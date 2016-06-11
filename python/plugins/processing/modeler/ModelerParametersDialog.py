@@ -57,6 +57,7 @@ from processing.core.parameters import (ParameterExtent,
                                         ParameterString,
                                         ParameterCrs,
                                         ParameterTableField,
+                                        ParameterTableMultipleField,
                                         ParameterFile,
                                         ParameterPoint,
                                         ParameterGeometryPredicate)
@@ -366,6 +367,12 @@ class ModelerParametersDialog(QDialog):
             item = QComboBox()
             item.setEditable(True)
             fields = self.getAvailableValuesOfType(ParameterTableField, None)
+            for f in fields:
+                item.addItem(self.resolveValueDescription(f), f)
+        elif isinstance(param, ParameterTableMultipleField):
+            item = QComboBox()
+            item.setEditable(True)
+            fields = self.getAvailableValuesOfType(ParameterTableMultipleField, None)
             for f in fields:
                 item.addItem(self.resolveValueDescription(f), f)
         elif isinstance(param, ParameterNumber):
@@ -718,7 +725,8 @@ class ModelerParametersDialog(QDialog):
                 return False
             alg.params[param.name] = ParameterFixedTable.tableToString(table)
             return True
-        elif isinstance(param, ParameterTableField):
+        elif isinstance(param, (ParameterTableField,
+                                ParameterTableMultipleField)):
             return self.setParamTableFieldValue(alg, param, widget)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:

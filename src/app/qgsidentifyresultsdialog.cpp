@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
 #include "qgsattributedialog.h"
+#include "qgsdockwidget.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsfeatureaction.h"
 #include "qgsgeometry.h"
@@ -44,7 +45,6 @@
 #include <QSettings>
 #include <QMenu>
 #include <QClipboard>
-#include <QDockWidget>
 #include <QMenuBar>
 #include <QPushButton>
 #include <QPrinter>
@@ -258,7 +258,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mOpenFormAction->setDisabled( true );
 
   QSettings mySettings;
-  mDock = new QDockWidget( tr( "Identify Results" ), QgisApp::instance() );
+  mDock = new QgsDockWidget( tr( "Identify Results" ), QgisApp::instance() );
   mDock->setObjectName( "IdentifyResultsDock" );
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mDock->setWidget( this );

@@ -27,6 +27,7 @@ class EffectItem;
 class QgsPaintEffect;
 class QCheckBox;
 class QToolButton;
+class QgsRendererWidgetContainer;
 
 /** \ingroup gui
  * \class QgsEffectStackPropertiesWidget
@@ -62,6 +63,12 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QWidget, private Ui::Qg
      * @param picture preview picture
      */
     void setPreviewPicture( const QPicture& picture );
+
+  signals:
+    /**
+     * Emiited when something in the widget changes.
+     */
+    void widgetChanged();
 
   public slots:
 
@@ -198,7 +205,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QWidget
     QgsEffectStackCompactWidget( QWidget* parent = nullptr, QgsPaintEffect* effect = nullptr );
     ~QgsEffectStackCompactWidget();
 
-    /** Sets paint effect attached to the widget
+    /** Sets paint effect attached to the widget,
      * @param effect QgsPaintEffect for modification by the widget. If the effect
      * is not a QgsEffectStack, it will be automatically converted to an effect
      * stack consisting of the original effect
@@ -217,11 +224,24 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QWidget
      */
     void setPreviewPicture( const QPicture &picture );
 
+    /**
+     * Set the widget in dock mode. In dock mode the widget will emit a signal
+     * to show the effects selector instead of opening a dialog.
+     * @param dockMode True to enable dock mode.
+     */
+    void setDockMode( bool dockMode ) { mDockMode = dockMode; }
+
   signals:
 
     /** Emitted when the paint effect properties change
      */
     void changed();
+
+    /** Emitted when a panel is shown in the widget.
+     * @param widget widget panel which was shown
+     * @note added in QGIS 2.16
+     */
+    void showPanel( QgsRendererWidgetContainer* widget );
 
   private slots:
 
@@ -229,7 +249,11 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QWidget
 
     void enableToggled( bool checked );
 
+    void cleanUpContainer( QgsRendererWidgetContainer* container );
+    void updateFromContainer( QgsRendererWidgetContainer *container );
+
   private:
+    bool mDockMode;
 
     QgsEffectStack* mStack;
     QCheckBox* mEnabledCheckBox;

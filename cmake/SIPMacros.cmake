@@ -119,6 +119,7 @@ MACRO(BUILD_SIP_PYTHON_MODULE MODULE_NAME SIP_FILES EXTRA_OBJECTS)
   SET(_logical_name "python_module_${_logical_name}")
 
   ADD_LIBRARY(${_logical_name} MODULE ${_sip_output_files} ${EXTRA_OBJECTS})
+  SET_TARGET_PROPERTIES(${_logical_name} PROPERTIES CXX_VISIBILITY_PRESET default)
   IF (NOT APPLE)
     TARGET_LINK_LIBRARIES(${_logical_name} ${PYTHON_LIBRARY})
   ENDIF (NOT APPLE)

@@ -1,3 +1,5 @@
+FIND_PACKAGE(QJSON)
+
 INCLUDE_DIRECTORIES(
   ../../core
   ../../core/auth

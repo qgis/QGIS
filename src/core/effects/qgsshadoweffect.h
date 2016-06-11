@@ -77,7 +77,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setOffsetDistance( const double distance ) { mOffsetDist = distance; }
 
     /** Returns the distance used for offsetting the shadow.
-     * @returns offset distance. Distance units are retreived via @link offsetUnit @endlink
+     * @returns offset distance. Distance units are retrieved via @link offsetUnit @endlink
      * @see setOffsetDistance
      * @see offsetUnit
      * @see offsetMapUnitScale

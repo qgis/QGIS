@@ -200,7 +200,6 @@ FIND_PACKAGE(GDAL)
 FIND_PACKAGE(Expat REQUIRED)
 FIND_PACKAGE(Spatialindex REQUIRED)
 FIND_PACKAGE(Qwt REQUIRED)
-FIND_PACKAGE(QJSON)
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QEXTSERIALPORT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/gps/qextserialport)
@@ -312,6 +311,12 @@ ENDIF (WITH_TOUCH)
 
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
+
+# search for QJSON and decide whether to enable ArcGIS providers
+FIND_PACKAGE (QJSON)
+IF (QJSON_FOUND AND NOT ENABLE_QT5)
+  SET (WITH_ARCGIS TRUE)
+ENDIF (QJSON_FOUND AND NOT ENABLE_QT5)
 
 # Master password hash and authentication encryption
 FIND_PACKAGE(QCA REQUIRED)
@@ -607,6 +612,7 @@ ENDIF (ANDROID)
 IF(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
   cmake_policy(SET CMP0005 OLD)
+  cmake_policy(SET CMP0063 NEW)
 ENDIF(COMMAND cmake_policy)
 
 IF (WIN32)
@@ -634,6 +640,8 @@ ADD_DEFINITIONS("-DANALYSIS_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DAPP_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DCUSTOMWIDGETS_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DSERVER_EXPORT=${DLLIMPORT}")
+
+SET(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 #############################################################
 # user-changeable settings which can be used to customize

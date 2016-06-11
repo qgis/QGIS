@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsmapstylingwidget.h
+    ---------------------
+    begin                : April 2016
+    copyright            : (C) 2016 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSMAPSTYLESDOCK_H
 #define QGSMAPSTYLESDOCK_H
 
@@ -13,6 +27,7 @@
 #include <QTimer>
 
 #include "ui_qgsmapstylingwidgetbase.h"
+#include "qgsmapstylepanel.h"
 
 class QgsLabelingWidget;
 class QgsMapLayer;
@@ -22,6 +37,16 @@ class QgsRendererRasterPropertiesWidget;
 class QgsUndoWidget;
 class QgsRasterHistogramWidget;
 class QgsMapStylePanelFactory;
+class QgsMapLayerStyleManagerWidget;
+
+class APP_EXPORT QgsMapLayerStyleManagerWidgetFactory : public QgsMapStylePanelFactory
+{
+  public:
+    QIcon icon() override;
+    QString title() override;
+    QgsMapStylePanel *createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent ) override;
+    bool supportsLayer( QgsMapLayer *layer ) override;
+};
 
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {
@@ -41,10 +66,11 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget, private Ui::QgsMapStyling
 {
     Q_OBJECT
   public:
-    QgsMapStylingWidget(QgsMapCanvas *canvas, QList<QgsMapStylePanelFactory *> pages, QWidget *parent = 0 );
+    QgsMapStylingWidget( QgsMapCanvas *canvas, QList<QgsMapStylePanelFactory *> pages, QWidget *parent = 0 );
+    ~QgsMapStylingWidget();
     QgsMapLayer* layer() { return mCurrentLayer; }
 
-    void setPageFactories( QList<QgsMapStylePanelFactory*> factories) { mPageFactories = factories; }
+    void setPageFactories( QList<QgsMapStylePanelFactory*> factories );
 
   signals:
     void styleChanged( QgsMapLayer* layer );
@@ -53,10 +79,13 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget, private Ui::QgsMapStyling
     void setLayer( QgsMapLayer* layer );
     void apply();
     void autoApply();
+    void undo();
+    void redo();
 
   private slots:
     void updateCurrentWidgetLayer();
     void layerAboutToBeRemoved( QgsMapLayer* layer );
+    void liveApplyToggled( bool value );
 
   private:
     void pushUndoItem( const QString& name );
@@ -73,6 +102,7 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget, private Ui::QgsMapStyling
     QgsRendererRasterPropertiesWidget* mRasterStyleWidget;
     QList<QgsMapStylePanelFactory*> mPageFactories;
     QMap<int, QgsMapStylePanelFactory*> mUserPages;
+    QgsMapLayerStyleManagerWidgetFactory* mStyleManagerFactory;
 };
 
 #endif // QGSMAPSTYLESDOCK_H

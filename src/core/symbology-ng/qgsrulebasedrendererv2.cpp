@@ -197,6 +197,20 @@ QSet<QString> QgsRuleBasedRendererV2::Rule::usedAttributes() const
   return attrs;
 }
 
+bool QgsRuleBasedRendererV2::Rule::needsGeometry() const
+{
+  if ( mFilter && mFilter->needsGeometry() )
+    return true;
+
+  Q_FOREACH ( Rule* rule, mChildren )
+  {
+    if ( rule->needsGeometry() )
+      return true;
+  }
+
+  return false;
+}
+
 QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbols( const QgsRenderContext& context ) const
 {
   QgsSymbolV2List lst;
@@ -935,7 +949,12 @@ QString QgsRuleBasedRendererV2::filter( const QgsFields& )
 QList<QString> QgsRuleBasedRendererV2::usedAttributes()
 {
   QSet<QString> attrs = mRootRule->usedAttributes();
-  return attrs.values();
+  return attrs.toList();
+}
+
+bool QgsRuleBasedRendererV2::filterNeedsGeometry() const
+{
+  return mRootRule->needsGeometry();
 }
 
 QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::clone() const

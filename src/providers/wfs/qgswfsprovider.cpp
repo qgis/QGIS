@@ -33,6 +33,7 @@
 #include "qgswfstransactionrequest.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
+#include "qgscrscache.h"
 
 #include <QDomDocument>
 #include <QMessageBox>
@@ -72,9 +73,9 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Ca
   if ( !srsname.isEmpty() )
   {
     if ( srsname == "EPSG:900913" )
-      mShared->mSourceCRS.createFromOgcWmsCrs( "EPSG:3857" );
+      mShared->mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( "EPSG:3857" );
     else
-      mShared->mSourceCRS.createFromOgcWmsCrs( srsname );
+      mShared->mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( srsname );
   }
 
   // Must be called first to establish the version, in case we are in auto-detection
@@ -86,7 +87,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Ca
 
   if ( !mShared->mURI.sql().isEmpty() )
   {
-    if ( !processSQL( mShared->mURI.sql(), mProcessSQLErrorMsg ) )
+    if ( !processSQL( mShared->mURI.sql(), mProcessSQLErrorMsg, mProcessSQLWarningMsg ) )
     {
       QgsMessageLog::logMessage( mProcessSQLErrorMsg, tr( "WFS" ) );
       mValid = false;
@@ -270,14 +271,36 @@ void QgsWFSProviderSQLColumnRefValidator::visit( const QgsSQLStatement::NodeColu
 }
 
 
-bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
+bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QString& warningMsg )
 {
   QgsDebugMsg( QString( "Processing SQL: %1" ).arg( sqlString ) );
   errorMsg.clear();
+  warningMsg.clear();
   QgsSQLStatement sql( sqlString );
   if ( sql.hasParserError() )
   {
-    errorMsg = tr( "SQL query is invalid: %1" ).arg( sql.parserErrorString() );
+    QString parserErrorString( sql.parserErrorString() );
+    QStringList parts( parserErrorString.split( "," ) );
+    parserErrorString = "";
+    Q_FOREACH ( const QString& part, parts )
+    {
+      QString newPart( part );
+      if ( part == "syntax error" )
+        newPart = tr( "Syntax error." );
+      else if ( part == " unexpected $end" )
+        newPart = tr( "Missing content at end of string." );
+      else if ( part.startsWith( " unexpected " ) )
+        newPart = tr( "%1 is unexpected." ).arg( part.mid( QString( " unexpected " ).size() ) );
+      else if ( part.startsWith( " expecting " ) )
+        newPart = tr( "%1 is expected instead." ).arg( part.mid( QString( " expecting " ).size() ) );
+      if ( !parserErrorString.isEmpty() )
+        parserErrorString += " ";
+      parserErrorString += newPart;
+    }
+    parserErrorString.replace( " or ", tr( "%1 or %2" ).arg( "", "" ) );
+    parserErrorString.replace( "COMMA", tr( "comma" ) );
+    parserErrorString.replace( "IDENTIFIER", tr( "an identifier" ) );
+    errorMsg = tr( "SQL query is invalid: %1" ).arg( parserErrorString );
     return false;
   }
   if ( !sql.doBasicValidationChecks( errorMsg ) )
@@ -311,7 +334,14 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
     QString prefixedTypename( mShared->mCaps.addPrefixIfNeeded( table->name() ) );
     if ( prefixedTypename.isEmpty() )
     {
-      errorMsg = tr( "Typename '%1' is ambiguous without prefix" ).arg( table->name() );
+      if ( mShared->mCaps.setAmbiguousUnprefixedTypename.contains( table->name() ) )
+      {
+        errorMsg = tr( "Typename '%1' is ambiguous without prefix" ).arg( table->name() );
+      }
+      else
+      {
+        errorMsg = tr( "Typename '%1' is unknown" ).arg( table->name() );
+      }
       return false;
     }
     typenameList << prefixedTypename;
@@ -339,7 +369,14 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
     QString prefixedTypename( mShared->mCaps.addPrefixIfNeeded( table->name() ) );
     if ( prefixedTypename.isEmpty() )
     {
-      errorMsg = tr( "Typename '%1' is ambiguous without prefix" ).arg( table->name() );
+      if ( mShared->mCaps.setAmbiguousUnprefixedTypename.contains( table->name() ) )
+      {
+        errorMsg = tr( "Typename '%1' is ambiguous without prefix" ).arg( table->name() );
+      }
+      else
+      {
+        errorMsg = tr( "Typename '%1' is unknown" ).arg( table->name() );
+      }
       return false;
     }
     typenameList << prefixedTypename;
@@ -543,8 +580,17 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
         }
       }
     }
+    // Geometry field
+    else if ( mapTypenameToGeometryAttribute[columnTableTypename] == columnRef->name() )
+    {
+      if ( columnTableTypename != mShared->mURI.typeName() )
+      {
+        warningMsg = tr( "The geometry field of a typename that is not the main typename is ignored in the selected fields" );
+        QgsDebugMsg( warningMsg );
+      }
+    }
     // Regular field
-    else if ( mapTypenameToGeometryAttribute[columnTableTypename] != columnRef->name() )
+    else
     {
       const QgsFields tableFields = mapTypenameToFields[columnTableTypename];
       int idx = tableFields.fieldNameIndex( columnRef->name() );
@@ -609,6 +655,12 @@ QString QgsWFSProvider::subsetString()
 
 bool QgsWFSProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
+  QgsDebugMsg( QString( "theSql = '%1'" ).arg( theSQL ) );
+
+  // Invalid and cancel current download before altering fields, etc...
+  // (crashes might happen if not done at the beginning)
+  mShared->invalidateCache();
+
   mSubsetString = theSQL;
   mCacheMinMaxDirty = true;
 
@@ -617,10 +669,13 @@ bool QgsWFSProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
   mShared->mLayerPropertiesList.clear();
   mShared->mMapFieldNameToSrcLayerNameFieldName.clear();
   mShared->mDistinctSelect = false;
-  if ( theSQL.startsWith( "SELECT ", Qt::CaseInsensitive ) )
+  if ( theSQL.startsWith( "SELECT ", Qt::CaseInsensitive ) ||
+       theSQL.startsWith( "SELECT\t", Qt::CaseInsensitive ) ||
+       theSQL.startsWith( "SELECT\r", Qt::CaseInsensitive ) ||
+       theSQL.startsWith( "SELECT\n", Qt::CaseInsensitive ) )
   {
-    QString errorMsg;
-    if ( !processSQL( theSQL, errorMsg ) )
+    QString errorMsg, warningMsg;
+    if ( !processSQL( theSQL, errorMsg, warningMsg ) )
     {
       QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
       return false;
@@ -1389,12 +1444,11 @@ bool QgsWFSProvider::getCapabilities()
       const QgsRectangle& r = mShared->mCaps.featureTypes[i].bboxLongLat;
       if ( mShared->mSourceCRS.authid().isEmpty() && mShared->mCaps.featureTypes[i].crslist.size() != 0 )
       {
-        mShared->mSourceCRS.createFromOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
+        mShared->mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
       }
       if ( !r.isNull() )
       {
-        QgsCoordinateReferenceSystem src;
-        src.createFromOgcWmsCrs( "CRS:84" );
+        QgsCoordinateReferenceSystem src = QgsCRSCache::instance()->crsByOgcWmsCrs( "CRS:84" );
         QgsCoordinateTransform ct( src, mShared->mSourceCRS );
 
         QgsDebugMsg( "latlon ext:" + r.toString() );

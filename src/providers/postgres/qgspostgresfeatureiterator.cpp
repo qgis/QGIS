@@ -581,6 +581,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
       break;
 
     case pktInt:
+    case pktUint64:
       query += delim + QgsPostgresConn::quotedIdentifier( mSource->mFields.at( mSource->mPrimaryKeyAttrs.at( 0 ) ).name() );
       delim = ',';
       break;
@@ -705,17 +706,29 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
   QgsFeatureId fid = 0;
 
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-  const QgsAttributeList& fetchAttributes = mRequest.subsetOfAttributes();
+  QgsAttributeList fetchAttributes = mRequest.subsetOfAttributes();
 
   switch ( mSource->mPrimaryKeyType )
   {
     case pktOid:
     case pktTid:
-    case pktInt:
       fid = mConn->getBinaryInt( queryResult, row, col++ );
-      if ( mSource->mPrimaryKeyType == pktInt &&
-           ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs.at( 0 ) ) ) )
+      break;
+
+    case pktInt:
+    case pktUint64:
+      fid = mConn->getBinaryInt( queryResult, row, col++ );
+      if ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs.at( 0 ) ) )
+      {
         feature.setAttribute( mSource->mPrimaryKeyAttrs[0], fid );
+      }
+      if ( mSource->mPrimaryKeyType == pktInt )
+      {
+        // NOTE: this needs be done _after_ the setAttribute call
+        // above as we want the attribute value to be 1:1 with
+        // database value
+        fid = QgsPostgresUtils::int32pk_to_fid( fid );
+      }
       break;
 
     case pktFidMap:

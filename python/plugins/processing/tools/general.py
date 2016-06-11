@@ -29,13 +29,14 @@ import os
 import ConfigParser
 
 from processing.core.Processing import Processing
-from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.core.alglist import algList
 from processing.core.parameters import ParameterSelection
+from processing.gui.Postprocessing import handleAlgorithmResults
 
 
 def alglist(text=None):
     s = ''
-    for provider in Processing.algList.algs.values():
+    for provider in algList.algs.values():
         sortedlist = sorted(provider.values(), key=lambda alg: alg.name)
         for alg in sortedlist:
             if text is None or text.lower() in alg.name.lower():

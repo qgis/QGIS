@@ -275,11 +275,6 @@ class QgsProject : QObject
 
     QgsRelationManager* relationManager() const;
 
-    /** Return the project's billboard manager instance pointer
-     * @note added in QGIS 2.16
-     */
-    QgsBillBoardRegistry* billboardRegistry() const;
-
     /** Return pointer to the root (invisible) node of the project's layer tree
      * @note added in 2.4
      */
@@ -329,6 +324,20 @@ class QgsProject : QObject
      * @note Added in QGIS 2.16
      */
     void setAutoTransaction(bool autoTransaction );
+    /**
+     * Should default values be evaluated on provider side when requested and not when committed.
+     *
+     * @note added in 2.16
+     */
+    bool evaluateDefaultValues() const;
+
+
+    /**
+     * Defines if default values should be evaluated on provider side when requested and not when committed.
+     *
+     * @note added in 2.16
+     */
+    void setEvaluateDefaultValues( bool evaluateDefaultValues );
 
   protected:
 

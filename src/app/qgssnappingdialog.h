@@ -19,7 +19,7 @@
 #define QGSSNAPPINGDIALOG_H
 
 #include "qgsmaplayer.h"
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 #include "ui_qgssnappingdialogbase.h"
 
 class QgsMapCanvas;
@@ -90,7 +90,7 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
     /** Used to query the loaded layers*/
     QgsMapCanvas* mMapCanvas;
 
-    QDockWidget *mDock;
+    QgsDockWidget *mDock;
 
     /** Set checkbox value based on project setting*/
     void setTopologicalEditingState();
@@ -102,7 +102,7 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
 };
 
 
-class QgsSnappingDock : public QDockWidget
+class QgsSnappingDock : public QgsDockWidget
 {
     Q_OBJECT
 

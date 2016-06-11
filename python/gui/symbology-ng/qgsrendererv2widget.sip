@@ -48,10 +48,16 @@ class QgsRendererV2Widget : QWidget
     void layerVariablesChanged();
 
     /**
-     * Emmited when something on the widget has changed.
+     * Emitted when something on the widget has changed.
      * All widgets will fire this event to notify of an internal change.
      */
     void widgetChanged();
+
+    /** Shows a panel widget inside the renderer widget.
+     * @param widget widget panel to show
+     * @note added in QGIS 2.16
+     */
+    void showPanel( QgsRendererWidgetContainer* widget );
 
   protected:
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods

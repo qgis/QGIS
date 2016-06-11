@@ -18,7 +18,7 @@
 #include <QColor>
 
 #include "qgshillshaderenderer.h"
-
+#include "qgsrastertransparency.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterblock.h"
 #include "qgsrectangle.h"
@@ -40,6 +40,10 @@ QgsHillshadeRenderer *QgsHillshadeRenderer::clone() const
   QgsHillshadeRenderer* r = new QgsHillshadeRenderer( nullptr, mBand, mLightAzimuth, mLightAngle );
   r->setZFactor( mZFactor );
   r->setMultiDirectional( mMultiDirectional );
+  // "Effects"
+  r->setOpacity( mOpacity );
+  r->setAlphaBand( mAlphaBand );
+  r->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
   return r;
 }
 
@@ -98,11 +102,33 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     return outputBlock;
   }
 
+  QgsRasterBlock *alphaBlock = nullptr;
+
+  if ( mAlphaBand > 0 && mBand != mAlphaBand )
+  {
+
+    alphaBlock = mInput->block( mAlphaBand, extent, width, height );
+    if ( !alphaBlock || alphaBlock->isEmpty() )
+    {
+      // TODO: better to render without alpha
+      delete inputBlock;
+      delete alphaBlock;
+      return outputBlock;
+    }
+  }
+  else if ( mAlphaBand > 0 )
+  {
+    alphaBlock = inputBlock;
+  }
+
   if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
+    delete alphaBlock;
     return outputBlock;
   }
+
+
 
   double cellXSize = extent.width() / double( width );
   double cellYSize = extent.height() / double( height );
@@ -224,8 +250,32 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         double color3 = cosSlope + sinSlope * cos( angle3Rad - aspectRad ) ;
         grayValue = qBound( 0.0, 255 * ( weight0 * color0 + weight1 * color1 + weight2 * color2 + weight3 * color3 ) * 0.5, 255.0 );
       }
-      outputBlock->setColor( i, j, qRgb( grayValue, grayValue, grayValue ) );
+
+      double currentAlpha = mOpacity;
+      if ( mRasterTransparency )
+      {
+        currentAlpha = mRasterTransparency->alphaValue( x22, mOpacity * 255 ) / 255.0;
+      }
+      if ( mAlphaBand > 0 )
+      {
+        currentAlpha *= alphaBlock->value( i ) / 255.0;
+      }
+
+      if ( qgsDoubleNear( currentAlpha, 1.0 ) )
+      {
+        outputBlock->setColor( i, j, qRgba( grayValue, grayValue, grayValue, 255 ) );
+      }
+      else
+      {
+        outputBlock->setColor( i, j, qRgba( currentAlpha * grayValue, currentAlpha * grayValue, currentAlpha * grayValue, currentAlpha * 255 ) );
+      }
     }
+  }
+
+  delete inputBlock;
+  if ( mAlphaBand > 0 && mBand != mAlphaBand )
+  {
+    delete alphaBlock;
   }
   return outputBlock;
 }

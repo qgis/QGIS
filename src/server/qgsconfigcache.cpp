@@ -23,6 +23,7 @@
 #include "qgswmsprojectparser.h"
 #include "qgssldconfigparser.h"
 #include "qgsaccesscontrol.h"
+#include "qgsproject.h"
 
 #include <QFile>
 
@@ -47,11 +48,37 @@ QgsConfigCache::~QgsConfigCache()
 
 QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& filePath )
 {
+  QgsMessageLog::logMessage(
+    QString( "Open the project file '%1'." )
+    .arg( filePath ),
+    "Server", QgsMessageLog::INFO
+  );
+
   QDomDocument* doc = xmlDocument( filePath );
   if ( !doc )
   {
     return nullptr;
   }
+
+  QgsProjectVersion fileVersion = getVersion( *doc );
+  QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
+
+  if ( thisVersion != fileVersion )
+  {
+    QgsMessageLog::logMessage(
+      QString(
+        "\n========================================================================"
+        "\n= WARNING: This project file was saved by a different version of QGIS. ="
+        "\n========================================================================"
+      ), "Server", QgsMessageLog::WARNING
+    );
+  }
+  QgsMessageLog::logMessage(
+    QString( "QGIS server version %1, project version %2" )
+    .arg( thisVersion.text() )
+    .arg( fileVersion.text() ),
+    "Server", QgsMessageLog::INFO
+  );
   return new QgsServerProjectParser( doc, filePath );
 }
 
@@ -207,3 +234,10 @@ void QgsConfigCache::removeChangedEntry( const QString& path )
 
   mFileSystemWatcher.removePath( path );
 }
+
+
+void QgsConfigCache::removeEntry( const QString& path )
+{
+  removeChangedEntry( path );
+}
+

@@ -881,7 +881,11 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   }
   int featuresCounted = 0;
 
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
+  QgsFeatureRequest request;
+  if ( !mRendererV2->filterNeedsGeometry() )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setSubsetOfAttributes( mRendererV2->usedAttributes(), mUpdatedFields );
+  QgsFeatureIterator fit = getFeatures( request );
   QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures interruptionCheck( &progressDialog );
   if ( showProgress )
   {
@@ -3747,12 +3751,21 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
 
 QgsAttributeTableConfig QgsVectorLayer::attributeTableConfig() const
 {
-  return mAttributeTableConfig;
+  QgsAttributeTableConfig config = mAttributeTableConfig;
+
+  if ( config.isEmpty() )
+    config.update( fields() );
+
+  return config;
 }
 
 void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig )
 {
-  mAttributeTableConfig = attributeTableConfig;
+  if ( mAttributeTableConfig != attributeTableConfig )
+  {
+    mAttributeTableConfig = attributeTableConfig;
+    emit configChanged();
+  }
 }
 
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )

@@ -27,7 +27,7 @@
 
 QgsCompoundCurveV2::QgsCompoundCurveV2(): QgsCurveV2()
 {
-
+  mWkbType = QgsWKBTypes::CompoundCurve;
 }
 
 QgsCompoundCurveV2::~QgsCompoundCurveV2()
@@ -51,6 +51,7 @@ bool QgsCompoundCurveV2::operator!=( const QgsCurveV2& other ) const
 
 QgsCompoundCurveV2::QgsCompoundCurveV2( const QgsCompoundCurveV2& curve ): QgsCurveV2( curve )
 {
+  mWkbType = QgsWKBTypes::CompoundCurve;
   Q_FOREACH ( const QgsCurveV2* c, curve.mCurves )
   {
     mCurves.append( static_cast<QgsCurveV2*>( c->clone() ) );
@@ -78,9 +79,9 @@ QgsCompoundCurveV2 *QgsCompoundCurveV2::clone() const
 
 void QgsCompoundCurveV2::clear()
 {
+  mWkbType = QgsWKBTypes::CompoundCurve;
   qDeleteAll( mCurves );
   mCurves.clear();
-  mWkbType = QgsWKBTypes::Unknown;
   clearCache();
 }
 
@@ -149,7 +150,7 @@ bool QgsCompoundCurveV2::fromWkt( const QString& wkt )
 
   QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::parseType( geometryType() ) )
+  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::CompoundCurve )
     return false;
   mWkbType = parts.first;
 
@@ -430,7 +431,7 @@ void QgsCompoundCurveV2::addVertex( const QgsPointV2& pt )
   }
 
   QgsLineStringV2* line = nullptr;
-  if ( !lastCurve || lastCurve->geometryType() != "LineString" )
+  if ( !lastCurve || QgsWKBTypes::flatType( lastCurve->wkbType() ) != QgsWKBTypes::LineString )
   {
     line = new QgsLineStringV2();
     mCurves.append( line );

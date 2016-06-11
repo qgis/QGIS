@@ -71,6 +71,7 @@
      <addaction name="mActionSelectFreehand"/>
      <addaction name="mActionSelectRadius"/>
      <addaction name="mActionSelectByExpression"/>
+     <addaction name="mActionSelectByForm"/>
      <addaction name="mActionDeselectAll"/>
      <addaction name="mActionSelectAll"/>
      <addaction name="mActionInvertSelection"/>
@@ -663,7 +664,7 @@
   <action name="mActionUndo">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionUndo.png</normaloff>:/images/themes/default/mActionUndo.png</iconset>
+     <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Undo</string>
@@ -675,7 +676,7 @@
   <action name="mActionRedo">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRedo.png</normaloff>:/images/themes/default/mActionRedo.png</iconset>
+     <normaloff>:/images/themes/default/mActionRedo.svg</normaloff>:/images/themes/default/mActionRedo.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Redo</string>
@@ -888,7 +889,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRotatePointSymbols.png</normaloff>:/images/themes/default/mActionRotatePointSymbols.png</iconset>
+     <normaloff>:/images/themes/default/mActionRotatePointSymbols.svg</normaloff>:/images/themes/default/mActionRotatePointSymbols.svg</iconset>
    </property>
    <property name="text">
     <string>Rotate Point Symbols</string>
@@ -2502,7 +2503,7 @@ Acts on currently active editable layer</string>
     <string>Modify the Attributes of all Selected Features Simultaneously</string>
    </property>
   </action>
-    <action name="mActionAddAmsLayer">
+  <action name="mActionAddAmsLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAddAmsLayer.svg</normaloff>:/images/themes/default/mActionAddAmsLayer.svg</iconset>
@@ -2524,6 +2525,21 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Add ArcGIS FeatureServer Layer</string>
+   </property>
+  </action>
+  <action name="mActionSelectByForm">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconFormSelect.svg</normaloff>:/images/themes/default/mIconFormSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select Features by Value...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Features By Value</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
    </property>
   </action>
  </widget>

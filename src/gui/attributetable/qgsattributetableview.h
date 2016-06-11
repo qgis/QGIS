@@ -31,7 +31,7 @@ class QgsVectorLayer;
 class QgsVectorLayerCache;
 class QMenu;
 class QProgressDialog;
-
+class QgsAttributeTableConfig;
 
 /**
  * @brief
@@ -67,6 +67,13 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * @return Returns always false, so the event gets processed
      */
     virtual bool eventFilter( QObject* object, QEvent* event ) override;
+
+    /**
+     * Set the attribute table config which should be used to control
+     * the appearance of the attribute table.
+     * @note added in QGIS 2.16
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
   protected:
     /**
@@ -126,6 +133,13 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *                 In most cases, this will be a @link QgsAttributeTableFilterModel @endlink
      */
     void willShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
+
+    /** Emitted when a column in the view has been resized.
+     * @param column column index (starts at 0)
+     * @param width new width in pixel
+     * @note added in QGIS 2.16
+     */
+    void columnResized( int column, int width );
 
     void finished();
 

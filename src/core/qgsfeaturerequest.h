@@ -370,7 +370,7 @@ class CORE_EXPORT QgsFeatureRequest
      * Return the subset of attributes which at least need to be fetched
      * @return A list of attributes to be fetched
      */
-    const QgsAttributeList& subsetOfAttributes() const { return mAttrs; }
+    QgsAttributeList subsetOfAttributes() const { return mAttrs; }
 
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );

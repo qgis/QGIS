@@ -16,8 +16,8 @@ import qgis # switch sip api
 
 from qgis.gui import (QgsShortcutsManager)
 from qgis.PyQt.QtCore import QSettings, QCoreApplication
-from qgis.PyQt.QtGui import QAction, QShortcut, QKeySequence
-from qgis.PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtGui import QKeySequence
+from qgis.PyQt.QtWidgets import QWidget, QAction, QShortcut
 
 from qgis.testing import (start_app,
                           unittest

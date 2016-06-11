@@ -33,6 +33,19 @@ class QgsDataProvider : QObject
       Net
     };
 
+    /**
+     * Properties are used to pass custom configuration options into data providers.
+     * This enum defines a list of custom properties which can be used on different
+     * providers. It depends on the provider, which properties are supported.
+     * In addition to these default properties, providers can add their custom properties
+     * starting from CustomData.
+     */
+    enum ProviderProperty
+    {
+      EvaluateDefaultValues,       //!< Evaluate default values on provider side when calling QgsVectorDataProvider::defaultValue( int index ) rather than on commit.
+      CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
+    };
+
     QgsDataProvider( const QString & uri = "" );
 
     /**
@@ -250,7 +263,7 @@ class QgsDataProvider : QObject
      *
      * This is aimed at providers that can open differently the connection to
      * the datasource, according it to be in update mode or in read-only mode.
-     * This method shall be balanced with a succesful call to enterUpdateMode().
+     * This method shall be balanced with a successful call to enterUpdateMode().
      *
      * Most providers will have an empty implementation for that method.
      *
@@ -263,6 +276,38 @@ class QgsDataProvider : QObject
      * @note added in QGIS 2.16
      */
     virtual bool leaveUpdateMode();
+
+    /**
+     * Allows setting arbitrary properties on the provider.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    void setProviderProperty( ProviderProperty property, const QVariant& value );
+
+    /**
+     * Allows setting arbitrary properties on the provider.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    // void setProviderProperty( int property, const QVariant& value );
+
+    /**
+     * Get the current value of a certain provider property.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    QVariant providerProperty( ProviderProperty property, const QVariant& defaultValue = QVariant() ) const;
+
+    /**
+     * Get the current value of a certain provider property.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    // QVariant providerProperty( int property , const QVariant& defaultValue ) const;
 
   signals:
 

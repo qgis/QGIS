@@ -49,6 +49,7 @@ enum QgsPostgresPrimaryKeyType
 {
   pktUnknown,
   pktInt,
+  pktUint64,
   pktTid,
   pktOid,
   pktFidMap

@@ -81,7 +81,6 @@ SET(QGIS_CORE_SRCS
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsattributetableconfig.cpp
-  qgsbillboardregistry.cpp
   qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
@@ -102,6 +101,7 @@ SET(QGIS_CORE_SRCS
   qgsdataitemprovider.cpp
   qgsdataitemproviderregistry.cpp
   qgsdatasourceuri.cpp
+  qgsdataprovider.cpp
   qgsdatetimestatisticalsummary.cpp
   qgsdatumtransformstore.cpp
   qgsdbfilterproxymodel.cpp
@@ -186,6 +186,7 @@ SET(QGIS_CORE_SRCS
   qgsrendercontext.cpp
   qgsrulebasedlabeling.cpp
   qgsrunprocess.cpp
+  qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
   qgsscaleexpression.cpp
   qgsscaleutils.cpp
@@ -450,7 +451,6 @@ ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
-  qgsbillboardregistry.h
   qgsbrowsermodel.h
   qgscontexthelp.h
   qgscoordinatetransform.h
@@ -693,6 +693,7 @@ SET(QGIS_CORE_HDRS
   qgsrelation.h
   qgsrenderchecker.h
   qgsrendercontext.h
+  qgsruntimeprofiler.h
   qgsscalecalculator.h
   qgsscaleexpression.h
   qgsscaleutils.h
@@ -876,12 +877,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
 )
 
-IF (NOT MSVC)
-  ADD_DEFINITIONS("-UCORE_EXPORT")
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
-  ENDIF()
-ENDIF (NOT MSVC)
+REMOVE_DEFINITIONS("-DCORE_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("\"-DCORE_EXPORT=${DLLEXPORT}\"")
 
 

@@ -428,7 +428,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
+  mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.svg" ) );
 
   QString title = QString( tr( "Layer Properties - %1" ) ).arg( lyr->name() );
   restoreOptionsBaseUi( title );
@@ -797,6 +797,12 @@ void QgsRasterLayerProperties::sync()
 
   mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
+
+  /*
+   * Legend Tab
+   */
+  mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
+
 } // QgsRasterLayerProperties::sync()
 
 /*
@@ -806,6 +812,11 @@ void QgsRasterLayerProperties::sync()
  */
 void QgsRasterLayerProperties::apply()
 {
+  /*
+   * Legend Tab
+   */
+  mLegendConfigEmbeddedWidget->applyToLayer();
+
   QgsDebugMsg( "apply processing symbology tab" );
   /*
    * Symbology Tab

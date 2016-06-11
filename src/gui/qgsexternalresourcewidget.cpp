@@ -16,7 +16,9 @@
 
 #include "qgsexternalresourcewidget.h"
 #include "qgspixmaplabel.h"
+#include "qgsproject.h"
 
+#include <QDir>
 #include <QGridLayout>
 #include <QVariant>
 #include <QSettings>
@@ -31,6 +33,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
     , mDocumentViewerContent( NoContent )
     , mDocumentViewerHeight( 0 )
     , mDocumentViewerWidth( 0 )
+    , mRelativeStorage( QgsFileWidget::Absolute )
 
 {
   setBackgroundRole( QPalette::Window );
@@ -167,8 +170,49 @@ void QgsExternalResourceWidget::updateDocumentViewer()
   }
 }
 
+QString QgsExternalResourceWidget::resolvePath( const QString& path )
+{
+  switch ( mRelativeStorage )
+  {
+    case QgsFileWidget::Absolute:
+      return path;
+      break;
+    case QgsFileWidget::RelativeProject:
+      return QgsProject::instance()->fileInfo().dir().filePath( path );
+      break;
+    case QgsFileWidget::RelativeDefaultPath:
+      return QDir( mDefaultRoot ).filePath( path );
+      break;
+  }
+  return QString(); // avoid warnings
+}
+
+QString QgsExternalResourceWidget::defaultRoot() const
+{
+  return mDefaultRoot;
+}
+
+void QgsExternalResourceWidget::setDefaultRoot( const QString& defaultRoot )
+{
+  mFileWidget->setDefaultRoot( defaultRoot );
+  mDefaultRoot = defaultRoot;
+}
+
+QgsFileWidget::RelativeStorage QgsExternalResourceWidget::relativeStorage() const
+{
+  return mRelativeStorage;
+}
+
+void QgsExternalResourceWidget::setRelativeStorage( const QgsFileWidget::RelativeStorage& relativeStorage )
+{
+  mFileWidget->setRelativeStorage( relativeStorage );
+  mRelativeStorage = relativeStorage;
+}
+
 void QgsExternalResourceWidget::loadDocument( const QString& path )
 {
+  QString resolvedPath;
+
   if ( path.isEmpty() )
   {
 #ifdef WITH_QTWEBKIT
@@ -183,20 +227,23 @@ void QgsExternalResourceWidget::loadDocument( const QString& path )
       updateDocumentViewer();
     }
   }
-
+  else
+  {
+    resolvedPath = resolvePath( path );
 
 #ifdef WITH_QTWEBKIT
-  if ( mDocumentViewerContent == Web )
-  {
-    mWebView->setUrl( QUrl( path ) );
-  }
+    if ( mDocumentViewerContent == Web )
+    {
+      mWebView->setUrl( QUrl( resolvedPath ) );
+    }
 #endif
 
-  if ( mDocumentViewerContent == Image )
-  {
-    QPixmap pm( path );
-    mPixmapLabel->setPixmap( pm );
-    updateDocumentViewer();
+    if ( mDocumentViewerContent == Image )
+    {
+      QPixmap pm( resolvedPath );
+      mPixmapLabel->setPixmap( pm );
+      updateDocumentViewer();
+    }
   }
 }
 

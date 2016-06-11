@@ -21,6 +21,7 @@
 #include "qgspainteffectwidget.h"
 #include "qgsapplication.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsrendererwidgetcontainer.h"
 
 #include <QPicture>
 #include <QPainter>
@@ -219,6 +220,7 @@ void QgsEffectStackPropertiesWidget::updatePreview()
   painter.end();
 
   lblPreview->setPixmap( QPixmap::fromImage( previewImage ) );
+  emit widgetChanged();
 }
 
 EffectItem* QgsEffectStackPropertiesWidget::currentEffectItem()
@@ -378,6 +380,7 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 
 QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent , QgsPaintEffect *effect )
     : QWidget( parent )
+    , mDockMode( false )
     , mEnabledCheckBox( nullptr )
     , mButton( nullptr )
     , mPreviewPicture( nullptr )
@@ -447,18 +450,34 @@ void QgsEffectStackCompactWidget::showDialog()
     return;
 
   QgsEffectStack* clone = static_cast<QgsEffectStack*>( mStack->clone() );
-  QgsEffectStackPropertiesDialog dialog( clone, this );
-  if ( mPreviewPicture )
+  if ( mDockMode )
   {
-    dialog.setPreviewPicture( *mPreviewPicture );
+    QgsEffectStackPropertiesWidget* widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
+    if ( mPreviewPicture )
+    {
+      widget->setPreviewPicture( *mPreviewPicture );
+    }
+    QgsRendererWidgetContainer* container = new  QgsRendererWidgetContainer( widget, tr( "Effects Properties" ), nullptr );
+    connect( widget, SIGNAL( widgetChanged() ), container, SLOT( emitWidgetChanged() ) );
+    connect( container, SIGNAL( widgetChanged( QgsRendererWidgetContainer* ) ), this, SLOT( updateFromContainer( QgsRendererWidgetContainer* ) ) );
+    connect( container, SIGNAL( accepted( QgsRendererWidgetContainer* ) ), this, SLOT( cleanUpContainer( QgsRendererWidgetContainer* ) ) );
+    emit showPanel( container );
   }
-  if ( dialog.exec() == QDialog::Accepted )
+  else
   {
-    *mStack = *clone;
-    emit changed();
-  }
+    QgsEffectStackPropertiesDialog dialog( clone, this );
+    if ( mPreviewPicture )
+    {
+      dialog.setPreviewPicture( *mPreviewPicture );
+    }
+    if ( dialog.exec() == QDialog::Accepted )
+    {
+      *mStack = *clone;
+      emit changed();
+    }
 
-  delete clone;
+    delete clone;
+  }
 }
 
 void QgsEffectStackCompactWidget::enableToggled( bool checked )
@@ -470,5 +489,20 @@ void QgsEffectStackCompactWidget::enableToggled( bool checked )
 
   mStack->setEnabled( checked );
   mButton->setEnabled( checked );
+  emit changed();
+}
+
+void QgsEffectStackCompactWidget::cleanUpContainer( QgsRendererWidgetContainer *container )
+{
+  QgsEffectStackPropertiesWidget* widget = qobject_cast<QgsEffectStackPropertiesWidget*>( container->widget() );
+  *mStack = *widget->stack();
+  emit changed();
+//    delete widget->stack();
+}
+
+void QgsEffectStackCompactWidget::updateFromContainer( QgsRendererWidgetContainer *container )
+{
+  QgsEffectStackPropertiesWidget* widget = qobject_cast<QgsEffectStackPropertiesWidget*>( container->widget() );
+  *mStack = *widget->stack();
   emit changed();
 }

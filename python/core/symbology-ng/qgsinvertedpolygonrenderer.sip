@@ -6,9 +6,11 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
   public:
 
     /** Constructor
-     * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned
+     * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
+     * Ownership will be transferred.
      */
-    QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* embeddedRenderer /Transfer/ = 0 );
+    QgsInvertedPolygonRenderer( QgsFeatureRendererV2* embeddedRenderer /Transfer/ = 0 );
+
     virtual ~QgsInvertedPolygonRenderer();
 
     /** Used to clone this feature renderer.*/
@@ -80,13 +82,10 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
      */
     virtual QDomElement save( QDomDocument& doc );
 
-    /** Sets the embedded renderer
-     * @param subRenderer the embedded renderer (will be cloned)
-     */
-    void setEmbeddedRenderer( const QgsFeatureRendererV2* subRenderer );
-    /** @returns the current embedded renderer
-     */
+    void setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer /Transfer/ );
     const QgsFeatureRendererV2* embeddedRenderer() const;
+
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol );
 
     /** @returns true if the geometries are to be preprocessed (merged with an union) before rendering.*/
     bool preprocessingEnabled() const;

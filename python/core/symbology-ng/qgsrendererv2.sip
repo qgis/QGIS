@@ -148,6 +148,11 @@ class QgsFeatureRendererV2
      */
     virtual QList<QString> usedAttributes() = 0;
 
+    /**
+     * Returns true if this renderer requires the geometry to apply the filter.
+     */
+    virtual bool filterNeedsGeometry() const;
+
     virtual ~QgsFeatureRendererV2();
 
     virtual QgsFeatureRendererV2* clone() const = 0 /Factory/;
@@ -385,6 +390,21 @@ class QgsFeatureRendererV2
      * @see orderByEnabled()
      */
     void setOrderByEnabled( bool enabled );
+
+    /** Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
+     * does nothing with subrenderers, but individual derived classes can use these to modify their behaviour.
+     * @param subRenderer the embedded renderer. Ownership will be transferred.
+     * @see embeddedRenderer()
+     * @note added in QGIS 2.16
+     */
+    virtual void setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer /Transfer/ );
+
+    /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
+     * implementation does not use subrenderers and will always return null.
+     * @see setEmbeddedRenderer()
+     * @note added in QGIS 2.16
+     */
+    virtual const QgsFeatureRendererV2* embeddedRenderer() const;
 
   protected:
     QgsFeatureRendererV2( const QString& type );

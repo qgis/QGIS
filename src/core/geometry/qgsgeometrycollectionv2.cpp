@@ -72,7 +72,6 @@ void QgsGeometryCollectionV2::clear()
 {
   qDeleteAll( mGeometries );
   mGeometries.clear();
-  mWkbType = QgsWKBTypes::Unknown;
   clearCache(); //set bounding box invalid
 }
 
@@ -491,7 +490,7 @@ bool QgsGeometryCollectionV2::fromCollectionWkt( const QString &wkt, const QList
 
   QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::parseType( geometryType() ) )
+  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::flatType( wkbType() ) )
     return false;
   mWkbType = parts.first;
 
@@ -504,7 +503,7 @@ bool QgsGeometryCollectionV2::fromCollectionWkt( const QString &wkt, const QList
     bool success = false;
     Q_FOREACH ( const QgsAbstractGeometryV2* geom, subtypes )
     {
-      if ( QgsWKBTypes::flatType( childParts.first ) == QgsWKBTypes::parseType( geom->geometryType() ) )
+      if ( QgsWKBTypes::flatType( childParts.first ) == QgsWKBTypes::flatType( geom->wkbType() ) )
       {
         mGeometries.append( geom->clone() );
         if ( mGeometries.back()->fromWkt( childWkt ) )

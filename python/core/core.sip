@@ -24,7 +24,6 @@
 %Include qgsaggregatecalculator.sip
 %Include qgsattributeaction.sip
 %Include qgsattributetableconfig.sip
-%Include qgsbillboardregistry.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip
 %Include qgscolorscheme.sip
@@ -122,6 +121,7 @@
 %Include qgsrenderchecker.sip
 %Include qgsrendercontext.sip
 %Include qgsrunprocess.sip
+%Include qgsruntimeprofiler.sip
 %Include qgsscalecalculator.sip
 %Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip

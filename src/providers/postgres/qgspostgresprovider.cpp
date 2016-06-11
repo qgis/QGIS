@@ -25,7 +25,6 @@
 #include <qgscoordinatereferencesystem.h>
 
 #include <QMessageBox>
-#include <QSettings>
 
 #include "qgsvectorlayerimport.h"
 #include "qgsprovidercountcalcevent.h"
@@ -38,9 +37,41 @@
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgrestransaction.h"
 #include "qgslogger.h"
+#include "qgscrscache.h"
 
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
+
+inline qint64 PKINT2FID( qint32 x )
+{
+  return QgsPostgresUtils::int32pk_to_fid( x );
+}
+
+inline qint32 FID2PKINT( qint64 x )
+{
+  return QgsPostgresUtils::fid_to_int32pk( x );
+}
+
+QgsPostgresPrimaryKeyType
+QgsPostgresProvider::pkType( const QgsField& f ) const
+{
+  switch ( f.type() )
+  {
+    case QVariant::LongLong:
+      // unless we can guarantee all values are unsigned
+      // (in which case we could use pktUint64)
+      // we'll have to use a Map type.
+      // See http://hub.qgis.org/issues/14262
+      return pktFidMap; // pktUint64
+
+    case QVariant::Int:
+      return pktInt;
+
+    default:
+      return pktFidMap;
+  }
+}
+
 
 
 QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
@@ -194,6 +225,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
       key = "tid";
       break;
     case pktInt:
+    case pktUint64:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
       Q_ASSERT( mPrimaryKeyAttrs[0] >= 0 && mPrimaryKeyAttrs[0] < mAttributeFields.count() );
       key = mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).name();
@@ -402,6 +434,7 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
       break;
 
     case pktInt:
+    case pktUint64:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
       whereClause = QString( "%3%1=$%2" ).arg( quotedIdentifier( field( mPrimaryKeyAttrs[0] ).name() ) ).arg( offset ).arg( aliased );
       break;
@@ -442,8 +475,12 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
   switch ( mPrimaryKeyType )
   {
     case pktOid:
-    case pktInt:
+    case pktUint64:
       params << QString::number( featureId );
+      break;
+
+    case pktInt:
+      params << QString::number( FID2PKINT( featureId ) );
       break;
 
     case pktTid:
@@ -508,6 +545,11 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
 
     case pktInt:
       Q_ASSERT( pkAttrs.size() == 1 );
+      whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ).arg( FID2PKINT( featureId ) );
+      break;
+
+    case pktUint64:
+      Q_ASSERT( pkAttrs.size() == 1 );
       whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ).arg( featureId );
       break;
 
@@ -558,6 +600,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
   {
     case pktOid:
     case pktInt:
+    case pktUint64:
     {
       QString expr;
 
@@ -569,7 +612,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
 
         Q_FOREACH ( const QgsFeatureId featureId, featureIds )
         {
-          expr += delim + FID_TO_STRING( featureId );
+          expr += delim + FID_TO_STRING( pkType == pktOid ? featureId : pkType == pktUint64 ? featureId : FID2PKINT( featureId ) );
           delim = ',';
         }
         expr += ')';
@@ -1285,11 +1328,11 @@ bool QgsPostgresProvider::determinePrimaryKey()
       res = connectionRO()->PQexec( sql );
       QgsDebugMsg( QString( "Got %1 rows." ).arg( res.PQntuples() ) );
 
-      bool isInt = true;
       bool mightBeNull = false;
       QString primaryKey;
       QString delim = "";
 
+      mPrimaryKeyType = pktFidMap; // map by default, will downgrade if needed
       for ( int i = 0; i < res.PQntuples(); i++ )
       {
         QString name = res.PQgetvalue( i, 0 );
@@ -1310,15 +1353,11 @@ bool QgsPostgresProvider::determinePrimaryKey()
         }
         const QgsField& fld = mAttributeFields.at( idx );
 
-        if ( isInt &&
-             fld.type() != QVariant::Int &&
-             fld.type() != QVariant::LongLong )
-          isInt = false;
+        // Always use pktFidMap for multi-field keys
+        mPrimaryKeyType = i ? pktFidMap : pkType( fld );
 
         mPrimaryKeyAttrs << idx;
       }
-
-      mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
 
       if (( mightBeNull || isParentTable ) && !mUseEstimatedMetadata && !uniqueData( primaryKey ) )
       {
@@ -1407,7 +1446,12 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
     {
       if ( mUseEstimatedMetadata || uniqueData( primaryKey ) )
       {
-        mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() == QVariant::Int || mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
+        mPrimaryKeyType = pktFidMap; // Map by default
+        if ( mPrimaryKeyAttrs.size() == 1 )
+        {
+          const QgsField& fld = mAttributeFields.at( 0 );
+          mPrimaryKeyType = pkType( fld );
+        }
       }
       else
       {
@@ -1655,11 +1699,9 @@ bool QgsPostgresProvider::isValid()
 
 QVariant QgsPostgresProvider::defaultValue( int fieldId )
 {
-  QSettings settings;
-
   QVariant defVal = mDefaultValues.value( fieldId, QString::null );
 
-  if ( settings.value( "/qgis/evaluateDefaultValues", false ).toBool() && !defVal.isNull() )
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isNull() )
   {
     const QgsField& fld = field( fieldId );
 
@@ -1837,7 +1879,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       delim = ',';
     }
 
-    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap || mPrimaryKeyType == pktUint64 )
     {
       Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
@@ -1946,7 +1988,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     insert += values + ')';
 
-    if ( mPrimaryKeyType == pktFidMap || mPrimaryKeyType == pktInt )
+    if ( mPrimaryKeyType == pktFidMap || mPrimaryKeyType == pktInt || mPrimaryKeyType == pktUint64 )
     {
       insert += " RETURNING ";
 
@@ -2022,15 +2064,19 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     }
 
     // update feature ids
-    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap || mPrimaryKeyType == pktUint64 )
     {
       for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
       {
         QgsAttributes attrs = features->attributes();
 
-        if ( mPrimaryKeyType == pktInt )
+        if ( mPrimaryKeyType == pktUint64 )
         {
           features->setFeatureId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
+        }
+        else if ( mPrimaryKeyType == pktInt )
+        {
+          features->setFeatureId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
         }
         else
         {
@@ -3703,7 +3749,7 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs()
   {
     QgsPostgresResult result( connectionRO()->PQexec( QString( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
     if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-      srs.createFromProj4( result.PQgetvalue( 0, 0 ) );
+      srs = QgsCRSCache::instance()->crsByProj4( result.PQgetvalue( 0, 0 ) );
   }
   return srs;
 }

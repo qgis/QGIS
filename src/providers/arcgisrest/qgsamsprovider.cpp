@@ -100,7 +100,8 @@ void QgsAmsLegendFetcher::handleFinished()
       maxImageSize.setWidth( qMax( maxImageSize.width(), legendEntry.second.width() ) );
       maxImageSize.setHeight( qMax( maxImageSize.height(), legendEntry.second.height() ) );
     }
-    double scaleFactor = qMin( 1., qMin( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
+    double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0 :
+                         qMin( 1., qMin( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
 
     mLegendImage = QImage( imageSize + padding + textWidth, vpadding + legendEntries.size() * ( imageSize + vpadding ), QImage::Format_ARGB32 );
     mLegendImage.fill( Qt::transparent );

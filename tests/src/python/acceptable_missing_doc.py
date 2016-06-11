@@ -1,6 +1,31 @@
 # -*- coding: utf-8 -*-
+
 """
-The list of acceptable documatation missing
+***************************************************************************
+    acceptable_missing_doc.py
+    ---------------------
+    Date                 : March 2016
+    Copyright            : (C) 2016 by Stéphane Brunner
+    Email                : stephane dot brunner at camptocamp dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Stéphane Brunner'
+__date__ = 'March 2016'
+__copyright__ = '(C) 2016, Stéphane Brunner'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+# -*- coding: utf-8 -*-
+"""
+The list of acceptable documentation missing
 """
 __author__ = 'Stéphane Brunner'
 __date__ = '18/03/2016'

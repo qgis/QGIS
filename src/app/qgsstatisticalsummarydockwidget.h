@@ -15,13 +15,13 @@
 #ifndef QGSSTATISTICALSUMMARYDOCKWIDGET_H
 #define QGSSTATISTICALSUMMARYDOCKWIDGET_H
 
-#include <QDockWidget>
 #include <QMap>
 #include "ui_qgsstatisticalsummarybase.h"
 
 #include "qgsstatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
+#include "qgsdockwidget.h"
 
 class QgsBrowserModel;
 class QModelIndex;
@@ -32,7 +32,7 @@ class QgsBrowserTreeFilterProxyModel;
 
 /** A dock widget which displays a statistical summary of the values in a field or expression
  */
-class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private Ui::QgsStatisticalSummaryWidgetBase
+class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private Ui::QgsStatisticalSummaryWidgetBase
 {
     Q_OBJECT
 

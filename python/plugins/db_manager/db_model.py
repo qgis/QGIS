@@ -21,7 +21,7 @@ email                : brush.tyler@gmail.com
 """
 
 from functools import partial
-from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal, pyqtSlot
+from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal
 from qgis.PyQt.QtWidgets import QApplication, QMessageBox
 from qgis.PyQt.QtGui import QIcon
 
@@ -140,8 +140,8 @@ class ConnectionItem(TreeItem):
 
     def __init__(self, connection, parent=None):
         TreeItem.__init__(self, connection, parent)
-        connection.changed.connect(self.itemChanged)
-        connection.deleted.connect(self.itemRemoved)
+        connection.changed.connect(self.itemWasChanged)
+        connection.deleted.connect(self.itemWasRemoved)
 
         # load (shared) icon with first instance of table item
         if not hasattr(ConnectionItem, 'connectedIcon'):
@@ -169,8 +169,8 @@ class ConnectionItem(TreeItem):
                 return False
 
         database = connection.database()
-        database.changed.connect(self.itemChanged)
-        database.deleted.connect(self.itemRemoved)
+        database.changed.connect(self.itemWasChanged)
+        database.deleted.connect(self.itemWasRemoved)
 
         schemas = database.schemas()
         if schemas is not None:
@@ -195,8 +195,8 @@ class SchemaItem(TreeItem):
 
     def __init__(self, schema, parent):
         TreeItem.__init__(self, schema, parent)
-        schema.changed.connect(self.itemChanged)
-        schema.deleted.connect(self.itemRemoved)
+        schema.changed.connect(self.itemWasChanged)
+        schema.deleted.connect(self.itemWasRemoved)
 
         # load (shared) icon with first instance of schema item
         if not hasattr(SchemaItem, 'schemaIcon'):
@@ -225,8 +225,8 @@ class TableItem(TreeItem):
 
     def __init__(self, table, parent):
         TreeItem.__init__(self, table, parent)
-        table.changed.connect(self.itemChanged)
-        table.deleted.connect(self.itemRemoved)
+        table.changed.connect(self.itemWasChanged)
+        table.deleted.connect(self.itemWasRemoved)
         self.populate()
 
         # load (shared) icon with first instance of table item
@@ -487,7 +487,7 @@ class DBModel(QAbstractItemModel):
             if prevPopulated or force:
                 if item.populate():
                     for child in item.childItems:
-                        child.itemChanged.connect(partial(self.refreshItem, item))
+                        child.itemChanged.connect(partial(self.refreshItem, child))
                     self._onDataChanged(index)
                 else:
                     self.notPopulated.emit(index)

@@ -36,6 +36,7 @@
 #include "qgsdataprovider.h"
 #include "qgsowssourceselect.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgscrscache.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -388,8 +389,8 @@ void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
   QString myDefaultCrs = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
-  QgsCoordinateReferenceSystem defaultCRS;
-  if ( defaultCRS.createFromOgcWmsCrs( myDefaultCrs ) )
+  QgsCoordinateReferenceSystem defaultCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( myDefaultCrs );
+  if ( defaultCRS.isValid() )
   {
     mySelector->setSelectedCrsId( defaultCRS.srsid() );
   }
@@ -594,8 +595,7 @@ QString QgsOWSSourceSelect::descriptionForAuthId( const QString& authId )
   if ( mCrsNames.contains( authId ) )
     return mCrsNames[ authId ];
 
-  QgsCoordinateReferenceSystem qgisSrs;
-  qgisSrs.createFromOgcWmsCrs( authId );
+  QgsCoordinateReferenceSystem qgisSrs = QgsCRSCache::instance()->crsByOgcWmsCrs( authId );
   mCrsNames.insert( authId, qgisSrs.description() );
   return qgisSrs.description();
 }

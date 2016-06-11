@@ -17,6 +17,7 @@
 
 #include <QWidget>
 #include <QMenu>
+#include <QStackedWidget>
 #include "qgssymbolv2.h"
 #include "qgsdatadefined.h"
 
@@ -25,6 +26,8 @@ class QgsStyleV2;
 class QgsFeatureRendererV2;
 class QgsSymbolV2SelectorDialog;
 class QgsMapCanvas;
+class QgsRendererWidgetContainer;
+
 
 /**
   Base class for renderer settings widgets
@@ -74,6 +77,7 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      */
     void applyChanges();
 
+
   signals:
     /**
      * Emitted when expression context variables on the associated
@@ -87,6 +91,12 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      * All widgets will fire this event to notify of an internal change.
      */
     void widgetChanged();
+
+    /** Shows a panel widget inside the renderer widget.
+     * @param widget widget panel to show
+     * @note added in QGIS 2.16
+     */
+    void showPanel( QgsRendererWidgetContainer* widget );
 
   protected:
     QgsVectorLayer* mLayer;

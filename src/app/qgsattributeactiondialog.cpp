@@ -74,8 +74,8 @@ void QgsAttributeActionDialog::init( const QgsActionManager& actions, const QgsA
   updateButtons();
 
   QgsAttributeTableConfig::ColumnConfig visibleActionWidgetConfig = QgsAttributeTableConfig::ColumnConfig();
-  visibleActionWidgetConfig.mType = QgsAttributeTableConfig::Action;
-  visibleActionWidgetConfig.mHidden = false;
+  visibleActionWidgetConfig.type = QgsAttributeTableConfig::Action;
+  visibleActionWidgetConfig.hidden = false;
 
   mShowInAttributeTable->setChecked( attributeTableConfig.actionWidgetVisible() );
   mAttributeTableWidgetType->setCurrentIndex( attributeTableConfig.actionWidgetStyle() );

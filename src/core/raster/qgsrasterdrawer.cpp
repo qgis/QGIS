@@ -20,6 +20,7 @@
 #include "qgsrasteriterator.h"
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
+#include "qgsrendercontext.h"
 #include <QImage>
 #include <QPainter>
 #include <QPrinter>
@@ -28,7 +29,7 @@ QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iter
 {
 }
 
-void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
+void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, const QgsRenderContext* ctx )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
@@ -88,6 +89,8 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
     drawImage( p, viewPort, img, topLeftCol, topLeftRow, theQgsMapToPixel );
 
     delete block;
+    if ( ctx && ctx->renderingStopped() )
+      break;
   }
 }
 

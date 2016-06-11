@@ -64,6 +64,11 @@ class QgsServerInterface
     virtual QString configFilePath() = 0;
     /** Set the config file path */
     virtual void setConfigFilePath( const QString& configFilePath) = 0;
+    /** Remove entry from config cache */
+    virtual void removeConfigCacheEntry( const QString& path ) = 0;
+    /** Remove entry from layer cache */
+    virtual void removeProjectLayers( const QString& path ) = 0;
+
 
 private:
     /** Constructor */

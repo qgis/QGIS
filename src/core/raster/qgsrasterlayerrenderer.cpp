@@ -25,6 +25,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
     : QgsMapLayerRenderer( layer->id() )
     , mRasterViewPort( nullptr )
     , mPipe( nullptr )
+    , mContext( rendererContext )
 {
 
   mPainter = rendererContext.painter();
@@ -209,7 +210,7 @@ bool QgsRasterLayerRenderer::render()
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
-  drawer.draw( mPainter, mRasterViewPort, mMapToPixel );
+  drawer.draw( mPainter, mRasterViewPort, mMapToPixel, &mContext );
 
   QgsDebugMsgLevel( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 

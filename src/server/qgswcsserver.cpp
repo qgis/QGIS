@@ -367,7 +367,7 @@ QByteArray* QgsWCSServer::getCoverage()
     throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
   }
 
-  QgsCoordinateReferenceSystem requestCRS = QgsCRSCache::instance()->crsByAuthId( crs );
+  QgsCoordinateReferenceSystem requestCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( crs );
   if ( !requestCRS.isValid() )
   {
     mErrors << QString( "Could not create request CRS" );
@@ -392,7 +392,7 @@ QByteArray* QgsWCSServer::getCoverage()
     crs = mParameters.value( "RESPONSE_CRS", "" );
     if ( crs != "" )
     {
-      responseCRS = QgsCRSCache::instance()->crsByAuthId( crs );
+      responseCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( crs );
       if ( !responseCRS.isValid() )
       {
         responseCRS = rLayer->crs();

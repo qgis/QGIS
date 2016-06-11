@@ -153,10 +153,10 @@ class CORE_EXPORT QgsMapSettings
     //! Get color that is used for drawing of selected vector features
     QColor selectionColor() const { return mSelectionColor; }
 
-    //! Enumeration of flags that adjust the way how map is rendered
+    //! Enumeration of flags that adjust the way the map is rendered
     enum Flag
     {
-      Antialiasing             = 0x01,  //!< Enable anti-aliasin for map rendering
+      Antialiasing             = 0x01,  //!< Enable anti-aliasing for map rendering
       DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
       ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
       UseAdvancedEffects       = 0x08,  //!< Enable layer transparency and blending effects

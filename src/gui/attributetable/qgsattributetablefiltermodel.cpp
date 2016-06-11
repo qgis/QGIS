@@ -63,8 +63,9 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
 
 void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
 {
-  masterModel()->prefetchColumnData( column );
-  QSortFilterProxyModel::sort( column, order );
+  int myColumn = mColumnMapping.at( column );
+  masterModel()->prefetchColumnData( myColumn );
+  QSortFilterProxyModel::sort( myColumn, order );
 }
 
 QVariant QgsAttributeTableFilterModel::data( const QModelIndex& index, int role ) const
@@ -95,7 +96,10 @@ QVariant QgsAttributeTableFilterModel::headerData( int section, Qt::Orientation 
       return QSortFilterProxyModel::headerData( section, orientation, role );
   }
   else
-    return QSortFilterProxyModel::headerData( section, orientation, role );
+  {
+    int sourceSection = mapToSource( index( section, mColumnMapping.at( 0 ) == -1 ? 1 : 0 ) ).row();
+    return sourceModel()->headerData( sourceSection, orientation, role );
+  }
 }
 
 int QgsAttributeTableFilterModel::actionColumnIndex() const
@@ -119,11 +123,11 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, mConfig.columns() )
   {
     // Hidden? Forget about this column
-    if ( columnConfig.mHidden )
+    if ( columnConfig.hidden )
       continue;
 
     // The new value for the mapping (field index or -1 for action column)
-    int newValue = ( columnConfig.mType == QgsAttributeTableConfig::Action ) ? -1 : layer()->fieldNameIndex( columnConfig.mName );
+    int newValue = ( columnConfig.type == QgsAttributeTableConfig::Action ) ? -1 : layer()->fieldNameIndex( columnConfig.name );
     newColumnMapping << newValue;
   }
 
@@ -358,7 +362,9 @@ void QgsAttributeTableFilterModel::onColumnsChanged()
 int QgsAttributeTableFilterModel::mapColumnToSource( int column ) const
 {
   if ( mColumnMapping.isEmpty() )
-    return 0;
+    return column;
+  if ( column < 0 || column >= mColumnMapping.size() )
+    return -1;
   else
     return mColumnMapping.at( column );
 }

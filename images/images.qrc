@@ -228,6 +228,7 @@
         <file>themes/default/mActionHideAllLayers.png</file>
         <file>themes/default/mActionHideAllLayers.svg</file>
         <file>themes/default/mActionHideSelectedLayers.png</file>
+        <file>themes/default/mActionHistory.svg</file>
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
         <file>themes/default/mActionIncreaseContrast.svg</file>
@@ -266,6 +267,7 @@
         <file>themes/default/mActionOpenTable.png</file>
         <file>themes/default/mActionOpenTable.svg</file>
         <file>themes/default/mActionAddTable.svg</file>
+        <file>themes/default/mActionOffsetPointSymbols.svg</file>
         <file>themes/default/mActionOptions.svg</file>
         <file>themes/default/mActionPan.svg</file>
         <file>themes/default/mActionPanToSelected.svg</file>
@@ -277,6 +279,7 @@
         <file>themes/default/mActionPropertyItem.svg</file>
         <file>themes/default/mActionQgisHomePage.png</file>
         <file>themes/default/mActionRaiseItems.png</file>
+        <file>themes/default/mActionRedo.svg</file>
         <file>themes/default/mActionRedo.png</file>
         <file>themes/default/mActionRefresh.png</file>
         <file>themes/default/mActionRemove.png</file>
@@ -290,6 +293,7 @@
         <file>themes/default/mActionRotateLabel.png</file>
         <file>themes/default/mActionRotateLabel.svg</file>
         <file>themes/default/mActionRotatePointSymbols.png</file>
+        <file>themes/default/mActionRotatePointSymbols.svg</file>
         <file>themes/default/mActionSaveAllEdits.svg</file>
         <file>themes/default/mActionSaveAsPDF.png</file>
         <file>themes/default/mActionSaveAsSVG.png</file>
@@ -330,6 +334,7 @@
         <file>themes/default/mActionToggleEditing.svg</file>
         <file>themes/default/mActionTouch.svg</file>
         <file>themes/default/mActionTouch2.png</file>
+        <file>themes/default/mActionUndo.svg</file>
         <file>themes/default/mActionUndo.png</file>
         <file>themes/default/mActionUngroupItems.png</file>
         <file>themes/default/mActionUnselectAttributes.png</file>
@@ -593,6 +598,7 @@
         <file>themes/default/mIconAms.svg</file>
         <file>themes/default/mActionAddAmsLayer.svg</file>
         <file>themes/default/mActionAddAfsLayer.svg</file>
+        <file>themes/default/mIconFormSelect.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -55,7 +55,7 @@
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Delete</string>
+           <string>Remove</string>
           </property>
          </widget>
         </item>

@@ -19,7 +19,7 @@
 #ifndef QGSNODEEDITOR_H
 #define QGSNODEEDITOR_H
 
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 #include <QAbstractTableModel>
 #include <QItemSelection>
 #include <QStyledItemDelegate>
@@ -69,7 +69,7 @@ class QgsNodeEditorModel : public QAbstractTableModel
     void featureChanged();
 };
 
-class QgsNodeEditor : public QDockWidget
+class QgsNodeEditor : public QgsDockWidget
 {
     Q_OBJECT
   public:

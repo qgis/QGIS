@@ -61,6 +61,8 @@ class SERVER_EXPORT QgsConfigCache : public QObject
       , const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() )
     );
 
+    void removeEntry( const QString& path );
+
   private:
     QgsConfigCache();
 

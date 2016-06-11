@@ -66,6 +66,18 @@ class QgsEffectStackPropertiesWidget : QWidget
      */
     void changeEffect( QgsPaintEffect* newEffect );
 
+  signals:
+    /**
+     * Emitted when something in the widget changes.
+     */
+    void widgetChanged();
+
+    /** Emitted when a panel is shown in the widget.
+     * @param widget widget panel which was shown
+     * @note added in QGIS 2.16
+     */
+    void showPanel( QgsRendererWidgetContainer* widget );
+
   protected:
 
     /** Refreshes the widget to reflect the current state of the stack.
@@ -182,10 +194,23 @@ class QgsEffectStackCompactWidget : QWidget
      */
     void setPreviewPicture( const QPicture& picture );
 
+    /**
+     * Set the widget in dock mode. In dock mode the widget will emit a signal
+     * to show the effects selector instead of opening a dialog.
+     * @param dockMode True to enable dock mode.
+     */
+    void setDockMode( bool dockMode );
+
   signals:
 
     /** Emitted when the paint effect properties change
      */
     void changed();
+
+    /** Emitted when a panel is shown in the widget.
+     * @param widget widget panel which was shown
+     * @note added in QGIS 2.16
+     */
+    void showPanel( QgsRendererWidgetContainer* widget );
 
 };

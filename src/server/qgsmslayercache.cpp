@@ -226,3 +226,9 @@ void QgsMSLayerCache::logCacheContents() const
     QgsMessageLog::logMessage( "Url: " + it.value().url + " Layer name: " + it.value().layerPointer->name() + " Project: " + it.value().configFile, "Server", QgsMessageLog::INFO );
   }
 }
+
+
+void QgsMSLayerCache::removeProjectLayers( const QString& path )
+{
+  removeProjectFileLayers( path );
+}

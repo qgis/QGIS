@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsrendererrasterpropertieswidget.cpp
+    ---------------------
+    begin                : May 2016
+    copyright            : (C) 2016 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsrendererrasterpropertieswidget.h"
 
 #include "qgis.h"
@@ -10,6 +24,9 @@
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgspalettedrendererwidget.h"
 #include "qgshillshaderendererwidget.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
 
 
 static void _initRendererWidgetFunctions()
@@ -29,15 +46,25 @@ static void _initRendererWidgetFunctions()
 
 
 
-QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapCanvas* canvas, QWidget *parent )
-    : QWidget( parent )
-    , mRasterLayer( nullptr )
-    , mMapCanvas( canvas )
+QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas* canvas, QWidget *parent )
+    : QgsMapStylePanel( layer, canvas, parent )
     , mRendererWidget( nullptr )
 {
+  mRasterLayer = qobject_cast<QgsRasterLayer*>( layer );
+  if ( !mRasterLayer )
+    return;
+
   setupUi( this );
 
   _initRendererWidgetFunctions();
+
+  mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
+  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ) );
+  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ) );
+  mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
+  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Average" ) );
+
+  syncToLayer( mRasterLayer );
 
   connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
 
@@ -74,6 +101,11 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapCanv
 
   // enable or disable colorize colorbutton with colorize checkbox
   connect( mColorizeCheck, SIGNAL( toggled( bool ) ), this, SLOT( toggleColorizeControls( bool ) ) );
+
+  connect( mZoomedInResamplingComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mZoomedOutResamplingComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mMaximumOversamplingSpinBox, SIGNAL( valueChanged( double ) ), this, SIGNAL( widgetChanged() ) );
+
 }
 
 QgsRendererRasterPropertiesWidget::~QgsRendererRasterPropertiesWidget()
@@ -113,6 +145,35 @@ void QgsRendererRasterPropertiesWidget::apply()
     hueSaturationFilter->setColorizeOn( mColorizeCheck->checkState() );
     hueSaturationFilter->setColorizeColor( btnColorizeColor->color() );
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
+  }
+
+  QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
+  if ( resampleFilter )
+  {
+    QgsRasterResampler *zoomedInResampler = nullptr;
+    QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
+    if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
+    {
+      zoomedInResampler = new QgsBilinearRasterResampler();
+    }
+    else if ( zoomedInResamplingMethod == tr( "Cubic" ) )
+    {
+      zoomedInResampler = new QgsCubicRasterResampler();
+    }
+
+    resampleFilter->setZoomedInResampler( zoomedInResampler );
+
+    //raster resampling
+    QgsRasterResampler *zoomedOutResampler = nullptr;
+    QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
+    if ( zoomedOutResamplingMethod == tr( "Average" ) )
+    {
+      zoomedOutResampler = new QgsBilinearRasterResampler();
+    }
+
+    resampleFilter->setZoomedOutResampler( zoomedOutResampler );
+
+    resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
   }
 
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
@@ -175,6 +236,42 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
 
   //blend mode
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
+
+  const QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
+  //set combo boxes to current resampling types
+  if ( resampleFilter )
+  {
+    const QgsRasterResampler* zoomedInResampler = resampleFilter->zoomedInResampler();
+    if ( zoomedInResampler )
+    {
+      if ( zoomedInResampler->type() == "bilinear" )
+      {
+        mZoomedInResamplingComboBox->setCurrentIndex( 1 );
+      }
+      else if ( zoomedInResampler->type() == "cubic" )
+      {
+        mZoomedInResamplingComboBox->setCurrentIndex( 2 );
+      }
+    }
+    else
+    {
+      mZoomedInResamplingComboBox->setCurrentIndex( 0 );
+    }
+
+    const QgsRasterResampler* zoomedOutResampler = resampleFilter->zoomedOutResampler();
+    if ( zoomedOutResampler )
+    {
+      if ( zoomedOutResampler->type() == "bilinear" ) //bilinear resampler does averaging when zooming out
+      {
+        mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
+      }
+    }
+    else
+    {
+      mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
+    }
+    mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
+  }
 }
 
 void QgsRendererRasterPropertiesWidget::on_mResetColorRenderingBtn_clicked()

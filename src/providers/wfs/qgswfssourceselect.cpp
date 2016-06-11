@@ -32,6 +32,7 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgssqlstatement.h"
 #include "qgssqlcomposerdialog.h"
+#include "qgscrscache.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -409,7 +410,7 @@ class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLV
     QgsWFSValidatorCallback( QObject* parent,
                              const QgsWFSDataSourceURI& uri, const QString& allSql,
                              const QgsWFSCapabilities::Capabilities& caps );
-    bool isValid( const QString& sql, QString& errorReason ) override;
+    bool isValid( const QString& sql, QString& errorReason, QString& warningMsg ) override;
   private:
     QgsWFSDataSourceURI mURI;
     QString mAllSql;
@@ -427,7 +428,7 @@ QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject* parent,
 {
 }
 
-bool QgsWFSValidatorCallback::isValid( const QString& sqlStr, QString& errorReason )
+bool QgsWFSValidatorCallback::isValid( const QString& sqlStr, QString& errorReason, QString& warningMsg )
 {
   errorReason.clear();
   if ( sqlStr.isEmpty() || sqlStr == mAllSql )
@@ -441,6 +442,7 @@ bool QgsWFSValidatorCallback::isValid( const QString& sqlStr, QString& errorReas
     errorReason = p.processSQLErrorMsg();
     return false;
   }
+  warningMsg = p.processSQLWarningMsg();
 
   return true;
 }
@@ -546,7 +548,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
   d->setTableSelectedCallback( tableSelectedCbk );
 
   const bool bSupportJoins = mCaps.featureTypes.size() > 1 && mCaps.supportsJoins;
-  d->setSupportMultipleTables( bSupportJoins );
+  d->setSupportMultipleTables( bSupportJoins, QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
 
   QMap< QString, QString > mapTypenameToTitle;
   Q_FOREACH ( const QgsWFSCapabilities::FeatureType f, mCaps.featureTypes )
@@ -701,8 +703,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
         QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
         if ( !preferredCRS.isEmpty() )
         {
-          QgsCoordinateReferenceSystem refSys;
-          refSys.createFromOgcWmsCrs( preferredCRS );
+          QgsCoordinateReferenceSystem refSys = QgsCRSCache::instance()->crsByOgcWmsCrs( preferredCRS );
           mProjectionSelector->setSelectedCrsId( refSys.srsid() );
 
           labelCoordRefSys->setText( preferredCRS );

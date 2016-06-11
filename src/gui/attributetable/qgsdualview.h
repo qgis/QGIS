@@ -31,6 +31,7 @@ class QgsAttributeForm;
 class QgsFeatureRequest;
 class QSignalMapper;
 class QgsMapLayerAction;
+class QScrollArea;
 
 /**
  * This widget is used to show the attributes of a set of features of a {@link QgsVectorLayer}.
@@ -277,6 +278,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void organizeColumns();
 
+    void tableColumnResized( int column, int width );
+
+    void hideColumn();
+
+    void resizeColumn();
+
+    void autosizeColumn();
+
     void modifySort();
 
     void previewExpressionChanged( const QString& expression );
@@ -324,6 +333,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsDistanceArea mDistanceArea;
     QString mDisplayExpression;
+    QgsAttributeTableConfig mConfig;
+    QScrollArea* mAttributeEditorScrollArea;
 
     friend class TestQgsDualView;
 };

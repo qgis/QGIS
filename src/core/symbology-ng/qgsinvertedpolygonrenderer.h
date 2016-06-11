@@ -42,9 +42,11 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
   public:
 
     /** Constructor
-     * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned
+     * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
+     * Ownership will be transferred.
      */
-    QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* embeddedRenderer = nullptr );
+    QgsInvertedPolygonRenderer( QgsFeatureRendererV2* embeddedRenderer = nullptr );
+
     virtual ~QgsInvertedPolygonRenderer();
 
     /** Used to clone this feature renderer.*/
@@ -116,13 +118,14 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
      */
     virtual QDomElement save( QDomDocument& doc ) override;
 
-    /** Sets the embedded renderer
-     * @param subRenderer the embedded renderer (will be cloned)
-     */
-    void setEmbeddedRenderer( const QgsFeatureRendererV2* subRenderer );
-    /** @returns the current embedded renderer
-     */
-    const QgsFeatureRendererV2* embeddedRenderer() const;
+    void setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer ) override;
+    const QgsFeatureRendererV2* embeddedRenderer() const override;
+
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol ) override;
+
+    virtual bool legendSymbolItemsCheckable() const override;
+    virtual bool legendSymbolItemChecked( const QString& key ) override;
+    virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
 
     /** @returns true if the geometries are to be preprocessed (merged with an union) before rendering.*/
     bool preprocessingEnabled() const { return mPreprocessingEnabled; }

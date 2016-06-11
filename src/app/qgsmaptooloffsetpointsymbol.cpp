@@ -164,7 +164,8 @@ void QgsMapToolOffsetPointSymbol::canvasReleaseEvent( QgsMapMouseEvent* e )
   mOffsetting = false;
   delete mOffsetItem;
   mOffsetItem = nullptr;
-  mCanvas->refresh();
+  if ( mActiveLayer )
+    mActiveLayer->triggerRepaint();
 }
 
 void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbolV2* markerSymbol )

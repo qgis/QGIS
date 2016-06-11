@@ -70,6 +70,12 @@ QgsPolygonV2* QgsPolygonV2::clone() const
   return new QgsPolygonV2( *this );
 }
 
+void QgsPolygonV2::clear()
+{
+  QgsCurvePolygonV2::clear();
+  mWkbType = QgsWKBTypes::Polygon;
+}
+
 bool QgsPolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
 {
   clear();

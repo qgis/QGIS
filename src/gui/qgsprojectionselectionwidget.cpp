@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
+#include "qgscrscache.h"
 #include <QSettings>
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
@@ -41,13 +42,13 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
     //only show project CRS if OTF reprojection is enabled - otherwise the
     //CRS stored in the project can be misleading
     QString projectCrsString = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs" );
-    mProjectCrs.createFromOgcWmsCrs( projectCrsString );
+    mProjectCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( projectCrsString );
     addProjectCrsOption();
   }
 
   QSettings settings;
   QString defCrsString = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  mDefaultCrs.createFromOgcWmsCrs( defCrsString );
+  mDefaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( defCrsString );
   if ( mDefaultCrs.authid() != mProjectCrs.authid() )
   {
     //only show default CRS option if it's different to the project CRS, avoids
@@ -144,8 +145,7 @@ void QgsProjectionSelectionWidget::selectCrs()
     mCrsComboBox->blockSignals( true );
     mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
     mCrsComboBox->blockSignals( false );
-    QgsCoordinateReferenceSystem crs;
-    crs.createFromOgcWmsCrs( mDialog->selectedAuthId() );
+    QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( mDialog->selectedAuthId() );
     setCrs( crs );
     emit crsChanged( crs );
   }

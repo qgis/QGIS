@@ -35,6 +35,7 @@
 #include "qgspolygonv2.h"
 #include "qgssurfacev2.h"
 #include "qgsunittypes.h"
+#include "qgscrscache.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h
 #ifndef M_PI
@@ -117,8 +118,7 @@ void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS )
 
 void QgsDistanceArea::setSourceAuthId( const QString& authId )
 {
-  QgsCoordinateReferenceSystem srcCRS;
-  srcCRS.createFromOgcWmsCrs( authId );
+  QgsCoordinateReferenceSystem srcCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( authId );
   mCoordTransform->setSourceCrs( srcCRS );
 }
 
@@ -227,8 +227,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
 
   // get spatial ref system for ellipsoid
   QString proj4 = "+proj=longlat +ellps=" + ellipsoid + " +no_defs";
-  QgsCoordinateReferenceSystem destCRS;
-  destCRS.createFromProj4( proj4 );
+  QgsCoordinateReferenceSystem destCRS = QgsCRSCache::instance()->crsByProj4( proj4 );
   //TODO: createFromProj4 used to save to the user database any new CRS
   // this behavior was changed in order to separate creation and saving.
   // Not sure if it necessary to save it here, should be checked by someone
@@ -890,6 +889,11 @@ void QgsDistanceArea::computeAreaInit()
 
 double QgsDistanceArea::computePolygonArea( const QList<QgsPoint>& points ) const
 {
+  if ( points.isEmpty() )
+  {
+    return 0;
+  }
+
   double x1, y1, x2, y2, dx, dy;
   double Qbar1, Qbar2;
   double area;

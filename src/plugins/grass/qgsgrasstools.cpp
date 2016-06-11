@@ -150,7 +150,7 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
 };
 
 QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char * name, Qt::WindowFlags f )
-    : QDockWidget( parent, f )
+    : QgsDockWidget( parent, f )
     , mModulesListModel( 0 )
     , mModelProxy( 0 )
 {

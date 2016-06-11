@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsmapstylepanel.h
+    ---------------------
+    begin                : June 2016
+    copyright            : (C) 2016 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSMAPSTYLEPANEL_H
 #define QGSMAPSTYLEPANEL_H
 
@@ -9,7 +23,8 @@
 class QgsMapCanvas;
 
 /** \ingroup gui
- * \class A panel widget that can be shown in the map style dock
+ * \class QgsMapStylePanel
+ * \brief A panel widget that can be shown in the map style dock
  * \note added in QGIS 2.16
  */
 class GUI_EXPORT QgsMapStylePanel : public QWidget
@@ -42,6 +57,10 @@ class GUI_EXPORT QgsMapStylePanel : public QWidget
      * Will be called when live update is enabled.
      */
     virtual void apply() = 0;
+
+  protected:
+    QgsMapLayer* mLayer;
+    QgsMapCanvas* mMapCanvas;
 };
 
 
@@ -52,6 +71,8 @@ class GUI_EXPORT QgsMapStylePanel : public QWidget
 class GUI_EXPORT QgsMapStylePanelFactory
 {
   public:
+    Q_DECLARE_FLAGS( LayerTypesFlags, QgsMapLayer::LayerType )
+
     /** Constructor */
     QgsMapStylePanelFactory();
 
@@ -65,17 +86,17 @@ class GUI_EXPORT QgsMapStylePanelFactory
     virtual QIcon icon() = 0;
 
     /**
-     * @brief The title of the panel..
+     * @brief The title of the panel.
      * @note This may or may not be shown to the user.
      * @return Title of the panel
      */
     virtual QString title() = 0;
 
     /**
-     * @brief Supported layer type for the widget.
-     * @return The layer type this widget is supported for.
+     * @brief Check if the layer is supported for this widget.
+     * @return True if this layer is supported for this widget
      */
-    virtual QgsMapLayer::LayerType layerType() = 0;
+    virtual bool supportsLayer( QgsMapLayer *layer ) = 0;
 
     /**
      * @brief Factory fucntion to create the widget on demand as needed by the dock.

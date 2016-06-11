@@ -67,7 +67,8 @@ QgsPointDisplacementRenderer::~QgsPointDisplacementRenderer()
 QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::clone() const
 {
   QgsPointDisplacementRenderer* r = new QgsPointDisplacementRenderer( mLabelAttributeName );
-  r->setEmbeddedRenderer( mRenderer->clone() );
+  if ( mRenderer )
+    r->setEmbeddedRenderer( mRenderer->clone() );
   r->setCircleWidth( mCircleWidth );
   r->setCircleColor( mCircleColor );
   r->setLabelFont( mLabelFont );
@@ -220,6 +221,43 @@ void QgsPointDisplacementRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* r 
 {
   delete mRenderer;
   mRenderer = r;
+}
+
+const QgsFeatureRendererV2* QgsPointDisplacementRenderer::embeddedRenderer() const
+{
+  return mRenderer;
+}
+
+void QgsPointDisplacementRenderer::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+{
+  if ( !mRenderer )
+    return;
+
+  mRenderer->setLegendSymbolItem( key, symbol );
+}
+
+bool QgsPointDisplacementRenderer::legendSymbolItemsCheckable() const
+{
+  if ( !mRenderer )
+    return false;
+
+  return mRenderer->legendSymbolItemsCheckable();
+}
+
+bool QgsPointDisplacementRenderer::legendSymbolItemChecked( const QString& key )
+{
+  if ( !mRenderer )
+    return false;
+
+  return mRenderer->legendSymbolItemChecked( key );
+}
+
+void QgsPointDisplacementRenderer::checkLegendSymbolItem( const QString& key, bool state )
+{
+  if ( !mRenderer )
+    return;
+
+  return mRenderer->checkLegendSymbolItem( key, state );
 }
 
 QList<QString> QgsPointDisplacementRenderer::usedAttributes()

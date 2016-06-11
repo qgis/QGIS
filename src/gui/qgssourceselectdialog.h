@@ -1,9 +1,16 @@
 /***************************************************************************
     qgssourceselectdialog.h
-    -----------------------
-  begin                : Nov 26, 2015
-  copyright            : (C) 2015 by Sandro Mani
-  email                : smani@sourcepole.ch
+    ---------------------
+    begin                : Nov 26, 2015
+    copyright            : (C) 2015 by Sandro Mani
+    email                : smani at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
 
 #ifndef QGSSOURCESELECTDIALOG_H
@@ -33,7 +40,7 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     QgsSourceSelectDialog( const QString& serviceName, ServiceType serviceType, QWidget* parent, Qt::WindowFlags fl );
     /** Destructor */
     ~QgsSourceSelectDialog();
-    /** Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retreive data only in the current extent */
+    /** Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent */
     void setCurrentExtentAndCrs( const QgsRectangle& canvasExtent, const QgsCoordinateReferenceSystem& canvasCrs );
 
   signals:

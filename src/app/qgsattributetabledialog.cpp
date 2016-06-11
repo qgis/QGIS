@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDockWidget>
 #include <QMessageBox>
 #include <QGridLayout>
 #include <QDialogButtonBox>
@@ -33,6 +32,7 @@
 #include "qgisapp.h"
 #include "qgsaddattrdialog.h"
 #include "qgsdelattrdialog.h"
+#include "qgsdockwidget.h"
 #include "qgssearchquerybuilder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -125,7 +125,9 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   // Initialize dual view
   mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, mEditorContext );
-  mMainView->setAttributeTableConfig( mLayer->attributeTableConfig() );
+
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+  mMainView->setAttributeTableConfig( config );
 
   // Initialize filter gui elements
   mFilterActionMapper = new QSignalMapper( this );
@@ -246,6 +248,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mUpdateExpressionText->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
 
   mFieldModel = new QgsFieldModel( this );
+  mFieldModel->setFilters( QgsFieldModel::WritableFields );
   mFieldModel->setLayer( mLayer );
   mFieldCombo->setModel( mFieldModel );
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
@@ -944,7 +947,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
 //
 
 QgsAttributeTableDock::QgsAttributeTableDock( const QString& title, QWidget* parent, Qt::WindowFlags flags )
-    : QDockWidget( title, parent, flags )
+    : QgsDockWidget( title, parent, flags )
 {
   setObjectName( "AttributeTable" ); // set object name so the position can be saved
 }

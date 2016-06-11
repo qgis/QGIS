@@ -31,6 +31,7 @@
 #include <qgsgraphbuilder.h>
 #include <qgsgraph.h>
 #include <qgsdistancearcproperter.h>
+#include "qgsdockwidget.h"
 
 // Road grap plugin includes
 #include "roadgraphplugin.h"
@@ -50,7 +51,6 @@
 #include <QLocale>
 #include <QToolBar>
 #include <QPushButton>
-#include <QDockWidget>
 #include <QVBoxLayout>
 #include <QDebug>
 

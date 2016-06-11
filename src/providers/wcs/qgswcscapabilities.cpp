@@ -32,6 +32,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
+#include "qgscrscache.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -956,8 +957,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     else
     {
       QgsRectangle box;
-      QgsCoordinateReferenceSystem crs;
-      if ( crs.createFromOgcWmsCrs( authid ) && crs.axisInverted() )
+      QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( authid );
+      if ( crs.isValid() && crs.axisInverted() )
       {
         box = QgsRectangle( low[1], low[0], high[1], high[0] );
       }

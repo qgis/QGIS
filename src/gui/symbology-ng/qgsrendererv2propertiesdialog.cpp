@@ -27,6 +27,7 @@
 #include "qgsheatmaprendererwidget.h"
 #include "qgs25drendererwidget.h"
 #include "qgsnullsymbolrendererwidget.h"
+#include "qgsrendererwidgetcontainer.h"
 
 #include "qgsorderbydialog.h"
 #include "qgsapplication.h"
@@ -78,14 +79,16 @@ static void _initRendererWidgetFunctions()
   initialized = true;
 }
 
-QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded )
-    : mLayer( layer )
+QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded, QWidget* parent )
+    : QDialog( parent )
+    , mLayer( layer )
     , mStyle( style )
     , mActiveWidget( nullptr )
     , mPaintEffect( nullptr )
     , mMapCanvas( nullptr )
 {
   setupUi( this );
+  mLayerRenderingGroupBox->setSettingGroup( "layerRenderingGroupBox" );
 
   // can be embedded in vector layer properties
   if ( embedded )
@@ -95,39 +98,11 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   }
 
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-
   // initialize registry's widget functions
   _initRendererWidgetFunctions();
 
-  // Blend mode
-  mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
-
-  // Feature blend mode
-  mFeatureBlendComboBox->setBlendMode( mLayer->featureBlendMode() );
-
-  // Layer transparency
-  mLayerTransparencySlider->setValue( mLayer->layerTransparency() );
-  mLayerTransparencySpnBx->setValue( mLayer->layerTransparency() );
-
-  // connect layer transparency slider and spin box
-  connect( mLayerTransparencySlider, SIGNAL( valueChanged( int ) ), mLayerTransparencySpnBx, SLOT( setValue( int ) ) );
-  connect( mLayerTransparencySpnBx, SIGNAL( valueChanged( int ) ), mLayerTransparencySlider, SLOT( setValue( int ) ) );
-
-  //paint effect widget
-  if ( mLayer->rendererV2() )
-  {
-    if ( mLayer->rendererV2()->paintEffect() )
-    {
-      mPaintEffect = mLayer->rendererV2()->paintEffect()->clone();
-      mEffectWidget->setPaintEffect( mPaintEffect );
-    }
-
-    mOrderBy = mLayer->rendererV2()->orderBy();
-  }
-
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
-  QStringList renderers = reg->renderersList();
+  QStringList renderers = reg->renderersList( mLayer );
   Q_FOREACH ( const QString& name, renderers )
   {
     QgsRendererV2AbstractMetadata* m = reg->rendererMetadata( name );
@@ -136,34 +111,33 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
 
   cboRenderers->setCurrentIndex( -1 ); // set no current renderer
 
-  // setup slot rendererChanged()
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
+
+  // connect layer transparency slider and spin box
+  connect( mLayerTransparencySlider, SIGNAL( valueChanged( int ) ), mLayerTransparencySpnBx, SLOT( setValue( int ) ) );
+  connect( mLayerTransparencySpnBx, SIGNAL( valueChanged( int ) ), mLayerTransparencySlider, SLOT( setValue( int ) ) );
+
   connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
-  //setup order by
-  if ( mLayer->rendererV2()->orderByEnabled() )
-  {
-    checkboxEnableOrderBy->setChecked( true );
-  }
-  else
-  {
-    btnOrderBy->setEnabled( false );
-    checkboxEnableOrderBy->setChecked( false );
-    lineEditOrderBy->setEnabled( false );
-  }
-  lineEditOrderBy->setReadOnly( true );
   connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), btnOrderBy, SLOT( setEnabled( bool ) ) );
   connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), lineEditOrderBy, SLOT( setEnabled( bool ) ) );
   connect( btnOrderBy, SIGNAL( clicked( bool ) ), this, SLOT( showOrderByDialog() ) );
-  lineEditOrderBy->setText( mOrderBy.dump() );
+  connect( mEffectWidget, SIGNAL( showPanel( QgsRendererWidgetContainer* ) ), this, SLOT( showPanel( QgsRendererWidgetContainer* ) ) );
 
-  // set current renderer from layer
-  QString rendererName = mLayer->rendererV2()->type();
+  mEffectWidget->setDockMode( true );
 
-  int rendererIdx = cboRenderers->findData( rendererName );
-  cboRenderers->setCurrentIndex( rendererIdx );
+  syncToLayer();
 
-  // no renderer found... this mustn't happen
-  Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
-  connectValueChanged( findChildren<QWidget*>(), SIGNAL( widgetChanged() ) );
+  QList<QWidget*> widgets;
+  widgets << mLayerTransparencySpnBx
+  << cboRenderers
+  << checkboxEnableOrderBy
+  << lineEditOrderBy
+  << mBlendModeComboBox
+  << mFeatureBlendComboBox
+  << mEffectWidget;
+
+
+  connectValueChanged( widgets, SIGNAL( widgetChanged() ) );
 }
 
 void QgsRendererV2PropertiesDialog::connectValueChanged( QList<QWidget *> widgets, const char *slot )
@@ -202,6 +176,11 @@ void QgsRendererV2PropertiesDialog::connectValueChanged( QList<QWidget *> widget
     else if ( QLineEdit* w =  qobject_cast<QLineEdit*>( widget ) )
     {
       connect( w, SIGNAL( textEdited( QString ) ), this, slot );
+      connect( w, SIGNAL( textChanged( QString ) ), this, slot );
+    }
+    else if ( QgsEffectStackCompactWidget* w = qobject_cast<QgsEffectStackCompactWidget*>( widget ) )
+    {
+      connect( w, SIGNAL( changed() ), this, slot );
     }
   }
 }
@@ -222,6 +201,7 @@ void QgsRendererV2PropertiesDialog::setMapCanvas( QgsMapCanvas* canvas )
 void QgsRendererV2PropertiesDialog::rendererChanged()
 {
 
+  QgsDebugMsg( "RENDERER CHANGED" );
   if ( cboRenderers->currentIndex() == -1 )
   {
     QgsDebugMsg( "No current item -- this should never happen!" );
@@ -270,6 +250,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
       connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }
     connect( mActiveWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+    connect( mActiveWidget, SIGNAL( showPanel( QgsRendererWidgetContainer* ) ), this, SLOT( showPanel( QgsRendererWidgetContainer* ) ) );
   }
   else
   {
@@ -312,6 +293,72 @@ void QgsRendererV2PropertiesDialog::onOK()
   accept();
 }
 
+void QgsRendererV2PropertiesDialog::showPanel( QgsRendererWidgetContainer *container )
+{
+  connect( container, SIGNAL( accepted( QgsRendererWidgetContainer* ) ), this, SLOT( closePanel( QgsRendererWidgetContainer* ) ) );
+
+  int page = this->mainStack->addWidget( container );
+  this->mainStack->setCurrentIndex( page );
+}
+
+void QgsRendererV2PropertiesDialog::closePanel( QgsRendererWidgetContainer *container )
+{
+  this->mainStack->removeWidget( container );
+  this->mainStack->setCurrentIndex( this->mainStack->currentIndex() - 1 );
+  container->deleteLater();
+}
+
+void QgsRendererV2PropertiesDialog::syncToLayer()
+{
+  // Blend mode
+  mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
+
+  // Feature blend mode
+  mFeatureBlendComboBox->setBlendMode( mLayer->featureBlendMode() );
+
+  // Layer transparency
+  mLayerTransparencySlider->setValue( mLayer->layerTransparency() );
+  mLayerTransparencySpnBx->setValue( mLayer->layerTransparency() );
+
+  //paint effect widget
+  if ( mLayer->rendererV2() )
+  {
+    if ( mLayer->rendererV2()->paintEffect() )
+    {
+      mPaintEffect = mLayer->rendererV2()->paintEffect()->clone();
+      mEffectWidget->setPaintEffect( mPaintEffect );
+    }
+
+    mOrderBy = mLayer->rendererV2()->orderBy();
+  }
+
+  lineEditOrderBy->setText( mOrderBy.dump() );
+
+  // setup slot rendererChanged()
+  //setup order by
+  if ( mLayer->rendererV2()->orderByEnabled() )
+  {
+    checkboxEnableOrderBy->setChecked( true );
+  }
+  else
+  {
+    btnOrderBy->setEnabled( false );
+    checkboxEnableOrderBy->setChecked( false );
+    lineEditOrderBy->setEnabled( false );
+  }
+  lineEditOrderBy->setReadOnly( true );
+
+  // set current renderer from layer
+  QString rendererName = mLayer->rendererV2()->type();
+
+  int rendererIdx = cboRenderers->findData( rendererName );
+  cboRenderers->setCurrentIndex( rendererIdx );
+
+  // no renderer found... this mustn't happen
+  Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
+
+}
+
 void QgsRendererV2PropertiesDialog::showOrderByDialog()
 {
   QgsOrderByDialog dlg( mLayer, this );
@@ -329,6 +376,12 @@ void QgsRendererV2PropertiesDialog::changeOrderBy( const QgsFeatureRequest::Orde
   mOrderBy = orderBy;
   lineEditOrderBy->setText( mOrderBy.dump() );
   checkboxEnableOrderBy->setChecked( orderByEnabled );
+}
+
+void QgsRendererV2PropertiesDialog::updateUIState( bool hidden )
+{
+  mLayerRenderingGroupBox->setHidden( hidden );
+  cboRenderers->setHidden( hidden );
 }
 
 

@@ -352,6 +352,17 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     bool parseDomainCheckConstraint( QStringList& enumValues, const QString& attributeName ) const;
 
+    /** Return the type of primary key for a PK field
+     *
+     * @param fld the field to determine PK type of
+     * @return the PrimaryKeyType
+     *
+     * @note that this only makes sense for single-field primary keys,
+     *       whereas multi-field keys always need the pktFidMap
+     *       primary key type.
+     */
+    QgsPostgresPrimaryKeyType pkType( const QgsField& fld ) const;
+
     QgsFields mAttributeFields;
     QString mDataComment;
 
@@ -502,6 +513,21 @@ class QgsPostgresUtils
                                 QSharedPointer<QgsPostgresSharedData> sharedData );
 
     static QString andWhereClauses( const QString& c1, const QString& c2 );
+
+    static const qint64 int32pk_offset = 4294967296;
+
+    // We shift negative 32bit integers to above the max 32bit
+    // positive integer to support the whole range of int32 values
+    // See http://hub.qgis.org/issues/14262
+    static qint64 int32pk_to_fid( qint32 x )
+    {
+      return x >= 0 ? x : x + int32pk_offset;
+    }
+
+    static qint32 fid_to_int32pk( qint64 x )
+    {
+      return x <= (( int32pk_offset ) / 2.0 ) ? x : -( int32pk_offset - x );
+    }
 };
 
 /** Data shared between provider class and its feature sources. Ideally there should

@@ -28,7 +28,7 @@
 
 QgsCircularStringV2::QgsCircularStringV2(): QgsCurveV2()
 {
-
+  mWkbType = QgsWKBTypes::CircularString;
 }
 
 QgsCircularStringV2::~QgsCircularStringV2()
@@ -57,11 +57,11 @@ QgsCircularStringV2 *QgsCircularStringV2::clone() const
 
 void QgsCircularStringV2::clear()
 {
+  mWkbType = QgsWKBTypes::CircularString;
   mX.clear();
   mY.clear();
   mZ.clear();
   mM.clear();
-  mWkbType = QgsWKBTypes::Unknown;
   clearCache();
 }
 
@@ -252,7 +252,7 @@ bool QgsCircularStringV2::fromWkt( const QString& wkt )
 
   QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::parseType( geometryType() ) )
+  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::CircularString )
     return false;
   mWkbType = parts.first;
 

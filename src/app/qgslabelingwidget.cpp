@@ -139,10 +139,7 @@ void QgsLabelingWidget::apply()
   writeSettingsToLayer();
   QgisApp::instance()->markDirty();
   // trigger refresh
-  if ( mCanvas )
-  {
-    mCanvas->refresh();
-  }
+  mLayer->triggerRepaint();
 }
 
 void QgsLabelingWidget::labelModeChanged( int index )

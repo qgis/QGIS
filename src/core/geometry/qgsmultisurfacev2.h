@@ -27,6 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsMultiSurfaceV2: public QgsGeometryCollectionV2
 {
   public:
+    QgsMultiSurfaceV2();
     virtual QString geometryType() const override { return "MultiSurface"; }
     QgsMultiSurfaceV2* clone() const override;
 

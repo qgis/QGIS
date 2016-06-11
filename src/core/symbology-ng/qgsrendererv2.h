@@ -169,6 +169,11 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     virtual QList<QString> usedAttributes() = 0;
 
+    /**
+     * Returns true if this renderer requires the geometry to apply the filter.
+     */
+    virtual bool filterNeedsGeometry() const;
+
     virtual ~QgsFeatureRendererV2();
 
     virtual QgsFeatureRendererV2* clone() const = 0;
@@ -190,11 +195,11 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     enum Capabilities
     {
-      SymbolLevels = 1,               // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
-      RotationField = 1 <<  1,        // rotate symbols by attribute value
-      MoreSymbolsPerFeature = 1 << 2, // may use more than one symbol to render a feature: symbolsForFeature() will return them
-      Filter         = 1 << 3,        // features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
-      ScaleDependent = 1 << 4         // depends on scale if feature will be rendered (rule based )
+      SymbolLevels = 1,               //!< rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+      RotationField = 1 <<  1,        //!< rotate symbols by attribute value
+      MoreSymbolsPerFeature = 1 << 2, //!< may use more than one symbol to render a feature: symbolsForFeature() will return them
+      Filter         = 1 << 3,        //!< features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
+      ScaleDependent = 1 << 4         //!< depends on scale if feature will be rendered (rule based )
     };
 
     //! returns bitwise OR-ed capabilities of the renderer
@@ -407,6 +412,21 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @see orderByEnabled()
      */
     void setOrderByEnabled( bool enabled );
+
+    /** Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
+     * does nothing with subrenderers, but individual derived classes can use these to modify their behaviour.
+     * @param subRenderer the embedded renderer. Ownership will be transferred.
+     * @see embeddedRenderer()
+     * @note added in QGIS 2.16
+     */
+    virtual void setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer ) { delete subRenderer; }
+
+    /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
+     * implementation does not use subrenderers and will always return null.
+     * @see setEmbeddedRenderer()
+     * @note added in QGIS 2.16
+     */
+    virtual const QgsFeatureRendererV2* embeddedRenderer() const { return nullptr; }
 
   protected:
     QgsFeatureRendererV2( const QString& type );

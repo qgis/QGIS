@@ -113,6 +113,7 @@ SET(QGIS_APP_SRCS
   qgsrasterlayerproperties.cpp
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
+  qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
   qgssnappingdialog.cpp
@@ -287,6 +288,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsrasterlayerproperties.h
   qgsrelationmanagerdialog.h
   qgsrelationadddlg.h
+  qgsselectbyformdialog.h
   qgssnappingdialog.h
   qgssponsors.h
   qgsstatisticalsummarydockwidget.h
@@ -582,12 +584,7 @@ ELSE (ANDROID)
   ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ENDIF (ANDROID)
 
-IF (NOT MSVC)
-  ADD_DEFINITIONS("-UAPP_EXPORT")
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
-  ENDIF()
-ENDIF (NOT MSVC)
+REMOVE_DEFINITIONS("-DAPP_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("\"-DAPP_EXPORT=${DLLEXPORT}\"")
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is cousing problems when the lib is loaded (by plugin for example) in test unit (qgis_composerpicturetest).
@@ -657,7 +654,7 @@ IF (POSTGRES_FOUND)
 ENDIF (POSTGRES_FOUND)
 
 IF(MSVC)
-  INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
+  INSTALL(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
 ENDIF(MSVC)
 
 INSTALL(TARGETS qgis_app

@@ -111,6 +111,21 @@ class SERVER_EXPORT QgsServerInterface
      */
     virtual void setConfigFilePath( const QString& configFilePath ) = 0;
 
+    /**
+     * Remove entry from config cache
+     * @param path the path of the file to remove
+     */
+    virtual void removeConfigCacheEntry( const QString& path ) = 0;
+
+    /**
+     * Remove entries from layer cache
+     * @param path the path of the project which own the layers to be removed
+     */
+    virtual void removeProjectLayers( const QString& path ) = 0;
+
+
+
+
   private:
     QString mConfigFilePath;
 };

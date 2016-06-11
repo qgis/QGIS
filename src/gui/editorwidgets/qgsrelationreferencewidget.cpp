@@ -197,7 +197,6 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation& relation, bool 
     {
       mAttributeEditorFrame->setTitle( mReferencedLayer->name() );
       mReferencedAttributeForm = new QgsAttributeForm( relation.referencedLayer(), QgsFeature(), context, this );
-      mReferencedAttributeForm->hideButtonBox();
       mAttributeEditorLayout->addWidget( mReferencedAttributeForm );
     }
 
@@ -749,7 +748,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
   }
   else
   {
-    mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mReferencedFieldIdx ), QgsAttributeTableModel::FeatureIdRole ) );
+    mComboBox->setCurrentIndex( mComboBox->findData( feature.id(), QgsAttributeTableModel::FeatureIdRole ) );
     mFeature = feature;
   }
 

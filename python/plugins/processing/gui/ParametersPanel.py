@@ -53,12 +53,14 @@ from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.gui.GeometryPredicateSelectionPanel import \
     GeometryPredicateSelectionPanel
+from processing.gui.ListMultiselectWidget import ListMultiSelectWidget
 
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
 from processing.core.parameters import ParameterRange
@@ -176,7 +178,6 @@ class ParametersPanel(BASE, WIDGET):
             if param.isAdvanced:
                 self.grpAdvanced.show()
                 break
-
         # Create widgets and put them in layouts
         for param in self.alg.parameters:
             if param.hidden:
@@ -347,8 +348,11 @@ class ParametersPanel(BASE, WIDGET):
                 item.setChecked(True)
             else:
                 item.setChecked(False)
-        elif isinstance(param, ParameterTableField):
-            item = QComboBox()
+        elif isinstance(param, ParameterTableField) or isinstance(param, ParameterTableMultipleField):
+            if isinstance(param, ParameterTableMultipleField):
+                item = ListMultiSelectWidget()
+            else:
+                item = QComboBox()
             if param.parent in self.dependentItems:
                 items = self.dependentItems[param.parent]
             else:
@@ -361,7 +365,7 @@ class ParametersPanel(BASE, WIDGET):
             else:
                 layers = dataobjects.getTables()
             if len(layers) > 0:
-                if param.optional:
+                if param.optional and isinstance(param, ParameterTableField):
                     item.addItem(self.tr('[not set]'))
                 item.addItems(self.getFields(layers[0], param.datatype))
         elif isinstance(param, ParameterSelection):
@@ -445,13 +449,16 @@ class ParametersPanel(BASE, WIDGET):
             return
         children = self.dependentItems[sender.name]
         for child in children:
-            if isinstance(child, ParameterTableField):
+            if (isinstance(child, ParameterTableField) or isinstance(
+                    child, ParameterTableMultipleField)):
                 widget = self.valueItems[child.name]
                 widget.clear()
-                if self.alg.getParameterFromName(child.name).optional:
+                if (self.alg.getParameterFromName(child.name).optional and
+                        not isinstance(child, ParameterTableMultipleField)):
                     widget.addItem(self.tr('[not set]'))
-                widget.addItems(self.getFields(layer,
-                                               self.alg.getParameterFromName(child.name).datatype))
+                widget.addItems(
+                    self.getFields(layer, self.alg.getParameterFromName(
+                                   child.name).datatype))
             if isinstance(child, OutputVector):
                 child.base_layer = layer
 
@@ -471,7 +478,8 @@ class ParametersPanel(BASE, WIDGET):
 
     def somethingDependsOnThisParameter(self, parent):
         for param in self.alg.parameters:
-            if isinstance(param, ParameterTableField):
+            if isinstance(param, (ParameterTableField,
+                                  ParameterTableMultipleField)):
                 if param.parent == parent.name:
                     return True
         for output in self.alg.outputs:

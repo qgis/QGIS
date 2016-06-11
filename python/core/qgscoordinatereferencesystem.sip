@@ -33,7 +33,7 @@ class QgsCoordinateReferenceSystem
     /** Use this constructor when you want to create a CRS object using
      *  a postgis SRID, an EpsgCrsId id or a QGIS CRS_ID.
      * @note We encourage you to use EpsgCrsId, WKT or Proj4 to describe CRS's in your code
-     * wherever possible. QGSI CRS_IDs are not guaranteed to be permanent / involatile.
+     * wherever possible. QGIS CRS_IDs are not guaranteed to be permanent / involatile.
      * @param theId The ID no valid for the chosen coordinate system id type
      * @param theType One of the types described in QgsCoordinateReferenceSystem::CrsType
      */
@@ -44,11 +44,9 @@ class QgsCoordinateReferenceSystem
     bool createFromId( const long theId, CrsType theType = PostgisCrsId );
 
     /**
-     * \brief Set up this CRS from the given OGC CRS
-     *
      * Sets this CRS to the given OGC WMS-format Coordinate Reference Systems.
-     *
-     * \retval false if not given an valid label
+     * @returns false if not given an valid label
+     * @note this method is expensive. Consider using QgsCRSCache::crsByOgcWmsCrs() instead.
      */
     bool createFromOgcWmsCrs( QString theCrs );
 
@@ -107,6 +105,7 @@ class QgsCoordinateReferenceSystem
      *
      * @param theProjString A proj4 format string
      * @return bool TRUE if success else false
+     * @note this method is expensive. Consider using QgsCRSCache::crsByProj4() instead.
      */
     bool createFromProj4( const QString &theProjString );
 

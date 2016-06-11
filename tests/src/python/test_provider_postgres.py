@@ -157,9 +157,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         test_unique([f for f in vl.getFeatures()], 4)
 
     # See http://hub.qgis.org/issues/14262
+    # TODO: accept multi-featured layers, and an array of values/fids
     def testSignedIdentifiers(self):
-        def test_query_attribute(dbconn, query, att, val, fidval):
-            ql = QgsVectorLayer('%s table="%s" (g) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), att), "testgeom", "postgres")
+
+        def test_layer(ql, att, val, fidval):
             self.assertTrue(ql.isValid())
             features = ql.getFeatures()
             att_idx = ql.fieldNameIndex(att)
@@ -167,12 +168,53 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             for f in features:
                 count += 1
                 self.assertEqual(f.attributes()[att_idx], val)
-                #self.assertEqual(f.id(), val)
+                self.assertEqual(f.id(), fidval)
             self.assertEqual(count, 1)
-        test_query_attribute(self.dbconn, '(SELECT -1::int4 i, NULL::geometry(Point) g)', 'i', -1, 1)
-        test_query_attribute(self.dbconn, '(SELECT -1::int2 i, NULL::geometry(Point) g)', 'i', -1, 1)
-        test_query_attribute(self.dbconn, '(SELECT -1::int8 i, NULL::geometry(Point) g)', 'i', -1, 1)
-        test_query_attribute(self.dbconn, '(SELECT -65535::int8 i, NULL::geometry(Point) g)', 'i', -65535, 1)
+
+        def test(dbconn, query, att, val, fidval):
+            table = query.replace('"', '\\"')
+            uri = '%s table="%s" (g) key=\'%s\'' % (dbconn, table, att)
+            ql = QgsVectorLayer(uri, "t", "postgres")
+            test_layer(ql, att, val, fidval)
+            # now with estimated metadata
+            uri += ' estimatedmetadata="true"'
+            test_layer(ql, att, val, fidval)
+
+        #### --- INT16 ----
+        # zero
+        test(self.dbconn, '(SELECT 0::int2 i, NULL::geometry(Point) g)', 'i', 0, 0)
+        # low positive
+        test(self.dbconn, '(SELECT 1::int2 i, NULL::geometry(Point) g)', 'i', 1, 1)
+        # low negative
+        test(self.dbconn, '(SELECT -1::int2 i, NULL::geometry(Point) g)', 'i', -1, 4294967295)
+        # max positive signed 16bit integer
+        test(self.dbconn, '(SELECT 32767::int2 i, NULL::geometry(Point) g)', 'i', 32767, 32767)
+        # max negative signed 16bit integer
+        test(self.dbconn, '(SELECT (-32768)::int2 i, NULL::geometry(Point) g)', 'i', -32768, 4294934528)
+
+        #### --- INT32 ----
+        # zero
+        test(self.dbconn, '(SELECT 0::int4 i, NULL::geometry(Point) g)', 'i', 0, 0)
+        # low positive
+        test(self.dbconn, '(SELECT 2::int4 i, NULL::geometry(Point) g)', 'i', 2, 2)
+        # low negative
+        test(self.dbconn, '(SELECT -2::int4 i, NULL::geometry(Point) g)', 'i', -2, 4294967294)
+        # max positive signed 32bit integer
+        test(self.dbconn, '(SELECT 2147483647::int4 i, NULL::geometry(Point) g)', 'i', 2147483647, 2147483647)
+        # max negative signed 32bit integer
+        test(self.dbconn, '(SELECT (-2147483648)::int4 i, NULL::geometry(Point) g)', 'i', -2147483648, 2147483648)
+
+        #### --- INT64 (FIDs are always 1 because assigned ex-novo) ----
+        # zero
+        test(self.dbconn, '(SELECT 0::int8 i, NULL::geometry(Point) g)', 'i', 0, 1)
+        # low positive
+        test(self.dbconn, '(SELECT 3::int8 i, NULL::geometry(Point) g)', 'i', 3, 1)
+        # low negative
+        test(self.dbconn, '(SELECT -3::int8 i, NULL::geometry(Point) g)', 'i', -3, 1)
+        # max positive signed 64bit integer
+        test(self.dbconn, '(SELECT 9223372036854775807::int8 i, NULL::geometry(Point) g)', 'i', 9223372036854775807, 1)
+        # max negative signed 32bit integer
+        test(self.dbconn, '(SELECT (-9223372036854775808)::int8 i, NULL::geometry(Point) g)', 'i', -9223372036854775808, 1)
 
     def testPktIntInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="pk" sql='.format(self.dbconn, 'bikes_view'), "bikes_view", "postgres")

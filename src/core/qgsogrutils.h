@@ -52,7 +52,7 @@ class CORE_EXPORT QgsOgrUtils
     /** Retrieves an attribute value from an OGR feature.
      * @param ogrFet OGR feature handle
      * @param fields fields collection corresponding to feature
-     * @param attIndex index of attribute to retreive
+     * @param attIndex index of attribute to retrieve
      * @param encoding text encoding
      * @param ok optional storage for success of retrieval
      * @returns attribute converted to a QVariant object

@@ -6,23 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>314</width>
-    <height>392</height>
+    <width>330</width>
+    <height>593</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <property name="leftMargin">
-    <number>3</number>
-   </property>
-   <property name="topMargin">
-    <number>3</number>
-   </property>
-   <property name="rightMargin">
-    <number>3</number>
-   </property>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -46,7 +37,16 @@
        </sizepolicy>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -69,14 +69,14 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
+      <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="mBlendTypeLabel">
         <property name="text">
          <string>Blending mode</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="0" column="2" colspan="3">
        <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
         <property name="minimumSize">
          <size>
@@ -86,14 +86,14 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="1" column="0" colspan="2">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Brightness</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="1" column="2" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
          <widget class="QSlider" name="mSliderBrightness">
@@ -132,14 +132,14 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="0">
+      <item row="2" column="0" colspan="2">
        <widget class="QLabel" name="labelSaturation">
         <property name="text">
          <string>Saturation</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="2" column="2" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item>
          <widget class="QSlider" name="sliderSaturation">
@@ -184,14 +184,14 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="0">
+      <item row="3" column="0" colspan="2">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>Contrast</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="3" column="2" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout_12">
         <item>
          <widget class="QSlider" name="mSliderContrast">
@@ -227,14 +227,14 @@
         </item>
        </layout>
       </item>
-      <item row="4" column="0">
+      <item row="4" column="0" colspan="2">
        <widget class="QLabel" name="labelGrayscale">
         <property name="text">
          <string>Grayscale</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="4" column="2" colspan="3">
        <widget class="QComboBox" name="comboGrayscale">
         <item>
          <property name="text">
@@ -265,7 +265,7 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="5" column="2" colspan="3">
        <layout class="QFormLayout" name="formLayout_2">
         <item row="0" column="0" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -339,7 +339,7 @@
         </item>
        </layout>
       </item>
-      <item row="6" column="1">
+      <item row="6" column="2" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout_13">
         <item>
          <spacer name="horizontalSpacer_3">
@@ -364,7 +364,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mActionUndo.png</normaloff>:/images/themes/default/mActionUndo.png</iconset>
+            <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
           </property>
           <property name="toolButtonStyle">
            <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -372,6 +372,43 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item row="7" column="0" colspan="5">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Resampling</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="mZoomedInResamplingLabel">
+        <property name="text">
+         <string>Zoomed in</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="mZoomedOutResamplingLabel">
+        <property name="text">
+         <string>Zoomed out</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="mMaximumOversamplingLabel">
+        <property name="text">
+         <string>Oversampling</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2" colspan="3">
+       <widget class="QComboBox" name="mZoomedInResamplingComboBox"/>
+      </item>
+      <item row="9" column="2" colspan="3">
+       <widget class="QComboBox" name="mZoomedOutResamplingComboBox"/>
+      </item>
+      <item row="10" column="2" colspan="3">
+       <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
       </item>
      </layout>
     </widget>

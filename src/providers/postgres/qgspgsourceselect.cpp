@@ -661,5 +661,6 @@ void QgsPgSourceSelect::setSearchExpression( const QString& regexp )
 void QgsPgSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( deselected )
-  mAddButton->setEnabled( !selected.isEmpty() );
+  Q_UNUSED( selected )
+  mAddButton->setEnabled( !mTablesTreeView->selectionModel()->selection().isEmpty() );
 }

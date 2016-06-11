@@ -21,6 +21,14 @@ class QgsFieldModel : QAbstractItemModel
       ExpressionValidityRole, /*!< return if expression is valid or not */
       FieldTypeRole /*!< return the field type (if a field, return QVariant if expression) */
     };
+    /**
+     * Filters for which fields should be shown
+     */
+    enum Filter
+    {
+      WritableFields = 1 //!< Only show writable fields
+    };
+    typedef QFlags<QgsFieldModel::Filter> Filters;
 
     /**
      * @brief QgsFieldModel creates a model to display the fields of a given layer
@@ -46,6 +54,15 @@ class QgsFieldModel : QAbstractItemModel
 
     //! returns the currently used layer
     QgsVectorLayer* layer();
+    /**
+     * The currently applied filters that define which fields are shown.
+     */
+    Filters filters() const;
+
+    /**
+     * The currently applied filters that define which fields are shown.
+     */
+    void setFilters( const Filters& filter );
 
   public slots:
     //! set the layer of whch fields are displayed

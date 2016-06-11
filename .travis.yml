@@ -9,23 +9,24 @@ matrix:
       env:
         - BUILD=qt4
         - QT_VERSION=4
-        - LLVM_VERSION=3.8
+#        - LLVM_VERSION=3.8
       sudo: false
       cache:
         apt: true
         directories:
           - $HOME/.ccache
-      compiler: clang
+      compiler: gcc
       addons:
         postgresql: "9.4"
         apt:
           sources:
-            - llvm-toolchain-precise-3.8
+#            - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports # doxygen 1.8.3
           packages:
             - bison
-            - clang-3.8
+            - gcc-6
+            - g++-6
             - doxygen
             - flex
             - flip
@@ -68,13 +69,13 @@ matrix:
         apt: true
         directories:
           - $HOME/.ccache
-      compiler: clang
+      compiler: gcc
       python: "3.3"
       addons:
         postgresql: "9.4"
         apt:
           sources:
-            - llvm-toolchain-precise-3.8
+#            - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports # doxygen 1.8.3
           packages:
@@ -90,7 +91,8 @@ matrix:
             - txt2tags
             - xvfb
             - flip
-            - clang-3.8
+            - gcc-6
+            - g++-6
     # OSX based build with QT4 and Python 2
     - os: osx
       env:

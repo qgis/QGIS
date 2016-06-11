@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsapplayertreeviewmenuprovider.cpp
+    ---------------------
+    begin                : May 2014
+    copyright            : (C) 2014 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsapplayertreeviewmenuprovider.h"
 
 
@@ -133,7 +147,11 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( vlayer )
         {
-          QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< QgsSingleSymbolRendererV2* >( vlayer->rendererV2() );
+          const QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( vlayer->rendererV2() );
+          if ( !singleRenderer && vlayer->rendererV2()->embeddedRenderer() )
+          {
+            singleRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( vlayer->rendererV2()->embeddedRenderer() );
+          }
           if ( singleRenderer && singleRenderer->symbol() )
           {
             //single symbol renderer, so add set color/edit symbol actions
@@ -269,44 +287,44 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ), tr( "&Hide All Items" ),
                          symbolNode, SLOT( uncheckAllItems() ) );
         menu->addSeparator();
+      }
 
-        if ( symbolNode->symbol() )
-        {
-          QgsColorWheel* colorWheel = new QgsColorWheel( menu );
-          colorWheel->setColor( symbolNode->symbol()->color() );
-          QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, menu, menu );
-          colorAction->setDismissOnColorSelection( false );
-          connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
-          //store the layer id and rule key in action, so we can later retrieve the corresponding
-          //legend node, if it still exists
-          colorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
-          colorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
-          menu->addAction( colorAction );
-
-          //add recent colors action
-          QList<QgsRecentColorScheme *> recentSchemes;
-          QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
-          if ( !recentSchemes.isEmpty() )
-          {
-            QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, "symbology", menu );
-            recentColorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
-            recentColorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
-            recentColorAction->setDismissOnColorSelection( false );
-            menu->addAction( recentColorAction );
-            connect( recentColorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
-          }
-
-          menu->addSeparator();
-        }
-
-        QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menu );
+      if ( symbolNode->symbol() )
+      {
+        QgsColorWheel* colorWheel = new QgsColorWheel( menu );
+        colorWheel->setColor( symbolNode->symbol()->color() );
+        QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, menu, menu );
+        colorAction->setDismissOnColorSelection( false );
+        connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
         //store the layer id and rule key in action, so we can later retrieve the corresponding
         //legend node, if it still exists
-        editSymbolAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
-        editSymbolAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
-        connect( editSymbolAction, SIGNAL( triggered() ), this, SLOT( editSymbolLegendNodeSymbol() ) );
-        menu->addAction( editSymbolAction );
+        colorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
+        colorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+        menu->addAction( colorAction );
+
+        //add recent colors action
+        QList<QgsRecentColorScheme *> recentSchemes;
+        QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
+        if ( !recentSchemes.isEmpty() )
+        {
+          QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, "symbology", menu );
+          recentColorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
+          recentColorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+          recentColorAction->setDismissOnColorSelection( false );
+          menu->addAction( recentColorAction );
+          connect( recentColorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
+        }
+
+        menu->addSeparator();
       }
+
+      QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menu );
+      //store the layer id and rule key in action, so we can later retrieve the corresponding
+      //legend node, if it still exists
+      editSymbolAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
+      editSymbolAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+      connect( editSymbolAction, SIGNAL( triggered() ), this, SLOT( editSymbolLegendNodeSymbol() ) );
+      menu->addAction( editSymbolAction );
     }
   }
 
@@ -497,12 +515,34 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor& color 
     return;
 
   QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< QgsSingleSymbolRendererV2* >( layer->rendererV2() );
-  if ( !singleRenderer || !singleRenderer->symbol() )
+  QgsSymbolV2* newSymbol = nullptr;
+
+  if ( singleRenderer && singleRenderer->symbol() )
+    newSymbol = singleRenderer->symbol()->clone();
+
+  const QgsSingleSymbolRendererV2* embeddedRenderer = nullptr;
+  if ( !newSymbol && layer->rendererV2()->embeddedRenderer() )
+  {
+    embeddedRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( layer->rendererV2()->embeddedRenderer() );
+    if ( embeddedRenderer && embeddedRenderer->symbol() )
+      newSymbol = embeddedRenderer->symbol()->clone();
+  }
+
+  if ( !newSymbol )
     return;
 
-  QgsSymbolV2* newSymbol = singleRenderer->symbol()->clone();
   newSymbol->setColor( color );
-  singleRenderer->setSymbol( newSymbol );
+  if ( singleRenderer )
+  {
+    singleRenderer->setSymbol( newSymbol );
+  }
+  else if ( embeddedRenderer )
+  {
+    QgsSingleSymbolRendererV2* newRenderer = embeddedRenderer->clone();
+    newRenderer->setSymbol( newSymbol );
+    layer->rendererV2()->setEmbeddedRenderer( newRenderer );
+  }
+
   layer->triggerRepaint();
   mView->refreshLayerSymbology( layer->id() );
 }

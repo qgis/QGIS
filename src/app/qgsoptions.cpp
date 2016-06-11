@@ -31,6 +31,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
 #include "qgsdualview.h"
+#include "qgscrscache.h"
 
 #include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
@@ -234,29 +235,25 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   }
 
   //local directories to search when looking for an SVG with a given basename
-  myPaths = mSettings->value( "svg/searchPathsForSVG", QDir::homePath() ).toString();
-  if ( !myPaths.isEmpty() )
+  QStringList svgPaths = QgsApplication::svgPaths();
+  if ( !svgPaths.isEmpty() )
   {
-    QStringList myPathList = myPaths.split( '|' );
-    QStringList::const_iterator pathIt = myPathList.constBegin();
-    for ( ; pathIt != myPathList.constEnd(); ++pathIt )
+    Q_FOREACH ( const QString& path, svgPaths )
     {
       QListWidgetItem* newItem = new QListWidgetItem( mListSVGPaths );
-      newItem->setText( *pathIt );
+      newItem->setText( path );
       newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mListSVGPaths->addItem( newItem );
     }
   }
 
-  myPaths = mSettings->value( "composer/searchPathsForTemplates", "" ).toString();
-  if ( !myPaths.isEmpty() )
+  QStringList templatePaths = QgsApplication::composerTemplatePaths();
+  if ( !templatePaths.isEmpty() )
   {
-    QStringList myPathList = myPaths.split( '|' );
-    QStringList::const_iterator pathIt = myPathList.constBegin();
-    for ( ; pathIt != myPathList.constEnd(); ++pathIt )
+    Q_FOREACH ( const QString& path, templatePaths )
     {
       QListWidgetItem* newItem = new QListWidgetItem( mListComposerTemplatePaths );
-      newItem->setText( *pathIt );
+      newItem->setText( path );
       newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mListComposerTemplatePaths->addItem( newItem );
     }
@@ -394,7 +391,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
     radUseGlobalProjection->setChecked( true );
   }
   QString myLayerDefaultCrs = mSettings->value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  mLayerDefaultCrs.createFromOgcWmsCrs( myLayerDefaultCrs );
+  mLayerDefaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
   //on the fly CRS transformation settings
@@ -413,7 +410,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   }
 
   QString myDefaultCrs = mSettings->value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  mDefaultCrs.createFromOgcWmsCrs( myDefaultCrs );
+  mDefaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( myDefaultCrs );
   leProjectGlobalCrs->setCrs( mDefaultCrs );
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::DefaultCrs, false );
 
@@ -635,7 +632,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   cbxSnappingOptionsDocked->setChecked( mSettings->value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( mSettings->value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddOracleDC->setChecked( mSettings->value( "/qgis/addOracleDC", false ).toBool() );
-  cbxEvaluateDefaultValues->setChecked( mSettings->value( "/qgis/evaluateDefaultValues", false ).toBool() );
   cbxCompileExpressions->setChecked( mSettings->value( "/qgis/compileExpressions", true ).toBool() );
   cbxCreateRasterLegendIcons->setChecked( mSettings->value( "/qgis/createRasterLegendIcons", false ).toBool() );
 
@@ -1192,7 +1188,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   mSettings->setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );
   mSettings->setValue( "/qgis/compileExpressions", cbxCompileExpressions->isChecked() );
-  mSettings->setValue( "/qgis/evaluateDefaultValues", cbxEvaluateDefaultValues->isChecked() );
   mSettings->setValue( "/qgis/defaultLegendGraphicResolution", mLegendGraphicResolutionSpinBox->value() );
   bool createRasterLegendIcons = mSettings->value( "/qgis/createRasterLegendIcons", false ).toBool();
   mSettings->setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );

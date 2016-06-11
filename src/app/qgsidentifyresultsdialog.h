@@ -41,7 +41,7 @@ class QgsVectorLayer;
 class QgsRasterLayer;
 class QgsHighlight;
 class QgsMapCanvas;
-class QDockWidget;
+class QgsDockWidget;
 
 class QwtPlotCurve;
 
@@ -253,7 +253,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action );
 
-    QDockWidget *mDock;
+    QgsDockWidget *mDock;
 
     QVector<QgsIdentifyPlotCurve *> mPlotCurves;
 };

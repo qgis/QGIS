@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgswmscapabilities.cpp
+    ---------------------
+    begin                : January 2014
+    copyright            : (C) 2014 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "qgswmscapabilities.h"
 #include "qgswmsprovider.h"
@@ -13,6 +27,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsunittypes.h"
+#include "qgscrscache.h"
 
 
 // %%% copied from qgswmsprovider.cpp
@@ -796,11 +811,9 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
         {
           try
           {
-            QgsCoordinateReferenceSystem src;
-            src.createFromOgcWmsCrs( e1.attribute( "SRS" ) );
+            QgsCoordinateReferenceSystem src = QgsCRSCache::instance()->crsByOgcWmsCrs( e1.attribute( "SRS" ) );
 
-            QgsCoordinateReferenceSystem dst;
-            dst.createFromOgcWmsCrs( DEFAULT_LATLON_CRS );
+            QgsCoordinateReferenceSystem dst =  QgsCRSCache::instance()->crsByOgcWmsCrs( DEFAULT_LATLON_CRS );
 
             QgsCoordinateTransform ct( src, dst );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
@@ -1231,8 +1244,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
 
         if ( !bb.crs.isEmpty() )
         {
-          QgsCoordinateReferenceSystem crs;
-          crs.createFromOgcWmsCrs( bb.crs );
+          QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( bb.crs );
           if ( crs.isValid() )
             bb.crs = crs.authid();
 
@@ -1299,8 +1311,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
     QString supportedCRS = e0.firstChildElement( "ows:SupportedCRS" ).text();
 
-    QgsCoordinateReferenceSystem crs;
-    crs.createFromOgcWmsCrs( supportedCRS );
+    QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( supportedCRS );
 
     s.wkScaleSet = e0.firstChildElement( "WellKnownScaleSet" ).text();
 
@@ -1438,8 +1449,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
         if ( !bb.crs.isEmpty() )
         {
-          QgsCoordinateReferenceSystem crs;
-          crs.createFromOgcWmsCrs( bb.crs );
+          QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( bb.crs );
           if ( crs.isValid() )
           {
             bb.crs = crs.authid();
@@ -1803,8 +1813,8 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
   if ( tmsIt == mTileMatrixSets.constEnd() )
     return false;
 
-  QgsCoordinateReferenceSystem crs;
-  if ( !crs.createFromOgcWmsCrs( tmsIt->crs ) )
+  QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( tmsIt->crs );
+  if ( !crs.isValid() )
     return false;
 
   // take most coarse tile matrix ...
@@ -1847,8 +1857,8 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
     }
 
     //create CRS from string
-    QgsCoordinateReferenceSystem theSrs;
-    if ( theSrs.createFromOgcWmsCrs( ogcCrs ) && theSrs.axisInverted() )
+    QgsCoordinateReferenceSystem theSrs = QgsCRSCache::instance()->crsByOgcWmsCrs( ogcCrs );
+    if ( theSrs.isValid() && theSrs.axisInverted() )
     {
       changeXY = true;
     }

@@ -31,6 +31,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgspointdisplacementrendererwidget.cpp
   symbology-ng/qgsrendererv2propertiesdialog.cpp
   symbology-ng/qgsrendererv2widget.cpp
+  symbology-ng/qgsrendererwidgetcontainer.cpp
   symbology-ng/qgsrulebasedrendererv2widget.cpp
   symbology-ng/qgssinglesymbolrendererv2widget.cpp
   symbology-ng/qgssizescalewidget.cpp
@@ -153,6 +154,9 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
   layertree/qgscustomlayerorderwidget.cpp
+  layertree/qgslayertreeembeddedconfigwidget.cpp
+  layertree/qgslayertreeembeddedwidgetregistry.cpp
+  layertree/qgslayertreeembeddedwidgetsimpl.cpp
   layertree/qgslayertreemapcanvasbridge.cpp
   layertree/qgslayertreeview.cpp
   layertree/qgslayertreeviewdefaultactions.cpp
@@ -200,6 +204,7 @@ SET(QGIS_GUI_SRCS
   qgsdetaileditemwidget.cpp
   qgsdial.cpp
   qgsdialog.cpp
+  qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
   qgserrordialog.cpp
   qgsexpressionbuilderdialog.cpp
@@ -242,6 +247,7 @@ SET(QGIS_GUI_SRCS
   qgsmaplayermodel.cpp
   qgsmaplayerpropertiesfactory.cpp
   qgsmaplayerproxymodel.cpp
+  qgsmaplayerstylemanagerwidget.cpp
   qgsmapmouseevent.cpp
   qgsmapoverviewcanvas.cpp
   qgsmaptip.cpp
@@ -355,6 +361,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsdetaileditemwidget.h
   qgsdial.h
   qgsdialog.h
+  qgsdockwidget.h
   qgsencodingfiledialog.h
   qgserrordialog.h
   qgsexpressionbuilderdialog.h
@@ -392,6 +399,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaplayercombobox.h
   qgsmaplayermodel.h
   qgsmaplayerproxymodel.h
+  qgsmaplayerstylemanagerwidget.h
   qgsmapoverviewcanvas.h
   qgsmaptool.h
   qgsmaptooladvanceddigitizing.h
@@ -472,6 +480,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgspointdisplacementrendererwidget.h
   symbology-ng/qgsrendererv2propertiesdialog.h
   symbology-ng/qgsrendererv2widget.h
+  symbology-ng/qgsrendererwidgetcontainer.h
   symbology-ng/qgsrulebasedrendererv2widget.h
   symbology-ng/qgssinglesymbolrendererv2widget.h
   symbology-ng/qgssizescalewidget.h
@@ -580,6 +589,8 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsvaluerelationwidgetwrapper.h
 
   layertree/qgscustomlayerorderwidget.h
+  layertree/qgslayertreeembeddedconfigwidget.h
+  layertree/qgslayertreeembeddedwidgetsimpl.h
   layertree/qgslayertreemapcanvasbridge.h
   layertree/qgslayertreeview.h
   layertree/qgslayertreeviewdefaultactions.h
@@ -675,6 +686,9 @@ SET(QGIS_GUI_HDRS
   editorwidgets/qgsvaluemapwidgetfactory.h
   editorwidgets/qgsvaluerelationwidgetfactory.h
 
+  layertree/qgslayertreeembeddedconfigwidget.h
+  layertree/qgslayertreeembeddedwidgetregistry.h
+
   raster/qgsrasterrendererwidget.h
 )
 
@@ -744,12 +758,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
 )
 
-IF (NOT MSVC)
-  ADD_DEFINITIONS("-UGUI_EXPORT")
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
-  ENDIF()
-ENDIF (NOT MSVC)
+REMOVE_DEFINITIONS("-DGUI_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("\"-DGUI_EXPORT=${DLLEXPORT}\"")
 
 # disable deprecation warnings for classes re-exporting deprecated methods

@@ -43,6 +43,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterFile
@@ -152,7 +153,10 @@ class RAlgorithm(GeoAlgorithm):
         tokens = line.split('=')
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
-            self.group = tokens[0]
+            self.group = self.i18n_group = tokens[0]
+            return
+        if tokens[1].lower().strip() == 'name':
+            self.name = self.i18n_name = tokens[0]
             return
 
         if tokens[1].lower().strip().startswith('output'):
@@ -231,6 +235,15 @@ class RAlgorithm(GeoAlgorithm):
                     break
             if found:
                 param = ParameterTableField(name, desc, field)
+        elif token.lower().strip().startswith('multiple field'):
+            field = token.strip()[len('multiple field') + 1:]
+            found = False
+            for p in self.parameters:
+                if p.name == field:
+                    found = True
+                    break
+            if found:
+                param = ParameterTableMultipleField(token, desc, field)
         elif token.lower().strip() == 'extent':
             param = ParameterExtent(name, desc)
         elif token.lower().strip() == 'point':
@@ -360,37 +373,46 @@ class RAlgorithm(GeoAlgorithm):
 
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
-                value = param.value
-                value = value.replace('\\', '/')
-                if self.passFileNames:
-                    commands.append(param.name + ' = "' + value + '"')
-                elif self.useRasterPackage:
-                    commands.append(param.name + ' = ' + 'brick("' + value
-                                    + '")')
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
                 else:
-                    commands.append(param.name + ' = ' + 'readGDAL("' + value
-                                    + '")')
+                    value = param.value
+                    value = value.replace('\\', '/')
+                    if self.passFileNames:
+                        commands.append(param.name + ' = "' + value + '"')
+                    elif self.useRasterPackage:
+                        commands.append(param.name + ' = ' + 'brick("' + value
+                                        + '")')
+                    else:
+                        commands.append(param.name + ' = ' + 'readGDAL("' + value
+                                        + '")')
             elif isinstance(param, ParameterVector):
-                value = param.getSafeExportedLayer()
-                value = value.replace('\\', '/')
-                filename = os.path.basename(value)
-                filename = filename[:-4]
-                folder = os.path.dirname(value)
-                if self.passFileNames:
-                    commands.append(param.name + ' = "' + value + '"')
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
                 else:
-                    commands.append(param.name + ' = readOGR("' + folder
-                                    + '",layer="' + filename + '")')
+                    value = param.getSafeExportedLayer()
+                    value = value.replace('\\', '/')
+                    filename = os.path.basename(value)
+                    filename = filename[:-4]
+                    folder = os.path.dirname(value)
+                    if self.passFileNames:
+                        commands.append(param.name + ' = "' + value + '"')
+                    else:
+                        commands.append(param.name + ' = readOGR("' + folder
+                                        + '",layer="' + filename + '")')
             elif isinstance(param, ParameterTable):
-                value = param.value
-                if not value.lower().endswith('csv'):
-                    raise GeoAlgorithmExecutionException(
-                        'Unsupported input file format.\n' + value)
-                if self.passFileNames:
-                    commands.append(param.name + ' = "' + value + '"')
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
                 else:
-                    commands.append(param.name + ' <- read.csv("' + value
-                                    + '", head=TRUE, sep=",")')
+                    value = param.value
+                    if not value.lower().endswith('csv'):
+                        raise GeoAlgorithmExecutionException(
+                            'Unsupported input file format.\n' + value)
+                    if self.passFileNames:
+                        commands.append(param.name + ' = "' + value + '"')
+                    else:
+                        commands.append(param.name + ' <- read.csv("' + value
+                                        + '", head=TRUE, sep=",")')
             elif isinstance(param, ParameterExtent):
                 if param.value:
                     tokens = unicode(param.value).split(',')
@@ -400,12 +422,21 @@ class RAlgorithm(GeoAlgorithm):
                 else:
                     commands.append(param.name + ' = NULL')
             elif isinstance(param, ParameterCrs):
-                commands.append(param.name + ' = "' + param.value + '"')
-            elif isinstance(param, (ParameterTableField, ParameterString,
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
+                else:
+                    commands.append(param.name + ' = "' + param.value + '"')
+            elif isinstance(param, (ParameterTableField, ParameterTableMultipleField, ParameterString,
                                     ParameterFile)):
-                commands.append(param.name + '="' + param.value + '"')
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
+                else:
+                    commands.append(param.name + '="' + param.value + '"')
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                commands.append(param.name + '=' + unicode(param.value))
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
+                else:
+                    commands.append(param.name + '=' + unicode(param.value))
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     commands.append(param.name + '=TRUE')

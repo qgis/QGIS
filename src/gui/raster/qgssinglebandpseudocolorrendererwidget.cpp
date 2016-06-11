@@ -354,11 +354,11 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   double min = lineEditValue( mMinLineEdit );
   double max = lineEditValue( mMaxLineEdit );
 
-  QgsVectorColorRampV2* colorRamp = mColorRampComboBox->currentColorRamp();
+  QScopedPointer< QgsVectorColorRampV2 > colorRamp( mColorRampComboBox->currentColorRamp() );
 
   if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Continuous )
   {
-    if ( colorRamp )
+    if ( colorRamp.data() )
     {
       numberOfEntries = colorRamp->count();
       entryValues.reserve( numberOfEntries );
@@ -367,7 +367,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
         double intervalDiff = max - min;
 
         // remove last class when ColorRamp is gradient and discrete, as they are implemented with an extra stop
-        QgsVectorGradientColorRampV2* colorGradientRamp = dynamic_cast<QgsVectorGradientColorRampV2*>( colorRamp );
+        QgsVectorGradientColorRampV2* colorGradientRamp = dynamic_cast<QgsVectorGradientColorRampV2*>( colorRamp.data() );
         if ( colorGradientRamp != NULL && colorGradientRamp->isDiscrete() )
         {
           numberOfEntries--;
@@ -405,7 +405,8 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   else // for other classification modes interpolate colors linearly
   {
     numberOfEntries = mNumberOfEntriesSpinBox->value();
-    if ( numberOfEntries < 2 ) return; // < 2 classes is not useful, shouldn't happen, but if it happens save it from crashing
+    if ( numberOfEntries < 2 )
+      return; // < 2 classes is not useful, shouldn't happen, but if it happens save it from crashing
 
     if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Quantile )
     { // Quantile
@@ -470,7 +471,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
       }
     }
 
-    if ( ! colorRamp )
+    if ( !colorRamp.data() )
     {
       //hard code color range from blue -> red (previous default)
       int colorDiff = 0;

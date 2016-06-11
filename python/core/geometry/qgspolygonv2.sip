@@ -12,6 +12,7 @@ class QgsPolygonV2: public QgsCurvePolygonV2
 
     virtual QString geometryType() const;
     virtual QgsPolygonV2* clone() const;
+    void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
 

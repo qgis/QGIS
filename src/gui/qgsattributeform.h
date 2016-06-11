@@ -54,25 +54,31 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       FilterOr, /*!< Filter should be combined using "OR" */
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
+    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(),
+                               const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
     ~QgsAttributeForm();
 
     const QgsFeature& feature() { return mFeature; }
 
     /**
      * Hides the button box (Ok/Cancel) and enables auto-commit
+     * @note set Embed in QgsAttributeEditorContext in constructor instead
      */
+    // TODO QGIS 3.0 - make private
     void hideButtonBox();
 
     /**
      * Shows the button box (Ok/Cancel) and disables auto-commit
+     * @note set Embed in QgsAttributeEditorContext in constructor instead
      */
+    // TODO QGIS 3.0 - make private
     void showButtonBox();
 
     /**
      * Disconnects the button box (Ok/Cancel) from the accept/resetValues slots
      * If this method is called, you have to create these connections from outside
      */
+    // TODO QGIS 3.0 - make private
     void disconnectButtonBox();
 
     /**
@@ -141,6 +147,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void setMultiEditFeatureIds( const QgsFeatureIds& fids );
 
+    /** Sets the message bar to display feedback from the form in. This is used in the search/filter
+     * mode to display the count of selected features.
+     * @param messageBar target message bar
+     * @note added in QGIS 2.16
+     */
+    void setMessageBar( QgsMessageBar* messageBar );
+
   signals:
     /**
      * Notifies about changes of attributes
@@ -176,6 +189,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * @param mode new mode
      */
     void modeChanged( QgsAttributeForm::Mode mode );
+
+    /** Emitted when the user selects the close option from the form's button bar.
+     * @note added in QGIS 2.16
+     */
+    void closed();
 
   public slots:
     /**
@@ -311,6 +329,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QgsVectorLayer* mLayer;
     QgsFeature mFeature;
     QgsMessageBar* mMessageBar;
+    bool mOwnsMessageBar;
     QgsMessageBarItem* mMultiEditUnsavedMessageBarItem;
     QgsMessageBarItem* mMultiEditMessageBarItem;
     QLabel* mInvalidConstraintMessage;

@@ -34,11 +34,12 @@
 QgsAfsProvider::QgsAfsProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mValid( false )
+    , mObjectIdFieldIdx( -1 )
 {
   mDataSource = QgsDataSourceURI( uri );
 
   // Set CRS
-  mSourceCRS = QgsCRSCache::instance()->crsByAuthId( mDataSource.param( "crs" ) );
+  mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( mDataSource.param( "crs" ) );
 
   // Get layer info
   QString errorTitle, errorMessage;
@@ -74,7 +75,7 @@ QgsAfsProvider::QgsAfsProvider( const QString& uri )
     mExtent.setYMaximum( layerExtentMap["ymax"].toDouble( &ymaxOk ) );
     if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
     {
-      appendError( QgsErrorMessage( tr( "Could not retreive layer extent" ), "AFSProvider" ) );
+      appendError( QgsErrorMessage( tr( "Could not retrieve layer extent" ), "AFSProvider" ) );
       return;
     }
     QgsCoordinateReferenceSystem extentCrs = QgsArcGisRestUtils::parseSpatialReference( layerExtentMap["spatialReference"].toMap() );
@@ -160,7 +161,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
   if ( it != mCache.end() )
   {
     f = it.value();
-    return filterRect.isNull() || f.geometry()->intersects(filterRect);
+    return filterRect.isNull() || f.geometry()->intersects( filterRect );
   }
 
   // Determine attributes to fetch
@@ -243,7 +244,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
   }
   f = mCache[id];
   Q_ASSERT( f.isValid() );
-  return filterRect.isNull() || f.geometry()->intersects(filterRect);
+  return filterRect.isNull() || f.geometry()->intersects( filterRect );
 }
 
 void QgsAfsProvider::setDataSourceUri( const QString &uri )

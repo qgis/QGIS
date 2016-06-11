@@ -42,6 +42,7 @@
 #include "qgsgml.h"
 #include "qgsgmlschema.h"
 #include "qgswmscapabilities.h"
+#include "qgscrscache.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -129,7 +130,7 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
     appendError( ERR( tr( "Cannot set CRS" ) ) );
     return;
   }
-  mCrs.createFromOgcWmsCrs( mSettings.mCrsId );
+  mCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( mSettings.mCrsId );
 
   if ( !calculateExtent() || mLayerExtent.isEmpty() )
   {
@@ -998,8 +999,9 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString& layerName, const QSt
 
   // transform it to requested CRS
 
-  QgsCoordinateReferenceSystem dst, wgs;
-  if ( !wgs.createFromOgcWmsCrs( DEFAULT_LATLON_CRS ) || !dst.createFromOgcWmsCrs( crs ) )
+  QgsCoordinateReferenceSystem dst = QgsCRSCache::instance()->crsByOgcWmsCrs( DEFAULT_LATLON_CRS );
+  QgsCoordinateReferenceSystem wgs = QgsCRSCache::instance()->crsByOgcWmsCrs( crs );
+  if ( !wgs.isValid() || !dst.isValid() )
     return false;
 
   QgsCoordinateTransform xform( wgs, dst );
@@ -1228,14 +1230,12 @@ bool QgsWmsProvider::calculateExtent()
       }
       else
       {
-        QgsCoordinateReferenceSystem qgisSrsDest;
-        qgisSrsDest.createFromOgcWmsCrs( mImageCrs );
+        QgsCoordinateReferenceSystem qgisSrsDest = QgsCRSCache::instance()->crsByOgcWmsCrs( mImageCrs );
 
         // pick the first that transforms fin(it)e
         for ( i = 0; i < mTileLayer->boundingBoxes.size(); i++ )
         {
-          QgsCoordinateReferenceSystem qgisSrsSource;
-          qgisSrsSource.createFromOgcWmsCrs( mTileLayer->boundingBoxes[i].crs );
+          QgsCoordinateReferenceSystem qgisSrsSource = QgsCRSCache::instance()->crsByOgcWmsCrs( mTileLayer->boundingBoxes[i].crs );
 
           QgsCoordinateTransform ct( qgisSrsSource, qgisSrsDest );
 
@@ -2102,8 +2102,8 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     double xRes = 0.001; // expecting meters
 
     // TODO: add CRS as class member
-    QgsCoordinateReferenceSystem crs;
-    if ( crs.createFromOgcWmsCrs( mImageCrs ) )
+    QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( mImageCrs );
+    if ( crs.isValid() )
     {
       // set resolution approximately to 1mm
       switch ( crs.mapUnits() )
@@ -2687,8 +2687,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
               QgsDebugMsg( QString( "crs not supported:%1" ).arg( result.property( "crs" ).toString() ) );
             }
 
-            QgsCoordinateReferenceSystem featuresCrs;
-            featuresCrs.createFromOgcWmsCrs( crsText );
+            QgsCoordinateReferenceSystem featuresCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( crsText );
 
             if ( !featuresCrs.isValid() )
               throw QString( "CRS %1 invalid" ).arg( crsText );

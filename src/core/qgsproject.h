@@ -41,7 +41,6 @@ class QDomDocument;
 class QDomElement;
 class QDomNode;
 
-class QgsBillBoardRegistry;
 class QgsLayerTreeGroup;
 class QgsLayerTreeRegistryBridge;
 class QgsMapLayer;
@@ -116,13 +115,6 @@ class CORE_EXPORT QgsProject : public QObject
      */
     Q_DECL_DEPRECATED inline void dirty( bool b ) { setDirty( b ); }
 
-    /**
-     * Flag the project as dirty (modified). If this flag is set, the user will
-     * be asked to save changes to the project before closing the current project.
-     *
-     * @note added in 2.4
-     */
-    void setDirty( bool b );
     //@}
 
 
@@ -324,11 +316,6 @@ class CORE_EXPORT QgsProject : public QObject
 
     QgsRelationManager* relationManager() const;
 
-    /** Return the project's billboard manager instance pointer
-     * @note added in QGIS 2.16
-     */
-    QgsBillBoardRegistry* billboardRegistry() const { return mBillboardRegistry; }
-
     /** Return pointer to the root (invisible) node of the project's layer tree
      * @note added in 2.4
      */
@@ -388,6 +375,21 @@ class CORE_EXPORT QgsProject : public QObject
      * @note Not available in python bindings
      */
     QMap< QPair< QString, QString>, QgsTransactionGroup*> transactionGroups();
+
+    /**
+     * Should default values be evaluated on provider side when requested and not when committed.
+     *
+     * @note added in 2.16
+     */
+    bool evaluateDefaultValues() const;
+
+
+    /**
+     * Defines if default values should be evaluated on provider side when requested and not when committed.
+     *
+     * @note added in 2.16
+     */
+    void setEvaluateDefaultValues( bool evaluateDefaultValues );
 
   protected:
     /** Set error message from read/write operation
@@ -455,8 +457,19 @@ class CORE_EXPORT QgsProject : public QObject
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
+  public slots:
+
+    /**
+     * Flag the project as dirty (modified). If this flag is set, the user will
+     * be asked to save changes to the project before closing the current project.
+     *
+     * @note added in 2.4
+     * @note promoted to public slot in 2.16
+     */
+    void setDirty( bool b = true );
+
   private slots:
-    void addToTransactionGroups( const QList<QgsMapLayer*> layers );
+    void onMapLayersAdded( const QList<QgsMapLayer*>& layers );
     void cleanTransactionGroups( bool force = false );
 
   private:
@@ -493,8 +506,6 @@ class CORE_EXPORT QgsProject : public QObject
 
     QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge;
 
-    QgsBillBoardRegistry* mBillboardRegistry;
-
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;
 
@@ -518,5 +529,7 @@ class CORE_EXPORT QgsProjectBadLayerDefaultHandler : public QgsProjectBadLayerHa
     virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) override;
 
 };
+
+CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc );
 
 #endif

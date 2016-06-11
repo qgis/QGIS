@@ -68,9 +68,14 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setLabelAttributeName( const QString& name );
     QString labelAttributeName() const;
 
-    /** Sets embedded renderer (takes ownership)*/
     void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
-    QgsFeatureRendererV2* embeddedRenderer();
+    const QgsFeatureRendererV2* embeddedRenderer() const;
+
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol );
+
+    virtual bool legendSymbolItemsCheckable() const;
+    virtual bool legendSymbolItemChecked( const QString& key );
+    virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
     //! not available in python bindings
     //! @deprecated since 2.4

@@ -5,7 +5,16 @@ class QgsRendererV2PropertiesDialog : QDialog
 %End
 
   public:
-    QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false );
+
+    /** Constructor for QgsRendererV2PropertiesDialog.
+     * @param layer associated layer
+     * @param style style collection
+     * @param embedded set to true to indicate that the dialog will be embedded in another widget, rather
+     * than shown as a dialog by itself
+     * @param parent parent widget
+     */
+    QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false, QWidget* parent /TransferThis/ = nullptr );
+
     ~QgsRendererV2PropertiesDialog();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -24,7 +33,7 @@ class QgsRendererV2PropertiesDialog : QDialog
     void layerVariablesChanged();
 
     /**
-     * Emmited when something on the widget has changed.
+     * Emitted when something on the widget has changed.
      * All widgets will fire this event to notify of an internal change.
      */
     void widgetChanged();
@@ -38,6 +47,18 @@ class QgsRendererV2PropertiesDialog : QDialog
 
     //! Apply and accept the changes for the dialog.
     void onOK();
+
+    /** Shows a panel widget inside the renderer widget.
+     * @param container widget panel to show
+     * @note added in QGIS 2.16
+     */
+    void showPanel( QgsRendererWidgetContainer *container );
+
+    /**
+     * Closes the given panel in the stack of panels.
+     * @param container The container widget to close.
+     */
+    void closePanel( QgsRendererWidgetContainer *container );
 
   protected:
     /**

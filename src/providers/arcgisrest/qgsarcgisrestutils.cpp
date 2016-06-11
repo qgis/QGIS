@@ -104,12 +104,12 @@ static QgsPointV2* parsePoint( const QVariantList& coordList, QgsWKBTypes::Type 
 {
   int nCoords = coordList.size();
   if ( nCoords < 2 )
-    return 0;
+    return nullptr;
   bool xok = false, yok = false;
   double x = coordList[0].toDouble( &xok );
   double y = coordList[1].toDouble( &yok );
   if ( !xok || !yok )
-    return 0;
+    return nullptr;
   double z = nCoords >= 3 ? coordList[2].toDouble() : 0;
   double m = nCoords >= 4 ? coordList[3].toDouble() : 0;
   return new QgsPointV2( pointType, x, y, z, m );
@@ -119,15 +119,15 @@ static QgsCircularStringV2* parseCircularString( const QVariantMap& curveData, Q
 {
   QVariantList coordsList = curveData["c"].toList();
   if ( coordsList.isEmpty() )
-    return 0;
+    return nullptr;
   QList<QgsPointV2> points;
   points.append( startPoint );
   foreach ( const QVariant& coordData, coordsList )
   {
     QgsPointV2* point = parsePoint( coordData.toList(), pointType );
-    if ( points.last() == 0 )
+    if ( !point )
     {
-      return 0;
+      return nullptr;
     }
     points.append( *point );
     delete point;
@@ -151,7 +151,7 @@ static QgsCompoundCurveV2* parseCompoundCurve( const QVariantList& curvesList, Q
       if ( !point )
       {
         delete compoundCurve;
-        return 0;
+        return nullptr;
       }
       lineString->addVertex( *point );
       delete point;
@@ -163,7 +163,7 @@ static QgsCompoundCurveV2* parseCompoundCurve( const QVariantList& curvesList, Q
       if ( !circularString )
       {
         delete compoundCurve;
-        return 0;
+        return nullptr;
       }
 
       // If the previous curve had less than two points, remove it
@@ -188,7 +188,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryPoint( const QVariantMap& geometr
   double x = geometryData["x"].toDouble( &xok );
   double y = geometryData["y"].toDouble( &yok );
   if ( !xok || !yok )
-    return 0;
+    return nullptr;
   double z = geometryData["z"].toDouble();
   double m = geometryData["m"].toDouble();
   return new QgsPointV2( pointType, x, y, z, m );
@@ -199,7 +199,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryMultiPoint( const QVariantMap& ge
   // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], ... ]}
   QVariantList coordsList = geometryData["points"].toList();
   if ( coordsList.isEmpty() )
-    return 0;
+    return nullptr;
 
   QgsMultiPointV2* multiPoint = new QgsMultiPointV2();
   foreach ( QVariant coordData, coordsList )
@@ -209,7 +209,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryMultiPoint( const QVariantMap& ge
     if ( !p )
     {
       delete multiPoint;
-      return 0;
+      return nullptr;
     }
     multiPoint->addGeometry( p );
   }
@@ -225,7 +225,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryPolyline( const QVariantMap& geom
   else if ( geometryData["curvePaths"].isValid() )
     pathsList = geometryData["curvePaths"].toList();
   if ( pathsList.isEmpty() )
-    return 0;
+    return nullptr;
   QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
   foreach ( const QVariant& pathData, pathsList )
   {
@@ -233,7 +233,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryPolyline( const QVariantMap& geom
     if ( !curve )
     {
       delete multiCurve;
-      return 0;
+      return nullptr;
     }
     multiCurve->addGeometry( curve );
   }
@@ -249,13 +249,13 @@ static QgsAbstractGeometryV2* parseEsriGeometryPolygon( const QVariantMap& geome
   else if ( geometryData["ringPaths"].isValid() )
     ringsList = geometryData["ringPaths"].toList();
   if ( ringsList.isEmpty() )
-    return 0;
+    return nullptr;
   QgsCurvePolygonV2* polygon = new QgsCurvePolygonV2();
   QgsCompoundCurveV2* ext = parseCompoundCurve( ringsList.front().toList(), pointType );
   if ( !ext )
   {
     delete polygon;
-    return 0;
+    return nullptr;
   }
   polygon->setExteriorRing( ext );
   for ( int i = 1, n = ringsList.size(); i < n; ++i )
@@ -264,7 +264,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryPolygon( const QVariantMap& geome
     if ( !curve )
     {
       delete polygon;
-      return 0;
+      return nullptr;
     }
     polygon->addInteriorRing( curve );
   }
@@ -280,7 +280,7 @@ static QgsAbstractGeometryV2* parseEsriEnvelope( const QVariantMap& geometryData
   double xmax = geometryData["xmax"].toDouble( &xmaxOk );
   double ymax = geometryData["ymax"].toDouble( &ymaxOk );
   if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
-    return 0;
+    return nullptr;
   QgsLineStringV2* ext = new QgsLineStringV2();
   ext->addVertex( QgsPointV2( xmin, ymin ) );
   ext->addVertex( QgsPointV2( xmax, ymin ) );
@@ -302,7 +302,7 @@ QgsAbstractGeometryV2* QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap& 
 
   // http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Geometry_Objects/02r3000000n1000000/
   if ( esriGeometryType == "esriGeometryNull" )
-    return 0;
+    return nullptr;
   else if ( esriGeometryType == "esriGeometryPoint" )
     return parseEsriGeometryPoint( geometryData, pointType );
   else if ( esriGeometryType == "esriGeometryMultipoint" )
@@ -328,7 +328,7 @@ QgsAbstractGeometryV2* QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap& 
   //  esriGeometrySphere
   //  esriGeometryTriangles
   //  esriGeometryBag
-  return 0;
+  return nullptr;
 }
 
 QgsCoordinateReferenceSystem QgsArcGisRestUtils::parseSpatialReference( const QVariantMap &spatialReferenceMap )
@@ -482,7 +482,15 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
 
 QgsArcGisAsyncQuery::QgsArcGisAsyncQuery( QObject* parent )
     : QObject( parent )
+    , mReply( nullptr )
+    , mResult( nullptr )
 {
+}
+
+QgsArcGisAsyncQuery::~QgsArcGisAsyncQuery()
+{
+  if ( mReply )
+    mReply->deleteLater();
 }
 
 void QgsArcGisAsyncQuery::start( const QUrl &url, QByteArray *result, bool allowCache )
@@ -522,7 +530,7 @@ void QgsArcGisAsyncQuery::handleReply()
   }
 
   *mResult = mReply->readAll();
-  mResult = 0;
+  mResult = nullptr;
   emit finished();
 }
 
@@ -530,6 +538,8 @@ void QgsArcGisAsyncQuery::handleReply()
 
 QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( QObject* parent )
     : QObject( parent )
+    , mResults( nullptr )
+    , mPendingRequests( 0 )
 {
 }
 
@@ -585,7 +595,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
   if ( mPendingRequests == 0 )
   {
     emit finished( mErrors );
-    mResults = 0;
+    mResults = nullptr;
     mErrors.clear();
   }
 }

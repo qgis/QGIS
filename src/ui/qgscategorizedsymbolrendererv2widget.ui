@@ -6,14 +6,11 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>422</width>
-    <height>417</height>
+    <width>378</width>
+    <height>368</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
-    <number>3</number>
-   </property>
    <item row="0" column="0">
     <widget class="QLabel" name="label_3">
      <property name="sizePolicy">
@@ -24,6 +21,16 @@
      </property>
      <property name="text">
       <string>Column</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>16777215</height>
+      </size>
      </property>
     </widget>
    </item>
@@ -40,6 +47,19 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="btnChangeCategorizedSymbol">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Change...</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_10">
      <property name="sizePolicy">
@@ -53,7 +73,41 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3">
+   <item row="2" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QgsColorRampComboBox" name="cboCategorizedColorRamp">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mButtonEditRamp">
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cbxInvertedColorRamp">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Invert</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0" colspan="2">
     <widget class="QTreeView" name="viewCategories">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
@@ -87,7 +141,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="3">
+   <item row="4" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="btnAddCategories">
@@ -151,64 +205,19 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="1" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QgsColorRampComboBox" name="cboCategorizedColorRamp">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mButtonEditRamp">
-       <property name="text">
-        <string>Edit</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="cbxInvertedColorRamp">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Invert</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
-     <property name="maximumSize">
-      <size>
-       <width>500</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QPushButton" name="btnChangeCategorizedSymbol">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>1</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Change...</string>
-     </property>
-    </widget>
-   </item>
   </layout>
+  <zorder>viewCategories</zorder>
+  <zorder>btnChangeCategorizedSymbol</zorder>
+  <zorder>label_9</zorder>
+  <zorder>label_10</zorder>
+  <zorder>mExpressionWidget</zorder>
+  <zorder>label_3</zorder>
+  <zorder>viewCategories</zorder>
+  <zorder>btnChangeCategorizedSymbol</zorder>
+  <zorder>label_9</zorder>
+  <zorder>label_10</zorder>
+  <zorder>mExpressionWidget</zorder>
+  <zorder>label_3</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -224,8 +233,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>btnChangeCategorizedSymbol</tabstop>
-  <tabstop>viewCategories</tabstop>
   <tabstop>btnAddCategories</tabstop>
   <tabstop>btnAddCategory</tabstop>
   <tabstop>btnDeleteCategories</tabstop>

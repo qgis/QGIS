@@ -571,7 +571,7 @@ void QgsGPSPlugin::setupBabel()
 {
   // where is gpsbabel?
   QSettings settings;
-  mBabelPath = settings.value( "/Plugin-GPS/gpsbabelpath", QDir::homePath() ).toString();
+  mBabelPath = settings.value( "/Plugin-GPS/gpsbabelpath", QString() ).toString();
   if ( mBabelPath.isEmpty() )
     mBabelPath = "gpsbabel";
   // the importable formats

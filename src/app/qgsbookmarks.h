@@ -17,13 +17,12 @@
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
 
-#include <QDockWidget>
 #include <QSqlTableModel>
 #include <QScopedPointer>
 
 #include "ui_qgsbookmarksbase.h"
 #include "qgscontexthelp.h"
-
+#include "qgsdockwidget.h"
 
 /*
  * Model for project bookmarks
@@ -100,7 +99,7 @@ class QgsMergedBookmarksTableModel: public QAbstractTableModel
 };
 
 
-class APP_EXPORT QgsBookmarks : public QDockWidget, private Ui::QgsBookmarksBase
+class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBase
 {
     Q_OBJECT
 

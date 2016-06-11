@@ -107,9 +107,8 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
 };
 
 
-class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMenuProvider
+class QgsComposerLegendMenuProvider : public QgsLayerTreeViewMenuProvider
 {
-    Q_OBJECT
 
   public:
     QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w );

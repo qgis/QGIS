@@ -35,7 +35,7 @@
 
 
 QgsBookmarks::QgsBookmarks( QWidget *parent )
-    : QDockWidget( parent )
+    : QgsDockWidget( parent )
 {
   setupUi( this );
   restorePosition();

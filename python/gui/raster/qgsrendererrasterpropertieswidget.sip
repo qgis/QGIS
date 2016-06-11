@@ -1,11 +1,11 @@
-class QgsRendererRasterPropertiesWidget : QWidget
+class QgsRendererRasterPropertiesWidget : QgsMapStylePanel
 {
 %TypeHeaderCode
 #include <qgsrendererrasterpropertieswidget.h>
 %End
 
   public:
-    QgsRendererRasterPropertiesWidget( QgsMapCanvas* canvas, QWidget* parent );
+    QgsRendererRasterPropertiesWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget* parent );
     ~QgsRendererRasterPropertiesWidget();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -23,7 +23,7 @@ class QgsRendererRasterPropertiesWidget : QWidget
   signals:
 
     /**
-     * Emmited when something on the widget has changed.
+     * Emitted when something on the widget has changed.
      * All widgets will fire this event to notify of an internal change.
      */
     void widgetChanged();

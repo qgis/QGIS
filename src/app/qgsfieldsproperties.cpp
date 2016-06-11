@@ -305,7 +305,14 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
     mFieldsList->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
   }
 
-  for ( int i = 0; i < attrCommentCol; i++ )
+  QList<int> notEditableCols = QList<int>()
+                               << attrIdCol
+                               << attrNameCol
+                               << attrTypeCol
+                               << attrTypeNameCol
+                               << attrLengthCol
+                               << attrPrecCol;
+  Q_FOREACH ( int i, notEditableCols )
     mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
   bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
@@ -751,9 +758,9 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
   {
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );
     if ( !nameItem ||
-	nameItem->text().isEmpty() ||
-	!mLayer->fields().exists( row ) ||
-	mLayer->fields().at( row ).name() == nameItem->text() )
+         nameItem->text().isEmpty() ||
+         !mLayer->fields().exists( row ) ||
+         mLayer->fields().at( row ).name() == nameItem->text() )
       return;
 
     mLayer->beginEditCommand( tr( "Rename attribute" ) );
@@ -1146,7 +1153,6 @@ QTreeWidgetItem* DesignerTree::addItem( QTreeWidgetItem* parent, QgsFieldsProper
 
 void DesignerTree::dragMoveEvent( QDragMoveEvent *event )
 {
-  QTreeWidgetItem* targetItem = itemAt( event->pos() );
   const QMimeData* data = event->mimeData();
 
   if ( data->hasFormat( "application/x-qgsattributetabledesignerelement" ) )
@@ -1156,13 +1162,6 @@ void DesignerTree::dragMoveEvent( QDragMoveEvent *event )
     QByteArray itemData = data->data( "application/x-qgsattributetabledesignerelement" );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
     stream >> itemElement;
-
-    // Forbid dropping fields on root item
-    if ( itemElement.type() == QgsFieldsProperties::DesignerTreeItemData::Field && !targetItem )
-    {
-      event->ignore();
-      return;
-    }
 
     // Inner drag and drop actions are always MoveAction
     if ( event->source() == this )
@@ -1203,10 +1202,10 @@ bool DesignerTree::dropMimeData( QTreeWidgetItem* parent, int index, const QMime
         addItem( parent, itemElement );
         bDropSuccessful = true;
       }
-      else // Should never happen as we ignore drops of fields onto the root element in dragMoveEvent, but actually does happen. Qt?
+      else
       {
-        // addItem( invisibleRootItem(), itemName );
-        // bDropSuccessful = true;
+        addItem( invisibleRootItem(), itemElement );
+        bDropSuccessful = true;
       }
     }
   }

@@ -43,6 +43,15 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     };
 
     /**
+     * Filters for which fields should be shown
+     */
+    enum Filter
+    {
+      WritableFields = 1 //!< Only show writable fields
+    };
+    Q_DECLARE_FLAGS( Filters, Filter )
+
+    /**
      * @brief QgsFieldModel creates a model to display the fields of a given layer
      */
     explicit QgsFieldModel( QObject *parent = nullptr );
@@ -74,6 +83,16 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     int columnCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
 
+    /**
+     * The currently applied filters that define which fields are shown.
+     */
+    Filters filters() const;
+
+    /**
+     * The currently applied filters that define which fields are shown.
+     */
+    void setFilters( const Filters& filter );
+
   public slots:
     //! set the layer of whch fields are displayed
     void setLayer( QgsVectorLayer *layer );
@@ -84,14 +103,14 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
   private slots:
     void layerDeleted();
 
-  protected:
+  private:
     QgsFields mFields;
     QList<QString> mExpression;
 
     QgsVectorLayer* mLayer;
     bool mAllowExpression;
+    Filters mFilters;
 
-  private:
     void fetchFeature();
 };
 

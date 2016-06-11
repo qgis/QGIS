@@ -57,9 +57,11 @@ class TestQgsComposerPicture : public QObject
     void pictureSvgFrameToImage();
 
     void svgParameters();
+    void issue_14644();
 
     void pictureExpression();
     void pictureInvalidExpression();
+
 
   private:
     QgsComposition* mComposition;
@@ -379,6 +381,22 @@ void TestQgsComposerPicture::svgParameters()
   mComposerPicture->setSvgBorderWidth( 2.2 );
 
   QgsCompositionChecker checker( "composerpicture_svg_params", mComposition );
+  checker.setControlPathPrefix( "composer_picture" );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+
+  mComposition->removeItem( mComposerPicture );
+  mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
+  mComposerPicture->setPicturePath( mPngImage );
+}
+
+void TestQgsComposerPicture::issue_14644()
+{
+  //test rendering SVG file with text
+  mComposition->addComposerPicture( mComposerPicture );
+  mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
+  mComposerPicture->setPicturePath( QString( TEST_DATA_DIR ) + "/svg/issue_14644.svg" );
+
+  QgsCompositionChecker checker( "composerpicture_issue_14644", mComposition );
   checker.setControlPathPrefix( "composer_picture" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 

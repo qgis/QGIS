@@ -54,7 +54,7 @@ class lasground(LAStoolsAlgorithm):
         self.addParameter(ParameterBoolean(lasground.NO_BULGE,
                                            self.tr("no triangle bulging during TIN refinement"), False))
         self.addParameter(ParameterBoolean(lasground.BY_FLIGHTLINE,
-                                           self.tr("classify flightlines seperately (needs point source IDs populated)"), False))
+                                           self.tr("classify flightlines separately (needs point source IDs populated)"), False))
         self.addParameter(ParameterSelection(lasground.TERRAIN,
                                              self.tr("terrain type"), lasground.TERRAINS, 1))
         self.addParameter(ParameterSelection(lasground.GRANULARITY,

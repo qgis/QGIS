@@ -227,7 +227,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>7</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -256,8 +256,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>565</width>
+                <height>685</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -758,8 +758,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>294</width>
+                <height>59</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -903,8 +903,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1370,8 +1370,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>667</width>
-                <height>2249</height>
+                <width>676</width>
+                <height>2317</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2436,8 +2436,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2491,8 +2491,21 @@
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0" colspan="2">
             <widget class="QCheckBox" name="mAutoTransaction">
+             <property name="toolTip">
+              <string>When enabled, layers from the same database connection will be put into a transaction group. Their edit state will be synchronized and changes to these layers will be sent to the provider immediately. Only supported on postgres provider.</string>
+             </property>
              <property name="text">
               <string>Automatically create transaction groups where possible</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="mEvaluateDefaultValues">
+             <property name="toolTip">
+              <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres provider.</string>
+             </property>
+             <property name="text">
+              <string>Evaluate default values on provider side</string>
              </property>
             </widget>
            </item>

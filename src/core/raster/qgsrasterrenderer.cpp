@@ -24,8 +24,6 @@
 #include <QImage>
 #include <QPainter>
 
-#define tr( sourceText ) QCoreApplication::translate ( "QgsRasterRenderer", sourceText )
-
 // See #9101 before any change of NODATA_COLOR!
 const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 

@@ -16,6 +16,7 @@
 #include "qgswelcomepageitemsmodel.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmessagelog.h"
+#include "qgscrscache.h"
 
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
@@ -149,8 +150,7 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
     case CrsRole:
       if ( mRecentProjects.at( index.row() ).crs != "" )
       {
-        QgsCoordinateReferenceSystem crs;
-        crs.createFromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
+        QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
         return  QString( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );
       }
       else

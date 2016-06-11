@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsadvanceddigitizingdock.h  -  dock for CAD tools
+    qgsadvanceddigitizingdockwidget.h  -  dock for CAD tools
     ----------------------
     begin                : October 2014
     copyright            : (C) Denis Rouzaud
@@ -16,8 +16,7 @@
 #ifndef QGSADVANCEDDIGITIZINGDOCK
 #define QGSADVANCEDDIGITIZINGDOCK
 
-#include <QDockWidget>
-
+#include "qgsdockwidget.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmessagebaritem.h"
 
@@ -36,12 +35,12 @@ static const double SoftConstraintTolerancePixel = 15;
 static const double SoftConstraintToleranceDegrees = 10;
 
 /**
- * @brief The QgsAdvancedDigitizingDock class is a dockable widget
+ * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
  * by implemeting filters called from QgsMapToolAdvancedDigitizing.
  */
-class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
+class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
 {
     Q_OBJECT
     Q_FLAGS( CadCapacities )

@@ -21,6 +21,17 @@ from qgis.core import (
     QgsFeature,
     QgsPoint,
     QgsPointV2,
+    QgsCircularStringV2,
+    QgsCompoundCurveV2,
+    QgsCurvePolygonV2,
+    QgsGeometryCollectionV2,
+    QgsLineStringV2,
+    QgsMultiCurveV2,
+    QgsMultiLineStringV2,
+    QgsMultiPointV2,
+    QgsMultiPolygonV2,
+    QgsMultiSurfaceV2,
+    QgsPolygonV2,
     QgsCoordinateTransform,
     QgsRectangle,
     QgsWKBTypes,
@@ -1852,6 +1863,34 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(g.distanceToVertex(3), 3)
         self.assertEqual(g.distanceToVertex(4), 4)
         self.assertEqual(g.distanceToVertex(5), -1)
+
+    def testTypeInformation(self):
+        """ Test type information """
+        types = [
+            (QgsCircularStringV2, "CircularString", QgsWKBTypes.CircularString),
+            (QgsCompoundCurveV2, "CompoundCurve", QgsWKBTypes.CompoundCurve),
+            (QgsCurvePolygonV2, "CurvePolygon", QgsWKBTypes.CurvePolygon),
+            (QgsGeometryCollectionV2, "GeometryCollection", QgsWKBTypes.GeometryCollection),
+            (QgsLineStringV2, "LineString", QgsWKBTypes.LineString),
+            (QgsMultiCurveV2, "MultiCurve", QgsWKBTypes.MultiCurve),
+            (QgsMultiLineStringV2, "MultiLineString", QgsWKBTypes.MultiLineString),
+            (QgsMultiPointV2, "MultiPoint", QgsWKBTypes.MultiPoint),
+            (QgsMultiPolygonV2, "MultiPolygon", QgsWKBTypes.MultiPolygon),
+            (QgsMultiSurfaceV2, "MultiSurface", QgsWKBTypes.MultiSurface),
+            (QgsPointV2, "Point", QgsWKBTypes.Point),
+            (QgsPolygonV2, "Polygon", QgsWKBTypes.Polygon),
+        ]
+
+        for geomtype in types:
+            geom = geomtype[0]()
+            self.assertEqual(geom.geometryType(), geomtype[1])
+            self.assertEqual(geom.wkbType(), geomtype[2])
+            geom.clear()
+            self.assertEqual(geom.geometryType(), geomtype[1])
+            self.assertEqual(geom.wkbType(), geomtype[2])
+            clone = geom.clone()
+            self.assertEqual(clone.geometryType(), geomtype[1])
+            self.assertEqual(clone.wkbType(), geomtype[2])
 
     def testRelates(self):
         """ Test relationships between geometries. Note the bulk of these tests were taken from the PostGIS relate testdata """

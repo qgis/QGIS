@@ -186,7 +186,7 @@ void QgsMapToolOffsetCurve::applyOffset()
   delete mSnapVertexMarker;
   mSnapVertexMarker = nullptr;
   mForceCopy = false;
-  mCanvas->refresh();
+  layer->triggerRepaint();
 }
 
 void QgsMapToolOffsetCurve::placeOffsetCurveToValue()

@@ -80,7 +80,12 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
          * Return the attributes used to evaluate the expression of this rule
          * @return A set of attribute names
          */
-        QSet<QString> usedAttributes();
+        QSet<QString> usedAttributes() const;
+
+        /**
+         * Returns true if this rule or one of its chilren needs the geometry to be applied.
+         */
+        bool needsGeometry() const;
 
 	//! @note available in python bindings as symbol2
         QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() ) /PyName=symbols2/;
@@ -356,6 +361,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     virtual QString filter( const QgsFields& fields = QgsFields() );
 
     virtual QList<QString> usedAttributes();
+
+    virtual bool filterNeedsGeometry() const;
 
     virtual QgsRuleBasedRendererV2* clone() const /Factory/;
 

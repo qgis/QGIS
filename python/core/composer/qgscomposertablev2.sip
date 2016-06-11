@@ -362,7 +362,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     void setCellStyle( CellStyleGroup group, const QgsComposerTableStyle& style );
 
     /** Returns the cell style for a cell group.
-     * @param group group to retreive style for
+     * @param group group to retrieve style for
      * @see setCellStyle()
      * @note added in QGIS 2.12
      */

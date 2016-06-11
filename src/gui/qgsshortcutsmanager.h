@@ -75,13 +75,13 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     /** Registers an action with the manager so the shortcut can be configured in GUI.
      * @param action action to register. The action must have a unique text string for
      * identification.
-     * @param defaultSequence default key sequence for action
+     * @param defaultShortcut default key sequence for action
      * @returns true if action was successfully registered
      * @see registerShortcut()
      * @see unregisterAction()
      * @see registerAllChildActions()
      */
-    bool registerAction( QAction* action, const QString& defaultShortcut = QString() );
+    bool registerAction( QAction *action, const QString &defaultShortcut = QString() );
 
     /** Registers a QShortcut with the manager so the shortcut can be configured in GUI.
     * @param shortcut QShortcut to register. The shortcut must have a unique QObject::objectName() for

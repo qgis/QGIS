@@ -230,7 +230,7 @@ bool QgsNodeEditorModel::setData( const QModelIndex& index, const QVariant& valu
   mLayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
   mLayer->moveVertex( p, mSelectedFeature->featureId(), index.row() );
   mLayer->endEditCommand();
-  mCanvas->refresh();
+  mLayer->triggerRepaint();
 
   return false;
 }

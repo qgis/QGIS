@@ -130,7 +130,7 @@ bool QgsPointV2::fromWkt( const QString& wkt )
 
   QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::parseType( geometryType() ) )
+  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::Point )
     return false;
   mWkbType = parts.first;
 
@@ -253,7 +253,6 @@ void QgsPointV2::draw( QPainter& p ) const
 
 void QgsPointV2::clear()
 {
-  mWkbType = QgsWKBTypes::Unknown;
   mX = mY = mZ = mM = 0.;
   clearCache();
 }

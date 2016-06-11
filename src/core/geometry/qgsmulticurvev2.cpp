@@ -21,6 +21,12 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
 
+QgsMultiCurveV2::QgsMultiCurveV2()
+    : QgsGeometryCollectionV2()
+{
+  mWkbType = QgsWKBTypes::MultiCurve;
+}
+
 QgsMultiCurveV2 *QgsMultiCurveV2::clone() const
 {
   return new QgsMultiCurveV2( *this );

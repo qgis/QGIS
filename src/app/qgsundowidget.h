@@ -15,11 +15,11 @@
 #ifndef QGSUNDOWIDGET_H
 #define QGSUNDOWIDGET_H
 
+#include "qgsdockwidget.h"
 #include <QVariant>
 #include <QAction>
 #include <QApplication>
 #include <QButtonGroup>
-#include <QDockWidget>
 #include <QGridLayout>
 #include <QPushButton>
 #include <QSpacerItem>

@@ -49,22 +49,67 @@ class CORE_EXPORT QgsCoordinateTransformCache
     QgsCoordinateTransformCache& operator=( const QgsCoordinateTransformCache& rh );
 };
 
+
+
+/** \ingroup core
+ * \class QgsCRSCache
+ * \brief Caches QgsCoordinateReferenceSystem construction, which may be expensive.
+ *
+ * QgsCRSCache maintains a cache of previously constructed coordinate systems, so that
+ * creating a new CRS from the cache can reuse previously calculated parameters. The
+ * constructors for QgsCoordinateReferenceSystem can be expensive, so it's recommended
+ * to use QgsCRSCache instead of directly calling the QgsCoordinateReferenceSystem
+ * constructors.
+ */
+
 class CORE_EXPORT QgsCRSCache
 {
   public:
+
+    //! Returns a pointer to the QgsCRSCache singleton
     static QgsCRSCache* instance();
 
-    /** Returns the CRS for authid, e.g. 'EPSG:4326' (or an invalid CRS in case of error)*/
-    const QgsCoordinateReferenceSystem& crsByAuthId( const QString& authid );
-    const QgsCoordinateReferenceSystem& crsByEpsgId( long epsg );
+    /** Returns the CRS for authid, e.g. 'EPSG:4326' (or an invalid CRS in case of error)
+     * @deprecated use crsByOgcWmsCrs() instead
+    */
+    Q_DECL_DEPRECATED QgsCoordinateReferenceSystem crsByAuthId( const QString& authid );
 
-    void updateCRSCache( const QString &authid );
+    /** Returns the CRS from a given OGC WMS-format Coordinate Reference System string.
+     * @param ogcCrs OGR compliant CRS definition, eg "EPSG:4326"
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 2.16
+     * @see QgsCoordinateReferenceSystem::createFromOgcWmsCrs()
+    */
+    QgsCoordinateReferenceSystem crsByOgcWmsCrs( const QString& ogcCrs ) const;
+
+    /** Returns the CRS from a given EPSG ID.
+     * @param epsg epsg CRS ID
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+    */
+    QgsCoordinateReferenceSystem crsByEpsgId( long epsg ) const;
+
+    /** Returns the CRS from a proj4 style formatted string.
+     * @param proj4 proj4 format string
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 2.16
+     * @see QgsCoordinateReferenceSystem::createFromProj4()
+    */
+    QgsCoordinateReferenceSystem crsByProj4( const QString& proj4 ) const;
+
+    /** Updates the cached definition of a CRS. Should be called if the definition of a user-created
+     * CRS has been changed.
+     * @param authid CRS auth ID, eg "EPSG:4326" or "USER:100009"
+     */
+    void updateCRSCache( const QString& authid );
 
   protected:
     QgsCRSCache();
 
   private:
-    QHash< QString, QgsCoordinateReferenceSystem > mCRS;
+
+    mutable QHash< QString, QgsCoordinateReferenceSystem > mCRS;
+    mutable QHash< QString, QgsCoordinateReferenceSystem > mCRSProj4;
+
     /** CRS that is not initialized (returned in case of error)*/
     QgsCoordinateReferenceSystem mInvalidCRS;
 };

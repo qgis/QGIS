@@ -16,7 +16,7 @@
 #ifndef QGSGRASSTOOLS_H
 #define QGSGRASSTOOLS_H
 
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 
 #include "ui_qgsgrasstoolsbase.h"
 
@@ -35,7 +35,7 @@ class QgsGrassToolsTreeFilterProxyModel;
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassTools: public QDockWidget, public Ui::QgsGrassToolsBase
+class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
 {
     Q_OBJECT
 

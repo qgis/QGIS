@@ -170,7 +170,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
       addFeature( vlayer, &f, false );
 
-      mCanvas->refresh();
+      vlayer->triggerRepaint();
     }
   }
 
