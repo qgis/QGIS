@@ -184,7 +184,7 @@ class PGTable(Table):
         self.schema().refresh() if self.schema() else self.database().refresh()
 
     def runRefreshMaterializedView(self):
-        self.aboutToChange()
+        self.aboutToChange.emit()
         self.database().connector.runRefreshMaterializedView((self.schemaName(), self.name))
         # TODO: change only this item, not re-create all the tables in the schema/database
         self.schema().refresh() if self.schema() else self.database().refresh()
