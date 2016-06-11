@@ -72,6 +72,9 @@ class TestQgsGML : public QObject
     void testTuple();
     void testRenamedFields();
     void testTruncatedResponse();
+    void testPartialFeature();
+    void testThroughOGRGeometry();
+    void testThroughOGRGeometry_urn_EPSG_4326();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -106,9 +109,11 @@ void TestQgsGML::testFromURL()
   tmpFile.flush();
   QCOMPARE( gmlParser.getFeatures( QUrl::fromLocalFile( tmpFile.fileName() ).toString(), &wkbType ), 0 );
   QCOMPARE( wkbType, QGis::WKBPoint );
-  QCOMPARE( gmlParser.featuresMap().size(), 1 );
+  QMap<QgsFeatureId, QgsFeature* > featureMaps = gmlParser.featuresMap();
+  QCOMPARE( featureMaps.size(), 1 );
   QCOMPARE( gmlParser.idsMap().size(), 1 );
   QCOMPARE( gmlParser.crs().authid(), QString( "EPSG:27700" ) );
+  delete featureMaps[ 0 ];
 }
 
 void TestQgsGML::testFromByteArray()
@@ -125,6 +130,7 @@ void TestQgsGML::testFromByteArray()
   QMap<QgsFeatureId, QString > idsMap = gmlParser.idsMap();
   QVERIFY( idsMap.constFind( 0 ) != idsMap.constEnd() );
   QCOMPARE( idsMap[ 0 ], QString( "mytypename.1" ) );
+  delete featureMaps[ 0 ];
 }
 
 void TestQgsGML::testStreamingParser()
@@ -155,6 +161,7 @@ void TestQgsGML::testStreamingParser()
   QCOMPARE( gmlParser.getAndStealReadyFeatures().size(), 0 );
   QCOMPARE( gmlParser.getEPSGCode(), 27700 );
   QCOMPARE( gmlParser.wkbType(), QGis::WKBPoint );
+  delete features[0].first;
 }
 
 void TestQgsGML::testStreamingParserInvalidGML()
@@ -188,6 +195,7 @@ void TestQgsGML::testPointGML2()
   QVERIFY( features[0].first->constGeometry() != nullptr );
   QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBPoint );
   QCOMPARE( features[0].first->constGeometry()->asPoint(), QgsPoint( 10, 20 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testLineStringGML2()
@@ -216,6 +224,7 @@ void TestQgsGML::testLineStringGML2()
   QCOMPARE( line.size(), 2 );
   QCOMPARE( line[0], QgsPoint( 10, 20 ) );
   QCOMPARE( line[1], QgsPoint( 30, 40 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testPolygonGML2()
@@ -253,6 +262,7 @@ void TestQgsGML::testPolygonGML2()
   QCOMPARE( poly.size(), 2 );
   QCOMPARE( poly[0].size(), 5 );
   QCOMPARE( poly[1].size(), 4 );
+  delete features[0].first;
 }
 
 void TestQgsGML::testMultiPointGML2()
@@ -290,6 +300,7 @@ void TestQgsGML::testMultiPointGML2()
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0], QgsPoint( 10, 20 ) );
   QCOMPARE( multi[1], QgsPoint( 30, 40 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testMultiLineStringGML2()
@@ -329,6 +340,7 @@ void TestQgsGML::testMultiLineStringGML2()
   QCOMPARE( multi[0][0], QgsPoint( 10, 20 ) );
   QCOMPARE( multi[0][1], QgsPoint( 30, 40 ) );
   QCOMPARE( multi[1].size(), 3 );
+  delete features[0].first;
 }
 
 void TestQgsGML::testMultiPolygonGML2()
@@ -365,6 +377,7 @@ void TestQgsGML::testMultiPolygonGML2()
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
+  delete features[0].first;
 }
 
 void TestQgsGML::testPointGML3()
@@ -392,6 +405,7 @@ void TestQgsGML::testPointGML3()
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBPoint );
   QCOMPARE( features[0].first->constGeometry()->asPoint(), QgsPoint( 10, 20 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testPointGML3_EPSG_4326()
@@ -419,6 +433,7 @@ void TestQgsGML::testPointGML3_EPSG_4326()
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBPoint );
   QCOMPARE( features[0].first->constGeometry()->asPoint(), QgsPoint( 2, 49 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testPointGML3_urn_EPSG_4326()
@@ -446,6 +461,7 @@ void TestQgsGML::testPointGML3_urn_EPSG_4326()
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBPoint );
   QCOMPARE( features[0].first->constGeometry()->asPoint(), QgsPoint( 2, 49 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG()
@@ -473,6 +489,7 @@ void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG()
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBPoint );
   QCOMPARE( features[0].first->constGeometry()->asPoint(), QgsPoint( 2, 49 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG_invert()
@@ -500,6 +517,7 @@ void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG_invert()
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBPoint );
   QCOMPARE( features[0].first->constGeometry()->asPoint(), QgsPoint( 2, 49 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testLineStringGML3()
@@ -528,6 +546,7 @@ void TestQgsGML::testLineStringGML3()
   QCOMPARE( line.size(), 2 );
   QCOMPARE( line[0], QgsPoint( 10, 20 ) );
   QCOMPARE( line[1], QgsPoint( 30, 40 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testLineStringGML3_LineStringSegment()
@@ -554,6 +573,7 @@ void TestQgsGML::testLineStringGML3_LineStringSegment()
   QCOMPARE( line.size(), 2 );
   QCOMPARE( line[0], QgsPoint( 10, 20 ) );
   QCOMPARE( line[1], QgsPoint( 30, 40 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testPolygonGML3()
@@ -591,6 +611,7 @@ void TestQgsGML::testPolygonGML3()
   QCOMPARE( poly.size(), 2 );
   QCOMPARE( poly[0].size(), 5 );
   QCOMPARE( poly[1].size(), 4 );
+  delete features[0].first;
 }
 
 void TestQgsGML::testPolygonGML3_srsDimension_on_Polygon()
@@ -622,6 +643,7 @@ void TestQgsGML::testPolygonGML3_srsDimension_on_Polygon()
   QgsPolygon poly = features[0].first->constGeometry()->asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
+  delete features[0].first;
 }
 
 void TestQgsGML::testMultiLineStringGML3()
@@ -661,6 +683,7 @@ void TestQgsGML::testMultiLineStringGML3()
   QCOMPARE( multi[0][0], QgsPoint( 10, 20 ) );
   QCOMPARE( multi[0][1], QgsPoint( 30, 40 ) );
   QCOMPARE( multi[1].size(), 3 );
+  delete features[0].first;
 }
 
 void TestQgsGML::testMultiPolygonGML3()
@@ -706,6 +729,7 @@ void TestQgsGML::testMultiPolygonGML3()
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
+  delete features[0].first;
 }
 
 void TestQgsGML::testPointGML3_2()
@@ -734,6 +758,7 @@ void TestQgsGML::testPointGML3_2()
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBPoint );
   QCOMPARE( features[0].first->constGeometry()->asPoint(), QgsPoint( 10, 20 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testBoundingBoxGML2()
@@ -761,6 +786,7 @@ void TestQgsGML::testBoundingBoxGML2()
   QgsPolygon poly = features[0].first->constGeometry()->asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
+  delete features[0].first;
 }
 
 void TestQgsGML::testBoundingBoxGML3()
@@ -789,6 +815,7 @@ void TestQgsGML::testBoundingBoxGML3()
   QgsPolygon poly = features[0].first->constGeometry()->asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
+  delete features[0].first;
 }
 
 void TestQgsGML::testNumberMatchedNumberReturned()
@@ -930,6 +957,7 @@ void TestQgsGML::testTuple()
   QCOMPARE( features[0].second, QString( "firstlayer.1|secondlayer.1" ) );
   QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBPoint );
   QCOMPARE( features[0].first->constGeometry()->asPoint(), QgsPoint( 10, 20 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testRenamedFields()
@@ -969,6 +997,7 @@ void TestQgsGML::testRenamedFields()
   QCOMPARE( features[0].second, QString( "mylayer.1" ) );
   QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBPoint );
   QCOMPARE( features[0].first->constGeometry()->asPoint(), QgsPoint( 10, 20 ) );
+  delete features[0].first;
 }
 
 void TestQgsGML::testTruncatedResponse()
@@ -980,6 +1009,97 @@ void TestQgsGML::testTruncatedResponse()
                                    "<wfs:truncatedResponse/>"
                                    "</wfs:FeatureCollection>" ), true ), true );
   QCOMPARE( gmlParser.isTruncatedResponse(), true );
+}
+
+void TestQgsGML::testPartialFeature()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:mytypename fid='mytypename.1'>"
+                                   "<myns:mygeom>"
+                                   "<gml:Point srsName='EPSG:27700'>"
+                                   "<gml:coordinates>10,20</gml:coordinates>"
+                                             ), true ), false );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 0 );
+}
+
+void TestQgsGML::testThroughOGRGeometry()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:mytypename fid='mytypename.1'>"
+                                   "<myns:mygeom>"
+                                   "<gml:CompositeSurface srsName='EPSG:27700'><gml:surfaceMember>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>0 0 0 10 10 10 10 0 0 0</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember></gml:CompositeSurface>"
+                                   "</myns:mygeom>"
+                                   "</myns:mytypename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QGis::WKBPolygon );
+  QCOMPARE( gmlParser.getEPSGCode(), 27700 );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->constGeometry() != nullptr );
+  QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBMultiPolygon );
+  QgsMultiPolygon multi = features[0].first->constGeometry()->asMultiPolygon();
+  QCOMPARE( multi.size(), 1 );
+  QCOMPARE( multi[0].size(), 1 );
+  QCOMPARE( multi[0][0].size(), 5 );
+  delete features[0].first;
+}
+
+void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:mytypename fid='mytypename.1'>"
+                                   "<myns:mygeom>"
+                                   "<gml:CompositeSurface srsName='urn:ogc:def:crs:EPSG::4326'><gml:surfaceMember>"
+                                   "<gml:Polygon srsName='urn:ogc:def:crs:EPSG::4326'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>49 2 49 3 59 3 49 2</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember></gml:CompositeSurface>"
+                                   "</myns:mygeom>"
+                                   "</myns:mytypename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QGis::WKBPolygon );
+  QCOMPARE( gmlParser.getEPSGCode(), 4326 );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->constGeometry() != nullptr );
+  QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBMultiPolygon );
+  QgsMultiPolygon multi = features[0].first->constGeometry()->asMultiPolygon();
+  QCOMPARE( multi.size(), 1 );
+  QCOMPARE( multi[0].size(), 1 );
+  QCOMPARE( multi[0][0].size(), 4 );
+  QgsDebugMsg( multi[0][0][0].toString() );
+  QCOMPARE( multi[0][0][0], QgsPoint( 2, 49 ) );
+  delete features[0].first;
 }
 
 QTEST_MAIN( TestQgsGML )
