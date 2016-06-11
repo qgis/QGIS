@@ -225,7 +225,7 @@ void QgsMapStylingWidget::redo()
 
 void QgsMapStylingWidget::updateCurrentWidgetLayer()
 {
-  QgsDebugMsg( "UPDATE!!!" );
+  QgsDebugMsgLevel( "UPDATE!!!", 4 );
   mBlockAutoApply = true;
 
   QgsMapLayer* layer = mCurrentLayer;
@@ -250,10 +250,6 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
   else if ( QgsRendererRasterPropertiesWidget* widget = qobject_cast<QgsRendererRasterPropertiesWidget*>( current ) )
   {
     mRasterStyleWidget = widget;
-  }
-  else
-  {
-    current->deleteLater();
   }
 
   // Create the user page widget if we are on one of those pages
@@ -323,7 +319,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
         mWidgetArea->setWidget( transwidget );
         break;
       }
-      case 2: // Transparency
+      case 2: // Histogram
       {
         if ( mRasterStyleWidget )
         {
