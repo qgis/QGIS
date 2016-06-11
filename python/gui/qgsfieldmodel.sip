@@ -46,6 +46,15 @@ class QgsFieldModel : QAbstractItemModel
 
     //! returns the currently used layer
     QgsVectorLayer* layer();
+    /**
+     * The currently applied filters that define which fields are shown.
+     */
+    Filters filters() const;
+
+    /**
+     * The currently applied filters that define which fields are shown.
+     */
+    void setFilters( const Filters& filter );
 
   public slots:
     //! set the layer of whch fields are displayed

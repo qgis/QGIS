@@ -94,11 +94,35 @@ void QgsFieldModel::layerDeleted()
   updateModel();
 }
 
+QgsFieldModel::Filters QgsFieldModel::filters() const
+{
+  return mFilters;
+}
+
+void QgsFieldModel::setFilters( const Filters& filters )
+{
+  if ( filters == mFilters )
+    return;
+
+  mFilters = filters;
+
+  updateModel();
+}
+
 void QgsFieldModel::updateModel()
 {
   if ( mLayer )
   {
-    QgsFields newFields = mLayer->fields();
+    QgsFields fields = mLayer->fields();
+    QgsFields newFields;
+    for ( int i = 0; i < fields.count(); ++i )
+    {
+      if ( fields.fieldOrigin( i ) != QgsFields::OriginExpression && fields.fieldOrigin( i ) != QgsFields::OriginJoin )
+      {
+        newFields.append( fields.at( i ), fields.fieldOrigin( i ), fields.fieldOriginIndex( i ) );
+      }
+    }
+
     if ( mFields.toList() != newFields.toList() )
     {
       // Try to handle two special cases: addition of a new field and removal of a field.
