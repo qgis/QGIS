@@ -532,6 +532,10 @@ void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
     cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
   }
 
+  if ( cboCategorizedColorRamp->currentText() == tr( "Random colors" ) )
+    mButtonEditRamp->setEnabled( false );
+  else
+    mButtonEditRamp->setEnabled( true );
 }
 
 QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2Widget::renderer()
