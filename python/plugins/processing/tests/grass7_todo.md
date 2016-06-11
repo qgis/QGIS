@@ -188,10 +188,7 @@
 * i.pca
 * i.rectify
 * i.tasscap
---* i.topo.coor.ill
 * i.topo.corr
-
-
 
 ## Vector algorithms
 
