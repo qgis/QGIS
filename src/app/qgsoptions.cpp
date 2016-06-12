@@ -315,6 +315,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   // cache settings
   mCacheDirectory->setText( mSettings->value( "cache/directory" ).toString() );
+  mCacheDirectory->setPlaceholderText( QDir( QgsApplication::qgisSettingsDirPath() ).canonicalPath() + QDir::separator() + "cache" );
   mCacheSize->setMinimum( 0 );
   mCacheSize->setMaximum( std::numeric_limits<int>::max() );
   mCacheSize->setSingleStep( 1024 );
