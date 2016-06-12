@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsconfig.h"
+#include "qgsnetworkaccessmanager.h"
 #include <qmainwindow.h>
 
 #include "qgseditorwidgetregistry.h"
@@ -112,6 +113,8 @@ int main( int argc, char ** argv )
       qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), myTranslationCode ).toLocal8Bit().constData() );
     }
   }
+
+  QgsNetworkAccessManager::instance();
 
   QgsBrowser w;
 
