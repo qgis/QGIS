@@ -482,9 +482,10 @@ QModelIndex QgsAttributeTableFilterModel::mapToSource( const QModelIndex& proxyI
 
   int sourceColumn = mapColumnToSource( proxyIndex.column() );
 
-  // For the action column there is no matching column in the source model: invalid
+  // For the action column there is no matching column in the source model, just return the first one
+  // so we are still able to query for the feature id, the feature...
   if ( sourceColumn == -1 )
-    return QModelIndex();
+    sourceColumn = 0;
 
   return QSortFilterProxyModel::mapToSource( index( proxyIndex.row(), sourceColumn, proxyIndex.parent() ) );
 }
