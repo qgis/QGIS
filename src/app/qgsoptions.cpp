@@ -314,16 +314,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   }
 
   // cache settings
-  QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( QgsNetworkAccessManager::instance()->cache() );
-  if ( cache )
-  {
-    mCacheDirectory->setText( cache->cacheDirectory() );
-    mCacheSize->setMinimum( 0 );
-    mCacheSize->setMaximum( std::numeric_limits<int>::max() );
-    mCacheSize->setSingleStep( 1024 );
-    QgsDebugMsg( QString( "set cacheSize: %1" ).arg( cache->maximumCacheSize() ) );
-    mCacheSize->setValue( cache->maximumCacheSize() / 1024 );
-  }
+  mCacheDirectory->setText( mSettings->value( "cache/directory" ).toString() );
+  mCacheSize->setMinimum( 0 );
+  mCacheSize->setMaximum( std::numeric_limits<int>::max() );
+  mCacheSize->setSingleStep( 1024 );
+  mCacheSize->setValue( mSettings->value( "cache/size" ).toInt() / 1024 );
 
   //wms search server
   leWmsSearch->setText( mSettings->value( "/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );

@@ -61,7 +61,7 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     void setupDefaultProxyAndCache();
 
     //! return whether the system proxy should be used
-    bool useSystemProxy();
+    bool useSystemProxy() const;
 
   public slots:
     /** Send GET request, calls get().

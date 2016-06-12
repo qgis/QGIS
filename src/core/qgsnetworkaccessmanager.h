@@ -83,7 +83,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void setupDefaultProxyAndCache();
 
     //! return whether the system proxy should be used
-    bool useSystemProxy() { return mUseSystemProxy; }
+    bool useSystemProxy() const { return mUseSystemProxy; }
 
   public slots:
     /** Send GET request, calls get().
