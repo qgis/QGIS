@@ -306,9 +306,8 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   // This part of the code parses the uri transmitted to the ogr provider to
   // get the options the client wants us to apply
 
-  // If there is no & in the uri, then the uri is just the filename. The loaded
+  // If there is no | in the uri, then the uri is just the filename. The loaded
   // layer will be layer 0.
-  //this is not true for geojson
 
   if ( !uri.contains( '|', Qt::CaseSensitive ) )
   {
