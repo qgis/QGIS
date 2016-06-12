@@ -134,7 +134,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def testReferencedColumnsSet(self):
         success = QgsExpression.registerFunction(self.referenced_columns_set)
         exp = QgsExpression('referenced_columns_set()')
-        self.assertEqual(exp.referencedColumns(), ['a', 'b'])
+        self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
 
     def testCantOverrideBuiltinsWithUnregister(self):
         success = QgsExpression.unregisterFunction("sqrt")
