@@ -73,7 +73,6 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource* source,
     , mNextCidx( 0 )
     , mNextLid( 1 )
 {
-  QgsDebugMsg( "entered" );
 
   // WARNING: the iterater cannot use mutex lock for its whole life, because QgsVectorLayerFeatureIterator is opening
   // multiple iterators if features are edited -> lock only critical sections
@@ -584,7 +583,6 @@ bool QgsGrassFeatureIterator::rewind()
 
 bool QgsGrassFeatureIterator::close()
 {
-  QgsDebugMsg( "entered" );
   if ( mClosed )
   {
     QgsDebugMsg( "already closed" );

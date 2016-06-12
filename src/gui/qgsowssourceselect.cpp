@@ -139,7 +139,6 @@ void QgsOWSSourceSelect::clearFormats()
 
 void QgsOWSSourceSelect::populateFormats()
 {
-  QgsDebugMsg( "entered" );
 
   // A server may offer more similar formats, which are mapped
   // to the same GDAL format, e.g. GeoTIFF and TIFF
@@ -225,7 +224,6 @@ void QgsOWSSourceSelect::populateFormats()
 
 void QgsOWSSourceSelect::populateTimes()
 {
-  QgsDebugMsg( "entered" );
   mTimeComboBox->clear();
   mTimeComboBox->insertItems( 0, selectedLayersTimes() );
   mTimeComboBox->setEnabled( !selectedLayersTimes().isEmpty() );
@@ -345,7 +343,6 @@ void QgsOWSSourceSelect::populateLayerList()
 
 void QgsOWSSourceSelect::on_mConnectButton_clicked()
 {
-  QgsDebugMsg( "entered" );
 
   mLayersTreeWidget->clear();
   clearFormats();
@@ -367,7 +364,6 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
 
 void QgsOWSSourceSelect::addClicked()
 {
-  QgsDebugMsg( "entered" );
 }
 
 void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )

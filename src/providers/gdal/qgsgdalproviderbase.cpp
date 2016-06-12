@@ -38,7 +38,6 @@ QgsGdalProviderBase::QgsGdalProviderBase()
  */
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int theBandNumber )const
 {
-  QgsDebugMsg( "entered." );
   QList<QgsColorRampShader::ColorRampItem> ct;
 
   //Invalid band number, segfault prevention

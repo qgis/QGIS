@@ -386,7 +386,6 @@ void QgsMssqlSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QSt
 
 void QgsMssqlSourceSelect::setLayerType( const QgsMssqlLayerProperty& layerProperty )
 {
-  QgsDebugMsg( "entering." );
   mTableModel.setGeometryTypesForTable( layerProperty );
 }
 

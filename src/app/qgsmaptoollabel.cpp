@@ -620,7 +620,6 @@ bool QgsMapToolLabel::layerCanPin( QgsVectorLayer* vlayer, int& xCol, int& yCol 
 
 bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer* vlayer, int& showCol ) const
 {
-  //QgsDebugMsg( "entered" );
   if ( !vlayer || !vlayer->isEditable() )
   {
     return false;

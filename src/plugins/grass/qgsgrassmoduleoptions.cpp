@@ -646,7 +646,6 @@ bool QgsGrassModuleStandardOptions::hasOutput( int type )
 
 QStringList QgsGrassModuleStandardOptions::ready()
 {
-  QgsDebugMsg( "entered." );
   QStringList list;
 
   for ( int i = 0; i < mParams.size(); i++ )

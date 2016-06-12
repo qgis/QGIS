@@ -483,7 +483,6 @@ void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
 
 void QgsRasterLayerProperties::populateTransparencyTable( QgsRasterRenderer* renderer )
 {
-  QgsDebugMsg( "entering." );
   if ( !mRasterLayer )
   {
     return;

@@ -448,7 +448,6 @@ void QgsPgSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QStrin
 
 void QgsPgSourceSelect::setLayerType( const QgsPostgresLayerProperty& layerProperty )
 {
-  QgsDebugMsg( "entering." );
   mTableModel.addTableEntry( layerProperty );
 }
 

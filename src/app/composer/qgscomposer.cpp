@@ -473,7 +473,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mWindowAction = new QAction( windowTitle(), this );
   connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
 
-  QgsDebugMsg( "entered." );
 
   setMouseTracking( true );
   mViewFrame->setMouseTracking( true );

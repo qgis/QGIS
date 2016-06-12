@@ -226,7 +226,6 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
 
 QgsGdalProvider::~QgsGdalProvider()
 {
-  QgsDebugMsg( "entering." );
   if ( mGdalBaseDataset )
   {
     GDALDereferenceDataset( mGdalBaseDataset );
@@ -872,7 +871,6 @@ void QgsGdalProvider::computeMinMax( int theBandNo ) const
  */
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int theBandNumber )const
 {
-  QgsDebugMsg( "entered." );
   return QgsGdalProviderBase::colorTable( mGdalDataset, theBandNumber );
 }
 

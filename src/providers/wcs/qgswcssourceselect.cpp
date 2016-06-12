@@ -47,7 +47,6 @@ QgsWCSSourceSelect::~QgsWCSSourceSelect()
 
 void QgsWCSSourceSelect::populateLayerList()
 {
-  QgsDebugMsg( "entered" );
 
   mLayersTreeWidget->clear();
 
@@ -115,7 +114,6 @@ QString QgsWCSSourceSelect::selectedIdentifier()
 
 void QgsWCSSourceSelect::addClicked()
 {
-  QgsDebugMsg( "entered" );
   QgsDataSourceURI uri = mUri;
 
   QString identifier = selectedIdentifier();
@@ -155,7 +153,6 @@ void QgsWCSSourceSelect::addClicked()
 
 void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 {
-  QgsDebugMsg( "entered" );
 
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return; }
@@ -175,7 +172,6 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 
 void QgsWCSSourceSelect::updateButtons()
 {
-  QgsDebugMsg( "entered" );
 
   if ( mLayersTreeWidget->selectedItems().isEmpty() )
   {
@@ -194,7 +190,6 @@ void QgsWCSSourceSelect::updateButtons()
 
 QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 {
-  QgsDebugMsg( "entered" );
   QList<SupportedFormat> formats;
 
   QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
@@ -218,7 +213,6 @@ QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 
 QStringList QgsWCSSourceSelect::selectedLayersFormats()
 {
-  QgsDebugMsg( "entered" );
 
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }
@@ -232,7 +226,6 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
 
 QStringList QgsWCSSourceSelect::selectedLayersCRSs()
 {
-  QgsDebugMsg( "entered" );
 
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }
@@ -245,7 +238,6 @@ QStringList QgsWCSSourceSelect::selectedLayersCRSs()
 
 QStringList QgsWCSSourceSelect::selectedLayersTimes()
 {
-  QgsDebugMsg( "entered" );
 
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }

@@ -67,7 +67,6 @@ void QgsGrassImportProgress::setProcess( QProcess *process )
 
 void QgsGrassImportProgress::onReadyReadStandardError()
 {
-  QgsDebugMsg( "entered" );
   if ( mProcess )
   {
     // TODO: parse better progress output
@@ -161,7 +160,6 @@ QString QgsGrassImport::error()
 
 void QgsGrassImport::importInThread()
 {
-  QgsDebugMsg( "entered" );
   mFutureWatcher = new QFutureWatcher<bool>( this );
   connect( mFutureWatcher, SIGNAL( finished() ), SLOT( onFinished() ) );
   mFutureWatcher->setFuture( QtConcurrent::run( run, this ) );
@@ -169,14 +167,12 @@ void QgsGrassImport::importInThread()
 
 bool QgsGrassImport::run( QgsGrassImport *imp )
 {
-  QgsDebugMsg( "entered" );
   imp->import();
   return true;
 }
 
 void QgsGrassImport::onFinished()
 {
-  QgsDebugMsg( "entered" );
   emit finished( this );
 }
 
@@ -194,7 +190,6 @@ bool QgsGrassImport::isCanceled() const
 
 void QgsGrassImport::cancel()
 {
-  QgsDebugMsg( "entered" );
   mCanceled = true;
 }
 
@@ -221,7 +216,6 @@ QgsGrassRasterImport::~QgsGrassRasterImport()
 
 bool QgsGrassRasterImport::import()
 {
-  QgsDebugMsg( "entered" );
   if ( !mPipe )
   {
     setError( "Pipe is null." );
@@ -556,7 +550,6 @@ QgsGrassVectorImport::~QgsGrassVectorImport()
 
 bool QgsGrassVectorImport::import()
 {
-  QgsDebugMsg( "entered" );
 
   if ( !mProvider )
   {
@@ -770,7 +763,6 @@ QgsGrassCopy::~QgsGrassCopy()
 
 bool QgsGrassCopy::import()
 {
-  QgsDebugMsg( "entered" );
 
   try
   {
@@ -804,7 +796,6 @@ QgsGrassExternal::~QgsGrassExternal()
 
 bool QgsGrassExternal::import()
 {
-  QgsDebugMsg( "entered" );
 
   try
   {

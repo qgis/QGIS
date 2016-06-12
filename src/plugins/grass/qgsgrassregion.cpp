@@ -37,7 +37,6 @@
 QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
-  QgsDebugMsg( "entered" );
   mDraw = false;
   mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
   mSrcRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
@@ -57,7 +56,6 @@ QgsGrassRegionEdit::~QgsGrassRegionEdit()
 //! mouse pressed in map canvas
 void QgsGrassRegionEdit::canvasPressEvent( QgsMapMouseEvent * event )
 {
-  QgsDebugMsg( "entered." );
   mDraw = true;
   mRubberBand->reset( QGis::Polygon );
   mSrcRubberBand->reset( QGis::Polygon );
@@ -289,7 +287,6 @@ void QgsGrassRegion::refreshGui()
 
   mUpdatingGui = true;
 
-  QgsDebugMsg( "entered." );
 
   mNorth->setText( formatExtent( mWindow.north ) );
   mSouth->setText( formatExtent( mWindow.south ) );
@@ -431,7 +428,6 @@ void QgsGrassRegion::colsChanged()
 
 void QgsGrassRegion::adjust()
 {
-  QgsDebugMsg( "entered" );
   mButtonBox->button( QDialogButtonBox::Apply )->setDisabled( false );
   int rc = 0;
   if ( mRowsColsRadio->isChecked() )
@@ -451,7 +447,6 @@ void QgsGrassRegion::adjust()
 
 void QgsGrassRegion::radioChanged()
 {
-  QgsDebugMsg( "entered." );
 
   bool res = !mRowsColsRadio->isChecked();
 
@@ -468,7 +463,6 @@ void QgsGrassRegion::radioChanged()
 
 void QgsGrassRegion::onCaptureFinished()
 {
-  QgsDebugMsg( "entered." );
   if ( !mRegionEdit )
   {
     return;
@@ -486,7 +480,6 @@ void QgsGrassRegion::onCaptureFinished()
 
 void QgsGrassRegion::canvasMapToolSet( QgsMapTool *tool )
 {
-  QgsDebugMsg( "entered" );
   mDrawButton->setChecked( tool == mRegionEdit );
 }
 
@@ -504,7 +497,6 @@ void QgsGrassRegion::displayRegion()
 
 void QgsGrassRegion::on_mDrawButton_clicked()
 {
-  QgsDebugMsg( "entered" );
   mCanvas->setMapTool( mRegionEdit );
 }
 

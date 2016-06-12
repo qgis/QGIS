@@ -1167,7 +1167,6 @@ QString QgsWcsCapabilities::lastErrorFormat()
 
 bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
 {
-  QgsDebugMsg( "entered" );
   if ( mUri.hasParam( "authcfg" ) && !mUri.param( "authcfg" ).isEmpty() )
   {
     return QgsAuthManager::instance()->updateNetworkRequest( request, mUri.param( "authcfg" ) );

@@ -175,7 +175,6 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
 
 QgsVectorLayer::~QgsVectorLayer()
 {
-  QgsDebugMsg( "entered." );
 
   emit layerDeleted();
 

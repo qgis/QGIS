@@ -111,7 +111,6 @@ QString QgsNewNameDialog::highlightText( const QString& text )
 
 void QgsNewNameDialog::nameChanged()
 {
-  QgsDebugMsg( "entered" );
 
   QString namesString = tr( "Full names" ) + ": ";
   if ( !mExtensions.isEmpty() )

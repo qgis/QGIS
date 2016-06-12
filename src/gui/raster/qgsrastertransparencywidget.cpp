@@ -494,7 +494,6 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPoint & canvasPoint )
 
 void QgsRasterTransparencyWidget::populateTransparencyTable( QgsRasterRenderer *renderer )
 {
-  QgsDebugMsg( "entering." );
   if ( !mRasterLayer )
   {
     return;

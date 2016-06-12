@@ -204,7 +204,6 @@ void QgsProjectFileTransform::transform081to090()
 
 void QgsProjectFileTransform::transform091to0100()
 {
-  QgsDebugMsg( "entering" );
   if ( ! mDom.isNull() )
   {
     // Insert transforms here!

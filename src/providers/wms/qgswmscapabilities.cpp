@@ -216,7 +216,6 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray& response, const QgsWms
 
 bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty )
 {
-  QgsDebugMsg( "entering." );
 
 #ifdef QGISDEBUG
   QFile file( QDir::tempPath() + "/qgis-wmsprovider-capabilities.xml" );
@@ -312,7 +311,6 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
 
 void QgsWmsCapabilities::parseService( QDomElement const & e, QgsWmsServiceProperty& serviceProperty )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -377,7 +375,6 @@ void QgsWmsCapabilities::parseService( QDomElement const & e, QgsWmsServicePrope
 
 void QgsWmsCapabilities::parseOnlineResource( QDomElement const & e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute )
 {
-  QgsDebugMsg( "entering." );
 
   onlineResourceAttribute.xlinkHref = QUrl::fromEncoded( e.attribute( "xlink:href" ).toUtf8() ).toString();
 
@@ -387,7 +384,6 @@ void QgsWmsCapabilities::parseOnlineResource( QDomElement const & e, QgsWmsOnlin
 
 void QgsWmsCapabilities::parseKeywordList( QDomElement  const & e, QStringList& keywordListProperty )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -415,7 +411,6 @@ void QgsWmsCapabilities::parseKeywordList( QDomElement  const & e, QStringList& 
 
 void QgsWmsCapabilities::parseContactInformation( QDomElement const & e, QgsWmsContactInformationProperty& contactInformationProperty )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -482,7 +477,6 @@ void QgsWmsCapabilities::parseContactInformation( QDomElement const & e, QgsWmsC
 
 void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const & e, QgsWmsContactPersonPrimaryProperty& contactPersonPrimaryProperty )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -512,7 +506,6 @@ void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const & e, QgsWm
 
 void QgsWmsCapabilities::parseContactAddress( QDomElement const & e, QgsWmsContactAddressProperty& contactAddressProperty )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -558,7 +551,6 @@ void QgsWmsCapabilities::parseContactAddress( QDomElement const & e, QgsWmsConta
 
 void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty )
 {
-  QgsDebugMsg( "entering." );
 
   for ( QDomNode n1 = e.firstChild(); !n1.isNull(); n1 = n1.nextSibling() )
   {
@@ -651,7 +643,6 @@ void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilit
 
 void QgsWmsCapabilities::parseRequest( QDomElement const & e, QgsWmsRequestProperty& requestProperty )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -691,7 +682,6 @@ void QgsWmsCapabilities::parseRequest( QDomElement const & e, QgsWmsRequestPrope
 
 void QgsWmsCapabilities::parseLegendUrl( QDomElement const & e, QgsWmsLegendUrlProperty& legendUrlProperty )
 {
-  QgsDebugMsg( "entering." );
 
   legendUrlProperty.width  = e.attribute( "width" ).toUInt();
   legendUrlProperty.height = e.attribute( "height" ).toUInt();
@@ -724,7 +714,6 @@ void QgsWmsCapabilities::parseLegendUrl( QDomElement const & e, QgsWmsLegendUrlP
 void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty,
                                      QgsWmsLayerProperty *parentProperty )
 {
-  //QgsDebugMsg( "entering." );
 
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
 #if 0
@@ -990,7 +979,6 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
 
 void QgsWmsCapabilities::parseStyle( QDomElement const & e, QgsWmsStyleProperty& styleProperty )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -1037,7 +1025,6 @@ void QgsWmsCapabilities::parseStyle( QDomElement const & e, QgsWmsStyleProperty&
 
 void QgsWmsCapabilities::parseOperationType( QDomElement const & e, QgsWmsOperationType& operationType )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -1071,7 +1058,6 @@ void QgsWmsCapabilities::parseOperationType( QDomElement const & e, QgsWmsOperat
 
 void QgsWmsCapabilities::parseDcpType( QDomElement const & e, QgsWmsDcpTypeProperty& dcpType )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -1093,7 +1079,6 @@ void QgsWmsCapabilities::parseDcpType( QDomElement const & e, QgsWmsDcpTypePrope
 
 void QgsWmsCapabilities::parseHttp( QDomElement const & e, QgsWmsHttpProperty& httpProperty )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -1124,7 +1109,6 @@ void QgsWmsCapabilities::parseHttp( QDomElement const & e, QgsWmsHttpProperty& h
 
 void QgsWmsCapabilities::parseGet( QDomElement const & e, QgsWmsGetProperty& getProperty )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -1150,7 +1134,6 @@ void QgsWmsCapabilities::parseGet( QDomElement const & e, QgsWmsGetProperty& get
 
 void QgsWmsCapabilities::parsePost( QDomElement const & e, QgsWmsPostProperty& postProperty )
 {
-  QgsDebugMsg( "entering." );
 
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -1975,7 +1958,6 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyProgress( qint64 bytesReceived
 
 void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 {
-  QgsDebugMsg( "entering." );
   if ( !mIsAborted && mCapabilitiesReply )
   {
     if ( mCapabilitiesReply->error() == QNetworkReply::NoError )

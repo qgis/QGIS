@@ -2494,7 +2494,6 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry *geom, QStringList 
 
 bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
-  QgsDebugMsg( "entering." );
 
   if ( mIsQuery || mGeometryColumn.isNull() )
     return false;
@@ -2681,7 +2680,6 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
 bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_map,
     const QgsGeometryMap &geometry_map )
 {
-  QgsDebugMsg( "entering." );
   Q_ASSERT( mSpatialColType != sctTopoGeometry );
 
   bool returnvalue = true;

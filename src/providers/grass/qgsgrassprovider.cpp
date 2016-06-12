@@ -279,7 +279,6 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
 
 QgsGrassProvider::~QgsGrassProvider()
 {
-  QgsDebugMsg( "entered" );
   if ( mLayer )
   {
     mLayer->close();
@@ -314,7 +313,6 @@ int QgsGrassProvider::capabilities() const
 
 bool QgsGrassProvider::openLayer()
 {
-  QgsDebugMsg( "entered" );
   // the map may be invalid (e.g. wrong uri or open failed)
   QgsGrassVectorMap *vectorMap = QgsGrassVectorMapStore::instance()->openMap( mGrassObject );
   if ( !vectorMap ) // should not happen
@@ -382,7 +380,6 @@ void QgsGrassProvider::loadMapInfo()
 
 void QgsGrassProvider::update()
 {
-  QgsDebugMsg( "entered" );
 
   mValid = false;
 
@@ -563,7 +560,6 @@ int QgsGrassProvider::grassLayerType( QString name )
 
 void QgsGrassProvider::onDataChanged()
 {
-  QgsDebugMsg( "entered" );
   update();
   emit dataChanged();
 }
@@ -572,7 +568,6 @@ void QgsGrassProvider::onDataChanged()
 
 bool QgsGrassProvider::isGrassEditable( void )
 {
-  QgsDebugMsg( "entered" );
 
   if ( !isValid() )
     return false;
@@ -594,7 +589,6 @@ bool QgsGrassProvider::isEdited( void )
 
 void QgsGrassProvider::freeze()
 {
-  QgsDebugMsg( "entered" );
 
   if ( !isValid() )
   {
@@ -613,7 +607,6 @@ void QgsGrassProvider::freeze()
 
 void QgsGrassProvider::thaw()
 {
-  QgsDebugMsg( "entered" );
 
   if ( !openLayer() )
   {
@@ -628,7 +621,6 @@ void QgsGrassProvider::thaw()
 
 bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
 {
-  QgsDebugMsg( "entered" );
 
   if ( !isValid() )
   {
@@ -685,7 +677,6 @@ void QgsGrassProvider::ensureUpdated()
 
 int QgsGrassProvider::numLines( void )
 {
-  QgsDebugMsg( "entered" );
 
   //return ( Vect_get_num_lines( map() ) );
   return mLayer->map()->numLines();
@@ -693,7 +684,6 @@ int QgsGrassProvider::numLines( void )
 
 int QgsGrassProvider::numNodes( void )
 {
-  QgsDebugMsg( "entered" );
 
   return ( Vect_get_num_nodes( map() ) );
 }
@@ -818,7 +808,6 @@ int QgsGrassProvider::rewriteLine( int oldLid, int type, struct line_pnts *Point
 
 int QgsGrassProvider::deleteLine( int line )
 {
-  QgsDebugMsg( "entered" );
 
   if ( !isEdited() )
     return -1;
@@ -1047,14 +1036,12 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
 
 int QgsGrassProvider::numDbLinks( void )
 {
-  QgsDebugMsg( "entered" );
 
   return ( Vect_get_num_dblinks( map() ) );
 }
 
 int QgsGrassProvider::dbLinkField( int link )
 {
-  QgsDebugMsg( "entered" );
 
   struct  field_info *fi = Vect_get_dblink( map(), link );
 
@@ -1932,7 +1919,6 @@ void QgsGrassProvider::onAttributeDeleted( int idx )
 
 void QgsGrassProvider::setAddedFeaturesSymbol()
 {
-  QgsDebugMsg( "entered" );
   if ( !mEditBuffer )
   {
     return;
@@ -2006,18 +1992,15 @@ bool QgsGrassProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
 void QgsGrassProvider::onBeforeCommitChanges()
 {
-  QgsDebugMsg( "entered" );
   mLayer->map()->clearUndoCommands();
 }
 
 void QgsGrassProvider::onBeforeRollBack()
 {
-  QgsDebugMsg( "entered" );
 }
 
 void QgsGrassProvider::onEditingStopped()
 {
-  QgsDebugMsg( "entered" );
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
   closeEdit( false, vectorLayer );
 }

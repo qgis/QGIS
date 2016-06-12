@@ -1983,7 +1983,6 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry
 
 bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
-  QgsDebugMsg( "entering." );
 
   if ( mIsQuery || mGeometryColumn.isNull() || !mConnection )
     return false;

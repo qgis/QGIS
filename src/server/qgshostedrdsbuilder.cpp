@@ -42,7 +42,6 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
     bool allowCaching ) const
 {
   Q_UNUSED( filesToRemove );
-  QgsDebugMsg( "entering." );
 
   if ( elem.isNull() )
   {

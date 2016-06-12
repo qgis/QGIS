@@ -916,7 +916,6 @@ void QgsWcsProvider::clearCache()
 
 QList<QgsColorRampShader::ColorRampItem> QgsWcsProvider::colorTable( int theBandNumber )const
 {
-  QgsDebugMsg( "entered." );
   return mColorTables.value( theBandNumber - 1 );
 }
 
@@ -929,7 +928,6 @@ int QgsWcsProvider::colorInterpretation( int bandNo ) const
 
 bool QgsWcsProvider::parseServiceExceptionReportDom( QByteArray const & xml, const QString& wcsVersion, QString& errorTitle, QString& errorText )
 {
-  QgsDebugMsg( "entering." );
 
 #ifdef QGISDEBUG
   //test the content of the QByteArray
@@ -984,7 +982,6 @@ bool QgsWcsProvider::parseServiceExceptionReportDom( QByteArray const & xml, con
 
 void QgsWcsProvider::parseServiceException( QDomElement const & e, const QString& wcsVersion, QString& errorTitle, QString& errorText )
 {
-  QgsDebugMsg( "entering." );
 
   errorTitle = tr( "Service Exception" );
 
@@ -1078,7 +1075,6 @@ QString QgsWcsProvider::wcsVersion()
 
 bool QgsWcsProvider::calculateExtent()
 {
-  QgsDebugMsg( "entered." );
 
   // Make sure we know what extents are available
   if ( !mCoverageSummary.described )

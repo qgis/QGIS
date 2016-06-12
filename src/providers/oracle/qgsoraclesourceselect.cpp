@@ -432,7 +432,6 @@ void QgsOracleSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QS
 
 void QgsOracleSourceSelect::setLayerType( QgsOracleLayerProperty layerProperty )
 {
-  QgsDebugMsg( "entering." );
   mTableModel.addTableEntry( layerProperty );
 }
 

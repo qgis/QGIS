@@ -915,7 +915,6 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
 bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
 {
-  QgsDebugMsg( "entering" );
   QgsDebugMsg( "mGeometryColType: " + mGeometryColType );
   int writeCount = 0;
   bool copyOperation = false;

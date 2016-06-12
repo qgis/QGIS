@@ -996,7 +996,6 @@ void QgsCoordinateReferenceSystem::setMapUnits()
 */
 long QgsCoordinateReferenceSystem::findMatchingProj()
 {
-  QgsDebugMsg( "entered." );
   if ( d->mEllipsoidAcronym.isNull() || d->mProjectionAcronym.isNull()
        || !d->mIsValid )
   {

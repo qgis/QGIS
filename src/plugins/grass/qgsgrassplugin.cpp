@@ -98,7 +98,6 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
 
 QgsGrassPlugin::~QgsGrassPlugin()
 {
-  QgsDebugMsg( "entered." );
   // When main app is closed, QgsGrassTools (probably because of dock widget) are destroyed before QgsGrassPlugin
   // -> do not call mTools here
   //if ( mTools )
@@ -306,7 +305,6 @@ void QgsGrassPlugin::initGui()
 
 void QgsGrassPlugin::onGisbaseChanged()
 {
-  QgsDebugMsg( "entered" );
   if ( !QgsGrass::init() )
   {
     // TODO: save init error and get it here more reliably
@@ -435,7 +433,6 @@ void QgsGrassPlugin::onEditingStarted()
 
 void QgsGrassPlugin::onEditingStopped()
 {
-  QgsDebugMsg( "entered" );
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
   if ( vectorLayer )
   {
@@ -451,7 +448,6 @@ void QgsGrassPlugin::onEditingStopped()
 
 void QgsGrassPlugin::onFieldsChanged()
 {
-  QgsDebugMsg( "entered" );
   QgsGrassProvider* grassProvider = dynamic_cast<QgsGrassProvider*>( sender() );
   if ( !grassProvider )
   {
@@ -480,7 +476,6 @@ void QgsGrassPlugin::onFieldsChanged()
 
 void QgsGrassPlugin::addFeature()
 {
-  QgsDebugMsg( "entered" );
   QgsGrassProvider* grassProvider = 0;
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
   if ( vectorLayer )
@@ -525,7 +520,6 @@ void QgsGrassPlugin::addFeature()
 
 void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
 {
-  QgsDebugMsg( "entered" );
   if ( checked )
   {
     QgsGrassProvider* grassProvider = 0;
@@ -545,7 +539,6 @@ void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
 
 void QgsGrassPlugin::mapsetChanged()
 {
-  QgsDebugMsg( "entered" );
   if ( !QgsGrass::activeMode() )
   {
     mRegionAction->setEnabled( false );
@@ -666,12 +659,10 @@ void QgsGrassPlugin::postRender( QPainter *painter )
   Q_UNUSED( painter );
   // We have to redraw rectangle, because canvas->mapRenderer()->destinationCrs is set after GRASS plugin constructor! This way it is redrawn also if canvas CRS has changed.
   displayRegion();
-// QgsDebugMsg("entered.");
 }
 
 void QgsGrassPlugin::displayRegion()
 {
-  QgsDebugMsg( "entered" );
 
   mRegionBand->reset();
   if ( !mRegionAction->isChecked() )
@@ -707,7 +698,6 @@ void QgsGrassPlugin::displayRegion()
 
 void QgsGrassPlugin::switchRegion( bool on )
 {
-// QgsDebugMsg("entered.");
 
   QSettings settings;
   settings.setValue( "/GRASS/region/on", on );
@@ -724,14 +714,12 @@ void QgsGrassPlugin::switchRegion( bool on )
 
 void QgsGrassPlugin::redrawRegion()
 {
-// QgsDebugMsg("entered.");
 
   displayRegion();
 }
 
 void QgsGrassPlugin::openMapset()
 {
-// QgsDebugMsg("entered.");
 
   QString element;
 
@@ -770,7 +758,6 @@ void QgsGrassPlugin::newMapset()
 
 void QgsGrassPlugin::projectRead()
 {
-  QgsDebugMsg( "entered." );
 
   bool ok;
   QString gisdbase = QgsProject::instance()->readPath(
@@ -816,7 +803,6 @@ void QgsGrassPlugin::projectRead()
 
 void QgsGrassPlugin::newProject()
 {
-  QgsDebugMsg( "entered" );
 }
 
 // Unload the plugin by cleaning up the GUI

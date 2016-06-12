@@ -448,7 +448,6 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
 
 void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 {
-  QgsDebugMsg( "entered." );
 
 
   //

@@ -416,7 +416,6 @@ QgsGrassVectorMapLayer * QgsGrassVectorMap::openLayer( int field )
 
 void QgsGrassVectorMap::reloadLayers()
 {
-  QgsDebugMsg( "entered" );
   Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
   {
     l->load();
@@ -497,7 +496,6 @@ void QgsGrassVectorMap::update()
 
 bool QgsGrassVectorMap::mapOutdated()
 {
-  QgsDebugMsg( "entered" );
 
   QString dp = mGrassObject.mapsetPath() + "/vector/" + mGrassObject.name();
   QFileInfo di( dp );
@@ -519,7 +517,6 @@ bool QgsGrassVectorMap::mapOutdated()
 
 bool QgsGrassVectorMap::attributesOutdated()
 {
-  QgsDebugMsg( "entered" );
 
   QString dp = mGrassObject.mapsetPath() + "/vector/" + mGrassObject.name() + "/dbln";
   QFileInfo di( dp );
@@ -535,14 +532,12 @@ bool QgsGrassVectorMap::attributesOutdated()
 
 int QgsGrassVectorMap::numLines()
 {
-  QgsDebugMsg( "entered" );
 
   return ( Vect_get_num_lines( mMap ) );
 }
 
 int QgsGrassVectorMap::numAreas()
 {
-  QgsDebugMsg( "entered" );
 
   return ( Vect_get_num_areas( mMap ) );
 }
@@ -554,7 +549,6 @@ QString QgsGrassVectorMap::toString()
 
 void QgsGrassVectorMap::printDebug()
 {
-  QgsDebugMsg( "entered" );
   if ( !mValid || !mMap )
   {
     QgsDebugMsg( "map not valid" );
@@ -745,7 +739,6 @@ QgsGrassVectorMapStore::QgsGrassVectorMapStore()
 
 QgsGrassVectorMapStore::~QgsGrassVectorMapStore()
 {
-  QgsDebugMsg( "entered" );
 }
 
 QgsGrassVectorMapStore *QgsGrassVectorMapStore::instance()

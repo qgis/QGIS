@@ -205,7 +205,6 @@ void QgsWFSRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 
 void QgsWFSRequest::replyFinished()
 {
-  QgsDebugMsg( "entering." );
   if ( !mIsAborted && mReply )
   {
     if ( mReply->error() == QNetworkReply::NoError )

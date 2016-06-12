@@ -37,7 +37,6 @@ QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocal
 QgsQtLocationConnection::~QgsQtLocationConnection()
 {
   //connection will be closed by base class
-  QgsDebugMsg( "entered." );
 }
 
 //Needed to make connection detectable (half HACK)

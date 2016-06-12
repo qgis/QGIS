@@ -55,7 +55,6 @@ QgsGrassVectorMapLayer::QgsGrassVectorMapLayer( QgsGrassVectorMap *map, int fiel
 
 void QgsGrassVectorMapLayer::clear()
 {
-  QgsDebugMsg( "entered" );
   mTableFields.clear();
   mFields.clear();
   mAttributeFields.clear();
@@ -87,7 +86,6 @@ int QgsGrassVectorMapLayer::cidxFieldNumCats()
 
 void QgsGrassVectorMapLayer::load()
 {
-  QgsDebugMsg( "entered" );
   clear();
 
   if ( !mMap )
@@ -351,7 +349,6 @@ QStringList QgsGrassVectorMapLayer::fieldNames( QgsFields & fields )
 
 void QgsGrassVectorMapLayer::updateFields()
 {
-  QgsDebugMsg( "entered" );
 
   // update fields to pass layer/buffer check when committing
   for ( int i = mFields.size() - 1; i >= 0; i-- )
@@ -420,7 +417,6 @@ QString QgsGrassVectorMapLayer::quotedValue( QVariant value )
 
 dbDriver * QgsGrassVectorMapLayer::openDriver( QString &error )
 {
-  QgsDebugMsg( "entered" );
   dbDriver * driver = 0;
 
   if ( !mFieldInfo )
@@ -472,7 +468,6 @@ void QgsGrassVectorMapLayer::addTopoField( QgsFields &fields )
 
 void QgsGrassVectorMapLayer::startEdit()
 {
-  QgsDebugMsg( "entered" );
 
   // add topo field which is present until closeEdit when data are reloaded
   addTopoField( mFields );
@@ -490,7 +485,6 @@ void QgsGrassVectorMapLayer::startEdit()
 
 void QgsGrassVectorMapLayer::closeEdit()
 {
-  QgsDebugMsg( "entered" );
 
   if ( mDriver )
   {

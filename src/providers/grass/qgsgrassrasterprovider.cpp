@@ -637,14 +637,12 @@ QDateTime QgsGrassRasterProvider::dataTimestamp() const
 
 void QgsGrassRasterProvider::freeze()
 {
-  QgsDebugMsg( "entered" );
   mRasterValue.stop();
   mValid = false;
 }
 
 void QgsGrassRasterProvider::thaw()
 {
-  QgsDebugMsg( "entered" );
   mValid = true;
 }
 
@@ -670,7 +668,6 @@ void QgsGrassRasterValue::set( const QString & gisdbase, const QString & locatio
 
 void QgsGrassRasterValue::start()
 {
-  QgsDebugMsg( "entered" );
   if ( mProcess )
   {
     QgsDebugMsg( "already running" );
@@ -695,7 +692,6 @@ void QgsGrassRasterValue::start()
 
 void QgsGrassRasterValue::stop()
 {
-  QgsDebugMsg( "entered" );
   if ( mProcess )
   {
     QgsDebugMsg( "closing process" );

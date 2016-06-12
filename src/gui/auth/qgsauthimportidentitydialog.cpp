@@ -139,7 +139,6 @@ void QgsAuthImportIdentityDialog::validateIdentity()
 
 bool QgsAuthImportIdentityDialog::validateBundle()
 {
-  QgsDebugMsg( "entered" );
 
   // clear out any previously set bundle
   QSslCertificate emptycert;

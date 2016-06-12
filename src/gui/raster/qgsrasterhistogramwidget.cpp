@@ -283,7 +283,6 @@ void QgsRasterHistogramWidget::on_btnHistoCompute_clicked()
 
 bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
 {
-  QgsDebugMsg( "entered." );
 
   //bool myIgnoreOutOfRangeFlag = true;
   //bool myThoroughBandScanFlag = false;
@@ -340,7 +339,6 @@ void QgsRasterHistogramWidget::refreshHistogram()
   //
   int myBandCountInt = mRasterLayer->bandCount();
 
-  QgsDebugMsg( "entered." );
 
   if ( ! computeHistogram( false ) )
   {

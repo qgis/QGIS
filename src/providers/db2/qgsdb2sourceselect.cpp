@@ -391,7 +391,6 @@ void QgsDb2SourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QStri
 
 void QgsDb2SourceSelect::setLayerType( QgsDb2LayerProperty layerProperty )
 {
-  QgsDebugMsg( "entering." );
   mTableModel.setGeometryTypesForTable( layerProperty );
 }
 

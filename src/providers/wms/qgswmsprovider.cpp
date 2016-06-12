@@ -1028,7 +1028,6 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString& layerName, const QSt
 
 bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml, QString& errorTitle, QString& errorText )
 {
-  QgsDebugMsg( "entering." );
 
 #ifdef QGISDEBUG
   //test the content of the QByteArray
@@ -1095,7 +1094,6 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml, QSt
 
 void QgsWmsProvider::parseServiceException( QDomElement const & e, QString& errorTitle, QString& errorText )
 {
-  QgsDebugMsg( "entering." );
 
   QString seCode = e.attribute( "code" );
   QString seText = e.text();
@@ -1213,7 +1211,6 @@ bool QgsWmsProvider::calculateExtent()
 {
   //! \todo Make this handle non-geographic CRSs (e.g. floor plans) as per WMS spec
 
-  QgsDebugMsg( "entered." );
 
   if ( mSettings.mTiled )
   {
@@ -1312,7 +1309,6 @@ int QgsWmsProvider::capabilities() const
   int capability = NoCapabilities;
   bool canIdentify = false;
 
-  QgsDebugMsg( "entering." );
 
   if ( mSettings.mTiled && mTileLayer )
   {
@@ -3039,7 +3035,6 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
   // TODO manage return basing of getCapablity => avoid call if service is not available
   // some services doesn't expose getLegendGraphic in capabilities but adding LegendURL in
   // the layer tags inside capabilities
-  QgsDebugMsg( "entering." );
 
   QString lurl = getLegendGraphicUrl();
 
@@ -3123,7 +3118,6 @@ QgsImageFetcher* QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings* 
 
 void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage& img )
 {
-  QgsDebugMsg( "entering." );
 
   QObject* reply = sender();
 

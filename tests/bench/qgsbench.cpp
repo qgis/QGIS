@@ -129,7 +129,6 @@ QgsBench::QgsBench( int theWidth, int theHeight, int theIterations )
     , mSysStart( 0.0 )
     , mParallel( false )
 {
-  QgsDebugMsg( "entered" );
 
   QgsDebugMsg( QString( "mIterations = %1" ).arg( mIterations ) );
 
@@ -143,7 +142,6 @@ QgsBench::~QgsBench()
 
 bool QgsBench::openProject( const QString & theFileName )
 {
-  QgsDebugMsg( "entered" );
   // QgsProject loads layers to QgsMapLayerRegistry singleton
   QFileInfo file( theFileName );
   if ( ! QgsProject::instance()->read( file ) )
@@ -156,7 +154,6 @@ bool QgsBench::openProject( const QString & theFileName )
 
 void QgsBench::readProject( const QDomDocument &doc )
 {
-  QgsDebugMsg( "entered" );
   QDomNodeList nodes = doc.elementsByTagName( "mapcanvas" );
   if ( nodes.count() )
   {
@@ -177,7 +174,6 @@ void QgsBench::setExtent( const QgsRectangle & extent )
 
 void QgsBench::render()
 {
-  QgsDebugMsg( "entered" );
 
   QgsDebugMsg( "extent: " +  mMapSettings.extent().toString() );
 

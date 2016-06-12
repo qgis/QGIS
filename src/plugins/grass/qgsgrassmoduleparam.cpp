@@ -294,7 +294,6 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
     , mValidator( 0 )
     , mUsesRegion( false )
 {
-  QgsDebugMsg( "entered" );
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
 
   if ( mHidden )
@@ -521,7 +520,6 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
 
 void QgsGrassModuleOption::addRow()
 {
-  QgsDebugMsg( "entered" );
 
   // TODO make the widget growing with new lines. HOW???!!!
   QLineEdit *lineEdit = new QLineEdit( this );
@@ -586,7 +584,6 @@ void QgsGrassModuleOption::addRow()
 
 void QgsGrassModuleOption::removeRow()
 {
-  QgsDebugMsg( "entered" );
 
   if ( mLineEdits.size() < 2 )
   {
@@ -599,7 +596,6 @@ void QgsGrassModuleOption::removeRow()
 void QgsGrassModuleOption::browse( bool checked )
 {
   Q_UNUSED( checked );
-  QgsDebugMsg( "entered" );
 
   QSettings settings;
   QString lastDir = settings.value( "/GRASS/lastDirectOutputDir", "" ).toString();
@@ -617,7 +613,6 @@ void QgsGrassModuleOption::browse( bool checked )
 
 QString QgsGrassModuleOption::outputExists()
 {
-  QgsDebugMsg( "entered" );
 
   if ( !mIsOutput )
     return QString();
@@ -784,7 +779,6 @@ QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
                                         bool direct, QWidget * parent )
     : QgsGrassModuleCheckBox( "", parent ), QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
 {
-  QgsDebugMsg( "entered" );
 
   if ( mHidden )
     hide();
@@ -893,7 +887,6 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
 
 void QgsGrassModuleGdalInput::updateQgisLayers()
 {
-  QgsDebugMsg( "entered" );
 
   QString current = mLayerComboBox->currentText();
   mLayerComboBox->clear();
@@ -1071,7 +1064,6 @@ QStringList QgsGrassModuleGdalInput::options()
 
 QString QgsGrassModuleGdalInput::ready()
 {
-  QgsDebugMsg( "entered" );
 
   QString error;
 
@@ -1159,7 +1151,6 @@ QgsGrassModuleVectorField::QgsGrassModuleVectorField(
 
 void QgsGrassModuleVectorField::addRow()
 {
-  QgsDebugMsg( "entered" );
   QComboBox *comboBox = new QComboBox();
   comboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
   paramsLayout()->addWidget( comboBox );
@@ -1169,7 +1160,6 @@ void QgsGrassModuleVectorField::addRow()
 
 void QgsGrassModuleVectorField::removeRow()
 {
-  QgsDebugMsg( "entered" );
 
   if ( mComboBoxList.size() < 2 )
   {
@@ -1181,7 +1171,6 @@ void QgsGrassModuleVectorField::removeRow()
 
 void QgsGrassModuleVectorField::updateFields()
 {
-  QgsDebugMsg( "entered" );
 
   Q_FOREACH ( QComboBox *comboBox, mComboBoxList )
   {
@@ -1287,7 +1276,6 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
 
 void QgsGrassModuleSelection::onLayerChanged()
 {
-  QgsDebugMsg( "entered" );
 
   if ( !mLayerInput )
   {
@@ -1385,7 +1373,6 @@ QgsVectorLayer * QgsGrassModuleSelection::currentSelectionLayer()
 
 void QgsGrassModuleSelection::onModeChanged()
 {
-  QgsDebugMsg( "entered" );
   int index = mModeComboBox->currentIndex();
   if ( mModeComboBox->itemData( index ).toInt() == AddLayer )
   {
@@ -1413,7 +1400,6 @@ void QgsGrassModuleSelection::onModeChanged()
 
 void QgsGrassModuleSelection::onLayerSelectionChanged()
 {
-  QgsDebugMsg( "entered" );
   mLineEdit->clear();
 
   QgsVectorLayer *vectorLayer = currentSelectionLayer();
@@ -1625,7 +1611,6 @@ QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString & text, QWidget * 
     : QCheckBox( text, parent )
     , mText( text )
 {
-  QgsDebugMsg( "entered" );
   adjustText();
 }
 
