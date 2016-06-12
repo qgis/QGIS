@@ -501,7 +501,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
         assert vl.isValid()
 
-        reference = QgsGeometry.fromRect(QgsRectangle(399999.9999999680439942,5399338.9090830031782389,449999.9999999987776391,5500658.0448500607162714))
+        reference = QgsGeometry.fromRect(QgsRectangle(399999.9999999680439942, 5399338.9090830031782389, 449999.9999999987776391, 5500658.0448500607162714))
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
@@ -2006,7 +2006,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.wkbType(), QgsWKBTypes.MultiPolygon)
 
         # Extent before downloading features
-        reference = QgsGeometry.fromRect(QgsRectangle(243900.3520259926444851,4427769.1559739429503679,1525592.3040170343592763,5607994.6020106188952923))
+        reference = QgsGeometry.fromRect(QgsRectangle(243900.3520259926444851, 4427769.1559739429503679, 1525592.3040170343592763, 5607994.6020106188952923))
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
