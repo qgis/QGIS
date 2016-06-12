@@ -3,15 +3,9 @@
 ## Raster algorithms
 
 * r.basins.fill
-* r.blend.combine
-* r.blend.rgb
-* r.buffer
-* r.buffer.lowmem
-* r.carve
+* r.carve: needs a vector input
 * r.category
 * r.category.out
-* r.circle
-* r.clump
 * r.coin
 * r.colors
 * r.colors.out
@@ -92,7 +86,6 @@
 * r.out.vrml
 * r.param.scale
 * r.patch
-* r.plane
 * r.profile
 * r.quant
 * r.quantile
@@ -100,7 +93,6 @@
 * r.random.cells
 * r.random.raster
 * r.random.surface
-* r.reclass
 * r.reclass.area.greater
 * r.reclass.area.lesser
 * r.recode
@@ -118,58 +110,28 @@
 * r.rescale
 * r.rescale.eq
 * r.rgb
-* r.ros
-* r.series
-* r.series.accumulate
-* r.series.interp
-* r.shade
-* r.sim.sediment
-* r.sim.water
-* r.slope (il y en a 2)
-* r.slope.aspect
-* r.solute.transport
-* r.spread
-* r.spreadpath
-* r.statistics
-* r.stats
-* r.stats.quantile.out
-* r.stats.quantile.rast
-* r.stream.extract
-* r.sum
-* r.sun
-* r.sunhours
-* r.sunmask.datetime
-* r.sunmask.position
-* r.support
-* r.surf.area
-* r.surf.contour
-* r.surf.fractal
-* r.surf.gauss
-* r.surf.idw
-* r.surf.random
-* r.terraflow
-* r.texture
-* r.thin
-* r.tile
-* r.tileset
-* r.to.vect
-* r.topidx
-* r.topmodel
-* r.topmodel.topidxstats
-* r.transect
-* r.univar
-* r.uslek
-* r.usler
-* r.viewshed
-* r.volume
-* r.walk.coords
-* r.walk.points
-* r.walk.rast
-* r.water.outlet
-* r.watershed
-* r.what.color
-* r.what.coords
-* r.what.points
+* r.ros: too much input rasters !
+* r.series.accumulate: can't reproduce same results !
+* r.series.interp: needs to handle output directories
+* r.sim.sediment: too much input rasters !
+* r.sim.water: too much input rasters !
+* r.solute.transport: too much input rasters !
+* r.spreadpath: segfaults with test dataset !
+* r.stats.quantile.rast: needs to handle output directories
+* r.sunhours: can't reproduce same results !
+* r.support: create a new test for raster: test after metadata.
+* r.surf.fractal: random results !
+* r.surf.gauss: random results !
+* r.surf.random: random results !
+* r.terraflow: can't produce output with test dataset !
+* r.texture: needs to handle output directories
+* r.tile: needs to handle output directories
+* r.tileset: can't reproduce same results
+* r.to.vect: needs a vector output in GML
+* r.topmodel: too much manual inputs.
+* r.uslek: can't produce output with test dataset (needs reclassified float rasters) !
+* r.viewshed: can't produce output with test dataset !
+* r.volume: needs a vector output in GML
 
 ## Imagery algorithms
 

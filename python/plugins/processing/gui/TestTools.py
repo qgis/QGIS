@@ -54,6 +54,7 @@ from processing.core.parameters import (
     ParameterMultipleInput,
     ParameterFile,
     ParameterString,
+    ParameterNumber,
     ParameterBoolean
 )
 
@@ -77,7 +78,7 @@ def extractSchemaPath(filepath):
     path = filepath
     part = True
 
-    while part:
+    while part and filepath:
         (path, part) = os.path.split(path)
         if part == 'testdata' and not localpath:
             localparts = parts
@@ -111,6 +112,14 @@ def parseParameters(command):
         result = m.group(2)
         separator = m.group(3)
 
+        # Handle special values:
+        if result == 'None':
+            result = None
+        elif result.lower() == unicode(True).lower():
+            result = True
+        elif result.lower() == unicode(False).lower():
+            result = False
+
         yield result
 
         if not separator:
@@ -139,6 +148,9 @@ def createTest(text):
 
         i += 1
         token = tokens[i]
+        # Handle empty parameters that are optionals
+        if param.optional and token is None:
+            continue
 
         if isinstance(param, ParameterVector):
             schema, filepath = extractSchemaPath(token)
@@ -198,19 +210,18 @@ def createTest(text):
         elif isinstance(param, ParameterString):
             params[param.name] = token
         elif isinstance(param, ParameterBoolean):
-            params[param.name] = token == 'True'
-        else:
-            try:
+            params[param.name] = token
+        elif isinstance(param, ParameterNumber):
+            if param.isInteger:
                 params[param.name] = int(token)
-            except ValueError:
-                try:
-                    params[param.name] = float(token)
-                except ValueError:
-                    if token[0] == '"':
-                        token = token[1:]
-                    if token[-1] == '"':
-                        token = token[:-1]
-                    params[param.name] = token
+            else:
+                params[param.name] = float(token)
+        else:
+            if token[0] == '"':
+                token = token[1:]
+            if token[-1] == '"':
+                token = token[:-1]
+            params[param.name] = token
 
     definition['params'] = params
 
