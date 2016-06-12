@@ -115,17 +115,13 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
 
 void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel )
 {
-  if ( mFilterModel )
-  {
-    // Cleanup old model stuff if present
-    disconnect( mFilterModel, SIGNAL( filterAboutToBeInvalidated() ), this, SLOT( onFilterAboutToBeInvalidated() ) );
-    disconnect( mFilterModel, SIGNAL( filterInvalidated() ), this, SLOT( onFilterInvalidated() ) );
-  }
-
   mFilterModel = filterModel;
   QTableView::setModel( filterModel );
 
-  connect( mFilterModel, SIGNAL( destroyed() ), this, SLOT( modelDeleted() ) );
+  if ( mFilterModel )
+  {
+    connect( mFilterModel, SIGNAL( destroyed() ), this, SLOT( modelDeleted() ) );
+  }
 
   delete mFeatureSelectionModel;
   mFeatureSelectionModel = nullptr;
