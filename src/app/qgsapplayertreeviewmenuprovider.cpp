@@ -148,7 +148,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( vlayer )
         {
           const QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( vlayer->rendererV2() );
-          if ( !singleRenderer && vlayer->rendererV2()->embeddedRenderer() )
+          if ( !singleRenderer && vlayer->rendererV2() && vlayer->rendererV2()->embeddedRenderer() )
           {
             singleRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( vlayer->rendererV2()->embeddedRenderer() );
           }
