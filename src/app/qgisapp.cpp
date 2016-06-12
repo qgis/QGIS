@@ -10880,8 +10880,6 @@ void QgisApp::namSetup()
 {
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
-  namUpdate();
-
   connect( nam, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
            this, SLOT( namAuthenticationRequired( QNetworkReply *, QAuthenticator * ) ) );
 
