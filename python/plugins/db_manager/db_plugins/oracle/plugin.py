@@ -527,7 +527,7 @@ class ORTableField(TableField):
 
     def update(self, new_name, new_type_str=None, new_not_null=None,
                new_default_str=None):
-        self.table().aboutToChange()
+        self.table().aboutToChange.emit()
         if self.name == new_name:
             new_name = None
         if self.type2String() == new_type_str:
