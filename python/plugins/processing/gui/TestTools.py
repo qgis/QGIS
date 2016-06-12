@@ -44,7 +44,8 @@ from processing.core.outputs import (
     OutputString,
     OutputRaster,
     OutputVector,
-    OutputHTML
+    OutputHTML,
+    OutputFile
 )
 
 from processing.core.parameters import (
@@ -235,7 +236,7 @@ def createTest(text):
             }
             if not schema:
                 results[out.name]['location'] = '[The expected result data is not in the testdata directory. Please write it to processing/tests/testdata/expected. Prefer gml files.]'
-        elif isinstance(out, OutputHTML):
+        elif isinstance(out, OutputHTML) or isinstance(out, OutputFile):
             schema, filepath = extractSchemaPath(token)
             results[out.name] = {
                 'type': 'file',
