@@ -279,11 +279,8 @@ void QgsCustomizationDialog::on_actionSelectAll_triggered( bool checked )
   Q_UNUSED( checked );
   QList<QTreeWidgetItem*> items = treeWidget->findItems( "*", Qt::MatchWildcard | Qt::MatchRecursive, 0 );
 
-  QList<QTreeWidgetItem*>::iterator i;
-  for ( i = items.begin(); i != items.end(); ++i )
-  {
-    ( *i )->setCheckState( 0, Qt::Checked );
-  }
+  Q_FOREACH ( QTreeWidgetItem* item, items )
+    item->setCheckState( 0, Qt::Checked );
 }
 
 void QgsCustomizationDialog::on_mCustomizationEnabledCheckBox_toggled( bool checked )
