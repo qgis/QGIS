@@ -20,6 +20,8 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
+#include "qgscrscache.h"
+
 #include <QDomDocument>
 #include <QSettings>
 #include <QStringList>
@@ -312,31 +314,72 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
     QDomElement latLongBB = featureTypeElem.firstChildElement( "LatLongBoundingBox" );
     if ( latLongBB.hasAttributes() )
     {
-      featureType.bboxLongLat = QgsRectangle(
-                                  latLongBB.attribute( "minx" ).toDouble(),
-                                  latLongBB.attribute( "miny" ).toDouble(),
-                                  latLongBB.attribute( "maxx" ).toDouble(),
-                                  latLongBB.attribute( "maxy" ).toDouble() );
+      // Despite the name LatLongBoundingBox, the coordinates are supposed to
+      // be expressed in <SRS>. From the WFS schema;
+      // <!-- The LatLongBoundingBox element is used to indicate the edges of
+      // an enclosing rectangle in the SRS of the associated feature type.
+      featureType.bbox = QgsRectangle(
+                           latLongBB.attribute( "minx" ).toDouble(),
+                           latLongBB.attribute( "miny" ).toDouble(),
+                           latLongBB.attribute( "maxx" ).toDouble(),
+                           latLongBB.attribute( "maxy" ).toDouble() );
+      featureType.bboxSRSIsWGS84 = false;
+
+      // But some servers do not honour this and systematically reproject to WGS84
+      // such as GeoServer. See http://osgeo-org.1560.x6.nabble.com/WFS-LatLongBoundingBox-td3813810.html
+      // This is also true of TinyOWS
+      if ( !featureType.crslist.isEmpty() &&
+           featureType.bbox.xMinimum() >= -180 && featureType.bbox.yMinimum() >= -90 &&
+           featureType.bbox.xMaximum() <= 180 && featureType.bbox.yMaximum() < 90 )
+      {
+        QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( featureType.crslist[0] );
+        if ( !crs.geographicFlag() )
+        {
+          // If the CRS is projected then check that projecting the corner of the bbox, assumed to be in WGS84,
+          // into the CRS, and then back to WGS84, works (check that we are in the validity area)
+          QgsCoordinateReferenceSystem crsWGS84 = QgsCRSCache::instance()->crsByOgcWmsCrs( "CRS:84" );
+          QgsCoordinateTransform ct( crsWGS84, crs );
+
+          QgsPoint ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
+          QgsPoint ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPoint ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
+          QgsPoint ptMaxBack( ct.transform( ct.transform( ptMax, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+
+          QgsDebugMsg( featureType.bbox.toString() );
+          QgsDebugMsg( ptMinBack.toString() );
+          QgsDebugMsg( ptMaxBack.toString() );
+
+          if ( fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
+               fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
+               fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
+               fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
+          {
+            QgsDebugMsg( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" );
+            featureType.bboxSRSIsWGS84 = true;
+          }
+        }
+      }
     }
     else
     {
       // WFS 1.1 way
-      latLongBB = featureTypeElem.firstChildElement( "WGS84BoundingBox" );
-      if ( !latLongBB.isNull() )
+      QDomElement WGS84BoundingBox = featureTypeElem.firstChildElement( "WGS84BoundingBox" );
+      if ( !WGS84BoundingBox.isNull() )
       {
-        QDomElement lowerCorner = latLongBB.firstChildElement( "LowerCorner" );
-        QDomElement upperCorner = latLongBB.firstChildElement( "UpperCorner" );
+        QDomElement lowerCorner = WGS84BoundingBox.firstChildElement( "LowerCorner" );
+        QDomElement upperCorner = WGS84BoundingBox.firstChildElement( "UpperCorner" );
         if ( !lowerCorner.isNull() && !upperCorner.isNull() )
         {
           QStringList lowerCornerList = lowerCorner.text().split( " ", QString::SkipEmptyParts );
           QStringList upperCornerList = upperCorner.text().split( " ", QString::SkipEmptyParts );
           if ( lowerCornerList.size() == 2 && upperCornerList.size() == 2 )
           {
-            featureType.bboxLongLat = QgsRectangle(
-                                        lowerCornerList[0].toDouble(),
-                                        lowerCornerList[1].toDouble(),
-                                        upperCornerList[0].toDouble(),
-                                        upperCornerList[1].toDouble() );
+            featureType.bbox = QgsRectangle(
+                                 lowerCornerList[0].toDouble(),
+                                 lowerCornerList[1].toDouble(),
+                                 upperCornerList[0].toDouble(),
+                                 upperCornerList[1].toDouble() );
+            featureType.bboxSRSIsWGS84 = true;
           }
         }
       }

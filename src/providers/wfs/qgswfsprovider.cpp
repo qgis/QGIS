@@ -1457,21 +1457,28 @@ bool QgsWFSProvider::getCapabilities()
   {
     if ( thisLayerName == mShared->mCaps.featureTypes[i].name )
     {
-      const QgsRectangle& r = mShared->mCaps.featureTypes[i].bboxLongLat;
+      const QgsRectangle& r = mShared->mCaps.featureTypes[i].bbox;
       if ( mShared->mSourceCRS.authid().isEmpty() && mShared->mCaps.featureTypes[i].crslist.size() != 0 )
       {
         mShared->mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
       }
       if ( !r.isNull() )
       {
-        QgsCoordinateReferenceSystem src = QgsCRSCache::instance()->crsByOgcWmsCrs( "CRS:84" );
-        QgsCoordinateTransform ct( src, mShared->mSourceCRS );
+        if ( mShared->mCaps.featureTypes[i].bboxSRSIsWGS84 )
+        {
+          QgsCoordinateReferenceSystem src = QgsCRSCache::instance()->crsByOgcWmsCrs( "CRS:84" );
+          QgsCoordinateTransform ct( src, mShared->mSourceCRS );
 
-        QgsDebugMsg( "latlon ext:" + r.toString() );
-        QgsDebugMsg( "src:" + src.authid() );
-        QgsDebugMsg( "dst:" + mShared->mSourceCRS.authid() );
+          QgsDebugMsg( "latlon ext:" + r.toString() );
+          QgsDebugMsg( "src:" + src.authid() );
+          QgsDebugMsg( "dst:" + mShared->mSourceCRS.authid() );
 
-        mShared->mCapabilityExtent = ct.transformBoundingBox( r, QgsCoordinateTransform::ForwardTransform );
+          mShared->mCapabilityExtent = ct.transformBoundingBox( r, QgsCoordinateTransform::ForwardTransform );
+        }
+        else
+        {
+          mShared->mCapabilityExtent = r;
+        }
 
         QgsDebugMsg( "layer ext:" + mShared->mCapabilityExtent.toString() );
       }

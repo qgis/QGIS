@@ -369,8 +369,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
       <Name>my:typename</Name>
       <Title>Title</Title>
       <Abstract>Abstract</Abstract>
-      <SRS>EPSG:4326</SRS>
-      <LatLongBoundingBox minx="-71.123" miny="66.33" maxx="-65.32" maxy="78.3"/>
+      <SRS>EPSG:32631</SRS>
+      <!-- in WFS 1.0, LatLongBoundingBox is in SRS units, not necessarily lat/long... -->
+      <LatLongBoundingBox minx="400000" miny="5400000" maxx="450000" maxy="5500000"/>
     </FeatureType>
   </FeatureTypeList>
 </WFS_Capabilities>""".encode('UTF-8'))
@@ -402,11 +403,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
         self.assertEqual(len(vl.fields()), 5)
         self.assertEqual(vl.featureCount(), 0)
-        reference = QgsGeometry.fromRect(QgsRectangle(-71.123, 66.33, -65.32, 78.3))
+        reference = QgsGeometry.fromRect(QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0))
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs"
@@ -416,7 +417,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <gml:featureMember>
     <my:typename fid="typename.0">
       <my:geometryProperty>
-          <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:coordinates decimal="." cs="," ts=" ">2,49</gml:coordinates></gml:Point></my:geometryProperty>
+          <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:coordinates decimal="." cs="," ts=" ">426858,5427937</gml:coordinates></gml:Point></my:geometryProperty>
       <my:INTFIELD>1</my:INTFIELD>
       <my:GEOMETRY>2</my:GEOMETRY>
       <my:longfield>1234567890123</my:longfield>
@@ -448,7 +449,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         got_f = [f for f in vl.getFeatures()]
         got = got_f[0].geometry().geometry()
-        self.assertEqual((got.x(), got.y()), (2.0, 49.0))
+        self.assertEqual((got.x(), got.y()), (426858.0, 5427937.0))
 
         self.assertEqual(vl.featureCount(), 1)
 
@@ -458,6 +459,51 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert not ret
 
         assert not vl.dataProvider().deleteFeatures([0])
+
+    def testWFS10_latlongboundingbox_in_WGS84(self):
+        """Test WFS 1.0 with non conformatn LatLongBoundingBox"""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_WFS1.0_latlongboundingbox_in_WGS84'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=1.0.0'), 'wb') as f:
+            f.write("""
+<WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <SRS>EPSG:32631</SRS>
+      <!-- in WFS 1.0, LatLongBoundingBox are supposed to be in SRS units, not necessarily lat/long...
+        But some servers do not honour this, so let's try to be robust -->
+      <LatLongBoundingBox minx="1.63972075372399" miny="48.7449841112119" maxx="2.30733562794991" maxy="49.6504711179582"/>
+    </FeatureType>
+  </FeatureTypeList>
+</WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
+        assert vl.isValid()
+
+        reference = QgsGeometry.fromRect(QgsRectangle(399999.9999999680439942,5399338.9090830031782389,449999.9999999987776391,5500658.0448500607162714))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
     def testWFST10(self):
         """Test WFS-T 1.0 (read-write)"""
@@ -1959,14 +2005,19 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWKBTypes.MultiPolygon)
 
+        # Extent before downloading features
+        reference = QgsGeometry.fromRect(QgsRectangle(243900.3520259926444851,4427769.1559739429503679,1525592.3040170343592763,5607994.6020106188952923))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+
         # Download all features
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
 
         reference = QgsGeometry.fromRect(QgsRectangle(500000, 4500000, 510000, 4510000))
         vl_extent = QgsGeometry.fromRect(vl.extent())
-        self.assertEqual(features[0]['intfield'], 1)
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+        self.assertEqual(features[0]['intfield'], 1)
         self.assertEqual(features[1]['intfield'], 2)
 
 
