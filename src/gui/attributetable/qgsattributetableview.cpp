@@ -142,11 +142,12 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
     mTableDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
-  }
 
-  mActionWidget = createActionWidget( 0 );
-  mActionWidget->setVisible( false );
-  updateActionImage( mActionWidget );
+    delete mActionWidget;
+    mActionWidget = createActionWidget( 0 );
+    mActionWidget->setVisible( false );
+    updateActionImage( mActionWidget );
+  }
 }
 
 void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
