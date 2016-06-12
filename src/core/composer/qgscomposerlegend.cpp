@@ -291,7 +291,6 @@ void QgsComposerLegend::setRasterBorderWidth( double width ) { mSettings.setRast
 
 void QgsComposerLegend::synchronizeWithModel()
 {
-  QgsDebugMsg( "Entered" );
   adjustBoxSize();
   updateItem();
 }

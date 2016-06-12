@@ -704,7 +704,6 @@ QString QgsMapToolIdentify::formatArea( double area ) const
 
 void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
 {
-  QgsDebugMsg( "Entered" );
   QList<IdentifyResult> results;
   if ( identifyRasterLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel ) )
   {

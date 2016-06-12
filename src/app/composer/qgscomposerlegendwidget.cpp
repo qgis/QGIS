@@ -945,7 +945,6 @@ void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, cons
 {
   Q_UNUSED( current );
   Q_UNUSED( previous );
-  QgsDebugMsg( "Entered" );
 
   if ( mLegend && mLegend->autoUpdateModel() )
     return;

@@ -225,7 +225,6 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
 void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
 {
   Q_UNUSED( xBlock );
-  QgsDebugMsg( "Entered" );
   clearLastError();
   // TODO: optimize, see extent()
 
@@ -281,7 +280,6 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
 
 void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
 {
-  QgsDebugMsg( "Entered" );
   QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
   QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
   QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
@@ -388,7 +386,6 @@ QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int th
 QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int bandNo )const
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsg( "Entered" );
   QList<QgsColorRampShader::ColorRampItem> ct;
 
   // TODO: check if color can be realy discontinuous in GRASS,
@@ -431,13 +428,11 @@ QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int
 
 QgsCoordinateReferenceSystem QgsGrassRasterProvider::crs()
 {
-  QgsDebugMsg( "Entered" );
   return mCrs;
 }
 
 QgsRectangle QgsGrassRasterProvider::extent()
 {
-  QgsDebugMsg( "Entered" );
   // The extend can change of course so we get always fresh, to avoid running always the module
   // we should save mExtent and mLastModified and check if the map was modified
 
@@ -465,7 +460,6 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   Q_UNUSED( theExtent );
   Q_UNUSED( theWidth );
   Q_UNUSED( theHeight );
-  QgsDebugMsg( "Entered" );
   QMap<int, QVariant> results;
   QMap<int, QVariant> noDataResults;
   noDataResults.insert( 1, QVariant() );

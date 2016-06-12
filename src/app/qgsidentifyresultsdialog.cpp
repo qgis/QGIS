@@ -214,7 +214,6 @@ QgsIdentifyResultsWebViewItem::QgsIdentifyResultsWebViewItem( QTreeWidget *treeW
 
 void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 {
-  QgsDebugMsg( "Entered" );
   Q_UNUSED( ok );
 
   mWebView->show();
@@ -920,7 +919,6 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
 
 void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
 {
-  QgsDebugMsg( "Entered" );
 
   // only handle context menu event if showing tree widget
   if ( stackedWidget->currentIndex() != 0 )
@@ -1070,7 +1068,6 @@ void QgsIdentifyResultsDialog::expandColumnsToFit()
 
 void QgsIdentifyResultsDialog::clear()
 {
-  QgsDebugMsg( "Entered" );
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
     disconnectLayer( lstResults->topLevelItem( i )->data( 0, Qt::UserRole ).value<QObject *>() );
@@ -1672,7 +1669,6 @@ void QgsIdentifyResultsDialog::copyAttributeValue()
 
 void QgsIdentifyResultsDialog::copyFeatureAttributes()
 {
-  QgsDebugMsg( "Entered" );
   QClipboard *clipboard = QApplication::clipboard();
   QString text;
 
@@ -1782,7 +1778,6 @@ void QgsIdentifyResultsDialog::on_mActionCopy_triggered( bool checked )
 
 void QgsIdentifyResultsDialog::copyFeature()
 {
-  QgsDebugMsg( "Entered" );
 
   QgsIdentifyResultsFeatureItem *item = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( lstResults->selectedItems().value( 0 ) ) );
 
@@ -1799,7 +1794,6 @@ void QgsIdentifyResultsDialog::copyFeature()
 
 void QgsIdentifyResultsDialog::toggleFeatureSelection()
 {
-  QgsDebugMsg( "Entered" );
 
   QgsIdentifyResultsFeatureItem *item = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( lstResults->selectedItems().value( 0 ) ) );
 
@@ -1821,7 +1815,6 @@ void QgsIdentifyResultsDialog::toggleFeatureSelection()
 
 void QgsIdentifyResultsDialog::formatChanged( int index )
 {
-  QgsDebugMsg( "Entered" );
   QComboBox *combo = qobject_cast<QComboBox*>( sender() );
   if ( !combo )
   {

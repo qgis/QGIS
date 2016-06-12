@@ -367,7 +367,6 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
 
 void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
 {
-  QgsDebugMsg( "Entered" );
   QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
   if ( mySelector->exec() )
   {
@@ -388,7 +387,6 @@ void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
 
 void QgsCustomProjectionDialog::on_buttonBox_accepted()
 {
-  QgsDebugMsg( "Entered" );
   //Update the current CRS:
   int i = leNameList->currentIndex().row();
   if ( i != -1 )

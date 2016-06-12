@@ -874,7 +874,6 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
 
 void QgsDirectoryItem::setState( State state )
 {
-  QgsDebugMsg( "Entered" );
   QgsDataCollectionItem::setState( state );
 
   if ( state == Populated )
@@ -898,7 +897,6 @@ void QgsDirectoryItem::setState( State state )
 
 void QgsDirectoryItem::directoryChanged()
 {
-  QgsDebugMsg( "Entered" );
   if ( state() == Populating )
   {
     // schedule to refresh later, because refres() simply returns if Populating

@@ -114,7 +114,6 @@ void QgsMssqlConnectionItem::refresh()
 
 QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
 
   setState( Populating );
 

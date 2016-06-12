@@ -188,7 +188,6 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
 
 void QgsWcsCapabilities::clear()
 {
-  QgsDebugMsg( "Entered" );
   mCoverageCount = 0;
   mCoveragesSupported.clear();
   mCapabilities = QgsWcsCapabilitiesProperty();
@@ -691,7 +690,6 @@ void QgsWcsCapabilities::parseContentMetadata( QDomElement const & e, QgsWcsCove
 void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const & e, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
 {
   Q_UNUSED( parent );
-  QgsDebugMsg( "Entered" );
   coverageSummary.orderId = ++mCoverageCount;
 
   coverageSummary.identifier = firstChildText( e, "name" );

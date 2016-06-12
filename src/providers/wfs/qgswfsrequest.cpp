@@ -172,7 +172,6 @@ bool QgsWFSRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader,
 
 void QgsWFSRequest::abort()
 {
-  QgsDebugMsg( "Entered" );
   mIsAborted = true;
   if ( mReply )
   {

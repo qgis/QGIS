@@ -36,13 +36,11 @@ QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, Q
 
 QgsWMSConnectionItem::~QgsWMSConnectionItem()
 {
-  QgsDebugMsg( "Entered" );
   delete mCapabilitiesDownload;
 }
 
 void QgsWMSConnectionItem::deleteLater()
 {
-  QgsDebugMsg( "Entered" );
   if ( mCapabilitiesDownload )
   {
     mCapabilitiesDownload->abort();
@@ -52,7 +50,6 @@ void QgsWMSConnectionItem::deleteLater()
 
 QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
 
   QgsDataSourceURI uri;

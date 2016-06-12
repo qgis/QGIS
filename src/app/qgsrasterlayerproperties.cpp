@@ -445,7 +445,6 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
 
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
 {
-  QgsDebugMsg( "Entered" );
   tableTransparency->clear();
   tableTransparency->setColumnCount( 0 );
   tableTransparency->setRowCount( 0 );
@@ -1160,7 +1159,6 @@ void QgsRasterLayerProperties::on_mCrsSelector_crsChanged( const QgsCoordinateRe
 
 void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 {
-  QgsDebugMsg( "Entered" );
   if ( !mRendererWidget )
   {
     return;

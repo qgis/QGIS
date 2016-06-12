@@ -325,7 +325,6 @@ void QgsGraduatedSymbolRendererV2Model::removeAllRows()
 
 void QgsGraduatedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
 {
-  QgsDebugMsg( "Entered" );
   if ( column == 0 )
   {
     return;

@@ -34,12 +34,10 @@ QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, Q
 
 QgsWCSConnectionItem::~QgsWCSConnectionItem()
 {
-  QgsDebugMsg( "Entered" );
 }
 
 QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
 
   QgsDataSourceURI uri;

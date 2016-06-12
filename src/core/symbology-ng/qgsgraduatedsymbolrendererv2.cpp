@@ -1628,7 +1628,6 @@ bool valueGreaterThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r
 
 void QgsGraduatedSymbolRendererV2::sortByValue( Qt::SortOrder order )
 {
-  QgsDebugMsg( "Entered" );
   if ( order == Qt::AscendingOrder )
   {
     qSort( mRanges.begin(), mRanges.end(), valueLessThan );

@@ -470,7 +470,6 @@ void QgsBrowserDockWidget::refresh()
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
 {
-  QgsDebugMsg( "Entered" );
   QgsDataItem *item = mModel->dataItem( index );
   if ( item )
   {

@@ -417,7 +417,6 @@ void QgsOWSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 
 void QgsOWSSourceSelect::populateCRS()
 {
-  QgsDebugMsg( "Entered" );
   clearCRS();
   mSelectedLayersCRSs = selectedLayersCRSs().toSet();
   mCRSLabel->setText( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) + ':' );

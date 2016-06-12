@@ -72,7 +72,6 @@ void QgsOracleConnectionItem::refresh()
 
 QVector<QgsDataItem*> QgsOracleConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
 
   mOwnerMap.clear();
 

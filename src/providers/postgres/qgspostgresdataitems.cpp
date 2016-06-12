@@ -46,7 +46,6 @@ QgsPGConnectionItem::~QgsPGConnectionItem()
 
 QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
 
   QVector<QgsDataItem*>items;
 
@@ -470,7 +469,6 @@ QgsPGSchemaItem::~QgsPGSchemaItem()
 
 QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
 
   QVector<QgsDataItem*>items;
 

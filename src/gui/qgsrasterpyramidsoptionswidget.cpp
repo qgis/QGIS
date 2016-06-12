@@ -188,7 +188,6 @@ void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsFormat_currentIndexChanged( i
 
 void QgsRasterPyramidsOptionsWidget::setOverviewList()
 {
-  QgsDebugMsg( "Entered" );
 
   mOverviewList.clear();
 

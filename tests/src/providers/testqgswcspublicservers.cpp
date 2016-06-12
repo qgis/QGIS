@@ -73,7 +73,6 @@ TestQgsWcsPublicServers::~TestQgsWcsPublicServers()
 void TestQgsWcsPublicServers::init()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsDebugMsg( "Entered" );
 
   // Unfortunately this seems to be the only way to set timeout, we try to reset it
   // at the end but it can be canceled before ...

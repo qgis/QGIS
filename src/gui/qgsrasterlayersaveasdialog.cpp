@@ -375,7 +375,6 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
 
 void QgsRasterLayerSaveAsDialog::recalcSize()
 {
-  QgsDebugMsg( "Entered" );
   QgsRectangle extent = outputRectangle();
   int xSize =  xResolution() != 0 ? static_cast<int>( qRound( extent.width() / xResolution() ) ) : 0;
   int ySize =  yResolution() != 0 ? static_cast<int>( qRound( extent.height() / yResolution() ) ) : 0;
@@ -393,7 +392,6 @@ void QgsRasterLayerSaveAsDialog::setOriginalSize()
 
 void QgsRasterLayerSaveAsDialog::recalcResolution()
 {
-  QgsDebugMsg( "Entered" );
   QgsRectangle extent = outputRectangle();
   double xRes = nColumns() != 0 ? extent.width() / nColumns() : 0;
   double yRes = nRows() != 0 ? extent.height() / nRows() : 0;
@@ -404,7 +402,6 @@ void QgsRasterLayerSaveAsDialog::recalcResolution()
 
 void QgsRasterLayerSaveAsDialog::recalcResolutionSize()
 {
-  QgsDebugMsg( "Entered" );
   if ( mResolutionRadioButton->isChecked() )
   {
     recalcSize();

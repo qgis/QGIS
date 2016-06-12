@@ -1958,7 +1958,6 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
 
 void QgsWmsCapabilitiesDownload::abort()
 {
-  QgsDebugMsg( "Entered" );
   mIsAborted = true;
   if ( mCapabilitiesReply )
   {

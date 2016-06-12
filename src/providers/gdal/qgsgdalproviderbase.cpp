@@ -26,7 +26,6 @@
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
-  QgsDebugMsg( "Entered" );
 
   // first get the GDAL driver manager
   QgsGdalProviderBase::registerGdalDrivers();

@@ -107,7 +107,6 @@ static QgsLayerItem::LayerType _layerTypeFromDb( QString dbType )
 
 QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
   QgsSpatiaLiteConnection connection( mName );
 

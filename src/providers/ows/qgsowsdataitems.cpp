@@ -37,7 +37,6 @@ QgsOWSConnectionItem::~QgsOWSConnectionItem()
 
 QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
   QMap<QgsDataItem*, QString> serviceItems; // service/provider key
 
@@ -184,7 +183,6 @@ QgsOWSRootItem::~QgsOWSRootItem()
 
 QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> connections;
   // Combine all WMS,WFS,WCS connections
   QStringList connNames;

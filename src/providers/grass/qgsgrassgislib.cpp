@@ -304,7 +304,6 @@ int GRASS_LIB_EXPORT G__gisinit( const char * version, const char * programName 
 typedef int G_parser_type( int argc, char **argv );
 int GRASS_LIB_EXPORT G_parser( int argc, char **argv )
 {
-  QgsDebugMsg( "Entered" );
   G_parser_type* fn = ( G_parser_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_parser" ) );
   int ret = fn( argc, argv );
 
@@ -322,7 +321,6 @@ int GRASS_LIB_EXPORT G_parser( int argc, char **argv )
 typedef int G_set_error_routine_type( int ( * )( const char *, int ) );
 int GRASS_LIB_EXPORT G_set_error_routine( int ( *error_routine )( const char *, int ) )
 {
-  //QgsDebugMsg( "Entered" );
   G_set_error_routine_type* fn = ( G_set_error_routine_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_set_error_routine" ) );
   return fn( error_routine );
 }
@@ -330,7 +328,6 @@ int GRASS_LIB_EXPORT G_set_error_routine( int ( *error_routine )( const char *, 
 typedef int G_warning_type( const char *, ... );
 int GRASS_LIB_EXPORT G_warning( const char * msg, ... )
 {
-  QgsDebugMsg( "Entered" );
   G_warning_type* fn = ( G_warning_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_warning" ) );
   va_list ap;
   va_start( ap, msg );
@@ -353,7 +350,6 @@ void GRASS_LIB_EXPORT G_important_message( const char * msg, ... )
 //typedef int G_fatal_error_type( const char *, ... );
 int GRASS_LIB_EXPORT G_fatal_error( const char * msg, ... )
 {
-  QgsDebugMsg( "Entered" );
   //G_fatal_error_type* fn = ( G_fatal_error_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_fatal_error" ) );
   va_list ap;
   va_start( ap, msg );

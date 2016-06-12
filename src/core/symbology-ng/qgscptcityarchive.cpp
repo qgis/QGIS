@@ -845,7 +845,6 @@ QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
 
 QgsCptCityCollectionItem::~QgsCptCityCollectionItem()
 {
-  // QgsDebugMsg( "Entered" );
   Q_FOREACH ( QgsCptCityDataItem* i, mChildren )
   {
     // QgsDebugMsg( QString( "delete child = 0x%0" ).arg(( qlonglong )i, 8, 16, QLatin1Char( '0' ) ) );
@@ -1651,7 +1650,6 @@ void QgsCptCityBrowserModel::beginInsertItems( QgsCptCityDataItem *parent, int f
 }
 void QgsCptCityBrowserModel::endInsertItems()
 {
-  QgsDebugMsg( "Entered" );
   endInsertRows();
 }
 void QgsCptCityBrowserModel::beginRemoveItems( QgsCptCityDataItem *parent, int first, int last )
@@ -1664,7 +1662,6 @@ void QgsCptCityBrowserModel::beginRemoveItems( QgsCptCityDataItem *parent, int f
 }
 void QgsCptCityBrowserModel::endRemoveItems()
 {
-  QgsDebugMsg( "Entered" );
   endRemoveRows();
 }
 void QgsCptCityBrowserModel::connectItem( QgsCptCityDataItem* item )

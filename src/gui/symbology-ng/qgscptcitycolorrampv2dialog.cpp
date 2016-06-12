@@ -307,7 +307,6 @@ void QgsCptCityColorRampV2Dialog::on_mListWidget_itemSelectionChanged()
 
 void QgsCptCityColorRampV2Dialog::on_tabBar_currentChanged( int index )
 {
-  QgsDebugMsg( "Entered" );
   if ( index == 0 )
   {
     setTreeModel( mSelectionsModel );
@@ -562,7 +561,6 @@ bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
 
 bool QgsCptCityColorRampV2Dialog::updateRamp()
 {
-  QgsDebugMsg( "Entered" );
   mListWidget->clear();
   mListRamps.clear();
   cboVariantName->clear();
@@ -643,7 +641,6 @@ void QgsCptCityColorRampV2Dialog::showAll()
 
 void QgsCptCityColorRampV2Dialog::setTreeModel( QgsCptCityBrowserModel* model )
 {
-  QgsDebugMsg( "Entered" );
   mModel = model;
 
   if ( mTreeFilter )

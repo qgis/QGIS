@@ -866,7 +866,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsg( "Entered" );
   // TODO: optimize to avoid writing to QImage
   QImage *image = draw( viewExtent, pixelWidth, pixelHeight );
   if ( !image )   // should not happen

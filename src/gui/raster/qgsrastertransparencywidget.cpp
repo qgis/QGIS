@@ -550,7 +550,6 @@ void QgsRasterTransparencyWidget::populateTransparencyTable( QgsRasterRenderer *
 
 void QgsRasterTransparencyWidget::setupTransparencyTable( int nBands )
 {
-  QgsDebugMsg( "Entered" );
   tableTransparency->clear();
   tableTransparency->setColumnCount( 0 );
   tableTransparency->setRowCount( 0 );

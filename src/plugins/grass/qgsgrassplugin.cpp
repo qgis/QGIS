@@ -352,13 +352,11 @@ void QgsGrassPlugin::onLayerWasAdded( QgsMapLayer* theMapLayer )
 void QgsGrassPlugin::onCurrentLayerChanged( QgsMapLayer* layer )
 {
   Q_UNUSED( layer );
-  QgsDebugMsg( "Entered" );
   resetEditActions();
 }
 
 void QgsGrassPlugin::resetEditActions()
 {
-  QgsDebugMsg( "Entered" );
 
   QgsGrassProvider* grassProvider = 0;
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
@@ -390,7 +388,6 @@ void QgsGrassPlugin::resetEditActions()
 
 void QgsGrassPlugin::onEditingStarted()
 {
-  QgsDebugMsg( "Entered" );
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
   if ( !vectorLayer )
     return;

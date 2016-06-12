@@ -334,7 +334,6 @@ void QgsCategorizedSymbolRendererV2Model::removeAllRows()
 
 void QgsCategorizedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
 {
-  QgsDebugMsg( "Entered" );
   if ( column == 0 )
   {
     return;

@@ -181,7 +181,6 @@ void QgsGrassItemActions::removeMapsetFromSearchPath()
 
 void QgsGrassItemActions::renameGrassObject()
 {
-  QgsDebugMsg( "Entered" );
 
   QStringList existingNames = QgsGrass::grassObjects( mGrassObject, mGrassObject.type() );
   // remove current name to avoid warning that exists
@@ -225,7 +224,6 @@ void QgsGrassItemActions::renameGrassObject()
 
 void QgsGrassItemActions::deleteGrassObject()
 {
-  QgsDebugMsg( "Entered" );
 
   if ( !QgsGrass::deleteObjectDialog( mGrassObject ) )
     return;
@@ -419,7 +417,6 @@ QIcon QgsGrassMapsetItem::icon()
 
 void QgsGrassMapsetItem::setState( State state )
 {
-  QgsDebugMsg( "Entered" );
 
   // TODO: it seems to be causing strange icon switching during import, sometimes
   if ( state == Populated )
@@ -467,7 +464,6 @@ bool QgsGrassMapsetItem::objectInImports( QgsGrassObject grassObject )
 
 QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
 
   QVector<QgsDataItem*> items;
 
@@ -1214,7 +1210,6 @@ QWidget * QgsGrassImportItem::paramWidget()
 
 void QgsGrassImportItem::cancel()
 {
-  QgsDebugMsg( "Entered" );
   if ( !mImport ) // should not happen
   {
     QgsDebugMsg( "mImport is null" );
