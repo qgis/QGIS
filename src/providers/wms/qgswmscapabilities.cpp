@@ -570,7 +570,9 @@ void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilit
     }
     else if ( tagName == "Layer" )
     {
-      parseLayer( e1, capabilityProperty.layer );
+      QgsWmsLayerProperty layer;
+      parseLayer( e1, layer );
+      capabilityProperty.layers.push_back( layer );
     }
     else if ( tagName == "VendorSpecificCapabilities" )
     {
@@ -947,10 +949,6 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
     // Store if the layer is queryable
     mQueryableForLayer[ layerProperty.name ] = layerProperty.queryable;
 
-    // Store the available Coordinate Reference Systems for the layer so that it
-    // can be combined with others later in supportedCrsForLayers()
-    mCrsForLayer[ layerProperty.name ] = layerProperty.crs;
-
     // Insert into the local class' registry
     mLayersSupported.push_back( layerProperty );
 
@@ -964,13 +962,6 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
   if ( !layerProperty.layer.empty() )
   {
     mLayerParentNames[ layerProperty.orderId ] = QStringList() << layerProperty.name << layerProperty.title << layerProperty.abstract;
-  }
-
-  if ( !parentProperty )
-  {
-    // Why clear()? I need top level access. Seems to work in standard select dialog without clear.
-    //layerProperty.layer.clear();
-    layerProperty.crs.clear();
   }
 
   //QgsDebugMsg( "exiting." );
