@@ -3183,7 +3183,7 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
         mDataProvider->uniqueValues( index, uniqueValues, limit );
         return;
       }
-      FALLTHROUGH
+      FALLTHROUGH;
       //we need to go through each feature
     case QgsFields::OriginJoin:
     case QgsFields::OriginExpression:
@@ -3244,7 +3244,7 @@ QVariant QgsVectorLayer::minimumValue( int index )
         return mDataProvider->minimumValue( index );
       }
     }
-    FALLTHROUGH
+    FALLTHROUGH;
     // no choice but to go through all features
     case QgsFields::OriginExpression:
     case QgsFields::OriginJoin:
@@ -3302,7 +3302,7 @@ QVariant QgsVectorLayer::maximumValue( int index )
         return mDataProvider->maximumValue( index );
       }
 
-      FALLTHROUGH
+      FALLTHROUGH;
       //no choice but to go through each feature
     case QgsFields::OriginJoin:
     case QgsFields::OriginExpression:
