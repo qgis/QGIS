@@ -3136,87 +3136,81 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin( index );
-  if ( origin == QgsFields::OriginUnknown )
+  switch ( origin )
   {
-    return;
-  }
+    case QgsFields::OriginUnknown:
+      return;
 
-  if ( origin == QgsFields::OriginProvider ) //a provider field
-  {
-    mDataProvider->uniqueValues( index, uniqueValues, limit );
-
-    if ( mEditBuffer )
+    case QgsFields::OriginProvider: //a provider field
     {
-      QSet<QString> vals;
-      Q_FOREACH ( const QVariant& v, uniqueValues )
-      {
-        vals << v.toString();
-      }
+      mDataProvider->uniqueValues( index, uniqueValues, limit );
 
-      QMapIterator< QgsFeatureId, QgsAttributeMap > it( mEditBuffer->changedAttributeValues() );
-      while ( it.hasNext() && ( limit < 0 || uniqueValues.count() < limit ) )
+      if ( mEditBuffer )
       {
-        it.next();
-        QVariant v = it.value().value( index );
-        if ( v.isValid() )
+        QSet<QString> vals;
+        Q_FOREACH ( const QVariant& v, uniqueValues )
         {
-          QString vs = v.toString();
-          if ( !vals.contains( vs ) )
+          vals << v.toString();
+        }
+
+        QMapIterator< QgsFeatureId, QgsAttributeMap > it( mEditBuffer->changedAttributeValues() );
+        while ( it.hasNext() && ( limit < 0 || uniqueValues.count() < limit ) )
+        {
+          it.next();
+          QVariant v = it.value().value( index );
+          if ( v.isValid() )
           {
-            vals << vs;
-            uniqueValues << v;
+            QString vs = v.toString();
+            if ( !vals.contains( vs ) )
+            {
+              vals << vs;
+              uniqueValues << v;
+            }
           }
         }
       }
-    }
 
-    return;
-  }
-  else if ( origin == QgsFields::OriginJoin )
-  {
-    int sourceLayerIndex;
-    const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, mUpdatedFields, sourceLayerIndex );
-    Q_ASSERT( join );
-
-    QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
-
-    if ( vl )
-      vl->dataProvider()->uniqueValues( sourceLayerIndex, uniqueValues, limit );
-
-    return;
-  }
-  else if ( origin == QgsFields::OriginEdit || origin == QgsFields::OriginExpression )
-  {
-    // the layer is editable, but in certain cases it can still be avoided going through all features
-    if ( origin == QgsFields::OriginEdit && mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )
-    {
-      mDataProvider->uniqueValues( index, uniqueValues, limit );
       return;
     }
 
-    // we need to go through each feature
-    QgsAttributeList attList;
-    attList << index;
-
-    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                          .setFlags( QgsFeatureRequest::NoGeometry )
-                                          .setSubsetOfAttributes( attList ) );
-
-    QgsFeature f;
-    QVariant currentValue;
-    QHash<QString, QVariant> val;
-    while ( fit.nextFeature( f ) )
-    {
-      currentValue = f.attribute( index );
-      val.insert( currentValue.toString(), currentValue );
-      if ( limit >= 0 && val.size() >= limit )
+    case QgsFields::OriginEdit:
+      // the layer is editable, but in certain cases it can still be avoided going through all features
+      if ( mEditBuffer->mDeletedFeatureIds.isEmpty() &&
+           mEditBuffer->mAddedFeatures.isEmpty() &&
+           !mEditBuffer->mDeletedAttributeIds.contains( index ) &&
+           mEditBuffer->mChangedAttributeValues.isEmpty() )
       {
-        break;
+        mDataProvider->uniqueValues( index, uniqueValues, limit );
+        return;
       }
-    }
+      FALLTHROUGH
+      //we need to go through each feature
+    case QgsFields::OriginJoin:
+    case QgsFields::OriginExpression:
+    {
+      QgsAttributeList attList;
+      attList << index;
 
-    uniqueValues = val.values();
-    return;
+      QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                            .setFlags( QgsFeatureRequest::NoGeometry )
+                                            .setSubsetOfAttributes( attList ) );
+
+      QgsFeature f;
+      QVariant currentValue;
+      QHash<QString, QVariant> val;
+      while ( fit.nextFeature( f ) )
+      {
+        currentValue = f.attribute( index );
+        val.insert( currentValue.toString(), currentValue );
+        if ( limit >= 0 && val.size() >= limit )
+        {
+          break;
+        }
+      }
+
+      uniqueValues = val.values();
+      return;
+    }
   }
 
   Q_ASSERT_X( false, "QgsVectorLayer::uniqueValues()", "Unknown source of the field!" );
@@ -3230,58 +3224,52 @@ QVariant QgsVectorLayer::minimumValue( int index )
   }
 
   QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin( index );
-  if ( origin == QgsFields::OriginUnknown )
-  {
-    return QVariant();
-  }
 
-  if ( origin == QgsFields::OriginProvider ) //a provider field
+  switch ( origin )
   {
-    return mDataProvider->minimumValue( index );
-  }
-  else if ( origin == QgsFields::OriginJoin )
-  {
-    int sourceLayerIndex;
-    const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, mUpdatedFields, sourceLayerIndex );
-    Q_ASSERT( join );
+    case QgsFields::OriginUnknown:
+      return QVariant();
 
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
-    Q_ASSERT( vl );
-
-    return vl->minimumValue( sourceLayerIndex );
-  }
-  else if ( origin == QgsFields::OriginEdit || origin == QgsFields::OriginExpression )
-  {
-    // the layer is editable, but in certain cases it can still be avoided going through all features
-    if ( origin == QgsFields::OriginEdit &&
-         mEditBuffer->mDeletedFeatureIds.isEmpty() &&
-         mEditBuffer->mAddedFeatures.isEmpty() && !
-         mEditBuffer->mDeletedAttributeIds.contains( index ) &&
-         mEditBuffer->mChangedAttributeValues.isEmpty() )
-    {
+    case QgsFields::OriginProvider: //a provider field
       return mDataProvider->minimumValue( index );
-    }
 
-    // we need to go through each feature
-    QgsAttributeList attList;
-    attList << index;
-
-    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                          .setFlags( QgsFeatureRequest::NoGeometry )
-                                          .setSubsetOfAttributes( attList ) );
-
-    QgsFeature f;
-    double minimumValue = std::numeric_limits<double>::max();
-    double currentValue = 0;
-    while ( fit.nextFeature( f ) )
+    case QgsFields::OriginEdit:
     {
-      currentValue = f.attribute( index ).toDouble();
-      if ( currentValue < minimumValue )
+      // the layer is editable, but in certain cases it can still be avoided going through all features
+      if ( mEditBuffer->mDeletedFeatureIds.isEmpty() &&
+           mEditBuffer->mAddedFeatures.isEmpty() && !
+           mEditBuffer->mDeletedAttributeIds.contains( index ) &&
+           mEditBuffer->mChangedAttributeValues.isEmpty() )
       {
-        minimumValue = currentValue;
+        return mDataProvider->minimumValue( index );
       }
     }
-    return QVariant( minimumValue );
+    FALLTHROUGH
+    // no choice but to go through all features
+    case QgsFields::OriginExpression:
+    case QgsFields::OriginJoin:
+    {
+      // we need to go through each feature
+      QgsAttributeList attList;
+      attList << index;
+
+      QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                            .setFlags( QgsFeatureRequest::NoGeometry )
+                                            .setSubsetOfAttributes( attList ) );
+
+      QgsFeature f;
+      double minimumValue = std::numeric_limits<double>::max();
+      double currentValue = 0;
+      while ( fit.nextFeature( f ) )
+      {
+        currentValue = f.attribute( index ).toDouble();
+        if ( currentValue < minimumValue )
+        {
+          minimumValue = currentValue;
+        }
+      }
+      return QVariant( minimumValue );
+    }
   }
 
   Q_ASSERT_X( false, "QgsVectorLayer::minimumValue()", "Unknown source of the field!" );
@@ -3296,58 +3284,49 @@ QVariant QgsVectorLayer::maximumValue( int index )
   }
 
   QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin( index );
-  if ( origin == QgsFields::OriginUnknown )
+  switch ( origin )
   {
-    return QVariant();
-  }
+    case QgsFields::OriginUnknown:
+      return QVariant();
 
-  if ( origin == QgsFields::OriginProvider ) //a provider field
-  {
-    return mDataProvider->maximumValue( index );
-  }
-  else if ( origin == QgsFields::OriginJoin )
-  {
-    int sourceLayerIndex;
-    const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, mUpdatedFields, sourceLayerIndex );
-    Q_ASSERT( join );
-
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
-    Q_ASSERT( vl );
-
-    return vl->maximumValue( sourceLayerIndex );
-  }
-  else if ( origin == QgsFields::OriginEdit || origin == QgsFields::OriginExpression )
-  {
-    // the layer is editable, but in certain cases it can still be avoided going through all features
-    if ( origin == QgsFields::OriginEdit &&
-         mEditBuffer->mDeletedFeatureIds.isEmpty() &&
-         mEditBuffer->mAddedFeatures.isEmpty() &&
-         !mEditBuffer->mDeletedAttributeIds.contains( index ) &&
-         mEditBuffer->mChangedAttributeValues.isEmpty() )
-    {
+    case QgsFields::OriginProvider: //a provider field
       return mDataProvider->maximumValue( index );
-    }
 
-    // we need to go through each feature
-    QgsAttributeList attList;
-    attList << index;
-
-    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                          .setFlags( QgsFeatureRequest::NoGeometry )
-                                          .setSubsetOfAttributes( attList ) );
-
-    QgsFeature f;
-    double maximumValue = -std::numeric_limits<double>::max();
-    double currentValue = 0;
-    while ( fit.nextFeature( f ) )
-    {
-      currentValue = f.attribute( index ).toDouble();
-      if ( currentValue > maximumValue )
+    case QgsFields::OriginEdit:
+      // the layer is editable, but in certain cases it can still be avoided going through all features
+      if ( mEditBuffer->mDeletedFeatureIds.isEmpty() &&
+           mEditBuffer->mAddedFeatures.isEmpty() &&
+           !mEditBuffer->mDeletedAttributeIds.contains( index ) &&
+           mEditBuffer->mChangedAttributeValues.isEmpty() )
       {
-        maximumValue = currentValue;
+        return mDataProvider->maximumValue( index );
       }
+
+      FALLTHROUGH
+      //no choice but to go through each feature
+    case QgsFields::OriginJoin:
+    case QgsFields::OriginExpression:
+    {
+      QgsAttributeList attList;
+      attList << index;
+
+      QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                            .setFlags( QgsFeatureRequest::NoGeometry )
+                                            .setSubsetOfAttributes( attList ) );
+
+      QgsFeature f;
+      double maximumValue = -std::numeric_limits<double>::max();
+      double currentValue = 0;
+      while ( fit.nextFeature( f ) )
+      {
+        currentValue = f.attribute( index ).toDouble();
+        if ( currentValue > maximumValue )
+        {
+          maximumValue = currentValue;
+        }
+      }
+      return QVariant( maximumValue );
     }
-    return QVariant( maximumValue );
   }
 
   Q_ASSERT_X( false, "QgsVectorLayer::maximumValue()", "Unknown source of the field!" );
