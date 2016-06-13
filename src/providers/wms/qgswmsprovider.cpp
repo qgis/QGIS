@@ -3636,14 +3636,24 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
 }
 
+// Some servers like http://glogow.geoportal2.pl/map/wms/wms.php? do not BBOX
+// to be formatted with excessive precision. As a double is exactly represented
+// with 19 decimal figures, do not attempt to output more
+static QString formatDouble( double x )
+{
+  if ( x == 0.0 )
+    return "0";
+  const int numberOfDecimals = qMax( 0, 19 - static_cast<int>( ceil( log10( fabs( x ) ) ) ) );
+  return qgsDoubleToString( x, numberOfDecimals );
+}
+
 QString QgsWmsProvider::toParamValue( const QgsRectangle& rect, bool changeXY )
 {
-  // Warning: does not work with scientific notation
   return QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-         .arg( qgsDoubleToString( rect.xMinimum() ),
-               qgsDoubleToString( rect.yMinimum() ),
-               qgsDoubleToString( rect.xMaximum() ),
-               qgsDoubleToString( rect.yMaximum() ) );
+         .arg( formatDouble( rect.xMinimum() ),
+               formatDouble( rect.yMinimum() ),
+               formatDouble( rect.xMaximum() ),
+               formatDouble( rect.yMaximum() ) );
 }
 
 void QgsWmsProvider::setSRSQueryItem( QUrl& url )
