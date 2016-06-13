@@ -238,7 +238,6 @@
       </layout>
       <zorder>frame</zorder>
       <zorder>line</zorder>
-      <zorder></zorder>
      </widget>
     </widget>
    </item>
