@@ -264,7 +264,7 @@ void TestQgsComposerLabel::renderAsHtml()
 
   QgsCompositionChecker checker( "composerlabel_renderhtml", mComposition );
   checker.setControlPathPrefix( "composer_label" );
-  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 10 ) );
 }
 
 void TestQgsComposerLabel::renderAsHtmlRelative()
