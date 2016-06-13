@@ -1306,6 +1306,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   if ( mLayer->rendererV2() )
   {
     mRendererDialog = new QgsRendererV2PropertiesDialog( mLayer, QgsStyleV2::defaultStyle(), true, this );
+    mRendererDialog->setDockMode( true );
     mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
 
     connect( mRendererDialog, SIGNAL( layerVariablesChanged() ), this, SLOT( updateVariableEditor() ) );

@@ -29,7 +29,7 @@ class QgsMapCanvas;
  * @brief The QgsMapLayerStyleManagerWidget class which is used to visually manage
  * the layer styles.
  */
-class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapStylePanel
+class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapStylingPanel
 {
     Q_OBJECT
   public:

@@ -302,10 +302,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual void unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) override;
 
     /** Register a new tab in the layer properties dialog */
-    virtual void registerMapStylePanelFactory( QgsMapStylePanelFactory* factory ) override;
+    virtual void registerMapStylePanelFactory( QgsMapStylingPanelFactory* factory ) override;
 
     /** Unregister a previously registered tab in the layer properties dialog */
-    virtual void unregisterMapStylePanelFactory( QgsMapStylePanelFactory* factory ) override;
+    virtual void unregisterMapStylePanelFactory( QgsMapStylingPanelFactory* factory ) override;
 
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.

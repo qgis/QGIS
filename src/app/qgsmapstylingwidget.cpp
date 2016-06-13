@@ -41,7 +41,7 @@
 #include "qgsmapstylepanel.h"
 #include "qgsmaplayerstylemanagerwidget.h"
 
-QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStylePanelFactory*> pages, QWidget *parent )
+QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStylingPanelFactory*> pages, QWidget *parent )
     : QWidget( parent )
     , mNotSupportedPage( 0 )
     , mLayerPage( 1 )
@@ -87,7 +87,7 @@ QgsMapStylingWidget::~QgsMapStylingWidget()
   delete mStyleManagerFactory;
 }
 
-void QgsMapStylingWidget::setPageFactories( QList<QgsMapStylePanelFactory *> factories )
+void QgsMapStylingWidget::setPageFactories( QList<QgsMapStylingPanelFactory *> factories )
 {
   mPageFactories = factories;
   // Always append the style manager factory at the bottom of the list
@@ -127,7 +127,7 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
     mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/histogram.png" ), "" ) );
   }
 
-  Q_FOREACH ( QgsMapStylePanelFactory* factory, mPageFactories )
+  Q_FOREACH ( QgsMapStylingPanelFactory* factory, mPageFactories )
   {
     if ( factory->supportsLayer( layer ) )
     {
@@ -162,7 +162,7 @@ void QgsMapStylingWidget::apply()
   QWidget* current = mWidgetArea->widget();
 
   bool styleWasChanged = false;
-  if ( QgsMapStylePanel* widget = qobject_cast<QgsMapStylePanel*>( current ) )
+  if ( QgsMapStylingPanel* widget = qobject_cast<QgsMapStylingPanel*>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
@@ -256,12 +256,13 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
   // TODO Make all widgets use this method.
   if ( mUserPages.contains( row ) )
   {
-    QgsMapStylePanel* panel = mUserPages[row]->createPanel( layer, mMapCanvas, this );
+    QgsMapStylingPanel* panel = mUserPages[row]->createPanel( layer, mMapCanvas, this );
     if ( panel )
     {
-      QgsDebugMsg( "Made me a widget!!" );
-      connect( panel, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
-      mWidgetArea->setWidget( panel );
+      connect( panel, SIGNAL( widgetChanged( QgsPanelWidget* ) ), this, SLOT( autoApply() ) );
+      QgsPanelWidgetStackWidget* stack = new QgsPanelWidgetStackWidget( mWidgetArea );
+      mWidgetArea->setWidget( stack );
+      stack->addMainPanel( panel );
     }
   }
 
@@ -280,6 +281,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
       {
         mVectorStyleWidget->deleteLater();
         mVectorStyleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyleV2::defaultStyle(), true, mWidgetArea );
+        mVectorStyleWidget->setDockMode( true );
         connect( mVectorStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         mWidgetArea->setWidget( mVectorStyleWidget );
         break;
@@ -419,7 +421,7 @@ QString QgsMapLayerStyleManagerWidgetFactory::title()
   return QString();
 }
 
-QgsMapStylePanel *QgsMapLayerStyleManagerWidgetFactory::createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+QgsMapStylingPanel *QgsMapLayerStyleManagerWidgetFactory::createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
 {
   return new QgsMapLayerStyleManagerWidget( layer,  canvas, parent );
 

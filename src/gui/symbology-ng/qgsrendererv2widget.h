@@ -20,14 +20,13 @@
 #include <QStackedWidget>
 #include "qgssymbolv2.h"
 #include "qgsdatadefined.h"
+#include "qgspanelwidget.h"
 
 class QgsVectorLayer;
 class QgsStyleV2;
 class QgsFeatureRendererV2;
 class QgsSymbolV2SelectorDialog;
 class QgsMapCanvas;
-class QgsRendererWidgetContainer;
-
 
 /**
   Base class for renderer settings widgets
@@ -39,7 +38,7 @@ WORKFLOW:
 - on any change of renderer type, create some default (dummy?) version and change the stacked widget
 - when clicked ok/apply, get the renderer from active widget and clone it for the layer
 */
-class GUI_EXPORT QgsRendererV2Widget : public QWidget
+class GUI_EXPORT QgsRendererV2Widget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
@@ -77,6 +76,13 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      */
     void applyChanges();
 
+    /**
+     * Set the widget in dock mode which tells the widget to emit panel
+     * widgets and not open dialogs
+     * @param dockMode True to enable dock mode.
+     */
+    virtual void setDockMode( bool dockMode ) override;
+
 
   signals:
     /**
@@ -86,19 +92,8 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      */
     void layerVariablesChanged();
 
-    /**
-     * Emitted when something on the widget has changed.
-     * All widgets will fire this event to notify of an internal change.
-     */
-    void widgetChanged();
-
-    /** Shows a panel widget inside the renderer widget.
-     * @param widget widget panel to show
-     * @note added in QGIS 2.16
-     */
-    void showPanel( QgsRendererWidgetContainer* widget );
-
   protected:
+    bool mDockMode;
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
     QMenu* contextMenu;

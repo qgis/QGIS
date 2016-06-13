@@ -31,7 +31,6 @@ class QgsSymbolV2;
 class QgsPaintEffect;
 class QgsRendererV2Widget;
 class QgsMapCanvas;
-class QgsRendererWidgetContainer;
 
 
 class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::QgsRendererV2PropsDialogBase
@@ -57,6 +56,13 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
+    /**
+     * Set the widget in dock mode which tells the widget to emit panel
+     * widgets and not open dialogs
+     * @param dockMode True to enable dock mode.
+     */
+    void setDockMode( bool dockMode );
+
   signals:
     /**
      * Emitted when expression context variables on the associated
@@ -80,18 +86,6 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
 
     //! Apply and accept the changes for the dialog.
     void onOK();
-
-    /** Shows a panel widget inside the renderer widget.
-     * @param container widget panel to show
-     * @note added in QGIS 2.16
-     */
-    void showPanel( QgsRendererWidgetContainer *container );
-
-    /**
-     * Closes the given panel in the stack of panels.
-     * @param container The container widget to close.
-     */
-    void closePanel( QgsRendererWidgetContainer *container );
 
   private slots:
     void showOrderByDialog();
@@ -126,6 +120,9 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
     QgsMapCanvas* mMapCanvas;
 
     QgsFeatureRequest::OrderBy mOrderBy;
+
+  private:
+    bool mDockMode;
 };
 
 

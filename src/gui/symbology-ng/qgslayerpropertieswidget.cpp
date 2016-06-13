@@ -32,6 +32,7 @@
 #include "qgsellipsesymbollayerv2widget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbolv2.h" //for the unit
+#include "qgspanelwidget.h"
 
 static bool _initWidgetFunction( const QString& name, QgsSymbolLayerV2WidgetFunc f )
 {
@@ -86,7 +87,7 @@ static void _initWidgetFunctions()
 
 
 QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent )
-    : QWidget( parent )
+    : QgsPanelWidget( parent )
     , mPresetExpressionContext( nullptr )
     , mMapCanvas( nullptr )
 {
@@ -119,6 +120,9 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, con
   connect( cboLayerType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( layerTypeChanged() ) );
 
   connect( mEffectWidget, SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
+
+  this->connectChildPanel( mEffectWidget );
+
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
 }
 
@@ -128,6 +132,15 @@ void QgsLayerPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
   QgsSymbolLayerV2Widget* w = dynamic_cast< QgsSymbolLayerV2Widget* >( stackedWidget->currentWidget() );
   if ( w )
     w->setMapCanvas( mMapCanvas );
+}
+
+void QgsLayerPropertiesWidget::setDockMode( bool dockMode )
+{
+  mDockMode = dockMode;
+  if ( dockMode )
+  {
+    mEffectWidget->setDockMode( dockMode );
+  }
 }
 
 void QgsLayerPropertiesWidget::setExpressionContext( QgsExpressionContext *context )
@@ -227,6 +240,7 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
 
   // also update paint effect preview
   mEffectWidget->setPreviewPicture( QgsSymbolLayerV2Utils::symbolLayerPreviewPicture( mLayer, QgsSymbolV2::MM, QSize( 80, 80 ) ) );
+  emit widgetChanged();
 }
 
 void QgsLayerPropertiesWidget::reloadLayer()

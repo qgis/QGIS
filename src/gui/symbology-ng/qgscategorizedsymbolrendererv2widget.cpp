@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgscategorizedsymbolrendererv2widget.h"
-#include "qgsrendererwidgetcontainer.h"
+#include "qgspanelwidget.h"
 
 #include "qgscategorizedsymbolrendererv2.h"
 
@@ -571,14 +571,13 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
 void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 {
   QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
-  QgsSymbolV2SelectorDialog* dlg = new QgsSymbolV2SelectorDialog( newSymbol, mStyle, mLayer, nullptr, true );
+  QgsSymbolV2SelectorWidget* dlg = new QgsSymbolV2SelectorWidget( newSymbol, mStyle, mLayer, nullptr );
+  dlg->setDockMode( true );
   dlg->setMapCanvas( mMapCanvas );
 
-  QgsRendererWidgetContainer* container = new  QgsRendererWidgetContainer( dlg, "Select Symbol", nullptr );
-  connect( dlg, SIGNAL( symbolModified() ), container, SLOT( emitWidgetChanged() ) );
-  connect( container, SIGNAL( widgetChanged( QgsRendererWidgetContainer* ) ), this, SLOT( updateSymbolsFromWidget( QgsRendererWidgetContainer* ) ) );
-  connect( container, SIGNAL( accepted( QgsRendererWidgetContainer* ) ), this, SLOT( cleanUpSymbolSelector( QgsRendererWidgetContainer* ) ) );
-  emit showPanel( container );
+  connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
+  connect( dlg, SIGNAL( accepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
+  emit showPanel( dlg );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
@@ -617,14 +616,12 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
     symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   }
 
-  QgsSymbolV2SelectorDialog* dlg = new QgsSymbolV2SelectorDialog( symbol, mStyle, mLayer, nullptr, true );
+  QgsSymbolV2SelectorWidget* dlg = new QgsSymbolV2SelectorWidget( symbol, mStyle, mLayer, nullptr );
+  dlg->setDockMode( true );
   dlg->setMapCanvas( mMapCanvas );
-
-  QgsRendererWidgetContainer* container = new QgsRendererWidgetContainer( dlg, "Select Symbol", nullptr );
-  connect( dlg, SIGNAL( symbolModified() ), container, SLOT( emitWidgetChanged() ) );
-  connect( container, SIGNAL( widgetChanged( QgsRendererWidgetContainer* ) ), this, SLOT( updateSymbolsFromWidget( QgsRendererWidgetContainer* ) ) );
-  connect( container, SIGNAL( accepted( QgsRendererWidgetContainer* ) ), this, SLOT( cleanUpSymbolSelector( QgsRendererWidgetContainer* ) ) );
-  emit showPanel( container );
+  connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
+  connect( dlg, SIGNAL( accepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
+  emit showPanel( dlg );
 }
 
 static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV2* symbol )
@@ -1002,18 +999,18 @@ void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
   }
 }
 
-void QgsCategorizedSymbolRendererV2Widget::cleanUpSymbolSelector( QgsRendererWidgetContainer *container )
+void QgsCategorizedSymbolRendererV2Widget::cleanUpSymbolSelector( QgsPanelWidget *container )
 {
   if ( container )
   {
-    QgsSymbolV2SelectorDialog* dlg = qobject_cast<QgsSymbolV2SelectorDialog*>( container->widget() );
+    QgsSymbolV2SelectorWidget* dlg = qobject_cast<QgsSymbolV2SelectorWidget*>( container );
     delete dlg->symbol();
   }
 }
 
-void QgsCategorizedSymbolRendererV2Widget::updateSymbolsFromWidget( QgsRendererWidgetContainer* container )
+void QgsCategorizedSymbolRendererV2Widget::updateSymbolsFromWidget()
 {
-  QgsSymbolV2SelectorDialog* dlg = qobject_cast<QgsSymbolV2SelectorDialog*>( container->widget() );
+  QgsSymbolV2SelectorWidget* dlg = qobject_cast<QgsSymbolV2SelectorWidget*>( sender() );
   delete mCategorizedSymbol;
   mCategorizedSymbol = dlg->symbol()->clone();
 

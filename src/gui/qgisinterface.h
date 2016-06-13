@@ -35,7 +35,7 @@ class QgsLegendInterface;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapLayerPropertiesFactory;
-class QgsMapStylePanelFactory;
+class QgsMapStylingPanelFactory;
 class QgsMessageBar;
 class QgsPluginManagerInterface;
 class QgsRasterLayer;
@@ -344,10 +344,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) = 0;
 
     /** Register a new tab in the layer properties dialog */
-    virtual void registerMapStylePanelFactory( QgsMapStylePanelFactory* factory ) = 0;
+    virtual void registerMapStylePanelFactory( QgsMapStylingPanelFactory* factory ) = 0;
 
     /** Unregister a previously registered tab in the layer properties dialog */
-    virtual void unregisterMapStylePanelFactory( QgsMapStylePanelFactory* factory ) = 0;
+    virtual void unregisterMapStylePanelFactory( QgsMapStylingPanelFactory* factory ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used

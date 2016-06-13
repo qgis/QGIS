@@ -21,7 +21,7 @@
 #include "qgspainteffectwidget.h"
 #include "qgsapplication.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgsrendererwidgetcontainer.h"
+#include "qgspanelwidget.h"
 
 #include <QPicture>
 #include <QPainter>
@@ -94,7 +94,7 @@ class EffectItem : public QStandardItem
 //
 
 QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent )
-    : QWidget( parent )
+    : QgsPanelWidget( parent )
     , mStack( stack )
     , mPreviewPicture( nullptr )
 {
@@ -133,6 +133,8 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   // set effect as active item in the tree
   QModelIndex newIndex = mEffectsList->model()->index( 0, 0 );
   mEffectsList->setCurrentIndex( newIndex );
+
+  setPanelTitle( tr( "Effects Properties" ) );
 }
 
 QgsEffectStackPropertiesWidget::~QgsEffectStackPropertiesWidget()
@@ -379,7 +381,7 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 //
 
 QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent , QgsPaintEffect *effect )
-    : QWidget( parent )
+    : QgsPanelWidget( parent )
     , mDockMode( false )
     , mEnabledCheckBox( nullptr )
     , mButton( nullptr )
@@ -457,11 +459,9 @@ void QgsEffectStackCompactWidget::showDialog()
     {
       widget->setPreviewPicture( *mPreviewPicture );
     }
-    QgsRendererWidgetContainer* container = new  QgsRendererWidgetContainer( widget, tr( "Effects Properties" ), nullptr );
-    connect( widget, SIGNAL( widgetChanged() ), container, SLOT( emitWidgetChanged() ) );
-    connect( container, SIGNAL( widgetChanged( QgsRendererWidgetContainer* ) ), this, SLOT( updateFromContainer( QgsRendererWidgetContainer* ) ) );
-    connect( container, SIGNAL( accepted( QgsRendererWidgetContainer* ) ), this, SLOT( cleanUpContainer( QgsRendererWidgetContainer* ) ) );
-    emit showPanel( container );
+    connect( widget, SIGNAL( widgetChanged() ), this, SLOT( updateEffectLive() ) );
+    connect( widget, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( updateAcceptWidget( QgsPanelWidget* ) ) );
+    emit showPanel( widget );
   }
   else
   {
@@ -492,17 +492,17 @@ void QgsEffectStackCompactWidget::enableToggled( bool checked )
   emit changed();
 }
 
-void QgsEffectStackCompactWidget::cleanUpContainer( QgsRendererWidgetContainer *container )
+void QgsEffectStackCompactWidget::updateAcceptWidget( QgsPanelWidget *panel )
 {
-  QgsEffectStackPropertiesWidget* widget = qobject_cast<QgsEffectStackPropertiesWidget*>( container->widget() );
+  QgsEffectStackPropertiesWidget* widget = qobject_cast<QgsEffectStackPropertiesWidget*>( panel );
   *mStack = *widget->stack();
   emit changed();
 //    delete widget->stack();
 }
 
-void QgsEffectStackCompactWidget::updateFromContainer( QgsRendererWidgetContainer *container )
+void QgsEffectStackCompactWidget::updateEffectLive()
 {
-  QgsEffectStackPropertiesWidget* widget = qobject_cast<QgsEffectStackPropertiesWidget*>( container->widget() );
+  QgsEffectStackPropertiesWidget* widget = qobject_cast<QgsEffectStackPropertiesWidget*>( sender() );
   *mStack = *widget->stack();
   emit changed();
 }

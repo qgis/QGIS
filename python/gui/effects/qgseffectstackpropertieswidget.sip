@@ -9,7 +9,7 @@
  * \see QgsEffectStackCompactWidget
  */
 
-class QgsEffectStackPropertiesWidget : QWidget
+class QgsEffectStackPropertiesWidget : QgsPanelWidget
 {
 %TypeHeaderCode
 #include <qgseffectstackpropertieswidget.h>
@@ -65,18 +65,6 @@ class QgsEffectStackPropertiesWidget : QWidget
      * @param newEffect new effect to replace existing effect at selected position within the stack.
      */
     void changeEffect( QgsPaintEffect* newEffect );
-
-  signals:
-    /**
-     * Emitted when something in the widget changes.
-     */
-    void widgetChanged();
-
-    /** Emitted when a panel is shown in the widget.
-     * @param widget widget panel which was shown
-     * @note added in QGIS 2.16
-     */
-    void showPanel( QgsRendererWidgetContainer* widget );
 
   protected:
 
@@ -159,7 +147,7 @@ class QgsEffectStackPropertiesDialog : QgsDialog
  * \see QgsEffectStackPropertiesDialog
  */
 
-class QgsEffectStackCompactWidget : QWidget
+class QgsEffectStackCompactWidget : QgsPanelWidget
 {
 %TypeHeaderCode
 #include <qgseffectstackpropertieswidget.h>
@@ -206,11 +194,4 @@ class QgsEffectStackCompactWidget : QWidget
     /** Emitted when the paint effect properties change
      */
     void changed();
-
-    /** Emitted when a panel is shown in the widget.
-     * @param widget widget panel which was shown
-     * @note added in QGIS 2.16
-     */
-    void showPanel( QgsRendererWidgetContainer* widget );
-
 };

@@ -47,7 +47,7 @@ static void _initRendererWidgetFunctions()
 
 
 QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas* canvas, QWidget *parent )
-    : QgsMapStylePanel( layer, canvas, parent )
+    : QgsMapStylingPanel( layer, canvas, parent )
     , mRendererWidget( nullptr )
 {
   mRasterLayer = qobject_cast<QgsRasterLayer*>( layer );

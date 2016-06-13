@@ -24,6 +24,8 @@ class QgsRendererV2PropertiesDialog : QDialog
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
+    void setDockMode( bool dockMode );
+
   signals:
     /**
      * Emitted when expression context variables on the associated
@@ -47,18 +49,6 @@ class QgsRendererV2PropertiesDialog : QDialog
 
     //! Apply and accept the changes for the dialog.
     void onOK();
-
-    /** Shows a panel widget inside the renderer widget.
-     * @param container widget panel to show
-     * @note added in QGIS 2.16
-     */
-    void showPanel( QgsRendererWidgetContainer *container );
-
-    /**
-     * Closes the given panel in the stack of panels.
-     * @param container The container widget to close.
-     */
-    void closePanel( QgsRendererWidgetContainer *container );
 
   protected:
     /**

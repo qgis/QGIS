@@ -18,7 +18,7 @@
 #include "qgsrendererv2widget.h"
 
 class QgsSingleSymbolRendererV2;
-class QgsSymbolV2SelectorDialog;
+class QgsSymbolV2SelectorWidget;
 
 class QMenu;
 
@@ -36,6 +36,13 @@ class GUI_EXPORT QgsSingleSymbolRendererV2Widget : public QgsRendererV2Widget
 
     virtual void setMapCanvas( QgsMapCanvas* canvas ) override;
 
+    /**
+     * Set the widget in dock mode which tells the widget to emit panel
+     * widgets and not open dialogs
+     * @param dockMode True to enable dock mode.
+     */
+    virtual void setDockMode( bool dockMode ) override;
+
   public slots:
     void changeSingleSymbol();
 
@@ -47,7 +54,7 @@ class GUI_EXPORT QgsSingleSymbolRendererV2Widget : public QgsRendererV2Widget
   protected:
 
     QgsSingleSymbolRendererV2* mRenderer;
-    QgsSymbolV2SelectorDialog* mSelector;
+    QgsSymbolV2SelectorWidget* mSelector;
     QgsSymbolV2* mSingleSymbol;
 };
 

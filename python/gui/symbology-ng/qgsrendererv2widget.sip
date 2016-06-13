@@ -1,4 +1,4 @@
-class QgsRendererV2Widget : QWidget
+class QgsRendererV2Widget : QgsPanelWidget
 {
 %TypeHeaderCode
 #include <qgsrendererv2widget.h>
@@ -39,6 +39,13 @@ class QgsRendererV2Widget : QWidget
      */
     void applyChanges();
 
+    /**
+     * Set the widget in dock mode which tells the widget to emit panel
+     * widgets and not open dialogs
+     * @param dockMode True to enable dock mode.
+     */
+    virtual void setDockMode( bool dockMode);
+
   signals:
     /**
      * Emitted when expression context variables on the associated
@@ -46,18 +53,6 @@ class QgsRendererV2Widget : QWidget
      * to re-synchronize with the variables.
      */
     void layerVariablesChanged();
-
-    /**
-     * Emitted when something on the widget has changed.
-     * All widgets will fire this event to notify of an internal change.
-     */
-    void widgetChanged();
-
-    /** Shows a panel widget inside the renderer widget.
-     * @param widget widget panel to show
-     * @note added in QGIS 2.16
-     */
-    void showPanel( QgsRendererWidgetContainer* widget );
 
   protected:
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods

@@ -23,6 +23,7 @@ class QgsSymbolLayerV2;
 class QgsSymbolLayerV2Widget;
 class QgsVectorLayer;
 class QgsMapCanvas;
+class QgsPanelWidget;
 
 class SymbolLayerItem;
 
@@ -30,7 +31,7 @@ class SymbolLayerItem;
 #include <QStandardItemModel>
 
 
-class GUI_EXPORT QgsLayerPropertiesWidget : public QWidget, private Ui::LayerPropertiesWidget
+class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::LayerPropertiesWidget
 {
     Q_OBJECT
 
@@ -51,6 +52,13 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QWidget, private Ui::LayerPro
      * @note added in QGIS 2.12
      */
     virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /**
+     * Set the widget in dock mode which tells the widget to emit panel
+     * widgets and not open dialogs
+     * @param dockMode True to enable dock mode.
+     */
+    void setDockMode( bool dockMode );
 
   public slots:
     void layerTypeChanged();
@@ -84,6 +92,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QWidget, private Ui::LayerPro
     void reloadLayer();
 
   private:
+    bool mDockMode;
     QgsExpressionContext* mPresetExpressionContext;
     QgsMapCanvas* mMapCanvas;
 
