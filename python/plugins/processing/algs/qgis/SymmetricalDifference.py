@@ -39,10 +39,6 @@ from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
-GEOM_25D = [QGis.WKBPoint25D, QGis.WKBLineString25D, QGis.WKBPolygon25D,
-            QGis.WKBMultiPoint25D, QGis.WKBMultiLineString25D,
-            QGis.WKBMultiPolygon25D]
-
 
 class SymmetricalDifference(GeoAlgorithm):
 
@@ -73,10 +69,6 @@ class SymmetricalDifference(GeoAlgorithm):
         providerB = layerB.dataProvider()
 
         geomType = providerA.geometryType()
-        if geomType in GEOM_25D:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Input layer does not support 2.5D type geometry ({}).').format(QgsWKBTypes.displayString(geomType)))
-
         fields = vector.combineVectorFields(layerA, layerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, geomType, providerA.crs())
