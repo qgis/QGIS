@@ -176,7 +176,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   if ( myDockFlag )
   {
     mDock = new QgsAttributeTableDock( tr( "%1 (%n Feature(s))", "feature count", mMainView->featureCount() ).arg( mLayer->name() ), QgisApp::instance() );
-    mDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
     mDock->setWidget( this );
     connect( this, SIGNAL( destroyed() ), mDock, SLOT( close() ) );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
