@@ -90,6 +90,8 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
   private slots:
     void joinedLayerUpdatedFields();
 
+    void joinedLayerModified();
+
   private:
 
     QgsVectorLayer* mLayer;

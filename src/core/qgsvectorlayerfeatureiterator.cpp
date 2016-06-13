@@ -31,7 +31,10 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer 
 {
   mProviderFeatureSource = layer->dataProvider()->featureSource();
   mFields = layer->fields();
+
+  layer->createJoinCaches();
   mJoinBuffer = layer->mJoinBuffer->clone();
+
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
   mCrsId = layer->crs().srsid();
 

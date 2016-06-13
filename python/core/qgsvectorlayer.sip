@@ -8,6 +8,7 @@ struct QgsVectorJoinInfo
 %TypeHeaderCode
 #include "qgsvectorlayer.h"
 %End
+  QgsVectorJoinInfo();
 
   /** Join field in the target layer*/
   QString targetFieldName;
@@ -17,6 +18,8 @@ struct QgsVectorJoinInfo
   QString joinFieldName;
   /** True if the join is cached in virtual memory*/
   bool memoryCache;
+  /** True if the cached join attributes need to be updated*/
+  bool cacheDirty;
   /** Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
    * @note not available in python bindings
    */
