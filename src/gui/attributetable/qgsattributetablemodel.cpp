@@ -593,6 +593,11 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     val = mFeat.attribute( fieldId );
   }
 
+  if ( role == SortRole )
+  {
+    return val;
+  }
+
   switch ( role )
   {
     case Qt::DisplayRole:
