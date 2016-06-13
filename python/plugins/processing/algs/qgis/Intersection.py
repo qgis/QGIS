@@ -43,10 +43,6 @@ for key, value in wkbTypeGroups.items():
     for const in value:
         wkbTypeGroups[const] = key
 
-GEOM_25D = [QGis.WKBPoint25D, QGis.WKBLineString25D, QGis.WKBPolygon25D,
-            QGis.WKBMultiPoint25D, QGis.WKBMultiLineString25D,
-            QGis.WKBMultiPolygon25D]
-
 
 class Intersection(GeoAlgorithm):
 
@@ -71,10 +67,6 @@ class Intersection(GeoAlgorithm):
         vproviderA = vlayerA.dataProvider()
 
         geomType = vproviderA.geometryType()
-        if geomType in GEOM_25D:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Input layer has unsupported geometry type {}').format(geomType))
-
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      geomType, vproviderA.crs())
