@@ -838,7 +838,9 @@ void QgsSymbolV2SelectorDialog::lockLayer()
 
 void QgsSymbolV2SelectorDialog::saveSymbol()
 {
+  Q_NOWARN_DEPRECATED_PUSH
   mSelectorWidget->saveSymbol();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsSymbolV2SelectorDialog::duplicateLayer()

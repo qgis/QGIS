@@ -37,9 +37,9 @@ void QgsPanelWidget::connectChildPanel( QgsPanelWidget *panel )
   connect( panel, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
 }
 
-void QgsPanelWidget::setDockMode(bool dockMode)
+void QgsPanelWidget::setDockMode( bool dockMode )
 {
- mDockMode = true;
+  mDockMode = dockMode;
 }
 
 void QgsPanelWidget::acceptPanel()
