@@ -40,6 +40,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsmapstylepanel.h"
 #include "qgsmaplayerstylemanagerwidget.h"
+#include "qgsruntimeprofiler.h"
 
 QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStylingPanelFactory*> pages, QWidget *parent )
     : QWidget( parent )
@@ -100,6 +101,7 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
   {
     mLayerCombo->setLayer( nullptr );
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
+    mLastStyleXml.clear();
     return;
   }
 
@@ -135,7 +137,6 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
       mOptionsListWidget->addItem( item );
       int row = mOptionsListWidget->row( item );
       mUserPages[row] = factory;
-      QgsDebugMsg( QString( "ROW IS %1" ).arg( row ) );
     }
   }
   mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "mActionHistory.svg" ), "" ) );
@@ -150,14 +151,22 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
   }
 
   mStackedWidget->setCurrentIndex( 1 );
+
+  QString errorMsg;
+  QDomDocument doc( "style" );
+  mLastStyleXml = doc.createElement( "style" );
+  doc.appendChild( mLastStyleXml );
+  mCurrentLayer->writeStyle( mLastStyleXml, doc, errorMsg );
 }
 
 void QgsMapStylingWidget::apply()
 {
-  disconnect( mCurrentLayer, SIGNAL( repaintRequested() ), this, SLOT( updateCurrentWidgetLayer() ) );
-  QString undoName = "Style Change";
   if ( !mCurrentLayer )
     return;
+
+  disconnect( mCurrentLayer, SIGNAL( repaintRequested() ), this, SLOT( updateCurrentWidgetLayer() ) );
+
+  QString undoName = "Style Change";
 
   QWidget* current = mWidgetArea->widget();
 
@@ -191,6 +200,7 @@ void QgsMapStylingWidget::apply()
     mRasterStyleWidget->apply();
     styleWasChanged = true;
   }
+
   pushUndoItem( undoName );
 
   if ( styleWasChanged )
@@ -225,7 +235,6 @@ void QgsMapStylingWidget::redo()
 
 void QgsMapStylingWidget::updateCurrentWidgetLayer()
 {
-  QgsDebugMsgLevel( "UPDATE!!!", 4 );
   mBlockAutoApply = true;
 
   QgsMapLayer* layer = mCurrentLayer;
@@ -348,12 +357,6 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
   {
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
   }
-
-  QString errorMsg;
-  QDomDocument doc( "style" );
-  mLastStyleXml = doc.createElement( "style" );
-  doc.appendChild( mLastStyleXml );
-  mCurrentLayer->writeSymbology( mLastStyleXml, doc, errorMsg );
 
   mBlockAutoApply = false;
 }
