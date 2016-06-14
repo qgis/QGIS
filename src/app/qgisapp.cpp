@@ -5576,6 +5576,9 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
   if ( !vlayer )
     return;
 
+  mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( "/mAction.svg" ) );
+  mActionFeatureAction->setToolTip( tr( "No action selected" ) );
+
   mFeatureActionMenu->setActiveAction( action );
 
   int index = mFeatureActionMenu->actions().indexOf( action );
@@ -5584,6 +5587,16 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
   {
     vlayer->actions()->setDefaultAction( index );
     QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, nullptr );
+
+    QgsAction a = vlayer->actions()->listActions().at( index );
+
+    if ( !a.name().isEmpty() )
+      mActionFeatureAction->setToolTip( tr( "Run feature action<br><b>%1</b>" ).arg( a.name() ) );
+    else if ( !a.shortTitle().isEmpty() )
+      mActionFeatureAction->setToolTip( tr( "Run feature action<br><b>%1</b>" ).arg( a.shortTitle() ) );
+
+    if ( !a.icon().isNull() )
+      mActionFeatureAction->setIcon( a.icon() );
   }
   else
   {
@@ -5594,6 +5607,12 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
     if ( mapLayerAction )
     {
       QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, mapLayerAction );
+
+      if ( !mapLayerAction->text().isEmpty() )
+        mActionFeatureAction->setToolTip( tr( "Run feature action<br><b>%1</b>" ).arg( mapLayerAction->text() ) );
+
+      if ( !mapLayerAction->icon().isNull() )
+        mActionFeatureAction->setIcon( mapLayerAction->icon() );
     }
     else
     {
@@ -5613,7 +5632,7 @@ void QgisApp::refreshFeatureActions()
   QgsActionManager *actions = vlayer->actions();
   for ( int i = 0; i < actions->size(); i++ )
   {
-    QAction *action = mFeatureActionMenu->addAction( actions->at( i ).name() );
+    QAction *action = mFeatureActionMenu->addAction( actions->at( i ).icon(), actions->at( i ).name() );
     if ( i == actions->defaultAction() )
     {
       mFeatureActionMenu->setActiveAction( action );
@@ -5637,6 +5656,7 @@ void QgisApp::refreshFeatureActions()
     }
   }
 
+  updateDefaultFeatureAction( mFeatureActionMenu->activeAction() );
 }
 
 void QgisApp::measure()
@@ -10700,6 +10720,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
     }
   }
+
+  refreshFeatureActions();
 }
 
 void QgisApp::refreshActionFeatureAction()
