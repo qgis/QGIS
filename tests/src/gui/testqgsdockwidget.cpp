@@ -59,22 +59,28 @@ void TestQgsDockWidget::testSignals()
   QApplication::setActiveWindow( w ); //required for focus events
   QgsDockWidget* d = new QgsDockWidget( w );
 
-  QSignalSpy spyClosed( d, SIGNAL( closed( bool ) ) );
-  QSignalSpy spyOpened( d, SIGNAL( opened( bool ) ) );
+  QSignalSpy spyClosedStateChanged( d, SIGNAL( closedStateChanged( bool ) ) );
+  QSignalSpy spyClosed( d, SIGNAL( closed() ) );
+  QSignalSpy spyOpenedStateChanged( d, SIGNAL( openedStateChanged( bool ) ) );
+  QSignalSpy spyOpened( d, SIGNAL( opened() ) );
 
   w->show();
 
   d->show();
-  QCOMPARE( spyClosed.count(), 1 );
-  QCOMPARE( spyClosed.last().at( 0 ).toBool(), false );
+  QCOMPARE( spyClosedStateChanged.count(), 1 );
+  QCOMPARE( spyClosedStateChanged.last().at( 0 ).toBool(), false );
+  QCOMPARE( spyOpenedStateChanged.count(), 1 );
+  QCOMPARE( spyOpenedStateChanged.last().at( 0 ).toBool(), true );
+  QCOMPARE( spyClosed.count(), 0 );
   QCOMPARE( spyOpened.count(), 1 );
-  QCOMPARE( spyOpened.last().at( 0 ).toBool(), true );
 
   d->close();
-  QCOMPARE( spyClosed.count(), 2 );
-  QCOMPARE( spyClosed.last().at( 0 ).toBool(), true );
-  QCOMPARE( spyOpened.count(), 2 );
-  QCOMPARE( spyOpened.last().at( 0 ).toBool(), false );
+  QCOMPARE( spyClosedStateChanged.count(), 2 );
+  QCOMPARE( spyClosedStateChanged.last().at( 0 ).toBool(), true );
+  QCOMPARE( spyOpenedStateChanged.count(), 2 );
+  QCOMPARE( spyOpenedStateChanged.last().at( 0 ).toBool(), false );
+  QCOMPARE( spyClosed.count(), 1 );
+  QCOMPARE( spyOpened.count(), 1 );
 
   delete w;
 }
