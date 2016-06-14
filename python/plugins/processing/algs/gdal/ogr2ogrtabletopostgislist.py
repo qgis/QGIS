@@ -44,6 +44,7 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
 
     DATABASE = 'DATABASE'
     INPUT_LAYER = 'INPUT_LAYER'
+    SHAPE_ENCODING = 'SHAPE_ENCODING'
     HOST = 'HOST'
     PORT = 'PORT'
     USER = 'USER'
@@ -76,6 +77,8 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
                                              self.tr('Database (connection name)'), self.DB_CONNECTIONS))
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input layer')))
+        self.addParameter(ParameterString(self.SHAPE_ENCODING,
+                                          self.tr('Shape encoding'), "", optional=True))
         self.addParameter(ParameterString(self.SCHEMA,
                                           self.tr('Schema name'), 'public', optional=True))
         self.addParameter(ParameterString(self.TABLE,
@@ -120,6 +123,7 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         password = settings.value(mySettings + '/password')
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
         schema = unicode(self.getParameterValue(self.SCHEMA))
         table = unicode(self.getParameterValue(self.TABLE))
         pk = unicode(self.getParameterValue(self.PK))
@@ -140,6 +144,10 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         arguments = []
         arguments.append('-progress')
         arguments.append('--config PG_USE_COPY YES')
+        if len(shapeEncoding) > 0:
+            arguments.append('--config')
+            arguments.append('SHAPE_ENCODING')
+            arguments.append('"' + shapeEncoding + '"')
         arguments.append('-f')
         arguments.append('PostgreSQL')
         arguments.append('PG:"host=')
