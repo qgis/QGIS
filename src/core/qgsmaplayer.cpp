@@ -1228,12 +1228,6 @@ bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMe
   setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
   setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
 
-  QDomNode extentNode = myRoot.namedItem( "extent" );
-  if ( !extentNode.isNull() )
-  {
-    setExtent( QgsXmlUtils::readRectangle( extentNode.toElement() ) );
-  }
-
 #if 0
   //read transparency level
   QDomNode transparencyNode = myRoot.namedItem( "transparencyLevelInt" );
@@ -1262,11 +1256,6 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg )
   myRootNode.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
   myRootNode.setAttribute( "minimumScale", QString::number( minimumScale() ) );
   myRootNode.setAttribute( "maximumScale", QString::number( maximumScale() ) );
-
-  if ( !mExtent.isNull() )
-  {
-    myRootNode.appendChild( QgsXmlUtils::writeRectangle( mExtent, myDocument ) );
-  }
 
 #if 0
   // <transparencyLevelInt>
