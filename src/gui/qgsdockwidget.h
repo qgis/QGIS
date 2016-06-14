@@ -73,17 +73,31 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
 
   signals:
 
-    /** Emitted when dock widget is closed (or opened).
-     * @param wasClosed will be true if dock widget was closed, or false if dock widget was opened
+    /** Emitted when dock widget is closed.
+     * @see closedStateChanged()
      * @see opened()
      */
-    void closed( bool wasClosed );
+    void closed();
+
+    /** Emitted when dock widget is closed (or opened).
+     * @param wasClosed will be true if dock widget was closed, or false if dock widget was opened
+     * @see closed()
+     * @see openedStateChanged()
+     */
+    void closedStateChanged( bool wasClosed );
+
+    /** Emitted when dock widget is opened.
+     * @see openedStateChanged()
+     * @see closed()
+     */
+    void opened();
 
     /** Emitted when dock widget is opened (or closed).
      * @param wasOpened will be true if dock widget was opened, or false if dock widget was closed
-     * @see closed()
+     * @see closedStateChanged()
+     * @see opened()
      */
-    void opened( bool wasOpened );
+    void openedStateChanged( bool wasOpened );
 
   private slots:
 

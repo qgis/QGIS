@@ -59,15 +59,17 @@ bool QgsDockWidget::isUserVisible() const
 
 void QgsDockWidget::closeEvent( QCloseEvent* e )
 {
-  emit closed( true );
-  emit opened( false );
+  emit closed();
+  emit closedStateChanged( true );
+  emit openedStateChanged( false );
   QDockWidget::closeEvent( e );
 }
 
 void QgsDockWidget::showEvent( QShowEvent* e )
 {
-  emit closed( false );
-  emit opened( true );
+  emit opened();
+  emit closedStateChanged( false );
+  emit openedStateChanged( true );
   QDockWidget::showEvent( e );
 }
 
