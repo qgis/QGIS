@@ -46,24 +46,7 @@ class PostGISExecuteSQL(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         connection = self.getParameterValue(self.DATABASE)
-        settings = QSettings()
-        mySettings = '/PostgreSQL/connections/' + connection
-        try:
-            database = settings.value(mySettings + '/database')
-            username = settings.value(mySettings + '/username')
-            host = settings.value(mySettings + '/host')
-            port = settings.value(mySettings + '/port', type=int)
-            password = settings.value(mySettings + '/password')
-        except Exception as e:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Wrong database connection name: %s' % connection))
-        try:
-            self.db = postgis.GeoDB(host=host, port=port,
-                                    dbname=database, user=username, passwd=password)
-        except postgis.DbError as e:
-            raise GeoAlgorithmExecutionException(
-                self.tr("Couldn't connect to database:\n%s") % unicode(e))
-
+        self.db = postgis.GeoDB.from_name(connection)
         sql = self.getParameterValue(self.SQL).replace('\n', ' ')
         try:
             self.db._exec_sql_and_commit(unicode(sql))
