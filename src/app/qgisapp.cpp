@@ -2938,7 +2938,7 @@ void QgisApp::toggleLogMessageIcon( bool hasLogMessage )
 
 void QgisApp::openMessageLog()
 {
-  mMessageButton->toggle();
+  mMessageButton->setChecked( true );
 }
 
 void QgisApp::addUserInputWidget( QWidget *widget )
