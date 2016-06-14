@@ -1534,8 +1534,8 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
     {
       QDomElement noDataRange =  document.createElement( "noDataRange" );
 
-      noDataRange.setAttribute( "min", range.min() );
-      noDataRange.setAttribute( "max", range.max() );
+      noDataRange.setAttribute( "min", QgsRasterBlock::printValue( range.min() ) );
+      noDataRange.setAttribute( "max", QgsRasterBlock::printValue( range.max() ) );
       noDataRangeList.appendChild( noDataRange );
     }
 

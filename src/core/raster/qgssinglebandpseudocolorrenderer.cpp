@@ -224,8 +224,8 @@ void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement&
   {
     mShader->writeXML( doc, rasterRendererElem ); //todo: include color ramp items directly in this renderer
   }
-  rasterRendererElem.setAttribute( "classificationMin", QString::number( mClassificationMin ) );
-  rasterRendererElem.setAttribute( "classificationMax", QString::number( mClassificationMax ) );
+  rasterRendererElem.setAttribute( "classificationMin", QgsRasterBlock::printValue( mClassificationMin ) );
+  rasterRendererElem.setAttribute( "classificationMax", QgsRasterBlock::printValue( mClassificationMax ) );
   rasterRendererElem.setAttribute( "classificationMinMaxOrigin", QgsRasterRenderer::minMaxOriginName( mClassificationMinMaxOrigin ) );
 
   parentElem.appendChild( rasterRendererElem );
