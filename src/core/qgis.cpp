@@ -162,16 +162,22 @@ QGis::WkbType QGis::fromNewWkbType( QgsWKBTypes::Type type )
     case QgsWKBTypes::NoGeometry:
       return QGis::WKBNoGeometry;
     case QgsWKBTypes::PointZ:
+    case QgsWKBTypes::Point25D:
       return QGis::WKBPoint25D;
     case QgsWKBTypes::LineStringZ:
+    case QgsWKBTypes::LineString25D:
       return QGis::WKBLineString25D;
     case QgsWKBTypes::PolygonZ:
+    case QgsWKBTypes::Polygon25D:
       return QGis::WKBPolygon25D;
     case QgsWKBTypes::MultiPointZ:
+    case QgsWKBTypes::MultiPoint25D:
       return QGis::WKBMultiPoint25D;
     case QgsWKBTypes::MultiLineStringZ:
+    case QgsWKBTypes::MultiLineString25D:
       return QGis::WKBMultiLineString25D;
     case QgsWKBTypes::MultiPolygonZ:
+    case QgsWKBTypes::MultiPolygon25D:
       return QGis::WKBMultiPolygon25D;
     default:
       break;
