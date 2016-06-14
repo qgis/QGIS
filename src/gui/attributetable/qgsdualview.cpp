@@ -86,6 +86,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
 
   mTableView->setModel( mFilterModel );
   mFeatureList->setModel( mFeatureListModel );
+  delete mAttributeForm;
   mAttributeForm = new QgsAttributeForm( layer, QgsFeature(), mEditorContext );
   if ( !context.parentContext() )
   {
