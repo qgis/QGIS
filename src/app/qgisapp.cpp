@@ -9016,7 +9016,7 @@ void QgisApp::apiDocumentation()
 
 void QgisApp::reportaBug()
 {
-  openURL( tr( "https://qgis.org/en/site/getinvolved/development/index.html#bugs-features-and-issues" ), false );
+  openURL( tr( "https://qgis.org/en/site/getinvolved/development/bugreporting.html" ), false );
 }
 void QgisApp::supportProviders()
 {
