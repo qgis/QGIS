@@ -3590,6 +3590,7 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
     bool ok;
     l->loadDefaultStyle( ok );
   }
+  activateDeactivateLayerRelatedActions( activeLayer() );
 
   // Only update the map if we frozen in this method
   // Let the caller do it otherwise
