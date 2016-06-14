@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgssvgcache.h"
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QVector2D>
@@ -252,22 +253,14 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     imageFixPoint.setY( 0 );
   }
 
-  //rasterize svg
+  QString svgFileName = ( type == StartMarker ? mStartMarkerFile : mEndMarkerFile );
+  if ( svgFileName.isEmpty() )
+    return;
+
   QSvgRenderer r;
-  if ( type == StartMarker )
-  {
-    if ( mStartMarkerFile.isEmpty() || !r.load( mStartMarkerFile ) )
-    {
-      return;
-    }
-  }
-  else //end marker
-  {
-    if ( mEndMarkerFile.isEmpty() || !r.load( mEndMarkerFile ) )
-    {
-      return;
-    }
-  }
+  const QByteArray &svgContent = QgsSvgCache::instance()->svgContent( svgFileName, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadOutlineColor, mArrowHeadOutlineWidth,
+                                 1.0, 1.0 );
+  r.load( svgContent );
 
   p->save();
   p->setRenderHint( QPainter::Antialiasing );
