@@ -762,13 +762,16 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2Re
     {
       _resolveDataDefined( context );
 
-      // origin point
-      QPointF po( points.at( 0 ) );
-      // destination point
-      QPointF pd( points.back() );
+      if ( !points.isEmpty() )
+      {
+        // origin point
+        QPointF po( points.at( 0 ) );
+        // destination point
+        QPointF pd( points.back() );
 
-      QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadWidth, mScaledHeadHeight, mComputedHeadType, mComputedArrowType, mScaledOffset );
-      mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+        QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadWidth, mScaledHeadHeight, mComputedHeadType, mComputedArrowType, mScaledOffset );
+        mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+      }
     }
     else
     {
