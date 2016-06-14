@@ -195,11 +195,23 @@ QString QgsVectorDataProvider::capabilitiesString() const
     QgsDebugMsg( "Capability: Delete Attributes" );
   }
 
+  if ( abilities & QgsVectorDataProvider::RenameAttributes )
+  {
+    abilitiesList += tr( "Rename Attributes" );
+    QgsDebugMsg( "Capability: Rename Attributes" );
+  }
+
   if ( abilities & QgsVectorDataProvider::CreateSpatialIndex )
   {
     // TODO: Tighten up this test.  See QgsOgrProvider for details.
     abilitiesList += tr( "Create Spatial Index" );
     QgsDebugMsg( "Capability: Create Spatial Index" );
+  }
+
+  if ( abilities & QgsVectorDataProvider::CreateAttributeIndex )
+  {
+    abilitiesList += tr( "Create Attribute Indexes" );
+    QgsDebugMsg( "Capability: Create Attribute Index" );
   }
 
   if ( abilities & QgsVectorDataProvider::SelectAtId )
@@ -230,6 +242,18 @@ QString QgsVectorDataProvider::capabilitiesString() const
   {
     abilitiesList += tr( "Simultaneous Geometry and Attribute Updates" );
     QgsDebugMsg( "Capability: change both feature attributes and geometry at once" );
+  }
+
+  if ( abilities & QgsVectorDataProvider::TransactionSupport )
+  {
+    abilitiesList += tr( "Transactions" );
+    QgsDebugMsg( "Capability: transactions" );
+  }
+
+  if ( abilities & QgsVectorDataProvider::CircularGeometries )
+  {
+    abilitiesList += tr( "Curved Geometries" );
+    QgsDebugMsg( "Supports circular geometry types (circularstring, compoundcurve, curvepolygon)" );
   }
 
   return abilitiesList.join( ", " );
