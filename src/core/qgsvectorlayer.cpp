@@ -3804,11 +3804,10 @@ QString QgsVectorLayer::metadata()
   else
   {
     QString typeString( QGis::vectorGeometryType( geometryType() ) );
+    QString wkbTypeString = QgsWKBTypes::displayString( QGis::fromOldWkbType( mWkbType ) );
 
     myMetadata += "<p class=\"glossy\">" + tr( "Geometry type of the features in this layer" ) + "</p>\n";
-    myMetadata += "<p>";
-    myMetadata += typeString;
-    myMetadata += "</p>\n";
+    myMetadata += QString( "<p>%1 (WKB type: \"%2\")</p>\n" ).arg( typeString, wkbTypeString );
   }
 
   QgsAttributeList pkAttrList = pkAttributeList();
