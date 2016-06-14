@@ -578,6 +578,15 @@ QgsProjectVersion getVersion( const QDomDocument& doc )
   return projectVersion;
 }
 
+void QgsProject::processLayerJoins( QgsVectorLayer* layer )
+{
+  if ( !layer )
+    return;
+
+  layer->createJoinCaches();
+  layer->updateFields();
+}
+
 bool QgsProject::_getMapLayers( const QDomDocument& doc, QList<QDomNode>& brokenNodes )
 {
   // Layer order is set by the restoring the legend settings from project file.
@@ -641,8 +650,7 @@ bool QgsProject::_getMapLayers( const QDomDocument& doc, QList<QDomNode>& broken
   QList< QPair< QgsVectorLayer*, QDomElement > >::iterator vIt = vLayerList.begin();
   for ( ; vIt != vLayerList.end(); ++vIt )
   {
-    vIt->first->createJoinCaches();
-    vIt->first->updateFields();
+    processLayerJoins( vIt->first );
   }
 
   QSet<QgsVectorLayer *> notified;
@@ -975,7 +983,24 @@ bool QgsProject::read( QDomNode &layerNode )
 {
   QList<QDomNode> brokenNodes;
   QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
-  return addLayer( layerNode.toElement(), brokenNodes, vectorLayerList );
+  if ( addLayer( layerNode.toElement(), brokenNodes, vectorLayerList ) )
+  {
+    // have to try to update joins for all layers now - a previously added layer may be dependant on this newly
+    // added layer for joins
+    QVector<QgsVectorLayer*> vectorLayers = QgsMapLayerRegistry::instance()->layers<QgsVectorLayer*>();
+    Q_FOREACH ( QgsVectorLayer* layer, vectorLayers )
+    {
+      processLayerJoins( layer );
+    }
+
+    if ( !vectorLayerList.isEmpty() )
+    {
+      emit readMapLayer( vectorLayerList.at( 0 ).first, vectorLayerList.at( 0 ).second );
+    }
+
+    return true;
+  }
+  return false;
 }
 
 bool QgsProject::write( QFileInfo const &file )

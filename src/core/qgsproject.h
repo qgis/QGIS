@@ -491,6 +491,11 @@ class CORE_EXPORT QgsProject : public QObject
     */
     bool _getMapLayers( QDomDocument const &doc, QList<QDomNode>& brokenNodes );
 
+    /** Processes any joins attached to a newly added layer.
+     * @param layer layer to process
+     */
+    void processLayerJoins( QgsVectorLayer* layer );
+
     QString mErrorMessage;
 
     QgsProjectBadLayerHandler* mBadLayerHandler;
