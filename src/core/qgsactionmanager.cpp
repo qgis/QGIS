@@ -293,6 +293,7 @@ QString QgsActionManager::expandAction( const QString& action, QgsFeature &feat,
 bool QgsActionManager::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
 {
   QDomElement aActions = doc.createElement( "attributeactions" );
+  aActions.setAttribute( "default", mDefaultAction );
 
   Q_FOREACH ( const QgsAction& action, mActions )
   {
@@ -319,6 +320,8 @@ bool QgsActionManager::readXML( const QDomNode& layer_node )
 
   if ( !aaNode.isNull() )
   {
+    mDefaultAction = aaNode.toElement().attribute( "default", 0 ).toInt();
+
     QDomNodeList actionsettings = aaNode.childNodes();
     for ( int i = 0; i < actionsettings.size(); ++i )
     {

@@ -2035,6 +2035,7 @@ void QgisApp::createToolBars()
   bt->setDefaultAction( mActionFeatureAction );
   mFeatureActionMenu = new QMenu( bt );
   connect( mFeatureActionMenu, SIGNAL( triggered( QAction * ) ), this, SLOT( updateDefaultFeatureAction( QAction * ) ) );
+  connect( mFeatureActionMenu, SIGNAL( triggered( QAction * ) ), this, SLOT( doFeatureAction() ) );
   connect( mFeatureActionMenu, SIGNAL( aboutToShow() ), this, SLOT( refreshFeatureActions() ) );
   bt->setMenu( mFeatureActionMenu );
   QAction* featureActionAction = mAttributesToolBar->insertWidget( selectAction, bt );
@@ -5599,8 +5600,6 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
       QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, nullptr );
     }
   }
-
-  doFeatureAction();
 }
 
 void QgisApp::refreshFeatureActions()
@@ -10588,17 +10587,14 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
 
       mActionOpenFieldCalc->setEnabled( true );
-
-      return;
     }
     else
     {
       mUndoDock->widget()->setEnabled( false );
       mActionUndo->setEnabled( false );
       mActionRedo->setEnabled( false );
+      mActionLayerSubsetString->setEnabled( false );
     }
-
-    mActionLayerSubsetString->setEnabled( false );
   } //end vector layer block
   /*************Raster layers*************/
   else if ( layer->type() == QgsMapLayer::RasterLayer )
