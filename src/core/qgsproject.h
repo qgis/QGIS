@@ -52,22 +52,22 @@ class QgsTransactionGroup;
 
 /** \ingroup core
  * Reads and writes project states.
-
-
+ *
   @note
 
   Has two general kinds of state to make persistent.  (I.e., to read and
-  write.)  First, Qgis proprietary information.  Second plug-in information.
+  write.)  First, QGIS proprietary information.  Second plug-in information.
 
   A singleton since there shall only be one active project at a time; and
   provides canonical location for plug-ins and main app to find/set
   properties.
 
-  Might want to consider moving from Singleton; i.e., allowing more than one
-  project.  Just as the GIMP can have simultaneous multiple images, perhaps
-  qgis can one day have simultaneous multiple projects.
-
 */
+
+// TODO Might want to consider moving from Singleton; i.e., allowing more than one
+// project.  Just as the GIMP can have simultaneous multiple images, perhaps
+// QGIS can one day have simultaneous multiple projects.
+
 class CORE_EXPORT QgsProject : public QObject
 {
     Q_OBJECT
@@ -75,12 +75,10 @@ class CORE_EXPORT QgsProject : public QObject
 
   public:
 
-    /**
-     * @todo XXX Should have semantics for saving project if dirty as last gasp?
-     */
+    // TODO XXX Should have semantics for saving project if dirty as last gasp?
     ~QgsProject();
 
-    /// access to canonical QgsProject instance
+    //! Returns the QgsProject singleton instance
     static QgsProject * instance();
 
     /**
@@ -88,23 +86,23 @@ class CORE_EXPORT QgsProject : public QObject
      *
      * @deprecated Use setTitle instead.
      */
-    //@{
     Q_DECL_DEPRECATED inline void title( const QString & title ) { setTitle( title ); }
 
-    /** Set project title
+    /** Sets the project's title.
+     * @param title new title
      *  @note added in 2.4
+     * @see title()
      */
     void setTitle( const QString& title );
 
-    /** Returns title */
+    /** Returns the project's title.
+     * @see setTitle()
+    */
     QString title() const;
-    //@}
 
     /**
-     * the dirty flag is true if the project has been modified since the last
-     * write()
+     * Returns true if the project has been modified since the last write()
      */
-    //@{
     bool isDirty() const;
 
     /**
@@ -115,39 +113,35 @@ class CORE_EXPORT QgsProject : public QObject
      */
     Q_DECL_DEPRECATED inline void dirty( bool b ) { setDirty( b ); }
 
-    //@}
-
-
-    /**
-     * Every project has an associated file that contains its XML
+    /** Sets the file name associated with the project. This is the file which contains the project's XML
+     * representation.
+     * @param name project file name
+     * @see fileName()
      */
-    //@{
-    void setFileName( const QString & name );
+    void setFileName( const QString& name );
 
-    /** Returns file name */
+    /** Returns the project's file name. This is the file which contains the project's XML
+     * representation.
+     * @see setFileName()
+     * @see fileInfo()
+    */
     QString fileName() const;
-    //@}
 
     /** Returns QFileInfo object for the project's associated file.
+     * @see fileName()
      * @note added in QGIS 2.9
      */
     QFileInfo fileInfo() const;
 
-    /** Clear the project
+    /** Clear the project - removes all settings and resets it back to an empty, default state.
      * @note added in 2.4
      */
     void clear();
 
-
-    /** Read project file
-     *
+    /** Reads a project file.
+     * @param file name of project file to read
      * @note Any current plug-in state is erased
-     *
-     * @note dirty set to false after successful invocation
-     *
-     * @note file name argument implicitly sets file
-     *
-     * @note
+     * @note Calling read() performs the following operations:
      *
      * - Gets the extents
      * - Creates maplayers
@@ -155,47 +149,54 @@ class CORE_EXPORT QgsProject : public QObject
      *
      * @note it's presumed that the caller has already reset the map canvas, map registry, and legend
      */
-    //@{
-    bool read( const QFileInfo & file );
-    bool read();
-    //@}
+    bool read( const QFileInfo& file );
 
-
-    /** Read the layer described in the associated Dom node
+    /** Reads the current project file.
+     * @note Any current plug-in state is erased
+     * @note Calling read() performs the following operations:
      *
-     * @param layerNode   represents a QgsProject Dom node that maps to a specific layer.
+     * - Gets the extents
+     * - Creates maplayers
+     * - Registers maplayers
+     *
+     * @note it's presumed that the caller has already reset the map canvas, map registry, and legend
+     */
+    bool read();
+
+    /** Reads the layer described in the associated DOM node.
+     *
+     * @param layerNode represents a QgsProject DOM node that encodes a specific layer.
      *
      * QgsProject raises an exception when one of the QgsProject::read()
      * implementations fails.  Since the read()s are invoked from qgisapp,
      * then qgisapp handles the exception.  It prompts the user for the new
-     * location of the data, if any.  If there is a new location, the Dom
+     * location of the data, if any.  If there is a new location, the DOM
      * node associated with the layer has its datasource tag corrected.
      * Then that node is passed to this member function to be re-opened.
      *
      */
-    bool read( QDomNode & layerNode );
+    bool read( QDomNode& layerNode );
 
-
-    /** Write project file
-     *
-     * XXX How to best get read access to Qgis state?  Actually we can finagle
-     * that by searching for qgisapp in object hiearchy.
-     *
-     * @note file name argument implicitly sets file
-     *
-     * @note dirty set to false after successful invocation
+    /** Writes the project to a file.
+     * @param file destination file
+     * @note calling this implicitly sets the project's filename (see setFileName() )
+     * @note isDirty() will be set to false if project is successfully written
+     * @returns true if project was written successfully
      */
-    //@{
-    bool write( const QFileInfo & file );
+    bool write( const QFileInfo& file );
+
+    /** Writes the project to its current associated file (see fileName() ).
+     * @note isDirty() will be set to false if project is successfully written
+     * @returns true if project was written successfully
+     */
     bool write();
-    //@}
 
     /**
-     * removes all project properties
+     * Removes all project properties.
      *
-     * ### QGIS 3: remove in favor of clear()
+     * @deprecated use clear() instead
      */
-    void clearProperties();
+    Q_DECL_DEPRECATED void clearProperties();
 
 
     /* key value mutators
@@ -205,7 +206,6 @@ class CORE_EXPORT QgsProject : public QObject
      *
      * @note The key string must be valid xml tag names in order to be saved to the file.
      */
-    //@{
     //! @note available in python bindings as writeEntryBool
     bool writeEntry( const QString & scope, const QString & key, bool value );
     //! @note available in python bindings as writeEntryDouble
@@ -213,7 +213,6 @@ class CORE_EXPORT QgsProject : public QObject
     bool writeEntry( const QString & scope, const QString & key, int value );
     bool writeEntry( const QString & scope, const QString & key, const QString & value );
     bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
-    //@}
 
     /** Key value accessors
      *
@@ -221,14 +220,12 @@ class CORE_EXPORT QgsProject : public QObject
      * implying a hierarchy of keys and corresponding values
      *
      */
-    //@{
     QStringList readListEntry( const QString & scope, const QString & key, const QStringList& def = QStringList(), bool *ok = nullptr ) const;
 
     QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = nullptr ) const;
     int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = nullptr ) const;
     double readDoubleEntry( const QString & scope, const QString & key, double def = 0, bool * ok = nullptr ) const;
     bool readBoolEntry( const QString & scope, const QString & key, bool def = false, bool * ok = nullptr ) const;
-    //@}
 
 
     /** Remove the given key */
@@ -249,13 +246,14 @@ class CORE_EXPORT QgsProject : public QObject
 
 
     /** Dump out current project properties to stderr
-     *
-     * @todo XXX Now slightly broken since re-factoring.  Won't print out top-level key
-     *           and redundantly prints sub-keys.
      */
+    // TODO Now slightly broken since re-factoring.  Won't print out top-level key
+    //           and redundantly prints sub-keys.
     void dumpProperties() const;
 
-    /** Prepare a filename to save it to the project file */
+    /** Prepare a filename to save it to the project file. Creates an absolute or relative path to writes
+     * it to the project file.
+    */
     QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
 
     /** Turn filename read from the project file to an absolute path */
@@ -485,7 +483,13 @@ class CORE_EXPORT QgsProject : public QObject
 
     static QgsProject * theProject_;
 
-    QPair< bool, QList<QDomNode> > _getMapLayers( QDomDocument const &doc );
+    /** Read map layers from project file.
+     * @param doc DOM document to parse
+     * @param brokenNodes a list of DOM nodes corresponding to layers that we were unable to load; this could be
+     * because the layers were removed or re-located after the project was last saved
+     * @returns true if function worked; else is false
+    */
+    bool _getMapLayers( QDomDocument const &doc, QList<QDomNode>& brokenNodes );
 
     QString mErrorMessage;
 
@@ -510,7 +514,7 @@ class CORE_EXPORT QgsProject : public QObject
     QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;
 
     QScopedPointer<QgsVisibilityPresetCollection> mVisibilityPresetCollection;
-}; // QgsProject
+};
 
 
 /** Interface for classes that handle missing layer files when reading project file. */
@@ -530,6 +534,10 @@ class CORE_EXPORT QgsProjectBadLayerDefaultHandler : public QgsProjectBadLayerHa
 
 };
 
+
+/** Return the version string found in the given DOM document
+   @returns the version string or an empty string if none found
+ */
 CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc );
 
 #endif

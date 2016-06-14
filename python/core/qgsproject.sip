@@ -6,15 +6,11 @@
   @note
 
   Has two general kinds of state to make persistent.  (I.e., to read and
-  write.)  First, Qgis proprietary information.  Second plug-in information.
+  write.)  First, QGIS proprietary information.  Second plug-in information.
 
   A singleton since there shall only be one active project at a time; and
   provides canonical location for plug-ins and main app to find/set
   properties.
-
-  Might want to consider moving from Singleton; i.e., allowing more than one
-  project.  Just as the GIMP can have simultaneous multiple images, perhaps
-  qgis can one day have simultaneous multiple projects.
 
 */
 class QgsProject : QObject
@@ -25,12 +21,10 @@ class QgsProject : QObject
 
   public:
 
-    /**
-     * @todo XXX Should have semantics for saving project if dirty as last gasp?
-     */
+    // TODO XXX Should have semantics for saving project if dirty as last gasp?
     ~QgsProject();
 
-    /// access to canonical QgsProject instance
+    //! Returns the QgsProject singleton instance
     static QgsProject * instance();
 
     /**
@@ -38,23 +32,23 @@ class QgsProject : QObject
      *
      * @deprecated Use setTitle instead.
      */
-    //@{
     void title( const QString & title ) /Deprecated/;
 
-    /** Set project title
+    /** Sets the project's title.
+     * @param title new title
      *  @note added in 2.4
+     * @see title()
      */
     void setTitle( const QString& title );
 
-    /** Returns title */
+    /** Returns the project's title.
+     * @see setTitle()
+    */
     QString title() const;
-    //@}
 
     /**
-     * the dirty flag is true if the project has been modified since the last
-     * write()
+     * Returns true if the project has been modified since the last write()
      */
-    //@{
     bool isDirty() const;
 
     /**
@@ -65,46 +59,35 @@ class QgsProject : QObject
      */
     void dirty( bool b ) /Deprecated/;
 
-    /**
-     * Flag the project as dirty (modified). If this flag is set, the user will
-     * be asked to save changes to the project before closing the current project.
-     *
-     * @note added in 2.4
+    /** Sets the file name associated with the project. This is the file which contains the project's XML
+     * representation.
+     * @param name project file name
+     * @see fileName()
      */
-    void setDirty( bool b );
-    //@}
+    void setFileName( const QString& name );
 
-
-    /**
-     * Every project has an associated file that contains its XML
-     */
-    //@{
-    void setFileName( const QString & name );
-
-    /** Returns file name */
+    /** Returns the project's file name. This is the file which contains the project's XML
+     * representation.
+     * @see setFileName()
+     * @see fileInfo()
+    */
     QString fileName() const;
-    //@}
 
     /** Returns QFileInfo object for the project's associated file.
+     * @see fileName()
      * @note added in QGIS 2.9
      */
     QFileInfo fileInfo() const;
 
-    /** Clear the project
+    /** Clear the project - removes all settings and resets it back to an empty, default state.
      * @note added in 2.4
      */
     void clear();
 
-
-    /** Read project file
-     *
+    /** Reads a project file.
+     * @param file name of project file to read
      * @note Any current plug-in state is erased
-     *
-     * @note dirty set to false after successful invocation
-     *
-     * @note file name argument implicitly sets file
-     *
-     * @note
+     * @note Calling read() performs the following operations:
      *
      * - Gets the extents
      * - Creates maplayers
@@ -112,47 +95,54 @@ class QgsProject : QObject
      *
      * @note it's presumed that the caller has already reset the map canvas, map registry, and legend
      */
-    //@{
-    bool read( const QFileInfo & file );
-    bool read();
-    //@}
+    bool read( const QFileInfo& file );
 
-
-    /** Read the layer described in the associated Dom node
+    /** Reads the current project file.
+     * @note Any current plug-in state is erased
+     * @note Calling read() performs the following operations:
      *
-     * @param layerNode   represents a QgsProject Dom node that maps to a specific layer.
+     * - Gets the extents
+     * - Creates maplayers
+     * - Registers maplayers
+     *
+     * @note it's presumed that the caller has already reset the map canvas, map registry, and legend
+     */
+    bool read();
+
+    /** Reads the layer described in the associated DOM node.
+     *
+     * @param layerNode represents a QgsProject DOM node that encodes a specific layer.
      *
      * QgsProject raises an exception when one of the QgsProject::read()
      * implementations fails.  Since the read()s are invoked from qgisapp,
      * then qgisapp handles the exception.  It prompts the user for the new
-     * location of the data, if any.  If there is a new location, the Dom
+     * location of the data, if any.  If there is a new location, the DOM
      * node associated with the layer has its datasource tag corrected.
      * Then that node is passed to this member function to be re-opened.
      *
      */
-    bool read( QDomNode & layerNode );
+    bool read( QDomNode& layerNode );
 
-
-    /** Write project file
-     *
-     * XXX How to best get read access to Qgis state?  Actually we can finagle
-     * that by searching for qgisapp in object hiearchy.
-     *
-     * @note file name argument implicitly sets file
-     *
-     * @note dirty set to false after successful invocation
+    /** Writes the project to a file.
+     * @param file destination file
+     * @note calling this implicitly sets the project's filename (see setFileName() )
+     * @note isDirty() will be set to false if project is successfully written
+     * @returns true if project was written successfully
      */
-    //@{
-    bool write( const QFileInfo & file );
+    bool write( const QFileInfo& file );
+
+    /** Writes the project to its current associated file (see fileName() ).
+     * @note isDirty() will be set to false if project is successfully written
+     * @returns true if project was written successfully
+     */
     bool write();
-    //@}
 
     /**
-     * removes all project properties
+     * Removes all project properties.
      *
-     * ### QGIS 3: remove in favor of clear()
+     * @deprecated use clear() instead
      */
-    void clearProperties();
+    void clearProperties() /Deprecated/;
 
 
     /* key value mutators
@@ -162,7 +152,6 @@ class QgsProject : QObject
      *
      * @note The key string must be valid xml tag names in order to be saved to the file.
      */
-    //@{
     //! @note available in python bindings as writeEntryBool
     bool writeEntry( const QString & scope, const QString & key, bool value ) /PyName=writeEntryBool/;
     //! @note available in python bindings as writeEntryDouble
@@ -170,7 +159,6 @@ class QgsProject : QObject
     bool writeEntry( const QString & scope, const QString & key, int value );
     bool writeEntry( const QString & scope, const QString & key, const QString & value );
     bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
-    //@}
 
     /** Key value accessors
      *
@@ -178,15 +166,12 @@ class QgsProject : QObject
      * implying a hierarchy of keys and corresponding values
      *
      */
-    //@{
     QStringList readListEntry( const QString & scope, const QString & key, const QStringList& def = QStringList(), bool *ok = 0 ) const;
 
     QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
     int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
     double readDoubleEntry( const QString & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
     bool readBoolEntry( const QString & scope, const QString & key, bool def = false, bool * ok = 0 ) const;
-    //@}
-
 
     /** Remove the given key */
     bool removeEntry( const QString & scope, const QString & key );
@@ -405,6 +390,17 @@ class QgsProject : QObject
 
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+
+  public slots:
+
+    /**
+     * Flag the project as dirty (modified). If this flag is set, the user will
+     * be asked to save changes to the project before closing the current project.
+     *
+     * @note added in 2.4
+     * @note promoted to public slot in 2.16
+     */
+    void setDirty( bool b = true );
 
   private:
 
