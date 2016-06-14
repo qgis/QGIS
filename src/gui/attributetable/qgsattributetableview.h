@@ -170,7 +170,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QMenu *mActionPopup;
     int mRowSectionAnchor;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
-    QWidget* mActionWidget;
+    QScopedPointer<QWidget> mActionWidget;
 };
 
 #endif

@@ -139,10 +139,9 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
 
-    delete mActionWidget;
-    mActionWidget = createActionWidget( 0 );
+    mActionWidget.reset( createActionWidget( 0 ) );
     mActionWidget->setVisible( false );
-    updateActionImage( mActionWidget );
+    updateActionImage( mActionWidget.data() );
   }
 }
 
@@ -167,13 +166,13 @@ QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 
   if ( attributeTableConfig.actionWidgetStyle() == QgsAttributeTableConfig::DropDown )
   {
-    toolButton  = new QToolButton( this );
+    toolButton  = new QToolButton();
     toolButton->setPopupMode( QToolButton::MenuButtonPopup );
     container = toolButton;
   }
   else
   {
-    container = new QWidget( this );
+    container = new QWidget();
     container->setLayout( new QHBoxLayout() );
     container->layout()->setMargin( 0 );
   }
@@ -400,7 +399,7 @@ void QgsAttributeTableView::columnSizeChanged( int index, int oldWidth, int newW
   if ( mFilterModel->actionColumnIndex() == index )
   {
     mActionWidget->resize( newWidth, mActionWidget->height() );
-    updateActionImage( mActionWidget );
+    updateActionImage( mActionWidget.data() );
   }
   emit columnResized( index, newWidth );
 }
