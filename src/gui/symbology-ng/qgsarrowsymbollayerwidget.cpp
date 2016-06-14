@@ -25,8 +25,8 @@ QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer* vl, 
 
   mArrowWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
   mArrowStartWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
-  mHeadWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
-  mHeadHeightUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mHeadLengthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mHeadThicknessUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
   mOffsetUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
   mOffsetSpin->setClearValue( 0.0 );
@@ -49,12 +49,12 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mArrowStartWidthUnitWidget->setUnit( mLayer->arrowStartWidthUnit() );
   mArrowStartWidthUnitWidget->setMapUnitScale( mLayer->arrowStartWidthUnitScale() );
 
-  mHeadWidthSpin->setValue( mLayer->headWidth() );
-  mHeadWidthUnitWidget->setUnit( mLayer->headWidthUnit() );
-  mHeadWidthUnitWidget->setMapUnitScale( mLayer->headWidthUnitScale() );
-  mHeadHeightSpin->setValue( mLayer->headHeight() );
-  mHeadHeightUnitWidget->setUnit( mLayer->headHeightUnit() );
-  mHeadHeightUnitWidget->setMapUnitScale( mLayer->headHeightUnitScale() );
+  mHeadLengthSpin->setValue( mLayer->headLength() );
+  mHeadLengthUnitWidget->setUnit( mLayer->headLengthUnit() );
+  mHeadLengthUnitWidget->setMapUnitScale( mLayer->headLengthUnitScale() );
+  mHeadThicknessSpin->setValue( mLayer->headThickness() );
+  mHeadThicknessUnitWidget->setUnit( mLayer->headThicknessUnit() );
+  mHeadThicknessUnitWidget->setMapUnitScale( mLayer->headThicknessUnitScale() );
 
   mHeadTypeCombo->setCurrentIndex( mLayer->headType() );
   mArrowTypeCombo->setCurrentIndex( mLayer->arrowType() );
@@ -68,8 +68,8 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
 
   registerDataDefinedButton( mArrowWidthDDBtn, "arrow_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
   registerDataDefinedButton( mArrowStartWidthDDBtn, "arrow_start_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadWidthDDBtn, "head_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadHeightDDBtn, "head_height", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mHeadWidthDDBtn, "head_length", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mHeadHeightDDBtn, "head_thickness", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
   registerDataDefinedButton( mHeadTypeDDBtn, "head_type", QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
   registerDataDefinedButton( mArrowTypeDDBtn, "arrow_type", QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
   registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleDesc() );
@@ -99,21 +99,21 @@ void QgsArrowSymbolLayerWidget::on_mArrowStartWidthSpin_valueChanged( double d )
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadWidthSpin_valueChanged( double d )
+void QgsArrowSymbolLayerWidget::on_mHeadLengthSpin_valueChanged( double d )
 {
   if ( !mLayer )
     return;
 
-  mLayer->setHeadWidth( d );
+  mLayer->setHeadLength( d );
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadHeightSpin_valueChanged( double d )
+void QgsArrowSymbolLayerWidget::on_mHeadThicknessSpin_valueChanged( double d )
 {
   if ( !mLayer )
     return;
 
-  mLayer->setHeadHeight( d );
+  mLayer->setHeadThickness( d );
   emit changed();
 }
 
@@ -137,23 +137,23 @@ void QgsArrowSymbolLayerWidget::on_mArrowStartWidthUnitWidget_changed()
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadWidthUnitWidget_changed()
+void QgsArrowSymbolLayerWidget::on_mHeadLengthUnitWidget_changed()
 {
   if ( !mLayer )
     return;
 
-  mLayer->setHeadWidthUnit( mHeadWidthUnitWidget->unit() );
-  mLayer->setHeadWidthUnitScale( mHeadWidthUnitWidget->getMapUnitScale() );
+  mLayer->setHeadLengthUnit( mHeadLengthUnitWidget->unit() );
+  mLayer->setHeadLengthUnitScale( mHeadLengthUnitWidget->getMapUnitScale() );
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadHeightUnitWidget_changed()
+void QgsArrowSymbolLayerWidget::on_mHeadThicknessUnitWidget_changed()
 {
   if ( !mLayer )
     return;
 
-  mLayer->setHeadHeightUnit( mHeadHeightUnitWidget->unit() );
-  mLayer->setHeadHeightUnitScale( mHeadHeightUnitWidget->getMapUnitScale() );
+  mLayer->setHeadThicknessUnit( mHeadThicknessUnitWidget->unit() );
+  mLayer->setHeadThicknessUnitScale( mHeadThicknessUnitWidget->getMapUnitScale() );
   emit changed();
 }
 

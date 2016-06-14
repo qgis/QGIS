@@ -51,10 +51,10 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerV2Widget, priva
     void on_mArrowStartWidthSpin_valueChanged( double d );
     void on_mArrowStartWidthUnitWidget_changed();
 
-    void on_mHeadWidthSpin_valueChanged( double d );
-    void on_mHeadWidthUnitWidget_changed();
-    void on_mHeadHeightSpin_valueChanged( double d );
-    void on_mHeadHeightUnitWidget_changed();
+    void on_mHeadLengthSpin_valueChanged( double d );
+    void on_mHeadLengthUnitWidget_changed();
+    void on_mHeadThicknessSpin_valueChanged( double d );
+    void on_mHeadThicknessUnitWidget_changed();
 
     void on_mHeadTypeCombo_currentIndexChanged( int );
     void on_mArrowTypeCombo_currentIndexChanged( int );

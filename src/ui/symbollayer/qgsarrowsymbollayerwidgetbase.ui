@@ -72,7 +72,7 @@
    <item row="5" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QgsDoubleSpinBox" name="mHeadHeightSpin">
+      <widget class="QgsDoubleSpinBox" name="mHeadThicknessSpin">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -91,7 +91,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mHeadHeightUnitWidget" native="true"/>
+      <widget class="QgsUnitSelectionWidget" name="mHeadThicknessUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -222,7 +222,7 @@
    <item row="5" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Head height</string>
+      <string>Head thickness</string>
      </property>
     </widget>
    </item>
@@ -236,7 +236,7 @@
    <item row="4" column="0">
     <widget class="QLabel" name="label_9">
      <property name="text">
-      <string>Head width</string>
+      <string>Head length</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -246,7 +246,7 @@
    <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
-      <widget class="QgsDoubleSpinBox" name="mHeadWidthSpin">
+      <widget class="QgsDoubleSpinBox" name="mHeadLengthSpin">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -268,7 +268,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mHeadWidthUnitWidget" native="true"/>
+      <widget class="QgsUnitSelectionWidget" name="mHeadLengthUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -357,14 +357,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
