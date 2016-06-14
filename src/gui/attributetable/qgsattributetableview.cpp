@@ -35,15 +35,12 @@
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     : QTableView( parent )
-    , mMasterModel( nullptr )
     , mFilterModel( nullptr )
     , mFeatureSelectionModel( nullptr )
     , mFeatureSelectionManager( nullptr )
-    , mModel( nullptr )
     , mActionPopup( nullptr )
     , mRowSectionAnchor( 0 )
     , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
-    , mActionWidget( nullptr )
 {
   QSettings settings;
   restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );
@@ -52,8 +49,6 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   horizontalHeader()->setHighlightSections( false );
 
   // We need mouse move events to create the action button on hover
-  setMouseTracking( true );
-
   mTableDelegate = new QgsAttributeTableDelegate( this );
   setItemDelegate( mTableDelegate );
 
@@ -121,6 +116,7 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
   if ( mFilterModel )
   {
     connect( mFilterModel, SIGNAL( destroyed() ), this, SLOT( modelDeleted() ) );
+    connect( mTableDelegate, SIGNAL( actionColumnItemPainted( QModelIndex ) ), this, SLOT( onActionColumnItemPainted( QModelIndex ) ) );
   }
 
   delete mFeatureSelectionModel;
@@ -138,10 +134,6 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
     mTableDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
-
-    mActionWidget.reset( createActionWidget( 0 ) );
-    mActionWidget->setVisible( false );
-    updateActionImage( mActionWidget.data() );
   }
 }
 
@@ -238,15 +230,6 @@ void QgsAttributeTableView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsAttributeTableView::mouseMoveEvent( QMouseEvent *event )
 {
-  QModelIndex index = indexAt( event->pos() );
-  if ( index.data( QgsAttributeTableFilterModel::TypeRole ) == QgsAttributeTableFilterModel::ColumnTypeActionButton )
-  {
-    Q_ASSERT( index.isValid() );
-
-    if ( !indexWidget( index ) )
-      setIndexWidget( index, createActionWidget( mFilterModel->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() ) );
-  }
-
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mouseMoveEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -396,18 +379,13 @@ void QgsAttributeTableView::actionTriggered()
 void QgsAttributeTableView::columnSizeChanged( int index, int oldWidth, int newWidth )
 {
   Q_UNUSED( oldWidth )
-  if ( mFilterModel->actionColumnIndex() == index )
-  {
-    mActionWidget->resize( newWidth, mActionWidget->height() );
-    updateActionImage( mActionWidget.data() );
-  }
   emit columnResized( index, newWidth );
 }
 
-void QgsAttributeTableView::updateActionImage( QWidget* widget )
+void QgsAttributeTableView::onActionColumnItemPainted( const QModelIndex& index )
 {
-  QImage image( widget->size(), QImage::Format_ARGB32_Premultiplied );
-  QPainter painter( &image );
-  widget->render( &painter );
-  mTableDelegate->setActionWidgetImage( image );
+  if ( !indexWidget( index ) )
+  {
+    setIndexWidget( index, createActionWidget( mFilterModel->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() ) );
+  }
 }

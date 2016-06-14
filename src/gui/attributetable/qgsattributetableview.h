@@ -155,22 +155,20 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void showHorizontalSortIndicator();
     void actionTriggered();
     void columnSizeChanged( int index, int oldWidth, int newWidth );
+    void onActionColumnItemPainted( const QModelIndex& index );
 
   private:
     void updateActionImage( QWidget* widget );
     QWidget* createActionWidget( QgsFeatureId fid );
 
     void selectRow( int row, bool anchor );
-    QgsAttributeTableModel* mMasterModel;
     QgsAttributeTableFilterModel* mFilterModel;
     QgsFeatureSelectionModel* mFeatureSelectionModel;
     QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsAttributeTableDelegate* mTableDelegate;
-    QAbstractItemModel* mModel; // Most likely the filter model
     QMenu *mActionPopup;
     int mRowSectionAnchor;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
-    QScopedPointer<QWidget> mActionWidget;
 };
 
 #endif

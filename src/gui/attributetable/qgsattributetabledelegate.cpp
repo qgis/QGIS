@@ -118,20 +118,13 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
   mFeatureSelectionModel = featureSelectionModel;
 }
 
-void QgsAttributeTableDelegate::setActionWidgetImage( const QImage& image )
-{
-  mActionWidgetImage = image;
-}
-
-
 void QgsAttributeTableDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>( index.model()->data( index, QgsAttributeTableFilterModel::TypeRole ).toInt() );
 
   if ( columnType == QgsAttributeTableFilterModel::ColumnTypeActionButton )
   {
-    QRect r = option.rect.adjusted( -1, 0, 0, 0 );
-    painter->drawImage( r.x(), r.y(), mActionWidgetImage );
+    emit actionColumnItemPainted( index );
   }
   else
   {
