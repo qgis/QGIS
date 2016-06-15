@@ -2573,10 +2573,11 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionAddAmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddAmsLayer.svg" ) );
 #endif
   mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionInOverview.svg" ) );
-  mActionAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionAnnotation.png" ) );
-  mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
-  mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
-  mActionTextAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionTextAnnotation.png" ) );
+  mActionAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionAnnotation.svg" ) );
+  mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.svg" ) );
+  mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionHtmlAnnotation.svg" ) );
+  mActionSvgAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionSvgAnnotation.svg" ) );
+  mActionTextAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionTextAnnotation.svg" ) );
   mActionLabeling->setIcon( QgsApplication::getThemeIcon( "/mActionLabeling.png" ) );
   mActionShowPinnedLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowPinnedLabels.svg" ) );
   mActionPinLabels->setIcon( QgsApplication::getThemeIcon( "/mActionPinLabels.svg" ) );

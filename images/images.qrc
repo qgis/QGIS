@@ -155,6 +155,7 @@
         <file>themes/default/mActionAlignVCenter.png</file>
         <file>themes/default/mActionAllEdits.svg</file>
         <file>themes/default/mActionAnnotation.png</file>
+        <file>themes/default/mActionAnnotation.svg</file>
         <file>themes/default/mActionArrowDown.png</file>
         <file>themes/default/mActionArrowLeft.png</file>
         <file>themes/default/mActionArrowRight.png</file>
@@ -217,6 +218,7 @@
         <file>themes/default/mActionFolder.png</file>
         <file>themes/default/mActionFolder.svg</file>
         <file>themes/default/mActionFormAnnotation.png</file>
+        <file>themes/default/mActionFormAnnotation.svg</file>
         <file>themes/default/mActionFromSelectedFeature.png</file>
         <file>themes/default/mActionFullCumulativeCutStretch.png</file>
         <file>themes/default/mActionFullHistogramStretch.png</file>
@@ -229,6 +231,7 @@
         <file>themes/default/mActionHideAllLayers.svg</file>
         <file>themes/default/mActionHideSelectedLayers.png</file>
         <file>themes/default/mActionHistory.svg</file>
+        <file>themes/default/mActionHtmlAnnotation.svg</file>
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
         <file>themes/default/mActionIncreaseContrast.svg</file>
@@ -330,6 +333,7 @@
         <file>themes/default/mActionSplitParts.svg</file>
         <file>themes/default/mActionSum.png</file>
         <file>themes/default/mActionTextAnnotation.png</file>
+        <file>themes/default/mActionTextAnnotation.svg</file>
         <file>themes/default/mActionToggleEditing.png</file>
         <file>themes/default/mActionToggleEditing.svg</file>
         <file>themes/default/mActionTouch.svg</file>
@@ -338,6 +342,7 @@
         <file>themes/default/mActionUndo.png</file>
         <file>themes/default/mActionUngroupItems.png</file>
         <file>themes/default/mActionUnselectAttributes.png</file>
+        <file>themes/default/mActionSvgAnnotation.svg</file>
         <file>themes/default/mActionWhatsThis.svg</file>
         <file>themes/default/mActionZoomActual.svg</file>
         <file>themes/default/mActionZoomFullExtent.svg</file>
