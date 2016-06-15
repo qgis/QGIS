@@ -166,6 +166,7 @@
         <file>themes/default/mActionAtlasPrev.svg</file>
         <file>themes/default/mActionAtlasSettings.svg</file>
         <file>themes/default/mActionCalculateField.png</file>
+        <file>themes/default/mActionCalculateField.svg</file>
         <file>themes/default/mActionCancelAllEdits.svg</file>
         <file>themes/default/mActionCancelEdits.svg</file>
         <file>themes/default/mActionCaptureLine.png</file>
@@ -246,9 +247,13 @@
         <file>themes/default/mActionLocalHistogramStretch.png</file>
         <file>themes/default/mActionLowerItems.png</file>
         <file>themes/default/mActionMapTips.png</file>
+        <file>themes/default/mActionMapTips.svg</file>
         <file>themes/default/mActionMeasure.png</file>
+        <file>themes/default/mActionMeasure.svg</file>
         <file>themes/default/mActionMeasureAngle.png</file>
+        <file>themes/default/mActionMeasureAngle.svg</file>
         <file>themes/default/mActionMeasureArea.png</file>
+        <file>themes/default/mActionMeasureArea.svg</file>
         <file>themes/default/mActionMergeFeatureAttributes.png</file>
         <file>themes/default/mActionMergeFeatures.png</file>
         <file>themes/default/mActionMoveFeature.png</file>
@@ -260,6 +265,7 @@
         <file>themes/default/mActionMoveVertex.png</file>
         <file>themes/default/mActionNewAttribute.png</file>
         <file>themes/default/mActionNewBookmark.png</file>
+        <file>themes/default/mActionNewBookmark.svg</file>
         <file>themes/default/mActionNewComposer.svg</file>
         <file>themes/default/mActionNewFolder.png</file>
         <file>themes/default/mActionNewSpatiaLiteLayer.svg</file>
@@ -321,6 +327,7 @@
         <file>themes/default/mActionShowAllLayers.png</file>
         <file>themes/default/mActionShowAllLayers.svg</file>
         <file>themes/default/mActionShowBookmarks.png</file>
+        <file>themes/default/mActionShowBookmarks.svg</file>
         <file>themes/default/mActionShowHideLabels.svg</file>
         <file>themes/default/mActionShowPinnedLabels.svg</file>
         <file>themes/default/mActionShowPluginManager.svg</file>
@@ -332,6 +339,7 @@
         <file>themes/default/mActionSplitFeatures.svg</file>
         <file>themes/default/mActionSplitParts.svg</file>
         <file>themes/default/mActionSum.png</file>
+        <file>themes/default/mActionSum.svg</file>
         <file>themes/default/mActionTextAnnotation.png</file>
         <file>themes/default/mActionTextAnnotation.svg</file>
         <file>themes/default/mActionToggleEditing.png</file>
