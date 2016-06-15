@@ -57,6 +57,12 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
   addImageryMenu->addAction( tr( "WMS" ) )->setMenu( wmsImageryMenu );
 
   QMenu* fileImageryMenu = new QMenu( this );
+  QString worldtif = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/world.tif" );
+  if ( QgsApplication::isRunningFromBuildDir() )
+  {
+    worldtif = QDir::cleanPath( QgsApplication::buildSourcePath() + "/src/plugins/globe/images/world.tif" );
+  }
+  fileImageryMenu->addAction( tr( "world.tif" ), this, SLOT( addRasterImagery() ) )->setData( worldtif );
   fileImageryMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomRasterImagery() ) );
   addImageryMenu->addAction( tr( "Raster" ) )->setMenu( fileImageryMenu );
 
