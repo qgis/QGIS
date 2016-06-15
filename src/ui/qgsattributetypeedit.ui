@@ -53,7 +53,7 @@
    <item row="2" column="1">
     <widget class="QCheckBox" name="notNullCheckBox">
      <property name="text">
-      <string>Not Null</string>
+      <string>Not null</string>
      </property>
     </widget>
    </item>
@@ -98,6 +98,7 @@
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
