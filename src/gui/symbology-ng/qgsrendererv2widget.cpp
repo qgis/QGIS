@@ -273,11 +273,6 @@ void QgsRendererV2Widget::applyChanges()
   apply();
 }
 
-void QgsRendererV2Widget::setDockMode( bool dockMode )
-{
-  mDockMode = dockMode;
-}
-
 
 
 ////////////

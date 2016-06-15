@@ -300,11 +300,6 @@ void QgsSymbolV2SelectorWidget::setMapCanvas( QgsMapCanvas *canvas )
     listWidget->setMapCanvas( canvas );
 }
 
-void QgsSymbolV2SelectorWidget::setDockMode( bool dockMode )
-{
-  mDockMode = dockMode;
-}
-
 void QgsSymbolV2SelectorWidget::loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent )
 {
   SymbolLayerItem* symbolItem = new SymbolLayerItem( symbol );
@@ -419,7 +414,7 @@ void QgsSymbolV2SelectorWidget::layerChanged()
     SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( currentItem->parent() );
     mDataDefineRestorer.reset( new DataDefinedRestorer( parent->symbol(), currentItem->layer() ) );
     QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
-    layerProp->setDockMode( mDockMode );
+    layerProp->setDockMode( this->dockMode() );
     layerProp->setExpressionContext( mPresetExpressionContext.data() );
     layerProp->setMapCanvas( mMapCanvas );
     setWidget( layerProp );

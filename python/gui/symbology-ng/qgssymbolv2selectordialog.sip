@@ -40,12 +40,6 @@ class QgsSymbolV2SelectorWidget : QgsPanelWidget
      */
     QgsSymbolV2* symbol();
 
-    /**
-     * Set the widget in dock mode which will emit showPanel when a sub widget requests
-     * to show a widget.
-     * @param dockMode True to enable dock mode.
-     */
-    void setDockMode( bool dockMode );
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event );

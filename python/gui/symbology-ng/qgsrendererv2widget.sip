@@ -39,13 +39,6 @@ class QgsRendererV2Widget : QgsPanelWidget
      */
     void applyChanges();
 
-    /**
-     * Set the widget in dock mode which tells the widget to emit panel
-     * widgets and not open dialogs
-     * @param dockMode True to enable dock mode.
-     */
-    virtual void setDockMode( bool dockMode);
-
   signals:
     /**
      * Emitted when expression context variables on the associated

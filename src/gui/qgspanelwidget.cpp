@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QDialog>
 
 #include "qgspanelwidget.h"
 #include "qgslogger.h"
@@ -40,6 +41,28 @@ void QgsPanelWidget::connectChildPanel( QgsPanelWidget *panel )
 void QgsPanelWidget::setDockMode( bool dockMode )
 {
   mDockMode = dockMode;
+}
+
+void QgsPanelWidget::openPanel( QgsPanelWidget* panel )
+{
+  if ( mDockMode )
+  {
+    QgsDebugMsg( "DOCK MODE!!" );
+    emit showPanel( panel );
+  }
+  else
+  {
+    // Show the dialog version if no one is connected
+    QDialog* dlg = new QDialog();
+    dlg->setWindowTitle( panel->panelTitle() );
+    dlg->setLayout( new QVBoxLayout() );
+    dlg->layout()->addWidget( panel );
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+    connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+    dlg->layout()->addWidget( buttonBox );
+    dlg->exec();
+    emit panelAccepted( panel );
+  }
 }
 
 void QgsPanelWidget::acceptPanel()

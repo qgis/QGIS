@@ -136,11 +136,8 @@ void QgsLayerPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsLayerPropertiesWidget::setDockMode( bool dockMode )
 {
-  mDockMode = dockMode;
-  if ( dockMode )
-  {
-    mEffectWidget->setDockMode( dockMode );
-  }
+  QgsPanelWidget::setDockMode( dockMode );
+  mEffectWidget->setDockMode( this->dockMode() );
 }
 
 void QgsLayerPropertiesWidget::setExpressionContext( QgsExpressionContext *context )

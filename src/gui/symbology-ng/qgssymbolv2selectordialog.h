@@ -128,13 +128,6 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
      */
     QgsSymbolV2* symbol() { return mSymbol; }
 
-    /**
-     * Set the widget in dock mode which will emit showPanel when a sub widget requests
-     * to show a widget.
-     * @param dockMode True to enable dock mode.
-     */
-    void setDockMode( bool dockMode );
-
   protected:
 
     /**
@@ -255,7 +248,6 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
     QWidget *mPresentWidget;
 
   private:
-    bool mDockMode;
     QScopedPointer<DataDefinedRestorer> mDataDefineRestorer;
     QScopedPointer< QgsExpressionContext > mPresetExpressionContext;
 

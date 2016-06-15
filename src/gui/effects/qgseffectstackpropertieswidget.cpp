@@ -382,7 +382,6 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 
 QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent , QgsPaintEffect *effect )
     : QgsPanelWidget( parent )
-    , mDockMode( false )
     , mEnabledCheckBox( nullptr )
     , mButton( nullptr )
     , mPreviewPicture( nullptr )
@@ -452,32 +451,14 @@ void QgsEffectStackCompactWidget::showDialog()
     return;
 
   QgsEffectStack* clone = static_cast<QgsEffectStack*>( mStack->clone() );
-  if ( mDockMode )
+  QgsEffectStackPropertiesWidget* widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
+  if ( mPreviewPicture )
   {
-    QgsEffectStackPropertiesWidget* widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
-    if ( mPreviewPicture )
-    {
-      widget->setPreviewPicture( *mPreviewPicture );
-    }
-    connect( widget, SIGNAL( widgetChanged() ), this, SLOT( updateEffectLive() ) );
-    connect( widget, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( updateAcceptWidget( QgsPanelWidget* ) ) );
-    emit showPanel( widget );
+    widget->setPreviewPicture( *mPreviewPicture );
   }
-  else
-  {
-    QgsEffectStackPropertiesDialog dialog( clone, this );
-    if ( mPreviewPicture )
-    {
-      dialog.setPreviewPicture( *mPreviewPicture );
-    }
-    if ( dialog.exec() == QDialog::Accepted )
-    {
-      *mStack = *clone;
-      emit changed();
-    }
-
-    delete clone;
-  }
+  connect( widget, SIGNAL( widgetChanged() ), this, SLOT( updateEffectLive() ) );
+  connect( widget, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( updateAcceptWidget( QgsPanelWidget* ) ) );
+  openPanel( widget );
 }
 
 void QgsEffectStackCompactWidget::enableToggled( bool checked )
