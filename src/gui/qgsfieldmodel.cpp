@@ -94,35 +94,11 @@ void QgsFieldModel::layerDeleted()
   updateModel();
 }
 
-QgsFieldModel::Filters QgsFieldModel::filters() const
-{
-  return mFilters;
-}
-
-void QgsFieldModel::setFilters( const Filters& filters )
-{
-  if ( filters == mFilters )
-    return;
-
-  mFilters = filters;
-
-  updateModel();
-}
-
 void QgsFieldModel::updateModel()
 {
   if ( mLayer )
   {
-    QgsFields fields = mLayer->fields();
-    QgsFields newFields;
-    for ( int i = 0; i < fields.count(); ++i )
-    {
-      if ( fields.fieldOrigin( i ) != QgsFields::OriginExpression && fields.fieldOrigin( i ) != QgsFields::OriginJoin )
-      {
-        newFields.append( fields.at( i ), fields.fieldOrigin( i ), fields.fieldOriginIndex( i ) );
-      }
-    }
-
+    QgsFields newFields = mLayer->fields();
     if ( mFields.toList() != newFields.toList() )
     {
       // Try to handle two special cases: addition of a new field and removal of a field.
@@ -277,7 +253,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         return "";
       }
-      QgsField field = mFields[index.row()];
+      QgsField field = mFields.at( index.row() );
       return field.name();
     }
 
@@ -285,11 +261,11 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( exprIdx >= 0 )
       {
-        return mExpression[exprIdx];
+        return mExpression.at( exprIdx );
       }
       else
       {
-        QgsField field = mFields[index.row()];
+        QgsField field = mFields.at( index.row() );
         return field.name();
       }
     }
@@ -312,7 +288,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( exprIdx >= 0 )
       {
-        QgsExpression exp( mExpression[exprIdx] );
+        QgsExpression exp( mExpression.at( exprIdx ) );
         QgsExpressionContext context;
         if ( mLayer )
           context.setFields( mLayer->fields() );
@@ -327,8 +303,17 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( exprIdx < 0 )
       {
-        QgsField field = mFields[index.row()];
+        QgsField field = mFields.at( index.row() );
         return static_cast< int >( field.type() );
+      }
+      return QVariant();
+    }
+
+    case FieldOriginRole:
+    {
+      if ( exprIdx < 0 )
+      {
+        return static_cast< int >( mFields.fieldOrigin( index.row() ) );
       }
       return QVariant();
     }
@@ -338,11 +323,11 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( exprIdx >= 0 )
       {
-        return mExpression[exprIdx];
+        return mExpression.at( exprIdx );
       }
       else if ( role == Qt::EditRole )
       {
-        return mFields[index.row()].name();
+        return mFields.at( index.row() ).name();
       }
       else if ( mLayer )
       {
@@ -357,7 +342,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx >= 0 )
       {
         // if expression, test validity
-        QgsExpression exp( mExpression[exprIdx] );
+        QgsExpression exp( mExpression.at( exprIdx ) );
         QgsExpressionContext context;
         if ( mLayer )
           context.setFields( mLayer->fields() );

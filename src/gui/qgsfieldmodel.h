@@ -39,17 +39,9 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
       ExpressionRole = Qt::UserRole + 3, /*!< return field name or expression */
       IsExpressionRole = Qt::UserRole + 4, /*!< return if index corresponds to an expression */
       ExpressionValidityRole = Qt::UserRole + 5, /*!< return if expression is valid or not */
-      FieldTypeRole = Qt::UserRole + 6 /*!< return the field type (if a field, return QVariant if expression) */
+      FieldTypeRole = Qt::UserRole + 6, /*!< return the field type (if a field, return QVariant if expression) */
+      FieldOriginRole = Qt::UserRole + 7, /*!< return the field origin (if a field, returns QVariant if expression) */
     };
-
-    /**
-     * Filters for which fields should be shown
-     */
-    enum Filter
-    {
-      WritableFields = 1 //!< Only show writable fields
-    };
-    Q_DECLARE_FLAGS( Filters, Filter )
 
     /**
      * @brief QgsFieldModel creates a model to display the fields of a given layer
@@ -83,16 +75,6 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     int columnCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
 
-    /**
-     * The currently applied filters that define which fields are shown.
-     */
-    Filters filters() const;
-
-    /**
-     * The currently applied filters that define which fields are shown.
-     */
-    void setFilters( const Filters& filter );
-
   public slots:
     //! set the layer of whch fields are displayed
     void setLayer( QgsVectorLayer *layer );
@@ -103,14 +85,14 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
   private slots:
     void layerDeleted();
 
-  private:
+  protected:
     QgsFields mFields;
     QList<QString> mExpression;
 
     QgsVectorLayer* mLayer;
     bool mAllowExpression;
-    Filters mFilters;
 
+  private:
     void fetchFeature();
 };
 

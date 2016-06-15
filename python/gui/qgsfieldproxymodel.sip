@@ -21,7 +21,8 @@ class QgsFieldProxyModel : QSortFilterProxyModel
       Numeric, /*!< All numeric fields */
       Date, /*!< Date or datetime fields */
       Time, /*!< Time fields */
-      All, /*!< All fields */
+      HideReadOnly,  /*!< Hide read-only fields */
+      All, /*!< All field types */
     };
     typedef QFlags<QgsFieldProxyModel::Filter> Filters;
 

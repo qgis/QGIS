@@ -47,6 +47,7 @@
 #include "qgsrubberband.h"
 #include "qgsfield.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsfieldproxymodel.h"
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
@@ -248,11 +249,9 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   }
 
   mUpdateExpressionText->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+  mFieldCombo->setFilters( QgsFieldProxyModel::All | QgsFieldProxyModel::HideReadOnly );
+  mFieldCombo->setLayer( mLayer );
 
-  mFieldModel = new QgsFieldModel( this );
-  mFieldModel->setFilters( QgsFieldModel::WritableFields );
-  mFieldModel->setLayer( mLayer );
-  mFieldCombo->setModel( mFieldModel );
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
   connect( mRunFieldCalcSelected, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpressionSelected() ) );
   // NW TODO Fix in 2.6 - Doesn't work with field model for some reason.
@@ -411,8 +410,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
 
   mLayer->beginEditCommand( "Field calculator" );
 
-  QModelIndex modelindex = mFieldModel->indexFromName( fieldName );
-  int fieldindex = modelindex.data( QgsFieldModel::FieldIndexRole ).toInt();
+  int fieldindex = layer->fields().indexFromName( fieldName );
 
   bool calculationSuccess = true;
   QString error;
@@ -738,6 +736,10 @@ void QgsAttributeTableDialog::editingToggled()
   mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() );
 
   mUpdateExpressionBox->setVisible( mLayer->isEditable() );
+  if ( mLayer->isEditable() && mFieldCombo->currentIndex() == -1 )
+  {
+    mFieldCombo->setCurrentIndex( 0 );
+  }
   // not necessary to set table read only if layer is not editable
   // because model always reflects actual state when returning item flags
 }

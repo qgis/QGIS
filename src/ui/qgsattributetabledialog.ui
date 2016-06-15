@@ -787,7 +787,7 @@
        <number>3</number>
       </property>
       <item>
-       <widget class="QComboBox" name="mFieldCombo"/>
+       <widget class="QgsFieldComboBox" name="mFieldCombo"/>
       </item>
       <item>
        <widget class="QLabel" name="label">
@@ -909,6 +909,11 @@
    <extends>QStackedWidget</extends>
    <header>qgsdualview.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
