@@ -57,14 +57,20 @@ class SpatiaLiteDBConnector(DBConnector):
 
     @classmethod
     def isValidDatabase(self, path):
-        if not QFile.exists(path):
+        """Checks if a file is a valid sqlite database
+           http://stackoverflow.com/a/15355790
+        """
+        from os.path import isfile, getsize
+
+        if not isfile(path):
             return False
-        try:
-            conn = sqlite.connect(path)
-        except self.connection_error_types():
+        if getsize(path) < 100:
             return False
-        conn.close()
-        return True
+
+        with open(path, 'rb') as fd:
+            header = fd.read(100)
+
+        return header[:16] == 'SQLite format 3\x00'
 
     def _checkSpatial(self):
         """ check if it's a valid spatialite db """
