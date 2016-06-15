@@ -2494,7 +2494,7 @@ Acts on currently active editable layer</string>
   <action name="mActionMultiEditAttributes">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAllEdits.svg</normaloff>:/images/themes/default/mActionAllEdits.svg</iconset>
+     <normaloff>:/images/themes/default/mActionMultiEdit.svg</normaloff>:/images/themes/default/mActionMultiEdit.svg</iconset>
    </property>
    <property name="text">
     <string>Modify Attributes of Selected Features</string>
