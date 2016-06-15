@@ -1221,7 +1221,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionTextAnnotation.png</normaloff>:/images/themes/default/mActionTextAnnotation.png</iconset>
+     <normaloff>:/images/themes/default/mActionTextAnnotation.svg</normaloff>:/images/themes/default/mActionTextAnnotation.svg</iconset>
    </property>
    <property name="text">
     <string>Text Annotation</string>
@@ -1233,7 +1233,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFormAnnotation.png</normaloff>:/images/themes/default/mActionFormAnnotation.png</iconset>
+     <normaloff>:/images/themes/default/mActionFormAnnotation.svg</normaloff>:/images/themes/default/mActionFormAnnotation.svg</iconset>
    </property>
    <property name="text">
     <string>Form Annotation</string>
@@ -1245,7 +1245,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAnnotation.png</normaloff>:/images/themes/default/mActionAnnotation.png</iconset>
+     <normaloff>:/images/themes/default/mActionAnnotation.svg</normaloff>:/images/themes/default/mActionAnnotation.svg</iconset>
    </property>
    <property name="text">
     <string>Move Annotation</string>
@@ -2013,7 +2013,7 @@ Acts on currently active editable layer</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFormAnnotation.png</normaloff>:/images/themes/default/mActionFormAnnotation.png</iconset>
+     <normaloff>:/images/themes/default/mActionHtmlAnnotation.svg</normaloff>:/images/themes/default/mActionHtmlAnnotation.svg</iconset>
    </property>
    <property name="text">
     <string>HTML Annotation</string>
@@ -2040,7 +2040,7 @@ Acts on currently active editable layer</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
+     <normaloff>:/images/themes/default/mActionSvgAnnotation.svg</normaloff>:/images/themes/default/mActionSvgAnnotation.svg</iconset>
    </property>
    <property name="text">
     <string>SVG Annotation</string>
