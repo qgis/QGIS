@@ -198,8 +198,11 @@
         <file>themes/default/mActionDuplicateLayer.svg</file>
         <file>themes/default/mActionDuplicateComposer.svg</file>
         <file>themes/default/mActionEditCopy.png</file>
+        <file>themes/default/mActionEditCopy.svg</file>
         <file>themes/default/mActionEditCut.png</file>
+        <file>themes/default/mActionEditCut.svg</file>
         <file>themes/default/mActionEditPaste.png</file>
+        <file>themes/default/mActionEditPaste.svg</file>
         <file>themes/default/mActionExpandNewTree.png</file>
         <file>themes/default/mActionExpandNewTree.svg</file>
         <file>themes/default/mActionExpandTree.png</file>
@@ -257,6 +260,7 @@
         <file>themes/default/mActionMergeFeatureAttributes.png</file>
         <file>themes/default/mActionMergeFeatures.png</file>
         <file>themes/default/mActionMoveFeature.png</file>
+        <file>themes/default/mActionMoveFeature.svg</file>
         <file>themes/default/mActionMoveItemContent.png</file>
         <file>themes/default/mActionMoveItemContent.svg</file>
         <file>themes/default/mActionMoveItemsToBottom.png</file>
@@ -272,6 +276,7 @@
         <file>themes/default/mActionNewGeoPackageLayer.svg</file>
         <file>themes/default/mActionNewVectorLayer.svg</file>
         <file>themes/default/mActionNodeTool.png</file>
+        <file>themes/default/mActionNodeTool.svg</file>
         <file>themes/default/mActionOffsetCurve.png</file>
         <file>themes/default/mActionOpenTable.png</file>
         <file>themes/default/mActionOpenTable.svg</file>

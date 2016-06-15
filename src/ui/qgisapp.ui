@@ -688,7 +688,7 @@
   <action name="mActionCutFeatures">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionEditCut.png</normaloff>:/images/themes/default/mActionEditCut.png</iconset>
+     <normaloff>:/images/themes/default/mActionEditCut.svg</normaloff>:/images/themes/default/mActionEditCut.svg</iconset>
    </property>
    <property name="text">
     <string>Cut Features</string>
@@ -700,7 +700,7 @@
   <action name="mActionCopyFeatures">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionEditCopy.png</normaloff>:/images/themes/default/mActionEditCopy.png</iconset>
+     <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
    </property>
    <property name="text">
     <string>Copy Features</string>
@@ -712,7 +712,7 @@
   <action name="mActionPasteFeatures">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionEditPaste.png</normaloff>:/images/themes/default/mActionEditPaste.png</iconset>
+     <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
    </property>
    <property name="text">
     <string>Paste Features</string>
@@ -727,7 +727,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCapturePolygon.png</normaloff>:/images/themes/default/mActionCapturePolygon.png</iconset>
+     <normaloff>:/images/themes/default/mActionCapturePolygon.svg</normaloff>:/images/themes/default/mActionCapturePolygon.svg</iconset>
    </property>
    <property name="text">
     <string>Add Feature</string>
@@ -742,7 +742,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMoveFeature.png</normaloff>:/images/themes/default/mActionMoveFeature.png</iconset>
+     <normaloff>:/images/themes/default/mActionMoveFeature.svg</normaloff>:/images/themes/default/mActionMoveFeature.svg</iconset>
    </property>
    <property name="text">
     <string>Move Feature(s)</string>
@@ -877,7 +877,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNodeTool.png</normaloff>:/images/themes/default/mActionNodeTool.png</iconset>
+     <normaloff>:/images/themes/default/mActionNodeTool.svg</normaloff>:/images/themes/default/mActionNodeTool.svg</iconset>
    </property>
    <property name="text">
     <string>Node Tool</string>
@@ -1881,7 +1881,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionCopyStyle">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionEditCopy.png</normaloff>:/images/themes/default/mActionEditCopy.png</iconset>
+     <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
    </property>
    <property name="text">
     <string>Copy style</string>
@@ -1890,7 +1890,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionPasteStyle">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionEditPaste.png</normaloff>:/images/themes/default/mActionEditPaste.png</iconset>
+     <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
    </property>
    <property name="text">
     <string>Paste style</string>
