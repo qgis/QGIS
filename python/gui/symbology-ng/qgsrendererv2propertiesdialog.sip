@@ -24,8 +24,6 @@ class QgsRendererV2PropertiesDialog : QDialog
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
-    void setDockMode( bool dockMode );
-
   signals:
     /**
      * Emitted when expression context variables on the associated

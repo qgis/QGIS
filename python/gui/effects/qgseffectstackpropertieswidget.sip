@@ -182,13 +182,6 @@ class QgsEffectStackCompactWidget : QgsPanelWidget
      */
     void setPreviewPicture( const QPicture& picture );
 
-    /**
-     * Set the widget in dock mode. In dock mode the widget will emit a signal
-     * to show the effects selector instead of opening a dialog.
-     * @param dockMode True to enable dock mode.
-     */
-    void setDockMode( bool dockMode );
-
   signals:
 
     /** Emitted when the paint effect properties change
