@@ -23,6 +23,7 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer* layer, const QgsAt
 {
   QgsAttributeEditorContext dlgContext = context;
   dlgContext.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
+  dlgContext.setAllowCustomUi( false );
 
   mForm = new QgsAttributeForm( layer, QgsFeature(), dlgContext, this );
   mForm->setMode( QgsAttributeForm::SearchMode );

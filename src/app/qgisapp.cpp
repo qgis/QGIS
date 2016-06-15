@@ -6929,10 +6929,12 @@ void QgisApp::modifyAttributesOfSelectedFeatures()
 
   //dummy feature
   QgsFeature f;
-  QgsAttributeDialog* dialog = new QgsAttributeDialog( vl, &f, false, this );
+  QgsAttributeEditorContext context;
+  context.setAllowCustomUi( false );
+
+  QgsAttributeDialog* dialog = new QgsAttributeDialog( vl, &f, false, this, true, context );
   dialog->setMode( QgsAttributeForm::MultiEditMode );
   dialog->exec();
-
 }
 
 void QgisApp::mergeSelectedFeatures()

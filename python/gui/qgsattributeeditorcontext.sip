@@ -54,5 +54,19 @@ class QgsAttributeEditorContext
      */
     void setFormMode( FormMode mode );
 
+    /** Returns true if the attribute editor should permit use of custom UI forms.
+     * @see setAllowCustomUi()
+     * @note added in QGIS 2.16
+     */
+    bool allowCustomUi() const;
+
+    /** Sets whether the attribute editor should permit use of custom UI forms.
+     * @param allow set to true to allow custom UI forms, or false to disable them and use default generated
+     * QGIS forms
+     * @see allowCustomUi()
+     * @note added in QGIS 2.16
+     */
+    void setAllowCustomUi( bool allow );
+
     const QgsAttributeEditorContext* parentContext() const;
 };
