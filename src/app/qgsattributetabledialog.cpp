@@ -270,6 +270,15 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mSearchFormButton, SIGNAL( toggled( bool ) ), mMainView, SLOT( toggleSearchMode( bool ) ) );
   updateMultiEditButtonState();
 
+  if ( mLayer->editFormConfig()->layout() == QgsEditFormConfig::UiFileLayout )
+  {
+    //not supported with custom UI
+    mToggleMultiEditButton->setEnabled( false );
+    mToggleMultiEditButton->setToolTip( tr( "Multiedit is not supported when using custom UI forms" ) );
+    mSearchFormButton->setEnabled( false );
+    mSearchFormButton->setToolTip( tr( "Search is not supported when using custom UI forms" ) );
+  }
+
   editingToggled();
 }
 
