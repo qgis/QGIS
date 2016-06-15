@@ -32,12 +32,42 @@ QgsFieldProxyModel *QgsFieldProxyModel::setFilters( const Filters& filters )
   return this;
 }
 
+bool QgsFieldProxyModel::isReadOnly( const QModelIndex& index ) const
+{
+  QVariant originVariant = sourceModel()->data( index, QgsFieldModel::FieldOriginRole );
+  if ( originVariant.isNull() )
+  {
+    //expression
+    return true;
+  }
+
+  QgsFields::FieldOrigin origin = static_cast< QgsFields::FieldOrigin >( originVariant.toInt() );
+  switch ( origin )
+  {
+    case QgsFields::OriginUnknown:
+    case QgsFields::OriginJoin:
+    case QgsFields::OriginExpression:
+      //read only
+      return true;
+
+    case QgsFields::OriginEdit:
+    case QgsFields::OriginProvider:
+      //not read only
+      return false;
+  }
+  return false; // avoid warnings
+}
+
 bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
+  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+
+  if ( mFilters.testFlag( HideReadOnly ) && isReadOnly( index ) )
+    return false;
+
   if ( mFilters.testFlag( All ) )
     return true;
 
-  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
   QVariant typeVar = sourceModel()->data( index, QgsFieldModel::FieldTypeRole );
 
   // if expression, consider valid

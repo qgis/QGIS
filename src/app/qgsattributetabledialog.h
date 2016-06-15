@@ -28,7 +28,6 @@
 
 #include "qgsattributedialog.h"
 #include "qgsvectorlayer.h" //QgsFeatureIds
-#include "qgsfieldmodel.h"
 #include "qgssearchwidgetwrapper.h"
 #include "qgsdockwidget.h"
 
@@ -222,8 +221,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QSignalMapper* mFilterActionMapper;
 
     QgsVectorLayer* mLayer;
-    QgsFieldModel* mFieldModel;
-
     QgsRubberBand* mRubberBand;
     QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
     QStringList mVisibleFields;
