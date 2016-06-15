@@ -301,7 +301,7 @@ void GlobePlugin::run()
   osgEarth::Util::EarthManipulator* manip = new osgEarth::Util::EarthManipulator();
   mOsgViewer->setCameraManipulator( manip );
   osgEarth::Util::Viewpoint viewpoint;
-  viewpoint.focalPoint() = osgEarth::GeoPoint( osgEarth::SpatialReference::get( "wgs84" ), -90., 0., 0. );
+  viewpoint.focalPoint() = osgEarth::GeoPoint( osgEarth::SpatialReference::get( "wgs84" ), 0., 0., 0. );
   viewpoint.heading() = 0.;
   viewpoint.pitch() = -90.;
   viewpoint.range() = 2e7;
