@@ -371,8 +371,6 @@ void GlobePlugin::run()
     mQgisMapLayer = new osgEarth::ImageLayer( options, mTileSource );
     map->addImageLayer( mQgisMapLayer );
 
-    // Add layers to the map
-    updateLayers();
 
     // Create the frustum highlight callback
     mFrustumHighlightCallback = new QgsGlobeFrustumHighlightCallback(
@@ -417,9 +415,13 @@ void GlobePlugin::run()
   // which appear when launching the globe a second time:
   // Delay applySettings one event loop iteration, i.e. one update call of the GL canvas
   QTimer* timer = new QTimer();
+  QTimer* timer2 = new QTimer();
   connect( timer, SIGNAL( timeout() ), timer, SLOT( deleteLater() ) );
+  connect( timer2, SIGNAL( timeout() ), timer2, SLOT( deleteLater() ) );
   connect( timer, SIGNAL( timeout() ), this, SLOT( applySettings() ) );
+  connect( timer2, SIGNAL( timeout() ), this, SLOT( updateLayers() ) );
   timer->start( 0 );
+  timer2->start( 100 );
 }
 
 void GlobePlugin::showSettings()
