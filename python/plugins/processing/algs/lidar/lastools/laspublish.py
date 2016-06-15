@@ -74,7 +74,7 @@ class laspublish(LAStoolsAlgorithm):
         self.addParameter(ParameterString(laspublish.PORTAL_TITLE,
                                           self.tr("portal title"), "My LiDAR Portal"))
         self.addParameter(ParameterString(laspublish.PORTAL_DESCRIPTION,
-                                          self.tr("portal desciption")))
+                                          self.tr("portal description")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
