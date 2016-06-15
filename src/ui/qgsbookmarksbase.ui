@@ -64,7 +64,7 @@
   <action name="actionAdd">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewBookmark.png</normaloff>:/images/themes/default/mActionNewBookmark.png</iconset>
+     <normaloff>:/images/themes/default/mActionNewBookmark.svg</normaloff>:/images/themes/default/mActionNewBookmark.svg</iconset>
    </property>
    <property name="text">
     <string>Add</string>

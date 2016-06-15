@@ -1065,7 +1065,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMeasure.png</normaloff>:/images/themes/default/mActionMeasure.png</iconset>
+     <normaloff>:/images/themes/default/mActionMeasure.svg</normaloff>:/images/themes/default/mActionMeasure.svg</iconset>
    </property>
    <property name="text">
     <string>Measure Line</string>
@@ -1080,7 +1080,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMeasureArea.png</normaloff>:/images/themes/default/mActionMeasureArea.png</iconset>
+     <normaloff>:/images/themes/default/mActionMeasureArea.svg</normaloff>:/images/themes/default/mActionMeasureArea.svg</iconset>
    </property>
    <property name="text">
     <string>Measure Area</string>
@@ -1095,7 +1095,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMeasureAngle.png</normaloff>:/images/themes/default/mActionMeasureAngle.png</iconset>
+     <normaloff>:/images/themes/default/mActionMeasureAngle.svg</normaloff>:/images/themes/default/mActionMeasureAngle.svg</iconset>
    </property>
    <property name="text">
     <string>Measure Angle</string>
@@ -1170,7 +1170,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMapTips.png</normaloff>:/images/themes/default/mActionMapTips.png</iconset>
+     <normaloff>:/images/themes/default/mActionMapTips.svg</normaloff>:/images/themes/default/mActionMapTips.svg</iconset>
    </property>
    <property name="text">
     <string>Map Tips</string>
@@ -1182,7 +1182,7 @@
   <action name="mActionNewBookmark">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewBookmark.png</normaloff>:/images/themes/default/mActionNewBookmark.png</iconset>
+     <normaloff>:/images/themes/default/mActionNewBookmark.svg</normaloff>:/images/themes/default/mActionNewBookmark.svg</iconset>
    </property>
    <property name="text">
     <string>New Bookmark...</string>
@@ -1194,7 +1194,7 @@
   <action name="mActionShowBookmarks">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionShowBookmarks.png</normaloff>:/images/themes/default/mActionShowBookmarks.png</iconset>
+     <normaloff>:/images/themes/default/mActionShowBookmarks.svg</normaloff>:/images/themes/default/mActionShowBookmarks.svg</iconset>
    </property>
    <property name="text">
     <string>Show Bookmarks</string>
@@ -2234,7 +2234,7 @@ Acts on currently active editable layer</string>
   <action name="mActionOpenFieldCalc">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCalculateField.png</normaloff>:/images/themes/default/mActionCalculateField.png</iconset>
+     <normaloff>:/images/themes/default/mActionCalculateField.svg</normaloff>:/images/themes/default/mActionCalculateField.svg</iconset>
    </property>
    <property name="text">
     <string>Open Field Calculator...</string>
@@ -2412,7 +2412,7 @@ Acts on currently active editable layer</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSum.png</normaloff>:/images/themes/default/mActionSum.png</iconset>
+     <normaloff>:/images/themes/default/mActionSum.svg</normaloff>:/images/themes/default/mActionSum.svg</iconset>
    </property>
    <property name="text">
     <string>Statistical Summary</string>

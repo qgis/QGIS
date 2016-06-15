@@ -55,7 +55,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
   mRemoveToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
   mMoveUpToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
   mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.svg" ) ) );
-  mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.png" ) ) );
+  mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
 
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setContext( "composer" );
