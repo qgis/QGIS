@@ -24,6 +24,11 @@ class QgsRendererV2PropertiesDialog : QDialog
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
+    /**
+     * Set the widget in dock mode which tells the widget to emit panel
+     * widgets and not open dialogs
+     * @param dockMode True to enable dock mode.
+     */
     void setDockMode( bool dockMode );
 
   signals:

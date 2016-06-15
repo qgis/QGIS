@@ -76,14 +76,6 @@ class GUI_EXPORT QgsRendererV2Widget : public QgsPanelWidget
      */
     void applyChanges();
 
-    /**
-     * Set the widget in dock mode which tells the widget to emit panel
-     * widgets and not open dialogs
-     * @param dockMode True to enable dock mode.
-     */
-    virtual void setDockMode( bool dockMode ) override;
-
-
   signals:
     /**
      * Emitted when expression context variables on the associated
@@ -93,7 +85,6 @@ class GUI_EXPORT QgsRendererV2Widget : public QgsPanelWidget
     void layerVariablesChanged();
 
   protected:
-    bool mDockMode;
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
     QMenu* contextMenu;

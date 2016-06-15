@@ -90,7 +90,6 @@ void QgsSingleSymbolRendererV2Widget::setMapCanvas( QgsMapCanvas* canvas )
 void QgsSingleSymbolRendererV2Widget::setDockMode( bool dockMode )
 {
   QgsRendererV2Widget::setDockMode( dockMode );
-  mDockMode = dockMode;
   if ( mSelector )
     mSelector->setDockMode( dockMode );
 }

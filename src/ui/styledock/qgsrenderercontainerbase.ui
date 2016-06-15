@@ -25,11 +25,14 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Back</string>
+        <string/>
        </property>
        <property name="icon">
         <iconset resource="../../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionArrowLeft.png</normaloff>:/images/themes/default/mActionArrowLeft.png</iconset>
+       </property>
+       <property name="autoRepeat">
+        <bool>true</bool>
        </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
