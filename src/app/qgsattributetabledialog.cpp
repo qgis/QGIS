@@ -67,6 +67,9 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 
 void QgsAttributeTableDialog::updateMultiEditButtonState()
 {
+  if ( mLayer->editFormConfig()->layout() == QgsEditFormConfig::UiFileLayout )
+    return;
+
   mToggleMultiEditButton->setEnabled( mLayer->isEditable() );
   if ( mLayer->isEditable() && mMainView->view() != QgsDualView::AttributeEditor )
   {
