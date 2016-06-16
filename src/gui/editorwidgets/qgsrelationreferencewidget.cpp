@@ -323,7 +323,7 @@ void QgsRelationReferenceWidget::deleteForeignKey()
   emit foreignKeyChanged( QVariant( QVariant::Int ) );
 }
 
-QgsFeature QgsRelationReferenceWidget::referencedFeature()
+QgsFeature QgsRelationReferenceWidget::referencedFeature() const
 {
   QgsFeature f;
   if ( mReferencedLayer )
@@ -356,7 +356,7 @@ void QgsRelationReferenceWidget::showIndeterminateState()
   updateAttributeEditorFrame( QgsFeature() );
 }
 
-QVariant QgsRelationReferenceWidget::foreignKey()
+QVariant QgsRelationReferenceWidget::foreignKey() const
 {
   if ( mReadOnlySelector )
   {
@@ -557,6 +557,7 @@ void QgsRelationReferenceWidget::init()
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboReferenceChanged( int ) ) );
+    updateAttributeEditorFrame( mFeature );
     QApplication::restoreOverrideCursor();
   }
 }
@@ -706,13 +707,11 @@ void QgsRelationReferenceWidget::comboReferenceChanged( int index )
 
 void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature& feature )
 {
+  mOpenFormButton->setEnabled( feature.isValid() );
   // Check if we're running with an embedded frame we need to update
-  if ( mAttributeEditorFrame )
+  if ( mAttributeEditorFrame && mReferencedAttributeForm )
   {
-    if ( mReferencedAttributeForm )
-    {
-      mReferencedAttributeForm->setFeature( feature );
-    }
+    mReferencedAttributeForm->setFeature( feature );
   }
 }
 
