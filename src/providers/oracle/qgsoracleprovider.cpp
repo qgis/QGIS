@@ -3274,7 +3274,7 @@ QGISEXTERN bool saveStyle( const QString &uri,
 
   if ( !qry.exec( sql ) )
   {
-    errCause = QObject::tr( "Unable to check style existences [%1]" ).arg( qry.lastError().text() );
+    errCause = QObject::tr( "Unable to check style existence [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
     return false;
   }
@@ -3403,7 +3403,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   QString style;
   if ( !qry.exec( "SELECT COUNT(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ) || !qry.next() || qry.value( 0 ).toInt() == 0 )
   {
-    errCause = QObject::tr( "Unable layer style table not found [%1]" ).arg( qry.lastError().text() );
+    errCause = QObject::tr( "Unable to find layer style table [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
     return QString::null;
   }
@@ -3461,7 +3461,7 @@ QGISEXTERN int listStyles( const QString &uri,
   }
   else if ( qry.value( 0 ).toInt() == 0 )
   {
-    errCause = QObject::tr( "Layer style table does not exists [%1]" ).arg( qry.value( 0 ).toString() );
+    errCause = QObject::tr( "Layer style table does not exist [%1]" ).arg( qry.value( 0 ).toString() );
   }
   else
   {
@@ -3523,7 +3523,7 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
 
   if ( !qry.exec( QString( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsOracleConn::quotedValue( styleId ) ) ) )
   {
-    errCause = QObject::tr( "Could load layer style table [%1]" ).arg( qry.lastError().text() );
+    errCause = QObject::tr( "Could not load layer style table [%1]" ).arg( qry.lastError().text() );
   }
   else if ( !qry.next() )
   {
