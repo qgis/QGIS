@@ -1480,11 +1480,13 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
 
 } // mouseReleaseEvent
 
-void QgsMapCanvas::updateMapSize()
+void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 {
+  QGraphicsView::resizeEvent( e );
   mResizeTimer->start( 500 );
 
   QSize lastSize = viewport()->size();
+
   mSettings.setOutputSize( lastSize );
   mMapRenderer->setOutputSize( lastSize, mSettings.outputDpi() );
 
@@ -1502,28 +1504,12 @@ void QgsMapCanvas::updateMapSize()
   emit extentsChanged();
 }
 
-
-void QgsMapCanvas::resizeEvent( QResizeEvent * e )
-{
-  QGraphicsView::resizeEvent( e );
-
-  QSize size = viewport()->size();
-  if ( size.width() > mSettings.outputSize().width() || size.height() > mSettings.outputSize().height() )
-  {
-    updateMapSize();
-  }
-  else
-  {
-    moveCanvasContents( true );
-  }
-}
-
 void QgsMapCanvas::paintEvent( QPaintEvent *e )
 {
   // no custom event handling anymore
 
   QGraphicsView::paintEvent( e );
-}
+} // paintEvent
 
 void QgsMapCanvas::updateCanvasItemPositions()
 {
