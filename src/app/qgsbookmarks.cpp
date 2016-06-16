@@ -21,6 +21,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
+#include "qgsmessagelog.h"
 
 #include "qgslogger.h"
 
@@ -562,7 +563,7 @@ QVariant QgsMergedBookmarksTableModel::data( const QModelIndex& index, int role 
 
 bool QgsMergedBookmarksTableModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
-  // is project or QGIS
+  // last column triggers a move from QGIS to project bookmark
   if ( index.column() == mQgisTableModel.columnCount() )
   {
     if ( index.row() < mQgisTableModel.rowCount() )
@@ -581,7 +582,8 @@ bool QgsMergedBookmarksTableModel::setData( const QModelIndex& index, const QVar
     }
     return true;
   }
-  if ( index.column() < mQgisTableModel.rowCount() )
+
+  if ( index.row() < mQgisTableModel.rowCount() )
   {
     return mQgisTableModel.setData( index, value, role );
   }
