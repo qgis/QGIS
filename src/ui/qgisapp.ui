@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1050</width>
+    <width>1018</width>
     <height>506</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1050</width>
+     <width>1018</width>
      <height>25</height>
     </rect>
    </property>
@@ -428,6 +428,8 @@
    <addaction name="mActionZoomToLayer"/>
    <addaction name="mActionZoomLast"/>
    <addaction name="mActionZoomNext"/>
+   <addaction name="mActionNewBookmark"/>
+   <addaction name="mActionShowBookmarks"/>
    <addaction name="mActionDraw"/>
   </widget>
   <widget class="QToolBar" name="mAttributesToolBar">
@@ -449,8 +451,6 @@
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
    <addaction name="mActionMapTips"/>
-   <addaction name="mActionNewBookmark"/>
-   <addaction name="mActionShowBookmarks"/>
   </widget>
   <widget class="QToolBar" name="mPluginToolBar">
    <property name="windowTitle">
