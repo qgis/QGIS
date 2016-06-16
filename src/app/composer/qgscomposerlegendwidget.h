@@ -99,6 +99,8 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     /** Update the enabling state of the filter by atlas button */
     void updateFilterLegendByAtlasButton();
 
+    void on_mItemTreeView_doubleClicked( const QModelIndex &index );
+
   private:
     QgsComposerLegendWidget();
     void blockAllSignals( bool b );
