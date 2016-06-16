@@ -261,6 +261,8 @@
         <file>themes/default/mActionMergeFeatures.png</file>
         <file>themes/default/mActionMoveFeature.png</file>
         <file>themes/default/mActionMoveFeature.svg</file>
+        <file>themes/default/mActionMoveFeatureLine.svg</file>
+        <file>themes/default/mActionMoveFeaturePoint.svg</file>
         <file>themes/default/mActionMoveItemContent.png</file>
         <file>themes/default/mActionMoveItemContent.svg</file>
         <file>themes/default/mActionMoveItemsToBottom.png</file>
