@@ -508,7 +508,9 @@
         <file>themes/default/propertyicons/rendering.png</file>
         <file>themes/default/propertyicons/render.svg</file>
         <file>themes/default/propertyicons/settings.svg</file>
+        <file>themes/default/propertyicons/stylepreset.svg</file>
         <file>themes/default/propertyicons/symbology.png</file>
+        <file>themes/default/propertyicons/symbology.svg</file>
         <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.png</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
