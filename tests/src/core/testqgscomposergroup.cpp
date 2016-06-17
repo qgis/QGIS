@@ -17,7 +17,7 @@
 
 #include "qgscomposeritemgroup.h"
 #include "qgscomposerlabel.h"
-#include "qgscomposerpolygon.h"
+#include "qgscomposerarrow.h"
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
 #include "qgsapplication.h"
@@ -183,19 +183,19 @@ void TestQgsComposerGroup::deleteGroup()
 }
 
 Q_DECLARE_METATYPE( QgsComposerItemGroup * );
-Q_DECLARE_METATYPE( QgsComposerPolygon * );
+Q_DECLARE_METATYPE( QgsComposerArrow * );
 Q_DECLARE_METATYPE( QgsComposerItem * );
 
 void TestQgsComposerGroup::undoRedo()
 {
-  QgsComposerPolygon *item1, *item2;
-  int polygonsAdded = 0;
+  QgsComposerArrow *item1, *item2;
+  int arrowsAdded = 0;
   int groupsAdded = 0;
   int itemsRemoved = 0;
 
-  qRegisterMetaType<QgsComposerPolygon *>();
-  QSignalSpy spyPolygonAdded( mComposition, SIGNAL( composerPolygonAdded( QgsComposerPolygon* ) ) );
-  QCOMPARE( spyPolygonAdded.count(), 0 );
+  qRegisterMetaType<QgsComposerArrow *>();
+  QSignalSpy spyArrowAdded( mComposition, SIGNAL( composerArrowAdded( QgsComposerArrow* ) ) );
+  QCOMPARE( spyArrowAdded.count(), 0 );
 
   qRegisterMetaType<QgsComposerItemGroup *>();
   QSignalSpy spyGroupAdded( mComposition, SIGNAL( composerItemGroupAdded( QgsComposerItemGroup* ) ) );
@@ -217,12 +217,16 @@ void TestQgsComposerGroup::undoRedo()
   QgsDebugMsg( QString( "clear stack count:%1 index:%2" ) .arg( us->count() ) .arg( us->index() ) );
 
   //create some items
-  item1 = new QgsComposerPolygon( QPolygonF( QRectF( 0, 0, 1, 1 ) ), mComposition ); //QgsComposerLabel( mComposition );
-  mComposition->addComposerPolygon( item1 );
-  QCOMPARE( spyPolygonAdded.count(), ++polygonsAdded );
-  item2 = new QgsComposerPolygon( QPolygonF( QRectF( -1, -2, 1, 1 ) ), mComposition ); //QgsComposerLabel( mComposition );
-  mComposition->addComposerPolygon( item2 );
-  QCOMPARE( spyPolygonAdded.count(), ++polygonsAdded );
+  item1 = new QgsComposerArrow( QPointF(0, 0), QPointF(1, 1), mComposition );
+  item1->setArrowHeadWidth(0);
+  item1->setArrowHeadOutlineWidth(0);
+  mComposition->addComposerArrow( item1 );
+  QCOMPARE( spyArrowAdded.count(), ++arrowsAdded );
+  item2 = new QgsComposerArrow( QPointF(-1, -2), QPointF(1, 1), mComposition );
+  item2->setArrowHeadOutlineWidth(0);
+  item2->setArrowHeadWidth(0);
+  mComposition->addComposerArrow( item2 );
+  QCOMPARE( spyArrowAdded.count(), ++arrowsAdded );
   mComposition->composerItems( items );
   QCOMPARE( items.size(), 3 ); // paper, 2 shapes
   QgsDebugMsg( QString( "addedItems stack count:%1 index:%2" ) .arg( us->count() ) .arg( us->index() ) );
@@ -234,7 +238,7 @@ void TestQgsComposerGroup::undoRedo()
   items.clear();
   items << item1 << item2;
   mGroup = mComposition->groupItems( items );
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), ++groupsAdded );
   QCOMPARE( spyItemRemoved.count(), itemsRemoved );
   QCOMPARE( mGroup->items().size(), 2 );
@@ -253,7 +257,7 @@ void TestQgsComposerGroup::undoRedo()
   mGroup->beginCommand( "move group" );
   mGroup->move( 10.0, 20.0 );
   mGroup->endCommand();
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), groupsAdded );
   QCOMPARE( spyItemRemoved.count(), itemsRemoved );
   QgsDebugMsg( QString( "groupItems stack count:%1 index:%2" ) .arg( us->count() ) .arg( us->index() ) );
@@ -270,7 +274,7 @@ void TestQgsComposerGroup::undoRedo()
   //ungroup
   QgsDebugMsg( QString( "ungrouping" ) );
   mComposition->ungroupItems( mGroup );
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), groupsAdded );
   QCOMPARE( spyItemRemoved.count(), ++itemsRemoved );
   mComposition->composerItems( items );
@@ -287,7 +291,7 @@ void TestQgsComposerGroup::undoRedo()
   //undo (groups again) -- crashed here before #11371 got fixed
   QgsDebugMsg( QString( "undo ungrouping" ) );
   us->undo();
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), ++groupsAdded );
   QCOMPARE( spyItemRemoved.count(), itemsRemoved );
   QCOMPARE( mGroup->items().size(), 2 ); // WARNING: might not be alive anymore
@@ -307,7 +311,7 @@ void TestQgsComposerGroup::undoRedo()
   //remove group
   QgsDebugMsg( QString( "remove group" ) );
   mComposition->removeComposerItem( mGroup, true, true );
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), groupsAdded );
   itemsRemoved += 3; // the group and the two items
   QCOMPARE( spyItemRemoved.count(), itemsRemoved );
@@ -322,8 +326,8 @@ void TestQgsComposerGroup::undoRedo()
   //undo remove group
   QgsDebugMsg( QString( "undo remove group" ) );
   us->undo();
-  polygonsAdded += 2;
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  arrowsAdded += 2;
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), ++groupsAdded );
   QCOMPARE( spyItemRemoved.count(), itemsRemoved );
   mComposition->composerItems( items );
@@ -338,7 +342,7 @@ void TestQgsComposerGroup::undoRedo()
   //undo move group
   QgsDebugMsg( QString( "undo move group" ) );
   us->undo();
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), groupsAdded );
   QCOMPARE( spyItemRemoved.count(), itemsRemoved );
   QCOMPARE( mGroup->items().size(), 2 );
@@ -360,7 +364,7 @@ void TestQgsComposerGroup::undoRedo()
   //undo group
   QgsDebugMsg( QString( "undo group" ) );
   us->undo();
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), groupsAdded );
   QCOMPARE( spyItemRemoved.count(), ++itemsRemoved );
   //QCOMPARE( mGroup->items().size(), 2 ); // not important
@@ -382,7 +386,7 @@ void TestQgsComposerGroup::undoRedo()
   //redo group
   QgsDebugMsg( QString( "redo group" ) );
   us->redo();
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), ++groupsAdded );
   QCOMPARE( spyItemRemoved.count(), itemsRemoved );
   mComposition->composerItems( items );
@@ -398,7 +402,7 @@ void TestQgsComposerGroup::undoRedo()
   //redo move group
   QgsDebugMsg( QString( "redo move group" ) );
   us->redo();
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), groupsAdded );
   QCOMPARE( spyItemRemoved.count(), itemsRemoved );
   mComposition->composerItems( items );
@@ -414,7 +418,7 @@ void TestQgsComposerGroup::undoRedo()
   //redo remove group
   QgsDebugMsg( QString( "redo remove group" ) );
   us->redo();
-  QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
+  QCOMPARE( spyArrowAdded.count(), arrowsAdded );
   QCOMPARE( spyGroupAdded.count(), groupsAdded );
   itemsRemoved += 3; // 1 group, 2 contained items
   QCOMPARE( spyItemRemoved.count(), itemsRemoved );
