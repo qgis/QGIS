@@ -19,8 +19,12 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QPoint;
 class QString;
+class QgsPoint;
+class QgsVectorLayer;
 class QgsWebView;
 
+#include <QWidget>
+#include <QUrl>
 #include "qgsfeature.h"
 
 /** \ingroup gui
@@ -42,8 +46,9 @@ class QgsWebView;
  * discourages link rel="stylesheet" in the body, but all browsers allow it.
  * see https://jakearchibald.com/2016/link-in-body/
  */
-class GUI_EXPORT QgsMapTip
+class GUI_EXPORT QgsMapTip: public QWidget
 {
+    Q_OBJECT
   public:
     /** Default constructor
      */
@@ -84,5 +89,7 @@ class GUI_EXPORT QgsMapTip
     QWidget* mWidget;
     QgsWebView* mWebView;
 
+  private slots:
+    void onLinkClicked( const QUrl& url );
 };
 #endif // QGSMAPTIP_H

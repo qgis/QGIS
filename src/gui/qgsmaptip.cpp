@@ -26,6 +26,7 @@
 #include <QToolTip>
 #include <QSettings>
 #include <QLabel>
+#include <QDesktopServices>
 #if WITH_QTWEBKIT
 #include <QWebElement>
 #endif
@@ -64,6 +65,13 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   delete mWidget;
   mWidget = new QWidget( pMapCanvas );
   mWebView = new QgsWebView( mWidget );
+
+
+#if WITH_QTWEBKIT
+  mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
+  mWebView->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
+  connect( mWebView, SIGNAL( linkClicked( QUrl ) ), this, SLOT( onLinkClicked( QUrl ) ) );
+#endif
 
   mWebView->page()->settings()->setAttribute(
     QWebSettings::DeveloperExtrasEnabled, true );
@@ -199,4 +207,10 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
   {
     return feature.attribute( idx ).toString();
   }
+}
+
+//This slot handles all clicks
+void QgsMapTip::onLinkClicked( const QUrl &url )
+{
+  QDesktopServices::openUrl( url );
 }
