@@ -705,6 +705,7 @@ SET(QGIS_CORE_HDRS
   qgsstatisticalsummary.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
+  qgstestutils.h
   qgstextlabelfeature.h
   qgstolerance.h
   qgstracer.h
