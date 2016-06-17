@@ -598,22 +598,22 @@ class geometryThread(QThread):
         writer = QgsVectorFileWriter(self.myName, self.myEncoding, vprovider.fields(),
                                      QGis.WKBPoint, vprovider.crs())
         inFeat = QgsFeature()
-        outFeat = QgsFeature()
         nFeat = vprovider.featureCount()
         nElement = 0
         self.emit(SIGNAL("runStatus( PyQt_PyObject )"), 0)
         self.emit(SIGNAL("runRange( PyQt_PyObject )"), (0, nFeat))
         fit = vprovider.getFeatures()
         while fit.nextFeature(inFeat):
+            outFeat = QgsFeature()
             nElement += 1
             self.emit(SIGNAL("runStatus( PyQt_PyObject )"), nElement)
-            inGeom = inFeat.geometry()
+            if inFeat.constGeometry():
+                inGeom = inFeat.geometry()
+                outGeom = inGeom.centroid()
+                outFeat.setGeometry(QgsGeometry(outGeom))
+
             atMap = inFeat.attributes()
-            outGeom = inGeom.centroid()
-            if outGeom is None:
-                return "math_error"
             outFeat.setAttributes(atMap)
-            outFeat.setGeometry(QgsGeometry(outGeom))
             writer.addFeature(outFeat)
         del writer
         return True
