@@ -1478,7 +1478,7 @@ bool QgsGeos::isEmpty( QString* errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( false );
 }
 
-GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve, double precision )
+GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve, double precision, bool forceClose )
 {
   bool segmentize = false;
   const QgsLineStringV2* line = dynamic_cast<const QgsLineStringV2*>( curve );
@@ -1507,10 +1507,17 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve, d
   }
 
   int numPoints = line->numPoints();
+
+  int numOutPoints = numPoints;
+  if ( forceClose && ( line->pointN( 0 ) != line->pointN( numPoints - 1 ) ) )
+  {
+    ++numOutPoints;
+  }
+
   GEOSCoordSequence* coordSeq = nullptr;
   try
   {
-    coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, numPoints, coordDims );
+    coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, numOutPoints, coordDims );
     if ( !coordSeq )
     {
       QgsMessageLog::logMessage( QObject::tr( "Could not create coordinate sequence for %1 points in %2 dimensions" ).arg( numPoints ).arg( coordDims ), QObject::tr( "GEOS" ) );
@@ -1518,9 +1525,9 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve, d
     }
     if ( precision > 0. )
     {
-      for ( int i = 0; i < numPoints; ++i )
+      for ( int i = 0; i < numOutPoints; ++i )
       {
-        QgsPointV2 pt = line->pointN( i ); //todo: create method to get const point reference
+        const QgsPointV2 &pt = line->pointN( i % numPoints ); //todo: create method to get const point reference
         GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, qgsRound( pt.x() / precision ) * precision );
         GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, qgsRound( pt.y() / precision ) * precision );
         if ( hasZ )
@@ -1535,9 +1542,9 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve, d
     }
     else
     {
-      for ( int i = 0; i < numPoints; ++i )
+      for ( int i = 0; i < numOutPoints; ++i )
       {
-        QgsPointV2 pt = line->pointN( i ); //todo: create method to get const point reference
+        const QgsPointV2 &pt = line->pointN( i % numPoints ); //todo: create method to get const point reference
         GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, pt.x() );
         GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, pt.y() );
         if ( hasZ )
@@ -1640,7 +1647,7 @@ GEOSGeometry* QgsGeos::createGeosPolygon( const QgsAbstractGeometryV2* poly , do
   GEOSGeometry* geosPolygon = nullptr;
   try
   {
-    GEOSGeometry* exteriorRingGeos = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( exteriorRing, precision ) );
+    GEOSGeometry* exteriorRingGeos = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( exteriorRing, precision, true ) );
 
 
     int nHoles = polygon->numInteriorRings();
@@ -1653,7 +1660,7 @@ GEOSGeometry* QgsGeos::createGeosPolygon( const QgsAbstractGeometryV2* poly , do
     for ( int i = 0; i < nHoles; ++i )
     {
       const QgsCurveV2* interiorRing = polygon->interiorRing( i );
-      holes[i] = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( interiorRing, precision ) );
+      holes[i] = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( interiorRing, precision, true ) );
     }
     geosPolygon = GEOSGeom_createPolygon_r( geosinit.ctxt, exteriorRingGeos, holes, nHoles );
     delete[] holes;
