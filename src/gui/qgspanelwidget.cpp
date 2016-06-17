@@ -21,6 +21,7 @@
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
     : QWidget( parent )
+    , mDockMode( false )
 {
 }
 
