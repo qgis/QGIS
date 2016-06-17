@@ -217,14 +217,14 @@ void TestQgsComposerGroup::undoRedo()
   QgsDebugMsg( QString( "clear stack count:%1 index:%2" ) .arg( us->count() ) .arg( us->index() ) );
 
   //create some items
-  item1 = new QgsComposerArrow( QPointF(0, 0), QPointF(1, 1), mComposition );
-  item1->setArrowHeadWidth(0);
-  item1->setArrowHeadOutlineWidth(0);
+  item1 = new QgsComposerArrow( QPointF( 0, 0 ), QPointF( 1, 1 ), mComposition );
+  item1->setArrowHeadWidth( 0 );
+  item1->setArrowHeadOutlineWidth( 0 );
   mComposition->addComposerArrow( item1 );
   QCOMPARE( spyArrowAdded.count(), ++arrowsAdded );
-  item2 = new QgsComposerArrow( QPointF(-1, -2), QPointF(1, 1), mComposition );
-  item2->setArrowHeadOutlineWidth(0);
-  item2->setArrowHeadWidth(0);
+  item2 = new QgsComposerArrow( QPointF( -1, -2 ), QPointF( 1, 1 ), mComposition );
+  item2->setArrowHeadOutlineWidth( 0 );
+  item2->setArrowHeadWidth( 0 );
   mComposition->addComposerArrow( item2 );
   QCOMPARE( spyArrowAdded.count(), ++arrowsAdded );
   mComposition->composerItems( items );
