@@ -66,6 +66,8 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   setWidget( myWidget );
 
   QVBoxLayout *v = new QVBoxLayout( myWidget );
+  v->setMargin( 0 );
+  v->setContentsMargins( 0, 0, 0, 0 );
   QHBoxLayout *h = nullptr;
   QLabel *l = nullptr;
 
@@ -197,8 +199,8 @@ void RgShortestPathWidget::onSelectFrontPoint()
 void RgShortestPathWidget::setFrontPoint( const QgsPoint& pt )
 {
   mPlugin->iface()->mapCanvas()->unsetMapTool( mFrontPointMapTool );
-  mFrontPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QLatin1String( "," ) +
-                                QString().setNum( pt.y() ) + QLatin1String( ")" ) );
+  mFrontPointLineEdit->setText( QString( "(%1, %2)" ).arg( QString::number( pt.x(), 'f' ),
+                                QString::number( pt.y(), 'f' ) ) );
   mFrontPoint = pt;
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
@@ -221,8 +223,8 @@ void RgShortestPathWidget::setBackPoint( const QgsPoint& pt )
   mPlugin->iface()->mapCanvas()->unsetMapTool( mBackPointMapTool );
 
   mBackPoint = pt;
-  mBackPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QLatin1String( "," ) +
-                               QString().setNum( pt.y() ) + QLatin1String( ")" ) );
+  mBackPointLineEdit->setText( QString( "(%1, %2)" ).arg( QString::number( pt.x(), 'f' ),
+                               QString::number( pt.y(), 'f' ) ) );
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
 
@@ -250,7 +252,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     const QgsGraphDirector *director = mPlugin->director();
     if ( !director )
     {
-      QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured! Please go to the Vector → Road graph → Settings to configure it." ) );
+      QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured! Please go to the Vector menu, Road Graph, Settings option to configure it." ) );
       return nullptr;
     }
     connect( director, SIGNAL( buildProgress( int, int ) ), mPlugin->iface()->mainWindow(), SLOT( showProgress( int, int ) ) );

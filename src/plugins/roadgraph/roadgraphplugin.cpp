@@ -57,7 +57,7 @@
 // standard includes
 
 static const QString sName = QObject::tr( "Road graph plugin" );
-static const QString sDescription = QObject::tr( "It solves the shortest path problem." );
+static const QString sDescription = QObject::tr( "Solves the shortest path problem by tracing along line layers." );
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QString sPluginIcon = ":/roadgraph/road-fast.png";
@@ -102,7 +102,7 @@ void RoadGraphPlugin::initGui()
   mQGisIface->addDockWidget( Qt::LeftDockWidgetArea, mQShortestPathDock );
 
   // Create the action for tool
-  mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Settings" ), this );
+  mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Settings..." ), this );
   mQSettingsAction->setObjectName( "mQSettingsAction" );
 
   // Set the what's this text
@@ -113,7 +113,7 @@ void RoadGraphPlugin::initGui()
   // Connect the action to slots
   connect( mQSettingsAction, SIGNAL( triggered() ), this, SLOT( property() ) );
 
-  mQGisIface->addPluginToVectorMenu( tr( "Road graph" ), mQSettingsAction );
+  mQGisIface->addPluginToVectorMenu( tr( "Road Graph" ), mQSettingsAction );
 
   connect( mQGisIface, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   connect( mQGisIface, SIGNAL( newProjectCreated() ), this, SLOT( newProject() ) );
@@ -128,7 +128,7 @@ void RoadGraphPlugin::initGui()
 void RoadGraphPlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginVectorMenu( tr( "Road graph" ), mQSettingsAction );
+  mQGisIface->removePluginVectorMenu( tr( "Road Graph" ), mQSettingsAction );
 
   // disconnect
   disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
