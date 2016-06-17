@@ -284,15 +284,6 @@ static QgsGeometry getGeometry( const QVariant& value, QgsExpression* parent )
 {
   if ( value.canConvert<QgsGeometry>() )
     return value.value<QgsGeometry>();
-  else if ( value.canConvert<QgsFeature>() )
-  {
-    //try to grab geometry from feature
-    QgsFeature f = value.value<QgsFeature>();
-    if ( f.constGeometry() )
-    {
-      return *f.constGeometry();
-    }
-  }
 
   parent->setEvalErrorString( "Cannot convert to QgsGeometry" );
   return QgsGeometry();
@@ -1162,7 +1153,7 @@ static QVariant fcnWordwrap( const QVariantList& values, const QgsExpressionCont
 static QVariant fcnLength( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   // two variants, one for geometry, one for string
-  if ( values.at( 0 ).canConvert<QgsGeometry>() || values.at( 0 ).canConvert<QgsFeature>() )
+  if ( values.at( 0 ).canConvert<QgsGeometry>() )
   {
     //geometry variant
     QgsGeometry geom = getGeometry( values.at( 0 ), parent );
