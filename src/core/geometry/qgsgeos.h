@@ -137,7 +137,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     void cacheGeos() const;
     QgsAbstractGeometryV2* overlay( const QgsAbstractGeometryV2& geom, Overlay op, QString* errorMsg = nullptr ) const;
     bool relation( const QgsAbstractGeometryV2& geom, Relation r, QString* errorMsg = nullptr ) const;
-    static GEOSCoordSequence* createCoordinateSequence( const QgsCurveV2* curve , double precision );
+    static GEOSCoordSequence* createCoordinateSequence( const QgsCurveV2* curve , double precision, bool forceClose = false );
     static QgsLineStringV2* sequenceToLinestring( const GEOSGeometry* geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry* g );
     static GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
