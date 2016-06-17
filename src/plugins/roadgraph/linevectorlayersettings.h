@@ -65,7 +65,7 @@ class RgLineVectorLayerSettings: public RgSettings
     /**
      * contained Layer name
      */
-    QString mLayer;
+    QString mLayerName;
 
     /**
      * contained direction field name

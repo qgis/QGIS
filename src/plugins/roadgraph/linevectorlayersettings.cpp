@@ -19,6 +19,7 @@
 
 // Qgis includes
 #include <qgsproject.h>
+#include "qgsmaplayercombobox.h"
 
 // QT includes
 #include <QLineEdit>
@@ -28,17 +29,15 @@
 //standard includes
 
 RgLineVectorLayerSettings::RgLineVectorLayerSettings()
+    : mDefaultDirection( Both )
+    , mDefaultSpeed( 40 )
 {
-  mLayer = "";
-  mDirection = "";
-  mDefaultDirection = Both;
-  mSpeed = "";
-  mDefaultSpeed = 40;
 }
+
 RgLineVectorLayerSettings::~RgLineVectorLayerSettings()
 {
-
 }
+
 bool RgLineVectorLayerSettings::test()
 {
   // implement me
@@ -48,7 +47,7 @@ bool RgLineVectorLayerSettings::test()
   {
     return false;
   }
-  if ( mLayer == "" )
+  if ( mLayerName.isEmpty() )
   {
     return false;
   }
@@ -68,7 +67,7 @@ void RgLineVectorLayerSettings::read( const QgsProject *project )
   mBothDirectionVal = project->readEntry( "roadgraphplugin", "/BothDirectionVal" );
   mSpeed        = project->readEntry( "roadgraphplugin", "/speedField" );
   mDefaultSpeed = project->readDoubleEntry( "roadgraphplugin", "/defaultSpeed" );
-  mLayer        = project->readEntry( "roadgraphplugin", "/layer" );
+  mLayerName        = project->readEntry( "roadgraphplugin", "/layer" );
   mSpeedUnitName = project->readEntry( "roadgraphplugin", "/speedUnitName" );
 
   if ( dd == 1 )
@@ -97,7 +96,7 @@ void RgLineVectorLayerSettings::write( QgsProject *project )
   project->writeEntry( "roadgraphplugin", "/BothDirectionVal", mBothDirectionVal );
   project->writeEntry( "roadgraphplugin", "/speedField",   mSpeed );
   project->writeEntry( "roadgraphplugin", "/defaultSpeed", mDefaultSpeed );
-  project->writeEntry( "roadgraphplugin", "/layer",        mLayer );
+  project->writeEntry( "roadgraphplugin", "/layer",        mLayerName );
   project->writeEntry( "roadgraphplugin", "/speedUnitName",    mSpeedUnitName );
 } // RgLineVectorLayerSettings::write( QgsProject *project )
 
@@ -116,7 +115,7 @@ void RgLineVectorLayerSettings::setFromGui( QWidget *myGui )
   mLastPointToFirstPointDirectionVal  = w->mleLastPointToFirstPointDirection->text();
   mBothDirectionVal                   = w->mleBothDirection->text();
   mDirection                          = w->mcbDirection->currentText();
-  mLayer                              = w->mcbLayers->currentText();
+  mLayerName                              = w->mcbLayers->currentText();
 
   if ( w->mcbDirectionDefault->currentIndex() == 0 )
   {

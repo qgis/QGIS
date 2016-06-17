@@ -26,9 +26,8 @@
 
 // Qgis includes
 #include "qgsfield.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayercombobox.h"
 
 //standard includes
 
@@ -46,7 +45,8 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
   tab->addTab( frame, tr( "Transportation layer" ) );
   v = new QVBoxLayout( frame );
   QLabel *l = new QLabel( tr( "Layer" ), frame );
-  mcbLayers = new QComboBox( frame );
+  mcbLayers = new QgsMapLayerComboBox( frame );
+  mcbLayers->setFilters( QgsMapLayerProxyModel::LineLayer );
   QHBoxLayout *h = new QHBoxLayout();
 
   h->addWidget( l );
@@ -122,29 +122,15 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
   h->addWidget( msbSpeedDefault );
   v->addLayout( h );
 
-
-  // fill list of layers
-  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
-  QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();
-
-  for ( ; layer_it != mapLayers.end(); ++layer_it )
-  {
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
-    if ( !vl )
-      continue;
-    if ( vl->wkbType() == QGis::WKBLineString
-         || vl->wkbType() == QGis::WKBMultiLineString )
-      mcbLayers->insertItem( 0, vl->name() );
-  }
-
   //sets current settings
   msbSpeedDefault->setValue( static_cast<int>( s->mDefaultSpeed ) );
 
-  int idx = mcbLayers->findText( s->mLayer );
+  int idx = mcbLayers->findText( s->mLayerName );
   if ( idx != -1 )
   {
     mcbLayers->setCurrentIndex( idx );
   }
+  on_mcbLayers_selectItem();
 
   idx = mcbDirection->findText( s->mDirection );
   if ( idx != -1 )
@@ -172,26 +158,12 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
   else if ( s->mSpeedUnitName == "m/s" )
     mcbUnitOfSpeed->setCurrentIndex( 0 );
 
-} // RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget()
+}
 
 QgsVectorLayer* RgLineVectorLayerSettingsWidget::selectedLayer()
 {
-  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
-  QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();
-
-  for ( ; layer_it != mapLayers.end(); ++layer_it )
-  {
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
-    if ( !vl )
-      continue;
-    if ( vl->geometryType() != QGis::Line )
-      continue;
-    if ( vl->name() == mcbLayers->currentText() )
-      return vl;
-  }
-
-  return nullptr;
-} // RgLineVectorLayerSettingsWidget::setlectedLayer()
+  return dynamic_cast< QgsVectorLayer* >( mcbLayers->currentLayer() );
+}
 
 void RgLineVectorLayerSettingsWidget::on_mcbLayers_selectItem()
 {
@@ -205,21 +177,18 @@ void RgLineVectorLayerSettingsWidget::on_mcbLayers_selectItem()
   if ( !vl )
     return;
 
-  QgsVectorDataProvider* provider = vl->dataProvider();
-  if ( !provider )
-    return;
-
-  Q_FOREACH ( const QgsField& currentField, provider->fields() )
+  Q_FOREACH ( const QgsField& currentField, vl->fields() )
   {
     QVariant currentType = currentField.type();
-    if ( currentType == QVariant::Int || currentType == QVariant::String )
+    if ( currentType == QVariant::Int || currentType == QVariant::LongLong ||
+         currentType == QVariant::String )
     {
       mcbDirection->insertItem( 1, currentField.name() );
     }
-    if ( currentType == QVariant::Int || currentType == QVariant::Double )
+    if ( currentType == QVariant::Int || currentType == QVariant::LongLong ||
+         currentType == QVariant::Double )
     {
       mcbSpeed->insertItem( 1, currentField.name() );
     }
   }
-
-} // RgDSettingsDlg::on_mcbLayers_selectItem()
+}
