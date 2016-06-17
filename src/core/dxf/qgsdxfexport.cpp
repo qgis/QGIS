@@ -963,9 +963,8 @@ void QgsDxfExport::writeEntities()
     const QgsAbstractVectorLayerLabeling *labeling = vl->labeling();
     QgsDxfLabelProvider *lp = nullptr;
     QgsDxfRuleBasedLabelProvider *rblp = nullptr;
-    if ( dynamic_cast<const QgsRuleBasedLabeling*>( labeling ) )
+    if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling*>( labeling ) )
     {
-      const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling*>( labeling );
       rblp = new QgsDxfRuleBasedLabelProvider( *rbl, vl, this );
       rblp->reinit( vl );
       engine.addProvider( rblp );
