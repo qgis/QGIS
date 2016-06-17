@@ -517,10 +517,10 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     }
     else if ( section >= 0 && section < mFieldCount )
     {
-      QString attributeName = layer()->attributeAlias( mAttributes[section] );
+      QString attributeName = layer()->attributeAlias( mAttributes.at( section ) );
       if ( attributeName.isEmpty() )
       {
-        QgsField field = layer()->fields().at( mAttributes[section] );
+        QgsField field = layer()->fields().at( mAttributes.at( section ) );
         attributeName = field.name();
       }
       return QVariant( attributeName );
@@ -528,6 +528,19 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     else
     {
       return tr( "extra column" );
+    }
+  }
+  else if ( role == Qt::ToolTipRole )
+  {
+    if ( orientation == Qt::Vertical )
+    {
+      // TODO show DisplayExpression
+      return tr( "Feature ID: %1" ).arg( rowToId( section ) );
+    }
+    else
+    {
+      QgsField field = layer()->fields().at( mAttributes.at( section ) );
+      return field.name();
     }
   }
   else
