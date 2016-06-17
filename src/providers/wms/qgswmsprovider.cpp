@@ -2952,19 +2952,25 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle& 
 
   QUrl url( lurl );
 
-  if ( !url.hasQueryItem( "SERVICE" ) )
+  // query names are NOT case-sensitive, so make an uppercase list for proper comparison
+  QStringList qnames = QStringList();
+  for ( int i = 0; i < url.queryItems().size(); i++ )
+  {
+    qnames << url.queryItems().at( i ).first.toUpper();
+  }
+  if ( !qnames.contains( "SERVICE" ) )
     setQueryItem( url, "SERVICE", "WMS" );
-  if ( !url.hasQueryItem( "VERSION" ) )
+  if ( !qnames.contains( "VERSION" ) )
     setQueryItem( url, "VERSION", mCaps.mCapabilities.version );
-  if ( !url.hasQueryItem( "SLD_VERSION" ) )
+  if ( !qnames.contains( "SLD_VERSION" ) )
     setQueryItem( url, "SLD_VERSION", "1.1.0" ); // can not determine SLD_VERSION
-  if ( !url.hasQueryItem( "REQUEST" ) )
+  if ( !qnames.contains( "REQUEST" ) )
     setQueryItem( url, "REQUEST", "GetLegendGraphic" );
-  if ( !url.hasQueryItem( "FORMAT" ) )
+  if ( !qnames.contains( "FORMAT" ) )
     setFormatQueryItem( url );
-  if ( !url.hasQueryItem( "LAYER" ) )
+  if ( !qnames.contains( "LAYER" ) )
     setQueryItem( url, "LAYER", mSettings.mActiveSubLayers[0] );
-  if ( !url.hasQueryItem( "STYLE" ) )
+  if ( !qnames.contains( "STYLE" ) )
     setQueryItem( url, "STYLE", mSettings.mActiveSubStyles[0] );
 
   // add config parameter related to resolution
