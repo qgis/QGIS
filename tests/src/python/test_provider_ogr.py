@@ -22,9 +22,14 @@ from qgis.testing import (
     unittest
 )
 from utilities import unitTestDataPath
+from osgeo import gdal, ogr
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 # Note - doesn't implement ProviderTestCase as most OGR provider is tested by the shapefile provider test
 
@@ -77,6 +82,40 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+
+    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
+    def testMixOfPolygonCurvePolygon(self):
+
+        datasource = os.path.join(self.basetestpath, 'testMixOfPolygonCurvePolygon.csv')
+        with open(datasource, 'wt') as f:
+            f.write('id,WKT\n')
+            f.write('1,"POLYGON((0 0,0 1,1 1,0 0))"\n')
+            f.write('2,"CURVEPOLYGON((0 0,0 1,1 1,0 0))"\n')
+            f.write('3,"MULTIPOLYGON(((0 0,0 1,1 1,0 0)))"\n')
+            f.write('4,"MULTISURFACE(((0 0,0 1,1 1,0 0)))"\n')
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 1)
+        self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfPolygonCurvePolygon:4:CurvePolygon')
+
+    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
+    def testMixOfLineStringCompoundCurve(self):
+
+        datasource = os.path.join(self.basetestpath, 'testMixOfLineStringCompoundCurve.csv')
+        with open(datasource, 'wt') as f:
+            f.write('id,WKT\n')
+            f.write('1,"LINESTRING(0 0,0 1)"\n')
+            f.write('2,"COMPOUNDCURVE((0 0,0 1))"\n')
+            f.write('3,"MULTILINESTRING((0 0,0 1))"\n')
+            f.write('4,"MULTICURVE((0 0,0 1))"\n')
+            f.write('5,"CIRCULARSTRING(0 0,1 1,2 0)"\n')
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 1)
+        self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfLineStringCompoundCurve:5:CompoundCurve')
+
 
 if __name__ == '__main__':
     unittest.main()

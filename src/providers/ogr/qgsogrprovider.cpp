@@ -655,11 +655,40 @@ QStringList QgsOgrProvider::subLayers() const
       {
         fCount[wkbUnknown] = 0;
       }
+
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+      // When there are CurvePolygons, promote Polygons
+      if ( fCount.contains( wkbPolygon ) && fCount.contains( wkbCurvePolygon ) )
+      {
+        fCount[wkbCurvePolygon] += fCount.value( wkbPolygon );
+        fCount.remove( wkbPolygon );
+      }
+      // When there are CompoundCurves, promote LineStrings and CircularStrings
+      if ( fCount.contains( wkbLineString ) && fCount.contains( wkbCompoundCurve ) )
+      {
+        fCount[wkbCompoundCurve] += fCount.value( wkbLineString );
+        fCount.remove( wkbLineString );
+      }
+      if ( fCount.contains( wkbCircularString ) && fCount.contains( wkbCompoundCurve ) )
+      {
+        fCount[wkbCompoundCurve] += fCount.value( wkbCircularString );
+        fCount.remove( wkbCircularString );
+      }
+#endif
+
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+      bool bIs25D = ( wkbHasZ( layerGeomType ) != 0 );
+#else
       bool bIs25D = (( layerGeomType & wkb25DBit ) != 0 );
+#endif
       QMap<OGRwkbGeometryType, int>::const_iterator countIt = fCount.constBegin();
       for ( ; countIt != fCount.constEnd(); ++countIt )
       {
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+        QString geom = ogrWkbGeometryTypeName(( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() );
+#else
         QString geom = ogrWkbGeometryTypeName(( bIs25D ) ? ( OGRwkbGeometryType )( countIt.key() | wkb25DBit ) : countIt.key() );
+#endif
 
         QString sl = QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( countIt.key() ) ).arg( geom );
         QgsDebugMsg( "sub layer: " + sl );
@@ -2960,6 +2989,12 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
       return wkbLineString;
     case wkbMultiPolygon:
       return wkbPolygon;
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+    case wkbMultiCurve:
+      return wkbCompoundCurve;
+    case wkbMultiSurface:
+      return wkbCurvePolygon;
+#endif
     default:
       return type;
   }
