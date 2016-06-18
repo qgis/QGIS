@@ -183,8 +183,8 @@
      <addaction name="mActionCopySelectedRows"/>
      <addaction name="mActionPasteFeatures"/>
      <addaction name="separator"/>
-     <addaction name="mActionRemoveAttribute"/>
      <addaction name="mActionAddAttribute"/>
+     <addaction name="mActionRemoveAttribute"/>
      <addaction name="mActionOpenFieldCalculator"/>
      <addaction name="separator"/>
      <addaction name="mActionSetStyles"/>

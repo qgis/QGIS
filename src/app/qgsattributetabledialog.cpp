@@ -99,6 +99,21 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   QSettings settings;
 
+  int size = settings.value( "/IconSize", 16 ).toInt();
+  if ( size > 32 )
+  {
+    size -= 16;
+  }
+  else if ( size == 32 )
+  {
+    size = 24;
+  }
+  else
+  {
+    size = 16;
+  }
+  mToolbar->setIconSize( QSize( size, size ) );
+
   // Initialize the window geometry
   restoreGeometry( settings.value( "/Windows/BetterAttributeTable/geometry" ).toByteArray() );
 
@@ -188,10 +203,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   columnBoxInit();
   updateTitle();
 
-  mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( "/mActionUnselectAttributes.png" ) );
+  mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.svg" ) );
   mActionSelectAll->setIcon( QgsApplication::getThemeIcon( "/mActionSelectAll.svg" ) );
   mActionSelectedToTop->setIcon( QgsApplication::getThemeIcon( "/mActionSelectedToTop.png" ) );
-  mActionCopySelectedRows->setIcon( QgsApplication::getThemeIcon( "/mActionCopySelected.png" ) );
+  mActionCopySelectedRows->setIcon( QgsApplication::getThemeIcon( "/mActionEditCopy.svg" ) );
+  mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionEditPaste.svg" ) );
   mActionZoomMapToSelectedRows->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.svg" ) );
   mActionPanMapToSelectedRows->setIcon( QgsApplication::getThemeIcon( "/mActionPanToSelected.svg" ) );
   mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( "/mActionInvertSelection.svg" ) );
