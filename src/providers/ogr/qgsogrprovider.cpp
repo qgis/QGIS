@@ -479,6 +479,20 @@ QString QgsOgrProvider::subsetString()
 QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
 {
   QString geom;
+
+  // GDAL 2.1 can return M/ZM geometries
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
+  if ( wkbHasM( type ) )
+  {
+    geom = ogrWkbGeometryTypeName( wkbFlatten( type ) );
+    if ( wkbHasZ( type ) )
+      geom += "Z";
+    if ( wkbHasM( type ) )
+      geom += "M";
+    return geom;
+  }
+#endif
+
   switch (( long )type )
   {
     case wkbUnknown:
