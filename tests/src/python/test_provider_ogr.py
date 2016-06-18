@@ -16,7 +16,7 @@ import os
 import shutil
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsVectorDataProvider
+from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWKBTypes
 from qgis.testing import (
     start_app,
     unittest
@@ -66,6 +66,17 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(vl.dataProvider().leaveUpdateMode())
         self.assertEqual(vl.dataProvider().property("_debug_open_mode"), "read-write")
 
+    def testGeometryTypeKnownAtSecondFeature(self):
+
+        datasource = os.path.join(self.basetestpath, 'testGeometryTypeKnownAtSecondFeature.csv')
+        with open(datasource, 'wt') as f:
+            f.write('id,WKT\n')
+            f.write('1,\n')
+            f.write('2,POINT(2 49)\n')
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
 
 if __name__ == '__main__':
     unittest.main()

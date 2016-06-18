@@ -706,23 +706,26 @@ OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
 
     // Some ogr drivers (e.g. GML) are not able to determine the geometry type of a layer like this.
     // In such cases, we use virtual sublayers for each geometry if the layer contains
-    // multiple geometries (see subLayers) otherwise we guess geometry type from first feature
+    // multiple geometries (see subLayers) otherwise we guess geometry type from the first
+    // feature that has a geometry (limit us to a few features, not the whole layer)
     if ( geomType == wkbUnknown )
     {
+      geomType = wkbNone;
       OGR_L_ResetReading( ogrLayer );
-      OGRFeatureH firstFeature = OGR_L_GetNextFeature( ogrLayer );
-      if ( firstFeature )
+      for ( int i = 0; i < 10; i++ )
       {
-        OGRGeometryH firstGeometry = OGR_F_GetGeometryRef( firstFeature );
-        if ( firstGeometry )
+        OGRFeatureH nextFeature = OGR_L_GetNextFeature( ogrLayer );
+        if ( !nextFeature )
+          break;
+
+        OGRGeometryH geometry = OGR_F_GetGeometryRef( nextFeature );
+        if ( geometry )
         {
-          geomType = OGR_G_GetGeometryType( firstGeometry );
+          geomType = OGR_G_GetGeometryType( geometry );
         }
-        else
-        {
-          geomType = wkbNone;
-        }
-        OGR_F_Destroy( firstFeature );
+        OGR_F_Destroy( nextFeature );
+        if ( geomType != wkbNone )
+          break;
       }
       OGR_L_ResetReading( ogrLayer );
     }
