@@ -881,9 +881,14 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
     //create bounding box from mStringCash
     if ( mCurrentExtent.isNull() &&
          !mBoundedByNullFound &&
-         createBBoxFromCoordinateString( mCurrentExtent, mStringCash ) != 0 )
+         !createBBoxFromCoordinateString( mCurrentExtent, mStringCash ) )
     {
       QgsDebugMsg( "creation of bounding box failed" );
+    }
+    if ( !mCurrentExtent.isNull() && mLayerExtent.isNull() &&
+         mCurrentFeature == nullptr && mFeatureCount == 0 )
+    {
+      mLayerExtent = mCurrentExtent;
     }
 
     mParseModeStack.pop();
@@ -1198,6 +1203,7 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int& epsgNr, const XML_Char** 
         return 1;
       }
       epsgNr = eNr;
+      mSrsName = epsgString;
 
       QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgNr ) );
       if ( crs.isValid() )
@@ -1230,22 +1236,22 @@ QString QgsGmlStreamingParser::readAttribute( const QString& attributeName, cons
   return QString();
 }
 
-int QgsGmlStreamingParser::createBBoxFromCoordinateString( QgsRectangle &r, const QString& coordString ) const
+bool QgsGmlStreamingParser::createBBoxFromCoordinateString( QgsRectangle &r, const QString& coordString ) const
 {
   QList<QgsPoint> points;
   if ( pointsFromCoordinateString( points, coordString ) != 0 )
   {
-    return 2;
+    return false;
   }
 
   if ( points.size() < 2 )
   {
-    return 3;
+    return false;
   }
 
   r.set( points[0], points[1] );
 
-  return 0;
+  return true;
 }
 
 int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPoint>& points, const QString& coordString ) const

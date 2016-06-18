@@ -24,6 +24,7 @@
 #include "qgswfsprovider.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
+#include "qgscrscache.h"
 
 #include <QDir>
 #include <QProgressDialog>
@@ -540,11 +541,34 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
       if ( featurePtrList.size() != 0 )
       {
+        // Heuristics to try to detect MapServer WFS 1.1 that honours EPSG axis order, but returns
+        // EPSG:XXXX srsName and not EPSG urns
+        if ( pagingIter == 1 && featureCountForThisResponse == 0 &&
+             mShared->mWFSVersion.startsWith( "1.1" ) &&
+             parser->srsName().startsWith( "EPSG:" ) &&
+             !parser->layerExtent().isNull() &&
+             !mShared->mURI.ignoreAxisOrientation() &&
+             !mShared->mURI.invertAxisOrientation() )
+        {
+          QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( parser->srsName() );
+          if ( crs.isValid() && crs.axisInverted() &&
+               !mShared->mCapabilityExtent.contains( parser->layerExtent() ) )
+          {
+            QgsRectangle invertedRectangle( parser->layerExtent() );
+            invertedRectangle.invert();
+            if ( mShared->mCapabilityExtent.contains( invertedRectangle ) )
+            {
+              mShared->mGetFeatureEPSGDotHonoursEPSGOrder = true;
+              QgsDebugMsg( "Server is likely MapServer. Using mGetFeatureEPSGDotHonoursEPSGOrder mode" );
+            }
+          }
+        }
+
         QVector<QgsWFSFeatureGmlIdPair> featureList;
         for ( int i = 0;i < featurePtrList.size();i++ )
         {
           QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair = featurePtrList[i];
-          const QgsFeature& f = *( featPair.first );
+          QgsFeature& f = *( featPair.first );
           QString gmlId( featPair.second );
           if ( gmlId.isEmpty() )
           {
@@ -566,6 +590,12 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
             disablePaging = true;
             QgsDebugMsg( "Server does not seem to properly support paging since it returned the same first feature for 2 different page requests. Disabling paging" );
           }
+
+          if ( mShared->mGetFeatureEPSGDotHonoursEPSGOrder && f.geometry() )
+          {
+            f.geometry()->transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
+          }
+
           featureList.push_back( QgsWFSFeatureGmlIdPair( f, gmlId ) );
           delete featPair.first;
           if (( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featurePtrList.size() )

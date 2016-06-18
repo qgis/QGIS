@@ -171,6 +171,10 @@ class QgsWFSSharedData : public QObject
     /** Create GML parser */
     QgsGmlStreamingParser* createParser();
 
+    /** If the server (typically MapServer WFS 1.1) honours EPSG axis order, but returns
+        EPSG:XXXX srsName and not EPSG urns */
+    bool mGetFeatureEPSGDotHonoursEPSGOrder;
+
   private:
 
     /** Main mutex to protect most data members that can be modified concurrently */

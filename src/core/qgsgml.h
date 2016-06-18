@@ -105,6 +105,12 @@ class CORE_EXPORT QgsGmlStreamingParser
     /** Return the EPSG code, or 0 if unknown */
     int getEPSGCode() const { return mEpsg; }
 
+    /** Return the value of the srsName attribute */
+    const QString& srsName() const { return mSrsName; }
+
+    /** Return layer bounding box */
+    const QgsRectangle& layerExtent() const { return mLayerExtent; }
+
     /** Return the geometry type */
     QGis::WkbType wkbType() const { return mWkbType; }
 
@@ -182,9 +188,8 @@ class CORE_EXPORT QgsGmlStreamingParser
        @return attribute value or an empty string if no such attribute
       */
     QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
-    /** Creates a rectangle from a coordinate string.
-     @return 0 in case of success*/
-    int createBBoxFromCoordinateString( QgsRectangle &bb, const QString& coordString ) const;
+    /** Creates a rectangle from a coordinate string. */
+    bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString& coordString ) const;
     /** Creates a set of points from a coordinate string.
        @param points list that will contain the created points
        @param coordString the text containing the coordinates
@@ -285,6 +290,10 @@ class CORE_EXPORT QgsGmlStreamingParser
     ParseMode mCoorMode;
     /** EPSG of parsed features geometries */
     int mEpsg;
+    /** Literal srsName attribute */
+    QString mSrsName;
+    /** Layer bounding box */
+    QgsRectangle mLayerExtent;
     /** GML namespace URI */
     QString mGMLNameSpaceURI;
     const char* mGMLNameSpaceURIPtr;
