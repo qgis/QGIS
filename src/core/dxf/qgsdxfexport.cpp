@@ -4212,6 +4212,11 @@ QString QgsDxfExport::dxfLayerName( const QString& name )
   layerName.replace( '=', '_' );
   layerName.replace( '\'', '_' );
 
+  // also remove newline characters (#15067)
+  layerName.replace( "\r\n", "_" );
+  layerName.replace( '\r', '_' );
+  layerName.replace( '\n', '_' );
+
   return layerName.trimmed();
 }
 
