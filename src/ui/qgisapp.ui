@@ -1587,7 +1587,7 @@
   <action name="mActionLocalHistogramStretch">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionLocalHistogramStretch.png</normaloff>:/images/themes/default/mActionLocalHistogramStretch.png</iconset>
+     <normaloff>:/images/themes/default/mActionLocalHistogramStretch.svg</normaloff>:/images/themes/default/mActionLocalHistogramStretch.svg</iconset>
    </property>
    <property name="text">
     <string>Local Histogram Stretch</string>
@@ -1725,7 +1725,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionFullHistogramStretch">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFullHistogramStretch.png</normaloff>:/images/themes/default/mActionFullHistogramStretch.png</iconset>
+     <normaloff>:/images/themes/default/mActionFullHistogramStretch.svg</normaloff>:/images/themes/default/mActionFullHistogramStretch.svg</iconset>
    </property>
    <property name="text">
     <string>Full Histogram Stretch</string>
@@ -1968,7 +1968,7 @@ Acts on all editable layers</string>
   <action name="mActionLocalCumulativeCutStretch">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionLocalCumulativeCutStretch.png</normaloff>:/images/themes/default/mActionLocalCumulativeCutStretch.png</iconset>
+     <normaloff>:/images/themes/default/mActionLocalCumulativeCutStretch.svg</normaloff>:/images/themes/default/mActionLocalCumulativeCutStretch.svg</iconset>
    </property>
    <property name="text">
     <string>Local Cumulative Cut Stretch</string>
@@ -1980,7 +1980,7 @@ Acts on all editable layers</string>
   <action name="mActionFullCumulativeCutStretch">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFullCumulativeCutStretch.png</normaloff>:/images/themes/default/mActionFullCumulativeCutStretch.png</iconset>
+     <normaloff>:/images/themes/default/mActionFullCumulativeCutStretch.svg</normaloff>:/images/themes/default/mActionFullCumulativeCutStretch.svg</iconset>
    </property>
    <property name="text">
     <string>Full Dataset Cumulative Cut Stretch</string>
