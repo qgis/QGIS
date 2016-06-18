@@ -331,7 +331,8 @@ void QgsRendererV2PropertiesDialog::syncToLayer()
 
   // setup slot rendererChanged()
   //setup order by
-  if ( mLayer->rendererV2()->orderByEnabled() )
+  if ( mLayer->rendererV2() &&
+       mLayer->rendererV2()->orderByEnabled() )
   {
     checkboxEnableOrderBy->setChecked( true );
   }
@@ -343,14 +344,17 @@ void QgsRendererV2PropertiesDialog::syncToLayer()
   }
   lineEditOrderBy->setReadOnly( true );
 
-  // set current renderer from layer
-  QString rendererName = mLayer->rendererV2()->type();
+  if ( mLayer->rendererV2() )
+  {
+    // set current renderer from layer
+    QString rendererName = mLayer->rendererV2()->type();
 
-  int rendererIdx = cboRenderers->findData( rendererName );
-  cboRenderers->setCurrentIndex( rendererIdx );
+    int rendererIdx = cboRenderers->findData( rendererName );
+    cboRenderers->setCurrentIndex( rendererIdx );
 
-  // no renderer found... this mustn't happen
-  Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
+    // no renderer found... this mustn't happen
+    Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
+  }
 
 }
 
