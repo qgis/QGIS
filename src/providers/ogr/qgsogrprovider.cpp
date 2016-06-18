@@ -665,6 +665,11 @@ OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
   {
     geomType = OGR_FD_GetGeomType( fdef );
 
+    // Handle wkbUnknown and its Z/M variants. QGIS has no unknown Z/M variants,
+    // so just use flat wkbUnknown
+    if ( wkbFlatten( geomType ) == wkbUnknown )
+      geomType = wkbUnknown;
+
     // Some ogr drivers (e.g. GML) are not able to determine the geometry type of a layer like this.
     // In such cases, we use virtual sublayers for each geometry if the layer contains
     // multiple geometries (see subLayers) otherwise we guess geometry type from first feature
