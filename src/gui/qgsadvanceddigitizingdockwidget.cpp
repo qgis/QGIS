@@ -118,7 +118,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   // this action is also used in the advanced digitizing tool bar
   mEnableAction = new QAction( this );
   mEnableAction->setText( tr( "Enable advanced digitizing tools" ) );
-  mEnableAction->setIcon( QgsApplication::getThemeIcon( "/cadtools/cad.png" ) );
+  mEnableAction->setIcon( QgsApplication::getThemeIcon( "/cadtools/cad.svg" ) );
   mEnableAction->setCheckable( true );
   mEnabledButton->addAction( mEnableAction );
   mEnabledButton->setDefaultAction( mEnableAction );
