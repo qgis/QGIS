@@ -61,6 +61,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void mapUnits();
     void setValidationHint();
     void axisInverted();
+    void createFromProj4Invalid();
   private:
     void debugPrint( QgsCoordinateReferenceSystem &theCrs );
     // these used by createFromESRIWkt()
@@ -486,6 +487,12 @@ void TestQgsCoordinateReferenceSystem::debugPrint(
   {
     QgsDebugMsg( "* Units : degrees" );
   }
+}
+
+void TestQgsCoordinateReferenceSystem::createFromProj4Invalid()
+{
+  QgsCoordinateReferenceSystem myCrs;
+  QVERIFY( !myCrs.createFromProj4( "+proj=longlat +no_defs" ) );
 }
 
 QTEST_MAIN( TestQgsCoordinateReferenceSystem )
