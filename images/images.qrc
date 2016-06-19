@@ -179,6 +179,7 @@
         <file>themes/default/mActionCapturePolygon.svg</file>
         <file>themes/default/mActionNewTableRow.png</file>
         <file>themes/default/mActionChangeLabelProperties.png</file>
+        <file>themes/default/mActionChangeLabelProperties.svg</file>
         <file>themes/default/mActionCheckQgisVersion.png</file>
         <file>themes/default/mActionCollapseTree.png</file>
         <file>themes/default/mActionCollapseTree.svg</file>
@@ -249,6 +250,7 @@
         <file>themes/default/mActionLabel.png</file>
         <file>themes/default/mActionLabel.svg</file>
         <file>themes/default/mActionLabeling.png</file>
+        <file>themes/default/mActionLabeling.svg</file>
         <file>themes/default/mActionDiagramProperties.svg</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.png</file>
         <file>themes/default/mActionLocalHistogramStretch.png</file>
@@ -273,6 +275,7 @@
         <file>themes/default/mActionMoveItemsToBottom.png</file>
         <file>themes/default/mActionMoveItemsToTop.png</file>
         <file>themes/default/mActionMoveLabel.png</file>
+        <file>themes/default/mActionMoveLabel.svg</file>
         <file>themes/default/mActionMoveVertex.png</file>
         <file>themes/default/mActionNewAttribute.png</file>
         <file>themes/default/mActionNewBookmark.png</file>

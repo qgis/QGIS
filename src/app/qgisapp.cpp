@@ -2578,13 +2578,13 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionHtmlAnnotation.svg" ) );
   mActionSvgAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionSvgAnnotation.svg" ) );
   mActionTextAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionTextAnnotation.svg" ) );
-  mActionLabeling->setIcon( QgsApplication::getThemeIcon( "/mActionLabeling.png" ) );
+  mActionLabeling->setIcon( QgsApplication::getThemeIcon( "/mActionLabeling.svg" ) );
   mActionShowPinnedLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowPinnedLabels.svg" ) );
   mActionPinLabels->setIcon( QgsApplication::getThemeIcon( "/mActionPinLabels.svg" ) );
   mActionShowHideLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowHideLabels.svg" ) );
-  mActionMoveLabel->setIcon( QgsApplication::getThemeIcon( "/mActionMoveLabel.png" ) );
+  mActionMoveLabel->setIcon( QgsApplication::getThemeIcon( "/mActionMoveLabel.svg" ) );
   mActionRotateLabel->setIcon( QgsApplication::getThemeIcon( "/mActionRotateLabel.svg" ) );
-  mActionChangeLabelProperties->setIcon( QgsApplication::getThemeIcon( "/mActionChangeLabelProperties.png" ) );
+  mActionChangeLabelProperties->setIcon( QgsApplication::getThemeIcon( "/mActionChangeLabelProperties.svg" ) );
   mActionDiagramProperties->setIcon( QgsApplication::getThemeIcon( "/mActionDiagramProperties.svg" ) );
   mActionDecorationCopyright->setIcon( QgsApplication::getThemeIcon( "/copyright_label.png" ) );
   mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( "/north_arrow.png" ) );

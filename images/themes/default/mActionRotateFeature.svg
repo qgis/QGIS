@@ -14,7 +14,7 @@
    height="24"
    id="svg5692"
    version="1.1"
-   inkscape:version="0.92pre1 unknown"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="mActionRotateFeature.svg"
    inkscape:export-filename="/home/robert/prv/projekty/osgeographics/trunk/toolbar-icons/24x24/ring-fill2.png"
    inkscape:export-xdpi="90"
@@ -1034,9 +1034,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="83.049269"
-     inkscape:cy="32.03189"
+     inkscape:zoom="4"
+     inkscape:cx="0.49674152"
+     inkscape:cy="3.7785827"
      inkscape:current-layer="layer4"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -1141,14 +1141,14 @@
        style="display:inline;opacity:0.3;fill:#fcffff;fill-rule:evenodd;stroke:none;enable-background:new"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 21.498844,26.875057 C 21.542034,25.000098 20.37406,23.500129 18.499421,23.500129 16.601216,23.484759 15.5,24.75151 15.5,26.875057 15.5,28.314909 16.999711,29.5 18.499421,29.5"
+       style="display:inline;fill:none;stroke:#ffffff;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 21.498844,26.2375 c 0,-1.520773 -1.240344,-2.750705 -2.999423,-2.737371 C 16.601216,23.484759 15.5,24.747684 15.5,26.5 c 0,1.439852 1.50029,2.5 3,2.5"
        id="path187"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccc" />
     <path
-       style="fill:none;stroke:#ffffff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 17.5,27.5 1.5,2 -1.5,2"
+       style="display:inline;fill:none;stroke:#ffffff;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 18.58077,27 1.5,2 -1.5,2"
        id="path996"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
