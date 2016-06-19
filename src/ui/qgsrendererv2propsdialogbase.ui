@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QgsPanelWidgetStackWidget" name="mainStack">
+    <widget class="QStackedWidget" name="mainStack">
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <property name="leftMargin">
@@ -238,12 +238,6 @@
    <class>QgsEffectStackCompactWidget</class>
    <extends>QWidget</extends>
    <header>effects/qgseffectstackpropertieswidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsPanelWidgetStackWidget</class>
-   <extends>QStackedWidget</extends>
-   <header>qgspanelwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

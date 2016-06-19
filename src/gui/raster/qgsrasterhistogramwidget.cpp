@@ -55,7 +55,7 @@
 //#define RASTER_HISTOGRAM_BINS 256
 
 QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget *parent )
-    : QWidget( parent )
+    : QgsMapStylingPanel( lyr, nullptr, parent )
     , mRasterLayer( lyr )
     , mRendererWidget( nullptr )
 {
@@ -1248,4 +1248,9 @@ QPair< QString, QString > QgsRasterHistogramWidget::rendererMinMax( int theBandN
   QgsDebugMsg( QString( "bandNo %1 got min/max [%2] [%3]" ).arg( theBandNo ).arg( myMinMax.first, myMinMax.second ) );
 
   return myMinMax;
+}
+
+void QgsRasterHistogramWidget::apply()
+{
+
 }

@@ -14,6 +14,18 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -32,7 +44,7 @@
          <normaloff>:/images/themes/default/mActionArrowLeft.png</normaloff>:/images/themes/default/mActionArrowLeft.png</iconset>
        </property>
        <property name="autoRepeat">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -42,7 +54,7 @@
      <item>
       <widget class="QLabel" name="mTitleText">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+        <sizepolicy hsizetype="Ignored" vsizetype="Maximum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -55,7 +67,44 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="mWidgetLayout"/>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>375</width>
+        <height>598</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QStackedWidget" name="mStackedWidget">
+         <widget class="QWidget" name="page"/>
+         <widget class="QWidget" name="page_2"/>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>

@@ -22,7 +22,7 @@
 
 
 QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
-    : QWidget( parent )
+    : QgsPanelWidget( parent )
 {
   setupUi( this );
 

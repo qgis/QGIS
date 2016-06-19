@@ -44,6 +44,7 @@ class QgsFieldsProperties;
 class QgsRendererV2PropertiesDialog;
 class QgsMapLayerPropertiesFactory;
 class QgsVectorLayerPropertiesPage;
+class QgsPanelWidget;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase
 {
@@ -207,6 +208,12 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     /** Adds a new join to mJoinTreeWidget*/
     void addJoinToTreeWidget( const QgsVectorJoinInfo& join , const int insertIndex = -1 );
+
+  private slots:
+    void openPanel( QgsPanelWidget* panel );
+
+  private:
+    QgsPanelWidget* mPanelWrapper;
 };
 
 inline QString QgsVectorLayerProperties::displayName()

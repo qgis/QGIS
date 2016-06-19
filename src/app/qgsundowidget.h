@@ -27,13 +27,15 @@
 #include <QUndoView>
 #include <QUndoStack>
 
+#include "qgspanelwidget.h"
+
 class QgsMapCanvas;
 class QgsMapLayer;
 
 /**
  * Class that handles undo display fo undo commands
  */
-class APP_EXPORT QgsUndoWidget : public QWidget
+class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:

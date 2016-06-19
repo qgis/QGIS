@@ -97,8 +97,6 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
     layout()->setContentsMargins( 0, 0, 0, 0 );
   }
 
-  this->setDockMode( embedded );
-
   // initialize registry's widget functions
   _initRendererWidgetFunctions();
 
@@ -123,10 +121,6 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), lineEditOrderBy, SLOT( setEnabled( bool ) ) );
   connect( btnOrderBy, SIGNAL( clicked( bool ) ), this, SLOT( showOrderByDialog() ) );
 
-  QList<QgsPanelWidget*> panels;
-  panels << mEffectWidget;
-  mainStack->connectPanels( panels );
-
   syncToLayer();
 
   QList<QWidget*> widgets;
@@ -138,8 +132,8 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   << mFeatureBlendComboBox
   << mEffectWidget;
 
-
   connectValueChanged( widgets, SIGNAL( widgetChanged() ) );
+  connect( mEffectWidget, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
 }
 
 void QgsRendererV2PropertiesDialog::connectValueChanged( QList<QWidget *> widgets, const char *slot )
@@ -203,13 +197,13 @@ void QgsRendererV2PropertiesDialog::setDockMode( bool dockMode )
 {
   mDockMode = dockMode;
   mEffectWidget->setDockMode( dockMode );
+  if ( mActiveWidget )
+    mActiveWidget->setDockMode( mDockMode );
 }
 
 
 void QgsRendererV2PropertiesDialog::rendererChanged()
 {
-
-  QgsDebugMsg( "RENDERER CHANGED" );
   if ( cboRenderers->currentIndex() == -1 )
   {
     QgsDebugMsg( "No current item -- this should never happen!" );
@@ -258,7 +252,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
       connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }
     connect( mActiveWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
-    mainStack->connectPanel( mActiveWidget );
+    connect( mActiveWidget, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
     w->setDockMode( mDockMode );
   }
   else
@@ -302,6 +296,33 @@ void QgsRendererV2PropertiesDialog::onOK()
   accept();
 }
 
+void QgsRendererV2PropertiesDialog::openPanel( QgsPanelWidget *panel )
+{
+  QgsDebugMsg( "Open panel!!!" );
+  if ( mDockMode )
+  {
+    QgsDebugMsg( "DOCK MODE" );
+    emit showPanel( panel );
+  }
+  else
+  {
+    QgsDebugMsg( "DIALOG MODE" );
+    // Show the dialog version if no one is connected
+    QDialog* dlg = new QDialog();
+    QString key =  QString( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    QSettings settings;
+    dlg->restoreGeometry( settings.value( key ).toByteArray() );
+    dlg->setWindowTitle( panel->panelTitle() );
+    dlg->setLayout( new QVBoxLayout() );
+    dlg->layout()->addWidget( panel );
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+    connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+    dlg->layout()->addWidget( buttonBox );
+    dlg->exec();
+    settings.setValue( key, dlg->saveGeometry() );
+    panel->acceptPanel();
+  }
+}
 
 void QgsRendererV2PropertiesDialog::syncToLayer()
 {

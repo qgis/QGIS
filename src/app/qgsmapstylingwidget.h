@@ -98,7 +98,6 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget, private Ui::QgsMapStyling
     QgsUndoWidget* mUndoWidget;
     QgsMapLayer* mCurrentLayer;
     QgsLabelingWidget *mLabelingWidget;
-    QgsRendererV2PropertiesDialog* mVectorStyleWidget;
     QgsRendererRasterPropertiesWidget* mRasterStyleWidget;
     QList<QgsMapStylingPanelFactory*> mPageFactories;
     QMap<int, QgsMapStylingPanelFactory*> mUserPages;

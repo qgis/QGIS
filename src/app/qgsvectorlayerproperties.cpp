@@ -81,6 +81,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     , mSaveAsMenu( nullptr )
     , mLoadStyleMenu( nullptr )
     , mRendererDialog( nullptr )
+    , mPanelWrapper( nullptr )
     , labelingDialog( nullptr )
     , labelDialog( nullptr )
     , mActionDialog( nullptr )
@@ -1281,6 +1282,23 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
   mJoinTreeWidget->setCurrentItem( joinItem );
 }
 
+void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )
+{
+  QDialog* dlg = new QDialog();
+  QString key =  QString( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+  QSettings settings;
+  dlg->restoreGeometry( settings.value( key ).toByteArray() );
+  dlg->setWindowTitle( panel->panelTitle() );
+  dlg->setLayout( new QVBoxLayout() );
+  dlg->layout()->addWidget( panel );
+  QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+  connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+  dlg->layout()->addWidget( buttonBox );
+  dlg->exec();
+  settings.setValue( key, dlg->saveGeometry() );
+  panel->acceptPanel();
+}
+
 void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
 {
   QTreeWidgetItem* currentJoinItem = mJoinTreeWidget->currentItem();
@@ -1303,12 +1321,15 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   delete mRendererDialog;
   mRendererDialog = nullptr;
 
+  delete mPanelWrapper;
+  mPanelWrapper = nullptr;
+
   if ( mLayer->rendererV2() )
   {
     mRendererDialog = new QgsRendererV2PropertiesDialog( mLayer, QgsStyleV2::defaultStyle(), true, this );
-    mRendererDialog->setDockMode( true );
+    mRendererDialog->setDockMode( false );
     mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
-
+    connect( mRendererDialog, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
     connect( mRendererDialog, SIGNAL( layerVariablesChanged() ), this, SLOT( updateVariableEditor() ) );
 
     // display the menu to choose the output format (fix #5136)

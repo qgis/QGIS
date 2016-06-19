@@ -77,6 +77,14 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
      */
     void widgetChanged();
 
+    /**
+     * Emit when you require a panel to be show in the interface.
+     * @param panel The panel widget to show.
+     * @note If you are connected to this signal you should also connect
+     * given panels showPanel signal as they can be nested.
+     */
+    void showPanel( QgsPanelWidget* panel );
+
   public slots:
     //! called when user changes renderer type
     void rendererChanged();
@@ -86,6 +94,19 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
 
     //! Apply and accept the changes for the dialog.
     void onOK();
+
+    /**
+     * Open a panel or dialog depending on dock mode setting
+     * If dock mode is true this method will emit the showPanel signal
+     * for connected slots to handle the open event.
+     *
+     * If dock mode is false this method will open a dialog
+     * and block the user.
+     *
+     * @param panel The panel widget to open.
+     */
+    void openPanel( QgsPanelWidget* panel );
+
 
   private slots:
     void showOrderByDialog();

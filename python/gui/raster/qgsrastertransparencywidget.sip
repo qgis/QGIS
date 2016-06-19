@@ -1,7 +1,7 @@
 /**
  * @brief Widget to control a layers transparency and related options
  */
-class QgsRasterTransparencyWidget: QWidget
+class QgsRasterTransparencyWidget: QgsPanelWidgetStack
 {
 %TypeHeaderCode
 #include <qgsrastertransparencywidget.h>
@@ -12,13 +12,6 @@ class QgsRasterTransparencyWidget: QWidget
      */
     QgsRasterTransparencyWidget( QgsRasterLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
     ~QgsRasterTransparencyWidget();
-
-  signals:
-    /**
-     * Emitted when something on the widget has changed.
-     * All widgets will fire this event to notify of an internal change.
-     */
-    void widgetChanged();
 
   public slots:
     /**
