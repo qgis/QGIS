@@ -754,7 +754,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionReshape.png</normaloff>:/images/themes/default/mActionReshape.png</iconset>
+     <normaloff>:/images/themes/default/mActionReshape.svg</normaloff>:/images/themes/default/mActionReshape.svg</iconset>
    </property>
    <property name="text">
     <string>Reshape Features</string>
@@ -799,7 +799,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddRing.png</normaloff>:/images/themes/default/mActionAddRing.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddRing.svg</normaloff>:/images/themes/default/mActionAddRing.svg</iconset>
    </property>
    <property name="text">
     <string>Add Ring</string>
@@ -811,7 +811,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddPart.png</normaloff>:/images/themes/default/mActionAddPart.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddPart.svg</normaloff>:/images/themes/default/mActionAddPart.svg</iconset>
    </property>
    <property name="text">
     <string>Add Part</string>
@@ -823,7 +823,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSimplify.png</normaloff>:/images/themes/default/mActionSimplify.png</iconset>
+     <normaloff>:/images/themes/default/mActionSimplify.svg</normaloff>:/images/themes/default/mActionSimplify.svg</iconset>
    </property>
    <property name="text">
     <string>Simplify Feature</string>
@@ -835,7 +835,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeleteRing.png</normaloff>:/images/themes/default/mActionDeleteRing.png</iconset>
+     <normaloff>:/images/themes/default/mActionDeleteRing.svg</normaloff>:/images/themes/default/mActionDeleteRing.svg</iconset>
    </property>
    <property name="text">
     <string>Delete Ring</string>
@@ -847,7 +847,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeletePart.png</normaloff>:/images/themes/default/mActionDeletePart.png</iconset>
+     <normaloff>:/images/themes/default/mActionDeletePart.svg</normaloff>:/images/themes/default/mActionDeletePart.svg</iconset>
    </property>
    <property name="text">
     <string>Delete Part</string>
@@ -856,7 +856,7 @@
   <action name="mActionMergeFeatures">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMergeFeatures.png</normaloff>:/images/themes/default/mActionMergeFeatures.png</iconset>
+     <normaloff>:/images/themes/default/mActionMergeFeatures.svg</normaloff>:/images/themes/default/mActionMergeFeatures.svg</iconset>
    </property>
    <property name="text">
     <string>Merge Selected Features</string>
@@ -865,7 +865,7 @@
   <action name="mActionMergeFeatureAttributes">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMergeFeatureAttributes.png</normaloff>:/images/themes/default/mActionMergeFeatureAttributes.png</iconset>
+     <normaloff>:/images/themes/default/mActionMergeFeatureAttributes.svg</normaloff>:/images/themes/default/mActionMergeFeatureAttributes.svg</iconset>
    </property>
    <property name="text">
     <string>Merge Attributes of Selected Features</string>
@@ -1254,7 +1254,7 @@
   <action name="mActionLabeling">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionLabeling.png</normaloff>:/images/themes/default/mActionLabeling.png</iconset>
+     <normaloff>:/images/themes/default/mActionLabeling.svg</normaloff>:/images/themes/default/mActionLabeling.svg</iconset>
    </property>
    <property name="text">
     <string>Labeling</string>
@@ -1664,7 +1664,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMoveLabel.png</normaloff>:/images/themes/default/mActionMoveLabel.png</iconset>
+     <normaloff>:/images/themes/default/mActionMoveLabel.svg</normaloff>:/images/themes/default/mActionMoveLabel.svg</iconset>
    </property>
    <property name="text">
     <string>Move Label And Diagram</string>
@@ -1695,7 +1695,7 @@ Ctl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionChangeLabelProperties.png</normaloff>:/images/themes/default/mActionChangeLabelProperties.png</iconset>
+     <normaloff>:/images/themes/default/mActionChangeLabelProperties.svg</normaloff>:/images/themes/default/mActionChangeLabelProperties.svg</iconset>
    </property>
    <property name="text">
     <string>Change Label</string>
@@ -1704,7 +1704,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionStyleManagerV2">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
+     <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
    </property>
    <property name="text">
     <string>Style Manager...</string>
@@ -1872,7 +1872,7 @@ Ctl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOffsetCurve.png</normaloff>:/images/themes/default/mActionOffsetCurve.png</iconset>
+     <normaloff>:/images/themes/default/mActionOffsetCurve.svg</normaloff>:/images/themes/default/mActionOffsetCurve.svg</iconset>
    </property>
    <property name="text">
     <string>Offset Curve</string>
@@ -2461,7 +2461,7 @@ Acts on currently active editable layer</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionTracing.png</normaloff>:/images/themes/default/mActionTracing.png</iconset>
+     <normaloff>:/images/themes/default/mActionTracing.svg</normaloff>:/images/themes/default/mActionTracing.svg</iconset>
    </property>
    <property name="text">
     <string>Enable Tracing</string>
