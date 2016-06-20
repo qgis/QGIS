@@ -119,12 +119,12 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
   mUserPages.clear();
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "" ) );
+    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ), "" ) );
     mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "labelingSingle.svg" ), "" ) );
   }
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "" ) );
+    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ), "" ) );
     mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/transparency.png" ), "" ) );
     mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/histogram.png" ), "" ) );
   }
@@ -424,7 +424,7 @@ void QgsMapLayerStyleCommand::redo()
 
 QIcon QgsMapLayerStyleManagerWidgetFactory::icon()
 {
-  return  QgsApplication::getThemeIcon( "propertyicons/symbology.png" );
+  return  QgsApplication::getThemeIcon( "propertyicons/stylepreset.svg" );
 }
 
 QString QgsMapLayerStyleManagerWidgetFactory::title()

@@ -3007,7 +3007,7 @@ void QgisApp::initLayerTreeView()
   mActionStyleDock->setCheckable( true );
   mActionStyleDock->setToolTip( tr( "Open the map styling dock" ) );
   mActionStyleDock->setShortcut( QString( "F7" ) );
-  mActionStyleDock->setIcon( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ) );
+  mActionStyleDock->setIcon( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ) );
   connect( mActionStyleDock, SIGNAL( toggled( bool ) ), this, SLOT( mapStyleDock( bool ) ) );
 
   // expand / collapse tool buttons
