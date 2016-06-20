@@ -184,12 +184,14 @@
         <file>themes/default/mActionCapturePolygon.png</file>
         <file>themes/default/mActionCapturePolygon.svg</file>
         <file>themes/default/mActionNewTableRow.png</file>
+        <file>themes/default/mActionNewTableRow.svg</file>
         <file>themes/default/mActionChangeLabelProperties.png</file>
         <file>themes/default/mActionChangeLabelProperties.svg</file>
         <file>themes/default/mActionCheckQgisVersion.png</file>
         <file>themes/default/mActionCollapseTree.png</file>
         <file>themes/default/mActionCollapseTree.svg</file>
         <file>themes/default/mActionComposerManager.svg</file>
+        <file>themes/default/mActionConditionalFormatting.svg</file>
         <file>themes/default/mActionContextHelp.png</file>
         <file>themes/default/mActionCopySelected.png</file>
         <file>themes/default/mActionCreateMemory.png</file>
@@ -198,6 +200,7 @@
         <file>themes/default/mActionDecreaseBrightness.svg</file>
         <file>themes/default/mActionDecreaseContrast.svg</file>
         <file>themes/default/mActionDeleteAttribute.png</file>
+        <file>themes/default/mActionDeleteAttribute.svg</file>
         <file>themes/default/mActionDeletePart.png</file>
         <file>themes/default/mActionDeletePart.svg</file>
         <file>themes/default/mActionDeleteRing.png</file>
@@ -293,6 +296,7 @@
         <file>themes/default/mActionMoveLabel.svg</file>
         <file>themes/default/mActionMoveVertex.png</file>
         <file>themes/default/mActionNewAttribute.png</file>
+        <file>themes/default/mActionNewAttribute.svg</file>
         <file>themes/default/mActionNewBookmark.png</file>
         <file>themes/default/mActionNewBookmark.svg</file>
         <file>themes/default/mActionNewComposer.svg</file>
@@ -351,6 +355,7 @@
         <file>themes/default/mActionSelectAll.png</file>
         <file>themes/default/mActionSelectAll.svg</file>
         <file>themes/default/mActionSelectedToTop.png</file>
+        <file>themes/default/mActionSelectedToTop.svg</file>
         <file>themes/default/mActionSelectFreehand.svg</file>
         <file>themes/default/mActionSelectPan.png</file>
         <file>themes/default/mActionSelectPolygon.svg</file>

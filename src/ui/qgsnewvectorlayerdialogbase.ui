@@ -181,7 +181,7 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+          <normaloff>../../images/themes/default/mActionNewAttribute.svg</normaloff>../../images/themes/default/mActionNewAttribute.svg</iconset>
         </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -265,7 +265,7 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+          <normaloff>../../images/themes/default/mActionDeleteAttribute.svg</normaloff>../../images/themes/default/mActionDeleteAttribute.svg</iconset>
         </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextBesideIcon</enum>
