@@ -114,7 +114,7 @@ QString QgsMultiPolygonV2::asJSON( int precision ) const
 
 bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometryV2* g )
 {
-  if ( !dynamic_cast<QgsCurvePolygonV2*>( g ) )
+  if ( !dynamic_cast<QgsPolygonV2*>( g ) )
   {
     delete g;
     return false;

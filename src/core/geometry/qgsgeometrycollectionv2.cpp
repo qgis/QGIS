@@ -192,22 +192,24 @@ bool QgsGeometryCollectionV2::fromWkb( QgsConstWkbPtr wkbPtr )
   int nGeometries = 0;
   wkbPtr >> nGeometries;
 
-  QList<QgsAbstractGeometryV2*> geometryList;
+  QVector<QgsAbstractGeometryV2*> geometryListBackup = mGeometries;
+  mGeometries.clear();
   for ( int i = 0; i < nGeometries; ++i )
   {
     QgsAbstractGeometryV2* geom = QgsGeometryFactory::geomFromWkb( wkbPtr );
     if ( geom )
     {
-      geometryList.append( geom );
+      if ( !addGeometry( geom ) )
+      {
+        qDeleteAll( mGeometries );
+        mGeometries = geometryListBackup;
+        return false;
+      }
       wkbPtr += geom->wkbSize();
     }
   }
+  qDeleteAll( geometryListBackup );
 
-  mGeometries.resize( geometryList.size() );
-  for ( int i = 0; i < geometryList.size(); ++i )
-  {
-    mGeometries[i] = geometryList.at( i );
-  }
   clearCache(); //set bounding box invalid
 
   return true;
@@ -217,8 +219,10 @@ bool QgsGeometryCollectionV2::fromWkt( const QString& wkt )
 {
   return fromCollectionWkt( wkt, QList<QgsAbstractGeometryV2*>() << new QgsPointV2 << new QgsLineStringV2 << new QgsPolygonV2
                             << new QgsCircularStringV2 << new QgsCompoundCurveV2
+                            << new QgsCurvePolygonV2
                             << new QgsMultiPointV2 << new QgsMultiLineStringV2
-                            << new QgsMultiPolygonV2 << new QgsGeometryCollectionV2, "GeometryCollection" );
+                            << new QgsMultiPolygonV2 << new QgsGeometryCollectionV2
+                            << new QgsMultiCurveV2 << new QgsMultiSurfaceV2, "GeometryCollection" );
 }
 
 int QgsGeometryCollectionV2::wkbSize() const

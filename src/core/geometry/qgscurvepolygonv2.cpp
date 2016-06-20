@@ -110,17 +110,16 @@ bool QgsCurvePolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
   {
     QgsWKBTypes::Type curveType = wkbPtr.readHeader();
     wkbPtr -= 1 + sizeof( int );
-    if ( curveType == QgsWKBTypes::LineString || curveType == QgsWKBTypes::LineStringZ || curveType == QgsWKBTypes::LineStringM ||
-         curveType == QgsWKBTypes::LineStringZM || curveType == QgsWKBTypes::LineString25D )
+    QgsWKBTypes::Type flatCurveType = QgsWKBTypes::flatType( curveType );
+    if ( flatCurveType == QgsWKBTypes::LineString )
     {
       currentCurve = new QgsLineStringV2();
     }
-    else if ( curveType == QgsWKBTypes::CircularString || curveType == QgsWKBTypes::CircularStringZ || curveType == QgsWKBTypes::CircularStringZM ||
-              curveType == QgsWKBTypes::CircularStringM )
+    else if ( flatCurveType == QgsWKBTypes::CircularString )
     {
       currentCurve = new QgsCircularStringV2();
     }
-    else if ( curveType == QgsWKBTypes::CompoundCurve || curveType == QgsWKBTypes::CompoundCurveZ || curveType == QgsWKBTypes::CompoundCurveZM )
+    else if ( flatCurveType == QgsWKBTypes::CompoundCurve )
     {
       currentCurve = new QgsCompoundCurveV2();
     }
