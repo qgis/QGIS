@@ -98,6 +98,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   setAttribute( Qt::WA_DeleteOnClose );
 
+  layout()->setMargin( 0 );
+  layout()->setContentsMargins( 0, 0, 0, 0 );
+  static_cast< QGridLayout* >( layout() )->setVerticalSpacing( 0 );
+
   QSettings settings;
 
   int size = settings.value( "/IconSize", 16 ).toInt();

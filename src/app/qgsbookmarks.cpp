@@ -41,6 +41,10 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   setupUi( this );
   restorePosition();
 
+  bookmarksDockContents->layout()->setMargin( 0 );
+  bookmarksDockContents->layout()->setContentsMargins( 0, 0, 0, 0 );
+  static_cast< QGridLayout* >( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
+
   QToolButton* btnImpExp = new QToolButton;
   btnImpExp->setAutoRaise( true );
   btnImpExp->setToolTip( tr( "Import/Export Bookmarks" ) );

@@ -270,6 +270,10 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * paren
 {
   setupUi( this );
 
+  mContents->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mContents->layout()->setMargin( 0 );
+  static_cast< QVBoxLayout* >( mContents->layout() )->setSpacing( 0 );
+
   setWindowTitle( name );
 
   mBrowserView = new QgsDockBrowserTreeView( this );
