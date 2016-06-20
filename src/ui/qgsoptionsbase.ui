@@ -2919,6 +2919,11 @@
                         <string>Open attribute table</string>
                        </property>
                       </item>
+                      <item>
+                       <property name="text">
+                        <string>Open map styling dock</string>
+                       </property>
+                      </item>
                      </widget>
                     </item>
                    </layout>
