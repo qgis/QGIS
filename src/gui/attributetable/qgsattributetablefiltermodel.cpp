@@ -101,7 +101,7 @@ QVariant QgsAttributeTableFilterModel::headerData( int section, Qt::Orientation 
       return section + 1;
     else
     {
-      int sourceSection = mapToSource( index( section, mColumnMapping.at( 0 ) == -1 ? 1 : 0 ) ).row();
+      int sourceSection = mapToSource( index( section, ( !mColumnMapping.isEmpty() && mColumnMapping.at( 0 ) == -1 ) ? 1 : 0 ) ).row();
       return sourceModel()->headerData( sourceSection, orientation, role );
     }
   }
