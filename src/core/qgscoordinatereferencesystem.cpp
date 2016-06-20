@@ -927,6 +927,20 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString& theProj4String
   OSRDestroySpatialReference( mCRS );
   mCRS = OSRNewSpatialReference( nullptr );
   mIsValidFlag = OSRImportFromProj4( mCRS, theProj4String.trimmed().toLatin1().constData() ) == OGRERR_NONE;
+  // OSRImportFromProj4() may accept strings that are not valid proj.4 strings,
+  // e.g if they lack a +ellps parameter, it will automatically add +ellps=WGS84, but as
+  // we use the original mProj4 with QgsCoordinateTransform, it will fail to initialize
+  // so better detect it now.
+  projPJ theProj = pj_init_plus( theProj4String.trimmed().toLatin1().constData() );
+  if ( !theProj )
+  {
+    QgsDebugMsg( "proj.4 string rejected by pj_init_plus()" );
+    mIsValidFlag = false;
+  }
+  else
+  {
+    pj_free( theProj );
+  }
   mWkt.clear();
   setMapUnits();
 
