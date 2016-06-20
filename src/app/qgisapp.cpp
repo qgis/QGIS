@@ -463,6 +463,9 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
     case 1:
       QgisApp::instance()->attributeTable();
       break;
+    case 2:
+      mapStyleDock( true );
+      break;
     default:
       break;
   }
