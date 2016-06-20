@@ -109,6 +109,10 @@ class PGDatabase(Database):
     def dataTablesFactory(self, row, db, schema=None):
         return PGTable(row, db, schema)
 
+    def info(self):
+        from .info_model import PGDatabaseInfo
+        return PGDatabaseInfo(self)
+
     def vectorTablesFactory(self, row, db, schema=None):
         return PGVectorTable(row, db, schema)
 
