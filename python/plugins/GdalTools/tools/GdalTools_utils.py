@@ -445,19 +445,39 @@ class FileDialog:
 
     @classmethod
     def getOpenFileNames(self, parent=None, caption='', filter='', selectedFilter=None, useEncoding=False):
-        return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.ExistingFiles, filter, selectedFilter, useEncoding)
+        if useEncoding:
+            return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.ExistingFiles, filter, selectedFilter, useEncoding)
+        res = QFileDialog.getOpenFileNames(parent, caption, getLastUsedDir(), filter)
+        if len(res) > 0:
+            setLastUsedDir(res[-1])
+        return res
 
     @classmethod
     def getOpenFileName(self, parent=None, caption='', filter='', selectedFilter=None, useEncoding=False):
-        return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.ExistingFile, filter, selectedFilter, useEncoding)
+        if useEncoding:
+            return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.ExistingFile, filter, selectedFilter, useEncoding)
+        res = QFileDialog.getOpenFileName(parent, caption, getLastUsedDir(), filter)
+        if res:
+            setLastUsedDir(res)
+        return res
 
     @classmethod
     def getSaveFileName(self, parent=None, caption='', filter='', selectedFilter=None, useEncoding=False):
-        return self.getDialog(parent, caption, QFileDialog.AcceptSave, QFileDialog.AnyFile, filter, selectedFilter, useEncoding)
+        if useEncoding:
+            return self.getDialog(parent, caption, QFileDialog.AcceptSave, QFileDialog.AnyFile, filter, selectedFilter, useEncoding)
+        res = QFileDialog.getSaveFileName(parent, caption, getLastUsedDir(), filter)
+        if res:
+            setLastUsedDir(res)
+        return res
 
     @classmethod
     def getExistingDirectory(self, parent=None, caption='', useEncoding=False):
-        return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.DirectoryOnly, '', None, useEncoding)
+        if useEncoding:
+            return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.DirectoryOnly, '', None, useEncoding)
+        res = QFileDialog.getExistingDirectory(parent, caption, getLastUsedDir(), QFileDialog.ShowDirsOnly)
+        if res:
+            setLastUsedDir(res)
+        return res
 
 
 class FileFilter:
