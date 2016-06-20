@@ -244,5 +244,23 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # And now check that fields are up-to-date
         self.assertEquals(len(vl1.fields()), len(vl2.fields()))
 
+    def testDeleteGeometry(self):
+        ''' Test changeGeometryValues() with a null geometry '''
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        self.assertTrue(vl.dataProvider().changeGeometryValues({0: QgsGeometry()}))
+        vl = None
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        fet = next(vl.getFeatures())
+        self.assertIsNone(fet.geometry())
+
 if __name__ == '__main__':
     unittest.main()
