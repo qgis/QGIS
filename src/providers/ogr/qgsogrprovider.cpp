@@ -1560,9 +1560,6 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   if ( !doInitialActionsForEdition() )
     return false;
 
-  OGRFeatureH theOGRFeature = nullptr;
-  OGRGeometryH theNewGeometry = nullptr;
-
   setRelevantFields( ogrLayer, true, attributeIndexes() );
 
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
@@ -1573,39 +1570,49 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       continue;
     }
 
-    theOGRFeature = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( it.key() ) ) );
+    OGRFeatureH theOGRFeature = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( it.key() ) ) );
     if ( !theOGRFeature )
     {
       pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
       continue;
     }
 
-    //create an OGRGeometry
-    if ( OGR_G_CreateFromWkb( const_cast<unsigned char*>( it->asWkb() ),
-                              OGR_L_GetSpatialRef( ogrLayer ),
-                              &theNewGeometry,
-                              it->wkbSize() ) != OGRERR_NONE )
+    OGRGeometryH theNewGeometry = nullptr;
+    // We might receive null geometries. It is ok, but don't go through the
+    // OGR_G_CreateFromWkb() route then
+    if ( it->wkbSize() != 0 )
     {
-      pushError( tr( "OGR error creating geometry for feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
-      OGR_G_DestroyGeometry( theNewGeometry );
-      theNewGeometry = nullptr;
-      continue;
-    }
+      //create an OGRGeometry
+      if ( OGR_G_CreateFromWkb( const_cast<unsigned char*>( it->asWkb() ),
+                                OGR_L_GetSpatialRef( ogrLayer ),
+                                &theNewGeometry,
+                                it->wkbSize() ) != OGRERR_NONE )
+      {
+        pushError( tr( "OGR error creating geometry for feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
+        OGR_G_DestroyGeometry( theNewGeometry );
+        theNewGeometry = nullptr;
+        OGR_F_Destroy( theOGRFeature );
+        continue;
+      }
 
-    if ( !theNewGeometry )
-    {
-      pushError( tr( "OGR error in feature %1: geometry is null" ).arg( it.key() ) );
-      continue;
-    }
+      if ( !theNewGeometry )
+      {
+        pushError( tr( "OGR error in feature %1: geometry is null" ).arg( it.key() ) );
+        OGR_F_Destroy( theOGRFeature );
+        continue;
+      }
 
-    theNewGeometry = ConvertGeometryIfNecessary( theNewGeometry );
+      theNewGeometry = ConvertGeometryIfNecessary( theNewGeometry );
+    }
 
     //set the new geometry
     if ( OGR_F_SetGeometryDirectly( theOGRFeature, theNewGeometry ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting geometry of feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
-      OGR_G_DestroyGeometry( theNewGeometry );
-      theNewGeometry = nullptr;
+      // Shouldn't happen normally. If it happens, ownership of the geometry
+      // may be not really well defined, so better not destroy it, but just
+      // the feature.
+      OGR_F_Destroy( theOGRFeature );
       continue;
     }
 
@@ -1613,8 +1620,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     if ( OGR_L_SetFeature( ogrLayer, theOGRFeature ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
-      OGR_G_DestroyGeometry( theNewGeometry );
-      theNewGeometry = nullptr;
+      OGR_F_Destroy( theOGRFeature );
       continue;
     }
     mShapefileMayBeCorrupted = true;
