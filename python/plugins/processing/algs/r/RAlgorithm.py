@@ -346,7 +346,7 @@ class RAlgorithm(GeoAlgorithm):
             elif isinstance(out, OutputTable):
                 value = out.value
                 value = value.replace('\\', '/')
-                commands.append('write.csv(' + out.name + ',"' + value + '"')
+                commands.append('write.csv(' + out.name + ',"' + value + '")')
 
         if self.showPlots:
             commands.append('dev.off()')
