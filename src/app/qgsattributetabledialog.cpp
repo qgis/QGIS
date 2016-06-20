@@ -72,7 +72,8 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
     return;
 
   mActionToggleMultiEdit->setEnabled( mLayer->isEditable() );
-  if ( mLayer->isEditable() && mMainView->view() != QgsDualView::AttributeEditor )
+
+  if ( !mLayer->isEditable() || ( mLayer->isEditable() && mMainView->view() != QgsDualView::AttributeEditor ) )
   {
     mActionToggleMultiEdit->setChecked( false );
   }
