@@ -404,6 +404,7 @@
         <file>themes/default/mActionZoomLast.svg</file>
         <file>themes/default/mActionZoomNext.svg</file>
         <file>themes/default/mActionZoomOut.svg</file>
+        <file>themes/default/mActionZoomToBookmark.svg</file>
         <file>themes/default/mActionZoomToLayer.svg</file>
         <file>themes/default/mActionZoomToSelected.svg</file>
         <file>themes/default/mActionFilterTableFields.svg</file>

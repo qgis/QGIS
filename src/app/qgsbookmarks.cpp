@@ -61,7 +61,6 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   connect( actionZoomTo, SIGNAL( triggered() ), this, SLOT( zoomToBookmark() ) );
 
   mBookmarkToolbar->addWidget( btnImpExp );
-  mBookmarkToolbar->addAction( actionHelp );
 
   // open the database
   QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", "bookmarks" );
