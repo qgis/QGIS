@@ -290,12 +290,21 @@ QgsPostgresConn::QgsPostgresConn( const QString& conninfo, bool readOnly, bool s
   deduceEndian();
 
   /* Check to see if we have working PostGIS support */
-  if ( postgisVersion().isNull() )
+  if ( !postgisVersion().isNull() )
   {
-    QgsMessageLog::logMessage( tr( "Your database has no working PostGIS support." ), tr( "PostGIS" ) );
-    PQfinish();
-    mRef = 0;
-    return;
+    /* Check to see if we have GEOS support and if not, warn the user about
+       the problems they will see :) */
+    QgsDebugMsg( "Checking for GEOS support" );
+
+    if ( !hasGEOS() )
+    {
+      QgsMessageLog::logMessage( tr( "Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)" ), tr( "PostGIS" ) );
+    }
+
+    if ( hasTopology() )
+    {
+      QgsDebugMsg( "Topology support available!" );
+    }
   }
 
   if ( mPostgresqlVersion >= 90000 )
@@ -303,19 +312,6 @@ QgsPostgresConn::QgsPostgresConn( const QString& conninfo, bool readOnly, bool s
     PQexecNR( "SET application_name='QGIS'" );
   }
 
-  /* Check to see if we have GEOS support and if not, warn the user about
-     the problems they will see :) */
-  QgsDebugMsg( "Checking for GEOS support" );
-
-  if ( !hasGEOS() )
-  {
-    QgsMessageLog::logMessage( tr( "Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)" ), tr( "PostGIS" ) );
-  }
-
-  if ( hasTopology() )
-  {
-    QgsDebugMsg( "Topology support available!" );
-  }
 
   PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );
 }
@@ -836,10 +832,11 @@ QString QgsPostgresConn::postgisVersion()
 
   mPostgresqlVersion = PQserverVersion( mConn );
 
-  QgsPostgresResult result( PQexec( "SELECT postgis_version()" ) );
+  QgsPostgresResult result( PQexec( "SELECT postgis_version()", false ) );
   if ( result.PQntuples() != 1 )
   {
-    QgsMessageLog::logMessage( tr( "Retrieval of postgis version failed" ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "No PostGIS support in the database." ), tr( "PostGIS" ) );
+    mGotPostgisVersion = true;
     return QString::null;
   }
 
