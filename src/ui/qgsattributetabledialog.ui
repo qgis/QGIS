@@ -170,7 +170,6 @@
      <addaction name="separator"/>
      <addaction name="mActionAddFeature"/>
      <addaction name="mActionDeleteSelected"/>
-     <addaction name="separator"/>
      <addaction name="mActionExpressionSelect"/>
      <addaction name="mActionSelectAll"/>
      <addaction name="mActionInvertSelection"/>
