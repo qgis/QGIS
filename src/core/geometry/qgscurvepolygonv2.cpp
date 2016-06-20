@@ -161,10 +161,13 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
   {
     QPair<QgsWKBTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
-    if ( QgsWKBTypes::flatType( childParts.first ) == QgsWKBTypes::LineString )
+    QgsWKBTypes::Type flatCurveType = QgsWKBTypes::flatType( childParts.first );
+    if ( flatCurveType == QgsWKBTypes::LineString )
       mInteriorRings.append( new QgsLineStringV2() );
-    else if ( QgsWKBTypes::flatType( childParts.first ) == QgsWKBTypes::CircularString )
+    else if ( flatCurveType == QgsWKBTypes::CircularString )
       mInteriorRings.append( new QgsCircularStringV2() );
+    else if ( flatCurveType == QgsWKBTypes::CompoundCurve )
+      mInteriorRings.append( new QgsCompoundCurveV2() );
     else
     {
       clear();
@@ -739,10 +742,12 @@ bool QgsCurvePolygonV2::deleteVertex( QgsVertexId vId )
   if ( success )
   {
     // If first or last vertex is removed, re-sync the last/first vertex
+    // Do not use "n - 2", but "ring->numPoints() - 1" as more than one vertex
+    // may have been deleted (e.g. with CircularString)
     if ( vId.vertex == 0 )
-      ring->moveVertex( QgsVertexId( 0, 0, n - 2 ), ring->vertexAt( QgsVertexId( 0, 0, 0 ) ) );
+      ring->moveVertex( QgsVertexId( 0, 0, ring->numPoints() - 1 ), ring->vertexAt( QgsVertexId( 0, 0, 0 ) ) );
     else if ( vId.vertex == n - 1 )
-      ring->moveVertex( QgsVertexId( 0, 0, 0 ), ring->vertexAt( QgsVertexId( 0, 0, n - 2 ) ) );
+      ring->moveVertex( QgsVertexId( 0, 0, 0 ), ring->vertexAt( QgsVertexId( 0, 0, ring->numPoints() - 1 ) ) );
     clearCache();
   }
   return success;

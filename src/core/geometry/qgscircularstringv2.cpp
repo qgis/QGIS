@@ -779,9 +779,10 @@ bool QgsCircularStringV2::deleteVertex( QgsVertexId position )
   int nVertices = this->numPoints();
   if ( nVertices < 4 ) //circular string must have at least 3 vertices
   {
-    return false;
+    clear();
+    return true;
   }
-  if ( position.vertex < 1 || position.vertex > ( nVertices - 2 ) )
+  if ( position.vertex < 0 || position.vertex > ( nVertices - 1 ) )
   {
     return false;
   }

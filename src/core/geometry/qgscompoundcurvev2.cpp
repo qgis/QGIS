@@ -539,10 +539,87 @@ bool QgsCompoundCurveV2::moveVertex( QgsVertexId position, const QgsPointV2& new
 bool QgsCompoundCurveV2::deleteVertex( QgsVertexId position )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
-  QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
-  for ( ; idIt != curveIds.constEnd(); ++idIt )
+  if ( curveIds.size() == 1 )
   {
-    mCurves.at( idIt->first )->deleteVertex( idIt->second );
+    if ( !mCurves.at( curveIds.at( 0 ).first )->deleteVertex( curveIds.at( 0 ).second ) )
+    {
+      clearCache(); //bbox may have changed
+      return false;
+    }
+    if ( mCurves.at( curveIds.at( 0 ).first )->numPoints() == 0 )
+    {
+      removeCurve( curveIds.at( 0 ).first );
+    }
+  }
+  else if ( curveIds.size() == 2 )
+  {
+    Q_ASSERT( curveIds.at( 1 ).first == curveIds.at( 0 ).first + 1 );
+    Q_ASSERT( curveIds.at( 0 ).second.vertex == mCurves.at( curveIds.at( 0 ).first )->numPoints() - 1 );
+    Q_ASSERT( curveIds.at( 1 ).second.vertex == 0 );
+    QgsPointV2 startPoint = mCurves.at( curveIds.at( 0 ).first ) ->startPoint();
+    QgsPointV2 endPoint = mCurves.at( curveIds.at( 1 ).first ) ->endPoint();
+    if ( QgsWKBTypes::flatType( mCurves.at( curveIds.at( 0 ).first )->wkbType() ) == QgsWKBTypes::LineString &&
+         QgsWKBTypes::flatType( mCurves.at( curveIds.at( 1 ).first )->wkbType() ) == QgsWKBTypes::CircularString &&
+         mCurves.at( curveIds.at( 1 ).first )->numPoints() > 3 )
+    {
+      QgsPointV2 intermediatePoint;
+      QgsVertexId::VertexType type;
+      mCurves.at( curveIds.at( 1 ).first ) ->pointAt( 2, intermediatePoint, type );
+      mCurves.at( curveIds.at( 0 ).first )->moveVertex(
+        QgsVertexId( 0, 0, mCurves.at( curveIds.at( 0 ).first )->numPoints() - 1 ), intermediatePoint );
+    }
+    else if ( !mCurves.at( curveIds.at( 0 ).first )->deleteVertex( curveIds.at( 0 ).second ) )
+    {
+      clearCache(); //bbox may have changed
+      return false;
+    }
+    if ( QgsWKBTypes::flatType( mCurves.at( curveIds.at( 0 ).first )->wkbType() ) == QgsWKBTypes::CircularString &&
+         mCurves.at( curveIds.at( 0 ).first )->numPoints() > 0 &&
+         QgsWKBTypes::flatType( mCurves.at( curveIds.at( 1 ).first )->wkbType() ) == QgsWKBTypes::LineString )
+    {
+      QgsPointV2 intermediatePoint = mCurves.at( curveIds.at( 0 ).first ) ->endPoint();
+      mCurves.at( curveIds.at( 1 ).first )->moveVertex( QgsVertexId( 0, 0, 0 ), intermediatePoint );
+    }
+    else if ( !mCurves.at( curveIds.at( 1 ).first )->deleteVertex( curveIds.at( 1 ).second ) )
+    {
+      clearCache(); //bbox may have changed
+      return false;
+    }
+    if ( mCurves.at( curveIds.at( 0 ).first )->numPoints() == 0 &&
+         mCurves.at( curveIds.at( 1 ).first )->numPoints() != 0 )
+    {
+      removeCurve( curveIds.at( 0 ).first );
+      mCurves.at( curveIds.at( 1 ).first )->moveVertex( QgsVertexId( 0, 0, 0 ), startPoint );
+    }
+    else if ( mCurves.at( curveIds.at( 0 ).first )->numPoints() != 0 &&
+              mCurves.at( curveIds.at( 1 ).first )->numPoints() == 0 )
+    {
+      removeCurve( curveIds.at( 1 ).first );
+      mCurves.at( curveIds.at( 0 ).first )->moveVertex(
+        QgsVertexId( 0, 0, mCurves.at( curveIds.at( 0 ).first )->numPoints() - 1 ), endPoint );
+    }
+    else if ( mCurves.at( curveIds.at( 0 ).first )->numPoints() == 0 &&
+              mCurves.at( curveIds.at( 1 ).first )->numPoints() == 0 )
+    {
+      removeCurve( curveIds.at( 1 ).first );
+      removeCurve( curveIds.at( 0 ).first );
+      QgsLineStringV2* line = new QgsLineStringV2();
+      line->insertVertex( QgsVertexId( 0, 0, 0 ), startPoint );
+      line->insertVertex( QgsVertexId( 0, 0, 1 ), endPoint );
+      mCurves.insert( curveIds.at( 0 ).first, line );
+    }
+    else
+    {
+      QgsPointV2 endPointOfFirst = mCurves.at( curveIds.at( 0 ).first ) ->endPoint();
+      QgsPointV2 startPointOfSecond = mCurves.at( curveIds.at( 1 ).first ) ->startPoint();
+      if ( endPointOfFirst != startPointOfSecond )
+      {
+        QgsLineStringV2* line = new QgsLineStringV2();
+        line->insertVertex( QgsVertexId( 0, 0, 0 ), endPointOfFirst );
+        line->insertVertex( QgsVertexId( 0, 0, 1 ), startPointOfSecond );
+        mCurves.insert( curveIds.at( 1 ).first, line );
+      }
+    }
   }
 
   bool success = !curveIds.isEmpty();
@@ -574,6 +651,7 @@ QList< QPair<int, QgsVertexId> > QgsCompoundCurveV2::curveVertexId( QgsVertexId 
         vid.vertex = 0;
         curveIds.append( qMakePair( i + 1, vid ) );
       }
+      break;
     }
     currentVertexIndex += increment;
   }
