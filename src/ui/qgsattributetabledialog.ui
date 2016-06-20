@@ -400,7 +400,7 @@
   <action name="mActionAddFeature">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewTableRow.png</normaloff>:/images/themes/default/mActionNewTableRow.png</iconset>
+     <normaloff>:/images/themes/default/mActionNewTableRow.svg</normaloff>:/images/themes/default/mActionNewTableRow.svg</iconset>
    </property>
    <property name="text">
     <string>Add feature</string>
@@ -484,7 +484,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectedToTop.png</normaloff>:/images/themes/default/mActionSelectedToTop.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelectedToTop.svg</normaloff>:/images/themes/default/mActionSelectedToTop.svg</iconset>
    </property>
    <property name="text">
     <string>Move selection to top</string>
@@ -556,7 +556,7 @@
   <action name="mActionRemoveAttribute">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeleteAttribute.png</normaloff>:/images/themes/default/mActionDeleteAttribute.png</iconset>
+     <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
    </property>
    <property name="text">
     <string>Delete field</string>
@@ -571,7 +571,7 @@
   <action name="mActionAddAttribute">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewAttribute.png</normaloff>:/images/themes/default/mActionNewAttribute.png</iconset>
+     <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
    </property>
    <property name="text">
     <string>New field</string>
@@ -604,7 +604,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/rendererCategorizedSymbol.svg</normaloff>:/images/themes/default/rendererCategorizedSymbol.svg</iconset>
+     <normaloff>:/images/themes/default/mActionConditionalFormatting.svg</normaloff>:/images/themes/default/mActionConditionalFormatting.svg</iconset>
    </property>
    <property name="text">
     <string>Conditional formatting</string>

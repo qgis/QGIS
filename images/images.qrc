@@ -150,11 +150,17 @@
         <file>themes/default/mActionAddDelimitedTextLayer.svg</file>
         <file>themes/default/mActionAddVirtualLayer.svg</file>
         <file>themes/default/mActionAlignBottom.png</file>
+        <file>themes/default/mActionAlignBottom.svg</file>
         <file>themes/default/mActionAlignHCenter.png</file>
+        <file>themes/default/mActionAlignHCenter.svg</file>
         <file>themes/default/mActionAlignLeft.png</file>
+        <file>themes/default/mActionAlignLeft.svg</file>
         <file>themes/default/mActionAlignRight.png</file>
+        <file>themes/default/mActionAlignRight.svg</file>
         <file>themes/default/mActionAlignTop.png</file>
+        <file>themes/default/mActionAlignTop.svg</file>
         <file>themes/default/mActionAlignVCenter.png</file>
+        <file>themes/default/mActionAlignVCenter.svg</file>
         <file>themes/default/mActionAllEdits.svg</file>
         <file>themes/default/mActionAnnotation.png</file>
         <file>themes/default/mActionAnnotation.svg</file>
@@ -178,12 +184,14 @@
         <file>themes/default/mActionCapturePolygon.png</file>
         <file>themes/default/mActionCapturePolygon.svg</file>
         <file>themes/default/mActionNewTableRow.png</file>
+        <file>themes/default/mActionNewTableRow.svg</file>
         <file>themes/default/mActionChangeLabelProperties.png</file>
         <file>themes/default/mActionChangeLabelProperties.svg</file>
         <file>themes/default/mActionCheckQgisVersion.png</file>
         <file>themes/default/mActionCollapseTree.png</file>
         <file>themes/default/mActionCollapseTree.svg</file>
         <file>themes/default/mActionComposerManager.svg</file>
+        <file>themes/default/mActionConditionalFormatting.svg</file>
         <file>themes/default/mActionContextHelp.png</file>
         <file>themes/default/mActionCopySelected.png</file>
         <file>themes/default/mActionCreateMemory.png</file>
@@ -192,6 +200,7 @@
         <file>themes/default/mActionDecreaseBrightness.svg</file>
         <file>themes/default/mActionDecreaseContrast.svg</file>
         <file>themes/default/mActionDeleteAttribute.png</file>
+        <file>themes/default/mActionDeleteAttribute.svg</file>
         <file>themes/default/mActionDeletePart.png</file>
         <file>themes/default/mActionDeletePart.svg</file>
         <file>themes/default/mActionDeleteRing.png</file>
@@ -217,6 +226,7 @@
         <file>themes/default/mActionFileNew.svg</file>
         <file>themes/default/mActionFileOpen.svg</file>
         <file>themes/default/mActionFilePrint.png</file>
+        <file>themes/default/mActionFilePrint.svg</file>
         <file>themes/default/mActionFileSave.svg</file>
         <file>themes/default/mActionFileSaveAs.svg</file>
         <file>themes/default/mActionFileSmall.png</file>
@@ -234,6 +244,7 @@
         <file>themes/default/mActionFullHistogramStretch.png</file>
         <file>themes/default/mActionFullHistogramStretch.svg</file>
         <file>themes/default/mActionGroupItems.png</file>
+        <file>themes/default/mActionGroupItems.svg</file>
         <file>themes/default/mActionHelpAbout.png</file>
         <file>themes/default/mActionHelpAPI.png</file>
         <file>themes/default/mActionHelpContents.svg</file>
@@ -259,6 +270,7 @@
         <file>themes/default/mActionLocalHistogramStretch.png</file>
         <file>themes/default/mActionLocalHistogramStretch.svg</file>
         <file>themes/default/mActionLowerItems.png</file>
+        <file>themes/default/mActionLowerItems.svg</file>
         <file>themes/default/mActionMapTips.png</file>
         <file>themes/default/mActionMapTips.svg</file>
         <file>themes/default/mActionMeasure.png</file>
@@ -277,11 +289,14 @@
         <file>themes/default/mActionMoveItemContent.png</file>
         <file>themes/default/mActionMoveItemContent.svg</file>
         <file>themes/default/mActionMoveItemsToBottom.png</file>
+        <file>themes/default/mActionMoveItemsToBottom.svg</file>
         <file>themes/default/mActionMoveItemsToTop.png</file>
+        <file>themes/default/mActionMoveItemsToTop.svg</file>
         <file>themes/default/mActionMoveLabel.png</file>
         <file>themes/default/mActionMoveLabel.svg</file>
         <file>themes/default/mActionMoveVertex.png</file>
         <file>themes/default/mActionNewAttribute.png</file>
+        <file>themes/default/mActionNewAttribute.svg</file>
         <file>themes/default/mActionNewBookmark.png</file>
         <file>themes/default/mActionNewBookmark.svg</file>
         <file>themes/default/mActionNewComposer.svg</file>
@@ -308,8 +323,9 @@
         <file>themes/default/mActionPropertyItem.svg</file>
         <file>themes/default/mActionQgisHomePage.png</file>
         <file>themes/default/mActionRaiseItems.png</file>
-        <file>themes/default/mActionRedo.svg</file>
+        <file>themes/default/mActionRaiseItems.svg</file>
         <file>themes/default/mActionRedo.png</file>
+        <file>themes/default/mActionRedo.svg</file>
         <file>themes/default/mActionRefresh.png</file>
         <file>themes/default/mActionRemove.png</file>
         <file>themes/default/mActionRemoveAllFromOverview.svg</file>
@@ -327,15 +343,19 @@
         <file>themes/default/mActionRotatePointSymbols.svg</file>
         <file>themes/default/mActionSaveAllEdits.svg</file>
         <file>themes/default/mActionSaveAsPDF.png</file>
+        <file>themes/default/mActionSaveAsPDF.svg</file>
         <file>themes/default/mActionSaveAsSVG.png</file>
+        <file>themes/default/mActionSaveAsSVG.svg</file>
         <file>themes/default/mActionSaveEdits.svg</file>
         <file>themes/default/mActionSaveMapAsImage.png</file>
+        <file>themes/default/mActionSaveMapAsImage.svg</file>
         <file>themes/default/mActionScaleBar.png</file>
         <file>themes/default/mActionScaleBar.svg</file>
         <file>themes/default/mActionSelect.svg</file>
         <file>themes/default/mActionSelectAll.png</file>
         <file>themes/default/mActionSelectAll.svg</file>
         <file>themes/default/mActionSelectedToTop.png</file>
+        <file>themes/default/mActionSelectedToTop.svg</file>
         <file>themes/default/mActionSelectFreehand.svg</file>
         <file>themes/default/mActionSelectPan.png</file>
         <file>themes/default/mActionSelectPolygon.svg</file>
@@ -374,6 +394,7 @@
         <file>themes/default/mActionUndo.svg</file>
         <file>themes/default/mActionUndo.png</file>
         <file>themes/default/mActionUngroupItems.png</file>
+        <file>themes/default/mActionUngroupItems.svg</file>
         <file>themes/default/mActionUnselectAttributes.png</file>
         <file>themes/default/mActionSvgAnnotation.svg</file>
         <file>themes/default/mActionWhatsThis.svg</file>
