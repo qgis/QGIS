@@ -15,7 +15,7 @@
 #include "qgsmapstylepanel.h"
 #include "qgspanelwidget.h"
 
-QgsMapStylingPanel::QgsMapStylingPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+QgsLayerStylingPanel::QgsLayerStylingPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
     : QgsPanelWidget( parent )
     , mLayer( layer )
     , mMapCanvas( canvas )
@@ -23,12 +23,12 @@ QgsMapStylingPanel::QgsMapStylingPanel( QgsMapLayer *layer, QgsMapCanvas *canvas
 
 }
 
-QgsMapStylingPanelFactory::QgsMapStylingPanelFactory()
+QgsLayerStylingPanelFactory::QgsLayerStylingPanelFactory()
 {
 
 }
 
-QgsMapStylingPanelFactory::~QgsMapStylingPanelFactory()
+QgsLayerStylingPanelFactory::~QgsLayerStylingPanelFactory()
 {
 
 }

@@ -31,7 +31,7 @@ class QgsPoint;
 /**
  * @brief Widget to control a layers transparency and related options
  */
-class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapStylingPanel, private Ui::QgsRasterTransparencyWidget
+class GUI_EXPORT QgsRasterTransparencyWidget : public QgsLayerStylingPanel, private Ui::QgsRasterTransparencyWidget
 {
     Q_OBJECT
   public:

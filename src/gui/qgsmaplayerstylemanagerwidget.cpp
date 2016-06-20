@@ -33,7 +33,7 @@
 
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent )
-    : QgsMapStylingPanel( layer, canvas, parent )
+    : QgsLayerStylingPanel( layer, canvas, parent )
 {
   mModel = new QStandardItemModel( this );
   mStyleList = new QListView( this );

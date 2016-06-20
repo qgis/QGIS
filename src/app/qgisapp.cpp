@@ -75,7 +75,7 @@
 #include <qgsnetworkaccessmanager.h>
 #include <qgsapplication.h>
 #include <qgscomposition.h>
-#include <qgsmapstylingwidget.h>
+#include <qgslayerstylingwidget.h>
 
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -772,11 +772,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   addDockWidget( Qt::LeftDockWidgetArea, mUndoDock );
   mUndoDock->hide();
 
-  startProfile( "Map Style dock" );
+  startProfile( "Layer Style dock" );
   mMapStylingDock = new QgsDockWidget( this );
-  mMapStylingDock->setWindowTitle( tr( "Map Styling" ) );
-  mMapStylingDock->setObjectName( "MapStyling" );
-  mMapStyleWidget = new QgsMapStylingWidget( mMapCanvas, mMapStylePanelFactories );
+  mMapStylingDock->setWindowTitle( tr( "Layer Styling" ) );
+  mMapStylingDock->setObjectName( "LayerStyling" );
+  mMapStyleWidget = new QgsLayerStylingWidget( mMapCanvas, mMapStylePanelFactories );
   mMapStylingDock->setWidget( mMapStyleWidget );
   connect( mMapStyleWidget, SIGNAL( styleChanged( QgsMapLayer* ) ), this, SLOT( updateLabelToolButtons() ) );
   connect( mMapStylingDock, SIGNAL( visibilityChanged( bool ) ), mActionStyleDock, SLOT( setChecked( bool ) ) );
@@ -3006,9 +3006,9 @@ void QgisApp::initLayerTreeView()
   mLegendExpressionFilterButton->setToolTip( tr( "Filter legend by expression" ) );
   connect( mLegendExpressionFilterButton, SIGNAL( toggled( bool ) ), this, SLOT( toggleFilterLegendByExpression( bool ) ) );
 
-  mActionStyleDock = new QAction( tr( "Map Styling" ), this );
+  mActionStyleDock = new QAction( tr( "Layer Styling" ), this );
   mActionStyleDock->setCheckable( true );
-  mActionStyleDock->setToolTip( tr( "Open the map styling dock" ) );
+  mActionStyleDock->setToolTip( tr( "Open the layer styling dock" ) );
   mActionStyleDock->setShortcut( QString( "F7" ) );
   mActionStyleDock->setIcon( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ) );
   connect( mActionStyleDock, SIGNAL( toggled( bool ) ), this, SLOT( mapStyleDock( bool ) ) );
@@ -9094,12 +9094,12 @@ void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory*
   mMapLayerPropertiesFactories.removeAll( factory );
 }
 
-void QgisApp::registerMapStylePanelFactory( QgsMapStylingPanelFactory *factory )
+void QgisApp::registerMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )
 {
   mMapStylePanelFactories << factory;
 }
 
-void QgisApp::unregisterMapStylePanelFactory( QgsMapStylingPanelFactory *factory )
+void QgisApp::unregisterMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )
 {
   mMapStylePanelFactories.removeAll( factory );
 }

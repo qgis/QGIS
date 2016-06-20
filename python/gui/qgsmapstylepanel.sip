@@ -2,7 +2,7 @@
  * \class A panel widget that can be shown in the map style dock
  * \note added in QGIS 2.16
  */
-class QgsMapStylingPanel : public QgsPanelWidget
+class QgsLayerStylingPanel : public QgsPanelWidget
 {
 %TypeHeaderCode
 #include <qgsmapstylepanel.h>
@@ -16,7 +16,7 @@ public:
      * @note The widget is created each time the panel is selected in the dock.
      * Keep the loading light as possible for speed in the UI.
      */
-  QgsMapStylingPanel(QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0);
+  QgsLayerStylingPanel(QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0);
 
 signals:
     /**
@@ -38,10 +38,10 @@ public slots:
 
 
 /** \ingroup gui
- * \class QgsMapStylePanelFactory
+ * \class QgsLayerStylingPanelFactory
  * \note added in QGIS 2.16
  */
-class QgsMapStylingPanelFactory
+class QgsLayerStylingPanelFactory
 {
 %TypeHeaderCode
 #include <qgsmapstylepanel.h>
@@ -50,10 +50,10 @@ class QgsMapStylingPanelFactory
     typedef QFlags<QgsMapLayer::LayerType> LayerTypesFlags;
 
     /** Constructor */
-    QgsMapStylingPanelFactory();
+    QgsLayerStylingPanelFactory();
 
     /** Destructor */
-    virtual ~QgsMapStylingPanelFactory();
+    virtual ~QgsLayerStylingPanelFactory();
 
     /**
      * @brief The icon that will be shown in the UI for the panel.
@@ -80,7 +80,7 @@ class QgsMapStylingPanelFactory
      * @param layer The active layer in the dock.
      * @param canvas The map canvas.
      * @param parent The parent of the widget.
-     * @return A new QgsMapStylePanel which is shown in the map style dock.
+     * @return A new QgsLayerStylingPanel which is shown in the map style dock.
      */
-    virtual QgsMapStylingPanel* createPanel( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget* parent /TransferThis/ ) = 0 /Factory/;
+    virtual QgsLayerStylingPanel* createPanel( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget* parent /TransferThis/ ) = 0 /Factory/;
 };

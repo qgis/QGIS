@@ -25,7 +25,7 @@
 #include "qgisapp.h"
 
 QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
-    : QgsMapStylingPanel( layer, canvas, parent )
+    : QgsLayerStylingPanel( layer, canvas, parent )
     , mLayer( layer )
     , mCanvas( canvas )
     , mWidget( nullptr )

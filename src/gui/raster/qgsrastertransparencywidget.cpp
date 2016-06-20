@@ -37,7 +37,7 @@
 
 
 QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas* canvas, QWidget *parent )
-    : QgsMapStylingPanel( layer, canvas, parent )
+    : QgsLayerStylingPanel( layer, canvas, parent )
     , TRSTRING_NOT_SET( tr( "Not Set" ) )
     , mRasterLayer( layer )
     , mMapCanvas( canvas )

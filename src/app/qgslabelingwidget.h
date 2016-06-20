@@ -32,7 +32,7 @@ class QgsMapLayer;
 /**
  * Master widget for configuration of labeling of a vector layer
  */
-class QgsLabelingWidget : public QgsMapStylingPanel, private Ui::QgsLabelingWidget
+class QgsLabelingWidget : public QgsLayerStylingPanel, private Ui::QgsLabelingWidget
 {
     Q_OBJECT
   public:

@@ -485,12 +485,12 @@ void QgisAppInterface::unregisterMapLayerPropertiesFactory( QgsMapLayerPropertie
   qgis->unregisterMapLayerPropertiesFactory( factory );
 }
 
-void QgisAppInterface::registerMapStylePanelFactory( QgsMapStylingPanelFactory *factory )
+void QgisAppInterface::registerMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )
 {
   qgis->registerMapStylePanelFactory( factory );
 }
 
-void QgisAppInterface::unregisterMapStylePanelFactory( QgsMapStylingPanelFactory *factory )
+void QgisAppInterface::unregisterMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )
 {
   qgis->unregisterMapStylePanelFactory( factory );
 }
