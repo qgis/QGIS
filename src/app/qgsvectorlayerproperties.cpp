@@ -81,7 +81,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     , mSaveAsMenu( nullptr )
     , mLoadStyleMenu( nullptr )
     , mRendererDialog( nullptr )
-    , mPanelWrapper( nullptr )
     , labelingDialog( nullptr )
     , labelDialog( nullptr )
     , mActionDialog( nullptr )
@@ -1320,9 +1319,6 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   //find out the type of renderer in the vectorlayer, create a dialog with these settings and add it to the form
   delete mRendererDialog;
   mRendererDialog = nullptr;
-
-  delete mPanelWrapper;
-  mPanelWrapper = nullptr;
 
   if ( mLayer->rendererV2() )
   {

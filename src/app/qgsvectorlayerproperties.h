@@ -211,9 +211,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
   private slots:
     void openPanel( QgsPanelWidget* panel );
-
-  private:
-    QgsPanelWidget* mPanelWrapper;
 };
 
 inline QString QgsVectorLayerProperties::displayName()
