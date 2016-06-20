@@ -619,7 +619,7 @@
   <action name="mActionSaveMapAsImage">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSaveMapAsImage.png</normaloff>:/images/themes/default/mActionSaveMapAsImage.png</iconset>
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
     <string>Save as &amp;Image...</string>

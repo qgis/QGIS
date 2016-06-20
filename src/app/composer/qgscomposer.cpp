@@ -708,10 +708,10 @@ void QgsComposer::setupTheme()
   mActionComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.svg" ) );
   mActionLoadFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
   mActionSaveAsTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.svg" ) );
-  mActionExportAsImage->setIcon( QgsApplication::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
-  mActionExportAsSVG->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAsSVG.png" ) );
-  mActionExportAsPDF->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAsPDF.png" ) );
-  mActionPrint->setIcon( QgsApplication::getThemeIcon( "/mActionFilePrint.png" ) );
+  mActionExportAsImage->setIcon( QgsApplication::getThemeIcon( "/mActionSaveMapAsImage.svg" ) );
+  mActionExportAsSVG->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAsSVG.svg" ) );
+  mActionExportAsPDF->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAsPDF.svg" ) );
+  mActionPrint->setIcon( QgsApplication::getThemeIcon( "/mActionFilePrint.svg" ) );
   mActionZoomAll->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.svg" ) );
   mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
   mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
@@ -737,18 +737,18 @@ void QgsComposer::setupTheme()
   mActionSelectMoveItem->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.svg" ) );
   mActionMoveItemContent->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemContent.svg" ) );
   mActionEditNodesItem->setIcon( QgsApplication::getThemeIcon( "/mActionEditNodesItem.svg" ) );
-  mActionGroupItems->setIcon( QgsApplication::getThemeIcon( "/mActionGroupItems.png" ) );
-  mActionUngroupItems->setIcon( QgsApplication::getThemeIcon( "/mActionUngroupItems.png" ) );
-  mActionRaiseItems->setIcon( QgsApplication::getThemeIcon( "/mActionRaiseItems.png" ) );
-  mActionLowerItems->setIcon( QgsApplication::getThemeIcon( "/mActionLowerItems.png" ) );
-  mActionMoveItemsToTop->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemsToTop.png" ) );
-  mActionMoveItemsToBottom->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemsToBottom.png" ) );
-  mActionAlignLeft->setIcon( QgsApplication::getThemeIcon( "/mActionAlignLeft.png" ) );
-  mActionAlignHCenter->setIcon( QgsApplication::getThemeIcon( "/mActionAlignHCenter.png" ) );
-  mActionAlignRight->setIcon( QgsApplication::getThemeIcon( "/mActionAlignRight.png" ) );
-  mActionAlignTop->setIcon( QgsApplication::getThemeIcon( "/mActionAlignTop.png" ) );
-  mActionAlignVCenter->setIcon( QgsApplication::getThemeIcon( "/mActionAlignVCenter.png" ) );
-  mActionAlignBottom->setIcon( QgsApplication::getThemeIcon( "/mActionAlignBottom.png" ) );
+  mActionGroupItems->setIcon( QgsApplication::getThemeIcon( "/mActionGroupItems.svg" ) );
+  mActionUngroupItems->setIcon( QgsApplication::getThemeIcon( "/mActionUngroupItems.svg" ) );
+  mActionRaiseItems->setIcon( QgsApplication::getThemeIcon( "/mActionRaiseItems.svg" ) );
+  mActionLowerItems->setIcon( QgsApplication::getThemeIcon( "/mActionLowerItems.svg" ) );
+  mActionMoveItemsToTop->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemsToTop.svg" ) );
+  mActionMoveItemsToBottom->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemsToBottom.svg" ) );
+  mActionAlignLeft->setIcon( QgsApplication::getThemeIcon( "/mActionAlignLeft.svg" ) );
+  mActionAlignHCenter->setIcon( QgsApplication::getThemeIcon( "/mActionAlignHCenter.svg" ) );
+  mActionAlignRight->setIcon( QgsApplication::getThemeIcon( "/mActionAlignRight.svg" ) );
+  mActionAlignTop->setIcon( QgsApplication::getThemeIcon( "/mActionAlignTop.svg" ) );
+  mActionAlignVCenter->setIcon( QgsApplication::getThemeIcon( "/mActionAlignVCenter.svg" ) );
+  mActionAlignBottom->setIcon( QgsApplication::getThemeIcon( "/mActionAlignBottom.svg" ) );
 }
 
 void QgsComposer::setIconSizes( int size )
