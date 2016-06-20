@@ -2211,6 +2211,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QgsAttributeTableConfig mAttributeTableConfig;
 
+    QMutex mFeatureSourceConstructorMutex;
+
     friend class QgsVectorLayerFeatureSource;
 };
 
