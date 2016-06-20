@@ -127,9 +127,12 @@ void QgsPanelWidgetStack::clear()
       {
         widget->deleteLater();
       }
-
     }
   }
+  mTitles.clear();
+  mTitleText->hide();
+  mBackButton->hide();
+  this->updateBreadcrumb();
 }
 
 void QgsPanelWidgetStack::acceptCurrentPanel()
@@ -144,8 +147,6 @@ void QgsPanelWidgetStack::acceptCurrentPanel()
 
 void QgsPanelWidgetStack::showPanel( QgsPanelWidget *panel )
 {
-  QgsDebugMsg( QString( "SHOW PANEL!! %1" ).arg( panel->panelTitle() ) );
-
   mTitles.push( panel->panelTitle() );
 
   connect( panel, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( closePanel( QgsPanelWidget* ) ) );
@@ -161,7 +162,6 @@ void QgsPanelWidgetStack::showPanel( QgsPanelWidget *panel )
 
 void QgsPanelWidgetStack::closePanel( QgsPanelWidget *panel )
 {
-  QgsDebugMsg( QString( "CLOSE PANEL!! %1" ).arg( panel->panelTitle() ) );
   mTitles.pop();
   mStackedWidget->setCurrentIndex( mStackedWidget->currentIndex() - 1 );
   mStackedWidget->removeWidget( panel );
