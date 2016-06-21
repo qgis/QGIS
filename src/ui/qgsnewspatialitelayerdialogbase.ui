@@ -51,8 +51,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>432</width>
-        <height>576</height>
+        <width>419</width>
+        <height>598</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -250,6 +250,9 @@
          </property>
          <property name="text">
           <string>Create an autoincrementing primary key</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
