@@ -4058,6 +4058,7 @@ QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
   QDomElement elem = doc.createElement( "attributeEditorContainer" );
   elem.setAttribute( "name", mName );
   elem.setAttribute( "columnCount", mColumnCount );
+  elem.setAttribute( "groupBox", mIsGroupBox ? 1 : 0 );
 
   Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
   {

@@ -421,6 +421,12 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
       cc = 0;
     container->setColumnCount( cc );
 
+    bool isGroupBox = elem.attribute( "groupBox" ).toInt( &ok );
+    if ( ok )
+      container->setIsGroupBox( isGroupBox );
+    else
+      container->setIsGroupBox( qobject_cast<QgsAttributeEditorContainer*>( parent ) );
+
     QDomNodeList childNodeList = elem.childNodes();
 
     for ( int i = 0; i < childNodeList.size(); i++ )

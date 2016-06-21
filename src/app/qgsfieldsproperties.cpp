@@ -177,6 +177,7 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
         break;
 
       itemData.setColumnCount( container->columnCount() );
+      itemData.setShowAsGroupBox( container->isGroupBox() );
       newWidget = mDesignerTree->addItem( parent, itemData );
 
       Q_FOREACH ( QgsAttributeEditorElement* wdg, container->children() )
@@ -862,7 +863,7 @@ void QgsFieldsProperties::updateFieldRenamingStatus()
   }
 }
 
-QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent )
+QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent , bool forceGroup )
 {
   QgsAttributeEditorElement *widgetDef = nullptr;
 
@@ -887,6 +888,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
     {
       QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( item->text( 0 ), parent );
       container->setColumnCount( itemData.columnCount() );
+      container->setIsGroupBox( forceGroup ? true : itemData.showAsGroupBox() );
 
       for ( int t = 0; t < item->childCount(); t++ )
       {
@@ -985,7 +987,7 @@ void QgsFieldsProperties::apply()
   {
     QTreeWidgetItem* tabItem = mDesignerTree->invisibleRootItem()->child( t );
 
-    mLayer->editFormConfig()->addTab( createAttributeEditorWidget( tabItem, mLayer ) );
+    mLayer->editFormConfig()->addTab( createAttributeEditorWidget( tabItem, mLayer, false ) );
   }
 
   mLayer->editFormConfig()->setLayout(( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
@@ -1273,6 +1275,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
     QFormLayout* layout = new QFormLayout() ;
     dlg.setLayout( layout );
 
+    QCheckBox* showAsGroupBox = nullptr;
     QLineEdit* title = new QLineEdit( itemData.name() );
     QSpinBox* columnCount = new QSpinBox();
     columnCount->setRange( 1, 5 );
@@ -1280,6 +1283,13 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
 
     layout->addRow( tr( "Title" ), title );
     layout->addRow( tr( "Column count" ), columnCount );
+
+    if ( !item->parent() )
+    {
+      showAsGroupBox = new QCheckBox( tr( "Show as group box" ) );
+      showAsGroupBox->setChecked( itemData.showAsGroupBox() );
+      layout->addRow( tr( "Show as group box" ), showAsGroupBox );
+    }
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
         | QDialogButtonBox::Cancel );
@@ -1292,6 +1302,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
     if ( dlg.exec() )
     {
       itemData.setColumnCount( columnCount->value() );
+      itemData.setShowAsGroupBox( showAsGroupBox ? showAsGroupBox->isChecked() : true );
       itemData.setName( title->text() );
       item->setData( 0, QgsFieldsProperties::DesignerTreeRole, itemData.asQVariant() );
       item->setText( 0, title->text() );
@@ -1320,4 +1331,14 @@ QDataStream& operator>>( QDataStream& stream, QgsFieldsProperties::DesignerTreeI
   data.setName( name );
 
   return stream;
+}
+
+bool QgsFieldsProperties::DesignerTreeItemData::showAsGroupBox() const
+{
+  return mShowAsGroupBox;
+}
+
+void QgsFieldsProperties::DesignerTreeItemData::setShowAsGroupBox( bool showAsGroupBox )
+{
+  mShowAsGroupBox = showAsGroupBox;
 }
