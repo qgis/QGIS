@@ -205,7 +205,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     /**
      * Apply any changes from the widget to the set rule.
      */
-    void apply() override;
+    void apply();
     /**
      * Set the widget in dock mode.
      * @param dockMode True for dock mode.
