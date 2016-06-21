@@ -1,5 +1,5 @@
-<h3>Add PostGIS Tables</h3>
-This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
+<h3>Add Oracle Tables</h3>
+This dialog allows you to add Oracle layers (tables with a geometry column) to the QGIS map canvas.
 <p>
 <a href="#connect">Connections</a><br/>
 <a href="#add">Adding Layers</a><br/>
