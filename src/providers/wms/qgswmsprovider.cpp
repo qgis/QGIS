@@ -3010,6 +3010,9 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle& 
     setQueryItem( url, "LAYER", mSettings.mActiveSubLayers[0] );
   if ( !qnames.contains( "STYLE" ) )
     setQueryItem( url, "STYLE", mSettings.mActiveSubStyles[0] );
+  // by setting TRANSPARENT=true, even too big legend images will look good
+  if ( !qnames.contains( "TRANSPARENT" ) )
+    setQueryItem( url, "TRANSPARENT", "true" );
 
   // add config parameter related to resolution
   QSettings s;
