@@ -115,8 +115,7 @@ class QgsRendererRulePropsWidget: QgsPanelWidget
   public slots:
     void testFilter();
     void buildExpression();
-    void accept();
-    void apply() override;
+    void apply();
     virtual void setDockMode( bool dockMode);
 };
 
