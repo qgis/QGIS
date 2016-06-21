@@ -1,4 +1,17 @@
-
+/***************************************************************************
+  qgspointlocator.sip
+  --------------------------------------
+  Date                 : November 2014
+  Copyright            : (C) 2014 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 class QgsPointLocator : QObject
 {
 %TypeHeaderCode
@@ -29,11 +42,11 @@ class QgsPointLocator : QObject
 
     enum Type
     {
-      Invalid = 0, //!< Invalid
-      Vertex  = 1, //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
-      Edge    = 2, //!< Snapped to an edge
-      Area    = 4, //!< Snapped to an area
-      All     = 7  //!< Combination of vertex, edge and area
+      Invalid, //!< Invalid
+      Vertex,  //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
+      Edge,    //!< Snapped to an edge
+      Area,    //!< Snapped to an area
+      All      //!< Combination of vertex, edge and area
     };
 
     typedef QFlags<QgsPointLocator::Type> Types;
