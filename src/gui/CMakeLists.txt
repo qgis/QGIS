@@ -401,6 +401,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaplayerproxymodel.h
   qgsmaplayerstylemanagerwidget.h
   qgsmapoverviewcanvas.h
+  qgsmaptip.h
   qgsmaptool.h
   qgsmaptooladvanceddigitizing.h
   qgsmaptoolcapture.h
