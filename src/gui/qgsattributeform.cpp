@@ -1104,6 +1104,7 @@ void QgsAttributeForm::init()
         {
           tabWidget = new QTabWidget();
           layout->addWidget( tabWidget, row, column, 1, 2 );
+          column += 2;
         }
 
         QWidget* tabPage = new QWidget( tabWidget );
@@ -1136,8 +1137,8 @@ void QgsAttributeForm::init()
         {
           QVBoxLayout* c = new QVBoxLayout();
           label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-          c->layout()->addWidget( label );
-          c->layout()->addWidget( widgetInfo.widget );
+          c->addWidget( label );
+          c->addWidget( widgetInfo.widget );
           layout->addLayout( c, row, column, 1, 2 );
           column += 2;
         }
