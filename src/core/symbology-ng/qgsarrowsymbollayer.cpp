@@ -567,7 +567,7 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
 
       spiralArcTo( path, circleCenter, angle_d - headAngle, circleRadius - direction * width / 2, angle_o, circleRadius - direction * startWidth / 2, -direction );
 
-      path.lineTo( po );
+      path.lineTo( circlePoint( circleCenter, circleRadius + direction * startWidth / 2, angle_o ) );
     }
     else
     {
