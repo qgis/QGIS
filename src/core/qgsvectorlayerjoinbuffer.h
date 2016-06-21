@@ -101,6 +101,9 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 
     /** Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is true (and the cache is not already there)*/
     void cacheJoinLayer( QgsVectorJoinInfo& joinInfo );
+
+    /** Main mutex to protect most data members that can be modified concurrently */
+    QMutex mMutex;
 };
 
 #endif // QGSVECTORLAYERJOINBUFFER_H

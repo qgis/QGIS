@@ -62,6 +62,7 @@ static bool _hasCycleDFS( QgsVectorLayer* n, QHash<QgsVectorLayer*, int>& mark )
 
 bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
 {
+  QMutexLocker locker( &mMutex );
   mVectorJoins.push_back( joinInfo );
 
   // run depth-first search to detect cycles in the graph of joins between layers.
@@ -97,6 +98,7 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
 
 bool QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
 {
+  QMutexLocker locker( &mMutex );
   bool res = false;
   for ( int i = 0; i < mVectorJoins.size(); ++i )
   {
@@ -259,6 +261,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
 
 void QgsVectorLayerJoinBuffer::createJoinCaches()
 {
+  QMutexLocker locker( &mMutex );
   QList< QgsVectorJoinInfo >::iterator joinIt = mVectorJoins.begin();
   for ( ; joinIt != mVectorJoins.end(); ++joinIt )
   {
