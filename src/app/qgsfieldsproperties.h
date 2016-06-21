@@ -74,10 +74,14 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         int columnCount() const { return mColumnCount; }
         void setColumnCount( int count ) { mColumnCount = count; }
 
+        bool showAsGroupBox() const;
+        void setShowAsGroupBox( bool showAsGroupBox );
+
       private:
         Type mType;
         QString mName;
         int mColumnCount;
+        bool mShowAsGroupBox;
     };
 
     /**
@@ -111,10 +115,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     bool addAttribute( const QgsField &field );
 
     /** Creates the a proper item to save from the tree
-     * @param item The tree widget item to process
      * @return A widget definition. Containing another container or the final field
      */
-    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent );
+    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent, bool forceGroup = true );
 
     void init();
     void apply();

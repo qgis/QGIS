@@ -349,7 +349,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     /**
      * This is only useful in combination with EditorLayout::TabLayout.
      *
-     * Adds a new tab to the layout. Should be a QgsAttributeEditorContainer.
+     * Adds a new element to the layout.
      */
     void addTab( QgsAttributeEditorElement* data ) { mAttributeEditorElements.append( data ); }
 
