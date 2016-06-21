@@ -26,7 +26,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import QVariant
-from qgis.core import QGis, QgsField, QgsGeometry, QgsDistanceArea, QgsFeature
+from qgis.core import QGis, QgsField, QgsGeometry, QgsDistanceArea, QgsFeature, QgsFeatureRequest
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -106,12 +106,7 @@ class HubDistance(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, geomType, layerPoints.crs())
 
-        # Create array of hubs in memory
-        hubs = []
-        features = vector.features(layerHubs)
-        for f in features:
-            hubs.append(Hub(f.geometry().boundingBox().center(),
-                            unicode(f[fieldName])))
+        index = vector.spatialindex(layerHubs)
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(layerPoints.crs().srsid())
@@ -123,17 +118,13 @@ class HubDistance(GeoAlgorithm):
         for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 
-            closest = hubs[0]
-            hubDist = distance.measureLine(src, closest.point)
-
-            for hub in hubs:
-                dist = distance.measureLine(src, hub.point)
-                if dist < hubDist:
-                    closest = hub
-                    hubDist = dist
+            neighbors = index.nearestNeighbor(src, 1)
+            ft = layerHubs.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0])).next()
+            closest = ft.geometry().boundingBox().center()
+            hubDist = distance.measureLine(src, closest)
 
             attributes = f.attributes()
-            attributes.append(closest.name)
+            attributes.append(ft[fieldName])
             if units == 'Feet':
                 attributes.append(hubDist * 3.2808399)
             elif units == 'Miles':
@@ -142,8 +133,8 @@ class HubDistance(GeoAlgorithm):
                 attributes.append(hubDist / 1000.0)
             elif units != 'Meters':
                 attributes.append(sqrt(
-                    pow(src.x() - closest.point.x(), 2.0) +
-                    pow(src.y() - closest.point.y(), 2.0)))
+                    pow(src.x() - closest.x(), 2.0) +
+                    pow(src.y() - closest.y(), 2.0)))
             else:
                 attributes.append(hubDist)
 
@@ -153,16 +144,9 @@ class HubDistance(GeoAlgorithm):
             if geomType == QGis.WKBPoint:
                 feat.setGeometry(QgsGeometry.fromPoint(src))
             else:
-                feat.setGeometry(QgsGeometry.fromPolyline([src, closest.point]))
+                feat.setGeometry(QgsGeometry.fromPolyline([src, closest]))
 
             writer.addFeature(feat)
             progress.setPercentage(int(current * total))
 
         del writer
-
-
-class Hub:
-
-    def __init__(self, point, name):
-        self.point = point
-        self.name = name
