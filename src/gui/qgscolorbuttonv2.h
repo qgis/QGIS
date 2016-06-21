@@ -318,6 +318,7 @@ class GUI_EXPORT QgsColorButtonV2 : public QToolButton
 
   protected:
 
+    bool event( QEvent *e ) override;
     void changeEvent( QEvent* e ) override;
     void showEvent( QShowEvent* e ) override;
     void resizeEvent( QResizeEvent *event ) override;
