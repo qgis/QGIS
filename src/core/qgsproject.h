@@ -90,7 +90,7 @@ class CORE_EXPORT QgsProject : public QObject
 
     /** Sets the project's title.
      * @param title new title
-     *  @note added in 2.4
+     * @note added in 2.4
      * @see title()
      */
     void setTitle( const QString& title );

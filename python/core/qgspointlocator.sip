@@ -29,11 +29,11 @@ class QgsPointLocator : QObject
 
     enum Type
     {
-      Invalid,
-      Vertex,
-      Edge,
-      Area,
-      All
+      Invalid = 0, //!< Invalid
+      Vertex  = 1, //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
+      Edge    = 2, //!< Snapped to an edge
+      Area    = 4, //!< Snapped to an area
+      All     = 7  //!< Combination of vertex, edge and area
     };
 
     typedef QFlags<QgsPointLocator::Type> Types;
