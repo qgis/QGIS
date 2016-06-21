@@ -155,6 +155,10 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
   protected slots:
     void copy() override;
     void paste() override;
+
+  private slots:
+    void ruleWidgetPanelAccepted( QgsPanelWidget* panel);
+    void liveUpdateRuleFromPanel();
 };
 
 ///////
@@ -162,8 +166,64 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
 #include <QDialog>
 
 #include "ui_qgsrendererrulepropsdialogbase.h"
+#include "qgssymbolv2selectordialog.h"
 
-class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRendererRulePropsDialog
+class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui::QgsRendererRulePropsWidget
+{
+    Q_OBJECT
+
+  public:
+  /**
+     * Widget to edit the details of a rule based renderer rule.
+     * @param rule The rule to edit.
+     * @param layer The layer used to pull layer related information.
+     * @param style The active QGIS style.
+     * @param parent The parent widget.
+     * @param mapCanvas The map canvas object.
+     */
+    QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
+    ~QgsRendererRulePropsWidget();
+
+    /**
+     * Return the current set rule.
+     * @return The current rule.
+     */
+    QgsRuleBasedRendererV2::Rule* rule() { return mRule; }
+
+  public slots:
+
+    /**
+     * Test the filter that is set in the widget
+     */
+    void testFilter();
+
+    /**
+     * Open the expression builder widget to check if the
+     */
+    void buildExpression();
+
+    /**
+     * Apply any changes from the widget to the set rule.
+     */
+    void apply() override;
+    /**
+     * Set the widget in dock mode.
+     * @param dockMode True for dock mode.
+     */
+    virtual void setDockMode( bool dockMode);
+
+  protected:
+    QgsRuleBasedRendererV2::Rule* mRule; // borrowed
+    QgsVectorLayer* mLayer;
+
+    QgsSymbolV2SelectorWidget* mSymbolSelector;
+    QgsSymbolV2* mSymbol; // a clone of original symbol
+
+    QgsMapCanvas* mMapCanvas;
+};
+
+
+class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
 {
     Q_OBJECT
 
@@ -171,21 +231,16 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
     QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
     ~QgsRendererRulePropsDialog();
 
-    QgsRuleBasedRendererV2::Rule* rule() { return mRule; }
+    QgsRuleBasedRendererV2::Rule* rule() { return mPropsWidget->rule(); }
 
   public slots:
     void testFilter();
     void buildExpression();
     void accept() override;
 
-  protected:
-    QgsRuleBasedRendererV2::Rule* mRule; // borrowed
-    QgsVectorLayer* mLayer;
-
-    QgsSymbolV2SelectorDialog* mSymbolSelector;
-    QgsSymbolV2* mSymbol; // a clone of original symbol
-
-    QgsMapCanvas* mMapCanvas;
+  private:
+    QgsRendererRulePropsWidget* mPropsWidget;
+    QDialogButtonBox* buttonBox;
 };
 
 
