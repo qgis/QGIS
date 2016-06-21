@@ -157,7 +157,7 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void paste() override;
 
   private slots:
-    void ruleWidgetPanelAccepted( QgsPanelWidget* panel);
+    void ruleWidgetPanelAccepted( QgsPanelWidget* panel );
     void liveUpdateRuleFromPanel();
 };
 
@@ -173,14 +173,14 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     Q_OBJECT
 
   public:
-  /**
-     * Widget to edit the details of a rule based renderer rule.
-     * @param rule The rule to edit.
-     * @param layer The layer used to pull layer related information.
-     * @param style The active QGIS style.
-     * @param parent The parent widget.
-     * @param mapCanvas The map canvas object.
-     */
+    /**
+       * Widget to edit the details of a rule based renderer rule.
+       * @param rule The rule to edit.
+       * @param layer The layer used to pull layer related information.
+       * @param style The active QGIS style.
+       * @param parent The parent widget.
+       * @param mapCanvas The map canvas object.
+       */
     QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
     ~QgsRendererRulePropsWidget();
 
@@ -210,7 +210,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
      * Set the widget in dock mode.
      * @param dockMode True for dock mode.
      */
-    virtual void setDockMode( bool dockMode);
+    virtual void setDockMode( bool dockMode );
 
   protected:
     QgsRuleBasedRendererV2::Rule* mRule; // borrowed
