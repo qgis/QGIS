@@ -386,6 +386,7 @@ Depends:
  python-tz,
  python-six,
  python-yaml,
+#stretch sid wily xenial# python-future,
 #sid stretch jessie trusty wily xenial# python-pyspatialite,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},

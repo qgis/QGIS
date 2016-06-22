@@ -6,7 +6,8 @@ qgis (2.15.0) UNRELEASED; urgency=medium
   * refine GSL build dependency
   * limit python-future to stretch, sid, wily and xenial
   * include qgis.qch in qgis-api-doc
-  * include argis rest provider
+  * include arcgis rest provider
+  * add python-future as dependency for python-qgis
 
   [ Matthias Kuhn ]
   * Add dependency to python-future
@@ -15,7 +16,7 @@ qgis (2.15.0) UNRELEASED; urgency=medium
   * Fix removal of obsolete diversions for bother the grass plugin & provider.
     (closes: #817176)
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 02 Jun 2016 16:08:54 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 22 Jun 2016 23:54:59 +0200
 
 qgis (2.14.0) unstable; urgency=medium
 
