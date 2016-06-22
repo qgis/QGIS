@@ -29,7 +29,7 @@ import os
 import subprocess
 import platform
 from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsVectorFileWriter
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.SilentProgress import SilentProgress
 
@@ -141,6 +141,19 @@ class GdalUtils:
                 if ext not in allexts and ext != '':
                     allexts.append(ext)
         return allexts
+
+    @staticmethod
+    def getVectorDriverFromFileName(filename):
+        ext = os.path.splitext(filename)[1]
+        if ext == '':
+            return 'ESRI Shapefile'
+
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats()
+        for k, v in formats.iteritems():
+            print k, v
+            if ext in k:
+                return v
+        return 'ESRI Shapefile'
 
     @staticmethod
     def getFormatShortNameFromFilename(filename):
