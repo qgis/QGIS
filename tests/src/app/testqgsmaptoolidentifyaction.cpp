@@ -312,7 +312,8 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
 
   QCOMPARE( testIdentifyRaster( tempLayer.data(), 1.5, 0.5 ), QString( "-999.987" ) );
 
-  // More than 6 significant digits : precision loss in Float32
+  // More than 6 significant digits for corresponding value in .asc:
+  // precision loss in Float32
   QCOMPARE( testIdentifyRaster( tempLayer.data(), 2.5, 0.5 ), QString( "1.2345678" ) ); // in .asc file : 1.2345678
 
   QCOMPARE( testIdentifyRaster( tempLayer.data(), 3.5, 0.5 ), QString( "123456" ) );
@@ -323,7 +324,8 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
   // More than 6 significant digits: no precision loss here for that particular value
   QCOMPARE( testIdentifyRaster( tempLayer.data(), 5.5, 0.5 ), QString( "-999.9876" ) );
 
-  // More than 6 significant digits: no precision loss here
+  // More than 6 significant digits for corresponding value in .asc:
+  // precision loss in Float32
   QCOMPARE( testIdentifyRaster( tempLayer.data(), 6.5, 0.5 ), QString( "1.2345678901234" ) ); // in .asc file : 1.2345678901234
 }
 
