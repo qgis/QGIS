@@ -355,7 +355,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
 
   // hmm why is there a for(;;) here ..
   // not good coding practice IMHO, it might be better to use [ for() and break ] or  [ while (test) ]
-  for ( ;; )
+  Q_FOREVER
   {
     for ( int i = 1; i <= nBands; ++i )
     {

@@ -163,13 +163,14 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
 
   if ( mTileModeCheckBox->isChecked() )
   {
-    while ( true )
+    Q_FOREVER
     {
       // TODO: would not it be better to select .vrt file instead of directory?
       fileName = QFileDialog::getExistingDirectory( this, tr( "Select output directory" ), dirName );
       //fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), QString(), tr( "VRT" ) + " (*.vrt *.VRT)" );
 
-      if ( fileName.isEmpty() ) break; // canceled
+      if ( fileName.isEmpty() )
+        break; // canceled
 
       // Check if directory is empty
       QDir dir( fileName );
@@ -177,39 +178,30 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
       QStringList filters;
       filters << QString( "%1.*" ).arg( baseName );
       QStringList files = dir.entryList( filters );
-      if ( !files.isEmpty() )
-      {
-        QMessageBox::StandardButton button = QMessageBox::warning( this, tr( "Warning" ),
-                                             tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( ", " ) ),
-                                             QMessageBox::Ok | QMessageBox::Cancel );
-
-        if ( button == QMessageBox::Ok )
-        {
-          break;
-        }
-        else
-        {
-          fileName = "";
-        }
-      }
-      else
-      {
+      if ( files.isEmpty() )
         break;
-      }
+
+      if ( QMessageBox::warning( this, tr( "Warning" ),
+                                 tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( ", " ) ),
+                                 QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+        break;
+
+      fileName = "";
     }
   }
   else
   {
     fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, tr( "GeoTIFF" ) + " (*.tif *.tiff *.TIF *.TIFF)" );
+
+    // ensure the user never omits the extension from the file name
+    if ( !fileName.isEmpty() && !fileName.endsWith( ".tif", Qt::CaseInsensitive ) && !fileName.endsWith( ".tiff", Qt::CaseInsensitive ) )
+    {
+      fileName += ".tif";
+    }
   }
 
   if ( !fileName.isEmpty() )
   {
-    // ensure the user never ommited the extension from the file name
-    if ( !fileName.endsWith( ".tif", Qt::CaseInsensitive ) && !fileName.endsWith( ".tiff", Qt::CaseInsensitive ) )
-    {
-      fileName += ".tif";
-    }
     mSaveAsLineEdit->setText( fileName );
   }
 }
