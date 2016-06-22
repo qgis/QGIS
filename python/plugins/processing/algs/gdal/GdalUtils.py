@@ -28,6 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 import platform
+
+from osgeo import gdal
+
 from qgis.PyQt.QtCore import QSettings
 from qgis.core import QgsApplication, QgsVectorFileWriter
 from processing.core.ProcessingLog import ProcessingLog
@@ -175,3 +178,7 @@ class GdalUtils:
                 escaped = s
             joined += escaped + ' '
         return joined.strip()
+
+    @staticmethod
+    def version():
+        return int(gdal.VersionInfo('VERSION_NUM'))
