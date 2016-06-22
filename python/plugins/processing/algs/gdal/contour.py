@@ -72,7 +72,6 @@ class contour(GdalAlgorithm):
 
     def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT_VECTOR)
-        print 'OUTPUT', output
         interval = unicode(self.getParameterValue(self.INTERVAL))
         fieldName = unicode(self.getParameterValue(self.FIELD_NAME))
         extra = self.getParameterValue(self.EXTRA)
@@ -87,7 +86,6 @@ class contour(GdalAlgorithm):
         arguments.append(interval)
 
         driver = GdalUtils.getVectorDriverFromFileName(output)
-        print 'DRIVER', driver
         arguments.append('-f')
         arguments.append(driver)
 
