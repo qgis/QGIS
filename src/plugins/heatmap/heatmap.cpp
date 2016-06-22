@@ -16,9 +16,9 @@
  ***************************************************************************/
 
 // GDAL includes
-#include "gdal_priv.h"
-#include "cpl_string.h"
-#include "cpl_conv.h"
+#include <gdal.h>
+#include <cpl_string.h>
+#include <cpl_conv.h>
 
 // QGIS Specific includes
 #include <qgisinterface.h>
@@ -142,10 +142,7 @@ void Heatmap::run()
   // Getting the rasterdataset in place
   GDALAllRegister();
 
-  GDALDataset *emptyDataset;
-  GDALDriver *myDriver;
-
-  myDriver = GetGDALDriverManager()->GetDriverByName( d.outputFormat().toUtf8() );
+  GDALDriverH myDriver = GDALGetDriverByName( d.outputFormat().toUtf8() );
   if ( !myDriver )
   {
     mQGisIface->messageBar()->pushMessage( tr( "GDAL driver error" ), tr( "Cannot open the driver for the specified format" ), QgsMessageBar::WARNING, mQGisIface->messageTimeout() );
@@ -153,14 +150,13 @@ void Heatmap::run()
   }
 
   double geoTransform[6] = { myBBox.xMinimum(), cellsize, 0, myBBox.yMinimum(), 0, cellsize };
-  emptyDataset = myDriver->Create( d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, nullptr );
-  emptyDataset->SetGeoTransform( geoTransform );
+  GDALDatasetH emptyDataset = GDALCreate( myDriver, d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, nullptr );
+  GDALSetGeoTransform( emptyDataset, geoTransform );
   // Set the projection on the raster destination to match the input layer
-  emptyDataset->SetProjection( inputLayer->crs().toWkt().toLocal8Bit().data() );
+  GDALSetProjection( emptyDataset, inputLayer->crs().toWkt().toLocal8Bit().data() );
 
-  GDALRasterBand *poBand;
-  poBand = emptyDataset->GetRasterBand( 1 );
-  poBand->SetNoDataValue( NO_DATA );
+  GDALRasterBandH poBand = GDALGetRasterBand( emptyDataset, 1 );
+  GDALSetRasterNoDataValue( poBand, NO_DATA );
 
   float* line = ( float * ) CPLMalloc( sizeof( float ) * columns );
   for ( int i = 0; i < columns ; i++ )
@@ -170,7 +166,7 @@ void Heatmap::run()
   // Write the empty raster
   for ( int i = 0; i < rows ; i++ )
   {
-    if ( poBand->RasterIO( GF_Write, 0, i, columns, 1, line, columns, 1, GDT_Float32, 0, 0 ) != CE_None )
+    if ( GDALRasterIO( poBand, GF_Write, 0, i, columns, 1, line, columns, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
       QgsDebugMsg( "Raster IO Error" );
     }
@@ -178,17 +174,16 @@ void Heatmap::run()
 
   CPLFree( line );
   //close the dataset
-  GDALClose(( GDALDatasetH ) emptyDataset );
+  GDALClose( emptyDataset );
 
   // open the raster in GA_Update mode
-  GDALDataset *heatmapDS;
-  heatmapDS = ( GDALDataset * ) GDALOpen( TO8F( d.outputFilename() ), GA_Update );
+  GDALDatasetH heatmapDS = GDALOpen( TO8F( d.outputFilename() ), GA_Update );
   if ( !heatmapDS )
   {
     mQGisIface->messageBar()->pushMessage( tr( "Raster update error" ), tr( "Could not open the created raster for updating. The heatmap was not generated." ), QgsMessageBar::WARNING );
     return;
   }
-  poBand = heatmapDS->GetRasterBand( 1 );
+  poBand = GDALGetRasterBand( heatmapDS, 1 );
 
   QgsAttributeList myAttrList;
   int rField = 0;
@@ -302,8 +297,8 @@ void Heatmap::run()
 
       // get the data
       float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
-      if ( poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize,
-                             dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
+      if ( GDALRasterIO( poBand, GF_Read, xPosition, yPosition, blockSize, blockSize,
+                         dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
       {
         QgsDebugMsg( "Raster IO Error" );
       }
@@ -347,8 +342,8 @@ void Heatmap::run()
           }
         }
       }
-      if ( poBand->RasterIO( GF_Write, xPosition, yPosition, blockSize, blockSize,
-                             dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
+      if ( GDALRasterIO( poBand, GF_Write, xPosition, yPosition, blockSize, blockSize,
+                         dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
       {
         QgsDebugMsg( "Raster IO Error" );
       }
