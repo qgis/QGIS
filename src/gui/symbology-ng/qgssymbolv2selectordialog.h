@@ -86,7 +86,7 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
 
   public:
     /**
-       * Symbol selector widget that cna be used to select and build a symbol
+       * Symbol selector widget that can be used to select and build a symbol
        * @param symbol The symbol to load into the widget as a start point.
        * @param style The style used by the widget.
        * @param vl The vector layer for the symbol.

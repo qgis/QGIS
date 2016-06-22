@@ -494,6 +494,7 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
 
   QScopedPointer< QgsSymbolV2 > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
   QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), layer, mView->window() );
+  dlg.setWindowTitle( tr( "Edit symbol" ) );
   dlg.setMapCanvas( mCanvas );
   if ( dlg.exec() )
   {
