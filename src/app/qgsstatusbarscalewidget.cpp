@@ -78,7 +78,9 @@ QgsStatusBarScaleWidget::~QgsStatusBarScaleWidget()
 
 void QgsStatusBarScaleWidget::setScale( double scale )
 {
+  mScale->blockSignals( true );
   mScale->setScale( scale );
+  mScale->blockSignals( false );
 }
 
 bool QgsStatusBarScaleWidget::isLocked() const
