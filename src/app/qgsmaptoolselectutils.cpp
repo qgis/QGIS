@@ -163,20 +163,51 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
   // the rubber band.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.
-  QgsGeometry selectGeomTrans( *selectGeometry );
+  QScopedPointer<QgsGeometry> selectGeomTrans( new QgsGeometry( *selectGeometry ) );
 
   if ( canvas->mapSettings().hasCrsTransformEnabled() )
   {
     try
     {
       QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs() );
-      selectGeomTrans.transform( ct );
+
+      if ( !ct.isShortCircuited() && selectGeomTrans->type() == QGis::Polygon )
+      {
+        // convert add more points to the edges of the rectangle
+        // improve transformation result
+        QgsPolygon poly( selectGeomTrans->asPolygon() );
+        if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
+        {
+          const QgsPolyline &ringIn = poly.at( 0 );
+
+          QgsPolygon newpoly( 1 );
+          newpoly[0].resize( 41 );
+          QgsPolyline &ringOut = newpoly[0];
+
+          ringOut[ 0 ] = ringIn.at( 0 );
+
+          int i = 1;
+          for ( int j = 1; j < 5; j++ )
+          {
+            QgsVector v(( ringIn.at( j ) - ringIn.at( j - 1 ) ) / 10.0 );
+            for ( int k = 0; k < 9; k++ )
+            {
+              ringOut[ i ] = ringOut[ i - 1 ] + v;
+              i++;
+            }
+            ringOut[ i++ ] = ringIn.at( j );
+          }
+          selectGeomTrans.reset( QgsGeometry::fromPolygon( newpoly ) );
+        }
+      }
+
+      selectGeomTrans->transform( ct );
     }
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse );
       // catch exception for 'invalid' point and leave existing selection unchanged
-      QgsLogger::warning( "Caught CRS exception " + QString( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+      QgsDebugMsg( "Caught CRS exception " );
       QgisApp::instance()->messageBar()->pushMessage(
         QObject::tr( "CRS Exception" ),
         QObject::tr( "Selection extends beyond layer's coordinate system" ),
@@ -187,7 +218,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
   }
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
-  QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.exportToWkt(), 3 );
+  QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans->exportToWkt(), 3 );
   QgsDebugMsgLevel( "doContains: " + QString( doContains ? "T" : "F" ), 3 );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
@@ -197,7 +228,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
     r->startRender( context, vlayer->fields() );
 
   QgsFeatureRequest request;
-  request.setFilterRect( selectGeomTrans.boundingBox() );
+  request.setFilterRect( selectGeomTrans->boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
   if ( r )
     request.setSubsetOfAttributes( r->usedAttributes(), vlayer->fields() );
@@ -220,18 +251,18 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
     const QgsGeometry* g = f.constGeometry();
     if ( doContains )
     {
-      if ( !selectGeomTrans.contains( g ) )
+      if ( !selectGeomTrans->contains( g ) )
         continue;
     }
     else
     {
-      if ( !selectGeomTrans.intersects( g ) )
+      if ( !selectGeomTrans->intersects( g ) )
         continue;
     }
     if ( singleSelect )
     {
       foundSingleFeature = true;
-      double distance = g->distance( selectGeomTrans );
+      double distance = g->distance( *selectGeomTrans );
       if ( distance <= closestFeatureDist )
       {
         closestFeatureDist = distance;
