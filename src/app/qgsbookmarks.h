@@ -117,7 +117,6 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
     void importFromXML();
 
     void on_lstBookmarks_doubleClicked( const QModelIndex & );
-    void on_actionHelp_triggered() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
     QSqlTableModel* mQgisModel;
