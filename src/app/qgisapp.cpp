@@ -5594,6 +5594,8 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
     vlayer->actions()->setDefaultAction( index );
     QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, nullptr );
 
+    if ( index == -1 )
+      index = 0;
     QgsAction a = vlayer->actions()->listActions().at( index );
 
     if ( !a.name().isEmpty() )
