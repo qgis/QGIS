@@ -559,7 +559,7 @@ class DBModel(QAbstractItemModel):
                         uri = QgsDataSourceURI()
                         uri.setDatabase(filename)
                         item.getItemData().addConnection(conn_name, uri)
-                        item.itemChanged.emit(item)
+                        item.itemChanged.emit()
                         added += 1
                         continue
 
