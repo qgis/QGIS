@@ -63,8 +63,19 @@ class SpatiaLiteDBConnector(DBConnector):
             conn = sqlite.connect(path)
         except self.connection_error_types():
             return False
+
+        isValid = False
+
+        try:
+            c = conn.cursor()
+            c.execute("SELECT count(*) FROM sqlite_master")
+            c.fetchone()
+            isValid = True
+        except sqlite.DatabaseError:
+            pass
+
         conn.close()
-        return True
+        return isValid
 
     def _checkSpatial(self):
         """ check if it's a valid spatialite db """
