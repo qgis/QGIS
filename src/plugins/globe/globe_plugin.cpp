@@ -322,7 +322,7 @@ void GlobePlugin::run()
   connect( mDockWidget, SIGNAL( destroyed( QObject* ) ), this, SLOT( reset() ) );
   connect( mDockWidget, SIGNAL( layersChanged() ), this, SLOT( updateLayers() ) );
   connect( mDockWidget, SIGNAL( showSettings() ), this, SLOT( showSettings() ) );
-  connect( mDockWidget, SIGNAL( refresh() ), this, SLOT( updateLayers() ) );
+  connect( mDockWidget, SIGNAL( refresh() ), this, SLOT( rebuildQGISLayer() ) );
   connect( mDockWidget, SIGNAL( syncExtent() ), this, SLOT( syncExtent() ) );
   mQGisIface->addDockWidget( Qt::RightDockWidgetArea, mDockWidget );
 
@@ -1018,6 +1018,27 @@ void GlobePlugin::layerChanged( QgsMapLayer* mapLayer )
   }
 }
 
+void GlobePlugin::rebuildQGISLayer()
+{
+  if ( mMapNode )
+  {
+    mMapNode->getMap()->removeImageLayer( mQgisMapLayer );
+    mLayerExtents.clear();
+
+    osgEarth::TileSourceOptions opts;
+    opts.L2CacheSize() = 0;
+    opts.tileSize() = 128;
+    mTileSource = new QgsGlobeTileSource( mQGisIface->mapCanvas(), opts );
+
+    osgEarth::ImageLayerOptions options( "QGIS" );
+    options.driver()->L2CacheSize() = 0;
+    options.cachePolicy() = osgEarth::CachePolicy::USAGE_NO_CACHE;
+    mQgisMapLayer = new osgEarth::ImageLayer( options, mTileSource );
+    mMapNode->getMap()->addImageLayer( mQgisMapLayer );
+    updateLayers();
+  }
+}
+
 void GlobePlugin::setGlobeEnabled( bool enabled )
 {
   if ( enabled )
@@ -1055,6 +1076,7 @@ void GlobePlugin::reset()
   mDockWidget = 0;
   mImagerySources.clear();
   mElevationSources.clear();
+  mLayerExtents.clear();
 #ifdef GLOBE_SHOW_TILE_STATS
   disconnect( QgsGlobeTileStatistics::instance(), SIGNAL( changed( int, int ) ), this, SLOT( updateTileStats( int, int ) ) );
   delete QgsGlobeTileStatistics::instance();
