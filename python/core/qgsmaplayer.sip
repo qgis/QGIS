@@ -462,8 +462,10 @@ class QgsMapLayer : QObject
      * @param node node that will contain the style definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
+     * @note added in 2.16
+     * @note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
-    virtual bool readStyle( const QDomNode& node, QString& errorMessage ) = 0;
+    virtual bool readStyle( const QDomNode& node, QString& errorMessage );
 
     /** Write the symbology for the layer into the docment provided.
      *  @param node the node that will have the style element added to it.
@@ -478,13 +480,17 @@ class QgsMapLayer : QObject
      *  @param doc the document that will have the QDomNode added.
      *  @param errorMessage reference to string that will be updated with any error messages
      *  @return true in case of success.
+     *  @note added in 2.16
+     *  @note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
-    virtual bool writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const = 0;
+    virtual bool writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
 
     /** Return pointer to layer's undo stack */
     QUndoStack *undoStack();
 
-    /** Return pointer to layer's style undo stack */
+    /** Return pointer to layer's style undo stack
+     *  @note added in 2.16
+     */
     QUndoStack *undoStackStyles();
 
     /* Layer legendUrl information */

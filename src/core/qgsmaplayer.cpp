@@ -1609,6 +1609,21 @@ QString QgsMapLayer::loadSldStyle( const QString &theURI, bool &theResultFlag )
   return "";
 }
 
+bool QgsMapLayer::readStyle( const QDomNode& node, QString& errorMessage )
+{
+  Q_UNUSED( node );
+  Q_UNUSED( errorMessage );
+  return false;
+}
+
+bool QgsMapLayer::writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
+{
+  Q_UNUSED( node );
+  Q_UNUSED( doc );
+  Q_UNUSED( errorMessage );
+  return false;
+}
+
 
 QUndoStack* QgsMapLayer::undoStack()
 {
