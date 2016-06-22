@@ -389,7 +389,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
           <xsd:element maxOccurs="1" minOccurs="0" name="longfield" nillable="true" type="xsd:long"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="stringfield" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="datetimefield" nillable="true" type="xsd:dateTime"/>
-          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+          <!-- use geometry that is the default spatialite geometry name -->
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometry" nillable="true" type="gml:PointPropertyType"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -416,8 +417,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>
   <gml:featureMember>
     <my:typename fid="typename.0">
-      <my:geometryProperty>
-          <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:coordinates decimal="." cs="," ts=" ">426858,5427937</gml:coordinates></gml:Point></my:geometryProperty>
+      <my:geometry>
+          <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:coordinates decimal="." cs="," ts=" ">426858,5427937</gml:coordinates></gml:Point>
+      </my:geometry>
       <my:INTFIELD>1</my:INTFIELD>
       <my:GEOMETRY>2</my:GEOMETRY>
       <my:longfield>1234567890123</my:longfield>
@@ -878,7 +880,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     <xsd:complexContent>
       <xsd:extension base="gml:AbstractFeatureType">
         <xsd:sequence>
-          <xsd:element maxOccurs="1" minOccurs="0" name="id" nillable="true" type="xsd:int"/>
+          <!-- use ogc_fid that is the default spatialite FID name -->
+          <xsd:element maxOccurs="1" minOccurs="0" name="ogc_fid" nillable="true" type="xsd:int"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
         </xsd:sequence>
       </xsd:extension>
@@ -903,14 +906,14 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <gml:featureMembers>
     <my:typename gml:id="typename.200">
       <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
-      <my:id>2</my:id>
+      <my:ogc_fid>2</my:ogc_fid>
     </my:typename>
   </gml:featureMembers>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         extent = QgsRectangle(-70, 60, -60, 80)
         request = QgsFeatureRequest().setFilterRect(extent)
-        values = [f['id'] for f in vl.getFeatures(request)]
+        values = [f['ogc_fid'] for f in vl.getFeatures(request)]
         self.assertEqual(values, [2])
 
         # To show that if we zoom-in, we won't issue a new request
@@ -923,14 +926,14 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <gml:featureMembers>
     <my:typename gml:id="typename.20000">
       <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
-      <my:id>200</my:id>
+      <my:ogc_fid>200</my:ogc_fid>
     </my:typename>
   </gml:featureMembers>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         extent = QgsRectangle(-66, 62, -62, 78)
         request = QgsFeatureRequest().setFilterRect(extent)
-        values = [f['id'] for f in vl.getFeatures(request)]
+        values = [f['ogc_fid'] for f in vl.getFeatures(request)]
         self.assertEqual(values, [2])
 
         # Move to a neighbouring area, and reach the download limit
@@ -944,18 +947,18 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <gml:featureMembers>
     <my:typename gml:id="typename.200">
       <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
-      <my:id>2</my:id>
+      <my:ogc_fid>2</my:ogc_fid>
     </my:typename>
     <my:typename gml:id="typename.300">
       <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>85 -65</gml:pos></gml:Point></my:geometryProperty>
-      <my:id>3</my:id>
+      <my:ogc_fid>3</my:ogc_fid>
     </my:typename>
   </gml:featureMembers>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         extent = QgsRectangle(-70, 65, -60, 90)
         request = QgsFeatureRequest().setFilterRect(extent)
-        values = [f['id'] for f in vl.getFeatures(request)]
+        values = [f['ogc_fid'] for f in vl.getFeatures(request)]
         self.assertEqual(values, [2, 3])
 
         # Zoom-in again, and bring more features
@@ -969,18 +972,18 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <gml:featureMembers>
     <my:typename gml:id="typename.200">
       <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
-      <my:id>2</my:id>
+      <my:ogc_fid>2</my:ogc_fid>
     </my:typename>
     <my:typename gml:id="typename.400">
       <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>84 -64</gml:pos></gml:Point></my:geometryProperty>
-      <my:id>4</my:id>
+      <my:ogc_fid>4</my:ogc_fid>
     </my:typename>
   </gml:featureMembers>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         extent = QgsRectangle(-69, 66, -61, 89)
         request = QgsFeatureRequest().setFilterRect(extent)
-        values = [f['id'] for f in vl.getFeatures(request)]
+        values = [f['ogc_fid'] for f in vl.getFeatures(request)]
         self.assertEqual(values, [2, 3, 4])
 
         # Test RESULTTYPE=hits
@@ -1003,7 +1006,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
    </gml:Envelope>
   </ogc:BBOX>
   <ogc:PropertyIsEqualTo xmlns:ogc="http://www.opengis.net/ogc">
-   <ogc:PropertyName xmlns:ogc="http://www.opengis.net/ogc">id</ogc:PropertyName>
+   <ogc:PropertyName xmlns:ogc="http://www.opengis.net/ogc">ogc_fid</ogc:PropertyName>
    <ogc:Literal xmlns:ogc="http://www.opengis.net/ogc">101</ogc:Literal>
   </ogc:PropertyIsEqualTo>
  </ogc:And>
@@ -1018,15 +1021,15 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <gml:featureMembers>
     <my:typename gml:id="typename.101">
       <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
-      <my:id>101</my:id>
+      <my:ogc_fid>101</my:ogc_fid>
     </my:typename>
   </gml:featureMembers>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        vl.dataProvider().setSubsetString('id = 101')
+        vl.dataProvider().setSubsetString('ogc_fid = 101')
         extent = QgsRectangle(-69, 66, -61, 89)
         request = QgsFeatureRequest().setFilterRect(extent)
-        values = [f['id'] for f in vl.getFeatures(request)]
+        values = [f['ogc_fid'] for f in vl.getFeatures(request)]
         self.assertEqual(values, [101])
 
     def testWFS20TruncatedResponse(self):

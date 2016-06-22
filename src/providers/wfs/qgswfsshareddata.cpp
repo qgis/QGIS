@@ -240,15 +240,21 @@ bool QgsWFSSharedData::createCache()
     cacheFields.append( QgsField( QgsWFSConstants::FIELD_MD5, QVariant::String, "string" ) );
 
   bool ogrWaySuccessful = false;
+  QString fidName( "__ogc_fid" );
   QString geometryFieldname( "__spatialite_geometry" );
 #ifdef USE_OGR_FOR_DB_CREATION
-  // Only GDAL >= 2.0 can use an alternate geometry field name
+  // Only GDAL >= 2.0 can use an alternate geometry or FID field name
+  // but QgsVectorFileWriter will refuse anyway to create a ogc_fid, so we will
+  // do it manually
+  bool useReservedNames = cacheFields.fieldNameIndex( "ogc_fid" ) >= 0;
 #if GDAL_VERSION_MAJOR < 2
-  const bool hasGeometryField = cacheFields.fieldNameIndex( "geometry" ) >= 0;
-  if ( !hasGeometryField )
+  if ( cacheFields.fieldNameIndex( "geometry" ) >= 0 )
+    useReservedNames = true;
 #endif
+  if ( !useReservedNames )
   {
 #if GDAL_VERSION_MAJOR < 2
+    fidName = "ogc_fid";
     geometryFieldname = "GEOMETRY";
 #endif
     // Creating a spatialite database can be quite slow on some file systems
@@ -260,6 +266,7 @@ bool QgsWFSSharedData::createCache()
     datasourceOptions.push_back( "INIT_WITH_EPSG=NO" );
     layerOptions.push_back( "LAUNDER=NO" ); // to get exact matches for field names, especially regarding case
 #if GDAL_VERSION_MAJOR >= 2
+    layerOptions.push_back( "FID=__ogc_fid" );
     layerOptions.push_back( "GEOMETRY_NAME=__spatialite_geometry" );
 #endif
     vsimemFilename.sprintf( "/vsimem/qgis_wfs_cache_template_%p/features.sqlite", this );
@@ -374,7 +381,7 @@ bool QgsWFSSharedData::createCache()
     if ( !ogrWaySuccessful )
     {
       mCacheTablename = "features";
-      sql = QString( "CREATE TABLE %1 (ogc_fid INTEGER PRIMARY KEY" ).arg( mCacheTablename );
+      sql = QString( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename ).arg( fidName );
       Q_FOREACH ( QgsField field, cacheFields )
       {
         QString type( "VARCHAR" );
@@ -389,17 +396,26 @@ bool QgsWFSSharedData::createCache()
       sql += ")";
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
+      {
+        QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
         ret = false;
+      }
 
       sql = QString( "SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)" ).arg( mCacheTablename, geometryFieldname );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
+      {
+        QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
         ret = false;
+      }
 
       sql = QString( "SELECT CreateSpatialIndex('%1','%2')" ).arg( mCacheTablename, geometryFieldname );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
+      {
+        QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
         ret = false;
+      }
     }
 
     // We need an index on the gmlid, since we will check for duplicates, particularly
@@ -407,14 +423,20 @@ bool QgsWFSSharedData::createCache()
     sql = QString( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename ).arg( QgsWFSConstants::FIELD_GMLID );
     rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
+    {
+      QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
       ret = false;
+    }
 
     if ( mDistinctSelect )
     {
       sql = QString( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename ).arg( QgsWFSConstants::FIELD_MD5 );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
+      {
+        QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
         ret = false;
+      }
     }
 
     ( void )sqlite3_exec( db, "COMMIT", nullptr, nullptr, nullptr );
@@ -435,7 +457,7 @@ bool QgsWFSSharedData::createCache()
   // regarding crashes, since this is a temporary DB
   QgsDataSourceURI dsURI;
   dsURI.setDatabase( mCacheDbname );
-  dsURI.setDataSource( "", mCacheTablename, geometryFieldname, "", "ogc_fid" );
+  dsURI.setDataSource( "", mCacheTablename, geometryFieldname, "", fidName );
   QStringList pragmas;
   pragmas << "synchronous=OFF";
   pragmas << "journal_mode=WAL"; // WAL is needed to avoid reader to block writers
