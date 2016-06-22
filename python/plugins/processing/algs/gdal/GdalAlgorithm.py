@@ -54,7 +54,12 @@ class GdalAlgorithm(GeoAlgorithm):
         for i, c in enumerate(commands):
             for layer in layers:
                 if layer.source() in c:
-                    c = c.replace(layer.source(), dataobjects.exportVectorLayer(layer, supported))
+                    exported = dataobjects.exportVectorLayer(layer, supported)
+                    exportedFileName = os.path.splitext(os.path.split(exported)[1])[0]
+                    c = c.replace(layer.source(), exported)
+                    if os.path.isfile(layer.source()):
+                        fileName = os.path.splitext(os.path.split(layer.source())[1])[0]
+                        c = c.replace(fileName, exportedFileName)
 
             commands[i] = c
         GdalUtils.runGdal(commands, progress)
