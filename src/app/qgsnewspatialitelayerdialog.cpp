@@ -84,7 +84,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
   connect( mNameEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged( QString ) ) );
   connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
-  connect( leLayerName, SIGNAL( textChanged( const QString& text ) ), this, SLOT( checkOk() ) );
+  connect( leLayerName, SIGNAL( textChanged( QString ) ), this, SLOT( checkOk() ) );
   connect( checkBoxPrimaryKey, SIGNAL( clicked() ), this, SLOT( checkOk() ) );
 
   mAddAttributeButton->setEnabled( false );
