@@ -52,6 +52,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
     cb_onlyExistingTypes->setChecked( settings.value( key + "/onlyExistingTypes", true ).toBool() );
+    cb_includeGeoAttributes->setChecked( settings.value( key + "/includeGeoAttributes", false ).toBool() );
 
     if ( settings.value( key + "/saveUsername" ).toString() == "true" )
     {
@@ -126,6 +127,7 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
   settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/onlyExistingTypes", cb_onlyExistingTypes->isChecked() ? "true" : "false" );
+  settings.setValue( baseKey + "/includeGeoAttributes", cb_includeGeoAttributes->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/dboptions", txtOptions->text() );

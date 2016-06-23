@@ -84,6 +84,8 @@ class OracleDBConnector(DBConnector):
             'allowGeometrylessTables').lower() == "true"
         self.onlyExistingTypes = uri.param(
             'onlyExistingTypes').lower() == "true"
+        self.includeGeoAttributes = uri.param(
+            'includeGeoAttributes').lower() == "true"
 
         # For refreshing
         self.populated = False

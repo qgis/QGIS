@@ -358,6 +358,9 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /* Use estimated metadata. Uses fast table counts, geometry type and extent determination */
     bool mUseEstimatedMetadata;
 
+    /* Include additional geo attributes */
+    bool mIncludeGeoAttributes;
+
     struct OracleFieldNotFound {}; //! Exception to throw
 
     struct OracleException
