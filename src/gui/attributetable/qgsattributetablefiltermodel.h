@@ -214,6 +214,14 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
+  signals:
+    /**
+     * Is emitted whenever the sort column is changed
+     * @param column The sort column
+     * @param order The sort order
+     */
+    void sortColumnChanged( int column, Qt::SortOrder order );
+
   protected:
     /**
      * Returns true if the source row will be accepted

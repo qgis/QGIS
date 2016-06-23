@@ -66,6 +66,7 @@ void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
   int myColumn = mColumnMapping.at( column );
   masterModel()->prefetchColumnData( myColumn );
   QSortFilterProxyModel::sort( myColumn, order );
+  emit sortColumnChanged( column, order );
 }
 
 QVariant QgsAttributeTableFilterModel::data( const QModelIndex& index, int role ) const

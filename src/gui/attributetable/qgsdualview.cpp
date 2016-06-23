@@ -104,6 +104,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
   connect( mAttributeForm, SIGNAL( modeChanged( QgsAttributeForm::Mode ) ), this, SIGNAL( formModeChanged( QgsAttributeForm::Mode ) ) );
   connect( mMasterModel, SIGNAL( modelChanged() ), mAttributeForm, SLOT( refreshFeature() ) );
   connect( mAttributeForm, SIGNAL( filterExpressionSet( QString, QgsAttributeForm::FilterType ) ), this, SIGNAL( filterExpressionSet( QString, QgsAttributeForm::FilterType ) ) );
+  connect( mFilterModel, SIGNAL( sortColumnChanged( int, Qt::SortOrder ) ), this, SLOT( onSortColumnChanged() ) );
   if ( mFeatureListPreviewButton->defaultAction() )
     mFeatureList->setDisplayExpression( mDisplayExpression );
   else
@@ -512,7 +513,6 @@ void QgsDualView::organizeColumns()
   if ( dialog.exec() == QDialog::Accepted )
   {
     QgsAttributeTableConfig config = dialog.config();
-    mLayerCache->layer()->setAttributeTableConfig( config );
     setAttributeTableConfig( config );
   }
 }
@@ -651,6 +651,13 @@ void QgsDualView::previewExpressionChanged( const QString& expression )
   mLayerCache->layer()->setDisplayExpression( expression );
 }
 
+void QgsDualView::onSortColumnChanged()
+{
+  QgsAttributeTableConfig cfg = mLayerCache->layer()->attributeTableConfig();
+  cfg.setSortExpression( mFilterModel->sortExpression() );
+  mLayerCache->layer()->setAttributeTableConfig( cfg );
+}
+
 void QgsDualView::sortByPreviewExpression()
 {
   setSortExpression( mFeatureList->displayExpression() );
@@ -684,6 +691,7 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featu
 
 void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig& config )
 {
+  mLayerCache->layer()->setAttributeTableConfig( config );
   mFilterModel->setAttributeTableConfig( config );
   mTableView->setAttributeTableConfig( config );
   mConfig = config;
@@ -695,6 +703,10 @@ void QgsDualView::setSortExpression( const QString& sortExpression )
     mFilterModel->sort( -1 );
   else
     mFilterModel->sort( sortExpression );
+
+  QgsAttributeTableConfig cfg = mLayerCache->layer()->attributeTableConfig();
+  cfg.setSortExpression( sortExpression );
+  mLayerCache->layer()->setAttributeTableConfig( cfg );
 }
 
 QString QgsDualView::sortExpression() const

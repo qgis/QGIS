@@ -22,7 +22,6 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
-#include "qgsorganizetablecolumnsdialog.h"
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"

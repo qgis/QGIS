@@ -290,6 +290,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void previewExpressionChanged( const QString& expression );
 
+    void onSortColumnChanged();
+
     void sortByPreviewExpression();
 
     /**
