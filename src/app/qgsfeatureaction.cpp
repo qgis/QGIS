@@ -61,7 +61,8 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, nullptr, true, context );
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
+  dialog->setWindowFlags( dialog->windowFlags() | Qt::WindowStaysOnTopHint );
 
   if ( mLayer->actions()->size() > 0 )
   {
