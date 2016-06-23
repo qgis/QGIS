@@ -157,6 +157,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     void addModelLayer( QgsVectorLayer* mapLayer , QgsGlobeVectorLayerConfig *layerConfig );
     void setupControls();
     void applyProjectSettings();
+    QgsRectangle getQGISLayerExtent() const;
 
   private slots:
     void setGlobeEnabled( bool enabled );
@@ -165,7 +166,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     void applySettings();
     void layerChanged( QgsMapLayer* mapLayer = 0 );
     void rebuildQGISLayer();
-    void refreshQGISMapLayer( QgsRectangle rect = QgsRectangle() );
+    void refreshQGISMapLayer( const QgsRectangle &dirtyRect );
     void updateTileStats( int queued, int tot );
 
   signals:

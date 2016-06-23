@@ -56,9 +56,9 @@ QgsGlobeTileImage::QgsGlobeTileImage( QgsGlobeTileSource* tileSource, const QgsR
     , mTileSource( tileSource )
     , mTileExtent( tileExtent )
     , mTileSize( tileSize )
-    , mImageUpdatePending( false )
     , mLod( tileLod )
 {
+  mTileSource->addTile( this );
 #ifdef GLOBE_SHOW_TILE_STATS
   QgsGlobeTileStatistics::instance()->updateTileCount( + 1 );
 #endif
@@ -69,10 +69,8 @@ QgsGlobeTileImage::QgsGlobeTileImage( QgsGlobeTileSource* tileSource, const QgsR
             GL_BGRA, GL_UNSIGNED_BYTE,
             mTileData, osg::Image::NO_DELETE );
 
-  mLastUpdateTime = osgEarth::DateTime().asTimeStamp();
   mTileSource->mTileUpdateManager.addTile( const_cast<QgsGlobeTileImage*>( this ) );
   mDpi = 72;
-  mImageUpdatePending = true;
 #else
   QImage qImage( mTileData, mTileSize, mTileSize, QImage::Format_ARGB32_Premultiplied );
   QPainter painter( &qImage );
@@ -84,33 +82,17 @@ QgsGlobeTileImage::QgsGlobeTileImage( QgsGlobeTileSource* tileSource, const QgsR
             mTileData, osg::Image::NO_DELETE );
   flipVertical();
   mDpi = qImage.logicalDpiX();
-  mLastUpdateTime = osgEarth::DateTime().asTimeStamp();
 #endif
 }
 
 QgsGlobeTileImage::~QgsGlobeTileImage()
 {
+  mTileSource->removeTile( this );
   mTileSource->mTileUpdateManager.removeTile( this );
   delete[] mTileData;
 #ifdef GLOBE_SHOW_TILE_STATS
   QgsGlobeTileStatistics::instance()->updateTileCount( -1 );
 #endif
-}
-
-bool QgsGlobeTileImage::requiresUpdateCall() const
-{
-  if ( mLastUpdateTime < mTileSource->mLastModifiedTime )
-  {
-    mLastUpdateTime = mTileSource->mLastModifiedTime;
-    if ( !mTileExtent.intersects( mTileSource->mLastUpdateExtent ) )
-    {
-      return false;
-    }
-    mTileSource->mTileUpdateManager.addTile( const_cast<QgsGlobeTileImage*>( this ) );
-    mImageUpdatePending = true;
-    return true;
-  }
-  return mImageUpdatePending;
 }
 
 QgsMapSettings QgsGlobeTileImage::createSettings( int dpi , const QStringList &layerSet ) const
@@ -143,7 +125,6 @@ void QgsGlobeTileImage::update( osg::NodeVisitor * )
               mTileData, osg::Image::NO_DELETE );
     flipVertical();
     mUpdatedImage = QImage();
-    mImageUpdatePending = false;
   }
 }
 
@@ -237,14 +218,17 @@ void QgsGlobeTileUpdateManager::renderingFinished()
 QgsGlobeTileSource::QgsGlobeTileSource( QgsMapCanvas* canvas, const osgEarth::TileSourceOptions& options )
     : TileSource( options )
     , mCanvas( canvas )
-    , mLastModifiedTime( 0 )
 {
+  osgEarth::GeoExtent geoextent( osgEarth::SpatialReference::get( "wgs84" ), -180., -90., 180., 90. );
+  osgEarth::DataExtentList extents;
+  extents.push_back( geoextent );
+  getDataExtents() = extents;
+  dirtyDataExtents();
 }
 
 osgEarth::TileSource::Status QgsGlobeTileSource::initialize( const osgDB::Options* /*dbOptions*/ )
 {
   setProfile( osgEarth::Registry::instance()->getGlobalGeodeticProfile() );
-  mLastModifiedTime = osgEarth::DateTime().asTimeStamp();
   return STATUS_OK;
 }
 
@@ -266,28 +250,18 @@ osg::Image* QgsGlobeTileSource::createImage( const osgEarth::TileKey& key, osgEa
   return new QgsGlobeTileImage( this, tileExtent, getPixelsPerTile(), key.getLOD() );
 }
 
-bool QgsGlobeTileSource::hasDataInExtent( const osgEarth::GeoExtent &extent ) const
+void QgsGlobeTileSource::refresh( const QgsRectangle& dirtyExtent )
 {
-  osgEarth::Bounds bounds = extent.bounds();
-  QgsRectangle requestExtent( bounds.xMin(), bounds.yMin(), bounds.xMax(), bounds.yMax() );
-  return requestExtent.intersects( mViewExtent );
-}
-
-bool QgsGlobeTileSource::hasData( const osgEarth::TileKey& key ) const
-{
-  const osgEarth::GeoExtent& tileExtent = key.getExtent();
-  QgsRectangle rect( tileExtent.xMin(), tileExtent.yMin(), tileExtent.xMax(), tileExtent.yMax() );
-  return rect.intersects( mViewExtent );
-}
-
-void QgsGlobeTileSource::refresh( const QgsRectangle& updateExtent )
-{
-  osgEarth::TimeStamp old = mLastModifiedTime;
-  mLastModifiedTime = osgEarth::DateTime().asTimeStamp();
   mTileUpdateManager.updateLayerSet( mLayerSet );
-  mLastUpdateExtent = updateExtent;
-  QgsDebugMsg( QString( "Updated QGIS map layer modified time from %1 to %2" ).arg( old ).arg( mLastModifiedTime ) );
-  mViewExtent = QgsCoordinateTransformCache::instance()->transform( mCanvas->mapSettings().destinationCrs().authid(), GEO_EPSG_CRS_AUTHID )->transform( mCanvas->fullExtent() );
+  mTileListLock.lock();
+  foreach ( QgsGlobeTileImage* tile, mTiles )
+  {
+    if ( tile->extent().intersects( dirtyExtent ) )
+    {
+      mTileUpdateManager.addTile( tile );
+    }
+  }
+  mTileListLock.unlock();
 }
 
 void QgsGlobeTileSource::setLayerSet( const QStringList &layerSet )
@@ -298,4 +272,18 @@ void QgsGlobeTileSource::setLayerSet( const QStringList &layerSet )
 const QStringList& QgsGlobeTileSource::layerSet() const
 {
   return mLayerSet;
+}
+
+void QgsGlobeTileSource::addTile( QgsGlobeTileImage* tile )
+{
+  mTileListLock.lock();
+  mTiles.append( tile );
+  mTileListLock.unlock();
+}
+
+void QgsGlobeTileSource::removeTile( QgsGlobeTileImage* tile )
+{
+  mTileListLock.lock();
+  mTiles.removeOne( tile );
+  mTileListLock.unlock();
 }

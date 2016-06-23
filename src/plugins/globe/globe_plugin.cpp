@@ -602,6 +602,18 @@ void GlobePlugin::applyProjectSettings()
   }
 }
 
+QgsRectangle GlobePlugin::getQGISLayerExtent() const
+{
+  QList<QgsRectangle> extents = mLayerExtents.values();
+  QgsRectangle fullExtent = extents.isEmpty() ? QgsRectangle() : extents.front();
+  for ( int i = 1, n = extents.size(); i < n; ++i )
+  {
+    if ( !extents[i].isNull() )
+      fullExtent.combineExtentWith( extents[i] );
+  }
+  return fullExtent;
+}
+
 void GlobePlugin::showCurrentCoordinates( const osgEarth::GeoPoint& geoPoint )
 {
   osg::Vec3d pos = geoPoint.vec3d();
@@ -743,25 +755,12 @@ void GlobePlugin::setupProxy()
   settings.endGroup();
 }
 
-void GlobePlugin::refreshQGISMapLayer( QgsRectangle rect )
+void GlobePlugin::refreshQGISMapLayer( const QgsRectangle& dirtyRect )
 {
   if ( mTileSource )
   {
-    if ( rect.isEmpty() )
-    {
-      if ( mLayerExtents.isEmpty() )
-      {
-        return;
-      }
-
-      rect = mLayerExtents.values().front();
-      foreach ( const QgsRectangle& extent, mLayerExtents.values() )
-      {
-        rect.combineExtentWith( extent );
-      }
-    }
     mOsgViewer->getDatabasePager()->clear();
-    mTileSource->refresh( rect );
+    mTileSource->refresh( dirtyRect );
     mOsgViewer->requestRedraw();
   }
 }
@@ -885,11 +884,7 @@ void GlobePlugin::updateLayers()
   if ( mOsgViewer )
   {
     // Get previous full extent
-    QgsRectangle fullExtent = mLayerExtents.isEmpty() ? QgsRectangle() : mLayerExtents.values().front();
-    foreach ( const QgsRectangle& rect, mLayerExtents.values() )
-    {
-      fullExtent.combineExtentWith( rect );
-    }
+    QgsRectangle dirtyExtent = getQGISLayerExtent();
     mLayerExtents.clear();
 
     QStringList drapedLayers;
@@ -939,19 +934,16 @@ void GlobePlugin::updateLayers()
         drapedLayers.append( mapLayer->id() );
         QgsRectangle extent = QgsCoordinateTransformCache::instance()->transform( mapLayer->crs().authid(), GEO_EPSG_CRS_AUTHID )->transform( mapLayer->extent() );
         mLayerExtents.insert( mapLayer->id(), extent );
-        if ( fullExtent.isEmpty() )
-        {
-          fullExtent = extent;
-        }
-        else
-        {
-          fullExtent.combineExtentWith( extent );
-        }
       }
     }
 
     mTileSource->setLayerSet( drapedLayers );
-    refreshQGISMapLayer( fullExtent );
+    QgsRectangle newExtent = getQGISLayerExtent();
+    if ( dirtyExtent.isNull() )
+      dirtyExtent = newExtent;
+    else if ( !newExtent.isNull() )
+      dirtyExtent.combineExtentWith( newExtent );
+    refreshQGISMapLayer( dirtyExtent );
   }
 }
 
@@ -981,8 +973,9 @@ void GlobePlugin::layerChanged( QgsMapLayer* mapLayer )
         QStringList layerSet = mTileSource->layerSet();
         layerSet.removeAll( mapLayer->id() );
         mTileSource->setLayerSet( layerSet );
-        refreshQGISMapLayer( mLayerExtents[mapLayer->id()] );
+        QgsRectangle dirtyExtent = mLayerExtents[mapLayer->id()];
         mLayerExtents.remove( mapLayer->id() );
+        refreshQGISMapLayer( dirtyExtent );
       }
       mMapNode->getMap()->removeModelLayer( mMapNode->getMap()->getModelLayerByName( mapLayer->id().toStdString() ) );
       addModelLayer( static_cast<QgsVectorLayer*>( mapLayer ), layerConfig );
@@ -1007,13 +1000,16 @@ void GlobePlugin::layerChanged( QgsMapLayer* mapLayer )
       // Remove any model layer of that layer, in case one existed
       mMapNode->getMap()->removeModelLayer( mMapNode->getMap()->getModelLayerByName( mapLayer->id().toStdString() ) );
       QgsRectangle layerExtent = QgsCoordinateTransformCache::instance()->transform( mapLayer->crs().authid(), GEO_EPSG_CRS_AUTHID )->transform( mapLayer->extent() );
-      QgsRectangle updateExtent = layerExtent;
+      QgsRectangle dirtyExtent = layerExtent;
       if ( mLayerExtents.contains( mapLayer->id() ) )
       {
-        updateExtent.combineExtentWith( mLayerExtents[mapLayer->id()] );
+        if ( dirtyExtent.isNull() )
+          dirtyExtent = mLayerExtents[mapLayer->id()];
+        else if ( !mLayerExtents[mapLayer->id()].isNull() )
+          dirtyExtent.combineExtentWith( mLayerExtents[mapLayer->id()] );
       }
       mLayerExtents[mapLayer->id()] = layerExtent;
-      refreshQGISMapLayer( updateExtent );
+      refreshQGISMapLayer( dirtyExtent );
     }
   }
 }

@@ -60,10 +60,11 @@ class QgsGlobeTileImage : public osg::Image
   public:
     QgsGlobeTileImage( QgsGlobeTileSource* tileSource, const QgsRectangle& tileExtent, int tileSize, int tileLod );
     ~QgsGlobeTileImage();
-    bool requiresUpdateCall() const;
+    bool requiresUpdateCall() const { return !mUpdatedImage.isNull(); }
     QgsMapSettings createSettings( int dpi, const QStringList &layerSet ) const;
     void setUpdatedImage( const QImage& image ) { mUpdatedImage = image; }
     int dpi() const { return mDpi; }
+    const QgsRectangle& extent() { return mTileExtent; }
 
     void update( osg::NodeVisitor * );
 
@@ -72,10 +73,8 @@ class QgsGlobeTileImage : public osg::Image
   private:
     QgsGlobeTileSource* mTileSource;
     QgsRectangle mTileExtent;
-    mutable osgEarth::TimeStamp mLastUpdateTime;
     int mTileSize;
     unsigned char* mTileData;
-    mutable bool mImageUpdatePending;
     int mLod;
     int mDpi;
     QImage mUpdatedImage;
@@ -114,25 +113,24 @@ class QgsGlobeTileSource : public osgEarth::TileSource
     Status initialize( const osgDB::Options *dbOptions ) override;
     osg::Image* createImage( const osgEarth::TileKey& key, osgEarth::ProgressCallback* progress ) override;
     osg::HeightField* createHeightField( const osgEarth::TileKey &/*key*/, osgEarth::ProgressCallback* /*progress*/ ) override { return 0; }
-    bool hasDataInExtent( const osgEarth::GeoExtent &extent ) const override;
-    bool hasData( const osgEarth::TileKey& key ) const override;
 
     bool isDynamic() const override { return true; }
-    osgEarth::TimeStamp getLastModifiedTime() const override { return mLastModifiedTime; }
 
-    void refresh( const QgsRectangle &updateExtent );
+    void refresh( const QgsRectangle &dirtyExtent );
     void setLayerSet( const QStringList& layerSet );
     const QStringList &layerSet() const;
 
   private:
     friend class QgsGlobeTileImage;
 
+    QMutex mTileListLock;
+    QList<QgsGlobeTileImage*> mTiles;
     QgsMapCanvas* mCanvas;
-    osgEarth::TimeStamp mLastModifiedTime;
-    QgsRectangle mViewExtent;
-    QgsRectangle mLastUpdateExtent;
     QStringList mLayerSet;
     QgsGlobeTileUpdateManager mTileUpdateManager;
+
+    void addTile( QgsGlobeTileImage* tile );
+    void removeTile( QgsGlobeTileImage* tile );
 };
 
 #endif // QGSGLOBETILESOURCE_H
