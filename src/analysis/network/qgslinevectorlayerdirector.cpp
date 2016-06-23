@@ -23,6 +23,7 @@
 #include <qgspoint.h>
 #include <qgsgeometry.h>
 #include <qgsdistancearea.h>
+#include <qgswkbtypes.h>
 
 // QT includes
 #include <QString>
@@ -162,9 +163,9 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   while ( fit.nextFeature( feature ) )
   {
     QgsMultiPolyline mpl;
-    if ( feature.constGeometry()->wkbType() == QGis::WKBMultiLineString || feature.constGeometry()->wkbType() == QGis::WKBMultiLineString25D )
+    if ( QgsWKBTypes::flatType( feature.constGeometry()->geometry()->wkbType() ) == QgsWKBTypes::MultiLineString )
       mpl = feature.constGeometry()->asMultiPolyline();
-    else if ( feature.constGeometry()->wkbType() == QGis::WKBLineString || feature.constGeometry()->wkbType() == QGis::WKBLineString25D )
+    else if ( QgsWKBTypes::flatType( feature.constGeometry()->geometry()->wkbType() ) == QgsWKBTypes::LineString )
       mpl.push_back( feature.constGeometry()->asPolyline() );
 
     QgsMultiPolyline::iterator mplIt;
@@ -296,9 +297,9 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
 
     // begin features segments and add arc to the Graph;
     QgsMultiPolyline mpl;
-    if ( feature.constGeometry()->wkbType() == QGis::WKBMultiLineString )
+    if ( QgsWKBTypes::flatType( feature.constGeometry()->geometry()->wkbType() ) == QgsWKBTypes::MultiLineString )
       mpl = feature.constGeometry()->asMultiPolyline();
-    else if ( feature.constGeometry()->wkbType() == QGis::WKBLineString )
+    else if ( QgsWKBTypes::flatType( feature.constGeometry()->geometry()->wkbType() ) == QgsWKBTypes::LineString )
       mpl.push_back( feature.constGeometry()->asPolyline() );
 
     QgsMultiPolyline::iterator mplIt;
