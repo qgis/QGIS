@@ -23,6 +23,7 @@
 #include <qgsrenderchecker.h>
 #include <qgsvectordataprovider.h>
 #include <qgsmaptoolpan.h>
+#include "qgstestutils.h"
 
 namespace QTest
 {
@@ -33,17 +34,6 @@ namespace QTest
     return qstrdup( ba.data() );
   }
 }
-
-inline bool qgsDoubleNearDebug( double a, double b, double epsilon = 4 * DBL_EPSILON )
-{
-  if ( !qgsDoubleNear( a, b, epsilon ) )
-  {
-    qDebug( "Expecting %f got %f (diff %f > %f)", a, b, qAbs( a - b ), epsilon );
-    return false;
-  }
-  return true;
-}
-
 
 class QgsMapToolTest : public QgsMapTool
 {
@@ -116,20 +106,20 @@ void TestQgsMapCanvas::testMapRendererInteraction()
   QgsRectangle r1( 10, 10, 20, 20 );
   mr->setExtent( r1 );
   QgsRectangle r2 = mr->extent();
-  QVERIFY( qgsDoubleNear( mCanvas->extent().xMinimum(), r2.xMinimum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().yMinimum(), r2.yMinimum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().xMaximum(), r2.xMaximum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().yMaximum(), r2.yMaximum(), 0.0000000001 ) );
+  QGSCOMPARENEAR( mCanvas->extent().xMinimum(), r2.xMinimum(), 0.0000000001 );
+  QGSCOMPARENEAR( mCanvas->extent().yMinimum(), r2.yMinimum(), 0.0000000001 );
+  QGSCOMPARENEAR( mCanvas->extent().xMaximum(), r2.xMaximum(), 0.0000000001 );
+  QGSCOMPARENEAR( mCanvas->extent().yMaximum(), r2.yMaximum(), 0.0000000001 );
   QCOMPARE( spy2.count(), 1 );
 
   QgsRectangle r3( 100, 100, 200, 200 );
   QSignalSpy spy3( mr, SIGNAL( extentsChanged() ) );
   mCanvas->setExtent( r3 );
   QgsRectangle r4 = mCanvas->extent();
-  QVERIFY( qgsDoubleNear( mr->extent().xMinimum(), r4.xMinimum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mr->extent().yMinimum(), r4.yMinimum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mr->extent().xMaximum(), r4.xMaximum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mr->extent().yMaximum(), r4.yMaximum(), 0.0000000001 ) );
+  QGSCOMPARENEAR( mr->extent().xMinimum(), r4.xMinimum(), 0.0000000001 );
+  QGSCOMPARENEAR( mr->extent().yMinimum(), r4.yMinimum(), 0.0000000001 );
+  QGSCOMPARENEAR( mr->extent().xMaximum(), r4.xMaximum(), 0.0000000001 );
+  QGSCOMPARENEAR( mr->extent().yMaximum(), r4.yMaximum(), 0.0000000001 );
   QCOMPARE( spy3.count(), 1 );
 
   // Destination CRS
@@ -278,10 +268,10 @@ void TestQgsMapCanvas::testMagnification()
 void compareExtent( const QgsRectangle &initialExtent,
                     const QgsRectangle &extent )
 {
-  QVERIFY( qgsDoubleNear( initialExtent.xMinimum(), extent.xMinimum(), 0.00000000001 ) );
-  QVERIFY( qgsDoubleNear( initialExtent.xMaximum(), extent.xMaximum(), 0.00000000001 ) );
-  QVERIFY( qgsDoubleNear( initialExtent.yMinimum(), extent.yMinimum(), 0.00000000001 ) );
-  QVERIFY( qgsDoubleNear( initialExtent.yMaximum(), extent.yMaximum(), 0.00000000001 ) );
+  QGSCOMPARENEAR( initialExtent.xMinimum(), extent.xMinimum(), 0.00000000001 );
+  QGSCOMPARENEAR( initialExtent.xMaximum(), extent.xMaximum(), 0.00000000001 );
+  QGSCOMPARENEAR( initialExtent.yMinimum(), extent.yMinimum(), 0.00000000001 );
+  QGSCOMPARENEAR( initialExtent.yMaximum(), extent.yMaximum(), 0.00000000001 );
 }
 
 void TestQgsMapCanvas::testMagnificationExtent()
@@ -393,26 +383,26 @@ void TestQgsMapCanvas::testZoomByWheel()
   //test zoom out
   QWheelEvent e( QPoint( 0, 0 ), -1, Qt::NoButton, Qt::NoModifier );
   mCanvas->wheelEvent( &e );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), originalWidth * 2.0, 0.1 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), originalHeight * 2.0, 0.1 ) );
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth * 2.0, 0.1 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight * 2.0, 0.1 );
 
   //test zoom in
   e = QWheelEvent( QPoint( 0, 0 ), 1, Qt::NoButton, Qt::NoModifier );
   mCanvas->wheelEvent( &e );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), originalWidth, 0.1 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), originalHeight, 0.1 ) );
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
 
   // test zoom out with ctrl
   e = QWheelEvent( QPoint( 0, 0 ), -1, Qt::NoButton, Qt::ControlModifier );
   mCanvas->wheelEvent( &e );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), 1.05 * originalWidth, 0.1 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), 1.05 * originalHeight, 0.1 ) );
+  QGSCOMPARENEAR( mCanvas->extent().width(), 1.05 * originalWidth, 0.1 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), 1.05 * originalHeight, 0.1 );
 
   //test zoom in with ctrl
   e = QWheelEvent( QPoint( 0, 0 ), 1, Qt::NoButton, Qt::ControlModifier );
   mCanvas->wheelEvent( &e );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), originalWidth, 0.1 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), originalHeight, 0.1 ) );
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
 }
 
 void TestQgsMapCanvas::testShiftZoom()
@@ -440,8 +430,8 @@ void TestQgsMapCanvas::testShiftZoom()
                    Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseReleaseEvent( &e );
 
-  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth / 2.0, 0.2 ) );
-  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight / 2.0, 0.2 ) );
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth / 2.0, 0.2 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight / 2.0, 0.2 );
 
   //reset
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
@@ -457,8 +447,8 @@ void TestQgsMapCanvas::testShiftZoom()
                    Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseReleaseEvent( &e );
 
-  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth, 0.0001 ) );
-  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight, 0.0001 ) );
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.0001 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.0001 );
 
   //reset
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
@@ -477,8 +467,8 @@ void TestQgsMapCanvas::testShiftZoom()
                    Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseReleaseEvent( &e );
 
-  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth, 0.00001 ) );
-  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight, 0.00001 ) );
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.00001 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.00001 );
 }
 
 QTEST_MAIN( TestQgsMapCanvas )
