@@ -52,7 +52,6 @@ const QgsGraphArc& QgsGraph::arc( int idx ) const
   return mGraphArc[ idx ];
 }
 
-
 int QgsGraph::vertexCount() const
 {
   return mGraphVertexes.size();
