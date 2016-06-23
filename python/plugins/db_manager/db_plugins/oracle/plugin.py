@@ -112,6 +112,8 @@ class OracleDBPlugin(DBPlugin):
             settings.value("allowGeometrylessTables", False, type=bool)))
         uri.setParam('onlyExistingTypes', unicode(
             settings.value("onlyExistingTypes", False, type=bool)))
+        uri.setParam('includeGeoAttributes', unicode(
+            settings.value("includeGeoAttributes", False, type=bool)))
 
         settings.endGroup()
 

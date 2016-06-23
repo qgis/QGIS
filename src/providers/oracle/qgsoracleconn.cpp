@@ -657,6 +657,7 @@ void QgsOracleConn::deleteConnection( QString theConnName )
   settings.remove( key + "/allowGeometrylessTables" );
   settings.remove( key + "/estimatedMetadata" );
   settings.remove( key + "/onlyExistingTypes" );
+  settings.remove( key + "/includeGeoAttributes" );
   settings.remove( key + "/saveUsername" );
   settings.remove( key + "/savePassword" );
   settings.remove( key + "/save" );

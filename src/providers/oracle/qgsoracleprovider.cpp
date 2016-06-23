@@ -69,6 +69,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
   mSrid = mUri.srid().toInt();
   mRequestedGeomType = mUri.wkbType();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
+  mIncludeGeoAttributes = mUri.hasParam( "includegeoattributes" ) ? mUri.param( "includegeoattributes" ) == "true" : false;
 
   mConnection = QgsOracleConn::connectDb( mUri.connectionInfo() );
   if ( !mConnection )
@@ -602,11 +603,12 @@ bool QgsOracleProvider::loadFields()
                              ",t.char_used"
                              ",t.data_default"
                              " FROM all_tab_columns t"
-                             " WHERE t.owner=%1 AND t.table_name=%2%3"
+                             " WHERE t.owner=%1 AND t.table_name=%2%3%4"
                              " ORDER BY t.column_id" )
                .arg( quotedValue( mOwnerName ) )
                .arg( quotedValue( mTableName ) )
                .arg( mGeometryColumn.isEmpty() ? "" : QString( " AND t.column_name<>%1 " ).arg( quotedValue( mGeometryColumn ) ) )
+               .arg( mIncludeGeoAttributes ? "" : " AND (t.data_type_owner<>'MDSYS' OR t.data_type<>'SDO_GEOMETRY')" )
              ) )
     {
       while ( qry.next() )
