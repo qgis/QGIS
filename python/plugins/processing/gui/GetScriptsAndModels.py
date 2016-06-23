@@ -125,6 +125,10 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
     def __init__(self, resourceType):
         super(GetScriptsAndModelsDialog, self).__init__(iface.mainWindow())
         self.setupUi(self)
+
+        if hasattr(self.leFilter, 'setPlaceholderText'):
+            self.leFilter.setPlaceholderText(self.tr('Search...'))
+
         self.manager = QgsNetworkAccessManager.instance()
 
         self.resourceType = resourceType
@@ -143,10 +147,13 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
 
         self.lastSelectedItem = None
         self.updateProvider = False
+        self.data = None
+
         self.populateTree()
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.tree.currentItemChanged.connect(self.currentItemChanged)
+        self.leFilter.textChanged.connect(self.fillTree)
 
     def popupError(self, error=None, url=None):
         """Popups an Error message bar for network errors."""
@@ -174,15 +181,6 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             QCoreApplication.processEvents()
 
     def populateTree(self):
-        self.uptodateItem = QTreeWidgetItem()
-        self.uptodateItem.setText(0, self.tr('Installed'))
-        self.toupdateItem = QTreeWidgetItem()
-        self.toupdateItem.setText(0, self.tr('Updatable'))
-        self.notinstalledItem = QTreeWidgetItem()
-        self.notinstalledItem.setText(0, self.tr('Not installed'))
-        self.toupdateItem.setIcon(0, self.icon)
-        self.uptodateItem.setIcon(0, self.icon)
-        self.notinstalledItem.setIcon(0, self.icon)
         self.grabHTTP(self.urlBase + 'list.txt', self.treeLoaded)
 
     def treeLoaded(self, reply):
@@ -197,14 +195,36 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             resources = unicode(reply.readAll()).splitlines()
             resources = [r.split(',') for r in resources]
             self.resources = {f: (v, n) for f, v, n in resources}
-            for filename, version, name in sorted(resources, key=lambda kv: kv[2].lower()):
-                treeBranch = self.getTreeBranchForState(filename, float(version))
+
+        reply.deleteLater()
+        self.fillTree()
+
+    def fillTree(self):
+        self.tree.clear()
+
+        self.uptodateItem = QTreeWidgetItem()
+        self.uptodateItem.setText(0, self.tr('Installed'))
+        self.toupdateItem = QTreeWidgetItem()
+        self.toupdateItem.setText(0, self.tr('Updatable'))
+        self.notinstalledItem = QTreeWidgetItem()
+        self.notinstalledItem.setText(0, self.tr('Not installed'))
+        self.toupdateItem.setIcon(0, self.icon)
+        self.uptodateItem.setIcon(0, self.icon)
+        self.notinstalledItem.setIcon(0, self.icon)
+
+        text = unicode(self.leFilter.text())
+
+        for i in sorted(self.resources.keys(), key=lambda kv: kv[2].lower()):
+            filename = i
+            version = self.resources[filename][0]
+            name = self.resources[filename][1]
+            treeBranch = self.getTreeBranchForState(filename, float(version))
+            if text == '' or text.lower() in filename.lower():
                 item = TreeItem(filename, name, self.icon)
                 treeBranch.addChild(item)
                 if treeBranch != self.notinstalledItem:
                     item.setCheckState(0, Qt.Checked)
 
-        reply.deleteLater()
         self.tree.addTopLevelItem(self.toupdateItem)
         self.tree.addTopLevelItem(self.notinstalledItem)
         self.tree.addTopLevelItem(self.uptodateItem)
