@@ -288,13 +288,13 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       Q_FOREACH ( QgsGeometry* geom, cit.geometries )
       {
         QgsMultiPolygon multi;
-        if (( geom->wkbType() == QGis::WKBPolygon ) ||
-            ( geom->wkbType() == QGis::WKBPolygon25D ) )
+        QgsWKBTypes::Type type = QgsWKBTypes::flatType( geom->geometry()->wkbType() );
+
+        if (( type == QgsWKBTypes::Polygon ) || ( type == QgsWKBTypes::CurvePolygon ) )
         {
           multi.append( geom->asPolygon() );
         }
-        else if (( geom->wkbType() == QGis::WKBMultiPolygon ) ||
-                 ( geom->wkbType() == QGis::WKBMultiPolygon25D ) )
+        else if (( type == QgsWKBTypes::MultiPolygon ) || ( type == QgsWKBTypes::MultiSurface ) )
         {
           multi = geom->asMultiPolygon();
         }

@@ -34,11 +34,10 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
     return;
   }
 
+  QgsWKBTypes::Type type = QgsWKBTypes::singleType( QgsWKBTypes::flatType( QGis::fromOldWkbType( layer->wkbType() ) ) );
+
   // the renderer only applies to polygon vector layers
-  if ( layer->wkbType() != QGis::WKBPolygon &&
-       layer->wkbType() != QGis::WKBPolygon25D &&
-       layer->wkbType() != QGis::WKBMultiPolygon &&
-       layer->wkbType() != QGis::WKBMultiPolygon25D )
+  if ( type != QgsWKBTypes::Polygon && type != QgsWKBTypes::CurvePolygon )
   {
     //setup blank dialog
     mRenderer.reset( nullptr );
