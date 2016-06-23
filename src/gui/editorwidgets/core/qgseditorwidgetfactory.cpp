@@ -16,6 +16,7 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgsdefaultsearchwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
+#include "qgsfield.h"
 
 #include <QSettings>
 
@@ -67,6 +68,20 @@ QString QgsEditorWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx
   Q_UNUSED( value )
 
   return vl->fields().at( fieldIdx ).displayString( value );
+}
+
+Qt::AlignmentFlag QgsEditorWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
+{
+  Q_UNUSED( config );
+
+  QVariant::Type fldType = vl->fields().at( fieldIdx ).type();
+  bool alignRight = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong
+                      || fldType == QVariant::DateTime || fldType == QVariant::Date || fldType == QVariant::Time );
+
+  if ( alignRight )
+    return Qt::AlignRight;
+  else
+    return Qt::AlignLeft;
 }
 
 QVariant QgsEditorWidgetFactory::createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config )

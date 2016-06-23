@@ -134,6 +134,10 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     return QVariant::fromValue( feat );
   }
+  else if ( role == Qt::TextAlignmentRole )
+  {
+    return Qt::AlignLeft;
+  }
 
   return sourceModel()->data( mapToSource( index ), role );
 }

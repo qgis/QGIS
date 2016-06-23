@@ -139,6 +139,16 @@ class GUI_EXPORT QgsEditorWidgetFactory
     virtual QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const;
 
     /**
+     * Return the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
+     * values are represented.
+     * @param vl       The vector layer.
+     * @param fieldIdx The index of the field.
+     * @param config   The editor widget config.
+     * @return The alignment flag, normally Qt::AlignRight or Qt::AlignLeft
+     */
+    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const;
+
+    /**
      * Create a cache for a given field.
      *
      * @param vl        The vector layer.
