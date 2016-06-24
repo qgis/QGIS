@@ -7180,6 +7180,13 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
         return;
       }
 
+      bool isVectorStyle = doc.elementsByTagName( "pipe" ).isEmpty();
+      if (( selectionLayer->type() == QgsMapLayer::RasterLayer && isVectorStyle ) ||
+          ( selectionLayer->type() == QgsMapLayer::VectorLayer && !isVectorStyle ) )
+      {
+        return;
+      }
+
       if ( !selectionLayer->importNamedStyle( doc, errorMsg ) )
       {
         messageBar()->pushMessage( tr( "Cannot paste style" ),
