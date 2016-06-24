@@ -28,6 +28,7 @@
 #include <QMenu>
 #include <QNetworkAccessManager>
 #include <QPalette>
+#include <QTextBrowser>
 
 
 /**
@@ -78,17 +79,14 @@ class CORE_EXPORT QWebSettings : public QObject
     explicit QWebSettings( QObject* parent = 0 )
         : QObject( parent )
     {
-
     }
 
     void setUserStyleSheetUrl( const QUrl& )
     {
-
     }
 
-    void setAttribute( WebAttribute, bool on )
+    void setAttribute( WebAttribute, bool )
     {
-      Q_UNUSED( on );
     }
 /// @endcond
 };
@@ -147,7 +145,14 @@ class CORE_EXPORT QWebPage : public QObject
 
     void setLinkDelegationPolicy( LinkDelegationPolicy linkDelegationPolicy )
     {
-      Q_UNUSED( linkDelegationPolicy );
+      if ( !parent() )
+        return;
+
+      QTextBrowser *tb = qobject_cast<QTextBrowser *>( parent() );
+      if ( !tb )
+        return;
+
+      tb->setOpenExternalLinks( linkDelegationPolicy != DontDelegateLinks );
     }
 
     void setNetworkAccessManager( QNetworkAccessManager* networkAccessManager )

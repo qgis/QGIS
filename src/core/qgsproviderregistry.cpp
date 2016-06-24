@@ -369,7 +369,7 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
   }
   else
   {
-    QgsDebugMsg( "dlopen suceeded" );
+    QgsDebugMsg( "dlopen succeeded" );
     dlclose( handle );
   }
 

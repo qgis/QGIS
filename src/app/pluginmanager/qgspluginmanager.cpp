@@ -114,6 +114,12 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
   buttonUninstall->hide();
   frameSettings->setHidden( true );
 
+  voteRating->hide();
+  voteLabel->hide();
+  voteSlider->hide();
+  voteSubmit->hide();
+  connect( voteSubmit, SIGNAL( clicked() ), this, SLOT( submitVote() ) );
+
   // Init the message bar instance
   msgBar = new QgsMessageBar( this );
   msgBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
@@ -343,7 +349,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       else
       {
-        QgsDebugMsg( "dlopen suceeded for " + lib );
+        QgsDebugMsg( "dlopen succeeded for " + lib );
         dlclose( handle );
       }
 #endif //#ifndef Q_OS_WIN && Q_OS_MACX
@@ -598,7 +604,10 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
 {
   const QMap<QString, QString> * metadata = pluginMetadata( item->data( PLUGIN_BASE_NAME_ROLE ).toString() );
 
-  if ( ! metadata ) return;
+  if ( !metadata )
+  {
+    return;
+  }
 
   QString html = "";
   html += "<style>"
@@ -615,8 +624,9 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
           "  }"
           "</style>";
 
-  if ( ! metadata->value( "plugin_id" ).isEmpty() )
+  if ( !metadata->value( "plugin_id" ).isEmpty() )
   {
+#ifdef WITH_QTWEBKIT
     html += QString(
               "<style>"
               "  div#stars_bg {"
@@ -671,9 +681,31 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
               "    document.getElementById('send_vote_trigger').dispatchEvent(ev);"
               "  }"
               "</script>" ).arg( metadata->value( "plugin_id" ) );
+#else
+    voteRating->show();
+    voteLabel->show();
+    voteSlider->show();
+    voteSubmit->show();
+    QgsDebugMsg( QString( "vote slider:%1" ).arg( qRound( metadata->value( "average_vote" ).toFloat() ) ) );
+    voteSlider->setValue( qRound( metadata->value( "average_vote" ).toFloat() ) );
+    mCurrentPluginId = metadata->value( "plugin_id" ).toInt();
+  }
+  else
+  {
+    voteRating->hide();
+    voteLabel->hide();
+    voteSlider->hide();
+    voteSubmit->hide();
+    mCurrentPluginId = -1;
+#endif
   }
 
+#ifdef WITH_QTWEBKIT
   html += "<body onload='ready()'>";
+#else
+  html += "<body>";
+#endif
+
 
   // First prepare message box(es)
   if ( ! metadata->value( "error" ).isEmpty() )
@@ -695,24 +727,28 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
                      "  <tr><td width=\"100%\" style=\"color:#CC0000\">%1</td></tr>"
                      "</table>" ).arg( errorMsg );
   }
+
   if ( metadata->value( "status" ) == "upgradeable" )
   {
     html += QString( "<table bgcolor=\"#FFFFAA\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#880000\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "There is a new version available" ) );
   }
+
   if ( metadata->value( "status" ) == "new" )
   {
     html += QString( "<table bgcolor=\"#CCFFCC\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#008800\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "This is a new plugin" ) );
   }
+
   if ( metadata->value( "status" ) == "newer" )
   {
     html += QString( "<table bgcolor=\"#FFFFCC\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#550000\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
   }
+
   if ( metadata->value( "experimental" ) == "true" )
   {
     html += QString( "<table bgcolor=\"#EEEEBB\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
@@ -721,6 +757,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is experimental" ) );
   }
+
   if ( metadata->value( "deprecated" ) == "true" )
   {
     html += QString( "<table bgcolor=\"#EEBBCC\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
@@ -768,23 +805,33 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   }
 
   html += "<br/><br/>";
-  html += "<div id='stars_bg'/><div id='stars'/>";
-  html += "<div id='votes'>";
+
+  QString votes;
+#ifndef WITH_QTWEBKIT
+  votes += tr( "Average rating %1" ).arg( metadata->value( "average_vote" ).toFloat(), 0, 'f', 1 );
+#endif
   if ( ! metadata->value( "rating_votes" ).isEmpty() )
   {
-    html += tr( "%1 rating vote(s)" ).arg( metadata->value( "rating_votes" ) );
-  }
-  if ( !( metadata->value( "rating_votes" ).isEmpty() || metadata->value( "downloads" ).isEmpty() ) )
-  {
-    html += ", ";
+    if ( !votes.isEmpty() )
+      votes += ", ";
+    votes += tr( "%1 rating vote(s)" ).arg( metadata->value( "rating_votes" ) );
   }
   if ( ! metadata->value( "downloads" ).isEmpty() )
   {
-    html += tr( "%1 downloads" ).arg( metadata->value( "downloads" ) );
+    if ( !votes.isEmpty() )
+      votes += ", ";
+    votes += tr( "%1 downloads" ).arg( metadata->value( "downloads" ) );
   }
+
+#ifdef WITH_QTWEBKIT
+  html += "<div id='stars_bg'/><div id='stars'/>";
+  html += "<div id='votes'>";
+  html += votes;
   html += "</div>";
   html += "<div><a id='send_vote_trigger'/></div>";
-
+#else
+  voteRating->setText( votes );
+#endif
   html += "</td></tr><tr><td>";
   html += "<br/>";
 
@@ -1159,7 +1206,29 @@ void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex & theIndex 
   }
 }
 
+#ifndef WITH_QTWEBKIT
+void QgsPluginManager::submitVote()
+{
+  if ( mCurrentPluginId < 0 )
+    return;
 
+  sendVote( mCurrentPluginId, voteSlider->value() );
+}
+#endif
+
+void QgsPluginManager::sendVote( int pluginId, int vote )
+{
+  QString response;
+  QgsPythonRunner::eval( QString( "pyplugin_installer.instance().sendVote('%1', '%2')" ).arg( pluginId ).arg( vote ), response );
+  if ( response == "True" )
+  {
+    pushMessage( tr( "Vote sent successfully" ), QgsMessageBar::INFO );
+  }
+  else
+  {
+    pushMessage( tr( "Sending vote to the plugin repository failed." ), QgsMessageBar::WARNING );
+  }
+}
 
 void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
 {
@@ -1169,17 +1238,7 @@ void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
     {
       QString params = url.path();
       QString response;
-      QgsPythonRunner::eval( QString( "pyplugin_installer.instance().sendVote('%1', '%2')" )
-                             .arg( params.split( '/' )[1],
-                                   params.split( '/' )[2] ), response );
-      if ( response == "True" )
-      {
-        pushMessage( tr( "Vote sent successfully" ), QgsMessageBar::INFO );
-      }
-      else
-      {
-        pushMessage( tr( "Sending vote to the plugin repository failed." ), QgsMessageBar::WARNING );
-      }
+      sendVote( params.split( '/' )[1].toInt(), params.split( '/' )[2].toInt() );
     }
   }
   else
@@ -1187,7 +1246,6 @@ void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
     QDesktopServices::openUrl( url );
   }
 }
-
 
 
 void QgsPluginManager::on_leFilter_textChanged( QString theText )
