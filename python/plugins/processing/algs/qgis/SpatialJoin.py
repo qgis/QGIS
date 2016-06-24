@@ -124,7 +124,7 @@ class SpatialJoin(GeoAlgorithm):
         else:
             numFields = {}
             for j in xrange(len(joinFields)):
-                if joinFields[j].type() in [QVariant.Int, QVariant.Double]:
+                if joinFields[j].type() in [QVariant.Int, QVariant.Double, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
                     numFields[j] = []
                     for i in sumList:
                         field = QgsField(i + unicode(joinFields[j].name()), QVariant.Double, '', 24, 16)
