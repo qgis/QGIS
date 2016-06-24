@@ -62,7 +62,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
-  dialog->setWindowFlags( dialog->windowFlags() | Qt::WindowStaysOnTopHint );
+  dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
 
   if ( mLayer->actions()->size() > 0 )
   {
