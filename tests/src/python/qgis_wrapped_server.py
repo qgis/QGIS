@@ -24,8 +24,8 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from qgis.server import QgsServer
 
 try:
-    QGIS_SERVER_DEFAULT_PORT = os.environ('QGIS_SERVER_DEFAULT_PORT')
-except:
+    QGIS_SERVER_DEFAULT_PORT = int(os.environ['QGIS_SERVER_DEFAULT_PORT'])
+except KeyError:
     QGIS_SERVER_DEFAULT_PORT = 8081
 
 
