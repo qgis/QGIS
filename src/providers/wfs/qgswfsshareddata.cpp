@@ -501,8 +501,11 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRecta
   // In case the request has a spatial filter, which is not the one currently
   // being downloaded, check if we have already downloaded an area of interest that includes it
   // before deciding to restart a new download with the provided area of interest.
+  // But don't abort a on going download without a BBOX (Offline editing use case
+  // when "Only request features overlapping the view extent" : the offline editor
+  // want to request all features whereas the map renderer only the view)
   bool newDownloadNeeded = false;
-  if ( !rect.isEmpty() && mRect != rect )
+  if ( !rect.isEmpty() && mRect != rect && !( mDownloader && mRect.isEmpty() ) )
   {
     QList<QgsFeatureId> intersectingRequests = mCachedRegions.intersects( rect );
     newDownloadNeeded = true;
@@ -532,6 +535,12 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRecta
         break;
       }
     }
+  }
+  // If there's a ongoing download with a BBOX and we request a new download
+  // without it, then we need a new download.
+  else if ( rect.isEmpty() && mDownloader && !mRect.isEmpty() )
+  {
+    newDownloadNeeded = true;
   }
 
   if ( newDownloadNeeded || !mDownloader )
