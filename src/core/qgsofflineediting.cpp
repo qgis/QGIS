@@ -235,6 +235,15 @@ void QgsOfflineEditing::synchronize()
     QgsVectorLayer* remoteLayer = new QgsVectorLayer( remoteSource, remoteName, remoteProvider );
     if ( remoteLayer->isValid() )
     {
+      // Rebuild WFS cache to get feature id<->GML fid mapping
+      if ( remoteLayer->dataProvider()->name().contains( "WFS", Qt::CaseInsensitive ) )
+      {
+        QgsFeatureIterator fit = remoteLayer->getFeatures();
+        QgsFeature f;
+        while ( fit.nextFeature( f ) )
+        {
+        }
+      }
       // TODO: only add remote layer if there are log entries?
 
       QgsVectorLayer* offlineLayer = qobject_cast<QgsVectorLayer*>( layer );
