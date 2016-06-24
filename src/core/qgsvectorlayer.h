@@ -223,6 +223,7 @@ protected:
  * - maxNumFeatures=number
  * - IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
  * - InvertAxisOrientation=1: to invert axis order
+ * - hideDownloadProgressDialog=1: to hide the download progress dialog
  *
  * The ‘FILTER’ query string parameter can be used to filter
  * the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
