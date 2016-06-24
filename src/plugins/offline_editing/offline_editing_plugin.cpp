@@ -25,6 +25,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgsproject.h>
 #include <qgsmessagebar.h>
+#include <qgsmapcanvas.h>
 
 #include <QAction>
 
@@ -111,6 +112,8 @@ void QgsOfflineEditingPlugin::convertProject()
     if ( mOfflineEditing->convertToOfflineProject( myPluginGui->offlineDataPath(), myPluginGui->offlineDbFile(), selectedLayerIds ) )
     {
       updateActions();
+      // Redraw, to make the offline layer visible
+      mQGisIface->mapCanvas()->refreshAllLayers();
     }
   }
 
