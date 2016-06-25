@@ -93,7 +93,8 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent* e )
   {
     if ( !mResultDisplay )
     {
-      mResultDisplay = new QgsDisplayAngle( this, Qt::WindowStaysOnTopHint );
+      mResultDisplay = new QgsDisplayAngle( this );
+      mResultDisplay->setWindowFlags( mResultDisplay->windowFlags() | Qt::Tool );
       QObject::connect( mResultDisplay, SIGNAL( rejected() ), this, SLOT( stopMeasuring() ) );
     }
     configureDistanceArea();
