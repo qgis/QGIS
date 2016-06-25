@@ -1013,7 +1013,8 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
           mComputedExtent.grow( 50. * 1000. );
         else if ( mSourceCRS.mapUnits() == QGis::Degrees )
           mComputedExtent.grow( 50. / 110 );
-        QgsMessageLog::logMessage( tr( "Layer extent reported by the server is not correct. You may need to zoom on layer and then zoom out to see all fetchures" ), tr( "WFS" ) );
+        QgsMessageLog::logMessage( tr( "Layer extent reported by the server is not correct. "
+                                       "You may need to zoom on layer and then zoom out to see all features" ), tr( "WFS" ) );
       }
       mMutex.unlock();
       if ( !mComputedExtent.isNull() )
