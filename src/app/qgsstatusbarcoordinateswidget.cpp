@@ -64,9 +64,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
 
   //toggle to switch between mouse pos and extents display in status bar widget
   mToggleExtentsViewButton = new QToolButton( this );
-  mToggleExtentsViewButton->setMaximumWidth( 20 );
-  //mToggleExtentsViewButton->setMaximumHeight( 20 );
-  mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "tracking.png" ) );
+  mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "tracking.svg" ) );
   mToggleExtentsViewButton->setToolTip( tr( "Toggle extents and mouse position display" ) );
   mToggleExtentsViewButton->setCheckable( true );
   connect( mToggleExtentsViewButton, SIGNAL( toggled( bool ) ), this, SLOT( extentsViewToggled( bool ) ) );

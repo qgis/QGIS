@@ -429,7 +429,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( vlayer->fields().size() > 0 )
     {
       QTreeWidgetItem *editItem = new QTreeWidgetItem( QStringList() << "" << ( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) ) );
-      editItem->setIcon( 0, QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
+      editItem->setIcon( 0, QgsApplication::getThemeIcon( "/mActionFormView.svg" ) );
       editItem->setData( 0, Qt::UserRole, "edit" );
       actionItem->addChild( editItem );
     }

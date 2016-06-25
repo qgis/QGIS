@@ -222,7 +222,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mActionAddAttribute->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.svg" ) );
   mActionRemoveAttribute->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.svg" ) );
   mTableViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ) );
-  mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
+  mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionFormView.svg" ) );
   mActionExpressionSelect->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
   mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.svg" ) );
 

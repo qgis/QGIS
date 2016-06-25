@@ -239,6 +239,7 @@
         <file>themes/default/mActionFormAnnotation.png</file>
         <file>themes/default/mActionFormAnnotation.svg</file>
         <file>themes/default/mActionFromSelectedFeature.png</file>
+        <file>themes/default/mActionFormView.svg</file>
         <file>themes/default/mActionFullCumulativeCutStretch.png</file>
         <file>themes/default/mActionFullCumulativeCutStretch.svg</file>
         <file>themes/default/mActionFullHistogramStretch.png</file>
@@ -592,6 +593,7 @@
         <file>themes/default/sync_views.svg</file>
         <file>themes/default/text.png</file>
         <file>themes/default/tracking.png</file>
+        <file>themes/default/tracking.svg</file>
         <file>themes/default/transformed.png</file>
         <file>themes/default/transp-background_8x8.png</file>
         <file>themes/default/unlocked.svg</file>
