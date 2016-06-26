@@ -235,7 +235,7 @@ class CORE_EXPORT QgsDxfExport
      * @param line polyline
      * @param layer layer name to use
      * @param lineStyleName line type to use
-     * @param color coolor to use
+     * @param color color to use
      * @param width line width to use
      */
     void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsDxfExport
      * @param polygon polygon
      * @param layer layer name to use
      * @param hatchPattern hatchPattern to use
-     * @param color coolor to use
+     * @param color color to use
      */
     void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
 

@@ -919,6 +919,7 @@ void QgsDxfExport::writeEntities()
 
   // label engine
   QgsLabelingEngineV2 engine;
+  engine.readSettingsFromProject();
   engine.setMapSettings( mapSettings );
 
   // iterate through the maplayers
@@ -4209,63 +4210,98 @@ QString QgsDxfExport::layerName( QgsVectorLayer *vl ) const
 void QgsDxfExport::drawLabel( QString layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings )
 {
   Q_UNUSED( context );
-  QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->feature() );
-  if ( !lf )
+
+  if ( !settings.drawLabels )
     return;
 
-  //label text
-  QString txt = lf->text( label->getPartId() );
+  QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->feature() );
 
-  //angle
-  double angle = label->getAlpha() * 180 / M_PI;
+  // Copy to temp, editable layer settings
+  // these settings will be changed by any data defined values, then used for rendering label components
+  // settings may be adjusted during rendering of components
+  QgsPalLayerSettings tmpLyr( settings );
+
+  // apply any previously applied data defined settings for the label
+  const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues = lf->dataDefinedValues();
+
+  //font
+  QFont dFont = lf->definedFont();
+  QgsDebugMsgLevel( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.textFont.toString(), tmpLyr.textFont.styleName() ), 4 );
+  QgsDebugMsgLevel( QString( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString(), dFont.styleName() ), 4 );
+  tmpLyr.textFont = dFont;
+
+  if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiFollowPlacement )
+  {
+    //calculate font alignment based on label quadrant
+    switch ( label->getQuadrant() )
+    {
+      case pal::LabelPosition::QuadrantAboveLeft:
+      case pal::LabelPosition::QuadrantLeft:
+      case pal::LabelPosition::QuadrantBelowLeft:
+        tmpLyr.multilineAlign = QgsPalLayerSettings::MultiRight;
+        break;
+      case pal::LabelPosition::QuadrantAbove:
+      case pal::LabelPosition::QuadrantOver:
+      case pal::LabelPosition::QuadrantBelow:
+        tmpLyr.multilineAlign = QgsPalLayerSettings::MultiCenter;
+        break;
+      case pal::LabelPosition::QuadrantAboveRight:
+      case pal::LabelPosition::QuadrantRight:
+      case pal::LabelPosition::QuadrantBelowRight:
+        tmpLyr.multilineAlign = QgsPalLayerSettings::MultiLeft;
+        break;
+    }
+  }
+
+  // update tmpLyr with any data defined text style values
+  QgsPalLabeling::dataDefinedTextStyle( tmpLyr, ddValues );
+
+  // update tmpLyr with any data defined text buffer values
+  QgsPalLabeling::dataDefinedTextBuffer( tmpLyr, ddValues );
+
+  // update tmpLyr with any data defined text formatting values
+  QgsPalLabeling::dataDefinedTextFormatting( tmpLyr, ddValues );
+
+  // add to the results
+  QString txt = label->getFeaturePart()->feature()->labelText();
 
   QgsFeatureId fid = label->getFeaturePart()->featureId();
   QString dxfLayer = mDxfLayerNames[layerId][fid];
 
-  //debug: show label rectangle
-#if 0
-  QgsPolyline line;
-  for ( int i = 0; i < 4; ++i )
-  {
-    line.append( QgsPoint( label->getX( i ), label->getY( i ) ) );
-  }
-  writePolyline( line, dxfLayer, "CONTINUOUS", 1, 0.01, true );
-#endif
-
-  QString wrapchr = settings.wrapChar.isEmpty() ? "\n" : settings.wrapChar;
+  QString wrapchr = tmpLyr.wrapChar.isEmpty() ? "\n" : tmpLyr.wrapChar;
 
   //add the direction symbol if needed
-  if ( !txt.isEmpty() && settings.placement == QgsPalLayerSettings::Line && settings.addDirectionSymbol )
+  if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line && tmpLyr.addDirectionSymbol )
   {
     bool prependSymb = false;
-    QString symb = settings.rightDirectionSymbol;
+    QString symb = tmpLyr.rightDirectionSymbol;
 
     if ( label->getReversed() )
     {
       prependSymb = true;
-      symb = settings.leftDirectionSymbol;
+      symb = tmpLyr.leftDirectionSymbol;
     }
 
-    if ( settings.reverseDirectionSymbol )
+    if ( tmpLyr.reverseDirectionSymbol )
     {
-      if ( symb == settings.rightDirectionSymbol )
+      if ( symb == tmpLyr.rightDirectionSymbol )
       {
         prependSymb = true;
-        symb = settings.leftDirectionSymbol;
+        symb = tmpLyr.leftDirectionSymbol;
       }
       else
       {
         prependSymb = false;
-        symb = settings.rightDirectionSymbol;
+        symb = tmpLyr.rightDirectionSymbol;
       }
     }
 
-    if ( settings.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
+    if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
     {
       prependSymb = true;
       symb = symb + wrapchr;
     }
-    else if ( settings.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
+    else if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
     {
       prependSymb = false;
       symb = wrapchr + symb;
@@ -4283,28 +4319,28 @@ void QgsDxfExport::drawLabel( QString layerId, QgsRenderContext& context, pal::L
 
   txt = txt.replace( wrapchr, "\\P" );
 
-  if ( settings.textFont.underline() )
+  if ( tmpLyr.textFont.underline() )
   {
     txt.prepend( "\\L" ).append( "\\l" );
   }
 
-  if ( settings.textFont.overline() )
+  if ( tmpLyr.textFont.overline() )
   {
     txt.prepend( "\\O" ).append( "\\o" );
   }
 
-  if ( settings.textFont.strikeOut() )
+  if ( tmpLyr.textFont.strikeOut() )
   {
     txt.prepend( "\\K" ).append( "\\k" );
   }
 
   txt.prepend( QString( "\\f%1|i%2|b%3;\\H%4;\\W0.75;" )
-               .arg( settings.textFont.family() )
-               .arg( settings.textFont.italic() ? 1 : 0 )
-               .arg( settings.textFont.bold() ? 1 : 0 )
+               .arg( tmpLyr.textFont.family() )
+               .arg( tmpLyr.textFont.italic() ? 1 : 0 )
+               .arg( tmpLyr.textFont.bold() ? 1 : 0 )
                .arg( label->getHeight() / ( 1 + txt.count( "\\P" ) ) * 0.75 ) );
 
-  writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth() * 1.1, angle, settings.textColor );
+  writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.textColor );
 }
 
 void QgsDxfExport::registerDxfLayer( QString layerId, QgsFeatureId fid, QString layerName )
