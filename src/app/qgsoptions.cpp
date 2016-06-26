@@ -1086,7 +1086,11 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "proxy/proxyPassword", leProxyPassword->text() );
   mSettings->setValue( "proxy/proxyType", mProxyTypeComboBox->currentText() );
 
-  mSettings->setValue( "cache/directory", mCacheDirectory->text() );
+  if ( !mCacheDirectory->text().isEmpty() )
+    mSettings->setValue( "cache/directory", mCacheDirectory->text() );
+  else
+    mSettings->remove( "cache/directory" );
+
   mSettings->setValue( "cache/size", QVariant::fromValue( mCacheSize->value()*1024L ) );
 
   //url to exclude from proxys
