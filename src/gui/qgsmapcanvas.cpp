@@ -862,7 +862,7 @@ QgsRectangle QgsMapCanvas::fullExtent() const
 } // extent
 
 
-void QgsMapCanvas::setExtent( QgsRectangle const & r )
+void QgsMapCanvas::setExtent( const QgsRectangle& r )
 {
   QgsRectangle current = extent();
 
@@ -1134,8 +1134,8 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
     return;
 
   QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
-  setExtent( QgsRectangle( rect.center(), rect.center() ) );
-  refresh();
+  if ( !rect.isNull() )
+    setCenter( rect.center() );
 } // panToSelected
 
 void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
