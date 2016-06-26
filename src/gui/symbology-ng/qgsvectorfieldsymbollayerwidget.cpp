@@ -26,11 +26,13 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
   {
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
+    int i = 0;
     Q_FOREACH ( const QgsField& f, mVectorLayer->fields() )
     {
       QString fieldName = f.name();
-      mXAttributeComboBox->addItem( fieldName );
-      mYAttributeComboBox->addItem( fieldName );
+      mXAttributeComboBox->addItem( mVectorLayer->fields().iconForField( i ), fieldName );
+      mYAttributeComboBox->addItem( mVectorLayer->fields().iconForField( i ), fieldName );
+      i++;
     }
   }
 }
