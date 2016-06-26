@@ -2204,9 +2204,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8173785"
-     inkscape:cx="-178.84017"
-     inkscape:cy="44.183312"
+     inkscape:zoom="1.4086893"
+     inkscape:cx="174.20449"
+     inkscape:cy="-108.709"
      inkscape:current-layer="layer2"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -2287,7 +2287,7 @@
      style="display:inline"
      transform="translate(0,-8)">
     <rect
-       style="opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#c8c8c8;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#6e97c4;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4176"
        width="19"
        height="19"
@@ -2305,38 +2305,30 @@
     <path
        inkscape:connector-curvature="0"
        id="path4686-5"
-       d="m 5,15 4,0"
-       style="display:inline;fill:#919699;fill-opacity:1;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       d="m 5,16 4,0"
+       style="display:inline;fill:#46617e;fill-opacity:1;fill-rule:evenodd;stroke:#455e78;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <rect
        y="13.5"
        x="10.5"
-       height="3"
+       height="5"
        width="8"
        id="rect4416-6"
-       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#fafefe;fill-opacity:1;fill-rule:evenodd;stroke:#787878;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.92156863;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#fafefe;fill-opacity:1;fill-rule:evenodd;stroke:#6e97c4;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       rx="0.5"
+       ry="0.5" />
     <path
        inkscape:connector-curvature="0"
        id="path4686-5-2"
-       d="m 5,20.000001 4,0"
-       style="display:inline;fill:#919699;fill-opacity:1;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       d="m 5,24.000001 4,0"
+       style="display:inline;fill:#919699;fill-opacity:1;fill-rule:evenodd;stroke:#455e78;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <rect
-       y="18.5"
+       y="21.5"
        x="10.500001"
-       height="3"
+       height="5"
        width="8"
        id="rect4416-6-9"
-       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#fafefe;fill-opacity:1;fill-rule:evenodd;stroke:#787878;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.92156863;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
-    <path
-       inkscape:connector-curvature="0"
-       id="path4686-5-2-1"
-       d="m 5,25.000001 4,0"
-       style="display:inline;fill:#919699;fill-opacity:1;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <rect
-       y="23.5"
-       x="10.500001"
-       height="3"
-       width="8"
-       id="rect4416-6-9-2"
-       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#fafefe;fill-opacity:1;fill-rule:evenodd;stroke:#787878;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.92156863;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#fafefe;fill-opacity:1;fill-rule:evenodd;stroke:#6e97c4;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       rx="0.5"
+       ry="0.5" />
   </g>
 </svg>
