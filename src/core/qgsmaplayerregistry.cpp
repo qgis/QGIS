@@ -127,6 +127,9 @@ void QgsMapLayerRegistry::removeMapLayers( const QStringList& theLayerIds )
 
 void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
 {
+  if ( layers.isEmpty() )
+    return;
+
   QStringList layerIds;
 
   Q_FOREACH ( QgsMapLayer* layer, layers )
