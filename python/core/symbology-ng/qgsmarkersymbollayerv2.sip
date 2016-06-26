@@ -220,6 +220,8 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsSimpleMarkerSymbolLayerBase
     void setOutlineColor( const QColor& color );
     QColor fillColor() const;
     void setFillColor( const QColor& color );
+    void setColor( const QColor& color );
+    virtual QColor color() const;
 
     // new methods
 

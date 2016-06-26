@@ -493,7 +493,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   btnChangeColorBorder->setColor( mLayer->borderColor() );
   btnChangeColorBorder->blockSignals( false );
   btnChangeColorFill->blockSignals( true );
-  btnChangeColorFill->setColor( mLayer->color() );
+  btnChangeColorFill->setColor( mLayer->fillColor() );
   btnChangeColorFill->blockSignals( false );
   spinSize->blockSignals( true );
   spinSize->setValue( mLayer->size() );

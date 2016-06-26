@@ -1516,6 +1516,32 @@ QRectF QgsSimpleMarkerSymbolLayerV2::bounds( QPointF point, QgsSymbolV2RenderCon
   return symbolBounds;
 }
 
+void QgsSimpleMarkerSymbolLayerV2::setColor( const QColor& color )
+{
+  if ( shapeIsFilled( mShape ) )
+  {
+    setFillColor( color );
+  }
+  else
+  {
+    setOutlineColor( color );
+  }
+}
+
+QColor QgsSimpleMarkerSymbolLayerV2::color() const
+{
+  if ( shapeIsFilled( mShape ) )
+  {
+    return fillColor();
+  }
+  else
+  {
+    return outlineColor();
+  }
+}
+
+
+
 
 //
 // QgsFilledMarkerSymbolLayer

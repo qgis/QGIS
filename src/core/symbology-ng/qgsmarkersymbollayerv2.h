@@ -257,8 +257,10 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsSimpleMarkerSymbolLay
     QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context ) override;
     QColor outlineColor() const override { return borderColor(); }
     void setOutlineColor( const QColor& color ) override { setBorderColor( color ); }
-    QColor fillColor() const override { return color(); }
-    void setFillColor( const QColor& color ) override { setColor( color ); }
+    QColor fillColor() const override { return mColor; }
+    void setFillColor( const QColor& color ) override { mColor = color; }
+    void setColor( const QColor& color ) override;
+    virtual QColor color() const override;
 
     // new methods
 
