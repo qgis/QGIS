@@ -319,4 +319,17 @@ void QgsVectorFieldSymbolLayer::convertPolarToCartesian( double length, double a
   y = length * cos( angle );
 }
 
+void QgsVectorFieldSymbolLayer::setColor( const QColor& color )
+{
+  if ( mLineSymbol )
+    mLineSymbol->setColor( color );
+
+  mColor = color;
+}
+
+QColor QgsVectorFieldSymbolLayer::color() const
+{
+  return mLineSymbol ? mLineSymbol->color() : mColor;
+}
+
 
