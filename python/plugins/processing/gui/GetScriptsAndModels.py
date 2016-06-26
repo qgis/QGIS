@@ -207,10 +207,10 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         self.tree.addTopLevelItem(self.notinstalledItem)
         self.tree.addTopLevelItem(self.uptodateItem)
 
-        self.webView.setHtml(self.HELP_TEXT)
+        self.txtHelp.setHtml(self.HELP_TEXT)
 
     def setHelp(self, reply, item):
-        """Change the webview HTML content"""
+        """Change the HTML content"""
         QApplication.restoreOverrideCursor()
         if reply.error() != QNetworkReply.NoError:
             html = self.tr('<h2>No detailed description available for this script</h2>')
@@ -222,14 +222,14 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             html += self.tr('<p><b>Created by:</b> %s') % getDescription(ALG_CREATOR, descriptions)
             html += self.tr('<p><b>Version:</b> %s') % getDescription(ALG_VERSION, descriptions)
         reply.deleteLater()
-        self.webView.setHtml(html)
+        self.txtHelp.setHtml(html)
 
     def currentItemChanged(self, item, prev):
         if isinstance(item, TreeItem):
             url = self.urlBase + item.filename.replace(' ', '%20') + '.help'
             self.grabHTTP(url, self.setHelp, item)
         else:
-            self.webView.setHtml(self.HELP_TEXT)
+            self.txtHelp.setHtml(self.HELP_TEXT)
 
     def getTreeBranchForState(self, filename, version):
         if not os.path.exists(os.path.join(self.folder, filename)):

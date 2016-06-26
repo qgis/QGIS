@@ -31,6 +31,7 @@ import webbrowser
 from PyQt4 import uic
 from PyQt4.QtCore import QCoreApplication, QSettings, QByteArray, SIGNAL, QUrl
 from PyQt4.QtGui import QApplication, QDialogButtonBox, QDesktopWidget
+from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.utils import iface
 from qgis.core import *
@@ -64,9 +65,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.setWindowTitle(AlgorithmClassification.getDisplayName(self.alg))
 
-        desktop = QDesktopWidget()
-        if desktop.physicalDpiX() > 96:
-            self.textHelp.setZoomFactor(desktop.physicalDpiX() / 96)
+        #~ desktop = QDesktopWidget()
+        #~ if desktop.physicalDpiX() > 96:
+        #~     self.textHelp.setZoomFactor(desktop.physicalDpiX() / 96)
 
         algHelp = self.alg.shortHelp()
         if algHelp is None:
@@ -84,26 +85,38 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         def linkClicked(url):
             webbrowser.open(url.toString())
-        self.textShortHelp.connect(self.textShortHelp, SIGNAL("anchorClicked(const QUrl&)"), linkClicked)
 
-        self.textHelp.page().setNetworkAccessManager(QgsNetworkAccessManager.instance())
+        self.textShortHelp.anchorClicked.connect(linkClicked)
 
         isText, algHelp = self.alg.help()
         if algHelp is not None:
             algHelp = algHelp if isText else QUrl(algHelp)
             try:
                 if isText:
-                    self.textHelp.setHtml(algHelp)
+                    self.txtHelp.setHtml(algHelp)
                 else:
-                    self.textHelp.settings().clearMemoryCaches()
-                    self.textHelp.load(algHelp)
-            except:
+                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
+                    self.txtHelp.setHtml(html)
+                    rq = QNetworkRequest(algHelp)
+                    self.reply = QgsNetworkAccessManager.instance().get(rq)
+                    self.reply.finished.connect(self.requestFinished)
+            except Exception, e:
                 self.tabWidget.removeTab(2)
         else:
             self.tabWidget.removeTab(2)
 
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+
+    def requestFinished(self):
+        """Change the webview HTML content"""
+        reply = self.sender()
+        if reply.error() != QNetworkReply.NoError:
+            html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
+        else:
+            html = unicode(reply.readAll())
+        reply.deleteLater()
+        self.txtHelp.setHtml(html)
 
     def closeEvent(self, evt):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())

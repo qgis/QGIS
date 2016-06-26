@@ -27,7 +27,9 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import Qt, QUrl, QMetaObject
 from PyQt4.QtGui import QDialog, QDialogButtonBox, QLabel, QLineEdit, QFrame, QPushButton, QSizePolicy, QVBoxLayout, QHBoxLayout, QTabWidget, QWidget, QScrollArea, QComboBox, QTableWidgetItem, QMessageBox
-from PyQt4.QtWebKit import QWebView
+from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
+
+from qgis.core import QgsNetworkAccessManager
 
 from processing.modeler.ModelerAlgorithm import ValueFromInput, \
     ValueFromOutput, Algorithm, ModelerOutput
@@ -166,27 +168,27 @@ class ModelerParametersDialog(QDialog):
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
         self.tabWidget.addTab(self.scrollArea, self.tr('Parameters'))
-        self.webView = QWebView()
+
+        self.txtHelp = QTextBrowser()
 
         html = None
         url = None
-        isText, help = self._alg.help()
-        if help is not None:
-            if isText:
-                html = help
-            else:
-                url = QUrl(help)
-        else:
-            html = self.tr('<h2>Sorry, no help is available for this '
-                           'algorithm.</h2>')
-        try:
-            if html:
-                self.webView.setHtml(html)
-            elif url:
-                self.webView.load(url)
-        except:
-            self.webView.setHtml(self.tr('<h2>Could not open help file :-( </h2>'))
-        self.tabWidget.addTab(self.webView, 'Help')
+        isText, algHelp = self._alg.help()
+        if algHelp is not None:
+            algHelp = algHelp if isText else QUrl(algHelp)
+            try:
+                if isText:
+                    self.txtHelp.setHtml(algHelp)
+                else:
+                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
+                    self.txtHelp.setHtml(html)
+                    self.reply = QgsNetworkAccessManager.instance().get(QNetworkRequest(algHelp))
+                    self.reply.finished.connect(self.requestFinished)
+            except:
+                self.txtHelp.setHtml(self.tr('<h2>No help available for this algorithm</h2>'))
+
+        self.tabWidget.addTab(self.txtHelp, 'Help')
+
         self.verticalLayout2.addWidget(self.tabWidget)
         self.verticalLayout2.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout2)
@@ -204,6 +206,16 @@ class ModelerParametersDialog(QDialog):
             if alg.name not in dependent:
                 opts.append(alg)
         return opts
+
+    def requestFinished(self):
+        """Change the webview HTML content"""
+        reply = self.sender()
+        if reply.error() != QNetworkReply.NoError:
+            html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
+        else:
+            html = unicode(reply.readAll())
+        reply.deleteLater()
+        self.txtHelp.setHtml(html)
 
     def getDependenciesPanel(self):
         return MultipleInputPanel([alg.algorithm.name for alg in self.getAvailableDependencies()])

@@ -74,7 +74,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QWebView" name="webView">
+        <widget class="QTextEdit" name="txtHelp">
          <property name="maximumSize">
           <size>
            <width>10000</width>

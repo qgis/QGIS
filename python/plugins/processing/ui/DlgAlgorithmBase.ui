@@ -47,9 +47,6 @@
          </property>
          <item>
           <widget class="QTextEdit" name="txtLog">
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
            <property name="readOnly">
             <bool>true</bool>
            </property>
@@ -69,13 +66,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QWebView" name="textHelp">
-           <property name="url">
-            <url>
-             <string>about:blank</string>
-            </url>
-           </property>
-          </widget>
+          <widget class="QTextBrowser" name="txtHelp"/>
          </item>
         </layout>
        </widget>
@@ -131,13 +122,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>
