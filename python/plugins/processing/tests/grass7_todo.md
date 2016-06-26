@@ -2,76 +2,22 @@
 
 ## Raster algorithms
 
-* r.basins.fill
-* r.carve: needs a vector input
-* r.category
-* r.category.out
-* r.coin
-* r.colors
-* r.colors.out
-* r.colors.stddev
-* r.composite
-* r.contour.level
-* r.contour.step
-* r.cost.coordinates
-* r.cost.points
-* r.cost.raster
-* r.covar
-* r.cross
-* r.describe
-* r.distance
-* r.drain
-* r.fill.dir
-* r.fillnulls
-* r.flow
-* r.flow.aspect
-* r.flow.aspect.barrier
-* r.flow.barrier
-* r.grow
-* r.grow.distance
-* r.gwflow
-* r.his
+* r.basins.fill: needs different input rasters (result is always empty).
+* r.carve: needs a vector input.
+* r.colors: needs to handle output directories.
+* r.colors.stddev: needs to find a way to test color table.
+* r.contour.level: needs to export vector to GeoJSON (instead of Shapefile).
+* r.contour.step: needs to export vector to GeoJSON (instead of Shapefile).
+* r.drain: needs another dataset.
+* r.flow.aspect.barrier: needs another dataset.
+* r.flow.barrier:  needs another dataset.
+* r.grow: needs another dataset.
+* r.grow.distance: needs another dataset.
+* r.gwflow:  needs another (huge) dataset.
 * r.horizon
 * r.horizon.height
-* r.in.lidar
-* r.in.lidar.info
-* r.info
-* r.kappa
-* r.lake.coords
-* r.lake.layer
-* r.latlong
-* r.li.cwed
-* r.li.cwed.ascii
-* r.li.dominance
-* r.li.dominance.ascii
-* r.li.edgedensity
-* r.li.edgedensity.ascii
-* r.li.mpa
-* r.li.mpa.ascii
-* r.li.mps
-* r.li.mps.ascii
-* r.li.padcv
-* r.li.padcv.ascii
-* r.li.padrange
-* r.li.padrange.ascii
-* r.li.padsd
-* r.li.padsd.ascii
-* r.li.patchdensity
-* r.li.patchdensity.ascii
-* r.li.patchnum
-* r.li.patchnum.ascii
-* r.li.pielou
-* r.li.pielou.ascii
-* r.li.renyi
-* r.li.renyi.ascii
-* r.li.richness
-* r.li.richness.ascii
-* r.li.shannon
-* r.li.shannon.ascii
-* r.li.shape
-* r.li.shape.ascii
-* r.li.simpson
-* r.li.simpson.ascii
+* r.in.lidar: needs another dataset.
+* r.in.lidar.info: needs another dataset.
 * r.mapcalc
 * r.mask.rast
 * r.mask.vect
