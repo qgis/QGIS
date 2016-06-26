@@ -186,48 +186,50 @@ tests:
       output:
         name: expected/grass7/r.what.colors.txt
         type: file
-  - algorithm: grass7:r.watershed
-    name: GRASS7 r.watershed
-    params:
-      '-4': false
-      -a: false
-      -b: false
-      -m: false
-      -s: false
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      convergence: 5
-      elevation:
-        name: custom/grass7/float_raster.tif
-        type: raster
-      max_slope_length: 50
-      memory: 300
-      threshold: 1
-    results:
-      accumulation:
-        hash: 1ecbadff7aee4101be1c3626a7c77ebca3ae598d33672807f4a6fc34
-        type: rasterhash
-      basin:
-        hash: d4691e1bff8bf352508ecbdf7c694208d07ef83bb13b0768418f322c
-        type: rasterhash
-      drainage:
-        hash: 3e97f781cbca662823a53e7a6cb10e1edde2f8d0e4d64c28a62db2c0
-        type: rasterhash
-      half_basin:
-        hash: 431a0c8359b7662169ef8a9adf469da47a282a70981de5bee24e3528
-        type: rasterhash
-      length_slope:
-        hash: 69b5b31ac93a25f01b85e4f7867e5b8720183732d29d50c24204a7b9
-        type: rasterhash
-      slope_steepness:
-        hash: cafb759a5701e78928a43d87e58e552f9186358b1de40c375047f81e
-        type: rasterhash
-      stream:
-        hash: c6e7b081057d120e47e6d10f5abd05e47b42284c7d7974e64c71e053
-        type: rasterhash
-      tci:
-        hash: 6b213bddf1223f392c01ab26e84485c01d652dfcae40aecd186f3295
-        type: rasterhash
+
+# Differences between osgeo4travis and Debian Stretch
+#  - algorithm: grass7:r.watershed
+#    name: GRASS7 r.watershed
+#    params:
+#      '-4': false
+#      -a: false
+#      -b: false
+#      -m: false
+#      -s: false
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      convergence: 5
+#      elevation:
+#        name: custom/grass7/float_raster.tif
+#        type: raster
+#      max_slope_length: 50
+#      memory: 300
+#      threshold: 1
+#    results:
+#      accumulation:
+#        hash: 1ecbadff7aee4101be1c3626a7c77ebca3ae598d33672807f4a6fc34
+#        type: rasterhash
+#      basin:
+#        hash: d4691e1bff8bf352508ecbdf7c694208d07ef83bb13b0768418f322c
+#        type: rasterhash
+#      drainage:
+#        hash: 3e97f781cbca662823a53e7a6cb10e1edde2f8d0e4d64c28a62db2c0
+#        type: rasterhash
+#      half_basin:
+#        hash: 431a0c8359b7662169ef8a9adf469da47a282a70981de5bee24e3528
+#        type: rasterhash
+#      length_slope:
+#        hash: 69b5b31ac93a25f01b85e4f7867e5b8720183732d29d50c24204a7b9
+#        type: rasterhash
+#      slope_steepness:
+#        hash: cafb759a5701e78928a43d87e58e552f9186358b1de40c375047f81e
+#        type: rasterhash
+#      stream:
+#        hash: c6e7b081057d120e47e6d10f5abd05e47b42284c7d7974e64c71e053
+#        type: rasterhash
+#      tci:
+#        hash: 6b213bddf1223f392c01ab26e84485c01d652dfcae40aecd186f3295
+#        type: rasterhash
 
   - algorithm: grass7:r.water.outlet
     name: GRASS7 r.water.outlet
@@ -367,20 +369,21 @@ tests:
         name: expected/grass7/r.univar.txt
         type: file
 
-  - algorithm: grass7:r.transect
-    name: GRASS7 r.transect
-    params:
-      -g: false
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      line: 351710,6688812,90,1000
-      map:
-        name: custom/grass7/float_raster.tif
-        type: raster
-      null_value: '*'
-    results:
-      output:
-        name: expected/grass7/r.transect.txt
-        type: file
+# Differences between osgeo4travis and Debian Stretch
+#- algorithm: grass7:r.transect
+#    name: GRASS7 r.transect
+#    params:
+#      -g: false
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      line: 351710,6688812,90,1000
+#      map:
+#        name: custom/grass7/float_raster.tif
+#        type: raster
+#      null_value: '*'
+#    results:
+#      output:
+#        name: expected/grass7/r.transect.txt
+#        type: file
 
   - algorithm: grass7:r.topmodel.topidxstats
     name: GRASS7 r.topmodel.topidxstats
@@ -544,26 +547,27 @@ tests:
         hash: cd2002486c5117db9c493e365ff6983faf1ea92b1bbea87569d3ebdd
         type: rasterhash
 
-  - algorithm: grass7:r.stream.extract
-    name: GRASS7 r.stream.extract
-    params:
-      GRASS_OUTPUT_TYPE_PARAMETER: '0'
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      d8cut: 0
-      elevation:
-        name: custom/grass7/float_raster.tif
-        type: raster
-      mexp: 0
-      stream_length: 0
-      threshold: 1
-    results:
-      direction:
-        hash: 8499f6e5f81d0b79a0483481b467263246e2c97f1ef652df90e773e2
-        type: rasterhash
-      stream_raster:
-        hash: 916672ce0c35295100bcdc56bc60e26841b9cbb384924ae4f54648a8
-        type: rasterhash
+# Differences between osgeo4travis and Debian Stretch
+#  - algorithm: grass7:r.stream.extract
+#    name: GRASS7 r.stream.extract
+#    params:
+#      GRASS_OUTPUT_TYPE_PARAMETER: '0'
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      d8cut: 0
+#      elevation:
+#        name: custom/grass7/float_raster.tif
+#        type: raster
+#      mexp: 0
+#      stream_length: 0
+#      threshold: 1
+#    results:
+#      direction:
+#        hash: 8499f6e5f81d0b79a0483481b467263246e2c97f1ef652df90e773e2
+#        type: rasterhash
+#      stream_raster:
+#        hash: 916672ce0c35295100bcdc56bc60e26841b9cbb384924ae4f54648a8
+#        type: rasterhash
 
   - algorithm: grass7:r.stats.quantile.out
     name: GRASS7 r.stats.quantile.out
