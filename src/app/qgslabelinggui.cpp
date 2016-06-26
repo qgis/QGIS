@@ -34,6 +34,7 @@
 #include "qgscharacterselectdialog.h"
 #include "qgssvgselectorwidget.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgslogger.h"
 
 #include <QCheckBox>
 #include <QSettings>
@@ -288,7 +289,6 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mBufferSizeDDBtn
   << mBufferTranspDDBtn
   << mBufferTranspFillChbx
-  << mBufferTranspSlider
   << mBufferTranspSpinBox
   << mBufferUnitsDDBtn
   << mCentroidDDBtn
@@ -303,22 +303,18 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mDirectSymbDDBtn
   << mDirectSymbLeftDDBtn
   << mDirectSymbLeftLineEdit
-  << mDirectSymbLeftToolBtn
   << mDirectSymbPlacementDDBtn
   << mDirectSymbRevChkBx
   << mDirectSymbRevDDBtn
   << mDirectSymbRightDDBtn
   << mDirectSymbRightLineEdit
-  << mDirectSymbRightToolBtn
   << mFitInsidePolygonCheckBox
   << mFontBlendModeDDBtn
-  << mFontBoldBtn
   << mFontBoldDDBtn
   << mFontCapitalsComboBox
   << mFontCaseDDBtn
   << mFontColorDDBtn
   << mFontDDBtn
-  << mFontItalicBtn
   << mFontItalicDDBtn
   << mFontLetterSpacingDDBtn
   << mFontLetterSpacingSpinBox
@@ -335,13 +331,10 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mFontSizeDDBtn
   << mFontSizeSpinBox
   << mFontStrikeoutDDBtn
-  << mFontStrikethroughBtn
   << mFontStyleComboBox
   << mFontStyleDDBtn
   << mFontTranspDDBtn
-  << mFontTranspSlider
   << mFontTranspSpinBox
-  << mFontUnderlineBtn
   << mFontUnderlineDDBtn
   << mFontUnitsDDBtn
   << mFontWordSpacingDDBtn
@@ -369,24 +362,13 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mPalShowAllLabelsForLayerChkBx
   << mPointAngleDDBtn
   << mPointAngleSpinBox
-  << mPointOffsetAbove
-  << mPointOffsetAboveLeft
-  << mPointOffsetAboveRight
-  << mPointOffsetBelow
-  << mPointOffsetBelowLeft
-  << mPointOffsetBelowRight
   << mPointOffsetDDBtn
-  << mPointOffsetLeft
-  << mPointOffsetOver
-  << mPointOffsetRight
   << mPointOffsetUnitsDDBtn
   << mPointOffsetXSpinBox
   << mPointOffsetYSpinBox
   << mPointPositionOrderDDBtn
   << mPointQuadOffsetDDBtn
   << mPreviewBackgroundBtn
-  << mPreviewSizeSlider
-  << mPreviewTextBtn
   << mPreviewTextEdit
   << mPriorityDDBtn
   << mPrioritySlider
@@ -418,7 +400,6 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mShadowScaleDDBtn
   << mShadowScaleSpnBx
   << mShadowTranspDDBtn
-  << mShadowTranspSlider
   << mShadowTranspSpnBx
   << mShadowUnderCmbBx
   << mShadowUnderDDBtn
@@ -447,10 +428,8 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mShapeRotationDDBtn
   << mShapeRotationDblSpnBx
   << mShapeRotationTypeDDBtn
-  << mShapeSVGParamsBtn
   << mShapeSVGPathDDBtn
   << mShapeSVGPathLineEdit
-  << mShapeSVGSelectorBtn
   << mShapeSizeCmbBx
   << mShapeSizeTypeDDBtn
   << mShapeSizeUnitsDDBtn
@@ -459,7 +438,6 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mShapeSizeYDDBtn
   << mShapeSizeYSpnBx
   << mShapeTranspDDBtn
-  << mShapeTranspSlider
   << mShapeTranspSpinBox
   << mShapeTypeCmbBx
   << mShapeTypeDDBtn
@@ -469,7 +447,6 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mZIndexSpinBox
   << spinBufferSize
   << wrapCharacterEdit
-  << stackedPlacement
   << mCentroidRadioVisible
   << mCentroidRadioWhole
   << mDirectSymbRadioBtnAbove
@@ -519,33 +496,41 @@ void QgsLabelingGui::connectValueChanged( QList<QWidget *> widgets, const char *
     {
       connect( w, SIGNAL( fieldChanged( QString ) ), this,  slot );
     }
-    else if ( QComboBox* w =  qobject_cast<QComboBox*>( widget ) )
+    else if ( QComboBox* w = qobject_cast<QComboBox*>( widget ) )
     {
       connect( w, SIGNAL( currentIndexChanged( int ) ), this, slot );
     }
-    else if ( QSpinBox* w =  qobject_cast<QSpinBox*>( widget ) )
+    else if ( QSpinBox* w = qobject_cast<QSpinBox*>( widget ) )
     {
       connect( w, SIGNAL( valueChanged( int ) ), this, slot );
     }
-    else if ( QDoubleSpinBox* w =  qobject_cast<QDoubleSpinBox*>( widget ) )
+    else if ( QDoubleSpinBox* w = qobject_cast<QDoubleSpinBox*>( widget ) )
     {
       connect( w , SIGNAL( valueChanged( double ) ), this, slot );
     }
-    else if ( QgsColorButtonV2* w =  qobject_cast<QgsColorButtonV2*>( widget ) )
+    else if ( QgsColorButtonV2* w = qobject_cast<QgsColorButtonV2*>( widget ) )
     {
       connect( w, SIGNAL( colorChanged( QColor ) ), this, slot );
     }
-    else if ( QCheckBox* w =  qobject_cast<QCheckBox*>( widget ) )
+    else if ( QCheckBox* w = qobject_cast<QCheckBox*>( widget ) )
     {
       connect( w, SIGNAL( toggled( bool ) ), this, slot );
     }
-    else if ( QRadioButton* w =  qobject_cast<QRadioButton*>( widget ) )
+    else if ( QRadioButton* w = qobject_cast<QRadioButton*>( widget ) )
     {
       connect( w, SIGNAL( toggled( bool ) ), this, slot );
     }
-    else if ( QLineEdit* w =  qobject_cast<QLineEdit*>( widget ) )
+    else if ( QLineEdit* w = qobject_cast<QLineEdit*>( widget ) )
     {
       connect( w, SIGNAL( textEdited( QString ) ), this, slot );
+    }
+    else if ( QSlider* w = qobject_cast<QSlider*>( widget ) )
+    {
+      connect( w, SIGNAL( valueChanged( int ) ), this, slot );
+    }
+    else
+    {
+      QgsLogger::warning( QString( "Could not create connection for widget %1" ).arg( widget->objectName() ) );
     }
   }
 }
