@@ -116,6 +116,24 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
         self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfLineStringCompoundCurve:5:CompoundCurve')
 
+    def testGpxElevation(self):
+        # GPX without elevation data
+        datasource = os.path.join(TEST_DATA_DIR, 'noelev.gpx')
+        vl = QgsVectorLayer(u'{}|layername=routes'.format(datasource), u'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        f = next(vl.getFeatures())
+        self.assertEqual(f.constGeometry().geometry().wkbType(), QgsWKBTypes.LineString)
+
+        # GPX with elevation data
+        datasource = os.path.join(TEST_DATA_DIR, 'elev.gpx')
+        vl = QgsVectorLayer(u'{}|layername=routes'.format(datasource), u'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        f = next(vl.getFeatures())
+        self.assertEqual(f.constGeometry().geometry().wkbType(), QgsWKBTypes.LineString25D)
+        self.assertEqual(f.constGeometry().geometry().pointN(0).z(), 1)
+        self.assertEqual(f.constGeometry().geometry().pointN(1).z(), 2)
+        self.assertEqual(f.constGeometry().geometry().pointN(2).z(), 3)
+
 
 if __name__ == '__main__':
     unittest.main()
