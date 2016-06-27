@@ -1028,10 +1028,8 @@ void QgsCategorizedSymbolRendererV2Widget::updateSymbolsFromWidget()
     {
       Q_FOREACH ( int idx, selectedCats )
       {
-        QgsRendererCategoryV2 category = mRenderer->categories().value( idx );
-
         QgsSymbolV2* newCatSymbol = mCategorizedSymbol->clone();
-//        newCatSymbol->setColor( mRenderer->categories()[idx].symbol()->color() );
+        newCatSymbol->setColor( mRenderer->categories().at( idx ).symbol()->color() );
         mRenderer->updateCategorySymbol( idx, newCatSymbol );
       }
       emit widgetChanged();
