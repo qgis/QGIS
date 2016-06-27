@@ -879,7 +879,7 @@ void QgsCircularStringV2::sumUpArea( double& sum ) const
     //segment is a full circle, p2 is the center point
     if ( p1 == p3 )
     {
-      double r2 = QgsGeometryUtils::sqrDistance2D( p1, p2 ) / 2.0;
+      double r2 = QgsGeometryUtils::sqrDistance2D( p1, p2 ) / 4.0;
       sum += M_PI * r2;
       continue;
     }
