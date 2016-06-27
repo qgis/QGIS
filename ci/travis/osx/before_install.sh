@@ -15,7 +15,7 @@
 
 brew tap osgeo/osgeo4mac
 brew update
-brew install osgeo/osgeo4mac/qgis-28 --without-postgis --without-postgresql --without-grass --without-gpsbabel --only-dependencies
+brew install osgeo/osgeo4mac/qgis-214 --without-postgis --without-postgresql --without-gpsbabel --only-dependencies
 brew install qca
 brew install spawn-fcgi
 brew install lighttpd
@@ -28,6 +28,7 @@ brew ln expat --force
 brew ln libxml2 --force
 brew ln gettext --force
 brew ln libffi --force
+brew remove gdal
 
 mkdir -p ${HOME}/Library/Python/2.7/lib/python/site-packages
 echo 'import site; site.addsitedir("/usr/local/lib/python2.7/site-packages")' >> ${HOME}/Library/Python/2.7/lib/python/site-packages/homebrew.pth
