@@ -62,7 +62,7 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
                                           QgsSingleBandPseudoColorRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( "singlebandcolordata", QObject::tr( "Singleband color data" ),
                                           QgsSingleBandColorDataRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( "hillshade", QObject::tr( "Hillshade renderer" ),
+  insert( QgsRasterRendererRegistryEntry( "hillshade", QObject::tr( "Hillshade" ),
                                           QgsHillshadeRenderer::create, nullptr ) );
 }
 

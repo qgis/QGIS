@@ -66,10 +66,6 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
   connect( mLightAzimuthDial, SIGNAL( valueChanged( int ) ), this, SLOT( on_mLightAzimuthDail_updated( int ) ) );
   connect( mZFactor, SIGNAL( valueChanged( double ) ), this, SIGNAL( widgetChanged() ) );
   connect( mMultiDirection, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
-
-  QgsBilinearRasterResampler* zoomedInResampler = new QgsBilinearRasterResampler();
-  layer->resampleFilter()->setZoomedInResampler( zoomedInResampler );
-
 }
 
 QgsHillshadeRendererWidget::~QgsHillshadeRendererWidget()
