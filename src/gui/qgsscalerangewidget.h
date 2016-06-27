@@ -62,6 +62,19 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
 
     void setScaleRange( double min, double max );
 
+  signals:
+
+    /** Emitted when the scale range set in the widget is changed.
+     * @param min minimum scale
+     * @param max maximum scale
+     * @note added in QGIS 2.16
+     */
+    void rangeChanged( double min, double max );
+
+  private slots:
+
+    void emitRangeChanged();
+
   private:
     //! pointer to the map canvas used for current buttons.
     QgsMapCanvas* mCanvas;

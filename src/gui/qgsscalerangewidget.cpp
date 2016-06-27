@@ -64,6 +64,9 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   mLayout->setColumnStretch( 3, 0 );
   mLayout->setColumnStretch( 4, 0 );
   mLayout->setColumnStretch( 5, 3 );
+
+  connect( mMinimumScaleWidget, SIGNAL( scaleChanged( double ) ), this, SLOT( emitRangeChanged() ) );
+  connect( mMaximumScaleWidget, SIGNAL( scaleChanged( double ) ), this, SLOT( emitRangeChanged() ) );
 }
 
 QgsScaleRangeWidget::~QgsScaleRangeWidget()
@@ -121,5 +124,10 @@ void QgsScaleRangeWidget::setScaleRange( double min, double max )
 {
   setMaximumScale( max );
   setMinimumScale( min );
+}
+
+void QgsScaleRangeWidget::emitRangeChanged()
+{
+  emit rangeChanged( minimumScale(), maximumScale() );
 }
 
