@@ -668,7 +668,6 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     {
       x[i] *= DEG_TO_RAD;
       y[i] *= DEG_TO_RAD;
-      z[i] *= DEG_TO_RAD;
     }
 
   }
@@ -736,7 +735,6 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     {
       x[i] *= RAD_TO_DEG;
       y[i] *= RAD_TO_DEG;
-      z[i] *= RAD_TO_DEG;
     }
   }
 #ifdef COORDINATE_TRANSFORM_VERBOSE
