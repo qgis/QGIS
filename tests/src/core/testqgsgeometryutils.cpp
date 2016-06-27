@@ -365,37 +365,37 @@ void TestQgsGeometryUtils::testDistanceToVertex()
 
 void TestQgsGeometryUtils::testCircleCenterRadius_data()
 {
-    QTest::addColumn<double>( "x1" );
-    QTest::addColumn<double>( "y1" );
-    QTest::addColumn<double>( "x2" );
-    QTest::addColumn<double>( "y2" );
-    QTest::addColumn<double>( "x3" );
-    QTest::addColumn<double>( "y3" );
-    QTest::addColumn<double>( "expectedRadius" );
-    QTest::addColumn<double>( "expectedCenterX" );
-    QTest::addColumn<double>( "expectedCenterY" );
+  QTest::addColumn<double>( "x1" );
+  QTest::addColumn<double>( "y1" );
+  QTest::addColumn<double>( "x2" );
+  QTest::addColumn<double>( "y2" );
+  QTest::addColumn<double>( "x3" );
+  QTest::addColumn<double>( "y3" );
+  QTest::addColumn<double>( "expectedRadius" );
+  QTest::addColumn<double>( "expectedCenterX" );
+  QTest::addColumn<double>( "expectedCenterY" );
 
-    QTest::newRow( "circleCenterRadius1" ) << 1.0 << 1.0 << 5.0 << 7.0 << 1.0 << 1.0 << sqrt( 13.0 ) << 3.0 << 4.0;
-    QTest::newRow( "circleCenterRadius1" ) << 0.0 << 2.0 << 2.0 << 2.0 << 0.0 << 2.0 << 1.0 << 1.0 << 2.0;
+  QTest::newRow( "circleCenterRadius1" ) << 1.0 << 1.0 << 5.0 << 7.0 << 1.0 << 1.0 << sqrt( 13.0 ) << 3.0 << 4.0;
+  QTest::newRow( "circleCenterRadius1" ) << 0.0 << 2.0 << 2.0 << 2.0 << 0.0 << 2.0 << 1.0 << 1.0 << 2.0;
 }
 
 void TestQgsGeometryUtils::testCircleCenterRadius()
 {
-   QFETCH( double, x1 );
-   QFETCH( double, y1 );
-   QFETCH( double, x2 );
-   QFETCH( double, y2 );
-   QFETCH( double, x3 );
-   QFETCH( double, y3 );
-   QFETCH( double, expectedRadius );
-   QFETCH( double, expectedCenterX );
-   QFETCH( double, expectedCenterY );
+  QFETCH( double, x1 );
+  QFETCH( double, y1 );
+  QFETCH( double, x2 );
+  QFETCH( double, y2 );
+  QFETCH( double, x3 );
+  QFETCH( double, y3 );
+  QFETCH( double, expectedRadius );
+  QFETCH( double, expectedCenterX );
+  QFETCH( double, expectedCenterY );
 
-   double radius, centerX, centerY;
-   QgsGeometryUtils::circleCenterRadius( QgsPointV2( x1, y1 ), QgsPointV2( x2, y2 ), QgsPointV2( x3, y3 ), radius, centerX, centerY );
-   QVERIFY( qgsDoubleNear( expectedRadius, radius ) );
-   QVERIFY( qgsDoubleNear( expectedCenterX, centerX ) );
-   QVERIFY( qgsDoubleNear( expectedCenterY, centerY ) );
+  double radius, centerX, centerY;
+  QgsGeometryUtils::circleCenterRadius( QgsPointV2( x1, y1 ), QgsPointV2( x2, y2 ), QgsPointV2( x3, y3 ), radius, centerX, centerY );
+  QVERIFY( qgsDoubleNear( expectedRadius, radius ) );
+  QVERIFY( qgsDoubleNear( expectedCenterX, centerX ) );
+  QVERIFY( qgsDoubleNear( expectedCenterY, centerY ) );
 }
 
 
