@@ -88,8 +88,7 @@ QgsPanelWidgetStack::QgsPanelWidgetStack( QWidget *parent )
     : QWidget( parent )
 {
   setupUi( this );
-  mBackButton->hide();
-  mTitleText->hide();
+  clear();
 
   connect( mBackButton, SIGNAL( pressed() ), this, SLOT( acceptCurrentPanel() ) );
 }
@@ -116,17 +115,20 @@ QgsPanelWidget *QgsPanelWidgetStack::takeMainWidget()
 
 void QgsPanelWidgetStack::clear()
 {
-  // TODO Remove all widgets;
   for ( int i = mStackedWidget->count(); i >= 0; i-- )
   {
-    QgsPanelWidget* widget = qobject_cast<QgsPanelWidget*>( mStackedWidget->widget( i ) );
-    if ( widget )
+    if ( QgsPanelWidget* panelWidget = qobject_cast<QgsPanelWidget*>( mStackedWidget->widget( i ) ) )
+    {
+      mStackedWidget->removeWidget( panelWidget );
+      if ( panelWidget->autoDelete() )
+      {
+        panelWidget->deleteLater();
+      }
+    }
+    else if ( QWidget* widget = mStackedWidget->widget( i ) )
     {
       mStackedWidget->removeWidget( widget );
-      if ( widget->autoDelete() )
-      {
-        widget->deleteLater();
-      }
+      widget->deleteLater();
     }
   }
   mTitles.clear();

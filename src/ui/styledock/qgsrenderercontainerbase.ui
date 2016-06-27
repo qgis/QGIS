@@ -77,8 +77,6 @@
        </property>
        <item>
         <widget class="QStackedWidget" name="mStackedWidget">
-         <widget class="QWidget" name="page"/>
-         <widget class="QWidget" name="page_2"/>
         </widget>
        </item>
       </layout>
