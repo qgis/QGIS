@@ -159,7 +159,7 @@ void QgsOgrProvider::repack()
       OGR_DS_Destroy( ogrDataSource );
       ogrLayer = ogrOrigLayer = nullptr;
 
-      ogrDataSource = OGROpen( TO8F( mFilePath ), true, nullptr );
+      ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), true, nullptr );
       if ( ogrDataSource )
       {
         if ( mLayerName.isNull() )
@@ -2853,6 +2853,33 @@ void QgsOgrProvider::forceReload()
   QgsOgrConnPool::instance()->invalidateConnections( dataSourceUri() );
 }
 
+OGRDataSourceH QgsOgrProviderUtils::OGROpenWrapper( const char* pszPath, bool bUpdate, OGRSFDriverH *phDriver )
+{
+  CPLErrorReset();
+  OGRSFDriverH hDriver = nullptr;
+  OGRDataSourceH hDS = OGROpen( pszPath, bUpdate, &hDriver );
+  if ( phDriver )
+    *phDriver = hDriver;
+  if ( !hDS )
+    return nullptr;
+  // GDAL < 1.11.5 has a crashing bug with GeoPackage databases with curve geometry
+  // types (https://trac.osgeo.org/gdal/ticket/6558)
+#if GDAL_VERSION_MAJOR == 1 && GDAL_VERSION_MINOR == 11 && GDAL_VERSION_MACRO < 5
+  const char* pszLastErrorMsg = CPLGetLastErrorMsg();
+  if ( hDriver == OGRGetDriverByName( "GPKG" ) &&
+       strstr( pszLastErrorMsg, "geometry column" ) &&
+       strstr( pszLastErrorMsg, "of type" ) &&
+       strstr( pszLastErrorMsg, "ignored" ) )
+  {
+    QgsDebugMsg( QString( "Ignoring %1 that is a GeoPackage DB with curve geometries" ).arg( pszPath ) );
+    OGR_DS_Destroy( hDS );
+    hDS = nullptr;
+  }
+#endif
+  return hDS;
+}
+
+
 QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QString& ogrDriverName )
 {
   if ( ogrDriverName == "MySQL" )
@@ -3087,7 +3114,7 @@ void QgsOgrProvider::open( OpenMode mode )
 
   // first try to open in update mode (unless specified otherwise)
   if ( !openReadOnly )
-    ogrDataSource = OGROpen( TO8F( mFilePath ), true, &ogrDriver );
+    ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), true, &ogrDriver );
 
   mValid = false;
   if ( ogrDataSource )
@@ -3104,7 +3131,7 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 
     // try to open read-only
-    ogrDataSource = OGROpen( TO8F( mFilePath ), false, &ogrDriver );
+    ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), false, &ogrDriver );
   }
 
   if ( ogrDataSource )
@@ -3165,7 +3192,7 @@ void QgsOgrProvider::open( OpenMode mode )
     ogrLayer = ogrOrigLayer = nullptr;
     mValid = false;
 
-    ogrDataSource = OGROpen( TO8F( mFilePath ), false, &ogrDriver );
+    ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), false, &ogrDriver );
 
     mWriteAccess = false;
 

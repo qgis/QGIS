@@ -391,4 +391,6 @@ class QgsOgrProviderUtils
     /** Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant& value );
+
+    static OGRDataSourceH OGROpenWrapper( const char* pszPath, bool bUpdate, OGRSFDriverH *phDriver );
 };

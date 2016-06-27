@@ -40,7 +40,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
 
   OGRRegisterAll();
   OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
+  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mPath ), true, &hDriver );
 
   if ( hDataSource )
   {
@@ -195,7 +195,7 @@ QVector<QgsDataItem*> QgsOgrDataCollectionItem::createChildren()
   QVector<QgsDataItem*> children;
 
   OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), false, &hDriver );
+  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mPath ), false, &hDriver );
   if ( !hDataSource )
     return children;
   int numLayers = OGR_DS_GetLayerCount( hDataSource );
@@ -363,7 +363,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  OGRDataSourceH hDataSource = OGROpen( TO8F( thePath ), false, &hDriver );
+  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( thePath ), false, &hDriver );
   CPLPopErrorHandler();
 
   if ( ! hDataSource )
