@@ -30,5 +30,6 @@ cmake \
   -DWITH_PYSPATIALITE=ON \
   -DQWT_INCLUDE_DIR=/usr/local/opt/qwt/lib/qwt.framework/Headers/ \
   -DQWT_LIBRARY=/usr/local/opt/qwt/lib/qwt.framework/qwt \
+  -DGDAL_CONFIG=/usr/local/opt/gdal-20/bin/gdal-config \
   -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
   ..
