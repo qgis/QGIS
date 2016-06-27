@@ -290,7 +290,20 @@ class CORE_EXPORT QgsDxfExport
     //! return list of available DXF encodings
     static QStringList encodings();
 
+    /** Output the label
+     * @param layerId id of the layer
+     * @param context render context
+     * @param label position of label
+     * @param settings label settings
+     * @note not available in Python bindings
+     */
     void drawLabel( QString layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings );
+
+    /** Register name of layer for feature
+     * @param layerId id of layer
+     * @param fid id of feature
+     * @param layer dxf layer of feature
+     */
     void registerDxfLayer( QString layerId, QgsFeatureId fid, QString layer );
 
   private:

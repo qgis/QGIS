@@ -117,7 +117,7 @@ class QgsDxfExport
      * Get DXF palette index of nearest entry for given color
      * @param color
      */
-    static int closestColorMatch( QRgb pixel );
+    static int closestColorMatch( QRgb color );
 
     /**
      * Get layer name for feature
@@ -215,7 +215,7 @@ class QgsDxfExport
      * @param line polyline
      * @param layer layer name to use
      * @param lineStyleName line type to use
-     * @param color coolor to use
+     * @param color color to use
      * @param width line width to use
      */
     void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
@@ -225,7 +225,7 @@ class QgsDxfExport
      * @param polygon polygon
      * @param layer layer name to use
      * @param hatchPattern hatchPattern to use
-     * @param color coolor to use
+     * @param color color to use
      */
     void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
 
@@ -269,5 +269,21 @@ class QgsDxfExport
 
     //! return list of available DXF encodings
     static QStringList encodings();
+
+    /** Output the label
+     * @param layerId id of the layer
+     * @param context render context
+     * @param label position of label
+     * @param settings label settings
+     * @note not available in Python bindings
+     */
+    // void drawLabel( QString layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings );
+
+    /** Register name of layer for feature
+     * @param layerId id of layer
+     * @param fid id of feature
+     * @param layer dxf layer of feature
+     */
+    void registerDxfLayer( QString layerId, QgsFeatureId fid, QString layer );
 
 };
