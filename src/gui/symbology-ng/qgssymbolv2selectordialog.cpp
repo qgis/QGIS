@@ -601,6 +601,7 @@ void QgsSymbolV2SelectorWidget::lockLayer()
   if ( !layer )
     return;
   layer->setLocked( btnLock->isChecked() );
+  emit symbolModified();
 }
 
 void QgsSymbolV2SelectorWidget::duplicateLayer()
