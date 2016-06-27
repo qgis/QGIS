@@ -158,7 +158,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
     QList<QgsSymbolV2*> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();
-    void refreshSymbolView() override { populateCategories(); }
+    void refreshSymbolView() override;
     void keyPressEvent( QKeyEvent* event ) override;
 
   protected:

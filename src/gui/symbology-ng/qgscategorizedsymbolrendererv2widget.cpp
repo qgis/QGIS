@@ -915,6 +915,12 @@ QgsCategoryList QgsCategorizedSymbolRendererV2Widget::selectedCategoryList()
   return cl;
 }
 
+void QgsCategorizedSymbolRendererV2Widget::refreshSymbolView()
+{
+  populateCategories();
+  emit widgetChanged();
+}
+
 void QgsCategorizedSymbolRendererV2Widget::showSymbolLevels()
 {
   showSymbolLevelsDialog( mRenderer );

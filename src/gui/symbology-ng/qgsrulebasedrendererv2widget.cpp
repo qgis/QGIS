@@ -400,6 +400,7 @@ void QgsRuleBasedRendererV2Widget::refreshSymbolView()
     treeRules->populateRules();
   }
   */
+  emit widgetChanged();
 }
 
 void QgsRuleBasedRendererV2Widget::keyPressEvent( QKeyEvent* event )
@@ -654,7 +655,7 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::
 
   connect( btnExpressionBuilder, SIGNAL( clicked() ), this, SLOT( buildExpression() ) );
   connect( btnTestFilter, SIGNAL( clicked() ), this, SLOT( testFilter() ) );
-  connect( editFilter, SIGNAL(textChanged(QString)), this, SIGNAL(widgetChanged()));
+  connect( editFilter, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
 
 }
 
