@@ -334,6 +334,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       case 0: // Style
       {
         QgsRendererV2PropertiesDialog* styleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyleV2::defaultStyle(), true, mStackedWidget );
+        styleWidget->setMapCanvas( mMapCanvas );
         styleWidget->setDockMode( true );
         connect( styleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         QgsPanelWidgetWrapper* wrapper = new QgsPanelWidgetWrapper( styleWidget, mStackedWidget );
