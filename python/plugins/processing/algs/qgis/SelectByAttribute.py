@@ -94,7 +94,7 @@ class SelectByAttribute(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Operators %s can be used only with string fields.' % op))
 
-        if fieldType in [QVariant.Int, QVariant.Double]:
+        if fieldType in [QVariant.Int, QVariant.Double, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
             expr = '"%s" %s %s' % (fieldName, operator, value)
         elif fieldType == QVariant.String:
             if operator not in self.OPERATORS[-2:]:
