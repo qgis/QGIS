@@ -72,6 +72,13 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 
     void setPageFactories( QList<QgsLayerStylingPanelFactory*> factories );
 
+    /** Sets whether updates of the styling widget are blocked. This can be called to prevent
+     * the widget being refreshed multiple times when a batch of layer style changes are
+     * about to be applied
+     * @param blocked set to true to block updates, or false to re-allow updates
+     */
+    void blockUpdates( bool blocked );
+
   signals:
     void styleChanged( QgsMapLayer* layer );
 
@@ -81,9 +88,10 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void autoApply();
     void undo();
     void redo();
+    void updateCurrentWidgetLayer();
 
   private slots:
-    void updateCurrentWidgetLayer();
+
     void layerAboutToBeRemoved( QgsMapLayer* layer );
     void liveApplyToggled( bool value );
 

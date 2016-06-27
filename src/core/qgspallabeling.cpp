@@ -1244,9 +1244,8 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/zIndex", zIndex );
 
   writeDataDefinedPropertyMap( layer, nullptr, dataDefinedProperties );
+  layer->emitStyleChanged();
 }
-
-
 
 void QgsPalLayerSettings::readXml( QDomElement& elem )
 {

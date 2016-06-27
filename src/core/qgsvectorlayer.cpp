@@ -659,6 +659,7 @@ void QgsVectorLayer::setDiagramRenderer( QgsDiagramRendererV2* r )
   delete mDiagramRenderer;
   mDiagramRenderer = r;
   emit rendererChanged();
+  emit styleChanged();
 }
 
 QGis::GeometryType QgsVectorLayer::geometryType() const
@@ -2964,6 +2965,7 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
     mSymbolFeatureCountMap.clear();
 
     emit rendererChanged();
+    emit styleChanged();
   }
 }
 
@@ -3469,6 +3471,7 @@ void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlend
 {
   mFeatureBlendMode = featureBlendMode;
   emit featureBlendModeChanged( featureBlendMode );
+  emit styleChanged();
 }
 
 /** Read blend mode for layer */
@@ -3482,6 +3485,7 @@ void QgsVectorLayer::setLayerTransparency( int layerTransparency )
 {
   mLayerTransparency = layerTransparency;
   emit layerTransparencyChanged( layerTransparency );
+  emit styleChanged();
 }
 
 /** Read transparency for layer */

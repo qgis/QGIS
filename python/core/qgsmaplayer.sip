@@ -618,6 +618,11 @@ class QgsMapLayer : QObject
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const;
 
+    /** Triggers an emission of the styleChanged() signal.
+     * @note added in QGIS 2.16
+     */
+    void emitStyleChanged();
+
   signals:
 
     //! @deprecated in 2.4 - not emitted anymore
@@ -649,8 +654,18 @@ class QgsMapLayer : QObject
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
     void blendModeChanged( QPainter::CompositionMode blendMode );
 
-    /** Signal emitted when renderer is changed */
+    /** Signal emitted when renderer is changed.
+     * @see styleChanged()
+    */
     void rendererChanged();
+
+    /** Signal emitted whenever a change affects the layer's style. Ie this may be triggered
+     * by renderer changes, label style changes, or other style changes such as blend
+     * mode or layer opacity changes.
+     * @note added in QGIS 2.16
+     * @see rendererChanged()
+    */
+    void styleChanged();
 
     /**
      * Signal emitted when legend of the layer has changed

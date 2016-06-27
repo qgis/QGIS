@@ -936,6 +936,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   qDeleteAll( myEnhancements );
 
   emit repaintRequested();
+  emit styleChanged();
 }
 
 void QgsRasterLayer::setDefaultContrastEnhancement()
@@ -1076,6 +1077,7 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
   if ( !theRenderer ) { return; }
   mPipe.set( theRenderer );
   emit rendererChanged();
+  emit styleChanged();
 }
 
 void QgsRasterLayer::showProgress( int theValue )

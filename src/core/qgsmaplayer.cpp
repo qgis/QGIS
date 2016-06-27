@@ -147,6 +147,7 @@ void QgsMapLayer::setBlendMode( QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
   emit blendModeChanged( blendMode );
+  emit styleChanged();
 }
 
 /** Read blend mode for layer */
@@ -1705,6 +1706,11 @@ void QgsMapLayer::triggerRepaint()
 QString QgsMapLayer::metadata()
 {
   return QString();
+}
+
+void QgsMapLayer::emitStyleChanged()
+{
+  emit styleChanged();
 }
 
 void QgsMapLayer::setExtent( const QgsRectangle &r )

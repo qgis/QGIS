@@ -11345,10 +11345,14 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
       vlp->addPropertiesPageFactory( factory );
     }
 
+    mMapStyleWidget->blockUpdates( true );
     if ( vlp->exec() )
     {
       activateDeactivateLayerRelatedActions( ml );
+      mMapStyleWidget->updateCurrentWidgetLayer();
     }
+    mMapStyleWidget->blockUpdates( false );
+
     delete vlp; // delete since dialog cannot be reused without updating code
   }
   else if ( ml->type() == QgsMapLayer::PluginLayer )

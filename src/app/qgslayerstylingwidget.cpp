@@ -95,13 +95,37 @@ void QgsLayerStylingWidget::setPageFactories( QList<QgsLayerStylingPanelFactory 
   mPageFactories.append( mStyleManagerFactory );
 }
 
+void QgsLayerStylingWidget::blockUpdates( bool blocked )
+{
+  if ( !mCurrentLayer )
+    return;
+
+  if ( blocked )
+  {
+    disconnect( mCurrentLayer, SIGNAL( styleChanged() ), this, SLOT( updateCurrentWidgetLayer() ) );
+  }
+  else
+  {
+    connect( mCurrentLayer, SIGNAL( styleChanged() ), this, SLOT( updateCurrentWidgetLayer() ) );
+  }
+}
+
 void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
 {
+  if ( layer == mCurrentLayer )
+    return;
+
+  if ( mCurrentLayer )
+  {
+    disconnect( mCurrentLayer, SIGNAL( styleChanged() ), this, SLOT( updateCurrentWidgetLayer() ) );
+  }
+
   if ( !layer || !layer->isSpatial() )
   {
     mLayerCombo->setLayer( nullptr );
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
     mLastStyleXml.clear();
+    mCurrentLayer = nullptr;
     return;
   }
 
@@ -112,9 +136,10 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   }
 
   mCurrentLayer = layer;
-  connect( mCurrentLayer, SIGNAL( repaintRequested() ), this, SLOT( updateCurrentWidgetLayer() ) );
+  connect( mCurrentLayer, SIGNAL( styleChanged() ), this, SLOT( updateCurrentWidgetLayer() ) );
 
   int lastPage = mOptionsListWidget->currentIndex().row();
+  mOptionsListWidget->blockSignals( true );
   mOptionsListWidget->clear();
   mUserPages.clear();
   if ( layer->type() == QgsMapLayer::VectorLayer )
@@ -140,6 +165,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     }
   }
   mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "mActionHistory.svg" ), "" ) );
+  mOptionsListWidget->blockSignals( false );
 
   if ( sameLayerType )
   {
@@ -164,7 +190,7 @@ void QgsLayerStylingWidget::apply()
   if ( !mCurrentLayer )
     return;
 
-  disconnect( mCurrentLayer, SIGNAL( repaintRequested() ), this, SLOT( updateCurrentWidgetLayer() ) );
+  disconnect( mCurrentLayer, SIGNAL( styleChanged() ), this, SLOT( updateCurrentWidgetLayer() ) );
 
   QString undoName = "Style Change";
 
@@ -213,7 +239,7 @@ void QgsLayerStylingWidget::apply()
     mMapCanvas->clearCache();
     mMapCanvas->refresh();
   }
-  disconnect( mCurrentLayer, SIGNAL( repaintRequested() ), this, SLOT( updateCurrentWidgetLayer() ) );
+  connect( mCurrentLayer, SIGNAL( styleChanged() ), this, SLOT( updateCurrentWidgetLayer() ) );
 }
 
 void QgsLayerStylingWidget::autoApply()
@@ -374,8 +400,7 @@ void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer* layer )
   if ( layer == mCurrentLayer )
   {
     mAutoApplyTimer->stop();
-    mStackedWidget->setCurrentIndex( mNotSupportedPage );
-    mCurrentLayer = nullptr;
+    setLayer( nullptr );
   }
 }
 
