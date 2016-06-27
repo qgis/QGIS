@@ -97,7 +97,7 @@ class Merge(GeoAlgorithm):
                 sattributes = feature.attributes()
                 dattributes = []
                 for dindex, dfield in enumerate(fields):
-                    if (dfield.type() == QVariant.Int):
+                    if (dfield.type() == QVariant.Int, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong):
                         dattribute = 0
                     elif (dfield.type() == QVariant.Double):
                         dattribute = 0.0
