@@ -144,27 +144,39 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   mUserPages.clear();
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ), "" ) );
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "labelingSingle.svg" ), "" ) );
+    QListWidgetItem* symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ), QString() );
+    symbolItem->setData( Qt::UserRole, Symbology );
+    mOptionsListWidget->addItem( symbolItem );
+    QListWidgetItem* labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( "labelingSingle.svg" ), QString() );
+    labelItem->setData( Qt::UserRole, VectorLabeling );
+    mOptionsListWidget->addItem( labelItem );
   }
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ), "" ) );
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/transparency.png" ), "" ) );
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/histogram.png" ), "" ) );
+    QListWidgetItem* symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ), QString() );
+    symbolItem->setData( Qt::UserRole, Symbology );
+    mOptionsListWidget->addItem( symbolItem );
+    QListWidgetItem* transparencyItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/transparency.png" ), QString() );
+    transparencyItem->setData( Qt::UserRole, RasterTransparency );
+    mOptionsListWidget->addItem( transparencyItem );
+    QListWidgetItem* histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/histogram.png" ), QString() );
+    histogramItem->setData( Qt::UserRole, RasterHistogram );
+    mOptionsListWidget->addItem( histogramItem );
   }
 
   Q_FOREACH ( QgsLayerStylingPanelFactory* factory, mPageFactories )
   {
     if ( factory->supportsLayer( layer ) )
     {
-      QListWidgetItem* item =  new QListWidgetItem( factory->icon(), "" );
+      QListWidgetItem* item =  new QListWidgetItem( factory->icon(), QString() );
       mOptionsListWidget->addItem( item );
       int row = mOptionsListWidget->row( item );
       mUserPages[row] = factory;
     }
   }
-  mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "mActionHistory.svg" ), "" ) );
+  QListWidgetItem* historyItem = new QListWidgetItem( QgsApplication::getThemeIcon( "mActionHistory.svg" ), QString() );
+  historyItem->setData( Qt::UserRole, History );
+  mOptionsListWidget->addItem( historyItem );
   mOptionsListWidget->blockSignals( false );
 
   if ( sameLayerType )
@@ -393,6 +405,19 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   }
 
   mBlockAutoApply = false;
+}
+
+void QgsLayerStylingWidget::setCurrentPage( QgsLayerStylingWidget::Page page )
+{
+  for ( int i = 0; i < mOptionsListWidget->count(); ++i )
+  {
+    int data = mOptionsListWidget->item( i )->data( Qt::UserRole ).toInt();
+    if ( data == static_cast< int >( page ) )
+    {
+      mOptionsListWidget->setCurrentRow( i );
+      return;
+    }
+  }
 }
 
 void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer* layer )

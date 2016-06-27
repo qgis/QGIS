@@ -66,6 +66,16 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 {
     Q_OBJECT
   public:
+
+    enum Page
+    {
+      Symbology = 1,
+      VectorLabeling,
+      RasterTransparency,
+      RasterHistogram,
+      History,
+    };
+
     QgsLayerStylingWidget( QgsMapCanvas *canvas, QList<QgsLayerStylingPanelFactory *> pages, QWidget *parent = 0 );
     ~QgsLayerStylingWidget();
     QgsMapLayer* layer() { return mCurrentLayer; }
@@ -89,6 +99,11 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void undo();
     void redo();
     void updateCurrentWidgetLayer();
+
+    /** Sets the current visible page in the widget.
+     * @param page standard page to display
+     */
+    void setCurrentPage( Page page );
 
   private slots:
 

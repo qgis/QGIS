@@ -5819,6 +5819,7 @@ void QgisApp::labeling()
   }
 
   mapStyleDock( true );
+  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::VectorLabeling );
 }
 
 void QgisApp::setMapStyleDockLayer( QgsMapLayer* layer )
