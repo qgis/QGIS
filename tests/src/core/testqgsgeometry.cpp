@@ -604,7 +604,7 @@ void TestQgsGeometry::pointV2()
   p16.transform( tr, QgsCoordinateTransform::ForwardTransform );
   QVERIFY( qgsDoubleNear( p16.x(), 175.771, 0.001 ) );
   QVERIFY( qgsDoubleNear( p16.y(), -39.722, 0.001 ) );
-  QVERIFY( qgsDoubleNear( p16.z(), 57.2958, 0.001 ) );
+  QVERIFY( qgsDoubleNear( p16.z(), 1.0, 0.001 ) );
   QCOMPARE( p16.m(), 2.0 );
   p16.transform( tr, QgsCoordinateTransform::ReverseTransform );
   QVERIFY( qgsDoubleNear( p16.x(), 6374985, 1 ) );
@@ -1489,11 +1489,11 @@ void TestQgsGeometry::lineStringV2()
   l22.transform( tr, QgsCoordinateTransform::ForwardTransform );
   QVERIFY( qgsDoubleNear( l22.pointN( 0 ).x(), 175.771, 0.001 ) );
   QVERIFY( qgsDoubleNear( l22.pointN( 0 ).y(), -39.722, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l22.pointN( 0 ).z(), 57.2958, 0.001 ) );
+  QVERIFY( qgsDoubleNear( l22.pointN( 0 ).z(), 1.0, 0.001 ) );
   QCOMPARE( l22.pointN( 0 ).m(), 2.0 );
   QVERIFY( qgsDoubleNear( l22.pointN( 1 ).x(), 176.959, 0.001 ) );
   QVERIFY( qgsDoubleNear( l22.pointN( 1 ).y(), -38.798, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l22.pointN( 1 ).z(), 171.887, 0.001 ) );
+  QVERIFY( qgsDoubleNear( l22.pointN( 1 ).z(), 3.0, 0.001 ) );
   QCOMPARE( l22.pointN( 1 ).m(), 4.0 );
 
   //reverse transform
