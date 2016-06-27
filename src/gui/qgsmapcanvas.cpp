@@ -1207,7 +1207,13 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
 
   QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
   if ( !rect.isNull() )
+  {
     setCenter( rect.center() );
+  }
+  else
+  {
+    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "Geometry is NULL" ), QgsMessageBar::WARNING );
+  }
 } // panToSelected
 
 void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
