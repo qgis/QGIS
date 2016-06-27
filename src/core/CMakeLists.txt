@@ -840,12 +840,30 @@ SET(QGIS_CORE_HDRS
   layertree/qgslayertreeutils.h
 
   geometry/qgsabstractgeometryv2.h
+  geometry/qgscircularstringv2.h
+  geometry/qgscompoundcurvev2.h
+  geometry/qgscurvepolygonv2.h
+  geometry/qgscurvev2.h
+  geometry/qgsgeometrycollectionv2.h
+  geometry/qgsgeometryeditutils.h
+  geometry/qgsgeometryengine.h
+  geometry/qgsgeometryfactory.h
   geometry/qgsgeometry.h
+  geometry/qgsgeometryutils.h
+  geometry/qgsgeos.h
   geometry/qgsinternalgeometryengine.h
+  geometry/qgslinestringv2.h
+  geometry/qgsmulticurvev2.h
+  geometry/qgsmultilinestringv2.h
+  geometry/qgsmultipointv2.h
+  geometry/qgsmultipolygonv2.h
+  geometry/qgsmultisurfacev2.h
   geometry/qgspointv2.h
+  geometry/qgspolygonv2.h
+  geometry/qgssurfacev2.h
   geometry/qgswkbptr.h
-  geometry/qgswkbtypes.h
   geometry/qgswkbsimplifierptr.h
+  geometry/qgswkbtypes.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
