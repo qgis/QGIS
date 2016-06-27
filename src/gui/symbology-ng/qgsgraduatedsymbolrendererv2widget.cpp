@@ -1082,10 +1082,14 @@ QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
 
 QgsSymbolV2* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const
 {
+  int decimalPlaces = mRenderer->labelFormat().precision() + 2;
+  if ( decimalPlaces < 0 )
+    decimalPlaces = 0;
+  double precision = 1.0 / qPow( 10, decimalPlaces );
+
   for ( QgsRangeList::const_iterator it = ranges.begin(); it != ranges.end(); ++it )
   {
-    //range string has been created with option 'f',4
-    if ( qgsDoubleNear( lowerBound, it->lowerValue(), 0.0001 ) && qgsDoubleNear( upperBound, it->upperValue(), 0.0001 ) )
+    if ( qgsDoubleNear( lowerBound, it->lowerValue(), precision ) && qgsDoubleNear( upperBound, it->upperValue(), precision ) )
     {
       return it->symbol();
     }
