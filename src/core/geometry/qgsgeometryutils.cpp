@@ -359,9 +359,9 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPointV2& pt1, const QgsPoint
   //closed circle
   if ( qgsDoubleNear( pt1.x(), pt3.x() ) && qgsDoubleNear( pt1.y(), pt3.y() ) )
   {
-    centerX = pt2.x();
-    centerY = pt2.y();
-    radius = sqrt( pow( pt2.x() - pt1.x(), 2.0 ) + pow( pt2.y() - pt1.y(), 2.0 ) );
+    centerX = ( pt1.x() + pt2.x() ) / 2.0;
+    centerY = ( pt1.y() + pt2.y() ) / 2.0;
+    radius = sqrt( pow( centerX - pt1.x(), 2.0 ) + pow( centerY - pt1.y(), 2.0 ) );
     return;
   }
 
