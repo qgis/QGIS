@@ -717,7 +717,11 @@ void QgsGraduatedSymbolRendererV2Widget::updateSymbolsFromWidget()
       {
         int rangeIdx = idx.row();
         QgsSymbolV2* newRangeSymbol = mGraduatedSymbol->clone();
-        newRangeSymbol->setColor( mRenderer->ranges()[rangeIdx].symbol()->color() );
+        if ( selectedIndexes.count() > 1 )
+        {
+          //if updating multiple ranges, retain the existing range colors
+          newRangeSymbol->setColor( mRenderer->ranges().at( rangeIdx ).symbol()->color() );
+        }
         mRenderer->updateRangeSymbol( rangeIdx, newRangeSymbol );
       }
     }
