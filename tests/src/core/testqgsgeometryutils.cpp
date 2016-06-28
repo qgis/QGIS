@@ -46,6 +46,7 @@ class TestQgsGeometryUtils: public QObject
     void testDistanceToVertex();
     void testCircleCenterRadius_data();
     void testCircleCenterRadius();
+    void testSqrDistToLine();
 };
 
 
@@ -396,6 +397,24 @@ void TestQgsGeometryUtils::testCircleCenterRadius()
   QVERIFY( qgsDoubleNear( expectedRadius, radius ) );
   QVERIFY( qgsDoubleNear( expectedCenterX, centerX ) );
   QVERIFY( qgsDoubleNear( expectedCenterY, centerY ) );
+}
+
+//QgsGeometryUtils::sqrDistToLine
+void TestQgsGeometryUtils::testSqrDistToLine()
+{
+
+  // See http://hub.qgis.org/issues/13952#note-26
+  QgsPoint qp( 771938, 6.95593e+06 );
+  QgsPoint p1( 771946, 6.95593e+06 );
+  QgsPoint p2( 771904, 6.95595e+06 );
+  double rx = 0, ry = 0;
+  double epsilon = 1e-18;
+  double sqrDist = QgsGeometryUtils::sqrDistToLine( qp.x(), qp.y(),
+                   p1.x(), p1.y(),
+                   p2.x(), p2.y(),
+                   rx, ry, epsilon );
+  sqrDist = round( sqrDist * 100 ) / 100;
+  QCOMPARE( sqrDist, 11.83 );
 }
 
 
