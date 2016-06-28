@@ -447,6 +447,7 @@ void QgsSelectedFeature::selectVertex( int vertexNr )
   entry->setSelected();
 
   emit selectionChanged();
+  emit lastVertexChanged( entry->point() );
 }
 
 void QgsSelectedFeature::deselectVertex( int vertexNr )
@@ -456,8 +457,23 @@ void QgsSelectedFeature::deselectVertex( int vertexNr )
 
   QgsVertexEntry *entry = mVertexMap.at( vertexNr );
   entry->setSelected( false );
-
   emit selectionChanged();
+
+  //todo: take another selected vertex as 'lastVertexChanged'
+  QList<QgsVertexEntry*>::const_iterator vIt = mVertexMap.constBegin();
+  for ( ; vIt != mVertexMap.constEnd(); ++vIt )
+  {
+    if (( *vIt )->isSelected() )
+    {
+      emit lastVertexChanged(( *vIt )->point() );
+      return;
+    }
+  }
+
+  if ( vIt == mVertexMap.constEnd() )
+  {
+    emit lastVertexChanged( QgsPointV2() ); //no selection anymore
+  }
 }
 
 void QgsSelectedFeature::deselectAllVertexes()
@@ -467,6 +483,7 @@ void QgsSelectedFeature::deselectAllVertexes()
     mVertexMap.at( i )->setSelected( false );
   }
   emit selectionChanged();
+  emit lastVertexChanged( QgsPointV2() );
 }
 
 void QgsSelectedFeature::invertVertexSelection( int vertexNr )
@@ -480,19 +497,10 @@ void QgsSelectedFeature::invertVertexSelection( int vertexNr )
 
   entry->setSelected( selected );
   emit selectionChanged();
-}
-
-void QgsSelectedFeature::invertVertexSelection( QVector<int> vertexIndices )
-{
-  Q_FOREACH ( int index, vertexIndices )
+  if ( selected )
   {
-    if ( index < 0 || index >= mVertexMap.size() )
-      continue;
-
-    QgsVertexEntry *entry = mVertexMap.at( index );
-    entry->setSelected( !entry->isSelected() );
+    emit lastVertexChanged( entry->point() );
   }
-  emit selectionChanged();
 }
 
 void QgsSelectedFeature::updateVertexMarkersPosition()
@@ -516,4 +524,18 @@ QList<QgsVertexEntry*> &QgsSelectedFeature::vertexMap()
 QgsVectorLayer* QgsSelectedFeature::vlayer()
 {
   return mVlayer;
+}
+
+bool QgsSelectedFeature::hasSelection() const
+{
+  bool hasSelection = false;
+  QList<QgsVertexEntry*>::const_iterator vertexIt = mVertexMap.constBegin();
+  for ( ; vertexIt != mVertexMap.constEnd(); ++vertexIt )
+  {
+    if (( *vertexIt )->isSelected() )
+    {
+      return true;
+    }
+  }
+  return hasSelection;
 }
