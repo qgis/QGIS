@@ -151,8 +151,8 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="btnAddCategory">
-       <property name="text">
+      <widget class="QPushButton" name="btnAddCategory">
+       <property name="toolTip">
         <string>Add</string>
        </property>
        <property name="icon">
@@ -162,8 +162,8 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="btnDeleteCategories">
-       <property name="text">
+      <widget class="QPushButton" name="btnDeleteCategories">
+       <property name="toolTip">
         <string>Delete</string>
        </property>
        <property name="icon">
@@ -176,10 +176,6 @@
       <widget class="QPushButton" name="btnDeleteAllCategories">
        <property name="text">
         <string>Delete all</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
        </property>
       </widget>
      </item>
