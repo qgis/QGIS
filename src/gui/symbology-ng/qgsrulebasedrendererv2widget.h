@@ -133,7 +133,9 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
 
   protected:
     void refineRule( int type );
+    //TODO QGIS 3.0 - remove index parameter
     void refineRuleCategoriesGui( const QModelIndexList& index );
+    //TODO QGIS 3.0 - remove index parameter
     void refineRuleRangesGui( const QModelIndexList& index );
     void refineRuleScalesGui( const QModelIndexList& index );
 

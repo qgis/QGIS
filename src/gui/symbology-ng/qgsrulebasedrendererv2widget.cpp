@@ -251,20 +251,17 @@ void QgsRuleBasedRendererV2Widget::refineRuleScales()
   refineRule( 2 );
 }
 
-void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexList& indexList )
+void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexList& )
 {
-  QVBoxLayout* l = new QVBoxLayout();
   QgsCategorizedSymbolRendererV2Widget* w = new QgsCategorizedSymbolRendererV2Widget( mLayer, mStyle, nullptr );
   w->setPanelTitle( tr( "Add categories to rules" ) );
   connect( w, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( refineRuleCategoriesAccepted( QgsPanelWidget* ) ) );
   w->setDockMode( this->dockMode() );
   w->setMapCanvas( mMapCanvas );
   openPanel( w );
-
 }
 
-
-void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& indexList )
+void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& )
 {
   QgsGraduatedSymbolRendererV2Widget* w = new QgsGraduatedSymbolRendererV2Widget( mLayer, mStyle, nullptr );
   w->setPanelTitle( tr( "Add ranges to rules" ) );
@@ -272,7 +269,6 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& i
   w->setMapCanvas( mMapCanvas );
   w->setDockMode( this->dockMode() );
   openPanel( w );
-
 }
 
 void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& indexList )
