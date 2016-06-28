@@ -44,6 +44,11 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
      */
     void insertCapabilitiesDocument( const QString& configFilePath, const QString& key, const QDomDocument* doc );
 
+    /** Remove capabilities document
+     * @param configFilePath the project file path
+     */
+    void removeCapabilitiesDocument( const QString& path );
+
   private:
     QHash< QString, QHash< QString, QDomDocument > > mCachedCapabilities;
     QFileSystemWatcher mFileSystemWatcher;
