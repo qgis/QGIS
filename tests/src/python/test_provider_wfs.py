@@ -2048,8 +2048,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <schema
-   targetNamespace="http://my" 
-   xmlns:my="http://my" 
+   targetNamespace="http://my"
+   xmlns:my="http://my"
    xmlns:ogc="http://www.opengis.net/ogc"
    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
    xmlns="http://www.w3.org/2001/XMLSchema"
@@ -2057,8 +2057,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
    elementFormDefault="qualified" version="0.1" >
   <import namespace="http://www.opengis.net/gml"
           schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" />
-  <element name="typename" 
-           type="my:typenameType" 
+  <element name="typename"
+           type="my:typenameType"
            substitutionGroup="gml:_Feature" />
   <complexType name="typenameType">
     <complexContent>
