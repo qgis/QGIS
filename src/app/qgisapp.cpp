@@ -5835,7 +5835,6 @@ void QgisApp::setMapStyleDockLayer( QgsMapLayer* layer )
   // the extra work if it's not needed
   if ( mMapStylingDock->isVisible() )
   {
-    mMapStyleWidget->setPageFactories( mMapStylePanelFactories );
     mMapStyleWidget->setLayer( layer );
   }
 }
@@ -9121,6 +9120,8 @@ void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory*
 void QgisApp::registerMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )
 {
   mMapStylePanelFactories << factory;
+  if ( mMapStyleWidget )
+    mMapStyleWidget->setPageFactories( mMapStylePanelFactories );
 }
 
 void QgisApp::unregisterMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )

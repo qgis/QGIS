@@ -70,6 +70,9 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, QList<QgsLay
 
   mStyleManagerFactory = new QgsLayerStyleManagerWidgetFactory();
 
+  QList<QgsLayerStylingPanelFactory*> l;
+  setPageFactories( pages );
+
   connect( mUndoButton, SIGNAL( pressed() ), this, SLOT( undo() ) );
   connect( mRedoButton, SIGNAL( pressed() ), this, SLOT( redo() ) );
 
@@ -168,6 +171,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   {
     if ( factory->supportsLayer( layer ) )
     {
+      QgsDebugMsg( "MAKING PANEL" );
       QListWidgetItem* item =  new QListWidgetItem( factory->icon(), QString() );
       mOptionsListWidget->addItem( item );
       int row = mOptionsListWidget->row( item );
