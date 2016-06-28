@@ -54,6 +54,7 @@ class GUI_EXPORT QgsMapCanvasSnapper
      * @param allResutInTolerance return all thew results in the tolerance
      */
     int snapToCurrentLayer( QPoint p, QList<QgsSnappingResult>& results, QgsSnapper::SnappingType snap_to, double snappingTol = -1, const QList<QgsPoint>& excludePoints = QList<QgsPoint>(), bool allResutInTolerance = false );
+
     /** Snaps to the background layers. This method is useful to align the features of the
      * edited layers to those of other layers (as described in the project properties).
      * Uses snap mode QgsSnapper::SnapWithOneResult. Therefore, only the
