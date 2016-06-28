@@ -629,7 +629,7 @@ void QgsCircularStringV2::draw( QPainter& p ) const
   p.drawPath( path );
 }
 
-void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
+void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   clearCache();
 
@@ -637,7 +637,8 @@ void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordi
 
   bool hasZ = is3D();
   int nPoints = numPoints();
-  if ( !hasZ )
+  bool useDummyZ = !hasZ || !transformZ;
+  if ( useDummyZ )
   {
     zArray = new double[nPoints];
     for ( int i = 0; i < nPoints; ++i )
@@ -646,7 +647,7 @@ void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordi
     }
   }
   ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
-  if ( !hasZ )
+  if ( useDummyZ )
   {
     delete[] zArray;
   }

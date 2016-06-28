@@ -70,11 +70,8 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
      */
     virtual bool removeGeometry( int nr );
 
-    /** Transforms the geometry using a coordinate transform
-     * @param ct coordinate transform
-     * @param d transformation direction
-     */
-    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
+    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+                            bool transformZ = false ) override;
     void transform( const QTransform& t ) override;
 #if 0
     virtual void clip( const QgsRectangle& rect ) override;

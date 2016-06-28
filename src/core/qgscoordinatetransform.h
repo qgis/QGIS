@@ -159,11 +159,11 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     // C style arrays.
     void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform ) const;
 
-    // @note not available in python bindings
+    //! @note not available in python bindings
     void transformInPlace( float& x, float& y, double &z, TransformDirection direction = ForwardTransform ) const;
-    // @note not available in python bindings
+    //! @note not available in python bindings
     void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
-    // @note not available in python bindings
+    //! @note not available in python bindings
     void transformInPlace( QVector<float>& x, QVector<float>& y, QVector<float>& z,
                            TransformDirection direction = ForwardTransform ) const;
 

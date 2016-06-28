@@ -599,13 +599,14 @@ QgsAbstractGeometryV2* QgsLineStringV2::toCurveType() const
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
+void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   double* zArray = mZ.data();
 
   bool hasZ = is3D();
   int nPoints = numPoints();
-  if ( !hasZ )
+  bool useDummyZ = !hasZ || !transformZ;
+  if ( useDummyZ )
   {
     zArray = new double[nPoints];
     for ( int i = 0; i < nPoints; ++i )
@@ -614,7 +615,7 @@ void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinate
     }
   }
   ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
-  if ( !hasZ )
+  if ( useDummyZ )
   {
     delete[] zArray;
   }

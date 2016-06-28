@@ -142,11 +142,11 @@ int QgsGeometryCollectionV2::dimension() const
   return maxDim;
 }
 
-void QgsGeometryCollectionV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
+void QgsGeometryCollectionV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   Q_FOREACH ( QgsAbstractGeometryV2* g, mGeometries )
   {
-    g->transform( ct, d );
+    g->transform( ct, d, transformZ );
   }
   clearCache(); //set bounding box invalid
 }
