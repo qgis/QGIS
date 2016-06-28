@@ -115,7 +115,7 @@ QgsConstWkbPtr QgsSymbolV2::_getPoint( QPointF& pt, QgsRenderContext& context, Q
 
   if ( context.coordinateTransform() )
   {
-    double z = 0; // dummy variable for coordiante transform
+    double z = 0; // dummy variable for coordinate transform
     context.coordinateTransform()->transformInPlace( pt.rx(), pt.ry(), z );
   }
 
@@ -993,7 +993,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         //transform
         x = vertexPoint.x();
         y = vertexPoint.y();
-        z = vertexPoint.z();
+        z = 0.0;
         if ( ct )
         {
           ct->transformInPlace( x, y, z );

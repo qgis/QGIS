@@ -62,11 +62,8 @@ class QgsCompoundCurveV2: public QgsCurveV2
     void addVertex( const QgsPointV2& pt );
 
     void draw( QPainter& p ) const;
-    /** Transforms the geometry using a coordinate transform
-     * @param ct coordinate transform
-       @param d transformation direction
-     */
-    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+                    bool transformZ = false );
     void transform( const QTransform& t );
     void addToPainterPath( QPainterPath& path ) const;
     void drawAsPolygon( QPainter& p ) const;
