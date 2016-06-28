@@ -159,7 +159,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QgsDebugMsg( "Selection layer: " + vlayer->name() );
-  QgsDebugMsg( "Selection polygon: " + selectGeomTrans.exportToWkt() );
+  QgsDebugMsg( "Selection polygon: " + selectGeomTrans->exportToWkt() );
   QgsDebugMsg( "doContains: " + QString( doContains ? "T" : "F" ) );
   QgsDebugMsg( "doDifference: " + QString( doDifference ? "T" : "F" ) );
 
