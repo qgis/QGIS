@@ -308,6 +308,12 @@ Negative rounds to powers of 10</string>
        <string>Classes</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
@@ -379,13 +385,6 @@ Negative rounds to powers of 10</string>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btnGraduatedClassify">
-           <property name="text">
-            <string>Classify</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <spacer name="horizontalSpacer_4">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -428,8 +427,15 @@ Negative rounds to powers of 10</string>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QToolButton" name="btnGraduatedAdd">
+          <widget class="QPushButton" name="btnGraduatedClassify">
            <property name="text">
+            <string>Classify</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnGraduatedAdd">
+           <property name="toolTip">
             <string>Add class</string>
            </property>
            <property name="icon">
@@ -439,8 +445,8 @@ Negative rounds to powers of 10</string>
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="btnGraduatedDelete">
-           <property name="text">
+          <widget class="QPushButton" name="btnGraduatedDelete">
+           <property name="toolTip">
             <string>Delete</string>
            </property>
            <property name="icon">
@@ -454,20 +460,6 @@ Negative rounds to powers of 10</string>
            <property name="text">
             <string>Delete all</string>
            </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cbxLinkBoundaries">
-           <property name="text">
-            <string>Link class boundaries</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
          <item>
@@ -477,11 +469,32 @@ Negative rounds to powers of 10</string>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
+             <width>0</width>
              <height>20</height>
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnAdvanced">
+           <property name="text">
+            <string>Advanced</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="_2">
+         <item>
+          <widget class="QCheckBox" name="cbxLinkBoundaries">
+           <property name="text">
+            <string>Link class boundaries</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -498,30 +511,6 @@ Negative rounds to powers of 10</string>
       </layout>
      </widget>
     </widget>
-   </item>
-   <item row="6" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="_2">
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnAdvanced">
-       <property name="text">
-        <string>Advanced</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>
