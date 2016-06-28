@@ -63,8 +63,8 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFile
 
 void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString& path )
 {
-    mCachedCapabilities.remove( path );
-    mFileSystemWatcher.removePath( path );
+  mCachedCapabilities.remove( path );
+  mFileSystemWatcher.removePath( path );
 }
 
 void QgsCapabilitiesCache::removeChangedEntry( const QString& path )

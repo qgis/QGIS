@@ -77,7 +77,7 @@ void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter* acce
 
 void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString& path )
 {
-  if( mCapabilitiesCache )
+  if ( mCapabilitiesCache )
   {
     mCapabilitiesCache->removeCapabilitiesDocument( path );
   }
