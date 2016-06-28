@@ -9127,6 +9127,8 @@ void QgisApp::registerMapStylePanelFactory( QgsLayerStylingPanelFactory *factory
 void QgisApp::unregisterMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )
 {
   mMapStylePanelFactories.removeAll( factory );
+  if ( mMapStyleWidget )
+    mMapStyleWidget->setPageFactories( mMapStylePanelFactories );
 }
 
 /** Get a pointer to the currently selected map layer */
