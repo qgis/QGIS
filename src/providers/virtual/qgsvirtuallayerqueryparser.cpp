@@ -201,7 +201,7 @@ namespace QgsVirtualLayerQueryParser
       QString qs = "SELECT ";
       for ( int i = 0; i < undefinedColumns.size(); i++ )
       {
-        qs += columns[undefinedColumns[i]];
+        qs += "\"" + columns[undefinedColumns[i]] + "\"";
         if ( i != undefinedColumns.size() - 1 )
           qs += ", ";
       }
