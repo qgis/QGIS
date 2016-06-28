@@ -134,6 +134,8 @@ void TestQgsMapToolSelect::selectInvalidPolygons()
   QVERIFY( memoryLayer->isValid() );
   QgsFeature f1( memoryLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( "pk", 1 );
+  // This geometry is an invalid polygon (3 distinct vertices).
+  // GEOS reported invalidity: Points of LinearRing do not form a closed linestring
   f1.setGeometry( geomFromHexWKB(
                     "010300000001000000030000000000000000000000000000000000000000000000000024400000000000000000000000000000244000000000000024400000000000000000"
                   ) );
