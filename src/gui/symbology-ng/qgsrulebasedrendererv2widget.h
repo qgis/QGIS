@@ -157,6 +157,8 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void paste() override;
 
   private slots:
+    void refineRuleCategoriesAccepted( QgsPanelWidget* panel );
+    void refineRuleRangesAccepted( QgsPanelWidget* panel );
     void ruleWidgetPanelAccepted( QgsPanelWidget* panel );
     void liveUpdateRuleFromPanel();
 };

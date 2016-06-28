@@ -253,61 +253,26 @@ void QgsRuleBasedRendererV2Widget::refineRuleScales()
 
 void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexList& indexList )
 {
-  QDialog dlg;
-  dlg.setWindowTitle( tr( "Refine a rule to categories" ) );
   QVBoxLayout* l = new QVBoxLayout();
   QgsCategorizedSymbolRendererV2Widget* w = new QgsCategorizedSymbolRendererV2Widget( mLayer, mStyle, nullptr );
+  w->setPanelTitle( tr( "Add categories to rules" ) );
+  connect( w, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( refineRuleCategoriesAccepted( QgsPanelWidget* ) ) );
+  w->setDockMode( this->dockMode() );
   w->setMapCanvas( mMapCanvas );
-  l->addWidget( w );
-  QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-  l->addWidget( bb );
-  connect( bb, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
-  connect( bb, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
-  dlg.setLayout( l );
+  openPanel( w );
 
-  if ( !dlg.exec() )
-    return;
-
-  // create new rules
-  QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>( w->renderer() );
-  Q_FOREACH ( const QModelIndex& index, indexList )
-  {
-    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
-    mModel->willAddRules( index, r->categories().count() );
-    QgsRuleBasedRendererV2::refineRuleCategories( initialRule, r );
-  }
-  mModel->finishedAddingRules();
 }
 
 
 void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& indexList )
 {
-
-
-  QDialog dlg;
-  dlg.setWindowTitle( tr( "Refine a rule to ranges" ) );
-  QVBoxLayout* l = new QVBoxLayout();
   QgsGraduatedSymbolRendererV2Widget* w = new QgsGraduatedSymbolRendererV2Widget( mLayer, mStyle, nullptr );
+  w->setPanelTitle( tr( "Add ranges to rules" ) );
+  connect( w, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( refineRuleRangesAccepted( QgsPanelWidget* ) ) );
   w->setMapCanvas( mMapCanvas );
-  l->addWidget( w );
-  QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-  l->addWidget( bb );
-  connect( bb, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
-  connect( bb, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
-  dlg.setLayout( l );
+  w->setDockMode( this->dockMode() );
+  openPanel( w );
 
-  if ( !dlg.exec() )
-    return;
-
-  // create new rules
-  QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>( w->renderer() );
-  Q_FOREACH ( const QModelIndex& index, indexList )
-  {
-    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
-    mModel->willAddRules( index, r->ranges().count() );
-    QgsRuleBasedRendererV2::refineRuleRanges( initialRule, r );
-  }
-  mModel->finishedAddingRules();
 }
 
 void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& indexList )
@@ -485,6 +450,39 @@ void QgsRuleBasedRendererV2Widget::paste()
   else
     index = indexlist.first();
   mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
+}
+
+void QgsRuleBasedRendererV2Widget::refineRuleCategoriesAccepted( QgsPanelWidget *panel )
+{
+  QgsCategorizedSymbolRendererV2Widget* w = qobject_cast<QgsCategorizedSymbolRendererV2Widget*>( panel );
+
+  // create new rules
+  QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>( w->renderer() );
+  QModelIndexList indexList = viewRules->selectionModel()->selectedRows();
+  Q_FOREACH ( const QModelIndex& index, indexList )
+  {
+    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
+    mModel->willAddRules( index, r->categories().count() );
+    QgsRuleBasedRendererV2::refineRuleCategories( initialRule, r );
+  }
+  mModel->finishedAddingRules();
+  emit widgetChanged();
+}
+
+void QgsRuleBasedRendererV2Widget::refineRuleRangesAccepted( QgsPanelWidget *panel )
+{
+  QgsGraduatedSymbolRendererV2Widget* w = qobject_cast<QgsGraduatedSymbolRendererV2Widget*>( panel );
+  // create new rules
+  QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>( w->renderer() );
+  QModelIndexList indexList = viewRules->selectionModel()->selectedRows();
+  Q_FOREACH ( const QModelIndex& index, indexList )
+  {
+    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
+    mModel->willAddRules( index, r->ranges().count() );
+    QgsRuleBasedRendererV2::refineRuleRanges( initialRule, r );
+  }
+  mModel->finishedAddingRules();
+  emit widgetChanged();
 }
 
 void QgsRuleBasedRendererV2Widget::ruleWidgetPanelAccepted( QgsPanelWidget *panel )
