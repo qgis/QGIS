@@ -413,7 +413,7 @@ void TestQgsGeometryUtils::testSqrDistToLine()
                    p1.x(), p1.y(),
                    p2.x(), p2.y(),
                    rx, ry, epsilon );
-  sqrDist = round( sqrDist * 100 ) / 100;
+  sqrDist = qRound( sqrDist * 100 ) / 100;
   QCOMPARE( sqrDist, 11.83 );
 }
 
