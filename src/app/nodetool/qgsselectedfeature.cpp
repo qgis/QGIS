@@ -265,7 +265,9 @@ void QgsSelectedFeature::deleteSelectedVertexes()
       if ( --nSelected == 0 )
         endGeometryChange();
 
-      if ( !mVlayer->deleteVertex( mFeatureId, i ) )
+      QgsVectorLayer::EditResult res;
+      res = mVlayer->deleteVertexV2( mFeatureId, i );
+      if ( res != QgsVectorLayer::Success && res != QgsVectorLayer::EmptyGeometry )
       {
         count = 0;
         QgsDebugMsg( QString( "Deleting vertex %1 failed - resetting" ).arg( i ) );
@@ -282,7 +284,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
         {
           // move all other
           if ( mFeatureId !=  resultIt.value().snappedAtGeometry )
-            mVlayer->deleteVertex( resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
+            mVlayer->deleteVertexV2( resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
         }
       }
     }
