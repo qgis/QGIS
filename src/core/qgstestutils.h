@@ -23,7 +23,14 @@
  * @note added in QGIS 2.16
  */
 
-#define QGSCOMPARENEAR(a,b,epsilon) { bool _xxxresult = qgsDoubleNear( a, b, epsilon ); if ( !_xxxresult  ) { qDebug( "Expecting %f got %f (diff %f > %f)", static_cast< double >( a ), static_cast< double >( b ), qAbs( static_cast< double >( a ) - b ), static_cast< double >( epsilon ) ); } QVERIFY( _xxxresult  ); }
+#define QGSCOMPARENEAR(a,b,epsilon) { \
+  bool _xxxresult = qgsDoubleNear( a, b, epsilon ); \
+  if ( !_xxxresult  ) \
+  { \
+    qDebug( "Expecting %f got %f (diff %f > %f)", static_cast< double >( a ), static_cast< double >( b ), qAbs( static_cast< double >( a ) - b ), static_cast< double >( epsilon ) ); \
+  } \
+  QVERIFY( qgsDoubleNear( a, b, epsilon ) ); \
+}
 
 
 #endif // QGSTESTUTILS_H

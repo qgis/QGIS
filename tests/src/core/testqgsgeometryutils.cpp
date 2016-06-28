@@ -19,6 +19,7 @@
 #include "qgslinestringv2.h"
 #include "qgspolygonv2.h"
 #include "qgsmultipolygonv2.h"
+#include "qgstestutils.h"
 
 class TestQgsGeometryUtils: public QObject
 {
@@ -413,8 +414,7 @@ void TestQgsGeometryUtils::testSqrDistToLine()
                    p1.x(), p1.y(),
                    p2.x(), p2.y(),
                    rx, ry, epsilon );
-  sqrDist = qRound( sqrDist * 100 ) / 100;
-  QCOMPARE( sqrDist, 11.83 );
+  QGSCOMPARENEAR( sqrDist, 11.83, 0.01 );
 }
 
 
