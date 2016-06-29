@@ -42,7 +42,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.iface = iface
 
         self.setupUi(self)
-        BaseBatchWidget.__init__(self, self.iface, "gdalwarp")
+        BaseBatchWidget.__init__(self, self.iface, "gdal_translate")
 
         self.inSelector.setType(self.inSelector.FILE)
 
@@ -112,7 +112,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
     def getArguments(self):
         arguments = []
         if self.desiredSRSEdit.text():
-            arguments.append("-t_srs")
+            arguments.append("-a_srs")
             arguments.append(self.desiredSRSEdit.text())
         if self.batchCheck.isChecked():
             return arguments
