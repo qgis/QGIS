@@ -26,6 +26,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import re
 import yaml
 import hashlib
 
@@ -43,14 +44,18 @@ from processing.core.outputs import (
     OutputString,
     OutputRaster,
     OutputVector,
-    OutputHTML
+    OutputHTML,
+    OutputFile
 )
 
 from processing.core.parameters import (
     ParameterRaster,
     ParameterVector,
     ParameterMultipleInput,
-    ParameterFile
+    ParameterFile,
+    ParameterString,
+    ParameterNumber,
+    ParameterBoolean
 )
 
 
@@ -73,7 +78,7 @@ def extractSchemaPath(filepath):
     path = filepath
     part = True
 
-    while part:
+    while part and filepath:
         (path, part) = os.path.split(path)
         if part == 'testdata' and not localpath:
             localparts = parts
@@ -95,11 +100,39 @@ def extractSchemaPath(filepath):
     return schema, localpath
 
 
+def parseParameters(command):
+    """
+    Parse alg string to grab parameters value.
+    Can handle quotes and comma.
+    """
+    pos = 0
+    exp = re.compile(r"""(['"]?)(.*?)\1(,|$)""")
+    while True:
+        m = exp.search(command, pos)
+        result = m.group(2)
+        separator = m.group(3)
+
+        # Handle special values:
+        if result == 'None':
+            result = None
+        elif result.lower() == unicode(True).lower():
+            result = True
+        elif result.lower() == unicode(False).lower():
+            result = False
+
+        yield result
+
+        if not separator:
+            break
+
+        pos = m.end(0)
+
+
 def createTest(text):
     definition = {}
 
-    tokens = text[len('processing.runalg('):-1].split(',')
-    cmdname = (tokens[0])[1:-1]
+    tokens = list(parseParameters(text[len('processing.runalg('):-1]))
+    cmdname = tokens[0]
     alg = Processing.getAlgorithm(cmdname)
 
     definition['name'] = 'Test ({})'.format(cmdname)
@@ -115,10 +148,12 @@ def createTest(text):
 
         i += 1
         token = tokens[i]
+        # Handle empty parameters that are optionals
+        if param.optional and token is None:
+            continue
 
         if isinstance(param, ParameterVector):
-            filename = token[1:-1]
-            schema, filepath = extractSchemaPath(filename)
+            schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'vector',
                 'name': filepath
@@ -128,8 +163,7 @@ def createTest(text):
 
             params[param.name] = p
         elif isinstance(param, ParameterRaster):
-            filename = token[1:-1]
-            schema, filepath = extractSchemaPath(filename)
+            schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'raster',
                 'name': filepath
@@ -139,7 +173,7 @@ def createTest(text):
 
             params[param.name] = p
         elif isinstance(param, ParameterMultipleInput):
-            multiparams = token[1:-1].split(';')
+            multiparams = token.split(';')
             newparam = []
 
             # Handle datatype detection
@@ -164,8 +198,7 @@ def createTest(text):
 
             params[param.name] = p
         elif isinstance(param, ParameterFile):
-            filename = token[1:-1]
-            schema, filepath = extractSchemaPath(filename)
+            schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'file',
                 'name': filepath
@@ -174,18 +207,21 @@ def createTest(text):
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
             params[param.name] = p
-        else:
-            try:
+        elif isinstance(param, ParameterString):
+            params[param.name] = token
+        elif isinstance(param, ParameterBoolean):
+            params[param.name] = token
+        elif isinstance(param, ParameterNumber):
+            if param.isInteger:
                 params[param.name] = int(token)
-            except ValueError:
-                try:
-                    params[param.name] = float(token)
-                except ValueError:
-                    if token[0] == '"':
-                        token = token[1:]
-                    if token[-1] == '"':
-                        token = token[:-1]
-                    params[param.name] = token
+            else:
+                params[param.name] = float(token)
+        else:
+            if token[0] == '"':
+                token = token[1:]
+            if token[-1] == '"':
+                token = token[:-1]
+            params[param.name] = token
 
     definition['params'] = params
 
@@ -195,8 +231,7 @@ def createTest(text):
         if isinstance(out, (OutputNumber, OutputString)):
             results[out.name] = unicode(out)
         elif isinstance(out, OutputRaster):
-            filename = token[1:-1]
-            dataset = gdal.Open(filename, GA_ReadOnly)
+            dataset = gdal.Open(token, GA_ReadOnly)
             dataArray = nan_to_num(dataset.ReadAsArray(0))
             strhash = hashlib.sha224(dataArray.data).hexdigest()
 
@@ -205,17 +240,15 @@ def createTest(text):
                 'hash': strhash
             }
         elif isinstance(out, OutputVector):
-            filename = token[1:-1]
-            schema, filepath = extractSchemaPath(filename)
+            schema, filepath = extractSchemaPath(token)
             results[out.name] = {
                 'type': 'vector',
                 'name': filepath
             }
             if not schema:
                 results[out.name]['location'] = '[The expected result data is not in the testdata directory. Please write it to processing/tests/testdata/expected. Prefer gml files.]'
-        elif isinstance(out, OutputHTML):
-            filename = token[1:-1]
-            schema, filepath = extractSchemaPath(filename)
+        elif isinstance(out, OutputHTML) or isinstance(out, OutputFile):
+            schema, filepath = extractSchemaPath(token)
             results[out.name] = {
                 'type': 'file',
                 'name': filepath
@@ -224,7 +257,6 @@ def createTest(text):
                 results[out.name]['location'] = '[The expected result file is not in the testdata directory. Please redirect the output to processing/tests/testdata/expected.]'
 
     definition['results'] = results
-
     dlg = ShowTestDialog(yaml.dump([definition], default_flow_style=False))
     dlg.exec_()
 
@@ -244,7 +276,8 @@ class ShowTestDialog(QDialog):
         self.text = QTextEdit()
         self.text.setFontFamily("monospace")
         self.text.setEnabled(True)
-        self.text.setText(s)
+        # Add two spaces in front of each text for faster copy/paste
+        self.text.setText('  {}'.format(s.replace('\n', '\n  ')))
         layout.addWidget(self.text)
         self.setLayout(layout)
         QMetaObject.connectSlotsByName(self)

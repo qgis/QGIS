@@ -2,8 +2,8 @@
 
 """
 ***************************************************************************
-    Grass7AlgorithmTests.py
-    -----------------------
+    Grass7AlgorithmsRasterTest.py
+    -----------------------------
     Date                 : May 2016
     Copyright            : (C) 2016 by Médéric Ribreux
     Email                : mederic dot ribreux at medspx dot fr
@@ -36,7 +36,7 @@ from qgis.testing import (
 )
 
 
-class TestGrass7Algorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):
@@ -51,7 +51,7 @@ class TestGrass7Algorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest)
             shutil.rmtree(path)
 
     def test_definition_file(self):
-        return 'grass7_algorithm_tests.yaml'
+        return 'grass7_algorithms_raster_tests.yaml'
 
 
 if __name__ == '__main__':

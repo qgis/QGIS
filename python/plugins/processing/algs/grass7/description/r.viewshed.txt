@@ -2,9 +2,14 @@ r.viewshed
 Computes the viewshed of a point on an elevation raster map.
 Raster (r.*)
 ParameterRaster|input|Elevation|False
-ParameterString|coordinates|Coordinate identifying the viewing position|0,0
-ParameterString|observer_elevation|Viewing position height above the ground|1.75
-ParameterString|target_elevation|Offset for target elevation above the ground|0.0
-ParameterString|max_distance|Maximum distance from the viewing point (meters)|10000
-ParameterBoolean|-c|Consider earth curvature (current ellipsoid)|False
+ParameterString|coordinates|Coordinate identifying the viewing position|0,0|False|False
+ParameterString|observer_elevation|Viewing elevation above the ground|1.75|False|False
+ParameterString|target_elevation|Offset for target elevation above the ground|0.0|False|False
+ParameterString|max_distance|Maximum distance from the viewing point (meters)|-1|False|False
+ParameterNumber|refraction_coeff|Refraction coefficient|0.0|1.0|0.14286|False
+ParameterNumber|memory|Amount of memory to use in MB|1|None|500|False
+*ParameterBoolean|-c|Consider earth curvature (current ellipsoid)|False
+*ParameterBoolean|-r|Consider the effect of atmospheric refraction|False
+*ParameterBoolean|-b|Output format is invisible = 0, visible = 1|False
+*ParameterBoolean|-e|Output format is invisible = NULL, else current elev - viewpoint_elev|False
 OutputRaster|output|Intervisibility

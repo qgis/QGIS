@@ -29,7 +29,7 @@ from r_li import checkMovingWindow, configFile
 
 
 def checkParameterValuesBeforeExecuting(alg):
-    checkMovingWindow(alg)
+    return checkMovingWindow(alg)
 
 
 def processCommand(alg):

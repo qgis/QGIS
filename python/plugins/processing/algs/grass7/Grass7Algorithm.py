@@ -476,20 +476,12 @@ class Grass7Algorithm(GeoAlgorithm):
                     command += ' input='
                     command += 'correctedoutput' + self.uniqueSufix
                     command += ' output="' + filename + '"'
-                elif self.grass7Name == 'r.composite':
-                    command = 'r.out.gdal --overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
-                    command += ' input='
-                    command += 'correctedoutput' + self.uniqueSufix
-                    command += ' output="' + filename + '"'
                 else:
                     command = 'r.out.gdal --overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
 
                 if self.grass7Name == 'r.horizon':
                     command += out.name + self.uniqueSufix + '_0'
-                elif self.grass7Name == 'r.composite':
-                    self.commands.append(command)
-                    self.outputCommands.append(command)
                 elif self.grass7Name == 'r.statistics':
                     self.commands.append(command)
                     self.outputCommands.append(command)
