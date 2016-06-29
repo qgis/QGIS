@@ -32,7 +32,7 @@ class QgsCapabilitiesCache: QObject
     void insertCapabilitiesDocument( const QString& configFilePath, const QString& version, const QDomDocument* doc );
 
     /** Remove capabilities document
-     * @param configFilePath the project file path
+     * @param path the project file path
      * @note added in QGIS 2.16
      */
     void removeCapabilitiesDocument( const QString& path );
