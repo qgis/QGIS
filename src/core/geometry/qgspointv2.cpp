@@ -257,10 +257,18 @@ void QgsPointV2::clear()
   clearCache();
 }
 
-void QgsPointV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
+void QgsPointV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   clearCache();
-  ct.transformInPlace( mX, mY, mZ, d );
+  if ( transformZ )
+  {
+    ct.transformInPlace( mX, mY, mZ, d );
+  }
+  else
+  {
+    double z = 0.0;
+    ct.transformInPlace( mX, mY, z, d );
+  }
 }
 
 QgsCoordinateSequenceV2 QgsPointV2::coordinateSequence() const

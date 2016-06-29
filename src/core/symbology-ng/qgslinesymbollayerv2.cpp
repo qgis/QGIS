@@ -1063,7 +1063,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
       {
         //transform
         x = vPoint.x(), y = vPoint.y();
-        z = vPoint.z();
+        z = 0.0;
         if ( ct )
         {
           ct->transformInPlace( x, y, z );

@@ -141,8 +141,8 @@ class QgsLineStringV2: public QgsCurveV2
     void points( QList<QgsPointV2>& pt ) const;
 
     void draw( QPainter& p ) const;
-
-    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+                    bool transformZ = false );
     void transform( const QTransform& t );
 
     void addToPainterPath( QPainterPath& path ) const;

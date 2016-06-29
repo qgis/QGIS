@@ -46,11 +46,8 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
      */
     virtual bool removeGeometry( int nr );
 
-    /** Transforms the geometry using a coordinate transform
-     * @param ct coordinate transform
-     * @param d transformation direction
-     */
-    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+                    bool transformZ = false );
     void transform( const QTransform& t );
 
     //virtual void clip( const QgsRectangle& rect );

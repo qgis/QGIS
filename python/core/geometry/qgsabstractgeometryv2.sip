@@ -203,9 +203,13 @@ class QgsAbstractGeometryV2
 
     /** Transforms the geometry using a coordinate transform
      * @param ct coordinate transform
-       @param d transformation direction
+     * @param d transformation direction
+     * @param transformZ set to true to also transform z coordinates. This requires that
+     * the z coordinates in the geometry represent height in metres relative to the
+     * source ellipsoid. If false, then z coordinates will not be changed by the transform.
      */
-    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) = 0;
+    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+                            bool transformZ = false ) = 0;
 
     /** Transforms the geometry using a QTransform object
      * @param t QTransform transformation

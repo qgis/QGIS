@@ -458,11 +458,11 @@ void QgsCompoundCurveV2::draw( QPainter& p ) const
   }
 }
 
-void QgsCompoundCurveV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
+void QgsCompoundCurveV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   Q_FOREACH ( QgsCurveV2* curve, mCurves )
   {
-    curve->transform( ct, d );
+    curve->transform( ct, d, transformZ );
   }
   clearCache();
 }

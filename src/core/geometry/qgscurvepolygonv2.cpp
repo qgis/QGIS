@@ -561,16 +561,16 @@ void QgsCurvePolygonV2::draw( QPainter& p ) const
   }
 }
 
-void QgsCurvePolygonV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
+void QgsCurvePolygonV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   if ( mExteriorRing )
   {
-    mExteriorRing->transform( ct, d );
+    mExteriorRing->transform( ct, d, transformZ );
   }
 
   Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
   {
-    curve->transform( ct, d );
+    curve->transform( ct, d, transformZ );
   }
   clearCache();
 }
