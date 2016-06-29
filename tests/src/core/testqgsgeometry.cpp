@@ -36,6 +36,7 @@
 #include "qgscircularstringv2.h"
 #include "qgsgeometrycollectionv2.h"
 #include "qgsgeometryfactory.h"
+#include "qgstestutils.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -600,19 +601,24 @@ void TestQgsGeometry::pointV2()
   QgsCoordinateReferenceSystem sourceSrs;
   sourceSrs.createFromSrid( 3994 );
   QgsCoordinateReferenceSystem destSrs;
-  destSrs.createFromSrid( 4326 );
+  destSrs.createFromSrid( 4202 ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs );
   QgsPointV2 p16( QgsWKBTypes::PointZM, 6374985, -3626584, 1, 2 );
   p16.transform( tr, QgsCoordinateTransform::ForwardTransform );
-  QVERIFY( qgsDoubleNear( p16.x(), 175.771, 0.001 ) );
-  QVERIFY( qgsDoubleNear( p16.y(), -39.722, 0.001 ) );
-  QVERIFY( qgsDoubleNear( p16.z(), 1.0, 0.001 ) );
+  QGSCOMPARENEAR( p16.x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( p16.y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( p16.z(), 1.0, 0.001 );
   QCOMPARE( p16.m(), 2.0 );
   p16.transform( tr, QgsCoordinateTransform::ReverseTransform );
-  QVERIFY( qgsDoubleNear( p16.x(), 6374985, 1 ) );
-  QVERIFY( qgsDoubleNear( p16.y(), -3626584, 1 ) );
-  QVERIFY( qgsDoubleNear( p16.z(), 1.0, 0.001 ) );
+  QGSCOMPARENEAR( p16.x(), 6374985, 1 );
+  QGSCOMPARENEAR( p16.y(), -3626584, 1 );
+  QGSCOMPARENEAR( p16.z(), 1.0, 0.001 );
   QCOMPARE( p16.m(), 2.0 );
+  //test with z transform
+  p16.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  QGSCOMPARENEAR( p16.z(), -19.249, 0.001 );
+  p16.transform( tr, QgsCoordinateTransform::ReverseTransform, true );
+  QGSCOMPARENEAR( p16.z(), 1.0, 0.001 );
 
   //QTransform transform
   QTransform qtr = QTransform::fromScale( 2, 3 );
@@ -1467,7 +1473,7 @@ void TestQgsGeometry::lineStringV2()
   QgsCoordinateReferenceSystem sourceSrs;
   sourceSrs.createFromSrid( 3994 );
   QgsCoordinateReferenceSystem destSrs;
-  destSrs.createFromSrid( 4326 );
+  destSrs.createFromSrid( 4202 ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs );
 
   // 2d CRS transform
@@ -1475,39 +1481,47 @@ void TestQgsGeometry::lineStringV2()
   l21.setPoints( QgsPointSequenceV2() << QgsPointV2( 6374985, -3626584 )
                  << QgsPointV2( 6474985, -3526584 ) );
   l21.transform( tr, QgsCoordinateTransform::ForwardTransform );
-  QVERIFY( qgsDoubleNear( l21.pointN( 0 ).x(), 175.771, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l21.pointN( 0 ).y(), -39.722, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l21.pointN( 1 ).x(), 176.959, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l21.pointN( 1 ).y(), -38.798, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l21.boundingBox().xMinimum(), 175.771, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l21.boundingBox().yMinimum(), -39.722, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l21.boundingBox().xMaximum(), 176.959, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l21.boundingBox().yMaximum(), -38.798, 0.001 ) );
+  QGSCOMPARENEAR( l21.pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( l21.pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( l21.pointN( 1 ).x(), 176.959, 0.001 );
+  QGSCOMPARENEAR( l21.pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( l21.boundingBox().xMinimum(), 175.771, 0.001 );
+  QGSCOMPARENEAR( l21.boundingBox().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( l21.boundingBox().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( l21.boundingBox().yMaximum(), -38.7999, 0.001 );
 
   //3d CRS transform
   QgsLineStringV2 l22;
   l22.setPoints( QgsPointSequenceV2() << QgsPointV2( QgsWKBTypes::PointZM, 6374985, -3626584, 1, 2 )
                  << QgsPointV2( QgsWKBTypes::PointZM, 6474985, -3526584, 3, 4 ) );
   l22.transform( tr, QgsCoordinateTransform::ForwardTransform );
-  QVERIFY( qgsDoubleNear( l22.pointN( 0 ).x(), 175.771, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l22.pointN( 0 ).y(), -39.722, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l22.pointN( 0 ).z(), 1.0, 0.001 ) );
+  QGSCOMPARENEAR( l22.pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( l22.pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( l22.pointN( 0 ).z(), 1.0, 0.001 );
   QCOMPARE( l22.pointN( 0 ).m(), 2.0 );
-  QVERIFY( qgsDoubleNear( l22.pointN( 1 ).x(), 176.959, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l22.pointN( 1 ).y(), -38.798, 0.001 ) );
-  QVERIFY( qgsDoubleNear( l22.pointN( 1 ).z(), 3.0, 0.001 ) );
+  QGSCOMPARENEAR( l22.pointN( 1 ).x(), 176.959, 0.001 );
+  QGSCOMPARENEAR( l22.pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( l22.pointN( 1 ).z(), 3.0, 0.001 );
   QCOMPARE( l22.pointN( 1 ).m(), 4.0 );
 
   //reverse transform
   l22.transform( tr, QgsCoordinateTransform::ReverseTransform );
-  QVERIFY( qgsDoubleNear( l22.pointN( 0 ).x(), 6374985, 0.01 ) );
-  QVERIFY( qgsDoubleNear( l22.pointN( 0 ).y(), -3626584, 0.01 ) );
-  QVERIFY( qgsDoubleNear( l22.pointN( 0 ).z(), 1, 0.001 ) );
+  QGSCOMPARENEAR( l22.pointN( 0 ).x(), 6374985, 0.01 );
+  QGSCOMPARENEAR( l22.pointN( 0 ).y(), -3626584, 0.01 );
+  QGSCOMPARENEAR( l22.pointN( 0 ).z(), 1, 0.001 );
   QCOMPARE( l22.pointN( 0 ).m(), 2.0 );
-  QVERIFY( qgsDoubleNear( l22.pointN( 1 ).x(), 6474985, 0.01 ) );
-  QVERIFY( qgsDoubleNear( l22.pointN( 1 ).y(), -3526584, 0.01 ) );
-  QVERIFY( qgsDoubleNear( l22.pointN( 1 ).z(), 3, 0.001 ) );
+  QGSCOMPARENEAR( l22.pointN( 1 ).x(), 6474985, 0.01 );
+  QGSCOMPARENEAR( l22.pointN( 1 ).y(), -3526584, 0.01 );
+  QGSCOMPARENEAR( l22.pointN( 1 ).z(), 3, 0.001 );
   QCOMPARE( l22.pointN( 1 ).m(), 4.0 );
+
+  //z value transform
+  l22.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  QGSCOMPARENEAR( l22.pointN( 0 ).z(), -19.249066, 0.001 );
+  QGSCOMPARENEAR( l22.pointN( 1 ).z(), -21.092128, 0.001 );
+  l22.transform( tr, QgsCoordinateTransform::ReverseTransform, true );
+  QGSCOMPARENEAR( l22.pointN( 0 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( l22.pointN( 1 ).z(), 3.0, 0.001 );
 
   //QTransform transform
   QTransform qtr = QTransform::fromScale( 2, 3 );

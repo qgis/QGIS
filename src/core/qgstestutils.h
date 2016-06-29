@@ -23,13 +23,13 @@
  * @note added in QGIS 2.16
  */
 
-#define QGSCOMPARENEAR(a,b,epsilon) { \
-    bool _xxxresult = qgsDoubleNear( a, b, epsilon ); \
+#define QGSCOMPARENEAR(value,expected,epsilon) { \
+    bool _xxxresult = qgsDoubleNear( value, expected, epsilon ); \
     if ( !_xxxresult  ) \
     { \
-      qDebug( "Expecting %f got %f (diff %f > %f)", static_cast< double >( a ), static_cast< double >( b ), qAbs( static_cast< double >( a ) - b ), static_cast< double >( epsilon ) ); \
+      qDebug( "Expecting %f got %f (diff %f > %f)", static_cast< double >( expected ), static_cast< double >( value ), qAbs( static_cast< double >( expected ) - value ), static_cast< double >( epsilon ) ); \
     } \
-    QVERIFY( qgsDoubleNear( a, b, epsilon ) ); \
+    QVERIFY( qgsDoubleNear( value, expected, epsilon ) ); \
   }
 
 
