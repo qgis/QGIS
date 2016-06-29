@@ -282,11 +282,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 {
   mBlockAutoApply = true;
 
-  QgsMapLayer* layer = mCurrentLayer;
+  if ( !mCurrentLayer )
+    return;
 
-  mUndoWidget->setUndoStack( layer->undoStackStyles() );
+  mUndoWidget->setUndoStack( mCurrentLayer->undoStackStyles() );
 
-  whileBlocking( mLayerCombo )->setLayer( layer );
+  whileBlocking( mLayerCombo )->setLayer( mCurrentLayer );
 
   int row = mOptionsListWidget->currentIndex().row();
 
@@ -316,7 +317,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   // TODO Make all widgets use this method.
   if ( mUserPages.contains( row ) )
   {
-    QgsLayerStylingPanel* panel = mUserPages[row]->createPanel( layer, mMapCanvas, mWidgetStack );
+    QgsLayerStylingPanel* panel = mUserPages[row]->createPanel( mCurrentLayer, mMapCanvas, mWidgetStack );
     if ( panel )
     {
       connect( panel, SIGNAL( widgetChanged( QgsPanelWidget* ) ), this, SLOT( autoApply() ) );
@@ -329,9 +330,9 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   {
     mWidgetStack->addMainPanel( mUndoWidget );
   }
-  else if ( layer->type() == QgsMapLayer::VectorLayer )
+  else if ( mCurrentLayer->type() == QgsMapLayer::VectorLayer )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( mCurrentLayer );
 
     switch ( row )
     {
@@ -363,9 +364,9 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         break;
     }
   }
-  else if ( layer->type() == QgsMapLayer::RasterLayer )
+  else if ( mCurrentLayer->type() == QgsMapLayer::RasterLayer )
   {
-    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer*>( layer );
+    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer*>( mCurrentLayer );
 
     switch ( row )
     {
