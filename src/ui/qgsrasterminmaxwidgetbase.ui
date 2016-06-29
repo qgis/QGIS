@@ -6,15 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>276</width>
-    <height>275</height>
+    <width>316</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -26,7 +35,16 @@
       <bool>true</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
        <number>6</number>
       </property>
       <item>
@@ -163,10 +181,26 @@ standard deviation ×</string>
         </property>
         <item>
          <widget class="QGroupBox" name="mExtentGroupBox">
-          <property name="title">
-           <string>Extent</string>
-          </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Extent</string>
+             </property>
+            </widget>
+           </item>
            <item>
             <widget class="QRadioButton" name="mFullExtentRadioButton">
              <property name="text">
@@ -189,10 +223,26 @@ standard deviation ×</string>
         </item>
         <item>
          <widget class="QGroupBox" name="mAccuracyGroupBox">
-          <property name="title">
-           <string>Accuracy</string>
-          </property>
           <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Accuracy</string>
+             </property>
+            </widget>
+           </item>
            <item>
             <widget class="QRadioButton" name="mEstimateRadioButton">
              <property name="text">

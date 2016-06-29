@@ -315,6 +315,31 @@ Negative rounds to powers of 10</string>
         <number>0</number>
        </property>
        <item>
+        <widget class="QTreeView" name="viewGraduated">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::InternalMove</enum>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+         <property name="itemsExpandable">
+          <bool>false</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
           <widget class="QLabel" name="label_8">
@@ -356,6 +381,19 @@ Negative rounds to powers of 10</string>
           </widget>
          </item>
          <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <widget class="QLabel" name="label_5">
            <property name="text">
             <string>Classes</string>
@@ -384,45 +422,7 @@ Negative rounds to powers of 10</string>
            </property>
           </widget>
          </item>
-         <item>
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
         </layout>
-       </item>
-       <item>
-        <widget class="QTreeView" name="viewGraduated">
-         <property name="contextMenuPolicy">
-          <enum>Qt::CustomContextMenu</enum>
-         </property>
-         <property name="showDropIndicator" stdset="0">
-          <bool>true</bool>
-         </property>
-         <property name="dragDropMode">
-          <enum>QAbstractItemView::InternalMove</enum>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::ExtendedSelection</enum>
-         </property>
-         <property name="rootIsDecorated">
-          <bool>false</bool>
-         </property>
-         <property name="itemsExpandable">
-          <bool>false</bool>
-         </property>
-         <property name="sortingEnabled">
-          <bool>true</bool>
-         </property>
-        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
