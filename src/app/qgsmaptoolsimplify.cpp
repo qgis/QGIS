@@ -52,6 +52,12 @@ void QgsSimplifyDialog::enableOkButton( bool enabled )
   okButton->setEnabled( enabled );
 }
 
+void QgsSimplifyDialog::closeEvent( QCloseEvent* e )
+{
+  QDialog::closeEvent( e );
+  mTool->clearSelection();
+}
+
 
 ////////////////////////////////////////////////////////////////////////////
 

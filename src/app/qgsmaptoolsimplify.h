@@ -38,6 +38,11 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
     void updateStatusText();
     void enableOkButton( bool enabled );
 
+  protected:
+
+    //! Also cancels pending simplification
+    virtual void closeEvent( QCloseEvent* e ) override;
+
   private:
     QgsMapToolSimplify* mTool;
 
