@@ -257,6 +257,12 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent* e )
 
   mDragging = false;
 
+  if ( mSelectedFeatures.isEmpty() )
+  {
+    emit messageEmitted( tr( "Could not find a nearby feature in the current layer." ) );
+    return;
+  }
+
   // count vertices, prepare rubber bands
   mOriginalVertexCount = 0;
   Q_FOREACH ( const QgsFeature& f, mSelectedFeatures )

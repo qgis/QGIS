@@ -257,6 +257,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 
       if ( minDistance == std::numeric_limits<double>::max() )
       {
+        emit messageEmitted( tr( "Could not find a nearby feature in the current layer." ) );
         return;
       }
 
