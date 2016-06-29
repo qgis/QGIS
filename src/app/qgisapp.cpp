@@ -1997,6 +1997,7 @@ void QgisApp::createToolBars()
   bt->addActions( selectActions );
   bt->setDefaultAction( mActionSelectByExpression );
   QAction* selectionAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
+  selectionAction->setObjectName( "ActionSelection" );
 
   // select tool button
 
