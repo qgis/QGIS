@@ -157,15 +157,16 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
 
   QDomElement descrElem = doc.createElement( "se:Description" );
   QDomElement titleElem = doc.createElement( "se:Title" );
-  QString descrStr = QString( "range: %1 - %2" ).arg( mLowerValue ).arg( mUpperValue );
+  QString descrStr = QString( "range: %1 - %2" ).arg( qgsDoubleToString( mLowerValue ), qgsDoubleToString( mUpperValue ) );
   titleElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
   descrElem.appendChild( titleElem );
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range
   QString filterFunc = QString( "%1 > %2 AND %1 <= %3" )
-                       .arg( attrName.replace( '\"', "\"\"" ) )
-                       .arg( mLowerValue ).arg( mUpperValue );
+                       .arg( attrName.replace( '\"', "\"\"" ),
+                             qgsDoubleToString( mLowerValue ),
+                             qgsDoubleToString( mUpperValue ) );
   QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, filterFunc );
 
   mSymbol->toSld( doc, ruleElem, props );

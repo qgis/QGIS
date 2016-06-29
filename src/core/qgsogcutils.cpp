@@ -2268,7 +2268,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionLiteralToOgcFilter( const QgsExpr
       value = QString::number( node->value().toInt() );
       break;
     case QVariant::Double:
-      value = QString::number( node->value().toDouble() );
+      value = qgsDoubleToString( node->value().toDouble() );
       break;
     case QVariant::String:
       value = node->value().toString();
@@ -2713,7 +2713,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
       value = QString::number( node->value().toLongLong() );
       break;
     case QVariant::Double:
-      value = QString::number( node->value().toDouble() );
+      value = qgsDoubleToString( node->value().toDouble() );
       break;
     case QVariant::String:
       value = node->value().toString();
@@ -3128,7 +3128,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
         distance = QString::number( lit->value().toLongLong() );
         break;
       case QVariant::Double:
-        distance = QString::number( lit->value().toDouble() );
+        distance = qgsDoubleToString( lit->value().toDouble() );
         break;
       case QVariant::String:
       {

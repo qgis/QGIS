@@ -366,7 +366,7 @@ Qt::BrushStyle QgsSymbolLayerV2Utils::decodeSldBrushStyle( const QString& str )
 
 QString QgsSymbolLayerV2Utils::encodePoint( QPointF point )
 {
-  return QString( "%1,%2" ).arg( point.x() ).arg( point.y() );
+  return QString( "%1,%2" ).arg( qgsDoubleToString( point.x() ), qgsDoubleToString( point.y() ) );
 }
 
 QPointF QgsSymbolLayerV2Utils::decodePoint( const QString& str )
@@ -379,7 +379,8 @@ QPointF QgsSymbolLayerV2Utils::decodePoint( const QString& str )
 
 QString QgsSymbolLayerV2Utils::encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale )
 {
-  return QString( "%1,%2,%3,%4,%5,%6" ).arg( mapUnitScale.minScale ).arg( mapUnitScale.maxScale )
+  return QString( "%1,%2,%3,%4,%5,%6" ).arg( qgsDoubleToString( mapUnitScale.minScale ),
+         qgsDoubleToString( mapUnitScale.maxScale ) )
          .arg( mapUnitScale.minSizeMMEnabled ? 1 : 0 )
          .arg( mapUnitScale.minSizeMM )
          .arg( mapUnitScale.maxSizeMMEnabled ? 1 : 0 )
@@ -1939,7 +1940,7 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
       element.appendChild( createSvgParameterElement( doc, "stroke-opacity", encodeSldAlpha( color.alpha() ) ) );
   }
   if ( width > 0 )
-    element.appendChild( createSvgParameterElement( doc, "stroke-width", QString::number( width ) ) );
+    element.appendChild( createSvgParameterElement( doc, "stroke-width", qgsDoubleToString( width ) ) );
   if ( penJoinStyle )
     element.appendChild( createSvgParameterElement( doc, "stroke-linejoin", encodeSldLineJoinStyle( *penJoinStyle ) ) );
   if ( penCapStyle )
@@ -1949,7 +1950,7 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
   {
     element.appendChild( createSvgParameterElement( doc, "stroke-dasharray", encodeSldRealVector( *pattern ) ) );
     if ( !qgsDoubleNear( dashOffset, 0.0 ) )
-      element.appendChild( createSvgParameterElement( doc, "stroke-dashoffset", QString::number( dashOffset ) ) );
+      element.appendChild( createSvgParameterElement( doc, "stroke-dashoffset", qgsDoubleToString( dashOffset ) ) );
   }
 }
 
@@ -2100,7 +2101,7 @@ void QgsSymbolLayerV2Utils::externalGraphicToSld( QDomDocument &doc, QDomElement
   if ( size >= 0 )
   {
     QDomElement sizeElem = doc.createElement( "se:Size" );
-    sizeElem.appendChild( doc.createTextNode( QString::number( size ) ) );
+    sizeElem.appendChild( doc.createTextNode( qgsDoubleToString( size ) ) );
     element.appendChild( sizeElem );
   }
 }
@@ -2155,7 +2156,7 @@ void QgsSymbolLayerV2Utils::externalMarkerToSld( QDomDocument &doc, QDomElement 
   if ( !qgsDoubleNear( size, 0.0 ) && size > 0 )
   {
     QDomElement sizeElem = doc.createElement( "se:Size" );
-    sizeElem.appendChild( doc.createTextNode( QString::number( size ) ) );
+    sizeElem.appendChild( doc.createTextNode( qgsDoubleToString( size ) ) );
     element.appendChild( sizeElem );
   }
 }
@@ -2242,7 +2243,7 @@ void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement
   if ( !qgsDoubleNear( size, 0.0 ) && size > 0 )
   {
     QDomElement sizeElem = doc.createElement( "se:Size" );
-    sizeElem.appendChild( doc.createTextNode( QString::number( size ) ) );
+    sizeElem.appendChild( doc.createTextNode( qgsDoubleToString( size ) ) );
     element.appendChild( sizeElem );
   }
 }
@@ -2352,10 +2353,10 @@ void QgsSymbolLayerV2Utils::createDisplacementElement( QDomDocument &doc, QDomEl
   element.appendChild( displacementElem );
 
   QDomElement dispXElem = doc.createElement( "se:DisplacementX" );
-  dispXElem.appendChild( doc.createTextNode( QString::number( offset.x() ) ) );
+  dispXElem.appendChild( doc.createTextNode( qgsDoubleToString( offset.x() ) ) );
 
   QDomElement dispYElem = doc.createElement( "se:DisplacementY" );
-  dispYElem.appendChild( doc.createTextNode( QString::number( offset.y() ) ) );
+  dispYElem.appendChild( doc.createTextNode( qgsDoubleToString( offset.y() ) ) );
 
   displacementElem.appendChild( dispXElem );
   displacementElem.appendChild( dispYElem );

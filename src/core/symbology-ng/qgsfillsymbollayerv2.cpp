@@ -3306,7 +3306,7 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
     fillElem.appendChild( graphicFillElem );
 
     // store distanceX, distanceY, displacementX, displacementY in a <VendorOption>
-    QString dist =  QgsSymbolLayerV2Utils::encodePoint( QPointF( mDistanceX, mDistanceY ) );
+    QString dist = QgsSymbolLayerV2Utils::encodePoint( QPointF( mDistanceX, mDistanceY ) );
     QDomElement distanceElem = QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "distance", dist );
     symbolizerElem.appendChild( distanceElem );
 
