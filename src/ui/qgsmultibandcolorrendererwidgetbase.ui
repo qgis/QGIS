@@ -156,7 +156,7 @@ enhancement</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="4">
+     <item row="3" column="2">
       <widget class="QLineEdit" name="mGreenMinLineEdit">
        <property name="maxLength">
         <number>16</number>
@@ -209,7 +209,7 @@ enhancement</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="2">
+     <item row="3" column="4">
       <widget class="QLineEdit" name="mGreenMaxLineEdit">
        <property name="maxLength">
         <number>16</number>
@@ -217,6 +217,9 @@ enhancement</string>
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="4" column="0" colspan="5"> 
+    <widget class="QWidget" name="mMinMaxContainerWidget" native="true"/>
    </item>
   </layout>
  </widget>
