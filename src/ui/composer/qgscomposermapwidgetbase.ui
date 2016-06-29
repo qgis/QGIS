@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>465</width>
-    <height>2617</height>
+    <width>472</width>
+    <height>2688</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -55,8 +55,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>447</width>
-        <height>2584</height>
+        <width>466</width>
+        <height>2627</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -165,7 +165,16 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
+         <property name="title">
+          <string>Layers</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_12">
             <item>
              <widget class="QCheckBox" name="mFollowVisibilityPresetCheckBox">
@@ -186,7 +195,7 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="0" colspan="2">
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
              <widget class="QCheckBox" name="mKeepLayerListCheckBox">
@@ -197,7 +206,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Lock layers for map item</string>
+               <string>Lock layers</string>
               </property>
              </widget>
             </item>
@@ -233,10 +242,10 @@
             </item>
            </layout>
           </item>
-          <item row="6" column="0" colspan="2">
+          <item>
            <widget class="QCheckBox" name="mKeepLayerStylesCheckBox">
             <property name="text">
-             <string>Lock layer styles for map item</string>
+             <string>Lock styles for layers</string>
             </property>
            </widget>
           </item>
@@ -1453,8 +1462,8 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>scrollArea</tabstop>
   <tabstop>groupBox</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mPreviewModeComboBox</tabstop>
   <tabstop>mUpdatePreviewButton</tabstop>
   <tabstop>mScaleLineEdit</tabstop>
