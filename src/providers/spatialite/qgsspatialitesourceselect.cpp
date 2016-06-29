@@ -48,8 +48,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::Wind
   restoreGeometry( settings.value( "/Windows/SpatiaLiteSourceSelect/geometry" ).toByteArray() );
   mHoldDialogOpen->setChecked( settings.value( "/Windows/SpatiaLiteSourceSelect/HoldDialogOpen", false ).toBool() );
 
-  setWindowTitle( tr( "Add SpatiaLite Table(s)" ) );
-  connectionsGroupBox->setTitle( tr( "Databases" ) );
+  setWindowTitle( tr( "Add SpatiaLite Layer(s)" ) );
   btnEdit->hide();  // hide the edit button
   btnSave->hide();
   btnLoad->hide();
