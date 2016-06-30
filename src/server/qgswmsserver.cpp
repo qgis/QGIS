@@ -815,7 +815,7 @@ QImage* QgsWMSServer::getLegendGraphics()
     layerNameMap.insert( layerId, ml->name() );
     // set layer name with layer's title to have it in legend
     if ( !ml->title().isEmpty() )
-      layer->setLayerName( ml->title() );
+      layer->setName( ml->title() );
     // set show feature count
     if ( showFeatureCount )
       layer->setCustomProperty( "showFeatureCount", showFeatureCount );
@@ -960,7 +960,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   Q_FOREACH ( const QString& layerId, layerIds )
   {
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-    ml->setLayerName( layerNameMap[ layerId ] );
+    ml->setName( layerNameMap[ layerId ] );
   }
   //  clear map layer registry
   QgsMapLayerRegistry::instance()->removeAllMapLayers();

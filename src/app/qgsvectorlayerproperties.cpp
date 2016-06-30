@@ -613,7 +613,7 @@ void QgsVectorLayerProperties::apply()
   }
   Q_NOWARN_DEPRECATED_POP
 
-  mLayer->setLayerName( mLayerOrigNameLineEdit->text() );
+  mLayer->setName( mLayerOrigNameLineEdit->text() );
 
   // Apply fields settings
   mFieldsPropertiesDialog->apply();

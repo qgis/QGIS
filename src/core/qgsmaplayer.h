@@ -50,6 +50,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
+
   public:
     /** Layers enum defining the types of layers that can be added to a map */
     enum LayerType
@@ -79,8 +81,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Set the display name of the layer
      * @param name New name for the layer
+     * @deprecated Since 2.16, use setName instead
      */
-    void setLayerName( const QString & name );
+    Q_DECL_DEPRECATED void setLayerName( const QString & name );
+
+    /**
+     * Set the display name of the layer
+     * @param name New name for the layer
+     *
+     * @note added in 2.16
+     */
+    void setName( const QString& name );
 
     /** Get the display name of the layer
      * @return the layer name
@@ -651,8 +662,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
     void statusChanged( const QString& theStatus );
 
-    /** Emit a signal that the layer name has been changed */
-    void layerNameChanged();
+    /** Emit a signal that the layer name has been changed
+     * @deprecated since 2.16 use nameChanged() instead
+     */
+    Q_DECL_DEPRECATED void layerNameChanged();
+
+    /**
+     * Emitted when the name has been changed
+     *
+     * @note added in 2.16
+     */
+    void nameChanged();
 
     /** Emit a signal that layer's CRS has been reset */
     void layerCrsChanged();

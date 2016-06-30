@@ -903,7 +903,7 @@ void QgsRasterLayerProperties::apply()
   /*
    * General Tab
    */
-  mRasterLayer->setLayerName( mLayerOrigNameLineEd->text() );
+  mRasterLayer->setName( mLayerOrigNameLineEd->text() );
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );

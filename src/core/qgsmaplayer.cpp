@@ -64,9 +64,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   // Set the display name = internal name
-  QgsDebugMsg( "original name: '" + mLayerOrigName + '\'' );
   mLayerName = capitaliseLayerName( mLayerOrigName );
-  QgsDebugMsg( "display name: '" + mLayerName + '\'' );
 
   mShortName = "";
   //mShortName.replace( QRegExp( "[\\W]" ), "_" );
@@ -86,6 +84,8 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mMinScale = 0;
   mMaxScale = 100000000;
   mScaleBasedVisibility = false;
+
+  connect( this, SIGNAL( nameChanged() ), this, SIGNAL( layerNameChanged() ) );
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -105,16 +105,21 @@ QString QgsMapLayer::id() const
   return mID;
 }
 
-/** Write property of QString layerName. */
 void QgsMapLayer::setLayerName( const QString & name )
 {
-  QgsDebugMsg( "new original name: '" + name + '\'' );
+  setName( name );
+}
+
+void QgsMapLayer::setName( const QString& name )
+{
   QString newName = capitaliseLayerName( name );
-  QgsDebugMsg( "new display name: '" + name + '\'' );
-  if ( name == mLayerOrigName && newName == mLayerName ) return;
+  if ( name == mLayerOrigName && newName == mLayerName )
+    return;
+
   mLayerOrigName = name; // store the new original name
   mLayerName = newName;
-  emit layerNameChanged();
+
+  emit nameChanged();
 }
 
 /** Read property of QString layerName. */
@@ -434,7 +439,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   // set name
   mnl = layerElement.namedItem( "layername" );
   mne = mnl.toElement();
-  setLayerName( mne.text() );
+  setName( mne.text() );
 
   //short name
   QDomElement shortNameElem = layerElement.firstChildElement( "shortname" );

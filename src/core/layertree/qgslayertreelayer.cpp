@@ -79,7 +79,7 @@ QString QgsLayerTreeLayer::layerName() const
 void QgsLayerTreeLayer::setLayerName( const QString& n )
 {
   if ( mLayer )
-    mLayer->setLayerName( n );
+    mLayer->setName( n );
   else
     mLayerName = n;
 }

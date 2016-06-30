@@ -3568,7 +3568,7 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
         Q_ASSERT( elements.size() >= 4 );
         if ( layer->name() != elements.at( 1 ) )
         {
-          layer->setLayerName( QString( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+          layer->setName( QString( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
         }
 
         myList << layer;
@@ -7487,7 +7487,7 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
   if ( !layer )
     return nullptr;
 
-  layer->setLayerName( layerName );
+  layer->setName( layerName );
 
   mMapCanvas->freeze();
 
@@ -8875,7 +8875,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
     {
       // if the layer capitalization has changed, we need to update all layer names
       Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
-        layer->setLayerName( layer->originalName() );
+        layer->setName( layer->originalName() );
     }
 
     //update any open compositions so they reflect new composer settings
@@ -11073,7 +11073,7 @@ QgsPluginLayer* QgisApp::addPluginLayer( const QString& uri, const QString& base
   if ( !layer )
     return nullptr;
 
-  layer->setLayerName( baseName );
+  layer->setName( baseName );
 
   QgsMapLayerRegistry::instance()->addMapLayer( layer );
 
