@@ -3751,9 +3751,11 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
       {
         return TVL_Unknown;
       }
-      else if ( isDoubleSafe( vL ) && isDoubleSafe( vR ) )
+      else if ( isDoubleSafe( vL ) && isDoubleSafe( vR ) &&
+                ( vL.type() != QVariant::String || vR.type() != QVariant::String ) )
       {
-        // do numeric comparison if both operators can be converted to numbers
+        // do numeric comparison if both operators can be converted to numbers,
+        // and they aren't both string
         double fL = getDoubleValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
         double fR = getDoubleValue( vR, parent );
@@ -3780,7 +3782,8 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
       else // both operators non-null
       {
         bool equal = false;
-        if ( isDoubleSafe( vL ) && isDoubleSafe( vR ) )
+        if ( isDoubleSafe( vL ) && isDoubleSafe( vR ) &&
+             ( vL.type() != QVariant::String || vR.type() != QVariant::String ) )
         {
           double fL = getDoubleValue( vL, parent );
           ENSURE_NO_EVAL_ERROR;
