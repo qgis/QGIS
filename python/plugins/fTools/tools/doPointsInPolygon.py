@@ -299,6 +299,9 @@ class PointsInPolygonThread(QThread):
                             value = math.sqrt(value)
                         atMap.append(value)
 
+            else:  # no intersection - store at least the zero count
+                atMap.append(0)
+
             outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
 
