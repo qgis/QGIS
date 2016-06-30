@@ -232,8 +232,6 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         layer = None
         os.unlink(corrupt_dbname)
 
-    # FIXME: this test case does not work whereas equivalent OGR one does
-    # I believe the issue is that spatialite should have a Qgs
     def testNoDanglingFileDescriptorAfterCloseVariant1(self):
         ''' Test that when closing the provider all file handles are released '''
 
