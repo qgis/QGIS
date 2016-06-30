@@ -95,9 +95,8 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void setLabelAttributeName( const QString& name ) { mLabelAttributeName = name; }
     QString labelAttributeName() const { return mLabelAttributeName; }
 
-    /** Sets embedded renderer (takes ownership)*/
-    void setEmbeddedRenderer( QgsFeatureRendererV2* r );
-    QgsFeatureRendererV2* embeddedRenderer() const { return mRenderer;}
+    void setEmbeddedRenderer( QgsFeatureRendererV2* r ) override;
+    const QgsFeatureRendererV2* embeddedRenderer() const override;
 
     //! not available in python bindings
     //! @deprecated since 2.4

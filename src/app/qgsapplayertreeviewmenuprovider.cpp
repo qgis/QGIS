@@ -129,7 +129,11 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( vlayer )
         {
-          QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< QgsSingleSymbolRendererV2* >( vlayer->rendererV2() );
+          const QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( vlayer->rendererV2() );
+          if ( !singleRenderer && vlayer->rendererV2()->embeddedRenderer() )
+          {
+            singleRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( vlayer->rendererV2()->embeddedRenderer() );
+          }
           if ( singleRenderer && singleRenderer->symbol() )
           {
             //single symbol renderer, so add set color/edit symbol actions
@@ -488,12 +492,34 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor& color 
     return;
 
   QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< QgsSingleSymbolRendererV2* >( layer->rendererV2() );
-  if ( !singleRenderer || !singleRenderer->symbol() )
+  QgsSymbolV2* newSymbol = nullptr;
+
+  if ( singleRenderer && singleRenderer->symbol() )
+    newSymbol = singleRenderer->symbol()->clone();
+
+  const QgsSingleSymbolRendererV2* embeddedRenderer = nullptr;
+  if ( !newSymbol && layer->rendererV2()->embeddedRenderer() )
+  {
+    embeddedRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( layer->rendererV2()->embeddedRenderer() );
+    if ( embeddedRenderer && embeddedRenderer->symbol() )
+      newSymbol = embeddedRenderer->symbol()->clone();
+  }
+
+  if ( !newSymbol )
     return;
 
-  QgsSymbolV2* newSymbol = singleRenderer->symbol()->clone();
   newSymbol->setColor( color );
-  singleRenderer->setSymbol( newSymbol );
+  if ( singleRenderer )
+  {
+    singleRenderer->setSymbol( newSymbol );
+  }
+  else if ( embeddedRenderer )
+  {
+    QgsSingleSymbolRendererV2* newRenderer = embeddedRenderer->clone();
+    newRenderer->setSymbol( newSymbol );
+    layer->rendererV2()->setEmbeddedRenderer( newRenderer );
+  }
+
   layer->triggerRepaint();
   mView->refreshLayerSymbology( layer->id() );
 }
