@@ -7379,16 +7379,26 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     QgsAttributes srcAttr = featureIt->attributes();
     QgsAttributes dstAttr( dstAttrCount );
 
+    // pre-initialized with default values
+    for ( int dst = 0; dst < dstAttr.count(); ++dst )
+    {
+      QVariant defVal( pasteVectorLayer->dataProvider()->defaultValue( dst ) );
+      if( !defVal.isNull() )
+      {
+        dstAttr[ dst ] = defVal;
+      }
+    }
+
     for ( int src = 0; src < srcAttr.count(); ++src )
     {
       int dst = remap.value( src, -1 );
       if ( dst < 0 )
         continue;
 
-      // use default value for primary key fields if it's NOT NULL
+      // don't overwrite default value for primary key fields if it's NOT NULL
+      // or for spatialite layers
       if ( pkAttrList.contains( dst ) )
       {
-        dstAttr[ dst ] = pasteVectorLayer->dataProvider()->defaultValue( dst );
         if ( !dstAttr.at( dst ).isNull() )
           continue;
         else if ( pasteVectorLayer->providerType() == "spatialite" )

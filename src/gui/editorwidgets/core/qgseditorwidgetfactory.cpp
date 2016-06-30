@@ -17,6 +17,7 @@
 #include "qgsdefaultsearchwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
 #include "qgsfield.h"
+#include "qgsvectordataprovider.h"
 
 #include <QSettings>
 
@@ -67,7 +68,11 @@ QString QgsEditorWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx
   Q_UNUSED( cache )
   Q_UNUSED( value )
 
-  return vl->fields().at( fieldIdx ).displayString( value );
+  QString defVal;
+  if ( vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginProvider && vl->dataProvider() )
+    defVal = vl->dataProvider()->defaultValue( vl->fields().fieldOriginIndex( fieldIdx ) ).toString();
+
+  return value == defVal ? defVal : vl->fields().at( fieldIdx ).displayString( value );
 }
 
 Qt::AlignmentFlag QgsEditorWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
