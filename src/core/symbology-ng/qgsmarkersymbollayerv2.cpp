@@ -1437,6 +1437,13 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderCon
   }
 
   p->restore();
+
+  if ( context.renderContext().flags() & QgsRenderContext::Antialiasing )
+  {
+    // workaround issue with nested QPictures forgetting antialiasing flag - see http://hub.qgis.org/issues/14960
+    p->setRenderHint( QPainter::Antialiasing );
+  }
+
 }
 
 double QgsSvgMarkerSymbolLayerV2::calculateSize( QgsSymbolV2RenderContext& context, bool& hasDataDefinedSize ) const
