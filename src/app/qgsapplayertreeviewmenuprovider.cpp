@@ -264,44 +264,44 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ), tr( "&Hide All Items" ),
                          symbolNode, SLOT( uncheckAllItems() ) );
         menu->addSeparator();
+      }
 
-        if ( symbolNode->symbol() )
-        {
-          QgsColorWheel* colorWheel = new QgsColorWheel( menu );
-          colorWheel->setColor( symbolNode->symbol()->color() );
-          QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, menu, menu );
-          colorAction->setDismissOnColorSelection( false );
-          connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
-          //store the layer id and rule key in action, so we can later retrieve the corresponding
-          //legend node, if it still exists
-          colorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
-          colorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
-          menu->addAction( colorAction );
-
-          //add recent colors action
-          QList<QgsRecentColorScheme *> recentSchemes;
-          QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
-          if ( !recentSchemes.isEmpty() )
-          {
-            QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, "symbology", menu );
-            recentColorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
-            recentColorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
-            recentColorAction->setDismissOnColorSelection( false );
-            menu->addAction( recentColorAction );
-            connect( recentColorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
-          }
-
-          menu->addSeparator();
-        }
-
-        QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menu );
+      if ( symbolNode->symbol() )
+      {
+        QgsColorWheel* colorWheel = new QgsColorWheel( menu );
+        colorWheel->setColor( symbolNode->symbol()->color() );
+        QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, menu, menu );
+        colorAction->setDismissOnColorSelection( false );
+        connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
         //store the layer id and rule key in action, so we can later retrieve the corresponding
         //legend node, if it still exists
-        editSymbolAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
-        editSymbolAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
-        connect( editSymbolAction, SIGNAL( triggered() ), this, SLOT( editSymbolLegendNodeSymbol() ) );
-        menu->addAction( editSymbolAction );
+        colorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
+        colorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+        menu->addAction( colorAction );
+
+        //add recent colors action
+        QList<QgsRecentColorScheme *> recentSchemes;
+        QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
+        if ( !recentSchemes.isEmpty() )
+        {
+          QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, "symbology", menu );
+          recentColorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
+          recentColorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+          recentColorAction->setDismissOnColorSelection( false );
+          menu->addAction( recentColorAction );
+          connect( recentColorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
+        }
+
+        menu->addSeparator();
       }
+
+      QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menu );
+      //store the layer id and rule key in action, so we can later retrieve the corresponding
+      //legend node, if it still exists
+      editSymbolAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
+      editSymbolAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+      connect( editSymbolAction, SIGNAL( triggered() ), this, SLOT( editSymbolLegendNodeSymbol() ) );
+      menu->addAction( editSymbolAction );
     }
   }
 

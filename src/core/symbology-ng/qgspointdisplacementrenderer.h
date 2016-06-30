@@ -98,6 +98,8 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void setEmbeddedRenderer( QgsFeatureRendererV2* r ) override;
     const QgsFeatureRendererV2* embeddedRenderer() const override;
 
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol ) override;
+
     //! not available in python bindings
     //! @deprecated since 2.4
     Q_DECL_DEPRECATED void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list ) { Q_UNUSED( list ); }
