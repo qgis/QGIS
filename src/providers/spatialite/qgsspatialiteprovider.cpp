@@ -600,6 +600,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
 QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
 {
   closeDb();
+  invalidateConnections( mSqlitePath );
 }
 
 QgsAbstractFeatureSource* QgsSpatiaLiteProvider::featureSource() const

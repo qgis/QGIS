@@ -385,6 +385,9 @@ QgsOgrProvider::~QgsOgrProvider()
 {
   close();
   QgsOgrConnPool::instance()->unref( dataSourceUri() );
+  // We must also make sure to flush unusef cached connections so that
+  // the file can be removed (#15137)
+  QgsOgrConnPool::instance()->invalidateConnections( dataSourceUri() );
 }
 
 QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const

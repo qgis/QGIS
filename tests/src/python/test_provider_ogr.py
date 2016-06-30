@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import shutil
+import sys
 import tempfile
 
 from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWKBTypes
@@ -32,6 +33,21 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 # Note - doesn't implement ProviderTestCase as most OGR provider is tested by the shapefile provider test
+
+
+def count_opened_filedescriptors(filename_to_test):
+    count = -1
+    if sys.platform.startswith('linux'):
+        count = 0
+        open_files_dirname = '/proc/%d/fd' % os.getpid()
+        filenames = os.listdir(open_files_dirname)
+        for filename in filenames:
+            full_filename = open_files_dirname + '/' + filename
+            if os.path.exists(full_filename):
+                link = os.readlink(full_filename)
+                if os.path.basename(link) == os.path.basename(filename_to_test):
+                    count += 1
+    return count
 
 
 class PyQgsOGRProvider(unittest.TestCase):
@@ -134,6 +150,76 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(f.constGeometry().geometry().pointN(1).z(), 2)
         self.assertEqual(f.constGeometry().geometry().pointN(2).z(), 3)
 
+    def testNoDanglingFileDescriptorAfterCloseVariant1(self):
+        ''' Test that when closing the provider all file handles are released '''
+
+        datasource = os.path.join(self.basetestpath, 'testNoDanglingFileDescriptorAfterCloseVariant1.csv')
+        with open(datasource, 'wt') as f:
+            f.write('id,WKT\n')
+            f.write('1,\n')
+            f.write('2,POINT(2 49)\n')
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        # The iterator will take one extra connection
+        myiter = vl.getFeatures()
+        # Consume one feature but the iterator is still opened
+        f = next(myiter)
+        self.assertTrue(f.isValid())
+
+        if sys.platform.startswith('linux'):
+            self.assertEqual(count_opened_filedescriptors(datasource), 2)
+
+        # Should release one file descriptor
+        del vl
+
+        # Non portable, but Windows testing is done with trying to unlink
+        if sys.platform.startswith('linux'):
+            self.assertEqual(count_opened_filedescriptors(datasource), 1)
+
+        f = next(myiter)
+        self.assertTrue(f.isValid())
+
+        # Should release one file descriptor
+        del myiter
+
+        # Non portable, but Windows testing is done with trying to unlink
+        if sys.platform.startswith('linux'):
+            self.assertEqual(count_opened_filedescriptors(datasource), 0)
+
+        # Check that deletion works well (can only fail on Windows)
+        os.unlink(datasource)
+        self.assertFalse(os.path.exists(datasource))
+
+    def testNoDanglingFileDescriptorAfterCloseVariant2(self):
+        ''' Test that when closing the provider all file handles are released '''
+
+        datasource = os.path.join(self.basetestpath, 'testNoDanglingFileDescriptorAfterCloseVariant2.csv')
+        with open(datasource, 'wt') as f:
+            f.write('id,WKT\n')
+            f.write('1,\n')
+            f.write('2,POINT(2 49)\n')
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        # Consume all features.
+        myiter = vl.getFeatures()
+        for feature in myiter:
+            pass
+        # The iterator is closed, but the corresponding connection still not closed
+        if sys.platform.startswith('linux'):
+            self.assertEqual(count_opened_filedescriptors(datasource), 2)
+
+        # Should release one file descriptor
+        del vl
+
+        # Non portable, but Windows testing is done with trying to unlink
+        if sys.platform.startswith('linux'):
+            self.assertEqual(count_opened_filedescriptors(datasource), 0)
+
+        # Check that deletion works well (can only fail on Windows)
+        os.unlink(datasource)
+        self.assertFalse(os.path.exists(datasource))
 
 if __name__ == '__main__':
     unittest.main()
