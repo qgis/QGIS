@@ -1004,8 +1004,8 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString& layerName, const QSt
 
   // transform it to requested CRS
 
-  QgsCoordinateReferenceSystem dst = QgsCRSCache::instance()->crsByOgcWmsCrs( DEFAULT_LATLON_CRS );
-  QgsCoordinateReferenceSystem wgs = QgsCRSCache::instance()->crsByOgcWmsCrs( crs );
+  QgsCoordinateReferenceSystem dst = QgsCRSCache::instance()->crsByOgcWmsCrs( crs );
+  QgsCoordinateReferenceSystem wgs = QgsCRSCache::instance()->crsByOgcWmsCrs( DEFAULT_LATLON_CRS );
   if ( !wgs.isValid() || !dst.isValid() )
     return false;
 
