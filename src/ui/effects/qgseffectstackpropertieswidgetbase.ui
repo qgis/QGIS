@@ -83,7 +83,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Add symbol layer</string>
+          <string>Add new effect</string>
          </property>
         </widget>
        </item>
@@ -96,7 +96,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Remove symbol layer</string>
+          <string>Remove effect</string>
          </property>
         </widget>
        </item>
