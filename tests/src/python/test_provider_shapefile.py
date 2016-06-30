@@ -17,6 +17,7 @@ import tempfile
 import shutil
 import glob
 import osgeo.gdal
+import osgeo.ogr
 import sys
 
 from qgis.core import QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider
@@ -24,12 +25,6 @@ from qgis.PyQt.QtCore import QSettings, QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-
-try:
-    from osgeo import gdal
-    gdal_ok = True
-except:
-    gdal_ok = False
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -205,11 +200,9 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.dataProvider().deleteFeatures([fid]))
 
         # Check that it has really disappeared
-        if gdal_ok:
-            gdal.PushErrorHandler('CPLQuietErrorHandler')
+        osgeo.gdal.PushErrorHandler('CPLQuietErrorHandler')
         features = [f_iter for f_iter in vl.getFeatures(QgsFeatureRequest().setFilterFid(fid))]
-        if gdal_ok:
-            gdal.PopErrorHandler()
+        osgeo.gdal.PopErrorHandler()
         self.assertEquals(features, [])
 
         self.assertTrue(vl.dataProvider().addAttributes([QgsField("new_field", QVariant.Int, "integer")]))
@@ -357,6 +350,35 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
         fet = next(vl.getFeatures())
         self.assertIsNone(fet.geometry())
+
+    def testDeleteShapes(self):
+        ''' Test fix for #11007 '''
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        feature_count = vl.featureCount()
+        # Start an iterator that will open a new connection
+        iterator = vl.getFeatures()
+        f = next(iterator)
+
+        # Delete a feature
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.deleteFeature(1))
+        self.assertTrue(vl.commitChanges())
+
+        # Test the content of the shapefile while it is still opened
+        ds = osgeo.ogr.Open(datasource)
+        # Test repacking has been done
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount(), feature_count - 1)
+        ds = None
+
+        vl = None
 
 if __name__ == '__main__':
     unittest.main()
