@@ -280,10 +280,10 @@ void QgsLayerStylingWidget::redo()
 
 void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 {
-  mBlockAutoApply = true;
-
   if ( !mCurrentLayer )
-    return;
+    return;  // non-spatial are ignored in setLayer()
+
+  mBlockAutoApply = true;
 
   mUndoWidget->setUndoStack( mCurrentLayer->undoStackStyles() );
 
