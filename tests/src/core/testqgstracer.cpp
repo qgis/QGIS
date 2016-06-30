@@ -34,6 +34,7 @@ class TestQgsTracer : public QObject
     void testLayerUpdates();
     void testExtent();
     void testReprojection();
+    void testCurved();
 
   private:
 
@@ -317,6 +318,40 @@ void TestQgsTracer::testReprojection()
 
   QgsPolyline points1 = tracer.findShortestPath( p1, p2 );
   QCOMPARE( points1.count(), 2 );
+}
+
+void TestQgsTracer::testCurved()
+{
+  QStringList wkts;
+  wkts  << "CIRCULARSTRING(0 0, 10 10, 20 0)";
+
+  /* This shape - half of a circle (r = 10)
+   * 10,10  _
+   *       / \
+   * 0,0  |   |  20,0
+   */
+
+  QgsVectorLayer* vl = make_layer( wkts );
+
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+
+  QgsPolyline points1 = tracer.findShortestPath( QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) );
+
+  QVERIFY( points1.count() != 0 );
+
+  QgsGeometry* tmpG1 = QgsGeometry::fromPolyline( points1 );
+  double l = tmpG1->length();
+  delete tmpG1;
+
+  // fuzzy comparison of QCOMPARE is too strict for this case
+  double full_circle_length = 2 * M_PI * 10;
+  QVERIFY( qAbs( l - full_circle_length / 4 ) < 0.01 );
+
+  QCOMPARE( points1[0], QgsPoint( 0, 0 ) );
+  QCOMPARE( points1[points1.count()-1], QgsPoint( 10, 10 ) );
+
+  delete vl;
 }
 
 
