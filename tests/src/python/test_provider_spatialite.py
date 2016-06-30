@@ -37,8 +37,10 @@ except ImportError:
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+
 def die(error_message):
     raise Exception(error_message)
+
 
 def count_opened_filedescriptors(filename_to_test):
     count = -1
@@ -227,7 +229,6 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         layer.getFeatures()
         layer = None
         os.unlink(corrupt_dbname)
-
 
     def testNoDanglingFileDescriptorAfterCloseVariant1(self):
         ''' Test that when closing the provider all file handles are released '''
