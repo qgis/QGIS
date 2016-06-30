@@ -3667,33 +3667,38 @@ bool QgisApp::askUserForZipItemLayers( QString path )
   {
     // We initialize a selection dialog and display it.
     QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Vsifile, "vsi", this );
+    QgsSublayersDialog::LayerDefinitionList layers;
 
-    QStringList layers;
     for ( int i = 0; i < zipItem->children().size(); i++ )
     {
       QgsDataItem *item = zipItem->children().at( i );
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
-      if ( layerItem )
+      if ( !layerItem )
+        continue;
+
+      QgsDebugMsgLevel( QString( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ), 2 );
+
+      QgsSublayersDialog::LayerDefinition def;
+      def.layerId = i;
+      def.layerName = item->name();
+      if ( layerItem->providerKey() == "gdal" )
       {
-        QgsDebugMsgLevel( QString( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ), 2 );
+        def.type = tr( "Raster" );
       }
-      if ( layerItem && layerItem->providerKey() == "gdal" )
+      else if ( layerItem->providerKey() == "ogr" )
       {
-        layers << QString( "%1|%2|%3" ).arg( i ).arg( item->name(), "Raster" );
+        def.type = tr( "Vector" );
       }
-      else if ( layerItem && layerItem->providerKey() == "ogr" )
-      {
-        layers << QString( "%1|%2|%3" ).arg( i ).arg( item->name(), tr( "Vector" ) );
-      }
+      layers << def;
     }
 
-    chooseSublayersDialog.populateLayerTable( layers, "|" );
+    chooseSublayersDialog.populateLayerTable( layers );
 
     if ( chooseSublayersDialog.exec() )
     {
-      Q_FOREACH ( int i, chooseSublayersDialog.selectionIndexes() )
+      Q_FOREACH ( const QgsSublayersDialog::LayerDefinition& def, chooseSublayersDialog.selection() )
       {
-        childItems << zipItem->children().at( i );
+        childItems << zipItem->children().at( def.layerId );
       }
     }
   }
@@ -3751,7 +3756,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   // We initialize a selection dialog and display it.
   QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Gdal, "gdal", this );
 
-  QStringList layers;
+  QgsSublayersDialog::LayerDefinitionList layers;
   QStringList names;
   for ( int i = 0; i < sublayers.size(); i++ )
   {
@@ -3784,10 +3789,14 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
       name.chop( 1 );
 
     names << name;
-    layers << QString( "%1|%2" ).arg( i ).arg( name );
+
+    QgsSublayersDialog::LayerDefinition def;
+    def.layerId = i;
+    def.layerName = name;
+    layers << def;
   }
 
-  chooseSublayersDialog.populateLayerTable( layers, "|" );
+  chooseSublayersDialog.populateLayerTable( layers );
 
   if ( chooseSublayersDialog.exec() )
   {
@@ -3795,8 +3804,9 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     QRegExp rx( "\"(.*)\"" );
     QString uri, name;
 
-    Q_FOREACH ( int i, chooseSublayersDialog.selectionIndexes() )
+    Q_FOREACH ( const QgsSublayersDialog::LayerDefinition& def, chooseSublayersDialog.selection() )
     {
+      int i = def.layerId;
       if ( rx.indexIn( sublayers[i] ) != -1 )
       {
         uri = rx.cap( 1 );
@@ -3874,79 +3884,75 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   QStringList sublayers = layer->dataProvider()->subLayers();
   QString layertype = layer->dataProvider()->storageType();
 
+  QgsSublayersDialog::LayerDefinitionList list;
+  Q_FOREACH ( const QString& sublayer, sublayers )
+  {
+    // OGR provider returns items in this format:
+    // <layer_index>:<name>:<feature_count>:<geom_type>
+
+    QStringList elements = sublayer.split( ":" );
+    // merge back parts of the name that may have been split
+    while ( elements.size() > 4 )
+    {
+      elements[1] += ":" + elements[2];
+      elements.removeAt( 2 );
+    }
+
+    if ( elements.count() == 4 )
+    {
+      QgsSublayersDialog::LayerDefinition def;
+      def.layerId = elements[0].toInt();
+      def.layerName = elements[1];
+      def.count = elements[2].toInt();
+      def.type = elements[3];
+      list << def;
+    }
+    else
+    {
+      QgsDebugMsg( "Unexpected output from OGR provider's subLayers()! " + sublayer );
+    }
+  }
+
+
   // We initialize a selection dialog and display it.
   QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, "ogr", this );
-  chooseSublayersDialog.populateLayerTable( sublayers );
+  chooseSublayersDialog.populateLayerTable( list );
 
-  if ( chooseSublayersDialog.exec() )
+  if ( !chooseSublayersDialog.exec() )
+    return;
+
+  QString uri = layer->source();
+  //the separator char & was changed to | to be compatible
+  //with url for protocol drivers
+  if ( uri.contains( '|', Qt::CaseSensitive ) )
   {
-    QString uri = layer->source();
-    //the separator char & was changed to | to be compatible
-    //with url for protocol drivers
-    if ( uri.contains( '|', Qt::CaseSensitive ) )
-    {
-      // If we get here, there are some options added to the filename.
-      // A valid uri is of the form: filename&option1=value1&option2=value2,...
-      // We want only the filename here, so we get the first part of the split.
-      QStringList theURIParts = uri.split( '|' );
-      uri = theURIParts.at( 0 );
-    }
-    QgsDebugMsg( "Layer type " + layertype );
-    // the user has done his choice
-    loadOGRSublayers( layertype, uri, chooseSublayersDialog.selectionNames() );
+    // If we get here, there are some options added to the filename.
+    // A valid uri is of the form: filename&option1=value1&option2=value2,...
+    // We want only the filename here, so we get the first part of the split.
+    QStringList theURIParts = uri.split( '|' );
+    uri = theURIParts.at( 0 );
   }
-}
+  QgsDebugMsg( "Layer type " + layertype );
 
-// This method will load with OGR the layers  in parameter.
-// This method has been conceived to use the new URI
-// format of the ogrprovider so as to give precisions about which
-// sublayer to load into QGIS. It is normally triggered by the
-// sublayer selection dialog.
-void QgisApp::loadOGRSublayers( const QString& layertype, const QString& uri, const QStringList& list )
-{
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
   QString fileName = QFileInfo( uri ).baseName();
   QList<QgsMapLayer *> myList;
-  for ( int i = 0; i < list.size(); i++ )
+  Q_FOREACH ( const QgsSublayersDialog::LayerDefinition& def, chooseSublayersDialog.selection() )
   {
-    QString composedURI;
-    QStringList elements = list.at( i ).split( ':' );
-    while ( elements.size() > 2 )
-    {
-      elements[0] += ':' + elements[1];
-      elements.removeAt( 1 );
-    }
-
-    QString layerName = elements.value( 0 );
-    QString layerGeometryType = elements.value( 1 );
-    if ( layerGeometryType == "any" )
-    {
-      layerGeometryType = "";
-      elements.removeAt( 1 );
-    }
-
-    if ( layertype != "GRASS" )
-    {
-      composedURI = uri + "|layername=" + layerName;
-    }
-    else
-    {
-      composedURI = uri + "|layerindex=" + layerName;
-    }
+    QString layerGeometryType = def.type;
+    QString composedURI = uri + "|layerid=" + QString::number( def.layerId );
 
     if ( !layerGeometryType.isEmpty() )
     {
       composedURI += "|geometrytype=" + layerGeometryType;
     }
 
-    // addVectorLayer( composedURI, list.at( i ), "ogr" );
-
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
-    QString name = layerName;
+    QString name = fileName + " " + def.layerName;
     if ( !layerGeometryType.isEmpty() )
       name += " " + layerGeometryType;
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, fileName + " " + name, "ogr", false );
+    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, "ogr", false );
     if ( layer && layer->isValid() )
     {
       myList << layer;
