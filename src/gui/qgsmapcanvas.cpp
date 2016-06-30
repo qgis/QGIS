@@ -558,31 +558,33 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   if ( mSettings.destinationCrs() == crs )
     return;
 
-  if ( mSettings.hasCrsTransformEnabled() )
+  // try to reproject current extent to the new one
+  QgsRectangle rect;
+  if ( !mSettings.visibleExtent().isEmpty() )
   {
-    // try to reproject current extent to the new one
-    QgsRectangle rect;
-    if ( !mSettings.visibleExtent().isEmpty() )
+    QgsCoordinateTransform transform( mSettings.destinationCrs(), crs );
+    try
     {
-      QgsCoordinateTransform transform( mSettings.destinationCrs(), crs );
-      try
-      {
-        rect = transform.transformBoundingBox( mSettings.visibleExtent() );
-      }
-      catch ( QgsCsException &e )
-      {
-        Q_UNUSED( e );
-        QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
-      }
+      rect = transform.transformBoundingBox( mSettings.visibleExtent() );
     }
-    if ( !rect.isEmpty() )
+    catch ( QgsCsException &e )
     {
-      setExtent( rect );
+      Q_UNUSED( e );
+      QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
     }
-
-    QgsDebugMsg( "refreshing after destination CRS changed" );
-    refresh();
   }
+
+  if ( !mSettings.hasCrsTransformEnabled() )
+  {
+    mSettings.setMapUnits( crs.mapUnits() );
+  }
+  if ( !rect.isEmpty() )
+  {
+    setExtent( rect );
+  }
+
+  QgsDebugMsg( "refreshing after destination CRS changed" );
+  refresh();
 
   mSettings.setDestinationCrs( crs );
 
