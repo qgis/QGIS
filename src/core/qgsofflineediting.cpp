@@ -205,7 +205,9 @@ void QgsOfflineEditing::synchronize()
   // open logging db
   sqlite3* db = openLoggingDb();
   if ( !db )
+  {
     return;
+  }
 
   emit progressStarted();
 
@@ -221,6 +223,7 @@ void QgsOfflineEditing::synchronize()
     }
   }
 
+  QgsDebugMsgLevel( QString( "Found %1 offline layers" ).arg( offlineLayers.count() ), 4 );
   for ( int l = 0; l < offlineLayers.count(); l++ )
   {
     QgsMapLayer* layer = offlineLayers[l];
@@ -265,8 +268,10 @@ void QgsOfflineEditing::synchronize()
 
         // TODO: only get commitNos of this layer?
         int commitNo = getCommitNo( db );
+        QgsDebugMsgLevel( QString( "Found %1 commits" ).arg( commitNo ), 4 );
         for ( int i = 0; i < commitNo; i++ )
         {
+          QgsDebugMsgLevel( "Apply commits chronologically", 4 );
           // apply commits chronologically
           applyAttributesAdded( remoteLayer, db, layerId, i );
           applyAttributeValueChanges( offlineLayer, remoteLayer, db, layerId, i );
@@ -302,6 +307,10 @@ void QgsOfflineEditing::synchronize()
           showWarning( remoteLayer->commitErrors().join( "\n" ) );
         }
       }
+      else
+      {
+        QgsDebugMsg( "Could not find the layer id in the edit logs!" );
+      }
       // Invalidate the connection to force a reload if the project is put offline
       // again with the same path
       offlineLayer->dataProvider()->invalidateConnections( QgsDataSourceURI( offlineLayer->source() ).database() );
@@ -316,6 +325,10 @@ void QgsOfflineEditing::synchronize()
       QgsProject::instance()->setTitle( projectTitle );
       QgsProject::instance()->removeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
       remoteLayer->reload(); //update with other changes
+    }
+    else
+    {
+      QgsDebugMsg( "Remote layer is not valid!" );
     }
   }
 
@@ -477,7 +490,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
     return nullptr;
 
   QString tableName = layer->id();
-  QgsDebugMsg( QString( "Creating offline table %1 ..." ).arg( tableName ) );
+  QgsDebugMsgLevel( QString( "Creating offline table %1 ..." ).arg( tableName ), 4 );
 
   // create table
   QString sql = QString( "CREATE TABLE '%1' (" ).arg( tableName );
@@ -817,7 +830,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer* offlineLayer
   for ( int i = 0; i < values.size(); i++ )
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
-
+    QgsDebugMsgLevel( QString( "Offline changeAttributeValue %1 = %2" ).arg( QString( attrLookup[ values.at( i ).attr ] ), values.at( i ).value ), 4 );
     remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value );
 
     emit progressUpdated( i + 1 );
@@ -932,10 +945,15 @@ sqlite3* QgsOfflineEditing::openLoggingDb()
     int rc = sqlite3_open( dbPath.toUtf8().constData(), &db );
     if ( rc != SQLITE_OK )
     {
+      QgsDebugMsg( "Could not open the spatialite logging database" );
       showWarning( tr( "Could not open the spatialite logging database" ) );
       sqlite3_close( db );
       db = nullptr;
     }
+  }
+  else
+  {
+    QgsDebugMsg( "dbPath is empty!" );
   }
   return db;
 }
