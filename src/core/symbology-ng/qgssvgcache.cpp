@@ -328,7 +328,13 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
   entry->viewboxSize = viewboxSize;
   replaceElemParams( docElem, entry->fill, entry->outline, entry->outlineWidth * sizeScaleFactor );
 
-  entry->svgContent = svgDoc.toByteArray();
+  entry->svgContent = svgDoc.toByteArray( 0 );
+
+  // toByteArray screws up tspans inside text by adding new lines before and after each span... this should help, at the
+  // risk of potentially breaking some svgs where the newline is desired
+  entry->svgContent.replace( "\n<tspan", "<tspan" );
+  entry->svgContent.replace( "</tspan>\n", "</tspan>" );
+
   mTotalSize += entry->svgContent.size();
 }
 
@@ -342,16 +348,23 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElem
 
   //find svg viewbox attribute
   //first check if docElem is svg element
-  if ( docElem.tagName() == "svg" )
+  if ( docElem.tagName() == "svg" && docElem.hasAttribute( "viewBox" ) )
   {
     viewBox = docElem.attribute( "viewBox", QString() );
+  }
+  else if ( docElem.tagName() == "svg" && docElem.hasAttribute( "viewbox" ) )
+  {
+    viewBox = docElem.attribute( "viewbox", QString() );
   }
   else
   {
     QDomElement svgElem = docElem.firstChildElement( "svg" ) ;
     if ( !svgElem.isNull() )
     {
-      viewBox = svgElem.attribute( "viewBox", QString() );
+      if ( svgElem.hasAttribute( "viewBox" ) )
+        viewBox = svgElem.attribute( "viewBox", QString() );
+      else if ( svgElem.hasAttribute( "viewbox" ) )
+        viewBox = svgElem.attribute( "viewbox", QString() );
     }
   }
 
