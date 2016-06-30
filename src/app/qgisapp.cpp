@@ -7383,7 +7383,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     for ( int dst = 0; dst < dstAttr.count(); ++dst )
     {
       QVariant defVal( pasteVectorLayer->dataProvider()->defaultValue( dst ) );
-      if( !defVal.isNull() )
+      if ( !defVal.isNull() )
       {
         dstAttr[ dst ] = defVal;
       }

@@ -198,6 +198,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   connect( mSettingsButton, SIGNAL( triggered( QAction* ) ), this, SLOT( settingsButtonTriggered( QAction* ) ) );
 
   updateCapacity( true );
+  disable();
 }
 
 void QgsAdvancedDigitizingDockWidget::hideEvent( QHideEvent* )
