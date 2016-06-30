@@ -29,9 +29,11 @@
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName,
     QgsRasterRendererCreateFunc rendererFunction,
-    QgsRasterRendererWidgetCreateFunc widgetFunction ):
-    name( theName ), visibleName( theVisibleName ), rendererCreateFunction( rendererFunction ),
-    widgetCreateFunction( widgetFunction )
+    QgsRasterRendererWidgetCreateFunc widgetFunction )
+    : name( theName )
+    , visibleName( theVisibleName )
+    , rendererCreateFunction( rendererFunction )
+    , widgetCreateFunction( widgetFunction )
 {
 }
 

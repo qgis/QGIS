@@ -549,6 +549,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
+      mRendererWidget->setMapCanvas( mMapCanvas );
       mRendererStackedWidget->addWidget( mRendererWidget );
       if ( oldWidget )
       {

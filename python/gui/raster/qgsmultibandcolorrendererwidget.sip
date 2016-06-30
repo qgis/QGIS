@@ -10,6 +10,7 @@ class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
     ~QgsMultiBandColorRendererWidget();
 
     QgsRasterRenderer* renderer();
+    void setMapCanvas( QgsMapCanvas* canvas );
 
     void setFromRenderer( const QgsRasterRenderer* r );
 

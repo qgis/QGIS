@@ -33,6 +33,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandGrayRendererWidget( layer, theExtent ); }
 
     QgsRasterRenderer* renderer() override;
+    void setMapCanvas( QgsMapCanvas* canvas ) override;
 
     void setFromRenderer( const QgsRasterRenderer* r );
 

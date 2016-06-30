@@ -38,6 +38,7 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
     ~QgsMultiBandColorRendererWidget();
 
     QgsRasterRenderer* renderer() override;
+    void setMapCanvas( QgsMapCanvas* canvas ) override;
 
     void setFromRenderer( const QgsRasterRenderer* r );
 

@@ -20,10 +20,12 @@
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxwidget.h"
+#include "qgsmapcanvas.h"
 
-QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent ):
-    QWidget( parent )
+QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent )
+    : QWidget( parent )
     , mLayer( theLayer )
+    , mCanvas( nullptr )
 {
   QgsDebugMsg( "Entered." );
   setupUi( this );
@@ -48,6 +50,29 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget 
 
 QgsRasterMinMaxWidget::~QgsRasterMinMaxWidget()
 {
+}
+
+void QgsRasterMinMaxWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  mCanvas = canvas;
+}
+
+QgsMapCanvas* QgsRasterMinMaxWidget::mapCanvas()
+{
+  return mCanvas;
+}
+
+QgsRectangle QgsRasterMinMaxWidget::extent()
+{
+  if ( !mCurrentExtentRadioButton->isChecked() )
+    return QgsRectangle();
+
+  if ( mLayer && mCanvas )
+    return mCanvas->mapSettings().outputExtentToLayerExtent( mLayer, mCanvas->extent() );
+  else if ( mCanvas )
+    return mCanvas->extent();
+  else
+    return QgsRectangle();
 }
 
 void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()

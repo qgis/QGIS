@@ -100,6 +100,8 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
 
   mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
   mMinMaxWidget->setExtent( extent );
+  mMinMaxWidget->setMapCanvas( mCanvas );
+
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   mMinMaxContainerWidget->setLayout( layout );
@@ -189,6 +191,12 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
   renderer->setClassificationMax( lineEditValue( mMaxLineEdit ) );
   renderer->setClassificationMinMaxOrigin( mMinMaxOrigin );
   return renderer;
+}
+
+void QgsSingleBandPseudoColorRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRasterRendererWidget::setMapCanvas( canvas );
+  mMinMaxWidget->setMapCanvas( canvas );
 }
 
 /** Generate labels from the values in the color map.
