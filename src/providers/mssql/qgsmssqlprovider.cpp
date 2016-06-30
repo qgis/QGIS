@@ -1858,7 +1858,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
       QgsField fld = fields[i];
       if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
       {
-        oldToNewAttrIdxMap->insert( fields.indexFromName( fld.name() ), 0 );
+        oldToNewAttrIdxMap->insert( fields.fieldNameIndex( fld.name() ), 0 );
         continue;
       }
 
@@ -1879,7 +1879,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
 
       flist.append( fld );
       if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( fields.indexFromName( fld.name() ), offset++ );
+        oldToNewAttrIdxMap->insert( fields.fieldNameIndex( fld.name() ), offset++ );
     }
 
     if ( !provider->addAttributes( flist ) )
