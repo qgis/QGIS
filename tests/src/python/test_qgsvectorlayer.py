@@ -58,6 +58,21 @@ def createLayerWithOnePoint():
     return layer
 
 
+def createLayerWithTwoPoints():
+    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                           "addfeat", "memory")
+    pr = layer.dataProvider()
+    f = QgsFeature()
+    f.setAttributes(["test", 123])
+    f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
+    f2 = QgsFeature()
+    f2.setAttributes(["test2", 457])
+    f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
+    assert pr.addFeatures([f, f2])
+    assert layer.pendingFeatureCount() == 2
+    return layer
+
+
 def createJoinLayer():
     joinLayer = QgsVectorLayer(
         "Point?field=x:string&field=y:integer&field=z:integer",
@@ -69,8 +84,14 @@ def createJoinLayer():
     f2 = QgsFeature()
     f2.setAttributes(["bar", 456, 654])
     f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 2)))
-    assert pr.addFeatures([f1, f2])
-    assert joinLayer.pendingFeatureCount() == 2
+    f3 = QgsFeature()
+    f3.setAttributes(["qar", 457, 111])
+    f3.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 2)))
+    f4 = QgsFeature()
+    f4.setAttributes(["a", 458, 19])
+    f4.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 2)))
+    assert pr.addFeatures([f1, f2, f3, f4])
+    assert joinLayer.pendingFeatureCount() == 4
     return joinLayer
 
 
@@ -899,6 +920,24 @@ class TestQgsVectorLayer(unittest.TestCase):
         assert len(f2.attributes()) == 6
         assert f2[2] == "foo"
         assert f2[3] == 321
+
+    def test_JoinStats(self):
+        """ test calculating min/max/uniqueValues on joined field """
+        joinLayer = createJoinLayer()
+        layer = createLayerWithTwoPoints()
+        QgsMapLayerRegistry.instance().addMapLayers([joinLayer, layer])
+
+        join = QgsVectorJoinInfo()
+        join.targetFieldName = "fldint"
+        join.joinLayerId = joinLayer.id()
+        join.joinFieldName = "y"
+        join.memoryCache = True
+        layer.addJoin(join)
+
+        # stats on joined fields should only include values present by join
+        self.assertEqual(layer.minimumValue(3), 111)
+        self.assertEqual(layer.maximumValue(3), 321)
+        self.assertEqual(set(layer.uniqueValues(3)), set([111, 321]))
 
     def test_InvalidOperations(self):
         layer = createLayerWithOnePoint()
