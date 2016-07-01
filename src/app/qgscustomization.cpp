@@ -388,10 +388,11 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
   QgsDebugMsg( "Entered" );
   if ( !actionCatch->isChecked() )
     return false;
+
   QString path = widgetPath( widget );
   QgsDebugMsg( "path = " + path );
 
-  if ( path.startsWith( "/QgsCustomizationDialogBase" ) )
+  if ( path.contains( "/QgsCustomizationDialogBase" ) )
   {
     // do not allow modification of this dialog
     return false;
