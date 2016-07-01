@@ -15,10 +15,11 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature
+from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsField, NULL
 from qgis.testing import (start_app,
                           unittest
                           )
+from PyQt4.QtCore import QVariant
 from utilities import (unitTestDataPath,
                        compareWkt
                        )
