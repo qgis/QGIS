@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
-from qgis.core import QgsExpression
+from qgis.core import QgsExpression, QgsFeatureRequest
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
@@ -44,6 +44,14 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     @qgsfunction(1, 'testing', register=False, usesgeometry=True)
     def geomtest(values, feature, parent):
         pass
+
+    @qgsfunction(args=0, group='testing', register=False)
+    def no_referenced_columns_set(values, feature, parent):
+        return 1
+
+    @qgsfunction(args=0, group='testing', register=False, referenced_columns=['a', 'b'])
+    def referenced_columns_set(values, feature, parent):
+        return 2
 
     def tearDown(self):
         QgsExpression.unregisterFunction('testfun')
@@ -116,6 +124,16 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def testCanRegisterGeometryFunction(self):
         success = QgsExpression.registerFunction(self.geomtest)
         self.assertTrue(success)
+
+    def testReferencedColumnsNoSet(self):
+        success = QgsExpression.registerFunction(self.no_referenced_columns_set)
+        exp = QgsExpression('no_referenced_columns_set()')
+        self.assertEqual(exp.referencedColumns(), [QgsFeatureRequest.AllAttributes])
+
+    def testReferencedColumnsSet(self):
+        success = QgsExpression.registerFunction(self.referenced_columns_set)
+        exp = QgsExpression('referenced_columns_set()')
+        self.assertEqual(exp.referencedColumns(), ['a', 'b'])
 
     def testCantOverrideBuiltinsWithUnregister(self):
         success = QgsExpression.unregisterFunction("sqrt")
