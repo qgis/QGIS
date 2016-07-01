@@ -17,7 +17,7 @@ import shutil
 import sys
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsVectorDataProvider
+from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWKBTypes
 from qgis.testing import (
     start_app,
     unittest
