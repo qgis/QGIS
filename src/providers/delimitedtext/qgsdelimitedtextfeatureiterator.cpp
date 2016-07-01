@@ -341,7 +341,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 
     if ( ! mTestSubset && ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) )
     {
-      const QgsAttributeList& attrs = mRequest.subsetOfAttributes();
+      QgsAttributeList attrs = mRequest.subsetOfAttributes();
       for ( QgsAttributeList::const_iterator i = attrs.begin(); i != attrs.end(); ++i )
       {
         int fieldIdx = *i;

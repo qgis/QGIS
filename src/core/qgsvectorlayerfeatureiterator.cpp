@@ -538,6 +538,7 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
   mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope() );
   mExpressionContext->setFields( mSource->mFields );
 
+  QList< int > virtualFieldsToFetch;
   for ( int i = 0; i < mSource->mFields.count(); i++ )
   {
     if ( mSource->mFields.fieldOrigin( i ) == QgsFields::OriginExpression )
@@ -546,38 +547,53 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
       if ( !( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
            || mRequest.subsetOfAttributes().contains( i ) )
       {
-        int oi = mSource->mFields.fieldOriginIndex( i );
-        QgsExpression* exp = new QgsExpression( exps[oi].cachedExpression );
-
-        QgsDistanceArea da;
-        da.setSourceCrs( mSource->mCrsId );
-        da.setEllipsoidalMode( true );
-        da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
-        exp->setGeomCalculator( da );
-        exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
-        exp->setAreaUnits( QgsProject::instance()->areaUnits() );
-
-        exp->prepare( mExpressionContext.data() );
-        mExpressionFieldInfo.insert( i, exp );
-
-        if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
-        {
-          QgsAttributeList attrs;
-          Q_FOREACH ( const QString& col, exp->referencedColumns() )
-          {
-            attrs.append( mSource->mFields.fieldNameIndex( col ) );
-          }
-
-          mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() + attrs );
-        }
-
-        if ( exp->needsGeometry() )
-        {
-          mRequest.setFlags( mRequest.flags() & ~QgsFeatureRequest::NoGeometry );
-        }
+        virtualFieldsToFetch << i;
       }
     }
   }
+
+  QList< int > virtualFieldsProcessed;
+  while ( !virtualFieldsToFetch.isEmpty() )
+  {
+    int fieldIdx = virtualFieldsToFetch.takeFirst();
+    if ( virtualFieldsProcessed.contains( fieldIdx ) )
+      continue;
+
+    virtualFieldsProcessed << fieldIdx;
+
+
+    int oi = mSource->mFields.fieldOriginIndex( fieldIdx );
+    QgsExpression* exp = new QgsExpression( exps[oi].cachedExpression );
+
+    QgsDistanceArea da;
+    da.setSourceCrs( mSource->mCrsId );
+    da.setEllipsoidalMode( true );
+    da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+    exp->setGeomCalculator( da );
+    exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
+    exp->setAreaUnits( QgsProject::instance()->areaUnits() );
+
+    exp->prepare( mExpressionContext.data() );
+    mExpressionFieldInfo.insert( fieldIdx, exp );
+
+    Q_FOREACH ( const QString& col, exp->referencedColumns() )
+    {
+      int dependantFieldIdx = mSource->mFields.fieldNameIndex( col );
+      if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+      {
+        mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() << dependantFieldIdx );
+      }
+      // also need to fetch this dependant field
+      if ( mSource->mFields.fieldOrigin( dependantFieldIdx ) == QgsFields::OriginExpression )
+        virtualFieldsToFetch << dependantFieldIdx;
+    }
+
+    if ( exp->needsGeometry() )
+    {
+      mRequest.setFlags( mRequest.flags() & ~QgsFeatureRequest::NoGeometry );
+    }
+  }
+
 }
 
 void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
