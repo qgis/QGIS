@@ -255,7 +255,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void invalidateCurrentMap();
 
   private slots:
-    void updateFilterByMap();
+    void updateFilterByMap( bool redraw = true );
 
     //! update legend in case style of associated map has changed
     void mapLayerStyleOverridesChanged();
