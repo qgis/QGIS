@@ -122,6 +122,14 @@ class QgsRubberBand: QgsMapCanvasItem
      */
     void addPoint( const QgsPoint & p, bool doUpdate = true, int geometryIndex = 0 );
 
+    /** Ensures that a polygon geometry is closed and that the last vertex equals the
+     * first vertex.
+     * @param doUpdate set to true to update the map canvas immediately
+     * @param geometryIndex index of the feature part (in case of multipart geometries)
+     * @note added in QGIS 2.16
+     */
+    void closePoints( bool doUpdate = true, int geometryIndex = 0 );
+
     /**
      * Remove a vertex from the rubberband and (optionally) update canvas.
      * @param index The index of the vertex/point to remove, negative indexes start at end

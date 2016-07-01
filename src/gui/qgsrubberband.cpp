@@ -188,6 +188,26 @@ void QgsRubberBand::addPoint( const QgsPoint & p, bool doUpdate /* = true */, in
   }
 }
 
+void QgsRubberBand::closePoints( bool doUpdate, int geometryIndex )
+{
+  if ( geometryIndex < 0 || geometryIndex >= mPoints.size() )
+  {
+    return;
+  }
+
+  if ( mPoints.at( geometryIndex ).at( 0 ) != mPoints.at( geometryIndex ).at( mPoints.at( geometryIndex ).size() - 1 ) )
+  {
+    mPoints[geometryIndex] << mPoints.at( geometryIndex ).at( 0 );
+  }
+
+  if ( doUpdate )
+  {
+    setVisible( true );
+    updateRect();
+    update();
+  }
+}
+
 
 void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geometryIndex/* = 0*/ )
 {

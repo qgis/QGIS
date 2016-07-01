@@ -46,6 +46,7 @@ class TestQgsRubberband : public QObject
     void testAddSingleMultiGeometries(); //test for #7728
     void testBoundingRect(); //test for #12392
     void testVisibility(); //test for 12486
+    void testClose(); //test closing geometry
 
   private:
     QgsMapCanvas* mCanvas;
@@ -191,6 +192,34 @@ void TestQgsRubberband::testVisibility()
   mCanvas->zoomIn();
   QCOMPARE( mRubberband->isVisible(), false );
 
+}
+
+void TestQgsRubberband::testClose()
+{
+  QgsRubberBand r( mCanvas, QGis::Polygon );
+
+  // try closing empty rubber band, don't want to crash
+  r.closePoints();
+  QCOMPARE( r.partSize( 0 ), 0 );
+
+  r.addPoint( QgsPoint( 1, 2 ) );
+  r.addPoint( QgsPoint( 1, 3 ) );
+  r.addPoint( QgsPoint( 2, 3 ) );
+  QCOMPARE( r.partSize( 0 ), 3 );
+
+  // test with some bad geometry indexes - don't want to crash!
+  r.closePoints( true, -1 );
+  QCOMPARE( r.partSize( 0 ), 3 );
+  r.closePoints( true, 100 );
+  QCOMPARE( r.partSize( 0 ), 3 );
+
+  // valid close
+  r.closePoints();
+  QCOMPARE( r.partSize( 0 ), 4 );
+
+  // close already closed polygon, should be no change
+  r.closePoints();
+  QCOMPARE( r.partSize( 0 ), 4 );
 }
 
 
