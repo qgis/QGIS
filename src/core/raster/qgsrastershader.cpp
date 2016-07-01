@@ -19,6 +19,7 @@ email                : ersts@amnh.org
 #include "qgslogger.h"
 #include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
+#include "qgsrasterblock.h"
 #include <QDomDocument>
 #include <QDomElement>
 
@@ -151,7 +152,7 @@ void QgsRasterShader::writeXML( QDomDocument& doc, QDomElement& parent ) const
     {
       QDomElement itemElem = doc.createElement( "item" );
       itemElem.setAttribute( "label", itemIt->label );
-      itemElem.setAttribute( "value", QString::number( itemIt->value ) );
+      itemElem.setAttribute( "value", QgsRasterBlock::printValue( itemIt->value ) );
       itemElem.setAttribute( "color", itemIt->color.name() );
       itemElem.setAttribute( "alpha", itemIt->color.alpha() );
       colorRampShaderElem.appendChild( itemElem );
