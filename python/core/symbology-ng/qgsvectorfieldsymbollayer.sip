@@ -34,6 +34,9 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
     bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
     QgsSymbolV2* subSymbol();
 
+    void setColor( const QColor& color );
+    virtual QColor color() const;
+
     void renderPoint( QPointF point, QgsSymbolV2RenderContext& context );
     void startRender( QgsSymbolV2RenderContext& context );
     void stopRender( QgsSymbolV2RenderContext& context );

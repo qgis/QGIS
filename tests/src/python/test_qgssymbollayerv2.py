@@ -730,5 +730,19 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+    def testQgsVectorFieldSymbolLayer(self):
+        """
+        Test QgsVectorFieldSymbolLayer
+        """
+        # test colors, need to make sure colors are passed/retrieved from subsymbol
+        mSymbolLayer = QgsVectorFieldSymbolLayer.create()
+
+        mSymbolLayer.setColor(QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(150, 50, 100))
+        mSymbolLayer.subSymbol().setColor(QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
+
 if __name__ == '__main__':
     unittest.main()
