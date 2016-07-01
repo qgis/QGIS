@@ -183,7 +183,7 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
     {
       diagonal = qMax( diagonal, QgsSymbolLayerV2Utils::convertToPainterUnits( context,
                        M_SQRT2 * symbol->size(),
-                       symbol->outputUnit(), symbol->mapUnitScale() ) );
+                       symbol->sizeUnit(), symbol->sizeMapUnitScale() ) );
     }
   }
 
@@ -573,7 +573,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolV2
     {
       double centerDiagonal = QgsSymbolLayerV2Utils::convertToPainterUnits( symbolContext.renderContext(),
                               M_SQRT2 * mCenterSymbol->size(),
-                              mCenterSymbol->outputUnit(), mCenterSymbol->mapUnitScale() );
+                              mCenterSymbol->sizeUnit(), mCenterSymbol->sizeMapUnitScale() );
 
       int pointsRemaining = nPosition;
       int ringNumber = 1;
