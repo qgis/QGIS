@@ -3551,11 +3551,11 @@ void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor& color,
 
 void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor& color, const QgsPointV2 &pt, double radius )
 {
-  writeGroup( 0, "HATCH" );                     // Entity type
+  writeGroup( 0, "HATCH" );  // Entity type
   writeHandle();
   writeGroup( 330, mBlockHandle );
   writeGroup( 100, "AcDbEntity" );
-  writeGroup( 8, layer );   // Layer name
+  writeGroup( 8, layer );    // Layer name
   writeGroup( color );       // Color (0 by block, 256 by layer)
   writeGroup( 100, "AcDbHatch" );
 
@@ -3566,26 +3566,23 @@ void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor& color,
   writeGroup( 70, 1 );       // Solid fill flag (solid fill = 1; pattern fill = 0)
   writeGroup( 71, 0 );       // Associativity flag (associative = 1; non-associative = 0)
 
-
   writeGroup( 91, 1 );       // Number of boundary paths (loops)
 
-  writeGroup( 92, 7 );       // Boundary path type flag (bit coded): 0 = Default; 1 = External; 2 = Polyline 4 = Derived; 8 = Textbox; 16 = Outermost
-  writeGroup( 72, 2 );
+  writeGroup( 92, 3 );       // Boundary path type flag (bit coded): 0 = Default; 1 = External; 2 = Polyline 4 = Derived; 8 = Textbox; 16 = Outermost
+  writeGroup( 72, 1 );
   writeGroup( 73, 1 );       // Is closed flag
   writeGroup( 93, 2 );       // Number of polyline vertices
 
-  writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ, pt.x() - radius, pt.y() ) );
+  writeGroup( 0, QgsPointV2( QgsWKBTypes::Point, pt.x() - radius, pt.y() ) );
   writeGroup( 42, 1.0 );
 
-  writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ, pt.x() + radius, pt.y() ) );
+  writeGroup( 0, QgsPointV2( QgsWKBTypes::Point, pt.x() + radius, pt.y() ) );
   writeGroup( 42, 1.0 );
 
   writeGroup( 97, 0 );       // Number of source boundary objects
 
-  writeGroup( 75, 1 );       // Hatch style: 0 = Hatch "odd parity" area (Normal style), 1 = Hatch outermost area only (Outer style), 2 = Hatch through entire area (Ignore style)
+  writeGroup( 75, 0 );       // Hatch style: 0 = Hatch "odd parity" area (Normal style), 1 = Hatch outermost area only (Outer style), 2 = Hatch through entire area (Ignore style)
   writeGroup( 76, 1 );       // Hatch pattern type: 0 = User-defined; 1 = Predefined; 2 = Custom
-  writeGroup( 47, 0.0059696789328105 ); // Pixel size
-
   writeGroup( 98, 0 );       // Number of seed points
 }
 
