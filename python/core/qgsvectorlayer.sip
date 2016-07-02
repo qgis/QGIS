@@ -1609,7 +1609,7 @@ class QgsVectorLayer : QgsMapLayer
      * @param fid The id of the changed feature
      * @param geometry The new geometry
      */
-    void geometryChanged( QgsFeatureId fid, const QgsGeometry& geometry );
+    void geometryChanged( QgsFeatureId fid, QgsGeometry& geometry );
 
     /** This signal is emitted, when attributes are deleted from the provider */
     void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributes );
