@@ -126,9 +126,6 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //@return true if qgis.user could be imported
     bool checkQgisUser();
 
-    //! import user defined Python code
-    void doUserImports();
-
     //! cleanup Python context
     void finish();
 
