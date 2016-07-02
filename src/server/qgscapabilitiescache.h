@@ -38,7 +38,7 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
     const QDomDocument* searchCapabilitiesDocument( const QString& configFilePath, const QString& key );
 
     /** Inserts new capabilities document (creates a copy of the document, does not take ownership)
-     * @param configFilePath the progect file path
+     * @param configFilePath the project file path
      * @param key key used to separate different version in different cache
      * @param doc the DOM document
      */
