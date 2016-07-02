@@ -158,6 +158,8 @@ QWidget* QgsPhotoWidgetWrapper::createWidget( QWidget* parent )
   layout->addWidget( label, 0, 0, 1, 2 );
   layout->addWidget( le, 1, 0 );
   layout->addWidget( pb, 1, 1 );
+  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
   container->setLayout( layout );
 
@@ -231,7 +233,9 @@ void QgsPhotoWidgetWrapper::setValue( const QVariant& value )
   {
     if ( value.isNull() )
     {
-      whileBlocking( mLineEdit )->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      mLineEdit->blockSignals( true );
+      mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      mLineEdit->blockSignals( false );
       clearPicture();
     }
     else
