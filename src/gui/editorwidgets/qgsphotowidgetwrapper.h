@@ -77,6 +77,8 @@ class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
     QLineEdit* mLineEdit;
     //! The button to open the file chooser dialog
     QPushButton* mButton;
+
+    void clearPicture();
 };
 
 #endif // QGSPHOTOWIDGETWRAPPER_H
