@@ -139,6 +139,9 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   }
 
   mCurrentLayer = layer;
+
+  mUndoWidget->setUndoStack( layer->undoStackStyles() );
+
   connect( mCurrentLayer, SIGNAL( styleChanged() ), this, SLOT( updateCurrentWidgetLayer() ) );
 
   int lastPage = mOptionsListWidget->currentIndex().row();
@@ -171,7 +174,6 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   {
     if ( factory->supportsLayer( layer ) )
     {
-      QgsDebugMsg( "MAKING PANEL" );
       QListWidgetItem* item =  new QListWidgetItem( factory->icon(), QString() );
       mOptionsListWidget->addItem( item );
       int row = mOptionsListWidget->row( item );
@@ -285,8 +287,6 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
   mBlockAutoApply = true;
 
-  mUndoWidget->setUndoStack( mCurrentLayer->undoStackStyles() );
-
   whileBlocking( mLayerCombo )->setLayer( mCurrentLayer );
 
   int row = mOptionsListWidget->currentIndex().row();
@@ -296,7 +296,6 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   QgsPanelWidget* current = mWidgetStack->takeMainWidget();
   if ( current )
   {
-
     if ( QgsLabelingWidget* widget = qobject_cast<QgsLabelingWidget*>( current ) )
     {
       mLabelingWidget = widget;
