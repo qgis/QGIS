@@ -202,13 +202,6 @@ bool QgsPythonUtilsImpl::checkQgisUser()
   return true;
 }
 
-void QgsPythonUtilsImpl::doUserImports()
-{
-
-  QString startuppath = homePythonPath() + " + \"/startup.py\"";
-  runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
-}
-
 void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 {
   init();
@@ -224,7 +217,6 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
     exitPython();
     return;
   }
-  doUserImports();
   finish();
 }
 
@@ -250,7 +242,6 @@ void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface )
   // This is the other main difference with initInterface() for desktop plugins
   runString( "qgis.utils.initServerInterface(" + QString::number(( unsigned long ) interface ) + ')' );
 
-  doUserImports();
   finish();
 }
 
