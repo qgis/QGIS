@@ -69,7 +69,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     QString labelAttributeName() const;
 
     void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
-    QgsFeatureRendererV2* embeddedRenderer();
+    const QgsFeatureRendererV2* embeddedRenderer() const;
 
     virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol );
 
