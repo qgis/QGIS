@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsvectorlayerpropertiespage.cpp
-     --------------------------------------
-    Date                 : 8.7.2013
-    Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    qgsmapstylepanel.cpp
+    ---------------------
+    begin                : June 2016
+    copyright            : (C) 2016 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,11 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsmaplayerconfigwidget.h"
+#include "qgspanelwidget.h"
 
-#include "qgsvectorlayerpropertiespage.h"
-
-QgsMapLayerPropertiesPage::QgsMapLayerPropertiesPage( QWidget *parent )
-    : QWidget( parent )
+QgsMapLayerConfigWidget::QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+    : QgsPanelWidget( parent )
+    , mLayer( layer )
+    , mMapCanvas( canvas )
 {
-}
 
+}

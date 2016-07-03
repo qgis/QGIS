@@ -293,13 +293,13 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterMapLayerPropertiesFactory() */
-    virtual void registerMapLayerPanelFactory( QgsMapLayerPanelFactory* factory ) override;
+    virtual void registerMapLayerPanelFactory( QgsMapLayerConfigWidgetFactory* factory ) override;
 
     /** Unregister a previously registered tab in the vector layer properties dialog.
      * @note added in QGIS 2.16
      * @see registerMapLayerPropertiesFactory()
     */
-    virtual void unregisterMapLayerPanelFactory( QgsMapLayerPanelFactory* factory ) override;
+    virtual void unregisterMapLayerPanelFactory( QgsMapLayerConfigWidgetFactory* factory ) override;
 
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.

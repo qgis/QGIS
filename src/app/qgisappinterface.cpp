@@ -475,12 +475,12 @@ bool QgisAppInterface::unregisterMainWindowAction( QAction* action )
   return QgsShortcutsManager::instance()->unregisterAction( action );
 }
 
-void QgisAppInterface::registerMapLayerPanelFactory( QgsMapLayerPanelFactory* factory )
+void QgisAppInterface::registerMapLayerPanelFactory( QgsMapLayerConfigWidgetFactory* factory )
 {
   qgis->registerMapLayerPropertiesFactory( factory );
 }
 
-void QgisAppInterface::unregisterMapLayerPanelFactory( QgsMapLayerPanelFactory* factory )
+void QgisAppInterface::unregisterMapLayerPanelFactory( QgsMapLayerConfigWidgetFactory* factory )
 {
   qgis->unregisterMapLayerPropertiesFactory( factory );
 }

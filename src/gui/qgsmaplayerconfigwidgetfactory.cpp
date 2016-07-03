@@ -13,28 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaplayerpropertiesfactory.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
 
-QgsMapLayerPanelFactory::QgsMapLayerPanelFactory()
+QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory()
 {
 }
 
-QgsMapLayerPanelFactory::~QgsMapLayerPanelFactory()
+QgsMapLayerConfigWidgetFactory::~QgsMapLayerConfigWidgetFactory()
 {
 }
 
-bool QgsMapLayerPanelFactory::supportsLayer( QgsMapLayer *layer )
+bool QgsMapLayerConfigWidgetFactory::supportsLayer(QgsMapLayer *layer) const
 {
   Q_UNUSED( layer );
-  return true;
+    return true;
 }
 
-QgsMapLayerPropertiesPage *QgsMapLayerPanelFactory::createPropertiesPage( QgsVectorLayer *layer, QWidget *parent )
+QgsMapLayerConfigWidget *QgsMapLayerConfigWidgetFactory::createPropertiesPage(QgsVectorLayer *layer, QWidget *parent) const
 {
-  return nullptr;
+   return nullptr;
 }
 
-QgsMapLayerPanel *QgsMapLayerPanelFactory::createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+QgsMapLayerConfigWidget *QgsMapLayerConfigWidgetFactory::createPanel(QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent) const
 {
-  return nullptr;
+ return nullptr;
 }

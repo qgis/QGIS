@@ -9124,14 +9124,14 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
 #endif
 }
 
-void QgisApp::registerMapLayerPropertiesFactory( QgsMapLayerPanelFactory* factory )
+void QgisApp::registerMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactory* factory )
 {
   mMapLayerPanelFactories << factory;
   if ( mMapStyleWidget )
     mMapStyleWidget->setPageFactories( mMapLayerPanelFactories );
 }
 
-void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerPanelFactory* factory )
+void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactory* factory )
 {
   mMapLayerPanelFactories.removeAll( factory );
   if ( mMapStyleWidget )
@@ -11358,7 +11358,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
 #else
     QgsVectorLayerProperties *vlp = new QgsVectorLayerProperties( vlayer, this );
 #endif
-    Q_FOREACH ( QgsMapLayerPanelFactory* factory, mMapLayerPanelFactories )
+    Q_FOREACH ( QgsMapLayerConfigWidgetFactory* factory, mMapLayerPanelFactories )
     {
       vlp->addPropertiesPageFactory( factory );
     }

@@ -24,7 +24,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
-#include "qgsmapstylepanel.h"
+#include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgsrasterdataprovider.h"
@@ -33,7 +33,7 @@
 
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent )
-    : QgsMapLayerPanel( layer, canvas, parent )
+    : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   mModel = new QStandardItemModel( this );
   mStyleList = new QListView( this );

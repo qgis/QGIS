@@ -18,41 +18,40 @@
 
 #include <QListWidgetItem>
 
-#include "qgsvectorlayerpropertiespage.h"
-#include "qgsmapstylepanel.h"
+#include "qgsmaplayerconfigwidget.h"
 
 /** \ingroup gui
  * \class QgsMapLayerPropertiesFactory
  * \note added in QGIS 2.16
  * Factory class for creating custom map layer property pages
  */
-class GUI_EXPORT QgsMapLayerPanelFactory
+class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 {
   public:
     /** Constructor */
-    QgsMapLayerPanelFactory();
+    QgsMapLayerConfigWidgetFactory();
 
     /** Destructor */
-    virtual ~QgsMapLayerPanelFactory();
+    virtual ~QgsMapLayerConfigWidgetFactory();
 
     /**
      * @brief The icon that will be shown in the UI for the panel.
      * @return A QIcon for the panel icon.
      */
-    virtual QIcon icon() { return QIcon(); }
+    virtual QIcon icon() const { return QIcon(); }
 
     /**
      * @brief The title of the panel.
      * @note This may or may not be shown to the user.
      * @return Title of the panel
      */
-    virtual QString title() { return QString(); }
+    virtual QString title() const { return QString(); }
 
     /**
      * @brief Check if the layer is supported for this widget.
      * @return True if this layer is supported for this widget
      */
-    virtual bool supportsLayer( QgsMapLayer *layer );
+    virtual bool supportsLayer( QgsMapLayer *layer ) const;
 
     /**
      * @brief Create a new properties page
@@ -60,7 +59,7 @@ class GUI_EXPORT QgsMapLayerPanelFactory
      * @param parent The parent widget
      * @return The new properties page instance
      */
-    virtual QgsMapLayerPanel* createPropertiesPage( QgsVectorLayer* layer, QWidget* parent );
+    virtual QgsMapLayerConfigWidget* createPropertiesPage( QgsVectorLayer* layer, QWidget* parent ) const;
 
     /**
      * @brief Factory fucntion to create the widget on demand as needed by the dock.
@@ -70,7 +69,7 @@ class GUI_EXPORT QgsMapLayerPanelFactory
      * @param parent The parent of the widget.
      * @return A new QgsMapStylePanel which is shown in the map style dock.
      */
-    virtual QgsMapLayerPanel* createPanel( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget* parent );
+    virtual QgsMapLayerConfigWidget* createPanel( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget* parent ) const;
 };
 
 #endif // QGSLAYERPROPERTIESFACTORY_H

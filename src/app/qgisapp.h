@@ -57,7 +57,7 @@ class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsMapCanvas;
 class QgsMapLayer;
-class QgsMapLayerPanelFactory;
+class QgsMapLayerConfigWidgetFactory;
 class QgsMapTip;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
@@ -507,10 +507,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void parseVersionInfo( QNetworkReply* reply, int& latestVersion, QStringList& versionInfo );
 
     /** Register a new tab in the layer properties dialog */
-    void registerMapLayerPropertiesFactory( QgsMapLayerPanelFactory* factory );
+    void registerMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactory* factory );
 
     /** Unregister a previously registered tab in the layer properties dialog */
-    void unregisterMapLayerPropertiesFactory( QgsMapLayerPanelFactory* factory );
+    void unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactory* factory );
 
   public slots:
     void layerTreeViewDoubleClicked( const QModelIndex& index );
@@ -1772,7 +1772,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsSnappingUtils* mSnappingUtils;
 
-    QList<QgsMapLayerPanelFactory*> mMapLayerPanelFactories;
+    QList<QgsMapLayerConfigWidgetFactory*> mMapLayerPanelFactories;
 
     QDateTime mProjectLastModified;
 
