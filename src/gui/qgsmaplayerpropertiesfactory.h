@@ -60,7 +60,7 @@ class GUI_EXPORT QgsMapLayerPanelFactory
      * @param parent The parent widget
      * @return The new properties page instance
      */
-    virtual QgsMapLayerPropertiesPage* createPropertiesPage( QgsVectorLayer* layer, QWidget* parent );
+    virtual QgsMapLayerPanel* createPropertiesPage( QgsVectorLayer* layer, QWidget* parent );
 
     /**
      * @brief Factory fucntion to create the widget on demand as needed by the dock.
