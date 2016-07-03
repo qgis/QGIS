@@ -668,15 +668,4 @@
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
     </qresource>
-    <qresource prefix="/images/sponsors">
-        <file>sponsors/geosynergy.png</file>
-        <file>sponsors/ibw.png</file>
-        <file>sponsors/vorarlberg.png</file>
-        <file>sponsors/gaia.png</file>
-        <file>sponsors/aas_300wide.png</file>
-        <file>sponsors/bronze.png</file>
-        <file>sponsors/gold.png</file>
-        <file>sponsors/platinum.png</file>
-        <file>sponsors/silver.png</file>
-    </qresource>
 </RCC>
