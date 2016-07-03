@@ -28,9 +28,7 @@ INSTALL(FILES ${QGIS_DOC_FILES} DESTINATION ${QGIS_DATA_DIR}/doc)
 INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
 
 # Sponsor images
-FILE (GLOB SPONSOR_IMAGES images/projects/thumbnails/*.png)
-INSTALL (FILES ${SPONSOR_IMAGES} DESTINATION ${QGIS_DATA_DIR}/doc/images/projects/thumbnails/)
-FILE (GLOB SPONSOR_IMAGES images/projects/thumbnails/*.jpg)
+FILE (GLOB SPONSOR_IMAGES images/projects/thumbnails/* )
 INSTALL (FILES ${SPONSOR_IMAGES} DESTINATION ${QGIS_DATA_DIR}/doc/images/projects/thumbnails/)
 
 IF(WITH_APIDOC)
