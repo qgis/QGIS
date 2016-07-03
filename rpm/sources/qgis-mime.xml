@@ -19,6 +19,7 @@
     <comment xml:lang="de">QGIS-Layereinstellungen</comment>
     <sub-class-of type="application/xml"/>
     <magic priority="50">
+    <icon name="qgis-qml"/>
       <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
         <match type="string" offset="0:256" value="&lt;qgis version"/>
       </match>
