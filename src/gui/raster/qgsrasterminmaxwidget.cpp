@@ -64,7 +64,7 @@ QgsMapCanvas* QgsRasterMinMaxWidget::mapCanvas()
 
 QgsRectangle QgsRasterMinMaxWidget::extent()
 {
-  if ( !mCurrentExtentRadioButton->isChecked() )
+  if ( !cbxClipExtent->isChecked() )
     return QgsRectangle();
 
   if ( mLayer && mCanvas )
@@ -91,7 +91,7 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
     double myMax = std::numeric_limits<double>::quiet_NaN();
 
     QgsRectangle myExtent = extent(); // empty == full
-    if ( mCurrentExtentRadioButton->isChecked() )
+    if ( cbxClipExtent->isChecked() )
     {
       origin |= QgsRasterRenderer::MinMaxSubExtent;
     }
@@ -102,7 +102,7 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
     QgsDebugMsg( QString( "myExtent.isEmpty() = %1" ).arg( myExtent.isEmpty() ) );
 
     int mySampleSize = sampleSize(); // 0 == exact
-    if ( mEstimateRadioButton->isChecked() )
+    if ( cboAccuracy->currentIndex() == 0 )
     {
       origin |= QgsRasterRenderer::MinMaxEstimated;
     }

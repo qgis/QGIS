@@ -62,7 +62,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     QgsRectangle extent();
 
     /** Return the selected sample size. */
-    int sampleSize() { return mEstimateRadioButton->isChecked() ? 250000 : 0; }
+    int sampleSize() { return cboAccuracy->currentIndex() == 0 ? 250000 : 0; }
 
     // Load programmaticaly with current values
     void load() { on_mLoadPushButton_clicked(); }

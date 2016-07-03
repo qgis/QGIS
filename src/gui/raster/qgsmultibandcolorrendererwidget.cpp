@@ -37,7 +37,10 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
     mMinMaxWidget->setExtent( extent );
     mMinMaxWidget->setMapCanvas( mCanvas );
-    layout()->addWidget( mMinMaxWidget );
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    mMinMaxContainerWidget->setLayout( layout );
+    layout->addWidget( mMinMaxWidget );
     connect( mMinMaxWidget, SIGNAL( load( int, double, double, int ) ),
              this, SLOT( loadMinMax( int, double, double, int ) ) );
 
