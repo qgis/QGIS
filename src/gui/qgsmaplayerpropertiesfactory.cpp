@@ -15,10 +15,26 @@
 
 #include "qgsmaplayerpropertiesfactory.h"
 
-QgsMapLayerPropertiesFactory::QgsMapLayerPropertiesFactory()
+QgsMapLayerPanelFactory::QgsMapLayerPanelFactory()
 {
 }
 
-QgsMapLayerPropertiesFactory::~QgsMapLayerPropertiesFactory()
+QgsMapLayerPanelFactory::~QgsMapLayerPanelFactory()
 {
+}
+
+bool QgsMapLayerPanelFactory::supportsLayer( QgsMapLayer *layer )
+{
+  Q_UNUSED( layer );
+  return true;
+}
+
+QgsMapLayerPropertiesPage *QgsMapLayerPanelFactory::createPropertiesPage( QgsVectorLayer *layer, QWidget *parent )
+{
+  return nullptr;
+}
+
+QgsMapLayerPanel *QgsMapLayerPanelFactory::createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+{
+  return nullptr;
 }

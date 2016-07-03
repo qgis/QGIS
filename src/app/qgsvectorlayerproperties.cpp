@@ -328,14 +328,18 @@ void QgsVectorLayerProperties::setLabelCheckBox()
   labelCheckBox->setCheckState( Qt::Checked );
 }
 
-void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerPropertiesFactory* factory )
+void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerPanelFactory* factory )
 {
-  QListWidgetItem* item = factory->createVectorLayerPropertiesItem( mLayer, mOptionsListWidget );
+  QListWidgetItem* item = new QListWidgetItem();
+  item->setIcon( factory->icon() );
+  item->setText( factory->title() );
+  item->setToolTip( factory->title() );
+
   if ( item )
   {
     mOptionsListWidget->addItem( item );
 
-    QgsVectorLayerPropertiesPage* page = factory->createVectorLayerPropertiesPage( mLayer, this );
+    QgsMapLayerPropertiesPage* page = factory->createPropertiesPage( mLayer, this );
     mLayerPropertiesPages << page;
     mOptionsStackedWidget->addWidget( page );
   }
@@ -628,7 +632,7 @@ void QgsVectorLayerProperties::apply()
   diagramPropertiesDialog->apply();
 
   // apply all plugin dialogs
-  Q_FOREACH ( QgsVectorLayerPropertiesPage* page, mLayerPropertiesPages )
+  Q_FOREACH ( QgsMapLayerPropertiesPage* page, mLayerPropertiesPages )
   {
     page->apply();
   }

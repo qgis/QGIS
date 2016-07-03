@@ -28,6 +28,7 @@
 
 #include "ui_qgsmapstylingwidgetbase.h"
 #include "qgsmapstylepanel.h"
+#include "qgsmaplayerpropertiesfactory.h"
 
 class QgsLabelingWidget;
 class QgsMapLayer;
@@ -36,15 +37,14 @@ class QgsRendererV2PropertiesDialog;
 class QgsRendererRasterPropertiesWidget;
 class QgsUndoWidget;
 class QgsRasterHistogramWidget;
-class QgsLayerStylingPanelFactory;
 class QgsMapLayerStyleManagerWidget;
 
-class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsLayerStylingPanelFactory
+class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerPanelFactory
 {
   public:
     QIcon icon() override;
     QString title() override;
-    QgsLayerStylingPanel *createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent ) override;
+    QgsMapLayerPanel *createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent ) override;
     bool supportsLayer( QgsMapLayer *layer ) override;
 };
 
@@ -76,11 +76,11 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       History,
     };
 
-    QgsLayerStylingWidget( QgsMapCanvas *canvas, QList<QgsLayerStylingPanelFactory *> pages, QWidget *parent = 0 );
+    QgsLayerStylingWidget( QgsMapCanvas *canvas, QList<QgsMapLayerPanelFactory *> pages, QWidget *parent = 0 );
     ~QgsLayerStylingWidget();
     QgsMapLayer* layer() { return mCurrentLayer; }
 
-    void setPageFactories( QList<QgsLayerStylingPanelFactory*> factories );
+    void setPageFactories( QList<QgsMapLayerPanelFactory *> factories );
 
     /** Sets whether updates of the styling widget are blocked. This can be called to prevent
      * the widget being refreshed multiple times when a batch of layer style changes are
@@ -122,8 +122,8 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsMapLayer* mCurrentLayer;
     QgsLabelingWidget *mLabelingWidget;
     QgsRendererRasterPropertiesWidget* mRasterStyleWidget;
-    QList<QgsLayerStylingPanelFactory*> mPageFactories;
-    QMap<int, QgsLayerStylingPanelFactory*> mUserPages;
+    QList<QgsMapLayerPanelFactory*> mPageFactories;
+    QMap<int, QgsMapLayerPanelFactory*> mUserPages;
     QgsLayerStyleManagerWidgetFactory* mStyleManagerFactory;
 };
 

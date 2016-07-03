@@ -27,7 +27,7 @@ class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsRasterRendererWidget;
 
-class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsLayerStylingPanel, private Ui::QgsRendererRasterPropsWidgetBase
+class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerPanel, private Ui::QgsRendererRasterPropsWidgetBase
 {
     Q_OBJECT
 

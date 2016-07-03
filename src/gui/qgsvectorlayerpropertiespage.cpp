@@ -15,7 +15,7 @@
 
 #include "qgsvectorlayerpropertiespage.h"
 
-QgsVectorLayerPropertiesPage::QgsVectorLayerPropertiesPage( QWidget *parent )
+QgsMapLayerPropertiesPage::QgsMapLayerPropertiesPage( QWidget *parent )
     : QWidget( parent )
 {
 }

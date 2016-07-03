@@ -55,7 +55,7 @@
 //#define RASTER_HISTOGRAM_BINS 256
 
 QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget *parent )
-    : QgsLayerStylingPanel( lyr, nullptr, parent )
+    : QgsMapLayerPanel( lyr, nullptr, parent )
     , mRasterLayer( lyr )
     , mRendererWidget( nullptr )
 {

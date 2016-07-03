@@ -19,20 +19,40 @@
 #include <QListWidgetItem>
 
 #include "qgsvectorlayerpropertiespage.h"
+#include "qgsmapstylepanel.h"
 
 /** \ingroup gui
  * \class QgsMapLayerPropertiesFactory
  * \note added in QGIS 2.16
  * Factory class for creating custom map layer property pages
  */
-class GUI_EXPORT QgsMapLayerPropertiesFactory
+class GUI_EXPORT QgsMapLayerPanelFactory
 {
   public:
     /** Constructor */
-    QgsMapLayerPropertiesFactory();
+    QgsMapLayerPanelFactory();
 
     /** Destructor */
-    virtual ~QgsMapLayerPropertiesFactory();
+    virtual ~QgsMapLayerPanelFactory();
+
+    /**
+     * @brief The icon that will be shown in the UI for the panel.
+     * @return A QIcon for the panel icon.
+     */
+    virtual QIcon icon() { return QIcon(); }
+
+    /**
+     * @brief The title of the panel.
+     * @note This may or may not be shown to the user.
+     * @return Title of the panel
+     */
+    virtual QString title() { return QString(); }
+
+    /**
+     * @brief Check if the layer is supported for this widget.
+     * @return True if this layer is supported for this widget
+     */
+    virtual bool supportsLayer( QgsMapLayer *layer );
 
     /**
      * @brief Create a new properties page
@@ -40,15 +60,17 @@ class GUI_EXPORT QgsMapLayerPropertiesFactory
      * @param parent The parent widget
      * @return The new properties page instance
      */
-    virtual QgsVectorLayerPropertiesPage* createVectorLayerPropertiesPage( QgsVectorLayer* layer, QWidget* parent ) = 0;
+    virtual QgsMapLayerPropertiesPage* createPropertiesPage( QgsVectorLayer* layer, QWidget* parent );
 
     /**
-     * @brief Creates the QListWidgetItem for the properties page
-     * @param layer The layer for which to create the item
-     * @param view The parent QListView
-     * @return The QListWidgetItem for the properties page
+     * @brief Factory fucntion to create the widget on demand as needed by the dock.
+     * @note This function is called each time the panel is selected. Keep it light for better UX.
+     * @param layer The active layer in the dock.
+     * @param canvas The map canvas.
+     * @param parent The parent of the widget.
+     * @return A new QgsMapStylePanel which is shown in the map style dock.
      */
-    virtual QListWidgetItem* createVectorLayerPropertiesItem( QgsVectorLayer* layer, QListWidget* view ) = 0;
+    virtual QgsMapLayerPanel* createPanel( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget* parent );
 };
 
 #endif // QGSLAYERPROPERTIESFACTORY_H

@@ -776,7 +776,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mMapStylingDock = new QgsDockWidget( this );
   mMapStylingDock->setWindowTitle( tr( "Layer Styling" ) );
   mMapStylingDock->setObjectName( "LayerStyling" );
-  mMapStyleWidget = new QgsLayerStylingWidget( mMapCanvas, mMapStylePanelFactories );
+  mMapStyleWidget = new QgsLayerStylingWidget( mMapCanvas, mMapLayerPanelFactories );
   mMapStylingDock->setWidget( mMapStyleWidget );
   connect( mMapStyleWidget, SIGNAL( styleChanged( QgsMapLayer* ) ), this, SLOT( updateLabelToolButtons() ) );
   connect( mMapStylingDock, SIGNAL( visibilityChanged( bool ) ), mActionStyleDock, SLOT( setChecked( bool ) ) );
@@ -9124,28 +9124,18 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
 #endif
 }
 
-void QgisApp::registerMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory )
+void QgisApp::registerMapLayerPropertiesFactory( QgsMapLayerPanelFactory* factory )
 {
-  mMapLayerPropertiesFactories << factory;
-}
-
-void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory )
-{
-  mMapLayerPropertiesFactories.removeAll( factory );
-}
-
-void QgisApp::registerMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )
-{
-  mMapStylePanelFactories << factory;
+  mMapLayerPanelFactories << factory;
   if ( mMapStyleWidget )
-    mMapStyleWidget->setPageFactories( mMapStylePanelFactories );
+    mMapStyleWidget->setPageFactories( mMapLayerPanelFactories );
 }
 
-void QgisApp::unregisterMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )
+void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerPanelFactory* factory )
 {
-  mMapStylePanelFactories.removeAll( factory );
+  mMapLayerPanelFactories.removeAll( factory );
   if ( mMapStyleWidget )
-    mMapStyleWidget->setPageFactories( mMapStylePanelFactories );
+    mMapStyleWidget->setPageFactories( mMapLayerPanelFactories );
 }
 
 /** Get a pointer to the currently selected map layer */
@@ -11368,7 +11358,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
 #else
     QgsVectorLayerProperties *vlp = new QgsVectorLayerProperties( vlayer, this );
 #endif
-    Q_FOREACH ( QgsMapLayerPropertiesFactory* factory, mMapLayerPropertiesFactories )
+    Q_FOREACH ( QgsMapLayerPanelFactory* factory, mMapLayerPanelFactories )
     {
       vlp->addPropertiesPageFactory( factory );
     }

@@ -41,8 +41,9 @@
 #include "qgsmapstylepanel.h"
 #include "qgsmaplayerstylemanagerwidget.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsmaplayerpropertiesfactory.h"
 
-QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, QList<QgsLayerStylingPanelFactory*> pages, QWidget *parent )
+QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, QList<QgsMapLayerPanelFactory*> pages, QWidget *parent )
     : QWidget( parent )
     , mNotSupportedPage( 0 )
     , mLayerPage( 1 )
@@ -70,7 +71,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, QList<QgsLay
 
   mStyleManagerFactory = new QgsLayerStyleManagerWidgetFactory();
 
-  QList<QgsLayerStylingPanelFactory*> l;
+  QList<QgsMapLayerPanelFactory*> l;
   setPageFactories( pages );
 
   connect( mUndoButton, SIGNAL( pressed() ), this, SLOT( undo() ) );
@@ -91,7 +92,7 @@ QgsLayerStylingWidget::~QgsLayerStylingWidget()
   delete mStyleManagerFactory;
 }
 
-void QgsLayerStylingWidget::setPageFactories( QList<QgsLayerStylingPanelFactory *> factories )
+void QgsLayerStylingWidget::setPageFactories( QList<QgsMapLayerPanelFactory *> factories )
 {
   mPageFactories = factories;
   // Always append the style manager factory at the bottom of the list
@@ -170,7 +171,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     mOptionsListWidget->addItem( histogramItem );
   }
 
-  Q_FOREACH ( QgsLayerStylingPanelFactory* factory, mPageFactories )
+  Q_FOREACH ( QgsMapLayerPanelFactory* factory, mPageFactories )
   {
     if ( factory->supportsLayer( layer ) )
     {
@@ -242,7 +243,7 @@ void QgsLayerStylingWidget::apply()
     mRasterStyleWidget->apply();
     styleWasChanged = true;
   }
-  else if ( QgsLayerStylingPanel* widget = qobject_cast<QgsLayerStylingPanel*>( current ) )
+  else if ( QgsMapLayerPanel* widget = qobject_cast<QgsMapLayerPanel*>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
@@ -316,7 +317,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   // TODO Make all widgets use this method.
   if ( mUserPages.contains( row ) )
   {
-    QgsLayerStylingPanel* panel = mUserPages[row]->createPanel( mCurrentLayer, mMapCanvas, mWidgetStack );
+    QgsMapLayerPanel* panel = mUserPages[row]->createPanel( mCurrentLayer, mMapCanvas, mWidgetStack );
     if ( panel )
     {
       connect( panel, SIGNAL( widgetChanged( QgsPanelWidget* ) ), this, SLOT( autoApply() ) );
@@ -487,7 +488,7 @@ QString QgsLayerStyleManagerWidgetFactory::title()
   return QString();
 }
 
-QgsLayerStylingPanel *QgsLayerStyleManagerWidgetFactory::createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+QgsMapLayerPanel *QgsLayerStyleManagerWidgetFactory::createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
 {
   return new QgsMapLayerStyleManagerWidget( layer,  canvas, parent );
 

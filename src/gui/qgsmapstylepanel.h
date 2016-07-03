@@ -28,7 +28,7 @@ class QgsMapCanvas;
  * \brief A panel widget that can be shown in the map style dock
  * \note added in QGIS 2.16
  */
-class GUI_EXPORT QgsLayerStylingPanel : public QgsPanelWidget
+class GUI_EXPORT QgsMapLayerPanel : public QgsPanelWidget
 {
     Q_OBJECT
   public:
@@ -41,7 +41,7 @@ class GUI_EXPORT QgsLayerStylingPanel : public QgsPanelWidget
        * @note The widget is created each time the panel is selected in the dock.
        * Keep the loading light as possible for speed in the UI.
        */
-    QgsLayerStylingPanel( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsMapLayerPanel( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 
   public slots:
     /**
@@ -54,52 +54,5 @@ class GUI_EXPORT QgsLayerStylingPanel : public QgsPanelWidget
     QgsMapLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
 };
-
-
-/** \ingroup gui
- * \class QgsLayerStylingPanelFactory
- * \note added in QGIS 2.16
- */
-class GUI_EXPORT QgsLayerStylingPanelFactory
-{
-  public:
-    Q_DECLARE_FLAGS( LayerTypesFlags, QgsMapLayer::LayerType )
-
-    /** Constructor */
-    QgsLayerStylingPanelFactory();
-
-    /** Destructor */
-    virtual ~QgsLayerStylingPanelFactory();
-
-    /**
-     * @brief The icon that will be shown in the UI for the panel.
-     * @return A QIcon for the panel icon.
-     */
-    virtual QIcon icon() = 0;
-
-    /**
-     * @brief The title of the panel.
-     * @note This may or may not be shown to the user.
-     * @return Title of the panel
-     */
-    virtual QString title() = 0;
-
-    /**
-     * @brief Check if the layer is supported for this widget.
-     * @return True if this layer is supported for this widget
-     */
-    virtual bool supportsLayer( QgsMapLayer *layer ) = 0;
-
-    /**
-     * @brief Factory fucntion to create the widget on demand as needed by the dock.
-     * @note This function is called each time the panel is selected. Keep it light for better UX.
-     * @param layer The active layer in the dock.
-     * @param canvas The map canvas.
-     * @param parent The parent of the widget.
-     * @return A new QgsMapStylePanel which is shown in the map style dock.
-     */
-    virtual QgsLayerStylingPanel* createPanel( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget* parent ) = 0;
-};
-
 
 #endif // QGSMAPSTYLEPANEL_H

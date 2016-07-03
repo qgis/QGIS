@@ -15,20 +15,10 @@
 #include "qgsmapstylepanel.h"
 #include "qgspanelwidget.h"
 
-QgsLayerStylingPanel::QgsLayerStylingPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+QgsMapLayerPanel::QgsMapLayerPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
     : QgsPanelWidget( parent )
     , mLayer( layer )
     , mMapCanvas( canvas )
-{
-
-}
-
-QgsLayerStylingPanelFactory::QgsLayerStylingPanelFactory()
-{
-
-}
-
-QgsLayerStylingPanelFactory::~QgsLayerStylingPanelFactory()
 {
 
 }

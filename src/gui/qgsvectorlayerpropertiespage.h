@@ -23,17 +23,17 @@ class QgsVectorLayer;
 /** \ingroup gui
  * \class QgsVectorLayerPropertiesPage
  * \note added in QGIS 2.16
- * Base class for custom vector layer property pages
+ * Base class for custom map layer property pages
  */
-class GUI_EXPORT QgsVectorLayerPropertiesPage : public QWidget
+class GUI_EXPORT QgsMapLayerPropertiesPage : public QWidget
 {
     Q_OBJECT
   public:
 
-    /** Constructor for QgsVectorLayerPropertiesPage.
+    /** Constructor for QgsMapLayerPropertiesPage.
      * @param parent parent widget
     */
-    explicit QgsVectorLayerPropertiesPage( QWidget *parent = nullptr );
+    explicit QgsMapLayerPropertiesPage( QWidget *parent = nullptr );
 
   public slots:
     /** Apply changes */

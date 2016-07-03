@@ -36,7 +36,7 @@ typedef QPointF QwtDoublePoint;
   *@author Etienne Tourigny
   */
 
-class GUI_EXPORT QgsRasterHistogramWidget : public QgsLayerStylingPanel, private Ui::QgsRasterHistogramWidgetBase
+class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerPanel, private Ui::QgsRasterHistogramWidgetBase
 {
     Q_OBJECT
 
