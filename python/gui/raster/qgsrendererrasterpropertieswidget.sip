@@ -1,4 +1,4 @@
-class QgsRendererRasterPropertiesWidget : QgsLayerStylingPanel
+class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
 {
 %TypeHeaderCode
 #include <qgsrendererrasterpropertieswidget.h>

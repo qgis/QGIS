@@ -1,7 +1,7 @@
 /***************************************************************************
-    qgsvectorlayerpropertiespage.h
+    qgsmaplayerconfigwidgetfactory.cpp
      --------------------------------------
-    Date                 : 8.7.2013
+    Date                 : 9.7.2013
     Copyright            : (C) 2013 Matthias Kuhn
     Email                : matthias dot kuhn at gmx dot ch
  ***************************************************************************
@@ -13,31 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVECTORLAYERPROPERTIESPAGE_H
-#define QGSVECTORLAYERPROPERTIESPAGE_H
+#include "qgsmaplayerconfigwidgetfactory.h"
 
-#include <QWidget>
-
-class QgsVectorLayer;
-
-/** \ingroup gui
- * \class QgsVectorLayerPropertiesPage
- * \note added in QGIS 2.16
- * Base class for custom vector layer property pages
- */
-class GUI_EXPORT QgsVectorLayerPropertiesPage : public QWidget
+QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory()
 {
-    Q_OBJECT
-  public:
+}
 
-    /** Constructor for QgsVectorLayerPropertiesPage.
-     * @param parent parent widget
-    */
-    explicit QgsVectorLayerPropertiesPage( QWidget *parent = nullptr );
+QgsMapLayerConfigWidgetFactory::~QgsMapLayerConfigWidgetFactory()
+{
+}
 
-  public slots:
-    /** Apply changes */
-    virtual void apply() = 0;
-};
-
-#endif // QGSVECTORLAYERPROPERTIESPAGE_H
+bool QgsMapLayerConfigWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
+{
+  Q_UNUSED( layer );
+  return true;
+}

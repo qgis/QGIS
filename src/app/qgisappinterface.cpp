@@ -475,24 +475,14 @@ bool QgisAppInterface::unregisterMainWindowAction( QAction* action )
   return QgsShortcutsManager::instance()->unregisterAction( action );
 }
 
-void QgisAppInterface::registerMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory )
+void QgisAppInterface::registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory )
 {
   qgis->registerMapLayerPropertiesFactory( factory );
 }
 
-void QgisAppInterface::unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory )
+void QgisAppInterface::unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory )
 {
   qgis->unregisterMapLayerPropertiesFactory( factory );
-}
-
-void QgisAppInterface::registerMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )
-{
-  qgis->registerMapStylePanelFactory( factory );
-}
-
-void QgisAppInterface::unregisterMapStylePanelFactory( QgsLayerStylingPanelFactory *factory )
-{
-  qgis->unregisterMapStylePanelFactory( factory );
 }
 
 //! Menus

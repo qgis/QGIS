@@ -19,7 +19,7 @@
 
 #include "ui_qgsrastertransparencywidget.h"
 
-#include "qgsmapstylepanel.h"
+#include "qgsmaplayerconfigwidget.h"
 
 class QgsRasterLayer;
 class QgsRasterRenderer;
@@ -31,7 +31,7 @@ class QgsPoint;
 /** \ingroup gui
  * @brief Widget to control a layers transparency and related options
  */
-class GUI_EXPORT QgsRasterTransparencyWidget : public QgsLayerStylingPanel, private Ui::QgsRasterTransparencyWidget
+class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterTransparencyWidget
 {
     Q_OBJECT
   public:

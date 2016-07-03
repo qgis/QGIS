@@ -244,7 +244,7 @@ SET(QGIS_GUI_SRCS
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayermodel.cpp
-  qgsmaplayerpropertiesfactory.cpp
+  qgsmaplayerconfigwidgetfactory.cpp
   qgsmaplayerproxymodel.cpp
   qgsmaplayerstylemanagerwidget.cpp
   qgsmapmouseevent.cpp
@@ -259,7 +259,7 @@ SET(QGIS_GUI_SRCS
   qgsmaptoolidentifyfeature.cpp
   qgsmaptoolpan.cpp
   qgsmaptoolzoom.cpp
-  qgsmapstylepanel.cpp
+  qgsmaplayerconfigwidget.cpp
   qgsmessagebar.cpp
   qgsmessagebaritem.cpp
   qgsmessagelogviewer.cpp
@@ -303,7 +303,6 @@ SET(QGIS_GUI_SRCS
   qgsunitselectionwidget.cpp
   qgsuserinputdockwidget.cpp
   qgsvariableeditorwidget.cpp
-  qgsvectorlayerpropertiespage.cpp
   qgsvertexmarker.cpp
 )
 
@@ -411,7 +410,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaptoolidentifyfeature.h
   qgsmaptoolpan.h
   qgsmaptoolzoom.h
-  qgsmapstylepanel.h
+  qgsmaplayerconfigwidget.h
   qgsmessagebar.h
   qgsmessagebaritem.h
   qgsmessagelogviewer.h
@@ -449,7 +448,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h
   qgsvariableeditorwidget.h
-  qgsvectorlayerpropertiespage.h
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
@@ -631,7 +629,7 @@ SET(QGIS_GUI_HDRS
   qgsmapcanvassnapper.h
   qgsmapcanvassnappingutils.h
   qgsmapcanvastracer.h
-  qgsmaplayerpropertiesfactory.h
+  qgsmaplayerconfigwidgetfactory.h
   qgsmapmouseevent.h
   qgsmaptip.h
   qgsnumericsortlistviewitem.h
