@@ -70,7 +70,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         self.editSql.setFocus()
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.editSql.setMarginVisible(True)
         self.initCompleter()
 
         # allow copying results
