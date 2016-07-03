@@ -151,11 +151,11 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
     QString myId( lyr->id() );
     emit layerWillBeRemoved( myId );
     emit layerWillBeRemoved( lyr );
+    mMapLayers.remove( myId );
     if ( lyr->parent() == this )
     {
       delete lyr;
     }
-    mMapLayers.remove( myId );
     emit layerRemoved( myId );
   }
 
@@ -192,10 +192,7 @@ void QgsMapLayerRegistry::reloadAllLayers()
 
 void QgsMapLayerRegistry::onMapLayerDeleted( QObject* obj )
 {
-  QgsMapLayer* ml = qobject_cast<QgsMapLayer*>( obj );
-  Q_ASSERT( ml );
-
-  QString id = mMapLayers.key( ml );
+  QString id = mMapLayers.key( static_cast<QgsMapLayer*>( obj ) );
 
   if ( !id.isNull() )
   {
