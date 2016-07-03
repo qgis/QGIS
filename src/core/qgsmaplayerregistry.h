@@ -309,12 +309,14 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     void connectNotify( const char * signal ) override;
 #endif
 
+  private slots:
+    void onMapLayerDeleted( QObject* obj );
+
   private:
     //! private singleton constructor
     QgsMapLayerRegistry( QObject * parent = nullptr );
 
     QMap<QString, QgsMapLayer*> mMapLayers;
-    QSet<QgsMapLayer*> mOwnedLayers;
 }; // class QgsMapLayerRegistry
 
 #endif //QgsMapLayerRegistry_H

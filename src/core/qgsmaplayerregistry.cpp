@@ -73,12 +73,11 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
   bool takeOwnership )
 {
   QList<QgsMapLayer *> myResultList;
-  for ( int i = 0; i < theMapLayers.size(); ++i )
+  Q_FOREACH ( QgsMapLayer* myLayer, theMapLayers )
   {
-    QgsMapLayer * myLayer = theMapLayers.at( i );
     if ( !myLayer || !myLayer->isValid() )
     {
-      QgsDebugMsg( "cannot add invalid layers" );
+      QgsDebugMsg( "Cannot add invalid layers" );
       continue;
     }
     //check the layer is not already registered!
@@ -87,7 +86,10 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
       mMapLayers[myLayer->id()] = myLayer;
       myResultList << mMapLayers[myLayer->id()];
       if ( takeOwnership )
-        mOwnedLayers << myLayer;
+      {
+        myLayer->setParent( this );
+      }
+      connect( myLayer, SIGNAL( destroyed( QObject* ) ), this, SLOT( onMapLayerDeleted( QObject* ) ) );
       emit layerWasAdded( myLayer );
     }
   }
@@ -149,10 +151,9 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
     QString myId( lyr->id() );
     emit layerWillBeRemoved( myId );
     emit layerWillBeRemoved( lyr );
-    if ( mOwnedLayers.contains( lyr ) )
+    if ( lyr->parent() == this )
     {
       delete lyr;
-      mOwnedLayers.remove( lyr );
     }
     mMapLayers.remove( myId );
     emit layerRemoved( myId );
@@ -183,14 +184,23 @@ void QgsMapLayerRegistry::removeAllMapLayers()
 
 void QgsMapLayerRegistry::reloadAllLayers()
 {
-  QMap<QString, QgsMapLayer *>::iterator it;
-  for ( it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
+  Q_FOREACH ( QgsMapLayer* layer, mMapLayers )
   {
-    QgsMapLayer* layer = it.value();
-    if ( layer )
-    {
-      layer->reload();
-    }
+    layer->reload();
+  }
+}
+
+void QgsMapLayerRegistry::onMapLayerDeleted( QObject* obj )
+{
+  QgsMapLayer* ml = qobject_cast<QgsMapLayer*>( obj );
+  Q_ASSERT( ml );
+
+  QString id = mMapLayers.key( ml );
+
+  if ( !id.isNull() )
+  {
+    QgsDebugMsg( QString( "Map layer deleted without unregistering! %1" ).arg( id ) );
+    mMapLayers.remove( id );
   }
 }
 
