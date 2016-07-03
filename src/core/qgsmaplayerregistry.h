@@ -23,6 +23,8 @@
 #include <QSet>
 #include <QObject>
 #include <QStringList>
+#include <QReadWriteLock>
+
 class QString;
 class QgsMapLayer;
 
@@ -317,6 +319,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     QgsMapLayerRegistry( QObject * parent = nullptr );
 
     QMap<QString, QgsMapLayer*> mMapLayers;
+    QReadWriteLock mRegistryLock;
 }; // class QgsMapLayerRegistry
 
 #endif //QgsMapLayerRegistry_H

@@ -32,7 +32,9 @@ QgsMapLayerRegistry *QgsMapLayerRegistry::instance()
 // Main class begins now...
 //
 
-QgsMapLayerRegistry::QgsMapLayerRegistry( QObject *parent ) : QObject( parent )
+QgsMapLayerRegistry::QgsMapLayerRegistry( QObject *parent )
+    : QObject( parent )
+    , mRegistryLock( QReadWriteLock::Recursive )
 {
   // constructor does nothing
 }
@@ -45,16 +47,19 @@ QgsMapLayerRegistry::~QgsMapLayerRegistry()
 // get the layer count (number of registered layers)
 int QgsMapLayerRegistry::count()
 {
+  QReadLocker lock( &mRegistryLock );
   return mMapLayers.size();
 }
 
 QgsMapLayer * QgsMapLayerRegistry::mapLayer( const QString& theLayerId )
 {
+  QReadLocker lock( &mRegistryLock );
   return mMapLayers.value( theLayerId );
 }
 
 QList<QgsMapLayer *> QgsMapLayerRegistry::mapLayersByName( const QString& layerName )
 {
+  QReadLocker lock( &mRegistryLock );
   QList<QgsMapLayer *> myResultList;
   Q_FOREACH ( QgsMapLayer* layer, mMapLayers )
   {
@@ -81,10 +86,14 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
       continue;
     }
     //check the layer is not already registered!
+    mRegistryLock.lockForRead();
     if ( !mMapLayers.contains( myLayer->id() ) )
     {
+      mRegistryLock.unlock();
+      mRegistryLock.lockForWrite();
       mMapLayers[myLayer->id()] = myLayer;
-      myResultList << mMapLayers[myLayer->id()];
+      mRegistryLock.unlock();
+      myResultList << myLayer;
       if ( takeOwnership )
       {
         myLayer->setParent( this );
@@ -92,6 +101,8 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
       connect( myLayer, SIGNAL( destroyed( QObject* ) ), this, SLOT( onMapLayerDeleted( QObject* ) ) );
       emit layerWasAdded( myLayer );
     }
+    else
+      mRegistryLock.unlock();
   }
   if ( !myResultList.isEmpty() )
   {
@@ -119,10 +130,12 @@ QgsMapLayerRegistry::addMapLayer( QgsMapLayer* theMapLayer,
 void QgsMapLayerRegistry::removeMapLayers( const QStringList& theLayerIds )
 {
   QList<QgsMapLayer*> layers;
+  mRegistryLock.lockForRead();
   Q_FOREACH ( const QString &myId, theLayerIds )
   {
     layers << mMapLayers.value( myId );
   }
+  mRegistryLock.unlock();
 
   removeMapLayers( layers );
 }
@@ -151,7 +164,9 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
     QString myId( lyr->id() );
     emit layerWillBeRemoved( myId );
     emit layerWillBeRemoved( lyr );
+    mRegistryLock.lockForWrite();
     mMapLayers.remove( myId );
+    mRegistryLock.unlock();
     if ( lyr->parent() == this )
     {
       delete lyr;
@@ -179,11 +194,13 @@ void QgsMapLayerRegistry::removeAllMapLayers()
   // now let all canvas observers know to clear themselves,
   // and then consequently any of their map legends
   removeMapLayers( mMapLayers.keys() );
+  QWriteLocker lock( &mRegistryLock );
   mMapLayers.clear();
 } // QgsMapLayerRegistry::removeAllMapLayers()
 
 void QgsMapLayerRegistry::reloadAllLayers()
 {
+  QReadLocker lock( &mRegistryLock );
   Q_FOREACH ( QgsMapLayer* layer, mMapLayers )
   {
     layer->reload();
@@ -203,7 +220,11 @@ void QgsMapLayerRegistry::onMapLayerDeleted( QObject* obj )
 
 QMap<QString, QgsMapLayer*> QgsMapLayerRegistry::mapLayers()
 {
-  return mMapLayers;
+  QReadLocker lock( &mRegistryLock );
+
+  QMap<QString, QgsMapLayer*> mapLayers = mMapLayers;
+  mapLayers.detach();
+  return mapLayers;
 }
 
 
@@ -211,6 +232,5 @@ QMap<QString, QgsMapLayer*> QgsMapLayerRegistry::mapLayers()
 void QgsMapLayerRegistry::connectNotify( const char * signal )
 {
   Q_UNUSED( signal );
-  //QgsDebugMsg("QgsMapLayerRegistry connected to " + QString(signal));
 } //  QgsMapLayerRegistry::connectNotify
 #endif
