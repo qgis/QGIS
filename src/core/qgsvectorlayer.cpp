@@ -1692,7 +1692,7 @@ void QgsVectorLayer::setDataSource( const QString& dataSource, const QString& ba
 
   mDataSource = dataSource;
   mLayerName = capitaliseLayerName( baseName );
-  setLayerName( mLayerName );
+  setName( mLayerName );
   setDataProvider( provider );
 
   if ( !mValid )
@@ -1791,7 +1791,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       }
 
       if ( !lName.isEmpty() )
-        setLayerName( lName );
+        setName( lName );
     }
 
     QgsDebugMsg( "Beautified layer name " + name() );

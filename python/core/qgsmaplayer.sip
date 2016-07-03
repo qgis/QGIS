@@ -64,7 +64,15 @@ class QgsMapLayer : QObject
     /** Set the display name of the layer
      * @param name New name for the layer
      */
-    void setLayerName( const QString & name );
+    void setLayerName( const QString & name ) /Deprecated/;
+
+    /**
+     * Set the display name of the layer
+     * @param name New name for the layer
+     *
+     * @note added in 2.16
+     */
+    void setName( const QString& name );
 
     /** Get the display name of the layer
      * @return the layer name
@@ -631,8 +639,17 @@ class QgsMapLayer : QObject
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
     void statusChanged( const QString& theStatus );
 
-    /** Emit a signal that the layer name has been changed */
+    /** Emit a signal that the layer name has been changed
+     * @deprecated since 2.16 use nameChanged() instead
+     */
     void layerNameChanged();
+
+    /**
+     * Emitted when the name has been changed
+     *
+     * @note added in 2.16
+     */
+    void nameChanged();
 
     /** Emit a signal that layer's CRS has been reset */
     void layerCrsChanged();

@@ -960,7 +960,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   Q_FOREACH ( const QString& layerId, layerIds )
   {
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-    ml->setLayerName( layerNameMap[ layerId ] );
+    ml->setName( layerNameMap[ layerId ] );
   }
   //  clear map layer registry
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
