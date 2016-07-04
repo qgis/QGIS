@@ -130,6 +130,9 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
       layerIds << layer->id();
   }
 
+  if ( layerIds.isEmpty() )
+    return;
+
   emit layersWillBeRemoved( layerIds );
   emit layersWillBeRemoved( layers );
 

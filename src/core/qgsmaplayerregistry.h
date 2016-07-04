@@ -62,14 +62,14 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      */
     QList<QgsMapLayer *> mapLayersByName( const QString& layerName ) const;
 
-    /** Returns a list of all registered layers.
+    /** Returns a map of all registered layers by layer ID.
      * @see mapLayer()
      * @see mapLayersByName()
      * @see layers()
      */
     QMap<QString, QgsMapLayer*> mapLayers() const;
 
-    /** Rerturns a list of registered map layers with a specified layer type.
+    /** Returns a list of registered map layers with a specified layer type.
      *
      * Example:
      *
@@ -183,6 +183,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * @see removeMapLayer()
      * @see removeAllMapLayers()
      */
+    //TODO QGIS 3.0 - add PyName alias to avoid list type conversion error
     void removeMapLayers( const QList<QgsMapLayer*>& layers );
 
     /**

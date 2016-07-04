@@ -35,7 +35,7 @@ class QgsMapLayerRegistry : QObject
      */
     QList<QgsMapLayer *> mapLayersByName( const QString& layerName ) const;
 
-    /** Returns a list of all registered layers.
+    /** Returns a map of all registered layers by layer ID.
      * @see mapLayer()
      * @see mapLayersByName()
      * @see layers()
