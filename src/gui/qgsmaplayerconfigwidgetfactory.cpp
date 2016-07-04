@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgslayeroptionsfactory.cpp
+    qgsmaplayerconfigwidgetfactory.cpp
      --------------------------------------
     Date                 : 9.7.2013
     Copyright            : (C) 2013 Matthias Kuhn

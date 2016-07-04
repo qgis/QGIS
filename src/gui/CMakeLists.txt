@@ -244,7 +244,7 @@ SET(QGIS_GUI_SRCS
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayermodel.cpp
-  qgsmaplayerconfigwidgetfactory.h
+  qgsmaplayerconfigwidgetfactory.cpp
   qgsmaplayerproxymodel.cpp
   qgsmaplayerstylemanagerwidget.cpp
   qgsmapmouseevent.cpp

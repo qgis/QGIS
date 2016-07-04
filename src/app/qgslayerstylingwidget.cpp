@@ -41,7 +41,7 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerstylemanagerwidget.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
+
 
 QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, QList<QgsMapLayerConfigWidgetFactory*> pages, QWidget *parent )
     : QWidget( parent )
