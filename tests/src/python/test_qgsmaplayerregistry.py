@@ -14,7 +14,6 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, QgsMapLayer
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtCore import QT_VERSION_STR
 import sip
 
@@ -94,6 +93,8 @@ class TestQgsMapLayerRegistry(unittest.TestCase):
     def test_addMapLayerSignals(self):
         """ test that signals are correctly emitted when adding map layer"""
 
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
+
         layer_was_added_spy = QSignalSpy(QgsMapLayerRegistry.instance().layerWasAdded)
         layers_added_spy = QSignalSpy(QgsMapLayerRegistry.instance().layersAdded)
         legend_layers_added_spy = QSignalSpy(QgsMapLayerRegistry.instance().legendLayersAdded)
@@ -108,7 +109,7 @@ class TestQgsMapLayerRegistry(unittest.TestCase):
         self.assertEqual(len(legend_layers_added_spy), 1)
 
         # layer not added to legend
-        QgsMapLayerRegistry.instance().addMapLayer(createLayer('test'), False)
+        QgsMapLayerRegistry.instance().addMapLayer(createLayer('test2'), False)
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 2)
         self.assertEqual(len(legend_layers_added_spy), 1)
@@ -170,6 +171,7 @@ class TestQgsMapLayerRegistry(unittest.TestCase):
     @unittest.skipIf(not use_signal_spy, "No QSignalSpy available")
     def test_addMapLayersSignals(self):
         """ test that signals are correctly emitted when adding map layers"""
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
 
         layer_was_added_spy = QSignalSpy(QgsMapLayerRegistry.instance().layerWasAdded)
         layers_added_spy = QSignalSpy(QgsMapLayerRegistry.instance().layersAdded)
@@ -465,6 +467,8 @@ class TestQgsMapLayerRegistry(unittest.TestCase):
         self.assertEqual(len(remove_all_spy), 1)
 
     def test_RemoveLayerShouldNotSegFault(self):
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
+
         reg = QgsMapLayerRegistry.instance()
         # Should not segfault
         reg.removeMapLayers(['not_exists'])
