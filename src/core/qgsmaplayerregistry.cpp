@@ -123,24 +123,26 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
     return;
 
   QStringList layerIds;
+  QList<QgsMapLayer*> layerList;
 
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
-    if ( layer )
+    // check layer and the registry contains it
+    if ( layer && mMapLayers.contains( layer->id() ) )
+    {
       layerIds << layer->id();
+      layerList << layer;
+    }
   }
 
   if ( layerIds.isEmpty() )
     return;
 
   emit layersWillBeRemoved( layerIds );
-  emit layersWillBeRemoved( layers );
+  emit layersWillBeRemoved( layerList );
 
-  Q_FOREACH ( QgsMapLayer* lyr, layers )
+  Q_FOREACH ( QgsMapLayer* lyr, layerList )
   {
-    if ( !lyr )
-      continue;
-
     QString myId( lyr->id() );
     emit layerWillBeRemoved( myId );
     emit layerWillBeRemoved( lyr );
