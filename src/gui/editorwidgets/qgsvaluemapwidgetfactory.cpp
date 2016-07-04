@@ -20,6 +20,8 @@
 #include "qgsdefaultsearchwidgetwrapper.h"
 #include "qgsvaluemapconfigdlg.h"
 
+#include <QSettings>
+
 QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )
 {
@@ -82,11 +84,15 @@ void QgsValueMapWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config,
 
 QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
 {
-  Q_UNUSED( vl )
-  Q_UNUSED( fieldIdx )
   Q_UNUSED( cache )
 
-  return config.key( value, QVariant( QString( "(%1)" ).arg( value.toString() ) ).toString() );
+  QString v;
+  if ( value.isNull() )
+    v = QSettings().value( "qgis/nullValue", "NULL" ).toString();
+  else
+    v = value.toString();
+
+  return config.key( v, QVariant( QString( "(%1)" ).arg( vl->fields().at( fieldIdx ).displayString( value ) ) ).toString() );
 }
 
 Qt::AlignmentFlag QgsValueMapWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
