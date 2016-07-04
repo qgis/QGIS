@@ -118,7 +118,6 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
 
   connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
   connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), btnOrderBy, SLOT( setEnabled( bool ) ) );
-  connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), lineEditOrderBy, SLOT( setEnabled( bool ) ) );
   connect( btnOrderBy, SIGNAL( clicked( bool ) ), this, SLOT( showOrderByDialog() ) );
 
   syncToLayer();
@@ -127,7 +126,6 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   widgets << mLayerTransparencySpnBx
   << cboRenderers
   << checkboxEnableOrderBy
-  << lineEditOrderBy
   << mBlendModeComboBox
   << mFeatureBlendComboBox
   << mEffectWidget;
@@ -348,8 +346,6 @@ void QgsRendererV2PropertiesDialog::syncToLayer()
     mOrderBy = mLayer->rendererV2()->orderBy();
   }
 
-  lineEditOrderBy->setText( mOrderBy.dump() );
-
   // setup slot rendererChanged()
   //setup order by
   if ( mLayer->rendererV2() &&
@@ -361,9 +357,7 @@ void QgsRendererV2PropertiesDialog::syncToLayer()
   {
     btnOrderBy->setEnabled( false );
     checkboxEnableOrderBy->setChecked( false );
-    lineEditOrderBy->setEnabled( false );
   }
-  lineEditOrderBy->setReadOnly( true );
 
   if ( mLayer->rendererV2() )
   {
@@ -387,14 +381,12 @@ void QgsRendererV2PropertiesDialog::showOrderByDialog()
   if ( dlg.exec() )
   {
     mOrderBy = dlg.orderBy();
-    lineEditOrderBy->setText( mOrderBy.dump() );
   }
 }
 
 void QgsRendererV2PropertiesDialog::changeOrderBy( const QgsFeatureRequest::OrderBy& orderBy, bool orderByEnabled )
 {
   mOrderBy = orderBy;
-  lineEditOrderBy->setText( mOrderBy.dump() );
   checkboxEnableOrderBy->setChecked( orderByEnabled );
 }
 
