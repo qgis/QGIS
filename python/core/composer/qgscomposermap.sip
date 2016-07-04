@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  *  \class QgsComposerMap
  *  \brief Object representing map window.
  */

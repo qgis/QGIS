@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapGridStack
  * \brief A collection of grids which is drawn above the map content in a
  * QgsComposerMap. The grid stack controls which grids are drawn and the
@@ -121,7 +121,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
 // QgsComposerMapGrid
 //
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapGrid
  * \brief An individual grid which is drawn above the map content in a
  * QgsComposerMap.

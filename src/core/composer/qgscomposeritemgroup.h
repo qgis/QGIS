@@ -20,7 +20,7 @@
 #include "qgscomposeritem.h"
 #include <QSet>
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A container for grouping several QgsComposerItems
  */
 class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem

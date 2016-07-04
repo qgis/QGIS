@@ -55,7 +55,7 @@ class QLabel;
 class QTreeView;
 class QPrinter;
 
-/** \ingroup MapComposer
+/** \ingroup app
  * \brief A gui for composing a printable map.
  */
 class QgsComposer: public QMainWindow, private Ui::QgsComposerBase

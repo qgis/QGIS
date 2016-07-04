@@ -16,7 +16,7 @@ typedef QList< QList< QVariant > > QgsComposerTableContents;
 typedef QList<QgsComposerTableColumn*> QgsComposerTableColumns;
 
 
-/** \ingroup MapComposer
+/** \ingroup core
  *  \class QgsComposerTableStyle
  *  \brief Styling option for a composer table cell
  *  \note added in QGIS 2.12
@@ -54,7 +54,7 @@ class QgsComposerTableStyle
 
 /** A class to display a table in the print composer, and allow
  * the table to span over multiple frames
- * \ingroup MapComposer
+ * \ingroup core
  * @note added in QGIS 2.5
  */
 class QgsComposerTableV2: QgsComposerMultiFrame

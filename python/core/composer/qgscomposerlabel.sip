@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * A label that can be placed onto a map composition.
  */
 class QgsComposerLabel : QgsComposerItem

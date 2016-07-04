@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapOverviewStack
  * \brief A collection of overviews which are drawn above the map content in a
  * QgsComposerMap. The overview stack controls which overviews are drawn and the
@@ -98,7 +98,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
 
 };
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapOverview
  * \brief An individual overview which is drawn above the map content in a
  * QgsComposerMap, and shows the extent of another QgsComposerMap.

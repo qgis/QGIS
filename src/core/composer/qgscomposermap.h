@@ -38,7 +38,7 @@ class QgsFillSymbolV2;
 class QgsLineSymbolV2;
 class QgsVectorLayer;
 
-/** \ingroup MapComposer
+/** \ingroup core
  *  \class QgsComposerMap
  *  \brief Object representing map window.
  */

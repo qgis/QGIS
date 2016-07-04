@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * A item that forms part of a map composition.
  */
 class QgsComposerItem : QgsComposerObject, QGraphicsRectItem

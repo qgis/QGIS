@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * Class used to render an Atlas, iterating over geometry features.
  * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
  * This class is used for printing, exporting to PDF and images.

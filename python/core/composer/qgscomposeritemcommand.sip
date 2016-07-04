@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
 Undo command to undo/redo all composer item related changes*/
 class QgsComposerItemCommand: QUndoCommand
 {

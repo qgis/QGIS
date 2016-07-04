@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * A base class for objects which belong to a map composition.
  */
 class QgsComposerObject : QObject

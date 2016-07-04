@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * A model that provides group, layer and classification items.
  */
 class QgsLegendModel : QStandardItemModel

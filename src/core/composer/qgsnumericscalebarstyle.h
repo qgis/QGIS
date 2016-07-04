@@ -19,7 +19,7 @@
 
 #include "qgsscalebarstyle.h"
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A scale bar style that draws text in the form of '1:XXXXX'
  */
 class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle

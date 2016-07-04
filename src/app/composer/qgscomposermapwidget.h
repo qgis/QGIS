@@ -25,7 +25,7 @@
 
 class QgsMapLayer;
 
-/** \ingroup MapComposer
+/** \ingroup app
  * Input widget for the configuration of QgsComposerMap
  * */
 class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerMapWidgetBase

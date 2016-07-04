@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * Utilities for compositions.
  */
 class QgsComposerUtils

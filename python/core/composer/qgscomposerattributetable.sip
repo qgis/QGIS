@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * Attribute table item for map composer.
  */
 

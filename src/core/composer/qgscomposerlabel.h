@@ -25,7 +25,7 @@ class QgsFeature;
 class QgsDistanceArea;
 class QgsWebPage;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A label that can be placed onto a map composition.
  */
 class CORE_EXPORT QgsComposerLabel: public QgsComposerItem

@@ -21,7 +21,7 @@
 
 class QgsComposerMap;
 
-/** \ingroup MapComposer
+/** \ingroup core
  *  \class QgsComposerMapItem
  *  \brief An item which is drawn inside a QgsComposerMap, eg a grid or map overview.
  */
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
 
 
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapItemStack
  * \brief A collection of map items which are drawn above the map content in a
  * QgsComposerMap. The item stack controls which items are drawn and the

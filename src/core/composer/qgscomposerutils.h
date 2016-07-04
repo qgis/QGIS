@@ -23,7 +23,7 @@
 
 class QPainter;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Utilities for compositions.
  */
 class CORE_EXPORT QgsComposerUtils

@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * Widget to display the composer items. Manages the composer tools and the
  * mouse/key events.
  * Creates the composer items according to the current map tools and keeps track

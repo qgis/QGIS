@@ -67,7 +67,7 @@ class QgsFillSymbolV2;
 class QgsDataDefined;
 class QgsComposerModel;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Graphics scene for map printing. The class manages the paper item which always
  * is the item in the back (z-value 0). It maintains the z-Values of the items and stores
  * them in a list in ascending z-Order. This list can be changed to lower/raise items one position

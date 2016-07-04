@@ -24,7 +24,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Composer legend components style
  */
 class CORE_EXPORT QgsComposerLegendStyle

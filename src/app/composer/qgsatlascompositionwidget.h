@@ -22,7 +22,7 @@ class QgsMapLayer;
 class QgsComposerMap;
 class QgsComposerItem;
 
-/** \ingroup MapComposer
+/** \ingroup app
   * Input widget for QgsAtlasComposition
   */
 class QgsAtlasCompositionWidget:

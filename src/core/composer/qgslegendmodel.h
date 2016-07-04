@@ -34,7 +34,7 @@ class QgsVectorLayer;
 //value: containter with layer ids contained in the group
 typedef QPair< QString, QList<QString> > GroupLayerInfo;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A model that provides group, layer and classification items.
  */
 class CORE_EXPORT QgsLegendModel : public QStandardItemModel
