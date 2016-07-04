@@ -400,14 +400,23 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
       {
         for ( int i = 0; i < numberOfEntries; ++i )
         {
-          double value = colorRamp->value( i );
-          entryValues.push_back( min + value * ( max - min ) );
+          if ( mInvertCheckBox->isChecked() )
+          {
+            double value = 1.0 - colorRamp->value( numberOfEntries - i - 1 );
+            entryValues.push_back( min + value * ( max - min ) );
+          }
+          else
+          {
+            double value = colorRamp->value( i );
+            entryValues.push_back( min + value * ( max - min ) );
+          }
         }
       }
       // for continuous mode take original color map colors
       for ( int i = 0; i < numberOfEntries; ++i )
       {
-        entryColors.push_back( colorRamp->color( colorRamp->value( i ) ) );
+        int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
+        entryColors.push_back( colorRamp->color( colorRamp->value( idx ) ) );
       }
     }
   }
