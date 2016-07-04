@@ -272,6 +272,8 @@
     <addaction name="mMenuPasteAs"/>
     <addaction name="separator"/>
     <addaction name="mActionAddFeature"/>
+    <addaction name="mActionCircularStringCurvePoint"/>
+    <addaction name="mActionCircularStringRadius"/>
     <addaction name="mActionMoveFeature"/>
     <addaction name="mActionDeleteSelected"/>
     <addaction name="mActionMultiEditAttributes"/>
