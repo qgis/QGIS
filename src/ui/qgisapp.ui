@@ -310,10 +310,10 @@
   </widget>
   <widget class="QToolBar" name="mFileToolBar">
    <property name="windowTitle">
-    <string>File Toolbar</string>
+    <string>Project Toolbar</string>
    </property>
    <property name="toolTip">
-    <string>File Toolbar</string>
+    <string>Project Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
