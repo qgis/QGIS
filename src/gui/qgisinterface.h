@@ -34,7 +34,7 @@ class QgsLayerTreeView;
 class QgsLegendInterface;
 class QgsMapCanvas;
 class QgsMapLayer;
-class QgsMapLayerPropertiesFactory;
+class QgsMapLayerConfigWidgetFactory;
 class QgsLayerStylingPanelFactory;
 class QgsMessageBar;
 class QgsPluginManagerInterface;
@@ -335,19 +335,13 @@ class GUI_EXPORT QgisInterface : public QObject
      * @note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterMapLayerPropertiesFactory() */
-    virtual void registerMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) = 0;
+    virtual void registerMapLayerPanelFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
 
     /** Unregister a previously registered tab in the vector layer properties dialog.
      * @note added in QGIS 2.16
      * @see registerMapLayerPropertiesFactory()
     */
-    virtual void unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) = 0;
-
-    /** Register a new tab in the layer properties dialog */
-    virtual void registerMapStylePanelFactory( QgsLayerStylingPanelFactory* factory ) = 0;
-
-    /** Unregister a previously registered tab in the layer properties dialog */
-    virtual void unregisterMapStylePanelFactory( QgsLayerStylingPanelFactory* factory ) = 0;
+    virtual void unregisterMapLayerPanelFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used

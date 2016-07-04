@@ -19,7 +19,7 @@
 
 #include "ui_qgsrasterhistogramwidgetbase.h"
 
-#include "qgsmapstylepanel.h"
+#include "qgsmaplayerconfigwidget.h"
 
 class QgsRasterLayer;
 class QgsRasterRendererWidget;
@@ -36,7 +36,7 @@ typedef QPointF QwtDoublePoint;
   *@author Etienne Tourigny
   */
 
-class GUI_EXPORT QgsRasterHistogramWidget : public QgsLayerStylingPanel, private Ui::QgsRasterHistogramWidgetBase
+class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterHistogramWidgetBase
 {
     Q_OBJECT
 

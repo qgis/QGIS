@@ -12,23 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsmapstylepanel.h"
+#include "qgsmaplayerconfigwidget.h"
 #include "qgspanelwidget.h"
 
-QgsLayerStylingPanel::QgsLayerStylingPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+QgsMapLayerConfigWidget::QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
     : QgsPanelWidget( parent )
     , mLayer( layer )
     , mMapCanvas( canvas )
-{
-
-}
-
-QgsLayerStylingPanelFactory::QgsLayerStylingPanelFactory()
-{
-
-}
-
-QgsLayerStylingPanelFactory::~QgsLayerStylingPanelFactory()
 {
 
 }
