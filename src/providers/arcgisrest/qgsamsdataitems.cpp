@@ -92,11 +92,30 @@ QVector<QgsDataItem*> QgsAmsConnectionItem::createChildren()
     return layers;
   }
 
+  QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData["spatialReference"].toMap() ).authid();
+  QString format = "jpg";
+  bool found = false;
+  QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+  foreach ( const QString& encoding, serviceData["supportedImageFormatTypes"].toString().split( "," ) )
+  {
+    foreach ( const QByteArray& fmt, supportedFormats )
+    {
+      if ( encoding.startsWith( fmt, Qt::CaseInsensitive ) )
+      {
+        format = encoding;
+        found = true;
+        break;
+      }
+    }
+    if ( found )
+      break;
+  }
+
   foreach ( const QVariant& layerInfo, serviceData["layers"].toList() )
   {
     QVariantMap layerInfoMap = layerInfo.toMap();
     QString id = layerInfoMap["id"].toString();
-    QgsAmsLayerItem* layer = new QgsAmsLayerItem( this, mName, mUrl + "/" + id, layerInfoMap["name"].toString() );
+    QgsAmsLayerItem* layer = new QgsAmsLayerItem( this, mName, mUrl, id, layerInfoMap["name"].toString(), authid, format );
     layers.append( layer );
   }
 
@@ -143,10 +162,10 @@ void QgsAmsConnectionItem::deleteConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem* parent, const QString &name, const QString &url, const QString &title )
+QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem* parent, const QString& name, const QString &url, const QString& id, const QString& title, const QString& authid, const QString& format )
     : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Raster, "arcgismapserver" )
 {
-  mUri = url;
+  mUri = QString( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid ).arg( format ).arg( id ).arg( url );
   setState( Populated );
   mIconName = "mIconAms.svg";
 }

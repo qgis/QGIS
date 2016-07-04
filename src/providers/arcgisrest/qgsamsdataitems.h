@@ -57,7 +57,7 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
 class QgsAmsLayerItem : public QgsLayerItem
 {
   public:
-    QgsAmsLayerItem( QgsDataItem* parent, const QString& name, const QString &url, const QString& title );
+    QgsAmsLayerItem( QgsDataItem* parent, const QString& name, const QString &url, const QString& id, const QString& title, const QString& authid, const QString& format );
 };
 
 #endif // QGSAMSDATAITEMS_H
