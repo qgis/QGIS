@@ -35,6 +35,7 @@ __revision__ = '$Format:%H$'
 
 
 import os
+import sys
 import subprocess
 from shutil import copytree, rmtree
 import tempfile
@@ -69,7 +70,6 @@ class TestWFST(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests"""
         cls.port = QGIS_SERVER_WFST_DEFAULT_PORT
-        cls.testdata_path = unitTestDataPath('wfs_transactional') + '/'
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
         cls.testdata_path = cls.temp_path + '/' + 'wfs_transactional' + '/'
@@ -92,7 +92,7 @@ class TestWFST(unittest.TestCase):
         os.environ['QGIS_SERVER_DEFAULT_PORT'] = str(cls.port)
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
-        cls.server = subprocess.Popen(['python', server_path],
+        cls.server = subprocess.Popen([sys.executable, server_path],
                                       env=os.environ)
         sleep(2)
 
@@ -152,7 +152,7 @@ class TestWFST(unittest.TestCase):
             'table': '',
             #'sql': '',
         }
-        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in parms.iteritems()])
+        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in parms.items()])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         assert wfs_layer.isValid()
         return wfs_layer
@@ -165,7 +165,7 @@ class TestWFST(unittest.TestCase):
         request = QgsFeatureRequest(QgsExpression("%s=%s" % (attr_name,
                                                              attr_value)))
         try:
-            return layer.dataProvider().getFeatures(request).next()
+            return next(layer.dataProvider().getFeatures(request))
         except StopIteration:
             raise Exception("Wrong attributes in WFS layer %s" %
                             layer.name())
