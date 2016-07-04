@@ -1235,9 +1235,10 @@ QSet< QString > QgsRuleBasedRendererV2::legendKeysForFeature( QgsFeature& featur
 
 QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFeatureRendererV2* renderer )
 {
+  QgsRuleBasedRendererV2* r = nullptr;
   if ( renderer->type() == "RuleRenderer" )
   {
-    return dynamic_cast<QgsRuleBasedRendererV2*>( renderer->clone() );
+    r = dynamic_cast<QgsRuleBasedRendererV2*>( renderer->clone() );
   }
 
   if ( renderer->type() == "singleSymbol" )
@@ -1248,7 +1249,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
 
     QgsSymbolV2* origSymbol = singleSymbolRenderer->symbol()->clone();
     convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField() );
-    return new QgsRuleBasedRendererV2( origSymbol );
+    r = new QgsRuleBasedRendererV2( origSymbol );
   }
 
   if ( renderer->type() == "categorizedSymbol" )
@@ -1312,7 +1313,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       rootrule->appendChild( rule );
     }
 
-    return new QgsRuleBasedRendererV2( rootrule );
+    r = new QgsRuleBasedRendererV2( rootrule );
   }
 
   if ( renderer->type() == "graduatedSymbol" )
@@ -1369,23 +1370,29 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       rootrule->appendChild( rule );
     }
 
-    return new QgsRuleBasedRendererV2( rootrule );
+    r = new QgsRuleBasedRendererV2( rootrule );
   }
 
   if ( renderer->type() == "pointDisplacement" )
   {
     const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
     if ( pointDisplacementRenderer )
-      return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+      r = convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
   }
   if ( renderer->type() == "invertedPolygonRenderer" )
   {
     const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
     if ( invertedPolygonRenderer )
-      return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+      r = convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
 
-  return nullptr;
+  if ( r )
+  {
+    r->setOrderBy( renderer->orderBy() );
+    r->setOrderByEnabled( renderer->orderByEnabled() );
+  }
+
+  return r;
 }
 
 void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol, const QString& sizeScaleField, const QString& rotationField )
