@@ -521,9 +521,9 @@ class DoxygenParser():
         if d.find('para'):
             for s in d.find('para').getiterator('simplesect'):
                 if s.get('kind') == 'note':
-                    t = s.find('para').text
-                    if t and t.lower().startswith('added in'):
-                        found_version_added = True
+                    for p in s.getiterator('para'):
+                        if p.text and p.text.lower().startswith('added in'):
+                            found_version_added = True
 
         return documentable_members, documented_members, undocumented_members, bindable_members, found_version_added
 
