@@ -29,7 +29,14 @@ class QgsRendererRangeV2
     // debugging
     QString dump() const;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+    /** Creates a DOM element representing the range in SLD format.
+     * @param doc DOM document
+     * @param element destination DOM element
+     * @param props graduated renderer properties
+     * @param firstRange set to true if the range is the first range, where the lower value uses a <= test
+     * rather than a < test.
+     */
+    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
 
   protected:
     // for cpy+swap idiom
