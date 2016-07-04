@@ -1688,7 +1688,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
 void QgsVectorLayer::setDataSource( const QString& dataSource, const QString& baseName, const QString& provider, bool loadDefaultStyleFlag )
 {
-  QGis::GeometryType oldGeomType = geometryType();
+  QGis::GeometryType oldGeomType = mValid && mDataProvider ? geometryType() : QGis::UnknownGeometry;
 
   mDataSource = dataSource;
   mLayerName = capitaliseLayerName( baseName );
@@ -1736,13 +1736,13 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   //      version big-time with an abnormal termination error
   delete mDataProvider;
   mDataProvider = ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->provider( provider, mDataSource ) );
-  connect( mDataProvider, SIGNAL( raiseError( QString ) ), this, SIGNAL( raiseError( QString ) ) );
-
   if ( !mDataProvider )
   {
     QgsDebugMsg( " unable to get data provider" );
     return false;
   }
+
+  connect( mDataProvider, SIGNAL( raiseError( QString ) ), this, SIGNAL( raiseError( QString ) ) );
 
   QgsDebugMsg( "Instantiated the data provider plugin" );
 
