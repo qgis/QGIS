@@ -118,7 +118,9 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
   voteLabel->hide();
   voteSlider->hide();
   voteSubmit->hide();
+#ifndef WITH_QTWEBKIT
   connect( voteSubmit, SIGNAL( clicked() ), this, SLOT( submitVote() ) );
+#endif
 
   // Init the message bar instance
   msgBar = new QgsMessageBar( this );
