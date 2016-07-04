@@ -24,7 +24,8 @@
 
 class QgsInterpolator;
 
-/** A class that does interpolation to a grid and writes the results to an ascii grid*/
+/** \ingroup analysis
+ * A class that does interpolation to a grid and writes the results to an ascii grid*/
 //todo: extend such that writing to other file types is possible
 class ANALYSIS_EXPORT QgsGridFileWriter
 {

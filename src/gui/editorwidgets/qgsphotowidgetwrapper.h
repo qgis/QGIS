@@ -28,7 +28,7 @@
 #endif
 
 
-/**
+/** \ingroup gui
  * Wraps a photo widget. Will show a picture and a file chooser to change the picture.
  *
  * Options:

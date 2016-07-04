@@ -34,6 +34,9 @@
 class QgsAttributeForm;
 class QgsVectorLayerTools;
 
+/** \ingroup gui
+ * \class QgsRelationReferenceWidget
+ */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
     Q_OBJECT

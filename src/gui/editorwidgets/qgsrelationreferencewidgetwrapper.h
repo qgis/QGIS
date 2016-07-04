@@ -20,7 +20,7 @@
 #include "qgseditorwidgetwrapper.h"
 
 
-/**
+/** \ingroup gui
  * Wraps a relation reference widget.
  *
  * Options:

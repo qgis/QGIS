@@ -23,7 +23,9 @@
 
 #include "ui_qgssymbollevelsv2dialogbase.h"
 
-
+/** \ingroup gui
+ * \class QgsSymbolLevelsV2Dialog
+ */
 class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbolLevelsV2DialogBase
 {
     Q_OBJECT

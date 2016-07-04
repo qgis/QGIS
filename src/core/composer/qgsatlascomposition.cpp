@@ -157,8 +157,7 @@ void QgsAtlasComposition::setSortKeyAttributeIndex( int idx )
   mSortKeyAttributeName = "";
 }
 
-//
-// Private class only used for the sorting of features
+/// @cond PRIVATE
 class FieldSorter
 {
   public:
@@ -177,6 +176,8 @@ class FieldSorter
     QgsAtlasComposition::SorterKeys& mKeys;
     bool mAscending;
 };
+
+/// @endcond
 
 int QgsAtlasComposition::updateFeatures()
 {

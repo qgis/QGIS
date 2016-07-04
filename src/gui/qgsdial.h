@@ -20,6 +20,9 @@
 
 class QPaintEvent;
 
+/** \ingroup gui
+ * \class QgsDial
+ */
 class GUI_EXPORT QgsDial : public QDial
 {
     Q_OBJECT

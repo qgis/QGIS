@@ -23,6 +23,9 @@
 #include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
 
+/** \ingroup gui
+ * \class QgsNewMemoryLayerDialog
+ */
 class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemoryLayerDialogBase
 {
     Q_OBJECT

@@ -23,7 +23,7 @@
 
 class QgsRectangle;
 
-/**
+/** \ingroup analysis
  * @brief OSMDownload is a utility class for downloading OpenStreetMap via Overpass API.
  *
  * To use this class, it is necessary to set query, output file name and start the request.

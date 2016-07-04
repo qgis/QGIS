@@ -25,7 +25,7 @@ class QFrame;
 class QBoxLayout;
 
 
-/**
+/** \ingroup gui
  * @brief The QgsUserInputDockWidget class is a dock widget that shall be used to display widgets for user inputs.
  * It can be used by map tools, plugins, etc.
  * Several widgets can be displayed at once, they will be separated by a separator. Widgets will be either layout horizontally or vertically.

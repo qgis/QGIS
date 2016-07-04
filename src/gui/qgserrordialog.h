@@ -23,6 +23,9 @@
 #include "qgisgui.h"
 #include "qgserror.h"
 
+/** \ingroup gui
+ * \class QgsErrorDialog
+ */
 class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
 {
     Q_OBJECT

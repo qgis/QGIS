@@ -49,6 +49,9 @@ class QgsFeatureRendererV2;
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
+/** \ingroup core
+ * \class QgsSymbolV2
+ */
 class CORE_EXPORT QgsSymbolV2
 {
     friend class QgsFeatureRendererV2;
@@ -340,6 +343,9 @@ class CORE_EXPORT QgsSymbolV2
 
 ///////////////////////
 
+/** \ingroup core
+ * \class QgsSymbolV2RenderContext
+ */
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
@@ -444,7 +450,9 @@ class CORE_EXPORT QgsSymbolV2RenderContext
 //////////////////////
 
 
-
+/** \ingroup core
+ * \class QgsMarkerSymbolV2
+ */
 class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 {
   public:
@@ -589,7 +597,9 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 };
 
 
-
+/** \ingroup core
+ * \class QgsLineSymbolV2
+ */
 class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
 {
   public:
@@ -629,7 +639,9 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
 };
 
 
-
+/** \ingroup core
+ * \class QgsFillSymbolV2
+ */
 class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
 {
   public:

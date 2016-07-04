@@ -30,7 +30,7 @@ class QgsDualView;
 class QgsRelationManager;
 class QgsVectorLayer;
 
-/**
+/** \ingroup gui
  * \brief create attribute widget for editing
  *
  * @deprecated

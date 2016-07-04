@@ -20,7 +20,8 @@
 #include <Point3D.h>
 #include <Vector3D.h>
 
-/** This is an interface for interpolator classes for triangulations*/
+/** \ingroup analysis
+ * This is an interface for interpolator classes for triangulations*/
 class ANALYSIS_EXPORT TriangleInterpolator
 {
   public:

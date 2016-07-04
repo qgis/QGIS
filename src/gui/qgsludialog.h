@@ -21,7 +21,9 @@
 #include "ui_qgsludialogbase.h"
 #include "qgisgui.h"
 
-
+/** \ingroup gui
+ * \class QgsLUDialog
+ */
 class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
 {
     Q_OBJECT

@@ -22,7 +22,9 @@
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
 
-
+/** \ingroup gui
+ * \class QgsSingleBandGrayRendererWidget
+ */
 class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandGrayRendererWidgetBase
 {
     Q_OBJECT

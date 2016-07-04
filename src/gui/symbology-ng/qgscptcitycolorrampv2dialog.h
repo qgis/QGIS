@@ -30,7 +30,9 @@ class TreeFilterProxyModel;
 class ListFilterProxyModel;
 class UngroupProxyModel;
 
-
+/** \ingroup gui
+ * \class QgsCptCityColorRampV2Dialog
+ */
 class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCptCityColorRampV2DialogBase
 {
     Q_OBJECT
@@ -85,6 +87,9 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
 
 /// @cond PRIVATE
 
+/** \ingroup gui
+ * \class TreeFilterProxyModel
+ */
 class TreeFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT

@@ -172,7 +172,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
 
 
-/** Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+/** \ingroup core
+ * Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
  * \note not available in Python bindings
 */
 template<typename T>

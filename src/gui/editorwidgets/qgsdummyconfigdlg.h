@@ -20,7 +20,8 @@
 #include "qgseditorconfigwidget.h"
 
 
-/** \class QgsDummyConfigDlg
+/** \ingroup gui
+ * \class QgsDummyConfigDlg
  * \note not available in Python bindings
  */
 

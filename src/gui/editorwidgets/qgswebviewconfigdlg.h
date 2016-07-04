@@ -20,7 +20,8 @@
 
 #include "qgseditorconfigwidget.h"
 
-/** \class QgsWebViewWidgetConfigDlg
+/** \ingroup gui
+ * \class QgsWebViewWidgetConfigDlg
  * \note not available in Python bindings
  */
 

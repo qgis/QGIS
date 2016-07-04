@@ -26,6 +26,9 @@ class QgsVectorLayer;
 class QgsNetworkContentFetcher;
 class QgsDistanceArea;
 
+/** \ingroup core
+ * \class QgsComposerHtml
+ */
 class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 {
     Q_OBJECT

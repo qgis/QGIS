@@ -21,6 +21,9 @@
 #include "qgsannotationitem.h"
 #include <QSvgRenderer>
 
+/** \ingroup gui
+ * \class QgsSvgAnnotationItem
+ */
 class GUI_EXPORT QgsSvgAnnotationItem: public QgsAnnotationItem
 {
   public:

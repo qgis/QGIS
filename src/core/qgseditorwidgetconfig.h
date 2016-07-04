@@ -19,7 +19,7 @@
 #ifndef QGSEDITORWIDGETCONFIG_H
 #define QGSEDITORWIDGETCONFIG_H
 
-/**
+/** \ingroup core
  * Holds a set of configuration parameters for a editor widget wrapper.
  * It's basically a set of key => value pairs.
  *

@@ -24,6 +24,8 @@
 #include <QWebView>
 #include <QDesktopWidget>
 
+/** \ingroup core
+ */
 class CORE_EXPORT QgsWebView : public QWebView
 {
     Q_OBJECT
@@ -44,7 +46,7 @@ class CORE_EXPORT QgsWebView : public QWebView
 #include "qgswebpage.h"
 #include <QTextBrowser>
 
-/**
+/** \ingroup core
  * @brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
  * library is not available. It should be used instead of QWebView inside QGIS.
  *

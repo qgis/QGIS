@@ -27,7 +27,7 @@ class QgsVectorLayer;
 class QgsStyleV2;
 class QgsRendererV2Widget;
 
-/**
+/** \ingroup core
  Stores metadata about one renderer class.
 
  @note It's necessary to implement createRenderer() function.
@@ -99,7 +99,7 @@ typedef QgsFeatureRendererV2*( *QgsRendererV2CreateFunc )( QDomElement& );
 typedef QgsRendererV2Widget*( *QgsRendererV2WidgetFunc )( QgsVectorLayer*, QgsStyleV2*, QgsFeatureRendererV2* );
 typedef QgsFeatureRendererV2*( *QgsRendererV2CreateFromSldFunc )( QDomElement&, QGis::GeometryType geomType );
 
-/**
+/** \ingroup core
  Convenience metadata class that uses static functions to create renderer and its widget.
  */
 class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata

@@ -23,7 +23,8 @@
 
 class QgsGPSConnection;
 
-/** A singleton class to register / unregister existing GPS connections such that the information
+/** \ingroup core
+ * A singleton class to register / unregister existing GPS connections such that the information
   is available to all classes and plugins*/
 class CORE_EXPORT QgsGPSConnectionRegistry
 {

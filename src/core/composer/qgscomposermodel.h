@@ -293,10 +293,10 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
 
 /**
- * /class QgsComposerProxyModel
- * /ingroup core
- * /brief Allows for filtering a QgsComposerModel by item type.
- * /note added in 2.16
+ * \class QgsComposerProxyModel
+ * \ingroup core
+ * \brief Allows for filtering a QgsComposerModel by item type.
+ * \note added in 2.16
  */
 class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
 {

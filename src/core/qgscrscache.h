@@ -23,7 +23,8 @@
 
 class QgsCoordinateTransform;
 
-/** Cache coordinate transform by authid of source/dest transformation to avoid the
+/** \ingroup core
+ * Cache coordinate transform by authid of source/dest transformation to avoid the
 overhead of initialization for each redraw*/
 class CORE_EXPORT QgsCoordinateTransformCache
 {

@@ -23,7 +23,8 @@ class QgsFeatureRendererV2;
 
 #include <Qt>
 
-/** This class is not a part of public API, it is intended only for compatibility with older versions of QGIS (1.x) */
+/** \ingroup core
+ * This class is not a part of public API, it is intended only for compatibility with older versions of QGIS (1.x) */
 class CORE_EXPORT QgsSymbologyV2Conversion
 {
   public:

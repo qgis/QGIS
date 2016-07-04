@@ -23,7 +23,8 @@
 #include <QHash>
 #include <QObject>
 
-/** A cache for capabilities xml documents (by configuration file path)*/
+/** \ingroup server
+ * A cache for capabilities xml documents (by configuration file path)*/
 class SERVER_EXPORT QgsCapabilitiesCache : public QObject
 {
     Q_OBJECT

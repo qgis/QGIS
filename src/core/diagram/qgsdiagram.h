@@ -31,7 +31,8 @@ class QgsExpression;
 
 
 
-/** Base class for all diagram types*/
+/** \ingroup core
+ * Base class for all diagram types*/
 class CORE_EXPORT QgsDiagram
 {
   public:

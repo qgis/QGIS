@@ -821,7 +821,8 @@ Q_NOWARN_DEPRECATED_POP
 
 
 
-/** Class that does synchronization between QgsMapCanvas and its associated QgsMapRenderer:
+/** \ingroup gui
+ * Class that does synchronization between QgsMapCanvas and its associated QgsMapRenderer:
  *   - changes done in map canvas settings are pushed to map renderer
  *   - changes done in map renderer are pushed to map canvas settings
  *

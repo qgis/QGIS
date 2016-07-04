@@ -31,6 +31,9 @@ class QgsScaleExpression;
 class QgsDataDefined;
 class QgsMapCanvas;
 
+/** \ingroup gui
+ * \class QgsSizeScaleWidget
+ */
 class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui_SizeScaleBase
 {
     Q_OBJECT

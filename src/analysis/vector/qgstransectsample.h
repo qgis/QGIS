@@ -26,7 +26,8 @@ class QgsVectorLayer;
 class QgsPoint;
 class QProgressDialog;
 
-/** A class for the creation of transect sample lines based on a set of strata polygons and baselines*/
+/** \ingroup analysis
+ * A class for the creation of transect sample lines based on a set of strata polygons and baselines*/
 class ANALYSIS_EXPORT QgsTransectSample
 {
   public:

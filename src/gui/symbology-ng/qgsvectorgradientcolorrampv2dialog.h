@@ -26,6 +26,9 @@ class QwtPlotCurve;
 class QwtPlotMarker;
 class QgsGradientPlotEventFilter;
 
+/** \ingroup gui
+ * \class QgsVectorGradientColorRampV2Dialog
+ */
 class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui::QgsVectorGradientColorRampV2DialogBase
 {
     Q_OBJECT

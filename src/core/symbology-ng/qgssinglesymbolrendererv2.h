@@ -22,6 +22,9 @@
 #include <QScopedPointer>
 
 Q_NOWARN_DEPRECATED_PUSH
+/** \ingroup core
+ * \class QgsSingleSymbolRendererV2
+ */
 class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:

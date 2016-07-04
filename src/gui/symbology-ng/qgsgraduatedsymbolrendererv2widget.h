@@ -75,6 +75,9 @@ class QgsGraduatedSymbolRendererV2ViewStyle: public QProxyStyle
 
 ///@endcond
 
+/** \ingroup gui
+ * \class QgsGraduatedSymbolRendererV2Widget
+ */
 class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsGraduatedSymbolRendererV2Widget
 {
     Q_OBJECT

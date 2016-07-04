@@ -28,7 +28,8 @@
 typedef QList< QgsVectorJoinInfo > QgsVectorJoinList;
 
 
-/** Manages joined fields for a vector layer*/
+/** \ingroup core
+ * Manages joined fields for a vector layer*/
 class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 {
     Q_OBJECT

@@ -20,7 +20,8 @@
 
 #include "qgseditorconfigwidget.h"
 
-/** \class QgsUniqueValuesConfigDlg
+/** \ingroup gui
+ * \class QgsUniqueValuesConfigDlg
  * \note not available in Python bindings
  */
 

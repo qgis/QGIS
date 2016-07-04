@@ -21,6 +21,9 @@
 #include <QGraphicsEffect>
 #include <QPainter>
 
+/** \ingroup core
+ * \class QgsComposerEffect
+ */
 class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 {
     Q_OBJECT

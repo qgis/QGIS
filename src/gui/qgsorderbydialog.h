@@ -23,7 +23,7 @@
 
 #include "ui_qgsorderbydialogbase.h"
 
-/**
+/** \ingroup gui
  * This is a dialog to build and manage a list of order by clauses.
  *
  * @note added in 2.14

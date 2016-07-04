@@ -40,6 +40,7 @@
 namespace pal
 {
   /**
+   * \ingroup core
    * \class pal::PriorityQueue
    * \note not available in Python bindings
    */

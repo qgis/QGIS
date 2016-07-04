@@ -19,7 +19,8 @@
 
 #include "Triangulation.h"
 
-/** Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
+/** \ingroup analysis
+ * Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
 class ANALYSIS_EXPORT TriDecorator : public Triangulation
 {
   public:

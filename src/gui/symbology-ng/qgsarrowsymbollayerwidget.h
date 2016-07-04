@@ -20,6 +20,9 @@
 
 class QgsArrowSymbolLayer;
 
+/** \ingroup gui
+ * \class QgsArrowSymbolLayerWidget
+ */
 class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerV2Widget, private Ui::QgsArrowSymbolLayerWidgetBase
 {
     Q_OBJECT

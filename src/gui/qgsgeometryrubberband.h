@@ -27,7 +27,8 @@ class QgsAbstractGeometryV2;
 class QgsPointV2;
 struct QgsVertexId;
 
-/** A rubberband class for QgsAbstractGeometryV2 (considering curved geometries)*/
+/** \ingroup gui
+ * A rubberband class for QgsAbstractGeometryV2 (considering curved geometries)*/
 class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 {
   public:

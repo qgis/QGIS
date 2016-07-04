@@ -24,7 +24,7 @@ class QgsLayerTreeNode;
 class QgsMapLayer;
 
 
-/**
+/** \ingroup core
  * Listens to the updates in map layer registry and does changes in layer tree.
  *
  * When connected to a layer tree, any layers added to the map layer registry

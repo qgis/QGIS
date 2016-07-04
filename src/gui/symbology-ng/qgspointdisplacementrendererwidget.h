@@ -23,6 +23,9 @@
 
 class QgsPointDisplacementRenderer;
 
+/** \ingroup gui
+ * \class QgsPointDisplacementRendererWidget
+ */
 class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererV2Widget, private Ui::QgsPointDisplacementRendererWidgetBase
 {
     Q_OBJECT

@@ -20,6 +20,9 @@
 
 #include "qgsderivativefilter.h"
 
+/** \ingroup analysis
+ * \class QgsHillshadeFilter
+ */
 class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
 {
   public:

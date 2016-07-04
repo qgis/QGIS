@@ -61,6 +61,9 @@ class QgsVectorLayerLabelProvider;
 class QgsDxfExport;
 class QgsVectorLayerDiagramProvider;
 
+/** \ingroup core
+ * \class QgsPalLayerSettings
+ */
 class CORE_EXPORT QgsPalLayerSettings
 {
   public:
@@ -723,6 +726,8 @@ class CORE_EXPORT QgsPalLayerSettings
     static QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 };
 
+/** \ingroup core
+ */
 class CORE_EXPORT QgsLabelCandidate
 {
   public:
@@ -830,7 +835,7 @@ class CORE_EXPORT QgsLabelComponent
 };
 
 
-/**
+/** \ingroup core
  * Class that stores computed placement from labeling engine.
  * @note added in 2.4
  */
@@ -857,6 +862,9 @@ class CORE_EXPORT QgsLabelingResults
 };
 
 Q_NOWARN_DEPRECATED_PUSH
+/** \ingroup core
+ * \class QgsPalLabeling
+ */
 class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 {
   public:

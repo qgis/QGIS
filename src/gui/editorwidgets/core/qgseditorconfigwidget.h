@@ -22,7 +22,7 @@
 
 class QgsVectorLayer;
 
-/**
+/** \ingroup gui
  * This class should be subclassed for every configurable editor widget type.
  *
  * It implements the GUI configuration widget and transforms this to/from a configuration.

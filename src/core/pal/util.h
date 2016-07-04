@@ -43,6 +43,7 @@ namespace pal
   class FeaturePart;
 
   /**
+   * \ingroup core
    * \brief For usage in problem solving algorithm
    * \note not available in Python bindings
    */
@@ -79,6 +80,7 @@ namespace pal
   /**
    * \class pal::Util
    * \note not available in Python bindings
+   * \ingroup core
    */
   class Util
   {

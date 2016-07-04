@@ -26,7 +26,7 @@ class QgsRasterPipe;
 struct QgsRasterViewPort;
 class QgsRenderContext;
 
-/**
+/** \ingroup core
  * Implementation of threaded rendering for raster layers.
  *
  * @note added in 2.4

@@ -22,7 +22,7 @@
 
 #include "qgsfield.h"
 
-/**
+/** \ingroup core
  * This is a container for configuration of the attribute table.
  * The configuration is specific for one vector layer.
  * \note added in QGIS 2.16

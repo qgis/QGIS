@@ -28,10 +28,9 @@
 class QgsField;
 class QgsVectorLayer;
 
-/*!
+/** \ingroup gui
  * \class QgsSearchQueryBuilder
  * \brief Query Builder for search strings
- *
  */
 class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
 {

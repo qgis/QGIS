@@ -17,7 +17,7 @@
 
 #include <QString>
 
-/**
+/** \ingroup core
   Utility class for running python commands from various parts of QGIS.
   There is no direct python support in the core library, so it is expected
   that application with python support creates a subclass that implements

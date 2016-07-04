@@ -21,7 +21,8 @@
 #include <QBrush>
 #include <QPen>
 
-/** An abstract composer item that provides generic methods for nodes based
+/** \ingroup core
+ * An abstract composer item that provides generic methods for nodes based
  * shapes such as polygon or polylines.
  * @note added in QGIS 2.16
  */

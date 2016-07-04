@@ -33,7 +33,7 @@ class QgsMapCanvas;
 class QgsHighlight;
 class QgsIdentifyMenu;
 
-/**
+/** \ingroup gui
   \brief Map tool for identifying features in layers
 
   after selecting a point, performs the identification:

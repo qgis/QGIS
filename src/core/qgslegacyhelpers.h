@@ -20,6 +20,9 @@
 
 #include "qgsvectorlayer.h"
 
+/** \ingroup core
+ * \class QgsLegacyHelpers
+ */
 class CORE_EXPORT QgsLegacyHelpers
 {
   public:

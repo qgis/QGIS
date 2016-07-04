@@ -59,6 +59,7 @@ namespace pal
   /**
    * \class pal::PointSet
    * \note not available in Python bindings
+   * \ingroup core
    */
   class CORE_EXPORT PointSet
   {

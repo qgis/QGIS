@@ -30,6 +30,9 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
+/** \ingroup core
+ * \class QgsVectorLayerEditBuffer
+ */
 class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 {
     Q_OBJECT

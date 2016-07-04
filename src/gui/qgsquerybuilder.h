@@ -26,7 +26,7 @@
 
 class QgsVectorLayer;
 
-/*!
+/** \ingroup gui
  * \class QgsQueryBuilder
  * \brief Query Builder for layers.
  *

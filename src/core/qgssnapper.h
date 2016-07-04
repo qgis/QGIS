@@ -58,7 +58,8 @@ struct CORE_EXPORT QgsSnappingResult
 
 
 
-/** A class that allows advanced snapping operations on a set of vector layers*/
+/** \ingroup core
+ * A class that allows advanced snapping operations on a set of vector layers*/
 class CORE_EXPORT QgsSnapper
 {
   public:

@@ -20,7 +20,8 @@
 
 #include "qgseditorconfigwidget.h"
 
-/** \class QgsExternalResourceConfigDlg
+/** \ingroup gui
+ * \class QgsExternalResourceConfigDlg
  * \note not available in Python bindings
  */
 

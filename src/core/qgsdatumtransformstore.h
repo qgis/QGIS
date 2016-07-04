@@ -23,7 +23,7 @@ class QgsMapLayer;
 class QDomElement;
 
 
-/**
+/** \ingroup core
  * @brief The QgsDatumTransformStore class keeps track of datum transformations
  * as chosen by the user.
  *

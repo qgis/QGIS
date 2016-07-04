@@ -24,7 +24,8 @@
 
 #include "qgsdataitem.h"
 
-/** \class QgsBrowserWatcher
+/** \ingroup core
+ * \class QgsBrowserWatcher
  * \note not available in Python bindings
 */
 class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem*> >
@@ -44,6 +45,9 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
     QgsDataItem *mItem;
 };
 
+/** \ingroup core
+ * \class QgsBrowserModel
+ */
 class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 {
     Q_OBJECT

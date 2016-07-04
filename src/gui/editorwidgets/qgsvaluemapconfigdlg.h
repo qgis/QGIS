@@ -20,7 +20,8 @@
 
 #include "qgseditorconfigwidget.h"
 
-/** \class QgsValueMapConfigDlg
+/** \ingroup gui
+ * \class QgsValueMapConfigDlg
  * \note not available in Python bindings
  */
 

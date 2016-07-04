@@ -18,7 +18,8 @@
 
 #include "qgseditorwidgetfactory.h"
 
-/** \class QgsValueMapWidgetFactory
+/** \ingroup gui
+ * \class QgsValueMapWidgetFactory
  * \note not available in Python bindings
  */
 

@@ -19,7 +19,8 @@
 
 #include <cmath>
 
-/** Point3D is a class to represent a three dimensional point*/
+/** \ingroup analysis
+ * Point3D is a class to represent a three dimensional point*/
 class ANALYSIS_EXPORT Point3D
 {
   protected:

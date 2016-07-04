@@ -27,7 +27,9 @@
 
 class QgsSpatialIndex;
 
-/** A renderer that automatically displaces points with the same position*/
+/** \ingroup core
+ * A renderer that automatically displaces points with the same position
+*/
 class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 {
   public:

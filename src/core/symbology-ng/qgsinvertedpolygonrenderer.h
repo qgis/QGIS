@@ -23,7 +23,7 @@
 #include "qgsgeometry.h"
 #include <QScopedPointer>
 
-/**
+/** \ingroup core
  * QgsInvertedPolygonRenderer is a polygon-only feature renderer used to
  * display features inverted, where the exterior is turned to an interior
  * and where the exterior theoretically spans the entire plane, allowing

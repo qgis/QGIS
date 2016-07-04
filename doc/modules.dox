@@ -28,3 +28,10 @@ The SERVER library is built on top of the CORE library and adds map server
 components to QGIS.
 
 */
+
+/** @defgroup plugins plugin classes
+
+Contains classes related to implementation of QGIS plugins.
+
+*/
+

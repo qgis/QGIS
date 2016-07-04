@@ -31,7 +31,7 @@
 #include <QTextBrowser>
 
 
-/**
+/** \ingroup core
  * @brief The QWebSettings class is a collection of stubs to mimic the API of a QWebSettings on systems
  * where QtWebkit is not available.
  */
@@ -92,6 +92,7 @@ class CORE_EXPORT QWebSettings : public QObject
 };
 
 /**
+ * \ingroup core
  * @brief The QWebPage class is a collection of stubs to mimic the API of a QWebPage on systems
  * where QtWebkit is not available.
  */

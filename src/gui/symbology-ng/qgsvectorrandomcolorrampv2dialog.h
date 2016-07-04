@@ -22,6 +22,9 @@
 
 class QgsVectorRandomColorRampV2;
 
+/** \ingroup gui
+ * \class QgsVectorRandomColorRampV2Dialog
+ */
 class GUI_EXPORT QgsVectorRandomColorRampV2Dialog : public QDialog, private Ui::QgsVectorRandomColorRampV2DialogBase
 {
     Q_OBJECT

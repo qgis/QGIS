@@ -27,7 +27,8 @@
 
 class QGraphicsProxyWidget;
 
-/** An annotation item that embedds a designer form showing the feature attribute*/
+/** \ingroup gui
+ * An annotation item that embedds a designer form showing the feature attribute*/
 class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
 {
     Q_OBJECT

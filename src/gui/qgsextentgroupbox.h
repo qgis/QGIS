@@ -24,7 +24,7 @@
 
 class QgsCoordinateReferenceSystem;
 
-/**
+/** \ingroup gui
  * Collapsible group box for configuration of extent, typically for a save operation.
  *
  * Besides allowing the user to enter the extent manually, it comes with options to use

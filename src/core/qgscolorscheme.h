@@ -23,7 +23,8 @@
 #include <QPair>
 #include <QObject>
 
-/** List of colors paired with a friendly display name identifying the color
+/** \ingroup core
+ * List of colors paired with a friendly display name identifying the color
  * \note Added in version 2.5
 */
 typedef QList< QPair< QColor, QString > > QgsNamedColorList;

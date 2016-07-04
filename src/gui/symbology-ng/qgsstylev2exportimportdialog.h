@@ -31,6 +31,9 @@
 
 class QgsStyleV2;
 
+/** \ingroup gui
+ * \class QgsStyleV2ExportImportDialog
+ */
 class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsStyleV2ExportImportDialogBase
 {
     Q_OBJECT

@@ -23,6 +23,9 @@
 class QgsGeometryCache;
 class QgsCurveV2;
 
+/** \ingroup core
+ * \class QgsVectorLayerEditUtils
+ */
 class CORE_EXPORT QgsVectorLayerEditUtils
 {
   public:

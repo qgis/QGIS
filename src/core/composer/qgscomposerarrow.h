@@ -24,7 +24,9 @@
 
 class QgsLineSymbolV2;
 
-/** An item that draws an arrow between to points*/
+/** \ingroup core
+ * An item that draws an arrow between two points.
+*/
 class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 {
     Q_OBJECT

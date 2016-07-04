@@ -35,6 +35,7 @@ QTM_USE_NAMESPACE
 #endif
 
 /**
+ * \ingroup core
  * \class QgsQtLocationConnection
  * \note may not be available in Python bindings on all platforms
 */

@@ -25,7 +25,7 @@
 
 class QgsFeature;
 
-/**
+/** \ingroup gui
 * An action which can run on map layers
 */
 class GUI_EXPORT QgsMapLayerAction : public QAction
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Targets )
 
-/**
+/** \ingroup gui
 * This class tracks map layer actions
 */
 class GUI_EXPORT QgsMapLayerActionRegistry : public QObject

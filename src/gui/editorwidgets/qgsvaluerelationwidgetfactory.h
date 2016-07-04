@@ -21,7 +21,8 @@
 
 #include <QMap>
 
-/** \class QgsValueRelationWidgetFactory
+/** \ingroup gui
+ * \class QgsValueRelationWidgetFactory
  * \note not available in Python bindings
  */
 

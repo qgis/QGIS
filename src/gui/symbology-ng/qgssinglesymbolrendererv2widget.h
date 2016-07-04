@@ -22,6 +22,9 @@ class QgsSymbolV2SelectorWidget;
 
 class QMenu;
 
+/** \ingroup gui
+ * \class QgsSingleSymbolRendererV2Widget
+ */
 class GUI_EXPORT QgsSingleSymbolRendererV2Widget : public QgsRendererV2Widget
 {
     Q_OBJECT

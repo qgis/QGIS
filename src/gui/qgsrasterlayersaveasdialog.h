@@ -24,6 +24,9 @@ class QgsRasterLayer;
 class QgsRasterDataProvider;
 class QgsRasterFormatOptionsWidget;
 
+/** \ingroup gui
+ * \class QgsRasterLayerSaveAsDialog
+ */
 class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRasterLayerSaveAsDialogBase
 {
     Q_OBJECT

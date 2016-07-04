@@ -52,7 +52,8 @@ static const double POINT_LOC_EPSILON = 1e-12;
 ////////////////////////////////////////////////////////////////////////////
 
 
-/** Helper class for bulk loading of R-trees.
+/** \ingroup core
+ * Helper class for bulk loading of R-trees.
  * @note not available in Python bindings
 */
 class QgsPointLocator_Stream : public IDataStream
@@ -79,7 +80,8 @@ class QgsPointLocator_Stream : public IDataStream
 ////////////////////////////////////////////////////////////////////////////
 
 
-/** Helper class used when traversing the index looking for vertices - builds a list of matches.
+/** \ingroup core
+ * Helper class used when traversing the index looking for vertices - builds a list of matches.
  * @note not available in Python bindings
 */
 class QgsPointLocator_VisitorNearestVertex : public IVisitor
@@ -123,7 +125,8 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 ////////////////////////////////////////////////////////////////////////////
 
 
-/** Helper class used when traversing the index looking for edges - builds a list of matches.
+/** \ingroup core
+ * Helper class used when traversing the index looking for edges - builds a list of matches.
  * @note not available in Python bindings
 */
 class QgsPointLocator_VisitorNearestEdge : public IVisitor
@@ -172,7 +175,8 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
 ////////////////////////////////////////////////////////////////////////////
 
 
-/** Helper class used when traversing the index with areas - builds a list of matches.
+/** \ingroup core
+ * Helper class used when traversing the index with areas - builds a list of matches.
  * @note not available in Python bindings
 */
 class QgsPointLocator_VisitorArea : public IVisitor
@@ -510,7 +514,8 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   return lst;
 }
 
-/** Helper class used when traversing the index looking for edges - builds a list of matches.
+/** \ingroup core
+ * Helper class used when traversing the index looking for edges - builds a list of matches.
  * @note not available in Python bindings
 */
 class QgsPointLocator_VisitorEdgesInRect : public IVisitor
@@ -553,7 +558,8 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
 ////////////////////////////////////////////////////////////////////////////
 #include <QStack>
 
-/** Helper class to dump the R-index nodes and their content
+/** \ingroup core
+ * Helper class to dump the R-index nodes and their content
  * @note not available in Python bindings
 */
 class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy

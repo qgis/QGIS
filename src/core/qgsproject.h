@@ -522,7 +522,8 @@ class CORE_EXPORT QgsProject : public QObject
 };
 
 
-/** Interface for classes that handle missing layer files when reading project file. */
+/** \ingroup core
+ * Interface for classes that handle missing layer files when reading project file. */
 class CORE_EXPORT QgsProjectBadLayerHandler
 {
   public:
@@ -531,7 +532,8 @@ class CORE_EXPORT QgsProjectBadLayerHandler
 };
 
 
-/** Default bad layer handler which ignores any missing layers. */
+/** \ingroup core
+ * Default bad layer handler which ignores any missing layers. */
 class CORE_EXPORT QgsProjectBadLayerDefaultHandler : public QgsProjectBadLayerHandler
 {
   public:

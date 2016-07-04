@@ -30,7 +30,7 @@ class QRectF;
 class QPainter;
 
 /**
- * \ingroup composer
+ * \ingroup core
  * \class QgsComposerMultiFrame
  * Abstract base class for composer items with the ability to distribute the content to several frames
  * (QgsComposerFrame items).

@@ -24,7 +24,8 @@
 class QgsDxfExport;
 class QPaintEngine;
 
-/** A paint device for drawing into dxf files.
+/** \ingroup core
+ * A paint device for drawing into dxf files.
  * @note not available in Python bindings
 */
 

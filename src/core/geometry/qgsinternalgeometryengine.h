@@ -19,6 +19,7 @@
 #include "qgsgeometry.h"
 
 /**
+ * \ingroup core
  * This class offers geometry processing methods.
  *
  * The methods are available via QgsGeometry::[geometryfunction]

@@ -29,7 +29,7 @@ class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 class QgsMapLayer;
 
-/**
+/** \ingroup core
  * Assorted functions for dealing with layer trees.
  *
  * @note added in 2.4

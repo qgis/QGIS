@@ -29,6 +29,9 @@ class QgsDiagramInterpolationSettings;
 
 class QgsRenderContext;
 
+/** \ingroup core
+ * \class QgsPieDiagram
+ */
 class CORE_EXPORT QgsPieDiagram: public QgsDiagram
 {
   public:

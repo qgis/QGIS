@@ -21,7 +21,7 @@
 #include "qgscolorbuttonv2.h"
 
 
-/**
+/** \ingroup gui
  * Wraps a color widget. Users will be able to choose a color.
  * \note not available in Python bindings
  */

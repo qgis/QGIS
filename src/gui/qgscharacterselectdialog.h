@@ -24,7 +24,8 @@
 
 class CharacterWidget;
 
-/** A dialog for selecting a single character from a single font
+/** \ingroup gui
+ * A dialog for selecting a single character from a single font
   */
 
 class GUI_EXPORT QgsCharacterSelectorDialog : public QDialog, private Ui::QgsCharacterSelectorBase

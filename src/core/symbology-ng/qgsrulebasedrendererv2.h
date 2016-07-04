@@ -27,7 +27,7 @@ class QgsExpression;
 class QgsCategorizedSymbolRendererV2;
 class QgsGraduatedSymbolRendererV2;
 
-/**
+/** \ingroup core
 When drawing a vector layer with rule-based renderer, it goes through
 the rules and draws features with symbols from rules that match.
  */
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     class Rule;
     typedef QList<Rule*> RuleList;
 
-    /**
+    /** \ingroup core
       This class keeps data about a rules for rule-based renderer.
       A rule consists of a symbol, filter expression and range of scales.
       If filter is empty, it matches all features.

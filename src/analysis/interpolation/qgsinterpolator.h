@@ -30,7 +30,8 @@ struct ANALYSIS_EXPORT vertexData
   double z;
 };
 
-/** Interface class for interpolations. Interpolators take
+/** \ingroup analysis
+ * Interface class for interpolations. Interpolators take
 the vertices of a vector layer as base data. The z-Value
 can be an attribute or the z-coordinates in case of 25D types*/
 class ANALYSIS_EXPORT QgsInterpolator

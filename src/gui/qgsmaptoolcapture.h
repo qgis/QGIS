@@ -32,6 +32,9 @@ class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
 
+/** \ingroup gui
+ * \class QgsMapToolCapture
+ */
 class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT

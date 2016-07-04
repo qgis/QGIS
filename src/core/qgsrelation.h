@@ -25,10 +25,14 @@
 
 class QgsVectorLayer;
 
+/** \ingroup core
+ * \class QgsRelation
+ */
 class CORE_EXPORT QgsRelation
 {
   public:
     /**
+     * \ingroup core
      * Defines a relation between matching fields of the two involved tables of a relation.
      * Often, a relation is only defined by just one FieldPair with the name of the foreign key
      * column of the referencing (child) table as first element and the name of the primary key column

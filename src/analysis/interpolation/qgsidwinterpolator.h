@@ -20,6 +20,9 @@
 
 #include "qgsinterpolator.h"
 
+/** \ingroup analysis
+ * \class QgsIDWInterpolator
+ */
 class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
 {
   public:

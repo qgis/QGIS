@@ -18,7 +18,7 @@
 
 #include <QLabel>
 
-/**
+/** \ingroup gui
  * @brief The QgsPixmapLabel class shows a pixmap and adjusts its size to the space given
  * to the widget by the layout and keeping its aspect ratio.
  */

@@ -22,7 +22,7 @@
 #include "qgsdatetimeedit.h"
 #include "qgsdatetimeeditfactory.h"
 
-/**
+/** \ingroup gui
  * Wraps a date time widget. Users will be able to choose date and time from an appropriate dialog.
  *
  * Options:

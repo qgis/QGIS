@@ -20,6 +20,9 @@
 #include <QString>
 #include <QDomElement>
 
+/** \ingroup core
+ * \class QgsFontUtils
+ */
 class CORE_EXPORT QgsFontUtils
 {
   public:

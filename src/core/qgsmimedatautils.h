@@ -20,6 +20,9 @@
 
 class QgsLayerItem;
 
+/** \ingroup core
+ * \class QgsMimeDataUtils
+ */
 class CORE_EXPORT QgsMimeDataUtils
 {
   public:

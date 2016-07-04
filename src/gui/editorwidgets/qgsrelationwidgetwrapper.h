@@ -20,7 +20,8 @@
 
 class QgsRelationEditorWidget;
 
-/** \class QgsRelationWidgetWrapper
+/** \ingroup gui
+ * \class QgsRelationWidgetWrapper
  * \note not available in Python bindings
  */
 

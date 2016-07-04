@@ -43,6 +43,7 @@ namespace pal
 
 
   /**
+   * \ingroup core
    * \brief LabelPosition is a candidate feature label position
    * \class pal::LabelPosition
    * \note not available in Python bindings

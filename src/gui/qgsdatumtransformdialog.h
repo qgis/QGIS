@@ -20,7 +20,7 @@
 
 #include "ui_qgsdatumtransformdialogbase.h"
 
-/**
+/** \ingroup gui
  * \class QgsDatumTransformDialog
  * \note not available in Python bindings
  */

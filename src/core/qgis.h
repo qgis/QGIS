@@ -282,7 +282,8 @@ inline void ( *cast_to_fptr( void *p ) )()
 }
 #endif
 
-/** RAII signal blocking class. Used for temporarily blocking signals from a QObject
+/** \ingroup core
+ * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
  * @see whileBlocking()
  * @note added in QGIS 2.16

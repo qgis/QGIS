@@ -24,7 +24,9 @@
 class QgsComposerMap;
 class QgsVectorLayer;
 
-/** Helper class for sorting tables, takes into account sorting column and ascending / descending*/
+/** \ingroup core
+ * Helper class for sorting tables, takes into account sorting column and ascending / descending
+*/
 class CORE_EXPORT QgsComposerAttributeTableCompareV2
 {
   public:
@@ -47,7 +49,9 @@ class CORE_EXPORT QgsComposerAttributeTableCompareV2
 };
 
 
-/** A table that displays attributes from a vector layer*/
+/** \ingroup core
+ * A table that displays attributes from a vector layer
+*/
 class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 {
     Q_OBJECT

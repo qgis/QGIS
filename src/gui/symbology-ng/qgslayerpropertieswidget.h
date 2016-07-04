@@ -30,7 +30,9 @@ class SymbolLayerItem;
 #include <QMap>
 #include <QStandardItemModel>
 
-
+/** \ingroup gui
+ * \class QgsLayerPropertiesWidget
+ */
 class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::LayerPropertiesWidget
 {
     Q_OBJECT

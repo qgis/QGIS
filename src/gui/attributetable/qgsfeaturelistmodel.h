@@ -28,6 +28,9 @@ class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
+/** \ingroup gui
+ * \class QgsFeatureListModel
+ */
 class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel
 {
     Q_OBJECT

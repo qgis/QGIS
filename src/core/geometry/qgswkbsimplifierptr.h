@@ -20,7 +20,8 @@
 
 class QgsGeometry;
 
-/** \class QgsConstWkbSimplifierPtr
+/** \ingroup core
+ * \class QgsConstWkbSimplifierPtr
  * \note not available in Python bindings
  */
 

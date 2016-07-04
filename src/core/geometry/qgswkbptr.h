@@ -31,7 +31,8 @@ class CORE_EXPORT QgsWkbException : public QgsException
 };
 
 
-/** \class QgsWkbPtr
+/** \ingroup core
+ * \class QgsWkbPtr
  * \note not available in Python bindings
  */
 
@@ -84,7 +85,8 @@ class CORE_EXPORT QgsWkbPtr
     inline int writtenSize() const { return mP - mStart; }
 };
 
-/** \class QgsConstWkbPtr
+/** \ingroup core
+ * \class QgsConstWkbPtr
  * \note not available in Python bindings
  */
 

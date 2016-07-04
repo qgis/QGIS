@@ -23,7 +23,7 @@
 #include "qgsrectangle.h"
 
 
-/**
+/** \ingroup core
  * This class is responsible for keeping cache of rendered images of individual layers.
  *
  * Once a layer has rendered image stored in the cache (using setCacheImage(...)),

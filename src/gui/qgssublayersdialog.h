@@ -20,7 +20,9 @@
 #include <ui_qgssublayersdialogbase.h>
 #include "qgscontexthelp.h"
 
-
+/** \ingroup gui
+ * \class QgsSublayersDialog
+ */
 class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase
 {
     Q_OBJECT

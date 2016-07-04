@@ -27,6 +27,8 @@ namespace pal
 {
   class Feats;
 
+  /** \ingroup core
+   */
   class CostCalculator
   {
     public:
@@ -51,6 +53,7 @@ namespace pal
   };
 
   /**
+   * \ingroup core
    * \brief Data structure to compute polygon's candidates costs
    *
    *  Eight segments from center of candidate to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)

@@ -29,6 +29,9 @@
 class QgsDistanceArea;
 class QgsHighlight;
 
+/** \ingroup gui
+ * \class QgsAttributeDialog
+ */
 class GUI_EXPORT QgsAttributeDialog : public QDialog
 {
     Q_OBJECT

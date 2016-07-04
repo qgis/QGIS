@@ -36,7 +36,8 @@
 
 #include <string>
 
-/** This class builds features from GML data in a streaming way. The caller must call processData()
+/** \ingroup core
+ * This class builds features from GML data in a streaming way. The caller must call processData()
  * as soon it has new content from the source. At any point, it can call
  * getAndStealReadyFeatures() to collect the features that have been completely
  * parsed.
@@ -49,7 +50,9 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     typedef QPair<QgsFeature*, QString> QgsGmlFeaturePtrGmlIdPair;
 
-    /** Layer properties */
+    /** \ingroup core
+     * Layer properties
+    */
     class LayerProperties
     {
       public:
@@ -314,7 +317,8 @@ class CORE_EXPORT QgsGmlStreamingParser
 };
 
 
-/** This class reads data from a WFS server or alternatively from a GML file. It
+/** \ingroup core
+ * This class reads data from a WFS server or alternatively from a GML file. It
  * uses the expat XML parser and an event based model to keep performance high.
  * The parsing starts when the first data arrives, it does not wait until the
  * request is finished */

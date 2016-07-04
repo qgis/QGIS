@@ -37,7 +37,7 @@ class QgsMapRendererJob;
 class QgsMapLayer;
 
 
-/**
+/** \ingroup core
  * The QgsMapSettings class contains configuration for rendering of the map.
  * The rendering itself is done by QgsMapRendererJob subclasses.
  *

@@ -359,14 +359,51 @@ class DoxygenParser():
         self.documented_members = 0
         self.undocumented_string = ''
         self.bindable_members = []
+        self.groups = {}
+        self.classes_missing_group = []
         self.parseFiles(path)
 
     def parseFiles(self, path):
         """ Parses all the Doxygen XML files in a folder
             :param path: Path to Doxygen XML output
         """
+
+        # find groups
+        for f in glob.glob(os.path.join(path, 'group__*.xml')):
+            group, members = self.parseGroup(f)
+            self.groups[group] = members
+
+        # parse docs
         for f in glob.glob(os.path.join(path, '*.xml')):
             self.parseFile(f)
+
+    def parseGroup(self, f):
+        """ Parses a single Doxygen Group XML file
+            :param f: XML file path
+        """
+        name = None
+        members = []
+
+        # Wrap everything in a try, as sometimes Doxygen XML is malformed
+        try:
+            for event, elem in ET.iterparse(f):
+                if event == 'end' and elem.tag == 'compoundname':
+                    name = elem.text
+                if event == 'end' and elem.tag == 'innerclass':
+                    members.append(elem.text)
+        except:
+            pass
+
+        return name, members
+
+    def hasGroup(self, class_name):
+        """ Returns true if a class has been assigned to a group
+            :param class_name class name to test
+        """
+        for g in self.groups:
+            if class_name in self.groups[g]:
+                return True
+        return False
 
     def parseFile(self, f):
         """ Parses a single Doxygen XML file
@@ -386,6 +423,9 @@ class DoxygenParser():
                         documented_members += documented
                         class_name = elem.find('compoundname').text
                         acceptable_missing = self.acceptable_missing.get(class_name, [])
+
+                        if not self.hasGroup(class_name):
+                            self.classes_missing_group.append(class_name)
 
                         # GEN LIST
                         # if len(undocumented) > 0:

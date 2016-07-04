@@ -25,6 +25,9 @@
 
 class QgsRasterBlock;
 
+/** \ingroup analysis
+ * \class QgsRasterCalcNode
+ */
 class ANALYSIS_EXPORT QgsRasterCalcNode
 {
   public:

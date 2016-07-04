@@ -20,7 +20,9 @@
 class QgsComposition;
 class QGraphicsLineItem;
 
-/** A class to show paper scale and the current cursor position*/
+/** \ingroup gui
+ * A class to show paper scale and the current cursor position
+*/
 class GUI_EXPORT QgsComposerRuler: public QWidget
 {
     Q_OBJECT

@@ -33,7 +33,7 @@ class QgsRectangle;
 #include "qgsexpression.h"
 #include "qgssqlstatement.h"
 
-/**
+/** \ingroup core
  * @brief The QgsOgcUtils class provides various utility functions for conversion between
  *   OGC (Open Geospatial Consortium) standards and QGIS internal representations.
  *
@@ -161,7 +161,8 @@ class CORE_EXPORT QgsOgcUtils
         bool invertAxisOrientation,
         QString* errorMessage = nullptr );
 
-    /** Layer properties. Used by SQLStatementToOgcFilter().
+    /** \ingroup core
+     * Layer properties. Used by SQLStatementToOgcFilter().
      * @note Added in QGIS 2.16
      * @note not available in Python bindings
      */
@@ -266,7 +267,8 @@ class CORE_EXPORT QgsOgcUtils
     static QgsExpression::NodeBinaryOperator* nodePropertyIsNullFromOgcFilter( QDomElement& element, QString& errorMessage );
 };
 
-/** Internal use by QgsOgcUtils
+/** \ingroup core
+ * Internal use by QgsOgcUtils
  * @note not available in Python bindings
  */
 class QgsOgcUtilsExprToFilter
@@ -311,7 +313,8 @@ class QgsOgcUtilsExprToFilter
     QDomElement expressionFunctionToOgcFilter( const QgsExpression::NodeFunction* node );
 };
 
-/** Internal use by QgsOgcUtils
+/** \ingroup core
+ * Internal use by QgsOgcUtils
  * @note not available in Python bindings
  */
 class QgsOgcUtilsSQLStatementToFilter

@@ -19,7 +19,7 @@
 #include "qgssearchwidgetwrapper.h"
 #include <QComboBox>
 
-/**
+/** \ingroup gui
  * Wraps a value map search widget. This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
  * It will be used as a search widget and produces expression to look for in the layer.

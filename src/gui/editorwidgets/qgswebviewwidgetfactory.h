@@ -18,7 +18,8 @@
 
 #include "qgseditorwidgetfactory.h"
 
-/** \class QgsWebViewWidgetFactory
+/** \ingroup gui
+ * \class QgsWebViewWidgetFactory
  * \note not available in Python bindings
  */
 

@@ -43,6 +43,9 @@ class QgsVectorLayer;
 class QgsPalLayerSettings;
 class QgsDiagramLayerSettings;
 
+/** \ingroup core
+ * \class QgsLabelPosition
+ */
 class CORE_EXPORT QgsLabelPosition
 {
   public:
@@ -90,7 +93,9 @@ class CORE_EXPORT QgsLabelPosition
     QString providerID;
 };
 
-/** Labeling engine interface. */
+/** \ingroup core
+ * Labeling engine interface.
+*/
 class CORE_EXPORT QgsLabelingEngineInterface
 {
   public:

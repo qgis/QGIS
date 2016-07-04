@@ -21,7 +21,7 @@
 #include "qgscontexthelp.h"
 #include "qgsauthconfigselect.h"
 
-/*!
+/** \ingroup gui
  * \brief Dialog to allow the user to configure and save connection
  * information for an HTTP Server for WMS, etc.
  */

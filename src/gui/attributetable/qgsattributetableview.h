@@ -33,7 +33,7 @@ class QMenu;
 class QProgressDialog;
 class QgsAttributeTableConfig;
 
-/**
+/** \ingroup gui
  * @brief
  * Provides a table view of features of a @link QgsVectorLayer @endlink.
  *

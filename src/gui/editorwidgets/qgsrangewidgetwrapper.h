@@ -24,7 +24,7 @@
 #include "qgsdial.h"
 #include "qgsslider.h"
 
-/**
+/** \ingroup gui
  * Wraps a range widget.
  *
  * Options:

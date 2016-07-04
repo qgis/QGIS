@@ -30,7 +30,8 @@ class QgsExpressionContext;
 
 class QgsVectorLayerFeatureIterator;
 
-/** Partial snapshot of vector layer's state (only the members necessary for access to features)
+/** \ingroup core
+ * Partial snapshot of vector layer's state (only the members necessary for access to features)
  * @note not available in Python bindings
 */
 class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
@@ -68,7 +69,8 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     long mCrsId;
 };
 
-
+/** \ingroup core
+ */
 class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>
 {
   public:

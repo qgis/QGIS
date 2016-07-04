@@ -31,7 +31,8 @@ class QgsMapLayer;
 class QgsVectorLayer;
 class QgsSymbolV2;
 
-/** A class for highlight features on the map.
+/** \ingroup gui
+ * A class for highlight features on the map.
  */
 class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {

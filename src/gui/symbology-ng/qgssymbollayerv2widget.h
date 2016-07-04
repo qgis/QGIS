@@ -26,6 +26,9 @@ class QgsSymbolLayerV2;
 class QgsVectorLayer;
 class QgsMapCanvas;
 
+/** \ingroup gui
+ * \class QgsSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 {
     Q_OBJECT
@@ -122,6 +125,9 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 
 class QgsSimpleLineSymbolLayerV2;
 
+/** \ingroup gui
+ * \class QgsSimpleLineSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSimpleLine
 {
     Q_OBJECT
@@ -171,6 +177,9 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
 
 class QgsSimpleMarkerSymbolLayerV2;
 
+/** \ingroup gui
+ * \class QgsSimpleMarkerSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSimpleMarker
 {
     Q_OBJECT
@@ -220,6 +229,9 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
 
 class QgsSimpleFillSymbolLayerV2;
 
+/** \ingroup gui
+ * \class QgsSimpleFillSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSimpleFill
 {
     Q_OBJECT
@@ -308,6 +320,9 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerV2Widge
 
 class QgsGradientFillSymbolLayerV2;
 
+/** \ingroup gui
+ * \class QgsGradientFillSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsGradientFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetGradientFill
 {
     Q_OBJECT
@@ -344,6 +359,9 @@ class GUI_EXPORT QgsGradientFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
 
 class QgsShapeburstFillSymbolLayerV2;
 
+/** \ingroup gui
+ * \class QgsShapeburstFillSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsShapeburstFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetShapeburstFill
 {
     Q_OBJECT
@@ -380,6 +398,9 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerV2Widget : public QgsSymbolLayerV2W
 
 class QgsMarkerLineSymbolLayerV2;
 
+/** \ingroup gui
+ * \class QgsMarkerLineSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetMarkerLine
 {
     Q_OBJECT
@@ -416,6 +437,9 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
 
 class QgsSvgMarkerSymbolLayerV2;
 
+/** \ingroup gui
+ * \class QgsSvgMarkerSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSvgMarker
 {
     Q_OBJECT
@@ -472,6 +496,9 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
 
 class QgsRasterFillSymbolLayer;
 
+/** \ingroup gui
+ * \class QgsRasterFillSymbolLayerWidget
+ */
 class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::WidgetRasterFill
 {
     Q_OBJECT
@@ -509,6 +536,9 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerV2Widget,
 
 class QgsSVGFillSymbolLayer;
 
+/** \ingroup gui
+ * \class QgsSVGFillSymbolLayerWidget
+ */
 class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::WidgetSVGFill
 {
     Q_OBJECT
@@ -553,6 +583,9 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
 
 class QgsLinePatternFillSymbolLayer;
 
+/** \ingroup gui
+ * \class QgsLinePatternFillSymbolLayerWidget
+ */
 class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::WidgetLinePatternFill
 {
     Q_OBJECT
@@ -582,6 +615,9 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
 
 class QgsPointPatternFillSymbolLayer;
 
+/** \ingroup gui
+ * \class QgsPointPatternFillSymbolLayerWidget
+ */
 class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Widget, private Ui::WidgetPointPatternFill
 {
     Q_OBJECT
@@ -614,6 +650,9 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Wi
 class QgsFontMarkerSymbolLayerV2;
 class CharacterWidget;
 
+/** \ingroup gui
+ * \class QgsFontMarkerSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetFontMarker
 {
     Q_OBJECT
@@ -669,6 +708,9 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
 
 class QgsCentroidFillSymbolLayerV2;
 
+/** \ingroup gui
+ * \class QgsCentroidFillSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetCentroidFill
 {
     Q_OBJECT
@@ -729,6 +771,9 @@ class QgsSvgGroupsModel : public QStandardItemModel
 
 class QgsGeometryGeneratorSymbolLayerV2;
 
+/** \ingroup gui
+ * \class QgsGeometryGeneratorSymbolLayerWidget
+ */
 class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::GeometryGeneratorWidgetBase
 {
     Q_OBJECT

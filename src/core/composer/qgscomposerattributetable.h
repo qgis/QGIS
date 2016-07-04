@@ -23,7 +23,10 @@
 class QgsComposerMap;
 class QgsVectorLayer;
 
-/** Helper class for sorting tables, takes into account sorting column and ascending / descending*/
+/** \ingroup core
+ * Helper class for sorting tables, takes into account sorting column and ascending / descending
+*/
+
 class CORE_EXPORT QgsComposerAttributeTableCompare
 {
   public:
@@ -45,7 +48,8 @@ class CORE_EXPORT QgsComposerAttributeTableCompare
     bool mAscending;
 };
 
-/** A table class that displays a vector attribute table
+/** \ingroup core
+ * A table class that displays a vector attribute table
  * @deprecated use QgsComposerAttributeTableV2 instead
 */
 // TODO QGIS 3.0 - remove

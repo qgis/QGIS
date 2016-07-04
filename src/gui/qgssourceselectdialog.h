@@ -25,7 +25,7 @@ class QSortFilterProxyModel;
 class QgsGenericProjectionSelector;
 class QgsOWSConnection;
 
-/**
+/** \ingroup gui
  * Generic class listing layers available from a remote service.
  */
 class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSourceSelectBase

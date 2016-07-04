@@ -34,7 +34,7 @@ class QgsPoint;
 static const double SoftConstraintTolerancePixel = 15;
 static const double SoftConstraintToleranceDegrees = 10;
 
-/**
+/** \ingroup gui
  * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       Parallel       //!< Parallel
     };
 
-    /**
+    /** \ingroup gui
      * @brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
      * @note Relative is not mandatory since it is not used for distance.

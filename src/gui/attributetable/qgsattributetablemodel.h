@@ -34,7 +34,7 @@ class QgsMapLayerAction;
 class QgsEditorWidgetFactory;
 
 
-/**
+/** \ingroup gui
  * A model backed by a {@link QgsVectorLayerCache} which is able to provide
  * feature/attribute information to a QAbstractItemView.
  *

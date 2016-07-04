@@ -23,7 +23,7 @@
 #include <QLabel>
 
 
-/**
+/** \ingroup gui
  * Wraps a file name widget. Will offer a file browser to choose files.
  * \note not available in Python bindings
  */

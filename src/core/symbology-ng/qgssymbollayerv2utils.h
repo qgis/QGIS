@@ -42,6 +42,9 @@ class QPixmap;
 class QPointF;
 class QSize;
 
+/** \ingroup core
+ * \class QgsSymbolLayerV2Utils
+ */
 class CORE_EXPORT QgsSymbolLayerV2Utils
 {
   public:

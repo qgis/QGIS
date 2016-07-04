@@ -24,7 +24,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsscalewidget.h"
 
-
+/** \ingroup gui
+ * \class QgsScaleRangeWidget
+ */
 class GUI_EXPORT QgsScaleRangeWidget : public QWidget
 {
     Q_OBJECT

@@ -20,7 +20,8 @@
 
 #include "qgseditorconfigwidget.h"
 
-/** \class QgsPhotoConfigDlg
+/** \ingroup gui
+ * \class QgsPhotoConfigDlg
  * \note not available in Python bindings
  */
 

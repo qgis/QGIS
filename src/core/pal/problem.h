@@ -43,6 +43,7 @@ namespace pal
 
   /**
    * \class pal::Sol
+   * \ingroup core
    * \note not available in Python bindings
    */
   class Sol
@@ -92,6 +93,7 @@ namespace pal
   } Chain;
 
   /**
+   * \ingroup core
    * \brief Representation of a labeling problem
    * \class pal::Problem
    * \note not available in Python bindings

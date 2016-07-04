@@ -27,7 +27,7 @@ class QgsField;
 #include "qgsattributeeditorcontext.h"
 #include "qgswidgetwrapper.h"
 
-/**
+/** \ingroup gui
  * Manages an editor widget
  * Widget and wrapper share the same parent
  *

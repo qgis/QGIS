@@ -396,7 +396,10 @@ class CORE_EXPORT QgsDiagramSettings
 
 };
 
-//additional diagram settings for interpolated size rendering
+/** \ingroup core
+ * \class QgsDiagramInterpolationSettings
+ * Additional diagram settings for interpolated size rendering.
+ */
 class CORE_EXPORT QgsDiagramInterpolationSettings
 {
   public:
@@ -547,7 +550,9 @@ class CORE_EXPORT QgsDiagramRendererV2
     QScopedPointer< QgsMarkerSymbolV2 > mSizeLegendSymbol;
 };
 
-/** Renders the diagrams for all features with the same settings*/
+/** \ingroup core
+ * Renders the diagrams for all features with the same settings
+*/
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
 {
   public:
@@ -578,6 +583,9 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
     QgsDiagramSettings mSettings;
 };
 
+/** \ingroup core
+ * \class QgsLinearlyInterpolatedDiagramRenderer
+ */
 class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRendererV2
 {
   public:

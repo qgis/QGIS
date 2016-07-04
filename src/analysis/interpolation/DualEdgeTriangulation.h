@@ -34,7 +34,8 @@
 #include <QProgressDialog>
 #include <QCursor>
 
-/** DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure*/
+/** \ingroup analysis
+ * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure*/
 class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
 {
   public:

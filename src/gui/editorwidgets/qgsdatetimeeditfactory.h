@@ -22,7 +22,8 @@
 #define QGSDATETIMEEDIT_TIMEFORMAT "HH:mm:ss"
 #define QGSDATETIMEEDIT_DATETIMEFORMAT "yyyy-MM-dd HH:mm:ss"
 
-/** \class QgsDateTimeEditFactory
+/** \ingroup gui
+ * \class QgsDateTimeEditFactory
  * \note not available in Python bindings
  */
 

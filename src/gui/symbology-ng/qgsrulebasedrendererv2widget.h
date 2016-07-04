@@ -34,7 +34,7 @@ struct QgsRuleBasedRendererV2Count
   QMap<QgsRuleBasedRendererV2::Rule*, int> duplicateCountMap;
 };
 
-/*
+/** \ingroup gui
 Tree model for the rules:
 
 (invalid)  == root node
@@ -97,6 +97,9 @@ class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
 
 #include "ui_qgsrulebasedrendererv2widget.h"
 
+/** \ingroup gui
+ * \class QgsRuleBasedRendererV2Widget
+ */
 class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsRuleBasedRendererV2Widget
 {
     Q_OBJECT
@@ -172,6 +175,9 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
 #include "ui_qgsrendererrulepropsdialogbase.h"
 #include "qgssymbolv2selectordialog.h"
 
+/** \ingroup gui
+ * \class QgsRendererRulePropsWidget
+ */
 class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui::QgsRendererRulePropsWidget
 {
     Q_OBJECT
@@ -226,7 +232,9 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     QgsMapCanvas* mMapCanvas;
 };
 
-
+/** \ingroup gui
+ * \class QgsRendererRulePropsDialog
+ */
 class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
 {
     Q_OBJECT

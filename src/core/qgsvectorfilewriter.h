@@ -47,6 +47,8 @@ class CORE_EXPORT QgsVectorFileWriter
       Hidden
     };
 
+    /** \ingroup core
+     */
     class Option
     {
       public:
@@ -59,6 +61,8 @@ class CORE_EXPORT QgsVectorFileWriter
         OptionType type;
     };
 
+    /** \ingroup core
+     */
     class SetOption : public Option
     {
       public:
@@ -74,6 +78,8 @@ class CORE_EXPORT QgsVectorFileWriter
         bool allowNone;
     };
 
+    /** \ingroup core
+     */
     class StringOption: public Option
     {
       public:
@@ -85,6 +91,8 @@ class CORE_EXPORT QgsVectorFileWriter
         QString defaultValue;
     };
 
+    /** \ingroup core
+     */
     class IntOption: public Option
     {
       public:
@@ -96,6 +104,8 @@ class CORE_EXPORT QgsVectorFileWriter
         int defaultValue;
     };
 
+    /** \ingroup core
+     */
     class BoolOption : public SetOption
     {
       public:
@@ -104,6 +114,8 @@ class CORE_EXPORT QgsVectorFileWriter
         {}
     };
 
+    /** \ingroup core
+     */
     class HiddenOption : public Option
     {
       public:
@@ -160,7 +172,8 @@ class CORE_EXPORT QgsVectorFileWriter
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
 
-    /** Interface to convert raw field values to their user-friendly value.
+    /** \ingroup core
+     * Interface to convert raw field values to their user-friendly value.
      * @note Added in QGIS 2.16
      */
     class CORE_EXPORT FieldValueConverter

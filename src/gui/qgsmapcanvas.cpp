@@ -66,7 +66,8 @@ email                : sherman at mrcc.com
 #include <math.h>
 
 
-/** Deprecated to be deleted, stuff from here should be moved elsewhere.
+/** \ingroup gui
+ * Deprecated to be deleted, stuff from here should be moved elsewhere.
  * @note not available in Python bindings
 */
 //TODO QGIS 3.0 - remove

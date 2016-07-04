@@ -53,7 +53,7 @@ class QgsMapSettings;
 
 /**
  * \brief Handles asynchronous download of images
- *
+ * \ingroup core
  * \note added in 2.8
  */
 class CORE_EXPORT QgsImageFetcher : public QObject

@@ -24,6 +24,9 @@
 
 class QgsMapCanvas;
 
+/** \ingroup gui
+ * \class QgsRasterMinMaxWidget
+ */
 class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMinMaxWidgetBase
 {
     Q_OBJECT

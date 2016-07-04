@@ -21,7 +21,8 @@
 #include "qgsannotationitem.h"
 #include <QTextDocument>
 
-/** An annotation item that displays formated text*/
+/** \ingroup gui
+ * An annotation item that displays formated text*/
 class GUI_EXPORT QgsTextAnnotationItem: public QgsAnnotationItem
 {
   public:

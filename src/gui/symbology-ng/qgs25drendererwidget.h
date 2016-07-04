@@ -20,6 +20,9 @@
 #include "qgsrendererv2widget.h"
 #include "qgs25drenderer.h"
 
+/** \ingroup gui
+ * \class Qgs25DRendererWidget
+ */
 class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererV2Widget, Ui::Qgs25DRendererWidgetBase
 {
     Q_OBJECT

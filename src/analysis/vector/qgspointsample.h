@@ -25,7 +25,8 @@ class QgsVectorFileWriter;
 class QgsVectorLayer;
 class QProgressDialog;
 
-/** Creates random points in polygons / multipolygons*/
+/** \ingroup analysis
+ * Creates random points in polygons / multipolygons*/
 class ANALYSIS_EXPORT QgsPointSample
 {
   public:

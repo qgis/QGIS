@@ -58,7 +58,7 @@ class QMouseEvent;
 class QPaintEvent;
 QT_END_NAMESPACE
 
-//! [0]
+//! \ingroup gui
 class GUI_EXPORT CharacterWidget : public QWidget
 {
     Q_OBJECT

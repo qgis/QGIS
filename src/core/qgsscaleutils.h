@@ -19,6 +19,8 @@
 #ifndef QGSSCALEUTILS_H
 #define QGSSCALEUTILS_H
 
+/** \ingroup core
+ */
 class CORE_EXPORT QgsScaleUtils
 {
   public:

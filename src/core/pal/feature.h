@@ -41,7 +41,7 @@
 
 #include "qgslabelfeature.h"
 
-/**
+/** \ingroup core
  * \class pal::LabelInfo
  * \note not available in Python bindings
  */
@@ -83,6 +83,7 @@ namespace pal
   class FeaturePart;
 
   /**
+   * \ingroup core
    * \brief Main class to handle feature
    * \class pal::FeaturePart
    * \note not available in Python bindings

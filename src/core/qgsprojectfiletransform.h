@@ -33,6 +33,8 @@
 
 class QgsRasterLayer;
 
+/** \ingroup core
+ */
 class CORE_EXPORT QgsProjectFileTransform
 {
   public:

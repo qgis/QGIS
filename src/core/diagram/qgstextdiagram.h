@@ -29,7 +29,9 @@ class QgsDiagramInterpolationSettings;
 
 class QgsRenderContext;
 
-
+/** \ingroup core
+ * \class QgsTextDiagram
+ */
 class CORE_EXPORT QgsTextDiagram: public QgsDiagram
 {
   public:

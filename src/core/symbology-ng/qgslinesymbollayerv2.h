@@ -29,7 +29,9 @@ class QgsExpression;
 #define DEFAULT_SIMPLELINE_JOINSTYLE Qt::BevelJoin
 #define DEFAULT_SIMPLELINE_CAPSTYLE  Qt::SquareCap
 
-
+/** \ingroup core
+ * \class QgsSimpleLineSymbolLayerV2
+ */
 class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 {
   public:
@@ -134,6 +136,9 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 #define DEFAULT_MARKERLINE_ROTATE     true
 #define DEFAULT_MARKERLINE_INTERVAL   3
 
+/** \ingroup core
+ * \class QgsMarkerLineSymbolLayerV2
+ */
 class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 {
   public:

@@ -39,7 +39,8 @@ class CORE_EXPORT QgsVisibilityPresetCollection : public QObject
 
   public:
 
-    /** Individual preset record of visible layers and styles.
+    /** \ingroup core
+     * Individual preset record of visible layers and styles.
      */
     class PresetRecord
     {

@@ -32,7 +32,8 @@ class QwtPlotZoomer;
 typedef QPointF QwtDoublePoint;
 #endif
 
-/** Histogram widget
+/** \ingroup gui
+ * Histogram widget
   *@author Etienne Tourigny
   */
 

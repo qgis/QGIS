@@ -27,7 +27,8 @@
 #include <labelposition.h>
 #include "qgsrectangle.h"
 
-/** A class to query the labeling structure at a given point (small wraper around pal RTree class)*/
+/** \ingroup core
+ * A class to query the labeling structure at a given point (small wraper around pal RTree class)*/
 class CORE_EXPORT QgsLabelSearchTree
 {
   public:

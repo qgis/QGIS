@@ -23,7 +23,8 @@
 class QgsComposerItem;
 class QgsComposition;
 
-/** A composer command class for grouping / ungrouping composer items.
+/** \ingroup core
+ * A composer command class for grouping / ungrouping composer items.
  *
  * If mState == Ungrouped, the command owns the group item
  */

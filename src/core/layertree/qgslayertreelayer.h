@@ -20,7 +20,7 @@
 
 class QgsMapLayer;
 
-/**
+/** \ingroup core
  * Layer tree node points to a map layer.
  *
  * When using with existing QgsMapLayer instance, it is expected that the layer

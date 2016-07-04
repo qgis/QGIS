@@ -25,7 +25,8 @@
 
 class QgsMapCanvas;
 
-/** Dialog allowing the user to choose the minimum and maximum scale of an object in map units */
+/** \ingroup gui
+ * Dialog allowing the user to choose the minimum and maximum scale of an object in map units */
 class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog, private Ui::QgsMapUnitScaleDialog
 {
     Q_OBJECT
@@ -51,7 +52,8 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog, private Ui::QgsMapUnitS
 
 };
 
-/** Widget displaying a combobox allowing the user to choose between millimeter and map units
+/** \ingroup gui
+ * Widget displaying a combobox allowing the user to choose between millimeter and map units
  *  If the user chooses map units,  a button appears allowing the specification of minimum and maximum scale */
 class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSelectionWidget
 {

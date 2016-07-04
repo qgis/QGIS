@@ -21,7 +21,9 @@
 class QgsComposition;
 class QgsComposerMultiFrame;
 
-/** Frame item for a composer multiframe item*/
+/** \ingroup core
+ * Frame item for a composer multiframe item.
+*/
 class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 {
     Q_OBJECT

@@ -20,7 +20,8 @@
 
 #include "qgsderivativefilter.h"
 
-/** Calculates aspect values in a window of 3x3 cells based on first order derivatives in x- and y- directions. Direction is clockwise starting from north*/
+/** \ingroup analysis
+ * Calculates aspect values in a window of 3x3 cells based on first order derivatives in x- and y- directions. Direction is clockwise starting from north*/
 class ANALYSIS_EXPORT QgsAspectFilter: public QgsDerivativeFilter
 {
   public:

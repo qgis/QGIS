@@ -22,6 +22,9 @@
 
 class QgsVectorColorBrewerColorRampV2;
 
+/** \ingroup gui
+ * \class QgsVectorColorBrewerColorRampV2Dialog
+ */
 class GUI_EXPORT QgsVectorColorBrewerColorRampV2Dialog : public QDialog, private Ui::QgsVectorColorBrewerColorRampV2DialogBase
 {
     Q_OBJECT

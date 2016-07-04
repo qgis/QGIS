@@ -44,6 +44,9 @@ class QgsDataDefined;
 class QgsRenderContext;
 class QgsPaintEffect;
 
+/** \ingroup core
+ * \class QgsSymbolLayerV2
+ */
 class CORE_EXPORT QgsSymbolLayerV2
 {
   public:
@@ -680,6 +683,9 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     static QgsMarkerSymbolLayerV2::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString& str );
 };
 
+/** \ingroup core
+ * \class QgsLineSymbolLayerV2
+ */
 class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
 {
   public:
@@ -726,6 +732,9 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     QgsMapUnitScale mOffsetMapUnitScale;
 };
 
+/** \ingroup core
+ * \class QgsFillSymbolLayerV2
+ */
 class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
 {
   public:

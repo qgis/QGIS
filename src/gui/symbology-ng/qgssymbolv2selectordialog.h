@@ -75,7 +75,7 @@ class DataDefinedRestorer: public QObject
 
 class QgsSymbolV2SelectorDialog;
 
-/**
+/** \ingroup gui
  * Symbol selector widget that cna be used to select and build a symbol
  */
 class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::QgsSymbolV2SelectorDialogBase
@@ -254,7 +254,9 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
     QgsMapCanvas* mMapCanvas;
 };
 
-
+/** \ingroup gui
+ * \class QgsSymbolV2SelectorDialog
+ */
 class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog
 {
     Q_OBJECT

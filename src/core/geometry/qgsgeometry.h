@@ -646,6 +646,8 @@ class CORE_EXPORT QgsGeometry
      */
     int avoidIntersections( const QMap<QgsVectorLayer*, QSet<QgsFeatureId> >& ignoreFeatures = ( QMap<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
 
+    /** \ingroup core
+     */
     class Error
     {
         QString message;

@@ -27,7 +27,8 @@ class QDialog;
 class QgsVectorLayer;
 class QgsMarkerSymbolV2;
 
-/** An annotation item can be either placed either on screen corrdinates or on map coordinates.
+/** \ingroup gui
+ * An annotation item can be either placed either on screen corrdinates or on map coordinates.
   It may reference a feature and displays that associatiation with a balloon like appearance*/
 class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem
 {

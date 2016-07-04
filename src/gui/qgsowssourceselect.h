@@ -37,7 +37,7 @@ class QDomDocument;
 class QDomElement;
 
 
-/*!
+/** \ingroup gui
  * \brief  Dialog to create connections and add layers from WMS, WFS, WCS etc.
  *
  * This dialog allows the user to define and save connection information

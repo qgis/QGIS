@@ -18,6 +18,9 @@
 #ifndef QGSRASTERMATRIX_H
 #define QGSRASTERMATRIX_H
 
+/** \ingroup analysis
+ * \class QgsRasterMatrix
+ */
 class ANALYSIS_EXPORT QgsRasterMatrix
 {
   public:

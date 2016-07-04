@@ -19,6 +19,9 @@
 
 class QgsVectorLayer;
 
+/** \ingroup core
+ * \class QgsVectorLayerEditPassthrough
+ */
 class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffer
 {
     Q_OBJECT

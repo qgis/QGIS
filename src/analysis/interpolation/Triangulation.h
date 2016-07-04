@@ -23,7 +23,8 @@
 #include <qpainter.h>
 #include <TriangleInterpolator.h>
 
-/** Interface for Triangulation classes*/
+/** \ingroup analysis
+ * Interface for Triangulation classes*/
 class ANALYSIS_EXPORT Triangulation
 {
   public:

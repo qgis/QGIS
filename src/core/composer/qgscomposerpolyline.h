@@ -23,7 +23,7 @@
 
 class QgsLineSymbolV2;
 
-/**
+/** \ingroup core
  * Composer item for polylines.
  * @note added in QGIS 2.16
  */

@@ -149,7 +149,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
 
 
 /** \ingroup gui
- * \class QgsColorGridAction
+ * \class QgsColorSwatchGridAction
  * A color swatch grid which can be embedded into a menu.
  * @see QgsColorSwatchGrid
  * @note introduced in QGIS 2.5

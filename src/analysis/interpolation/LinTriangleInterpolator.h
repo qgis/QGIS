@@ -20,7 +20,8 @@
 #include "TriangleInterpolator.h"
 #include "DualEdgeTriangulation.h"
 
-/** LinTriangleInterpolator is a class which interpolates linearly on a triangulation*/
+/** \ingroup analysis
+ * LinTriangleInterpolator is a class which interpolates linearly on a triangulation*/
 class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 {
   public:

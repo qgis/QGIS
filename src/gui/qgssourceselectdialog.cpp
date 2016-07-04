@@ -37,7 +37,8 @@
 #include <QRadioButton>
 #include <QImageReader>
 
-/** Item delegate with tweaked sizeHint.
+/** \ingroup gui
+ * Item delegate with tweaked sizeHint.
  * @note not available in Python bindings */
 class QgsSourceSelectItemDelegate : public QItemDelegate
 {

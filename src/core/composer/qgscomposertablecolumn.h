@@ -21,7 +21,8 @@
 #include "qgscomposertable.h"
 #include <QObject>
 
-/** Stores properties of a column in a QgsComposerTable. Some properties of a QgsComposerTableColumn
+/** \ingroup core
+ * Stores properties of a column in a QgsComposerTable. Some properties of a QgsComposerTableColumn
 are applicable only in certain contexts. For instance, the attribute and setAttribute methods only
 have an effect for QgsComposerAttributeTables, and have no effect for QgsComposerTextTables.*/
 class CORE_EXPORT QgsComposerTableColumn: public QObject

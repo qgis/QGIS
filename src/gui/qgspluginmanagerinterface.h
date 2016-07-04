@@ -22,6 +22,9 @@
 #include <QMap>
 #include "qgsmessagebar.h"
 
+/** \ingroup gui
+ * \class QgsPluginManagerInterface
+ */
 class GUI_EXPORT QgsPluginManagerInterface : public QObject
 {
     Q_OBJECT

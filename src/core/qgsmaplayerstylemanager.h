@@ -26,7 +26,7 @@ class QgsMapLayer;
 
 class QDomElement;
 
-/**
+/** \ingroup core
  * Stores style information (renderer, transparency, labeling, diagrams etc.) applicable to a map layer.
  *
  * Stored data are considered as opaque - it is not possible to access them directly or modify them - it is
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsMapLayerStyle
 };
 
 
-/**
+/** \ingroup core
  * Management of styles for use with one map layer. Stored styles are identified by their names. The manager
  * always keep track of which style of the stored ones is currently active. When the current style is changed,
  * the new style is applied to the associated layer.

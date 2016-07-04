@@ -477,6 +477,9 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 #define DEFAULT_SVGMARKER_SIZE         2*DEFAULT_POINT_SIZE
 #define DEFAULT_SVGMARKER_ANGLE        0
 
+/** \ingroup core
+ * \class QgsSvgMarkerSymbolLayerV2
+ */
 class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 {
   public:
@@ -564,6 +567,9 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 #define DEFAULT_FONTMARKER_JOINSTYLE    Qt::MiterJoin
 #define DEFAULT_FONTMARKER_ANGLE  0
 
+/** \ingroup core
+ * \class QgsFontMarkerSymbolLayerV2
+ */
 class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 {
   public:

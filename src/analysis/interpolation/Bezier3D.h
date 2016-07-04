@@ -22,7 +22,8 @@
 #include "MathUtils.h"
 #include "qgslogger.h"
 
-/** Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to t.*/
+/** \ingroup analysis
+ * Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to t.*/
 class ANALYSIS_EXPORT Bezier3D: public ParametricLine
 {
   protected:

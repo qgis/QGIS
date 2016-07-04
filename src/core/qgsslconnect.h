@@ -20,7 +20,7 @@
 
 struct sqlite3;
 
-/**
+/** \ingroup core
  * \class QgsSLConnect
  * \note not available in Python bindings
  */

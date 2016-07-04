@@ -62,7 +62,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
     QString mMimeFormat;
 };
 
-// View style which shows drop indicator line between items
+/** \ingroup gui
+ * View style which shows drop indicator line between items
+ */
 class QgsCategorizedSymbolRendererV2ViewStyle: public QProxyStyle
 {
     Q_OBJECT
@@ -75,6 +77,9 @@ class QgsCategorizedSymbolRendererV2ViewStyle: public QProxyStyle
 
 ///@endcond
 
+/** \ingroup gui
+ * \class QgsCategorizedSymbolRendererV2Widget
+ */
 class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsCategorizedSymbolRendererV2Widget
 {
     Q_OBJECT

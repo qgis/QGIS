@@ -30,6 +30,9 @@ class QgsMessageBar;
 class QgsMessageBarItem;
 class QgsWidgetWrapper;
 
+/** \ingroup gui
+ * \class QgsAttributeForm
+ */
 class GUI_EXPORT QgsAttributeForm : public QWidget
 {
     Q_OBJECT

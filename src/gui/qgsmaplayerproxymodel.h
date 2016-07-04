@@ -22,7 +22,7 @@
 class QgsMapLayerModel;
 class QgsMapLayer;
 
-/**
+/** \ingroup gui
  * @brief The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
  * @note added in 2.3
  */

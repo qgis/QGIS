@@ -25,7 +25,8 @@ class QgsGeometry;
 class QgsVectorLayer;
 class QProgressDialog;
 
-/** A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/
+/** \ingroup analysis
+ *  A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:

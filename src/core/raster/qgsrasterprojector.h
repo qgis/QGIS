@@ -35,6 +35,9 @@
 
 class QgsPoint;
 
+/** \ingroup core
+ * \class QgsRasterProjector
+ */
 class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 {
   public:

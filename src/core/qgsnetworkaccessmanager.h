@@ -24,7 +24,7 @@
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
-/*
+/**
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
  * \ingroup core

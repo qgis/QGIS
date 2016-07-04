@@ -24,7 +24,8 @@ email                : marco.hugentobler at sourcepole dot com
 class QgsLineStringV2;
 class QgsPolygonV2;
 
-/** Does vector analysis using the geos library and handles import, export, exception handling*
+/** \ingroup core
+ * Does vector analysis using the geos library and handles import, export, exception handling*
  * \note this API is not considered stable and may change for 2.12
  * \note not available in Python bindings
  */

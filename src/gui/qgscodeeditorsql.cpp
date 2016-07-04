@@ -46,6 +46,7 @@ QgsCodeEditorSQL::~QgsCodeEditorSQL()
    a lexer, since its caseSensitive() method is actually used, and defaults
    to true.
    @note not available in Python bindings
+   @ingroup gui
 */
 class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
 {

@@ -29,6 +29,9 @@
 #include <QString>
 #include <QtAlgorithms>
 
+/** \ingroup analysis
+ * \class QgsPointCompare
+ */
 class QgsPointCompare
 {
   public:

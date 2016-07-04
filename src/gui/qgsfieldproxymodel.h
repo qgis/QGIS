@@ -20,7 +20,7 @@
 
 #include "qgsfieldmodel.h"
 
-/**
+/** \ingroup gui
  * @brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
  * @note added in 2.3
  */

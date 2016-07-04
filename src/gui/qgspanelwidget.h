@@ -23,7 +23,7 @@
 #include "ui_qgsrenderercontainerbase.h"
 
 
-/**
+/** \ingroup gui
  * @brief Base class for any widget that can be shown as a inline panel
  */
 class GUI_EXPORT QgsPanelWidget : public QWidget
@@ -158,7 +158,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 };
 
 
-/**
+/** \ingroup gui
  * @brief Wrapper widget for existing widgets which can't have
  * the inheritance tree changed, e.g dialogs.
  *
@@ -189,7 +189,7 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
 };
 
 
-/**
+/** \ingroup gui
  * A stack widget to manage panels in the interface. Handles the open and close events
  * for added panels.
  * Any widgets that want to have a non blocking panel based interface should use this

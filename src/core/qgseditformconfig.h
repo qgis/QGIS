@@ -23,7 +23,7 @@
 #include "qgseditorwidgetconfig.h"
 #include "qgsrelationmanager.h"
 
-/**
+/** \ingroup core
  * This is an abstract base class for any elements of a drag and drop form.
  *
  * This can either be a container which will be represented on the screen
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsAttributeEditorElement : public QObject
 };
 
 
-/**
+/** \ingroup core
  * This is a container for attribute editors, used to group them visually in the
  * attribute form if it is set to the drag and drop designer.
  */
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     int mColumnCount;
 };
 
-/**
+/** \ingroup core
  * This element will load a field's widget onto the form.
  */
 class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     int mIdx;
 };
 
-/**
+/** \ingroup core
  * This element will load a relation editor onto the form.
  */
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
@@ -287,6 +287,9 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 };
 
 
+/** \ingroup core
+ * \class QgsEditFormConfig
+ */
 class CORE_EXPORT QgsEditFormConfig : public QObject
 {
     Q_OBJECT

@@ -25,19 +25,22 @@
 
 class QgsComposerTableColumn;
 
-/** List of QVariants, representing a the contents of a single row in
+/** \ingroup core
+ * List of QVariants, representing a the contents of a single row in
  * a QgsComposerTable
  * \note Added in version 2.5
 */
 typedef QList< QVariant > QgsComposerTableRow;
 
-/** List of QgsComposerTableRows, representing rows and column cell contents
+/** \ingroup core
+ * List of QgsComposerTableRows, representing rows and column cell contents
  * for a QgsComposerTable
  * \note Added in version 2.5
 */
 typedef QList< QgsComposerTableRow > QgsComposerTableContents;
 
-/** List of column definitions for a QgsComposerTable
+/** \ingroup core
+ * List of column definitions for a QgsComposerTable
  * \note Added in version 2.5
 */
 typedef QList<QgsComposerTableColumn*> QgsComposerTableColumns;

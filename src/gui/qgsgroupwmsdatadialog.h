@@ -22,6 +22,9 @@
 
 #include "qgis.h"
 
+/** \ingroup gui
+ * \class QgsGroupWMSDataDialog
+ */
 class GUI_EXPORT QgsGroupWMSDataDialog: public QDialog, private Ui::QgsGroupWMSDataDialogBase
 {
     Q_OBJECT

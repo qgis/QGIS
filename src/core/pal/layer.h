@@ -41,13 +41,16 @@ class QgsLabelFeature;
 namespace pal
 {
 
+  /// @cond PRIVATE
   template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
+  /// @endcond
 
   class FeaturePart;
   class Pal;
   class LabelInfo;
 
   /**
+   * \ingroup core
    * \brief A set of features which influence the labelling process
    * \class pal::Layer
    * \note not available in Python bindings

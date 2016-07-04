@@ -22,7 +22,8 @@
 class QgsMapCanvas;
 class QgsMessageBar;
 
-/** \class QgsRelationReferenceFactory
+/** \ingroup gui
+ * \class QgsRelationReferenceFactory
  * \note not available in Python bindings
  */
 

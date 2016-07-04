@@ -24,7 +24,8 @@
 
 class QgsFillSymbolV2;
 
-/** A composer items that draws common shapes (ellipse, triangle, rectangle)*/
+/** \ingroup core
+ * A composer items that draws common shapes (ellipse, triangle, rectangle)*/
 class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 {
     Q_OBJECT

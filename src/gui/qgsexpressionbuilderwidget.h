@@ -27,7 +27,8 @@
 #include "QSortFilterProxyModel"
 #include "QStringListModel"
 
-/** An expression item that can be used in the QgsExpressionBuilderWidget tree.
+/** \ingroup gui
+ * An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
 class QgsExpressionItem : public QStandardItem
 {
@@ -92,7 +93,8 @@ class QgsExpressionItem : public QStandardItem
 
 };
 
-/** Search proxy used to filter the QgsExpressionBuilderWidget tree.
+/** \ingroup gui
+ * Search proxy used to filter the QgsExpressionBuilderWidget tree.
   * The default search for a tree model only searches top level this will handle one
   * level down
   */
@@ -111,7 +113,8 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 };
 
 
-/** A reusable widget that can be used to build a expression string.
+/** \ingroup gui
+ * A reusable widget that can be used to build a expression string.
   * See QgsExpressionBuilderDialog for exmaple of usage.
   */
 class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase

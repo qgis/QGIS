@@ -18,6 +18,9 @@
 
 #include <QString>
 
+/** \ingroup core
+ * \class QgsDartMeasurement
+ */
 class CORE_EXPORT QgsDartMeasurement
 {
   public:

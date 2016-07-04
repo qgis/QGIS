@@ -21,6 +21,9 @@
 
 class QMenu;
 
+/** \ingroup gui
+ * \class QgsHeatmapRendererWidget
+ */
 class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererV2Widget, private Ui::QgsHeatmapRendererWidgetBase
 {
     Q_OBJECT

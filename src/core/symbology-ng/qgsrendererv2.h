@@ -51,6 +51,9 @@ typedef QList< QPair<QString, QgsSymbolV2*> > QgsLegendSymbolList;
 ////////
 // symbol levels
 
+/** \ingroup core
+ * \class QgsSymbolV2LevelItem
+ */
 class CORE_EXPORT QgsSymbolV2LevelItem
 {
   public:
@@ -75,6 +78,9 @@ typedef QList< QgsSymbolV2Level > QgsSymbolV2LevelOrder;
 //////////////
 // renderers
 
+/** \ingroup core
+ * \class QgsFeatureRendererV2
+ */
 class CORE_EXPORT QgsFeatureRendererV2
 {
   public:

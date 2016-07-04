@@ -22,7 +22,7 @@ This is a legacy header to keep backwards compatibility until QGIS 3.
 
 #include "qgsactionmanager.h"
 
-/**
+/** \ingroup core
  * QgsAttributeAction is deprecated and has been replaced with
  * QgsActionManager. This legacy typedef will be removed with QGIS 3.
  */

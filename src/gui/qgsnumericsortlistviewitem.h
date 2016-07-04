@@ -22,7 +22,7 @@
 
 #include <QTreeWidgetItem>
 
-/**
+/** \ingroup gui
 
   \brief  QTreeWidgetItem that can sort numerically (as opposed to just lexigraphically)
 

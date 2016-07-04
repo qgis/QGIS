@@ -35,7 +35,9 @@
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 
-/* Description of feature class in GML */
+/** \ingroup core
+ * Description of feature class in GML
+*/
 class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
@@ -70,6 +72,9 @@ class CORE_EXPORT QgsGmlFeatureClass
     QStringList mGeometryAttributes;
 };
 
+/** \ingroup core
+ * \class QgsGmlSchema
+ */
 class CORE_EXPORT QgsGmlSchema : public QObject
 {
     Q_OBJECT

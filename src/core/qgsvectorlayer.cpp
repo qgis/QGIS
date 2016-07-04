@@ -789,7 +789,8 @@ long QgsVectorLayer::featureCount( QgsSymbolV2* symbol )
   return mSymbolFeatureCountMap.value( symbol );
 }
 
-/** Used by QgsVectorLayer::countSymbolFeatures() to provide an interruption checker
+/** \ingroup core
+ * Used by QgsVectorLayer::countSymbolFeatures() to provide an interruption checker
  *  @note not available in Python bindings
  */
 class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInterruptionChecker

@@ -18,7 +18,9 @@
 
 #include "ui_qgsdashspacedialogbase.h"
 
-/** A dialog to enter a custom dash space pattern for lines*/
+/** \ingroup gui
+ * A dialog to enter a custom dash space pattern for lines
+*/
 class GUI_EXPORT QgsDashSpaceDialog: public QDialog, private Ui::QgsDashSpaceDialogBase
 {
     Q_OBJECT

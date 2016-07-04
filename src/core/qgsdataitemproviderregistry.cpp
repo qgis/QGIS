@@ -22,7 +22,9 @@
 #include "qgsproviderregistry.h"
 
 
-/** Simple data item provider implementation that handles the support for provider plugins (which may contain
+/**
+ * \ingroup core
+ * Simple data item provider implementation that handles the support for provider plugins (which may contain
  * dataCapabilities() and dataItem() functions).
  *
  * Ideally the provider plugins should directly provide implementation of QgsDataItemProvider, for the time being

@@ -18,7 +18,7 @@
 
 #include "qgseditorwidgetwrapper.h"
 
-/**
+/** \ingroup gui
  * Wraps a hidden widget. Fields with this widget type will not be visible.
  * \note not available in Python bindings
  */

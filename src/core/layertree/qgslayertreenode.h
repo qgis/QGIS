@@ -22,7 +22,7 @@
 
 class QDomElement;
 
-/**
+/** \ingroup core
  * This class is a base class for nodes in a layer tree.
  * Layer tree is a hierarchical structure consisting of group and layer nodes:
  * - group nodes are containers and may contain children (layer and group nodes)

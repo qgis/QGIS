@@ -36,7 +36,8 @@ struct ANALYSIS_EXPORT QgsRasterCalculatorEntry
   int bandNumber; //raster band number
 };
 
-/** Raster calculator class*/
+/** \ingroup analysis
+ * Raster calculator class*/
 class ANALYSIS_EXPORT QgsRasterCalculator
 {
   public:

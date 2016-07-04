@@ -21,6 +21,9 @@
 
 #include <QMap>
 
+/** \ingroup core
+ * \class QgsGeometryCache
+ */
 class CORE_EXPORT QgsGeometryCache
 {
   public:

@@ -21,7 +21,7 @@
 class QToolButton;
 class QLineEdit;
 
-/**
+/** \ingroup gui
  * @brief The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
  */
 class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit

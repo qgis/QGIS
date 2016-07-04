@@ -36,7 +36,8 @@ class QgsMapRendererCache;
 class QgsPalLabeling;
 
 
-/** Structure keeping low-level rendering job information.
+/** \ingroup core
+ * Structure keeping low-level rendering job information.
  * @note not part of public API!
  */
 struct LayerRenderJob
@@ -53,7 +54,7 @@ struct LayerRenderJob
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
 
-/**
+/** \ingroup core
  * Abstract base class for map rendering implementations.
  *
  * The API is designed in a way that rendering is done asynchronously, therefore
@@ -189,7 +190,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 };
 
 
-/** Intermediate base class adding functionality that allows client to query the rendered image.
+/** \ingroup core
+ * Intermediate base class adding functionality that allows client to query the rendered image.
  *  The image can be queried even while the rendering is still in progress to get intermediate result
  *
  * @note added in 2.4

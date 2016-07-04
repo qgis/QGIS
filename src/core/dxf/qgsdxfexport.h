@@ -36,6 +36,9 @@ namespace pal
   class LabelPosition;
 };
 
+/** \ingroup core
+ * \class QgsDxfExport
+ */
 class CORE_EXPORT QgsDxfExport
 {
   public:

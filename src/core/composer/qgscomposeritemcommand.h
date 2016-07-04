@@ -24,7 +24,9 @@
 class QgsComposerItem;
 class QgsComposerMultiFrame;
 
-/** Undo command to undo/redo all composer item related changes*/
+/** \ingroup core
+ * Undo command to undo/redo all composer item related changes
+*/
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
@@ -72,8 +74,10 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     void restoreState( QDomDocument& stateDoc ) const;
 };
 
-/** A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
-  newest after state. The purpose is to avoid too many micro changes in the history*/
+/** \ingroup core
+ * A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
+  newest after state. The purpose is to avoid too many micro changes in the history
+*/
 class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
 {
   public:

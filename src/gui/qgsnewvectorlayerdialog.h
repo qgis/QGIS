@@ -23,6 +23,9 @@
 
 #include "qgis.h"
 
+/** \ingroup gui
+ * \class QgsNewVectorLayerDialog
+ */
 class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDialogBase
 {
     Q_OBJECT

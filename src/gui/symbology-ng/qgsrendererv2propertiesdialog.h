@@ -32,7 +32,9 @@ class QgsPaintEffect;
 class QgsRendererV2Widget;
 class QgsMapCanvas;
 
-
+/** \ingroup gui
+ * \class QgsRendererV2PropertiesDialog
+ */
 class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::QgsRendererV2PropsDialogBase
 {
     Q_OBJECT
