@@ -272,6 +272,8 @@
     <addaction name="mMenuPasteAs"/>
     <addaction name="separator"/>
     <addaction name="mActionAddFeature"/>
+    <addaction name="mActionCircularStringCurvePoint"/>
+    <addaction name="mActionCircularStringRadius"/>
     <addaction name="mActionMoveFeature"/>
     <addaction name="mActionDeleteSelected"/>
     <addaction name="mActionMultiEditAttributes"/>
@@ -2435,6 +2437,9 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionCircularStringCurvePoint.svg</normaloff>:/images/themes/default/mActionCircularStringCurvePoint.svg</iconset>
    </property>
    <property name="text">
+    <string>Add Circular String</string>
+   </property>
+   <property name="toolTip">
     <string>Add circular string</string>
    </property>
   </action>
@@ -2447,6 +2452,9 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionCircularStringRadius.svg</normaloff>:/images/themes/default/mActionCircularStringRadius.svg</iconset>
    </property>
    <property name="text">
+    <string>Add Circular String by Radius</string>
+   </property>
+   <property name="toolTip">
     <string>Add circular string by radius</string>
    </property>
   </action>
