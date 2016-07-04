@@ -292,6 +292,11 @@ class TestQgsMapLayerRegistry(unittest.TestCase):
         self.assertEqual(QgsMapLayerRegistry.instance().count(), 0)
         self.assertTrue(sip.isdeleted(l2))
 
+        # try removing a layer not in the registry
+        l4 = createLayer('test4')
+        QgsMapLayerRegistry.instance().removeMapLayers([l4.id()])
+        self.assertFalse(sip.isdeleted(l4))
+
     # fails on qt5 due to removeMapLayers list type conversion - needs a PyName alias
     # added to removeMapLayers for QGIS 3.0
     @unittest.expectedFailure(QT_VERSION_STR[0] == '5')
@@ -362,6 +367,11 @@ class TestQgsMapLayerRegistry(unittest.TestCase):
         self.assertEqual(QgsMapLayerRegistry.instance().count(), 0)
         self.assertTrue(sip.isdeleted(l2))
 
+        # try removing a layer not in the registry
+        l3 = createLayer('test3')
+        QgsMapLayerRegistry.instance().removeMapLayer(l3.id())
+        self.assertFalse(sip.isdeleted(l3))
+
     def test_removeMapLayerByLayer(self):
         """ test removing a map layer by layer """
         QgsMapLayerRegistry.instance().removeAllMapLayers()
@@ -394,6 +404,11 @@ class TestQgsMapLayerRegistry(unittest.TestCase):
         QgsMapLayerRegistry.instance().removeMapLayer(l2)
         self.assertEqual(QgsMapLayerRegistry.instance().count(), 0)
         self.assertTrue(sip.isdeleted(l2))
+
+        # try removing a layer not in the registry
+        l3 = createLayer('test3')
+        QgsMapLayerRegistry.instance().removeMapLayer(l3)
+        self.assertFalse(sip.isdeleted(l3))
 
     def test_removeAllMapLayers(self):
         """ test removing all map layers from registry """
@@ -457,8 +472,17 @@ class TestQgsMapLayerRegistry(unittest.TestCase):
         self.assertEqual(len(layer_removed_spy), 4)
         self.assertEqual(len(remove_all_spy), 1)
 
-        #remove a layer which isn't in the registry
+        #remove some layers which aren't in the registry
         QgsMapLayerRegistry.instance().removeMapLayers(['asdasd'])
+        self.assertEqual(len(layers_will_be_removed_spy), 3)
+        self.assertEqual(len(layer_will_be_removed_spy_str), 4)
+        self.assertEqual(len(layer_will_be_removed_spy_layer), 4)
+        self.assertEqual(len(layers_removed_spy), 3)
+        self.assertEqual(len(layer_removed_spy), 4)
+        self.assertEqual(len(remove_all_spy), 1)
+
+        l5 = createLayer('test5')
+        QgsMapLayerRegistry.instance().removeMapLayer(l5)
         self.assertEqual(len(layers_will_be_removed_spy), 3)
         self.assertEqual(len(layer_will_be_removed_spy_str), 4)
         self.assertEqual(len(layer_will_be_removed_spy_layer), 4)
