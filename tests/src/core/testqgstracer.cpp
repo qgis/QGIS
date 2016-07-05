@@ -18,6 +18,7 @@
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
 #include <qgsmaplayerregistry.h>
+#include <qgstestutils.h>
 #include <qgstracer.h>
 #include <qgsvectorlayer.h>
 
@@ -344,9 +345,9 @@ void TestQgsTracer::testCurved()
   double l = tmpG1->length();
   delete tmpG1;
 
-  // fuzzy comparison of QCOMPARE is too strict for this case
+  // fuzzy comparison as QCOMPARE is too strict for this case
   double full_circle_length = 2 * M_PI * 10;
-  QVERIFY( qAbs( l - full_circle_length / 4 ) < 0.01 );
+  QGSCOMPARENEAR( l, full_circle_length / 4, 0.01 );
 
   QCOMPARE( points1[0], QgsPoint( 0, 0 ) );
   QCOMPARE( points1[points1.count()-1], QgsPoint( 10, 10 ) );
