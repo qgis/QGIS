@@ -5833,7 +5833,6 @@ void QgisApp::setMapStyleDockLayer( QgsMapLayer* layer )
 {
   if ( !layer )
   {
-    mMapStyleWidget->setEnabled( false );
     return;
   }
 
