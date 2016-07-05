@@ -156,6 +156,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void actionTriggered();
     void columnSizeChanged( int index, int oldWidth, int newWidth );
     void onActionColumnItemPainted( const QModelIndex& index );
+    void recreateActionWidgets();
 
   private:
     void updateActionImage( QWidget* widget );
@@ -169,6 +170,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QMenu *mActionPopup;
     int mRowSectionAnchor;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
+    QMap< QModelIndex, QWidget* > mActionWidgets;
 };
 
 #endif
