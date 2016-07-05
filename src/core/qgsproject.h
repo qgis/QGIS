@@ -72,6 +72,8 @@ class CORE_EXPORT QgsProject : public QObject
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
+    Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
+    Q_PROPERTY( QString homePath READ homePath NOTIFY homePathChanged )
 
   public:
 
@@ -454,6 +456,12 @@ class CORE_EXPORT QgsProject : public QObject
 
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+
+    //! Emitted when the file name of the project changes
+    void fileNameChanged();
+
+    //! Emitted when the home path of the project changes
+    void homePathChanged();
 
   public slots:
 
