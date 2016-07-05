@@ -26,13 +26,13 @@ QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer* vl, int fiel
 
 QVariant QgsValueMapWidgetWrapper::value() const
 {
-  QString v;
+  QVariant v;
 
   if ( mComboBox )
-    v = mComboBox->itemData( mComboBox->currentIndex() ).toString();
+    v = mComboBox->itemData( mComboBox->currentIndex() );
 
   if ( v == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
-    return QVariant( field().type() );
+    v = QVariant( field().type() );
 
   return v;
 }
