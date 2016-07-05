@@ -69,8 +69,7 @@ void QgsUserInputDockWidget::widgetDestroyed( QObject *obj )
       {
         i.value()->deleteLater();
       }
-      mWidgetList.remove( i.key() );
-      ++i;
+      i = mWidgetList.erase( i );
     }
   }
 }
