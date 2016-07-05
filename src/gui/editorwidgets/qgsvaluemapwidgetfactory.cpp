@@ -86,13 +86,20 @@ QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldI
 {
   Q_UNUSED( cache )
 
-  QString v;
+  QString valueInternalText;
+  QString valueDisplayText;
   if ( value.isNull() )
-    v = QSettings().value( "qgis/nullValue", "NULL" ).toString();
+  {
+    valueInternalText = QString( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" );
+    valueDisplayText = QString( "NULL" );
+  }
   else
-    v = value.toString();
+  {
+    valueInternalText = value.toString();
+    valueDisplayText = value.toString();
+  }
 
-  return config.key( v, QVariant( QString( "(%1)" ).arg( vl->fields().at( fieldIdx ).displayString( value ) ) ).toString() );
+  return config.key( valueInternalText, QVariant( QString( "(%1)" ).arg( vl->fields().at( fieldIdx ).displayString( valueDisplayText ) ) ).toString() );
 }
 
 Qt::AlignmentFlag QgsValueMapWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
