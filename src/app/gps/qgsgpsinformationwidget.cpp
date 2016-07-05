@@ -817,19 +817,16 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
   {
     QgsFeature* f = new QgsFeature( 0 );
 
-    int size = 0;
-    int wkbtype = 0;
-
     QgsCoordinateTransform t( mWgs84CRS, vlayer->crs() );
     QgsPoint myPoint = t.transform( mLastGpsPosition );
     double x = myPoint.x();
     double y = myPoint.y();
 
-    size = 1 + sizeof( int ) + 2 * sizeof( double );
+    int size = 1 + sizeof( int ) + 2 * sizeof( double );
     unsigned char *buf = new unsigned char[size];
 
     QgsWkbPtr wkbPtr( buf, size );
-    wkbPtr << ( char ) QgsApplication::endian() << wkbtype << x << y;
+    wkbPtr << ( char ) QgsApplication::endian() << QGis::WKBPoint << x << y;
 
     QgsGeometry *g = new QgsGeometry();
     g->fromWkb( buf, size );
