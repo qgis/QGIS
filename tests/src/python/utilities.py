@@ -363,6 +363,18 @@ class DoxygenParser():
         self.groups = {}
         self.classes_missing_group = []
         self.classes_missing_version_added = []
+        # for some reason the Doxygen generation on Travis refuses to assign these classes to groups
+        self.acceptable_missing_group = ['QgsOgcUtils::LayerProperties',
+                                         'QgsSQLStatement::Node',
+                                         'QgsSQLStatement::NodeBinaryOperator',
+                                         'QgsSQLStatement::NodeColumnRef',
+                                         'QgsSQLStatement::NodeFunction',
+                                         'QgsSQLStatement::NodeInOperator',
+                                         'QgsSQLStatement::NodeList',
+                                         'QgsSQLStatement::NodeLiteral',
+                                         'QgsSQLStatement::NodeUnaryOperator',
+                                         'QgsRuleBasedLabeling::Rule',
+                                         'QgsSQLStatement::Visitor']
         self.parseFiles(path)
 
     def parseFiles(self, path):
@@ -426,7 +438,7 @@ class DoxygenParser():
                         class_name = elem.find('compoundname').text
                         acceptable_missing = self.acceptable_missing.get(class_name, [])
 
-                        if not self.hasGroup(class_name):
+                        if not self.hasGroup(class_name) and not class_name in self.acceptable_missing_group:
                             self.classes_missing_group.append(class_name)
                         if not class_name in self.acceptable_missing_added_note and not found_version_added:
                             self.classes_missing_version_added.append(class_name)
