@@ -75,7 +75,7 @@ matrix:
         postgresql: "9.4"
         apt:
           sources:
-#            - llvm-toolchain-precise-3.8
+            - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports # doxygen 1.8.3
           packages:
@@ -91,8 +91,7 @@ matrix:
             - txt2tags
             - xvfb
             - flip
-            - gcc-6
-            - g++-6
+            - clang-3.8
     # OSX based build with QT4 and Python 2
     - os: osx
       env:
