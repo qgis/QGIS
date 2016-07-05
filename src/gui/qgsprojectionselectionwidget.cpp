@@ -87,8 +87,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
     case QgsProjectionSelectionWidget::RecentCrs:
     {
       long srsid = mCrsComboBox->itemData( mCrsComboBox->currentIndex(), Qt::UserRole + 1 ).toLongLong();
-      QgsCoordinateReferenceSystem crs;
-      crs.createFromSrsId( srsid );
+      QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsBySrsId( srsid );
       return crs;
     }
   }
@@ -174,8 +173,7 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
     case QgsProjectionSelectionWidget::RecentCrs:
     {
       long srsid = mCrsComboBox->itemData( idx, Qt::UserRole + 1 ).toLongLong();
-      QgsCoordinateReferenceSystem crs;
-      crs.createFromSrsId( srsid );
+      QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsBySrsId( srsid );
       emit crsChanged( crs );
       return;
     }
@@ -252,8 +250,7 @@ void QgsProjectionSelectionWidget::addRecentCrs()
     }
 
     i++;
-    QgsCoordinateReferenceSystem crs;
-    crs.createFromSrsId( srsid );
+    QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsBySrsId( srsid );
     if ( crs.isValid() )
     {
       mCrsComboBox->addItem( tr( "%1 - %2" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::RecentCrs );

@@ -89,5 +89,23 @@ class TestQgsCRSCache(unittest.TestCase):
         crs = QgsCRSCache.instance().crsByProj4('asdasdasd')
         self.assertFalse(crs.isValid())
 
+    def testcrsBySrsId(self):
+        """ test retrieving CRS from cache using srs id """
+
+        crs = QgsCRSCache.instance().crsBySrsId(3452)
+        self.assertTrue(crs.isValid())
+        self.assertEqual(crs.authid(), 'EPSG:4326')
+        # a second time, so crs is fetched from cache
+        crs = QgsCRSCache.instance().crsBySrsId(3452)
+        self.assertTrue(crs.isValid())
+        self.assertEqual(crs.authid(), 'EPSG:4326')
+
+        # invalid
+        crs = QgsCRSCache.instance().crsBySrsId(-9999)
+        self.assertFalse(crs.isValid())
+        # a second time, so invalid crs is fetched from cache
+        crs = QgsCRSCache.instance().crsBySrsId(-9999)
+        self.assertFalse(crs.isValid())
+
 if __name__ == '__main__':
     unittest.main()

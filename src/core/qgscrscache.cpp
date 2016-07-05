@@ -143,7 +143,7 @@ QgsCoordinateReferenceSystem QgsCRSCache::crsByEpsgId( long epsg ) const
 
 QgsCoordinateReferenceSystem QgsCRSCache::crsByProj4( const QString& proj4 ) const
 {
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRSProj4.find( proj4 );
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRSProj4.constFind( proj4 );
   if ( crsIt == mCRSProj4.constEnd() )
   {
     QgsCoordinateReferenceSystem s;
@@ -152,6 +152,24 @@ QgsCoordinateReferenceSystem QgsCRSCache::crsByProj4( const QString& proj4 ) con
       return mCRSProj4.insert( proj4, mInvalidCRS ).value();
     }
     return mCRSProj4.insert( proj4, s ).value();
+  }
+  else
+  {
+    return crsIt.value();
+  }
+}
+
+QgsCoordinateReferenceSystem QgsCRSCache::crsBySrsId( long srsId ) const
+{
+  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRSSrsId.constFind( srsId );
+  if ( crsIt == mCRSSrsId.constEnd() )
+  {
+    QgsCoordinateReferenceSystem s;
+    if ( ! s.createFromSrsId( srsId ) )
+    {
+      return mCRSSrsId.insert( srsId, mInvalidCRS ).value();
+    }
+    return mCRSSrsId.insert( srsId, s ).value();
   }
   else
   {

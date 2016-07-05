@@ -152,7 +152,7 @@ void QgsCoordinateTransform::setDestCRS( const QgsCoordinateReferenceSystem& the
 void QgsCoordinateTransform::setDestCRSID( long theCRSID )
 {
   //!todo Add some logic here to determine if the srsid is a system or user one
-  mDestCRS.createFromSrsId( theCRSID );
+  mDestCRS = QgsCRSCache::instance()->crsBySrsId( theCRSID );
   initialise();
 }
 
