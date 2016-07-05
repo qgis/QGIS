@@ -31,5 +31,6 @@ cmake \
   -DQWT_INCLUDE_DIR=/usr/local/opt/qwt/lib/qwt.framework/Headers/ \
   -DQWT_LIBRARY=/usr/local/opt/qwt/lib/qwt.framework/qwt \
   -DGDAL_CONFIG=/usr/local/opt/gdal-20/bin/gdal-config \
+  -DGRASS_PREFIX7=/usr/local/opt/grass-70/grass-7.0.4 \
   -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
   ..
