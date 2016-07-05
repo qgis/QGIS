@@ -88,4 +88,7 @@ class QgsCRSCache
   protected:
     QgsCRSCache();
 
+  private:
+
+    QgsCRSCache( const QgsCRSCache& other );
 };

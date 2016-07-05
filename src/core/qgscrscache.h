@@ -20,6 +20,7 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include <QHash>
+#include <QReadWriteLock>
 
 class QgsCoordinateTransform;
 
@@ -116,12 +117,17 @@ class CORE_EXPORT QgsCRSCache
 
   private:
 
+    mutable QReadWriteLock mCRSLock;
     mutable QHash< QString, QgsCoordinateReferenceSystem > mCRS;
+    mutable QReadWriteLock mCRSProj4Lock;
     mutable QHash< QString, QgsCoordinateReferenceSystem > mCRSProj4;
+    mutable QReadWriteLock mCRSSrsIdLock;
     mutable QHash< long, QgsCoordinateReferenceSystem > mCRSSrsId;
 
     /** CRS that is not initialized (returned in case of error)*/
     QgsCoordinateReferenceSystem mInvalidCRS;
+
+    QgsCRSCache( const QgsCRSCache& other );
 };
 
 #endif // QGSCRSCACHE_H

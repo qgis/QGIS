@@ -95,11 +95,15 @@ QgsCRSCache* QgsCRSCache::instance()
 }
 
 QgsCRSCache::QgsCRSCache()
+    : mCRSLock( QReadWriteLock::Recursive )
+    , mCRSProj4Lock( QReadWriteLock::Recursive )
+    , mCRSSrsIdLock( QReadWriteLock::Recursive )
 {
 }
 
 void QgsCRSCache::updateCRSCache( const QString& authid )
 {
+  QWriteLocker lock( &mCRSLock );
   QgsCoordinateReferenceSystem s;
   if ( s.createFromOgcWmsCrs( authid ) )
   {
@@ -120,19 +124,31 @@ QgsCoordinateReferenceSystem QgsCRSCache::crsByAuthId( const QString& authid )
 
 QgsCoordinateReferenceSystem QgsCRSCache::crsByOgcWmsCrs( const QString& ogcCrs ) const
 {
+  mCRSLock.lockForRead();
   QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.constFind( ogcCrs );
   if ( crsIt == mCRS.constEnd() )
   {
+    mCRSLock.unlock();
+    mCRSLock.lockForWrite();
     QgsCoordinateReferenceSystem s;
     if ( ! s.createFromOgcWmsCrs( ogcCrs ) )
     {
-      return mCRS.insert( ogcCrs, mInvalidCRS ).value();
+      QgsCoordinateReferenceSystem result = mCRS.insert( ogcCrs, mInvalidCRS ).value();
+      mCRSLock.unlock();
+      return result;
     }
-    return mCRS.insert( ogcCrs, s ).value();
+    else
+    {
+      QgsCoordinateReferenceSystem result = mCRS.insert( ogcCrs, s ).value();
+      mCRSLock.unlock();
+      return result;
+    }
   }
   else
   {
-    return crsIt.value();
+    QgsCoordinateReferenceSystem result = crsIt.value();
+    mCRSLock.unlock();
+    return result;
   }
 }
 
@@ -143,36 +159,60 @@ QgsCoordinateReferenceSystem QgsCRSCache::crsByEpsgId( long epsg ) const
 
 QgsCoordinateReferenceSystem QgsCRSCache::crsByProj4( const QString& proj4 ) const
 {
+  mCRSProj4Lock.lockForRead();
   QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRSProj4.constFind( proj4 );
   if ( crsIt == mCRSProj4.constEnd() )
   {
+    mCRSProj4Lock.unlock();
+    mCRSProj4Lock.lockForWrite();
     QgsCoordinateReferenceSystem s;
     if ( ! s.createFromProj4( proj4 ) )
     {
-      return mCRSProj4.insert( proj4, mInvalidCRS ).value();
+      QgsCoordinateReferenceSystem result = mCRSProj4.insert( proj4, mInvalidCRS ).value();
+      mCRSProj4Lock.unlock();
+      return result;
     }
-    return mCRSProj4.insert( proj4, s ).value();
+    else
+    {
+      QgsCoordinateReferenceSystem result = mCRSProj4.insert( proj4, s ).value();
+      mCRSProj4Lock.unlock();
+      return result;
+    }
   }
   else
   {
-    return crsIt.value();
+    QgsCoordinateReferenceSystem result = crsIt.value();
+    mCRSProj4Lock.unlock();
+    return result;
   }
 }
 
 QgsCoordinateReferenceSystem QgsCRSCache::crsBySrsId( long srsId ) const
 {
+  mCRSSrsIdLock.lockForRead();
   QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRSSrsId.constFind( srsId );
   if ( crsIt == mCRSSrsId.constEnd() )
   {
+    mCRSSrsIdLock.unlock();
+    mCRSSrsIdLock.lockForWrite();
     QgsCoordinateReferenceSystem s;
     if ( ! s.createFromSrsId( srsId ) )
     {
-      return mCRSSrsId.insert( srsId, mInvalidCRS ).value();
+      QgsCoordinateReferenceSystem result = mCRSSrsId.insert( srsId, mInvalidCRS ).value();
+      mCRSSrsIdLock.unlock();
+      return result;
     }
-    return mCRSSrsId.insert( srsId, s ).value();
+    else
+    {
+      QgsCoordinateReferenceSystem result = mCRSSrsId.insert( srsId, s ).value();
+      mCRSSrsIdLock.unlock();
+      return result;
+    }
   }
   else
   {
-    return crsIt.value();
+    QgsCoordinateReferenceSystem result = crsIt.value();
+    mCRSSrsIdLock.unlock();
+    return result;
   }
 }
