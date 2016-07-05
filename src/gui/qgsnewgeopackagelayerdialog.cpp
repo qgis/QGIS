@@ -389,7 +389,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   int crsId = mCrsSelector->crs().srsid();
   if ( wkbType != wkbNone && crsId > 0 )
   {
-    QgsCoordinateReferenceSystem srs( crsId, QgsCoordinateReferenceSystem::InternalCrsId );
+    QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( crsId );
     QString srsWkt = srs.toWkt();
     hSRS = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
   }

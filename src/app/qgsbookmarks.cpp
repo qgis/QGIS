@@ -22,6 +22,7 @@
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
+#include "qgscrscache.h"
 
 #include "qgslogger.h"
 
@@ -232,7 +233,7 @@ void QgsBookmarks::zoomToBookmark()
   if ( srid > 0 &&
        srid != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().srsid() )
   {
-    QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( srid, QgsCoordinateReferenceSystem::InternalCrsId ),
+    QgsCoordinateTransform ct( QgsCRSCache::instance()->crsBySrsId( srid ),
                                QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() );
     rect = ct.transform( rect );
     if ( rect.isEmpty() )

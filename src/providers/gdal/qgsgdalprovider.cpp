@@ -215,7 +215,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
       OGRFree( pszWkt );
 
       // create CRS from Wkt
-      mCrs.createFromWkt( myWktString );
+      mCrs = QgsCRSCache::instance()->crsByWkt( myWktString );
     }
   }
 

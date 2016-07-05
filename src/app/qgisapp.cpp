@@ -6166,7 +6166,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     QgsWKBTypes::Type forcedGeometryType = dialog->geometryType();
 
     QgsCoordinateTransform* ct = nullptr;
-    destCRS = QgsCoordinateReferenceSystem( dialog->crs(), QgsCoordinateReferenceSystem::InternalCrsId );
+    destCRS = QgsCRSCache::instance()->crsBySrsId( dialog->crs() );
 
     if ( destCRS.isValid() && destCRS != vlayer->crs() )
     {
@@ -8504,7 +8504,7 @@ void QgisApp::setLayerCRS()
     return;
   }
 
-  QgsCoordinateReferenceSystem crs( mySelector.selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+  QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsBySrsId( mySelector.selectedCrsId() );
 
   Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
@@ -8661,7 +8661,7 @@ void QgisApp::legendGroupSetCRS()
     return;
   }
 
-  QgsCoordinateReferenceSystem crs( mySelector.selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+  QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsBySrsId( mySelector.selectedCrsId() );
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, currentGroup->findLayers() )
   {
     if ( nodeLayer->layer() )

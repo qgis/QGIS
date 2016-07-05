@@ -98,7 +98,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent
     if ( currentCRS != -1 )
     {
       //convert CRS id to epsg
-      QgsCoordinateReferenceSystem currentRefSys( currentCRS, QgsCoordinateReferenceSystem::InternalCrsId );
+      QgsCoordinateReferenceSystem currentRefSys = QgsCRSCache::instance()->crsBySrsId( currentCRS );
       if ( currentRefSys.isValid() )
       {
         mSelectedCRS = currentRefSys.authid();

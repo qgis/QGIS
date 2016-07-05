@@ -89,6 +89,27 @@ class TestQgsCRSCache(unittest.TestCase):
         crs = QgsCRSCache.instance().crsByProj4('asdasdasd')
         self.assertFalse(crs.isValid())
 
+    def testcrsByWkt(self):
+        """ test retrieving CRS from cache using wkt """
+
+        # EPSG3111
+        wkt = 'PROJCS["GDA94 / Vicgrid94",GEOGCS["GDA94",DATUM["Geocentric_Datum_of_Australia_1994",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6283"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4283"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["standard_parallel_1",-36],PARAMETER["standard_parallel_2",-38],PARAMETER["latitude_of_origin",-37],PARAMETER["central_meridian",145],PARAMETER["false_easting",2500000],PARAMETER["false_northing",2500000],AUTHORITY["EPSG","3111"],AXIS["Easting",EAST],AXIS["Northing",NORTH]]'
+
+        crs = QgsCRSCache.instance().crsByWkt(wkt)
+        self.assertTrue(crs.isValid())
+        self.assertEqual(crs.authid(), 'EPSG:3111')
+        # a second time, so crs is fetched from cache
+        crs = QgsCRSCache.instance().crsByWkt(wkt)
+        self.assertTrue(crs.isValid())
+        self.assertEqual(crs.authid(), 'EPSG:3111')
+
+        # invalid
+        crs = QgsCRSCache.instance().crsByWkt('asdasdasd')
+        self.assertFalse(crs.isValid())
+        # a second time, so invalid crs is fetched from cache
+        crs = QgsCRSCache.instance().crsByWkt('asdasdasd')
+        self.assertFalse(crs.isValid())
+
     def testcrsBySrsId(self):
         """ test retrieving CRS from cache using srs id """
 

@@ -276,7 +276,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
     {
       if ( geometrytype != QGis::WKBUnknown )
       {
-        QgsCoordinateReferenceSystem srs( crsId, QgsCoordinateReferenceSystem::InternalCrsId );
+        QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( crsId );
         if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, &srs ) )
         {
           return QString::null;

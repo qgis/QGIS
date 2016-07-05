@@ -37,7 +37,7 @@ QgsMapSettings::QgsMapSettings()
     , mRotation( 0.0 )
     , mMagnificationFactor( 1.0 )
     , mProjectionsEnabled( false )
-    , mDestCRS( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId )  // WGS 84
+    , mDestCRS( QgsCRSCache::instance()->crsBySrsId( GEOCRS_ID ) )  // WGS 84
     , mDatumTransformStore( mDestCRS )
     , mBackgroundColor( Qt::white )
     , mSelectionColor( Qt::yellow )

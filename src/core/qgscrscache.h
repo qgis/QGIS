@@ -98,6 +98,14 @@ class CORE_EXPORT QgsCRSCache
     */
     QgsCoordinateReferenceSystem crsByProj4( const QString& proj4 ) const;
 
+    /** Returns the CRS from a WKT spatial ref sys definition string.
+     * @param wkt WKT for the desired spatial reference system.
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 2.16
+     * @see QgsCoordinateReferenceSystem::createFromWkt()
+    */
+    QgsCoordinateReferenceSystem crsByWkt( const QString& wkt ) const;
+
     /** Returns the CRS from a specified QGIS SRS ID.
      * @param srsId internal QGIS SRS ID
      * @returns matching CRS, or an invalid CRS if ID could not be found
@@ -121,6 +129,8 @@ class CORE_EXPORT QgsCRSCache
     mutable QHash< QString, QgsCoordinateReferenceSystem > mCRS;
     mutable QReadWriteLock mCRSProj4Lock;
     mutable QHash< QString, QgsCoordinateReferenceSystem > mCRSProj4;
+    mutable QReadWriteLock mCRSWktLock;
+    mutable QHash< QString, QgsCoordinateReferenceSystem > mCRSWkt;
     mutable QReadWriteLock mCRSSrsIdLock;
     mutable QHash< long, QgsCoordinateReferenceSystem > mCRSSrsId;
 

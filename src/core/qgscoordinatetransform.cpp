@@ -67,8 +67,8 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrsId, long theDestSrsId )
     : QObject()
     , mInitialisedFlag( false )
-    , mSourceCRS( theSourceSrsId, QgsCoordinateReferenceSystem::InternalCrsId )
-    , mDestCRS( theDestSrsId, QgsCoordinateReferenceSystem::InternalCrsId )
+    , mSourceCRS( QgsCRSCache::instance()->crsBySrsId( theSourceSrsId ) )
+    , mDestCRS( QgsCRSCache::instance()->crsBySrsId( theDestSrsId ) )
     , mSourceProjection( nullptr )
     , mDestinationProjection( nullptr )
     , mSourceDatumTransform( -1 )
@@ -86,8 +86,8 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QString& theSourceCRS, con
     , mDestinationDatumTransform( -1 )
 {
   setFinder();
-  mSourceCRS.createFromWkt( theSourceCRS );
-  mDestCRS.createFromWkt( theDestCRS );
+  mSourceCRS = QgsCRSCache::instance()->crsByWkt( theSourceCRS );
+  mDestCRS = QgsCRSCache::instance()->crsByWkt( theDestCRS );
   // initialize the coordinate system data structures
   //XXX Who spells initialize initialise?
   //XXX A: Its the queen's english....
@@ -108,7 +108,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrid,
   setFinder();
 
   mSourceCRS.createFromId( theSourceSrid, theSourceCRSType );
-  mDestCRS.createFromWkt( theDestWkt );
+  mDestCRS = QgsCRSCache::instance()->crsByWkt( theDestWkt );
   // initialize the coordinate system data structures
   //XXX Who spells initialize initialise?
   //XXX A: Its the queen's english....

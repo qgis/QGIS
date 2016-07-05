@@ -39,6 +39,7 @@ email                : sherman at mrcc.com
 #include <QSettings>
 
 #include "qgsapplication.h"
+#include "qgscrscache.h"
 #include "qgsdataitem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
@@ -2687,7 +2688,8 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
         QString myWktString = prjStream.readLine();
         prjFile.close();
 
-        if ( srs.createFromWkt( myWktString.toUtf8().constData() ) )
+        srs = QgsCRSCache::instance()->crsByWkt( myWktString.toUtf8().constData() );
+        if ( srs.isValid() )
           return srs;
       }
     }
@@ -2708,7 +2710,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
     char *pszWkt = nullptr;
     OSRExportToWkt( mySpatialRefSys, &pszWkt );
 
-    srs.createFromWkt( pszWkt );
+    srs = QgsCRSCache::instance()->crsByWkt( pszWkt );
     OGRFree( pszWkt );
   }
   else

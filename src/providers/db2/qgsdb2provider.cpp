@@ -23,6 +23,7 @@
 #include <qgscoordinatereferencesystem.h>
 #include <qgsdataitem.h>
 #include <qgslogger.h>
+#include "qgscrscache.h"
 #include "qgscredentials.h"
 
 static const QString PROVIDER_KEY = "DB2";
@@ -514,9 +515,11 @@ QgsCoordinateReferenceSystem QgsDb2Provider::crs()
     bool execOk = query.exec( QString( "SELECT DEFINITION FROM DB2GSE.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = %1" ).arg( QString::number( mSRId ) ) );
     if ( execOk && query.isActive() )
     {
-      if ( query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
+      if ( query.next() )
       {
-        return mCrs;
+        mCrs = QgsCRSCache::instance()->crsByWkt( query.value( 0 ).toString() );
+        if ( mCrs.isValid() )
+          return mCrs;
       }
     }
   }

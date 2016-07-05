@@ -117,7 +117,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bo
     if ( currentCRS != -1 )
     {
       //convert CRS id to epsg
-      QgsCoordinateReferenceSystem currentRefSys( currentCRS, QgsCoordinateReferenceSystem::InternalCrsId );
+      QgsCoordinateReferenceSystem currentRefSys = QgsCRSCache::instance()->crsBySrsId( currentCRS );
       if ( currentRefSys.isValid() )
       {
         mDefaultCRS = mCRS = currentRefSys.authid();

@@ -21,6 +21,7 @@
 
 #include "qgis.h"
 #include "qgisapp.h"
+#include "qgscrscache.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
@@ -103,7 +104,7 @@ void QgsOSMDownloadDialog::onExtentCanvas()
 
   if ( QgisApp::instance()->mapCanvas()->hasCrsTransformEnabled() )
   {
-    QgsCoordinateReferenceSystem dst( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId );
+    QgsCoordinateReferenceSystem dst = QgsCRSCache::instance()->crsBySrsId( GEOCRS_ID );
 
     QgsCoordinateTransform ct( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), dst );
     r = ct.transformBoundingBox( r );
@@ -142,7 +143,7 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
   if ( !layer )
     return;
 
-  QgsCoordinateReferenceSystem dst( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId );
+  QgsCoordinateReferenceSystem dst = QgsCRSCache::instance()->crsBySrsId( GEOCRS_ID );
 
   QgsCoordinateTransform ct( layer->crs(), dst );
   QgsRectangle rect( ct.transformBoundingBox( layer->extent() ) );
