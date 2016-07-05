@@ -381,6 +381,7 @@ void QgsRendererV2PropertiesDialog::showOrderByDialog()
   if ( dlg.exec() )
   {
     mOrderBy = dlg.orderBy();
+    emit widgetChanged();
   }
 }
 
