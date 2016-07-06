@@ -99,6 +99,7 @@ void QgsMeasureDialog::updateSettings()
   QgsDebugMsg( QString( "Area units: %1" ).arg( QgsUnitTypes::encodeUnit( mAreaUnits ) ) );
   QgsDebugMsg( QString( "Canvas units : %1" ).arg( QgsUnitTypes::encodeUnit( mCanvasUnits ) ) );
 
+  mTable->clear();
   mTotal = 0;
   updateUi();
 }

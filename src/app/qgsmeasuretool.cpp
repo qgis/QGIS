@@ -26,6 +26,7 @@
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
 #include "qgscursors.h"
+#include "qgsmessagelog.h"
 
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -46,6 +47,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   mDone = true;
   // Append point we will move
   mPoints.append( QgsPoint( 0, 0 ) );
+  mDestinationCrs = canvas->mapSettings().destinationCrs();
 
   mDialog = new QgsMeasureDialog( this );
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
@@ -125,7 +127,47 @@ void QgsMeasureTool::updateSettings()
   mRubberBandPoints->setIcon( QgsRubberBand::ICON_CIRCLE );
   mRubberBandPoints->setIconSize( 10 );
   mRubberBandPoints->setColor( QColor( myRed, myGreen, myBlue, 150 ) );
+
+  // Reproject the points to the new destination CoordinateReferenceSystem
+  if ( mRubberBand->size() > 0 && mDestinationCrs != mCanvas->mapSettings().destinationCrs() )
+  {
+    QList<QgsPoint> points = mPoints;
+    bool lastDone = mDone;
+
+    mDialog->restart();
+    mDone = lastDone;
+    QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs() );
+
+    Q_FOREACH ( const QgsPoint& previousPoint, points )
+    {
+      try
+      {
+        QgsPoint point = ct.transform( previousPoint );
+
+        mPoints.append( point );
+        mRubberBand->addPoint( point, false );
+        mRubberBandPoints->addPoint( point, false );
+      }
+      catch ( QgsCsException &cse )
+      {
+        QgsMessageLog::logMessage( QString( "Transform error caught at the MeasureTool: %1" ).arg( cse.what() ) );
+      }
+    }
+
+    mRubberBand->updatePosition();
+    mRubberBand->update();
+    mRubberBandPoints->updatePosition();
+    mRubberBandPoints->update();
+  }
+  mDestinationCrs = mCanvas->mapSettings().destinationCrs();
+
   mDialog->updateSettings();
+
+  if ( !mDone && mRubberBand->size() > 0 )
+  {
+    mRubberBand->addPoint( mPoints.last() );
+    mDialog->addPoint( mPoints.last() );
+  }
 }
 
 //////////////////////////
