@@ -17,6 +17,7 @@
 
 #include "qgsattributetypeloaddialog.h"
 
+#include <QSettings>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
@@ -77,7 +78,7 @@ void QgsValueMapConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
   for ( QgsEditorWidgetConfig::ConstIterator mit = config.begin(); mit != config.end(); mit++, row++ )
   {
     if ( mit.value().isNull() )
-      setRow( row, mit.key(), QString( "" ) );
+      setRow( row, mit.key(), QString() );
     else
       setRow( row, mit.value().toString(), mit.key() );
   }
@@ -134,7 +135,7 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
   for ( QMap<QString, QVariant>::const_iterator mit = map.begin(); mit != map.end(); ++mit, ++row )
   {
     if ( mit.value().isNull() )
-      setRow( row, mit.key(), QString( "" ) );
+      setRow( row, mit.key(), QString() );
     else
       setRow( row, mit.key(), mit.value().toString() );
   }
@@ -178,6 +179,8 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
+  QSettings settings;
+
   QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a file" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
@@ -233,6 +236,9 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     {
       val = val.mid( 1, val.length() - 2 );
     }
+
+    if ( key == settings.value( "qgis/nullValue", "NULL" ).toString() )
+      key = QString( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" );
 
     map[ key ] = val;
   }
