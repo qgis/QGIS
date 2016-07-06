@@ -69,6 +69,10 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, Q
 
   mModel = new QgsRuleBasedLabelingModel( mRootRule );
   viewRules->setModel( mModel );
+
+  connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SIGNAL( widgetChanged() ) );
 }
 
 QgsRuleBasedLabelingWidget::~QgsRuleBasedLabelingWidget()
@@ -116,8 +120,6 @@ void QgsRuleBasedLabelingWidget::ruleWidgetPanelAccepted( QgsPanelWidget* panel 
 
   QModelIndex index = viewRules->selectionModel()->currentIndex();
   mModel->updateRule( index.parent(), index.row() );
-
-  emit widgetChanged();
 }
 
 void QgsRuleBasedLabelingWidget::liveUpdateRuleFromPanel()
@@ -158,7 +160,6 @@ void QgsRuleBasedLabelingWidget::removeRule()
   }
   // make sure that the selection is gone
   viewRules->selectionModel()->clear();
-  emit widgetChanged();
 }
 
 void QgsRuleBasedLabelingWidget::copy()
@@ -171,7 +172,6 @@ void QgsRuleBasedLabelingWidget::copy()
 
   QMimeData* mime = mModel->mimeData( indexlist );
   QApplication::clipboard()->setMimeData( mime );
-  emit widgetChanged();
 }
 
 void QgsRuleBasedLabelingWidget::paste()
@@ -184,7 +184,6 @@ void QgsRuleBasedLabelingWidget::paste()
   else
     index = indexlist.first();
   mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
-  emit widgetChanged();
 }
 
 QgsRuleBasedLabeling::Rule* QgsRuleBasedLabelingWidget::currentRule()

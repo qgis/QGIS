@@ -107,6 +107,8 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
 
   connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SIGNAL( widgetChanged() ) );
 
   currentRuleChanged();
   selectedRulesChanged();
@@ -462,7 +464,6 @@ void QgsRuleBasedRendererV2Widget::refineRuleCategoriesAccepted( QgsPanelWidget 
     QgsRuleBasedRendererV2::refineRuleCategories( initialRule, r );
   }
   mModel->finishedAddingRules();
-  emit widgetChanged();
 }
 
 void QgsRuleBasedRendererV2Widget::refineRuleRangesAccepted( QgsPanelWidget *panel )
@@ -478,7 +479,6 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesAccepted( QgsPanelWidget *pan
     QgsRuleBasedRendererV2::refineRuleRanges( initialRule, r );
   }
   mModel->finishedAddingRules();
-  emit widgetChanged();
 }
 
 void QgsRuleBasedRendererV2Widget::ruleWidgetPanelAccepted( QgsPanelWidget *panel )
@@ -490,7 +490,6 @@ void QgsRuleBasedRendererV2Widget::ruleWidgetPanelAccepted( QgsPanelWidget *pane
   QModelIndex index = viewRules->selectionModel()->currentIndex();
   mModel->updateRule( index.parent(), index.row() );
   mModel->clearFeatureCounts();
-  emit widgetChanged();
 }
 
 void QgsRuleBasedRendererV2Widget::liveUpdateRuleFromPanel()
