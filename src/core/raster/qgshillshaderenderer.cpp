@@ -60,6 +60,8 @@ QgsRasterRenderer *QgsHillshadeRenderer::create( const QDomElement &elem, QgsRas
   double zFactor = elem.attribute( "zfactor", "1" ).toDouble();
   bool multiDirectional = elem.attribute( "multidirection", "0" ).toInt();
   QgsHillshadeRenderer* r = new QgsHillshadeRenderer( input, band, azimuth , angle );
+  r->readXML( elem );
+
   r->setZFactor( zFactor );
   r->setMultiDirectional( multiDirectional );
   return r;
