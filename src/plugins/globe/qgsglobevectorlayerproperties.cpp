@@ -34,8 +34,8 @@ QgsGlobeVectorLayerConfig* QgsGlobeVectorLayerConfig::getConfig( QgsVectorLayer*
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsGlobeVectorLayerPropertiesPage::QgsGlobeVectorLayerPropertiesPage( QgsVectorLayer* layer, QWidget *parent )
-    : QgsVectorLayerPropertiesPage( parent )
+QgsGlobeVectorLayerPropertiesPage::QgsGlobeVectorLayerPropertiesPage( QgsVectorLayer* layer, QgsMapCanvas *canvas, QWidget *parent )
+    : QgsMapLayerConfigWidget( layer, canvas, parent )
     , mLayer( layer )
 {
   setupUi( this );
@@ -190,17 +190,27 @@ QgsGlobeLayerPropertiesFactory::QgsGlobeLayerPropertiesFactory( QObject *parent 
   connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ), this, SLOT( writeGlobeVectorLayerConfig( QgsMapLayer*, QDomElement&, QDomDocument& ) ) );
 }
 
-QgsVectorLayerPropertiesPage* QgsGlobeLayerPropertiesFactory::createVectorLayerPropertiesPage( QgsVectorLayer* layer, QWidget* parent )
+QgsMapLayerConfigWidget *QgsGlobeLayerPropertiesFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const
 {
-  QgsGlobeVectorLayerPropertiesPage* propsPage = new QgsGlobeVectorLayerPropertiesPage( layer, parent );
+  Q_UNUSED( dockWidget );
+  QgsGlobeVectorLayerPropertiesPage* propsPage = new QgsGlobeVectorLayerPropertiesPage( qobject_cast<QgsVectorLayer*>( layer ), canvas, parent );
   connect( propsPage, SIGNAL( layerSettingsChanged( QgsMapLayer* ) ), this, SIGNAL( layerSettingsChanged( QgsMapLayer* ) ) );
   return propsPage;
 }
 
-QListWidgetItem* QgsGlobeLayerPropertiesFactory::createVectorLayerPropertiesItem( QgsVectorLayer* layer, QListWidget* view )
+QIcon QgsGlobeLayerPropertiesFactory::icon() const
 {
-  Q_UNUSED( layer );
-  return new QListWidgetItem( QIcon( ":/globe/icon.svg" ), tr( "Globe" ), view );
+  return QIcon( ":/globe/icon.svg" );
+}
+
+QString QgsGlobeLayerPropertiesFactory::title() const
+{
+  return tr( "Globe" );
+}
+
+bool QgsGlobeLayerPropertiesFactory::supportsLayer( QgsMapLayer *layer ) const
+{
+  return layer->type() == QgsMapLayer::VectorLayer;
 }
 
 void QgsGlobeLayerPropertiesFactory::readGlobeVectorLayerConfig( QgsMapLayer* mapLayer, const QDomElement& elem )

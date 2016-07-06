@@ -272,7 +272,7 @@ void GlobePlugin::initGui()
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mActionToggleGlobe );
 
   mLayerPropertiesFactory = new QgsGlobeLayerPropertiesFactory( this );
-  mQGisIface->registerMapLayerPropertiesFactory( mLayerPropertiesFactory );
+  mQGisIface->registerMapLayerConfigWidgetFactory( mLayerPropertiesFactory );
 
   connect( mActionToggleGlobe, SIGNAL( triggered( bool ) ), this, SLOT( setGlobeEnabled( bool ) ) );
   connect( mLayerPropertiesFactory, SIGNAL( layerSettingsChanged( QgsMapLayer* ) ), this, SLOT( layerChanged( QgsMapLayer* ) ) );
@@ -1090,7 +1090,7 @@ void GlobePlugin::unload()
   }
   mQGisIface->removePluginMenu( tr( "&Globe" ), mActionToggleGlobe );
   mQGisIface->removeToolBarIcon( mActionToggleGlobe );
-  mQGisIface->unregisterMapLayerPropertiesFactory( mLayerPropertiesFactory );
+  mQGisIface->unregisterMapLayerConfigWidgetFactory( mLayerPropertiesFactory );
   delete mLayerPropertiesFactory;
   mLayerPropertiesFactory = 0;
   delete mSettingsDialog;

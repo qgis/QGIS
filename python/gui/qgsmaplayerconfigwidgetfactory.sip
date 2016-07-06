@@ -29,6 +29,10 @@ class QgsMapLayerConfigWidgetFactory
      */
     virtual QString title() const;
 
+    virtual bool supportsStyleDock() const;
+
+    virtual bool supportLayerPropertiesDialog() const;
+
     /**
      * @brief Check if the layer is supported for this widget.
      * @return True if this layer is supported for this widget

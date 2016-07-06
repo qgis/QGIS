@@ -16,8 +16,11 @@
 #ifndef QGSGLOBEVECTORLAYERPROPERTIES_H
 #define QGSGLOBEVECTORLAYERPROPERTIES_H
 
+#include <QIcon>
+
 #include "ui_qgsglobevectorlayerpropertiespage.h"
-#include <qgsmaplayerpropertiesfactory.h>
+#include <qgsmaplayerconfigwidget.h>
+#include <qgsmaplayerconfigwidgetfactory.h>
 #include <osgEarthSymbology/AltitudeSymbol>
 
 class QgsGlobeVectorLayerConfig;
@@ -79,12 +82,12 @@ class QgsGlobeVectorLayerConfig : public QObject
 };
 
 
-class QgsGlobeVectorLayerPropertiesPage : public QgsVectorLayerPropertiesPage, private Ui::QgsGlobeVectorLayerPropertiesPage
+class QgsGlobeVectorLayerPropertiesPage : public QgsMapLayerConfigWidget, private Ui::QgsGlobeVectorLayerPropertiesPage
 {
     Q_OBJECT
 
   public:
-    explicit QgsGlobeVectorLayerPropertiesPage( QgsVectorLayer* layer, QWidget *parent = 0 );
+    explicit QgsGlobeVectorLayerPropertiesPage( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget *parent = 0 );
 
   public slots:
     virtual void apply();
@@ -102,13 +105,20 @@ class QgsGlobeVectorLayerPropertiesPage : public QgsVectorLayerPropertiesPage, p
 };
 
 
-class QgsGlobeLayerPropertiesFactory : public QObject, public QgsMapLayerPropertiesFactory
+class QgsGlobeLayerPropertiesFactory : public QObject, public QgsMapLayerConfigWidgetFactory
 {
     Q_OBJECT
   public:
     explicit QgsGlobeLayerPropertiesFactory( QObject* parent = 0 );
-    QgsVectorLayerPropertiesPage* createVectorLayerPropertiesPage( QgsVectorLayer* layer, QWidget* parent ) override;
-    QListWidgetItem* createVectorLayerPropertiesItem( QgsVectorLayer* layer, QListWidget* view ) override;
+    QgsMapLayerConfigWidget* createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
+
+    QIcon icon() const override;
+
+    QString title() const override;
+
+    bool supportLayerPropertiesDialog() const override { return true; }
+
+    bool supportsLayer( QgsMapLayer *layer ) const override;
 
   signals:
     void layerSettingsChanged( QgsMapLayer* layer );

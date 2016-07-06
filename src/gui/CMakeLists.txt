@@ -275,6 +275,7 @@ SET(QGIS_GUI_SRCS
   qgsowssourceselect.cpp
   qgssourceselectdialog.cpp
   qgspanelwidget.cpp
+  qgspanelwidgetstack.cpp
   qgspixmaplabel.cpp
   qgspluginmanagerinterface.cpp
   qgsprevieweffect.cpp
@@ -425,6 +426,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsowssourceselect.h
   qgssourceselectdialog.h
   qgspanelwidget.h
+  qgspanelwidgetstack.h
   qgspixmaplabel.h
   qgspluginmanagerinterface.h
   qgsprevieweffect.h

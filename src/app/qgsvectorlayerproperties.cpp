@@ -329,19 +329,21 @@ void QgsVectorLayerProperties::setLabelCheckBox()
 
 void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory* factory )
 {
+  if ( !factory->supportLayerPropertiesDialog() )
+  {
+    return;
+  }
+
   QListWidgetItem* item = new QListWidgetItem();
   item->setIcon( factory->icon() );
   item->setText( factory->title() );
   item->setToolTip( factory->title() );
 
-  if ( item )
-  {
-    mOptionsListWidget->addItem( item );
+  mOptionsListWidget->addItem( item );
 
-    QgsMapLayerConfigWidget* page = factory->createWidget( mLayer, nullptr, false, this );
-    mLayerPropertiesPages << page;
-    mOptionsStackedWidget->addWidget( page );
-  }
+  QgsMapLayerConfigWidget* page = factory->createWidget( mLayer, nullptr, false, this );
+  mLayerPropertiesPages << page;
+  mOptionsStackedWidget->addWidget( page );
 }
 
 void QgsVectorLayerProperties::insertField()

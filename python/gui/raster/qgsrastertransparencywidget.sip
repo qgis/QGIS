@@ -1,7 +1,7 @@
 /**
  * @brief Widget to control a layers transparency and related options
  */
-class QgsRasterTransparencyWidget: QgsPanelWidgetStack
+class QgsRasterTransparencyWidget: QgsMapLayerConfigWidget
 {
 %TypeHeaderCode
 #include <qgsrastertransparencywidget.h>

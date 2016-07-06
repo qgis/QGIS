@@ -173,7 +173,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
 
   Q_FOREACH ( QgsMapLayerConfigWidgetFactory* factory, mPageFactories )
   {
-    if ( factory->supportsLayer( layer ) )
+    if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
       QListWidgetItem* item =  new QListWidgetItem( factory->icon(), QString() );
       mOptionsListWidget->addItem( item );

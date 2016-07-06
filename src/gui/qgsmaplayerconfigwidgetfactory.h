@@ -48,6 +48,18 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     virtual QString title() const { return QString(); }
 
     /**
+     * Flag if widget is supported for use in style dock.
+     * @return True if supported
+     */
+    virtual bool supportsStyleDock() const { return false; }
+
+    /**
+     * Flag if widget is supported for use in layer properties dialog.
+     * @return True if supported
+     */
+    virtual bool supportLayerPropertiesDialog() const { return false; }
+
+    /**
      * @brief Check if the layer is supported for this widget.
      * @return True if this layer is supported for this widget
      */

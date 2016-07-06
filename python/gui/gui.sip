@@ -136,6 +136,7 @@
 %Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
 %Include qgspanelwidget.sip
+%Include qgspanelwidgetstack.sip
 %Include qgspixmaplabel.sip
 %Include qgspluginmanagerinterface.sip
 %Include qgsprevieweffect.sip

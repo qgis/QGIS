@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsGlobeVectorLayerPropertiesPage</class>
- <widget class="QgsVectorLayerPropertiesPage" name="QgsGlobeVectorLayerPropertiesPage">
+ <widget class="QgsMapLayerConfigWidget" name="QgsGlobeVectorLayerPropertiesPage">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackedWidgetRenderingMode">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pageRasterized">
       <layout class="QVBoxLayout" name="verticalLayout"/>
@@ -261,9 +261,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsVectorLayerPropertiesPage</class>
+   <class>QgsMapLayerConfigWidget</class>
    <extends>QWidget</extends>
-   <header>qgsvectorlayerpropertiespage.h</header>
+   <header>qgsmaplayerconfigwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
