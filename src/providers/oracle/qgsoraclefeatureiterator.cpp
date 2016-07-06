@@ -164,7 +164,6 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
 
   //NOTE - must be last added!
   mExpressionCompiled = false;
-  mCompileStatus = NoCompilation;
   QString fallbackStatement;
   bool useFallback = false;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
@@ -181,7 +180,6 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
 
         //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
         mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
-        mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
         limitAtProvider = mExpressionCompiled;
       }
       else
@@ -216,7 +214,6 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     if ( result )
     {
       mExpressionCompiled = false;
-      mCompileStatus = NoCompilation;
     }
   }
 }

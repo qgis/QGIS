@@ -68,11 +68,11 @@ void QgsOracleConnectionItem::refresh()
 
 void QgsOracleConnectionItem::setAllAsPopulated()
 {
-    Q_FOREACH ( QgsDataItem *child, mChildren )
-    {
-      child->setState( Populated );
-    }
-    setState( Populated );
+  Q_FOREACH ( QgsDataItem *child, mChildren )
+  {
+    child->setState( Populated );
+  }
+  setState( Populated );
 }
 
 QVector<QgsDataItem*> QgsOracleConnectionItem::createChildren()
