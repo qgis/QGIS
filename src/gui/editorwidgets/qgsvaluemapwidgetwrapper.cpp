@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvaluemapwidgetwrapper.h"
+#include "qgsvaluemapconfigdlg.h"
 
 #include <QSettings>
 
@@ -31,7 +32,7 @@ QVariant QgsValueMapWidgetWrapper::value() const
   if ( mComboBox )
     v = mComboBox->itemData( mComboBox->currentIndex() );
 
-  if ( v == QString( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" ) )
+  if ( v == QString( VALUEMAP_NULL_TEXT ) )
     v = QVariant( field().type() );
 
   return v;
@@ -77,7 +78,7 @@ void QgsValueMapWidgetWrapper::setValue( const QVariant& value )
 {
   QString v;
   if ( value.isNull() )
-    v = QString( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" );
+    v = QString( VALUEMAP_NULL_TEXT );
   else
     v = value.toString();
 

@@ -52,7 +52,7 @@ QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
 
     QString ks = ki->text();
     if (( ks == settings.value( "qgis/nullValue", "NULL" ).toString() ) && !( ki->flags() & Qt::ItemIsEditable ) )
-      ks = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}";
+      ks = VALUEMAP_NULL_TEXT;
 
     if ( !vi || vi->text().isNull() )
     {
@@ -129,7 +129,7 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
 
   if ( insertNull )
   {
-    setRow( row, "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}", "<NULL>" );
+    setRow( row, VALUEMAP_NULL_TEXT, "<NULL>" );
     ++row;
   }
 
@@ -148,7 +148,7 @@ void QgsValueMapConfigDlg::setRow( int row, const QString value, const QString d
   QTableWidgetItem* valueCell;
   QTableWidgetItem* descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
-  if ( value == QString( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" ) )
+  if ( value == QString( VALUEMAP_NULL_TEXT ) )
   {
     QFont cellFont;
     cellFont.setItalic( true );
@@ -167,7 +167,7 @@ void QgsValueMapConfigDlg::setRow( int row, const QString value, const QString d
 
 void QgsValueMapConfigDlg::addNullButtonPushed()
 {
-  setRow( tableWidget->rowCount() - 1, "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}", "<NULL>" );
+  setRow( tableWidget->rowCount() - 1, VALUEMAP_NULL_TEXT, "<NULL>" );
 }
 
 void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
@@ -240,7 +240,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     }
 
     if ( key == settings.value( "qgis/nullValue", "NULL" ).toString() )
-      key = QString( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" );
+      key = QString( VALUEMAP_NULL_TEXT );
 
     map[ key ] = val;
   }
