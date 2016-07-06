@@ -14,9 +14,8 @@
  ***************************************************************************/
 #include "qgsundowidget.h"
 
-#include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgslayertreeview.h"
+#include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
 
@@ -28,8 +27,6 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
 
   connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo() ) );
   connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo() ) );
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
-           this, SLOT( layerChanged( QgsMapLayer* ) ) );
 
   undoButton->setDisabled( true );
   redoButton->setDisabled( true );
@@ -39,20 +36,6 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
   mUndoStack = nullptr;
   mPreviousIndex = 0;
   mPreviousCount = 0;
-}
-
-
-void QgsUndoWidget::layerChanged( QgsMapLayer * layer )
-{
-  if ( layer )
-  {
-    setUndoStack( layer->undoStack() );
-  }
-  else
-  {
-    destroyStack();
-  }
-  emit undoStackChanged();
 }
 
 

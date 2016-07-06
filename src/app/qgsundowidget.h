@@ -64,10 +64,6 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
     QWidget* dockContents() { return dockWidgetContents; }
 
   public slots:
-    /**
-     * Changes undo stack which is displayed by undo view
-     */
-    void layerChanged( QgsMapLayer * layer );
 
     /**
      * Slot to handle undo changed signal

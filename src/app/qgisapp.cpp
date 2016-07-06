@@ -475,6 +475,19 @@ void QgisApp::activeLayerChanged( QgsMapLayer* layer )
 {
   if ( mMapCanvas )
     mMapCanvas->setCurrentLayer( layer );
+
+  if ( mUndoWidget )
+  {
+    if ( layer )
+    {
+      mUndoWidget->setUndoStack( layer->undoStack() );
+    }
+    else
+    {
+      mUndoWidget->destroyStack();
+    }
+    updateUndoActions();
+  }
 }
 
 /**
