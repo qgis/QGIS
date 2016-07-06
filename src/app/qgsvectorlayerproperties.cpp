@@ -338,7 +338,7 @@ void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidget
   {
     mOptionsListWidget->addItem( item );
 
-    QgsMapLayerConfigWidget* page = factory->createWidget( mLayer, nullptr, this );
+    QgsMapLayerConfigWidget* page = factory->createWidget( mLayer, nullptr, false, this );
     mLayerPropertiesPages << page;
     mOptionsStackedWidget->addWidget( page );
   }

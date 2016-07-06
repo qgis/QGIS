@@ -317,7 +317,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   // TODO Make all widgets use this method.
   if ( mUserPages.contains( row ) )
   {
-    QgsMapLayerConfigWidget* panel = mUserPages[row]->createWidget( mCurrentLayer, mMapCanvas, mWidgetStack );
+    QgsMapLayerConfigWidget* panel = mUserPages[row]->createWidget( mCurrentLayer, mMapCanvas, true, mWidgetStack );
     if ( panel )
     {
       connect( panel, SIGNAL( widgetChanged( QgsPanelWidget* ) ), this, SLOT( autoApply() ) );
