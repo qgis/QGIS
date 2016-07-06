@@ -84,6 +84,7 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     bool mExpressionCompiled;
     bool mFetchGeometry;
     QgsAttributeList mAttributeList;
+    QString mSql;
 };
 
 #endif // QGSORACLEFEATUREITERATOR_H

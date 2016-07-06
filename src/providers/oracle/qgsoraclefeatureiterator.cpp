@@ -209,10 +209,16 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
     if ( mRewind )
     {
       mRewind = false;
-      if ( !mQry.first() )
-        return true;
+      if ( !QgsOracleProvider::exec( mQry, mSql ) )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL:%1\nError: %2" )
+                                   .arg( mQry.lastQuery() )
+                                   .arg( mQry.lastError().text() ),
+                                   QObject::tr( "Oracle" ) );
+        return false;
+      }
     }
-    else if ( !mQry.next() )
+    if ( !mQry.next() )
     {
       return false;
     }
@@ -444,6 +450,7 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause )
       query += QString( " WHERE %1" ).arg( whereClause );
 
     QgsDebugMsg( QString( "Fetch features: %1" ).arg( query ) );
+    mSql = query;
     if ( !QgsOracleProvider::exec( mQry, query ) )
     {
       QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL:%1\nError: %2" )
