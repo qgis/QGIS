@@ -85,6 +85,7 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
     void stop();
     QMap<QString, QgsOracleOwnerItem * > mOwnerMap;
     QgsOracleColumnTypeThread *mColumnTypeThread;
+    void setAllAsPopulated();
 };
 
 class QgsOracleOwnerItem : public QgsDataCollectionItem

@@ -30,7 +30,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause );
 // ---------------------------------------------------------------------------
 QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
-    , mColumnTypeThread( 0 )
+    , mColumnTypeThread( nullptr )
 {
   mIconName = "mIconConnect.png";
 }
@@ -47,14 +47,12 @@ void QgsOracleConnectionItem::stop()
     mColumnTypeThread->stop();
     mColumnTypeThread->wait();
     delete mColumnTypeThread;
-    mColumnTypeThread = 0;
+    mColumnTypeThread = nullptr;
   }
 }
 
 void QgsOracleConnectionItem::refresh()
 {
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
   stop();
 
   Q_FOREACH ( QgsDataItem *child, mChildren )
@@ -66,17 +64,27 @@ void QgsOracleConnectionItem::refresh()
   {
     addChildItem( item, true );
   }
+}
 
-  QApplication::restoreOverrideCursor();
+void QgsOracleConnectionItem::setAllAsPopulated()
+{
+    Q_FOREACH ( QgsDataItem *child, mChildren )
+    {
+      child->setState( Populated );
+    }
+    setState( Populated );
 }
 
 QVector<QgsDataItem*> QgsOracleConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
+  setState( Populating );
 
   mOwnerMap.clear();
 
   stop();
+
+  if ( deferredDelete() )
+    return QVector<QgsDataItem*>();
 
   if ( !mColumnTypeThread )
   {
@@ -99,7 +107,13 @@ QVector<QgsDataItem*> QgsOracleConnectionItem::createChildren()
   }
 
   if ( mColumnTypeThread )
+  {
     mColumnTypeThread->start();
+  }
+  else
+  {
+    setAllAsPopulated();
+  }
 
   return QVector<QgsDataItem*>();
 }
@@ -107,13 +121,12 @@ QVector<QgsDataItem*> QgsOracleConnectionItem::createChildren()
 void QgsOracleConnectionItem::threadStarted()
 {
   QgsDebugMsgLevel( "Entering.", 3 );
-  qApp->setOverrideCursor( Qt::BusyCursor );
 }
 
 void QgsOracleConnectionItem::threadFinished()
 {
   QgsDebugMsgLevel( "Entering.", 3 );
-  qApp->restoreOverrideCursor();
+  setAllAsPopulated();
 }
 
 void QgsOracleConnectionItem::setLayerType( QgsOracleLayerProperty layerProperty )
@@ -133,6 +146,7 @@ void QgsOracleConnectionItem::setLayerType( QgsOracleLayerProperty layerProperty
     if ( !ownerItem )
     {
       ownerItem = new QgsOracleOwnerItem( this, layerProperty.ownerName, mPath + "/" + layerProperty.ownerName );
+      ownerItem->setState( Populating );
       QgsDebugMsgLevel( "add owner item: " + layerProperty.ownerName, 3 );
       addChildItem( ownerItem, true );
       mOwnerMap[ layerProperty.ownerName ] = ownerItem;
@@ -371,6 +385,8 @@ QgsOracleOwnerItem::QgsOracleOwnerItem( QgsDataItem* parent, QString name, QStri
     : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconDbOwner.png";
+  //not fertile, since children are created by QgsOracleConnectionItem
+  mCapabilities &= ~( Fertile );
 }
 
 QVector<QgsDataItem*> QgsOracleOwnerItem::createChildren()
