@@ -370,6 +370,7 @@ class ProviderTestCase(object):
 
     def testGetFeaturesFidsTests(self):
         fids = [f.id() for f in self.provider.getFeatures()]
+        self.assertEqual(len(fids), 5)
 
         request = QgsFeatureRequest().setFilterFids([fids[0], fids[2]])
         result = set([f.id() for f in self.provider.getFeatures(request)])
