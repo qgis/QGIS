@@ -1246,7 +1246,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
       const QgsField &fld = mAttributeFields[idx];
 
-      QgsDebugMsg( "Checking field against: " + fld.name() );
+      QgsDebugMsgLevel( "Checking field against: " + fld.name(), 4 );
 
       if ( fld.name().isEmpty() || fld.name() == mGeometryColumn )
         continue;
@@ -1313,7 +1313,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
     {
       QgsAttributes attributevec = features->attributes();
 
-      QgsDebugMsg( QString( "insert feature %1" ).arg( features->id() ) );
+      QgsDebugMsgLevel( QString( "insert feature %1" ).arg( features->id() ), 4 );
 
       if ( !mGeometryColumn.isNull() )
       {
