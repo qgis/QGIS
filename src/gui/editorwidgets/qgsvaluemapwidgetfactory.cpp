@@ -90,17 +90,11 @@ QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldI
   QString valueDisplayText;
   QSettings settings;
   if ( value.isNull() )
-  {
     valueInternalText = QString( VALUEMAP_NULL_TEXT );
-    valueDisplayText = settings.value( "qgis/nullValue", "NULL" ).toString();
-  }
   else
-  {
     valueInternalText = value.toString();
-    valueDisplayText = value.toString();
-  }
 
-  return config.key( valueInternalText, QVariant( QString( "(%1)" ).arg( vl->fields().at( fieldIdx ).displayString( valueDisplayText ) ) ).toString() );
+  return config.key( valueInternalText, QVariant( QString( "(%1)" ).arg( vl->fields().at( fieldIdx ).displayString( value ) ) ).toString() );
 }
 
 Qt::AlignmentFlag QgsValueMapWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
