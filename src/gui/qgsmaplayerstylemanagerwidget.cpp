@@ -94,6 +94,9 @@ void QgsMapLayerStyleManagerWidget::styleClicked( QModelIndex index )
     return;
 
   QString name = index.data().toString();
+  if ( name == "(default)" )
+    name = "";
+
   mLayer->styleManager()->setCurrentStyle( name );
 }
 
