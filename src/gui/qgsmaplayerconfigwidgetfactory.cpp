@@ -34,7 +34,7 @@ QgsMapLayerConfigWidget *QgsMapLayerConfigWidgetFactory::createPropertiesPage(Qg
    return nullptr;
 }
 
-QgsMapLayerConfigWidget *QgsMapLayerConfigWidgetFactory::createPanel(QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent) const
+QgsMapLayerConfigWidget *QgsMapLayerConfigWidgetFactory::createPanel(QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr) const
 {
  return nullptr;
 }
