@@ -1,6 +1,6 @@
 /***************************************************************************
-    qgsmapstylepanel.cpp
-    ---------------------
+    qgsmaplayerconfigwidget.cpp
+    ---------------------------
     begin                : June 2016
     copyright            : (C) 2016 by Nathan Woodrow
     email                : woodrow dot nathan at gmail dot com

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgslayeroptionsfactory.h
+    qgsmaplayerconfigwidgetfactoryfactory.h
      --------------------------------------
     Date                 : 9.7.2013
     Copyright            : (C) 2013 Matthias Kuhn
@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLAYERPROPERTIESFACTORY_H
-#define QGSLAYERPROPERTIESFACTORY_H
+#ifndef QGSMAPLAYERCONFIGWIDGETFACTORY_H
+#define QGSMAPLAYERCONFIGWIDGETFACTORY_H
 
 #include <QListWidgetItem>
 
 #include "qgsmaplayerconfigwidget.h"
 
 /** \ingroup gui
- * \class QgsMapLayerPropertiesFactory
+ * \class QgsMapLayerConfigWidgetFactory
  * \note added in QGIS 2.16
  * Factory class for creating custom map layer property pages
  */
@@ -65,4 +65,4 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     virtual QgsMapLayerConfigWidget* createWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget* parent = 0 ) const = 0;
 };
 
-#endif // QGSLAYERPROPERTIESFACTORY_H
+#endif // QGSMAPLAYERCONFIGWIDGETFACTORY_H

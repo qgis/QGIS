@@ -1,6 +1,6 @@
 /***************************************************************************
     qgsmaplayerconfigwidget.h
-    ---------------------
+    -------------------------
     begin                : June 2016
     copyright            : (C) 2016 by Nathan Woodrow
     email                : woodrow dot nathan at gmail dot com
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSMAPSTYLEPANEL_H
-#define QGSMAPSTYLEPANEL_H
+#ifndef QGSMAPLAYERCONFIGWIDGET_H
+#define QGSMAPLAYERCONFIGWIDGET_H
 
 #include <QWidget>
 #include <QIcon>
@@ -55,4 +55,4 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
     QgsMapCanvas* mMapCanvas;
 };
 
-#endif // QGSMAPSTYLEPANEL_H
+#endif // QGSMAPLAYERCONFIGWIDGET_H

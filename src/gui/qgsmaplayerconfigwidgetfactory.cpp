@@ -1,6 +1,6 @@
 /***************************************************************************
-    qgsmaplayerconfigwidgetfactory.cpp
-     --------------------------------------
+    qgsmaplayerconfigwidgetfactoryfactory.cpp
+     ----------------------------------------
     Date                 : 9.7.2013
     Copyright            : (C) 2013 Matthias Kuhn
     Email                : matthias dot kuhn at gmx dot ch
