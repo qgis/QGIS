@@ -106,19 +106,19 @@ QVector<QgsDataItem*> QgsOracleConnectionItem::createChildren()
 
 void QgsOracleConnectionItem::threadStarted()
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsgLevel( "Entering.", 3 );
   qApp->setOverrideCursor( Qt::BusyCursor );
 }
 
 void QgsOracleConnectionItem::threadFinished()
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsgLevel( "Entering.", 3 );
   qApp->restoreOverrideCursor();
 }
 
 void QgsOracleConnectionItem::setLayerType( QgsOracleLayerProperty layerProperty )
 {
-  QgsDebugMsg( layerProperty.toString() );
+  QgsDebugMsgLevel( layerProperty.toString(), 3 );
   QgsOracleOwnerItem *ownerItem = mOwnerMap.value( layerProperty.ownerName, 0 );
 
   for ( int i = 0 ; i < layerProperty.size(); i++ )
@@ -126,19 +126,19 @@ void QgsOracleConnectionItem::setLayerType( QgsOracleLayerProperty layerProperty
     QGis::WkbType wkbType = layerProperty.types.at( i );
     if ( wkbType == QGis::WKBUnknown )
     {
-      QgsDebugMsg( "skip unknown geometry type" );
+      QgsDebugMsgLevel( "skip unknown geometry type", 3 );
       continue;
     }
 
     if ( !ownerItem )
     {
       ownerItem = new QgsOracleOwnerItem( this, layerProperty.ownerName, mPath + "/" + layerProperty.ownerName );
-      QgsDebugMsg( "add owner item: " + layerProperty.ownerName );
+      QgsDebugMsgLevel( "add owner item: " + layerProperty.ownerName, 3 );
       addChildItem( ownerItem, true );
       mOwnerMap[ layerProperty.ownerName ] = ownerItem;
     }
 
-    QgsDebugMsg( "ADD LAYER" );
+    QgsDebugMsgLevel( "ADD LAYER", 3 );
     ownerItem->addLayer( layerProperty.at( i ) );
   }
 }
@@ -158,17 +158,21 @@ QList<QAction*> QgsOracleConnectionItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
-  lst.append( actionEdit );
-
-  QAction* actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
-  lst.append( actionDelete );
-
   QAction* actionRefresh = new QAction( tr( "Refresh" ), this );
   connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refreshConnection() ) );
   lst.append( actionRefresh );
+
+  QAction* separator = new QAction( this );
+  separator->setSeparator( true );
+  lst.append( separator );
+
+  QAction* actionEdit = new QAction( tr( "Edit Connection..." ), this );
+  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  lst.append( actionEdit );
+
+  QAction* actionDelete = new QAction( tr( "Delete Connection" ), this );
+  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  lst.append( actionDelete );
 
   return lst;
 }
@@ -185,10 +189,16 @@ void QgsOracleConnectionItem::editConnection()
 
 void QgsOracleConnectionItem::deleteConnection()
 {
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
+                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QgsOracleConn::deleteConnection( mName );
 
   // the parent should be updated
-  mParent->refresh();
+  if ( mParent )
+    mParent->refresh();
 }
 
 void QgsOracleConnectionItem::refreshConnection()
@@ -230,13 +240,13 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
     if ( srcLayer->isValid() )
     {
       uri.setDataSource( QString(), u.name.left( 30 ).toUpper(), "GEOM" );
-      uri.setWkbType( srcLayer->wkbType() );
+      uri.setWkbType( QGis::fromOldWkbType( srcLayer->wkbType() ) );
       QString authid = srcLayer->crs().authid();
       if ( authid.startsWith( "EPSG:", Qt::CaseInsensitive ) )
       {
         uri.setSrid( authid.mid( 5 ) );
       }
-      QgsDebugMsg( "URI " + uri.uri() );
+      QgsDebugMsgLevel( "URI " + uri.uri(), 3 );
       QgsVectorLayerImport::ImportError err;
       QString importError;
       err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri(), "oracle", &srcLayer->crs(), false, &importError, false, 0, progress );
@@ -294,7 +304,7 @@ QList<QAction*> QgsOracleLayerItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionDeleteLayer = new QAction( tr( "Delete layer" ), this );
+  QAction* actionDeleteLayer = new QAction( tr( "Delete Table" ), this );
   connect( actionDeleteLayer, SIGNAL( triggered() ), this, SLOT( deleteLayer() ) );
   lst.append( actionDeleteLayer );
 
@@ -303,15 +313,20 @@ QList<QAction*> QgsOracleLayerItem::actions()
 
 void QgsOracleLayerItem::deleteLayer()
 {
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
+                              QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.ownerName, mLayerProperty.tableName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QString errCause;
   bool res = ::deleteLayer( mUri, errCause );
   if ( !res )
   {
-    QMessageBox::warning( 0, tr( "Delete layer" ), errCause );
+    QMessageBox::warning( 0, tr( "Delete Table" ), errCause );
   }
   else
   {
-    QMessageBox::information( 0, tr( "Delete layer" ), tr( "Layer deleted successfully." ) );
+    QMessageBox::information( 0, tr( "Delete Table" ), tr( "Table deleted successfully." ) );
     deleteLater();
   }
 }
@@ -330,10 +345,10 @@ QString QgsOracleLayerItem::createUri()
   QgsDataSourceURI uri = QgsOracleConn::connUri( connItem->name() );
   uri.setDataSource( mLayerProperty.ownerName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, QString::null );
   uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
-  uri.setWkbType( mLayerProperty.types.at( 0 ) );
+  uri.setWkbType( QGis::fromOldWkbType( mLayerProperty.types.at( 0 ) ) );
   if ( mLayerProperty.isView && mLayerProperty.pkCols.size() > 0 )
     uri.setKeyColumn( mLayerProperty.pkCols[0] );
-  QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri() ) );
+  QgsDebugMsgLevel( QString( "layer uri: %1" ).arg( uri.uri() ), 3 );
   return uri.uri();
 }
 
@@ -346,7 +361,7 @@ QgsOracleOwnerItem::QgsOracleOwnerItem( QgsDataItem* parent, QString name, QStri
 
 QVector<QgsDataItem*> QgsOracleOwnerItem::createChildren()
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsgLevel( "Entering.", 3 );
   return QVector<QgsDataItem*>();
 }
 
@@ -356,7 +371,7 @@ QgsOracleOwnerItem::~QgsOracleOwnerItem()
 
 void QgsOracleOwnerItem::addLayer( QgsOracleLayerProperty layerProperty )
 {
-  QgsDebugMsg( layerProperty.toString() );
+  QgsDebugMsgLevel( layerProperty.toString(), 3 );
 
   Q_ASSERT( layerProperty.size() == 1 );
   QGis::WkbType wkbType = layerProperty.types.at( 0 );
