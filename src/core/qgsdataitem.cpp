@@ -668,6 +668,8 @@ void QgsDataItem::setState( State state )
   mPopulated = state == Populated;
 
   emit stateChanged( this, oldState );
+  if ( state == Populated )
+    emitDataChanged();
 }
 
 // ---------------------------------------------------------------------
