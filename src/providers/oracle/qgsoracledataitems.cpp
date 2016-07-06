@@ -216,13 +216,15 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
 
   qApp->setOverrideCursor( Qt::WaitCursor );
 
-  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, 0 );
+  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
   progress->setWindowTitle( tr( "Import layer" ) );
   progress->setWindowModality( Qt::WindowModal );
   progress->show();
 
   QStringList importResults;
   bool hasError = false;
+  bool cancelled = false;
+
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
@@ -248,9 +250,11 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
       QgsDebugMsgLevel( "URI " + uri.uri(), 3 );
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri(), "oracle", &srcLayer->crs(), false, &importError, false, 0, progress );
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri(), "oracle", &srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      else if ( err == QgsVectorLayerImport::ErrUserCancelled )
+        cancelled = true;
       else
       {
         importResults.append( QString( "%1: %2" ).arg( u.name ).arg( importError ) );
@@ -270,7 +274,12 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
 
   qApp->restoreOverrideCursor();
 
-  if ( hasError )
+  if ( cancelled )
+  {
+    QMessageBox::information( nullptr, tr( "Import to Oracle database" ), tr( "Import cancelled." ) );
+    refresh();
+  }
+  else if ( hasError )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to Oracle database" ) );
@@ -282,6 +291,11 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
     QMessageBox::information( 0, tr( "Import to Oracle database" ), tr( "Import was successful." ) );
     refresh();
   }
+
+  if ( state() == Populated )
+    refresh();
+  else
+    populate();
 
   return true;
 }
