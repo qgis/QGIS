@@ -81,7 +81,7 @@ void QgsAnimatedIcon::connectFrameChanged( const QObject * receiver, const char 
     mCount++;
   }
   mMovie->setPaused( mCount == 0 );
-  QgsDebugMsg( QString( "mCount = %1" ).arg( mCount ) );
+  QgsDebugMsgLevel( QString( "mCount = %1" ).arg( mCount ), 3 );
 }
 
 void QgsAnimatedIcon::disconnectFrameChanged( const QObject * receiver, const char * method )
@@ -91,7 +91,7 @@ void QgsAnimatedIcon::disconnectFrameChanged( const QObject * receiver, const ch
     mCount--;
   }
   mMovie->setPaused( mCount == 0 );
-  QgsDebugMsg( QString( "mCount = %1" ).arg( mCount ) );
+  QgsDebugMsgLevel( QString( "mCount = %1" ).arg( mCount ), 3 );
 }
 
 // shared icons
@@ -248,7 +248,7 @@ QString QgsDataItem::pathComponent( const QString &string )
 
 void QgsDataItem::deleteLater()
 {
-  QgsDebugMsg( "path = " + path() );
+  QgsDebugMsgLevel( "path = " + path(), 3 );
   setParent( nullptr ); // also disconnects parent
   Q_FOREACH ( QgsDataItem *child, mChildren )
   {
@@ -287,7 +287,7 @@ void QgsDataItem::moveToThread( QThread * targetThread )
   {
     if ( !child ) // should not happen
       continue;
-    QgsDebugMsg( "moveToThread child " + child->path() );
+    QgsDebugMsgLevel( "moveToThread child " + child->path(), 3 );
     child->QObject::setParent( nullptr ); // to be sure
     child->moveToThread( targetThread );
   }
@@ -341,7 +341,7 @@ void QgsDataItem::emitStateChanged( QgsDataItem* item, QgsDataItem::State oldSta
 {
   if ( !item )
     return;
-  QgsDebugMsg( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ) );
+  QgsDebugMsgLevel( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ), 2 );
   emit stateChanged( item, oldState );
 }
 
@@ -355,7 +355,7 @@ void QgsDataItem::populate( bool foreground )
   if ( state() == Populated || state() == Populating )
     return;
 
-  QgsDebugMsg( "mPath = " + mPath );
+  QgsDebugMsgLevel( "mPath = " + mPath, 2 );
 
   if ( capabilities2() & QgsDataItem::Fast || foreground )
   {
@@ -377,27 +377,27 @@ void QgsDataItem::populate( bool foreground )
 // This is expected to be run in a separate thread
 QVector<QgsDataItem*> QgsDataItem::runCreateChildren( QgsDataItem* item )
 {
-  QgsDebugMsg( "path = " + item->path() );
+  QgsDebugMsgLevel( "path = " + item->path(), 2 );
   QTime time;
   time.start();
   QVector <QgsDataItem*> children = item->createChildren();
-  QgsDebugMsg( QString( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ) );
+  QgsDebugMsgLevel( QString( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ), 3 );
   // Children objects must be pushed to main thread.
   Q_FOREACH ( QgsDataItem* child, children )
   {
     if ( !child ) // should not happen
       continue;
-    QgsDebugMsg( "moveToThread child " + child->path() );
+    QgsDebugMsgLevel( "moveToThread child " + child->path(), 2 );
     if ( qApp )
       child->moveToThread( qApp->thread() ); // moves also children
   }
-  QgsDebugMsg( QString( "finished path %1: %2 children" ).arg( item->path() ).arg( children.size() ) );
+  QgsDebugMsgLevel( QString( "finished path %1: %2 children" ).arg( item->path() ).arg( children.size() ), 3 );
   return children;
 }
 
 void QgsDataItem::childrenCreated()
 {
-  QgsDebugMsg( QString( "path = %1 children.size() = %2" ).arg( path() ).arg( mFutureWatcher->result().size() ) );
+  QgsDebugMsgLevel( QString( "path = %1 children.size() = %2" ).arg( path() ).arg( mFutureWatcher->result().size() ), 3 );
 
   if ( deferredDelete() )
   {
@@ -420,7 +420,7 @@ void QgsDataItem::childrenCreated()
 
 void QgsDataItem::populate( const QVector<QgsDataItem*>& children )
 {
-  QgsDebugMsg( "mPath = " + mPath );
+  QgsDebugMsgLevel( "mPath = " + mPath, 3 );
 
   Q_FOREACH ( QgsDataItem *child, children )
   {
@@ -434,11 +434,11 @@ void QgsDataItem::populate( const QVector<QgsDataItem*>& children )
 
 void QgsDataItem::depopulate()
 {
-  QgsDebugMsg( "mPath = " + mPath );
+  QgsDebugMsgLevel( "mPath = " + mPath, 3 );
 
   Q_FOREACH ( QgsDataItem *child, mChildren )
   {
-    QgsDebugMsg( "remove " + child->path() );
+    QgsDebugMsgLevel( "remove " + child->path(), 3 );
     child->depopulate(); // recursive
     deleteChildItem( child );
   }
@@ -450,7 +450,7 @@ void QgsDataItem::refresh()
   if ( state() == Populating )
     return;
 
-  QgsDebugMsg( "mPath = " + mPath );
+  QgsDebugMsgLevel( "mPath = " + mPath, 3 );
 
   if ( capabilities2() & QgsDataItem::Fast )
   {
@@ -484,7 +484,7 @@ void QgsDataItem::refresh( QVector<QgsDataItem*> children )
   }
   Q_FOREACH ( QgsDataItem *child, remove )
   {
-    QgsDebugMsg( "remove " + child->path() );
+    QgsDebugMsgLevel( "remove " + child->path(), 3 );
     deleteChildItem( child );
   }
 
@@ -548,7 +548,7 @@ void QgsDataItem::setParent( QgsDataItem* parent )
 void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
 {
   Q_ASSERT( child );
-  QgsDebugMsg( QString( "path = %1 add child #%2 - %3 - %4" ).arg( mPath ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ) );
+  QgsDebugMsgLevel( QString( "path = %1 add child #%2 - %3 - %4" ).arg( mPath ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ), 3 );
 
   //calculate position to insert child
   int i;
@@ -642,7 +642,7 @@ QgsDataItem::State QgsDataItem::state() const
 
 void QgsDataItem::setState( State state )
 {
-  QgsDebugMsg( QString( "item %1 set state %2 -> %3" ).arg( path() ).arg( this->state() ).arg( state ) );
+  QgsDebugMsgLevel( QString( "item %1 set state %2 -> %3" ).arg( path() ).arg( this->state() ).arg( state ), 3 );
   if ( state == mState )
     return;
 
@@ -919,11 +919,11 @@ bool QgsDirectoryItem::hiddenPath( QString path )
 
 void QgsDirectoryItem::childrenCreated()
 {
-  QgsDebugMsg( QString( "mRefreshLater = %1" ).arg( mRefreshLater ) );
+  QgsDebugMsgLevel( QString( "mRefreshLater = %1" ).arg( mRefreshLater ), 3 );
 
   if ( mRefreshLater )
   {
-    QgsDebugMsg( "directory changed during createChidren() -> refresh() again" );
+    QgsDebugMsgLevel( "directory changed during createChidren() -> refresh() again", 3 );
     mRefreshLater = false;
     setState( Populated );
     refresh();
@@ -1245,7 +1245,7 @@ void QgsZipItem::init()
     for ( i = keys.begin(); i != keys.end(); ++i )
     {
       QString k( *i );
-      QgsDebugMsg( "provider " + k );
+      QgsDebugMsgLevel( "provider " + k, 3 );
       // some providers hangs with empty uri (Postgis) etc...
       // -> using libraries directly
       QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( k );
