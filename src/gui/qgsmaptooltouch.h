@@ -48,7 +48,7 @@ class GUI_EXPORT QgsMapToolTouch : public QgsMapTool
     //! Overridden Mouse double click event.
     virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e ) override;
 
-    virtual bool isTransient() override { return true; }
+    Q_DECL_DEPRECATED virtual bool isTransient() const override { return true; }
 
     bool gestureEvent( QGestureEvent *event ) override;
 
