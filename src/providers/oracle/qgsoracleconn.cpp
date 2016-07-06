@@ -382,7 +382,7 @@ QString QgsOracleConn::fieldExpression( const QgsField &fld )
 
 void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes )
 {
-  QgsDebugMsg( "entering: " + layerProperty.toString() );
+  QgsDebugMsgLevel( "entering: " + layerProperty.toString(), 3 );
 
   if ( layerProperty.isView )
   {
@@ -699,7 +699,7 @@ void QgsOracleConn::setSelectedConnection( QString name )
 
 QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
 {
-  QgsDebugMsg( "theConnName = " + theConnName );
+  QgsDebugMsgLevel( "theConnName = " + theConnName, 3 );
 
   QSettings settings;
 
