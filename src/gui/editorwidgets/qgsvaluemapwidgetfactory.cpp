@@ -88,9 +88,10 @@ QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldI
 
   QString valueInternalText;
   QString valueDisplayText;
+  QSettings settings;
   if ( value.isNull() )
   {
-    valueInternalText = QString( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" );
+    valueInternalText = QString( VALUEMAP_NULL_TEXT );
     valueDisplayText = settings.value( "qgis/nullValue", "NULL" ).toString();
   }
   else

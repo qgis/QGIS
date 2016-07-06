@@ -20,6 +20,8 @@
 
 #include "qgseditorconfigwidget.h"
 
+#define VALUEMAP_NULL_TEXT "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
+
 /** \ingroup gui
  * \class QgsValueMapConfigDlg
  * \note not available in Python bindings
