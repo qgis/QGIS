@@ -275,12 +275,6 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
           }
         }
       }
-
-      if (( mRequest.flags() & QgsFeatureRequest::NoGeometry ) != 0 )
-      {
-        // clear not requested geometry
-        feature.setGeometry( 0 );
-      }
     }
 
     QgsFeatureId fid = 0;
