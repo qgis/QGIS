@@ -91,7 +91,7 @@ QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldI
   if ( value.isNull() )
   {
     valueInternalText = QString( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" );
-    valueDisplayText = QString( "NULL" );
+    valueDisplayText = settings.value( "qgis/nullValue", "NULL" ).toString();
   }
   else
   {

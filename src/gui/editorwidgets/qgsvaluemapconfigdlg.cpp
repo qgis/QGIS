@@ -39,6 +39,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
 QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
+  QSettings settings;
 
   //store data to map
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
@@ -50,7 +51,7 @@ QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
       continue;
 
     QString ks = ki->text();
-    if (( ks == QString( "NULL" ) ) && !( ki->flags() & Qt::ItemIsEditable ) )
+    if (( ks == settings.value( "qgis/nullValue", "NULL" ).toString() ) && !( ki->flags() & Qt::ItemIsEditable ) )
       ks = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}";
 
     if ( !vi || vi->text().isNull() )
@@ -143,6 +144,7 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
 
 void QgsValueMapConfigDlg::setRow( int row, const QString value, const QString description )
 {
+  QSettings settings;
   QTableWidgetItem* valueCell;
   QTableWidgetItem* descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
@@ -150,7 +152,7 @@ void QgsValueMapConfigDlg::setRow( int row, const QString value, const QString d
   {
     QFont cellFont;
     cellFont.setItalic( true );
-    valueCell = new QTableWidgetItem( "NULL" );
+    valueCell = new QTableWidgetItem( settings.value( "qgis/nullValue", "NULL" ).toString() );
     valueCell->setFont( cellFont );
     valueCell->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
     descriptionCell->setFont( cellFont );
