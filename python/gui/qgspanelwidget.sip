@@ -77,9 +77,9 @@ class QgsPanelWidget : public QWidget
   signals:
 
     /**
-     * Emiited when the panel is accpeted by the user.
+     * Emitted when the panel is accepted by the user.
      * @param panel The panel widget that was accepted.
-     * @note This argument is normally raised with emit panelAccpeted(this)
+     * @note This argument is normally raised with emit panelAccepted(this)
      * so that callers can retrive the widget easier in calling code.
      */
     void panelAccepted( QgsPanelWidget* panel );
@@ -93,7 +93,7 @@ class QgsPanelWidget : public QWidget
     void showPanel( QgsPanelWidget* panel );
 
     /**
-     * Emiited when the widget state changes.
+     * Emitted when the widget state changes.
      * Connect to this to pull any changes off the widget when needed.
      * As panels are non blocking "dialogs" you should listen to this signal
      * to give the user feedback when something changes.
@@ -114,7 +114,7 @@ class QgsPanelWidget : public QWidget
     void openPanel( QgsPanelWidget* panel );
 
     /**
-     * Accept the panel. Causes panelAccepted to be emiited.
+     * Accept the panel. Causes panelAccepted to be emitted.
      * Widgets are normally removed form the interface using the panel manager or the caller.
      */
     void acceptPanel();

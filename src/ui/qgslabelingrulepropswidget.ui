@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsLabelingRulePropsDialog</class>
- <widget class="QDialog" name="QgsLabelingRulePropsDialog">
+ <class>QgsLabelingRulePropsWidget</class>
+ <widget class="QWidget" name="QgsLabelingRulePropsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,7 +14,16 @@
    <string>Rule properties</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -31,11 +40,20 @@
         <x>0</x>
         <y>0</y>
         <width>666</width>
-        <height>540</height>
+        <height>573</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -102,7 +120,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+           <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
             <property name="toolTip">
              <string/>
             </property>
@@ -134,16 +152,6 @@
      </widget>
     </widget>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -158,7 +166,6 @@
   <tabstop>editFilter</tabstop>
   <tabstop>btnExpressionBuilder</tabstop>
   <tabstop>btnTestFilter</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

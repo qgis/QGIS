@@ -17,6 +17,8 @@
 
 #include <QWidget>
 
+#include "qgspanelwidget.h"
+
 #include <ui_qgsrulebasedlabelingwidget.h>
 
 #include "qgsrulebasedlabeling.h"
@@ -72,36 +74,33 @@ class APP_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
 };
 
 
-class QgsLabelingRulePropsDialog;
+class QgsLabelingRulePropsWidget;
 
 
-class QgsRuleBasedLabelingWidget : public QWidget, private Ui::QgsRuleBasedLabelingWidget
+class QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui::QgsRuleBasedLabelingWidget
 {
     Q_OBJECT
   public:
-    QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = nullptr, bool dockMode = false );
+    QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = nullptr );
     ~QgsRuleBasedLabelingWidget();
 
     //! save config to layer
     void writeSettingsToLayer();
-    void setDockMode( bool enabled );
 
   signals:
     void widgetChanged();
 
   protected slots:
-    void saveRuleEdit();
     void addRule();
-    void saveRule();
-    void rejectRule();
     void editRule();
     void editRule( const QModelIndex& index );
     void removeRule();
     void copy();
     void paste();
 
-  private:
-    void addNewRule( QgsRuleBasedLabeling::Rule* newrule );
+  private slots:
+    void ruleWidgetPanelAccepted( QgsPanelWidget* panel );
+    void liveUpdateRuleFromPanel();
 
   protected:
     QgsRuleBasedLabeling::Rule* currentRule();
@@ -112,12 +111,10 @@ class QgsRuleBasedLabelingWidget : public QWidget, private Ui::QgsRuleBasedLabel
 
     QgsRuleBasedLabeling::Rule* mRootRule;
     QgsRuleBasedLabelingModel* mModel;
-    QgsLabelingRulePropsDialog* mRuleProps;
 
     QAction* mCopyAction;
     QAction* mPasteAction;
     QAction* mDeleteAction;
-    bool mDockMode;
 };
 
 
@@ -125,9 +122,9 @@ class QgsRuleBasedLabelingWidget : public QWidget, private Ui::QgsRuleBasedLabel
 
 class QgsLabelingGui;
 
-#include "ui_qgslabelingrulepropsdialog.h"
+#include "ui_qgslabelingrulepropswidget.h"
 
-class APP_EXPORT QgsLabelingRulePropsDialog : public QDialog, private Ui::QgsLabelingRulePropsDialog
+class APP_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui::QgsLabelingRulePropsWidget
 {
     Q_OBJECT
 
@@ -138,15 +135,13 @@ class APP_EXPORT QgsLabelingRulePropsDialog : public QDialog, private Ui::QgsLab
       Editing
     };
 
-    QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer,
-                                QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr,
-                                bool dockMode = false );
-    ~QgsLabelingRulePropsDialog();
+    QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer,
+                                QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
+    ~QgsLabelingRulePropsWidget();
 
     QgsRuleBasedLabeling::Rule* rule() { return mRule; }
 
-    Mode currentMode() { return mCurrentMode; }
-    void setCurrentMode( Mode currentMode ) { mCurrentMode = currentMode; }
+    virtual void setDockMode( bool dockMode ) override;
 
   signals:
     void widgetChanged();
@@ -154,8 +149,11 @@ class APP_EXPORT QgsLabelingRulePropsDialog : public QDialog, private Ui::QgsLab
   public slots:
     void testFilter();
     void buildExpression();
-    void updateRule();
-    void accept() override;
+
+    /**
+     * Apply any changes from the widget to the set rule.
+     */
+    void apply();
 
   protected:
     QgsRuleBasedLabeling::Rule* mRule; // borrowed
@@ -165,8 +163,6 @@ class APP_EXPORT QgsLabelingRulePropsDialog : public QDialog, private Ui::QgsLab
     QgsPalLayerSettings* mSettings; // a clone of original settings
 
     QgsMapCanvas* mMapCanvas;
-    bool mDockMode;
-    Mode mCurrentMode;
 };
 
 

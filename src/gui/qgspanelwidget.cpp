@@ -96,7 +96,10 @@ QgsPanelWidgetStack::QgsPanelWidgetStack( QWidget *parent )
 void QgsPanelWidgetStack::addMainPanel( QgsPanelWidget *panel )
 {
   // TODO Don't allow adding another main widget or else that would be strange for the user.
-  connect( panel, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( showPanel( QgsPanelWidget* ) ) );
+  connect( panel, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( showPanel( QgsPanelWidget* ) ),
+           // using unique connection because addMainPanel() may be called multiple times
+           // for a panel, so showPanel() slot could be invoked more times from one signal
+           Qt::UniqueConnection );
   mStackedWidget->insertWidget( 0, panel );
   mStackedWidget->setCurrentIndex( 0 );
 }

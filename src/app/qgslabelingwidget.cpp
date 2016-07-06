@@ -86,8 +86,8 @@ void QgsLabelingWidget::setLayer( QgsMapLayer* mapLayer )
 
 void QgsLabelingWidget::setDockMode( bool enabled )
 {
-  mDockMode = enabled;
-  mLabelGui->setDockMode( mDockMode );
+  QgsPanelWidget::setDockMode( enabled );
+  mLabelGui->setDockMode( enabled );
 }
 
 void QgsLabelingWidget::adaptToLayer()
@@ -155,7 +155,9 @@ void QgsLabelingWidget::labelModeChanged( int index )
     delete mWidget;
     mWidget = nullptr;
 
-    QgsRuleBasedLabelingWidget* ruleWidget = new QgsRuleBasedLabelingWidget( mLayer, mCanvas, this, mDockMode );
+    QgsRuleBasedLabelingWidget* ruleWidget = new QgsRuleBasedLabelingWidget( mLayer, mCanvas, this );
+    ruleWidget->setDockMode( dockMode() );
+    connect( ruleWidget, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
     connect( ruleWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
     mWidget = ruleWidget;
     mStackedWidget->addWidget( mWidget );

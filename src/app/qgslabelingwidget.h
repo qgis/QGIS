@@ -63,8 +63,6 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mCanvas;
 
-    bool mDockMode;
-
     QWidget* mWidget;
     QgsLabelingGui* mLabelGui;
     QScopedPointer< QgsAbstractVectorLayerLabeling > mOldSettings;
