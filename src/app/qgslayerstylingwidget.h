@@ -51,15 +51,24 @@ class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWid
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {
   public:
-    QgsMapLayerStyleCommand( QgsMapLayer* layer, const QDomNode& current, const QDomNode& last );
+    QgsMapLayerStyleCommand( QgsMapLayer* layer, const QString& text, const QDomNode& current, const QDomNode& last );
+
+    /** Return unique ID for this kind of undo command.
+     * Currently we do not have a central registry of undo command IDs, so it is a random magic number.
+     */
+    virtual int id() const override { return 0xbeef; }
 
     virtual void undo() override;
     virtual void redo() override;
+
+    /** Try to merge with other commands of this type when they are created in small time interval */
+    virtual bool mergeWith( const QUndoCommand* other ) override;
 
   private:
     QgsMapLayer* mLayer;
     QDomNode mXml;
     QDomNode mLastState;
+    QTime mTime;
 };
 
 class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerStylingWidgetBase

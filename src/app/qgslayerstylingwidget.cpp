@@ -448,19 +448,18 @@ void QgsLayerStylingWidget::pushUndoItem( const QString &name )
   QDomElement rootNode = doc.createElement( "qgis" );
   doc.appendChild( rootNode );
   mCurrentLayer->writeStyle( rootNode, doc, errorMsg );
-  mCurrentLayer->undoStackStyles()->beginMacro( name );
-  mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, rootNode, mLastStyleXml ) );
-  mCurrentLayer->undoStackStyles()->endMacro();
+  mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, name, rootNode, mLastStyleXml ) );
   // Override the last style on the stack
   mLastStyleXml = rootNode.cloneNode();
 }
 
 
-QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QDomNode &current, const QDomNode &last )
-    : QUndoCommand()
+QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString& text, const QDomNode &current, const QDomNode &last )
+    : QUndoCommand( text )
     , mLayer( layer )
     , mXml( current )
     , mLastState( last )
+    , mTime( QTime::currentTime() )
 {
 }
 
@@ -476,6 +475,25 @@ void QgsMapLayerStyleCommand::redo()
   QString error;
   mLayer->readStyle( mXml, error );
   mLayer->triggerRepaint();
+}
+
+bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand* other )
+{
+  if ( other->id() != id() ) // make sure other is also an QgsMapLayerStyleCommand
+    return false;
+
+  const QgsMapLayerStyleCommand* otherCmd = static_cast<const QgsMapLayerStyleCommand*>( other );
+  if ( otherCmd->mLayer != mLayer )
+    return false;  // should never happen though...
+
+  // only merge commands if they are created shortly after each other
+  // (e.g. user keeps modifying one property)
+  if ( mTime.msecsTo( otherCmd->mTime ) > 3000 )
+    return false;
+
+  mXml = otherCmd->mXml;
+  mTime = otherCmd->mTime;
+  return true;
 }
 
 QIcon QgsLayerStyleManagerWidgetFactory::icon() const
