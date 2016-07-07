@@ -176,6 +176,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
       QListWidgetItem* item =  new QListWidgetItem( factory->icon(), QString() );
+      item->setToolTip( factory->title() );
       mOptionsListWidget->addItem( item );
       int row = mOptionsListWidget->row( item );
       mUserPages[row] = factory;
@@ -485,7 +486,7 @@ QIcon QgsLayerStyleManagerWidgetFactory::icon() const
 
 QString QgsLayerStyleManagerWidgetFactory::title() const
 {
-  return QString();
+  return QObject::tr( "Style Manager" );
 }
 
 QgsMapLayerConfigWidget *QgsLayerStyleManagerWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const
