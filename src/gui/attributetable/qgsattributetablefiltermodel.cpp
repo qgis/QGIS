@@ -503,7 +503,11 @@ QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex& sour
   if ( proxyIndex.column() < 0 )
     return QModelIndex();
 
-  return index( proxyIndex.row(), mapColumnToSource( proxyIndex.column() ), proxyIndex.parent() );
+  int col = mapColumnToSource( proxyIndex.column() );
+  if ( col == -1 )
+    col = 0;
+
+  return index( proxyIndex.row(), col , proxyIndex.parent() );
 }
 
 Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex& index ) const
