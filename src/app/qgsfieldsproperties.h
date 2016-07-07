@@ -55,12 +55,14 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         DesignerTreeItemData()
             : mType( Field )
             , mColumnCount( 1 )
+            , mShowAsGroupBox( false )
         {}
 
         DesignerTreeItemData( Type type, const QString& name )
             : mType( type )
             , mName( name )
             , mColumnCount( 1 )
+            , mShowAsGroupBox( false )
         {}
 
         QString name() const { return mName; }

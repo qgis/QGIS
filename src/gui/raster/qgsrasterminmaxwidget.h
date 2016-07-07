@@ -82,7 +82,6 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     QgsRectangle mExtent;
 
     QgsMapCanvas* mCanvas;
-    QgsRasterLayer* mRasterLayer;
 };
 
 #endif // QGSRASTERMINMAXWIDGET_H
