@@ -617,7 +617,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
           "    padding:0px;"
           "    margin:0px;"
           "    font-family:verdana;"
-          "    font-size: 12px;"
+          "    font-size: 1.1em;"
           "  }"
           "  div#votes {"
           "    width:360px;"
