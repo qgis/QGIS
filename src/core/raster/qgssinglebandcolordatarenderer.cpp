@@ -35,9 +35,7 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 QgsSingleBandColorDataRenderer* QgsSingleBandColorDataRenderer::clone() const
 {
   QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( nullptr, mBand );
-  renderer->setOpacity( mOpacity );
-  renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
+  renderer->copyCommonProperties( this );
   return renderer;
 }
 

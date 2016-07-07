@@ -38,12 +38,10 @@ QgsHillshadeRenderer::QgsHillshadeRenderer( QgsRasterInterface *input, int band,
 QgsHillshadeRenderer *QgsHillshadeRenderer::clone() const
 {
   QgsHillshadeRenderer* r = new QgsHillshadeRenderer( nullptr, mBand, mLightAzimuth, mLightAngle );
+  r->copyCommonProperties( this );
+
   r->setZFactor( mZFactor );
   r->setMultiDirectional( mMultiDirectional );
-  // "Effects"
-  r->setOpacity( mOpacity );
-  r->setAlphaBand( mAlphaBand );
-  r->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
   return r;
 }
 

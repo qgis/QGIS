@@ -49,9 +49,8 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
 QgsPalettedRasterRenderer* QgsPalettedRasterRenderer::clone() const
 {
   QgsPalettedRasterRenderer * renderer = new QgsPalettedRasterRenderer( nullptr, mBand, rgbArray(), mNColors );
-  renderer->setOpacity( mOpacity );
-  renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
+  renderer->copyCommonProperties( this );
+
   renderer->mLabels = mLabels;
   return renderer;
 }

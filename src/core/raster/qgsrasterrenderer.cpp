@@ -134,6 +134,16 @@ void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
   }
 }
 
+void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer* other )
+{
+  if ( !other )
+    return;
+
+  setOpacity( other->opacity() );
+  setAlphaBand( other->alphaBand() );
+  setRasterTransparency( other->rasterTransparency() ? new QgsRasterTransparency( *other->rasterTransparency() ) : nullptr );
+}
+
 QString QgsRasterRenderer::minMaxOriginName( int theOrigin )
 {
   if ( theOrigin == MinMaxUnknown )

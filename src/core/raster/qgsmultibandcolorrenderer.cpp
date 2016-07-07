@@ -48,6 +48,8 @@ QgsMultiBandColorRenderer::~QgsMultiBandColorRenderer()
 QgsMultiBandColorRenderer* QgsMultiBandColorRenderer::clone() const
 {
   QgsMultiBandColorRenderer * renderer = new QgsMultiBandColorRenderer( nullptr, mRedBand, mGreenBand, mBlueBand );
+  renderer->copyCommonProperties( this );
+
   if ( mRedContrastEnhancement )
   {
     renderer->setRedContrastEnhancement( new QgsContrastEnhancement( *mRedContrastEnhancement ) );
@@ -60,9 +62,6 @@ QgsMultiBandColorRenderer* QgsMultiBandColorRenderer::clone() const
   {
     renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
   }
-  renderer->setOpacity( mOpacity );
-  renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
 
   return renderer;
 }

@@ -133,7 +133,15 @@ void QgsRendererRasterPropertiesWidget::apply()
   QgsRasterRendererWidget* rendererWidget = dynamic_cast<QgsRasterRendererWidget*>( stackedWidget->currentWidget() );
   if ( rendererWidget )
   {
-    mRasterLayer->setRenderer( rendererWidget->renderer() );
+    QgsRasterRenderer* newRenderer = rendererWidget->renderer();
+
+    // there are transparency related data stored in renderer instances, but they
+    // are not configured in the widget, so we need to copy them over from existing renderer
+    QgsRasterRenderer* oldRenderer = mRasterLayer->renderer();
+    if ( oldRenderer )
+      newRenderer->copyCommonProperties( oldRenderer );
+
+    mRasterLayer->setRenderer( newRenderer );
   }
 
   // Hue and saturation controls
