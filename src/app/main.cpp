@@ -1034,8 +1034,8 @@ int main( int argc, char *argv[] )
   QString mySplashPath( QgsCustomization::instance()->splashPath() );
   QPixmap myPixmap( mySplashPath + QLatin1String( "splash.png" ) );
 
-  double w = 600 * qApp->desktop()->logicalDpiX() / 96;
-  double h = 300 * qApp->desktop()->logicalDpiY() / 96;
+  int w = 600 * qApp->desktop()->logicalDpiX() / 96;
+  int h = 300 * qApp->desktop()->logicalDpiY() / 96;
 
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio ) );
   if ( !myHideSplash && !mySettings.value( "/qgis/hideSplash" ).toBool() )
