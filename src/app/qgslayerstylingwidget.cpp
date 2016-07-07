@@ -489,7 +489,9 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand* other )
 
   // only merge commands if they are created shortly after each other
   // (e.g. user keeps modifying one property)
-  if ( mTime.msecsTo( otherCmd->mTime ) > 3000 )
+  QSettings settings;
+  int timeout = settings.value( "/UI/styleUndoMergeTimeout", 500 ).toInt();
+  if ( mTime.msecsTo( otherCmd->mTime ) > timeout )
     return false;
 
   mXml = otherCmd->mXml;
