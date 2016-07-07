@@ -168,6 +168,11 @@ void QgsMeasureTool::updateSettings()
     mRubberBand->addPoint( mPoints.last() );
     mDialog->addPoint( mPoints.last() );
   }
+  if ( mRubberBand->size() > 0 )
+  {
+    mRubberBand->setVisible( true );
+    mRubberBandPoints->setVisible( true );
+  }
 }
 
 //////////////////////////
