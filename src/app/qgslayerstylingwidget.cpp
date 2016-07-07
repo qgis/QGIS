@@ -153,22 +153,27 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   {
     QListWidgetItem* symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ), QString() );
     symbolItem->setData( Qt::UserRole, Symbology );
+    symbolItem->setToolTip( tr( "Symbology" ) );
     mOptionsListWidget->addItem( symbolItem );
     QListWidgetItem* labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( "labelingSingle.svg" ), QString() );
     labelItem->setData( Qt::UserRole, VectorLabeling );
+    labelItem->setToolTip( tr( "Labels" ) );
     mOptionsListWidget->addItem( labelItem );
   }
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
     QListWidgetItem* symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ), QString() );
     symbolItem->setData( Qt::UserRole, Symbology );
+    symbolItem->setToolTip( tr( "Symbology" ) );
     mOptionsListWidget->addItem( symbolItem );
     QListWidgetItem* transparencyItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/transparency.png" ), QString() );
+    transparencyItem->setToolTip( tr( "Transparency" ) );
     transparencyItem->setData( Qt::UserRole, RasterTransparency );
     mOptionsListWidget->addItem( transparencyItem );
     QListWidgetItem* histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/histogram.png" ), QString() );
     histogramItem->setData( Qt::UserRole, RasterHistogram );
     mOptionsListWidget->addItem( histogramItem );
+    histogramItem->setToolTip( tr( "Histogram" ) );
   }
 
   Q_FOREACH ( QgsMapLayerConfigWidgetFactory* factory, mPageFactories )
@@ -184,6 +189,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   }
   QListWidgetItem* historyItem = new QListWidgetItem( QgsApplication::getThemeIcon( "mActionHistory.svg" ), QString() );
   historyItem->setData( Qt::UserRole, History );
+  historyItem->setToolTip( tr( "History" ) );
   mOptionsListWidget->addItem( historyItem );
   mOptionsListWidget->blockSignals( false );
 
