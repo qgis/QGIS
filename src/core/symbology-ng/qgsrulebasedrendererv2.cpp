@@ -1240,8 +1240,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
   {
     r = dynamic_cast<QgsRuleBasedRendererV2*>( renderer->clone() );
   }
-
-  if ( renderer->type() == "singleSymbol" )
+  else if ( renderer->type() == "singleSymbol" )
   {
     const QgsSingleSymbolRendererV2* singleSymbolRenderer = dynamic_cast<const QgsSingleSymbolRendererV2*>( renderer );
     if ( !singleSymbolRenderer )
@@ -1251,8 +1250,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
     convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField() );
     r = new QgsRuleBasedRendererV2( origSymbol );
   }
-
-  if ( renderer->type() == "categorizedSymbol" )
+  else if ( renderer->type() == "categorizedSymbol" )
   {
     const QgsCategorizedSymbolRendererV2* categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRendererV2*>( renderer );
     if ( !categorizedRenderer )
@@ -1315,8 +1313,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
 
     r = new QgsRuleBasedRendererV2( rootrule );
   }
-
-  if ( renderer->type() == "graduatedSymbol" )
+  else if ( renderer->type() == "graduatedSymbol" )
   {
     const QgsGraduatedSymbolRendererV2* graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRendererV2*>( renderer );
     if ( !graduatedRenderer )
@@ -1372,14 +1369,13 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
 
     r = new QgsRuleBasedRendererV2( rootrule );
   }
-
-  if ( renderer->type() == "pointDisplacement" )
+  else if ( renderer->type() == "pointDisplacement" )
   {
     const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
     if ( pointDisplacementRenderer )
       r = convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
   }
-  if ( renderer->type() == "invertedPolygonRenderer" )
+  else if ( renderer->type() == "invertedPolygonRenderer" )
   {
     const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
     if ( invertedPolygonRenderer )
