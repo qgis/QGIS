@@ -753,6 +753,23 @@
           52.520804
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alexandre Neto",
+        "Committer": "No",
+        "First Commit Message": "Some translations",
+        "First Commit Date": "26-02-2013",
+        "GIT Nickname": "SrNetoChan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.42036,
+          38.69744
+        ]
+      }
     }
   ]
 }
