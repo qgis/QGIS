@@ -171,3 +171,8 @@ QString QgsRelationReferenceFactory::representValue( QgsVectorLayer* vl, int fie
   }
   return title;
 }
+
+QVariant QgsRelationReferenceFactory::sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
+{
+  return representValue( vl, fieldIdx, config, cache, value );
+}
