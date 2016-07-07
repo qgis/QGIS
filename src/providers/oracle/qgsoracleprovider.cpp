@@ -159,6 +159,10 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
   << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "CHAR", QVariant::String, 1, 255 )
   << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar2)" ), "VARCHAR2", QVariant::String, 1, 255 )
   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (long)" ), "LONG", QVariant::String )
+
+  // date type
+  << QgsVectorDataProvider::NativeType( tr( "Date" ), "DATE", QVariant::Date, 38, 38, 0, 0 )
+  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "TIMESTAMP(6)", QVariant::DateTime, 38, 38, 6, 6 )
   ;
 
   QString key;
@@ -741,7 +745,15 @@ bool QgsOracleProvider::loadFields()
     if ( !mIsQuery && !types.contains( field.name() ) )
       continue;
 
-    mAttributeFields.append( QgsField( field.name(), field.type(), types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) ) );
+    QVariant::Type type = field.type();
+
+    if ( types.value( field.name() ) == "DATE" )
+    {
+      // date types are incorrectly detected as datetime
+      type = QVariant::Date;
+    }
+
+    mAttributeFields.append( QgsField( field.name(), type, types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) ) );
     mDefaultValues.append( defvalues.value( field.name(), QVariant() ) );
   }
 
@@ -2522,6 +2534,11 @@ bool QgsOracleProvider::convertField( QgsField &field )
       break;
 
     case QVariant::DateTime:
+      fieldType = "TIMESTAMP";
+      fieldPrec = -1;
+      break;
+
+
     case QVariant::Time:
     case QVariant::String:
       fieldType = "VARCHAR2(2047)";
