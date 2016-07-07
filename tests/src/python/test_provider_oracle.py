@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest
+from qgis.core import QgsVectorLayer, QgsFeatureRequest, NULL
 
 from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 
@@ -76,6 +76,32 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             'not null',
             'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))'])
         return filters
+
+    # HERE GO THE PROVIDER SPECIFIC TESTS
+    def testDateTimeTypes(self):
+        vl = QgsVectorLayer('%s table="QGIS"."DATE_TIMES" sql=' %
+                            (self.dbconn), "testdatetimes", "oracle")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName(
+            'date_field')).type(), QVariant.Date)
+        self.assertEqual(fields.at(fields.indexFromName(
+            'datetime_field')).type(), QVariant.DateTime)
+
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+
+        date_idx = vl.fieldNameIndex('date_field')
+        self.assertTrue(isinstance(f.attributes()[date_idx], QDate))
+        self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
+        datetime_idx = vl.fieldNameIndex('datetime_field')
+        self.assertTrue(isinstance(f.attributes()[datetime_idx], QDateTime))
+        self.assertEqual(f.attributes()[datetime_idx], QDateTime(
+            QDate(2004, 3, 4), QTime(13, 41, 52)))
+
+    def testDefaultValue(self):
+        self.assertEqual(self.provider.defaultValue(1), NULL)
+        self.assertEqual(self.provider.defaultValue(2), "'qgis'")
 
 if __name__ == '__main__':
     unittest.main()
