@@ -399,10 +399,10 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
-void QgsExpressionBuilderWidget::saveToRecent( const QString& key )
+void QgsExpressionBuilderWidget::saveToRecent( const QString& collection )
 {
   QSettings settings;
-  QString location = QString( "/expressions/recent/%1" ).arg( key );
+  QString location = QString( "/expressions/recent/%1" ).arg( collection );
   QStringList expressions = settings.value( location ).toStringList();
   expressions.removeAll( this->expressionText() );
 
@@ -414,13 +414,13 @@ void QgsExpressionBuilderWidget::saveToRecent( const QString& key )
   }
 
   settings.setValue( location, expressions );
-  this->loadRecent( key );
+  this->loadRecent( collection );
 }
 
-void QgsExpressionBuilderWidget::loadRecent( const QString& key )
+void QgsExpressionBuilderWidget::loadRecent( const QString& collection )
 {
-  mRecentKey = key;
-  QString name = tr( "Recent (%1)" ).arg( key );
+  mRecentKey = collection;
+  QString name = tr( "Recent (%1)" ).arg( collection );
   if ( mExpressionGroups.contains( name ) )
   {
     QgsExpressionItem* node = mExpressionGroups.value( name );
@@ -428,7 +428,7 @@ void QgsExpressionBuilderWidget::loadRecent( const QString& key )
   }
 
   QSettings settings;
-  QString location = QString( "/expressions/recent/%1" ).arg( key );
+  QString location = QString( "/expressions/recent/%1" ).arg( collection );
   QStringList expressions = settings.value( location ).toStringList();
   int i = 0;
   Q_FOREACH ( const QString& expression, expressions )
