@@ -75,6 +75,15 @@ QString QgsEditorWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx
   return value == defVal ? defVal : vl->fields().at( fieldIdx ).displayString( value );
 }
 
+QVariant QgsEditorWidgetFactory::sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
+{
+  Q_UNUSED( vl )
+  Q_UNUSED( fieldIdx )
+  Q_UNUSED( config )
+  Q_UNUSED( cache )
+  return value;
+}
+
 Qt::AlignmentFlag QgsEditorWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
 {
   Q_UNUSED( config );
