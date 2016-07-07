@@ -28,8 +28,12 @@
 class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 {
   public:
+
     /** Constructor */
     QgsMapLayerConfigWidgetFactory();
+
+    /** Constructor */
+    QgsMapLayerConfigWidgetFactory( QString title, QIcon icon );
 
     /** Destructor */
     virtual ~QgsMapLayerConfigWidgetFactory();
@@ -38,14 +42,28 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * @brief The icon that will be shown in the UI for the panel.
      * @return A QIcon for the panel icon.
      */
-    virtual QIcon icon() const { return QIcon(); }
+    virtual QIcon icon() const { return mIcon; }
+
+    /**
+     * Set the icon for the factory object.
+     * @param icon The icon to show in the interface.
+     */
+    void setIcon( QIcon icon ) { mIcon = icon; }
 
     /**
      * @brief The title of the panel.
      * @note This may or may not be shown to the user.
      * @return Title of the panel
      */
-    virtual QString title() const { return QString(); }
+    virtual QString title() const { return mTitle; }
+
+    /**
+     * Set the title for the interface
+     * @note Not all users may show this as a label
+     * e.g style dock uses this as a tooltip.
+     * @param title The title to set.
+     */
+    void setTitlte( QString title ) { mTitle = title; }
 
     /**
      * Flag if widget is supported for use in style dock.
@@ -54,10 +72,22 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     virtual bool supportsStyleDock() const { return false; }
 
     /**
+     * Set support flag for style dock
+     * @param supports True if this widget is supported in the style dock.
+     */
+    void setSupportsStyleDock( bool supports ) { mSuppprtsDock = supports; }
+
+    /**
      * Flag if widget is supported for use in layer properties dialog.
      * @return True if supported
      */
     virtual bool supportLayerPropertiesDialog() const { return false; }
+
+    /**
+     * Set support flag for style dock
+     * @param supports True if this widget is supported in the style dock.
+     */
+    void setSupportLayerPropertiesDialog( bool supports ) { mSuppprtsProperties = supports; }
 
     /**
      * @brief Check if the layer is supported for this widget.
@@ -75,6 +105,12 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * @return A new QgsMapStylePanel which is shown in the map style dock.
      */
     virtual QgsMapLayerConfigWidget* createWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget* parent = 0 ) const = 0;
+
+  private:
+    QIcon mIcon;
+    QString mTitle;
+    bool mSuppprtsDock;
+    bool mSuppprtsProperties;
 };
 
 #endif // QGSMAPLAYERCONFIGWIDGETFACTORY_H

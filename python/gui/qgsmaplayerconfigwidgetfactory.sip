@@ -13,6 +13,9 @@ class QgsMapLayerConfigWidgetFactory
     /** Constructor */
     QgsMapLayerConfigWidgetFactory();
 
+    /** Constructor */
+    QgsMapLayerConfigWidgetFactory(QString title, QIcon icon);
+
     /** Destructor */
     virtual ~QgsMapLayerConfigWidgetFactory();
 
@@ -22,6 +25,8 @@ class QgsMapLayerConfigWidgetFactory
      */
     virtual QIcon icon() const;
 
+    void setIcon(QIcon icon);
+
     /**
      * @brief The title of the panel.
      * @note This may or may not be shown to the user.
@@ -29,9 +34,15 @@ class QgsMapLayerConfigWidgetFactory
      */
     virtual QString title() const;
 
+    void setTitlte(QString title);
+
     virtual bool supportsStyleDock() const;
 
+    void setSupportsStyleDock(bool supports);
+
     virtual bool supportLayerPropertiesDialog() const;
+
+    void setSupportLayerPropertiesDialog(bool supports);
 
     /**
      * @brief Check if the layer is supported for this widget.

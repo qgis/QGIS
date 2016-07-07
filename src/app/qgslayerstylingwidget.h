@@ -42,8 +42,7 @@ class QgsMapLayerStyleManagerWidget;
 class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
   public:
-    QIcon icon() const override;
-    QString title() const override;
+    QgsLayerStyleManagerWidgetFactory();
     bool supportsStyleDock() const override { return true; }
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;

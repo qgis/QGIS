@@ -505,14 +505,10 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand* other )
   return true;
 }
 
-QIcon QgsLayerStyleManagerWidgetFactory::icon() const
+QgsLayerStyleManagerWidgetFactory::QgsLayerStyleManagerWidgetFactory()
 {
-  return  QgsApplication::getThemeIcon( "propertyicons/stylepreset.svg" );
-}
-
-QString QgsLayerStyleManagerWidgetFactory::title() const
-{
-  return QObject::tr( "Style Manager" );
+  setIcon( QgsApplication::getThemeIcon( "propertyicons/stylepreset.svg" ) );
+  setTitlte( QObject::tr( "Style Manager" ) );
 }
 
 QgsMapLayerConfigWidget *QgsLayerStyleManagerWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const

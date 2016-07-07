@@ -17,6 +17,13 @@
 
 QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory()
 {
+
+}
+
+QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory( QString title, QIcon icon )
+    : mIcon( icon )
+    , mTitle( title )
+{
 }
 
 QgsMapLayerConfigWidgetFactory::~QgsMapLayerConfigWidgetFactory()
