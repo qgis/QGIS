@@ -205,7 +205,7 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
     }
   }
 
-  sort( config.sortExpression() );
+  sort( config.sortExpression(), config.sortOrder() );
 }
 
 void QgsAttributeTableFilterModel::sort( QString expression, Qt::SortOrder order )

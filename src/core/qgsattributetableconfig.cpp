@@ -196,6 +196,7 @@ void QgsAttributeTableConfig::readXml( const QDomNode& node )
   }
 
   mSortExpression = configNode.toElement().attribute( "sortExpression" );
+  mSortOrder = static_cast<Qt::SortOrder>( configNode.toElement().attribute( "sortOrder" ).toInt() );
 }
 
 QString QgsAttributeTableConfig::sortExpression() const
@@ -230,7 +231,17 @@ void QgsAttributeTableConfig::setColumnHidden( int column, bool hidden )
 
 bool QgsAttributeTableConfig::operator!=( const QgsAttributeTableConfig& other ) const
 {
-  return mSortExpression != other.mSortExpression || mColumns != other.mColumns || mActionWidgetStyle != other.mActionWidgetStyle;
+  return mSortExpression != other.mSortExpression || mColumns != other.mColumns || mActionWidgetStyle != other.mActionWidgetStyle || mSortOrder != other.mSortOrder;
+}
+
+Qt::SortOrder QgsAttributeTableConfig::sortOrder() const
+{
+  return mSortOrder;
+}
+
+void QgsAttributeTableConfig::setSortOrder( const Qt::SortOrder& sortOrder )
+{
+  mSortOrder = sortOrder;
 }
 
 void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
@@ -241,6 +252,8 @@ void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
   configElement.setAttribute( "actionWidgetStyle", mActionWidgetStyle == ButtonList ? "buttonList" : "dropDown" );
 
   configElement.setAttribute( "sortExpression", mSortExpression );
+
+  configElement.setAttribute( "sortOrder", mSortOrder );
 
   QDomElement columnsElement  = doc.createElement( "columns" );
 

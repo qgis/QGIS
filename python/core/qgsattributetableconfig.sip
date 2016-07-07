@@ -154,4 +154,16 @@ class QgsAttributeTableConfig
      * @see columnHidden()
      */
     void setColumnHidden( int column, bool hidden );
+
+    /**
+     * Get the sort order
+     * @note Added in 2.16
+     */
+    Qt::SortOrder sortOrder() const;
+
+    /**
+     * Set the sort order
+     * @note Added in 2.16
+     */
+    void setSortOrder( const Qt::SortOrder& sortOrder );
 };

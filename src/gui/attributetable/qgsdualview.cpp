@@ -591,7 +591,7 @@ void QgsDualView::modifySort()
   orderByDlg.setLayout( layout );
 
   QGroupBox* sortingGroupBox = new QGroupBox();
-  sortingGroupBox->setTitle( tr( "Enable sorting order in attribute table" ) );
+  sortingGroupBox->setTitle( tr( "Defined sort order in attribute table" ) );
   sortingGroupBox->setCheckable( true );
   sortingGroupBox->setChecked( !sortExpression().isEmpty() );
   layout->addWidget( sortingGroupBox );
@@ -610,22 +610,27 @@ void QgsDualView::modifySort()
 
   sortingGroupBox->layout()->addWidget( expressionBuilder );
 
+  QCheckBox* cbxSortAscending = new QCheckBox( tr( "Sort ascending" ) );
+  cbxSortAscending->setChecked( config.sortOrder() == Qt::AscendingOrder );
+  sortingGroupBox->layout()->addWidget( cbxSortAscending );
+
   layout->addWidget( dialogButtonBox );
   if ( orderByDlg.exec() )
   {
+    Qt::SortOrder sortOrder = cbxSortAscending->isChecked() ? Qt::AscendingOrder : Qt::DescendingOrder;
     if ( sortingGroupBox->isChecked() )
     {
-      setSortExpression( expressionBuilder->expressionText() );
+      setSortExpression( expressionBuilder->expressionText(), sortOrder );
       config.setSortExpression( expressionBuilder->expressionText() );
+      config.setSortOrder( sortOrder );
     }
     else
     {
-      setSortExpression( QString() );
+      setSortExpression( QString(), sortOrder );
       config.setSortExpression( QString() );
     }
 
-    layer->setAttributeTableConfig( config );
-    mConfig = config;
+    setAttributeTableConfig( config );
   }
 }
 
@@ -655,12 +660,18 @@ void QgsDualView::onSortColumnChanged()
 {
   QgsAttributeTableConfig cfg = mLayerCache->layer()->attributeTableConfig();
   cfg.setSortExpression( mFilterModel->sortExpression() );
+  cfg.setSortOrder( mFilterModel->sortOrder() );
   mLayerCache->layer()->setAttributeTableConfig( cfg );
 }
 
 void QgsDualView::sortByPreviewExpression()
 {
-  setSortExpression( mFeatureList->displayExpression() );
+  Qt::SortOrder sortOrder = Qt::AscendingOrder;
+  if ( mFeatureList->displayExpression() == sortExpression() )
+  {
+    sortOrder = mConfig.sortOrder() == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder;
+  }
+  setSortExpression( mFeatureList->displayExpression(), sortOrder );
 }
 
 void QgsDualView::featureFormAttributeChanged()
@@ -697,16 +708,16 @@ void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig& config
   mConfig = config;
 }
 
-void QgsDualView::setSortExpression( const QString& sortExpression )
+void QgsDualView::setSortExpression( const QString& sortExpression, Qt::SortOrder sortOrder )
 {
   if ( sortExpression.isNull() )
     mFilterModel->sort( -1 );
   else
-    mFilterModel->sort( sortExpression );
+    mFilterModel->sort( sortExpression, sortOrder );
 
-  QgsAttributeTableConfig cfg = mLayerCache->layer()->attributeTableConfig();
-  cfg.setSortExpression( sortExpression );
-  mLayerCache->layer()->setAttributeTableConfig( cfg );
+  mConfig.setSortExpression( sortExpression );
+  mConfig.setSortOrder( sortOrder );
+  mLayerCache->layer()->setAttributeTableConfig( mConfig );
 }
 
 QString QgsDualView::sortExpression() const

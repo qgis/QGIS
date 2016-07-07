@@ -185,7 +185,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Set the expression used for sorting the table and feature list.
      */
-    void setSortExpression( const QString& sortExpression );
+    void setSortExpression( const QString& sortExpression , Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
      * Get the expression used for sorting the table and feature list.
