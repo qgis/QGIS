@@ -770,6 +770,23 @@
           38.69744
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Even Rouault",
+        "Committer": "Yes",
+        "First Commit Message": "OGR provider: don't segfault when the layer cannot be retrieved (e.g. datasource with 0 layer)",
+        "First Commit Date": "20-11-2011",
+        "GIT Nickname": "rouault"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.42036,
+          38.69744
+        ]
+      }
     }
   ]
 }
