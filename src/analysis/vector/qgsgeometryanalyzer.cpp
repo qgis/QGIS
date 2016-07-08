@@ -49,7 +49,7 @@ bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
   QGis::WkbType outputType = dp->geometryType();
   QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, crs );
   QgsFeature currentFeature;
 
   //take only selection
@@ -165,7 +165,7 @@ bool QgsGeometryAnalyzer::centroids( QgsVectorLayer* layer, const QString& shape
   QGis::WkbType outputType = QGis::WKBPoint;
   QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, crs );
   QgsFeature currentFeature;
 
   //take only selection
@@ -293,7 +293,7 @@ bool QgsGeometryAnalyzer::extent( QgsVectorLayer* layer,
   fields.append( QgsField( QString( "HEIGHT" ), QVariant::Double ) );
   fields.append( QgsField( QString( "WIDTH" ), QVariant::Double ) );
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), fields, outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), fields, outputType, crs );
 
   QgsRectangle rect;
   if ( onlySelectedFeatures )  // take only selection
@@ -391,7 +391,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
   QGis::WkbType outputType = QGis::WKBPolygon;
   QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), fields, outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), fields, outputType, crs );
   QgsFeature currentFeature;
   QgsGeometry* dissolveGeometry = nullptr; //dissolve geometry
   QMultiMap<QString, QgsFeatureId> map;
@@ -597,7 +597,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
   QGis::WkbType outputType = dp->geometryType();
   QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, crs );
   QgsFeature currentFeature;
   QMultiMap<QString, QgsFeatureId> map;
 
@@ -750,7 +750,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
   }
   QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, crs );
   QgsFeature currentFeature;
   QgsGeometry *dissolveGeometry = nullptr; //dissolve geometry (if dissolve enabled)
 
@@ -923,7 +923,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
                                           eventLayer->dataProvider()->encoding(),
                                           eventLayer->fields(),
                                           memoryProviderType,
-                                          &( lineLayer->crs() ),
+                                          lineLayer->crs(),
                                           outputFormat );
   }
   else

@@ -203,7 +203,7 @@ class CORE_EXPORT QgsVectorFileWriter
      * @param layer layer to write
      * @param fileName file name to write to
      * @param fileEncoding encoding to use
-     * @param destCRS pointer to CRS to reproject exported geometries to
+     * @param destCRS CRS to reproject exported geometries to, or invalid CRS for no reprojection
      * @param driverName OGR driver to use
      * @param onlySelected write only selected features of layer
      * @param errorMessage pointer to buffer fo error message
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsVectorFileWriter
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
                                             const QString& fileEncoding,
-                                            const QgsCoordinateReferenceSystem *destCRS,
+                                            const QgsCoordinateReferenceSystem& destCRS = QgsCoordinateReferenceSystem(),
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = false,
                                             QString *errorMessage = nullptr,
@@ -291,7 +291,7 @@ class CORE_EXPORT QgsVectorFileWriter
                          const QString& fileEncoding,
                          const QgsFields& fields,
                          QGis::WkbType geometryType,
-                         const QgsCoordinateReferenceSystem* srs,
+                         const QgsCoordinateReferenceSystem& srs = QgsCoordinateReferenceSystem(),
                          const QString& driverName = "ESRI Shapefile",
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
@@ -304,7 +304,7 @@ class CORE_EXPORT QgsVectorFileWriter
                          const QString& fileEncoding,
                          const QgsFields& fields,
                          QgsWKBTypes::Type geometryType,
-                         const QgsCoordinateReferenceSystem* srs,
+                         const QgsCoordinateReferenceSystem& srs = QgsCoordinateReferenceSystem(),
                          const QString& driverName = "ESRI Shapefile",
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsVectorFileWriter
                          const QString& fileEncoding,
                          const QgsFields& fields,
                          QgsWKBTypes::Type geometryType,
-                         const QgsCoordinateReferenceSystem* srs,
+                         const QgsCoordinateReferenceSystem& srs,
                          const QString& driverName,
                          const QStringList &datasourceOptions,
                          const QStringList &layerOptions,
@@ -433,7 +433,7 @@ class CORE_EXPORT QgsVectorFileWriter
                        );
 
     void init( QString vectorFileName, QString fileEncoding, const QgsFields& fields,
-               QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem* srs,
+               QgsWKBTypes::Type geometryType, QgsCoordinateReferenceSystem srs,
                const QString& driverName, QStringList datasourceOptions,
                QStringList layerOptions, QString* newFilename,
                FieldValueConverter* fieldValueConverter );

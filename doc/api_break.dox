@@ -16,6 +16,18 @@ with too big impact should be deferred to a major version release.
 
 This page tries to maintain a list with incompatible changes that happened in previous releases.
 
+\section qgis_api_break_3_0 QGIS 3.0
+
+\subsection qgis_api_break_3_0_QgsVectorFileWriter QgsVectorFileWriter
+
+<ul>
+<li>QgsVectorFileWriter now takes references instead of pointers to QgsCoordinateReferenceSystem objects. Since
+QgsCoordinateReferenceSystem is now implicitly shared, using references to QgsCoordinateReferenceSystem rather than
+pointers makes for more robust, safer code. Use an invalid (default constructed) QgsCoordinateReferenceSystem
+in code which previously passed a null pointer to QgsVectorFileWriter.</li>
+</ul>
+
+
 \section qgis_api_break_2_4 QGIS 2.4
 
 \subsection qgis_api_break_mtr Multi-threaded Rendering

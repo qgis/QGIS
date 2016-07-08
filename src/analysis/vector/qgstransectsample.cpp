@@ -89,7 +89,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   outputPointFields.append( QgsField( "start_long", QVariant::Double ) );
 
   QgsVectorFileWriter outputPointWriter( mOutputPointLayer, "utf-8", outputPointFields, QGis::WKBPoint,
-                                         &( mStrataLayer->crs() ) );
+                                         mStrataLayer->crs() );
   if ( outputPointWriter.hasError() != QgsVectorFileWriter::NoError )
   {
     return 3;
@@ -97,7 +97,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
 
   outputPointFields.append( QgsField( "bearing", QVariant::Double ) ); //add bearing attribute for lines
   QgsVectorFileWriter outputLineWriter( mOutputLineLayer, "utf-8", outputPointFields, QGis::WKBLineString,
-                                        &( mStrataLayer->crs() ) );
+                                        mStrataLayer->crs() );
   if ( outputLineWriter.hasError() != QgsVectorFileWriter::NoError )
   {
     return 4;
@@ -107,7 +107,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   usedBaselineFields.append( QgsField( "stratum_id", stratumIdType ) );
   usedBaselineFields.append( QgsField( "ok", QVariant::String ) );
   QgsVectorFileWriter usedBaselineWriter( mUsedBaselineLayer, "utf-8", usedBaselineFields, QGis::WKBLineString,
-                                          &( mStrataLayer->crs() ) );
+                                          mStrataLayer->crs() );
   if ( usedBaselineWriter.hasError() != QgsVectorFileWriter::NoError )
   {
     return 5;
@@ -118,7 +118,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   QString bufferClipLineOutput = outputPointInfo.absolutePath() + "/out_buffer_clip_line.shp";
   QgsFields bufferClipLineFields;
   bufferClipLineFields.append( QgsField( "id", stratumIdType ) );
-  QgsVectorFileWriter bufferClipLineWriter( bufferClipLineOutput, "utf-8", bufferClipLineFields, QGis::WKBLineString, &( mStrataLayer->crs() ) );
+  QgsVectorFileWriter bufferClipLineWriter( bufferClipLineOutput, "utf-8", bufferClipLineFields, QGis::WKBLineString, mStrataLayer->crs() );
 
   //configure distanceArea depending on minDistance units and output CRS
   QgsDistanceArea distanceArea;

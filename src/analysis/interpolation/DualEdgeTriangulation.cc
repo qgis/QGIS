@@ -3105,7 +3105,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
     }
   }
 
-  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QGis::WKBLineString, nullptr );
+  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QGis::WKBLineString );
   if ( writer.hasError() != QgsVectorFileWriter::NoError )
   {
     return false;
