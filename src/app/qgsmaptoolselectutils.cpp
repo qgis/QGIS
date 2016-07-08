@@ -110,6 +110,14 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, QgsGeomet
   QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, false, true );
   if ( selectedFeatures.isEmpty() )
   {
+    if ( !( e->modifiers() & Qt::ShiftModifier || e->modifiers() & Qt::ControlModifier ) )
+    {
+      // if no modifiers then clicking outside features clears the selection
+      // but if there's a shift or ctrl modifier, then it's likely the user was trying
+      // to modify an existing selection by adding or subtracting features and just
+      // missed the feature
+      vlayer->removeSelection();
+    }
     QApplication::restoreOverrideCursor();
     return;
   }
