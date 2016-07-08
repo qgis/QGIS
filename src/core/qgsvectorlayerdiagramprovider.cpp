@@ -368,6 +368,6 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 
   QgsPoint ptZero = mSettings.xform->toMapCoordinates( 0, 0 );
   QgsPoint ptOne = mSettings.xform->toMapCoordinates( 1, 0 );
-  lf->setDistLabel( qAbs( ptOne.x() - ptZero.x() ) * mSettings.dist );
+  lf->setDistLabel( ptOne.distance( ptZero ) * mSettings.dist );
   return lf;
 }
