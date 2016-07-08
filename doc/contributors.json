@@ -324,6 +324,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Mathieu Pellerin",
+        "Committer": "No",
+        "First Commit Message": "[labelling] set fill rule of qpainterpath for text/buffer rendering",
+        "First Commit Date": "04-09-2015",
+        "GIT Nickname": "nirvn"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.9110,
+          11.5582          
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Matthias Kuhn",
         "Committer": "Yes",
         "First Commit Message": "Add backbuffering option to resolve flickering on X11 systems",
