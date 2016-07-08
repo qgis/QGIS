@@ -590,7 +590,14 @@ void QgsLabelingGui::init()
   if ( mLayer->geometryType() == QGis::Point )
   {
     // follow placement alignment is only valid for point layers
-    mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
+    if ( mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) ) == -1 )
+      mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
+  }
+  else
+  {
+    int idx = mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) );
+    if ( idx >= 0 )
+      mFontMultiLineAlignComboBox->removeItem( idx );
   }
 
   // load labeling settings from layer
