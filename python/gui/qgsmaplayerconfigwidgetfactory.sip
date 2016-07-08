@@ -25,7 +25,7 @@ class QgsMapLayerConfigWidgetFactory
      */
     virtual QIcon icon() const;
 
-    void setIcon(QIcon icon);
+    void setIcon(const QIcon& icon);
 
     /**
      * @brief The title of the panel.
@@ -34,7 +34,7 @@ class QgsMapLayerConfigWidgetFactory
      */
     virtual QString title() const;
 
-    void setTitlte(QString title);
+    void setTitle(const QString title);
 
     virtual bool supportsStyleDock() const;
 
