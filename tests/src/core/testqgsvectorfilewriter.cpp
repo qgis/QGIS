@@ -139,7 +139,7 @@ void TestQgsVectorFileWriter::createPoint()
                                 mEncoding,
                                 mFields,
                                 QGis::WKBPoint,
-                                &mCRS );
+                                mCRS );
   //
   // Create a feature
   //
@@ -185,7 +185,7 @@ void TestQgsVectorFileWriter::createLine()
                                 mEncoding,
                                 mFields,
                                 QGis::WKBLineString,
-                                &mCRS );
+                                mCRS );
   //
   // Create a feature
   //
@@ -234,7 +234,7 @@ void TestQgsVectorFileWriter::createPolygon()
                                 mEncoding,
                                 mFields,
                                 QGis::WKBPolygon,
-                                &mCRS );
+                                mCRS );
   //
   // Create a polygon feature
   //
@@ -285,7 +285,7 @@ void TestQgsVectorFileWriter::polygonGridTest()
                                 mEncoding,
                                 mFields,
                                 QGis::WKBPolygon,
-                                &mCRS );
+                                mCRS );
   double myInterval = 5.0;
   for ( double i = -180.0; i <= 180.0; i += myInterval )
   {
@@ -358,7 +358,7 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
                                 mEncoding,
                                 mFields,
                                 QGis::WKBPolygon,
-                                &mCRS );
+                                mCRS );
   double myInterval = 1000.0; //1km2
   for ( double i = 0.0; i <= 10000.0; i += myInterval ) //10km
   {
@@ -440,7 +440,7 @@ void TestQgsVectorFileWriter::regression1141()
                                   encoding,
                                   fields,
                                   QGis::WKBPoint,
-                                  &crs );
+                                  crs );
 
     QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
     // NOTE: don't delete this pointer again -

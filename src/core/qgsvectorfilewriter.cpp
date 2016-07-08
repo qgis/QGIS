@@ -75,7 +75,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &theFileEncoding,
   const QgsFields& fields,
   QGis::WkbType geometryType,
-  const QgsCoordinateReferenceSystem* srs,
+  const QgsCoordinateReferenceSystem& srs,
   const QString& driverName,
   const QStringList &datasourceOptions,
   const QStringList &layerOptions,
@@ -97,7 +97,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr );
 }
 
-QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName, const QString& fileEncoding, const QgsFields& fields, QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem* srs, const QString& driverName, const QStringList& datasourceOptions, const QStringList& layerOptions, QString* newFilename, QgsVectorFileWriter::SymbologyExport symbologyExport )
+QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName, const QString& fileEncoding, const QgsFields& fields, QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem& srs, const QString& driverName, const QStringList& datasourceOptions, const QStringList& layerOptions, QString* newFilename, QgsVectorFileWriter::SymbologyExport symbologyExport )
     : mDS( nullptr )
     , mLayer( nullptr )
     , mOgrRef( nullptr )
@@ -117,7 +117,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
     const QString& fileEncoding,
     const QgsFields& fields,
     QgsWKBTypes::Type geometryType,
-    const QgsCoordinateReferenceSystem* srs,
+    const QgsCoordinateReferenceSystem& srs,
     const QString& driverName,
     const QStringList& datasourceOptions,
     const QStringList& layerOptions,
@@ -143,7 +143,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
                                 QString fileEncoding,
                                 const QgsFields& fields,
                                 QgsWKBTypes::Type geometryType,
-                                const QgsCoordinateReferenceSystem* srs,
+                                QgsCoordinateReferenceSystem srs,
                                 const QString& driverName,
                                 QStringList datasourceOptions,
                                 QStringList layerOptions,
@@ -178,7 +178,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       layerOptions.append( "SHPT=NULL" );
     }
-    srs = nullptr;
+    srs = QgsCoordinateReferenceSystem();
   }
   else
   {
@@ -322,9 +322,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   }
 
   // consider spatial reference system of the layer
-  if ( srs )
+  if ( srs.isValid() )
   {
-    QString srsWkt = srs->toWkt();
+    QString srsWkt = srs.toWkt();
     QgsDebugMsg( "WKT to save as is " + srsWkt );
     mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() );
   }
@@ -369,7 +369,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
   }
 
-  if ( srs )
+  if ( srs.isValid() )
   {
     if ( mOgrDriverName == "ESRI Shapefile" )
     {
@@ -378,7 +378,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
       if ( prjFile.open( QIODevice::WriteOnly ) )
       {
         QTextStream prjStream( &prjFile );
-        prjStream << srs->toWkt().toLocal8Bit().constData() << endl;
+        prjStream << srs.toWkt().toLocal8Bit().constData() << endl;
         prjFile.close();
       }
       else
@@ -2099,7 +2099,7 @@ QgsVectorFileWriter::WriterError
 QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     const QString& fileName,
     const QString& fileEncoding,
-    const QgsCoordinateReferenceSystem *destCRS,
+    const QgsCoordinateReferenceSystem& destCRS,
     const QString& driverName,
     bool onlySelected,
     QString *errorMessage,
@@ -2117,9 +2117,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     FieldValueConverter* fieldValueConverter )
 {
   QgsCoordinateTransform* ct = nullptr;
-  if ( destCRS && layer )
+  if ( destCRS.isValid() && layer )
   {
-    ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
+    ct = new QgsCoordinateTransform( layer->crs(), destCRS );
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
@@ -2157,17 +2157,17 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   }
 
   bool shallTransform = false;
-  const QgsCoordinateReferenceSystem* outputCRS = nullptr;
+  QgsCoordinateReferenceSystem outputCRS;
   if ( ct )
   {
     // This means we should transform
-    outputCRS = &( ct->destCRS() );
+    outputCRS = ct->destCRS();
     shallTransform = true;
   }
   else
   {
     // This means we shouldn't transform, use source CRS as output (if defined)
-    outputCRS = &layer->crs();
+    outputCRS = layer->crs();
   }
 
   QgsWKBTypes::Type destWkbType = QGis::fromOldWkbType( layer->wkbType() );
