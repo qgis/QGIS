@@ -128,7 +128,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.verticalLayout.addLayout(self.horizontalLayoutParent)
         elif self.paramType in (
             ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD,
-                        ModelerParameterDefinitionDialog.PARAMETER_TABLE_MULTIPLE_FIELD)\
+            ModelerParameterDefinitionDialog.PARAMETER_TABLE_MULTIPLE_FIELD)\
             or isinstance(self.param, (ParameterTableField,
                                        ParameterTableMultipleField)):
             self.horizontalLayoutParent.addWidget(QLabel(self.tr('Parent layer')))

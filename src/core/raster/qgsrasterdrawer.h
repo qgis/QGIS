@@ -39,7 +39,7 @@ class CORE_EXPORT QgsRasterDrawer
     /** Draws raster data.
      * @param p destination QPainter
      * @param viewPort viewport to render
-     * @param theQgsMapToPixel map to pixel convertor
+     * @param theQgsMapToPixel map to pixel converter
      * @param ctx render context
      */
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, const QgsRenderContext *ctx = nullptr );

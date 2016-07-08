@@ -985,7 +985,7 @@ bool QgsProject::read( QDomNode &layerNode )
   QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
   if ( addLayer( layerNode.toElement(), brokenNodes, vectorLayerList ) )
   {
-    // have to try to update joins for all layers now - a previously added layer may be dependant on this newly
+    // have to try to update joins for all layers now - a previously added layer may be dependent on this newly
     // added layer for joins
     QVector<QgsVectorLayer*> vectorLayers = QgsMapLayerRegistry::instance()->layers<QgsVectorLayer*>();
     Q_FOREACH ( QgsVectorLayer* layer, vectorLayers )

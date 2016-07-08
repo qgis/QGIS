@@ -122,7 +122,7 @@ class QgsPanelWidget : public QWidget
   protected:
 
     /**
-     * @brief Overriden key press event to handle the esc event on the widget.
+     * @brief Overridden key press event to handle the esc event on the widget.
      * @param event The key event
      */
     void keyPressEvent( QKeyEvent* event );
