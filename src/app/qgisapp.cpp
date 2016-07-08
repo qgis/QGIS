@@ -3048,6 +3048,7 @@ void QgisApp::initLayerTreeView()
 
   QToolBar* toolbar = new QToolBar();
   toolbar->setIconSize( QSize( 16, 16 ) );
+  toolbar->addAction( mActionStyleDock );
   toolbar->addAction( actionAddGroup );
   toolbar->addWidget( btnVisibilityPresets );
   toolbar->addAction( mActionFilterLegend );
@@ -3055,8 +3056,6 @@ void QgisApp::initLayerTreeView()
   toolbar->addAction( actionExpandAll );
   toolbar->addAction( actionCollapseAll );
   toolbar->addAction( mActionRemoveLayer );
-  toolbar->addWidget( spacer );
-  toolbar->addAction( mActionStyleDock );
 
   QVBoxLayout* vboxLayout = new QVBoxLayout;
   vboxLayout->setMargin( 0 );
