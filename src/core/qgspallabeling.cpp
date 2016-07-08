@@ -2898,7 +2898,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     {
       distance *= vectorScaleFactor;
     }
-    double d = ptOne.distance( ptZero ) * distance;
+    double d = sqrt( ptOne.sqrDist( ptZero ) ) * distance;
     ( *labelFeature )->setDistLabel( d );
   }
 
