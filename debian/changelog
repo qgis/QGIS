@@ -1,4 +1,10 @@
-qgis (2.15.0) UNRELEASED; urgency=medium
+qgis (2.16.0) UNRELEASED; urgency=medium
+
+  * Release of 2.16.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 08 Jul 2016 14:11:47 +0200
+
+qgis (2.15.0) unstable; urgency=medium
 
   [ Jürgen E. Fischer ]
   * New development version 2.15 after branch of 2.14
@@ -16,7 +22,7 @@ qgis (2.15.0) UNRELEASED; urgency=medium
   * Fix removal of obsolete diversions for bother the grass plugin & provider.
     (closes: #817176)
 
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 22 Jun 2016 23:54:59 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 08 Jul 2016 14:11:47 +0200
 
 qgis (2.14.0) unstable; urgency=medium
 
