@@ -339,6 +339,6 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 
   QgsPoint ptZero = mapSettings.mapToPixel().toMapCoordinates( 0, 0 );
   QgsPoint ptOne = mapSettings.mapToPixel().toMapCoordinates( 1, 0 );
-  lf->setDistLabel( qAbs( ptOne.x() - ptZero.x() ) * mSettings.distance() );
+  lf->setDistLabel( ptOne.distance( ptZero ) * mSettings.distance() );
   return lf;
 }
