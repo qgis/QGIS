@@ -24,6 +24,8 @@ start_app()
 
 class TestQgsTextEditWidget(unittest.TestCase):
 
+    VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
+
     @classmethod
     def setUpClass(cls):
         QgsEditorWidgetRegistry.initEditors()
@@ -62,6 +64,57 @@ class TestQgsTextEditWidget(unittest.TestCase):
 
         self.doAttributeTest(0, ['value', '123', NULL, NULL])
         self.doAttributeTest(1, [NULL, 123, NULL, NULL])
+
+    def test_ValueMap_representValue(self):
+        layer = QgsVectorLayer("none?field=number1:integer&field=number2:double&field=text1:string&field=number3:integer&field=number4:double&field=text2:string",
+                               "layer", "memory")
+        assert layer.isValid()
+        QgsMapLayerRegistry.instance().addMapLayer(layer)
+        f = QgsFeature()
+        f.setAttributes([2, 2.5, 'NULL', None, None, None])
+        assert layer.dataProvider().addFeatures([f])
+        reg = QgsEditorWidgetRegistry.instance()
+        factory = reg.factory("ValueMap")
+        self.assertIsNotNone(factory)
+
+        # Tests with different value types occuring in the value map
+        config = {'two': '2', 'twoandhalf': '2.5', 'NULL text': 'NULL',
+                  'nothing': self.VALUEMAP_NULL_TEXT}
+        self.assertEqual(factory.representValue(layer, 0, config, None, 2), 'two')
+        self.assertEqual(factory.representValue(layer, 1, config, None, 2.5), 'twoandhalf')
+        self.assertEqual(factory.representValue(layer, 2, config, None, 'NULL'), 'NULL text')
+        # Tests with null values of different types, if value map contains null
+        self.assertEqual(factory.representValue(layer, 3, config, None, None), 'nothing')
+        self.assertEqual(factory.representValue(layer, 4, config, None, None), 'nothing')
+        self.assertEqual(factory.representValue(layer, 5, config, None, None), 'nothing')
+        # Tests with fallback display for different value types
+        config = {}
+        self.assertEqual(factory.representValue(layer, 0, config, None, 2), '(2)')
+        self.assertEqual(factory.representValue(layer, 1, config, None, 2.5), '(2.50000)')
+        self.assertEqual(factory.representValue(layer, 2, config, None, 'NULL'), '(NULL)')
+        # Tests with fallback display for null in different types of fields
+        self.assertEqual(factory.representValue(layer, 3, config, None, None), '(NULL)')
+        self.assertEqual(factory.representValue(layer, 4, config, None, None), '(NULL)')
+        self.assertEqual(factory.representValue(layer, 5, config, None, None), '(NULL)')
+
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
+
+    def test_ValueMap_set_get(self):
+        layer = QgsVectorLayer("none?field=number:integer", "layer", "memory")
+        assert layer.isValid()
+        QgsMapLayerRegistry.instance().addMapLayer(layer)
+        reg = QgsEditorWidgetRegistry.instance()
+        configWdg = reg.createConfigWidget('ValueMap', layer, 0, None)
+
+        config = {'two': '2', 'twoandhalf': '2.5', 'NULL text': 'NULL',
+                  'nothing': self.VALUEMAP_NULL_TEXT}
+
+        # Set a configuration containing values and NULL and check if it
+        # is returned intact.
+        configWdg.setConfig(config)
+        self.assertEqual(configWdg.config(), config)
+
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
 
     def test_ValueRelation_representValue(self):
 
