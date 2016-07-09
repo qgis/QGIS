@@ -15,6 +15,7 @@
 
 #include "qgsvaluemapsearchwidgetwrapper.h"
 #include "qgstexteditconfigdlg.h"
+#include "qgsvaluemapconfigdlg.h"
 
 #include "qgsfield.h"
 #include "qgsfieldvalidator.h"
@@ -94,6 +95,12 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
     return fieldName + " IS NOT NULL";
 
   QString currentKey = mComboBox->itemData( mComboBox->currentIndex() ).toString();
+
+  if ( currentKey == QString( VALUEMAP_NULL_TEXT ) )
+    if ( flags & EqualTo )
+      return fieldName + " IS NULL";
+  if ( flags & NotEqualTo )
+    return fieldName + " IS NOT NULL";
 
   switch ( fldType )
   {
