@@ -804,6 +804,21 @@
           48.9472
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Matteo Ghetta",
+        "Committer": "No",
+        "GIT Nickname": "ghtmtt"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.9358,
+          46.7963
+        ]
+      }
     }
   ]
 }
