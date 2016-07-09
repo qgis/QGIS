@@ -332,9 +332,9 @@ override_dh_auto_install:
 		install -o root -g root -m 644 $(CURDIR)/debian/qbrowser-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qbrowser.png ; \
 	done
 	
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps/qbrowser.svg
+	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qgis.svg
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qbrowser.svg
 
 	# Install desktop files
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/applications
