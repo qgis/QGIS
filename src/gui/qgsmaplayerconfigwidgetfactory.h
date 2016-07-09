@@ -75,7 +75,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * Set support flag for style dock
      * @param supports True if this widget is supported in the style dock.
      */
-    void setSupportsStyleDock( bool supports ) { mSuppprtsDock = supports; }
+    void setSupportsStyleDock( bool supports ) { mSupportsDock = supports; }
 
     /**
      * Flag if widget is supported for use in layer properties dialog.
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * Set support flag for style dock
      * @param supports True if this widget is supported in the style dock.
      */
-    void setSupportLayerPropertiesDialog( bool supports ) { mSuppprtsProperties = supports; }
+    void setSupportLayerPropertiesDialog( bool supports ) { mSupportsProperties = supports; }
 
     /**
      * @brief Check if the layer is supported for this widget.
@@ -109,8 +109,8 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
   private:
     QIcon mIcon;
     QString mTitle;
-    bool mSuppprtsDock;
-    bool mSuppprtsProperties;
+    bool mSupportsDock;
+    bool mSupportsProperties;
 };
 
 #endif // QGSMAPLAYERCONFIGWIDGETFACTORY_H
