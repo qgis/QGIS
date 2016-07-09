@@ -14,6 +14,9 @@
  ***************************************************************************/
 
 #include "qgsvaluemapwidgetwrapper.h"
+#include "qgsvaluemapconfigdlg.h"
+
+#include <QSettings>
 
 QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -28,6 +31,9 @@ QVariant QgsValueMapWidgetWrapper::value() const
 
   if ( mComboBox )
     v = mComboBox->itemData( mComboBox->currentIndex() );
+
+  if ( v == QString( VALUEMAP_NULL_TEXT ) )
+    v = QVariant( field().type() );
 
   return v;
 }
@@ -70,6 +76,12 @@ bool QgsValueMapWidgetWrapper::valid() const
 
 void QgsValueMapWidgetWrapper::setValue( const QVariant& value )
 {
+  QString v;
+  if ( value.isNull() )
+    v = QString( VALUEMAP_NULL_TEXT );
+  else
+    v = value.toString();
+
   if ( mComboBox )
-    mComboBox->setCurrentIndex( mComboBox->findData( value ) );
+    mComboBox->setCurrentIndex( mComboBox->findData( v ) );
 }
