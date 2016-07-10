@@ -221,7 +221,7 @@ unless( $dopoint ) {
 		push @topush, "master_$newmajor";
 
 		run( "git checkout master", "checkout master failed" );
-		$newminor=999;
+		$newminor=99;
 	}
 
 	updateCMakeLists($newmajor,$newminor,0,"Master");
