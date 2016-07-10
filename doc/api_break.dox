@@ -16,6 +16,20 @@ with too big impact should be deferred to a major version release.
 
 This page tries to maintain a list with incompatible changes that happened in previous releases.
 
+\section qgis_api_break_3_0 QGIS 3.0
+
+
+\subsection qgis_api_break_3_0_QgsMapLayer QgsMapLayer
+
+<ul>
+<li>setLayerName() was removed, use setName() instead. The layerNameChanged() signal has been replaced by nameChanged().</li>
+<li>toggleScaleBasedVisibility() was replaced by setScaleBasedVisibility()</li>
+<li>lastErrorTitle(), lastError(), cacheImage(), onCacheImageDelete(), clearCacheImage() and the signals drawingProgress(),
+screenUpdateRequested() were removed. These members have had no effect for a number of QGIS 2.x releases.</li>
+
+</ul>
+
+
 \section qgis_api_break_2_4 QGIS 2.4
 
 \subsection qgis_api_break_mtr Multi-threaded Rendering

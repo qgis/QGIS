@@ -61,11 +61,6 @@ class QgsMapLayer : QObject
     /** Get this layer's unique ID, this ID is used to access this layer from map layer registry */
     QString id() const;
 
-    /** Set the display name of the layer
-     * @param name New name for the layer
-     */
-    void setLayerName( const QString & name ) /Deprecated/;
-
     /**
      * Set the display name of the layer
      * @param name New name for the layer
@@ -343,13 +338,6 @@ class QgsMapLayer : QObject
     /** Remove a custom property from layer. Properties are stored in a map and saved in project file. */
     void removeCustomProperty( const QString& key );
 
-
-    //! @deprecated since 2.4 - returns empty string
-    virtual QString lastErrorTitle() /Deprecated/;
-
-    //! @deprecated since 2.4 - returns empty string
-    virtual QString lastError() /Deprecated/;
-
     /** Get current status error. This error describes some principal problem
      *  for which layer cannot work and thus is not valid. It is not last error
      *  after accessing data by draw() etc.
@@ -507,13 +495,6 @@ class QgsMapLayer : QObject
     void setLegendUrlFormat( const QString& legendUrlFormat );
     QString legendUrlFormat() const;
 
-    /** @deprecated since 2.4 - returns nullptr */
-    QImage *cacheImage() /Deprecated/;
-    /** @deprecated since 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
-    void setCacheImage( QImage * thepImage /Transfer/ ) /Deprecated/;
-    /** @deprecated since 2.4 - does nothing */
-    virtual void onCacheImageDelete() /Deprecated/;
-
     /**
      * Assign a legend controller to the map layer. The object will be responsible for providing legend items.
      * @param legend Takes ownership of the object. Can be null pointer
@@ -602,16 +583,6 @@ class QgsMapLayer : QObject
      */
     void setScaleBasedVisibility( const bool enabled );
 
-    /** Accessor for the scale based visilibility flag
-     * @deprecated use setScaleBasedVisibility instead
-     */
-    void toggleScaleBasedVisibility( bool theVisibilityFlag ) /Deprecated/;
-
-    /** Clear cached image
-     *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image
-     */
-    void clearCacheImage() /Deprecated/;
-
     /**
      * Will advice the map canvas (and any other interested party) that this layer requires to be repainted.
      * Will emit a repaintRequested() signal.
@@ -633,16 +604,8 @@ class QgsMapLayer : QObject
 
   signals:
 
-    //! @deprecated in 2.4 - not emitted anymore
-    void drawingProgress( int theProgress, int theTotalSteps );
-
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
     void statusChanged( const QString& theStatus );
-
-    /** Emit a signal that the layer name has been changed
-     * @deprecated since 2.16 use nameChanged() instead
-     */
-    void layerNameChanged();
 
     /**
      * Emitted when the name has been changed
@@ -658,9 +621,6 @@ class QgsMapLayer : QObject
      * and any view showing the rendered layer should refresh itself.
      */
     void repaintRequested();
-
-    //! \note Deprecated in 2.4 and not emitted anymore
-    void screenUpdateRequested();
 
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents();

@@ -84,8 +84,6 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mMinScale = 0;
   mMaxScale = 100000000;
   mScaleBasedVisibility = false;
-
-  connect( this, SIGNAL( nameChanged() ), this, SIGNAL( layerNameChanged() ) );
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -103,11 +101,6 @@ QgsMapLayer::LayerType QgsMapLayer::type() const
 QString QgsMapLayer::id() const
 {
   return mID;
-}
-
-void QgsMapLayer::setLayerName( const QString & name )
-{
-  setName( name );
 }
 
 void QgsMapLayer::setName( const QString& name )
@@ -930,17 +923,6 @@ void QgsMapLayer::invalidTransformInput()
   // TODO: emit a signal - it will be used to update legend
 }
 
-
-QString QgsMapLayer::lastErrorTitle()
-{
-  return QString();
-}
-
-QString QgsMapLayer::lastError()
-{
-  return QString();
-}
-
 #if 0
 void QgsMapLayer::connectNotify( const char * signal )
 {
@@ -952,11 +934,6 @@ void QgsMapLayer::connectNotify( const char * signal )
 bool QgsMapLayer::isInScaleRange( double scale ) const
 {
   return !mScaleBasedVisibility || ( mMinScale * QGis::SCALE_PRECISION < scale && scale < mMaxScale );
-}
-
-void QgsMapLayer::toggleScaleBasedVisibility( bool theVisibilityFlag )
-{
-  setScaleBasedVisibility( theVisibilityFlag );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
@@ -1669,11 +1646,6 @@ void QgsMapLayer::setValid( bool valid )
   mValid = valid;
 }
 
-void QgsMapLayer::setCacheImage( QImage * )
-{
-  emit repaintRequested();
-}
-
 void QgsMapLayer::setLegend( QgsMapLayerLegend* legend )
 {
   if ( legend == mLegend )
@@ -1696,11 +1668,6 @@ QgsMapLayerLegend*QgsMapLayer::legend() const
 QgsMapLayerStyleManager* QgsMapLayer::styleManager() const
 {
   return mStyleManager;
-}
-
-void QgsMapLayer::clearCacheImage()
-{
-  emit repaintRequested();
 }
 
 void QgsMapLayer::triggerRepaint()

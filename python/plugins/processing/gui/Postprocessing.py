@@ -62,7 +62,7 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
         if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
             try:
                 if hasattr(out, "layer") and out.layer is not None:
-                    out.layer.setLayerName(out.description)
+                    out.layer.setName(out.description)
                     QgsMapLayerRegistry.instance().addMapLayers([out.layer])
                 else:
                     if ProcessingConfig.getSetting(
