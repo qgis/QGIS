@@ -426,12 +426,12 @@ QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int
   return ct;
 }
 
-QgsCoordinateReferenceSystem QgsGrassRasterProvider::crs()
+QgsCoordinateReferenceSystem QgsGrassRasterProvider::crs() const
 {
   return mCrs;
 }
 
-QgsRectangle QgsGrassRasterProvider::extent()
+QgsRectangle QgsGrassRasterProvider::extent() const
 {
   // The extend can change of course so we get always fresh, to avoid running always the module
   // we should save mExtent and mLastModified and check if the map was modified
@@ -570,7 +570,7 @@ QString QgsGrassRasterProvider::metadata()
   return myMetadata;
 }
 
-bool QgsGrassRasterProvider::isValid()
+bool QgsGrassRasterProvider::isValid() const
 {
   return mValid;
 }

@@ -449,7 +449,7 @@ QgsAbstractFeatureSource* QgsDb2Provider::featureSource() const
   return new QgsDb2FeatureSource( this );
 }
 
-QgsFeatureIterator QgsDb2Provider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsDb2Provider::getFeatures( const QgsFeatureRequest& request ) const
 {
   if ( !mValid )
   {
@@ -499,7 +499,7 @@ const QgsFields &QgsDb2Provider::fields() const
   return mAttributeFields;
 }
 
-QgsCoordinateReferenceSystem QgsDb2Provider::crs()
+QgsCoordinateReferenceSystem QgsDb2Provider::crs() const
 {
   if ( !mCrs.isValid() && mSRId > 0 )
   {
@@ -527,7 +527,7 @@ QgsCoordinateReferenceSystem QgsDb2Provider::crs()
 }
 
 // update the extent for this layer
-void QgsDb2Provider::updateStatistics()
+void QgsDb2Provider::updateStatistics() const
 {
   // get features to calculate the statistics
   QString statement;
@@ -618,7 +618,7 @@ void QgsDb2Provider::updateStatistics()
   }
 }
 
-QgsRectangle QgsDb2Provider::extent()
+QgsRectangle QgsDb2Provider::extent() const
 {
   QgsDebugMsg( QString( "entering; mExtent: %1" ).arg( mExtent.toString() ) );
   if ( mExtent.isEmpty() )
@@ -626,12 +626,12 @@ QgsRectangle QgsDb2Provider::extent()
   return mExtent;
 }
 
-bool QgsDb2Provider::isValid()
+bool QgsDb2Provider::isValid() const
 {
   return true; //DB2 only has valid geometries
 }
 
-QString QgsDb2Provider::subsetString()
+QString QgsDb2Provider::subsetString() const
 {
   return mSqlWhereClause;
 }

@@ -87,7 +87,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
 
     /**
      * Get feature type.
@@ -148,35 +148,19 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     QString description() const override;
 
-    /**
-     * Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
+    virtual QgsRectangle extent() const override;
+    bool isValid() const override;
 
-    /**
-     * Returns true if this is a valid delimited file
-     */
-    bool isValid() override;
-
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
     /**
      * Set the subset string used to create a subset of features in
      * the layer.
      */
     virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true ) override;
 
-    /**
-     * provider supports setting of subset strings
-     */
-    virtual bool supportsSubsetString() override { return true; }
+    virtual bool supportsSubsetString() const override { return true; }
 
-    /**
-     * Returns the subset definition string (typically sql) currently in
-     * use by the layer and used by the provider to limit the feature set.
-     * Must be overridden in the dataprovider, otherwise returns a null
-     * QString.
-     */
-    virtual QString subsetString() override
+    virtual QString subsetString() const override
     {
       return mSubsetString;
     }
@@ -216,12 +200,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
   private:
 
     void scanFile( bool buildIndexes );
-    void rescanFile();
-    void resetCachedSubset();
-    void resetIndexes();
-    void clearInvalidLines();
+
+    //some of these methods const, as they need to be called from const methods such as extent()
+    void rescanFile() const;
+    void resetCachedSubset() const;
+    void resetIndexes() const;
+    void clearInvalidLines() const;
     void recordInvalidLine( const QString& message );
-    void reportErrors( const QStringList& messages = QStringList(), bool showDialog = false );
+    void reportErrors( const QStringList& messages = QStringList(), bool showDialog = false ) const;
     static bool recordIsEmpty( QStringList &record );
     void setUriParameter( const QString& parameter, const QString& value );
 
@@ -234,14 +220,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool mLayerValid;
     // mValid defines whether the layer is currently valid (may differ from
     // mLayerValid if the file has been rewritten)
-    bool mValid;
+    mutable bool mValid;
 
     //! Text file
     QgsDelimitedTextFile *mFile;
 
     // Fields
     GeomRepresentationType mGeomRep;
-    QList<int> attributeColumns;
+    mutable QList<int> attributeColumns;
     QgsFields attributeFields;
 
     int mFieldCount;  // Note: this includes field count for wkt field
@@ -249,41 +235,41 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QString mXFieldName;
     QString mYFieldName;
 
-    int mXFieldIndex;
-    int mYFieldIndex;
-    int mWktFieldIndex;
+    mutable int mXFieldIndex;
+    mutable int mYFieldIndex;
+    mutable int mWktFieldIndex;
 
     // mWktPrefix regexp is used to clean up
     // prefixes sometimes used for WKT (postgis EWKT, informix SRID)
     bool mWktHasPrefix;
 
     //! Layer extent
-    QgsRectangle mExtent;
+    mutable QgsRectangle mExtent;
 
     int mGeomType;
 
-    long mNumberFeatures;
+    mutable long mNumberFeatures;
     int mSkipLines;
     QString mDecimalPoint;
     bool mXyDms;
 
     QString mSubsetString;
-    QString mCachedSubsetString;
+    mutable QString mCachedSubsetString;
     QgsExpression *mSubsetExpression;
     bool mBuildSubsetIndex;
-    QList<quintptr> mSubsetIndex;
-    bool mUseSubsetIndex;
-    bool mCachedUseSubsetIndex;
+    mutable QList<quintptr> mSubsetIndex;
+    mutable bool mUseSubsetIndex;
+    mutable bool mCachedUseSubsetIndex;
 
     //! Storage for any lines in the file that couldn't be loaded
     int mMaxInvalidLines;
-    int mNExtraInvalidLines;
-    QStringList mInvalidLines;
+    mutable int mNExtraInvalidLines;
+    mutable QStringList mInvalidLines;
     //! Only want to show the invalid lines once to the user
     bool mShowInvalidLines;
 
     //! Record file updates, flags rescan required
-    bool mRescanRequired;
+    mutable bool mRescanRequired;
 
     // Coordinate reference sytem
     QgsCoordinateReferenceSystem mCrs;
@@ -293,9 +279,9 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     // Spatial index
     bool mBuildSpatialIndex;
-    bool mUseSpatialIndex;
-    bool mCachedUseSpatialIndex;
-    QgsSpatialIndex *mSpatialIndex;
+    mutable bool mUseSpatialIndex;
+    mutable bool mCachedUseSpatialIndex;
+    mutable QgsSpatialIndex *mSpatialIndex;
 
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;

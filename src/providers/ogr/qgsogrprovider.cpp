@@ -475,7 +475,7 @@ bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
   return true;
 }
 
-QString QgsOgrProvider::subsetString()
+QString QgsOgrProvider::subsetString() const
 {
   return mSubsetString;
 }
@@ -932,7 +932,7 @@ void QgsOgrProviderUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount,
 #endif
 }
 
-QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   return QgsFeatureIterator( new QgsOgrFeatureIterator( static_cast<QgsOgrFeatureSource*>( featureSource() ), true, request ) );
 }
@@ -954,7 +954,7 @@ unsigned char * QgsOgrProvider::getGeometryPointer( OGRFeatureH fet )
 }
 
 
-QgsRectangle QgsOgrProvider::extent()
+QgsRectangle QgsOgrProvider::extent() const
 {
   if ( !mExtent )
   {
@@ -1044,7 +1044,7 @@ const QgsFields & QgsOgrProvider::fields() const
 //TODO - add sanity check for shape file layers, to include cheking to
 //       see if the .shp, .dbf, .shx files are all present and the layer
 //       actually has features
-bool QgsOgrProvider::isValid()
+bool QgsOgrProvider::isValid() const
 {
   return mValid;
 }
@@ -2666,7 +2666,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   return true;
 }
 
-QgsCoordinateReferenceSystem QgsOgrProvider::crs()
+QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
 {
   QgsDebugMsg( "Entering." );
 
@@ -2721,7 +2721,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
   return srs;
 }
 
-void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
+void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
 {
   uniqueValues.clear();
 
@@ -2770,7 +2770,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
 #endif
 }
 
-QVariant QgsOgrProvider::minimumValue( int index )
+QVariant QgsOgrProvider::minimumValue( int index ) const
 {
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
   {
@@ -2809,7 +2809,7 @@ QVariant QgsOgrProvider::minimumValue( int index )
   return value;
 }
 
-QVariant QgsOgrProvider::maximumValue( int index )
+QVariant QgsOgrProvider::maximumValue( int index ) const
 {
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
   {

@@ -81,7 +81,7 @@ class CORE_EXPORT QgsRasterInterface
      * Get the extent of the interface.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() { return mInput ? mInput->extent() : QgsRectangle(); }
+    virtual QgsRectangle extent() const { return mInput ? mInput->extent() : QgsRectangle(); }
 
     int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
 

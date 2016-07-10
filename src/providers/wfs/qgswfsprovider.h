@@ -69,27 +69,26 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
 
     QGis::WkbType geometryType() const override;
     long featureCount() const override;
 
     const QgsFields& fields() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
-    /** Accessor for sql where clause used to limit dataset */
-    virtual QString subsetString() override;
+    virtual QString subsetString() const override;
 
     /** Mutator for sql where clause used to limit dataset size */
     virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() override { return true; }
+    virtual bool supportsSubsetString() const override { return true; }
 
     /* Inherited from QgsDataProvider */
 
-    QgsRectangle extent() override;
-    bool isValid() override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
     QString name() const override;
     QString description() const override;
 

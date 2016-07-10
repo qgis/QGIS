@@ -74,7 +74,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
     /**
      * Sub-layers handled by this provider, in order from bottom to top
@@ -89,12 +89,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
 
-    /** Accessor for sql where clause used to limit dataset */
-    virtual QString subsetString() override;
+    virtual QString subsetString() const override;
 
-    virtual bool supportsSubsetString() override { return true; }
+    virtual bool supportsSubsetString() const override { return true; }
 
     /** Mutator for sql where clause used to limit dataset size */
     virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
@@ -123,9 +122,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual const QgsFields & fields() const override;
 
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
+    virtual QgsRectangle extent() const override;
 
     /** Update the extents
      */
@@ -188,23 +185,23 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /** Returns true if this is a valid shapefile
      */
-    bool isValid() override;
+    bool isValid() const override;
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute
      */
-    QVariant minimumValue( int index ) override;
+    QVariant minimumValue( int index ) const override;
 
     /** Returns the maximum value of an attribute
      *  @param index the index of the attribute
      */
-    QVariant maximumValue( int index ) override;
+    QVariant maximumValue( int index ) const override;
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values
      */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) override;
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
 
     /** Return a provider name
      *
@@ -301,11 +298,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QgsFields mAttributeFields;
     bool mFirstFieldIsFid;
     OGRDataSourceH ogrDataSource;
-    OGREnvelope* mExtent;
+    mutable OGREnvelope* mExtent;
 
     /** This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
-    QgsRectangle mExtentRect;
+    mutable QgsRectangle mExtentRect;
     OGRLayerH ogrLayer;
     OGRLayerH ogrOrigLayer;
 

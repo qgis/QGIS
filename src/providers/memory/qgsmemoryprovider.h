@@ -47,7 +47,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
 
     /**
      * Get feature type.
@@ -113,13 +113,12 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     virtual bool changeGeometryValues( const QgsGeometryMap & geometry_map ) override;
 
-    /** Accessor for sql where clause used to limit dataset */
-    QString subsetString() override;
+    QString subsetString() const override;
 
     /** Mutator for sql where clause used to limit dataset size */
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() override { return true; }
+    virtual bool supportsSubsetString() const override { return true; }
 
     /**
      * Creates a spatial index
@@ -146,17 +145,10 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     QString description() const override;
 
-    /**
-     * Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
+    virtual QgsRectangle extent() const override;
+    bool isValid() const override;
 
-    /**
-     * Returns true if this is a valid provider
-     */
-    bool isValid() override;
-
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
   protected:
 

@@ -649,7 +649,7 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlI
   }
 }
 
-QString QgsWFSProvider::subsetString()
+QString QgsWFSProvider::subsetString() const
 {
   return mSubsetString;
 }
@@ -734,12 +734,12 @@ QString QgsWFSProvider::geometryAttribute() const
   return mShared->mGeometryAttribute;
 }
 
-QgsCoordinateReferenceSystem QgsWFSProvider::crs()
+QgsCoordinateReferenceSystem QgsWFSProvider::crs() const
 {
   return mShared->mSourceCRS;
 }
 
-QgsRectangle QgsWFSProvider::extent()
+QgsRectangle QgsWFSProvider::extent() const
 {
   // Some servers return completely buggy extent in their capabilities response
   // so mix it with the extent actually got from the downloaded features
@@ -766,12 +766,12 @@ QgsRectangle QgsWFSProvider::extent()
   return computedExtent;
 }
 
-bool QgsWFSProvider::isValid()
+bool QgsWFSProvider::isValid() const
 {
   return mValid;
 }
 
-QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   return QgsFeatureIterator( new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request ) );
 }
