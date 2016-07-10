@@ -198,10 +198,6 @@ Files: python/ext-libs/yaml/*
 Copyright: 2006, Kirill Simonov <xi@resolvent.net>
 License: MIT
 
-Files: python/plugins/fTools/*
-Copyright: 2009, Carson J.Q. Farmer
-License: MIT
-
 Files: python/plugins/GdalTools/*
 Copyright: 2009, Faunalia
 License: MIT
@@ -349,11 +345,6 @@ License: GPL-2+ or dxflib-Commercial-License
 
 Files: src/plugins/evis/*
 Copyright: 2007, American Museum of Natural History
-License: LGPL-2+
-
-Files: src/plugins/globe/osgEarthQt/ViewerWidget.cpp
- src/plugins/globe/osgEarthUtil/Controls.cpp
-Copyright: 2008-2012, Pelican Mapping
 License: LGPL-2+
 
 Files: src/plugins/grass/qtermwidget/BlockArray.*
@@ -521,7 +512,7 @@ Files: cmake/FindQwt.cmake
 Copyright: 2010, Tim Sutton <tim at linfiniti.com>
 License: BSD-3-Clause
 
-Files: cmake/FindSPATIALITE.cmake
+Files: cmake/FindSpatiaLite.cmake
 Copyright: 2009, Sandro Furieri <a.furieri at lqt.it>
 License: BSD-3-Clause
 

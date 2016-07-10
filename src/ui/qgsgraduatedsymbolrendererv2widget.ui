@@ -109,7 +109,7 @@ Positive is number of decimal places
 Negative rounds to powers of 10</string>
        </property>
        <property name="prefix">
-        <string>Precison </string>
+        <string>Precision </string>
        </property>
        <property name="minimum">
         <number>0</number>
