@@ -391,6 +391,12 @@ class QgsProject : QObject
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
+    //! Emitted when the file name of the project changes
+    void fileNameChanged();
+
+    //! Emitted when the home path of the project changes
+    void homePathChanged();
+
   public slots:
 
     /**
