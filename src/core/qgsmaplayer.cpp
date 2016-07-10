@@ -1258,7 +1258,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg )
   QDomDocument myDocument( documentType );
 
   QDomElement myRootNode = myDocument.createElement( "qgis" );
-  myRootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
+  myRootNode.setAttribute( "version", QGis::QGIS_VERSION );
   myDocument.appendChild( myRootNode );
 
   myRootNode.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );

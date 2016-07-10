@@ -376,7 +376,7 @@ static void setTitleBarText_( QWidget & qgisApp )
 {
   QString caption = QgisApp::tr( "QGIS " );
 
-  if ( QString( QGis::QGIS_VERSION ).endsWith( "Master" ) )
+  if ( QGis::QGIS_VERSION.endsWith( "Master" ) )
   {
     caption += QString( "%1" ).arg( QGis::QGIS_DEV_VERSION );
   }
@@ -8114,7 +8114,7 @@ void QgisApp::duplicateVectorStyle( QgsVectorLayer* srcLayer, QgsVectorLayer* de
         "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
     QDomDocument doc( documentType );
     QDomElement rootNode = doc.createElement( "qgis" );
-    rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
+    rootNode.setAttribute( "version", QGis::QGIS_VERSION );
     doc.appendChild( rootNode );
     QString errorMsg;
     srcLayer->writeSymbology( rootNode, doc, errorMsg );
