@@ -83,14 +83,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       */
     virtual QString storageType() const override;
 
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be returned
-     */
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
 
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -124,9 +119,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     void setExtent( QgsRectangle& newExtent );
 
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
+    virtual QgsRectangle extent() const override;
 
     /** Update the extent
      */
@@ -152,40 +145,15 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     QString dataComment() const override;
 
-    /** Returns the minimum value of an attribute
-     *  @param index the index of the attribute */
-    QVariant minimumValue( int index ) override;
-
-    /** Returns the maximum value of an attribute
-     *  @param index the index of the attribute */
-    QVariant maximumValue( int index ) override;
-
-    /** Return the unique values of an attribute
-     *  @param index the index of the attribute
-     *  @param values reference to the list of unique values */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) override;
-
-    /** Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
-      or if the given attribute is not an enum type.
-     * @param index the index of the attribute
-     * @param enumList reference to the list to fill */
-    virtual void enumValues( int index, QStringList& enumList ) override;
-
-    /** Returns true if layer is valid
-     */
-    bool isValid() override;
-
-    /**
-     * It returns true. Saving style to db is supported by this provider
-     */
-    virtual bool isSaveAndLoadStyleToDBSupported() override { return true; }
-
-    QgsAttributeList attributeIndexes() override;
-
-    QgsAttributeList pkAttributeIndexes() override { return mPrimaryKeyAttrs; }
-
-    /** Returns the default value for field specified by @c fieldId */
-    QVariant defaultValue( int fieldId ) override;
+    QVariant minimumValue( int index ) const override;
+    QVariant maximumValue( int index ) const override;
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
+    virtual void enumValues( int index, QStringList& enumList ) const override;
+    bool isValid() const override;
+    virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
+    QgsAttributeList attributeIndexes() const override;
+    QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
+    QVariant defaultValue( int fieldId ) const override;
 
     /** Adds a list of features
       @return true in case of success and false in case of failure*/
@@ -230,13 +198,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     //! Get the table name associated with this provider instance
     QString getTableName();
 
-    /** Accessor for sql where clause used to limit dataset */
-    QString subsetString() override;
+    QString subsetString() const override;
 
     /** Mutator for sql where clause used to limit dataset size */
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() override { return true; }
+    virtual bool supportsSubsetString() const override { return true; }
 
     /** Returns a bitmask containing the supported capabilities*/
     int capabilities() const override;
@@ -413,7 +380,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString mPrimaryKeyDefault;
 
     QString mGeometryColumn;          //! name of the geometry column
-    QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
+    mutable QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
 
     QGis::WkbType mDetectedGeomType;  //! geometry type detected in the database
     bool mForce2d;                    //! geometry type needs to be forced to 2d (eg. ZM)

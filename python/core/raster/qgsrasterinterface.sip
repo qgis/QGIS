@@ -104,7 +104,7 @@ class QgsRasterInterface
      * Get the extent of the interface.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() const;
 
     int dataTypeSize( int bandNo );
 

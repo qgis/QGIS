@@ -150,7 +150,7 @@ QgsAbstractFeatureSource* QgsAfsProvider::featureSource() const
   return new QgsAfsFeatureSource( this );
 }
 
-QgsFeatureIterator QgsAfsProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsAfsProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   return new QgsAfsFeatureIterator( new QgsAfsFeatureSource( this ), true, request );
 }

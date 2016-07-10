@@ -18,6 +18,21 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 \section qgis_api_break_3_0 QGIS 3.0
 
+\subsection qgis_api_break_3_0_DataProviders Data Providers
+
+<ul>
+<li>Many methods in QgsDataProvider, QgsVectorDataProvider and QgsRasterDataProvider have been made const-correct.
+This has no effect on PyQGIS code, but c++ code implementing third-party providers will need to update the
+signatures of these methods to match. Affected methods are:
+<ul>
+<li>QgsDataProvider: crs(), extent(), isValid(), supportsSubsetString(), subsetString()</li>
+<li>QgsVectorDataProvider: getFeatures(), minimumValue(), maximumValue(), uniqueValues(), enumValues(), defaultValue(),
+attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDBSupported()</li>
+<li>QgsRasterInterface: extent()</li>
+</ul
+</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsVectorFileWriter QgsVectorFileWriter
 
 <ul>

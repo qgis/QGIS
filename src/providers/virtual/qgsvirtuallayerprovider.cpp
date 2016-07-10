@@ -475,17 +475,17 @@ QString QgsVirtualLayerProvider::storageType() const
   return "No storage per se, view data from other data sources";
 }
 
-QgsCoordinateReferenceSystem QgsVirtualLayerProvider::crs()
+QgsCoordinateReferenceSystem QgsVirtualLayerProvider::crs() const
 {
   return mCrs;
 }
 
-QgsFeatureIterator QgsVirtualLayerProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsVirtualLayerProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   return QgsFeatureIterator( new QgsVirtualLayerFeatureIterator( new QgsVirtualLayerFeatureSource( this ), false, request ) );
 }
 
-QString QgsVirtualLayerProvider::subsetString()
+QString QgsVirtualLayerProvider::subsetString() const
 {
   return mSubset;
 }
@@ -514,7 +514,7 @@ long QgsVirtualLayerProvider::featureCount() const
   return mFeatureCount;
 }
 
-QgsRectangle QgsVirtualLayerProvider::extent()
+QgsRectangle QgsVirtualLayerProvider::extent() const
 {
   if ( !mCachedStatistics )
   {
@@ -558,7 +558,7 @@ const QgsFields & QgsVirtualLayerProvider::fields() const
   return mDefinition.fields();
 }
 
-bool QgsVirtualLayerProvider::isValid()
+bool QgsVirtualLayerProvider::isValid() const
 {
   return mValid;
 }
@@ -582,7 +582,7 @@ QString QgsVirtualLayerProvider::description() const
   return VIRTUAL_LAYER_DESCRIPTION;
 }
 
-QgsAttributeList QgsVirtualLayerProvider::pkAttributeIndexes()
+QgsAttributeList QgsVirtualLayerProvider::pkAttributeIndexes() const
 {
   if ( !mDefinition.uid().isNull() )
   {

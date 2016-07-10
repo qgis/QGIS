@@ -978,7 +978,7 @@ QString QgsSpatiaLiteProvider::storageType() const
   return "SQLite database with SpatiaLite extension";
 }
 
-QgsFeatureIterator QgsSpatiaLiteProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsSpatiaLiteProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   if ( !mValid )
   {
@@ -3256,7 +3256,7 @@ int QgsSpatiaLiteProvider::computeMultiWKB3Dsize( const unsigned char *p_in, int
   return size;
 }
 
-QString QgsSpatiaLiteProvider::subsetString()
+QString QgsSpatiaLiteProvider::subsetString() const
 {
   return mSubsetString;
 }
@@ -3292,7 +3292,7 @@ bool QgsSpatiaLiteProvider::setSubsetString( const QString& theSQL, bool updateF
 }
 
 
-QgsRectangle QgsSpatiaLiteProvider::extent()
+QgsRectangle QgsSpatiaLiteProvider::extent() const
 {
   return mLayerExtent;
 }
@@ -3325,7 +3325,7 @@ long QgsSpatiaLiteProvider::featureCount() const
 }
 
 
-QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs()
+QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs() const
 {
   QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByOgcWmsCrs( mAuthId );
   if ( !srs.isValid() )
@@ -3348,7 +3348,7 @@ QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs()
 }
 
 
-bool QgsSpatiaLiteProvider::isValid()
+bool QgsSpatiaLiteProvider::isValid() const
 {
   return mValid;
 }
@@ -3371,7 +3371,7 @@ const QgsFields& QgsSpatiaLiteProvider::fields() const
 }
 
 // Returns the minimum value of an attribute
-QVariant QgsSpatiaLiteProvider::minimumValue( int index )
+QVariant QgsSpatiaLiteProvider::minimumValue( int index ) const
 {
   int ret;
   int i;
@@ -3434,7 +3434,7 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
 }
 
 // Returns the maximum value of an attribute
-QVariant QgsSpatiaLiteProvider::maximumValue( int index )
+QVariant QgsSpatiaLiteProvider::maximumValue( int index ) const
 {
   int ret;
   int i;
@@ -3498,7 +3498,7 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index )
 }
 
 // Returns the list of unique values of an attribute
-void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueValues, int limit )
+void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueValues, int limit ) const
 {
   sqlite3_stmt *stmt = nullptr;
   QString sql;
@@ -5246,7 +5246,7 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   return true;
 }
 
-QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes()
+QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes() const
 {
   return mPrimaryKeyAttrs;
 }

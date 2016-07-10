@@ -277,13 +277,13 @@ QString QgsMemoryProvider::storageType() const
   return "Memory storage";
 }
 
-QgsFeatureIterator QgsMemoryProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsMemoryProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   return QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true, request ) );
 }
 
 
-QgsRectangle QgsMemoryProvider::extent()
+QgsRectangle QgsMemoryProvider::extent() const
 {
   return mExtent;
 }
@@ -314,12 +314,12 @@ const QgsFields & QgsMemoryProvider::fields() const
   return mFields;
 }
 
-bool QgsMemoryProvider::isValid()
+bool QgsMemoryProvider::isValid() const
 {
   return ( mWkbType != QGis::WKBUnknown );
 }
 
-QgsCoordinateReferenceSystem QgsMemoryProvider::crs()
+QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
 {
   // TODO: make provider projection-aware
   return mCrs; // return default CRS
@@ -488,7 +488,7 @@ bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
   return true;
 }
 
-QString QgsMemoryProvider::subsetString()
+QString QgsMemoryProvider::subsetString() const
 {
   return mSubsetString;
 }

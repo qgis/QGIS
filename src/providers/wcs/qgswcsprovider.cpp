@@ -502,7 +502,7 @@ void QgsWcsProvider::setCoverageCrs( QString const & crs )
   }
 }
 
-void QgsWcsProvider::setQueryItem( QUrl &url, const QString& item, const QString& value )
+void QgsWcsProvider::setQueryItem( QUrl &url, const QString& item, const QString& value ) const
 {
   url.removeQueryItem( item );
   url.addQueryItem( item, value );
@@ -627,7 +627,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   }
 }
 
-void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QString crs )
+void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QString crs ) const
 {
   Q_UNUSED( bandNo );
   // delete cached data
@@ -892,7 +892,7 @@ int QgsWcsProvider::yBlockSize() const
 int QgsWcsProvider::xSize() const { return mWidth; }
 int QgsWcsProvider::ySize() const { return mHeight; }
 
-void QgsWcsProvider::clearCache()
+void QgsWcsProvider::clearCache() const
 {
   if ( mCachedGdalDataset )
   {
@@ -1049,7 +1049,7 @@ void QgsWcsProvider::parseServiceException( QDomElement const & e, const QString
 
 
 
-QgsRectangle QgsWcsProvider::extent()
+QgsRectangle QgsWcsProvider::extent() const
 {
   if ( mExtentDirty )
   {
@@ -1062,7 +1062,7 @@ QgsRectangle QgsWcsProvider::extent()
   return mCoverageExtent;
 }
 
-bool QgsWcsProvider::isValid()
+bool QgsWcsProvider::isValid() const
 {
   return mValid;
 }
@@ -1073,7 +1073,7 @@ QString QgsWcsProvider::wcsVersion()
   return mCapabilities.version();
 }
 
-bool QgsWcsProvider::calculateExtent()
+bool QgsWcsProvider::calculateExtent() const
 {
 
   // Make sure we know what extents are available
@@ -1533,7 +1533,7 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
   return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
 
-QgsCoordinateReferenceSystem QgsWcsProvider::crs()
+QgsCoordinateReferenceSystem QgsWcsProvider::crs() const
 {
   return mCrs;
 }

@@ -874,12 +874,12 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int theBan
   return QgsGdalProviderBase::colorTable( mGdalDataset, theBandNumber );
 }
 
-QgsCoordinateReferenceSystem QgsGdalProvider::crs()
+QgsCoordinateReferenceSystem QgsGdalProvider::crs() const
 {
   return mCrs;
 }
 
-QgsRectangle QgsGdalProvider::extent()
+QgsRectangle QgsGdalProvider::extent() const
 {
   //TODO
   //mExtent = QgsGdal::extent( mGisdbase, mLocation, mMapset, mMapName, QgsGdal::Raster );
@@ -1190,7 +1190,7 @@ int QgsGdalProvider::colorInterpretation( int theBandNo ) const
   return colorInterpretationFromGdal( GDALGetRasterColorInterpretation( myGdalBand ) );
 }
 
-bool QgsGdalProvider::isValid()
+bool QgsGdalProvider::isValid() const
 {
   QgsDebugMsg( QString( "valid = %1" ).arg( mValid ) );
   return mValid;

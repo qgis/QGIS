@@ -187,7 +187,7 @@ QgsAbstractFeatureSource* QgsMssqlProvider::featureSource() const
   return new QgsMssqlFeatureSource( this );
 }
 
-QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   if ( !mValid )
   {
@@ -502,7 +502,7 @@ QString QgsMssqlProvider::quotedValue( const QVariant& value )
   }
 }
 
-QVariant QgsMssqlProvider::defaultValue( int fieldId )
+QVariant QgsMssqlProvider::defaultValue( int fieldId ) const
 {
   if ( mDefaultValues.contains( fieldId ) )
     return mDefaultValues[fieldId];
@@ -516,7 +516,7 @@ QString QgsMssqlProvider::storageType() const
 }
 
 // Returns the minimum value of an attribute
-QVariant QgsMssqlProvider::minimumValue( int index )
+QVariant QgsMssqlProvider::minimumValue( int index ) const
 {
   // get the field name
   QgsField fld = mAttributeFields.at( index );
@@ -547,7 +547,7 @@ QVariant QgsMssqlProvider::minimumValue( int index )
 }
 
 // Returns the maximum value of an attribute
-QVariant QgsMssqlProvider::maximumValue( int index )
+QVariant QgsMssqlProvider::maximumValue( int index ) const
 {
   // get the field name
   QgsField fld = mAttributeFields.at( index );
@@ -578,7 +578,7 @@ QVariant QgsMssqlProvider::maximumValue( int index )
 }
 
 // Returns the list of unique values of an attribute
-void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
+void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
 {
   uniqueValues.clear();
 
@@ -621,7 +621,7 @@ void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, i
 
 
 // update the extent, wkb type and srid for this layer
-void QgsMssqlProvider::UpdateStatistics( bool estimate )
+void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 {
   if ( mGeometryColName.isEmpty() )
     return;
@@ -730,7 +730,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
 }
 
 // Return the extent of the layer
-QgsRectangle QgsMssqlProvider::extent()
+QgsRectangle QgsMssqlProvider::extent() const
 {
   if ( mExtent.isEmpty() )
     UpdateStatistics( mUseEstimatedMetadata );
@@ -783,7 +783,7 @@ const QgsFields & QgsMssqlProvider::fields() const
   return mAttributeFields;
 }
 
-bool QgsMssqlProvider::isValid()
+bool QgsMssqlProvider::isValid() const
 {
   return mValid;
 }
@@ -1396,7 +1396,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
   return true;
 }
 
-QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
+QgsCoordinateReferenceSystem QgsMssqlProvider::crs() const
 {
   if ( !mCrs.isValid() && mSRId > 0 )
   {
@@ -1433,7 +1433,7 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
   return mCrs;
 }
 
-QString QgsMssqlProvider::subsetString()
+QString QgsMssqlProvider::subsetString() const
 {
   return mSqlWhereClause;
 }

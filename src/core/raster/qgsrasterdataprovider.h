@@ -108,10 +108,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) = 0;
 
-    /** Get the extent of the data source.
-     * @return QgsRectangle containing the extent of the layer
-     */
-    virtual QgsRectangle extent() override = 0;
+    virtual QgsRectangle extent() const override = 0;
 
     /** Returns data type for the band specified by number */
     virtual QGis::DataType dataType( int bandNo ) const override = 0;
@@ -434,7 +431,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
      * @note added in 2.14
      */
-    void statusChanged( const QString& );
+    void statusChanged( const QString& ) const;
 
   protected:
     /** Read block of data
@@ -484,7 +481,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *  for each band, indexed from 0 */
     QList< QgsRasterRangeList > mUserNoDataValue;
 
-    QgsRectangle mExtent;
+    mutable QgsRectangle mExtent;
 
     static QStringList mPyramidResamplingListGdal;
     static QgsStringMap mPyramidResamplingMapGdal;

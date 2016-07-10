@@ -64,7 +64,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Get the extent of the data source.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() = 0;
+    virtual QgsRectangle extent() const = 0;
 
     /** Returns data type for the band specified by number */
     virtual QGis::DataType dataType( int bandNo ) const = 0;
@@ -295,7 +295,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
      * @note added in 2.14
      */
-    void statusChanged( const QString& );
+    void statusChanged( const QString& ) const;
 
   protected:
     /** Read block of data

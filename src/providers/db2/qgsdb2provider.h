@@ -51,11 +51,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
 
-    /**
-     * Get feature iterator.
-     * @return QgsFeatureIterator to iterate features.
-     */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
 
     /**
      * Get feature type.
@@ -72,7 +68,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     /**
      * Update the extent for this layer.
      */
-    void updateStatistics();
+    void updateStatistics() const;
 
     /**
      * Return a map of indexes with field names for this layer.
@@ -80,29 +76,17 @@ class QgsDb2Provider : public QgsVectorDataProvider
      */
     virtual const QgsFields &fields() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() override;
-
-    /**
-     * Return the extent for this data layer.
-     */
-    virtual QgsRectangle extent() override;
-
-    /**
-     * Returns true if this is a valid data source.
-     */
-    virtual bool isValid() override;
-
-    /**
-     * Accessor for SQL WHERE clause used to limit dataset.
-     */
-    QString subsetString() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
+    virtual QgsRectangle extent() const override;
+    virtual bool isValid() const override;
+    QString subsetString() const override;
 
     /**
      * Mutator for SQL WHERE clause used to limit dataset size.
      */
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() override { return true; }
+    virtual bool supportsSubsetString() const override { return true; }
 
     /** Return a provider name
 
@@ -168,19 +152,19 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     QgsFields mAttributeFields; //fields
     QMap<int, QVariant> mDefaultValues;
-    QgsRectangle mExtent; //layer extent
+    mutable QgsRectangle mExtent; //layer extent
     bool mValid;
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
     long mNumberFeatures;
     QString mFidColName;
     QString mExtents;
-    long mSRId;
-    int  mEnvironment;
-    QString mSrsName;
-    QString mGeometryColName, mGeometryColType;
+    mutable long mSRId;
+    mutable int  mEnvironment;
+    mutable QString mSrsName;
+    mutable QString mGeometryColName, mGeometryColType;
     QString mLastError; //string containing the last reported error message
-    QgsCoordinateReferenceSystem mCrs; //coordinate reference system
+    mutable QgsCoordinateReferenceSystem mCrs; //coordinate reference system
     QGis::WkbType mWkbType;
     QSqlQuery mQuery; //current SQL query
     QString mConnInfo; // full connection information

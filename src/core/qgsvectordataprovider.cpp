@@ -93,7 +93,7 @@ bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap
   return false;
 }
 
-QVariant QgsVectorDataProvider::defaultValue( int fieldId )
+QVariant QgsVectorDataProvider::defaultValue( int fieldId ) const
 {
   Q_UNUSED( fieldId );
   return QVariant();
@@ -275,7 +275,7 @@ QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
   return resultMap;
 }
 
-QgsAttributeList QgsVectorDataProvider::attributeIndexes()
+QgsAttributeList QgsVectorDataProvider::attributeIndexes() const
 {
   return fields().allAttributesList();
 }
@@ -353,7 +353,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
   return false;
 }
 
-QVariant QgsVectorDataProvider::minimumValue( int index )
+QVariant QgsVectorDataProvider::minimumValue( int index ) const
 {
   if ( index < 0 || index >= fields().count() )
   {
@@ -369,7 +369,7 @@ QVariant QgsVectorDataProvider::minimumValue( int index )
   return mCacheMinValues[index];
 }
 
-QVariant QgsVectorDataProvider::maximumValue( int index )
+QVariant QgsVectorDataProvider::maximumValue( int index ) const
 {
   if ( index < 0 || index >= fields().count() )
   {
@@ -385,7 +385,7 @@ QVariant QgsVectorDataProvider::maximumValue( int index )
   return mCacheMaxValues[index];
 }
 
-void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, int limit )
+void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, int limit ) const
 {
   QgsFeature f;
   QgsAttributeList keys;
@@ -409,7 +409,7 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, in
 }
 
 QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate aggregate, int index,
-    const QgsAggregateCalculator::AggregateParameters& parameters, QgsExpressionContext* context, bool& ok )
+    const QgsAggregateCalculator::AggregateParameters& parameters, QgsExpressionContext* context, bool& ok ) const
 {
   //base implementation does nothing
   Q_UNUSED( aggregate );
@@ -426,7 +426,7 @@ void QgsVectorDataProvider::clearMinMaxCache()
   mCacheMinMaxDirty = true;
 }
 
-void QgsVectorDataProvider::fillMinMaxCache()
+void QgsVectorDataProvider::fillMinMaxCache() const
 {
   if ( !mCacheMinMaxDirty )
     return;
@@ -527,7 +527,7 @@ static bool _compareEncodings( const QString& s1, const QString& s2 )
   return s1.toLower() < s2.toLower();
 }
 
-const QStringList &QgsVectorDataProvider::availableEncodings()
+QStringList QgsVectorDataProvider::availableEncodings()
 {
   if ( smEncodings.isEmpty() )
   {
@@ -595,12 +595,12 @@ void QgsVectorDataProvider::clearErrors()
   mErrors.clear();
 }
 
-bool QgsVectorDataProvider::hasErrors()
+bool QgsVectorDataProvider::hasErrors() const
 {
   return !mErrors.isEmpty();
 }
 
-QStringList QgsVectorDataProvider::errors()
+QStringList QgsVectorDataProvider::errors() const
 {
   return mErrors;
 }
