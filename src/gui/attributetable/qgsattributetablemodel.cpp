@@ -790,7 +790,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
 
   if ( mSortCacheExpression.isField() )
   {
-    QString fieldName = dynamic_cast<const QgsExpression::NodeColumnRef*>( mSortCacheExpression.rootNode() )->name();
+    QString fieldName = static_cast<const QgsExpression::NodeColumnRef*>( mSortCacheExpression.rootNode() )->name();
     mSortFieldIndex = mLayerCache->layer()->fieldNameIndex( fieldName );
   }
 

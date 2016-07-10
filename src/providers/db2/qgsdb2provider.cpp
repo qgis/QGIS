@@ -932,7 +932,11 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
       return false;
     }
   }
-  mDatabase.transaction();
+  if ( !mDatabase.transaction() )
+  {
+    QgsDebugMsg( "transaction failed" );
+    return false;
+  }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QSqlQuery queryFid = QSqlQuery( mDatabase );

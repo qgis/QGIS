@@ -3351,7 +3351,7 @@ bool QgsAuthManager::authDbCommit() const
     const char* err = QT_TR_NOOP( "Auth db FAILED to rollback changes" );
     QgsDebugMsg( err );
     emit messageOut( tr( err ), authManTag(), WARNING );
-    authDbConnection().rollback();
+    ( void )authDbConnection().rollback();
     return false;
   }
 
@@ -3378,7 +3378,7 @@ bool QgsAuthManager::authDbTransactionQuery( QSqlQuery *query ) const
     const char* err = QT_TR_NOOP( "Auth db FAILED to rollback changes" );
     QgsDebugMsg( err );
     emit messageOut( tr( err ), authManTag(), WARNING );
-    authDbConnection().rollback();
+    ( void )authDbConnection().rollback();
     return false;
   }
 
