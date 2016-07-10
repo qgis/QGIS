@@ -495,9 +495,9 @@ void TestQgsExpressionContext::globalScope()
   QgsExpression expOsName( "var('qgis_os_name')" );
   QgsExpression expPlatform( "var('qgis_platform')" );
 
-  QCOMPARE( expVersion.evaluate( &context ).toString(), QString( QGis::QGIS_VERSION ) );
+  QCOMPARE( expVersion.evaluate( &context ).toString(), QGis::QGIS_VERSION );
   QCOMPARE( expVersionNo.evaluate( &context ).toInt(), QGis::QGIS_VERSION_INT );
-  QCOMPARE( expReleaseName.evaluate( &context ).toString(), QString( QGis::QGIS_RELEASE_NAME ) );
+  QCOMPARE( expReleaseName.evaluate( &context ).toString(), QGis::QGIS_RELEASE_NAME );
   QCOMPARE( expAccountName.evaluate( &context ).toString(), QgsApplication::userLoginName() );
   QCOMPARE( expUserFullName.evaluate( &context ).toString(), QgsApplication::userFullName() );
   QCOMPARE( expOsName.evaluate( &context ).toString(), QgsApplication::osName() );

@@ -31,11 +31,11 @@ class QGis
     // Version constants
     //
     // Version string
-    static const char* QGIS_VERSION;
+    static QString QGIS_VERSION;
     // Version number used for comparing versions using the "Check QGIS Version" function
     static const int QGIS_VERSION_INT;
     // Release name
-    static const char* QGIS_RELEASE_NAME;
+    static QString QGIS_RELEASE_NAME;
     // The development version
     static const char* QGIS_DEV_VERSION;
 
@@ -93,7 +93,7 @@ class QGis
     static int wkbDimensions( WkbType type );
 
     //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
-    static QgsWKBTypes::Type fromOldWkbType(QGis::WkbType type);
+    static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type );
 
     //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
     static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
