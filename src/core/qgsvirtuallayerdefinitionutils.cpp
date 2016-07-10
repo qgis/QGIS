@@ -27,7 +27,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
   QStringList columns;
 
   // look for the uid
-  const QgsFields& fields = layer->dataProvider()->fields();
+  QgsFields fields = layer->dataProvider()->fields();
   {
     QgsAttributeList pk = layer->dataProvider()->pkAttributeIndexes();
     if ( pk.size() == 1 )

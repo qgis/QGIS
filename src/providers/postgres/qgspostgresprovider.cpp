@@ -703,7 +703,7 @@ const QgsField &QgsPostgresProvider::field( int index ) const
   return mAttributeFields[index];
 }
 
-const QgsFields & QgsPostgresProvider::fields() const
+QgsFields QgsPostgresProvider::fields() const
 {
   return mAttributeFields;
 }

@@ -61,12 +61,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     virtual long featureCount() const override;
 
-    /**
-     * Return a map of indexes with field names for this layer
-     * @return map of fields
-     */
-    virtual const QgsFields & fields() const override;
-
+    virtual QgsFields fields() const override;
 
     /**
       * Adds a list of features

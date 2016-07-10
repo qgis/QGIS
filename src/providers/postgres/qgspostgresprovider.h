@@ -140,11 +140,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     void determinePrimaryKeyFromUriKeyColumn();
 
-    /**
-     * Get the field information for the layer
-     * @return vector of QgsField objects
-     */
-    const QgsFields &fields() const override;
+    QgsFields fields() const override;
 
     /**
      * Return a short comment for the data that this provider is

@@ -125,11 +125,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     /** Update the extent, feature count, wkb type and srid for this layer */
     void UpdateStatistics( bool estimate );
 
-    /**
-     * Return a map of indexes with field names for this layer
-     * @return map of fields
-     */
-    virtual const QgsFields & fields() const override;
+    virtual QgsFields fields() const override;
 
     /** Accessor for sql where clause used to limit dataset */
     QString subsetString() override;

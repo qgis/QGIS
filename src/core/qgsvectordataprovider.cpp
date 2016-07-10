@@ -269,10 +269,10 @@ QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
 {
   QMap<QString, int> resultMap;
 
-  const QgsFields& theFields = fields();
+  QgsFields theFields = fields();
   for ( int i = 0; i < theFields.count(); ++i )
   {
-    resultMap.insert( theFields[i].name(), i );
+    resultMap.insert( theFields.at( i ).name(), i );
   }
 
   return resultMap;
@@ -434,20 +434,20 @@ void QgsVectorDataProvider::fillMinMaxCache()
   if ( !mCacheMinMaxDirty )
     return;
 
-  const QgsFields& flds = fields();
+  QgsFields flds = fields();
   for ( int i = 0; i < flds.count(); ++i )
   {
-    if ( flds[i].type() == QVariant::Int )
+    if ( flds.at( i ).type() == QVariant::Int )
     {
       mCacheMinValues[i] = QVariant( INT_MAX );
       mCacheMaxValues[i] = QVariant( INT_MIN );
     }
-    else if ( flds[i].type() == QVariant::LongLong )
+    else if ( flds.at( i ).type() == QVariant::LongLong )
     {
       mCacheMinValues[i] = QVariant( std::numeric_limits<qlonglong>::max() );
       mCacheMaxValues[i] = QVariant( std::numeric_limits<qlonglong>::min() );
     }
-    else if ( flds[i].type() == QVariant::Double )
+    else if ( flds.at( i ).type() == QVariant::Double )
     {
       mCacheMinValues[i] = QVariant( DBL_MAX );
       mCacheMaxValues[i] = QVariant( -DBL_MAX );
@@ -473,7 +473,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
       if ( varValue.isNull() )
         continue;
 
-      if ( flds[*it].type() == QVariant::Int )
+      if ( flds.at( *it ).type() == QVariant::Int )
       {
         int value = varValue.toInt();
         if ( value < mCacheMinValues[*it].toInt() )
@@ -481,7 +481,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
         if ( value > mCacheMaxValues[*it].toInt() )
           mCacheMaxValues[*it] = value;
       }
-      else if ( flds[*it].type() == QVariant::LongLong )
+      else if ( flds.at( *it ).type() == QVariant::LongLong )
       {
         qlonglong value = varValue.toLongLong();
         if ( value < mCacheMinValues[*it].toLongLong() )
@@ -489,7 +489,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
         if ( value > mCacheMaxValues[*it].toLongLong() )
           mCacheMaxValues[*it] = value;
       }
-      else if ( flds[*it].type() == QVariant::Double )
+      else if ( flds.at( *it ).type() == QVariant::Double )
       {
         double value = varValue.toDouble();
         if ( value < mCacheMinValues[*it].toDouble() )

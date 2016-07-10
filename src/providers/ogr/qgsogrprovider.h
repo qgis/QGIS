@@ -118,10 +118,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual long featureCount() const override;
 
-    /**
-     * Get the field information for the layer
-     */
-    virtual const QgsFields & fields() const override;
+    virtual QgsFields fields() const override;
 
     /** Return the extent for this data layer
      */
