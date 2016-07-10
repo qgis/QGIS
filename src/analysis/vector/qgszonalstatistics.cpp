@@ -533,13 +533,13 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString& fieldName )
     return fieldName;
   }
 
-  const QgsFields& providerFields = dp->fields();
+  QgsFields providerFields = dp->fields();
   QString shortName = fieldName.mid( 0, 10 );
 
   bool found = false;
   for ( int idx = 0; idx < providerFields.count(); ++idx )
   {
-    if ( shortName == providerFields[idx].name() )
+    if ( shortName == providerFields.at( idx ).name() )
     {
       found = true;
       break;
@@ -559,7 +559,7 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString& fieldName )
     found = false;
     for ( int idx = 0; idx < providerFields.count(); ++idx )
     {
-      if ( shortName == providerFields[idx].name() )
+      if ( shortName == providerFields.at( idx ).name() )
       {
         n += 1;
         if ( n < 9 )

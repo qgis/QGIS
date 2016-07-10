@@ -3365,7 +3365,7 @@ QString QgsSpatiaLiteProvider::description() const
   return SPATIALITE_DESCRIPTION;
 }                               //  QgsSpatiaLiteProvider::description()
 
-const QgsFields& QgsSpatiaLiteProvider::fields() const
+QgsFields QgsSpatiaLiteProvider::fields() const
 {
   return mAttributeFields;
 }

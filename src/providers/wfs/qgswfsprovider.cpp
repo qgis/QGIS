@@ -724,7 +724,7 @@ long QgsWFSProvider::featureCount() const
   return mShared->getFeatureCount();
 }
 
-const QgsFields& QgsWFSProvider::fields() const
+QgsFields QgsWFSProvider::fields() const
 {
   return mShared->mFields;
 }

@@ -33,6 +33,14 @@ attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDBSupported()</li>
 </li>
 </ul>
 
+\subsection qgis_api_break_3_0_DataProviders Data Providers
+
+<ul>
+<li>QgsVectorDataProvider::fields() now returns a copy, rather than a const reference. Since QgsFields
+objects are implicitly shared, returning a copy helps simplify and make code more robust. This change
+only affects third party c++ providers, and does not affect PyQGIS scripts.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsVectorFileWriter QgsVectorFileWriter
 
 <ul>

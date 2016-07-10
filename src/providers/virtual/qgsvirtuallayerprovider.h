@@ -63,11 +63,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
 
     virtual bool supportsSubsetString() const override { return true; }
 
-    /**
-     * Get the field information for the layer
-     * @return vector of QgsField objects
-     */
-    const QgsFields & fields() const override;
+    QgsFields fields() const override;
 
     bool isValid() const override;
 

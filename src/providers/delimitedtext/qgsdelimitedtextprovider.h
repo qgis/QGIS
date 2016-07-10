@@ -101,11 +101,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     virtual long featureCount() const override;
 
-    /**
-     * Return a map of indexes with field names for this layer
-     * @return map of fields
-     */
-    virtual const QgsFields & fields() const override;
+    virtual QgsFields fields() const override;
 
     /** Returns a bitmask containing the supported capabilities
      * Note, some capabilities may change depending on whether

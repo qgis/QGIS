@@ -453,7 +453,7 @@ long QgsGrassProvider::featureCount() const
   return mNumberFeatures;
 }
 
-const QgsFields & QgsGrassProvider::fields() const
+QgsFields QgsGrassProvider::fields() const
 {
   if ( isTopoType() )
   {

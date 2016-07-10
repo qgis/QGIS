@@ -1135,7 +1135,7 @@ long QgsDelimitedTextProvider::featureCount() const
 }
 
 
-const QgsFields & QgsDelimitedTextProvider::fields() const
+QgsFields QgsDelimitedTextProvider::fields() const
 {
   return attributeFields;
 }

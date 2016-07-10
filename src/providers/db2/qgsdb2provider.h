@@ -70,11 +70,8 @@ class QgsDb2Provider : public QgsVectorDataProvider
      */
     void updateStatistics() const;
 
-    /**
-     * Return a map of indexes with field names for this layer.
-     * @return map of fields
-     */
-    virtual const QgsFields &fields() const override;
+
+    virtual QgsFields fields() const override;
 
     virtual QgsCoordinateReferenceSystem crs() const override;
     virtual QgsRectangle extent() const override;

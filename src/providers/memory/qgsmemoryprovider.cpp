@@ -309,7 +309,7 @@ long QgsMemoryProvider::featureCount() const
   return count;
 }
 
-const QgsFields & QgsMemoryProvider::fields() const
+QgsFields QgsMemoryProvider::fields() const
 {
   return mFields;
 }

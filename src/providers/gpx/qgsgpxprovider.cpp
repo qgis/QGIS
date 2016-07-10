@@ -171,7 +171,7 @@ long QgsGPXProvider::featureCount() const
 }
 
 
-const QgsFields& QgsGPXProvider::fields() const
+QgsFields QgsGPXProvider::fields() const
 {
   return attributeFields;
 }

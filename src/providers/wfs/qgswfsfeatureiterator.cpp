@@ -792,7 +792,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source,
 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
-    const QgsFields & dataProviderFields = mShared->mCacheDataProvider->fields();
+    QgsFields dataProviderFields = mShared->mCacheDataProvider->fields();
     QgsAttributeList cacheSubSet;
     Q_FOREACH ( int i, mRequest.subsetOfAttributes() )
     {

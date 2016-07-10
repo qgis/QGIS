@@ -43,7 +43,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
     QGis::WkbType geometryType() const override { return static_cast<QGis::WkbType>( mGeometryType ); }
     long featureCount() const override { return mObjectIds.size(); }
-    const QgsFields &fields() const override { return mFields; }
+    QgsFields fields() const override { return mFields; }
     /* Read only for the moment
     bool addFeatures( QgsFeatureList &flist ) override{ return false; }
     bool deleteFeatures( const QgsFeatureIds &id ) override{ return false; }
