@@ -36,7 +36,7 @@
 //
 
 // Version string
-const char* QGis::QGIS_VERSION = VERSION;
+QString QGis::QGIS_VERSION( QString::fromUtf8( VERSION ) );
 
 // development version
 const char* QGis::QGIS_DEV_VERSION = QGSVERSION;
@@ -46,7 +46,7 @@ const char* QGis::QGIS_DEV_VERSION = QGSVERSION;
 const int QGis::QGIS_VERSION_INT = VERSION_INT;
 
 // Release name
-const char* QGis::QGIS_RELEASE_NAME = RELEASE_NAME;
+QString QGis::QGIS_RELEASE_NAME( QString::fromUtf8( RELEASE_NAME ) );
 
 #if GDAL_VERSION_NUM >= 1800
 const QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
