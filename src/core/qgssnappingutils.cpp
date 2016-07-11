@@ -572,9 +572,9 @@ QString QgsSnappingUtils::dump()
   return msg;
 }
 
-const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
+QgsCoordinateReferenceSystem QgsSnappingUtils::destCRS() const
 {
-  return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : nullptr;
+  return mMapSettings.hasCrsTransformEnabled() ? mMapSettings.destinationCrs() : QgsCoordinateReferenceSystem();
 }
 
 

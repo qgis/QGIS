@@ -608,7 +608,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 ////////////////////////////////////////////////////////////////////////////
 
 
-QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS, const QgsRectangle* extent )
+QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem& destCRS, const QgsRectangle* extent )
     : mStorage( nullptr )
     , mRTree( nullptr )
     , mIsEmptyLayer( false )
@@ -616,9 +616,9 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateRefe
     , mLayer( layer )
     , mExtent( nullptr )
 {
-  if ( destCRS )
+  if ( destCRS.isValid() )
   {
-    mTransform = new QgsCoordinateTransform( layer->crs(), *destCRS );
+    mTransform = new QgsCoordinateTransform( layer->crs(), destCRS );
   }
 
   setExtent( extent );
@@ -639,9 +639,9 @@ QgsPointLocator::~QgsPointLocator()
   delete mExtent;
 }
 
-const QgsCoordinateReferenceSystem* QgsPointLocator::destCRS() const
+QgsCoordinateReferenceSystem QgsPointLocator::destCRS() const
 {
-  return mTransform ? &mTransform->destCRS() : nullptr;
+  return mTransform ? mTransform->destCRS() : QgsCoordinateReferenceSystem();
 }
 
 void QgsPointLocator::setExtent( const QgsRectangle* extent )

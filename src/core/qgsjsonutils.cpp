@@ -58,7 +58,7 @@ void QgsJSONExporter::setSourceCrs( const QgsCoordinateReferenceSystem& crs )
   mTransform.setSourceCrs( mCrs );
 }
 
-const QgsCoordinateReferenceSystem& QgsJSONExporter::sourceCrs() const
+QgsCoordinateReferenceSystem QgsJSONExporter::sourceCrs() const
 {
   return mCrs;
 }

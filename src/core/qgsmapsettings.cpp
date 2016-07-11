@@ -291,7 +291,7 @@ void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
   mDatumTransformStore.setDestinationCrs( crs );
 }
 
-const QgsCoordinateReferenceSystem& QgsMapSettings::destinationCrs() const
+QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
 {
   return mDestCRS;
 }

@@ -18,6 +18,13 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 \section qgis_api_break_3_0 QGIS 3.0
 
+\subsection qgis_api_break_3_0_QgsCoordinateTransform QgsCoordinateTransform
+
+<ul>
+<li>sourceCrs() and destCrs() now return a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
+plugins calling these methods will need to be updated.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_DataProviders Data Providers
 
 <ul>
@@ -47,6 +54,13 @@ only affects third party c++ providers, and does not affect PyQGIS scripts.</li>
 <li>crs() now returns a QgsCoordinateReferenceSystem object, not a reference. This change has no effect for PyQGIS code.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsJSONExporter QgsJSONExporter
+
+<ul>
+<li>sourceCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
+plugins calling this method will need to be updated.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsVectorLayerImport QgsVectorLayerImport
 
 <ul>
@@ -54,6 +68,29 @@ only affects third party c++ providers, and does not affect PyQGIS scripts.</li>
 QgsCoordinateReferenceSystem is now implicitly shared, using references to QgsCoordinateReferenceSystem rather than
 pointers makes for more robust, safer code. Use an invalid (default constructed) QgsCoordinateReferenceSystem
 in code which previously passed a null pointer to QgsVectorLayerImport.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsPointLocator QgsPointLocator
+
+<ul>
+<li>The constructor now takes a reference rather than a pointer to a CRS.  This has no effect on PyQGIS code, but c++
+plugins calling this method will need to be updated.</li>
+<li>destCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
+plugins calling this method will need to be updated.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsMapSettings QgsMapSettings
+
+<ul>
+<li>destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
+plugins calling this method will need to be updated.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsGraphBuilderInterface QgsGraphBuilderInterface
+
+<ul>
+<li>destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
+plugins calling this method will need to be updated.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorFileWriter QgsVectorFileWriter

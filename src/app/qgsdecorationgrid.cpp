@@ -833,7 +833,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
     return false;
   }
   QgsCoordinateReferenceSystem layerCRS = layer->crs();
-  const QgsCoordinateReferenceSystem& mapCRS =
+  QgsCoordinateReferenceSystem mapCRS =
     QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
   // is this the best way to compare CRS? should we also make sure map has OTF enabled?
   // TODO calculate transformed values if necessary
