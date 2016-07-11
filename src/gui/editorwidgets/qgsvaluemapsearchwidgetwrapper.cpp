@@ -96,12 +96,6 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
 
   QString currentKey = mComboBox->itemData( mComboBox->currentIndex() ).toString();
 
-  if ( currentKey == QString( VALUEMAP_NULL_TEXT ) )
-    if ( flags & EqualTo )
-      return fieldName + " IS NULL";
-  if ( flags & NotEqualTo )
-    return fieldName + " IS NOT NULL";
-
   switch ( fldType )
   {
     case QVariant::Int:
@@ -152,7 +146,8 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
 
     while ( it != cfg.constEnd() )
     {
-      mComboBox->addItem( it.key(), it.value() );
+      if ( it.value() != QString( VALUEMAP_NULL_TEXT ) )
+        mComboBox->addItem( it.key(), it.value() );
       ++it;
     }
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboBoxIndexChanged( int ) ) );
