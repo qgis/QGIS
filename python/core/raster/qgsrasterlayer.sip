@@ -115,7 +115,7 @@ class QgsRasterLayer : QgsMapLayer
     int bandCount() const;
 
     /** \brief Get the name of a band given its number  */
-    const  QString bandName( int theBandNoInt );
+    QString bandName( int theBandNoInt ) const;
 
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
@@ -147,7 +147,7 @@ class QgsRasterLayer : QgsMapLayer
     virtual bool isSpatial() const;
 
     /** \brief Obtain GDAL Metadata for this layer */
-    QString metadata();
+    QString metadata() const;
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );

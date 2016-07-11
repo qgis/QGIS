@@ -1379,7 +1379,7 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns the current transparency for the vector layer */
     int layerTransparency() const;
 
-    QString metadata();
+    QString metadata() const;
 
     /** @note not available in python bindings */
     // inline QgsGeometryCache* cache();
