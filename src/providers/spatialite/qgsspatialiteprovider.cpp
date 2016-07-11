@@ -93,15 +93,14 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 
 
 QgsVectorLayerImport::ImportError
-QgsSpatiaLiteProvider::createEmptyLayer(
-  const QString& uri,
-  const QgsFields &fields,
-  QGis::WkbType wkbType,
-  const QgsCoordinateReferenceSystem *srs,
-  bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *options )
+QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
+    const QgsFields &fields,
+    QGis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem& srs,
+    bool overwrite,
+    QMap<int, int> *oldToNewAttrIdxMap,
+    QString *errorMessage,
+    const QMap<QString, QVariant> *options )
 {
   Q_UNUSED( options );
 
@@ -224,7 +223,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 
       // get geometry type, dim and srid
       int dim = 2;
-      long srid = srs->postgisSrid();
+      long srid = srs.postgisSrid();
 
       switch ( wkbType )
       {
@@ -5075,7 +5074,7 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
   const QgsFields &fields,
   QGis::WkbType wkbType,
-  const QgsCoordinateReferenceSystem *srs,
+  const QgsCoordinateReferenceSystem& srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
   QString *errorMessage,

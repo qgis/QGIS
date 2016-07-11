@@ -270,14 +270,14 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
     QgsDebugMsg( "ogr provider loaded" );
 
     typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WkbType,
-        const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem * );
+        const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem & );
     createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
     if ( createEmptyDataSource )
     {
       if ( geometrytype != QGis::WKBUnknown )
       {
         QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( crsId );
-        if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, &srs ) )
+        if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs ) )
         {
           return QString::null;
         }
