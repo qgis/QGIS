@@ -26,7 +26,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <li>toggleScaleBasedVisibility() was replaced by setScaleBasedVisibility()</li>
 <li>lastErrorTitle(), lastError(), cacheImage(), onCacheImageDelete(), clearCacheImage() and the signals drawingProgress(),
 screenUpdateRequested() were removed. These members have had no effect for a number of QGIS 2.x releases.</li>
-<li>extent(), styleURI(), exportNamedStyle(), exportSldStyle(), writeXml() were made const. This has no effect on PyQGIS code, but c++ code implementing derived layer classes will need to update the signatures of these methods to match.</li>
+<li>extent(), styleURI(), exportNamedStyle(), exportSldStyle(), writeXml(), metadata() were made const. This has no effect on PyQGIS code, but c++ code implementing derived layer classes will need to update the signatures of these methods to match.</li>
 <li>The lyrname parameter in the QgsMapLayer constructor was renamed to 'name'.</li>
 <li>The vis parameter in setSubLayerVisibility was renamed to 'visible'.</li>
 <li>theResultFlag parameter in loadDefaultStyle and saveDefaultStyle were renamed to resultFlag.</li>

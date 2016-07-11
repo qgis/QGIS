@@ -1772,7 +1772,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns the current transparency for the vector layer */
     int layerTransparency() const;
 
-    QString metadata() override;
+    QString metadata() const override;
 
     /** @note not available in python bindings */
     inline QgsGeometryCache* cache() { return mCache; }

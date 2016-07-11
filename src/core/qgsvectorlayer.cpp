@@ -3760,7 +3760,7 @@ void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )
   *mDiagramLayerSettings = s;
 }
 
-QString QgsVectorLayer::metadata()
+QString QgsVectorLayer::metadata() const
 {
   QString myMetadata = "<html><body>";
 

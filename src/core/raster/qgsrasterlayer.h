@@ -251,7 +251,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     int bandCount() const;
 
     /** \brief Get the name of a band given its number  */
-    const  QString bandName( int theBandNoInt );
+    QString bandName( int theBandNoInt ) const;
 
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual bool isSpatial() const override { return true; }
 
     /** \brief Obtain GDAL Metadata for this layer */
-    QString metadata() override;
+    QString metadata() const override;
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );

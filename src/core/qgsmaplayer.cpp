@@ -1672,7 +1672,7 @@ void QgsMapLayer::triggerRepaint()
   emit repaintRequested();
 }
 
-QString QgsMapLayer::metadata()
+QString QgsMapLayer::metadata() const
 {
   return QString();
 }

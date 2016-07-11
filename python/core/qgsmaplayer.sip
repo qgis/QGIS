@@ -650,7 +650,7 @@ class QgsMapLayer : QObject
     void triggerRepaint();
 
     /** \brief Obtain Metadata for this layer */
-    virtual QString metadata();
+    virtual QString metadata() const;
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const;
