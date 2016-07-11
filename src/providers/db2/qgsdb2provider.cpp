@@ -1263,15 +1263,14 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   return true;
 }
 
-QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer(
-  const QString& uri,
-  const QgsFields &fields,
-  QGis::WkbType wkbType,
-  const QgsCoordinateReferenceSystem *srs,
-  bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *options )
+QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QString& uri,
+    const QgsFields &fields,
+    QGis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem& srs,
+    bool overwrite,
+    QMap<int, int> *oldToNewAttrIdxMap,
+    QString *errorMessage,
+    const QMap<QString, QVariant> *options )
 {
   Q_UNUSED( options );
 
@@ -1297,8 +1296,8 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer(
   // srs->posgisSrid() seems to return the authority id which is
   // most often the EPSG id.  Hopefully DB2 has defined an SRS using this
   // value as the srid / srs_id.  If not, we are out of luck.
-  QgsDebugMsg( "srs: " + srs->toWkt() );
-  long srid = srs->postgisSrid();
+  QgsDebugMsg( "srs: " + srs.toWkt() );
+  long srid = srs.postgisSrid();
   QgsDebugMsg( QString( "srid: %1" ).arg( srid ) );
   if ( srid >= 0 )
   {
@@ -1740,7 +1739,7 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
   const QgsFields &fields,
   QGis::WkbType wkbType,
-  const QgsCoordinateReferenceSystem *srs,
+  const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
   QString *errorMessage,

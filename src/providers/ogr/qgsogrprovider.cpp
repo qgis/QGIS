@@ -196,15 +196,14 @@ void QgsOgrProvider::repack()
 }
 
 
-QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
-  const QString& uri,
-  const QgsFields &fields,
-  QGis::WkbType wkbType,
-  const QgsCoordinateReferenceSystem *srs,
-  bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *options )
+QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QString& uri,
+    const QgsFields &fields,
+    QGis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem& srs,
+    bool overwrite,
+    QMap<int, int> *oldToNewAttrIdxMap,
+    QString *errorMessage,
+    const QMap<QString, QVariant> *options )
 {
   QString encoding;
   QString driverName = "ESRI Shapefile";
@@ -2438,7 +2437,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QString &encoding,
                                        QGis::WkbType vectortype,
                                        const QList< QPair<QString, QString> > &attributes,
-                                       const QgsCoordinateReferenceSystem *srs = nullptr )
+                                       const QgsCoordinateReferenceSystem& srs = QgsCoordinateReferenceSystem() )
 {
   QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
 
@@ -2493,9 +2492,9 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   OGRSpatialReferenceH reference = nullptr;
 
   QgsCoordinateReferenceSystem mySpatialRefSys;
-  if ( srs )
+  if ( srs.isValid() )
   {
-    mySpatialRefSys = *srs;
+    mySpatialRefSys = srs;
   }
   else
   {
@@ -3335,7 +3334,7 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
   const QgsFields &fields,
   QGis::WkbType wkbType,
-  const QgsCoordinateReferenceSystem *srs,
+  const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
   QString *errorMessage,

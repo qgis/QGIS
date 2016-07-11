@@ -426,7 +426,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& t
 
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "mssql", &srcLayer->crs(), false, &importError, false, nullptr, progress );
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "mssql", srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
       else if ( err == QgsVectorLayerImport::ErrUserCancelled )

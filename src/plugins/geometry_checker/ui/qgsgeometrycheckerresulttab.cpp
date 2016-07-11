@@ -245,13 +245,13 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
   {
     return false;
   }
-  typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WkbType, const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem * );
+  typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WkbType, const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem& );
   createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( ogrLib.resolve( "createEmptyDataSource" ) );
   if ( !createEmptyDataSource )
   {
     return false;
   }
-  if ( !createEmptyDataSource( file, "ESRI Shapefile", mFeaturePool->getLayer()->dataProvider()->encoding(), QGis::WKBPoint, attributes, &mFeaturePool->getLayer()->crs() ) )
+  if ( !createEmptyDataSource( file, "ESRI Shapefile", mFeaturePool->getLayer()->dataProvider()->encoding(), QGis::WKBPoint, attributes, mFeaturePool->getLayer()->crs() ) )
   {
     return false;
   }

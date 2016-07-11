@@ -1650,15 +1650,14 @@ QGis::WkbType QgsMssqlProvider::getWkbType( const QString& geometryType, int dim
 }
 
 
-QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
-  const QString& uri,
-  const QgsFields &fields,
-  QGis::WkbType wkbType,
-  const QgsCoordinateReferenceSystem *srs,
-  bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *options )
+QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QString& uri,
+    const QgsFields &fields,
+    QGis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem& srs,
+    bool overwrite,
+    QMap<int, int> *oldToNewAttrIdxMap,
+    QString *errorMessage,
+    const QMap<QString, QVariant> *options )
 {
   Q_UNUSED( options );
 
@@ -1758,23 +1757,23 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
 
   // set up spatial reference id
   int srid = 0;
-  if ( srs->isValid() )
+  if ( srs.isValid() )
   {
-    srid = srs->srsid();
+    srid = srs.srsid();
     QString auth_srid = "null";
     QString auth_name = "null";
-    QStringList sl = srs->authid().split( ':' );
+    QStringList sl = srs.authid().split( ':' );
     if ( sl.length() == 2 )
     {
       auth_name = '\'' + sl[0] + '\'';
       auth_srid = sl[1];
     }
     sql = QString( "IF NOT EXISTS (SELECT * FROM spatial_ref_sys WHERE srid=%1) INSERT INTO spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) VALUES (%1, %2, %3, '%4', '%5')" )
-          .arg( srs->srsid() )
+          .arg( srs.srsid() )
           .arg( auth_name,
                 auth_srid,
-                srs->toWkt(),
-                srs->toProj4() );
+                srs.toWkt(),
+                srs.toProj4() );
     if ( !q.exec( sql ) )
     {
       if ( errorMessage )
@@ -1958,7 +1957,7 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
   const QgsFields &fields,
   QGis::WkbType wkbType,
-  const QgsCoordinateReferenceSystem *srs,
+  const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
   QString *errorMessage,

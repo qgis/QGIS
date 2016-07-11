@@ -58,7 +58,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       const QString& uri,
       const QgsFields &fields,
       QGis::WkbType wkbType,
-      const QgsCoordinateReferenceSystem *srs,
+      const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
