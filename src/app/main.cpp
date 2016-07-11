@@ -1037,7 +1037,7 @@ int main( int argc, char *argv[] )
   int w = 600 * qApp->desktop()->logicalDpiX() / 96;
   int h = 300 * qApp->desktop()->logicalDpiY() / 96;
 
-  QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio ) );
+  QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
   if ( !myHideSplash && !mySettings.value( "/qgis/hideSplash" ).toBool() )
   {
     //for win and linux we can just automask and png transparency areas will be used
