@@ -1219,7 +1219,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     }
     // geometry
     const QgsAbstractGeometryV2 *geometry = 0;
-    if ( !mEditBuffer->addedFeatures().contains( fid ) )
+    if ( !mEditBuffer->featureIsAdded( fid ) )
     {
 #ifdef QGISDEBUG
       QgsDebugMsg( "the feature is missing in buffer addedFeatures :" );
@@ -1248,7 +1248,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 
     setPoints( mPoints, geometry );
 
-    QgsFeatureMap& addedFeatures = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
+    QgsFeatureMap& addedFeatures = mEditBuffer->mAddedFeatures;
 
     // change polygon to linestring
     QgsWKBTypes::Type wkbType = QgsWKBTypes::flatType( geometry->wkbType() );
@@ -1271,7 +1271,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
 
       // It may be that user manualy entered cat value
-      QgsFeatureMap& addedFeatures = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
+      QgsFeatureMap& addedFeatures = mEditBuffer->mAddedFeatures;
       QgsFeature& feature = addedFeatures[fid];
       int catIndex = feature.fields()->indexFromName( mLayer->keyColumnName() );
       if ( catIndex != -1 )
@@ -1721,7 +1721,7 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
   {
     QgsDebugMsg( "changing attributes in different layer is not allowed" );
     // reset the value
-    QgsChangedAttributesMap &changedAttributes = const_cast<QgsChangedAttributesMap &>( mEditBuffer->changedAttributeValues() );
+    QgsChangedAttributesMap &changedAttributes = mEditBuffer->mChangedAttributeValues;
     if ( idx == mLayer->keyColumn() )
     {
       // should not happen because cat field is not editable
@@ -1923,7 +1923,7 @@ void QgsGrassProvider::setAddedFeaturesSymbol()
   {
     return;
   }
-  QgsFeatureMap& features = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
+  QgsFeatureMap& features = mEditBuffer->mAddedFeatures;
   Q_FOREACH ( QgsFeatureId fid, features.keys() )
   {
     QgsFeature feature = features[fid];

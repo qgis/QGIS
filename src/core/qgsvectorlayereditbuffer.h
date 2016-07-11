@@ -99,24 +99,42 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /** Stop editing and discard the edits */
     virtual void rollBack();
 
+    /** Returns a map of new features which are not committed. */
+    QgsFeatureMap addedFeatures() const { return mAddedFeatures; }
 
+    /** Returns true if the specified feature ID has been added but not committed.
+     * @param id feature ID
+     * @note added in QGIS 3.0
+     */
+    bool featureIsAdded( QgsFeatureId id ) const { return mAddedFeatures.contains( id ); }
 
-    /** New features which are not commited. */
-    inline const QgsFeatureMap& addedFeatures() { return mAddedFeatures; }
+    /** Returns a map of features with changed attributes values which are not committed */
+    QgsChangedAttributesMap changedAttributeValues() const { return mChangedAttributeValues; }
 
-    /** Changed attributes values which are not commited */
-    inline const QgsChangedAttributesMap& changedAttributeValues() { return mChangedAttributeValues; }
+    /** Returns true if the specified feature ID has had an attribute changed but not committed.
+     * @param id feature ID
+     * @note added in QGIS 3.0
+     */
+    bool featureHasAttributeChanges( QgsFeatureId id ) const { return mChangedAttributeValues.contains( id ); }
 
-    /** Deleted attributes fields which are not commited. The list is kept sorted. */
-    inline const QgsAttributeList& deletedAttributeIds() { return mDeletedAttributeIds; }
+    /** Returns a list of deleted attributes fields which are not committed. The list is kept sorted. */
+    QgsAttributeList deletedAttributeIds() const { return mDeletedAttributeIds; }
 
-    /** Added attributes fields which are not commited */
-    inline const QList<QgsField>& addedAttributes() { return mAddedAttributes; }
+    /** Returns a list of added attributes fields which are not committed */
+    QList<QgsField> addedAttributes() const { return mAddedAttributes; }
 
-    /** Changed geometries which are not commited. */
-    inline const QgsGeometryMap& changedGeometries() { return mChangedGeometries; }
+    /** Returns a map of features with changed geometries which are not committed. */
+    QgsGeometryMap changedGeometries() const { return mChangedGeometries; }
 
-    inline const QgsFeatureIds deletedFeatureIds() { return mDeletedFeatureIds; }
+    /** Returns true if the specified feature ID has had its geometry changed but not committed.
+     * @param id feature ID
+     * @note added in QGIS 3.0
+     */
+    bool featureHasGeometryChange( QgsFeatureId id ) const { return mChangedGeometries.contains( id ); }
+
+    /** Returns a list of deleted feature IDs which are not committed. */
+    QgsFeatureIds deletedFeatureIds() const { return mDeletedFeatureIds; }
+
     //QString dumpEditBuffer();
 
   protected slots:
@@ -161,10 +179,10 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     void updateFields( QgsFields& fields );
 
-    /** Update feature with uncommited geometry updates */
+    /** Update feature with uncommitted geometry updates */
     void updateFeatureGeometry( QgsFeature &f );
 
-    /** Update feature with uncommited attribute updates */
+    /** Update feature with uncommitted attribute updates */
     void updateChangedAttributes( QgsFeature &f );
 
     /** Update added and changed features after addition of an attribute */
@@ -191,29 +209,31 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     friend class QgsVectorLayerUndoCommandDeleteAttribute;
     friend class QgsVectorLayerUndoCommandRenameAttribute;
 
-    /** Deleted feature IDs which are not commited.  Note a feature can be added and then deleted
+    /** Deleted feature IDs which are not committed.  Note a feature can be added and then deleted
         again before the change is committed - in that case the added feature would be removed
         from mAddedFeatures only and *not* entered here.
      */
     QgsFeatureIds mDeletedFeatureIds;
 
-    /** New features which are not commited. */
+    /** New features which are not committed. */
     QgsFeatureMap mAddedFeatures;
 
-    /** Changed attributes values which are not commited */
+    /** Changed attributes values which are not committed */
     QgsChangedAttributesMap mChangedAttributeValues;
 
-    /** Deleted attributes fields which are not commited. The list is kept sorted. */
+    /** Deleted attributes fields which are not committed. The list is kept sorted. */
     QgsAttributeList mDeletedAttributeIds;
 
-    /** Added attributes fields which are not commited */
+    /** Added attributes fields which are not committed */
     QList<QgsField> mAddedAttributes;
 
-    /** Renamed attributes which are not commited. */
+    /** Renamed attributes which are not committed. */
     QgsFieldNameMap mRenamedAttributes;
 
-    /** Changed geometries which are not commited. */
+    /** Changed geometries which are not committed. */
     QgsGeometryMap mChangedGeometries;
+
+    friend class QgsGrassProvider; //GRASS provider totally abuses the edit buffer
 };
 
 #endif // QGSVECTORLAYEREDITBUFFER_H
