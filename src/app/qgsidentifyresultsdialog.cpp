@@ -37,6 +37,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
+#include "qgsstringutils.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -61,28 +62,6 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 #include "qgsvectorcolorrampv2.h" // for random colors
-
-static QString& insertLinkAnchors( QString& value )
-{
-  // http://alanstorm.com/url_regex_explained
-  static QRegExp urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" );
-  static QRegExp protoRegEx( "^(?:f|ht)tps?://" );
-
-  int offset = 0;
-  while ( urlRegEx.indexIn( value, offset ) != -1 )
-  {
-    QString url = urlRegEx.cap( 1 );
-    QString protoUrl = url;
-    if ( protoRegEx.indexIn( protoUrl ) == -1 )
-    {
-      protoUrl.prepend( "http://" );
-    }
-    QString anchor = QString( "<a href=\"%1\">%2</a>" ).arg( Qt::escape( protoUrl ) ).arg( Qt::escape( url ) );
-    value.replace( urlRegEx.pos( 1 ), url.length(), anchor );
-    offset = urlRegEx.pos( 1 ) + anchor.length();
-  }
-  return value;
-}
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
@@ -493,8 +472,10 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( i >= fields.count() )
       continue;
 
-    if ( vlayer->editorWidgetV2( i ) == "Hidden" )
+    if ( vlayer->editFormConfig()->widgetType( i ) == "Hidden" )
+    {
       continue;
+    }
 
     QString defVal;
     if ( fields.fieldOrigin( i ) == QgsFields::OriginProvider && vlayer->dataProvider() )
@@ -510,18 +491,21 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     attrItem->setData( 1, Qt::UserRole, value );
 
-    if ( vlayer->editFormConfig()->widgetType( i ) == "Hidden" )
+    value = representValue( vlayer, fields.at( i ).name(), attrs.at( i ) );
+    bool foundLinks = false;
+    QString links = QgsStringUtils::insertLinks( value, &foundLinks );
+    if ( foundLinks )
     {
-      delete attrItem;
-      continue;
+      QLabel* valueLabel = new QLabel( links );
+      valueLabel->setOpenExternalLinks( true );
+      attrItem->treeWidget()->setItemWidget( attrItem, 1, valueLabel );
+      attrItem->setData( 1, Qt::DisplayRole, QString() );
     }
-
-    value = representValue( vlayer, fields[i].name(), attrs[i] );
-    QLabel* valueLabel = new QLabel( insertLinkAnchors( value ) );
-    valueLabel->setOpenExternalLinks( true );
-    attrItem->treeWidget()->setItemWidget( attrItem, 1, valueLabel );
-
-    attrItem->setData( 1, Qt::DisplayRole, QString() );
+    else
+    {
+      attrItem->setData( 1, Qt::DisplayRole, value );
+      attrItem->treeWidget()->setItemWidget( attrItem, 1, nullptr );
+    }
 
     if ( fields[i].name() == vlayer->displayField() )
     {
@@ -1507,9 +1491,21 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
         if ( item->data( 0, Qt::UserRole + 1 ).toInt() == idx )
         {
           value = representValue( vlayer, fld.name(), val );
-          QLabel* valueLabel = new QLabel( insertLinkAnchors( value ) );
-          valueLabel->setOpenExternalLinks( true );
-          item->treeWidget()->setItemWidget( item, 1, valueLabel );
+
+          bool foundLinks = false;
+          QString links = QgsStringUtils::insertLinks( value, &foundLinks );
+          if ( foundLinks )
+          {
+            QLabel* valueLabel = new QLabel( links );
+            valueLabel->setOpenExternalLinks( true );
+            item->treeWidget()->setItemWidget( item, 1, valueLabel );
+            item->setData( 1, Qt::DisplayRole, QString() );
+          }
+          else
+          {
+            item->treeWidget()->setItemWidget( item, 1, nullptr );
+            item->setData( 1, Qt::DisplayRole, value );
+          }
           return;
         }
       }

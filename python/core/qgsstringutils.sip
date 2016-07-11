@@ -46,4 +46,13 @@ class QgsStringUtils
      * @returns 4 letter Soundex code
      */
     static QString soundex( const QString &string );
+
+    /** Returns a string with any URL (eg http(s)/ftp) and mailto: text converted to valid HTML <a ...>
+     * links.
+     * @param string string to insert links into
+     * @param foundLinks if specified, will be set to true if any links were inserted into the string
+     * @returns string with inserted links
+     * @note added in QGIS 3.0
+     */
+    static QString insertLinks( const QString& string, bool* foundLinks = nullptr );
 };
