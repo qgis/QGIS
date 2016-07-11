@@ -23,13 +23,13 @@
 
 
 
-QgsAggregateCalculator::QgsAggregateCalculator( QgsVectorLayer* layer )
+QgsAggregateCalculator::QgsAggregateCalculator( const QgsVectorLayer* layer )
     : mLayer( layer )
 {
 
 }
 
-QgsVectorLayer*QgsAggregateCalculator::layer() const
+const QgsVectorLayer* QgsAggregateCalculator::layer() const
 {
   return mLayer;
 }

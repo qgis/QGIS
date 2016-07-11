@@ -106,6 +106,13 @@ plugins calling this method will need to be updated.</li>
 plugins calling this method will need to be updated.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsVectorLayer QgsVectorLayer
+
+<ul>
+<li>commitErrors() now returns an object, rather than a reference. This has no effect on PyQGIS code.</li>
+<li>subsetString() was made const. This has no effect on PyQGIS code, but c++ code implementing derived layer classes will need to update the signature of this method to match.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsVectorFileWriter QgsVectorFileWriter
 
 <ul>
