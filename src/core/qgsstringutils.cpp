@@ -15,6 +15,8 @@
 
 #include "qgsstringutils.h"
 #include <QVector>
+#include <QRegExp>
+#include <QTextDocument> // for Qt::escape
 
 int QgsStringUtils::levenshteinDistance( const QString& string1, const QString& string2, bool caseSensitive )
 {
@@ -293,4 +295,45 @@ QString QgsStringUtils::soundex( const QString& string )
   }
 
   return tmp;
+}
+
+QString QgsStringUtils::insertLinks( const QString& string, bool *foundLinks )
+{
+  QString converted = string;
+
+  // http://alanstorm.com/url_regex_explained
+  // note - there's more robust implementations available, but we need one which works within the limitation of QRegExp
+  static QRegExp urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" );
+  static QRegExp protoRegEx( "^(?:f|ht)tps?://" );
+  static QRegExp emailRegEx( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" );
+
+  int offset = 0;
+  bool found = false;
+  while ( urlRegEx.indexIn( converted, offset ) != -1 )
+  {
+    found = true;
+    QString url = urlRegEx.cap( 1 );
+    QString protoUrl = url;
+    if ( protoRegEx.indexIn( protoUrl ) == -1 )
+    {
+      protoUrl.prepend( "http://" );
+    }
+    QString anchor = QString( "<a href=\"%1\">%2</a>" ).arg( Qt::escape( protoUrl ) ).arg( Qt::escape( url ) );
+    converted.replace( urlRegEx.pos( 1 ), url.length(), anchor );
+    offset = urlRegEx.pos( 1 ) + anchor.length();
+  }
+  offset = 0;
+  while ( emailRegEx.indexIn( converted, offset ) != -1 )
+  {
+    found = true;
+    QString email = emailRegEx.cap( 1 );
+    QString anchor = QString( "<a href=\"mailto:%1\">%1</a>" ).arg( Qt::escape( email ) ).arg( Qt::escape( email ) );
+    converted.replace( emailRegEx.pos( 1 ), email.length(), anchor );
+    offset = emailRegEx.pos( 1 ) + anchor.length();
+  }
+
+  if ( foundLinks )
+    *foundLinks = found;
+
+  return converted;
 }
