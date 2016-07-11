@@ -359,7 +359,7 @@ class QgsMapLayer : QObject
     /** Returns layer's spatial reference system
     @note This was introduced in QGIS 1.4
      */
-    const QgsCoordinateReferenceSystem& crs() const;
+    QgsCoordinateReferenceSystem crs() const;
 
     /** Sets layer's spatial reference system */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
