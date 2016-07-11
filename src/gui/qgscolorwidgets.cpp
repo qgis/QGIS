@@ -1178,6 +1178,27 @@ void QgsColorRampWidget::mouseMoveEvent( QMouseEvent *event )
   QgsColorWidget::mouseMoveEvent( event );
 }
 
+void QgsColorRampWidget::wheelEvent( QWheelEvent *event )
+{
+  int oldValue = componentValue();
+
+  if ( event->delta() > 0 )
+  {
+    setComponentValue( componentValue() + 1 );
+  }
+  else
+  {
+    setComponentValue( componentValue() - 1 );
+  }
+
+  if ( componentValue() != oldValue )
+  {
+    //value has changed
+    emit colorChanged( mCurrentColor );
+    emit valueChanged( componentValue() );
+  }
+}
+
 void QgsColorRampWidget::mousePressEvent( QMouseEvent *event )
 {
   setColorFromPoint( event->posF() );
