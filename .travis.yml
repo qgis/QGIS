@@ -67,7 +67,7 @@ matrix:
         apt: true
         directories:
           - $HOME/.ccache
-      compiler: gcc
+      compiler: clang
       python: "3.3"
       addons:
         postgresql: "9.4"
