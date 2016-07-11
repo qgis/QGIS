@@ -68,7 +68,7 @@ class APP_EXPORT QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
     QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList & strings = QStringList() );
     const QgsFields &fields() const { return mFields; }
     const QgsFeature &feature() const { return mFeature; }
-    const QgsCoordinateReferenceSystem &crs() { return mCrs; }
+    QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
   private:
     QgsFields mFields;

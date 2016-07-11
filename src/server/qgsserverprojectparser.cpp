@@ -747,7 +747,7 @@ void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& gr
 
   QgsConfigParserUtils::appendCRSElementsToLayer( groupElem, doc, combinedCRSSet.toList(), supportedOutputCrsList() );
 
-  const QgsCoordinateReferenceSystem& groupCRS = projectCRS();
+  QgsCoordinateReferenceSystem groupCRS = projectCRS();
   if ( considerMapExtent )
   {
     QgsRectangle mapRect = mapRectangle();
@@ -879,7 +879,7 @@ QgsRectangle QgsServerProjectParser::layerBoundingBoxInProjectCRS( const QDomEle
   }
 
   //get project crs
-  const QgsCoordinateReferenceSystem& projectCrs = projectCRS();
+  QgsCoordinateReferenceSystem projectCrs = projectCRS();
   QgsCoordinateTransform t( layerCrs, projectCrs );
 
   //transform

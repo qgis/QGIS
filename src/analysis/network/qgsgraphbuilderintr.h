@@ -56,7 +56,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     { }
 
     //! get destinaltion Crs
-    QgsCoordinateReferenceSystem& destinationCrs()
+    QgsCoordinateReferenceSystem destinationCrs() const
     {
       return mCrs;
     }
