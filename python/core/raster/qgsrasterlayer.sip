@@ -247,6 +247,6 @@ class QgsRasterLayer : QgsMapLayer
     bool writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage) const;
 
     /** \brief Write layer specific state to project file Dom node */
-    bool writeXml( QDomNode & layer_node, QDomDocument & doc );
+    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const;
 };
 

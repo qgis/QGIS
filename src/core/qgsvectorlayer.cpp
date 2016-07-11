@@ -964,7 +964,7 @@ void QgsVectorLayer::setExtent( const QgsRectangle &r )
   mValidExtent = true;
 }
 
-QgsRectangle QgsVectorLayer::extent()
+QgsRectangle QgsVectorLayer::extent() const
 {
   QgsRectangle rect;
   rect.setMinimal();
@@ -980,7 +980,8 @@ QgsRectangle QgsVectorLayer::extent()
     // show the extent
     QgsDebugMsg( "Extent of layer: " + mbr.toString() );
     // store the extent
-    setExtent( mbr );
+    mValidExtent = true;
+    mExtent = mbr;
 
     mLazyExtent = false;
   }
@@ -1042,7 +1043,8 @@ QgsRectangle QgsVectorLayer::extent()
     rect = QgsRectangle(); // use rectangle with zero coordinates
   }
 
-  setExtent( rect );
+  mValidExtent = true;
+  mExtent = rect;
 
   // Send this (hopefully) up the chain to the map canvas
   emit recalculateExtents();
@@ -1101,7 +1103,7 @@ QgsConditionalLayerStyles* QgsVectorLayer::conditionalStyles() const
   return mConditionalStyles;
 }
 
-QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request ) const
 {
   if ( !mValid || !mDataProvider )
     return QgsFeatureIterator();
@@ -1828,7 +1830,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
 /* virtual */
 bool QgsVectorLayer::writeXml( QDomNode & layer_node,
-                               QDomDocument & document )
+                               QDomDocument & document ) const
 {
   // first get the layer element so that we can append the type attribute
 
@@ -3122,7 +3124,7 @@ void QgsVectorLayer::updateFields()
 }
 
 
-void QgsVectorLayer::createJoinCaches()
+void QgsVectorLayer::createJoinCaches() const
 {
   if ( mJoinBuffer->containsJoins() )
   {

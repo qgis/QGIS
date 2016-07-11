@@ -472,7 +472,7 @@ class QgsVectorLayer : QgsMapLayer
     /** Write vector layer specific state to project file Dom node.
      * @note Called by QgsMapLayer::writeXML().
      */
-    virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
+    virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const;
 
     /**
      * Save named and sld style of the layer to the style table in the db.
@@ -610,9 +610,11 @@ class QgsVectorLayer : QgsMapLayer
     virtual QString subsetString();
 
     /**
-     * Query the provider for features specified in request.
+      * Query the layer for features specified in request.
+      * @param request feature request describing parameters of features to return
+      * @returns iterator for matching features from provider
      */
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const;
 
     /** Adds a feature
         @param f feature to add
@@ -853,7 +855,7 @@ class QgsVectorLayer : QgsMapLayer
     void drawLabels( QgsRenderContext& rendererContext ) /Deprecated/;
 
     /** Return the extent of the layer */
-    QgsRectangle extent();
+    QgsRectangle extent() const;
 
     /**
      * Returns the list of fields of this layer.
@@ -1315,7 +1317,7 @@ class QgsVectorLayer : QgsMapLayer
     void updateFields();
 
     /** Caches joined attributes if required (and not already done) */
-    void createJoinCaches();
+    void createJoinCaches() const;
 
     /** Returns unique values for column
      * @param index column index for attribute

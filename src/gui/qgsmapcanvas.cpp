@@ -462,7 +462,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       if ( !currentLayer )
         continue;
       disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
-      disconnect( currentLayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerCrsChange() ) );
+      disconnect( currentLayer, SIGNAL( crsChanged() ), this, SLOT( layerCrsChange() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -480,7 +480,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       if ( !currentLayer )
         continue;
       connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
-      connect( currentLayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerCrsChange() ) );
+      connect( currentLayer, SIGNAL( crsChanged() ), this, SLOT( layerCrsChange() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {

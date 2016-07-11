@@ -378,7 +378,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const override;
 
     /** \brief Write layer specific state to project file Dom node */
-    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) override;
+    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const override;
 
   private:
     /** \brief Initialize default values */
