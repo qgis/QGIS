@@ -29,6 +29,15 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 
 </ul>
 
+\subsection qgis_api_break_3_0_QgsVectorLayerEditBuffer QgsVectorLayerEditBuffer
+
+<ul>
+<li>The addedFeatures(), changedAttributeValues(), deletedAttributeIds(), addedAttributes(), changedGeometries()
+and deletedFeatureIds() functions now return values, not references. This has no effect on PyQGIS code, but c++
+plugins calling these methods will need to be updated.</li>
+</ul>
+
+
 
 \section qgis_api_break_2_4 QGIS 2.4
 

@@ -324,11 +324,18 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
       QgsVectorLayerEditBuffer* editBuffer = layer()->editBuffer();
       if ( editBuffer )
       {
-        const QList<QgsFeatureId> addedFeatures = editBuffer->addedFeatures().keys();
-        const QList<QgsFeatureId> changedFeatures = editBuffer->changedAttributeValues().keys();
-        const QList<QgsFeatureId> changedGeometries = editBuffer->changedGeometries().keys();
-        const QgsFeatureId fid = masterModel()->rowToId( sourceRow );
-        return addedFeatures.contains( fid ) || changedFeatures.contains( fid ) || changedGeometries.contains( fid );
+        QgsFeatureId fid = masterModel()->rowToId( sourceRow );
+
+        if ( editBuffer->featureIsAdded( fid ) )
+          return true;
+
+        if ( editBuffer->featureHasAttributeChanges( fid ) )
+          return true;
+
+        if ( editBuffer->featureHasGeometryChange( fid ) )
+          return true;
+
+        return false;
       }
       return false;
     }

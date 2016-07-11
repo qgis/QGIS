@@ -70,24 +70,42 @@ class QgsVectorLayerEditBuffer : QObject
     /** Stop editing and discard the edits */
     virtual void rollBack();
 
+    /** Returns a map of new features which are not committed. */
+    QgsFeatureMap addedFeatures() const;
 
+    /** Returns true if the specified feature ID has been added but not committed.
+     * @param id feature ID
+     * @note added in QGIS 3.0
+     */
+    bool featureIsAdded( QgsFeatureId id ) const;
 
-    /** New features which are not commited. */
-    const QgsFeatureMap& addedFeatures();
+    /** Returns a map of features with changed attributes values which are not committed */
+    QgsChangedAttributesMap changedAttributeValues() const;
 
-    /** Changed attributes values which are not commited */
-    const QgsChangedAttributesMap& changedAttributeValues();
+    /** Returns true if the specified feature ID has had an attribute changed but not committed.
+     * @param id feature ID
+     * @note added in QGIS 3.0
+     */
+    bool featureHasAttributeChanges( QgsFeatureId id ) const;
 
-    /** Deleted attributes fields which are not commited. The list is kept sorted. */
-    const QgsAttributeList& deletedAttributeIds();
+    /** Returns a list of deleted attributes fields which are not committed. The list is kept sorted. */
+    QgsAttributeList deletedAttributeIds() const;
 
-    /** Added attributes fields which are not commited */
-    const QList<QgsField>& addedAttributes();
+    /** Returns a list of added attributes fields which are not committed */
+    QList<QgsField> addedAttributes() const;
 
-    /** Changed geometries which are not commited. */
-    const QgsGeometryMap& changedGeometries();
+    /** Returns a map of features with changed geometries which are not committed. */
+    QgsGeometryMap changedGeometries() const;
 
-    const QgsFeatureIds deletedFeatureIds();
+    /** Returns true if the specified feature ID has had its geometry changed but not committed.
+     * @param id feature ID
+     * @note added in QGIS 3.0
+     */
+    bool featureHasGeometryChange( QgsFeatureId id ) const;
+
+    /** Returns a list of deleted feature IDs which are not committed. */
+    QgsFeatureIds deletedFeatureIds() const;
+
     //QString dumpEditBuffer();
 
   protected slots:
@@ -131,10 +149,10 @@ class QgsVectorLayerEditBuffer : QObject
 
     void updateFields( QgsFields& fields );
 
-    /** Update feature with uncommited geometry updates */
+    /** Update feature with uncommitted geometry updates */
     void updateFeatureGeometry( QgsFeature &f );
 
-    /** Update feature with uncommited attribute updates */
+    /** Update feature with uncommitted attribute updates */
     void updateChangedAttributes( QgsFeature &f );
 
     /** Update added and changed features after addition of an attribute */
