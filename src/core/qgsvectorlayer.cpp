@@ -581,7 +581,7 @@ void QgsVectorLayer::selectAll()
   selectByIds( allFeatureIds() );
 }
 
-QgsFeatureIds QgsVectorLayer::allFeatureIds()
+QgsFeatureIds QgsVectorLayer::allFeatureIds() const
 {
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                         .setFlags( QgsFeatureRequest::NoGeometry )
@@ -695,7 +695,7 @@ QGis::WkbType QgsVectorLayer::wkbType() const
   return mWkbType;
 }
 
-QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
+QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
 {
   if ( !mValid || mSelectedFeatureIds.isEmpty() ) //no selected features
   {
@@ -781,7 +781,7 @@ bool QgsVectorLayer::diagramsEnabled() const
   return false;
 }
 
-long QgsVectorLayer::featureCount( QgsSymbolV2* symbol )
+long QgsVectorLayer::featureCount( QgsSymbolV2* symbol ) const
 {
   if ( !mSymbolFeatureCounted )
     return -1;
@@ -1052,7 +1052,7 @@ QgsRectangle QgsVectorLayer::extent() const
   return rect;
 }
 
-QString QgsVectorLayer::subsetString()
+QString QgsVectorLayer::subsetString() const
 {
   if ( !mValid || !mDataProvider )
   {
@@ -2545,7 +2545,7 @@ bool QgsVectorLayer::commitChanges()
   return success;
 }
 
-const QStringList &QgsVectorLayer::commitErrors()
+QStringList QgsVectorLayer::commitErrors() const
 {
   return mCommitErrors;
 }
@@ -2601,7 +2601,7 @@ void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids )
   selectByIds( ids, SetSelection );
 }
 
-int QgsVectorLayer::selectedFeatureCount()
+int QgsVectorLayer::selectedFeatureCount() const
 {
   return mSelectedFeatureIds.size();
 }
@@ -2611,7 +2611,7 @@ const QgsFeatureIds& QgsVectorLayer::selectedFeaturesIds() const
   return mSelectedFeatureIds;
 }
 
-QgsFeatureList QgsVectorLayer::selectedFeatures()
+QgsFeatureList QgsVectorLayer::selectedFeatures() const
 {
   QgsFeatureList features;
   QgsFeature f;
@@ -2639,7 +2639,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
   return features;
 }
 
-QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest request )
+QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest request ) const
 {
   if ( mSelectedFeatureIds.isEmpty() )
     return QgsFeatureIterator();
@@ -2855,7 +2855,7 @@ void QgsVectorLayer::setDisplayExpression( const QString &displayExpression )
   mDisplayExpression = displayExpression;
 }
 
-const QString QgsVectorLayer::displayExpression()
+QString QgsVectorLayer::displayExpression() const
 {
   return mDisplayExpression;
 }
@@ -3084,7 +3084,7 @@ void QgsVectorLayer::removeExpressionField( int index )
   emit attributeDeleted( index );
 }
 
-QString QgsVectorLayer::expressionField( int index )
+QString QgsVectorLayer::expressionField( int index ) const
 {
   int oi = mUpdatedFields.fieldOriginIndex( index );
   return mExpressionFieldBuffer->expressions().value( oi ).expression;
@@ -3132,7 +3132,7 @@ void QgsVectorLayer::createJoinCaches() const
   }
 }
 
-void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
+void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
 {
   uniqueValues.clear();
   if ( !mDataProvider )
@@ -3221,7 +3221,7 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   Q_ASSERT_X( false, "QgsVectorLayer::uniqueValues()", "Unknown source of the field!" );
 }
 
-QVariant QgsVectorLayer::minimumValue( int index )
+QVariant QgsVectorLayer::minimumValue( int index ) const
 {
   if ( !mDataProvider )
   {
@@ -3281,7 +3281,7 @@ QVariant QgsVectorLayer::minimumValue( int index )
   return QVariant();
 }
 
-QVariant QgsVectorLayer::maximumValue( int index )
+QVariant QgsVectorLayer::maximumValue( int index ) const
 {
   if ( !mDataProvider )
   {
@@ -3339,7 +3339,7 @@ QVariant QgsVectorLayer::maximumValue( int index )
 }
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString& fieldOrExpression,
-                                    const QgsAggregateCalculator::AggregateParameters& parameters, QgsExpressionContext* context, bool* ok )
+                                    const QgsAggregateCalculator::AggregateParameters& parameters, QgsExpressionContext* context, bool* ok ) const
 {
   if ( ok )
     *ok = false;
@@ -3376,7 +3376,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   return c.calculate( aggregate, fieldOrExpression, context, ok );
 }
 
-QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly )
+QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly ) const
 {
   QList<QVariant> values;
 
@@ -3441,7 +3441,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   return values;
 }
 
-QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly, int* nullCount )
+QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly, int* nullCount ) const
 {
   QList<double> values;
 
@@ -4034,7 +4034,7 @@ void QgsVectorLayer::onFeatureDeleted( QgsFeatureId fid )
   emit featureDeleted( fid );
 }
 
-QgsVectorLayer::ValueRelationData QgsVectorLayer::valueRelation( int idx )
+QgsVectorLayer::ValueRelationData QgsVectorLayer::valueRelation( int idx ) const
 {
   if ( mEditFormConfig->widgetType( idx ) == "ValueRelation" )
   {
@@ -4055,7 +4055,7 @@ QgsVectorLayer::ValueRelationData QgsVectorLayer::valueRelation( int idx )
   }
 }
 
-QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx )
+QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 {
   return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
 }

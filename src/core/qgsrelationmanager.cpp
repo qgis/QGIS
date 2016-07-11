@@ -93,7 +93,7 @@ void QgsRelationManager::clear()
   emit changed();
 }
 
-QList<QgsRelation> QgsRelationManager::referencingRelations( QgsVectorLayer* layer, int fieldIdx ) const
+QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLayer* layer, int fieldIdx ) const
 {
   if ( !layer )
   {

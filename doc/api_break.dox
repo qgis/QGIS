@@ -37,8 +37,12 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 <li>theError parameter in appendError() and setError() were renamed to 'error'.</li>
 </ul>
 
-</ul>
+\subsection qgis_api_break_3_0_QgsVectorLayer QgsVectorLayer
 
+<ul>
+<li>commitErrors() now returns an object, rather than a reference. This has no effect on PyQGIS code.</li>
+<li>subsetString() was made const. This has no effect on PyQGIS code, but c++ code implementing derived layer classes will need to update the signature of this method to match.</li>
+</ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayerEditBuffer QgsVectorLayerEditBuffer
 

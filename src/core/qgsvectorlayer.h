@@ -572,7 +572,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      *  @return The expression which will be used to preview features for this layer
      */
-    const QString displayExpression();
+    QString displayExpression() const;
 
     /** Returns the data provider */
     QgsVectorDataProvider* dataProvider();
@@ -634,7 +634,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @note added in 2.9
      */
-    QString expressionField( int index );
+    QString expressionField( int index ) const;
 
     /**
      * Changes the expression used to define an expression based (virtual) field
@@ -668,7 +668,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @return See description
      */
-    int selectedFeatureCount();
+    int selectedFeatureCount() const;
 
     /**
      * Select features found within the search rectangle (in layer's coordinates)
@@ -735,7 +735,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void selectAll();
 
     /** Get all feature Ids */
-    QgsFeatureIds allFeatureIds();
+    QgsFeatureIds allFeatureIds() const;
 
     /**
      * Invert selection of features found within the search rectangle (in layer's coordinates)
@@ -754,7 +754,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @see    selectedFeaturesIds()
      * @see    selectedFeaturesIterator() which is more memory friendly when handling large selections
      */
-    QgsFeatureList selectedFeatures();
+    QgsFeatureList selectedFeatures() const;
 
     /**
      * Get an iterator of the selected features
@@ -767,7 +767,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @see    selectedFeaturesIds()
      * @see    selectedFeatures()
      */
-    QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() );
+    QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() ) const;
 
     /**
      * Return reference to identifiers of selected features
@@ -788,7 +788,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     Q_DECL_DEPRECATED void setSelectedFeatures( const QgsFeatureIds &ids );
 
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
-    QgsRectangle boundingBoxOfSelected();
+    QgsRectangle boundingBoxOfSelected() const;
 
     /** Returns whether the layer contains labels which are enabled and should be drawn.
      * @return true if layer contains enabled labels
@@ -944,7 +944,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param symbol the symbol
      * @return number of features rendered by symbol or -1 if failed or counts are not available
      */
-    long featureCount( QgsSymbolV2* symbol );
+    long featureCount( QgsSymbolV2* symbol ) const;
 
     /**
      * Update the data source of the layer. The layer's renderer and legend will be preserved only
@@ -978,7 +978,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * Get the string (typically sql) used to define a subset of the layer
      * @return The subset string or QString::null if not implemented by the provider
      */
-    virtual QString subsetString();
+    virtual QString subsetString() const;
 
     /**
      * Query the layer for features specified in request.
@@ -1474,7 +1474,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * that the user has some chance of repairing the damage cleanly.
      */
     bool commitChanges();
-    const QStringList &commitErrors();
+    QStringList commitErrors() const;
 
     /** Stop editing and discard the edits
      * @param deleteBuffer whether to delete editing buffer
@@ -1624,7 +1624,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     Q_DECL_DEPRECATED RangeData range( int idx );
 
     /** Access value relation widget data */
-    ValueRelationData valueRelation( int idx );
+    ValueRelationData valueRelation( int idx ) const;
 
     /**
      * Get relations, where the foreign key is on this layer
@@ -1632,7 +1632,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param idx Only get relations, where idx forms part of the foreign key
      * @return A list of relations
      */
-    QList<QgsRelation> referencingRelations( int idx );
+    QList<QgsRelation> referencingRelations( int idx ) const;
 
     /**
      * Access date format
@@ -1717,13 +1717,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param uniqueValues out: result list
      * @param limit maximum number of values to return (-1 if unlimited)
      */
-    void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
+    void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const;
 
     /** Returns minimum value for an attribute column or invalid variant in case of error */
-    QVariant minimumValue( int index );
+    QVariant minimumValue( int index ) const;
 
     /** Returns maximum value for an attribute column or invalid variant in case of error */
-    QVariant maximumValue( int index );
+    QVariant maximumValue( int index ) const;
 
     /** Calculates an aggregated value from the layer's features.
      * @param aggregate aggregate to calculate
@@ -1738,7 +1738,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                         const QString& fieldOrExpression,
                         const QgsAggregateCalculator::AggregateParameters& parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext* context = nullptr,
-                        bool* ok = nullptr );
+                        bool* ok = nullptr ) const;
 
     /** Fetches all values from a specified field name or expression.
      * @param fieldOrExpression field name or an expression string
@@ -1748,7 +1748,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in QGIS 2.9
      * @see getDoubleValues
      */
-    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false );
+    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false ) const;
 
     /** Fetches all double values from a specified field name or expression. Null values or
      * invalid expression results are skipped.
@@ -1760,7 +1760,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in QGIS 2.9
      * @see getValues
      */
-    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int* nullCount = nullptr );
+    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int* nullCount = nullptr ) const;
 
     /** Set the blending mode used for rendering each feature */
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );

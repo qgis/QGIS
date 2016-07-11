@@ -79,7 +79,7 @@ class QgsRelationManager : QObject
      *
      * @return A list of relations matching the given layer and fieldIdx.
      */
-    QList<QgsRelation> referencingRelations( QgsVectorLayer *layer = 0, int fieldIdx = -2 ) const;
+    QList<QgsRelation> referencingRelations( const QgsVectorLayer *layer = 0, int fieldIdx = -2 ) const;
 
     /**
      * Get all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
