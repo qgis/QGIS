@@ -393,7 +393,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     lstResults->addTopLevelItem( layItem );
 
     connect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
-    connect( vlayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
+    connect( vlayer, SIGNAL( crsChanged() ), this, SLOT( layerDestroyed() ) );
     connect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
     connect( vlayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ),
              this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
@@ -731,7 +731,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     }
 
     connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
-    connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
+    connect( layer, SIGNAL( crsChanged() ), this, SLOT( layerDestroyed() ) );
   }
   // Set/reset getFeatureInfoUrl (currently only available for Feature, so it may change if format changes)
   layItem->setData( 0, GetFeatureInfoUrlRole, params.value( "getFeatureInfoUrl" ) );

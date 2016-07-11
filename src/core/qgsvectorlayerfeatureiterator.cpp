@@ -26,7 +26,7 @@
 #include "qgsdistancearea.h"
 #include "qgsproject.h"
 
-QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer )
+QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer* layer )
     : mCrsId( 0 )
 {
   QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );

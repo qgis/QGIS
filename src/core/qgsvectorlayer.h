@@ -843,7 +843,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Write vector layer specific state to project file Dom node.
      * @note Called by QgsMapLayer::writeXML().
      */
-    virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) override;
+    virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const override;
 
     /**
      * Save named and sld style of the layer to the style table in the db.
@@ -981,9 +981,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     virtual QString subsetString();
 
     /**
-     * Query the provider for features specified in request.
+     * Query the layer for features specified in request.
+     * @param request feature request describing parameters of features to return
+     * @returns iterator for matching features from provider
      */
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const;
 
     /** Adds a feature
         @param feature feature to add
@@ -1235,8 +1237,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     Q_DECL_DEPRECATED void drawLabels( QgsRenderContext& rendererContext ) override;
 
-    /** Return the extent of the layer */
-    QgsRectangle extent() override;
+    QgsRectangle extent() const override;
 
     /**
      * Returns the list of fields of this layer.
@@ -1675,6 +1676,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     QgsVectorLayerEditBuffer* editBuffer() { return mEditBuffer; }
 
+    //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
+    const QgsVectorLayerEditBuffer* editBuffer() const { return mEditBuffer; }
+
     /**
      * Create edit command for undo/redo operations
      * @param text text which is to be displayed in undo window
@@ -1705,7 +1709,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void updateFields();
 
     /** Caches joined attributes if required (and not already done) */
-    void createJoinCaches();
+    // marked as const as these are just caches, and need to be created from const accessors
+    void createJoinCaches() const;
 
     /** Returns unique values for column
      * @param index column index for attribute
@@ -2218,8 +2223,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     //stores infos about diagram placement (placement type, priority, position distance)
     QgsDiagramLayerSettings *mDiagramLayerSettings;
 
-    bool mValidExtent;
-    bool mLazyExtent;
+    mutable bool mValidExtent;
+    mutable bool mLazyExtent;
 
     // Features in renderer classes counted
     bool mSymbolFeatureCounted;
@@ -2234,7 +2239,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QgsAttributeTableConfig mAttributeTableConfig;
 
-    QMutex mFeatureSourceConstructorMutex;
+    mutable QMutex mFeatureSourceConstructorMutex;
 
     friend class QgsVectorLayerFeatureSource;
 };

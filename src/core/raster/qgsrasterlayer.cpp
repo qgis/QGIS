@@ -1502,7 +1502,7 @@ bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
  *  @note Called by QgsMapLayer::writeXML().
  */
 bool QgsRasterLayer::writeXml( QDomNode & layer_node,
-                               QDomDocument & document )
+                               QDomDocument & document ) const
 {
   // first get the layer element so that we can append the type attribute
 
