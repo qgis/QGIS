@@ -179,6 +179,21 @@ plugins calling this method will need to be updated.</li>
 plugins calling this method will need to be updated.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsNumericSortTreeWidgetItem QgsNumericSortTreeWidgetItem
+
+<ul>
+<li>QgsNumericSortTreeWidgetItem has been removed and replaced with QgsTreeWidgetItem, which
+has improved sort capabilities including the ability to set custom sort values for items
+and for forcing certain items to always sort on top.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsTreeWidgetItem QgsTreeWidgetItem
+
+<ul>
+<li>QgsTreeWidgetItem is no longer a QObject and does not emit the itemEdited signal. Instead,
+use QgsTreeWidgetItemObject which is an upgraded version of the original QgsTreeWidgetItem</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsVectorLayer QgsVectorLayer
 
 <ul>

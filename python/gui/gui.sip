@@ -131,7 +131,6 @@
 %Include qgsnewnamedialog.sip
 %Include qgsnewvectorlayerdialog.sip
 %Include qgsnewgeopackagelayerdialog.sip
-%Include qgsnumericsortlistviewitem.sip
 %Include qgsoptionsdialogbase.sip
 %Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
@@ -162,6 +161,7 @@
 %Include qgstablewidgetitem.sip
 %Include qgstextannotationitem.sip
 %Include qgstrackedvectorlayertools.sip
+%Include qgstreewidgetitem.sip
 %Include qgsunitselectionwidget.sip
 %Include qgsuserinputdockwidget.sip
 %Include qgsvariableeditorwidget.sip

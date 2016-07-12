@@ -30,7 +30,7 @@
 class QgisApp;
 class QgsWmsProvider;
 class QButtonGroup;
-class QgsNumericSortTreeWidgetItem;
+class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 class QgsWmsCapabilities;
@@ -148,12 +148,12 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     bool populateLayerList( const QgsWmsCapabilities& capabilities );
 
     //! create an item including possible parents
-    QgsNumericSortTreeWidgetItem *createItem( int id,
-        const QStringList &names,
-        QMap<int, QgsNumericSortTreeWidgetItem *> &items,
-        int &layerAndStyleCount,
-        const QMap<int, int> &layerParents,
-        const QMap<int, QStringList> &layerParentNames );
+    QgsTreeWidgetItem *createItem( int id,
+                                   const QStringList &names,
+                                   QMap<int, QgsTreeWidgetItem *> &items,
+                                   int &layerAndStyleCount,
+                                   const QMap<int, int> &layerParents,
+                                   const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( const QString& authId );
