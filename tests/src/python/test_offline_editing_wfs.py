@@ -36,10 +36,7 @@ from shutil import copytree, rmtree
 import tempfile
 from time import sleep
 from utilities import unitTestDataPath
-from qgis.core import (
-    QgsVectorLayer,
-    QgsProject,
-)
+from qgis.core import QgsVectorLayer
 
 from qgis.testing import (
     start_app,
@@ -48,18 +45,18 @@ from qgis.testing import (
 
 from offlineditingtestbase import OfflineTestBase
 
-from qgis.PyQt.QtCore import QFileInfo
-
 try:
     QGIS_SERVER_WFST_DEFAULT_PORT = os.environ['QGIS_SERVER_WFST_DEFAULT_PORT']
 except:
     QGIS_SERVER_WFST_DEFAULT_PORT = 8081
 
-
 qgis_app = start_app()
 
 
 class TestWFST(unittest.TestCase, OfflineTestBase):
+
+    # To fake the WFS cache!
+    counter = 0
 
     @classmethod
     def setUpClass(cls):
@@ -82,47 +79,55 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
             except KeyError:
                 pass
         # Clear all test layers
-        cls._clearLayer('test_point')
+        cls._clearLayer(cls._getLayer('test_point'))
         os.environ['QGIS_SERVER_DEFAULT_PORT'] = str(cls.port)
-        server_path = os.path.dirname(os.path.realpath(__file__)) + \
+        cls.server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
-        cls.server = subprocess.Popen([sys.executable, server_path],
-                                      env=os.environ)
-        sleep(2)
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        cls.server.terminate()
-        del cls.server
-        # Clear test layer
-        cls._clearLayer('test_point')
         rmtree(cls.temp_path)
 
     def setUp(self):
         """Run before each test."""
+        self.server = subprocess.Popen([sys.executable, self.server_path],
+                                       env=os.environ)
+        # Wait for the server process to start
+        sleep(2)
         self._setUp()
 
     def tearDown(self):
         """Run after each test."""
+        # Clear test layer
+        self._clearLayer(self._getOnlineLayer('test_point'))
+        # Kill the server
+        self.server.terminate()
+        del self.server
+        # Wait for the server process to stop
+        sleep(2)
+        # Delete the sqlite db
+        os.unlink(os.path.join(self.temp_path, 'offlineDbFile.sqlite'))
         self._tearDown()
 
     @classmethod
     def _getOnlineLayer(cls, type_name, layer_name=None):
         """
-        Layer factory (return the online layer), provider specific
+        Return a new WFS layer, overriding the WFS cache
         """
         if layer_name is None:
             layer_name = 'wfs_' + type_name
         parms = {
             'srsname': 'EPSG:4326',
             'typename': type_name,
-            'url': 'http://127.0.0.1:%s/?map=%s' % (cls.port,
-                                                    cls.project_path),
+            'url': 'http://127.0.0.1:%s/%s/?map=%s' % (cls.port,
+                                                       cls.counter,
+                                                       cls.project_path),
             'version': 'auto',
             'table': '',
             #'sql': '',
         }
+        cls.counter += 1
         uri = ' '.join([("%s='%s'" % (k, v)) for k, v in parms.items()])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         assert wfs_layer.isValid()

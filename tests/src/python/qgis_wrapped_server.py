@@ -31,15 +31,26 @@ try:
 except KeyError:
     QGIS_SERVER_DEFAULT_PORT = 8081
 
+qgs_server = QgsServer()
+
 
 class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
+        # CGI vars:
+        for k, v in self.headers.items():
+            qgs_server.putenv('HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper(), v)
+        qgs_server.putenv('SERVER_PORT', str(self.server.server_port))
+        qgs_server.putenv('SERVER_NAME', self.server.server_name)
+        qgs_server.putenv('REQUEST_URI', self.path)
         parsed_path = urllib.parse.urlparse(self.path)
-        s = QgsServer()
-        headers, body = s.handleRequest(parsed_path.query)
-        self.send_response(200)
-        for k, v in [h.split(':') for h in headers.decode().split('\n') if h]:
+        headers, body = qgs_server.handleRequest(parsed_path.query)
+        headers_dict = dict(h.split(': ', 1) for h in headers.decode().split('\n') if h)
+        try:
+            self.send_response(int(headers_dict['Status'].split(' ')[0]))
+        except:
+            self.send_response(200)
+        for k, v in headers_dict.items():
             self.send_header(k, v)
         self.end_headers()
         self.wfile.write(body)
