@@ -32,7 +32,7 @@
 
 class QgsDataProvider;
 class QButtonGroup;
-class QgsNumericSortTreeWidgetItem;
+class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 
@@ -182,12 +182,12 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     //! create an item including possible parents
     //! @note not available in python bindings
-    QgsNumericSortTreeWidgetItem *createItem( int id,
-        const QStringList &names,
-        QMap<int, QgsNumericSortTreeWidgetItem *> &items,
-        int &layerAndStyleCount,
-        const QMap<int, int> &layerParents,
-        const QMap<int, QStringList> &layerParentNames );
+    QgsTreeWidgetItem *createItem( int id,
+                                   const QStringList &names,
+                                   QMap<int, QgsTreeWidgetItem *> &items,
+                                   int &layerAndStyleCount,
+                                   const QMap<int, int> &layerParents,
+                                   const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( const QString& authId );

@@ -23,7 +23,7 @@
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
 #include "qgswcscapabilities.h"
-#include "qgsnumericsortlistviewitem.h"
+#include "qgstreewidgetitem.h"
 
 #include <QWidget>
 
@@ -67,7 +67,7 @@ void QgsWCSSourceSelect::populateLayerList()
   if ( !mCapabilities.supportedCoverages( coverages ) )
     return;
 
-  QMap<int, QgsNumericSortTreeWidgetItem *> items;
+  QMap<int, QgsTreeWidgetItem *> items;
   QMap<int, int> coverageParents;
   QMap<int, QStringList> coverageParentNames;
   mCapabilities.coverageParents( coverageParents, coverageParentNames );
@@ -82,7 +82,7 @@ void QgsWCSSourceSelect::populateLayerList()
   {
     QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2" ).arg( coverage->orderId ).arg( coverage->identifier ) );
 
-    QgsNumericSortTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
+    QgsTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
 
     lItem->setData( 0, Qt::UserRole + 0, coverage->identifier );
     lItem->setData( 0, Qt::UserRole + 1, "" );

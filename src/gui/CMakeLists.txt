@@ -269,7 +269,6 @@ SET(QGIS_GUI_SRCS
   qgsnewnamedialog.cpp
   qgsnewvectorlayerdialog.cpp
   qgsnewgeopackagelayerdialog.cpp
-  qgsnumericsortlistviewitem.cpp
   qgsoptionsdialogbase.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
@@ -301,6 +300,7 @@ SET(QGIS_GUI_SRCS
   qgstablewidgetitem.cpp
   qgstextannotationitem.cpp
   qgstrackedvectorlayertools.cpp
+  qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
   qgsuserinputdockwidget.cpp
   qgsvariableeditorwidget.cpp
@@ -447,6 +447,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsslider.h
   qgssqlcomposerdialog.h
   qgssublayersdialog.h
+  qgstreewidgetitem.h
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h
   qgsvariableeditorwidget.h
@@ -634,7 +635,6 @@ SET(QGIS_GUI_HDRS
   qgsmaplayerconfigwidgetfactory.h
   qgsmapmouseevent.h
   qgsmaptip.h
-  qgsnumericsortlistviewitem.h
   qgsrubberband.h
   qgssqlcomposerdialog.h
   qgssvgannotationitem.h

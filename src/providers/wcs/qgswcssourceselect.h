@@ -34,7 +34,7 @@
 class QgisApp;
 class QgsDataProvider;
 class QButtonGroup;
-class QgsNumericSortTreeWidgetItem;
+class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 
