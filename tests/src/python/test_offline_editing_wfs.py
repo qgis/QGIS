@@ -36,10 +36,7 @@ from shutil import copytree, rmtree
 import tempfile
 from time import sleep
 from utilities import unitTestDataPath
-from qgis.core import (
-    QgsVectorLayer,
-    QgsProject,
-)
+from qgis.core import QgsVectorLayer
 
 from qgis.testing import (
     start_app,
@@ -48,13 +45,10 @@ from qgis.testing import (
 
 from offlineditingtestbase import OfflineTestBase
 
-from qgis.PyQt.QtCore import QFileInfo
-
 try:
     QGIS_SERVER_WFST_DEFAULT_PORT = os.environ['QGIS_SERVER_WFST_DEFAULT_PORT']
 except:
     QGIS_SERVER_WFST_DEFAULT_PORT = 8081
-
 
 qgis_app = start_app()
 
@@ -99,6 +93,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         """Run before each test."""
         self.server = subprocess.Popen([sys.executable, self.server_path],
                                        env=os.environ)
+        # Wait for the server process to start
         sleep(2)
         self._setUp()
 
@@ -109,6 +104,8 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         # Kill the server
         self.server.terminate()
         del self.server
+        # Wait for the server process to stop
+        sleep(2)
         # Delete the sqlite db
         os.unlink(os.path.join(self.temp_path, 'offlineDbFile.sqlite'))
         self._tearDown()
