@@ -13,7 +13,7 @@
                                                                                                                                                                 
   <gml:featureMember>
     <ogr:clip_multipolygons_by_polygons fid="multipolys.0">
-      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>4.0,1.666666666666667 4,1 2,1 2,2 3,2 4.0,1.666666666666667</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2 1, 2 2, 3 2, 4 1.66666666666667, 4 1, 2 1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
       <ogr:Bname>Test</ogr:Bname>
       <ogr:Bintval>1</ogr:Bintval>
       <ogr:Bfloatval>0.123</ogr:Bfloatval>
@@ -21,7 +21,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_multipolygons_by_polygons fid="multipolys.1">
-      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>8,1 8,0 7,0 7,1 8,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>7 0, 7 1, 8 1, 8 0, 7 0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
     </ogr:clip_multipolygons_by_polygons>
   </gml:featureMember>
   <gml:featureMember>
