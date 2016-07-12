@@ -108,11 +108,8 @@ void QgsProviderRegistry::init()
     fileRegexp.setPattern( filePattern );
   }
 
-  QListIterator<QFileInfo> it( mLibraryDirectory.entryInfoList() );
-  while ( it.hasNext() )
+  Q_FOREACH ( const QFileInfo& fi, mLibraryDirectory.entryInfoList() )
   {
-    QFileInfo fi( it.next() );
-
     if ( !fileRegexp.isEmpty() )
     {
       if ( fileRegexp.indexIn( fi.fileName() ) == -1 )
