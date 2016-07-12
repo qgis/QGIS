@@ -70,6 +70,8 @@ class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn*, QgsOracleConn
   public:
     static QgsOracleConnPool* instance();
 
+    static void cleanupInstance();
+
   protected:
     Q_DISABLE_COPY( QgsOracleConnPool )
 
@@ -77,7 +79,7 @@ class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn*, QgsOracleConn
     QgsOracleConnPool();
     ~QgsOracleConnPool();
 
-    static QgsOracleConnPool sInstance;
+    static QgsOracleConnPool* sInstance;
 };
 
 

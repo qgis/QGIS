@@ -3177,6 +3177,11 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
   return true;
 }
 
+QGISEXTERN void cleanupProvider()
+{
+  QgsOracleConnPool::cleanupInstance();
+}
+
 // ----------
 
 

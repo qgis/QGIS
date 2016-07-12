@@ -16,11 +16,19 @@
 #include "qgsoracleconnpool.h"
 #include "qgsoracleconn.h"
 
-QgsOracleConnPool QgsOracleConnPool::sInstance;
+QgsOracleConnPool* QgsOracleConnPool::sInstance = nullptr;
 
 QgsOracleConnPool* QgsOracleConnPool::instance()
 {
-  return &sInstance;
+  if ( !sInstance )
+    sInstance = new QgsOracleConnPool();
+  return sInstance;
+}
+
+void QgsOracleConnPool::cleanupInstance()
+{
+  delete sInstance;
+  sInstance = nullptr;
 }
 
 QgsOracleConnPool::QgsOracleConnPool() : QgsConnectionPool<QgsOracleConn*, QgsOracleConnPoolGroup>()
