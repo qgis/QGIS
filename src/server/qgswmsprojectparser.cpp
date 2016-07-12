@@ -1146,6 +1146,11 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
         }
       }
 
+      if ( !ltGroup )
+      {
+        QgsDebugMsg( QString( "Skipping group %1, it could not be found" ).arg( name ) );
+        continue;
+      }
       QString shortName = ltGroup->customProperty( "wmsShortName" ).toString();
       QString title = ltGroup->customProperty( "wmsTitle" ).toString();
 
