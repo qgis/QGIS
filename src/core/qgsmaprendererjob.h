@@ -29,6 +29,7 @@
 
 #include "qgsgeometrycache.h"
 
+class QgsFeatureFilterProvider;
 class QgsLabelingEngineV2;
 class QgsLabelingResults;
 class QgsMapLayerRenderer;
@@ -139,6 +140,9 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     const QgsMapSettings& mapSettings() const;
 
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider* p ) { mFeatureFilterProvider = p; }
+    const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; }
+
   signals:
 
     //! emitted when asynchronous rendering is finished (or canceled).
@@ -187,6 +191,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     QTime mRenderingStart;
     int mRenderingTime;
+
+    const QgsFeatureFilterProvider* mFeatureFilterProvider;
 };
 
 

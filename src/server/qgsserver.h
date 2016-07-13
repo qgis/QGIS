@@ -30,7 +30,6 @@
 #include <QFileInfo>
 #include "qgsrequesthandler.h"
 #include "qgsapplication.h"
-#include "qgsmaprenderer.h"
 #include "qgsconfigcache.h"
 #include "qgscapabilitiescache.h"
 
@@ -40,6 +39,7 @@
 #include "qgsserverinterfaceimpl.h"
 #endif
 
+class QgsMapSettings;
 
 /** \ingroup server
  * The QgsServer class provides OGC web services.
@@ -123,7 +123,7 @@ class SERVER_EXPORT QgsServer
     // Status
     static QString* sConfigFilePath;
     static QgsCapabilitiesCache* sCapabilitiesCache;
-    static QgsMapRenderer* sMapRenderer;
+    static QgsMapSettings* sMapSettings;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     static QgsServerInterfaceImpl* sServerInterface;
     static bool sInitPython;

@@ -60,6 +60,12 @@ class QgsWMSServer: public QgsOWSServer
         QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
     QgsWMSServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWMSConfigParser* cp, QgsRequestHandler* rh,
                   QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache, const QgsAccessControl* accessControl );
+
+    /** Constructor. Does _NOT_ take ownership of
+        QgsConfigParser, QgsCapabilitiesCache and QgsMapSettings*/
+    QgsWMSServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWMSConfigParser* cp, QgsRequestHandler* rh,
+                  QgsMapSettings* renderer, QgsCapabilitiesCache* capCache, const QgsAccessControl* accessControl );
+
     ~QgsWMSServer();
 
     void executeRequest() override;

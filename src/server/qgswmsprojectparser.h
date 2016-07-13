@@ -117,6 +117,8 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
 
     /** Load PAL engine settings from projectfile*/
     void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const override;
+    /** Load PAL engine settings into global project instance*/
+    void loadLabelSettings() const override;
 
     int nLayers() const override;
 
@@ -177,6 +179,25 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
     void cleanupTextAnnotationItems();
 
     QString getCapaServiceUrl( QDomDocument& doc ) const;
+
+    void readLabelSettings( int& searchMethod, int& nCandPoint, int& nCandLine, int& nCandPoly, bool& showingCandidates,
+                            bool& drawRectOnly, bool& showingShadowRects, bool& showingAllLabels, bool& showingPartialsLabels,
+                            bool& drawOutlineLabels ) const;
 };
+
+#if 0
+mSearchMethod = static_cast< QgsPalLabeling::Search >( prj->readNumEntry( "PAL", "/SearchMethod", static_cast< int >( QgsPalLabeling::Chain ), &saved ) );
+mCandPoint = prj->readNumEntry( "PAL", "/CandidatesPoint", 8, &saved );
+mCandLine = prj->readNumEntry( "PAL", "/CandidatesLine", 8, &saved );
+mCandPolygon = prj->readNumEntry( "PAL", "/CandidatesPolygon", 8, &saved );
+
+mFlags = nullptr;
+if ( prj->readBoolEntry( "PAL", "/ShowingCandidates", false, &saved ) ) mFlags |= DrawCandidates;
+if ( prj->readBoolEntry( "PAL", "/DrawRectOnly", false, &saved ) ) mFlags |= DrawLabelRectOnly;
+if ( prj->readBoolEntry( "PAL", "/ShowingShadowRects", false, &saved ) ) mFlags |= DrawShadowRects;
+if ( prj->readBoolEntry( "PAL", "/ShowingAllLabels", false, &saved ) ) mFlags |= UseAllLabels;
+if ( prj->readBoolEntry( "PAL", "/ShowingPartialsLabels", true, &saved ) ) mFlags |= UsePartialCandidates;
+if ( prj->readBoolEntry( "PAL", "/DrawOutlineLabels", true, &saved ) ) mFlags |= RenderOutlineLabels;
+#endif //0
 
 #endif // QGSWMSPROJECTPARSER_H

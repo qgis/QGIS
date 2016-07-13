@@ -565,6 +565,14 @@ void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * lbl ) c
   }
 }
 
+void QgsSLDConfigParser::loadLabelSettings() const
+{
+  if ( mFallbackParser )
+  {
+    mFallbackParser->loadLabelSettings();
+  }
+}
+
 QString QgsSLDConfigParser::serviceUrl() const
 {
   if ( mFallbackParser )
