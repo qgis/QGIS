@@ -33,6 +33,7 @@ class TestQgsStringUtils : public QObject
     void longestCommonSubstring();
     void hammingDistance();
     void soundex();
+    void insertLinks();
 
 };
 
@@ -116,6 +117,41 @@ void TestQgsStringUtils::soundex()
   QCOMPARE( QgsStringUtils::soundex( "rubin" ), QString( "R150" ) );
   QCOMPARE( QgsStringUtils::soundex( "ashcraft" ), QString( "A261" ) );
   QCOMPARE( QgsStringUtils::soundex( "ashcroft" ), QString( "A261" ) );
+}
+
+void TestQgsStringUtils::insertLinks()
+{
+  QCOMPARE( QgsStringUtils::insertLinks( QString() ), QString() );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "not a link!" ) ), QString( "not a link!" ) );
+  bool found = true;
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "not a link!" ), &found ), QString( "not a link!" ) );
+  QVERIFY( !found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this www.north-road.com is a link" ), &found ), QString( "this <a href=\"http://www.north-road.com\">www.north-road.com</a> is a link" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this www.north-road.com.au is a link" ), &found ), QString( "this <a href=\"http://www.north-road.com.au\">www.north-road.com.au</a> is a link" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this www.north-road.sucks is not a good link" ), &found ), QString( "this <a href=\"http://www.north-road.sucks\">www.north-road.sucks</a> is not a good link" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this http://www.north-road.com is a link" ), &found ), QString( "this <a href=\"http://www.north-road.com\">http://www.north-road.com</a> is a link" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this http://north-road.com is a link" ), &found ), QString( "this <a href=\"http://north-road.com\">http://north-road.com</a> is a link" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this http://north-road.com is a link, so is http://qgis.org, ok?" ), &found ), QString( "this <a href=\"http://north-road.com\">http://north-road.com</a> is a link, so is <a href=\"http://qgis.org\">http://qgis.org</a>, ok?" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this north-road.com might not be a link" ), &found ), QString( "this north-road.com might not be a link" ) );
+  QVERIFY( !found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "please ftp to ftp://droopbox.ru and submit stuff" ), &found ), QString( "please ftp to <a href=\"ftp://droopbox.ru\">ftp://droopbox.ru</a> and submit stuff" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "please visit https://fsociety.org" ), &found ), QString( "please visit <a href=\"https://fsociety.org\">https://fsociety.org</a>" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "send your credit card number to qgis@qgis.org today!" ), &found ), QString( "send your credit card number to <a href=\"mailto:qgis@qgis.org\">qgis@qgis.org</a> today!" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "send your credit card number to qgis@qgis.org.nz today!" ), &found ), QString( "send your credit card number to <a href=\"mailto:qgis@qgis.org.nz\">qgis@qgis.org.nz</a> today!" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "visit http://qgis.org or email qgis@qgis.org" ), &found ), QString( "visit <a href=\"http://qgis.org\">http://qgis.org</a> or email <a href=\"mailto:qgis@qgis.org\">qgis@qgis.org</a>" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "is a@a an email?" ), &found ), QString( "is a@a an email?" ) );
+  QVERIFY( !found );
 }
 
 

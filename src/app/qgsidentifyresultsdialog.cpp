@@ -37,6 +37,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
+#include "qgsstringutils.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -53,6 +54,7 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QComboBox>
+#include <QTextDocument>
 
 //graph
 #include <qwt_plot.h>
@@ -60,7 +62,6 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 #include "qgsvectorcolorrampv2.h" // for random colors
-
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
@@ -471,12 +472,18 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( i >= fields.count() )
       continue;
 
+    if ( vlayer->editFormConfig()->widgetType( i ) == "Hidden" )
+    {
+      continue;
+    }
+
     QString defVal;
     if ( fields.fieldOrigin( i ) == QgsFields::OriginProvider && vlayer->dataProvider() )
       defVal = vlayer->dataProvider()->defaultValue( fields.fieldOriginIndex( i ) ).toString();
 
     QString value = defVal == attrs.at( i ) ? defVal : fields.at( i ).displayString( attrs.at( i ) );
     QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
+    featItem->addChild( attrItem );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
     attrItem->setData( 0, Qt::UserRole, fields[i].name() );
@@ -484,15 +491,21 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     attrItem->setData( 1, Qt::UserRole, value );
 
-    if ( vlayer->editFormConfig()->widgetType( i ) == "Hidden" )
+    value = representValue( vlayer, fields.at( i ).name(), attrs.at( i ) );
+    bool foundLinks = false;
+    QString links = QgsStringUtils::insertLinks( value, &foundLinks );
+    if ( foundLinks )
     {
-      delete attrItem;
-      continue;
+      QLabel* valueLabel = new QLabel( links );
+      valueLabel->setOpenExternalLinks( true );
+      attrItem->treeWidget()->setItemWidget( attrItem, 1, valueLabel );
+      attrItem->setData( 1, Qt::DisplayRole, QString() );
     }
-
-    value = representValue( vlayer, fields[i].name(), attrs.at( i ) );
-
-    attrItem->setData( 1, Qt::DisplayRole, value );
+    else
+    {
+      attrItem->setData( 1, Qt::DisplayRole, value );
+      attrItem->treeWidget()->setItemWidget( attrItem, 1, nullptr );
+    }
 
     if ( fields[i].name() == vlayer->displayField() )
     {
@@ -500,8 +513,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       featItem->setText( 1, attrItem->text( 1 ) );
       featureLabeled = true;
     }
-
-    featItem->addChild( attrItem );
   }
 
   if ( !featureLabeled )
@@ -1480,7 +1491,21 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
         if ( item->data( 0, Qt::UserRole + 1 ).toInt() == idx )
         {
           value = representValue( vlayer, fld.name(), val );
-          item->setData( 1, Qt::DisplayRole, value );
+
+          bool foundLinks = false;
+          QString links = QgsStringUtils::insertLinks( value, &foundLinks );
+          if ( foundLinks )
+          {
+            QLabel* valueLabel = new QLabel( links );
+            valueLabel->setOpenExternalLinks( true );
+            item->treeWidget()->setItemWidget( item, 1, valueLabel );
+            item->setData( 1, Qt::DisplayRole, QString() );
+          }
+          else
+          {
+            item->treeWidget()->setItemWidget( item, 1, nullptr );
+            item->setData( 1, Qt::DisplayRole, value );
+          }
           return;
         }
       }
