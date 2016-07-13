@@ -219,6 +219,7 @@ void QgsSnappingDialog::apply()
   QStringList enabledList;
   QStringList toleranceUnitList;
   QStringList avoidIntersectionList;
+  QStringList sideEffectLayersList;
 
   for ( int i = 0; i < mLayerTreeWidget->topLevelItemCount(); ++i )
   {
@@ -253,6 +254,12 @@ void QgsSnappingDialog::apply()
     {
       avoidIntersectionList << currentItem->data( 0, Qt::UserRole ).toString();
     }
+
+    QCheckBox *cbxSideEffect = qobject_cast<QCheckBox*>( mLayerTreeWidget->itemWidget( currentItem, 6 ) );
+    if ( cbxSideEffect && cbxSideEffect->isChecked() )
+    {
+      sideEffectLayersList << currentItem->data( 0, Qt::UserRole ).toString();
+    }
   }
 
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingList", layerIdList );
@@ -261,6 +268,7 @@ void QgsSnappingDialog::apply()
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
   QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
   QgsProject::instance()->writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
+  QgsProject::instance()->writeEntry( "Digitizing", "/SideEffectLayersList", sideEffectLayersList );
 
   emitProjectSnapSettingsChanged();
 }
@@ -290,6 +298,8 @@ void QgsSnappingDialog::show()
   mLayerTreeWidget->resizeColumnToContents( 2 );
   mLayerTreeWidget->resizeColumnToContents( 3 );
   mLayerTreeWidget->resizeColumnToContents( 4 );
+  mLayerTreeWidget->resizeColumnToContents( 5 );
+  mLayerTreeWidget->resizeColumnToContents( 6 );
 }
 
 void QgsSnappingDialog::addLayers( const QList<QgsMapLayer *>& layers )
@@ -327,13 +337,14 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
     defaultSnappingStringIdx = 2;
   }
 
-  bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk, avoidIntersectionListOk;
+  bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk, avoidIntersectionListOk, sideEffectLayersListOk;
   QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", QStringList(), &layerIdListOk );
   QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", QStringList(), &enabledListOk );
   QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", QStringList(), & toleranceListOk );
   QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", QStringList(), &toleranceUnitListOk );
   QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", QStringList(), &snapToListOk );
   QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", QStringList(), &avoidIntersectionListOk );
+  QStringList sideEffectLayersList = QgsProject::instance()->readListEntry( "Digitizing", "/SideEffectLayersList", QStringList(), &sideEffectLayersListOk );
 
   //snap to layer yes/no
   QTreeWidgetItem *item = new QTreeWidgetItem( mLayerTreeWidget );
@@ -374,8 +385,11 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
     mLayerTreeWidget->setItemWidget( item, 5, cbxAvoidIntersection );
   }
 
+  QCheckBox *cbxSideEffect = new QCheckBox( mLayerTreeWidget );
+  mLayerTreeWidget->setItemWidget( item, 6, cbxSideEffect );
+
   //resize treewidget columns
-  for ( int i = 0 ; i < 4 ; ++i )
+  for ( int i = 0 ; i < 7 ; ++i )
   {
     mLayerTreeWidget->resizeColumnToContents( i );
   }
@@ -394,6 +408,8 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
       {
         connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
       }
+      connect( cbxSideEffect, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
+
       setTopologicalEditingState();
       setIntersectionSnappingState();
     }
@@ -427,6 +443,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
   {
     cbxAvoidIntersection->setChecked( avoidIntersectionsList.contains( currentVectorLayer->id() ) );
   }
+  cbxSideEffect->setChecked( sideEffectLayersList.contains( currentVectorLayer->id() ) );
 
   if ( myDockFlag )
   {
@@ -439,6 +456,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
     {
       connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
     }
+    connect( cbxSideEffect, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
 
     setTopologicalEditingState();
     setIntersectionSnappingState();

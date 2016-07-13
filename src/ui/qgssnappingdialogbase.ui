@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>798</width>
-    <height>290</height>
+    <width>1021</width>
+    <height>288</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,7 +66,7 @@
    <item>
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QGridLayout" name="gridLayout_3">
@@ -205,6 +205,14 @@
           </property>
           <property name="textAlignment">
            <set>AlignLeft|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Has side effects</string>
+          </property>
+          <property name="toolTip">
+           <string>Reset the snapping index when the layer is modified (useful if geometries in other layers are computed from geometries of this layer with database triggers)</string>
           </property>
          </column>
         </widget>

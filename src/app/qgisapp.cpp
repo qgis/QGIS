@@ -591,7 +591,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     , mpTileScaleWidget( nullptr )
     , mpGpsWidget( nullptr )
     , mTracer( nullptr )
-    , mSnappingUtils( nullptr )
     , mProjectLastModified()
     , mWelcomePage( nullptr )
     , mCentralContainer( nullptr )
@@ -748,10 +747,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   startProfile( "Snapping utils" );
-  mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
-  mMapCanvas->setSnappingUtils( mSnappingUtils );
-  connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
-  connect( this, SIGNAL( projectRead() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
+  mSnappingUtils.reset( new QgsMapCanvasSnappingUtils( mMapCanvas, this ) );
+  mMapCanvas->setSnappingUtils( mSnappingUtils.data() );
+  connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), mSnappingUtils.data(), SLOT( readConfigFromProject() ) );
+  connect( this, SIGNAL( projectRead() ), mSnappingUtils.data(), SLOT( readConfigFromProject() ) );
   endProfile();
 
   functionProfile( &QgisApp::createActions, this, "Create actions" );
