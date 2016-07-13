@@ -37,7 +37,8 @@ import psycopg2
 from qgis.PyQt.QtCore import QVariant, QSettings
 from qgis.core import (QGis, QgsFields, QgsField, QgsGeometry, QgsRectangle,
                        QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
-                       QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceURI, QgsCredentials)
+                       QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceURI, QgsCredentials,
+                       QgsFeatureRequest)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -86,7 +87,7 @@ TYPE_MAP_SPATIALITE_LAYER = {
 }
 
 
-def features(layer):
+def features(layer, request=QgsFeatureRequest()):
     """This returns an iterator over features in a vector layer,
     considering the selection that might exist in the layer, and the
     configuration that indicates whether to use only selected feature
@@ -97,15 +98,15 @@ def features(layer):
     """
     class Features:
 
-        def __init__(self, layer):
+        def __init__(self, layer, request):
             self.layer = layer
             self.selection = False
-            self.iter = layer.getFeatures()
-            if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED):
-                selected = layer.selectedFeatures()
-                if len(selected) > 0:
-                    self.selection = True
-                    self.iter = iter(selected)
+            if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)\
+                    and layer.selectedFeatureCount() > 0:
+                self.iter = layer.selectedFeaturesIterator(request)
+                self.selection = True
+            else:
+                self.iter = layer.getFeatures(request)
 
         def __iter__(self):
             return self.iter
@@ -116,7 +117,7 @@ def features(layer):
             else:
                 return int(self.layer.featureCount())
 
-    return Features(layer)
+    return Features(layer, request)
 
 
 def uniqueValues(layer, attribute):
