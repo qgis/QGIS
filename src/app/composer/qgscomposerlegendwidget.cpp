@@ -137,6 +137,8 @@ void QgsComposerLegendWidget::setGuiElements()
 
   mCheckBoxAutoUpdate->setChecked( mLegend->autoUpdateModel() );
 
+  mCheckboxResizeContents->setChecked( mLegend->resizeToContents() );
+
   const QgsComposerMap* map = mLegend->composerMap();
   mMapComboBox->setItem( map );
   mFontColorButton->setColor( mLegend->fontColor() );
@@ -572,6 +574,21 @@ void QgsComposerLegendWidget::composerMapChanged( QgsComposerItem* item )
   }
 }
 
+void QgsComposerLegendWidget::on_mCheckboxResizeContents_toggled( bool checked )
+{
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  mLegend->beginCommand( tr( "Legend resize to contents" ) );
+  mLegend->setResizeToContents( checked );
+  if ( checked )
+    mLegend->adjustBoxSize();
+  mLegend->updateItem();
+  mLegend->endCommand();
+}
+
 void QgsComposerLegendWidget::on_mRasterBorderGroupBox_toggled( bool state )
 {
   if ( !mLegend )
@@ -886,6 +903,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mRasterBorderWidthSpinBox->blockSignals( b );
   mWmsLegendWidthSpinBox->blockSignals( b );
   mWmsLegendHeightSpinBox->blockSignals( b );
+  mCheckboxResizeContents->blockSignals( b );
   mTitleSpaceBottomSpinBox->blockSignals( b );
 }
 

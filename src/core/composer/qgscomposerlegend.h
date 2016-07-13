@@ -75,6 +75,20 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /** Sets item box to the whole content*/
     void adjustBoxSize();
 
+    /** Sets whether the legend should automatically resize to fit its contents.
+     * @param enabled set to false to disable automatic resizing. The legend frame will not
+     * be expanded to fit legend items, and items may be cropped from display.
+     * @see resizeToContents()
+     * @note added in QGIS 3.0
+     */
+    void setResizeToContents( bool enabled );
+
+    /** Returns whether the legend should automatically resize to fit its contents.
+     * @see setResizeToContents()
+     * @note added in QGIS 3.0
+     */
+    bool resizeToContents() const;
+
     /** Returns pointer to the legend model*/
     //! @deprecated in 2.6 - use modelV2()
     Q_DECL_DEPRECATED QgsLegendModel* model() {return &mLegendModel;}
@@ -299,6 +313,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     //! Will be true if the legend size should be totally reset at next paint
     bool mForceResize;
+
+    //! Will be true if the legend should be resized automatically to fit contents
+    bool mSizeToContents;
 };
 
 #endif
