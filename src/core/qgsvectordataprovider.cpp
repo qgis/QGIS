@@ -132,24 +132,18 @@ int QgsVectorDataProvider::capabilities() const
 
 void QgsVectorDataProvider::setEncoding( const QString& e )
 {
-  QTextCodec* ncodec = QTextCodec::codecForName( e.toLocal8Bit().constData() );
-  if ( ncodec )
-  {
-    mEncoding = ncodec;
-  }
-  else
-  {
-    if ( e != "System" )
-    {
-      QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
-      mEncoding = QTextCodec::codecForName( "System" );
-    }
+  mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
 
-    if ( !mEncoding )
-      mEncoding = QTextCodec::codecForLocale();
-
-    Q_ASSERT( mEncoding );
+  if ( !mEncoding && e != "System" )
+  {
+    QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
+    mEncoding = QTextCodec::codecForName( "System" );
   }
+
+  if ( !mEncoding )
+    mEncoding = QTextCodec::codecForLocale();
+
+  Q_ASSERT( mEncoding );
 }
 
 QString QgsVectorDataProvider::encoding() const
