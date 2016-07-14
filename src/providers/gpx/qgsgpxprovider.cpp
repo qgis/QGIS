@@ -135,7 +135,7 @@ int QgsGPXProvider::capabilities() const
 
 
 // Return the extent of the layer
-QgsRectangle QgsGPXProvider::extent()
+QgsRectangle QgsGPXProvider::extent() const
 {
   return data->getExtent();
 }
@@ -178,13 +178,13 @@ const QgsFields& QgsGPXProvider::fields() const
 
 
 
-bool QgsGPXProvider::isValid()
+bool QgsGPXProvider::isValid() const
 {
   return mValid;
 }
 
 
-QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   return QgsFeatureIterator( new QgsGPXFeatureIterator( new QgsGPXFeatureSource( this ), true, request ) );
 }
@@ -515,7 +515,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
 }
 
 
-QVariant QgsGPXProvider::defaultValue( int fieldId )
+QVariant QgsGPXProvider::defaultValue( int fieldId ) const
 {
   if ( fieldId == SrcAttr )
     return tr( "Digitized in QGIS" );
@@ -535,7 +535,7 @@ QString QgsGPXProvider::description() const
   return GPX_DESCRIPTION;
 } // QgsGPXProvider::description()
 
-QgsCoordinateReferenceSystem QgsGPXProvider::crs()
+QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
 {
   return QgsCoordinateReferenceSystem( GEOSRID, QgsCoordinateReferenceSystem::PostgisCrsId ); // use WGS84
 }

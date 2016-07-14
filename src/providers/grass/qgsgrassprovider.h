@@ -72,7 +72,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
       */
     virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
 
     /**
      * Get the feature type as defined in WkbType (qgis.h).
@@ -86,10 +86,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     long featureCount() const override;
 
-
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
+    virtual QgsRectangle extent() const override;
 
     /**
      * Get the field information for the layer
@@ -102,9 +99,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /** Restart reading features from previous select operation */
     void rewind();
 
-    /** Returns the minimum value of an attributs
-     *  @param index the index of the attribute */
-    QVariant minimumValue( int index ) override;
+    QVariant minimumValue( int index ) const override;
 
     /** Returns the maximum value of an attributs
      *  @param index the index of the attribute */
@@ -119,11 +114,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /** Load info (mNumberFeatures, mCidxFieldIndex, mCidxFieldNumCats)  from map */
     void loadMapInfo();
 
-    /** Returns true if this is a valid layer
-     */
-    bool isValid() override;
+    bool isValid() const override;
 
-    QgsCoordinateReferenceSystem crs() override;
+    QgsCoordinateReferenceSystem crs() const override;
 
     // ----------------------------------- New edit --------------------------------
     // Changes are written during editing.
@@ -406,7 +399,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QgsGrassVectorMapLayer *openLayer() const;
 
   private:
-    struct Map_info * map();
+    struct Map_info * map() const;
     void setMapset();
     bool openLayer();
     // update topo symbol of new features
@@ -443,7 +436,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     static char *attribute( int layerId, int cat, int column );
 
     /** Check if provider is outdated and update if necessary */
-    void ensureUpdated();
+    void ensureUpdated() const;
 
     /** Check if layer is topology layer TOPO_POINT, TOPO_NODE, TOPO_LINE */
     bool isTopoType() const;

@@ -285,14 +285,14 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString& filenam
 
 }
 
-void QgsDelimitedTextProvider::resetCachedSubset()
+void QgsDelimitedTextProvider::resetCachedSubset() const
 {
   mCachedSubsetString = QString();
   mCachedUseSubsetIndex = false;
   mCachedUseSpatialIndex = false;
 }
 
-void QgsDelimitedTextProvider::resetIndexes()
+void QgsDelimitedTextProvider::resetIndexes() const
 {
   resetCachedSubset();
   mUseSubsetIndex = false;
@@ -721,7 +721,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 // rescanFile.  Called if something has changed file definition, such as
 // selecting a subset, the file has been changed by another program, etc
 
-void QgsDelimitedTextProvider::rescanFile()
+void QgsDelimitedTextProvider::rescanFile() const
 {
   mRescanRequired = false;
   resetIndexes();
@@ -906,7 +906,7 @@ QString QgsDelimitedTextProvider::storageType() const
   return "Delimited text file";
 }
 
-QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   // If the file has become invalid, rescan to check that it is still invalid.
   //
@@ -915,7 +915,7 @@ QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureReques
   return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( new QgsDelimitedTextFeatureSource( this ), true, request ) );
 }
 
-void QgsDelimitedTextProvider::clearInvalidLines()
+void QgsDelimitedTextProvider::clearInvalidLines() const
 {
   mInvalidLines.clear();
   mNExtraInvalidLines = 0;
@@ -942,7 +942,7 @@ void QgsDelimitedTextProvider::recordInvalidLine( const QString& message )
   }
 }
 
-void QgsDelimitedTextProvider::reportErrors( const QStringList& messages, bool showDialog )
+void QgsDelimitedTextProvider::reportErrors( const QStringList& messages, bool showDialog ) const
 {
   if ( !mInvalidLines.isEmpty() || ! messages.isEmpty() )
   {
@@ -1110,11 +1110,10 @@ void QgsDelimitedTextProvider::onFileUpdated()
   }
 }
 
-
-// Return the extent of the layer
-QgsRectangle QgsDelimitedTextProvider::extent()
+QgsRectangle QgsDelimitedTextProvider::extent() const
 {
-  if ( mRescanRequired ) rescanFile();
+  if ( mRescanRequired )
+    rescanFile();
   return mExtent;
 }
 
@@ -1141,7 +1140,7 @@ const QgsFields & QgsDelimitedTextProvider::fields() const
   return attributeFields;
 }
 
-bool QgsDelimitedTextProvider::isValid()
+bool QgsDelimitedTextProvider::isValid() const
 {
   return mLayerValid;
 }
@@ -1152,7 +1151,7 @@ int QgsDelimitedTextProvider::capabilities() const
 }
 
 
-QgsCoordinateReferenceSystem QgsDelimitedTextProvider::crs()
+QgsCoordinateReferenceSystem QgsDelimitedTextProvider::crs() const
 {
   return mCrs;
 }

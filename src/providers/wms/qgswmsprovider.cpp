@@ -959,7 +959,7 @@ static const QgsWmsLayerProperty* _findNestedLayerProperty( const QString& layer
 }
 
 
-bool QgsWmsProvider::extentForNonTiledLayer( const QString& layerName, const QString& crs, QgsRectangle& extent )
+bool QgsWmsProvider::extentForNonTiledLayer( const QString& layerName, const QString& crs, QgsRectangle& extent ) const
 {
   const QgsWmsLayerProperty* layerProperty = nullptr;
   Q_FOREACH ( const QgsWmsLayerProperty& toplevelLayer, mCaps.mCapabilities.capability.layers )
@@ -1176,7 +1176,7 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e, QString& erro
   QgsDebugMsg( QString( "exiting with composed error message '%1'." ).arg( errorText ) );
 }
 
-QgsRectangle QgsWmsProvider::extent()
+QgsRectangle QgsWmsProvider::extent() const
 {
   if ( mExtentDirty )
   {
@@ -1189,7 +1189,7 @@ QgsRectangle QgsWmsProvider::extent()
   return mLayerExtent;
 }
 
-bool QgsWmsProvider::isValid()
+bool QgsWmsProvider::isValid() const
 {
   return mValid;
 }
@@ -1213,7 +1213,7 @@ QStringList QgsWmsProvider::subLayerStyles() const
   return mSettings.mActiveSubStyles;
 }
 
-bool QgsWmsProvider::calculateExtent()
+bool QgsWmsProvider::calculateExtent() const
 {
   //! \todo Make this handle non-geographic CRSs (e.g. floor plans) as per WMS spec
 
@@ -2854,7 +2854,7 @@ void QgsWmsProvider::identifyReplyFinished()
 }
 
 
-QgsCoordinateReferenceSystem QgsWmsProvider::crs()
+QgsCoordinateReferenceSystem QgsWmsProvider::crs() const
 {
   return mCrs;
 }

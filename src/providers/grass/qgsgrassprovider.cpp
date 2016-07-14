@@ -414,7 +414,7 @@ QString QgsGrassProvider::storageType() const
 
 
 
-QgsFeatureIterator QgsGrassProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsGrassProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   if ( !mValid )
   {
@@ -429,7 +429,7 @@ QgsFeatureIterator QgsGrassProvider::getFeatures( const QgsFeatureRequest& reque
   return QgsFeatureIterator( iterator );
 }
 
-QgsRectangle QgsGrassProvider::extent()
+QgsRectangle QgsGrassProvider::extent() const
 {
   if ( isValid() )
   {
@@ -478,7 +478,7 @@ int QgsGrassProvider::keyField()
   return mLayer->keyColumn();
 }
 
-QVariant QgsGrassProvider::minimumValue( int index )
+QVariant QgsGrassProvider::minimumValue( int index ) const
 {
   if ( isValid() )
   {
@@ -497,14 +497,14 @@ QVariant QgsGrassProvider::maxValue( int index )
   return QVariant();
 }
 
-bool QgsGrassProvider::isValid()
+bool QgsGrassProvider::isValid() const
 {
   bool valid = mValid && mLayer && mLayer->map() && mLayer->map()->map();
   QgsDebugMsg( QString( "valid = %1" ).arg( valid ) );
   return valid;
 }
 
-QgsCoordinateReferenceSystem QgsGrassProvider::crs()
+QgsCoordinateReferenceSystem QgsGrassProvider::crs() const
 {
   QString error;
   return QgsGrass::crs( mGrassObject.gisdbase(), mGrassObject.location(), error );
@@ -655,7 +655,7 @@ bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
   return false;
 }
 
-void QgsGrassProvider::ensureUpdated()
+void QgsGrassProvider::ensureUpdated() const
 {
   // TODO
 #if 0
@@ -2064,13 +2064,13 @@ QgsGrassVectorMapLayer * QgsGrassProvider::openLayer() const
   return mLayer->map()->openLayer( mLayerField );
 }
 
-struct Map_info * QgsGrassProvider::map()
-{
-  Q_ASSERT( mLayer );
-  Q_ASSERT( mLayer->map() );
-  Q_ASSERT( mLayer->map()->map() );
-  return mLayer->map()->map();
-}
+struct Map_info * QgsGrassProvider::map() const
+  {
+    Q_ASSERT( mLayer );
+    Q_ASSERT( mLayer->map() );
+    Q_ASSERT( mLayer->map()->map() );
+    return mLayer->map()->map();
+  }
 
 void QgsGrassProvider::setMapset()
 {

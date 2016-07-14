@@ -55,7 +55,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
      */
     virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
 
     /**
      * Get feature type.
@@ -96,21 +96,13 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     virtual int capabilities() const override;
 
-    /**
-     * Returns the default value for field specified by @c fieldId
-     */
-    virtual QVariant defaultValue( int fieldId ) override;
+    virtual QVariant defaultValue( int fieldId ) const override;
 
 
     /* Functions inherited from QgsDataProvider */
 
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
-
-    /** Returns true if this is a valid delimited file
-     */
-    virtual bool isValid() override;
+    virtual QgsRectangle extent() const override;
+    virtual bool isValid() const override;
 
     /** Return a provider name */
     virtual QString name() const override;
@@ -118,7 +110,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     /** Return description */
     virtual QString description() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
 
     /* new functions */

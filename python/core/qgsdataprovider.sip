@@ -54,12 +54,11 @@ class QgsDataProvider : QObject
     virtual ~QgsDataProvider();
 
 
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be return, ti will return 0
+    /* Returns the coordinate system for the data source.
+     * If the provider isn't capable of returning its projection then an invalid
+     * QgsCoordinateReferenceSystem will be returned.
      */
-    virtual QgsCoordinateReferenceSystem crs() = 0;
+    virtual QgsCoordinateReferenceSystem crs() const = 0;
 
 
     /**
@@ -82,21 +81,21 @@ class QgsDataProvider : QObject
 
 
     /**
-     * Get the extent of the layer
+     * Returns the extent of the layer.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() = 0;
+    virtual QgsRectangle extent() const = 0;
 
 
     /**
      * Returns true if this is a valid layer. It is up to individual providers
-     * to determine what constitutes a valid layer
+     * to determine what constitutes a valid layer.
      */
-    virtual bool isValid() = 0;
+    virtual bool isValid() const = 0;
 
 
     /**
-     * Update the extents of the layer. Not implemented by default
+     * Update the extents of the layer. Not implemented by default.
      */
     virtual void updateExtents();
 
@@ -109,8 +108,8 @@ class QgsDataProvider : QObject
      */
     virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true );
 
-    /** Provider supports setting of subset strings */
-    virtual bool supportsSubsetString();
+    /** Returns true if the provider supports setting of subset strings. */
+    virtual bool supportsSubsetString() const;
 
     /**
      * Returns the subset definition string (typically sql) currently in
@@ -118,7 +117,7 @@ class QgsDataProvider : QObject
      * Must be overridden in the dataprovider, otherwise returns a null
      * QString.
      */
-    virtual QString subsetString();
+    virtual QString subsetString() const;
 
 
     /**

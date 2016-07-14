@@ -402,7 +402,7 @@ static bool operator<( const QVariant &a, const QVariant &b )
 }
 #endif
 
-QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   if ( !mValid )
   {
@@ -1489,7 +1489,7 @@ bool QgsPostgresProvider::uniqueData( const QString& quotedColNames )
 }
 
 // Returns the minimum value of an attribute
-QVariant QgsPostgresProvider::minimumValue( int index )
+QVariant QgsPostgresProvider::minimumValue( int index ) const
 {
   try
   {
@@ -1516,7 +1516,7 @@ QVariant QgsPostgresProvider::minimumValue( int index )
 }
 
 // Returns the list of unique values of an attribute
-void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
+void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
 {
   uniqueValues.clear();
 
@@ -1554,7 +1554,7 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
   }
 }
 
-void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
+void QgsPostgresProvider::enumValues( int index, QStringList& enumList ) const
 {
   enumList.clear();
 
@@ -1664,7 +1664,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList& enumValues, c
 }
 
 // Returns the maximum value of an attribute
-QVariant QgsPostgresProvider::maximumValue( int index )
+QVariant QgsPostgresProvider::maximumValue( int index ) const
 {
   try
   {
@@ -1692,12 +1692,12 @@ QVariant QgsPostgresProvider::maximumValue( int index )
 }
 
 
-bool QgsPostgresProvider::isValid()
+bool QgsPostgresProvider::isValid() const
 {
   return mValid;
 }
 
-QVariant QgsPostgresProvider::defaultValue( int fieldId )
+QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
 {
   QVariant defVal = mDefaultValues.value( fieldId, QString::null );
 
@@ -2821,7 +2821,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
   return returnvalue;
 }
 
-QgsAttributeList QgsPostgresProvider::attributeIndexes()
+QgsAttributeList QgsPostgresProvider::attributeIndexes() const
 {
   QgsAttributeList lst;
   lst.reserve( mAttributeFields.count() );
@@ -2920,7 +2920,7 @@ long QgsPostgresProvider::featureCount() const
   return num;
 }
 
-QgsRectangle QgsPostgresProvider::extent()
+QgsRectangle QgsPostgresProvider::extent() const
 {
   if ( mGeometryColumn.isNull() )
     return QgsRectangle();
@@ -3738,7 +3738,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   return QgsVectorLayerImport::NoError;
 }
 
-QgsCoordinateReferenceSystem QgsPostgresProvider::crs()
+QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
 {
   QgsCoordinateReferenceSystem srs;
   int srid = mRequestedSrid.isEmpty() ? mDetectedSrid.toInt() : mRequestedSrid.toInt();
@@ -3752,7 +3752,7 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs()
   return srs;
 }
 
-QString QgsPostgresProvider::subsetString()
+QString QgsPostgresProvider::subsetString() const
 {
   return mSqlWhereClause;
 }

@@ -127,13 +127,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     QgsWmsProvider * clone() const override;
 
-
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be return, ti will return 0
-     */
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
     /**
      * Reorder the list of WMS layer names to be rendered by this server
@@ -171,14 +165,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
 
+    virtual QgsRectangle extent() const override;
 
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
-
-    /** Returns true if layer is valid
-     */
-    bool isValid() override;
+    bool isValid() const override;
 
 #if 0
     /** Returns true if layer has tile set profiles
@@ -376,7 +365,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * Try to get best extent for the layer in given CRS. Returns true on success, false otherwise (layer not found, invalid CRS, transform failed)
      */
-    bool extentForNonTiledLayer( const QString& layerName, const QString& crs, QgsRectangle& extent );
+    bool extentForNonTiledLayer( const QString& layerName, const QString& crs, QgsRectangle& extent ) const;
 
     // case insensitive attribute value lookup
     static QString nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue = QString::null );
@@ -419,7 +408,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \retval false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      */
-    bool calculateExtent();
+    bool calculateExtent() const;
 
     /* \brief Bounding box in WMS format
      *
@@ -465,7 +454,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * Rectangle that contains the extent (bounding box) of the layer
      */
-    QgsRectangle mLayerExtent;
+    mutable QgsRectangle mLayerExtent;
 
     /**
      * GetLegendGraphic of the WMS (raw)
@@ -544,7 +533,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QgsCoordinateTransform *mCoordinateTransform;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
-    bool mExtentDirty;
+    mutable bool mExtentDirty;
 
     QString mServiceMetadataURL;
 
