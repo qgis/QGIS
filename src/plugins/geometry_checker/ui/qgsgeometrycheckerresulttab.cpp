@@ -110,6 +110,10 @@ void QgsGeometryCheckerResultTab::finalize()
 
 void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
 {
+  bool sortingWasEnabled = ui.tableWidgetErrors->isSortingEnabled();
+  if ( sortingWasEnabled )
+    ui.tableWidgetErrors->setSortingEnabled( false );
+
   int row = ui.tableWidgetErrors->rowCount();
   int prec = 7 - std::floor( qMax( 0., std::log10( qMax( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QString( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
@@ -142,6 +146,9 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
   ui.labelErrorCount->setText( tr( "Total errors: %1, fixed errors: %2" ).arg( mErrorCount ).arg( mFixedCount ) );
   mStatistics.newErrors.insert( error );
   mErrorMap.insert( error, QPersistentModelIndex( ui.tableWidgetErrors->model()->index( row, 0 ) ) );
+
+  if ( sortingWasEnabled )
+    ui.tableWidgetErrors->setSortingEnabled( true );
 }
 
 void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, bool statusChanged )
