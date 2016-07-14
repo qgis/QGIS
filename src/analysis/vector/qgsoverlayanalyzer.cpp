@@ -49,7 +49,7 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
   QgsFields fieldsB = layerB->fields();
   combineFieldLists( fieldsA, fieldsB );
 
-  QgsVectorFileWriter vWriter( shapefileName, dpA->encoding(), fieldsA, outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dpA->encoding(), fieldsA, outputType, crs );
   QgsFeature currentFeature;
   QgsSpatialIndex index;
 

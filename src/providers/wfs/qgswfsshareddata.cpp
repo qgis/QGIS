@@ -273,7 +273,7 @@ bool QgsWFSSharedData::createCache()
     mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
     VSIUnlink( vsimemFilename.toStdString().c_str() );
     QgsVectorFileWriter* writer = new QgsVectorFileWriter( vsimemFilename, "",
-        cacheFields, QGis::WKBPolygon, nullptr, "SpatiaLite", datasourceOptions, layerOptions );
+        cacheFields, QGis::WKBPolygon, QgsCoordinateReferenceSystem(), "SpatiaLite", datasourceOptions, layerOptions );
     if ( writer->hasError() == QgsVectorFileWriter::NoError )
     {
       delete writer;

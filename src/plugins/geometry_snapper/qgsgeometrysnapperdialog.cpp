@@ -221,7 +221,7 @@ void QgsGeometrySnapperDialog::run()
     }
 
     QString errMsg;
-    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), &layer->crs(), mOutputDriverName, selectedOnly, &errMsg );
+    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), layer->crs(), mOutputDriverName, selectedOnly, &errMsg );
     if ( err != QgsVectorFileWriter::NoError )
     {
       QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create the output layer: %1" ).arg( errMsg ) );
