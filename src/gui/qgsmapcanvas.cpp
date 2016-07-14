@@ -1162,39 +1162,74 @@ void QgsMapCanvas::zoomToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds&
     return;
   }
 
+  QgsRectangle bbox;
+  QString errorMsg;
+  if ( boundingBoxOfFeatureIds( ids, layer, bbox, errorMsg ) )
+  {
+    zoomToFeatureExtent( bbox );
+  }
+  else
+  {
+    emit messageEmitted( tr( "Zoom to feature id failed" ), errorMsg, QgsMessageBar::WARNING );
+  }
+
+}
+
+void QgsMapCanvas::panToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  QgsRectangle bbox;
+  QString errorMsg;
+  if ( boundingBoxOfFeatureIds( ids, layer, bbox, errorMsg ) )
+  {
+    setCenter( bbox.center() );
+    refresh();
+  }
+  else
+  {
+    emit messageEmitted( tr( "Pan to feature id failed" ), errorMsg, QgsMessageBar::WARNING );
+  }
+}
+
+bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds& ids, QgsVectorLayer* layer, QgsRectangle& bbox, QString& errorMsg ) const
+{
   QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setFilterFids( ids ).setSubsetOfAttributes( QgsAttributeList() ) );
-  QgsRectangle rect;
-  rect.setMinimal();
+  bbox.setMinimal();
   QgsFeature fet;
   int featureCount = 0;
+  errorMsg.clear();
+
   while ( it.nextFeature( fet ) )
   {
     const QgsGeometry* geom = fet.constGeometry();
-    QString errorMessage;
     if ( !geom || geom->isEmpty() )
     {
-      errorMessage = tr( "Feature does not have a geometry" );
+      errorMsg = tr( "Feature does not have a geometry" );
     }
     else if ( geom->geometry()->isEmpty() )
     {
-      errorMessage = tr( "Feature geometry is empty" );
+      errorMsg = tr( "Feature geometry is empty" );
     }
-    if ( !errorMessage.isEmpty() )
+    if ( !errorMsg.isEmpty() )
     {
-      emit messageEmitted( tr( "Zoom to feature id failed" ), errorMessage, QgsMessageBar::WARNING );
-      return;
+      return false;
     }
     QgsRectangle r = mapSettings().layerExtentToOutputExtent( layer, geom->boundingBox() );
-    rect.combineExtentWith( r );
+    bbox.combineExtentWith( r );
     featureCount++;
   }
 
   if ( featureCount != ids.count() )
   {
-    return;
+    errorMsg = tr( "Feature not found" );
+    return false;
   }
 
-  zoomToFeatureExtent( rect );
+  return true;
 }
 
 void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )

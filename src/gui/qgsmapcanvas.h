@@ -253,6 +253,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
         @param ids the feature ids*/
     void zoomToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
 
+    /** Centers canvas extent to feature ids
+        @param layer the vector layer
+        @param ids the feature ids*/
+    void panToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
+
     /** Pan to the selected features of current (vector) layer keeping same extent. */
     void panToSelected( QgsVectorLayer* layer = nullptr );
 
@@ -812,6 +817,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * @note added in QGIS 2.16
      */
     void endZoomRect( QPoint pos );
+
+    /** Returns bounding box of feature list (in canvas coordinates)
+        @param ids feature id list
+        @param bbox out: bounding box
+        @param errorMsg error message in case of error
+        @return true in case of success*/
+    bool boundingBoxOfFeatureIds( const QgsFeatureIds& ids, QgsVectorLayer* layer, QgsRectangle& bbox, QString& errorMsg ) const;
 
     friend class TestQgsMapCanvas;
 
