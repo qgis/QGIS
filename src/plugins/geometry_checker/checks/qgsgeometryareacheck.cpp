@@ -200,14 +200,14 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
     return false;
   }
 
-  // Remove polygon from source geometry
-  deleteFeatureGeometryPart( feature, partIdx, changes );
+  // Replace polygon in merge geometry
   if ( mergeFeature.id() == feature.id() && mergePartIdx > partIdx )
   {
     --mergePartIdx;
   }
-  // Replace polygon in merge geometry
   replaceFeatureGeometryPart( mergeFeature, mergePartIdx, combinedGeom, changes );
+  // Remove polygon from source geometry
+  deleteFeatureGeometryPart( feature, partIdx, changes );
 
   return true;
 }
