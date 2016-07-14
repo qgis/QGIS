@@ -282,11 +282,11 @@ bool eVisGenericEventBrowserGui::initBrowser()
     return false;
   }
 
-  const QgsFields& myFields = mDataProvider->fields();
+  QgsFields myFields = mDataProvider->fields();
   mIgnoreEvent = true; //Ignore indexChanged event when adding items to combo boxes
   for ( int x = 0; x < myFields.count(); x++ )
   {
-    QString name = myFields[x].name();
+    QString name = myFields.at( x ).name();
     cboxEventImagePathField->addItem( name );
     cboxCompassBearingField->addItem( name );
     cboxCompassOffsetField->addItem( name );
@@ -594,13 +594,13 @@ void eVisGenericEventBrowserGui::loadRecord()
   QString myCompassBearingField = cboxCompassBearingField->currentText();
   QString myCompassOffsetField = cboxCompassOffsetField->currentText();
   QString myEventImagePathField = cboxEventImagePathField->currentText();
-  const QgsFields& myFields = mDataProvider->fields();
+  QgsFields myFields = mDataProvider->fields();
   QgsAttributes myAttrs = myFeature->attributes();
   //loop through the attributes and display their contents
   for ( int i = 0; i < myAttrs.count(); ++i )
   {
     QStringList myValues;
-    QString fieldName = myFields[i].name();
+    QString fieldName = myFields.at( i ).name();
     myValues << fieldName << myAttrs.at( i ).toString();
     QTreeWidgetItem* myItem = new QTreeWidgetItem( myValues );
     if ( fieldName == myEventImagePathField )
@@ -836,7 +836,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
   {
     mConfiguration.setEventImagePathField( cboxEventImagePathField->currentText() );
 
-    const QgsFields& myFields = mDataProvider->fields();
+    QgsFields myFields = mDataProvider->fields();
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( !myFeature )
@@ -864,7 +864,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
   {
     mConfiguration.setCompassBearingField( cboxCompassBearingField->currentText() );
 
-    const QgsFields& myFields = mDataProvider->fields();
+    QgsFields myFields = mDataProvider->fields();
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( !myFeature )
@@ -873,7 +873,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
     QgsAttributes myAttrs = myFeature->attributes();
     for ( int i = 0; i < myAttrs.count(); ++i )
     {
-      if ( myFields[i].name() == cboxCompassBearingField->currentText() )
+      if ( myFields.at( i ).name() == cboxCompassBearingField->currentText() )
       {
         mCompassBearing = myAttrs.at( i ).toDouble();
       }
@@ -892,7 +892,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
   {
     mConfiguration.setCompassOffsetField( cboxCompassOffsetField->currentText() );
 
-    const QgsFields& myFields = mDataProvider->fields();
+    QgsFields myFields = mDataProvider->fields();
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( !myFeature )
@@ -901,7 +901,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
     QgsAttributes myAttrs = myFeature->attributes();
     for ( int i = 0; i < myAttrs.count(); ++i )
     {
-      if ( myFields[i].name() == cboxCompassOffsetField->currentText() )
+      if ( myFields.at( i ).name() == cboxCompassOffsetField->currentText() )
       {
         mCompassOffset = myAttrs.at( i ).toDouble();
       }

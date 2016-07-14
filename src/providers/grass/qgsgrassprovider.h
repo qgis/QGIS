@@ -91,10 +91,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     virtual QgsRectangle extent() override;
 
-    /**
-     * Get the field information for the layer
-     */
-    const QgsFields & fields() const override;
+    QgsFields fields() const override;
 
     // ! Key (category) field index
     int keyField();

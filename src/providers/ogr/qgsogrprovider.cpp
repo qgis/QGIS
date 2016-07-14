@@ -1035,7 +1035,7 @@ long QgsOgrProvider::featureCount() const
 }
 
 
-const QgsFields & QgsOgrProvider::fields() const
+QgsFields QgsOgrProvider::fields() const
 {
   return mAttributeFields;
 }
@@ -1666,7 +1666,7 @@ bool QgsOgrProvider::createAttributeIndex( int field )
   QByteArray quotedLayerName = quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
   QByteArray dropSql = "DROP INDEX ON " + quotedLayerName;
   OGR_DS_ExecuteSQL( ogrDataSource, dropSql.constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), nullptr );
-  QByteArray createSql = "CREATE INDEX ON " + quotedLayerName + " USING " + mEncoding->fromUnicode( fields()[field].name() );
+  QByteArray createSql = "CREATE INDEX ON " + quotedLayerName + " USING " + mEncoding->fromUnicode( fields().at( field ).name() );
   OGR_DS_ExecuteSQL( ogrDataSource, createSql.constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), nullptr );
 
   QFileInfo fi( mFilePath );     // to get the base name

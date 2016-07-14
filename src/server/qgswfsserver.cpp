@@ -1575,7 +1575,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
           }
 
           // Update the features
-          const QgsFields& fields = provider->fields();
+          QgsFields fields = provider->fields();
           QMap<QString, int> fieldMap = provider->fieldNameMap();
           QMap<QString, int>::const_iterator fieldMapIt;
           QString fieldName;
@@ -1605,7 +1605,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
               {
                 continue;
               }
-              const QgsField& field = fields[fieldMapIt.value()];
+              const QgsField& field = fields.at( fieldMapIt.value() );
               if ( field.type() == 2 )
                 layer->changeAttributeValue( *fidIt, fieldMapIt.value(), it.value().toInt( &conversionSuccess ) );
               else if ( field.type() == 6 )
@@ -1694,7 +1694,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       if ( cap & QgsVectorDataProvider::AddFeatures )
       {
         // Get Layer Field Information
-        const QgsFields& fields = provider->fields();
+        QgsFields fields = provider->fields();
         QMap<QString, int> fieldMap = provider->fieldNameMap();
         QMap<QString, int>::const_iterator fieldMapIt;
 
@@ -1739,7 +1739,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
                   {
                     continue;
                   }
-                  const QgsField& field = fields[fieldMapIt.value()];
+                  const QgsField& field = fields.at( fieldMapIt.value() );
                   QString attrValue = currentAttributeElement.text();
                   int attrType = field.type();
                   QgsMessageLog::logMessage( QString( "attr: name=%1 idx=%2 value=%3" ).arg( attrName ).arg( fieldMapIt.value() ).arg( attrValue ) );
@@ -1845,7 +1845,7 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( const QDomElement& filterEl
         throw QgsMapServiceException( "RequestNotWellFormed", filter->parserErrorString() );
       }
       QgsFeature feature;
-      const QgsFields& fields = provider->fields();
+      QgsFields fields = provider->fields();
       QgsFeatureIterator fit = layer->getFeatures();
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( feature, fields );
 

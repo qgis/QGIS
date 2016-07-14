@@ -553,7 +553,7 @@ void QgsVirtualLayerProvider::invalidateStatistics()
   mCachedStatistics = false;
 }
 
-const QgsFields & QgsVirtualLayerProvider::fields() const
+QgsFields QgsVirtualLayerProvider::fields() const
 {
   return mDefinition.fields();
 }

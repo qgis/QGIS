@@ -114,11 +114,9 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual long featureCount() const = 0;
 
     /**
-     * Return a map of indexes with field names for this layer
-     * @return map of fields
-     * @see QgsFields
+     * Returns the fields associated with this data provider.
      */
-    virtual const QgsFields &fields() const = 0;
+    virtual QgsFields fields() const = 0;
 
     /**
      * Return a short comment for the data that this provider is

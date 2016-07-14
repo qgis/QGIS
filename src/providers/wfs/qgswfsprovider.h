@@ -74,7 +74,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QGis::WkbType geometryType() const override;
     long featureCount() const override;
 
-    const QgsFields& fields() const override;
+    QgsFields fields() const override;
 
     virtual QgsCoordinateReferenceSystem crs() override;
 

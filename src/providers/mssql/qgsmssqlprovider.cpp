@@ -778,7 +778,7 @@ long QgsMssqlProvider::featureCount() const
   }
 }
 
-const QgsFields & QgsMssqlProvider::fields() const
+QgsFields QgsMssqlProvider::fields() const
 {
   return mAttributeFields;
 }

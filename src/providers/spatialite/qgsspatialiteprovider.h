@@ -127,11 +127,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     virtual void updateExtents() override;
 
-    /**
-      * Get the field information for the layer
-      * @return vector of QgsField objects
-      */
-    const QgsFields & fields() const override;
+    QgsFields fields() const override;
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */

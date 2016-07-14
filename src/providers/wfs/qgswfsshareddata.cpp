@@ -581,7 +581,7 @@ QSet<QString> QgsWFSSharedData::getExistingCachedGmlIds( const QVector<QgsWFSFea
   bool first = true;
   QSet<QString> setExistingGmlIds;
 
-  const QgsFields & dataProviderFields = mCacheDataProvider->fields();
+  QgsFields dataProviderFields = mCacheDataProvider->fields();
   const int gmlidIdx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_GMLID );
 
   // To avoid excessive memory consumption in expression building, do not
@@ -632,7 +632,7 @@ QSet<QString> QgsWFSSharedData::getExistingCachedMD5( const QVector<QgsWFSFeatur
   bool first = true;
   QSet<QString> setExistingMD5;
 
-  const QgsFields & dataProviderFields = mCacheDataProvider->fields();
+  QgsFields dataProviderFields = mCacheDataProvider->fields();
   const int md5Idx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_MD5 );
 
   // To avoid excessive memory consumption in expression building, do not
@@ -685,7 +685,7 @@ QString QgsWFSSharedData::findGmlId( QgsFeatureId fid )
   QgsFeatureRequest request;
   request.setFilterFid( fid );
 
-  const QgsFields & dataProviderFields = mCacheDataProvider->fields();
+  QgsFields dataProviderFields = mCacheDataProvider->fields();
   int gmlidIdx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_GMLID );
 
   QgsAttributeList attList;
@@ -765,7 +765,7 @@ bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap &att
   if ( !mCacheDataProvider )
     return false;
 
-  const QgsFields & dataProviderFields = mCacheDataProvider->fields();
+  QgsFields dataProviderFields = mCacheDataProvider->fields();
   QgsChangedAttributesMap newMap;
   for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
   {
@@ -812,7 +812,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
   }
 
   QgsFeatureList featureListToCache;
-  const QgsFields & dataProviderFields = mCacheDataProvider->fields();
+  QgsFields dataProviderFields = mCacheDataProvider->fields();
   int gmlidIdx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_GMLID );
   Q_ASSERT( gmlidIdx >= 0 );
   int genCounterIdx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_GEN_COUNTER );
