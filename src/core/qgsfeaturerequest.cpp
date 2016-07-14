@@ -40,6 +40,16 @@ QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
 {
 }
 
+QgsFeatureRequest::QgsFeatureRequest( QgsFeatureIds fids )
+    : mFilter( FilterFids )
+    , mFilterFids( fids )
+    , mFilterExpression( nullptr )
+    , mFlags( nullptr )
+    , mLimit( -1 )
+{
+
+}
+
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
     : mFilter( FilterRect )
     , mFilterRect( rect )

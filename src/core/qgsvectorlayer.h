@@ -985,6 +985,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
 
+    /**
+     * Query the provider for features matching a given expression.
+     */
+    QgsFeatureIterator getFeatures( const QString& expression );
+
+    /**
+     * Query the provider for the feature with the given id.
+     * If there is no such feature, the returned feature will be invalid.
+     */
+    QgsFeature getFeature( QgsFeatureId fid );
+
+    /**
+     * Query the provider for the features with the given ids.
+     */
+    QgsFeatureIterator getFeatures( QgsFeatureIds fids );
+
     /** Adds a feature
         @param feature feature to add
         @param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
