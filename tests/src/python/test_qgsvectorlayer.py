@@ -74,6 +74,30 @@ def createLayerWithTwoPoints():
     return layer
 
 
+def createLayerWithFivePoints():
+    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                           "addfeat", "memory")
+    pr = layer.dataProvider()
+    f = QgsFeature()
+    f.setAttributes(["test", 123])
+    f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
+    f2 = QgsFeature()
+    f2.setAttributes(["test2", 457])
+    f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(200, 200)))
+    f3 = QgsFeature()
+    f3.setAttributes(["test2", 888])
+    f3.setGeometry(QgsGeometry.fromPoint(QgsPoint(300, 200)))
+    f4 = QgsFeature()
+    f4.setAttributes(["test3", -1])
+    f4.setGeometry(QgsGeometry.fromPoint(QgsPoint(400, 300)))
+    f5 = QgsFeature()
+    f5.setAttributes(["test4", 0])
+    f5.setGeometry(QgsGeometry.fromPoint(QgsPoint(0, 0)))
+    assert pr.addFeatures([f, f2, f3, f4, f5])
+    assert layer.featureCount() == 5
+    return layer
+
+
 def createJoinLayer():
     joinLayer = QgsVectorLayer(
         "Point?field=x:string&field=y:integer&field=z:integer",
@@ -1049,6 +1073,31 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(f["fldint"], 123)
 
         self.assertFalse(fi.nextFeature(f))
+
+        layer2 = createLayerWithFivePoints()
+
+        # getFeature(fid)
+        feat = layer2.getFeature(4)
+        self.assertTrue(feat.isValid())
+        self.assertEqual(feat['fldtxt'], 'test3')
+        self.assertEqual(feat['fldint'], -1)
+        feat = layer2.getFeature(10)
+        self.assertFalse(feat.isValid())
+
+        # getFeatures(expression)
+        it = layer2.getFeatures("fldint <= 0")
+        fids = [f.id() for f in it]
+        self.assertEqual(set(fids), set([4, 5]))
+
+        # getFeatures(fids)
+        it = layer2.getFeatures([1, 2])
+        fids = [f.id() for f in it]
+        self.assertEqual(set(fids), set([1, 2]))
+
+        # getFeatures(rect)
+        it = layer2.getFeatures(QgsRectangle(99, 99, 201, 201))
+        fids = [f.id() for f in it]
+        self.assertEqual(set(fids), set([1, 2]))
 
     def test_join(self):
 

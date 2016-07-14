@@ -1112,24 +1112,6 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( new QgsVectorLayerFeatureSource( this ), true, request ) );
 }
 
-QgsFeatureIterator QgsVectorLayer::getFeatures( const QString& expression )
-{
-  return getFeatures( QgsFeatureRequest( expression ) );
-}
-
-QgsFeature QgsVectorLayer::getFeature( QgsFeatureId fid )
-{
-  QgsFeature feature;
-  getFeatures( QgsFeatureRequest( fid ) ).nextFeature( feature );
-  return feature;
-}
-
-QgsFeatureIterator QgsVectorLayer::getFeatures( QgsFeatureIds fids )
-{
-  return getFeatures( QgsFeatureRequest( fids ) );
-}
-
-
 bool QgsVectorLayer::addFeature( QgsFeature& feature, bool alsoUpdateExtent )
 {
   Q_UNUSED( alsoUpdateExtent ); // TODO[MD]

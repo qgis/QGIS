@@ -617,20 +617,25 @@ class QgsVectorLayer : QgsMapLayer
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const;
 
     /**
-     * Query the provider for features matching a given expression.
+     * Query the layer for features matching a given expression.
      */
     QgsFeatureIterator getFeatures( const QString& expression );
 
     /**
-     * Query the provider for the feature with the given id.
+     * Query the layer for the feature with the given id.
      * If there is no such feature, the returned feature will be invalid.
      */
     QgsFeature getFeature( QgsFeatureId fid );
 
     /**
-     * Query the provider for the features with the given ids.
+     * Query the layer for the features with the given ids.
      */
     QgsFeatureIterator getFeatures( QgsFeatureIds fids );
+
+    /**
+     * Query the layer for the features which intersect the specified rectangle.
+     */
+    QgsFeatureIterator getFeatures( const QgsRectangle& rectangle );
 
     /** Adds a feature
         @param f feature to add
