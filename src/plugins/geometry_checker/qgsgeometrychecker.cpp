@@ -155,14 +155,17 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
     }
   }
 
-  // Remove just-fixed error from newly-found errors (needed in case error was fixed with "no change")
-  Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
+  // Remove just-fixed error from newly-found errors if no changes occurred (needed in case error was fixed with "no change")
+  if ( changes.isEmpty() )
   {
-    if ( recheckErr->isEqual( error ) )
+    Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
     {
-      recheckErrors.removeAll( recheckErr );
-      delete recheckErr;
-      break;
+      if ( recheckErr->isEqual( error ) )
+      {
+        recheckErrors.removeAll( recheckErr );
+        delete recheckErr;
+        break;
+      }
     }
   }
 
