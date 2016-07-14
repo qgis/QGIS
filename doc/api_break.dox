@@ -16,6 +16,23 @@ with too big impact should be deferred to a major version release.
 
 This page tries to maintain a list with incompatible changes that happened in previous releases.
 
+\section qgis_api_break_3_0 QGIS 3.0
+
+\subsection qgis_api_break_3_0_QgsTreeWidgetItem QgsTreeWidgetItem
+
+<ul>
+<li>QgsTreeWidgetItem is no longer a QObject and does not emit the itemEdited signal. Instead,
+use QgsTreeWidgetItemObject which is an upgraded version of the original QgsTreeWidgetItem</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsNumericSortTreeWidgetItem QgsNumericSortTreeWidgetItem
+
+<ul>
+<li>QgsNumericSortTreeWidgetItem has been removed and replaced with QgsTreeWidgetItem, which
+has improved sort capabilities including the ability to set custom sort values for items
+and for forcing certain items to always sort on top.</li>
+</ul>
+
 \section qgis_api_break_2_4 QGIS 2.4
 
 \subsection qgis_api_break_mtr Multi-threaded Rendering

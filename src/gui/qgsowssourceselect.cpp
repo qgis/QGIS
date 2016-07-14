@@ -29,7 +29,7 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsmessageviewer.h"
 #include "qgsnewhttpconnection.h"
-#include "qgsnumericsortlistviewitem.h"
+#include "qgstreewidgetitem.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsowsconnection.h"
@@ -303,10 +303,10 @@ void QgsOWSSourceSelect::on_mLoadButton_clicked()
   emit connectionsChanged();
 }
 
-QgsNumericSortTreeWidgetItem *QgsOWSSourceSelect::createItem(
+QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
   int id,
   const QStringList &names,
-  QMap<int, QgsNumericSortTreeWidgetItem *> &items,
+  QMap<int, QgsTreeWidgetItem *> &items,
   int &layerAndStyleCount,
   const QMap<int, int> &layerParents,
   const QMap<int, QStringList> &layerParentNames )
@@ -316,15 +316,15 @@ QgsNumericSortTreeWidgetItem *QgsOWSSourceSelect::createItem(
     return items[id];
 
 
-  QgsNumericSortTreeWidgetItem *item;
+  QgsTreeWidgetItem *item;
   if ( layerParents.contains( id ) )
   {
     // it has parent -> create first its parent
     int parent = layerParents[ id ];
-    item = new QgsNumericSortTreeWidgetItem( createItem( parent, layerParentNames[ parent ], items, layerAndStyleCount, layerParents, layerParentNames ) );
+    item = new QgsTreeWidgetItem( createItem( parent, layerParentNames[ parent ], items, layerAndStyleCount, layerParents, layerParentNames ) );
   }
   else
-    item = new QgsNumericSortTreeWidgetItem( mLayersTreeWidget );
+    item = new QgsTreeWidgetItem( mLayersTreeWidget );
 
   item->setText( 0, QString::number( ++layerAndStyleCount ) );
   item->setText( 1, names[0].simplified() );
