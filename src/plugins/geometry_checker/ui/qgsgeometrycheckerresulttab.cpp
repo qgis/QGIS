@@ -588,7 +588,7 @@ void QgsGeometryCheckerResultTab::storeDefaultResolutionMethod( int id ) const
 
 void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList &ids )
 {
-  if ( ids.contains( mFeaturePool->getLayer()->id() ) && isEnabled() )
+  if ( mFeaturePool->getLayer() && ids.contains( mFeaturePool->getLayer()->id() ) && isEnabled() )
   {
     if ( mTabWidget->currentWidget() == this )
     {
