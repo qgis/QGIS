@@ -219,7 +219,7 @@ int QgsRasterLayer::bandCount() const
   return mDataProvider->bandCount();
 }
 
-const QString QgsRasterLayer::bandName( int theBandNo )
+QString QgsRasterLayer::bandName( int theBandNo ) const
 {
   return dataProvider()->generateBandName( theBandNo );
 }
@@ -316,8 +316,9 @@ QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
   return symbolList;
 }
 
-QString QgsRasterLayer::metadata()
+QString QgsRasterLayer::metadata() const
 {
+  QgsRasterDataProvider* provider = const_cast< QgsRasterDataProvider* >( mDataProvider );
   QString myMetadata;
   myMetadata += "<p class=\"glossy\">" + tr( "Driver" ) + "</p>\n";
   myMetadata += "<p>";
@@ -442,7 +443,7 @@ QString QgsRasterLayer::metadata()
     myMetadata += "</p>\n";
 
     //check if full stats for this layer have already been collected
-    if ( !dataProvider()->hasStatistics( myIteratorInt ) )  //not collected
+    if ( !provider->hasStatistics( myIteratorInt ) )  //not collected
     {
       QgsDebugMsgLevel( ".....no", 4 );
 
@@ -457,7 +458,7 @@ QString QgsRasterLayer::metadata()
     {
       QgsDebugMsgLevel( ".....yes", 4 );
 
-      QgsRasterBandStats myRasterBandStats = dataProvider()->bandStatistics( myIteratorInt );
+      QgsRasterBandStats myRasterBandStats = provider->bandStatistics( myIteratorInt );
       //Min Val
       myMetadata += "<p>";
       myMetadata += tr( "Min Val" );
@@ -1502,7 +1503,7 @@ bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
  *  @note Called by QgsMapLayer::writeXML().
  */
 bool QgsRasterLayer::writeXml( QDomNode & layer_node,
-                               QDomDocument & document )
+                               QDomDocument & document ) const
 {
   // first get the layer element so that we can append the type attribute
 
