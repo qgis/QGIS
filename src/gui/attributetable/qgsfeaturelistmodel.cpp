@@ -111,11 +111,11 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     if ( editBuffer )
     {
-      if ( editBuffer->featureIsAdded( feat.id() ) )
+      if ( editBuffer->isFeatureAdded( feat.id() ) )
       {
         featInfo.isNew = true;
       }
-      if ( editBuffer->featureHasAttributeChanges( feat.id() ) )
+      if ( editBuffer->isFeatureAttributesChanged( feat.id() ) )
       {
         featInfo.isEdited = true;
       }

@@ -1219,7 +1219,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     }
     // geometry
     const QgsAbstractGeometryV2 *geometry = 0;
-    if ( !mEditBuffer->featureIsAdded( fid ) )
+    if ( !mEditBuffer->isFeatureAdded( fid ) )
     {
 #ifdef QGISDEBUG
       QgsDebugMsg( "the feature is missing in buffer addedFeatures :" );

@@ -326,13 +326,13 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
       {
         QgsFeatureId fid = masterModel()->rowToId( sourceRow );
 
-        if ( editBuffer->featureIsAdded( fid ) )
+        if ( editBuffer->isFeatureAdded( fid ) )
           return true;
 
-        if ( editBuffer->featureHasAttributeChanges( fid ) )
+        if ( editBuffer->isFeatureAttributesChanged( fid ) )
           return true;
 
-        if ( editBuffer->featureHasGeometryChange( fid ) )
+        if ( editBuffer->isFeatureGeometryChanged( fid ) )
           return true;
 
         return false;
