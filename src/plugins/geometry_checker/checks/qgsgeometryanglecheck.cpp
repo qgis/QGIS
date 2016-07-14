@@ -114,14 +114,16 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, 
   }
   else if ( method == DeleteNode )
   {
-
-    if ( n <= 3 )
+    if ( !QgsGeometryCheckerUtils::canDeleteVertex( geometry, vidx.part, vidx.ring ) )
     {
       error->setFixFailed( tr( "Resulting geometry is degenerate" ) );
     }
+    else if ( !geometry->deleteVertex( error->vidx() ) )
+    {
+      error->setFixFailed( tr( "Failed to delete vertex" ) );
+    }
     else
     {
-      geometry->deleteVertex( vidx );
       mFeaturePool->updateFeature( feature );
       error->setFixed( method );
       changes[error->featureId()].append( Change( ChangeNode, ChangeRemoved, vidx ) );

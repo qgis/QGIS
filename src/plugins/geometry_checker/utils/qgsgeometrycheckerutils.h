@@ -72,6 +72,14 @@ namespace QgsGeometryCheckerUtils
     return ( dx * dx + dy * dy ) < tol * tol;
   }
 
+  inline bool canDeleteVertex( const QgsAbstractGeometryV2* geom, int iPart, int iRing )
+  {
+    int nVerts = geom->vertexCount( iPart, iRing );
+    QgsPointV2 front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
+    QgsPointV2 back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
+    bool closed = back == front;
+    return closed ? nVerts > 4 : nVerts > 2;
+  }
 } // QgsGeometryCheckerUtils
 
 #endif // QGS_GEOMETRYCHECKERUTILS_H

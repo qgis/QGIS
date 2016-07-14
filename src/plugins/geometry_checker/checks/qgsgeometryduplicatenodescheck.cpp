@@ -86,10 +86,13 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int
   }
   else if ( method == RemoveDuplicates )
   {
-    geom->deleteVertex( error->vidx() );
-    if ( QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring ) < 3 )
+    if ( !QgsGeometryCheckerUtils::canDeleteVertex( geom, vidx.part, vidx.ring ) )
     {
       error->setFixFailed( tr( "Resulting geometry is degenerate" ) );
+    }
+    else if ( !geom->deleteVertex( error->vidx() ) )
+    {
+      error->setFixFailed( tr( "Failed to delete vertex" ) );
     }
     else
     {
