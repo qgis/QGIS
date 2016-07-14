@@ -447,6 +447,12 @@ class QgsMapLayer : QObject
      */
     virtual QString loadNamedStyle( const QString& uri, bool &resultFlag /Out/ );
 
+    /** Retrieve a named style for this layer from a sqlite database.
+     * @param db path to sqlite database
+     * @param uri uri for table
+     * @param qml will be set to QML style content from database
+     * @returns true if style was successfully loaded
+     */
     virtual bool loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml /Out/ );
 
     /**
@@ -500,7 +506,22 @@ class QgsMapLayer : QObject
      */
     virtual QString saveNamedStyle( const QString &uri, bool &resultFlag /Out/ );
 
+    /** Saves the properties of this layer to an SLD format file.
+     * @param uri uri of destination for exported SLD file.
+     * @param resultFlag a reference to a flag that will be set to false if
+     * the SLD file could not be generated
+     * @returns a string with any status or error messages
+     * @see loadSldStyle()
+     */
     virtual QString saveSldStyle( const QString &uri, bool &resultFlag ) const;
+
+    /** Attempts to style the layer using the formatting from an SLD type file.
+     * @param uri uri of source SLD file
+     * @param resultFlag a reference to a flag that will be set to false if
+     * the SLD file could not be loaded
+     * @returns a string with any status or error messages
+     * @see saveSldStyle()
+     */
     virtual QString loadSldStyle( const QString &uri, bool &resultFlag );
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage );

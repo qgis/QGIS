@@ -1472,8 +1472,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * so if a stage fails, it's difficult to roll back cleanly.
      * Therefore any error message also includes which stage failed so
      * that the user has some chance of repairing the damage cleanly.
+     * @see commitErrors()
      */
     bool commitChanges();
+
+    /** Returns a list containing any error messages generated when attempting
+     * to commit changes to the layer.
+     * @see commitChanges()
+     */
     QStringList commitErrors() const;
 
     /** Stop editing and discard the edits

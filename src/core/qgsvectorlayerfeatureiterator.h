@@ -37,7 +37,12 @@ class QgsVectorLayerFeatureIterator;
 class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
+
+    /** Constructor for QgsVectorLayerFeatureSource.
+     * @param layer source layer
+     */
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer* layer );
+
     ~QgsVectorLayerFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
