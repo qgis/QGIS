@@ -77,12 +77,12 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
       {
         QgsFeature newFeature;
         newFeature.setAttributes( feature.attributes() );
-        newFeature.setGeometry( new QgsGeometry( QgsGeomUtils::getGeomPart( geom, iPart )->clone() ) );
+        newFeature.setGeometry( new QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->clone() ) );
         mFeaturePool->addFeature( newFeature );
         changes[newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
       }
       // Recycle feature for part 0
-      feature.setGeometry( new QgsGeometry( QgsGeomUtils::getGeomPart( geom, 0 )->clone() ) );
+      feature.setGeometry( new QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
       mFeaturePool->updateFeature( feature );
       changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
     }

@@ -29,7 +29,7 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError*>& erro
       continue;
     }
     QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
-    QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::tolerance() );
+    QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::tolerance() );
 
     QgsFeatureIds ids = mFeaturePool->getIntersects( feature.geometry()->boundingBox() );
     Q_FOREACH ( QgsFeatureId otherid, ids )
@@ -52,13 +52,13 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError*>& erro
         QgsAbstractGeometryV2* interGeom = geomEngine->intersection( *otherFeature.geometry()->geometry() );
         if ( interGeom && !interGeom->isEmpty() )
         {
-          QgsGeomUtils::filter1DTypes( interGeom );
+          QgsGeometryCheckerUtils::filter1DTypes( interGeom );
           for ( int iPart = 0, nParts = interGeom->partCount(); iPart < nParts; ++iPart )
           {
-            double area = QgsGeomUtils::getGeomPart( interGeom, iPart )->area();
+            double area = QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart )->area();
             if ( area > QgsGeometryCheckPrecision::reducedTolerance() && area < mThreshold )
             {
-              errors.append( new QgsGeometryOverlapCheckError( this, featureid, QgsGeomUtils::getGeomPart( interGeom, iPart )->centroid(), area, otherid ) );
+              errors.append( new QgsGeometryOverlapCheckError( this, featureid, QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart )->centroid(), area, otherid ) );
             }
           }
         }
@@ -87,7 +87,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
     return;
   }
   QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
-  QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::tolerance() );
+  QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::tolerance() );
 
   // Check if error still applies
   if ( !geomEngine->overlaps( *otherFeature.geometry()->geometry() ) )
@@ -108,9 +108,9 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
   QgsAbstractGeometryV2* interPart = nullptr;
   for ( int iPart = 0, nParts = interGeom->partCount(); iPart < nParts; ++iPart )
   {
-    QgsAbstractGeometryV2* part = QgsGeomUtils::getGeomPart( interGeom, iPart );
+    QgsAbstractGeometryV2* part = QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart );
     if ( qAbs( part->area() - overlapError->value().toDouble() ) < QgsGeometryCheckPrecision::reducedTolerance() &&
-         QgsGeomUtils::pointsFuzzyEqual( part->centroid(), overlapError->location(), QgsGeometryCheckPrecision::reducedTolerance() ) )
+         QgsGeometryCheckerUtils::pointsFuzzyEqual( part->centroid(), overlapError->location(), QgsGeometryCheckPrecision::reducedTolerance() ) )
     {
       interPart = part;
       break;
@@ -130,7 +130,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
   }
   else if ( method == Subtract )
   {
-    geomEngine = QgsGeomUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::reducedTolerance() );
+    geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::reducedTolerance() );
     QgsAbstractGeometryV2* diff1 = geomEngine->difference( *interPart, &errMsg );
     delete geomEngine;
     if ( !diff1 || diff1->isEmpty() )
@@ -140,9 +140,9 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
     }
     else
     {
-      QgsGeomUtils::filter1DTypes( diff1 );
+      QgsGeometryCheckerUtils::filter1DTypes( diff1 );
     }
-    QgsGeometryEngine* otherGeomEngine = QgsGeomUtils::createGeomEngine( otherFeature.geometry()->geometry(), QgsGeometryCheckPrecision::reducedTolerance() );
+    QgsGeometryEngine* otherGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( otherFeature.geometry()->geometry(), QgsGeometryCheckPrecision::reducedTolerance() );
     QgsAbstractGeometryV2* diff2 = otherGeomEngine->difference( *interPart, &errMsg );
     delete otherGeomEngine;
     if ( !diff2 || diff2->isEmpty() )
@@ -152,10 +152,10 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
     }
     else
     {
-      QgsGeomUtils::filter1DTypes( diff2 );
+      QgsGeometryCheckerUtils::filter1DTypes( diff2 );
     }
-    double shared1 = diff1 ? QgsGeomUtils::sharedEdgeLength( diff1, interPart, QgsGeometryCheckPrecision::reducedPrecision() ) : 0;
-    double shared2 = diff2 ? QgsGeomUtils::sharedEdgeLength( diff2, interPart, QgsGeometryCheckPrecision::reducedPrecision() ) : 0;
+    double shared1 = diff1 ? QgsGeometryCheckerUtils::sharedEdgeLength( diff1, interPart, QgsGeometryCheckPrecision::reducedPrecision() ) : 0;
+    double shared2 = diff2 ? QgsGeometryCheckerUtils::sharedEdgeLength( diff2, interPart, QgsGeometryCheckPrecision::reducedPrecision() ) : 0;
     if ( shared1 == 0. || shared2 == 0. )
     {
       error->setFixFailed( tr( "Could not find shared edges between intersection and overlapping features" ) );

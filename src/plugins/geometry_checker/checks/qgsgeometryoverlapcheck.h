@@ -37,7 +37,7 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
       return err &&
              other->featureId() == featureId() &&
              err->otherId() == otherId() &&
-             QgsGeomUtils::pointsFuzzyEqual( location(), other->location(), QgsGeometryCheckPrecision::reducedTolerance() ) &&
+             QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), QgsGeometryCheckPrecision::reducedTolerance() ) &&
              qAbs( value().toDouble() - other->value().toDouble() ) < QgsGeometryCheckPrecision::reducedTolerance();
     }
 

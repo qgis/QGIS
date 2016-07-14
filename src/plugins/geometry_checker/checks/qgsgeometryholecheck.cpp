@@ -34,7 +34,7 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
       // Rings after the first one are interiors
       for ( int iRing = 1, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        errors.append( new QgsGeometryCheckError( this, featureid, QgsGeomUtils::getGeomPart( geom, iPart )->centroid(), QgsVertexId( iPart, iRing ) ) );
+        errors.append( new QgsGeometryCheckError( this, featureid, QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid(), QgsVertexId( iPart, iRing ) ) );
       }
     }
   }

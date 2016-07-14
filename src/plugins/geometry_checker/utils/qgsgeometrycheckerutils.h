@@ -1,5 +1,5 @@
 /***************************************************************************
- *  qgsgeomutils.h                                                         *
+ *  qgsgeometrycheckerutils.h                                              *
  *  -------------------                                                    *
  *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
  *  email                : smani@sourcepole.ch                             *
@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS_GEOM_UTILS_H
-#define QGS_GEOM_UTILS_H
+#ifndef QGS_GEOMETRYCHECKERUTILS_H
+#define QGS_GEOMETRYCHECKERUTILS_H
 
 #include "geometry/qgsabstractgeometryv2.h"
 #include "geometry/qgspointv2.h"
@@ -23,7 +23,7 @@
 
 class QgsGeometryEngine;
 
-namespace QgsGeomUtils
+namespace QgsGeometryCheckerUtils
 {
 
   QgsGeometryEngine *createGeomEngine( QgsAbstractGeometryV2* geometry, double tolerance );
@@ -72,6 +72,6 @@ namespace QgsGeomUtils
     return ( dx * dx + dy * dy ) < tol * tol;
   }
 
-}
+} // QgsGeometryCheckerUtils
 
-#endif // QGS_GEOM_UTILS_H
+#endif // QGS_GEOMETRYCHECKERUTILS_H

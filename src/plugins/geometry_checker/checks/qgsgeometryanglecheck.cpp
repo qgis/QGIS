@@ -32,7 +32,7 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        int nVerts = QgsGeomUtils::polyLineSize( geom, iPart, iRing );
+        int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing );
         // Less than three points, no angles to check
         if ( nVerts < 3 )
         {
@@ -85,7 +85,7 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, 
   }
 
   // Check if error still applies
-  int n = QgsGeomUtils::polyLineSize( geometry, vidx.part, vidx.ring );
+  int n = QgsGeometryCheckerUtils::polyLineSize( geometry, vidx.part, vidx.ring );
   const QgsPointV2& p1 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + n ) % n ) );
   const QgsPointV2& p2 = geometry->vertexAt( vidx );
   const QgsPointV2& p3 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) );

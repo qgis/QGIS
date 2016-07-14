@@ -109,7 +109,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
   const QgsGeometryUtils::SelfIntersection& inter = static_cast<QgsGeometrySelfIntersectionCheckError*>( error )->intersection();
   // Check if error still applies
   bool ringIsClosed = false;
-  int nVerts = QgsGeomUtils::polyLineSize( geom, vidx.part, vidx.ring, &ringIsClosed );
+  int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring, &ringIsClosed );
   if ( inter.segment1 >= nVerts || inter.segment2 >= nVerts )
   {
     error->setObsolete();
@@ -180,7 +180,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
     QgsLineStringV2* ringGeom2 = new QgsLineStringV2();
     ringGeom2->setPoints( ring2 );
 
-    QgsAbstractGeometryV2* part = QgsGeomUtils::getGeomPart( geom, vidx.part );
+    QgsAbstractGeometryV2* part = QgsGeometryCheckerUtils::getGeomPart( geom, vidx.part );
     // If is a polygon...
     if ( dynamic_cast<QgsCurvePolygonV2*>( part ) )
     {
@@ -206,8 +206,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
         poly2->setExteriorRing( ringGeom2 );
 
         // Reassing interiors as necessary
-        QgsGeometryEngine* geomEnginePoly1 = QgsGeomUtils::createGeomEngine( poly, QgsGeometryCheckPrecision::tolerance() );
-        QgsGeometryEngine* geomEnginePoly2 = QgsGeomUtils::createGeomEngine( poly2, QgsGeometryCheckPrecision::tolerance() );
+        QgsGeometryEngine* geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, QgsGeometryCheckPrecision::tolerance() );
+        QgsGeometryEngine* geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, QgsGeometryCheckPrecision::tolerance() );
         for ( int n = poly->numInteriorRings(), i = n - 1; i >= 0; --i )
         {
           if ( !geomEnginePoly1->contains( *poly->interiorRing( i ) ) )

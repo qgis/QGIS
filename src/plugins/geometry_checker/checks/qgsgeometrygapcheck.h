@@ -44,7 +44,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
     bool isEqual( QgsGeometryCheckError* other ) const override
     {
       QgsGeometryGapCheckError* err = dynamic_cast<QgsGeometryGapCheckError*>( other );
-      return err && QgsGeomUtils::pointsFuzzyEqual( err->location(), location(), QgsGeometryCheckPrecision::reducedTolerance() ) && err->neighbors() == neighbors();
+      return err && QgsGeometryCheckerUtils::pointsFuzzyEqual( err->location(), location(), QgsGeometryCheckPrecision::reducedTolerance() ) && err->neighbors() == neighbors();
     }
 
     bool closeMatch( QgsGeometryCheckError *other ) const override

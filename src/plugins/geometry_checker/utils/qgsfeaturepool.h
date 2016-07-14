@@ -23,7 +23,7 @@
 #include <QMutex>
 #include "qgsfeature.h"
 #include "qgsspatialindex.h"
-#include "qgsgeomutils.h"
+#include "qgsgeometrycheckerutils.h"
 
 class QgsVectorLayer;
 

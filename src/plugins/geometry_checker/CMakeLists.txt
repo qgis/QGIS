@@ -26,7 +26,7 @@ SET (geometrychecker_SRCS
     ui/qgsgeometrycheckfixdialog.cpp
     ui/qgsgeometrycheckerfixsummarydialog.cpp
     utils/qgsfeaturepool.cpp
-    utils/qgsgeomutils.cpp
+    utils/qgsgeometrycheckerutils.cpp
 )
 
 SET (geometrychecker_HDRS
@@ -34,7 +34,7 @@ SET (geometrychecker_HDRS
     qgsgeometrycheckerplugin.h
     qgsgeometrycheckfactory.h
     utils/qgsfeaturepool.h
-    utils/qgsgeomutils.h
+    utils/qgsgeometrycheckerutils.h
 )
 
 SET (geometrychecker_MOC_HDRS

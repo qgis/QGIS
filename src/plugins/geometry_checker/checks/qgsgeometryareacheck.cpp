@@ -143,7 +143,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
       {
         continue;
       }
-      double len = QgsGeomUtils::sharedEdgeLength( QgsGeomUtils::getGeomPart( geom, partIdx ), QgsGeomUtils::getGeomPart( testGeom, testPartIdx ), QgsGeometryCheckPrecision::reducedTolerance() );
+      double len = QgsGeometryCheckerUtils::sharedEdgeLength( QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), QgsGeometryCheckerUtils::getGeomPart( testGeom, testPartIdx ), QgsGeometryCheckPrecision::reducedTolerance() );
       if ( len > 0. )
       {
         if ( method == MergeLongestEdge || method == MergeLargestArea )
@@ -192,8 +192,8 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
 
   // Merge geometries
   QgsAbstractGeometryV2* mergeGeom = mergeFeature.geometry()->geometry();
-  QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( QgsGeomUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
-  QgsAbstractGeometryV2* combinedGeom = geomEngine->combine( *QgsGeomUtils::getGeomPart( geom, partIdx ), &errMsg );
+  QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
+  QgsAbstractGeometryV2* combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
   delete geomEngine;
   if ( !combinedGeom || combinedGeom->isEmpty() )
   {

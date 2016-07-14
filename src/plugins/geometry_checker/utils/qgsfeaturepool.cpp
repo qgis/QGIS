@@ -19,7 +19,7 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsgeomutils.h"
+#include "qgsgeometryutils.h"
 
 #include <QMutexLocker>
 #include <qmath.h>

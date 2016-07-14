@@ -36,7 +36,7 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError*>
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        int nVerts = QgsGeomUtils::polyLineSize( geom, iPart, iRing );
+        int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing );
         if ( nVerts < 2 )
         {
           continue;
@@ -75,7 +75,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError* error, int 
   }
 
   // Check if error still applies
-  int nVerts = QgsGeomUtils::polyLineSize( geom, vidx.part, vidx.ring );
+  int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring );
   QgsPointV2 pi = geom->vertexAt( error->vidx() );
   QgsPointV2 pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
   double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );

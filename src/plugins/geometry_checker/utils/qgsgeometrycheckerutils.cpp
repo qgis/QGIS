@@ -1,5 +1,5 @@
 /***************************************************************************
- *  qgsgeomutils.cpp                                                       *
+ *  qgsgeometrycheckerutils.cpp                                            *
  *  -------------------                                                    *
  *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
  *  email                : smani@sourcepole.ch                             *
@@ -14,13 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeomutils.h"
+#include "qgsgeometryutils.h"
 #include <qmath.h>
 #include "qgsgeos.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometrycollectionv2.h"
 
-namespace QgsGeomUtils
+namespace QgsGeometryCheckerUtils
 {
 
   QgsGeometryEngine* createGeomEngine( QgsAbstractGeometryV2* geometry, double tolerance )
@@ -109,4 +109,4 @@ namespace QgsGeomUtils
     return len;
   }
 
-}
+} // QgsGeometryCheckerUtils

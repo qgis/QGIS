@@ -80,7 +80,7 @@ QgsAbstractGeometryV2 *QgsGeometryCheckError::geometry()
   if ( mCheck->getFeaturePool()->get( featureId(), f ) && f.geometry() )
   {
     QgsAbstractGeometryV2* geom = f.geometry()->geometry();
-    return mVidx.part >= 0 ? QgsGeomUtils::getGeomPart( geom, mVidx.part )->clone() : geom->clone();
+    return mVidx.part >= 0 ? QgsGeometryCheckerUtils::getGeomPart( geom, mVidx.part )->clone() : geom->clone();
   }
   return nullptr;
 }
@@ -196,7 +196,7 @@ void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature &feature, int partI
 
 void QgsGeometryCheck::deleteFeatureGeometryRing( QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const
 {
-  QgsAbstractGeometryV2* partGeom = QgsGeomUtils::getGeomPart( feature.geometry()->geometry(), partIdx );
+  QgsAbstractGeometryV2* partGeom = QgsGeometryCheckerUtils::getGeomPart( feature.geometry()->geometry(), partIdx );
   if ( dynamic_cast<QgsCurvePolygonV2*>( partGeom ) )
   {
     // If we delete the exterior ring of a polygon, it makes no sense to keep the interiors

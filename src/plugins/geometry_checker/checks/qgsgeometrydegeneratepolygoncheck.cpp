@@ -32,7 +32,7 @@ void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckErr
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        if ( QgsGeomUtils::polyLineSize( geom, iPart, iRing ) < 3 )
+        if ( QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing ) < 3 )
         {
           errors.append( new QgsGeometryCheckError( this, featureid, geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ), QgsVertexId( iPart, iRing ) ) );
         }
@@ -60,7 +60,7 @@ void QgsGeometryDegeneratePolygonCheck::fixError( QgsGeometryCheckError* error, 
   }
 
   // Check if error still applies
-  if ( QgsGeomUtils::polyLineSize( geom, vidx.part, vidx.ring ) >= 3 )
+  if ( QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring ) >= 3 )
   {
     error->setObsolete();
     return;

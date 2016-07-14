@@ -21,7 +21,7 @@
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include "geometry/qgsgeometry.h"
-#include "../utils/qgsgeomutils.h"
+#include "../utils/qgsgeometrycheckerutils.h"
 #include "geos_c.h"
 #include <QApplication>
 

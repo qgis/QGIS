@@ -34,7 +34,7 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError*
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        int nVerts = QgsGeomUtils::polyLineSize( geom, iPart, iRing );
+        int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing );
         if ( nVerts < 2 )
           continue;
         for ( int iVert = nVerts - 1, jVert = 0; jVert < nVerts; iVert = jVert++ )
@@ -70,7 +70,7 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int
   }
 
   // Check if error still applies
-  int nVerts = QgsGeomUtils::polyLineSize( geom, vidx.part, vidx.ring );
+  int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring );
   QgsPointV2 pi = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + nVerts - 1 ) % nVerts ) );
   QgsPointV2 pj = geom->vertexAt( error->vidx() );
   if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) >= QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance() )
@@ -87,7 +87,7 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int
   else if ( method == RemoveDuplicates )
   {
     geom->deleteVertex( error->vidx() );
-    if ( QgsGeomUtils::polyLineSize( geom, vidx.part, vidx.ring ) < 3 )
+    if ( QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring ) < 3 )
     {
       error->setFixFailed( tr( "Resulting geometry is degenerate" ) );
     }

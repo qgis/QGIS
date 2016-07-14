@@ -61,7 +61,7 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError* error, int meth
   }
   else if ( method == ConvertToSingle )
   {
-    feature.setGeometry( new QgsGeometry( QgsGeomUtils::getGeomPart( geom, 0 )->clone() ) );
+    feature.setGeometry( new QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
     mFeaturePool->updateFeature( feature );
     error->setFixed( method );
     changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
