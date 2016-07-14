@@ -243,7 +243,7 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
 
   QgsVectorFileWriter *writer = new QgsVectorFileWriter(
     uri, encoding, fields, wkbType,
-    srs ? *srs : QgsCoordinateReferenceSystem(), driverName, dsOptions, layerOptions );
+    srs, driverName, dsOptions, layerOptions );
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
   if ( error )
