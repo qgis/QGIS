@@ -18,6 +18,7 @@
 #include <qmath.h>
 #include "qgsgeos.h"
 #include "qgsgeometrycollectionv2.h"
+#include "qgssurfacev2.h"
 
 namespace QgsGeometryCheckerUtils
 {
@@ -43,7 +44,7 @@ namespace QgsGeometryCheckerUtils
       QgsGeometryCollectionV2* geomCollection = static_cast<QgsGeometryCollectionV2*>( geom );
       for ( int nParts = geom->partCount(), iPart = nParts - 1; iPart >= 0; --iPart )
       {
-        if ( !dynamic_cast<QgsCurveV2*>( geomCollection->geometryN( iPart ) ) )
+        if ( !dynamic_cast<QgsSurfaceV2*>( geomCollection->geometryN( iPart ) ) )
         {
           geomCollection->removeGeometry( iPart );
         }
