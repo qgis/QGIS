@@ -391,7 +391,6 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   }
 
   mIface->mapCanvas()->setExtent( totextent );
-  mIface->mapCanvas()->refresh();
 }
 
 void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &newSel, const QItemSelection &/*oldSel*/ )
@@ -502,8 +501,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     ui.progressBarFixErrors->setVisible( false );
     unsetCursor();
   }
-
-  mIface->mapCanvas()->refresh();
+  mChecker->getLayer()->triggerRepaint();
 
   if ( mStatistics.itemCount() > 0 )
   {

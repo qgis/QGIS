@@ -240,6 +240,11 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   return true;
 }
 
+QgsMapLayer* QgsGeometryChecker::getLayer() const
+{
+  return mFeaturePool->getLayer();
+}
+
 void QgsGeometryChecker::runCheck( const QgsGeometryCheck* check )
 {
   // Run checks
