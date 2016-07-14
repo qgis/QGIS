@@ -398,6 +398,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   }
 
   mIface->mapCanvas()->setExtent( totextent );
+  mIface->mapCanvas()->refresh();
 }
 
 void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &newSel, const QItemSelection &/*oldSel*/ )
