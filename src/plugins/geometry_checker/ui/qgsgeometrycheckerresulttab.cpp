@@ -596,5 +596,7 @@ void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList &ids )
     }
     setEnabled( false );
     mFeaturePool->clearLayer();
+    qDeleteAll( mCurrentRubberBands );
+    mCurrentRubberBands.clear();
   }
 }
