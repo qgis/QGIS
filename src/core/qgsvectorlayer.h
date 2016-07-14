@@ -986,20 +986,39 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
 
     /**
-     * Query the provider for features matching a given expression.
+     * Query the layer for features matching a given expression.
      */
-    QgsFeatureIterator getFeatures( const QString& expression );
+    inline QgsFeatureIterator getFeatures( const QString& expression )
+    {
+      return getFeatures( QgsFeatureRequest( expression ) );
+    }
 
     /**
-     * Query the provider for the feature with the given id.
+     * Query the layer for the feature with the given id.
      * If there is no such feature, the returned feature will be invalid.
      */
-    QgsFeature getFeature( QgsFeatureId fid );
+    inline QgsFeature getFeature( QgsFeatureId fid )
+    {
+      QgsFeature feature;
+      getFeatures( QgsFeatureRequest( fid ) ).nextFeature( feature );
+      return feature;
+    }
 
     /**
-     * Query the provider for the features with the given ids.
+     * Query the layer for the features with the given ids.
      */
-    QgsFeatureIterator getFeatures( QgsFeatureIds fids );
+    inline QgsFeatureIterator getFeatures( const QgsFeatureIds& fids )
+    {
+      return getFeatures( QgsFeatureRequest( fids ) );
+    }
+
+    /**
+     * Query the layer for the features which intersect the specified rectangle.
+     */
+    inline QgsFeatureIterator getFeatures( const QgsRectangle& rectangle )
+    {
+      return getFeatures( QgsFeatureRequest( rectangle ) );
+    }
 
     /** Adds a feature
         @param feature feature to add

@@ -90,6 +90,27 @@ class QgsVectorLayerCache : QObject
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& featureRequest = QgsFeatureRequest() );
 
     /**
+     * Query the layer for features matching a given expression.
+     */
+    QgsFeatureIterator getFeatures( const QString& expression );
+
+    /**
+     * Query the layer for the feature with the given id.
+     * If there is no such feature, the returned feature will be invalid.
+     */
+    QgsFeature getFeature( QgsFeatureId fid );
+
+    /**
+     * Query the layer for the features with the given ids.
+     */
+    QgsFeatureIterator getFeatures( QgsFeatureIds fids );
+
+    /**
+     * Query the layer for the features which intersect the specified rectangle.
+     */
+    QgsFeatureIterator getFeatures( const QgsRectangle& rectangle );
+
+    /**
      * Check if a certain feature id is cached.
      * @param  fid The feature id to look for
      * @return True if this id is in the cache
