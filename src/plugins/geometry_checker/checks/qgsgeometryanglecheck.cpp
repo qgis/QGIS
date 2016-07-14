@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometryanglecheck.h"
+#include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"
 
 void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
@@ -124,9 +125,15 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, 
     }
     else
     {
+      changes[error->featureId()].append( Change( ChangeNode, ChangeRemoved, vidx ) );
+      if ( QgsGeometryUtils::sqrDistance2D( p1, p3 ) < QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance()
+           && QgsGeometryCheckerUtils::canDeleteVertex( geometry, vidx.part, vidx.ring ) &&
+           geometry->deleteVertex( error->vidx() ) ) // error->vidx points to p3 after removing p2
+      {
+        changes[error->featureId()].append( Change( ChangeNode, ChangeRemoved, QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) ) );
+      }
       mFeaturePool->updateFeature( feature );
       error->setFixed( method );
-      changes[error->featureId()].append( Change( ChangeNode, ChangeRemoved, vidx ) );
     }
   }
   else
