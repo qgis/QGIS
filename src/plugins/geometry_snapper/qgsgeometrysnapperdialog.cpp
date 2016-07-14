@@ -306,8 +306,8 @@ void QgsGeometrySnapperDialog::run()
 
   layer->setReadOnly( false );
 
-  /** Refresh canvas **/
-  mIface->mapCanvas()->refresh();
+  /** Trigger layer repaint **/
+  layer->triggerRepaint();
 
   /** Show errors **/
   if ( !snapper.getErrors().isEmpty() )
