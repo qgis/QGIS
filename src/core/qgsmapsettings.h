@@ -136,7 +136,7 @@ class CORE_EXPORT QgsMapSettings
     //! sets destination coordinate reference system
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
     //! returns CRS of destination coordinate reference system
-    const QgsCoordinateReferenceSystem& destinationCrs() const;
+    QgsCoordinateReferenceSystem destinationCrs() const;
 
     //! Get units of map's geographical coordinates - used for scale calculation
     QGis::UnitType mapUnits() const;

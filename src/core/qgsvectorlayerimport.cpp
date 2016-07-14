@@ -34,7 +34,7 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
   const QString &uri,
   const QgsFields &fields,
   QGis::WkbType geometryType,
-  const QgsCoordinateReferenceSystem *destCRS,
+  const QgsCoordinateReferenceSystem &destCRS,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdx,
   QString *errorMessage,
@@ -46,7 +46,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     const QString &providerKey,
     const QgsFields& fields,
     QGis::WkbType geometryType,
-    const QgsCoordinateReferenceSystem* crs,
+    const QgsCoordinateReferenceSystem& crs,
     bool overwrite,
     const QMap<QString, QVariant> *options,
     QProgressDialog *progress )
@@ -206,21 +206,21 @@ QgsVectorLayerImport::ImportError
 QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
                                    const QString& uri,
                                    const QString& providerKey,
-                                   const QgsCoordinateReferenceSystem *destCRS,
+                                   const QgsCoordinateReferenceSystem& destCRS,
                                    bool onlySelected,
                                    QString *errorMessage,
                                    bool skipAttributeCreation,
                                    QMap<QString, QVariant> *options,
                                    QProgressDialog *progress )
 {
-  const QgsCoordinateReferenceSystem* outputCRS;
+  QgsCoordinateReferenceSystem outputCRS;
   QgsCoordinateTransform* ct = nullptr;
   bool shallTransform = false;
 
   if ( !layer )
     return ErrInvalidLayer;
 
-  if ( destCRS && destCRS->isValid() )
+  if ( destCRS.isValid() )
   {
     // This means we should transform
     outputCRS = destCRS;
@@ -229,7 +229,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   else
   {
     // This means we shouldn't transform, use source CRS as output (if defined)
-    outputCRS = &layer->crs();
+    outputCRS = layer->crs();
   }
 
 
@@ -314,8 +314,8 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
   // Create our transform
-  if ( destCRS )
-    ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
+  if ( destCRS.isValid() )
+    ct = new QgsCoordinateTransform( layer->crs(), destCRS );
 
   // Check for failure
   if ( !ct )

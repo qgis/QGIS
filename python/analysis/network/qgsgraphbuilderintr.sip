@@ -30,7 +30,7 @@ class QgsGraphBuilderInterface
      */
     QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" );
 
-    QgsCoordinateReferenceSystem& destinationCrs();
+    QgsCoordinateReferenceSystem destinationCrs() const;
 
     //! get coordinate transformation enabled
     bool coordinateTransformationEnabled();

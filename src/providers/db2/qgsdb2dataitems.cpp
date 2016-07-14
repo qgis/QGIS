@@ -361,7 +361,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
 
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "DB2", &srcLayer->crs(), false, &importError, false, nullptr, progress );
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "DB2", srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
       {
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
