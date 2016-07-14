@@ -37,7 +37,7 @@ double QgsScaleCalculator::dpi()
 
 void QgsScaleCalculator::setMapUnits( QGis::UnitType mapUnits )
 {
-  QgsDebugMsg( QString( "Map units set to %1" ).arg( QString::number( mapUnits ) ) );
+  QgsDebugMsgLevel( QString( "Map units set to %1" ).arg( QString::number( mapUnits ) ), 3 );
   mMapUnits = mapUnits;
 }
 

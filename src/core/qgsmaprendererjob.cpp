@@ -90,12 +90,12 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         QgsRectangle extent1 = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
         QgsRectangle extent2 = ct->transformBoundingBox( extent1, QgsCoordinateTransform::ForwardTransform );
 
-        QgsDebugMsg( QString( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
-                     .arg( extent.toString() ).arg( extent.width() ).arg( extent.height() )
-                     .arg( extent1.toString(), extent2.toString() ).arg( extent2.width() ).arg( extent2.height() )
-                     .arg( fabs( 1.0 - extent2.width() / extent.width() ) )
-                     .arg( fabs( 1.0 - extent2.height() / extent.height() ) )
-                   );
+        QgsDebugMsgLevel( QString( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
+                          .arg( extent.toString() ).arg( extent.width() ).arg( extent.height() )
+                          .arg( extent1.toString(), extent2.toString() ).arg( extent2.width() ).arg( extent2.height() )
+                          .arg( fabs( 1.0 - extent2.width() / extent.width() ) )
+                          .arg( fabs( 1.0 - extent2.height() / extent.height() ) )
+                          , 3 );
 
         if ( fabs( 1.0 - extent2.width() / extent.width() ) < 0.5 &&
              fabs( 1.0 - extent2.height() / extent.height() ) < 0.5 )
@@ -189,7 +189,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
   {
     QString layerId = li.previous();
 
-    QgsDebugMsg( "Rendering at layer item " + layerId );
+    QgsDebugMsgLevel( "Rendering at layer item " + layerId, 2 );
 
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
@@ -199,17 +199,17 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       continue;
     }
 
-    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  blendmode:%5" )
-                 .arg( ml->name() )
-                 .arg( ml->minimumScale() )
-                 .arg( ml->maximumScale() )
-                 .arg( ml->hasScaleBasedVisibility() )
-                 .arg( ml->blendMode() )
-               );
+    QgsDebugMsgLevel( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  blendmode:%5" )
+                      .arg( ml->name() )
+                      .arg( ml->minimumScale() )
+                      .arg( ml->maximumScale() )
+                      .arg( ml->hasScaleBasedVisibility() )
+                      .arg( ml->blendMode() )
+                      , 3 );
 
     if ( !ml->isInScaleRange( mSettings.scale() ) ) //|| mOverview )
     {
-      QgsDebugMsg( "Layer not rendered because it is not within the defined visibility scale range" );
+      QgsDebugMsgLevel( "Layer not rendered because it is not within the defined visibility scale range", 3 );
       continue;
     }
 
@@ -223,7 +223,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       {
         reprojectToLayerExtent( ml, ct, r1, r2 );
       }
-      QgsDebugMsg( "extent: " + r1.toString() );
+      QgsDebugMsgLevel( "extent: " + r1.toString(), 3 );
       if ( !r1.isFinite() || !r2.isFinite() )
       {
         mErrors.append( Error( layerId, tr( "There was a problem transforming the layer's extent. Layer skipped." ) ) );

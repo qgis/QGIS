@@ -237,7 +237,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
 
   QTime t;
   t.start();
-  QgsDebugMsg( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.layerId ) );
+  QgsDebugMsgLevel( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.layerId ), 2 );
 
   try
   {
@@ -259,7 +259,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   }
 
   job.renderingTime = t.elapsed();
-  QgsDebugMsg( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ) );
+  QgsDebugMsgLevel( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
 }
 
 

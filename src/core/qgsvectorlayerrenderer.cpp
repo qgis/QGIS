@@ -92,7 +92,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   if ( !mRendererV2 )
     return;
 
-  QgsDebugMsg( "rendering v2:\n  " + mRendererV2->dump() );
+  QgsDebugMsgLevel( "rendering v2:\n  " + mRendererV2->dump(), 2 );
 
   if ( mDrawVertexMarkers )
   {
@@ -191,8 +191,8 @@ bool QgsVectorLayerRenderer::render()
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
         QgsRectangle targetRect = ct->transform( sourceRect );
 
-        QgsDebugMsg( QString( "Simplify - SourceTransformRect=%1" ).arg( sourceRect.toString( 16 ) ) );
-        QgsDebugMsg( QString( "Simplify - TargetTransformRect=%1" ).arg( targetRect.toString( 16 ) ) );
+        QgsDebugMsgLevel( QString( "Simplify - SourceTransformRect=%1" ).arg( sourceRect.toString( 16 ) ), 4 );
+        QgsDebugMsgLevel( QString( "Simplify - TargetTransformRect=%1" ).arg( targetRect.toString( 16 ) ), 4 );
 
         if ( !sourceRect.isEmpty() && sourceRect.isFinite() && !targetRect.isEmpty() && targetRect.isFinite() )
         {
@@ -204,8 +204,8 @@ bool QgsVectorLayerRenderer::render()
           double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
           double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
 
-          QgsDebugMsg( QString( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ) );
-          QgsDebugMsg( QString( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ) );
+          QgsDebugMsgLevel( QString( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ), 4 );
+          QgsDebugMsgLevel( QString( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ), 4 );
 
           if ( !qgsDoubleNear( targetHypothenuse, 0.0 ) )
             map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );

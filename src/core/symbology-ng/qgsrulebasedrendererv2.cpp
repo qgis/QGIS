@@ -893,7 +893,7 @@ void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFi
   {
     zLevelsToNormLevels[zLevel] = ++maxNormLevel;
     mRenderQueue.append( RenderLevel( zLevel ) );
-    QgsDebugMsg( QString( "zLevel %1 -> %2" ).arg( zLevel ).arg( maxNormLevel ) );
+    QgsDebugMsgLevel( QString( "zLevel %1 -> %2" ).arg( zLevel ).arg( maxNormLevel ), 4 );
   }
 
   mRootRule->setNormZLevels( zLevelsToNormLevels );

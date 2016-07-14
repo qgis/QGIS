@@ -701,7 +701,7 @@ void QgsMapCanvas::refreshMap()
 {
   Q_ASSERT( mRefreshScheduled );
 
-  QgsDebugMsg( "CANVAS refresh!" );
+  QgsDebugMsgLevel( "CANVAS refresh!", 3 );
 
   stopRendering(); // if any...
 

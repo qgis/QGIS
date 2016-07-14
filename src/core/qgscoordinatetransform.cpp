@@ -553,7 +553,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   QVector<double> y( nXPoints * nYPoints );
   QVector<double> z( nXPoints * nYPoints );
 
-  QgsDebugMsg( "Entering transformBoundingBox..." );
+  QgsDebugMsgLevel( "Entering transformBoundingBox...", 4 );
 
   // Populate the vectors
 
@@ -622,11 +622,11 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
       bb_rect.setXMaximum( bb_rect.xMaximum() - 360.0 );
   }
 
-  QgsDebugMsg( "Projected extent: " + bb_rect.toString() );
+  QgsDebugMsgLevel( "Projected extent: " + bb_rect.toString(), 4 );
 
   if ( bb_rect.isEmpty() )
   {
-    QgsDebugMsg( "Original extent: " + rect.toString() );
+    QgsDebugMsgLevel( "Original extent: " + rect.toString(), 4 );
   }
 
   return bb_rect;
