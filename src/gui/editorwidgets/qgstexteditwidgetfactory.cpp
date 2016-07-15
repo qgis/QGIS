@@ -62,3 +62,10 @@ QgsEditorWidgetConfig QgsTextEditWidgetFactory::readConfig( const QDomElement& c
 
   return cfg;
 }
+
+unsigned int QgsTextEditWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+{
+  Q_UNUSED( vl )
+  Q_UNUSED( fieldIdx )
+  return 10;
+}

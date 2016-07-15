@@ -43,10 +43,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
 QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* editor, QgsVectorLayer* vl, int idx, const QVariant& value, QgsAttributeEditorContext& context )
 {
-  QString widgetType = vl->editFormConfig().widgetType( idx );
-  QgsEditorWidgetConfig cfg = vl->editFormConfig().widgetConfig( idx );
-
-  QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, vl, idx, cfg, editor, parent, context );
+  QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( vl, idx, editor, parent, context );
 
   if ( eww )
   {

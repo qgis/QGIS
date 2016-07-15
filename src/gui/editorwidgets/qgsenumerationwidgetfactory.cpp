@@ -36,12 +36,12 @@ QgsEditorConfigWidget* QgsEnumerationWidgetFactory::configWidget( QgsVectorLayer
 }
 
 
-bool QgsEnumerationWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
+unsigned int QgsEnumerationWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
 {
   QStringList list;
   vl->dataProvider()->enumValues( fieldIdx, list );
   if ( !list.isEmpty() )
-    return true;
+    return 20;
   else
-    return false;
+    return 0;
 }

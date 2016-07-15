@@ -16,6 +16,7 @@
 #include "qgseditformconfig.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
+//#include "qgseditorwidgetregistry.h"
 
 QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 {
@@ -27,30 +28,14 @@ QgsEditFormConfig::QgsEditFormConfig()
 {
 }
 
-QString QgsEditFormConfig::widgetType( int fieldIdx ) const
-{
-  if ( fieldIdx < 0 || fieldIdx >= d->mFields.count() )
-    return "TextEdit";
-
-  return d->mEditorWidgetTypes.value( d->mFields.at( fieldIdx ).name(), "TextEdit" );
-}
-
 QString QgsEditFormConfig::widgetType( const QString& fieldName ) const
 {
-  return d->mEditorWidgetTypes.value( fieldName, "TextEdit" );
+  return d->mEditorWidgetTypes.value( fieldName );
 }
 
-QgsEditorWidgetConfig QgsEditFormConfig::widgetConfig( int fieldIdx ) const
+QgsEditorWidgetConfig QgsEditFormConfig::widgetConfig( const QString& fieldName ) const
 {
-  if ( fieldIdx < 0 || fieldIdx >= d->mFields.count() )
-    return QgsEditorWidgetConfig();
-
-  return d->mWidgetConfigs.value( d->mFields.at( fieldIdx ).name() );
-}
-
-QgsEditorWidgetConfig QgsEditFormConfig::widgetConfig( const QString& widgetName ) const
-{
-  return d->mWidgetConfigs.value( widgetName );
+  return d->mWidgetConfigs.value( fieldName );
 }
 
 void QgsEditFormConfig::setFields( const QgsFields& fields )
@@ -84,19 +69,9 @@ void QgsEditFormConfig::onRelationsLoaded()
   }
 }
 
-void QgsEditFormConfig::setWidgetType( int attrIdx, const QString& widgetType )
+void QgsEditFormConfig::setWidgetType( const QString& widgetName, const QString& widgetType )
 {
-  if ( attrIdx >= 0 && attrIdx < d->mFields.count() )
-    d->mEditorWidgetTypes[ d->mFields.at( attrIdx ).name()] = widgetType;
-}
-
-void QgsEditFormConfig::setWidgetConfig( int attrIdx, const QgsEditorWidgetConfig& config )
-{
-  if ( attrIdx >= 0 && attrIdx < d->mFields.count() )
-  {
-    d.detach();
-    d->mWidgetConfigs[ d->mFields.at( attrIdx ).name()] = config;
-  }
+  d->mEditorWidgetTypes[widgetName] = widgetType;
 }
 
 void QgsEditFormConfig::setWidgetConfig( const QString& widgetName, const QgsEditorWidgetConfig& config )
@@ -109,15 +84,6 @@ bool QgsEditFormConfig::removeWidgetConfig( const QString& widgetName )
 {
   d.detach();
   return d->mWidgetConfigs.remove( widgetName ) != 0;
-}
-
-bool QgsEditFormConfig::removeWidgetConfig( int fieldIdx )
-{
-  if ( fieldIdx < 0 || fieldIdx >= d->mFields.count() )
-    return false;
-
-  d.detach();
-  return d->mWidgetConfigs.remove( d->mFields.at( fieldIdx ).name() );
 }
 
 QgsEditFormConfig::QgsEditFormConfig( const QgsEditFormConfig& o )
@@ -446,38 +412,40 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
   }
 
 
-  //// TODO: MAKE THIS MORE GENERIC, SO INDIVIDUALL WIDGETS CAN NOT ONLY SAVE STRINGS
-  /// SEE QgsEditorWidgetFactory::writeConfig
-
   QDomElement widgetsElem = node.namedItem( "widgets" ).toElement();
 
   QDomNodeList widgetConfigsElems = widgetsElem.childNodes();
 
   for ( int i = 0; i < widgetConfigsElems.size(); ++i )
   {
-    QgsEditorWidgetConfig cfg;
+    const QDomElement wdgElem = widgetConfigsElems.at( i ).toElement();
+    const QDomElement cfgElem = wdgElem.namedItem( "config" ).toElement();
+    const QgsEditorWidgetConfig widgetConfig = parseEditorWidgetConfig( cfgElem );
+    setWidgetConfig( wdgElem.attribute( "name" ), widgetConfig );
+  }
+}
 
-    QDomElement wdgElem = widgetConfigsElems.at( i ).toElement();
+QgsEditorWidgetConfig QgsEditFormConfig::parseEditorWidgetConfig( const QDomElement& cfgElem )
+{
+  QgsEditorWidgetConfig cfg;
+  //// TODO: MAKE THIS MORE GENERIC, SO INDIVIDUALL WIDGETS CAN NOT ONLY SAVE STRINGS
+  /// SEE QgsEditorWidgetFactory::writeConfig
+  for ( int j = 0; j < cfgElem.attributes().size(); ++j )
+  {
+    const QDomAttr attr = cfgElem.attributes().item( j ).toAttr();
+    cfg.insert( attr.name(), attr.value() );
+  }
 
-    QDomElement cfgElem = wdgElem.namedItem( "config" ).toElement();
-
-    for ( int j = 0; j < cfgElem.attributes().size(); ++j )
-    {
-      QDomAttr attr = cfgElem.attributes().item( j ).toAttr();
-      cfg.insert( attr.name(), attr.value() );
-    }
-
-    QDomNodeList optionElements = cfgElem.elementsByTagName( "option" );
-    for ( int j = 0; j < optionElements.size(); ++j )
-    {
-      QString key = optionElements.at( j ).toElement().attribute( "key" );
-      QString value = optionElements.at( j ).toElement().attribute( "value" );
-      cfg.insert( key, value );
-    }
-
-    setWidgetConfig( wdgElem.attribute( "name" ), cfg );
+  const QDomNodeList optionElements = cfgElem.elementsByTagName( "option" );
+  for ( int j = 0; j < optionElements.size(); ++j )
+  {
+    const QDomElement option = optionElements.at( j ).toElement();
+    const QString key = option.attribute( "key" );
+    const QString value = option.attribute( "value" );
+    cfg.insert( key, value );
   }
   //// END TODO
+  return cfg;
 }
 
 void QgsEditFormConfig::writeXml( QDomNode& node ) const

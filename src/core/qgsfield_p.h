@@ -102,6 +102,8 @@ class QgsFieldPrivate : public QSharedData
 
     //! Default value expression
     QString defaultValueExpression;
+
+    QgsEditorWidgetSetup editorWidgetSetup;
 };
 
 

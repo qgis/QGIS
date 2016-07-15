@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 /**
  * This class manages all known edit widget factories
  */
@@ -42,6 +43,17 @@ class QgsEditorWidgetRegistry : QObject
      * @note Not required for plugins, the QGIS application does that already
      */
     static void initEditors( QgsMapCanvas* mapCanvas = 0, QgsMessageBar* messageBar = 0 );
+
+    /**
+     * Find the best editor widget and its configuration for a given field.
+     *
+     * @param vl        The vector layer for which this widget will be created
+     * @param fieldIdx  The field index on the specified layer for which this widget will be created
+     *
+     * @return The id of the widget type to use and its config
+     */
+    QgsEditorWidgetSetup findBest( const QgsVectorLayer* vl, const QString& fieldName ) const;
+
 
     /**
      * Create an attribute editor widget wrapper of a given type for a given field.
@@ -116,4 +128,11 @@ class QgsEditorWidgetRegistry : QObject
      * @return true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
      */
     bool registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory /Transfer/ );
+
+     /**
+     * Register a new auto-conf plugin.
+     *
+     * @param plugin The plugin (ownership is transfered)
+     */
+    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin );
 };

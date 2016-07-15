@@ -266,6 +266,16 @@ bool QgsField::convertCompatible( QVariant& v ) const
   return true;
 }
 
+void QgsField::setEditorWidgetSetup( const QgsEditorWidgetSetup& v )
+{
+  d->editorWidgetSetup = v;
+}
+
+const QgsEditorWidgetSetup& QgsField::editorWidgetSetup() const
+{
+  return d->editorWidgetSetup;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.

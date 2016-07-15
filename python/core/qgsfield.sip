@@ -220,6 +220,19 @@ class QgsField
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const;
 
+    /**
+     * Set the editor widget setup for the field.
+     *
+     * @param v  The value to set
+     */
+    void setEditorWidgetSetup( const QgsEditorWidgetSetup& v );
+
+    /**
+     * Get the editor widget setup for the field.
+     *
+     * @return the value
+     */
+    const QgsEditorWidgetSetup& editorWidgetSetup() const;
 }; // class QgsField
 
 

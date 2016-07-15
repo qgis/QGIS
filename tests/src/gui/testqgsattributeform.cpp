@@ -67,6 +67,7 @@ void TestQgsAttributeForm::testFieldConstraint()
   // make a temporary vector layer
   QString def = "Point?field=col0:integer";
   QgsVectorLayer* layer = new QgsVectorLayer( def, "test", "memory" );
+  layer->editFormConfig().setWidgetType( "col0", "TextEdit" );
 
   // add a feature to the vector layer
   QgsFeature ft( layer->dataProvider()->fields(), 1 );

@@ -71,18 +71,9 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
   }
 }
 
-bool QgsRangeWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
+unsigned int QgsRangeWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
 {
-  switch ( vl->fields().at( fieldIdx ).type() )
-  {
-    case QVariant::LongLong:
-    case QVariant::Double:
-    case QVariant::Int:
-      return true;
-
-    default:
-      return false;
-  }
+  return vl->fields().at( fieldIdx ).isNumeric() ? 20 : 0;
 }
 
 QMap<const char*, int> QgsRangeWidgetFactory::supportedWidgetTypes()
