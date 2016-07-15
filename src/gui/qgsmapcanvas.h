@@ -820,6 +820,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Returns bounding box of feature list (in canvas coordinates)
         @param ids feature id list
+        @param layer the layer
         @param bbox out: bounding box
         @param errorMsg error message in case of error
         @return true in case of success*/
