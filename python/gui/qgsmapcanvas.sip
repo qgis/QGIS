@@ -182,6 +182,11 @@ class QgsMapCanvas : QGraphicsView
         @param ids the feature ids*/
     void zoomToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
 
+    /** Centers canvas extent to feature ids
+        @param layer the vector layer
+        @param ids the feature ids*/
+    void panToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
+
     /** Pan to the selected features of current (vector) layer keeping same extent. */
     void panToSelected( QgsVectorLayer* layer = 0 );
 

@@ -430,6 +430,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
   if ( canvas && vl && vl->geometryType() != QGis::NoGeometry )
   {
     menu->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToCurrentFeature() ) );
+    menu->addAction( tr( "Pan to feature" ), this, SLOT( panToCurrentFeature() ) );
   }
 
   //add user-defined actions to context menu
@@ -648,6 +649,23 @@ void QgsDualView::zoomToCurrentFeature()
   if ( canvas )
   {
     canvas->zoomToFeatureIds( mLayerCache->layer(), ids );
+  }
+}
+
+void QgsDualView::panToCurrentFeature()
+{
+  QModelIndex currentIndex = mTableView->currentIndex();
+  if ( !currentIndex.isValid() )
+  {
+    return;
+  }
+
+  QgsFeatureIds ids;
+  ids.insert( mFilterModel->rowToId( currentIndex ) );
+  QgsMapCanvas* canvas = mFilterModel->mapCanvas();
+  if ( canvas )
+  {
+    canvas->panToFeatureIds( mLayerCache->layer(), ids );
   }
 }
 
