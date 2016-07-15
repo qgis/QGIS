@@ -113,9 +113,9 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @param fieldIdx  The field index
      * @return          True if the type is supported for this field
      *
-     * @see isFieldSupported( QgsVectorLayer* vl, ind fieldIdx )
+     * @see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
      */
-    inline bool supportsField( QgsVectorLayer* vl, int fieldIdx ) { return isFieldSupported( vl, fieldIdx ); }
+    inline bool supportsField( const QgsVectorLayer* vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
 
     /**
      * Returns a list of widget types which this editor widget supports.
@@ -187,19 +187,25 @@ class GUI_EXPORT QgsEditorWidgetFactory
      */
     virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
 
-  private:
     /**
      * This method allows disabling this editor widget type for a certain field.
-     * By default, it returns true for all fields.
+     * By default, it returns 5 for every fields.
      * Reimplement this if you only support certain fields.
+     *
+     * Typical return values are:
+     *   * 0: not supported
+     *   * 5: maybe support (for example, Datetime support strings depending on their content)
+     *   * 10: basic support (this is what returns TextEdit for example, since it supports everything in a crude way)
+     *   * 20: specialised support
      *
      * @param vl
      * @param fieldIdx
-     * @return True if the field is supported.
+     * @return 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
+     *      taken by default). The default implementation returns 5..
      *
      * @see supportsField( QgsVectorLayer* vl, fieldIdx )
      */
-    virtual bool isFieldSupported( QgsVectorLayer* vl, int fieldIdx );
+    virtual unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const;
 
   private:
     QString mName;

@@ -492,6 +492,8 @@ place of a null pointer.</li>
 
 <ul>
 <li>Does no longer inherit QObject
+<li>widgetType() and widgetConfig() now reflect only the user configured values.
+QgsEditorWidgetRegistry::instance()->findBest() must be used instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsExpression QgsExpression
@@ -588,6 +590,13 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().<
 <ul>
 <li>destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling this method will need to be updated.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsEditorWidgetRegistry QgsEditorWidgetRegistry
+
+<ul>
+<li>The signature of isFieldSupported() has been changed to return an unsigned (how good it supports the given field)
+and to const-correct it.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsGroupWMSDataDialog QgsGroupWMSDataDialog
@@ -817,6 +826,14 @@ plugins calling this method will need to be updated.</li>
 
 <ul>
 <li>setMapRenderer() has been removed. Use setMapSettings() instead.</li>
+<li>excludeAttributesWMS() and setExcludeAttributesWMS() have been renamed to excludeAttributesWms() and
+setExcludeAttributesWms()</li>
+<li>excludeAttributesWFS() and setExcludeAttributesWFS() have been renamed to excludeAttributesWfs() and 
+setExcludeAttributesWfs()</li>
+<li>editorWidgetV2() and editorWidgetV2Config() have been removed and QgsEditorWidgetRegistry::instance()->findBest() must be used instead.</li>
+<li>setEditorWidgetV2(), setEditorWidgetV2Config() have been removed and their equivalent in editFormConfig() must be used instead.</li>
+<li>setCheckedState() is removed. Use editFormConfig()->setWidgetConfig()` instead.</li>
+<li>valueMap(), valueRelation(), dateFormat(), widgetSize() have been removed. Use QgsEditorWidgetRegistry::instance()->findBest().config() instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsRenderContext QgsRenderContext

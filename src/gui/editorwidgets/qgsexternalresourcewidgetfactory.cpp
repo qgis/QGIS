@@ -119,10 +119,10 @@ QgsEditorWidgetConfig QgsExternalResourceWidgetFactory::readConfig( const QDomEl
   return cfg;
 }
 
-bool QgsExternalResourceWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
+unsigned int QgsExternalResourceWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
 {
   if ( vl->fields().at( fieldIdx ).type() == QVariant::String )
-    return true;
+    return 5;
 
-  return false;
+  return 0;
 }

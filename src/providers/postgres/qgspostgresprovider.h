@@ -300,6 +300,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     bool loadFields();
 
+    /** Set the default widget type for the fields
+     */
+    void setEditorWidgets();
+
     /** Convert a QgsField to work with PG */
     static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = nullptr );
 

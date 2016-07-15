@@ -33,8 +33,7 @@ class GUI_EXPORT QgsEnumerationWidgetFactory : public QgsEditorWidgetFactory
     QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
     QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
 
-  private:
-    bool isFieldSupported( QgsVectorLayer* vl, int fieldIdx ) override;
+    unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
 };
 
 #endif // QGSENUMERATIONWIDGETFACTORY_H

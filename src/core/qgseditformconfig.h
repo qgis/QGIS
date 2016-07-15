@@ -177,15 +177,7 @@ class CORE_EXPORT QgsEditFormConfig
 
     /**
      * Get the id for the editor widget used to represent the field at the given index
-     *
-     * @param fieldIdx  The index of the field
-     *
-     * @return The id for the editor widget or a NULL string if not applicable
-     */
-    QString widgetType( int fieldIdx ) const;
-
-    /**
-     * Get the id for the editor widget used to represent the field at the given index
+     * Don't use this directly. Prefere the use of QgsEditorWidgetRegistry::instance()->findBestType.
      *
      * @param fieldName  The name of the field
      *
@@ -218,32 +210,24 @@ class CORE_EXPORT QgsEditFormConfig
      *   layer.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
      * \endcode
      *
-     * @param widgetName  The name of the widget or field to configure
+     * @param fieldName  The name of the field to configure
      * @param config      The config to set for this field
      *
      * @see setWidgetType() for a list of widgets and choose the widget to see the available options.
      *
      * @note not available in python bindings
      */
-    void setWidgetConfig( const QString& widgetName, const QgsEditorWidgetConfig& config );
-
-    /**
-     * Get the configuration for the editor widget used to represent the field at the given index
-     *
-     * @param fieldIdx  The index of the field
-     *
-     * @return The configuration for the editor widget or an empty config if the field does not exist
-     */
-    QgsEditorWidgetConfig widgetConfig( int fieldIdx ) const;
+    void setWidgetConfig( const QString& fieldName, const QgsEditorWidgetConfig& config );
 
     /**
      * Get the configuration for the editor widget used to represent the field with the given name
+     * Don't use this directly. Prefere the use of QgsEditorWidgetRegistry::instance()->findBestConfig.
      *
-     * @param widgetName The name of the widget. This can be a field name or the name of an additional widget.
+     * @param fieldName The name of the field.
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
      */
-    QgsEditorWidgetConfig widgetConfig( const QString& widgetName ) const;
+    QgsEditorWidgetConfig widgetConfig( const QString& fieldName ) const;
 
     /**
      * Remove the configuration for the editor widget used to represent the field at the given index
@@ -257,11 +241,11 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Remove the configuration for the editor widget used to represent the field with the given name
      *
-     * @param widgetName The name of the widget. This can be a field name or the name of an additional widget.
+     * @param fieldName The name of the widget.
      *
      * @return true if successful, false if the field does not exist
      */
-    bool removeWidgetConfig( const QString& widgetName );
+    bool removeWidgetConfig( const QString& fieldName );
 
     /**
      * This returns true if the field is manually set to read only or if the field
@@ -410,6 +394,11 @@ class CORE_EXPORT QgsEditFormConfig
      * Create a new edit form config. Normally invoked by QgsVectorLayer
      */
     explicit QgsEditFormConfig();
+
+    /**
+     * Parse the XML for the config of one editor widget.
+     */
+    static QgsEditorWidgetConfig parseEditorWidgetConfig( const QDomElement& cfgElem );
 
   private:
 

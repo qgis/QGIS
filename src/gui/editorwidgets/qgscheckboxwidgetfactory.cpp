@@ -68,3 +68,9 @@ QMap<const char*, int> QgsCheckboxWidgetFactory::supportedWidgetTypes()
   map.insert( QGroupBox::staticMetaObject.className(), 10 );
   return map;
 }
+
+unsigned int QgsCheckboxWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+{
+  const QVariant::Type type = vl->fields().field( fieldIdx ).type();
+  return type == QVariant::Bool ? 20 : 5;
+}
