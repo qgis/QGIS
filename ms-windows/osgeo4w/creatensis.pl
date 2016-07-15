@@ -441,7 +441,7 @@ $cmd .= " -DVERSION_NAME='$releasename'";
 $cmd .= " -DVERSION_NUMBER='$version'";
 $cmd .= " -DBINARY_REVISION=$binary";
 $cmd .= sprintf( " -DVERSION_INT='%d%02d%02d%02d'", $major, $minor, $patch, $binary );
-$cmd .= " -DQGIS_BASE='$packagename $releasename'";
+$cmd .= " -DQGIS_BASE='$packagename $version'";
 $cmd .= " -DINSTALLER_NAME='$packagename-OSGeo4W-$version-$binary-Setup$archpostfix.exe'";
 $cmd .= " -DDISPLAYED_NAME='$packagename \'$releasename\' ($version)'";
 $cmd .= " -DSHORTNAME='$shortname'";
