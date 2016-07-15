@@ -85,7 +85,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # test contents of buffer
         added = layer.editBuffer().addedFeatures()
-        new_feature_ids = added.keys()
+        new_feature_ids = list(added.keys())
         self.assertEqual(added[new_feature_ids[0]]['fldtxt'], 'test2')
         self.assertEqual(added[new_feature_ids[0]]['fldint'], 246)
         self.assertEqual(added[new_feature_ids[1]]['fldtxt'], 'test')
@@ -115,7 +115,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # test contents of buffer
         added = layer.editBuffer().addedFeatures()
-        new_feature_ids = added.keys()
+        new_feature_ids = list(added.keys())
         self.assertEqual(added[new_feature_ids[0]]['fldtxt'], 'test2')
         self.assertEqual(added[new_feature_ids[0]]['fldint'], 246)
         self.assertEqual(added[new_feature_ids[1]]['fldtxt'], 'test')
@@ -161,7 +161,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         layer.deleteFeature(2)
 
         # test contents of buffer
-        self.assertEqual(layer.editBuffer().deletedFeatureIds(), [1, 2])
+        self.assertEqual(set(layer.editBuffer().deletedFeatureIds()), set([1, 2]))
         self.assertTrue(layer.editBuffer().isFeatureDeleted(1))
         self.assertTrue(layer.editBuffer().isFeatureDeleted(2))
 
@@ -194,7 +194,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         layer.deleteFeatures([1, 2])
 
         # test contents of buffer
-        self.assertEqual(layer.editBuffer().deletedFeatureIds(), [1, 2])
+        self.assertEqual(set(layer.editBuffer().deletedFeatureIds()), set([1, 2]))
         self.assertTrue(layer.editBuffer().isFeatureDeleted(1))
         self.assertTrue(layer.editBuffer().isFeatureDeleted(2))
 
@@ -227,7 +227,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         layer.changeAttributeValue(1, 0, 'a')
 
         # test contents of buffer
-        self.assertEqual(layer.editBuffer().changedAttributeValues().keys(), [1])
+        self.assertEqual(list(layer.editBuffer().changedAttributeValues().keys()), [1])
         self.assertEqual(layer.editBuffer().changedAttributeValues()[1], {0: 'a'})
         self.assertTrue(layer.editBuffer().isFeatureAttributesChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureAttributesChanged(2))
@@ -270,7 +270,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         layer.changeGeometry(1, QgsGeometry.fromPoint(QgsPoint(10, 20)))
 
         # test contents of buffer
-        self.assertEqual(layer.editBuffer().changedGeometries().keys(), [1])
+        self.assertEqual(list(layer.editBuffer().changedGeometries().keys()), [1])
         self.assertEqual(layer.editBuffer().changedGeometries()[1].geometry().x(), 10)
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
