@@ -33,6 +33,8 @@ class QgsFieldsPrivate;
  * See details in QEP #17
  ****************************************************************************/
 
+#include "qgseditorwidgetsetup.h"
+
 /** \class QgsField
   * \ingroup core
   * Encapsulate a field in an attribute table or data source.
@@ -217,6 +219,20 @@ class CORE_EXPORT QgsField
     {
       return QVariant::fromValue( *this );
     }
+
+    /**
+     * Set the editor widget setup for the field.
+     *
+     * @param v  The value to set
+     */
+    void setEditorWidgetSetup( const QgsEditorWidgetSetup& v );
+
+    /**
+     * Get the editor widget setup for the field.
+     *
+     * @return the value
+     */
+    const QgsEditorWidgetSetup& editorWidgetSetup() const;
 
   private:
 

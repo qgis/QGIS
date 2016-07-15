@@ -392,9 +392,9 @@ void QgsFieldsProperties::loadRelations()
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
         nmCombo->addItem( QString( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
 
-      QgsEditorWidgetConfig cfg = mLayer->editFormConfig().widgetConfig( relation.id() );
+      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relation.id() );
 
-      QVariant nmrelcfg = cfg.value( "nm-rel" );
+      const QVariant nmrelcfg = setup.config().value( "nm-rel" );
 
       int idx =  nmCombo->findData( nmrelcfg.toString() );
 
@@ -940,6 +940,7 @@ void QgsFieldsProperties::apply()
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
+    QString name = mLayer->fields().at( idx ).name();
     FieldConfig cfg = configForRow( i );
 
     editFormConfig.setReadOnly( i, !cfg.mEditable );
@@ -948,8 +949,8 @@ void QgsFieldsProperties::apply()
     editFormConfig.setExpressionDescription( i, cfg.mConstraintDescription );
     editFormConfig.setExpression( i, cfg.mConstraint );
 
-    editFormConfig.setWidgetType( idx, cfg.mEditorWidgetType );
-    editFormConfig.setWidgetConfig( idx, cfg.mEditorWidgetConfig );
+    editFormConfig.setWidgetType( name, cfg.mEditorWidgetType );
+    editFormConfig.setWidgetConfig( name, cfg.mEditorWidgetConfig );
 
     if ( mFieldsList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
     {
@@ -1030,8 +1031,9 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
   mNotNull = layer->editFormConfig().notNull( idx );
   mConstraint = layer->editFormConfig().expression( idx );
   mConstraintDescription = layer->editFormConfig().expressionDescription( idx );
-  mEditorWidgetType = layer->editFormConfig().widgetType( idx );
-  mEditorWidgetConfig = layer->editFormConfig().widgetConfig( idx );
+  const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer, layer->fields().field( idx ).name() );
+  mEditorWidgetType = setup.type();
+  mEditorWidgetConfig = setup.config();
 }
 
 /*

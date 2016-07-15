@@ -21,6 +21,7 @@
 #include "qgseditorwidgetconfig.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgseditorwidgetautoconf.h"
 
 class QgsMapLayer;
 class QDomNode;
@@ -68,6 +69,16 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     ~QgsEditorWidgetRegistry();
 
     /**
+     * Find the best editor widget and its configuration for a given field.
+     *
+     * @param vl        The vector layer for which this widget will be created
+     * @param fieldName The field name on the specified layer for which this widget will be created
+     *
+     * @return The id of the widget type to use and its config
+     */
+    QgsEditorWidgetSetup findBest( const QgsVectorLayer* vl, const QString& fieldName ) const;
+
+    /**
      * Create an attribute editor widget wrapper of a given type for a given field.
      * The editor may be NULL if you want the widget wrapper to create a default widget.
      *
@@ -85,6 +96,24 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     QgsVectorLayer* vl,
                                     int fieldIdx,
                                     const QgsEditorWidgetConfig& config,
+                                    QWidget* editor,
+                                    QWidget* parent,
+                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+
+    /**
+     * Create an attribute editor widget wrapper of the best type for a given field.
+     * The editor may be NULL if you want the widget wrapper to create a default widget.
+     *
+     * @param vl        The vector layer for which this widget will be created
+     * @param fieldIdx  The field index on the specified layer for which this widget will be created
+     * @param editor    An editor widget which will be used instead of an autocreated widget
+     * @param parent    The parent which will be used for the created wrapper and the created widget
+     * @param context   The editor context (not available in python bindings)
+     *
+     * @return A new widget wrapper
+     */
+    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl,
+                                    int fieldIdx,
                                     QWidget* editor,
                                     QWidget* parent,
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
@@ -140,6 +169,13 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @return true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
      */
     bool registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory );
+
+    /**
+     * Register a new auto-conf plugin.
+     *
+     * @param plugin The plugin (ownership is transfered)
+     */
+    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin ) { mAutoConf.registerPlugin( plugin ); }
 
   protected:
     QgsEditorWidgetRegistry();
@@ -199,6 +235,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
 
     QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
     QMap<const char*, QPair<int, QString> > mFactoriesByType;
+    QgsEditorWidgetAutoConf mAutoConf;
 };
 
 #endif // QGSEDITORWIDGETREGISTRY_H

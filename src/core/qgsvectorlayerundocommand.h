@@ -207,6 +207,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLay
 
   private:
     int mFieldIndex;
+    QString mFieldName;
     bool mProviderField;
     int mOriginIndex;
     QgsField mOldField;

@@ -41,6 +41,7 @@ class TestQgsField: public QObject
     void convertCompatible();
     void dataStream();
     void displayName();
+    void editorWidgetSetup();
 
   private:
 };
@@ -396,6 +397,18 @@ void TestQgsField::displayName()
   QCOMPARE( field.displayName(), QString( "alias" ) );
   field.setAlias( QString() );
   QCOMPARE( field.displayName(), QString( "name" ) );
+}
+
+void TestQgsField::editorWidgetSetup()
+{
+  QgsField field;
+  QgsEditorWidgetConfig config;
+  config.insert( "a", "value_a" );
+  const QgsEditorWidgetSetup setup( "test", config );
+  field.setEditorWidgetSetup( setup );
+
+  QCOMPARE( field.editorWidgetSetup().type(), setup.type() );
+  QCOMPARE( field.editorWidgetSetup().config(), setup.config() );
 }
 
 QTEST_MAIN( TestQgsField )

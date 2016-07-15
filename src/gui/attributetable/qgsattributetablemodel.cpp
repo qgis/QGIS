@@ -339,13 +339,13 @@ void QgsAttributeTableModel::loadAttributes()
 
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    const QString widgetType = layer()->editFormConfig().widgetType( idx );
-    QgsEditorWidgetFactory* widgetFactory = QgsEditorWidgetRegistry::instance()->factory( widgetType );
+    const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer(), fields[idx].name() );
+    QgsEditorWidgetFactory* widgetFactory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
     if ( widgetFactory )
     {
       mWidgetFactories.append( widgetFactory );
-      mWidgetConfigs.append( layer()->editFormConfig().widgetConfig( idx ) );
-      mAttributeWidgetCaches.append( widgetFactory->createCache( layer(), idx, mWidgetConfigs.last() ) );
+      mWidgetConfigs.append( setup.config() );
+      mAttributeWidgetCaches.append( widgetFactory->createCache( layer(), idx, setup.config() ) );
 
       attributes << idx;
     }
