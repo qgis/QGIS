@@ -644,7 +644,7 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
 QUrl QgsComposerLabel::createStylesheetUrl() const
 {
   QString stylesheet;
-  stylesheet += QString( "body { margin: %1 %2;" ).arg( qMax( mMarginX * mHtmlUnitsToMM, 0.0 ) ).arg( qMax( mMarginY * mHtmlUnitsToMM, 0.0 ) );
+  stylesheet += QString( "body { margin: %1 %2;" ).arg( qMax( mMarginY * mHtmlUnitsToMM, 0.0 ) ).arg( qMax( mMarginX * mHtmlUnitsToMM, 0.0 ) );
   stylesheet += QgsFontUtils::asCSS( mFont, 0.352778 * mHtmlUnitsToMM );
   stylesheet += QString( "color: %1;" ).arg( mFontColor.name() );
   stylesheet += QString( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? "left" : mHAlignment == Qt::AlignRight ? "right" : "center" );
