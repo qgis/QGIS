@@ -92,7 +92,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * If the provider isn't capable of returning
      * its projection an empty srs will be returned
      */
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -133,7 +133,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     /** Return the extent for this data layer
      */
-    virtual QgsRectangle extent() override;
+    virtual QgsRectangle extent() const override;
 
     /** Update the extent
      */
@@ -147,7 +147,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * Get the field information for the layer
      * @return vector of QgsField objects
      */
-    const QgsFields &fields() const override;
+    QgsFields fields() const override;
 
     /**
      * Return a short comment for the data that this provider is
@@ -161,28 +161,28 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
-    QVariant minimumValue( int index ) override;
+    QVariant minimumValue( int index ) const override;
 
     /** Returns the maximum value of an attribute
      *  @param index the index of the attribute */
-    QVariant maximumValue( int index ) override;
+    QVariant maximumValue( int index ) const override;
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) override;
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
 
     /** Returns true if layer is valid
      */
-    bool isValid() override;
+    bool isValid() const override;
 
-    QgsAttributeList pkAttributeIndexes() override { return mPrimaryKeyAttrs; }
+    QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
 
     /** Returns the default value for field specified by @c fieldName */
     QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
 
     /** Returns the default value for field specified by @c fieldId */
-    QVariant defaultValue( int fieldId ) override;
+    QVariant defaultValue( int fieldId ) const override;
 
     /** Adds a list of features
       @return true in case of success and false in case of failure*/
@@ -230,12 +230,12 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QString getTableName();
 
     /** Accessor for sql where clause used to limit dataset */
-    QString subsetString() override;
+    QString subsetString() const override;
 
     /** Mutator for sql where clause used to limit dataset size */
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() override { return true; }
+    virtual bool supportsSubsetString() const override { return true; }
 
     /** Returns a bitmask containing the supported capabilities*/
     int capabilities() const override;
@@ -272,14 +272,14 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /**
      * Query the provider for features specified in request.
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
     static bool exec( QSqlQuery &qry, QString sql );
 
     /**
      * It returns true. Saving style to db is supported by this provider
      */
-    virtual bool isSaveAndLoadStyleToDBSupported() override { return true; }
+    virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
 
   private:
     QString whereClause( QgsFeatureId featureId ) const;
@@ -344,14 +344,14 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QList<int> mPrimaryKeyAttrs;
     QString mPrimaryKeyDefault;
 
-    QString mGeometryColumn;          //! name of the geometry column
-    QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
-    mutable long mFeaturesCounted;    //! Number of features in the layer
-    int mSrid;                        //! srid of column
-    int mEnabledCapabilities;         //! capabilities of layer
+    QString mGeometryColumn;           //! name of the geometry column
+    mutable QgsRectangle mLayerExtent; //! Rectangle that contains the extent (bounding box) of the layer
+    mutable long mFeaturesCounted;     //! Number of features in the layer
+    int mSrid;                         //! srid of column
+    int mEnabledCapabilities;          //! capabilities of layer
 
-    QGis::WkbType mDetectedGeomType;  //! geometry type detected in the database
-    QGis::WkbType mRequestedGeomType; //! geometry type requested in the uri
+    QGis::WkbType mDetectedGeomType;   //! geometry type detected in the database
+    QGis::WkbType mRequestedGeomType;  //! geometry type requested in the uri
 
     bool getGeometryDetails();
 

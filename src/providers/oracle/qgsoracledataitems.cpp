@@ -265,7 +265,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
       QgsDebugMsgLevel( "URI " + uri.uri(), 3 );
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri(), "oracle", &srcLayer->crs(), false, &importError, false, nullptr, progress );
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri(), "oracle", srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
       else if ( err == QgsVectorLayerImport::ErrUserCancelled )

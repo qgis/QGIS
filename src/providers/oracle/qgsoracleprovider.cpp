@@ -515,7 +515,7 @@ const QgsField &QgsOracleProvider::field( int index ) const
   return mAttributeFields[ index ];
 }
 
-QgsFeatureIterator QgsOracleProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsOracleProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   if ( !mValid )
   {
@@ -534,7 +534,7 @@ uint QgsOracleProvider::fieldCount() const
   return mAttributeFields.size();
 }
 
-const QgsFields &QgsOracleProvider::fields() const
+QgsFields QgsOracleProvider::fields() const
 {
   return mAttributeFields;
 }
@@ -1019,7 +1019,7 @@ bool QgsOracleProvider::uniqueData( QString query, QString colName )
 }
 
 // Returns the minimum value of an attribute
-QVariant QgsOracleProvider::minimumValue( int index )
+QVariant QgsOracleProvider::minimumValue( int index ) const
 {
   if ( !mConnection )
     return QVariant( QString::null );
@@ -1060,7 +1060,7 @@ QVariant QgsOracleProvider::minimumValue( int index )
 }
 
 // Returns the list of unique values of an attribute
-void QgsOracleProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
+void QgsOracleProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
 {
   if ( !mConnection )
     return;
@@ -1109,7 +1109,7 @@ void QgsOracleProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, 
 }
 
 // Returns the maximum value of an attribute
-QVariant QgsOracleProvider::maximumValue( int index )
+QVariant QgsOracleProvider::maximumValue( int index ) const
 {
   if ( !mConnection )
     return QVariant();
@@ -1151,12 +1151,12 @@ QVariant QgsOracleProvider::maximumValue( int index )
 }
 
 
-bool QgsOracleProvider::isValid()
+bool QgsOracleProvider::isValid() const
 {
   return mValid;
 }
 
-QVariant QgsOracleProvider::defaultValue( int fieldId )
+QVariant QgsOracleProvider::defaultValue( int fieldId ) const
 {
   return mDefaultValues.value( fieldId, QVariant() );
 }
@@ -2162,7 +2162,7 @@ long QgsOracleProvider::featureCount() const
   return mFeaturesCounted;
 }
 
-QgsRectangle QgsOracleProvider::extent()
+QgsRectangle QgsOracleProvider::extent() const
 {
   if ( mGeometryColumn.isNull() || !mConnection )
     return QgsRectangle();
@@ -2958,7 +2958,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
   return QgsVectorLayerImport::NoError;
 }
 
-QgsCoordinateReferenceSystem QgsOracleProvider::crs()
+QgsCoordinateReferenceSystem QgsOracleProvider::crs() const
 {
   QgsCoordinateReferenceSystem srs;
 
@@ -2998,7 +2998,7 @@ QgsCoordinateReferenceSystem QgsOracleProvider::crs()
   return srs;
 }
 
-QString QgsOracleProvider::subsetString()
+QString QgsOracleProvider::subsetString() const
 {
   return mSqlWhereClause;
 }
