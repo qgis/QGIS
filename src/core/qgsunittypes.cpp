@@ -217,12 +217,6 @@ double QgsUnitTypes::fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitTy
 #define YARDS_TO_METER 0.9144
 #define YARDS_TO_FEET 3.0
 #define MILES_TO_METER 1609.344
-  // Unify degree units
-  // remove for QGIS 3.0, as extra degree types will be removed
-  if ( fromUnit == Qgis::DecimalDegrees || fromUnit == Qgis::DegreesMinutesSeconds || fromUnit == Qgis::DegreesDecimalMinutes )
-    fromUnit = Qgis::Degrees;
-  if ( toUnit == Qgis::DecimalDegrees || toUnit == Qgis::DegreesMinutesSeconds || toUnit == Qgis::DegreesDecimalMinutes )
-    toUnit = Qgis::Degrees;
 
   // Calculate the conversion factor between the specified units
   switch ( fromUnit )

@@ -151,13 +151,7 @@ class Qgis
       Kilometers, /*!< kilometers */
       Yards, /*!< imperial yards */
       Miles, /*!< terrestial miles */
-
       UnknownUnit, /*!< unknown distance unit */
-
-      // for [1.4;1.8] api compatibility
-      DecimalDegrees,         // was 2
-      DegreesMinutesSeconds,  // was 4
-      DegreesDecimalMinutes,  // was 5
     };
 
     //! Provides the canonical name of the type value

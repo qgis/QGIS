@@ -165,13 +165,7 @@ class CORE_EXPORT Qgis
       Kilometers = 8, /*!< kilometers */
       Yards = 9, /*!< imperial yards */
       Miles = 10, /*!< terrestial miles */
-
       UnknownUnit = 3, /*!< unknown distance unit */
-
-      // for [1.4;1.8] api compatibility
-      DecimalDegrees = 2,         // was 2
-      DegreesMinutesSeconds = 2,  // was 4
-      DegreesDecimalMinutes = 2,  // was 5
     };
 
     //! Provides the canonical name of the type value
