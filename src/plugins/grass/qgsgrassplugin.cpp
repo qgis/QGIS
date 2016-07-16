@@ -693,7 +693,7 @@ void QgsGrassPlugin::displayRegion()
   mRegionBand->setColor( regionPen.color() );
   mRegionBand->setWidth( regionPen.width() );
 
-  QgsGrassRegionEdit::drawRegion( mCanvas, mRegionBand, rect, &mCoordinateTransform );
+  QgsGrassRegionEdit::drawRegion( mCanvas, mRegionBand, rect, mCoordinateTransform );
 }
 
 void QgsGrassPlugin::switchRegion( bool on )

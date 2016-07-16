@@ -214,7 +214,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
                                    QProgressDialog *progress )
 {
   QgsCoordinateReferenceSystem outputCRS;
-  QgsCoordinateTransform* ct = nullptr;
+  QgsCoordinateTransform ct;
   bool shallTransform = false;
 
   if ( !layer )
@@ -315,10 +315,10 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
 
   // Create our transform
   if ( destCRS.isValid() )
-    ct = new QgsCoordinateTransform( layer->crs(), destCRS );
+    ct = QgsCoordinateTransform( layer->crs(), destCRS );
 
   // Check for failure
-  if ( !ct )
+  if ( !ct.isValid() )
     shallTransform = false;
 
   int n = 0;
@@ -366,12 +366,11 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
       {
         if ( fet.constGeometry() )
         {
-          fet.geometry()->transform( *ct );
+          fet.geometry()->transform( ct );
         }
       }
       catch ( QgsCsException &e )
       {
-        delete ct;
         delete writer;
 
         QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
@@ -421,11 +420,6 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   }
 
   delete writer;
-
-  if ( shallTransform )
-  {
-    delete ct;
-  }
 
   if ( errorMessage )
   {

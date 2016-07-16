@@ -23,9 +23,11 @@ class QgsDatumTransformStore
 
     /** Will return transform from layer's CRS to current destination CRS.
      *  Will emit datumTransformInfoRequested signal if the layer has no entry.
-     *  Returns an instance from QgsCoordinateTransformCache
+     *  @returns transformation associated with layer, or an invalid QgsCoordinateTransform
+     *  if no transform is associated with the layer
      */
-    const QgsCoordinateTransform* transformation( QgsMapLayer* layer ) const;
+    QgsCoordinateTransform transformation( QgsMapLayer* layer ) const;
+
 
     void readXML( const QDomNode& parentNode );
 

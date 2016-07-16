@@ -97,8 +97,8 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
         rb->setBrushStyle( Qt::NoBrush );
         rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
         QgsAbstractGeometryV2* rbGeom = feature.constGeometry()->geometry()->clone();
-        if ( mCanvas->mapSettings().layerTransform( vlayer ) )
-          rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
+        if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
+          rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
         rb->setGeometry( rbGeom );
         mMoveRubberBands.insert( snapFeatureId, rb );
       }
@@ -140,8 +140,8 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
       rb->setBrushStyle( Qt::NoBrush );
       rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
       QgsAbstractGeometryV2* rbGeom = mSelectedFeature->geometry()->geometry()->clone();
-      if ( mCanvas->mapSettings().layerTransform( vlayer ) )
-        rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
+      if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
+        rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
       rb->setGeometry( rbGeom );
       mMoveRubberBands.insert( mSelectedFeature->featureId(), rb );
       Q_FOREACH ( const QgsVertexEntry* vertexEntry, mSelectedFeature->vertexMap() )
@@ -402,8 +402,8 @@ void QgsMapToolNodeTool::updateSelectFeature( QgsGeometry &geom )
 
     QgsAbstractGeometryV2* rbGeom = geom.geometry()->clone();
     QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
-    if ( mCanvas->mapSettings().layerTransform( vlayer ) )
-      rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
+    if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
+      rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
     mSelectRubberBand->setGeometry( rbGeom );
   }
   else

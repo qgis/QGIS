@@ -28,6 +28,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
+#include "qgscoordinatetransform.h"
 
 #include <QString>
 #include <QStringList>
@@ -367,7 +368,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString mErrorFormat;
 
     //! A QgsCoordinateTransform is used for transformation of WCS layer extents
-    mutable QgsCoordinateTransform *mCoordinateTransform;
+    mutable QgsCoordinateTransform mCoordinateTransform;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
     mutable bool mExtentDirty;

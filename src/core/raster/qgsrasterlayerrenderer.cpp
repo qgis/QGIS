@@ -49,12 +49,12 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   QgsRectangle myProjectedViewExtent;
   QgsRectangle myProjectedLayerExtent;
 
-  if ( rendererContext.coordinateTransform() )
+  if ( rendererContext.coordinateTransform().isValid() )
   {
     QgsDebugMsgLevel( "coordinateTransform set -> project extents.", 4 );
     try
     {
-      myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox( rendererContext.extent() );
+      myProjectedViewExtent = rendererContext.coordinateTransform().transformBoundingBox( rendererContext.extent() );
     }
     catch ( QgsCsException &cs )
     {
@@ -64,7 +64,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
 
     try
     {
-      myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox( layer->extent() );
+      myProjectedLayerExtent = rendererContext.coordinateTransform().transformBoundingBox( layer->extent() );
     }
     catch ( QgsCsException &cs )
     {
@@ -103,12 +103,12 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   mRasterViewPort = new QgsRasterViewPort();
 
   mRasterViewPort->mDrawnExtent = myRasterExtent;
-  if ( rendererContext.coordinateTransform() )
+  if ( rendererContext.coordinateTransform().isValid() )
   {
     mRasterViewPort->mSrcCRS = layer->crs();
-    mRasterViewPort->mDestCRS = rendererContext.coordinateTransform()->destinationCrs();
-    mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform()->sourceDatumTransform();
-    mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform()->destinationDatumTransform();
+    mRasterViewPort->mDestCRS = rendererContext.coordinateTransform().destinationCrs();
+    mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform().sourceDatumTransform();
+    mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform().destinationDatumTransform();
   }
   else
   {

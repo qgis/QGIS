@@ -312,7 +312,7 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderC
   {
     // set correct extent
     renderContext.setExtent( settings.visibleExtent() );
-    renderContext.setCoordinateTransform( nullptr );
+    renderContext.setCoordinateTransform( QgsCoordinateTransform() );
 
     labelingEngine2->run( renderContext );
   }
@@ -345,13 +345,12 @@ void QgsMapRendererJob::drawOldLabeling( const QgsMapSettings& settings, QgsRend
     if ( !ml->isInScaleRange( settings.scale() ) )
       continue;
 
-    const QgsCoordinateTransform* ct = nullptr;
     QgsRectangle r1 = settings.visibleExtent(), r2;
 
+    QgsCoordinateTransform ct = settings.layerTransform( ml );
     if ( settings.hasCrsTransformEnabled() )
     {
-      ct = settings.layerTransform( ml );
-      if ( ct )
+      if ( ct.isValid() )
         reprojectToLayerExtent( ml, ct, r1, r2 );
     }
 
@@ -369,7 +368,7 @@ void QgsMapRendererJob::drawNewLabeling( const QgsMapSettings& settings, QgsRend
   {
     // set correct extent
     renderContext.setExtent( settings.visibleExtent() );
-    renderContext.setCoordinateTransform( nullptr );
+    renderContext.setCoordinateTransform( QgsCoordinateTransform() );
 
     labelingEngine->drawLabeling( renderContext );
     labelingEngine->exit();

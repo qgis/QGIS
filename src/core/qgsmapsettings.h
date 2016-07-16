@@ -267,9 +267,9 @@ class CORE_EXPORT QgsMapSettings
     /**
      * @brief Return coordinate transform from layer's CRS to destination CRS
      * @param layer
-     * @return transform - may be null if the transform is not needed
+     * @return transform - may be invalid if the transform is not needed
      */
-    const QgsCoordinateTransform* layerTransform( QgsMapLayer *layer ) const;
+    QgsCoordinateTransform layerTransform( QgsMapLayer *layer ) const;
 
     //! returns current extent of layer set
     QgsRectangle fullExtent() const;

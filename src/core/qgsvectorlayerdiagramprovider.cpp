@@ -91,8 +91,8 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderC
     return QList<QgsLabelFeature*>();
 
   QgsRectangle layerExtent = context.extent();
-  if ( mSettings.coordinateTransform() )
-    layerExtent = mSettings.coordinateTransform()->transformBoundingBox( context.extent(), QgsCoordinateTransform::ReverseTransform );
+  if ( mSettings.coordinateTransform().isValid() )
+    layerExtent = mSettings.coordinateTransform().transformBoundingBox( context.extent(), QgsCoordinateTransform::ReverseTransform );
 
   QgsFeatureRequest request;
   request.setFilterRect( layerExtent );
@@ -161,16 +161,16 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QS
 
   if ( mapSettings.hasCrsTransformEnabled() )
   {
-    if ( context.coordinateTransform() )
+    if ( context.coordinateTransform().isValid() )
       // this is context for layer rendering - use its CT as it includes correct datum transform
-      s2.setCoordinateTransform( new QgsCoordinateTransform( *context.coordinateTransform() ) );
+      s2.setCoordinateTransform( context.coordinateTransform() );
     else
       // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
-      s2.setCoordinateTransform( new QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() ) );
+      s2.setCoordinateTransform( QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() ) );
   }
   else
   {
-    s2.setCoordinateTransform( nullptr );
+    s2.setCoordinateTransform( QgsCoordinateTransform() );
   }
 
   s2.setRenderer( mDiagRenderer );
@@ -294,11 +294,11 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     }
     else
     {
-      const QgsCoordinateTransform* ct = mSettings.coordinateTransform();
-      if ( ct )
+      QgsCoordinateTransform ct = mSettings.coordinateTransform();
+      if ( ct.isValid() && !ct.isShortCircuited() )
       {
         double z = 0;
-        ct->transformInPlace( ddPosX, ddPosY, z );
+        ct.transformInPlace( ddPosX, ddPosY, z );
       }
       //data defined diagram position is always centered
       ddPosX -= diagramWidth / 2.0;

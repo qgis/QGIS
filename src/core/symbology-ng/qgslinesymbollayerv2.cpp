@@ -1049,7 +1049,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry()
        && context.renderContext().geometry()->hasCurvedSegments() && ( placement == Vertex || placement == CurvePoint ) )
   {
-    const QgsCoordinateTransform* ct = context.renderContext().coordinateTransform();
+    QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
     const QgsMapToPixel& mtp = context.renderContext().mapToPixel();
 
     QgsVertexId vId;
@@ -1064,9 +1064,9 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
         //transform
         x = vPoint.x(), y = vPoint.y();
         z = 0.0;
-        if ( ct )
+        if ( ct.isValid() )
         {
-          ct->transformInPlace( x, y, z );
+          ct.transformInPlace( x, y, z );
         }
         mapPoint.setX( x );
         mapPoint.setY( y );

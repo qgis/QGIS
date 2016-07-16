@@ -370,7 +370,7 @@ double QgsMapSettings::scale() const
 }
 
 
-const QgsCoordinateTransform* QgsMapSettings::layerTransform( QgsMapLayer *layer ) const
+QgsCoordinateTransform QgsMapSettings::layerTransform( QgsMapLayer *layer ) const
 {
   return mDatumTransformStore.transformation( layer );
 }
@@ -395,12 +395,13 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
   {
     try
     {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
+      QgsCoordinateTransform ct = layerTransform( theLayer );
+      if ( ct.isValid() )
       {
-        QgsDebugMsg( QString( "sourceCrs = " + ct->sourceCrs().authid() ) );
-        QgsDebugMsg( QString( "destCRS = " + ct->destinationCrs().authid() ) );
+        QgsDebugMsg( QString( "sourceCrs = " + ct.sourceCrs().authid() ) );
+        QgsDebugMsg( QString( "destCRS = " + ct.destinationCrs().authid() ) );
         QgsDebugMsg( QString( "extent = " + extent.toString() ) );
-        extent = ct->transformBoundingBox( extent );
+        extent = ct.transformBoundingBox( extent );
       }
     }
     catch ( QgsCsException &cse )
@@ -421,12 +422,13 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, Q
   {
     try
     {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
+      QgsCoordinateTransform ct = layerTransform( theLayer );
+      if ( ct.isValid() )
       {
-        QgsDebugMsg( QString( "sourceCrs = " + ct->sourceCrs().authid() ) );
-        QgsDebugMsg( QString( "destCRS = " + ct->destinationCrs().authid() ) );
+        QgsDebugMsg( QString( "sourceCrs = " + ct.sourceCrs().authid() ) );
+        QgsDebugMsg( QString( "destCRS = " + ct.destinationCrs().authid() ) );
         QgsDebugMsg( QString( "extent = " + extent.toString() ) );
-        extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
       }
     }
     catch ( QgsCsException &cse )
@@ -447,8 +449,9 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
   {
     try
     {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
-        point = ct->transform( point, QgsCoordinateTransform::ForwardTransform );
+      QgsCoordinateTransform ct = layerTransform( theLayer );
+      if ( ct.isValid() )
+        point = ct.transform( point, QgsCoordinateTransform::ForwardTransform );
     }
     catch ( QgsCsException &cse )
     {
@@ -469,8 +472,9 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRe
   {
     try
     {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
-        rect = ct->transform( rect, QgsCoordinateTransform::ForwardTransform );
+      QgsCoordinateTransform ct = layerTransform( theLayer );
+      if ( ct.isValid() )
+        rect = ct.transform( rect, QgsCoordinateTransform::ForwardTransform );
     }
     catch ( QgsCsException &cse )
     {
@@ -491,8 +495,9 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
   {
     try
     {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
-        point = ct->transform( point, QgsCoordinateTransform::ReverseTransform );
+      QgsCoordinateTransform ct = layerTransform( theLayer );
+      if ( ct.isValid() )
+        point = ct.transform( point, QgsCoordinateTransform::ReverseTransform );
     }
     catch ( QgsCsException &cse )
     {
@@ -513,8 +518,9 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
   {
     try
     {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
-        rect = ct->transform( rect, QgsCoordinateTransform::ReverseTransform );
+      QgsCoordinateTransform ct = layerTransform( theLayer );
+      if ( ct.isValid() )
+        rect = ct.transform( rect, QgsCoordinateTransform::ReverseTransform );
     }
     catch ( QgsCsException &cse )
     {

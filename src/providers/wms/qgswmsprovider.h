@@ -529,9 +529,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString mErrorFormat;
 
-    //! A QgsCoordinateTransform is used for transformation of WMS layer extents
-    QgsCoordinateTransform *mCoordinateTransform;
-
     //! See if calculateExtents() needs to be called before extent() returns useful data
     mutable bool mExtentDirty;
 

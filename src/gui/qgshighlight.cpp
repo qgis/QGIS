@@ -85,16 +85,16 @@ void QgsHighlight::init()
 {
   if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
-    const QgsCoordinateTransform* ct = mMapCanvas->mapSettings().layerTransform( mLayer );
-    if ( ct )
+    QgsCoordinateTransform ct = mMapCanvas->mapSettings().layerTransform( mLayer );
+    if ( ct.isValid() )
     {
       if ( mGeometry )
       {
-        mGeometry->transform( *ct );
+        mGeometry->transform( ct );
       }
       else if ( mFeature.constGeometry() )
       {
-        mFeature.geometry()->transform( *ct );
+        mFeature.geometry()->transform( ct );
       }
     }
   }

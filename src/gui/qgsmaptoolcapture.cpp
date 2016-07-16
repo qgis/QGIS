@@ -501,10 +501,10 @@ int QgsMapToolCapture::addCurve( QgsCurveV2* c )
 
   //transform back to layer CRS in case map CRS and layer CRS are different
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  const QgsCoordinateTransform* ct =  mCanvas->mapSettings().layerTransform( vlayer );
-  if ( ct )
+  QgsCoordinateTransform ct =  mCanvas->mapSettings().layerTransform( vlayer );
+  if ( ct.isValid() )
   {
-    c->transform( *ct, QgsCoordinateTransform::ReverseTransform );
+    c->transform( ct, QgsCoordinateTransform::ReverseTransform );
   }
   mCaptureCurve.addCurve( c );
 

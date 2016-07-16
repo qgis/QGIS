@@ -704,9 +704,8 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   }
   else
   {
-    QgsCoordinateTransform * coordTransform =  new QgsCoordinateTransform( srsSource, srcMapcanvas );
-    QgsRectangle rectExtent = coordTransform->transform( feat.constGeometry()->boundingBox() );
-    delete coordTransform;
+    QgsCoordinateTransform coordTransform( srsSource, srcMapcanvas );
+    QgsRectangle rectExtent = coordTransform.transform( feat.constGeometry()->boundingBox() );
     mIface->mapCanvas()->setExtent( rectExtent );
   }
   mIface->mapCanvas()->refresh();

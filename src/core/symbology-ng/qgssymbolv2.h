@@ -263,12 +263,12 @@ class CORE_EXPORT QgsSymbolV2
      */
     static inline void _getPoint( QPointF& pt, QgsRenderContext& context, const QgsPointV2* point )
     {
-      if ( context.coordinateTransform() )
+      if ( context.coordinateTransform().isValid() )
       {
         double x = point->x();
         double y = point->y();
         double z = 0.0;
-        context.coordinateTransform()->transformInPlace( x, y, z );
+        context.coordinateTransform().transformInPlace( x, y, z );
         pt = QPointF( x, y );
 
       }

@@ -89,7 +89,6 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
     , mCachedViewExtent( 0 )
     , mCachedViewWidth( 0 )
     , mCachedViewHeight( 0 )
-    , mCoordinateTransform( nullptr )
     , mExtentDirty( true )
     , mTileReqNo( 0 )
     , mTileLayer( nullptr )
@@ -2612,10 +2611,10 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
           QMap<QgsFeatureId, QgsFeature* > features = gml.featuresMap();
           QgsCoordinateReferenceSystem featuresCrs = gml.crs();
           QgsDebugMsg( QString( "%1 features read, crs: %2 %3" ).arg( features.size() ).arg( featuresCrs.authid(), featuresCrs.description() ) );
-          QgsCoordinateTransform *coordinateTransform = nullptr;
+          QgsCoordinateTransform coordinateTransform;
           if ( featuresCrs.isValid() && featuresCrs != crs() )
           {
-            coordinateTransform = new QgsCoordinateTransform( featuresCrs, crs() );
+            coordinateTransform = QgsCoordinateTransform( featuresCrs, crs() );
           }
           QgsFeatureStore featureStore( fields, crs() );
           QMap<QString, QVariant> params;
@@ -2629,14 +2628,13 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
             QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( id ).arg( feature->attributes().size() ) );
 
-            if ( coordinateTransform && feature->constGeometry() )
+            if ( coordinateTransform.isValid() && feature->constGeometry() )
             {
-              feature->geometry()->transform( *coordinateTransform );
+              feature->geometry()->transform( coordinateTransform );
             }
             featureStore.features().append( QgsFeature( *feature ) );
           }
           featureStoreList.append( featureStore );
-          delete coordinateTransform;
         }
         // It is suspicious if we guessed feature types from GML but could not get
         // features from it. Either we geuessed wrong schema or parsing features failed.
@@ -2663,7 +2661,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         QScriptValue result = engine.evaluate( json );
 
         QgsFeatureStoreList featureStoreList;
-        QgsCoordinateTransform *coordinateTransform = nullptr;
+        QgsCoordinateTransform coordinateTransform;
 
         try
         {
@@ -2695,7 +2693,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
             if ( featuresCrs.isValid() && featuresCrs != crs() )
             {
-              coordinateTransform = new QgsCoordinateTransform( featuresCrs, crs() );
+              coordinateTransform = QgsCoordinateTransform( featuresCrs, crs() );
             }
           }
 
@@ -2742,9 +2740,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
                   g->fromWkb( wkb, wkbSize );
                   feature.setGeometry( g );
 
-                  if ( coordinateTransform && feature.constGeometry() )
+                  if ( coordinateTransform.isValid() && feature.constGeometry() )
                   {
-                    feature.geometry()->transform( *coordinateTransform );
+                    feature.geometry()->transform( coordinateTransform );
                   }
                 }
               }
@@ -2776,8 +2774,6 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         {
           QgsDebugMsg( QString( "JSON error: %1\nResult: %2" ).arg( err, QString::fromUtf8( mIdentifyResultBodies.value( jsonPart ) ) ) );
         }
-
-        delete coordinateTransform;
 
         results.insert( results.size(), qVariantFromValue( featureStoreList ) );
       }

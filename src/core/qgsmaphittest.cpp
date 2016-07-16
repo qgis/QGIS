@@ -117,8 +117,8 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
   {
     if ( mSettings.destinationCrs() != vl->crs() )
     {
-      const QgsCoordinateTransform* ct = QgsCoordinateTransformCache::instance()->transform( mSettings.destinationCrs().authid(), vl->crs().authid() );
-      transformedPolygon.transform( *ct );
+      QgsCoordinateTransform ct = QgsCoordinateTransformCache::instance()->transform( mSettings.destinationCrs().authid(), vl->crs().authid() );
+      transformedPolygon.transform( ct );
     }
   }
 

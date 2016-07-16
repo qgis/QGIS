@@ -113,10 +113,10 @@ QgsConstWkbPtr QgsSymbolV2::_getPoint( QPointF& pt, QgsRenderContext& context, Q
   wkbPtr >> pt.rx() >> pt.ry();
   wkbPtr += ( QgsWKBTypes::coordDimensions( type ) - 2 ) * sizeof( double );
 
-  if ( context.coordinateTransform() )
+  if ( context.coordinateTransform().isValid() )
   {
     double z = 0; // dummy variable for coordinate transform
-    context.coordinateTransform()->transformInPlace( pt.rx(), pt.ry(), z );
+    context.coordinateTransform().transformInPlace( pt.rx(), pt.ry(), z );
   }
 
   context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
@@ -130,7 +130,7 @@ QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& co
   unsigned int nPoints;
   wkbPtr >> nPoints;
 
-  const QgsCoordinateTransform* ct = context.coordinateTransform();
+  QgsCoordinateTransform ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
 
   //apply clipping for large lines to achieve a better rendering performance
@@ -160,9 +160,9 @@ QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& co
   }
 
   //transform the QPolygonF to screen coordinates
-  if ( ct )
+  if ( ct.isValid() )
   {
-    ct->transformPolygon( pts );
+    ct.transformPolygon( pts );
   }
 
   QPointF *ptr = pts.data();
@@ -185,7 +185,7 @@ QgsConstWkbPtr QgsSymbolV2::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes
 
   holes.clear();
 
-  const QgsCoordinateTransform* ct = context.coordinateTransform();
+  QgsCoordinateTransform ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
   const QgsRectangle& e = context.extent();
   double cw = e.width() / 10;
@@ -222,9 +222,9 @@ QgsConstWkbPtr QgsSymbolV2::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes
     }
 
     //transform the QPolygonF to screen coordinates
-    if ( ct )
+    if ( ct.isValid() )
     {
-      ct->transformPolygon( poly );
+      ct.transformPolygon( poly );
     }
 
     QPointF *ptr = poly.data();
@@ -981,7 +981,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     }
     else
     {
-      const QgsCoordinateTransform* ct = context.coordinateTransform();
+      QgsCoordinateTransform ct = context.coordinateTransform();
       const QgsMapToPixel& mtp = context.mapToPixel();
 
       QgsPointV2 vertexPoint;
@@ -994,9 +994,9 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         x = vertexPoint.x();
         y = vertexPoint.y();
         z = 0.0;
-        if ( ct )
+        if ( ct.isValid() )
         {
-          ct->transformInPlace( x, y, z );
+          ct.transformInPlace( x, y, z );
         }
         mapPoint.setX( x );
         mapPoint.setY( y );

@@ -222,28 +222,19 @@ class CORE_EXPORT QgsDiagramLayerSettings
     // TODO QGIS 3.0 - make private, rename to mRenderer
     QgsDiagramRendererV2* renderer;
 
-    /** Returns the coordinate transform associated with the layer.
+    /** Returns the coordinate transform associated with the layer, or an
+     * invalid transform if no transformation is required.
      * @see setCoordinateTransform()
      * @note added in QGIS 2.16
      */
-    QgsCoordinateTransform* coordinateTransform() { return ct; }
-
-    /** Returns the coordinate transform associated with the layer.
-     * @see setCoordinateTransform()
-     * @note added in QGIS 2.16
-     */
-    const QgsCoordinateTransform* coordinateTransform() const { return ct; }
+    QgsCoordinateTransform coordinateTransform() const { return mCt; }
 
     /** Sets the coordinate transform associated with the layer.
      * @param transform coordinate transform. Ownership is transferred to the object.
      * @see coordinateTransform()
      * @note added in QGIS 2.16
      */
-    void setCoordinateTransform( QgsCoordinateTransform* transform );
-
-    //! Associated coordinate transform. Owned by this object.
-    // TODO QGIS 3.0 - make private, rename to mCt
-    QgsCoordinateTransform* ct;
+    void setCoordinateTransform( const QgsCoordinateTransform& transform );
 
     //! @deprecated will be removed in QGIS 3.0
     Q_DECL_DEPRECATED const QgsMapToPixel* xform;
@@ -288,6 +279,10 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //TODO QGIS 3.0 - remove need for fields parameter
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
 
+  private:
+
+    //! Associated coordinate transform, or invalid transform for no transformation
+    QgsCoordinateTransform mCt;
 };
 
 /** \ingroup core

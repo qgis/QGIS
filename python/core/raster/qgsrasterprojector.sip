@@ -81,7 +81,7 @@ class QgsRasterProjector : QgsRasterInterface
                          QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
 
     /** Calculate destination extent and size from source extent and size */
-    static bool extentSize( const QgsCoordinateTransform* ct,
+    static bool extentSize( const QgsCoordinateTransform& ct,
                             const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
                             QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
 };

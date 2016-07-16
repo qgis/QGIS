@@ -6177,12 +6177,12 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     bool autoGeometryType = dialog->automaticGeometryType();
     QgsWKBTypes::Type forcedGeometryType = dialog->geometryType();
 
-    QgsCoordinateTransform* ct = nullptr;
+    QgsCoordinateTransform ct;
     destCRS = QgsCRSCache::instance()->crsBySrsId( dialog->crs() );
 
     if ( destCRS.isValid() && destCRS != vlayer->crs() )
     {
-      ct = new QgsCoordinateTransform( vlayer->crs(), destCRS );
+      ct = QgsCoordinateTransform( vlayer->crs(), destCRS );
 
       //ask user about datum transformation
       QSettings settings;
@@ -6195,13 +6195,13 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
           QList< int > sdt = d.selectedDatumTransform();
           if ( !sdt.isEmpty() )
           {
-            ct->setSourceDatumTransform( sdt.at( 0 ) );
+            ct.setSourceDatumTransform( sdt.at( 0 ) );
           }
           if ( sdt.size() > 1 )
           {
-            ct->setDestinationDatumTransform( sdt.at( 1 ) );
+            ct.setDestinationDatumTransform( sdt.at( 1 ) );
           }
-          ct->initialise();
+          ct.initialise();
         }
       }
     }
@@ -6234,8 +6234,6 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
               dialog->selectedAttributes(),
               converterPtr
             );
-
-    delete ct;
 
     QApplication::restoreOverrideCursor();
 

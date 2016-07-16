@@ -140,10 +140,10 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   // If we don't do that, there is no need to have a simple rectangular extent
   // that covers the whole screen
   // (a rectangle in the destCRS cannot be expressed as valid coordinates in the sourceCRS in general)
-  if ( context.coordinateTransform() )
+  if ( context.coordinateTransform().isValid() )
   {
     // disable projection
-    mContext.setCoordinateTransform( nullptr );
+    mContext.setCoordinateTransform( QgsCoordinateTransform() );
     // recompute extent so that polygon clipping is correct
     QRect v( context.painter()->viewport() );
     mContext.setExtent( QgsRectangle( mtp.toMapCoordinates( v.topLeft() ), mtp.toMapCoordinates( v.bottomRight() ) ) );
@@ -224,10 +224,10 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   }
   QScopedPointer<QgsGeometry> geom( new QgsGeometry( *feature.constGeometry() ) );
 
-  const QgsCoordinateTransform* xform = context.coordinateTransform();
-  if ( xform )
+  QgsCoordinateTransform xform = context.coordinateTransform();
+  if ( xform.isValid() )
   {
-    geom->transform( *xform );
+    geom->transform( xform );
   }
 
   if ( mPreprocessingEnabled )
