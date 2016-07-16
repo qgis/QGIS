@@ -398,7 +398,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
       if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
       {
         QgsDebugMsg( QString( "sourceCrs = " + ct->sourceCrs().authid() ) );
-        QgsDebugMsg( QString( "destCRS = " + ct->destCRS().authid() ) );
+        QgsDebugMsg( QString( "destCRS = " + ct->destinationCrs().authid() ) );
         QgsDebugMsg( QString( "extent = " + extent.toString() ) );
         extent = ct->transformBoundingBox( extent );
       }
@@ -424,7 +424,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, Q
       if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
       {
         QgsDebugMsg( QString( "sourceCrs = " + ct->sourceCrs().authid() ) );
-        QgsDebugMsg( QString( "destCRS = " + ct->destCRS().authid() ) );
+        QgsDebugMsg( QString( "destCRS = " + ct->destinationCrs().authid() ) );
         QgsDebugMsg( QString( "extent = " + extent.toString() ) );
         extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
       }

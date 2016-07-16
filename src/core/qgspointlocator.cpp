@@ -641,7 +641,7 @@ QgsPointLocator::~QgsPointLocator()
 
 QgsCoordinateReferenceSystem QgsPointLocator::destCRS() const
 {
-  return mTransform ? mTransform->destCRS() : QgsCoordinateReferenceSystem();
+  return mTransform ? mTransform->destinationCrs() : QgsCoordinateReferenceSystem();
 }
 
 void QgsPointLocator::setExtent( const QgsRectangle* extent )

@@ -82,7 +82,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 
     if ( ml->crs().geographicFlag() )
     {
-      if ( ml->type() == QgsMapLayer::VectorLayer && !ct->destCRS().geographicFlag() )
+      if ( ml->type() == QgsMapLayer::VectorLayer && !ct->destinationCrs().geographicFlag() )
       {
         // if we transform from a projected coordinate system check
         // check if transforming back roughly returns the input
@@ -143,7 +143,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
     }
     else // can't cross 180
     {
-      if ( ct->destCRS().geographicFlag() &&
+      if ( ct->destinationCrs().geographicFlag() &&
            ( extent.xMinimum() <= -180 || extent.xMaximum() >= 180 ||
              extent.yMinimum() <=  -90 || extent.yMaximum() >=  90 ) )
         // Use unlimited rectangle because otherwise we may end up transforming wrong coordinates.

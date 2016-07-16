@@ -930,7 +930,7 @@ void QgsGrassPlugin::setTransform()
     QgsDebugMsg( "srcCrs: " + mCrs.toWkt() );
     QgsDebugMsg( "destCrs " + mCanvas->mapSettings().destinationCrs().toWkt() );
     mCoordinateTransform.setSourceCrs( mCrs );
-    mCoordinateTransform.setDestCRS( mCanvas->mapSettings().destinationCrs() );
+    mCoordinateTransform.setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
   }
 }
 

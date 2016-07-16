@@ -54,7 +54,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , obstacle( rh.obstacle )
     , dist( rh.dist )
     , renderer( rh.renderer ? rh.renderer->clone() : nullptr )
-    , ct( rh.ct ? new QgsCoordinateTransform( *rh.ct ): nullptr )
+    , ct( rh.ct ? new QgsCoordinateTransform( *rh.ct ) : nullptr )
     , xform( rh.xform )
     , fields( rh.fields )
     , xPosColumn( rh.xPosColumn )

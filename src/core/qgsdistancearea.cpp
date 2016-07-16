@@ -91,7 +91,7 @@ void QgsDistanceArea::_copy( const QgsDistanceArea & origDA )
   // Alternatively we could copy the temp vars?
   computeAreaInit();
   delete mCoordTransform;
-  mCoordTransform = new QgsCoordinateTransform( origDA.mCoordTransform->sourceCrs(), origDA.mCoordTransform->destCRS() );
+  mCoordTransform = new QgsCoordinateTransform( origDA.mCoordTransform->sourceCrs(), origDA.mCoordTransform->destinationCrs() );
 }
 
 void QgsDistanceArea::setEllipsoidalMode( bool flag )
@@ -241,7 +241,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   //
 
   // set transformation from project CRS to ellipsoid coordinates
-  mCoordTransform->setDestCRS( destCRS );
+  mCoordTransform->setDestinationCrs( destCRS );
 
   mEllipsoid = ellipsoid;
 
@@ -509,7 +509,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGi
       units = QGis::Meters;
       QgsDebugMsgLevel( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
       QgsDebugMsgLevel( QString( "From proj4 : %1" ).arg( mCoordTransform->sourceCrs().toProj4() ), 4 );
-      QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform->destCRS().toProj4() ), 4 );
+      QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform->destinationCrs().toProj4() ), 4 );
       pp1 = mCoordTransform->transform( p1 );
       pp2 = mCoordTransform->transform( p2 );
       QgsDebugMsgLevel( QString( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ), pp2.toString( 4 ) ), 4 );

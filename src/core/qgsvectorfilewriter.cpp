@@ -2161,7 +2161,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   if ( ct )
   {
     // This means we should transform
-    outputCRS = ct->destCRS();
+    outputCRS = ct->destinationCrs();
     shallTransform = true;
   }
   else
@@ -2319,7 +2319,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   QGis::UnitType mapUnits = layer->crs().mapUnits();
   if ( ct )
   {
-    mapUnits = ct->destCRS().mapUnits();
+    mapUnits = ct->destinationCrs().mapUnits();
   }
 
   writer->startRender( layer );
@@ -2601,7 +2601,7 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
   QGis::UnitType mapUnits = vl->crs().mapUnits();
   if ( ct )
   {
-    mapUnits = ct->destCRS().mapUnits();
+    mapUnits = ct->destinationCrs().mapUnits();
   }
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1700
@@ -2652,7 +2652,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   QGis::UnitType mapUnits = layer->crs().mapUnits();
   if ( ct )
   {
-    mapUnits = ct->destCRS().mapUnits();
+    mapUnits = ct->destinationCrs().mapUnits();
   }
 
   startRender( layer );

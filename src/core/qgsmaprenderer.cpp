@@ -818,7 +818,7 @@ QgsRectangle QgsMapRenderer::outputExtentToLayerExtent( QgsMapLayer* theLayer, Q
 #if QGISDEBUG
   const QgsCoordinateTransform *transform = transformation( theLayer );
   QgsDebugMsg( QString( "layer sourceCrs = " + ( transform ? transform->sourceCrs().authid() : "none" ) ) );
-  QgsDebugMsg( QString( "layer destCRS = " + ( transform ? transform->destCRS().authid() : "none" ) ) );
+  QgsDebugMsg( QString( "layer destCRS = " + ( transform ? transform->destinationCrs().authid() : "none" ) ) );
   QgsDebugMsg( QString( "extent = " + extent.toString() ) );
 #endif
   if ( hasCrsTransformEnabled() )

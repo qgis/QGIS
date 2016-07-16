@@ -113,7 +113,7 @@ void QgsGrassRegionEdit::calcSrcRegion()
   {
     QgsCoordinateTransform coordinateTransform;
     coordinateTransform.setSourceCrs( mCanvas->mapSettings().destinationCrs() );
-    coordinateTransform.setDestCRS( mCrs );
+    coordinateTransform.setDestinationCrs( mCrs );
     mSrcRectangle = coordinateTransform.transformBoundingBox( mSrcRectangle );
   }
 }
@@ -123,7 +123,7 @@ void QgsGrassRegionEdit::setTransform()
   if ( mCrs.isValid() && canvas()->mapSettings().destinationCrs().isValid() )
   {
     mCoordinateTransform.setSourceCrs( mCrs );
-    mCoordinateTransform.setDestCRS( canvas()->mapSettings().destinationCrs() );
+    mCoordinateTransform.setDestinationCrs( canvas()->mapSettings().destinationCrs() );
   }
 }
 

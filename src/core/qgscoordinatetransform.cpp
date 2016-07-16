@@ -80,7 +80,7 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& c
   d->mSourceCRS = crs;
   d->initialise();
 }
-void QgsCoordinateTransform::setDestCRS( const QgsCoordinateReferenceSystem& crs )
+void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
 {
   d.detach();
   d->mDestCRS = crs;
@@ -92,19 +92,10 @@ QgsCoordinateReferenceSystem QgsCoordinateTransform::sourceCrs() const
   return d->mSourceCRS;
 }
 
-QgsCoordinateReferenceSystem QgsCoordinateTransform::destCRS() const
+QgsCoordinateReferenceSystem QgsCoordinateTransform::destinationCrs() const
 {
   return d->mDestCRS;
 }
-
-void QgsCoordinateTransform::setDestCRSID( long crsId )
-{
-  //!todo Add some logic here to determine if the srsid is a system or user one
-  d.detach();
-  d->mDestCRS = QgsCRSCache::instance()->crsBySrsId( crsId );
-  d->initialise();
-}
-
 
 QgsPoint QgsCoordinateTransform::transform( const QgsPoint &thePoint, TransformDirection direction ) const
 {
@@ -574,17 +565,17 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #endif
 }
 
-bool QgsCoordinateTransform::isInitialised() const
+bool QgsCoordinateTransform::isValid() const
 {
   return d->mIsValid;
 }
 
 bool QgsCoordinateTransform::isShortCircuited() const
 {
-  return d->mShortCircuit;
+  return !d->mIsValid || d->mShortCircuit;
 }
 
-bool QgsCoordinateTransform::readXML( const QDomNode & theNode )
+bool QgsCoordinateTransform::readXml( const QDomNode & theNode )
 {
   d.detach();
 
@@ -602,7 +593,7 @@ bool QgsCoordinateTransform::readXML( const QDomNode & theNode )
   return d->initialise();
 }
 
-bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc ) const
+bool QgsCoordinateTransform::writeXml( QDomNode & theNode, QDomDocument & theDoc ) const
 {
   QDomElement myNodeElement = theNode.toElement();
   QDomElement myTransformElement = theDoc.createElement( "coordinatetransform" );

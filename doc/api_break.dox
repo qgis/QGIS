@@ -26,6 +26,15 @@ not slots. The invalidTransformInput() signal has been removed.</li>
 <li>QgsCoordinateTransform::clone() has been removed. Just use direct copies instead.</li>
 <li>sourceCrs() and destCrs() now return a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling these methods will need to be updated.</li>
+<li>isInitialised() has been renamed to isValid()</li>
+<li>theCRS parameter in setSourceCrs has been renamed to 'crs'</li>
+<li>setDestCRS() has been renamed to setDestinationCrs() for consistency</li>
+<li>destCRS() has been renamed to destinationCrs() for consistency</li>
+<li>theSource, theDest, theSourceSrsId, theDestSrsId, theSourceWkt, theDestWkt, theSourceCRSType parameters in the QgsCoordinateTransform constructors have been renamed to source, destination, sourceSrsId, destinationSrsId, sourceWkt, destinationWkt, sourceCrsType respectively</li>
+<li>'p' argument in transform() has been renamed to 'point', 'theRect' to 'rectangle', 'poly' to 'polygon'</li>
+<li>setDestCRSID has been removed, use setDestinationCrs() instead</li>
+<li>'theNode', 'theDoc' parameters in readXML and writeXML have been renamed to 'node' and 'document' respectively</li>
+<li>readXML() and writeXML() have been renamed to readXml() and writeXml() for consistency</li>
 </ul>
 
 \subsection qgis_api_break_3_0_DataProviders Data Providers

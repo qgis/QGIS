@@ -33,69 +33,79 @@ class QgsCoordinateTransform
     QgsCoordinateTransform();
 
     /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
-     * @param theSource CRS, typically of the layer's coordinate system
-     * @param theDest CRS, typically of the map canvas coordinate system
+     * @param source source CRS, typically of the layer's coordinate system
+     * @param destination CRS, typically of the map canvas coordinate system
      */
-    QgsCoordinateTransform( const QgsCoordinateReferenceSystem& theSource,
-                            const QgsCoordinateReferenceSystem& theDest );
+    QgsCoordinateTransform( const QgsCoordinateReferenceSystem& source,
+                            const QgsCoordinateReferenceSystem& destination );
 
     /** Constructs a QgsCoordinateTransform using CRS ID of source and destination CRS */
-    QgsCoordinateTransform( long theSourceSrsId, long theDestSrsId );
+    QgsCoordinateTransform( long sourceSrsId, long destinationSrsId );
 
     /*!
      * Constructs a QgsCoordinateTransform using the Well Known Text representation
      * of the layer and map canvas coordinate systems
-     * @param theSourceWkt Wkt, typically of the layer's coordinate system
-     * @param theDestWkt Wkt, typically of the map canvas coordinate system
+     * @param sourceWkt WKT, typically of the layer's coordinate system
+     * @param destinationWkt WKT, typically of the map canvas coordinate system
      */
-    QgsCoordinateTransform( const QString& theSourceWkt, const QString& theDestWkt );
+    QgsCoordinateTransform( const QString& sourceWkt, const QString& destinationWkt );
 
     /*!
      * Constructs a QgsCoordinateTransform using a Spatial Reference Id
      * of the layer and map canvas coordinate system as Wkt
-     * @param theSourceSrid Spatial Ref Id of the layer's coordinate system
-     * @param theDestWkt Wkt of the map canvas coordinate system
-     * @param theSourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CrsType
+     * @param sourceSrid Spatial Ref Id of the layer's coordinate system
+     * @param destinationWkt Wkt of the map canvas coordinate system
+     * @param sourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CrsType
      */
-    QgsCoordinateTransform( long theSourceSrid,
-                            const QString& theDestWkt,
-                            QgsCoordinateReferenceSystem::CrsType theSourceCRSType = QgsCoordinateReferenceSystem::PostgisCrsId );
-
-    //! destructor
-    ~QgsCoordinateTransform();
+    QgsCoordinateTransform( long sourceSrid,
+                            const QString& destinationWkt,
+                            QgsCoordinateReferenceSystem::CrsType sourceCRSType = QgsCoordinateReferenceSystem::PostgisCrsId );
 
     /*!
-     * Set the source (layer) QgsCoordinateReferenceSystem
-     * @param theCRS QgsCoordinateReferenceSystem representation of the layer's coordinate system
+     * Returns true if the coordinate transform is valid, ie both the source and destination
+     * CRS have been set and are valid.
+     * @note added in QGIS 3.0
      */
-    void setSourceCrs( const QgsCoordinateReferenceSystem& theCRS );
+    bool isValid() const;
 
     /*!
-     * Mutator for dest QgsCoordinateReferenceSystem
-     * @param theCRS of the destination coordinate system
+     * Sets the source coordinate reference system.
+     * @param crs CRS to transform coordinates from
+     * @see sourceCrs()
+     * @see setDestinationCrs()
      */
-    void setDestCRS( const QgsCoordinateReferenceSystem& theCRS );
+    void setSourceCrs( const QgsCoordinateReferenceSystem& crs );
 
     /*!
-     * Get the QgsCoordinateReferenceSystem representation of the layer's coordinate system
-     * @return QgsCoordinateReferenceSystem of the layer's coordinate system
+     * Sets the destination coordinate reference system.
+     * @param crs CRS to transform coordinates to
+     * @see destinationCrs()
+     * @see setSourceCrs()
+     */
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+
+    /** Returns the source coordinate reference system, which the transform will
+     * transform coordinates from.
+     * @see setSourceCrs()
+     * @see destinationCrs()
      */
     QgsCoordinateReferenceSystem sourceCrs() const;
 
-    /*!
-     * Get the QgsCoordinateReferenceSystem representation of the map canvas coordinate system
-     * @return QgsCoordinateReferenceSystem of the map canvas coordinate system
+    /** Returns the destination coordinate reference system, which the transform will
+     * transform coordinates to.
+     * @see setDestinationCrs()
+     * @see sourceCrs()
      */
-    QgsCoordinateReferenceSystem destCRS() const;
+    QgsCoordinateReferenceSystem destinationCrs() const;
 
     /** Transform the point from Source Coordinate System to Destination Coordinate System
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
      * otherwise points are transformed from map canvas CS to layerCS.
-     * @param p Point to transform
+     * @param point Point to transform
      * @param direction TransformDirection (defaults to ForwardTransform)
      * @return QgsPoint in Destination Coordinate System
      */
-    QgsPoint transform( const QgsPoint &p, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+    QgsPoint transform( const QgsPoint &point, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
 
     /** Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
@@ -107,19 +117,19 @@ class QgsCoordinateTransform
      */
     QgsPoint transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
 
-    /** Transform a QgsRectangle to the dest Coordinate system
+    /** Transforms a QgsRectangle to the dest Coordinate system
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
      * otherwise points are transformed from map canvas CS to layerCS.
      * It assumes that rect is a bounding box, and creates a bounding box
      * in the proejcted CS, so that all points in source rectangle is within
      * returned rectangle.
-     * @param theRect rect to transform
+     * @param rectangle rectangle to transform
      * @param direction TransformDirection (defaults to ForwardTransform)
      * @param handle180Crossover set to true if destination crs is geographic and handling of extents crossing the 180 degree
      * longitude line is required
      * @return QgsRectangle in Destination Coordinate System
      */
-    QgsRectangle transformBoundingBox( const QgsRectangle &theRect, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const throw (QgsCsException);
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const throw (QgsCsException);
 
     // Same as for the other transform() functions, but alters the x
     // and y variables in place. The second one works with good old-fashioned
@@ -138,16 +148,16 @@ class QgsCoordinateTransform
     // void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
     //                        TransformDirection direction = ForwardTransform ) const;
 
-    void transformPolygon( QPolygonF& poly, TransformDirection direction = ForwardTransform ) const;
+    void transformPolygon( QPolygonF& polygon, TransformDirection direction = ForwardTransform ) const;
 
     /** Transform a QgsRectangle to the dest Coordinate system
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
      * otherwise points are transformed from map canvas CS to layerCS.
-     * @param theRect rect to transform
+     * @param rectangle rect to transform
      * @param direction TransformDirection (defaults to ForwardTransform)
      * @return QgsRectangle in Destination Coordinate System
      */
-    QgsRectangle transform( const QgsRectangle &theRect, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
 
     /** Transform an array of coordinates to a different Coordinate System
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
@@ -161,27 +171,9 @@ class QgsCoordinateTransform
      */
     void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
 
-    /*!
-     * Flag to indicate whether the coordinate systems have been initialized
-     * @return true if initialized, otherwise false
-     */
-    bool isInitialised() const;
-
-    /** See if the transform short circuits because src and dest are equivalent
-     * @return bool True if it short circuits
+    /** Returns true if the transform short circuits because the source and destination are equivalent.
      */
     bool isShortCircuited() const;
-
-    /** Change the destination coordinate system by passing it a qgis srsid
-    * A QGIS srsid is a unique key value to an entry on the tbl_srs in the
-    * srs.db sqlite database.
-    * @note This slot will usually be called if the
-    * project properties change and a different coordinate system is
-    * selected.
-    * @note This coord transform will be reinitialized when this slot is called
-    * to check if short circuiting is needed or not etc.
-    * @param theCRSID -  A long representing the srsid of the srs to be used */
-    void setDestCRSID( long theCRSID );
 
     /** Returns list of datum transformations for the given src and dest CRS
      * @note not available in python bindings
@@ -201,16 +193,18 @@ class QgsCoordinateTransform
     void initialise();
 
     /** Restores state from the given Dom node.
-     * @param theNode The node from which state will be restored
+     * @param node The node from which state will be restored
      * @return bool True on success, False on failure
+     * @see writeXml()
      */
-    bool readXML( const QDomNode & theNode );
+    bool readXml( const QDomNode& node );
 
     /** Stores state to the given Dom node in the given document
-     * @param theNode The node in which state will be restored
-     * @param theDoc The document in which state will be stored
+     * @param node The node in which state will be restored
+     * @param document The document in which state will be stored
      * @return bool True on success, False on failure
+     * @see readXml()
      */
-    bool writeXML( QDomNode & theNode, QDomDocument & theDoc ) const;
+    bool writeXml( QDomNode & node, QDomDocument & document ) const;
 
 };

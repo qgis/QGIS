@@ -34,7 +34,7 @@ QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer* vectorLayer, int precisi
     mCrs = vectorLayer->crs();
     mTransform.setSourceCrs( mCrs );
   }
-  mTransform.setDestCRS( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
+  mTransform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
 }
 
 void QgsJSONExporter::setVectorLayer( const QgsVectorLayer* vectorLayer )

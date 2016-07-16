@@ -106,7 +106,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   if ( rendererContext.coordinateTransform() )
   {
     mRasterViewPort->mSrcCRS = layer->crs();
-    mRasterViewPort->mDestCRS = rendererContext.coordinateTransform()->destCRS();
+    mRasterViewPort->mDestCRS = rendererContext.coordinateTransform()->destinationCrs();
     mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform()->sourceDatumTransform();
     mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform()->destinationDatumTransform();
   }
