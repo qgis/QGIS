@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgscoordinatetransform.h"
 #include "qgsapplication.h"
+#include "qgsrectangle.h"
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -27,6 +28,8 @@ class TestQgsCoordinateTransform: public QObject
     void initTestCase();
     void cleanupTestCase();
     void transformBoundingBox();
+    void copy();
+    void assignment();
 
   private:
 
@@ -44,6 +47,70 @@ void TestQgsCoordinateTransform::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
+
+void TestQgsCoordinateTransform::copy()
+{
+  QgsCoordinateTransform uninitialized;
+  QgsCoordinateTransform uninitializedCopy( uninitialized );
+  QVERIFY( !uninitializedCopy.isInitialised() );
+
+  QgsCoordinateReferenceSystem source;
+  source.createFromId( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem destination;
+  destination.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+
+  QgsCoordinateTransform original( source, destination );
+  QVERIFY( original.isInitialised() );
+
+  QgsCoordinateTransform copy( original );
+  QVERIFY( copy.isInitialised() );
+  QCOMPARE( copy.sourceCrs().authid(), original.sourceCrs().authid() );
+  QCOMPARE( copy.destCRS().authid(), original.destCRS().authid() );
+
+  // force detachement of copy
+  QgsCoordinateReferenceSystem newDest;
+  newDest.createFromId( 3857, QgsCoordinateReferenceSystem::EpsgCrsId );
+  copy.setDestCRS( newDest );
+  QVERIFY( copy.isInitialised() );
+  QCOMPARE( copy.destCRS().authid(), QString( "EPSG:3857" ) );
+  QCOMPARE( original.destCRS().authid(), QString( "EPSG:4326" ) );
+}
+
+void TestQgsCoordinateTransform::assignment()
+{
+  QgsCoordinateTransform uninitialized;
+  QgsCoordinateTransform uninitializedCopy;
+  uninitializedCopy = uninitialized;
+  QVERIFY( !uninitializedCopy.isInitialised() );
+
+  QgsCoordinateReferenceSystem source;
+  source.createFromId( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem destination;
+  destination.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+
+  QgsCoordinateTransform original( source, destination );
+  QVERIFY( original.isInitialised() );
+
+  QgsCoordinateTransform copy;
+  copy = original;
+  QVERIFY( copy.isInitialised() );
+  QCOMPARE( copy.sourceCrs().authid(), original.sourceCrs().authid() );
+  QCOMPARE( copy.destCRS().authid(), original.destCRS().authid() );
+
+  // force detachement of copy
+  QgsCoordinateReferenceSystem newDest;
+  newDest.createFromId( 3857, QgsCoordinateReferenceSystem::EpsgCrsId );
+  copy.setDestCRS( newDest );
+  QVERIFY( copy.isInitialised() );
+  QCOMPARE( copy.destCRS().authid(), QString( "EPSG:3857" ) );
+  QCOMPARE( original.destCRS().authid(), QString( "EPSG:4326" ) );
+
+  // test assigning back to invalid
+  copy = uninitialized;
+  QVERIFY( !copy.isInitialised() );
+  QVERIFY( original.isInitialised() );
+}
+
 
 void TestQgsCoordinateTransform::transformBoundingBox()
 {

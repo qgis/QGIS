@@ -21,6 +21,8 @@ This page tries to maintain a list with incompatible changes that happened in pr
 \subsection qgis_api_break_3_0_QgsCoordinateTransform QgsCoordinateTransform
 
 <ul>
+<li>QgsCoordinateTransform is no longer a QObject. readXml, writeXml and initialise are all normal public members now,
+not slots. The invalidTransformInput() signal has been removed.</li>
 <li>sourceCrs() and destCrs() now return a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling these methods will need to be updated.</li>
 </ul>

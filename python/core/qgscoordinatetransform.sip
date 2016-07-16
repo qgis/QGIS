@@ -7,19 +7,29 @@
 * layer's coordinate system and the coordinate system of the map canvas, although
 * it can be used in a more general sense to transform coordinates.
 *
-* All references to source and destination coordinate systems refer to
-* layer and map canvas respectively. All operations are from the perspective
-* of the layer. For example, a forward transformation transforms coordinates from the
-* layers coordinate system to the map canvas.
+* When used to transform between a layer and the map canvas, all references to source
+* and destination coordinate systems refer to layer and map canvas respectively. All
+* operations are from the perspective of the layer. For example, a forward transformation
+* transforms coordinates from the layer's coordinate system to the map canvas.
+* \note Since QGIS 3.0 QgsCoordinateReferenceSystem objects are implicitly shared.
 */
-class QgsCoordinateTransform : QObject
+
+class QgsCoordinateTransform
 {
 %TypeHeaderCode
 #include <qgscoordinatetransform.h>
 %End
 
   public:
-    /** Default constructor. Make sure you use initialized() manually if you use this one! */
+
+    //! Enum used to indicate the direction (forward or inverse) of the transform
+    enum TransformDirection
+    {
+      ForwardTransform,     /*!< Transform from source to destination CRS. */
+      ReverseTransform      /*!< Transform from destination to source CRS. */
+    };
+
+    /** Default constructor, creates an invalid QgsCoordinateTransform. */
     QgsCoordinateTransform();
 
     /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
@@ -55,13 +65,6 @@ class QgsCoordinateTransform : QObject
     ~QgsCoordinateTransform();
 
     QgsCoordinateTransform* clone() const /Factory/;
-
-    //! Enum used to indicate the direction (forward or inverse) of the transform
-    enum TransformDirection
-    {
-      ForwardTransform,     /*!< Transform from source to destination CRS. */
-      ReverseTransform      /*!< Transform from destination to source CRS. */
-    };
 
     /*!
      * Set the source (layer) QgsCoordinateReferenceSystem
@@ -196,7 +199,6 @@ class QgsCoordinateTransform : QObject
     int destinationDatumTransform() const;
     void setDestinationDatumTransform( int dt );
 
-  public slots:
     //!initialize is used to actually create the Transformer instance
     void initialise();
 
@@ -204,16 +206,13 @@ class QgsCoordinateTransform : QObject
      * @param theNode The node from which state will be restored
      * @return bool True on success, False on failure
      */
-    bool readXML( QDomNode & theNode );
+    bool readXML( const QDomNode & theNode );
 
     /** Stores state to the given Dom node in the given document
      * @param theNode The node in which state will be restored
      * @param theDoc The document in which state will be stored
      * @return bool True on success, False on failure
      */
-    bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
+    bool writeXML( QDomNode & theNode, QDomDocument & theDoc ) const;
 
-  signals:
-    /** Signal when an invalid pj_transform() has occurred */
-    void  invalidTransformInput() const;
 };

@@ -1,6 +1,6 @@
 /***************************************************************************
-               QgsCoordinateTransform.h  - Coordinate Transforms
-                             -------------------
+               qgscoordinatetransform.h  - Coordinate Transforms
+               ------------------------
     begin                : Dec 2004
     copyright            : (C) 2004 Tim Sutton
     email                : tim at linfiniti.com
@@ -17,24 +17,15 @@
 #ifndef QGSCOORDINATETRANSFORM_H
 #define QGSCOORDINATETRANSFORM_H
 
-//qt includes
-#include <QObject>
-
-//qgis includes
-#include "qgspoint.h"
-#include "qgsrectangle.h"
-#include "qgscsexception.h"
+#include <QExplicitlySharedDataPointer>
 #include "qgscoordinatereferencesystem.h"
-class QDomNode;
-class QDomDocument;
+#include "qgscoordinatetransform_p.h"
+#include "qgscsexception.h"
+
+class QgsCoordinateTransformPrivate;
+class QgsPoint;
+class QgsRectangle;
 class QPolygonF;
-
-//non qt includes
-#include <iostream>
-#include <vector>
-
-typedef void* projPJ;
-class QString;
 
 /** \ingroup core
 * Class for doing transforms between two map coordinate systems.
@@ -44,16 +35,25 @@ class QString;
 * layer's coordinate system and the coordinate system of the map canvas, although
 * it can be used in a more general sense to transform coordinates.
 *
-* All references to source and destination coordinate systems refer to
-* layer and map canvas respectively. All operations are from the perspective
-* of the layer. For example, a forward transformation transforms coordinates from the
-* layers coordinate system to the map canvas.
+* When used to transform between a layer and the map canvas, all references to source
+* and destination coordinate systems refer to layer and map canvas respectively. All
+* operations are from the perspective of the layer. For example, a forward transformation
+* transforms coordinates from the layer's coordinate system to the map canvas.
+* \note Since QGIS 3.0 QgsCoordinateReferenceSystem objects are implicitly shared.
 */
-class CORE_EXPORT QgsCoordinateTransform : public QObject
+class CORE_EXPORT QgsCoordinateTransform
 {
-    Q_OBJECT
+
   public:
-    /** Default constructor. Make sure you use initialized() manually if you use this one! */
+
+    //! Enum used to indicate the direction (forward or inverse) of the transform
+    enum TransformDirection
+    {
+      ForwardTransform,     /*!< Transform from source to destination CRS. */
+      ReverseTransform      /*!< Transform from destination to source CRS. */
+    };
+
+    /** Default constructor, creates an invalid QgsCoordinateTransform. */
     QgsCoordinateTransform();
 
     /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
@@ -85,17 +85,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
                             const QString& theDestWkt,
                             QgsCoordinateReferenceSystem::CrsType theSourceCRSType = QgsCoordinateReferenceSystem::PostgisCrsId );
 
-    //! destructor
-    ~QgsCoordinateTransform();
-
     QgsCoordinateTransform* clone() const;
-
-    //! Enum used to indicate the direction (forward or inverse) of the transform
-    enum TransformDirection
-    {
-      ForwardTransform,     /*!< Transform from source to destination CRS. */
-      ReverseTransform      /*!< Transform from destination to source CRS. */
-    };
 
     /*!
      * Set the source (layer) QgsCoordinateReferenceSystem
@@ -113,13 +103,13 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * Get the QgsCoordinateReferenceSystem representation of the layer's coordinate system
      * @return QgsCoordinateReferenceSystem of the layer's coordinate system
      */
-    QgsCoordinateReferenceSystem sourceCrs() const { return mSourceCRS; }
+    QgsCoordinateReferenceSystem sourceCrs() const;
 
     /*!
      * Get the QgsCoordinateReferenceSystem representation of the map canvas coordinate system
      * @return QgsCoordinateReferenceSystem of the map canvas coordinate system
      */
-    QgsCoordinateReferenceSystem destCRS() const { return mDestCRS; }
+    QgsCoordinateReferenceSystem destCRS() const;
 
     /** Transform the point from Source Coordinate System to Destination Coordinate System
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
@@ -198,12 +188,12 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * Flag to indicate whether the coordinate systems have been initialized
      * @return true if initialized, otherwise false
      */
-    bool isInitialised() const { return mInitialisedFlag; }
+    bool isInitialised() const;
 
     /** See if the transform short circuits because src and dest are equivalent
      * @return bool True if it short circuits
      */
-    bool isShortCircuited() const { return mShortCircuit; }
+    bool isShortCircuited() const;
 
     /** Change the destination coordinate system by passing it a qgis srsid
     * A QGIS srsid is a unique key value to an entry on the tbl_srs in the
@@ -225,12 +215,11 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
         @return epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
     static bool datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
 
-    int sourceDatumTransform() const { return mSourceDatumTransform; }
-    void setSourceDatumTransform( int dt ) { mSourceDatumTransform = dt; }
-    int destinationDatumTransform() const { return mDestinationDatumTransform; }
-    void setDestinationDatumTransform( int dt ) { mDestinationDatumTransform = dt; }
+    int sourceDatumTransform() const;
+    void setSourceDatumTransform( int dt );
+    int destinationDatumTransform() const;
+    void setDestinationDatumTransform( int dt );
 
-  public slots:
     //!initialize is used to actually create the Transformer instance
     void initialise();
 
@@ -238,65 +227,20 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * @param theNode The node from which state will be restored
      * @return bool True on success, False on failure
      */
-    bool readXML( QDomNode & theNode );
+    bool readXML( const QDomNode& theNode );
 
     /** Stores state to the given Dom node in the given document
      * @param theNode The node in which state will be restored
      * @param theDoc The document in which state will be stored
      * @return bool True on success, False on failure
      */
-    bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
-
-  signals:
-    /** Signal when an invalid pj_transform() has occurred */
-    void invalidTransformInput() const;
+    bool writeXML( QDomNode & theNode, QDomDocument & theDoc ) const;
 
   private:
 
-    /*!
-     * Flag to indicate that the source and destination coordinate systems are
-     * equal and not transformation needs to be done
-     */
-    bool mShortCircuit;
-
-    /*!
-     * flag to show whether the transform is properly initialized or not
-     */
-    bool mInitialisedFlag;
-
-    /*!
-     * QgsCoordinateReferenceSystem of the source (layer) coordinate system
-     */
-    QgsCoordinateReferenceSystem mSourceCRS;
-
-    /*!
-     * QgsCoordinateReferenceSystem of the destination (map canvas) coordinate system
-     */
-    QgsCoordinateReferenceSystem mDestCRS;
-
-    /*!
-     * Proj4 data structure of the source projection (layer coordinate system)
-     */
-    projPJ mSourceProjection;
-
-    /*!
-     * Proj4 data structure of the destination projection (map canvas coordinate system)
-     */
-    projPJ mDestinationProjection;
-
-    int mSourceDatumTransform;
-    int mDestinationDatumTransform;
-
-    /*!
-     * Finder for PROJ grid files.
-     */
-    void setFinder();
-
-    /** Removes +nadgrids and +towgs84 from proj4 string*/
-    static QString stripDatumTransform( const QString& proj4 );
     static void searchDatumTransform( const QString& sql, QList< int >& transforms );
-    /** In certain situations, null grid shifts have to be added to src / dst proj string*/
-    void addNullGridShifts( QString& srcProjString, QString& destProjString );
+
+    QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
 };
 
 //! Output stream operator
