@@ -54,7 +54,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , obstacle( rh.obstacle )
     , dist( rh.dist )
     , renderer( rh.renderer ? rh.renderer->clone() : nullptr )
-    , ct( rh.ct ? rh.ct->clone() : nullptr )
+    , ct( rh.ct ? new QgsCoordinateTransform( *rh.ct ): nullptr )
     , xform( rh.xform )
     , fields( rh.fields )
     , xPosColumn( rh.xPosColumn )
@@ -75,7 +75,7 @@ QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLaye
   obstacle = rh.obstacle;
   dist = rh.dist;
   renderer = rh.renderer ? rh.renderer->clone() : nullptr;
-  ct = rh.ct ? rh.ct->clone() : nullptr;
+  ct = rh.ct ? new QgsCoordinateTransform( *rh.ct ) : nullptr;
   xform = rh.xform;
   fields = rh.fields;
   xPosColumn = rh.xPosColumn;

@@ -163,7 +163,7 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QS
   {
     if ( context.coordinateTransform() )
       // this is context for layer rendering - use its CT as it includes correct datum transform
-      s2.setCoordinateTransform( context.coordinateTransform()->clone() );
+      s2.setCoordinateTransform( new QgsCoordinateTransform( *context.coordinateTransform() ) );
     else
       // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
       s2.setCoordinateTransform( new QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() ) );

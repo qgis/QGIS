@@ -85,8 +85,6 @@ class CORE_EXPORT QgsCoordinateTransform
                             const QString& theDestWkt,
                             QgsCoordinateReferenceSystem::CrsType theSourceCRSType = QgsCoordinateReferenceSystem::PostgisCrsId );
 
-    QgsCoordinateTransform* clone() const;
-
     /*!
      * Set the source (layer) QgsCoordinateReferenceSystem
      * @param theCRS QgsCoordinateReferenceSystem representation of the layer's coordinate system

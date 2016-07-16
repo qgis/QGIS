@@ -64,8 +64,6 @@ class QgsCoordinateTransform
     //! destructor
     ~QgsCoordinateTransform();
 
-    QgsCoordinateTransform* clone() const /Factory/;
-
     /*!
      * Set the source (layer) QgsCoordinateReferenceSystem
      * @param theCRS QgsCoordinateReferenceSystem representation of the layer's coordinate system

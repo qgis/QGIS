@@ -233,7 +233,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
   {
     if ( context.coordinateTransform() )
       // this is context for layer rendering - use its CT as it includes correct datum transform
-      lyr.ct = context.coordinateTransform()->clone();
+      lyr.ct = new QgsCoordinateTransform( *context.coordinateTransform() );
     else
       // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
       lyr.ct = new QgsCoordinateTransform( mCrs, mapSettings.destinationCrs() );

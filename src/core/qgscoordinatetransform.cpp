@@ -74,15 +74,6 @@ QgsCoordinateTransform::QgsCoordinateTransform( long sourceSrid,
   d = new QgsCoordinateTransformPrivate( sourceCrs, QgsCRSCache::instance()->crsByWkt( destinationWkt ) );
 }
 
-QgsCoordinateTransform* QgsCoordinateTransform::clone() const
-{
-  QgsCoordinateTransform* tr = new QgsCoordinateTransform( sourceCrs(), destCRS() );
-  tr->setSourceDatumTransform( sourceDatumTransform() );
-  tr->setDestinationDatumTransform( destinationDatumTransform() );
-  tr->initialise();
-  return tr;
-}
-
 void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& crs )
 {
   d.detach();
