@@ -87,7 +87,15 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     bool useCustomDashPattern() const { return mUseCustomDashPattern; }
     void setUseCustomDashPattern( bool b ) { mUseCustomDashPattern = b; }
 
+    /** Sets the units for lengths used in the custom dash pattern.
+     * @param unit length units
+     * @see customDashPatternUnit()
+    */
     void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit ) { mCustomDashPatternUnit = unit; }
+
+    /** Returns the units for lengths used in the custom dash pattern.
+     * @see setCustomDashPatternUnit()
+    */
     QgsUnitTypes::RenderUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
 
     const QgsMapUnitScale& customDashPatternMapUnitScale() const { return mCustomDashPatternMapUnitScale; }
@@ -224,12 +232,17 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void setRotateMarker( bool rotate ) { mRotateMarker = rotate; }
 
     /**
-     * The interval between individual markers.
+     * Returns the interval between individual markers. Units are specified through intervalUnits().
+     * @see setInterval()
+     * @see intervalUnit()
      */
     double interval() const { return mInterval; }
 
     /**
-     * The interval between individual markers.
+     * Sets the interval between individual markers.
+     * @param interval interval size. Units are specified through setIntervalUnits()
+     * @see interval()
+     * @see setIntervalUnits()
      */
     void setInterval( double interval ) { mInterval = interval; }
 
@@ -292,7 +305,17 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
      */
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetAlongLineMapUnitScale = scale; }
 
+    /** Sets the units for the interval between markers.
+     * @param unit interval units
+     * @see intervalUnit()
+     * @see setInterval()
+    */
     void setIntervalUnit( QgsUnitTypes::RenderUnit unit ) { mIntervalUnit = unit; }
+
+    /** Returns the units for the interval between markers.
+     * @see setIntervalUnit()
+     * @see interval()
+    */
     QgsUnitTypes::RenderUnit intervalUnit() const { return mIntervalUnit; }
 
     void setIntervalMapUnitScale( const QgsMapUnitScale& scale ) { mIntervalMapUnitScale = scale; }

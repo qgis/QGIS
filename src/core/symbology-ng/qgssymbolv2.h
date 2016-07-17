@@ -177,7 +177,22 @@ class CORE_EXPORT QgsSymbolV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    /** Returns the units to use for sizes and widths within the symbol. Individual
+     * symbol layer definitions will interpret this in different ways, eg a marker symbol
+     * may use it to specify the units for the marker size, while a line symbol
+     * may use it to specify the units for the line width.
+     * @returns output unit, or UnknownRenderUnit if the symbol contains mixed units
+     * @see setOutputUnit()
+     */
     QgsUnitTypes::RenderUnit outputUnit() const;
+
+    /** Sets the units to use for sizes and widths within the symbol. Individual
+     * symbol definitions will interpret this in different ways, eg a marker symbol
+     * may use it to specify the units for the marker size, while a line symbol
+     * may use it to specify the units for the line width.
+     * @param unit output units
+     * @see outputUnit()
+     */
     void setOutputUnit( QgsUnitTypes::RenderUnit u );
 
     QgsMapUnitScale mapUnitScale() const;
@@ -333,6 +348,17 @@ class CORE_EXPORT QgsSymbolV2
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
+
+    /** Constructor for QgsSymbolV2RenderContext
+     * @param c
+     * @param u
+     * @param alpha
+     * @param selected set to true if symbol should be drawn in a "selected" state
+     * @param renderHints
+     * @param f
+     * @param fields
+     * @param mapUnitScale
+     */
     QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = nullptr, const QgsFields* fields = nullptr, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
@@ -346,7 +372,10 @@ class CORE_EXPORT QgsSymbolV2RenderContext
      */
     void setOriginalValueVariable( const QVariant& value );
 
+    //! Returns the output unit for the context
     QgsUnitTypes::RenderUnit outputUnit() const { return mOutputUnit; }
+
+    //! Sets the output unit for the context
     void setOutputUnit( QgsUnitTypes::RenderUnit u ) { mOutputUnit = u; }
 
     QgsMapUnitScale mapUnitScale() const { return mMapUnitScale; }

@@ -74,7 +74,14 @@ class QgsMapRenderer : QObject
     //! Recalculate the map scale
     void updateScale();
 
+    /** Returns the distance units which are used for map units.
+     * @see setMapUnits()
+     */
     QgsUnitTypes::DistanceUnit mapUnits() const;
+
+    /** Sets the distance units which will be used for map units.
+     * @see mapUnits()
+     */
     void setMapUnits( QgsUnitTypes::DistanceUnit u );
 
     //! sets whether map image will be for overview

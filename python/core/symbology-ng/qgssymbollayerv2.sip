@@ -142,7 +142,22 @@ class QgsSymbolLayerV2
       be affected by data defined symbology rules.*/
     virtual double estimateMaxBleed() const;
 
+    /** Sets the units to use for sizes and widths within the symbol layer. Individual
+     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * layer may use it to specify the units for the marker size, while a line symbol
+     * layer may use it to specify the units for the line width.
+     * @param unit output units
+     * @see outputUnit()
+     */
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units to use for sizes and widths within the symbol layer. Individual
+     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * layer may use it to specify the units for the marker size, while a line symbol
+     * layer may use it to specify the units for the line width.
+     * @returns output unit, or UnknownRenderUnit if the symbol layer contains mixed units
+     * @see setOutputUnit()
+     */
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale& scale );
@@ -608,13 +623,29 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
     double offset() const;
     void setOffset( double offset );
 
+    /** Sets the units for the line's width.
+     * @param unit width units
+     * @see widthUnit()
+    */
     void setWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the line's width.
+     * @see setWidthUnit()
+    */
     QgsUnitTypes::RenderUnit widthUnit() const;
 
     void setWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& widthMapUnitScale() const;
 
+    /** Sets the units for the line's offset.
+     * @param unit offset units
+     * @see offsetUnit()
+    */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the line's offset.
+     * @see setOffsetUnit()
+    */
     QgsUnitTypes::RenderUnit offsetUnit() const;
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale );

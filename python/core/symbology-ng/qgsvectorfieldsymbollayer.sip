@@ -70,7 +70,15 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
+    /** Sets the units for the distance.
+     * @param unit distance units
+     * @see distanceUnit()
+    */
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the distance.
+     * @see setDistanceUnit()
+    */
     QgsUnitTypes::RenderUnit distanceUnit() const;
 
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale );

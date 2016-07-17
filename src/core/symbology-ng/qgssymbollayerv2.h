@@ -124,7 +124,22 @@ class CORE_EXPORT QgsSymbolLayerV2
       be affected by data defined symbology rules.*/
     virtual double estimateMaxBleed() const { return 0; }
 
+    /** Sets the units to use for sizes and widths within the symbol layer. Individual
+     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * layer may use it to specify the units for the marker size, while a line symbol
+     * layer may use it to specify the units for the line width.
+     * @param unit output units
+     * @see outputUnit()
+     */
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit ) { Q_UNUSED( unit ); }
+
+    /** Returns the units to use for sizes and widths within the symbol layer. Individual
+     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * layer may use it to specify the units for the marker size, while a line symbol
+     * layer may use it to specify the units for the line width.
+     * @returns output unit, or UnknownRenderUnit if the symbol layer contains mixed units
+     * @see setOutputUnit()
+     */
     virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::UnknownRenderUnit; }
 
     virtual void setMapUnitScale( const QgsMapUnitScale& scale ) { Q_UNUSED( scale ); }
@@ -699,13 +714,29 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     double offset() const { return mOffset; }
     void setOffset( double offset ) { mOffset = offset; }
 
+    /** Sets the units for the line's width.
+     * @param unit width units
+     * @see widthUnit()
+    */
     void setWidthUnit( QgsUnitTypes::RenderUnit unit ) { mWidthUnit = unit; }
+
+    /** Returns the units for the line's width.
+     * @see setWidthUnit()
+    */
     QgsUnitTypes::RenderUnit widthUnit() const { return mWidthUnit; }
 
     void setWidthMapUnitScale( const QgsMapUnitScale& scale ) { mWidthMapUnitScale = scale; }
     const QgsMapUnitScale& widthMapUnitScale() const { return mWidthMapUnitScale; }
 
+    /** Sets the units for the line's offset.
+     * @param unit offset units
+     * @see offsetUnit()
+    */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+
+    /** Returns the units for the line's offset.
+     * @see setOffsetUnit()
+    */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }

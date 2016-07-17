@@ -22,30 +22,14 @@
 
 QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement& element )
 {
-  if ( "meters" == element.text() )
-  {
-    return QgsUnitTypes::Meters;
-  }
-  else if ( "feet" == element.text() )
-  {
-    return QgsUnitTypes::Feet;
-  }
-  else if ( "nautical miles" == element.text() )
-  {
-    return QgsUnitTypes::NauticalMiles;
-  }
-  else if ( "degrees" == element.text() )
-  {
-    return QgsUnitTypes::Degrees;
-  }
-  else if ( "unknown" == element.text() )
+  if ( "unknown" == element.text() )
   {
     return QgsUnitTypes::UnknownDistanceUnit;
   }
   else
   {
-    QgsDebugMsg( "Unknown map unit type " + element.text() );
-    return QgsUnitTypes::Degrees;
+    QgsUnitTypes::DistanceUnit unit = QgsUnitTypes::decodeDistanceUnit( element.text() );
+    return unit == QgsUnitTypes::UnknownDistanceUnit ? QgsUnitTypes::Degrees : unit;
   }
 }
 
@@ -81,26 +65,10 @@ QgsRectangle QgsXmlUtils::readRectangle( const QDomElement& element )
 
 QDomElement QgsXmlUtils::writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument& doc )
 {
-  QString unitsString;
-  switch ( units )
-  {
-    case QgsUnitTypes::Meters:
-      unitsString = "meters";
-      break;
-    case QgsUnitTypes::Feet:
-      unitsString = "feet";
-      break;
-    case QgsUnitTypes::NauticalMiles:
-      unitsString = "nautical miles";
-      break;
-    case QgsUnitTypes::Degrees:
-      unitsString = "degrees";
-      break;
-    case QgsUnitTypes::UnknownDistanceUnit:
-    default:
-      unitsString = "unknown";
-      break;
-  }
+  QString unitsString = QgsUnitTypes::encodeUnit( units );
+  // maintain compatibility with old projects
+  if ( units == QgsUnitTypes::UnknownDistanceUnit )
+    unitsString = "unknown";
 
   QDomElement unitsNode = doc.createElement( "units" );
   unitsNode.appendChild( doc.createTextNode( unitsString ) );

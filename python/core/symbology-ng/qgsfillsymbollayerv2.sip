@@ -68,13 +68,29 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
     void setOffset( QPointF offset );
     QPointF offset();
 
+    /** Sets the units for the width of the fill's border.
+     * @param unit width units
+     * @see borderWidthUnit()
+    */
     void setBorderWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the width of the fill's border.
+     * @see setBorderWidthUnit()
+    */
     QgsUnitTypes::RenderUnit borderWidthUnit() const;
 
     void setBorderWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& borderWidthMapUnitScale() const;
 
+    /** Sets the units for the fill's offset.
+     * @param unit offset units
+     * @see offsetUnit()
+    */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the fill's offset.
+     * @see setOffsetUnit()
+    */
     QgsUnitTypes::RenderUnit offsetUnit() const;
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
@@ -440,7 +456,15 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
     virtual QgsSymbolV2* subSymbol();
     virtual bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
 
+    /** Sets the units for the symbol's outline width.
+     * @param unit symbol units
+     * @see outlineWidthUnit()
+    */
     void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the symbol's outline width.
+     * @see setOutlineWidthUnit()
+    */
     QgsUnitTypes::RenderUnit outlineWidthUnit() const;
 
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
@@ -676,13 +700,29 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     void setSvgOutlineWidth( double w );
     double svgOutlineWidth() const;
 
+    /** Sets the units for the width of the SVG images in the pattern.
+     * @param unit width units
+     * @see patternWidthUnit()
+    */
     void setPatternWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the width of the SVG images in the pattern.
+     * @see setPatternWidthUnit()
+    */
     QgsUnitTypes::RenderUnit patternWidthUnit() const;
 
     void setPatternWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& patternWidthMapUnitScale() const;
 
+    /** Sets the units for the outline width.
+     * @param unit width units
+     * @see svgOutlineWidthUnit()
+    */
     void setSvgOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the outline width.
+     * @see setSvgOutlineWidthUnit()
+    */
     QgsUnitTypes::RenderUnit svgOutlineWidthUnit() const;
 
     void setSvgOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
@@ -729,7 +769,18 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     //getters and setters
     void setLineAngle( double a );
     double lineAngle() const;
+
+    /** Sets the distance between lines in the fill pattern.
+     * @param d distance. Units are specified by setDistanceUnit()
+     * @see distance()
+     * @see setDistanceUnit()
+    */
     void setDistance( double d );
+
+    /** Returns the distance between lines in the fill pattern. Units are retrieved by distanceUnit().
+     * @see setDistance()
+     * @see distanceUnit()
+    */
     double distance() const;
     void setLineWidth( double w );
     double lineWidth() const;
@@ -738,19 +789,45 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     void setOffset( double offset );
     double offset() const;
 
+    /** Sets the units for the distance between lines in the fill pattern.
+     * @param unit distance units
+     * @see distanceUnit()
+     * @see setDistance()
+    */
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the distance between lines in the fill pattern.
+     * @see setDistanceUnit()
+     * @see distance()
+    */
     QgsUnitTypes::RenderUnit distanceUnit() const;
 
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& distanceMapUnitScale() const;
 
+    /** Sets the units for the line's width.
+     * @param unit width units
+     * @see lineWidthUnit()
+    */
     void setLineWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the line's width.
+     * @see setLineWidthUnit()
+    */
     QgsUnitTypes::RenderUnit lineWidthUnit() const;
 
     void setLineWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& lineWidthMapUnitScale() const;
 
+    /** Sets the units for the line pattern's offset.
+     * @param unit offset units
+     * @see offsetUnit()
+    */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the line pattern's offset.
+     * @see setOffsetUnit()
+    */
     QgsUnitTypes::RenderUnit offsetUnit() const;
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
@@ -811,13 +888,33 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
     virtual QgsSymbolV2* subSymbol();
 
+    /** Sets the units for the horizontal distance between points in the pattern.
+     * @param unit distance units
+     * @see distanceXUnit()
+     * @see setDistanceYUnit()
+    */
     void setDistanceXUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the horizontal distance between points in the pattern.
+     * @see setDistanceXUnit()
+     * @see distanceYUnit()
+    */
     QgsUnitTypes::RenderUnit distanceXUnit() const;
 
     void setDistanceXMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& distanceXMapUnitScale() const;
 
+    /** Sets the units for the vertical distance between points in the pattern.
+     * @param unit distance units
+     * @see distanceYUnit()
+     * @see setDistanceXUnit()
+    */
     void setDistanceYUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the vertical distance between points in the pattern.
+     * @see setDistanceYUnit()
+     * @see distanceXUnit()
+    */
     QgsUnitTypes::RenderUnit distanceYUnit() const;
 
     void setDistanceYMapUnitScale( const QgsMapUnitScale& scale);

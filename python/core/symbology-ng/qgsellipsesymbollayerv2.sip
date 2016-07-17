@@ -57,13 +57,29 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     void setSymbolWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& symbolWidthMapUnitScale() const;
 
+    /** Sets the units for the symbol's height.
+     * @param unit symbol units
+     * @see symbolHeightUnit()
+    */
     void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the symbol's height.
+     * @see setSymbolHeightUnit()
+    */
     QgsUnitTypes::RenderUnit symbolHeightUnit() const;
 
     void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& symbolHeightMapUnitScale() const;
 
+    /** Sets the units for the symbol's outline width.
+     * @param unit symbol units
+     * @see outlineWidthUnit()
+    */
     void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the symbol's outline width.
+     * @see setOutlineWidthUnit()
+    */
     QgsUnitTypes::RenderUnit outlineWidthUnit() const;
 
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);

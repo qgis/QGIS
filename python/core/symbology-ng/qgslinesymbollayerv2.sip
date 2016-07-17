@@ -57,7 +57,15 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
     bool useCustomDashPattern() const;
     void setUseCustomDashPattern( bool b );
 
+    /** Sets the units for lengths used in the custom dash pattern.
+     * @param unit length units
+     * @see customDashPatternUnit()
+    */
     void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for lengths used in the custom dash pattern.
+     * @see setCustomDashPatternUnit()
+    */
     QgsUnitTypes::RenderUnit customDashPatternUnit() const;
 
     const QgsMapUnitScale& customDashPatternMapUnitScale() const;
@@ -170,12 +178,17 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     void setRotateMarker( bool rotate );
 
     /**
-     * The interval between individual markers.
+     * Returns the interval between individual markers. Units are specified through intervalUnits().
+     * @see setInterval()
+     * @see intervalUnit()
      */
     double interval() const;
 
     /**
-     * The interval between individual markers.
+     * Sets the interval between individual markers.
+     * @param interval interval size. Units are specified through setIntervalUnits()
+     * @see interval()
+     * @see setIntervalUnits()
      */
     void setInterval( double interval );
 
@@ -238,7 +251,17 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
      */
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale& scale );
 
+    /** Sets the units for the interval between markers.
+     * @param unit interval units
+     * @see intervalUnit()
+     * @see setInterval()
+    */
     void setIntervalUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the interval between markers.
+     * @see setIntervalUnit()
+     * @see interval()
+    */
     QgsUnitTypes::RenderUnit intervalUnit() const;
 
     void setIntervalMapUnitScale( const QgsMapUnitScale& scale );

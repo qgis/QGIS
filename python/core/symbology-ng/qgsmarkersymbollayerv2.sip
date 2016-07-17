@@ -448,7 +448,15 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     double outlineWidth() const;
     void setOutlineWidth( double w );
 
+    /** Sets the units for the outline width.
+     * @param unit width units
+     * @see outlineWidthUnit()
+    */
     void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the outline width.
+     * @see outlineWidthUnit()
+    */
     QgsUnitTypes::RenderUnit outlineWidthUnit() const;
 
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);

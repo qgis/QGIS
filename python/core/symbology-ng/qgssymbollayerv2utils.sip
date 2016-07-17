@@ -51,7 +51,20 @@ class QgsSymbolLayerV2Utils
     static QString encodeSldRealVector( const QVector<qreal>& v );
     static QVector<qreal> decodeSldRealVector( const QString& s );
 
+    /** Encodes a render unit into an SLD unit of measure string.
+     * @param unit unit to encode
+     * @param scaleFactor if specified, will be set to scale factor for unit of measure
+     * @returns encoded string
+     * @see decodeSldUom()
+     */
     static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
+
+    /** Decodes a SLD unit of measure string to a render unit.
+     * @param str string to decode
+     * @param scaleFactor if specified, will be set to scale factor for unit of measure
+     * @returns matching render unit
+     * @see encodeSldUom()
+     */
     static QgsUnitTypes::RenderUnit decodeSldUom( const QString& str, double *scaleFactor );
 
     static QString encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
@@ -68,10 +81,20 @@ class QgsSymbolLayerV2Utils
      * @param scale map unit scale for preview
      * @returns QPicture containing symbol layer preview
      * @note added in QGIS 2.9
+     * @see symbolLayerPreviewIcon()
      */
     static QPicture symbolLayerPreviewPicture( QgsSymbolLayerV2* layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
+    /** Draws a symbol layer preview to an icon.
+     * @param layer symbol layer to draw
+     * @param u size units
+     * @param size target size of preview icon
+     * @param scale map unit scale for preview
+     * @returns icon containing symbol layer preview
+     * @see symbolLayerPreviewPicture()
+     */
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
     static void drawStippledBackground( QPainter* painter, QRect rect );
