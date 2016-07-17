@@ -55,7 +55,10 @@ class QgsRenderContext
     QPainter* painter();
     const QPainter* constPainter() const;
 
-    const QgsCoordinateTransform* coordinateTransform() const;
+    /** Returns the current coordinate transform for the context, or an invalid
+     * transform is no coordinate transformation is required.
+     */
+    QgsCoordinateTransform coordinateTransform() const;
 
     const QgsRectangle& extent() const;
 
@@ -99,8 +102,9 @@ class QgsRenderContext
 
     //setters
 
-    /** Sets coordinate transformation. QgsRenderContext does not take ownership*/
-    void setCoordinateTransform( const QgsCoordinateTransform* t );
+    /** Sets coordinate transformation.*/
+    void setCoordinateTransform( const QgsCoordinateTransform& t );
+
     void setMapToPixel( const QgsMapToPixel& mtp );
     void setExtent( const QgsRectangle& extent );
 

@@ -23,8 +23,7 @@ class QgsVectorLayer;
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-
-class QgsCoordinateTransform;
+#include "qgscoordinatetransform.h"
 
 class QgsPointLocator_VisitorNearestVertex;
 class QgsPointLocator_VisitorNearestEdge;
@@ -227,7 +226,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     bool mIsEmptyLayer;
 
     /** R-tree containing spatial index */
-    QgsCoordinateTransform* mTransform;
+    QgsCoordinateTransform mTransform;
     QgsVectorLayer* mLayer;
     QgsRectangle* mExtent;
 

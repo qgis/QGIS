@@ -35,7 +35,6 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
     , obstacle( false )
     , dist( 0.0 )
     , renderer( nullptr )
-    , ct( nullptr )
     , xform( nullptr )
     , xPosColumn( -1 )
     , yPosColumn( -1 )
@@ -54,13 +53,13 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , obstacle( rh.obstacle )
     , dist( rh.dist )
     , renderer( rh.renderer ? rh.renderer->clone() : nullptr )
-    , ct( rh.ct ? rh.ct->clone() : nullptr )
     , xform( rh.xform )
     , fields( rh.fields )
     , xPosColumn( rh.xPosColumn )
     , yPosColumn( rh.yPosColumn )
     , showColumn( rh.showColumn )
     , showAll( rh.showAll )
+    , mCt( rh.mCt )
 {
 }
 Q_NOWARN_DEPRECATED_POP
@@ -75,7 +74,7 @@ QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLaye
   obstacle = rh.obstacle;
   dist = rh.dist;
   renderer = rh.renderer ? rh.renderer->clone() : nullptr;
-  ct = rh.ct ? rh.ct->clone() : nullptr;
+  mCt = rh.mCt;
   xform = rh.xform;
   fields = rh.fields;
   xPosColumn = rh.xPosColumn;
@@ -90,7 +89,6 @@ Q_NOWARN_DEPRECATED_PUSH // because of deprecated fields member
 QgsDiagramLayerSettings::~QgsDiagramLayerSettings()
 {
   delete renderer;
-  delete ct;
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -103,10 +101,9 @@ void QgsDiagramLayerSettings::setRenderer( QgsDiagramRendererV2 *diagramRenderer
   renderer = diagramRenderer;
 }
 
-void QgsDiagramLayerSettings::setCoordinateTransform( QgsCoordinateTransform *transform )
+void QgsDiagramLayerSettings::setCoordinateTransform( const QgsCoordinateTransform& transform )
 {
-  delete ct;
-  ct = transform;
+  mCt = transform;
 }
 
 void QgsDiagramLayerSettings::readXML( const QDomElement& elem, const QgsVectorLayer* layer )

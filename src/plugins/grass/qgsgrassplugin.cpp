@@ -693,7 +693,7 @@ void QgsGrassPlugin::displayRegion()
   mRegionBand->setColor( regionPen.color() );
   mRegionBand->setWidth( regionPen.width() );
 
-  QgsGrassRegionEdit::drawRegion( mCanvas, mRegionBand, rect, &mCoordinateTransform );
+  QgsGrassRegionEdit::drawRegion( mCanvas, mRegionBand, rect, mCoordinateTransform );
 }
 
 void QgsGrassPlugin::switchRegion( bool on )
@@ -930,7 +930,7 @@ void QgsGrassPlugin::setTransform()
     QgsDebugMsg( "srcCrs: " + mCrs.toWkt() );
     QgsDebugMsg( "destCrs " + mCanvas->mapSettings().destinationCrs().toWkt() );
     mCoordinateTransform.setSourceCrs( mCrs );
-    mCoordinateTransform.setDestCRS( mCanvas->mapSettings().destinationCrs() );
+    mCoordinateTransform.setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
   }
 }
 

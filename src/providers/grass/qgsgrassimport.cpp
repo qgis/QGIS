@@ -572,7 +572,7 @@ bool QgsGrassVectorImport::import()
   if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
   {
     coordinateTransform.setSourceCrs( providerCrs );
-    coordinateTransform.setDestCRS( mapsetCrs );
+    coordinateTransform.setDestinationCrs( mapsetCrs );
     doTransform = true;
   }
 

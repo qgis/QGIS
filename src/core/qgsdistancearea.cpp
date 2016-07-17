@@ -49,7 +49,6 @@ QgsDistanceArea::QgsDistanceArea()
 {
   // init with default settings
   mEllipsoidalMode = false;
-  mCoordTransform = new QgsCoordinateTransform;
   setSourceCrs( GEOCRS_ID ); // WGS 84
   setEllipsoid( GEO_NONE );
 }
@@ -57,14 +56,12 @@ QgsDistanceArea::QgsDistanceArea()
 
 //! Copy constructor
 QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea & origDA )
-    : mCoordTransform( nullptr )
 {
   _copy( origDA );
 }
 
 QgsDistanceArea::~QgsDistanceArea()
 {
-  delete mCoordTransform;
 }
 
 //! Assignment operator
@@ -90,8 +87,7 @@ void QgsDistanceArea::_copy( const QgsDistanceArea & origDA )
   // Some calculations and trig. Should not be TOO time consuming.
   // Alternatively we could copy the temp vars?
   computeAreaInit();
-  delete mCoordTransform;
-  mCoordTransform = new QgsCoordinateTransform( origDA.mCoordTransform->sourceCrs(), origDA.mCoordTransform->destCRS() );
+  mCoordTransform = origDA.mCoordTransform;
 }
 
 void QgsDistanceArea::setEllipsoidalMode( bool flag )
@@ -107,18 +103,18 @@ bool QgsDistanceArea::willUseEllipsoid() const
 void QgsDistanceArea::setSourceCrs( long srsid )
 {
   QgsCoordinateReferenceSystem srcCRS = QgsCRSCache::instance()->crsBySrsId( srsid );
-  mCoordTransform->setSourceCrs( srcCRS );
+  mCoordTransform.setSourceCrs( srcCRS );
 }
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS )
 {
-  mCoordTransform->setSourceCrs( srcCRS );
+  mCoordTransform.setSourceCrs( srcCRS );
 }
 
 void QgsDistanceArea::setSourceAuthId( const QString& authId )
 {
   QgsCoordinateReferenceSystem srcCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( authId );
-  mCoordTransform->setSourceCrs( srcCRS );
+  mCoordTransform.setSourceCrs( srcCRS );
 }
 
 bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
@@ -241,7 +237,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   //
 
   // set transformation from project CRS to ellipsoid coordinates
-  mCoordTransform->setDestCRS( destCRS );
+  mCoordTransform.setDestinationCrs( destCRS );
 
   mEllipsoid = ellipsoid;
 
@@ -457,7 +453,7 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
   try
   {
     if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
-      p1 = mCoordTransform->transform( points[0] );
+      p1 = mCoordTransform.transform( points[0] );
     else
       p1 = points[0];
 
@@ -465,7 +461,7 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
     {
       if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
       {
-        p2 = mCoordTransform->transform( *i );
+        p2 = mCoordTransform.transform( *i );
         total += computeDistanceBearing( p1, p2 );
       }
       else
@@ -497,7 +493,7 @@ double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 ) co
 double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGis::UnitType& units ) const
 {
   double result;
-  units = mCoordTransform->sourceCrs().mapUnits();
+  units = mCoordTransform.sourceCrs().mapUnits();
 
   try
   {
@@ -508,10 +504,10 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGi
     {
       units = QGis::Meters;
       QgsDebugMsgLevel( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
-      QgsDebugMsgLevel( QString( "From proj4 : %1" ).arg( mCoordTransform->sourceCrs().toProj4() ), 4 );
-      QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform->destCRS().toProj4() ), 4 );
-      pp1 = mCoordTransform->transform( p1 );
-      pp2 = mCoordTransform->transform( p2 );
+      QgsDebugMsgLevel( QString( "From proj4 : %1" ).arg( mCoordTransform.sourceCrs().toProj4() ), 4 );
+      QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform.destinationCrs().toProj4() ), 4 );
+      pp1 = mCoordTransform.transform( p1 );
+      pp2 = mCoordTransform.transform( p2 );
       QgsDebugMsgLevel( QString( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ), pp2.toString( 4 ) ), 4 );
       result = computeDistanceBearing( pp1, pp2 );
     }
@@ -533,13 +529,13 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGi
 
 QGis::UnitType QgsDistanceArea::lengthUnits() const
 {
-  return willUseEllipsoid() ? QGis::Meters : mCoordTransform->sourceCrs().mapUnits();
+  return willUseEllipsoid() ? QGis::Meters : mCoordTransform.sourceCrs().mapUnits();
 }
 
 QgsUnitTypes::AreaUnit QgsDistanceArea::areaUnits() const
 {
   return willUseEllipsoid() ? QgsUnitTypes::SquareMeters :
-         QgsUnitTypes::distanceToAreaUnit( mCoordTransform->sourceCrs().mapUnits() );
+         QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() );
 }
 
 QgsConstWkbPtr QgsDistanceArea::measurePolygon( QgsConstWkbPtr wkbPtr, double* area, double* perimeter, bool hasZptr ) const
@@ -593,7 +589,7 @@ QgsConstWkbPtr QgsDistanceArea::measurePolygon( QgsConstWkbPtr wkbPtr, double* a
 
         if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
         {
-          pnt = mCoordTransform->transform( pnt );
+          pnt = mCoordTransform.transform( pnt );
         }
         points.append( pnt );
       }
@@ -660,7 +656,7 @@ double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points ) const
       QList<QgsPoint> pts;
       for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
       {
-        pts.append( mCoordTransform->transform( *i ) );
+        pts.append( mCoordTransform.transform( *i ) );
       }
       return computePolygonArea( pts );
     }
@@ -685,8 +681,8 @@ double QgsDistanceArea::bearing( const QgsPoint& p1, const QgsPoint& p2 ) const
 
   if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
   {
-    pp1 = mCoordTransform->transform( p1 );
-    pp2 = mCoordTransform->transform( p2 );
+    pp1 = mCoordTransform.transform( p1 );
+    pp2 = mCoordTransform.transform( p2 );
     computeDistanceBearing( pp1, pp2, &bearing );
   }
   else //compute simple planar azimuth
@@ -1354,7 +1350,7 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
   else if ( mEllipsoidalMode && mEllipsoid == GEO_NONE )
   {
     // Measuring in plane within the source CRS. Force its map units
-    measureUnits = mCoordTransform->sourceCrs().mapUnits();
+    measureUnits = mCoordTransform.sourceCrs().mapUnits();
     QgsDebugMsg( "We're measuing on planimetric distance/area on given CRS, measured value is in CRS units" );
   }
 

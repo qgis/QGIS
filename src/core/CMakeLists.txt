@@ -454,7 +454,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
   qgsbrowsermodel.h
   qgscontexthelp.h
-  qgscoordinatetransform.h
   qgscredentials.h
   qgsdataitem.h
   qgsdataprovider.h
@@ -620,6 +619,8 @@ SET(QGIS_CORE_HDRS
   qgsconditionalstyle.h
   qgscoordinatereferencesystem.h  
   qgscoordinatereferencesystem_p.h
+  qgscoordinatetransform.h
+  qgscoordinatetransform_p.h
   qgscoordinateutils.h
   qgscrscache.h
   qgscsexception.h

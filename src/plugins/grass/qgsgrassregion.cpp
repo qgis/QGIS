@@ -101,8 +101,8 @@ void QgsGrassRegionEdit::setRegion( const QgsPoint& ul, const QgsPoint& lr )
   mStartPoint = ul;
   mEndPoint = lr;
   calcSrcRegion();
-  drawRegion( canvas(), mRubberBand, mSrcRectangle, &mCoordinateTransform, true );
-  drawRegion( canvas(), mSrcRubberBand, QgsRectangle( mStartPoint, mEndPoint ), 0, true );
+  drawRegion( canvas(), mRubberBand, mSrcRectangle, mCoordinateTransform, true );
+  drawRegion( canvas(), mSrcRubberBand, QgsRectangle( mStartPoint, mEndPoint ), QgsCoordinateTransform(), true );
 }
 
 void QgsGrassRegionEdit::calcSrcRegion()
@@ -113,7 +113,7 @@ void QgsGrassRegionEdit::calcSrcRegion()
   {
     QgsCoordinateTransform coordinateTransform;
     coordinateTransform.setSourceCrs( mCanvas->mapSettings().destinationCrs() );
-    coordinateTransform.setDestCRS( mCrs );
+    coordinateTransform.setDestinationCrs( mCrs );
     mSrcRectangle = coordinateTransform.transformBoundingBox( mSrcRectangle );
   }
 }
@@ -123,11 +123,11 @@ void QgsGrassRegionEdit::setTransform()
   if ( mCrs.isValid() && canvas()->mapSettings().destinationCrs().isValid() )
   {
     mCoordinateTransform.setSourceCrs( mCrs );
-    mCoordinateTransform.setDestCRS( canvas()->mapSettings().destinationCrs() );
+    mCoordinateTransform.setDestinationCrs( canvas()->mapSettings().destinationCrs() );
   }
 }
 
-void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, QgsCoordinateTransform *coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
+void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, const QgsCoordinateTransform& coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
 {
   /** Coordinate transform */
   if ( canvas->hasCrsTransformEnabled() )
@@ -138,7 +138,7 @@ void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &poi
     {
       for ( int i = 0; i < points.size(); i++ )
       {
-        points[i] = coordinateTransform->transform( points[i], direction );
+        points[i] = coordinateTransform.transform( points[i], direction );
       }
     }
     catch ( QgsCsException &cse )
@@ -149,7 +149,7 @@ void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &poi
   }
 }
 
-void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, QgsCoordinateTransform * coordinateTransform, bool isPolygon )
+void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, const QgsCoordinateTransform& coordinateTransform, bool isPolygon )
 {
   QVector<QgsPoint> points;
   points.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
@@ -161,7 +161,7 @@ void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubber
     points.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
   }
 
-  if ( coordinateTransform )
+  if ( coordinateTransform.isValid() )
   {
     transform( canvas, points, coordinateTransform );
   }

@@ -97,7 +97,7 @@ void CoordinateCapture::initGui()
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   setSourceCrs(); //set up the source CRS
-  mTransform.setDestCRS( mCrs ); // set the CRS in the transform
+  mTransform.setDestinationCrs( mCrs ); // set the CRS in the transform
   mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 5 : 3; // precision depends on CRS units
 
   //create the dock widget
@@ -190,7 +190,7 @@ void CoordinateCapture::setCRS()
   if ( mySelector.exec() )
   {
     mCrs.createFromSrsId( mySelector.selectedCrsId() );
-    mTransform.setDestCRS( mCrs );
+    mTransform.setDestinationCrs( mCrs );
     mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 5 : 3; //precision depends on CRS units
   }
 }

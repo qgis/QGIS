@@ -178,18 +178,18 @@ bool QgsVectorLayerRenderer::render()
 
     const QgsMapToPixel& mtp = mContext.mapToPixel();
     map2pixelTol *= mtp.mapUnitsPerPixel();
-    const QgsCoordinateTransform* ct = mContext.coordinateTransform();
+    QgsCoordinateTransform ct = mContext.coordinateTransform();
 
     // resize the tolerance using the change of size of an 1-BBOX from the source CoordinateSystem to the target CoordinateSystem
-    if ( ct && !( ct->isShortCircuited() ) )
+    if ( ct.isValid() && !ct.isShortCircuited() )
     {
       try
       {
         QgsPoint center = mContext.extent().center();
-        double rectSize = ct->sourceCrs().geographicFlag() ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
+        double rectSize = ct.sourceCrs().geographicFlag() ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
-        QgsRectangle targetRect = ct->transform( sourceRect );
+        QgsRectangle targetRect = ct.transform( sourceRect );
 
         QgsDebugMsgLevel( QString( "Simplify - SourceTransformRect=%1" ).arg( sourceRect.toString( 16 ) ), 4 );
         QgsDebugMsgLevel( QString( "Simplify - TargetTransformRect=%1" ).arg( targetRect.toString( 16 ) ), 4 );

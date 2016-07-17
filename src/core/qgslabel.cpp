@@ -378,11 +378,11 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
   QPainter *painter = renderContext.painter();
 
   // Convert point to projected units
-  if ( renderContext.coordinateTransform() )
+  if ( renderContext.coordinateTransform().isValid() )
   {
     try
     {
-      point = renderContext.coordinateTransform()->transform( point );
+      point = renderContext.coordinateTransform().transform( point );
     }
     catch ( QgsCsException &cse )
     {

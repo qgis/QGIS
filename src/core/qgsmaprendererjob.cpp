@@ -64,7 +64,7 @@ const QgsMapSettings& QgsMapRendererJob::mapSettings() const
 }
 
 
-bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform *ct, QgsRectangle &extent, QgsRectangle &r2 )
+bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform& ct, QgsRectangle &extent, QgsRectangle &r2 )
 {
   bool split = false;
 
@@ -82,13 +82,13 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 
     if ( ml->crs().geographicFlag() )
     {
-      if ( ml->type() == QgsMapLayer::VectorLayer && !ct->destCRS().geographicFlag() )
+      if ( ml->type() == QgsMapLayer::VectorLayer && !ct.destinationCrs().geographicFlag() )
       {
         // if we transform from a projected coordinate system check
         // check if transforming back roughly returns the input
         // extend - otherwise render the world.
-        QgsRectangle extent1 = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
-        QgsRectangle extent2 = ct->transformBoundingBox( extent1, QgsCoordinateTransform::ForwardTransform );
+        QgsRectangle extent1 = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        QgsRectangle extent2 = ct.transformBoundingBox( extent1, QgsCoordinateTransform::ForwardTransform );
 
         QgsDebugMsgLevel( QString( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
                           .arg( extent.toString() ).arg( extent.width() ).arg( extent.height() )
@@ -110,16 +110,16 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
       else
       {
         // Note: ll = lower left point
-        QgsPoint ll = ct->transform( extent.xMinimum(), extent.yMinimum(),
-                                     QgsCoordinateTransform::ReverseTransform );
+        QgsPoint ll = ct.transform( extent.xMinimum(), extent.yMinimum(),
+                                    QgsCoordinateTransform::ReverseTransform );
 
         //   and ur = upper right point
-        QgsPoint ur = ct->transform( extent.xMaximum(), extent.yMaximum(),
-                                     QgsCoordinateTransform::ReverseTransform );
+        QgsPoint ur = ct.transform( extent.xMaximum(), extent.yMaximum(),
+                                    QgsCoordinateTransform::ReverseTransform );
 
         QgsDebugMsg( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ) );
 
-        extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
 
         QgsDebugMsg( QString( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ) );
 
@@ -143,7 +143,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
     }
     else // can't cross 180
     {
-      if ( ct->destCRS().geographicFlag() &&
+      if ( ct.destinationCrs().geographicFlag() &&
            ( extent.xMinimum() <= -180 || extent.xMaximum() >= 180 ||
              extent.yMinimum() <=  -90 || extent.yMaximum() >=  90 ) )
         // Use unlimited rectangle because otherwise we may end up transforming wrong coordinates.
@@ -152,7 +152,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         // but this seems like a safer choice.
         extent = QgsRectangle( -DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX );
       else
-        extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
     }
   }
   catch ( QgsCsException &cse )
@@ -214,12 +214,12 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     }
 
     QgsRectangle r1 = mSettings.visibleExtent(), r2;
-    const QgsCoordinateTransform* ct = nullptr;
+    QgsCoordinateTransform ct;
 
     if ( mSettings.hasCrsTransformEnabled() )
     {
       ct = mSettings.layerTransform( ml );
-      if ( ct )
+      if ( ct.isValid() )
       {
         reprojectToLayerExtent( ml, ct, r1, r2 );
       }

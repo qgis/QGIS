@@ -2361,9 +2361,9 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         {
           if ( layer->crs() != outputCrs )
           {
-            const QgsCoordinateTransform *transform = mapRender->transformation( layer );
-            if ( transform )
-              geom->transform( *transform );
+            QgsCoordinateTransform transform = mapRender->transformation( layer );
+            if ( transform.isValid() )
+              geom->transform( transform );
           }
           QDomElement geometryElement = infoDocument.createElement( "Attribute" );
           geometryElement.setAttribute( "name", "geometry" );
@@ -3189,7 +3189,7 @@ QDomElement QgsWMSServer::createFeatureGML(
   QDomElement typeNameElement = doc.createElement( "qgs:" + typeName /*qgs:%TYPENAME%*/ );
   typeNameElement.setAttribute( "fid", typeName + "." + QString::number( feat->id() ) );
 
-  const QgsCoordinateTransform* transform = nullptr;
+  QgsCoordinateTransform transform;
   if ( layer && layer->crs() != crs )
   {
     transform = mMapRenderer->transformation( layer );
@@ -3208,11 +3208,11 @@ QDomElement QgsWMSServer::createFeatureGML(
   if ( geom && geom->type() != QGis::UnknownGeometry &&  geom->type() != QGis::NoGeometry )
   {
     QgsRectangle box = feat->constGeometry()->boundingBox();
-    if ( transform )
+    if ( transform.isValid() )
     {
       try
       {
-        QgsRectangle transformedBox = transform->transformBoundingBox( box );
+        QgsRectangle transformedBox = transform.transformBoundingBox( box );
         box = transformedBox;
       }
       catch ( QgsCsException &e )
@@ -3244,9 +3244,9 @@ QDomElement QgsWMSServer::createFeatureGML(
   {
     //add geometry column (as gml)
 
-    if ( transform )
+    if ( transform.isValid() )
     {
-      geom->transform( *transform );
+      geom->transform( transform );
     }
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );

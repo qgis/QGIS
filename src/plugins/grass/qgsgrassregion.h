@@ -157,9 +157,9 @@ class QgsGrassRegionEdit : public QgsMapTool
     void setRegion( const QgsPoint&, const QgsPoint& );
     void setSrcRegion( const QgsRectangle &rect );
 
-    static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, QgsCoordinateTransform *coordinateTransform = 0, bool isPolygon = false );
+    static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, const QgsCoordinateTransform& coordinateTransform = QgsCoordinateTransform(), bool isPolygon = false );
     void calcSrcRegion();
-    static void transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, QgsCoordinateTransform *coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
+    static void transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, const QgsCoordinateTransform &coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
 
   signals:
     void captureStarted();

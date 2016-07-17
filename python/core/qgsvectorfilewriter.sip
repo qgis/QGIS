@@ -179,7 +179,8 @@ class QgsVectorFileWriter
      * @param layer layer to write
      * @param fileName file name to write to
      * @param fileEncoding encoding to use
-     * @param ct pointer to coordinate transform to reproject exported geometries with
+     * @param ct coordinate transform to reproject exported geometries with, or invalid transform
+     * for no transformation
      * @param driverName OGR driver to use
      * @param onlySelected write only selected features of layer
      * @param errorMessage pointer to buffer fo error message
@@ -201,7 +202,7 @@ class QgsVectorFileWriter
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
                                             const QString& fileEncoding,
-                                            const QgsCoordinateTransform* ct,
+                                            const QgsCoordinateTransform& ct,
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = false,
                                             QString *errorMessage = 0,

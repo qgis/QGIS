@@ -107,7 +107,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
     : upsidedownLabels( Upright )
     , mCurFeat( nullptr )
     , xform( nullptr )
-    , ct( nullptr )
     , extentGeom( nullptr )
     , mFeaturesToLabel( 0 )
     , mFeatsSendingToPal( 0 )
@@ -354,7 +353,6 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
     : mCurFeat( nullptr )
     , fieldIndex( 0 )
     , xform( nullptr )
-    , ct( nullptr )
     , extentGeom( nullptr )
     , mFeaturesToLabel( 0 )
     , mFeatsSendingToPal( 0 )
@@ -521,7 +519,6 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
 {
   // pal layer is deleted internally in PAL
 
-  delete ct;
   delete expression;
   delete extentGeom;
 
@@ -2753,11 +2750,11 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 
         //project xPos and yPos from layer to map CRS
         double z = 0;
-        if ( ct )
+        if ( ct.isValid() && !ct.isShortCircuited() )
         {
           try
           {
-            ct->transformInPlace( xPos, yPos, z );
+            ct.transformInPlace( xPos, yPos, z );
           }
           catch ( QgsCsException &e )
           {
@@ -4006,7 +4003,7 @@ void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, Qgs
     provider->registerFeature( f, context );
 }
 
-bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry* geometry, QgsRenderContext &context, const QgsCoordinateTransform* ct, QgsGeometry* clipGeometry )
+bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry* geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
 {
   if ( !geometry )
   {
@@ -4014,7 +4011,7 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry* geometry, Q
   }
 
   //requires reprojection
-  if ( ct )
+  if ( ct.isValid() && !ct.isShortCircuited() )
     return true;
 
   //requires rotation
@@ -4066,7 +4063,7 @@ QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
   return graphemes;
 }
 
-QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRenderContext &context, const QgsCoordinateTransform* ct, QgsGeometry* clipGeometry )
+QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
 {
   if ( !geometry )
   {
@@ -4078,11 +4075,11 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRe
   QScopedPointer<QgsGeometry> clonedGeometry( geom );
 
   //reproject the geometry if necessary
-  if ( ct )
+  if ( ct.isValid() && !ct.isShortCircuited() )
   {
     try
     {
-      geom->transform( *ct );
+      geom->transform( ct );
     }
     catch ( QgsCsException &cse )
     {
@@ -4098,11 +4095,11 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRe
   {
     QgsPoint center = context.extent().center();
 
-    if ( ct )
+    if ( ct.isValid() && !ct.isShortCircuited() )
     {
       try
       {
-        center = ct->transform( center );
+        center = ct.transform( center );
       }
       catch ( QgsCsException &cse )
       {

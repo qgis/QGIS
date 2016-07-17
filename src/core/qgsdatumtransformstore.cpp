@@ -50,17 +50,17 @@ bool QgsDatumTransformStore::hasEntryForLayer( QgsMapLayer* layer ) const
   return mEntries.contains( layer->id() );
 }
 
-const QgsCoordinateTransform* QgsDatumTransformStore::transformation( QgsMapLayer* layer ) const
+QgsCoordinateTransform QgsDatumTransformStore::transformation( QgsMapLayer* layer ) const
 {
   if ( !layer )
-    return nullptr;
+    return QgsCoordinateTransform();
 
   QString srcAuthId = layer->crs().authid();
   QString dstAuthId = mDestCRS.authid();
 
   if ( srcAuthId == dstAuthId )
   {
-    return nullptr;
+    return QgsCoordinateTransform();
   }
 
   QHash< QString, Entry >::const_iterator ctIt = mEntries.find( layer->id() );

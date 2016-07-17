@@ -612,13 +612,12 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateRefe
     : mStorage( nullptr )
     , mRTree( nullptr )
     , mIsEmptyLayer( false )
-    , mTransform( nullptr )
     , mLayer( layer )
     , mExtent( nullptr )
 {
   if ( destCRS.isValid() )
   {
-    mTransform = new QgsCoordinateTransform( layer->crs(), destCRS );
+    mTransform = QgsCoordinateTransform( layer->crs(), destCRS );
   }
 
   setExtent( extent );
@@ -635,13 +634,12 @@ QgsPointLocator::~QgsPointLocator()
 {
   destroyIndex();
   delete mStorage;
-  delete mTransform;
   delete mExtent;
 }
 
 QgsCoordinateReferenceSystem QgsPointLocator::destCRS() const
 {
-  return mTransform ? mTransform->destCRS() : QgsCoordinateReferenceSystem();
+  return mTransform.isValid() ? mTransform.destinationCrs() : QgsCoordinateReferenceSystem();
 }
 
 void QgsPointLocator::setExtent( const QgsRectangle* extent )
@@ -682,11 +680,11 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   if ( mExtent )
   {
     QgsRectangle rect = *mExtent;
-    if ( mTransform )
+    if ( mTransform.isValid() )
     {
       try
       {
-        rect = mTransform->transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
+        rect = mTransform.transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
       }
       catch ( const QgsException& e )
       {
@@ -704,11 +702,11 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     if ( !f.constGeometry() )
       continue;
 
-    if ( mTransform )
+    if ( mTransform.isValid() )
     {
       try
       {
-        f.geometry()->transform( *mTransform );
+        f.geometry()->transform( mTransform );
       }
       catch ( const QgsException& e )
       {
@@ -783,11 +781,11 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     if ( !f.constGeometry() )
       return;
 
-    if ( mTransform )
+    if ( mTransform.isValid() )
     {
       try
       {
-        f.geometry()->transform( *mTransform );
+        f.geometry()->transform( mTransform );
       }
       catch ( const QgsException& e )
       {

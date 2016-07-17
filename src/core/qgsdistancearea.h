@@ -87,16 +87,16 @@ class CORE_EXPORT QgsDistanceArea
     //! returns source spatial reference system
     //! @deprecated use sourceCrsId() instead
     // TODO QGIS 3.0 - make sourceCrs() return QgsCoordinateReferenceSystem
-    Q_DECL_DEPRECATED long sourceCrs() const { return mCoordTransform->sourceCrs().srsid(); }
+    Q_DECL_DEPRECATED long sourceCrs() const { return mCoordTransform.sourceCrs().srsid(); }
 
     /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
      * @see setSourceCrs()
      * @note added in QGIS 2.14
      */
-    long sourceCrsId() const { return mCoordTransform->sourceCrs().srsid(); }
+    long sourceCrsId() const { return mCoordTransform.sourceCrs().srsid(); }
 
     //! What sort of coordinate system is being used?
-    bool geographic() const { return mCoordTransform->sourceCrs().geographicFlag(); }
+    bool geographic() const { return mCoordTransform.sourceCrs().geographicFlag(); }
 
     /** Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
      * both the ellipsoid has been set and ellipsoidalEnabled() is true.
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsDistanceArea
     void _copy( const QgsDistanceArea & origDA );
 
     //! used for transforming coordinates from source CRS to ellipsoid's coordinates
-    QgsCoordinateTransform* mCoordTransform;
+    QgsCoordinateTransform mCoordTransform;
 
     //! indicates whether we will transform coordinates
     bool mEllipsoidalMode;

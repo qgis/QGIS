@@ -21,8 +21,44 @@ This page tries to maintain a list with incompatible changes that happened in pr
 \subsection qgis_api_break_3_0_QgsCoordinateTransform QgsCoordinateTransform
 
 <ul>
+<li>QgsCoordinateTransform is no longer a QObject. readXml, writeXml and initialise are all normal public members now,
+not slots. The invalidTransformInput() signal has been removed.</li>
+<li>QgsCoordinateTransform::clone() has been removed. Just use direct copies instead.</li>
 <li>sourceCrs() and destCrs() now return a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling these methods will need to be updated.</li>
+<li>isInitialised() has been renamed to isValid()</li>
+<li>theCRS parameter in setSourceCrs has been renamed to 'crs'</li>
+<li>setDestCRS() has been renamed to setDestinationCrs() for consistency</li>
+<li>destCRS() has been renamed to destinationCrs() for consistency</li>
+<li>theSource, theDest, theSourceSrsId, theDestSrsId, theSourceWkt, theDestWkt, theSourceCRSType parameters in the QgsCoordinateTransform constructors have been renamed to source, destination, sourceSrsId, destinationSrsId, sourceWkt, destinationWkt, sourceCrsType respectively</li>
+<li>'p' argument in transform() has been renamed to 'point', 'theRect' to 'rectangle', 'poly' to 'polygon'</li>
+<li>setDestCRSID has been removed, use setDestinationCrs() instead</li>
+<li>'theNode', 'theDoc' parameters in readXML and writeXML have been renamed to 'node' and 'document' respectively</li>
+<li>readXML() and writeXML() have been renamed to readXml() and writeXml() for consistency</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsCoordinateTransformCache QgsCoordinateTransformCache
+
+<ul>
+<li>transform() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
+be returned in place of a null pointer.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsDiagramLayerSettings QgsDiagramLayerSettings
+
+<ul>
+<li>coordinateTransform() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
+be returned in place of a null pointer.</li>
+<li>setCoordinateTransform() now takes a QgsCoordinateTransform object, not a pointer. Use an invalid QgsCoordinateTransform in
+place of a null pointer.</li>
+<li>The ct member has been removed. Use coordinateTransform() and setCoordinateTransform() instead.
+</ul>
+
+\subsection qgis_api_break_3_0_QgsDatumTransformStore QgsDatumTransformStore
+
+<ul>
+<li>transformation() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
+be returned in place of a null pointer.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_DataProviders Data Providers
@@ -65,6 +101,43 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 <li>theMinScale and theMaxScale parameters in setMinimumScale and setMaximumScale were renamed to scale</li>
 <li>The layerCrsChanged() signal was renamed to crsChanged()</li>
 <li>theError parameter in appendError() and setError() were renamed to 'error'.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsMapRenderer QgsMapRenderer
+
+<ul>
+<li>transformation() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
+be returned instead of a null pointer if no transformation is required.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsMapRendererJob QgsMapRendererJob
+
+<ul>
+<li>reprojectToLayerExtent() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should
+be used instead of a null pointer if no transformation is required.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsMapSettings QgsMapSettings
+
+<ul>
+<li>layerTransform() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
+be returned instead of a null pointer if no transformation is required.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsRenderContext QgsRenderContext
+
+<ul>
+<li>coordinateTransform() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
+be returned instead of a null pointer if no transformation is required.</li>
+<li>setCoordinateTransform() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsPalLayerSettings QgsPalLayerSettings
+
+<ul>
+<li>ct is now a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
+be used instead of a null pointer if no transformation is required.</li>
+<li>prepareGeometry() and geometryRequiresPreparation() now take a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsJSONExporter QgsJSONExporter
@@ -113,6 +186,12 @@ plugins calling this method will need to be updated.</li>
 <li>subsetString() was made const. This has no effect on PyQGIS code, but c++ code implementing derived layer classes will need to update the signature of this method to match.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsRasterProjector QgsRasterProjector
+
+<ul>
+<li>extentSize() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsVectorFileWriter QgsVectorFileWriter
 
 <ul>
@@ -120,6 +199,7 @@ plugins calling this method will need to be updated.</li>
 QgsCoordinateReferenceSystem is now implicitly shared, using references to QgsCoordinateReferenceSystem rather than
 pointers makes for more robust, safer code. Use an invalid (default constructed) QgsCoordinateReferenceSystem
 in code which previously passed a null pointer to QgsVectorFileWriter.</li>
+<li>writeAsVectorFormat() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayerEditBuffer QgsVectorLayerEditBuffer

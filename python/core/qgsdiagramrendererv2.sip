@@ -181,28 +181,19 @@ class QgsDiagramLayerSettings
     // TODO QGIS 3.0 - make private, rename to mRenderer
     QgsDiagramRendererV2* renderer;
 
-    /** Returns the coordinate transform associated with the layer.
+    /** Returns the coordinate transform associated with the layer, or an
+     * invalid transform if no transformation is required.
      * @see setCoordinateTransform()
      * @note added in QGIS 2.16
      */
-    QgsCoordinateTransform* coordinateTransform();
-
-    /** Returns the coordinate transform associated with the layer.
-     * @see setCoordinateTransform()
-     * @note added in QGIS 2.16
-     */
-    //const QgsCoordinateTransform* coordinateTransform() const;
+    QgsCoordinateTransform coordinateTransform() const;
 
     /** Sets the coordinate transform associated with the layer.
      * @param transform coordinate transform. Ownership is transferred to the object.
      * @see coordinateTransform()
      * @note added in QGIS 2.16
      */
-    void setCoordinateTransform( QgsCoordinateTransform* transform /Transfer/ );
-
-    //! Associated coordinate transform. Owned by this object.
-    // TODO QGIS 3.0 - make private, rename to mCt
-    QgsCoordinateTransform* ct;
+    void setCoordinateTransform( const QgsCoordinateTransform& transform );
 
     //! @deprecated will be removed in QGIS 3.0
     const QgsMapToPixel* xform;

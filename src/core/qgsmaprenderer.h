@@ -373,7 +373,10 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
     void clearLayerCoordinateTransforms();
 
-    const QgsCoordinateTransform* transformation( const QgsMapLayer *layer ) const;
+    /** Returns the coordinate transform associated with a renderered layer,
+     * or an invalid transform is no transform is required for the layer.
+     */
+    QgsCoordinateTransform transformation( const QgsMapLayer *layer ) const;
 
     //! bridge to QgsMapSettings
     //! @note added in 2.4

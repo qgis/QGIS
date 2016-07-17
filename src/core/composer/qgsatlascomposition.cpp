@@ -925,7 +925,7 @@ QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSy
   }
 
   QgsGeometry transformed = *mCurrentFeature.constGeometry();
-  transformed.transform( *QgsCoordinateTransformCache::instance()->transform( mCoverageLayer->crs().authid(), crs.authid() ) );
+  transformed.transform( QgsCoordinateTransformCache::instance()->transform( mCoverageLayer->crs().authid(), crs.authid() ) );
   mGeometryCache[crs.srsid()] = transformed;
   return transformed;
 }

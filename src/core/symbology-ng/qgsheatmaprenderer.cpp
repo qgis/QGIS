@@ -143,11 +143,11 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
 
   //transform geometry if required
   QgsGeometry* transformedGeom = nullptr;
-  const QgsCoordinateTransform* xform = context.coordinateTransform();
-  if ( xform )
+  QgsCoordinateTransform xform = context.coordinateTransform();
+  if ( xform.isValid() )
   {
     transformedGeom = new QgsGeometry( *feature.constGeometry() );
-    transformedGeom->transform( *xform );
+    transformedGeom->transform( xform );
   }
 
   //convert point to multipoint

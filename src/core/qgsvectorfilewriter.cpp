@@ -2116,10 +2116,10 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     QgsAttributeList attributes,
     FieldValueConverter* fieldValueConverter )
 {
-  QgsCoordinateTransform* ct = nullptr;
+  QgsCoordinateTransform ct;
   if ( destCRS.isValid() && layer )
   {
-    ct = new QgsCoordinateTransform( layer->crs(), destCRS );
+    ct = QgsCoordinateTransform( layer->crs(), destCRS );
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
@@ -2127,14 +2127,13 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
       newFilename, symbologyExport, symbologyScale, filterExtent,
       overrideGeometryType, forceMulti, includeZ, attributes,
       fieldValueConverter );
-  delete ct;
   return error;
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     const QString& fileName,
     const QString& fileEncoding,
-    const QgsCoordinateTransform* ct,
+    const QgsCoordinateTransform& ct,
     const QString& driverName,
     bool onlySelected,
     QString *errorMessage,
@@ -2158,10 +2157,10 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 
   bool shallTransform = false;
   QgsCoordinateReferenceSystem outputCRS;
-  if ( ct )
+  if ( ct.isValid() )
   {
     // This means we should transform
-    outputCRS = ct->destCRS();
+    outputCRS = ct.destinationCrs();
     shallTransform = true;
   }
   else
@@ -2317,9 +2316,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 
   //unit type
   QGis::UnitType mapUnits = layer->crs().mapUnits();
-  if ( ct )
+  if ( ct.isValid() )
   {
-    mapUnits = ct->destCRS().mapUnits();
+    mapUnits = ct.destinationCrs().mapUnits();
   }
 
   writer->startRender( layer );
@@ -2346,7 +2345,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
       {
         if ( fet.geometry() )
         {
-          fet.geometry()->transform( *ct );
+          fet.geometry()->transform( ct );
         }
       }
       catch ( QgsCsException &e )
@@ -2584,7 +2583,7 @@ QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &c
   return codecName;
 }
 
-void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds )
+void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform& ct, OGRDataSourceH ds )
 {
   if ( !vl || !ds )
   {
@@ -2599,9 +2598,9 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
 
   //unit type
   QGis::UnitType mapUnits = vl->crs().mapUnits();
-  if ( ct )
+  if ( ct.isValid() )
   {
-    mapUnits = ct->destCRS().mapUnits();
+    mapUnits = ct.destinationCrs().mapUnits();
   }
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1700
@@ -2632,7 +2631,7 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit,
-    const QgsCoordinateTransform* ct, QString* errorMessage )
+    const QgsCoordinateTransform& ct, QString* errorMessage )
 {
   if ( !layer )
     return ErrInvalidLayer;
@@ -2650,9 +2649,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
 
   //unit type
   QGis::UnitType mapUnits = layer->crs().mapUnits();
-  if ( ct )
+  if ( ct.isValid() )
   {
-    mapUnits = ct->destCRS().mapUnits();
+    mapUnits = ct.destinationCrs().mapUnits();
   }
 
   startRender( layer );
@@ -2662,13 +2661,13 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   QgsSymbolV2* featureSymbol = nullptr;
   while ( fit.nextFeature( fet ) )
   {
-    if ( ct )
+    if ( ct.isValid() )
     {
       try
       {
         if ( fet.geometry() )
         {
-          fet.geometry()->transform( *ct );
+          fet.geometry()->transform( ct );
         }
       }
       catch ( QgsCsException &e )

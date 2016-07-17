@@ -140,11 +140,11 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   ct.setSourceCrs( vl->crs() );
   if ( builder->coordinateTransformationEnabled() )
   {
-    ct.setDestCRS( builder->destinationCrs() );
+    ct.setDestinationCrs( builder->destinationCrs() );
   }
   else
   {
-    ct.setDestCRS( vl->crs() );
+    ct.setDestinationCrs( vl->crs() );
   }
 
   tiedPoint = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );

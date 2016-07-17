@@ -85,7 +85,6 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mCachedViewExtent( 0 )
     , mCachedViewWidth( 0 )
     , mCachedViewHeight( 0 )
-    , mCoordinateTransform( nullptr )
     , mExtentDirty( true )
     , mGetFeatureInfoUrlBase( "" )
     , mErrors( 0 )
@@ -448,13 +447,6 @@ QgsWcsProvider::~QgsWcsProvider()
 
   // Dispose of any cached image as created by draw()
   clearCache();
-
-  if ( mCoordinateTransform )
-  {
-    delete mCoordinateTransform;
-    mCoordinateTransform = nullptr;
-  }
-
 }
 
 QgsWcsProvider* QgsWcsProvider::clone() const
@@ -488,11 +480,7 @@ void QgsWcsProvider::setCoverageCrs( QString const & crs )
   if ( crs != mCoverageCrs && !crs.isEmpty() )
   {
     // delete old coordinate transform as it is no longer valid
-    if ( mCoordinateTransform )
-    {
-      delete mCoordinateTransform;
-      mCoordinateTransform = nullptr;
-    }
+    mCoordinateTransform = QgsCoordinateTransform();
 
     mExtentDirty = true;
 
@@ -1095,7 +1083,7 @@ bool QgsWcsProvider::calculateExtent() const
   {
     // Set up the coordinate transform from the WCS standard CRS:84 bounding
     // box to the user's selected CRS
-    if ( !mCoordinateTransform )
+    if ( !mCoordinateTransform.isValid() )
     {
       QgsCoordinateReferenceSystem qgisSrsSource = QgsCRSCache::instance()->crsByOgcWmsCrs( "EPSG:4326" );
       QgsCoordinateReferenceSystem qgisSrsDest = QgsCRSCache::instance()->crsByOgcWmsCrs( mCoverageCrs );
@@ -1103,7 +1091,7 @@ bool QgsWcsProvider::calculateExtent() const
       //QgsDebugMsg( "qgisSrsSource: " + qgisSrsSource.toWkt() );
       //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );
 
-      mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
+      mCoordinateTransform = QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
 
     }
 
@@ -1112,7 +1100,7 @@ bool QgsWcsProvider::calculateExtent() const
     // Convert to the user's CRS as required
     try
     {
-      mCoverageExtent = mCoordinateTransform->transformBoundingBox( mCoverageSummary.wgs84BoundingBox, QgsCoordinateTransform::ForwardTransform );
+      mCoverageExtent = mCoordinateTransform.transformBoundingBox( mCoverageSummary.wgs84BoundingBox, QgsCoordinateTransform::ForwardTransform );
     }
     catch ( QgsCsException &cse )
     {
