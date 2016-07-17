@@ -166,17 +166,17 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
      * @see toleranceUnit()
      * @note added in QGIS 2.12
      */
-    void setToleranceUnit( QgsSymbolV2::OutputUnit unit ) { mToleranceUnit = unit; }
+    void setToleranceUnit( QgsUnitTypes::RenderUnit unit ) { mToleranceUnit = unit; }
 
     /** Returns the units for the tolerance distance.
      * @see tolerance()
      * @see setToleranceUnit()
      * @note added in QGIS 2.12
      */
-    QgsSymbolV2::OutputUnit toleranceUnit() const { return mToleranceUnit; }
+    QgsUnitTypes::RenderUnit toleranceUnit() const { return mToleranceUnit; }
 
     /** Sets the map unit scale object for the distance tolerance. This is only used if the
-     * toleranceUnit() is set to QgsSymbolV2::MapUnit.
+     * toleranceUnit() is set to QgsUnitTypes::MapUnit.
      * @param scale scale for distance tolerance
      * @see toleranceMapUnitScale()
      * @see setToleranceUnit()
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void setToleranceMapUnitScale( const QgsMapUnitScale& scale ) { mToleranceMapUnitScale = scale; }
 
     /** Returns the map unit scale object for the distance tolerance. This is only used if the
-     * toleranceUnit() is set to QgsSymbolV2::MapUnit.
+     * toleranceUnit() is set to QgsUnitTypes::MapUnit.
      * @see setToleranceMapUnitScale()
      * @see toleranceUnit()
      */
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     /** Tolerance. Points that are closer together are considered as equal*/
     double mTolerance;
-    QgsSymbolV2::OutputUnit mToleranceUnit;
+    QgsUnitTypes::RenderUnit mToleranceUnit;
     QgsMapUnitScale mToleranceMapUnitScale;
 
     Placement mPlacement;

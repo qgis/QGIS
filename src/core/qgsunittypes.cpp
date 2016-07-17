@@ -1067,47 +1067,42 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::Ang
   return QString( "%L1%2" ).arg( angle, 0, 'f', decimals ).arg( unitLabel );
 }
 
-// enable for QGIS 3.0
-#if 0
-
-QString QgsUnitTypes::encodeUnit( QgsSymbolV2::OutputUnit unit )
+QString QgsUnitTypes::encodeUnit( RenderUnit unit )
 {
   switch ( unit )
   {
-    case QgsSymbolV2::MM:
+    case RenderMillimeters:
       return "MM";
-    case QgsSymbolV2::MapUnit:
+    case RenderMapUnits:
       return "MapUnit";
-    case QgsSymbolV2::Pixel:
+    case RenderPixels:
       return "Pixel";
-    case QgsSymbolV2::Percentage:
+    case RenderPercentage:
       return "Percentage";
     default:
       return "MM";
   }
 }
 
-QgsSymbolV2::OutputUnit QgsUnitTypes::decodeSymbolUnit( const QString& string, bool* ok )
+QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString& string, bool* ok )
 {
   QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
 
-  if ( normalized == encodeUnit( QgsSymbolV2::MM ).toLower() )
-    return QgsSymbolV2::MM;
-  if ( normalized == encodeUnit( QgsSymbolV2::MapUnit ).toLower() )
-    return QgsSymbolV2::MapUnit;
-  if ( normalized == encodeUnit( QgsSymbolV2::Pixel ).toLower() )
-    return QgsSymbolV2::Pixel;
-  if ( normalized == encodeUnit( QgsSymbolV2::Percentage ).toLower() )
-    return QgsSymbolV2::Percentage;
+  if ( normalized == encodeUnit( RenderMillimeters ).toLower() )
+    return RenderMillimeters;
+  if ( normalized == encodeUnit( RenderMapUnits ).toLower() )
+    return RenderMapUnits;
+  if ( normalized == encodeUnit( RenderPixels ).toLower() )
+    return RenderPixels;
+  if ( normalized == encodeUnit( RenderPercentage ).toLower() )
+    return RenderPercentage;
 
   if ( ok )
     *ok = false;
 
   // millimeters are default
-  return QgsSymbolV2::MM;
+  return RenderMillimeters;
 }
-
-#endif

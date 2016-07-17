@@ -18,13 +18,13 @@
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
     : QgsLineSymbolLayerV2()
     , mArrowWidth( 1.0 )
-    , mArrowWidthUnit( QgsSymbolV2::MM )
+    , mArrowWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mArrowStartWidth( 1.0 )
-    , mArrowStartWidthUnit( QgsSymbolV2::MM )
+    , mArrowStartWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mHeadLength( 1.5 )
-    , mHeadLengthUnit( QgsSymbolV2::MM )
+    , mHeadLengthUnit( QgsUnitTypes::RenderMillimeters )
     , mHeadThickness( 1.5 )
-    , mHeadThicknessUnit( QgsSymbolV2::MM )
+    , mHeadThicknessUnit( QgsUnitTypes::RenderMillimeters )
     , mHeadType( HeadSingle )
     , mArrowType( ArrowPlain )
     , mIsCurved( true )
@@ -39,7 +39,7 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
 {
   /* default values */
   setOffset( 0.0 );
-  setOffsetUnit( QgsSymbolV2::MM );
+  setOffsetUnit( QgsUnitTypes::RenderMillimeters );
 
   mSymbol.reset( static_cast<QgsFillSymbolV2*>( QgsFillSymbolV2::createSimple( QgsStringMap() ) ) );
 }

@@ -93,7 +93,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
      * @see setTranslateY
      * @see setTranslateMapUnitScale
      */
-    void setTranslateUnit( const QgsSymbolV2::OutputUnit unit ) { mTranslateUnit = unit; }
+    void setTranslateUnit( const QgsUnitTypes::RenderUnit unit ) { mTranslateUnit = unit; }
 
     /** Returns the units used for the transform translation.
      * @returns units for translation
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
      * @see translateY
      * @see translateMapUnitScale
      */
-    QgsSymbolV2::OutputUnit translateUnit() const { return mTranslateUnit; }
+    QgsUnitTypes::RenderUnit translateUnit() const { return mTranslateUnit; }
 
     /** Sets the map unit scale used for the transform translation.
      * @param scale map unit scale for translation
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
 
     double mTranslateX;
     double mTranslateY;
-    QgsSymbolV2::OutputUnit mTranslateUnit;
+    QgsUnitTypes::RenderUnit mTranslateUnit;
     QgsMapUnitScale mTranslateMapUnitScale;
     double mScaleX;
     double mScaleY;

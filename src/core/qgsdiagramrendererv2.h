@@ -297,7 +297,7 @@ class CORE_EXPORT QgsDiagramSettings
 {
   public:
 
-    //! @deprecated use QgsSymbolV2::OutputUnit instead
+    //! @deprecated use QgsUnitTypes::RenderUnit instead
     enum SizeType
     {
       MM,
@@ -321,8 +321,8 @@ class CORE_EXPORT QgsDiagramSettings
 
     QgsDiagramSettings()
         : enabled( true )
-        , sizeType( QgsSymbolV2::MM )
-        , lineSizeUnit( QgsSymbolV2::MM )
+        , sizeType( QgsUnitTypes::RenderMillimeters )
+        , lineSizeUnit( QgsUnitTypes::RenderMillimeters )
         , penWidth( 0.0 )
         , labelPlacementMethod( QgsDiagramSettings::Height )
         , diagramOrientation( QgsDiagramSettings::Up )
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsDiagramSettings
 
     /** Diagram size unit
      */
-    QgsSymbolV2::OutputUnit sizeType;
+    QgsUnitTypes::RenderUnit sizeType;
 
     /** Diagram size unit scale
      * @note added in 2.16
@@ -355,7 +355,7 @@ class CORE_EXPORT QgsDiagramSettings
     /** Line unit index
      * @note added in 2.16
      */
-    QgsSymbolV2::OutputUnit lineSizeUnit;
+    QgsUnitTypes::RenderUnit lineSizeUnit;
 
     /** Line unit scale
      * @note added in 2.16

@@ -58,21 +58,6 @@ class CORE_EXPORT QgsSymbolV2
   public:
 
     /**
-     * The unit of the output
-     */
-    //TODO QGIS 3.0 - move to QgsUnitTypes and rename to SymbolUnit
-    enum OutputUnit
-    {
-      MM = 0,     //!< The output shall be in millimeters
-      MapUnit,    //!< The output shall be in map unitx
-      Mixed,      //!< Mixed units in symbol layers
-      Pixel,      //!< The output shall be in pixels
-      Percentage,  //!< The ouput shall be a percentage of another measurement (eg canvas size, feature size)
-    };
-
-    typedef QList<OutputUnit> OutputUnitList;
-
-    /**
      * Type of the symbol
      */
     enum SymbolType
@@ -192,8 +177,8 @@ class CORE_EXPORT QgsSymbolV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
-    QgsSymbolV2::OutputUnit outputUnit() const;
-    void setOutputUnit( QgsSymbolV2::OutputUnit u );
+    QgsUnitTypes::RenderUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit u );
 
     QgsMapUnitScale mapUnitScale() const;
     void setMapUnitScale( const QgsMapUnitScale& scale );
@@ -348,7 +333,7 @@ class CORE_EXPORT QgsSymbolV2
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = nullptr, const QgsFields* fields = nullptr, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = nullptr, const QgsFields* fields = nullptr, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
@@ -361,8 +346,8 @@ class CORE_EXPORT QgsSymbolV2RenderContext
      */
     void setOriginalValueVariable( const QVariant& value );
 
-    QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }
-    void setOutputUnit( QgsSymbolV2::OutputUnit u ) { mOutputUnit = u; }
+    QgsUnitTypes::RenderUnit outputUnit() const { return mOutputUnit; }
+    void setOutputUnit( QgsUnitTypes::RenderUnit u ) { mOutputUnit = u; }
 
     QgsMapUnitScale mapUnitScale() const { return mMapUnitScale; }
     void setMapUnitScale( const QgsMapUnitScale& scale ) { mMapUnitScale = scale; }
@@ -430,7 +415,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
   private:
     QgsRenderContext& mRenderContext;
     QgsExpressionContextScope* mExpressionContextScope;
-    QgsSymbolV2::OutputUnit mOutputUnit;
+    QgsUnitTypes::RenderUnit mOutputUnit;
     QgsMapUnitScale mMapUnitScale;
     qreal mAlpha;
     bool mSelected;
@@ -525,7 +510,7 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
      * @see setSizeMapUnitScale()
      * @see setSize()
      */
-    void setSizeUnit( OutputUnit unit );
+    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
 
     /** Returns the size units for the whole symbol (including all symbol layers).
      * @returns size units, or mixed units if symbol layers have different units
@@ -534,7 +519,7 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
      * @see sizeMapUnitScale()
      * @see size()
      */
-    OutputUnit sizeUnit() const;
+    QgsUnitTypes::RenderUnit sizeUnit() const;
 
     /** Sets the size map unit scale for the whole symbol (including all symbol layers).
      * @param scale map unit scale

@@ -447,6 +447,15 @@ has improved sort capabilities including the ability to set custom sort values f
 and for forcing certain items to always sort on top.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsSymbolV2 QgsSymbolV2
+
+<ul>
+<li>The OutputUnit enum, including QgsSymbolV2::MM, QgsSymbolV2::MapUnit, QgsSymbolV2::Mixed, QgsSymbolV2::Pixel and QgsSymbolV2::Percentage has been moved to QgsUnitTypes
+and renamed to RenderUnit. QgsSymbolV2::OutputUnitList was renamed to QgsUnitTypes::RenderUnitList. All methods which previously accepted QgsSymbolV2::OutputUnit
+parameters or QgsSymbolV2::OutputUnitList parameters now take QgsUnitTypes::RenderUnit or QgsUnitTypes::RenderUnitList parameters respectively.</li>
+<li>subsetString() was made const. This has no effect on PyQGIS code, but c++ code implementing derived layer classes will need to update the signature of this method to match.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsTreeWidgetItem QgsTreeWidgetItem
 
 <ul>

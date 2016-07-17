@@ -223,7 +223,7 @@ void QgsMapToolOffsetPointSymbol::updateOffsetPreviewItem( const QgsPoint& start
   mOffsetItem->updateSize();
 }
 
-QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPoint& startPoint, const QgsPoint& endPoint, QgsSymbolV2::OutputUnit unit ) const
+QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPoint& startPoint, const QgsPoint& endPoint, QgsUnitTypes::RenderUnit unit ) const
 {
   double dx = endPoint.x() - startPoint.x();
   double dy = -( endPoint.y() - startPoint.y() );
@@ -232,20 +232,20 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPoint& startPoint
 
   switch ( unit )
   {
-    case QgsSymbolV2::MM:
+    case QgsUnitTypes::RenderMillimeters:
       factor = 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel() ;
       break;
 
-    case QgsSymbolV2::Pixel:
+    case QgsUnitTypes::RenderPixels:
       factor = 1.0 / mCanvas->mapSettings().mapUnitsPerPixel();
       break;
 
-    case QgsSymbolV2::MapUnit:
+    case QgsUnitTypes::RenderMapUnits:
       factor = 1.0;
       break;
 
-    case QgsSymbolV2::Mixed:
-    case QgsSymbolV2::Percentage:
+    case QgsUnitTypes::UnknownRenderUnit:
+    case QgsUnitTypes::RenderPercentage:
       //no sensible value
       factor = 1.0;
       break;

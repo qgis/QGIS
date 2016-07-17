@@ -85,6 +85,19 @@ class CORE_EXPORT QgsUnitTypes
       UnknownAngleUnit, /*!< unknown angle unit */
     };
 
+    //! Rendering size units
+    enum RenderUnit
+    {
+      RenderMillimeters = 0, //!< millimeters
+      RenderMapUnits, //!< map units
+      RenderPixels, //!< pixels
+      RenderPercentage, //!< percentage of another measurement (eg canvas size, feature size)
+      UnknownRenderUnit, //!< mixed or unknown units
+    };
+
+    //! List of render units
+    typedef QList<RenderUnit> RenderUnitList;
+
     // DISTANCE UNITS
 
     /** Returns the type for a distance unit.
@@ -210,25 +223,22 @@ class CORE_EXPORT QgsUnitTypes
      */
     static QString formatAngle( double angle, int decimals, AngleUnit unit );
 
-    //TODO QGIS 3.0 - enable and move symbol units here! Otherwise creates circular dependencies...
-#if 0
-    // SYMBOL UNITS
+    // RENDER UNITS
 
-    /** Encodes a symbol unit to a string.
+    /** Encodes a render unit to a string.
      * @param unit unit to encode
      * @returns encoded string
-     * @see decodeSymbolUnit()
+     * @see decodeRenderUnit()
      */
-    static QString encodeUnit( QgsSymbolV2::OutputUnit unit );
+    static QString encodeUnit( RenderUnit unit );
 
-    /** Decodes a symbol unit from a string.
+    /** Decodes a render unit from a string.
      * @param string string to decode
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @returns decoded units
      * @see encodeUnit()
      */
-    static QgsSymbolV2::OutputUnit decodeSymbolUnit( const QString& string, bool *ok = 0 );
-#endif
+    static RenderUnit decodeRenderUnit( const QString& string, bool *ok = 0 );
 
 };
 

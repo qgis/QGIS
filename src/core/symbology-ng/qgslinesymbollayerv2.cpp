@@ -36,7 +36,7 @@ QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( const QColor& color, dou
     , mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE )
     , mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE )
     , mUseCustomDashPattern( false )
-    , mCustomDashPatternUnit( QgsSymbolV2::MM )
+    , mCustomDashPatternUnit( QgsUnitTypes::RenderMillimeters )
     , mDrawInsidePolygon( false )
 {
   mColor = color;
@@ -44,7 +44,7 @@ QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( const QColor& color, dou
   mCustomDashVector << 5 << 2;
 }
 
-void QgsSimpleLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsSimpleLineSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsLineSymbolLayerV2::setOutputUnit( unit );
   mWidthUnit = unit;
@@ -52,12 +52,12 @@ void QgsSimpleLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
   mCustomDashPatternUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit  QgsSimpleLineSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit  QgsSimpleLineSymbolLayerV2::outputUnit() const
 {
-  QgsSymbolV2::OutputUnit unit = QgsLineSymbolLayerV2::outputUnit();
+  QgsUnitTypes::RenderUnit unit = QgsLineSymbolLayerV2::outputUnit();
   if ( mWidthUnit != unit || mOffsetUnit != unit || mCustomDashPatternUnit != unit )
   {
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::UnknownRenderUnit;
   }
   return unit;
 }
@@ -594,7 +594,7 @@ double QgsSimpleLineSymbolLayerV2::estimateMaxBleed() const
   }
 }
 
-QVector<qreal> QgsSimpleLineSymbolLayerV2::dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const
+QVector<qreal> QgsSimpleLineSymbolLayerV2::dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const
 {
   unit = mCustomDashPatternUnit;
   return mUseCustomDashPattern ? mCustomDashVector : QVector<qreal>();
@@ -721,11 +721,11 @@ QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, doubl
 {
   mRotateMarker = rotateMarker;
   mInterval = interval;
-  mIntervalUnit = QgsSymbolV2::MM;
+  mIntervalUnit = QgsUnitTypes::RenderMillimeters;
   mMarker = nullptr;
   mPlacement = Interval;
   mOffsetAlongLine = 0;
-  mOffsetAlongLineUnit = QgsSymbolV2::MM;
+  mOffsetAlongLineUnit = QgsUnitTypes::RenderMillimeters;
 
   setSubSymbol( new QgsMarkerSymbolV2() );
 }
@@ -1551,7 +1551,7 @@ double QgsMarkerLineSymbolLayerV2::width() const
   return mMarker->size();
 }
 
-void QgsMarkerLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsMarkerLineSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsLineSymbolLayerV2::setOutputUnit( unit );
   mIntervalUnit = unit;
@@ -1559,12 +1559,12 @@ void QgsMarkerLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
   mOffsetAlongLineUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsMarkerLineSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsMarkerLineSymbolLayerV2::outputUnit() const
 {
-  QgsSymbolV2::OutputUnit unit = QgsLineSymbolLayerV2::outputUnit();
+  QgsUnitTypes::RenderUnit unit = QgsLineSymbolLayerV2::outputUnit();
   if ( mIntervalUnit != unit || mOffsetUnit != unit || mOffsetAlongLineUnit != unit )
   {
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::UnknownRenderUnit;
   }
   return unit;
 }

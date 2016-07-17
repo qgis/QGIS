@@ -61,6 +61,19 @@ class QgsUnitTypes
       UnknownAngleUnit, /*!< unknown angle unit */
     };
 
+    //! List of render units
+    typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;
+
+    //! Rendering size units
+    enum RenderUnit
+    {
+      RenderMillimeters, //!< millimeters
+      RenderMapUnits, //!< map units
+      RenderPixels, //!< pixels
+      RenderPercentage, //!< percentage of another measurement (eg canvas size, feature size)
+      UnknownRenderUnit, //!< mixed or unknown units
+    };
+
     /** Returns the type for a distance unit.
      */
     static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
@@ -181,5 +194,23 @@ class QgsUnitTypes
      * @returns formatted angle string
      */
     static QString formatAngle( double angle, int decimals, AngleUnit unit );
+
+    // RENDER UNITS
+
+    /** Encodes a render unit to a string.
+     * @param unit unit to encode
+     * @returns encoded string
+     * @see decodeRenderUnit()
+     */
+    static QString encodeUnit( RenderUnit unit );
+
+    /** Decodes a render unit from a string.
+     * @param string string to decode
+     * @param ok optional boolean, will be set to true if string was converted successfully
+     * @returns decoded units
+     * @see encodeUnit()
+     */
+    static RenderUnit decodeRenderUnit( const QString& string, bool *ok = 0 );
+
 };
 

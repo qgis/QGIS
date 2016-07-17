@@ -40,25 +40,25 @@ QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( const QColor& color, Qt:
     , mBorderColor( borderColor )
     , mBorderStyle( borderStyle )
     , mBorderWidth( borderWidth )
-    , mBorderWidthUnit( QgsSymbolV2::MM )
+    , mBorderWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mPenJoinStyle( penJoinStyle )
-    , mOffsetUnit( QgsSymbolV2::MM )
+    , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = color;
 }
 
-void QgsSimpleFillSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsSimpleFillSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mBorderWidthUnit = unit;
   mOffsetUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsSimpleFillSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsSimpleFillSymbolLayerV2::outputUnit() const
 {
-  QgsSymbolV2::OutputUnit unit = mBorderWidthUnit;
+  QgsUnitTypes::RenderUnit unit = mBorderWidthUnit;
   if ( mOffsetUnit != unit )
   {
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::UnknownRenderUnit;
   }
   return unit;
 }
@@ -472,7 +472,7 @@ QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( const QColor& color,
     , mReferencePoint1IsCentroid( false )
     , mReferencePoint2( QPointF( 0.5, 1 ) )
     , mReferencePoint2IsCentroid( false )
-    , mOffsetUnit( QgsSymbolV2::MM )
+    , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = color;
   mColor2 = color2;
@@ -924,12 +924,12 @@ double QgsGradientFillSymbolLayerV2::estimateMaxBleed() const
   return offsetBleed;
 }
 
-void QgsGradientFillSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsGradientFillSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mOffsetUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsGradientFillSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsGradientFillSymbolLayerV2::outputUnit() const
 {
   return mOffsetUnit;
 }
@@ -951,13 +951,13 @@ QgsShapeburstFillSymbolLayerV2::QgsShapeburstFillSymbolLayerV2( const QColor& co
     : mBlurRadius( blurRadius )
     , mUseWholeShape( useWholeShape )
     , mMaxDistance( maxDistance )
-    , mDistanceUnit( QgsSymbolV2::MM )
+    , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
     , mColorType( colorType )
     , mColor2( color2 )
     , mGradientRamp( nullptr )
     , mTwoColorGradientRamp( nullptr )
     , mIgnoreRings( false )
-    , mOffsetUnit( QgsSymbolV2::MM )
+    , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = color;
 }
@@ -1526,19 +1526,19 @@ double QgsShapeburstFillSymbolLayerV2::estimateMaxBleed() const
   return offsetBleed;
 }
 
-void QgsShapeburstFillSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsShapeburstFillSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mDistanceUnit = unit;
   mOffsetUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsShapeburstFillSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsShapeburstFillSymbolLayerV2::outputUnit() const
 {
   if ( mDistanceUnit == mOffsetUnit )
   {
     return mDistanceUnit;
   }
-  return QgsSymbolV2::Mixed;
+  return QgsUnitTypes::UnknownRenderUnit;
 }
 
 void QgsShapeburstFillSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -1562,7 +1562,7 @@ QgsMapUnitScale QgsShapeburstFillSymbolLayerV2::mapUnitScale() const
 QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
     : mNextAngle( 0.0 )
     , mOutlineWidth( 0.0 )
-    , mOutlineWidthUnit( QgsSymbolV2::MM )
+    , mOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mOutline( nullptr )
 {
   setSubSymbol( new QgsLineSymbolV2() );
@@ -1656,12 +1656,12 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
   return false;
 }
 
-void QgsImageFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsImageFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mOutlineWidthUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsImageFillSymbolLayer::outputUnit() const
+QgsUnitTypes::RenderUnit QgsImageFillSymbolLayer::outputUnit() const
 {
   return mOutlineWidthUnit;
 }
@@ -1736,8 +1736,8 @@ QSet<QString> QgsImageFillSymbolLayer::usedAttributes() const
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width, double angle )
     : QgsImageFillSymbolLayer()
     , mPatternWidth( width )
-    , mPatternWidthUnit( QgsSymbolV2::MM )
-    , mSvgOutlineWidthUnit( QgsSymbolV2::MM )
+    , mPatternWidthUnit( QgsUnitTypes::RenderMillimeters )
+    , mSvgOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
 {
   setSvgFilePath( svgFilePath );
   mOutlineWidth = 0.3;
@@ -1752,9 +1752,9 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width, double angle )
     : QgsImageFillSymbolLayer()
     , mPatternWidth( width )
-    , mPatternWidthUnit( QgsSymbolV2::MM )
+    , mPatternWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mSvgData( svgData )
-    , mSvgOutlineWidthUnit( QgsSymbolV2::MM )
+    , mSvgOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
 {
   storeViewBox();
   mOutlineWidth = 0.3;
@@ -1772,7 +1772,7 @@ QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
   delete mSvgPattern;
 }
 
-void QgsSVGFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsSVGFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsImageFillSymbolLayer::setOutputUnit( unit );
   mPatternWidthUnit = unit;
@@ -1780,12 +1780,12 @@ void QgsSVGFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
   mOutlineWidthUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsSVGFillSymbolLayer::outputUnit() const
+QgsUnitTypes::RenderUnit QgsSVGFillSymbolLayer::outputUnit() const
 {
-  QgsSymbolV2::OutputUnit unit = QgsImageFillSymbolLayer::outputUnit();
+  QgsUnitTypes::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
   if ( mPatternWidthUnit != unit || mSvgOutlineWidthUnit != unit || mOutlineWidthUnit != unit )
   {
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::UnknownRenderUnit;
   }
   return unit;
 }
@@ -1927,9 +1927,9 @@ QString QgsSVGFillSymbolLayer::layerType() const
   return "SVGFill";
 }
 
-void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFilePath, double patternWidth, QgsSymbolV2::OutputUnit patternWidthUnit,
+void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFilePath, double patternWidth, QgsUnitTypes::RenderUnit patternWidthUnit,
     const QColor& svgFillColor, const QColor& svgOutlineColor, double svgOutlineWidth,
-    QgsSymbolV2::OutputUnit svgOutlineWidthUnit, const QgsSymbolV2RenderContext& context,
+    QgsUnitTypes::RenderUnit svgOutlineWidthUnit, const QgsSymbolV2RenderContext& context,
     const QgsMapUnitScale& patternWidthMapUnitScale, const QgsMapUnitScale& svgOutlineWidthMapUnitScale )
 {
   if ( mSvgViewBox.isNull() )
@@ -2307,12 +2307,12 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
 QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
     : QgsImageFillSymbolLayer()
     , mDistance( 5.0 )
-    , mDistanceUnit( QgsSymbolV2::MM )
+    , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
     , mLineWidth( 0 )
-    , mLineWidthUnit( QgsSymbolV2::MM )
+    , mLineWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mLineAngle( 45.0 )
     , mOffset( 0.0 )
-    , mOffsetUnit( QgsSymbolV2::MM )
+    , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
     , mFillLineSymbol( nullptr )
 {
   setSubSymbol( new QgsLineSymbolV2() );
@@ -2381,7 +2381,7 @@ double QgsLinePatternFillSymbolLayer::estimateMaxBleed() const
   return 0;
 }
 
-void QgsLinePatternFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsLinePatternFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsImageFillSymbolLayer::setOutputUnit( unit );
   mDistanceUnit = unit;
@@ -2389,12 +2389,12 @@ void QgsLinePatternFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit 
   mOffsetUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsLinePatternFillSymbolLayer::outputUnit() const
+QgsUnitTypes::RenderUnit QgsLinePatternFillSymbolLayer::outputUnit() const
 {
-  QgsSymbolV2::OutputUnit unit = QgsImageFillSymbolLayer::outputUnit();
+  QgsUnitTypes::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
   if ( mDistanceUnit != unit || mLineWidthUnit != unit || mOffsetUnit != unit )
   {
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::UnknownRenderUnit;
   }
   return unit;
 }
@@ -2567,7 +2567,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
     // offset regardless units. This has to be fixed especially
     // in estimateMaxBleed(), context probably has to be used.
     // For now, we only support millimeters
-    double outputPixelLayerBleed = layerBleed * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, QgsSymbolV2::MM );
+    double outputPixelLayerBleed = layerBleed * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, QgsUnitTypes::RenderMillimeters );
     outputPixelBleed = qMax( outputPixelBleed, outputPixelLayerBleed );
 
     QgsMarkerLineSymbolLayerV2 *markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayerV2 *>( layer );
@@ -3036,13 +3036,13 @@ QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer()
     : QgsImageFillSymbolLayer()
     , mMarkerSymbol( nullptr )
     , mDistanceX( 15 )
-    , mDistanceXUnit( QgsSymbolV2::MM )
+    , mDistanceXUnit( QgsUnitTypes::RenderMillimeters )
     , mDistanceY( 15 )
-    , mDistanceYUnit( QgsSymbolV2::MM )
+    , mDistanceYUnit( QgsUnitTypes::RenderMillimeters )
     , mDisplacementX( 0 )
-    , mDisplacementXUnit( QgsSymbolV2::MM )
+    , mDisplacementXUnit( QgsUnitTypes::RenderMillimeters )
     , mDisplacementY( 0 )
-    , mDisplacementYUnit( QgsSymbolV2::MM )
+    , mDisplacementYUnit( QgsUnitTypes::RenderMillimeters )
 {
   mDistanceX = 15;
   mDistanceY = 15;
@@ -3057,7 +3057,7 @@ QgsPointPatternFillSymbolLayer::~QgsPointPatternFillSymbolLayer()
   delete mMarkerSymbol;
 }
 
-void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsImageFillSymbolLayer::setOutputUnit( unit );
   mDistanceXUnit = unit;
@@ -3066,12 +3066,12 @@ void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit
   mDisplacementYUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsPointPatternFillSymbolLayer::outputUnit() const
+QgsUnitTypes::RenderUnit QgsPointPatternFillSymbolLayer::outputUnit() const
 {
-  QgsSymbolV2::OutputUnit unit = QgsImageFillSymbolLayer::outputUnit();
+  QgsUnitTypes::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
   if ( mDistanceXUnit != unit || mDistanceYUnit != unit || mDisplacementXUnit != unit || mDisplacementYUnit != unit )
   {
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::UnknownRenderUnit;
   }
   return unit;
 }
@@ -3588,7 +3588,7 @@ QSet<QString> QgsCentroidFillSymbolLayerV2::usedAttributes() const
   return attributes;
 }
 
-void QgsCentroidFillSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsCentroidFillSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   if ( mMarker )
   {
@@ -3596,13 +3596,13 @@ void QgsCentroidFillSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
   }
 }
 
-QgsSymbolV2::OutputUnit QgsCentroidFillSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsCentroidFillSymbolLayerV2::outputUnit() const
 {
   if ( mMarker )
   {
     return mMarker->outputUnit();
   }
-  return QgsSymbolV2::Mixed; //mOutputUnit;
+  return QgsUnitTypes::UnknownRenderUnit; //mOutputUnit;
 }
 
 void QgsCentroidFillSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -3630,9 +3630,9 @@ QgsRasterFillSymbolLayer::QgsRasterFillSymbolLayer( const QString &imageFilePath
     , mImageFilePath( imageFilePath )
     , mCoordinateMode( QgsRasterFillSymbolLayer::Feature )
     , mAlpha( 1.0 )
-    , mOffsetUnit( QgsSymbolV2::MM )
+    , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
     , mWidth( 0.0 )
-    , mWidthUnit( QgsSymbolV2::Pixel )
+    , mWidthUnit( QgsUnitTypes::RenderPixels )
 {
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //disable sub symbol
 }

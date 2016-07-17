@@ -111,7 +111,7 @@ void QgsSymbolLevelsV2Dialog::populateTable()
       else
       {
         QgsSymbolLayerV2* sl = sym->symbolLayer( layer );
-        QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( sl, QgsSymbolV2::MM, QSize( 16, 16 ) );
+        QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) );
         item = new QTableWidgetItem( icon, QString::number( sl->renderingPass() ) );
       }
       tableLevels->setItem( row, layer + 1, item );

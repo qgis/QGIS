@@ -24,7 +24,7 @@
 QgsGlowEffect::QgsGlowEffect()
     : QgsPaintEffect()
     , mSpread( 2.0 )
-    , mSpreadUnit( QgsSymbolV2::MM )
+    , mSpreadUnit( QgsUnitTypes::RenderMillimeters )
     , mRamp( nullptr )
     , mBlurLevel( 3 )
     , mTransparency( 0.5 )

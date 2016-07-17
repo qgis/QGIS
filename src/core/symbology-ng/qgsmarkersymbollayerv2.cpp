@@ -90,8 +90,8 @@ QgsSimpleMarkerSymbolLayerBase::QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerS
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
   mScaleMethod = scaleMethod;
-  mSizeUnit = QgsSymbolV2::MM;
-  mOffsetUnit = QgsSymbolV2::MM;
+  mSizeUnit = QgsUnitTypes::RenderMillimeters;
+  mOffsetUnit = QgsUnitTypes::RenderMillimeters;
 }
 
 bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape )
@@ -689,7 +689,7 @@ QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( const QString& name,
     , mBorderColor( borderColor )
     , mOutlineStyle( Qt::SolidLine )
     , mOutlineWidth( 0 )
-    , mOutlineWidthUnit( QgsSymbolV2::MM )
+    , mOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mPenJoinStyle( penJoinStyle )
     , mName( name )
     , mUsingCache( false )
@@ -702,7 +702,7 @@ QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QgsSimpleMarkerSymbo
     , mBorderColor( borderColor )
     , mOutlineStyle( Qt::SolidLine )
     , mOutlineWidth( 0 )
-    , mOutlineWidthUnit( QgsSymbolV2::MM )
+    , mOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mPenJoinStyle( penJoinStyle )
     , mName( encodeShape( shape ) )
     , mUsingCache( false )
@@ -1290,7 +1290,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
 
     size = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), size, mSizeUnit, mSizeMapUnitScale );
   }
-  if ( mSizeUnit == QgsSymbolV2::MM )
+  if ( mSizeUnit == QgsUnitTypes::RenderMillimeters )
   {
     size *= mmMapUnitScaleFactor;
   }
@@ -1304,7 +1304,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     context.setOriginalValueVariable( mOutlineWidth );
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
   }
-  if ( mSizeUnit == QgsSymbolV2::MM )
+  if ( mSizeUnit == QgsUnitTypes::RenderMillimeters )
   {
     outlineWidth *= mmMapUnitScaleFactor;
   }
@@ -1359,7 +1359,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   if ( angle )
     off = _rotatedOffset( off, angle );
 
-  if ( mSizeUnit == QgsSymbolV2::MM )
+  if ( mSizeUnit == QgsUnitTypes::RenderMillimeters )
   {
     off *= mmMapUnitScaleFactor;
   }
@@ -1450,19 +1450,19 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
 }
 
 
-void QgsSimpleMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsSimpleMarkerSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsMarkerSymbolLayerV2::setOutputUnit( unit );
   mOutlineWidthUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsSimpleMarkerSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsSimpleMarkerSymbolLayerV2::outputUnit() const
 {
   if ( QgsMarkerSymbolLayerV2::outputUnit() == mOutlineWidthUnit )
   {
     return mOutlineWidthUnit;
   }
-  return QgsSymbolV2::Mixed;
+  return QgsUnitTypes::UnknownRenderUnit;
 }
 
 void QgsSimpleMarkerSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale& scale )
@@ -1746,7 +1746,7 @@ QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( const QString& name, doubl
   mOffset = QPointF( 0, 0 );
   mScaleMethod = scaleMethod;
   mOutlineWidth = 0.2;
-  mOutlineWidthUnit = QgsSymbolV2::MM;
+  mOutlineWidthUnit = QgsUnitTypes::RenderMillimeters;
   mColor = QColor( Qt::black );
   mOutlineColor = QColor( Qt::black );
 }
@@ -2052,7 +2052,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderCon
   if ( context.selected() )
   {
     QPen pen( context.renderContext().selectionColor() );
-    double penWidth = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), QgsSymbolV2::MM );
+    double penWidth = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), QgsUnitTypes::RenderMillimeters );
     if ( penWidth > size / 20 )
     {
       // keep the pen width from covering symbol
@@ -2188,18 +2188,18 @@ QgsSvgMarkerSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
   return m;
 }
 
-void QgsSvgMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsSvgMarkerSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsMarkerSymbolLayerV2::setOutputUnit( unit );
   mOutlineWidthUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsSvgMarkerSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsSvgMarkerSymbolLayerV2::outputUnit() const
 {
-  QgsSymbolV2::OutputUnit unit = QgsMarkerSymbolLayerV2::outputUnit();
+  QgsUnitTypes::RenderUnit unit = QgsMarkerSymbolLayerV2::outputUnit();
   if ( unit != mOutlineWidthUnit )
   {
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::UnknownRenderUnit;
   }
   return unit;
 }
@@ -2315,7 +2315,7 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
     }
   }
 
-  if ( mSizeUnit == QgsSymbolV2::MM )
+  if ( mSizeUnit == QgsUnitTypes::RenderMillimeters )
   {
     size *= mmMapUnitScaleFactor;
   }
@@ -2334,7 +2334,7 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   }
   double offsetX = offset.x();
   double offsetY = offset.y();
-  if ( mSizeUnit == QgsSymbolV2::MM )
+  if ( mSizeUnit == QgsUnitTypes::RenderMillimeters )
   {
     offsetX *= mmMapUnitScaleFactor;
     offsetY *= mmMapUnitScaleFactor;
@@ -2511,12 +2511,12 @@ QgsFontMarkerSymbolLayerV2::QgsFontMarkerSymbolLayerV2( const QString& fontFamil
   mAngle = angle;
   mSize = pointSize;
   mOrigSize = pointSize;
-  mSizeUnit = QgsSymbolV2::MM;
+  mSizeUnit = QgsUnitTypes::RenderMillimeters;
   mOffset = QPointF( 0, 0 );
-  mOffsetUnit = QgsSymbolV2::MM;
+  mOffsetUnit = QgsUnitTypes::RenderMillimeters;
   mOutlineColor = DEFAULT_FONTMARKER_BORDERCOLOR;
   mOutlineWidth = 0.0;
-  mOutlineWidthUnit = QgsSymbolV2::MM;
+  mOutlineWidthUnit = QgsUnitTypes::RenderMillimeters;
   mPenJoinStyle = DEFAULT_FONTMARKER_JOINSTYLE;
 }
 

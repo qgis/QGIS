@@ -304,7 +304,7 @@ void TestQgsLegendRenderer::testMapUnits()
   QgsMarkerSymbolV2* sym = new QgsMarkerSymbolV2();
   sym->setColor( Qt::red );
   sym->setSize( 100 );
-  sym->setSizeUnit( QgsSymbolV2::MapUnit );
+  sym->setSizeUnit( QgsUnitTypes::RenderMapUnits );
   QgsCategorizedSymbolRendererV2* catRenderer = dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
@@ -312,13 +312,13 @@ void TestQgsLegendRenderer::testMapUnits()
   sym = new QgsMarkerSymbolV2();
   sym->setColor( Qt::green );
   sym->setSize( 300 );
-  sym->setSizeUnit( QgsSymbolV2::MapUnit );
+  sym->setSizeUnit( QgsUnitTypes::RenderMapUnits );
   catRenderer->updateCategorySymbol( 1, sym );
 
   sym = new QgsMarkerSymbolV2();
   sym->setColor( Qt::blue );
   sym->setSize( 5 );
-  sym->setSizeUnit( QgsSymbolV2::MM );
+  sym->setSizeUnit( QgsUnitTypes::RenderMillimeters );
   catRenderer->updateCategorySymbol( 2, sym );
 
   QgsLayerTreeGroup* root = new QgsLayerTreeGroup();

@@ -449,8 +449,8 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** Writes features considering symbol level order*/
     WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit, const QgsCoordinateTransform& ct, QString* errorMessage = nullptr );
-    double mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
-    double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+    double mmScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+    double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
     void startRender( QgsVectorLayer* vl );
     void stopRender( QgsVectorLayer* vl );

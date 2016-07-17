@@ -250,22 +250,22 @@ QgsSymbolV2::~QgsSymbolV2()
   qDeleteAll( mLayers );
 }
 
-QgsSymbolV2::OutputUnit QgsSymbolV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsSymbolV2::outputUnit() const
 {
   if ( mLayers.empty() )
   {
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::UnknownRenderUnit;
   }
 
   QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin();
 
-  QgsSymbolV2::OutputUnit unit = ( *it )->outputUnit();
+  QgsUnitTypes::RenderUnit unit = ( *it )->outputUnit();
 
   for ( ; it != mLayers.constEnd(); ++it )
   {
     if (( *it )->outputUnit() != unit )
     {
-      return QgsSymbolV2::Mixed;
+      return QgsUnitTypes::UnknownRenderUnit;
     }
   }
   return unit;
@@ -295,7 +295,7 @@ QgsMapUnitScale QgsSymbolV2::mapUnitScale() const
   return scale;
 }
 
-void QgsSymbolV2::setOutputUnit( QgsSymbolV2::OutputUnit u )
+void QgsSymbolV2::setOutputUnit( QgsUnitTypes::RenderUnit u )
 {
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
@@ -1029,7 +1029,7 @@ void QgsSymbolV2::renderVertexMarker( QPointF pt, QgsRenderContext& context, int
 ////////////////////
 
 
-QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f, const QgsFields* fields, const QgsMapUnitScale& mapUnitScale )
+QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f, const QgsFields* fields, const QgsMapUnitScale& mapUnitScale )
     : mRenderContext( c )
     , mExpressionContextScope( nullptr )
     , mOutputUnit( u )
@@ -1275,7 +1275,7 @@ double QgsMarkerSymbolV2::size() const
   return maxSize;
 }
 
-void QgsMarkerSymbolV2::setSizeUnit( QgsSymbolV2::OutputUnit unit )
+void QgsMarkerSymbolV2::setSizeUnit( QgsUnitTypes::RenderUnit unit )
 {
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
@@ -1287,10 +1287,10 @@ void QgsMarkerSymbolV2::setSizeUnit( QgsSymbolV2::OutputUnit unit )
   }
 }
 
-QgsSymbolV2::OutputUnit QgsMarkerSymbolV2::sizeUnit() const
+QgsUnitTypes::RenderUnit QgsMarkerSymbolV2::sizeUnit() const
 {
   bool first = true;
-  OutputUnit unit = Mixed;
+  QgsUnitTypes::RenderUnit unit = QgsUnitTypes::UnknownRenderUnit;
 
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
@@ -1303,7 +1303,7 @@ QgsSymbolV2::OutputUnit QgsMarkerSymbolV2::sizeUnit() const
     else
     {
       if ( unit != markerLayer->sizeUnit() )
-        return Mixed;
+        return QgsUnitTypes::UnknownRenderUnit;
     }
 
     first = false;

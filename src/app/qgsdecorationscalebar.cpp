@@ -55,7 +55,7 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
     , mMarginVertical( 0 )
 {
   mPlacement = TopLeft;
-  mMarginUnit = QgsSymbolV2::MM;
+  mMarginUnit = QgsUnitTypes::RenderMillimeters;
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
   << tr( "Bar" ) << tr( "Box" );
 
@@ -260,7 +260,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     // Set  margin according to selected units
     switch ( mMarginUnit )
     {
-      case QgsSymbolV2::MM:
+      case QgsUnitTypes::RenderMillimeters:
       {
         int myPixelsInchX = theQPainter->device()->logicalDpiX();
         int myPixelsInchY = theQPainter->device()->logicalDpiY();
@@ -269,12 +269,12 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         break;
       }
 
-      case QgsSymbolV2::Pixel:
+      case QgsUnitTypes::RenderPixels:
         myOriginX = mMarginHorizontal - 5.; // Minus 5 to shift tight into corner
         myOriginY = mMarginVertical - 5.;
         break;
 
-      case QgsSymbolV2::Percentage:
+      case QgsUnitTypes::RenderPercentage:
       {
         float myMarginDoubledW = myMarginW * 2.0;
         float myMarginDoubledH = myMarginH * 2.0;

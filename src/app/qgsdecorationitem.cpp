@@ -47,7 +47,7 @@ QgsDecorationItem::QgsDecorationItem( QObject* parent )
     : QObject( parent )
     , mEnabled( false )
     , mPlacement( TopLeft )
-    , mMarginUnit( QgsSymbolV2::MM )
+    , mMarginUnit( QgsUnitTypes::RenderMillimeters )
 {
 }
 

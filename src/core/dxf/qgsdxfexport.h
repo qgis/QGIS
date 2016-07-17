@@ -352,7 +352,7 @@ class CORE_EXPORT QgsDxfExport
     //! @note added in 2.15
     void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor& color );
 
-    static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+    static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
     //! Return cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );
@@ -416,7 +416,7 @@ class CORE_EXPORT QgsDxfExport
     void writePoint( const QgsPointV2 &pt, const QString &layer, const QColor& color, QgsSymbolV2RenderContext &ctx, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol, double angle );
     void writeDefaultLinetypes();
     void writeSymbolLayerLinetype( const QgsSymbolLayerV2 *symbolLayer );
-    void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsSymbolV2::OutputUnit u );
+    void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );
 
     QgsRectangle dxfExtent() const;
 

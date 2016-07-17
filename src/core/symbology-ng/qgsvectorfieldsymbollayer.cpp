@@ -22,7 +22,7 @@
 QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
     : mXAttribute( "" )
     , mYAttribute( "" )
-    , mDistanceUnit( QgsSymbolV2::MM )
+    , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
     , mScale( 1.0 )
     , mVectorFieldType( Cartesian )
     , mAngleOrientation( ClockwiseFromNorth )
@@ -39,19 +39,19 @@ QgsVectorFieldSymbolLayer::~QgsVectorFieldSymbolLayer()
   delete mLineSymbol;
 }
 
-void QgsVectorFieldSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsVectorFieldSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsMarkerSymbolLayerV2::setOutputUnit( unit );
   mDistanceUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsVectorFieldSymbolLayer::outputUnit() const
+QgsUnitTypes::RenderUnit QgsVectorFieldSymbolLayer::outputUnit() const
 {
   if ( QgsMarkerSymbolLayerV2::outputUnit() == mDistanceUnit )
   {
     return mDistanceUnit;
   }
-  return QgsSymbolV2::Mixed;
+  return QgsUnitTypes::UnknownRenderUnit;
 }
 
 void QgsVectorFieldSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )

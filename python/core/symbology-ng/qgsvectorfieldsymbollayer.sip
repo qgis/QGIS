@@ -64,14 +64,14 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
     void setAngleUnits( AngleUnits units );
     AngleUnits angleUnits() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    void setDistanceUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit distanceUnit() const;
+    void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit distanceUnit() const;
 
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale );
     const QgsMapUnitScale& distanceMapUnitScale() const;

@@ -2775,9 +2775,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   return ( nErrors > 0 ) ? QgsVectorFileWriter::ErrFeatureWriteFailed : QgsVectorFileWriter::NoError;
 }
 
-double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
+double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
 {
-  if ( symbolUnits == QgsSymbolV2::MM )
+  if ( symbolUnits == QgsUnitTypes::RenderMillimeters )
   {
     return 1.0;
   }
@@ -2793,15 +2793,15 @@ double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsSymbolV2:
   return 1.0; //todo: map units
 }
 
-double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
+double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
 {
-  if ( symbolUnits == QgsSymbolV2::MapUnit )
+  if ( symbolUnits == QgsUnitTypes::RenderMapUnits )
   {
     return 1.0;
   }
   else
   {
-    if ( symbolUnits == QgsSymbolV2::MM && mapUnits == QgsUnitTypes::Meters )
+    if ( symbolUnits == QgsUnitTypes::RenderMillimeters && mapUnits == QgsUnitTypes::Meters )
     {
       return scaleDenominator / 1000;
     }

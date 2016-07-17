@@ -169,29 +169,28 @@ class TestQgsUnitTypes(unittest.TestCase):
         assert ok
         self.assertEqual(res, QgsUnitTypes.SquareMiles)
 
-    @unittest.skip("enable for 3.0")
-    def testEncodeDecodeSymbolUnits(self):
-        """Test encoding and decoding symbol units"""
-        units = [QgsSymbolV2.MM,
-                 QgsSymbolV2.MapUnit,
-                 QgsSymbolV2.Pixel,
-                 QgsSymbolV2.Percentage]
+    def testEncodeDecodeRenderUnits(self):
+        """Test encoding and decoding render units"""
+        units = [QgsUnitTypes.RenderMillimeters,
+                 QgsUnitTypes.RenderMapUnits,
+                 QgsUnitTypes.RenderPixels,
+                 QgsUnitTypes.RenderPercentage]
 
         for u in units:
-            res, ok = QgsUnitTypes.decodeSymbolUnit(QgsUnitTypes.encodeUnit(u))
+            res, ok = QgsUnitTypes.decodeRenderUnit(QgsUnitTypes.encodeUnit(u))
             assert ok
             self.assertEqual(res, u)
 
         # Test decoding bad units
-        res, ok = QgsUnitTypes.decodeSymbolUnit('bad')
+        res, ok = QgsUnitTypes.decodeRenderUnit('bad')
         self.assertFalse(ok)
         # default units should be MM
-        self.assertEqual(res, QgsSymbolV2.MM)
+        self.assertEqual(res, QgsUnitTypes.RenderMillimeters)
 
         # Test that string is cleaned before decoding
-        res, ok = QgsUnitTypes.decodeSymbolUnit(' PiXeL  ')
+        res, ok = QgsUnitTypes.decodeRenderUnit(' PiXeL  ')
         assert ok
-        self.assertEqual(res, QgsSymbolV2.Pixel)
+        self.assertEqual(res, QgsUnitTypes.RenderPixels)
 
     def testFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between units"""

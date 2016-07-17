@@ -50,7 +50,7 @@ class QgsGlowEffect : QgsPaintEffect
      * @see setSpread
      * @see setSpreadMapUnitScale
      */
-    void setSpreadUnit( const QgsSymbolV2::OutputUnit unit );
+    void setSpreadUnit( const QgsUnitTypes::RenderUnit unit );
 
     /** Returns the units used for the glow spread distance.
      * @returns units for spread distance
@@ -58,7 +58,7 @@ class QgsGlowEffect : QgsPaintEffect
      * @see spread
      * @see spreadMapUnitScale
      */
-    QgsSymbolV2::OutputUnit spreadUnit() const;
+    QgsUnitTypes::RenderUnit spreadUnit() const;
 
     /** Sets the map unit scale used for the spread distance.
      * @param scale map unit scale for spread distance

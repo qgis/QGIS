@@ -35,8 +35,8 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
@@ -57,8 +57,8 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
     bool useCustomDashPattern() const;
     void setUseCustomDashPattern( bool b );
 
-    void setCustomDashPatternUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit customDashPatternUnit() const;
+    void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit customDashPatternUnit() const;
 
     const QgsMapUnitScale& customDashPatternMapUnitScale() const;
     void setCustomDashPatternMapUnitScale( const QgsMapUnitScale& scale);
@@ -71,7 +71,7 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
     //Set to true if the line should only be drawn inside the polygon
     void setDrawInsidePolygon( bool drawInsidePolygon );
 
-    QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
+    QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const;
     Qt::PenStyle dxfPenStyle() const;
 
     double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const;
@@ -219,14 +219,14 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
      * @see setOffsetAlongLineUnit
      * @see offsetAlongLine
      */
-    QgsSymbolV2::OutputUnit offsetAlongLineUnit() const;
+    QgsUnitTypes::RenderUnit offsetAlongLineUnit() const;
 
     /** Sets the unit used for calculating the offset along line for markers.
      * @param unit Offset along line unit type.
      * @see offsetAlongLineUnit
      * @see setOffsetAlongLine
      */
-    void setOffsetAlongLineUnit( QgsSymbolV2::OutputUnit unit );
+    void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit );
 
     /** Returns the map unit scale used for calculating the offset in map units along line for markers.
      * @returns Offset along line map unit scale.
@@ -238,14 +238,14 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
      */
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale& scale );
 
-    void setIntervalUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit intervalUnit() const;
+    void setIntervalUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit intervalUnit() const;
 
     void setIntervalMapUnitScale( const QgsMapUnitScale& scale );
     const QgsMapUnitScale& intervalMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;

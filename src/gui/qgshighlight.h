@@ -78,7 +78,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
   private:
     void init();
     void setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
-    double getSymbolWidth( const QgsRenderContext & context, double width, QgsSymbolV2::OutputUnit unit );
+    double getSymbolWidth( const QgsRenderContext & context, double width, QgsUnitTypes::RenderUnit unit );
     /** Get renderer for current color mode and colors. The renderer should be freed by caller. */
     QgsFeatureRendererV2 * getRenderer( QgsRenderContext &context, const QColor & color, const QColor & fillColor );
     void paintPoint( QPainter *p, const QgsPoint& point );

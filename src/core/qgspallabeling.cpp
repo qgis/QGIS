@@ -4812,14 +4812,14 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     map["name"] = QgsSymbolLayerV2Utils::symbolNameToPath( tmpLyr.shapeSVGFile.trimmed() );
     map["size"] = QString::number( sizeOut );
     map["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit(
-                         tmpLyr.shapeSizeUnits == QgsPalLayerSettings::MapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
+                         tmpLyr.shapeSizeUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
     map["angle"] = QString::number( 0.0 ); // angle is handled by this local painter
 
     // offset is handled by this local painter
     // TODO: see why the marker renderer doesn't seem to translate offset *after* applying rotation
     //map["offset"] = QgsSymbolLayerV2Utils::encodePoint( tmpLyr.shapeOffset );
     //map["offset_unit"] = QgsUnitTypes::encodeUnit(
-    //                       tmpLyr.shapeOffsetUnits == QgsPalLayerSettings::MapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
+    //                       tmpLyr.shapeOffsetUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::MapUnit : QgsUnitTypes::MM );
 
     map["fill"] = tmpLyr.shapeFillColor.name();
     map["outline"] = tmpLyr.shapeBorderColor.name();
@@ -4828,7 +4828,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     // TODO: fix overriding SVG symbol's border width/units in QgsSvgCache
     // currently broken, fall back to symbol's
     //map["outline_width_unit"] = QgsUnitTypes::encodeUnit(
-    //                              tmpLyr.shapeBorderWidthUnits == QgsPalLayerSettings::MapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
+    //                              tmpLyr.shapeBorderWidthUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::MapUnit : QgsUnitTypes::MM );
 
     if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowShape )
     {
@@ -4856,7 +4856,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 
       QgsSymbolLayerV2* symShdwL = QgsSvgMarkerSymbolLayerV2::create( shdwmap );
       QgsSvgMarkerSymbolLayerV2* svgShdwM = static_cast<QgsSvgMarkerSymbolLayerV2*>( symShdwL );
-      QgsSymbolV2RenderContext svgShdwContext( shdwContext, QgsSymbolV2::Mixed,
+      QgsSymbolV2RenderContext svgShdwContext( shdwContext, QgsUnitTypes::UnknownRenderUnit,
           ( 100.0 - static_cast< double >( tmpLyr.shapeTransparency ) ) / 100.0 );
 
       double svgSize = tmpLyr.scaleToPixelContext( sizeOut, context, tmpLyr.shapeSizeUnits, true, tmpLyr.shapeSizeMapUnitScale );
@@ -4891,7 +4891,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     // draw the actual symbol
     QgsSymbolLayerV2* symL = QgsSvgMarkerSymbolLayerV2::create( map );
     QgsSvgMarkerSymbolLayerV2* svgM = static_cast<QgsSvgMarkerSymbolLayerV2*>( symL );
-    QgsSymbolV2RenderContext svgContext( context, QgsSymbolV2::Mixed,
+    QgsSymbolV2RenderContext svgContext( context, QgsUnitTypes::UnknownRenderUnit,
                                          ( 100.0 - static_cast< double >( tmpLyr.shapeTransparency ) ) / 100.0 );
 
     p->save();

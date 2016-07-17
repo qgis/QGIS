@@ -142,8 +142,8 @@ class QgsSymbolLayerV2
       be affected by data defined symbology rules.*/
     virtual double estimateMaxBleed() const;
 
-    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    virtual QgsSymbolV2::OutputUnit outputUnit() const;
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale& scale );
     virtual QgsMapUnitScale mapUnitScale() const;
@@ -264,7 +264,7 @@ class QgsSymbolLayerV2
     virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
     virtual double dxfAngle( QgsSymbolV2RenderContext& context ) const;
 
-    virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
+    virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
     virtual QColor dxfBrushColor( QgsSymbolV2RenderContext& context ) const;
     virtual Qt::BrushStyle dxfBrushStyle() const;
@@ -415,14 +415,14 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
      * @see setSize()
      * @see setSizeMapUnitScale()
      */
-    void setSizeUnit( QgsSymbolV2::OutputUnit unit );
+    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
 
     /** Returns the units for the symbol's size.
      * @see setSizeUnit()
      * @see size()
      * @see sizeMapUnitScale()
      */
-    QgsSymbolV2::OutputUnit sizeUnit() const;
+    QgsUnitTypes::RenderUnit sizeUnit() const;
 
     /** Sets the map unit scale for the symbol's size.
      * @param scale size map unit scale
@@ -473,14 +473,14 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
      * @see setOffset()
      * @see setOffsetMapUnitScale()
      */
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
 
     /** Returns the units for the symbol's offset.
      * @see setOffsetUnit()
      * @see offset()
      * @see offsetMapUnitScale()
      */
-    QgsSymbolV2::OutputUnit offsetUnit() const;
+    QgsUnitTypes::RenderUnit offsetUnit() const;
 
    /** Sets the map unit scale for the symbol's offset.
      * @param scale offset map unit scale
@@ -536,8 +536,8 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
      */
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
@@ -579,7 +579,7 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
 
     //! @note available in python bindings as markerOffset2
     void markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
-                       QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
+                       QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
                        double& offsetX, double& offsetY,
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const /PyName=markerOffset2/;
 
@@ -608,20 +608,20 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
     double offset() const;
     void setOffset( double offset );
 
-    void setWidthUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit widthUnit() const;
+    void setWidthUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit widthUnit() const;
 
     void setWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& widthMapUnitScale() const;
 
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit offsetUnit() const;
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit offsetUnit() const;
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale );
     const QgsMapUnitScale& offsetMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;

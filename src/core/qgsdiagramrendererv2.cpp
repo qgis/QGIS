@@ -193,7 +193,7 @@ void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer*
   if ( elem.attribute( "sizeType" ) == "MapUnits" )
   {
     //compatibility with pre-2.16 project files
-    sizeType = QgsSymbolV2::MapUnit;
+    sizeType = QgsUnitTypes::RenderMapUnits;
   }
   else
   {

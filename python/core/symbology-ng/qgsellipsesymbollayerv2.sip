@@ -51,26 +51,26 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     void setOutlineColor( const QColor& c );
     QColor outlineColor() const;
 
-    void setSymbolWidthUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit symbolWidthUnit() const;
+    void setSymbolWidthUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit symbolWidthUnit() const;
 
     void setSymbolWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& symbolWidthMapUnitScale() const;
 
-    void setSymbolHeightUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit symbolHeightUnit() const;
+    void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit symbolHeightUnit() const;
 
     void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& symbolHeightMapUnitScale() const;
 
-    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
 
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& outlineWidthMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
