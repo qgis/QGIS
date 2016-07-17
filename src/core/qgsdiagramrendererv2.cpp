@@ -197,12 +197,12 @@ void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer*
   }
   else
   {
-    sizeType = QgsSymbolLayerV2Utils::decodeOutputUnit( elem.attribute( "sizeType" ) );
+    sizeType = QgsUnitTypes::decodeRenderUnit( elem.attribute( "sizeType" ) );
   }
   sizeScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( elem.attribute( "sizeScale" ) );
 
   //line width unit type and scale
-  lineSizeUnit = QgsSymbolLayerV2Utils::decodeOutputUnit( elem.attribute( "lineSizeType" ) );
+  lineSizeUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( "lineSizeType" ) );
   lineSizeScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( elem.attribute( "lineSizeScale" ) );
 
   //label placement method
@@ -314,11 +314,11 @@ void QgsDiagramSettings::writeXml( QDomElement& rendererElem, QDomDocument& doc,
   categoryElem.setAttribute( "transparency", QString::number( transparency ) );
 
   //diagram size unit type and scale
-  categoryElem.setAttribute( "sizeType", QgsSymbolLayerV2Utils::encodeOutputUnit( sizeType ) );
+  categoryElem.setAttribute( "sizeType", QgsUnitTypes::encodeUnit( sizeType ) );
   categoryElem.setAttribute( "sizeScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( sizeScale ) );
 
   //line width unit type and scale
-  categoryElem.setAttribute( "lineSizeType", QgsSymbolLayerV2Utils::encodeOutputUnit( lineSizeUnit ) );
+  categoryElem.setAttribute( "lineSizeType", QgsUnitTypes::encodeUnit( lineSizeUnit ) );
   categoryElem.setAttribute( "lineSizeScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( lineSizeScale ) );
 
   // label placement method (text diagram)

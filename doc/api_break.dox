@@ -456,6 +456,12 @@ parameters or QgsSymbolV2::OutputUnitList parameters now take QgsUnitTypes::Rend
 <li>subsetString() was made const. This has no effect on PyQGIS code, but c++ code implementing derived layer classes will need to update the signature of this method to match.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsSymbolLayerV2Utils QgsSymbolLayerV2Utils
+
+<ul>
+<li>encodeOutputUnit() and decodeOutputUnit() were removed. QgsUnitTypes::encodeUnit() and QgsUnitTypes::decodeRenderUnit() should be used instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsTreeWidgetItem QgsTreeWidgetItem
 
 <ul>

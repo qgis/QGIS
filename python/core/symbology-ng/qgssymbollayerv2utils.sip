@@ -51,9 +51,6 @@ class QgsSymbolLayerV2Utils
     static QString encodeSldRealVector( const QVector<qreal>& v );
     static QVector<qreal> decodeSldRealVector( const QString& s );
 
-    static QString encodeOutputUnit( QgsUnitTypes::RenderUnit unit );
-    static QgsUnitTypes::RenderUnit decodeOutputUnit( const QString& str );
-
     static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
     static QgsUnitTypes::RenderUnit decodeSldUom( const QString& str, double *scaleFactor );
 

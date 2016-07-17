@@ -4811,7 +4811,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     QgsStringMap map; // for SVG symbology marker
     map["name"] = QgsSymbolLayerV2Utils::symbolNameToPath( tmpLyr.shapeSVGFile.trimmed() );
     map["size"] = QString::number( sizeOut );
-    map["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit(
+    map["size_unit"] = QgsUnitTypes::encodeUnit(
                          tmpLyr.shapeSizeUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
     map["angle"] = QString::number( 0.0 ); // angle is handled by this local painter
 
