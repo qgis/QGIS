@@ -879,6 +879,13 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
       delete slp;
       return nullptr;
     }
+    // Shift the character downwards since the draw position is specified at the baseline
+    // and we're calculating the mean line here
+    double dist = 0.9 * li->label_height / 2;
+    if ( orientation < 0 )
+      dist = -dist;
+    start_x += dist * cos( angle + M_PI_2 );
+    start_y -= dist * sin( angle + M_PI_2 );
 
     double render_angle = angle;
 
@@ -1042,11 +1049,11 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
       double angle_avg = atan2( sin_avg / li->char_num, cos_avg / li->char_num );
       // displacement
       if (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) )
-        positions.append( _createCurvedCandidate( slp, angle_avg, mLF->distLabel() ) );
+        positions.append( _createCurvedCandidate( slp, angle_avg, mLF->distLabel() + li->label_height / 2 ) );
       if ( flags & FLAG_ON_LINE )
-        positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 ) );
+        positions.append( _createCurvedCandidate( slp, angle_avg, 0 ) );
       if (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) )
-        positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height - mLF->distLabel() ) );
+        positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 - mLF->distLabel() ) );
 
       // delete original candidate
       delete slp;
