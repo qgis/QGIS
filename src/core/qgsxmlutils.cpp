@@ -20,32 +20,32 @@
 #include "qgsrectangle.h"
 
 
-Qgis::UnitType QgsXmlUtils::readMapUnits( const QDomElement& element )
+QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement& element )
 {
   if ( "meters" == element.text() )
   {
-    return Qgis::Meters;
+    return QgsUnitTypes::Meters;
   }
   else if ( "feet" == element.text() )
   {
-    return Qgis::Feet;
+    return QgsUnitTypes::Feet;
   }
   else if ( "nautical miles" == element.text() )
   {
-    return Qgis::NauticalMiles;
+    return QgsUnitTypes::NauticalMiles;
   }
   else if ( "degrees" == element.text() )
   {
-    return Qgis::Degrees;
+    return QgsUnitTypes::Degrees;
   }
   else if ( "unknown" == element.text() )
   {
-    return Qgis::UnknownUnit;
+    return QgsUnitTypes::UnknownDistanceUnit;
   }
   else
   {
     QgsDebugMsg( "Unknown map unit type " + element.text() );
-    return Qgis::Degrees;
+    return QgsUnitTypes::Degrees;
   }
 }
 
@@ -79,24 +79,24 @@ QgsRectangle QgsXmlUtils::readRectangle( const QDomElement& element )
 
 
 
-QDomElement QgsXmlUtils::writeMapUnits( Qgis::UnitType units, QDomDocument& doc )
+QDomElement QgsXmlUtils::writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument& doc )
 {
   QString unitsString;
   switch ( units )
   {
-    case Qgis::Meters:
+    case QgsUnitTypes::Meters:
       unitsString = "meters";
       break;
-    case Qgis::Feet:
+    case QgsUnitTypes::Feet:
       unitsString = "feet";
       break;
-    case Qgis::NauticalMiles:
+    case QgsUnitTypes::NauticalMiles:
       unitsString = "nautical miles";
       break;
-    case Qgis::Degrees:
+    case QgsUnitTypes::Degrees:
       unitsString = "degrees";
       break;
-    case Qgis::UnknownUnit:
+    case QgsUnitTypes::UnknownDistanceUnit:
     default:
       unitsString = "unknown";
       break;

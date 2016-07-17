@@ -181,7 +181,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
     double minDistanceLayerUnits = minDistance;
     //if minDistance is in meters and the data in degrees, we need to apply a rough conversion for the buffer distance
     double bufferDist = bufferDistance( minDistance );
-    if ( mMinDistanceUnits == Meters && mStrataLayer->crs().mapUnits() == Qgis::Degrees )
+    if ( mMinDistanceUnits == Meters && mStrataLayer->crs().mapUnits() == QgsUnitTypes::Degrees )
     {
       minDistanceLayerUnits = minDistance / 111319.9;
     }
@@ -710,7 +710,7 @@ double QgsTransectSample::bufferDistance( double minDistanceFromAttribute ) cons
     bufferDist = mBaselineBufferDistance;
   }
 
-  if ( mMinDistanceUnits == Meters && mStrataLayer->crs().mapUnits() == Qgis::Degrees )
+  if ( mMinDistanceUnits == Meters && mStrataLayer->crs().mapUnits() == QgsUnitTypes::Degrees )
   {
     bufferDist /= 111319.9;
   }

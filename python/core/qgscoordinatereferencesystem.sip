@@ -446,7 +446,7 @@ class QgsCoordinateReferenceSystem
 
     /** Returns the units for the projection used by the CRS.
      */
-    Qgis::UnitType mapUnits() const;
+    QgsUnitTypes::DistanceUnit mapUnits() const;
 
 
     // Mutators -----------------------------------

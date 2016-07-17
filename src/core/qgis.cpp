@@ -28,7 +28,6 @@
 #include "qgsconfig.h"
 #include "qgslogger.h"
 #include "geometry/qgswkbtypes.h"
-#include "qgsunittypes.h"
 
 #include <ogr_api.h>
 
@@ -87,20 +86,6 @@ double Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM = 0.5;
 double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 
 double Qgis::SCALE_PRECISION = 0.9999999999;
-
-// description strings for units
-// Order must match enum indices
-const char* Qgis::qgisUnitTypes[] =
-{
-  QT_TRANSLATE_NOOP( "Qgis::UnitType", "meters" ),
-  QT_TRANSLATE_NOOP( "Qgis::UnitType", "feet" ),
-  QT_TRANSLATE_NOOP( "Qgis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "Qgis::UnitType", "<unknown>" ),
-  QT_TRANSLATE_NOOP( "Qgis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "Qgis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "Qgis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "Qgis::UnitType", "nautical miles" )
-};
 
 QgsWKBTypes::Type Qgis::fromOldWkbType( Qgis::WkbType type )
 {
@@ -184,36 +169,6 @@ Qgis::WkbType Qgis::fromNewWkbType( QgsWKBTypes::Type type )
 
   QgsDebugMsg( QString( "unexpected new wkbType=%1" ).arg( type ) );
   return static_cast< Qgis::WkbType >( type );
-}
-
-
-Qgis::UnitType Qgis::fromLiteral( const QString& literal, Qgis::UnitType defaultType )
-{
-  bool ok = false;
-  Qgis::UnitType unit = QgsUnitTypes::decodeDistanceUnit( literal, &ok );
-  return ok ? unit : defaultType;
-}
-
-QString Qgis::toLiteral( Qgis::UnitType unit )
-{
-  return QgsUnitTypes::encodeUnit( unit );
-}
-
-QString Qgis::tr( Qgis::UnitType unit )
-{
-  return QgsUnitTypes::toString( unit );
-}
-
-Qgis::UnitType Qgis::fromTr( const QString& literal, Qgis::UnitType defaultType )
-{
-  bool ok = false;
-  Qgis::UnitType unit = QgsUnitTypes::stringToDistanceUnit( literal, &ok );
-  return ok ? unit : defaultType;
-}
-
-double Qgis::fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit )
-{
-  return QgsUnitTypes::fromUnitToUnitFactor( fromUnit, toUnit );
 }
 
 double qgsPermissiveToDouble( QString string, bool &ok )

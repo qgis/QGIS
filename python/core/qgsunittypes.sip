@@ -12,6 +12,19 @@ class QgsUnitTypes
 
   public:
 
+    //! Units of distance
+    enum DistanceUnit
+    {
+      Meters, /*!< meters */
+      Kilometers, /*!< kilometers */
+      Feet, /*!< imperial feet */
+      NauticalMiles, /*!< nautical miles */
+      Yards, /*!< imperial yards */
+      Miles, /*!< terrestial miles */
+      Degrees, /*!< degrees, for planar geographic CRS distance measurements */
+      UnknownDistanceUnit, /*!< unknown distance unit */
+    };
+
     /** Types of distance units
      */
     enum DistanceUnitType
@@ -50,14 +63,14 @@ class QgsUnitTypes
 
     /** Returns the type for a distance unit.
      */
-    static DistanceUnitType unitType( Qgis::UnitType unit );
+    static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
 
     /** Encodes a distance unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeDistanceUnit()
      */
-    static QString encodeUnit( Qgis::UnitType unit );
+    static QString encodeUnit( QgsUnitTypes::DistanceUnit unit );
 
     /** Decodes a distance unit from a string.
      * @param string string to decode
@@ -65,27 +78,27 @@ class QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
      */
-    static Qgis::UnitType decodeDistanceUnit( const QString& string, bool *ok = 0 );
+    static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString& string, bool *ok = 0 );
 
     /** Returns a translated string representing a distance unit.
      * @param unit unit to convert to string
      * @see stringToDistanceUnit()
      */
-    static QString toString( Qgis::UnitType unit );
+    static QString toString( QgsUnitTypes::DistanceUnit unit );
 
     /** Converts a translated string to a distance unit.
      * @param string string representing a distance unit
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
-    static Qgis::UnitType stringToDistanceUnit( const QString& string, bool *ok = 0 );
+    static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString& string, bool *ok = 0 );
 
     /** Returns the conversion factor between the specified distance units.
      * @param fromUnit distance unit to convert from
      * @param toUnit distance unit to convert to
      * @returns multiplication factor to convert between units
      */
-    static double fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit );
+    static double fromUnitToUnitFactor( QgsUnitTypes::DistanceUnit fromUnit, QgsUnitTypes::DistanceUnit toUnit );
 
     /** Returns the type for an areal unit.
     */
@@ -130,7 +143,7 @@ class QgsUnitTypes
      * @param distanceUnit distance unit to convert
      * @return matching areal unit
      */
-    static AreaUnit distanceToAreaUnit( Qgis::UnitType distanceUnit );
+    static AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
 
     // ANGULAR UNITS
 

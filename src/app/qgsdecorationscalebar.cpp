@@ -133,10 +133,10 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
 
     QSettings settings;
     bool ok = false;
-    Qgis::UnitType myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( "/qgis/measure/displayunits" ).toString(), &ok );
+    QgsUnitTypes::DistanceUnit myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( "/qgis/measure/displayunits" ).toString(), &ok );
     if ( !ok )
-      myPreferredUnits = Qgis::Meters;
-    Qgis::UnitType myMapUnits = canvas->mapUnits();
+      myPreferredUnits = QgsUnitTypes::Meters;
+    QgsUnitTypes::DistanceUnit myMapUnits = canvas->mapUnits();
 
     // Adjust units meter/feet/... or vice versa
     myMapUnitsPerPixelDouble *= QgsUnitTypes::fromUnitToUnitFactor( myMapUnits, myPreferredUnits );
@@ -175,7 +175,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     QString myScaleBarUnitLabel;
     switch ( myMapUnits )
     {
-      case Qgis::Meters:
+      case QgsUnitTypes::Meters:
         if ( myActualSize > 1000.0 )
         {
           myScaleBarUnitLabel = tr( " km" );
@@ -194,7 +194,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         else
           myScaleBarUnitLabel = tr( " m" );
         break;
-      case Qgis::Feet:
+      case QgsUnitTypes::Feet:
         if ( myActualSize > 5280.0 ) //5280 feet to the mile
         {
           myScaleBarUnitLabel = tr( " miles" );
@@ -224,13 +224,13 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
           myScaleBarUnitLabel = tr( " feet" );
         }
         break;
-      case Qgis::Degrees:
+      case QgsUnitTypes::Degrees:
         if ( myActualSize == 1.0 )
           myScaleBarUnitLabel = tr( " degree" );
         else
           myScaleBarUnitLabel = tr( " degrees" );
         break;
-      case Qgis::UnknownUnit:
+      case QgsUnitTypes::UnknownDistanceUnit:
         myScaleBarUnitLabel = tr( " unknown" );
         //intentional fall-through
         FALLTHROUGH;

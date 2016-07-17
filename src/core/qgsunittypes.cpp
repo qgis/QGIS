@@ -23,22 +23,22 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( Qgis::UnitType unit )
+QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( DistanceUnit unit )
 {
   switch ( unit )
   {
-    case Qgis::Meters:
-    case Qgis::Feet:
-    case Qgis::NauticalMiles:
-    case Qgis::Yards:
-    case Qgis::Miles:
-    case Qgis::Kilometers:
+    case Meters:
+    case Feet:
+    case NauticalMiles:
+    case Yards:
+    case Miles:
+    case Kilometers:
       return Standard;
 
-    case Qgis::Degrees:
+    case Degrees:
       return Geographic;
 
-    case Qgis::UnknownUnit:
+    case UnknownDistanceUnit:
       return UnknownType;
   }
   return UnknownType;
@@ -68,32 +68,32 @@ QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( QgsUnitTypes::AreaUnit un
   return UnknownType;
 }
 
-QString QgsUnitTypes::encodeUnit( Qgis::UnitType unit )
+QString QgsUnitTypes::encodeUnit( DistanceUnit unit )
 {
   switch ( unit )
   {
-    case Qgis::Meters:
+    case Meters:
       return "meters";
 
-    case Qgis::Kilometers:
+    case Kilometers:
       return "km";
 
-    case Qgis::Feet:
+    case Feet:
       return "feet";
 
-    case Qgis::Yards:
+    case Yards:
       return "yd";
 
-    case Qgis::Miles:
+    case Miles:
       return "mi";
 
-    case Qgis::Degrees:
+    case Degrees:
       return "degrees";
 
-    case Qgis::UnknownUnit:
+    case UnknownDistanceUnit:
       return "<unknown>";
 
-    case Qgis::NauticalMiles:
+    case NauticalMiles:
       return "nautical miles";
   }
   return QString();
@@ -105,63 +105,63 @@ QString QgsUnitTypes::encodeUnit( Qgis::UnitType unit )
  * See details in QEP #17
  ****************************************************************************/
 
-Qgis::UnitType QgsUnitTypes::decodeDistanceUnit( const QString& string, bool* ok )
+QgsUnitTypes::DistanceUnit QgsUnitTypes::decodeDistanceUnit( const QString& string, bool* ok )
 {
   QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
 
-  if ( normalized == encodeUnit( Qgis::Meters ) )
-    return Qgis::Meters;
-  if ( normalized == encodeUnit( Qgis::Feet ) )
-    return Qgis::Feet;
-  if ( normalized == encodeUnit( Qgis::Degrees ) )
-    return Qgis::Degrees;
-  if ( normalized == encodeUnit( Qgis::NauticalMiles ) )
-    return Qgis::NauticalMiles;
-  if ( normalized == encodeUnit( Qgis::Kilometers ) )
-    return Qgis::Kilometers;
-  if ( normalized == encodeUnit( Qgis::Yards ) )
-    return Qgis::Yards;
-  if ( normalized == encodeUnit( Qgis::Miles ) )
-    return Qgis::Miles;
-  if ( normalized == encodeUnit( Qgis::UnknownUnit ) )
-    return Qgis::UnknownUnit;
+  if ( normalized == encodeUnit( Meters ) )
+    return Meters;
+  if ( normalized == encodeUnit( Feet ) )
+    return Feet;
+  if ( normalized == encodeUnit( Degrees ) )
+    return Degrees;
+  if ( normalized == encodeUnit( NauticalMiles ) )
+    return NauticalMiles;
+  if ( normalized == encodeUnit( Kilometers ) )
+    return Kilometers;
+  if ( normalized == encodeUnit( Yards ) )
+    return Yards;
+  if ( normalized == encodeUnit( Miles ) )
+    return Miles;
+  if ( normalized == encodeUnit( UnknownDistanceUnit ) )
+    return UnknownDistanceUnit;
 
   if ( ok )
     *ok = false;
 
-  return Qgis::UnknownUnit;
+  return UnknownDistanceUnit;
 }
 
-QString QgsUnitTypes::toString( Qgis::UnitType unit )
+QString QgsUnitTypes::toString( DistanceUnit unit )
 {
   switch ( unit )
   {
-    case Qgis::Meters:
-      return QCoreApplication::translate( "Qgis::UnitType", "meters" );
+    case Meters:
+      return QCoreApplication::translate( "UnitType", "meters" );
 
-    case Qgis::Kilometers:
-      return QCoreApplication::translate( "Qgis::UnitType", "kilometers" );
+    case Kilometers:
+      return QCoreApplication::translate( "UnitType", "kilometers" );
 
-    case Qgis::Feet:
-      return QCoreApplication::translate( "Qgis::UnitType", "feet" );
+    case Feet:
+      return QCoreApplication::translate( "UnitType", "feet" );
 
-    case Qgis::Yards:
-      return QCoreApplication::translate( "Qgis::UnitType", "yards" );
+    case Yards:
+      return QCoreApplication::translate( "UnitType", "yards" );
 
-    case Qgis::Miles:
-      return QCoreApplication::translate( "Qgis::UnitType", "miles" );
+    case Miles:
+      return QCoreApplication::translate( "UnitType", "miles" );
 
-    case Qgis::Degrees:
-      return QCoreApplication::translate( "Qgis::UnitType", "degrees" );
+    case Degrees:
+      return QCoreApplication::translate( "UnitType", "degrees" );
 
-    case Qgis::UnknownUnit:
-      return QCoreApplication::translate( "Qgis::UnitType", "<unknown>" );
+    case UnknownDistanceUnit:
+      return QCoreApplication::translate( "UnitType", "<unknown>" );
 
-    case Qgis::NauticalMiles:
-      return QCoreApplication::translate( "Qgis::UnitType", "nautical miles" );
+    case NauticalMiles:
+      return QCoreApplication::translate( "UnitType", "nautical miles" );
   }
   return QString();
 }
@@ -172,34 +172,34 @@ QString QgsUnitTypes::toString( Qgis::UnitType unit )
  * See details in QEP #17
  ****************************************************************************/
 
-Qgis::UnitType QgsUnitTypes::stringToDistanceUnit( const QString& string, bool* ok )
+QgsUnitTypes::DistanceUnit QgsUnitTypes::stringToDistanceUnit( const QString& string, bool* ok )
 {
   QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
 
-  if ( normalized == toString( Qgis::Meters ) )
-    return Qgis::Meters;
-  if ( normalized == toString( Qgis::Kilometers ) )
-    return Qgis::Kilometers;
-  if ( normalized == toString( Qgis::Feet ) )
-    return Qgis::Feet;
-  if ( normalized == toString( Qgis::Yards ) )
-    return Qgis::Yards;
-  if ( normalized == toString( Qgis::Miles ) )
-    return Qgis::Miles;
-  if ( normalized == toString( Qgis::Degrees ) )
-    return Qgis::Degrees;
-  if ( normalized == toString( Qgis::NauticalMiles ) )
-    return Qgis::NauticalMiles;
-  if ( normalized == toString( Qgis::UnknownUnit ) )
-    return Qgis::UnknownUnit;
+  if ( normalized == toString( Meters ) )
+    return Meters;
+  if ( normalized == toString( Kilometers ) )
+    return Kilometers;
+  if ( normalized == toString( Feet ) )
+    return Feet;
+  if ( normalized == toString( Yards ) )
+    return Yards;
+  if ( normalized == toString( Miles ) )
+    return Miles;
+  if ( normalized == toString( Degrees ) )
+    return Degrees;
+  if ( normalized == toString( NauticalMiles ) )
+    return NauticalMiles;
+  if ( normalized == toString( UnknownDistanceUnit ) )
+    return UnknownDistanceUnit;
 
   if ( ok )
     *ok = false;
 
-  return Qgis::UnknownUnit;
+  return UnknownDistanceUnit;
 }
 
 /***************************************************************************
@@ -208,7 +208,7 @@ Qgis::UnitType QgsUnitTypes::stringToDistanceUnit( const QString& string, bool* 
  * See details in QEP #17
  ****************************************************************************/
 
-double QgsUnitTypes::fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit )
+double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit toUnit )
 {
 #define DEGREE_TO_METER 111319.49079327358
 #define FEET_TO_METER 0.3048
@@ -221,175 +221,175 @@ double QgsUnitTypes::fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitTy
   // Calculate the conversion factor between the specified units
   switch ( fromUnit )
   {
-    case Qgis::Meters:
+    case Meters:
     {
       switch ( toUnit )
       {
-        case Qgis::Meters:
+        case Meters:
           return 1.0;
-        case Qgis::Kilometers:
+        case Kilometers:
           return 1.0 / KILOMETERS_TO_METER;
-        case Qgis::Feet:
+        case Feet:
           return 1.0 / FEET_TO_METER;
-        case Qgis::Yards:
+        case Yards:
           return 1.0 / YARDS_TO_METER;
-        case Qgis::Miles:
+        case Miles:
           return 1.0 / MILES_TO_METER;
-        case Qgis::Degrees:
+        case Degrees:
           return 1.0 / DEGREE_TO_METER;
-        case Qgis::NauticalMiles:
+        case NauticalMiles:
           return 1.0 / NMILE_TO_METER;
-        case Qgis::UnknownUnit:
+        case UnknownDistanceUnit:
           break;
       }
 
       break;
     }
-    case Qgis::Kilometers:
+    case Kilometers:
     {
       switch ( toUnit )
       {
-        case Qgis::Meters:
+        case Meters:
           return KILOMETERS_TO_METER;
-        case Qgis::Kilometers:
+        case Kilometers:
           return 1.0;
-        case Qgis::Feet:
+        case Feet:
           return KILOMETERS_TO_METER / FEET_TO_METER;
-        case Qgis::Yards:
+        case Yards:
           return KILOMETERS_TO_METER / YARDS_TO_METER;
-        case Qgis::Miles:
+        case Miles:
           return KILOMETERS_TO_METER / MILES_TO_METER;
-        case Qgis::Degrees:
+        case Degrees:
           return KILOMETERS_TO_METER / DEGREE_TO_METER;
-        case Qgis::NauticalMiles:
+        case NauticalMiles:
           return KILOMETERS_TO_METER / NMILE_TO_METER;
-        case Qgis::UnknownUnit:
+        case UnknownDistanceUnit:
           break;
       }
 
       break;
     }
-    case Qgis::Feet:
+    case Feet:
     {
       switch ( toUnit )
       {
-        case Qgis::Meters:
+        case Meters:
           return FEET_TO_METER;
-        case Qgis::Kilometers:
+        case Kilometers:
           return FEET_TO_METER / KILOMETERS_TO_METER;
-        case Qgis::Feet:
+        case Feet:
           return 1.0;
-        case Qgis::Yards:
+        case Yards:
           return 1.0 / YARDS_TO_FEET;
-        case Qgis::Miles:
+        case Miles:
           return FEET_TO_METER / MILES_TO_METER;
-        case Qgis::Degrees:
+        case Degrees:
           return FEET_TO_METER / DEGREE_TO_METER;
-        case Qgis::NauticalMiles:
+        case NauticalMiles:
           return FEET_TO_METER / NMILE_TO_METER;
-        case Qgis::UnknownUnit:
+        case UnknownDistanceUnit:
           break;
       }
 
       break;
     }
-    case Qgis::Yards:
+    case Yards:
     {
       switch ( toUnit )
       {
-        case Qgis::Meters:
+        case Meters:
           return YARDS_TO_METER;
-        case Qgis::Kilometers:
+        case Kilometers:
           return YARDS_TO_METER / KILOMETERS_TO_METER;
-        case Qgis::Feet:
+        case Feet:
           return YARDS_TO_FEET;
-        case Qgis::Yards:
+        case Yards:
           return 1.0;
-        case Qgis::Miles:
+        case Miles:
           return YARDS_TO_METER / MILES_TO_METER;
-        case Qgis::Degrees:
+        case Degrees:
           return YARDS_TO_METER / DEGREE_TO_METER;
-        case Qgis::NauticalMiles:
+        case NauticalMiles:
           return YARDS_TO_METER / NMILE_TO_METER;
-        case Qgis::UnknownUnit:
+        case UnknownDistanceUnit:
           break;
       }
 
       break;
     }
-    case Qgis::Miles:
+    case Miles:
     {
       switch ( toUnit )
       {
-        case Qgis::Meters:
+        case Meters:
           return MILES_TO_METER;
-        case Qgis::Kilometers:
+        case Kilometers:
           return MILES_TO_METER / KILOMETERS_TO_METER;
-        case Qgis::Feet:
+        case Feet:
           return MILES_TO_METER / FEET_TO_METER;
-        case Qgis::Yards:
+        case Yards:
           return MILES_TO_METER / YARDS_TO_METER;
-        case Qgis::Miles:
+        case Miles:
           return 1.0;
-        case Qgis::Degrees:
+        case Degrees:
           return MILES_TO_METER / DEGREE_TO_METER;
-        case Qgis::NauticalMiles:
+        case NauticalMiles:
           return MILES_TO_METER / NMILE_TO_METER;
-        case Qgis::UnknownUnit:
+        case UnknownDistanceUnit:
           break;
       }
 
       break;
     }
-    case Qgis::Degrees:
+    case Degrees:
     {
       switch ( toUnit )
       {
-        case Qgis::Meters:
+        case Meters:
           return DEGREE_TO_METER;
-        case Qgis::Kilometers:
+        case Kilometers:
           return DEGREE_TO_METER / KILOMETERS_TO_METER;
-        case Qgis::Feet:
+        case Feet:
           return DEGREE_TO_METER / FEET_TO_METER;
-        case Qgis::Yards:
+        case Yards:
           return DEGREE_TO_METER / YARDS_TO_METER;
-        case Qgis::Miles:
+        case Miles:
           return DEGREE_TO_METER / MILES_TO_METER;
-        case Qgis::Degrees:
+        case Degrees:
           return 1.0;
-        case Qgis::NauticalMiles:
+        case NauticalMiles:
           return DEGREE_TO_METER / NMILE_TO_METER;
-        case Qgis::UnknownUnit:
+        case UnknownDistanceUnit:
           break;
       }
 
       break;
     }
-    case Qgis::NauticalMiles:
+    case NauticalMiles:
     {
       switch ( toUnit )
       {
-        case Qgis::Meters:
+        case Meters:
           return NMILE_TO_METER;
-        case Qgis::Kilometers:
+        case Kilometers:
           return NMILE_TO_METER / KILOMETERS_TO_METER;
-        case Qgis::Feet:
+        case Feet:
           return NMILE_TO_METER / FEET_TO_METER;
-        case Qgis::Yards:
+        case Yards:
           return NMILE_TO_METER / YARDS_TO_METER;
-        case Qgis::Miles:
+        case Miles:
           return NMILE_TO_METER / MILES_TO_METER;
-        case Qgis::Degrees:
+        case Degrees:
           return NMILE_TO_METER / DEGREE_TO_METER;
-        case Qgis::NauticalMiles:
+        case NauticalMiles:
           return 1.0;
-        case Qgis::UnknownUnit:
+        case UnknownDistanceUnit:
           break;
       }
 
       break;
     }
-    case Qgis::UnknownUnit:
+    case UnknownDistanceUnit:
       break;
   }
   return 1.0;
@@ -796,32 +796,32 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
   return 1.0;
 }
 
-QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( Qgis::UnitType distanceUnit )
+QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( DistanceUnit distanceUnit )
 {
   switch ( distanceUnit )
   {
-    case Qgis::Meters:
+    case Meters:
       return SquareMeters;
 
-    case Qgis::Kilometers:
+    case Kilometers:
       return SquareKilometers;
 
-    case Qgis::Feet:
+    case Feet:
       return SquareFeet;
 
-    case Qgis::Yards:
+    case Yards:
       return SquareYards;
 
-    case Qgis::Miles:
+    case Miles:
       return SquareMiles;
 
-    case Qgis::Degrees:
+    case Degrees:
       return SquareDegrees;
 
-    case Qgis::UnknownUnit:
+    case UnknownDistanceUnit:
       return UnknownAreaUnit;
 
-    case Qgis::NauticalMiles:
+    case NauticalMiles:
       return SquareNauticalMiles;
   }
 

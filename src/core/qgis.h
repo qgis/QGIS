@@ -150,44 +150,6 @@ class CORE_EXPORT Qgis
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
     };
 
-
-    /** Map units that qgis supports
-     * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
-     * @note and QGIS >1.8 returns to that
-     */
-    //TODO QGIS 3.0 - clean up and move to QgsUnitTypes and rename to DistanceUnit
-    enum UnitType
-    {
-      Meters = 0, /*!< meters */
-      Feet = 1, /*!< imperial feet */
-      Degrees = 2, /*!< degrees, for planar geographic CRS distance measurements */ //for 1.0 api backwards compatibility
-      NauticalMiles = 7, /*!< nautical miles */
-      Kilometers = 8, /*!< kilometers */
-      Yards = 9, /*!< imperial yards */
-      Miles = 10, /*!< terrestial miles */
-      UnknownUnit = 3, /*!< unknown distance unit */
-    };
-
-    //! Provides the canonical name of the type value
-    //! @deprecated use QgsUnitTypes::encodeUnit() instead
-    Q_DECL_DEPRECATED static QString toLiteral( Qgis::UnitType unit );
-
-    //! Converts from the canonical name to the type value
-    //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
-    Q_DECL_DEPRECATED static UnitType fromLiteral( const QString& literal, Qgis::UnitType defaultType = UnknownUnit );
-
-    //! Provides translated version of the type value
-    //! @deprecated use QgsUnitTypes::toString() instead
-    Q_DECL_DEPRECATED static QString tr( Qgis::UnitType unit );
-
-    //! Provides type value from translated version
-    //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
-    Q_DECL_DEPRECATED static UnitType fromTr( const QString& literal, Qgis::UnitType defaultType = UnknownUnit );
-
-    //! Returns the conversion factor between the specified units
-    //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
-    Q_DECL_DEPRECATED static double fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit );
-
     //! User defined event types
     enum UserEvent
     {

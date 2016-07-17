@@ -527,7 +527,7 @@ void QgsGrassNewMapset::setRegionPage()
 
     if ( ok )
     {
-      int precision = newCrs.mapUnits() == Qgis::Degrees ? 6 : 1;
+      int precision = newCrs.mapUnits() == QgsUnitTypes::Degrees ? 6 : 1;
       mNorthLineEdit->setText( qgsDoubleToString( points[1].y(), precision ) );
       mSouthLineEdit->setText( qgsDoubleToString( points[0].y(), precision ) );
       mEastLineEdit->setText( qgsDoubleToString( points[1].x(), precision ) );

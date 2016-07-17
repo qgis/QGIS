@@ -688,11 +688,11 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint& p )
 
   //work with a tolerance because coordinate projection may introduce some rounding
   double threshold =  0.0000001;
-  if ( L->crs().mapUnits() == Qgis::Meters )
+  if ( L->crs().mapUnits() == QgsUnitTypes::Meters )
   {
     threshold = 0.001;
   }
-  else if ( L->crs().mapUnits() == Qgis::Feet )
+  else if ( L->crs().mapUnits() == QgsUnitTypes::Feet )
   {
     threshold = 0.0001;
   }

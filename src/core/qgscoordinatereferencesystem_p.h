@@ -45,7 +45,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     explicit QgsCoordinateReferenceSystemPrivate()
         : mSrsId( 0 )
         , mIsGeographic( false )
-        , mMapUnits( Qgis::UnknownUnit )
+        , mMapUnits( QgsUnitTypes::UnknownDistanceUnit )
         , mSRID( 0 )
         , mIsValid( 0 )
         , mCRS( OSRNewSpatialReference( nullptr ) )
@@ -97,7 +97,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     bool mIsGeographic;
 
     //! The map units for the CRS
-    Qgis::UnitType mMapUnits;
+    QgsUnitTypes::DistanceUnit mMapUnits;
 
     //! If available, the Postgis spatial_ref_sys identifier for this CRS (defaults to 0)
     long mSRID;

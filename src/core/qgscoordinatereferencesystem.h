@@ -35,6 +35,7 @@ typedef struct sqlite3 sqlite3;
 
 //qgis includes
 #include "qgis.h"
+#include "qgsunittypes.h"
 
 #ifdef DEBUG
 typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH;
@@ -493,8 +494,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /** Returns the units for the projection used by the CRS.
      */
-    Qgis::UnitType mapUnits() const;
-
+    QgsUnitTypes::DistanceUnit mapUnits() const;
 
     // Mutators -----------------------------------
     /** Set user hint for validation

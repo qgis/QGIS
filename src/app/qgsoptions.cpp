@@ -460,19 +460,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   }
 
   // Set the units for measuring
-  mDistanceUnitsComboBox->addItem( tr( "Meters" ), Qgis::Meters );
-  mDistanceUnitsComboBox->addItem( tr( "Kilometers" ), Qgis::Kilometers );
-  mDistanceUnitsComboBox->addItem( tr( "Feet" ), Qgis::Feet );
-  mDistanceUnitsComboBox->addItem( tr( "Yards" ), Qgis::Yards );
-  mDistanceUnitsComboBox->addItem( tr( "Miles" ), Qgis::Miles );
-  mDistanceUnitsComboBox->addItem( tr( "Nautical miles" ), Qgis::NauticalMiles );
-  mDistanceUnitsComboBox->addItem( tr( "Degrees" ), Qgis::Degrees );
-  mDistanceUnitsComboBox->addItem( tr( "Map units" ), Qgis::UnknownUnit );
+  mDistanceUnitsComboBox->addItem( tr( "Meters" ), QgsUnitTypes::Meters );
+  mDistanceUnitsComboBox->addItem( tr( "Kilometers" ), QgsUnitTypes::Kilometers );
+  mDistanceUnitsComboBox->addItem( tr( "Feet" ), QgsUnitTypes::Feet );
+  mDistanceUnitsComboBox->addItem( tr( "Yards" ), QgsUnitTypes::Yards );
+  mDistanceUnitsComboBox->addItem( tr( "Miles" ), QgsUnitTypes::Miles );
+  mDistanceUnitsComboBox->addItem( tr( "Nautical miles" ), QgsUnitTypes::NauticalMiles );
+  mDistanceUnitsComboBox->addItem( tr( "Degrees" ), QgsUnitTypes::Degrees );
+  mDistanceUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::UnknownDistanceUnit );
 
   bool ok = false;
-  Qgis::UnitType distanceUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( "/qgis/measure/displayunits" ).toString(), &ok );
+  QgsUnitTypes::DistanceUnit distanceUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( "/qgis/measure/displayunits" ).toString(), &ok );
   if ( !ok )
-    distanceUnits = Qgis::Meters;
+    distanceUnits = QgsUnitTypes::Meters;
   mDistanceUnitsComboBox->setCurrentIndex( mDistanceUnitsComboBox->findData( distanceUnits ) );
 
   mAreaUnitsComboBox->addItem( tr( "Square meters" ), QgsUnitTypes::SquareMeters );
@@ -1302,7 +1302,7 @@ void QgsOptions::saveOptions()
 
   //measurement settings
 
-  Qgis::UnitType distanceUnit = static_cast< Qgis::UnitType >( mDistanceUnitsComboBox->itemData( mDistanceUnitsComboBox->currentIndex() ).toInt() );
+  QgsUnitTypes::DistanceUnit distanceUnit = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsComboBox->itemData( mDistanceUnitsComboBox->currentIndex() ).toInt() );
   mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( distanceUnit ) );
 
   QgsUnitTypes::AreaUnit areaUnit = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsComboBox->itemData( mAreaUnitsComboBox->currentIndex() ).toInt() );

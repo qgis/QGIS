@@ -660,13 +660,13 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   return true;
 }
 
-void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &measure, Qgis::UnitType &u, bool isArea )
+void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &measure, QgsUnitTypes::DistanceUnit &u, bool isArea )
 {
   // Helper for converting between units
   // The parameter &u is out only...
 
   // Get the canvas units
-  Qgis::UnitType myUnits = mCanvas->mapUnits();
+  QgsUnitTypes::DistanceUnit myUnits = mCanvas->mapUnits();
 
   Q_NOWARN_DEPRECATED_PUSH
   calc.convertMeasurement( measure, myUnits, displayUnits(), isArea );
@@ -674,12 +674,12 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
   Q_NOWARN_DEPRECATED_POP
 }
 
-Qgis::UnitType QgsMapToolIdentify::displayUnits()
+QgsUnitTypes::DistanceUnit QgsMapToolIdentify::displayUnits()
 {
   return mCanvas->mapUnits();
 }
 
-Qgis::UnitType QgsMapToolIdentify::displayDistanceUnits() const
+QgsUnitTypes::DistanceUnit QgsMapToolIdentify::displayDistanceUnits() const
 {
   return mCanvas->mapUnits();
 }

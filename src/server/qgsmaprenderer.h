@@ -110,8 +110,8 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //! Recalculate the map scale
     void updateScale();
 
-    Qgis::UnitType mapUnits() const;
-    void setMapUnits( Qgis::UnitType u );
+    QgsUnitTypes::DistanceUnit mapUnits() const;
+    void setMapUnits( QgsUnitTypes::DistanceUnit u );
 
     //! sets whether map image will be for overview
     void enableOverviewMode( bool isOverview = true ) { mOverview = isOverview; }

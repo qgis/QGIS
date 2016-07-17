@@ -17,7 +17,6 @@ import qgis  # NOQA
 from qgis.testing import unittest
 from qgis.core import (
     QgsUnitTypes,
-    Qgis,
     QgsSymbolV2
 )
 from qgis.PyQt.QtCore import QLocale
@@ -31,14 +30,14 @@ class TestQgsUnitTypes(unittest.TestCase):
 
     def testDistanceUnitType(self):
         """Test QgsUnitTypes::unitType() """
-        expected = {Qgis.Meters: QgsUnitTypes.Standard,
-                    Qgis.Kilometers: QgsUnitTypes.Standard,
-                    Qgis.Feet: QgsUnitTypes.Standard,
-                    Qgis.Yards: QgsUnitTypes.Standard,
-                    Qgis.Miles: QgsUnitTypes.Standard,
-                    Qgis.Degrees: QgsUnitTypes.Geographic,
-                    Qgis.UnknownUnit: QgsUnitTypes.UnknownType,
-                    Qgis.NauticalMiles: QgsUnitTypes.Standard
+        expected = {QgsUnitTypes.Meters: QgsUnitTypes.Standard,
+                    QgsUnitTypes.Kilometers: QgsUnitTypes.Standard,
+                    QgsUnitTypes.Feet: QgsUnitTypes.Standard,
+                    QgsUnitTypes.Yards: QgsUnitTypes.Standard,
+                    QgsUnitTypes.Miles: QgsUnitTypes.Standard,
+                    QgsUnitTypes.Degrees: QgsUnitTypes.Geographic,
+                    QgsUnitTypes.UnknownDistanceUnit: QgsUnitTypes.UnknownType,
+                    QgsUnitTypes.NauticalMiles: QgsUnitTypes.Standard
                     }
 
         for t in expected.keys():
@@ -46,14 +45,14 @@ class TestQgsUnitTypes(unittest.TestCase):
 
     def testEncodeDecodeDistanceUnits(self):
         """Test encoding and decoding distance units"""
-        units = [Qgis.Meters,
-                 Qgis.Kilometers,
-                 Qgis.Feet,
-                 Qgis.Yards,
-                 Qgis.Miles,
-                 Qgis.Degrees,
-                 Qgis.UnknownUnit,
-                 Qgis.NauticalMiles]
+        units = [QgsUnitTypes.Meters,
+                 QgsUnitTypes.Kilometers,
+                 QgsUnitTypes.Feet,
+                 QgsUnitTypes.Yards,
+                 QgsUnitTypes.Miles,
+                 QgsUnitTypes.Degrees,
+                 QgsUnitTypes.UnknownDistanceUnit,
+                 QgsUnitTypes.NauticalMiles]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeDistanceUnit(QgsUnitTypes.encodeUnit(u))
@@ -63,23 +62,23 @@ class TestQgsUnitTypes(unittest.TestCase):
         # Test decoding bad units
         res, ok = QgsUnitTypes.decodeDistanceUnit('bad')
         self.assertFalse(ok)
-        self.assertEqual(res, Qgis.UnknownUnit)
+        self.assertEqual(res, QgsUnitTypes.UnknownDistanceUnit)
 
         # Test that string is cleaned before decoding
         res, ok = QgsUnitTypes.decodeDistanceUnit(' FeEt  ')
         assert ok
-        self.assertEqual(res, Qgis.Feet)
+        self.assertEqual(res, QgsUnitTypes.Feet)
 
     def testDistanceUnitsToFromString(self):
         """Test converting distance units to and from translated strings"""
-        units = [Qgis.Meters,
-                 Qgis.Kilometers,
-                 Qgis.Feet,
-                 Qgis.Yards,
-                 Qgis.Miles,
-                 Qgis.Degrees,
-                 Qgis.UnknownUnit,
-                 Qgis.NauticalMiles]
+        units = [QgsUnitTypes.Meters,
+                 QgsUnitTypes.Kilometers,
+                 QgsUnitTypes.Feet,
+                 QgsUnitTypes.Yards,
+                 QgsUnitTypes.Miles,
+                 QgsUnitTypes.Degrees,
+                 QgsUnitTypes.UnknownDistanceUnit,
+                 QgsUnitTypes.NauticalMiles]
 
         for u in units:
             res, ok = QgsUnitTypes.stringToDistanceUnit(QgsUnitTypes.toString(u))
@@ -89,13 +88,13 @@ class TestQgsUnitTypes(unittest.TestCase):
         # Test converting bad strings
         res, ok = QgsUnitTypes.stringToDistanceUnit('bad')
         self.assertFalse(ok)
-        self.assertEqual(res, Qgis.UnknownUnit)
+        self.assertEqual(res, QgsUnitTypes.UnknownDistanceUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToDistanceUnit(' {}  '.format(QgsUnitTypes.toString(Qgis.Feet).upper()))
-        print(' {}  '.format(QgsUnitTypes.toString(Qgis.Feet).upper()))
+        res, ok = QgsUnitTypes.stringToDistanceUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.Feet).upper()))
+        print(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.Feet).upper()))
         assert ok
-        self.assertEqual(res, Qgis.Feet)
+        self.assertEqual(res, QgsUnitTypes.Feet)
 
     def testAreaUnitType(self):
         """Test QgsUnitTypes::unitType() for area units """
@@ -197,14 +196,14 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between units"""
 
-        expected = {Qgis.Meters: {Qgis.Meters: 1.0, Qgis.Kilometers: 0.001, Qgis.Feet: 3.28083989501, Qgis.Yards: 1.0936133, Qgis.Miles: 0.00062136931818182, Qgis.Degrees: 0.00000898315, Qgis.NauticalMiles: 0.000539957},
-                    Qgis.Kilometers: {Qgis.Meters: 1000.0, Qgis.Kilometers: 1.0, Qgis.Feet: 3280.8398950, Qgis.Yards: 1093.6132983, Qgis.Miles: 0.62137121212119317271, Qgis.Degrees: 0.0089832, Qgis.NauticalMiles: 0.53995682073432482717},
-                    Qgis.Feet: {Qgis.Meters: 0.3048, Qgis.Kilometers: 0.0003048, Qgis.Feet: 1.0, Qgis.Yards: 0.3333333, Qgis.Miles: 0.00018939375, Qgis.Degrees: 2.73806498599629E-06, Qgis.NauticalMiles: 0.000164579},
-                    Qgis.Yards: {Qgis.Meters: 0.9144, Qgis.Kilometers: 0.0009144, Qgis.Feet: 3.0, Qgis.Yards: 1.0, Qgis.Miles: 0.000568182, Qgis.Degrees: 0.0000082, Qgis.NauticalMiles: 0.0004937366590756},
-                    Qgis.Degrees: {Qgis.Meters: 111319.49079327358, Qgis.Kilometers: 111.3194908, Qgis.Feet: 365221.4264871, Qgis.Yards: 121740.4754957, Qgis.Miles: 69.1707247, Qgis.Degrees: 1.0, Qgis.NauticalMiles: 60.1077164},
-                    Qgis.Miles: {Qgis.Meters: 1609.3440000, Qgis.Kilometers: 1.6093440, Qgis.Feet: 5280.0000000, Qgis.Yards: 1760.0000000, Qgis.Miles: 1.0, Qgis.Degrees: 0.0144570, Qgis.NauticalMiles: 0.8689762},
-                    Qgis.NauticalMiles: {Qgis.Meters: 1852.0, Qgis.Kilometers: 1.8520000, Qgis.Feet: 6076.1154856, Qgis.Yards: 2025.3718285, Qgis.Miles: 1.1507794, Qgis.Degrees: 0.0166367990650, Qgis.NauticalMiles: 1.0},
-                    Qgis.UnknownUnit: {Qgis.Meters: 1.0, Qgis.Kilometers: 1.0, Qgis.Feet: 1.0, Qgis.Yards: 1.0, Qgis.Miles: 1.0, Qgis.Degrees: 1.0, Qgis.NauticalMiles: 1.0}
+        expected = {QgsUnitTypes.Meters: {QgsUnitTypes.Meters: 1.0, QgsUnitTypes.Kilometers: 0.001, QgsUnitTypes.Feet: 3.28083989501, QgsUnitTypes.Yards: 1.0936133, QgsUnitTypes.Miles: 0.00062136931818182, QgsUnitTypes.Degrees: 0.00000898315, QgsUnitTypes.NauticalMiles: 0.000539957},
+                    QgsUnitTypes.Kilometers: {QgsUnitTypes.Meters: 1000.0, QgsUnitTypes.Kilometers: 1.0, QgsUnitTypes.Feet: 3280.8398950, QgsUnitTypes.Yards: 1093.6132983, QgsUnitTypes.Miles: 0.62137121212119317271, QgsUnitTypes.Degrees: 0.0089832, QgsUnitTypes.NauticalMiles: 0.53995682073432482717},
+                    QgsUnitTypes.Feet: {QgsUnitTypes.Meters: 0.3048, QgsUnitTypes.Kilometers: 0.0003048, QgsUnitTypes.Feet: 1.0, QgsUnitTypes.Yards: 0.3333333, QgsUnitTypes.Miles: 0.00018939375, QgsUnitTypes.Degrees: 2.73806498599629E-06, QgsUnitTypes.NauticalMiles: 0.000164579},
+                    QgsUnitTypes.Yards: {QgsUnitTypes.Meters: 0.9144, QgsUnitTypes.Kilometers: 0.0009144, QgsUnitTypes.Feet: 3.0, QgsUnitTypes.Yards: 1.0, QgsUnitTypes.Miles: 0.000568182, QgsUnitTypes.Degrees: 0.0000082, QgsUnitTypes.NauticalMiles: 0.0004937366590756},
+                    QgsUnitTypes.Degrees: {QgsUnitTypes.Meters: 111319.49079327358, QgsUnitTypes.Kilometers: 111.3194908, QgsUnitTypes.Feet: 365221.4264871, QgsUnitTypes.Yards: 121740.4754957, QgsUnitTypes.Miles: 69.1707247, QgsUnitTypes.Degrees: 1.0, QgsUnitTypes.NauticalMiles: 60.1077164},
+                    QgsUnitTypes.Miles: {QgsUnitTypes.Meters: 1609.3440000, QgsUnitTypes.Kilometers: 1.6093440, QgsUnitTypes.Feet: 5280.0000000, QgsUnitTypes.Yards: 1760.0000000, QgsUnitTypes.Miles: 1.0, QgsUnitTypes.Degrees: 0.0144570, QgsUnitTypes.NauticalMiles: 0.8689762},
+                    QgsUnitTypes.NauticalMiles: {QgsUnitTypes.Meters: 1852.0, QgsUnitTypes.Kilometers: 1.8520000, QgsUnitTypes.Feet: 6076.1154856, QgsUnitTypes.Yards: 2025.3718285, QgsUnitTypes.Miles: 1.1507794, QgsUnitTypes.Degrees: 0.0166367990650, QgsUnitTypes.NauticalMiles: 1.0},
+                    QgsUnitTypes.UnknownDistanceUnit: {QgsUnitTypes.Meters: 1.0, QgsUnitTypes.Kilometers: 1.0, QgsUnitTypes.Feet: 1.0, QgsUnitTypes.Yards: 1.0, QgsUnitTypes.Miles: 1.0, QgsUnitTypes.Degrees: 1.0, QgsUnitTypes.NauticalMiles: 1.0}
                     }
 
         for from_unit in expected.keys():
@@ -217,7 +216,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                                                                                                               QgsUnitTypes.toString(from_unit),
                                                                                                               QgsUnitTypes.toString(to_unit)))
                 #test conversion to unknown units
-                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, Qgis.UnknownUnit)
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.UnknownDistanceUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
                                        msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
@@ -254,14 +253,14 @@ class TestQgsUnitTypes(unittest.TestCase):
 
     def testDistanceToAreaUnit(self):
         """Test distanceToAreaUnit conversion"""
-        expected = {Qgis.Meters: QgsUnitTypes.SquareMeters,
-                    Qgis.Kilometers: QgsUnitTypes.SquareKilometers,
-                    Qgis.Feet: QgsUnitTypes.SquareFeet,
-                    Qgis.Yards: QgsUnitTypes.SquareYards,
-                    Qgis.Miles: QgsUnitTypes.SquareMiles,
-                    Qgis.Degrees: QgsUnitTypes.SquareDegrees,
-                    Qgis.UnknownUnit: QgsUnitTypes.UnknownAreaUnit,
-                    Qgis.NauticalMiles: QgsUnitTypes.SquareNauticalMiles
+        expected = {QgsUnitTypes.Meters: QgsUnitTypes.SquareMeters,
+                    QgsUnitTypes.Kilometers: QgsUnitTypes.SquareKilometers,
+                    QgsUnitTypes.Feet: QgsUnitTypes.SquareFeet,
+                    QgsUnitTypes.Yards: QgsUnitTypes.SquareYards,
+                    QgsUnitTypes.Miles: QgsUnitTypes.SquareMiles,
+                    QgsUnitTypes.Degrees: QgsUnitTypes.SquareDegrees,
+                    QgsUnitTypes.UnknownDistanceUnit: QgsUnitTypes.UnknownAreaUnit,
+                    QgsUnitTypes.NauticalMiles: QgsUnitTypes.SquareNauticalMiles
                     }
 
         for t in expected.keys():

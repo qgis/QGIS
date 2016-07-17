@@ -1397,13 +1397,13 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
       // set resolution approximately to 1mm
       switch ( mCrs.mapUnits() )
       {
-        case Qgis::Meters:
+        case QgsUnitTypes::Meters:
           xRes = 0.001;
           break;
-        case Qgis::Feet:
+        case QgsUnitTypes::Feet:
           xRes = 0.003;
           break;
-        case Qgis::Degrees:
+        case QgsUnitTypes::Degrees:
           // max length of degree of latitude on pole is 111694 m
           xRes = 1e-8;
           break;

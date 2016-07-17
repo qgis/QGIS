@@ -1681,7 +1681,7 @@ double QgsMapCanvas::mapUnitsPerPixel() const
 } // mapUnitsPerPixel
 
 
-void QgsMapCanvas::setMapUnits( Qgis::UnitType u )
+void QgsMapCanvas::setMapUnits( QgsUnitTypes::DistanceUnit u )
 {
   if ( mSettings.mapUnits() == u )
     return;
@@ -1697,7 +1697,7 @@ void QgsMapCanvas::setMapUnits( Qgis::UnitType u )
 }
 
 
-Qgis::UnitType QgsMapCanvas::mapUnits() const
+QgsUnitTypes::DistanceUnit QgsMapCanvas::mapUnits() const
 {
   return mapSettings().mapUnits();
 }

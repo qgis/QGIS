@@ -2076,7 +2076,7 @@ bool QgsProject::topologicalEditing() const
   return ( QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 ) > 0 );
 }
 
-Qgis::UnitType QgsProject::distanceUnits() const
+QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const
 {
   QString distanceUnitString = QgsProject::instance()->readEntry( "Measurement", "/DistanceUnits", QString() );
   if ( !distanceUnitString.isEmpty() )
@@ -2085,8 +2085,8 @@ Qgis::UnitType QgsProject::distanceUnits() const
   //fallback to QGIS default measurement unit
   QSettings s;
   bool ok = false;
-  Qgis::UnitType type = QgsUnitTypes::decodeDistanceUnit( s.value( "/qgis/measure/displayunits" ).toString(), &ok );
-  return ok ? type : Qgis::Meters;
+  QgsUnitTypes::DistanceUnit type = QgsUnitTypes::decodeDistanceUnit( s.value( "/qgis/measure/displayunits" ).toString(), &ok );
+  return ok ? type : QgsUnitTypes::Meters;
 }
 
 QgsUnitTypes::AreaUnit QgsProject::areaUnits() const

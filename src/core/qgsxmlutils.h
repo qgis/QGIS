@@ -21,6 +21,7 @@ class QDomElement;
 class QgsRectangle;
 
 #include "qgis.h"
+#include "qgsunittypes.h"
 
 /** \ingroup core
  * Assorted helper methods for reading and writing chunks of XML
@@ -31,12 +32,12 @@ class CORE_EXPORT QgsXmlUtils
 
     /* reading */
 
-    static Qgis::UnitType readMapUnits( const QDomElement& element );
+    static QgsUnitTypes::DistanceUnit readMapUnits( const QDomElement& element );
     static QgsRectangle readRectangle( const QDomElement& element );
 
     /* writing */
 
-    static QDomElement writeMapUnits( Qgis::UnitType units, QDomDocument& doc );
+    static QDomElement writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument& doc );
     static QDomElement writeRectangle( const QgsRectangle& rect, QDomDocument& doc );
 };
 

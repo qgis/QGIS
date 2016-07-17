@@ -93,8 +93,8 @@ void QgsDecorationGrid::projectRead()
   QgsDecorationItem::projectRead();
 
   mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
-  mMapUnits = static_cast< Qgis::UnitType >( QgsProject::instance()->readNumEntry( mNameConfig, "/MapUnits",
-              Qgis::UnknownUnit ) );
+  mMapUnits = static_cast< QgsUnitTypes::DistanceUnit >( QgsProject::instance()->readNumEntry( mNameConfig, "/MapUnits",
+              QgsUnitTypes::UnknownDistanceUnit ) );
   mGridStyle = static_cast< GridStyle >( QgsProject::instance()->readNumEntry( mNameConfig, "/Style",
                                          QgsDecorationGrid::Line ) );
   mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalX", 10 );
@@ -747,11 +747,11 @@ void QgsDecorationGrid::checkMapUnitsChanged()
   // this is to avoid problems when CRS changes to/from geographic and projected
   // a better solution would be to change the grid interval, but this is a little tricky
   // note: we could be less picky (e.g. from degrees to DMS)
-  Qgis::UnitType mapUnits = QgisApp::instance()->mapCanvas()->mapSettings().mapUnits();
+  QgsUnitTypes::DistanceUnit mapUnits = QgisApp::instance()->mapCanvas()->mapSettings().mapUnits();
   if ( mEnabled && ( mMapUnits != mapUnits ) )
   {
     mEnabled = false;
-    mMapUnits = Qgis::UnknownUnit; // make sure isDirty() returns true
+    mMapUnits = QgsUnitTypes::UnknownDistanceUnit; // make sure isDirty() returns true
     if ( ! QgisApp::instance()->mapCanvas()->isFrozen() )
     {
       update();
@@ -763,7 +763,7 @@ bool QgsDecorationGrid::isDirty()
 {
   // checks if stored map units is undefined or different from canvas map units
   // or if interval is 0
-  if ( mMapUnits == Qgis::UnknownUnit ||
+  if ( mMapUnits == QgsUnitTypes::UnknownDistanceUnit ||
        mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
        qgsDoubleNear( mGridIntervalX, 0.0 ) || qgsDoubleNear( mGridIntervalY, 0.0 ) )
     return true;
@@ -774,7 +774,7 @@ void QgsDecorationGrid::setDirty( bool dirty )
 {
   if ( dirty )
   {
-    mMapUnits = Qgis::UnknownUnit;
+    mMapUnits = QgsUnitTypes::UnknownDistanceUnit;
   }
   else
   {
