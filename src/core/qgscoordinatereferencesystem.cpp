@@ -520,21 +520,13 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
     QgsDebugMsg( "proj string supplied has no +a argument" );
   }
 
-  /*
-   * We try to match the proj string to and srsid using the following logic:
-   *
-   * - perform a whole text search on srs name (if not null). The srs name will
-   *   have been set if this method has been delegated to from createFromWkt.
-   * Normally we wouldnt expect this to work, but its worth trying first
-   * as its quicker than methods below..
-   */
   long mySrsId = 0;
   QgsCoordinateReferenceSystem::RecordMap myRecord;
 
   /*
-   * - if the above does not match perform a whole text search on proj4 string (if not null)
+   * We try to match the proj string to and srsid using the following logic:
+   * - perform a whole text search on proj4 string (if not null)
    */
-  // QgsDebugMsg( "wholetext match on name failed, trying proj4string match" );
   myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( myProj4String ) + " order by deprecated" );
   if ( myRecord.empty() )
   {
@@ -999,15 +991,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   }
 }
 
-/*
-*    check if srs is a geocs or a proj cs (using ogr isGeographic)
-*   then sequentially walk through the database (first users qgis.db srs tbl then
-*   system srs.db tbl), converting each entry into an ogr srs and using isSame
-*   or isSameGeocs (essentially calling the == overloaded operator). We'll try to
-*   be smart about this and first parse out the proj and ellpse strings and only
-*   check for a match in entities that have the same ellps and proj entries so
-*   that it doesnt munch yer cpu so much.
-*/
+
 long QgsCoordinateReferenceSystem::findMatchingProj()
 {
   if ( d->mEllipsoidAcronym.isNull() || d->mProjectionAcronym.isNull()
