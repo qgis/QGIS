@@ -225,7 +225,6 @@
 %Include symbology-ng/qgscolorrampcombobox.sip
 %Include symbology-ng/qgscptcitycolorrampv2dialog.sip
 %Include symbology-ng/qgsdashspacedialog.sip
-%Include symbology-ng/qgsdatadefinedsymboldialog.sip
 %Include symbology-ng/qgsellipsesymbollayerv2widget.sip
 %Include symbology-ng/qgsgraduatedhistogramwidget.sip
 %Include symbology-ng/qgsgraduatedsymbolrendererv2widget.sip

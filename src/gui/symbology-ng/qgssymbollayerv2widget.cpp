@@ -24,7 +24,6 @@
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
-#include "qgsdatadefinedsymboldialog.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerv2utils.h"
