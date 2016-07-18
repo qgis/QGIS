@@ -31,7 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrendererv2.h"
 
-/* Few notes about highligting (RB):
+/* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer
    may be another layer which must remain partially visible.
  - Because single highlight color does not work well with layers using similar layer color
