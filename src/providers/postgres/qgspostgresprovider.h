@@ -23,6 +23,7 @@
 #include "qgsvectorlayerimport.h"
 #include "qgspostgresconn.h"
 #include "qgsfield.h"
+#include <QSharedPointer>
 
 class QgsFeature;
 class QgsField;

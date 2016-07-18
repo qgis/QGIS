@@ -18,6 +18,7 @@
 #include "qgsfeatureiterator.h"
 
 #include <QQueue>
+#include <QSharedPointer>
 
 #include "qgspostgresprovider.h"
 

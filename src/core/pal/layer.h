@@ -31,6 +31,7 @@
 #define PAL_LAYER_H_
 
 #include "pal.h" // for LineArrangementFlags enum
+#include "rtree.hpp"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>

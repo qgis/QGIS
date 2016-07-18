@@ -32,6 +32,7 @@
 
 #include <list>
 #include <QList>
+#include "rtree.hpp"
 
 namespace pal
 {

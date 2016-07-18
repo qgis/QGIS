@@ -35,8 +35,6 @@
 #include <QLinkedList>
 #include <geos_c.h>
 
-class RTree;
-
 namespace pal
 {
 

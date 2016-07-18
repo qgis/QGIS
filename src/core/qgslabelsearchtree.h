@@ -24,6 +24,7 @@
 #include <pointset.h>
 #include <labelposition.h>
 #include "qgsmaprenderer.h"
+#include "rtree.hpp"
 
 class QgsPoint;
 
