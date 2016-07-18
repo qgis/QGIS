@@ -516,14 +516,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! ask user about datum transformation
     void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
 
-    //! return if canvas rotation is enabled
-    //! @note added in 2.8
-    static bool rotationEnabled();
-
-    //! change canvas rotation support
-    //! @note added in 2.8
-    static void enableRotation( bool enabled );
-
     //! Sets the factor of magnification to apply to the map canvas. Indeed, we
     //! increase/decrease the DPI of the map settings according to this factor
     //! in order to render marker point, labels, ... bigger.
