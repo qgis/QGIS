@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import sys
 import os
 import traceback
+import inspect
 
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QObject, pyqtSignal
 from qgis.PyQt.QtWidgets import QApplication
@@ -144,8 +145,10 @@ class Processing:
         if "model" in [p.getName() for p in Processing.providers]:
             return
         # Add the basic providers
+        processingModuleMembers = [cls for name, cls in inspect.getmembers(sys.modules[__name__])]
         for c in AlgorithmProvider.__subclasses__():
-            Processing.addProvider(c())
+            if c in processingModuleMembers:
+                Processing.addProvider(c())
         # And initialize
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
