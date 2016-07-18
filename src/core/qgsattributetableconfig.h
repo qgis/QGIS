@@ -21,13 +21,13 @@
 #include <QDomNode>
 #include <QVariant>
 
+class QgsFields;
+
 /** \ingroup core
  * This is a container for configuration of the attribute table.
  * The configuration is specific for one vector layer.
  * \note added in QGIS 2.16
  */
-
-class QgsFields;
 
 class CORE_EXPORT QgsAttributeTableConfig
 {
