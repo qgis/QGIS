@@ -41,6 +41,7 @@
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #include "qgsstringutils.h"
+#include "qgstreewidgetitem.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -412,8 +413,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
   if ( derivedAttributes.size() >= 0 )
   {
-    QTreeWidgetItem *derivedItem = new QTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
+    QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
     derivedItem->setData( 0, Qt::UserRole, "derived" );
+    derivedItem->setAlwaysOnTopPriority( 0 );
     featItem->addChild( derivedItem );
 
     for ( QMap< QString, QString>::const_iterator it = derivedAttributes.begin(); it != derivedAttributes.end(); ++it )
@@ -427,8 +429,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
   if ( !vlayer->fields().isEmpty() || vlayer->actions()->size() || !registeredActions.isEmpty() )
   {
-    QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
+    QgsTreeWidgetItem *actionItem = new QgsTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
+    actionItem->setAlwaysOnTopPriority( 1 );
     featItem->addChild( actionItem );
 
     if ( vlayer->fields().size() > 0 )
@@ -485,7 +488,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       defVal = vlayer->dataProvider()->defaultValue( fields.fieldOriginIndex( i ) ).toString();
 
     QString value = defVal == attrs.at( i ) ? defVal : fields.at( i ).displayString( attrs.at( i ) );
-    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
+    QgsTreeWidgetItem *attrItem = new QgsTreeWidgetItem( QStringList() << QString::number( i ) << value );
     featItem->addChild( attrItem );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
@@ -495,14 +498,15 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     attrItem->setData( 1, Qt::UserRole, value );
 
     value = representValue( vlayer, fields.at( i ).name(), attrs.at( i ) );
+    attrItem->setSortData( 1, value );
     bool foundLinks = false;
     QString links = QgsStringUtils::insertLinks( value, &foundLinks );
     if ( foundLinks )
     {
       QLabel* valueLabel = new QLabel( links );
       valueLabel->setOpenExternalLinks( true );
-      attrItem->treeWidget()->setItemWidget( attrItem, 1, valueLabel );
       attrItem->setData( 1, Qt::DisplayRole, QString() );
+      attrItem->treeWidget()->setItemWidget( attrItem, 1, valueLabel );
     }
     else
     {
@@ -785,8 +789,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
   if ( derivedAttributes.size() >= 0 )
   {
-    QTreeWidgetItem *derivedItem = new QTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
+    QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
     derivedItem->setData( 0, Qt::UserRole, "derived" );
+    derivedItem->setAlwaysOnTopPriority( 0 );
     featItem->addChild( derivedItem );
 
     for ( QMap< QString, QString>::const_iterator it = derivedAttributes.begin(); it != derivedAttributes.end(); ++it )
@@ -1495,19 +1500,22 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
         {
           value = representValue( vlayer, fld.name(), val );
 
+          QgsTreeWidgetItem* treeItem = static_cast< QgsTreeWidgetItem* >( item );
+          treeItem->setSortData( 1, value );
+
           bool foundLinks = false;
           QString links = QgsStringUtils::insertLinks( value, &foundLinks );
           if ( foundLinks )
           {
             QLabel* valueLabel = new QLabel( links );
             valueLabel->setOpenExternalLinks( true );
-            item->treeWidget()->setItemWidget( item, 1, valueLabel );
-            item->setData( 1, Qt::DisplayRole, QString() );
+            treeItem->setData( 1, Qt::DisplayRole, QString() );
+            treeItem->treeWidget()->setItemWidget( item, 1, valueLabel );
           }
           else
           {
-            item->treeWidget()->setItemWidget( item, 1, nullptr );
-            item->setData( 1, Qt::DisplayRole, value );
+            treeItem->setData( 1, Qt::DisplayRole, value );
+            treeItem->treeWidget()->setItemWidget( item, 1, nullptr );
           }
           return;
         }
