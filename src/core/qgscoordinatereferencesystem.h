@@ -75,17 +75,18 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
  *
  * ~~~{.py}
  * crs = QgsCoordinateReferenceSystem("EPSG:27700")
- * print "Valid:", crs.isValid()
- * print "Description:", crs.description()
- * print "PROJ.4:", crs.toProj4()
+ * if crs.isValid():
+ *     print("CRS Description: {}".format(crs.description()))
+ *     print("CRS PROJ.4 text: {}".format(crs.toProj4()))
+ * else:
+ *     print("Invalid CRS!")
  * ~~~
  *
  * This will produce the following output:
  *
  * ~~~
- * Valid: True
- * Description: OSGB 1936 / British National Grid
- * PROJ.4: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
+ * CRS Description: OSGB 1936 / British National Grid
+ * CRS PROJ.4 text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
  * ~~~
  *
  * CRS Definition Formats
@@ -135,7 +136,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
  * The database of CRS shipped with QGIS is stored in a SQLite database (see QgsApplication::srsDbFilePath())
  * and it is based on the data files maintained by GDAL project (a variety of .csv and .wkt files).
  *
- * Sometimes it happens that user needs to use a CRS definition that is not well known
+ * Sometimes it happens that users need to use a CRS definition that is not well known
  * or that has been only created with a specific purpose (and thus its definition is not
  * available in our database of CRS). Whenever a new CRS definition is seen, it will
  * be added to the local databse (in user's home directory, see QgsApplication::qgisUserDbFilePath()).
@@ -186,7 +187,6 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
  * both flavours.
  *
  * \see QgsCoordinateTransform, QgsCRSCache
- *
  */
 class CORE_EXPORT QgsCoordinateReferenceSystem
 {
