@@ -16,6 +16,7 @@
 #include "qgsexpressionselectiondialog.h"
 #include "qgsapplication.h"
 #include "qgsexpression.h"
+#include "qgsvectorlayer.h"
 
 #include <QSettings>
 

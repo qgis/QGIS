@@ -16,7 +16,7 @@
 #include "qgsvectorcolorbrewercolorrampv2dialog.h"
 
 #include "qgsvectorcolorrampv2.h"
-
+#include "qgssymbollayerv2utils.h"
 #include <QAbstractButton>
 
 #if 0 // unused

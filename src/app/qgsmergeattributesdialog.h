@@ -22,6 +22,7 @@
 #include "ui_qgsmergeattributesdialogbase.h"
 #include "qgsfeature.h"
 #include "qgsstatisticalsummary.h"
+#include "qgsfield.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;

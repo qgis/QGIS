@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 // QGIS includes
+#include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"

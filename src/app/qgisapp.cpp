@@ -109,6 +109,7 @@
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
 #include "qgsattributetabledialog.h"
+#include "qgsattributedialog.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
 #ifndef QT_NO_OPENSSL
@@ -190,6 +191,7 @@
 #include "qgspluginmanager.h"
 #include "qgspluginregistry.h"
 #include "qgspoint.h"
+#include "qgsruntimeprofiler.h"
 #include "qgshandlebadlayers.h"
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
@@ -206,6 +208,7 @@
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
+#include "qgsrasterprojector.h"
 #include "qgsrectangle.h"
 #include "qgsscalevisibilitydialog.h"
 #include "qgsgroupwmsdatadialog.h"

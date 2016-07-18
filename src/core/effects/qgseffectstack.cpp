@@ -17,6 +17,7 @@
 
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
+#include "qgsrendercontext.h"
 #include <QPicture>
 
 QgsEffectStack::QgsEffectStack()

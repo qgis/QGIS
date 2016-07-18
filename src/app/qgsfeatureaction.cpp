@@ -26,6 +26,8 @@
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsactionmanager.h"
+#include "qgsaction.h"
 
 #include <QPushButton>
 #include <QSettings>

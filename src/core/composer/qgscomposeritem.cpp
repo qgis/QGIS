@@ -33,6 +33,7 @@
 #include "qgsdatadefined.h"
 #include "qgscomposerutils.h"
 #include "qgscomposermodel.h"
+#include "qgscomposereffect.h"
 
 #include <limits>
 #include "qgsapplication.h"

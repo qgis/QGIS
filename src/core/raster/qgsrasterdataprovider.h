@@ -30,15 +30,9 @@
 #include <QImage>
 
 #include "qgscolorrampshader.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsdataprovider.h"
-#include "qgserror.h"
-#include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgslogger.h"
-#include "qgsrasterbandstats.h"
 #include "qgsraster.h"
-#include "qgsrasterhistogram.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"

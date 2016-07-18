@@ -28,6 +28,7 @@
 #include "qgsproject.h"
 #include "qgsprojectionselector.h"
 #include "qgslocalec.h"
+#include "qgscsexception.h"
 
 #include <QCloseEvent>
 #include <QFileDialog>

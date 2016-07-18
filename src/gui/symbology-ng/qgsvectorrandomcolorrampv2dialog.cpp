@@ -15,6 +15,7 @@
 
 #include "qgsvectorrandomcolorrampv2dialog.h"
 
+#include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
 
 #include <QColorDialog>

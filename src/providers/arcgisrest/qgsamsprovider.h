@@ -20,6 +20,7 @@
 #define QGSMAPSERVERPROVIDER_H
 
 #include "qgsrasterdataprovider.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsArcGisAsyncQuery;
 class QgsAmsProvider;

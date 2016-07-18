@@ -16,7 +16,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmapcanvas.h"
-
+#include "qgsadvanceddigitizingdockwidget.h"
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget )
     : QgsMapToolEdit( canvas )

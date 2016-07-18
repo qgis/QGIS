@@ -19,7 +19,6 @@
 #ifndef QGSVECTORFILEWRITER_H
 #define QGSVECTORFILEWRITER_H
 
-#include "qgsvectorlayer.h"
 #include "qgsfield.h"
 #include "qgssymbolv2.h"
 #include <ogr_api.h>
@@ -29,6 +28,7 @@
 
 class QgsSymbolLayerV2;
 class QTextCodec;
+class QgsFeatureIterator;
 
 /** \ingroup core
   * A convenience class for writing vector files to disk.

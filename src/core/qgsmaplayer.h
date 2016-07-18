@@ -28,12 +28,11 @@
 
 #include "qgis.h"
 #include "qgserror.h"
-#include "qgsmaprenderer.h"
 #include "qgsobjectcustomproperties.h"
 #include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsRenderContext;
-class QgsCoordinateReferenceSystem;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;

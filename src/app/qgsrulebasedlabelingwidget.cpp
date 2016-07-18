@@ -16,7 +16,9 @@
 
 #include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsfeatureiterator.h"
 #include "qgslabelinggui.h"
+#include "qgsmapcanvas.h"
 #include "qgsrulebasedlabeling.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"

@@ -16,9 +16,9 @@
 #define QgsHTMLAnnotationDialog_H
 
 #include "ui_qgsformannotationdialogbase.h"
-#include "qgshtmlannotationitem.h"
 
 class QgsAnnotationWidget;
+class QgsHtmlAnnotationItem;
 
 class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
 {

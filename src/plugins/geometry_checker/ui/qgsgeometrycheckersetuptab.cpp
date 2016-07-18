@@ -22,6 +22,7 @@
 #include "../checks/qgsgeometrycheck.h"
 #include "../utils/qgsfeaturepool.h"
 
+#include "qgsfeatureiterator.h"
 #include "qgisinterface.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"

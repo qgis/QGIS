@@ -27,9 +27,11 @@
 
 //qgis includes...
 #include <qgsrasterchecker.h>
+#include "qgsrasterdataprovider.h"
 #include <qgsrasterlayer.h>
 #include <qgsrasterfilewriter.h>
 #include <qgsrasternuller.h>
+#include "qgsrasterprojector.h"
 #include <qgsapplication.h>
 
 /** \ingroup UnitTests

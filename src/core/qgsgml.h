@@ -17,15 +17,10 @@
 
 #include <expat.h>
 #include "qgis.h"
-#include "qgsapplication.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsdataprovider.h"
-#include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgslogger.h"
-#include "qgspoint.h"
 #include "qgsrectangle.h"
 #include "qgswkbptr.h"
+#include "qgsfeature.h"
 
 #include <QPair>
 #include <QByteArray>
@@ -35,6 +30,8 @@
 #include <QVector>
 
 #include <string>
+
+class QgsCoordinateReferenceSystem;
 
 /** \ingroup core
  * This class builds features from GML data in a streaming way. The caller must call processData()

@@ -19,8 +19,8 @@
 #define QGSDXFEXPORTDIALOG_H
 
 #include "ui_qgsdxfexportdialogbase.h"
-#include "qgsdxfexport.h"
 #include "qgslayertreemodel.h"
+#include "qgsdxfexport.h"
 
 #include <QList>
 #include <QPair>

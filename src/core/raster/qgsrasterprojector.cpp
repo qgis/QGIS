@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsrasterprojector.h"
 #include "qgscoordinatetransform.h"
+#include "qgscsexception.h"
 
 QgsRasterProjector::QgsRasterProjector(
   const QgsCoordinateReferenceSystem& theSrcCRS,

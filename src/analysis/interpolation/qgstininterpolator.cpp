@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgstininterpolator.h"
+#include "qgsfeatureiterator.h"
 #include "CloughTocherInterpolator.h"
 #include "DualEdgeTriangulation.h"
 #include "NormVecDecorator.h"
 #include "LinTriangleInterpolator.h"
+#include "Line3D.h"
 #include "Point3D.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"

@@ -37,6 +37,7 @@
 
 #include "qgslabelattributes.h"
 #include "qgslabel.h"
+#include "qgscsexception.h"
 
 // use M_PI define PI 3.141592654
 #ifdef Q_OS_WIN

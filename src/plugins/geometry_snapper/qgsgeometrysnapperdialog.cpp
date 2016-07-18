@@ -18,6 +18,7 @@
 #include "qgsgeometrysnapperdialog.h"
 #include "qgsgeometrysnapper.h"
 
+#include "qgsfeatureiterator.h"
 #include "qgisinterface.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"

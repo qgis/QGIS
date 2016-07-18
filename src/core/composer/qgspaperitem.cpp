@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgsstylev2.h"
 #include "qgslogger.h"
+#include "qgsmapsettings.h"
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 #include <QPainter>

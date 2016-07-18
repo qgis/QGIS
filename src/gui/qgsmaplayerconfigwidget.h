@@ -18,10 +18,10 @@
 #include <QWidget>
 #include <QIcon>
 
-#include "qgsmaplayer.h"
 #include "qgspanelwidget.h"
 
 class QgsMapCanvas;
+class QgsMapLayer;
 
 /** \ingroup gui
  * \class QgsMapLayerConfigWidget

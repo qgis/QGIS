@@ -19,7 +19,6 @@
 #define QGSLINESTRINGV2_H
 
 #include "qgscurvev2.h"
-#include "qgswkbptr.h"
 #include <QPolygonF>
 
 /***************************************************************************

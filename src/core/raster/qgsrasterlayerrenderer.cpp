@@ -16,10 +16,13 @@
 #include "qgsrasterlayerrenderer.h"
 
 #include "qgsmessagelog.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
-
+#include "qgsrasterprojector.h"
+#include "qgsrendercontext.h"
+#include "qgscsexception.h"
 
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext )
     : QgsMapLayerRenderer( layer->id() )

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspointsample.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsspatialindex.h"
 #include "qgsvectorfilewriter.h"

@@ -16,7 +16,6 @@
 #define QGSFEATUREITERATOR_H
 
 #include "qgsfeaturerequest.h"
-#include "qgslogger.h"
 #include "qgsindexedfeature.h"
 
 

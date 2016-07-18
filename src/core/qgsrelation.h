@@ -21,9 +21,12 @@
 #include <QPair>
 
 #include "qgsfield.h"
-#include "qgsfeatureiterator.h"
 
 class QgsVectorLayer;
+class QgsFeatureIterator;
+class QgsFeature;
+class QgsFeatureRequest;
+class QgsAttributes;
 
 /** \ingroup core
  * \class QgsRelation

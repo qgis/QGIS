@@ -34,6 +34,7 @@
 #include "qgsstylev2.h" //for symbol selector dialog
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
 #include "qgslogger.h"
 #include "qgssizescalewidget.h"

@@ -26,6 +26,8 @@
 #include <QVector>
 #include <QStyle>
 #include <QSettings>
+#include <QDomDocument>
+#include <QDomElement>
 
 #include "qgscptcityarchive.h"
 #include "qgis.h"
@@ -35,7 +37,7 @@
 #include "qgsconfig.h"
 #include "qgsmimedatautils.h"
 #include "qgsapplication.h"
-
+#include "qgssymbollayerv2utils.h"
 
 QString QgsCptCityArchive::mDefaultArchiveName;
 QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::mArchiveRegistry;

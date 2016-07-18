@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "ui_qgsatlascompositionwidgetbase.h"
-#include "qgsvectorlayer.h"
 
 class QgsComposition;
 class QgsMapLayer;

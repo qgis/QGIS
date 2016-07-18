@@ -24,7 +24,8 @@
 #include "qgserror.h"
 #include "qgslogger.h"
 #include "qgsrasterrange.h"
-#include "qgsrectangle.h"
+
+class QgsRectangle;
 
 /** \ingroup core
  * Raster data container.

@@ -21,7 +21,6 @@
 #include <QScopedPointer>
 
 #include "ui_qgsbookmarksbase.h"
-#include "qgscontexthelp.h"
 #include "qgsdockwidget.h"
 
 /*

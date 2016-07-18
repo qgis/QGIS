@@ -23,7 +23,6 @@
 #include <QCoreApplication> // for tr()
 #include <QImage>
 
-#include "qgslogger.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterhistogram.h"

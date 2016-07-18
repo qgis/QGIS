@@ -16,6 +16,7 @@
 #include "qgsrelation.h"
 
 #include "qgsapplication.h"
+#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"

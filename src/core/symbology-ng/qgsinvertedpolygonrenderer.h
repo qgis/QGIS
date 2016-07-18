@@ -17,7 +17,6 @@
 
 #include "qgis.h"
 #include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"

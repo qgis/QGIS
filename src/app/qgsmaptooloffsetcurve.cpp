@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdoublespinbox.h"
+#include "qgsfeatureiterator.h"
 #include "qgsmaptooloffsetcurve.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"

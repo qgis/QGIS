@@ -22,8 +22,6 @@
 #include <QVector>
 #include <QList>
 #include <QSet>
-#include "MathUtils.h"
-#include "TriangleInterpolator.h"
 #include <QColor>
 #include <QFile>
 #include <QTextStream>

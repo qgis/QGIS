@@ -21,6 +21,7 @@
 #include "qgslabelengineconfigdialog.h"
 #include "qgslabelinggui.h"
 #include "qgsrulebasedlabelingwidget.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgisapp.h"
 

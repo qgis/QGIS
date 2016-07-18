@@ -19,6 +19,7 @@
 #include <QTemporaryFile>
 
 //qgis includes...
+#include "qgsfeatureiterator.h"
 #include <qgsvectorlayercache.h>
 #include <qgsvectordataprovider.h>
 #include <qgsapplication.h>

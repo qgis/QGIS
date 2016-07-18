@@ -14,12 +14,10 @@
  ***************************************************************************/
 
 #include "qgslayertreeutils.h"
-
 #include "qgslayertree.h"
-
 #include "qgsvectorlayer.h"
-
 #include "qgsproject.h"
+#include "qgslogger.h"
 
 #include <QDomElement>
 

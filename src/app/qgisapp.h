@@ -74,7 +74,14 @@ class QgsUserInputDockWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsWelcomePage;
-
+class QgsRasterLayer;
+class QgsPluginLayer;
+class QgsCoordinateReferenceSystem;
+class QgsFeatureStore;
+class QgsAuthManager;
+class QgsPluginManager;
+class QgsRuntimeProfiler;
+class QgsBookmarks;
 
 class QDomDocument;
 class QNetworkReply;
@@ -106,20 +113,15 @@ class QgsDiagramProperties;
 #include <QPointer>
 #include <QSslError>
 #include <QDateTime>
+#include <QStackedWidget>
 
 #include "qgsauthmanager.h"
 #include "qgsconfig.h"
 #include "qgsfeature.h"
-#include "qgsfeaturestore.h"
 #include "qgspoint.h"
-#include "qgsrasterlayer.h"
-#include "qgssnappingdialog.h"
-#include "qgspluginmanager.h"
 #include "qgsmessagebar.h"
-#include "qgsbookmarks.h"
 #include "qgswelcomepageitemsmodel.h"
-#include "qgsruntimeprofiler.h"
-
+#include "qgsraster.h"
 
 #include "ui_qgisapp.h"
 

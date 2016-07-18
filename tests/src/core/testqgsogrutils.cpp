@@ -23,6 +23,7 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
+#include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgsogrutils.h"
 #include "qgsapplication.h"

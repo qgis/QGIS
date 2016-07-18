@@ -17,7 +17,6 @@
 #define QGSVALUERELATIONWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
-#include "qgsvaluerelationwidgetwrapper.h"
 
 #include <QMap>
 

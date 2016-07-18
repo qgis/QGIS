@@ -19,7 +19,6 @@
 #define QGSDXFPAINTENGINE_H
 
 #include <QPaintEngine>
-#include "qgsgeometryfactory.h"
 #include "qgsabstractgeometryv2.h"
 
 class QgsDxfExport;

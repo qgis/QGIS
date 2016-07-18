@@ -18,11 +18,10 @@
 #define QGSCOMPOSERITEM_H
 
 #include "qgscomposeritemcommand.h"
-#include "qgscomposereffect.h"
 #include "qgscomposerobject.h"
-#include "qgsmaprenderer.h" // for blend mode functions & enums
 #include <QGraphicsRectItem>
 #include <QObject>
+#include <QPainter>
 
 class QWidget;
 class QDomDocument;
@@ -32,6 +31,7 @@ class QgsComposerItemGroup;
 class QgsDataDefined;
 class QgsComposition;
 class QgsExpressionContext;
+class QgsComposerEffect;
 
 /** \ingroup core
  * A item that forms part of a map composition.

@@ -19,8 +19,8 @@
 #define QGSDXFPAINTDEVICE_H
 
 #include <QPaintDevice>
-#include "qgsdxfpaintengine.h"
 
+class QgsDxfPaintEngine;
 class QgsDxfExport;
 class QPaintEngine;
 

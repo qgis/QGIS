@@ -20,6 +20,7 @@
 
 #include "qgsconfig.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaprenderer.h"
 
 #include <QDomElement>
 #include <QHash>

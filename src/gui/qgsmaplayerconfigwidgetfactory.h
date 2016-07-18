@@ -18,7 +18,9 @@
 
 #include <QListWidgetItem>
 
-#include "qgsmaplayerconfigwidget.h"
+class QgsMapLayer;
+class QgsMapLayerConfigWidget;
+class QgsMapCanvas;
 
 /** \ingroup gui
  * \class QgsMapLayerConfigWidgetFactory

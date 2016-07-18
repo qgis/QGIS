@@ -18,6 +18,7 @@
 #include <QString>
 
 #include <qgsapplication.h>
+#include "qgsfeatureiterator.h"
 #include <qgsgeometry.h>
 #include <qgsspatialindex.h>
 #include <qgsvectordataprovider.h>

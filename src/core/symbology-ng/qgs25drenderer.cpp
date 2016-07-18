@@ -19,6 +19,7 @@
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
+#include "qgsdatadefined.h"
 
 #define ROOF_EXPRESSION \
   "translate(" \

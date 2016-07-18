@@ -20,7 +20,6 @@
 #include <QExplicitlySharedDataPointer>
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform_p.h"
-#include "qgscsexception.h"
 
 class QgsCoordinateTransformPrivate;
 class QgsPoint;

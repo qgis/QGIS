@@ -22,19 +22,17 @@
 #define QGSPROJECT_H
 
 #include <memory>
-#include "qgsprojectversion.h"
 #include <QHash>
 #include <QList>
 #include <QObject>
 #include <QPair>
 #include <QFileInfo>
-
-//for the snap settings
-#include "qgssnapper.h"
-#include "qgstolerance.h"
-#include "qgsunittypes.h"
+#include <QStringList>
 
 //#include <QDomDocument>
+#include "qgssnapper.h"
+#include "qgsunittypes.h"
+#include "qgsprojectversion.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -49,6 +47,7 @@ class QgsRelationManager;
 class QgsVectorLayer;
 class QgsVisibilityPresetCollection;
 class QgsTransactionGroup;
+class QgsTolerance;
 
 /** \ingroup core
  * Reads and writes project states.

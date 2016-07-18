@@ -16,12 +16,11 @@
 #ifndef QGSMAPTOOLIDENTIFY_H
 #define QGSMAPTOOLIDENTIFY_H
 
-#include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsmaptool.h"
-#include "qgsmaplayer.h"
 #include "qgspoint.h"
+#include "qgsunittypes.h"
 
 #include <QObject>
 #include <QPointer>
@@ -32,6 +31,7 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsHighlight;
 class QgsIdentifyMenu;
+class QgsDistanceArea;
 
 /** \ingroup gui
   \brief Map tool for identifying features in layers

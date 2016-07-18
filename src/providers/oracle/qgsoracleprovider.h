@@ -23,11 +23,13 @@
 #include "qgsvectorlayerimport.h"
 #include "qgsoracletablemodel.h"
 #include "qgsdatasourceuri.h"
+#include "qgsfield.h"
 
 #include <QVector>
 #include <QQueue>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QMutex>
 
 class QgsFeature;
 class QgsField;

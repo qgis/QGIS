@@ -18,7 +18,7 @@
 
 #include <QSortFilterProxyModel>
 
-#include "qgsfieldmodel.h"
+class QgsFieldModel;
 
 /** \ingroup gui
  * @brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.

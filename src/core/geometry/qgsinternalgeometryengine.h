@@ -16,7 +16,8 @@
 #ifndef QGSINTERNALGEOMETRYENGINE_H
 #define QGSINTERNALGEOMETRYENGINE_H
 
-#include "qgsgeometry.h"
+class QgsGeometry;
+class QgsAbstractGeometryV2;
 
 /**
  * \ingroup core

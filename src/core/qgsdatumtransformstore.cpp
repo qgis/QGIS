@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdatumtransformstore.h"
-
+#include "qgscoordinatetransform.h"
 #include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"

@@ -17,7 +17,6 @@
 #define QGSEXPRESSIONBUILDERDIALOG_H
 
 #include <QDialog>
-#include "qgsdistancearea.h"
 #include "ui_qgsexpressionbuilderdialogbase.h"
 
 /** \ingroup gui

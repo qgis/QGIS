@@ -15,6 +15,7 @@
 
 #include "qgsvectorlayerundocommand.h"
 
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"

@@ -20,7 +20,6 @@ email                : ersts@amnh.org
 #define QGSCONTRASTENHANCEMENTFUNCTION_H
 
 #include "qgis.h"
-#include "qgscontrastenhancement.h"
 
 /** \ingroup core
  * A contrast enhancement funcion is the base class for all raster contrast enhancements.

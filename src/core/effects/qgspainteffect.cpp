@@ -18,6 +18,7 @@
 #include "qgspainteffect.h"
 #include "qgsimageoperation.h"
 #include "qgslogger.h"
+#include "qgsrendercontext.h"
 #include <QPicture>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();

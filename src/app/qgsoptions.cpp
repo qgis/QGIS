@@ -32,6 +32,7 @@
 #include "qgsproject.h"
 #include "qgsdualview.h"
 #include "qgscrscache.h"
+#include "qgsrasterlayer.h"
 
 #include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"

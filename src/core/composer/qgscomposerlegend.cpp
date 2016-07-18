@@ -27,6 +27,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgslogger.h"
+#include "qgsmapsettings.h"
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgslayertreeutils.h"

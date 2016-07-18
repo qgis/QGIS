@@ -18,13 +18,19 @@
 
 #include <QObject>
 #include <QMap>
-
+#include "qgseditorwidgetconfig.h"
 #include "qgseditorwidgetfactory.h"
+#include "qgsattributeeditorcontext.h"
 
 class QgsMapLayer;
 class QDomNode;
 class QgsMapCanvas;
 class QgsMessageBar;
+class QgsSearchWidgetWrapper;
+class QgsEditorWidgetWrapper;
+class QgsEditorConfigWidget;
+class QgsVectorLayer;
+
 
 /** \ingroup gui
  * This class manages all known edit widget factories

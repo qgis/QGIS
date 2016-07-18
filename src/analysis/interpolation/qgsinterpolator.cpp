@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsinterpolator.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"

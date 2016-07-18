@@ -24,8 +24,7 @@
 #include <QStringList>
 #include <QUrl>
 
-#include "qgsauthconfig.h"
-
+class QgsAuthMethodConfig;
 
 /** \ingroup core
  * Abstract base class for authentication method plugins

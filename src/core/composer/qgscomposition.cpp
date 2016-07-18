@@ -36,6 +36,7 @@
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
 #include "qgsgroupungroupitemscommand.h"
+#include "qgsmaprenderer.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
 #include "qgsproject.h"

@@ -20,6 +20,7 @@
 #include "qgsdialog.h"
 #include "qgsrasterlayer.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterdataprovider.h"
 
 #include <QSettings>
 #include <QInputDialog>

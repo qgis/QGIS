@@ -27,6 +27,7 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
 #include <QString>
 #include <QStringList>

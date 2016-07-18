@@ -18,6 +18,7 @@
 #include "qgszonalstatisticsdialog.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgisinterface.h"

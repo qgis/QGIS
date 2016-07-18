@@ -14,7 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgs25drendererwidget.h"
-
+#include "qgs25drenderer.h"
+#include "qgsvectorlayer.h"
 #include "qgsmaplayerstylemanager.h"
 
 Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )

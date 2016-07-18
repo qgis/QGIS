@@ -18,7 +18,6 @@
 #ifndef QGSVECTORLAYERJOINBUFFER_H
 #define QGSVECTORLAYERJOINBUFFER_H
 
-#include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 
 #include <QHash>

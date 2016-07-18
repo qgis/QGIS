@@ -18,6 +18,7 @@
 #include "topolTest.h"
 
 #include <qgsvectorlayer.h>
+#include "qgsfeatureiterator.h"
 #include <qgsmaplayer.h>
 #include <qgsmapcanvas.h>
 #include <qgsgeometry.h>

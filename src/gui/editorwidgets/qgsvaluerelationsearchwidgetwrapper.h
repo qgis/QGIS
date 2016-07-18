@@ -17,7 +17,6 @@
 #define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include "qgsvaluerelationwidgetwrapper.h"
 
 #include <QComboBox>
 #include <QListWidget>

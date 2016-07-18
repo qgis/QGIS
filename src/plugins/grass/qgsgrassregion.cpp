@@ -24,6 +24,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaptool.h"
+#include "qgscsexception.h"
 
 #include <QButtonGroup>
 #include <QColorDialog>

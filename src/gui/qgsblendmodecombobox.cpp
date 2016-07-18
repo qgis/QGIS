@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsblendmodecombobox.h"
+#include "qgsmaprenderer.h"
 
 #include <QAbstractItemView>
 #include <QLocale>

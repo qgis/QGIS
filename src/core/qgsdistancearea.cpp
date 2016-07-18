@@ -36,6 +36,7 @@
 #include "qgssurfacev2.h"
 #include "qgsunittypes.h"
 #include "qgscrscache.h"
+#include "qgscsexception.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h
 #ifndef M_PI

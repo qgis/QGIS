@@ -18,9 +18,9 @@
 #define MATHUTILS_H
 
 #include <cmath>
-#include "Vector3D.h"
-#include "Point3D.h"
 
+class Point3D;
+class Vector3D;
 
 namespace MathUtils
 {

@@ -16,9 +16,7 @@
 #define QGSHIGHLIGHT_H
 
 #include "qgsmapcanvasitem.h"
-#include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
-#include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
 #include <QBrush>
 #include <QColor>

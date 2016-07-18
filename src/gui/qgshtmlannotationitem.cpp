@@ -18,6 +18,7 @@
 #include "qgshtmlannotationitem.h"
 #include "qgsattributeeditor.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
@@ -25,6 +26,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgswebview.h"
+#include "qgswebframe.h"
 
 #include <QDomElement>
 #include <QDir>

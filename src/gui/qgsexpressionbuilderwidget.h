@@ -18,14 +18,17 @@
 
 #include <QWidget>
 #include "ui_qgsexpressionbuilder.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressionhighlighter.h"
 #include "qgsdistancearea.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfeature.h"
 
 #include "QStandardItemModel"
 #include "QStandardItem"
 #include "QSortFilterProxyModel"
 #include "QStringListModel"
+
+class QgsFields;
+class QgsExpressionHighlighter;
 
 /** \ingroup gui
  * An expression item that can be used in the QgsExpressionBuilderWidget tree.

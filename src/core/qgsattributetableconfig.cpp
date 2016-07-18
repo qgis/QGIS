@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributetableconfig.h"
-
+#include "qgsfield.h"
 #include <QStringList>
 
 QgsAttributeTableConfig::QgsAttributeTableConfig()

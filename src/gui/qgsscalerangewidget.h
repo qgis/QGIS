@@ -19,10 +19,8 @@
 #include <QGridLayout>
 #include <QLabel>
 
-#include "qgscollapsiblegroupbox.h"
-#include "qgsmaplayer.h"
-#include "qgsmapcanvas.h"
-#include "qgsscalewidget.h"
+class QgsMapCanvas;
+class QgsScaleWidget;
 
 /** \ingroup gui
  * \class QgsScaleRangeWidget

@@ -17,6 +17,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsgeometry.h"
+#include "qgsfield.h"
 #include <QTextCodec>
 #include <QUuid>
 

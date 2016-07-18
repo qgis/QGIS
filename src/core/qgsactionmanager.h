@@ -29,13 +29,12 @@
 
 #include "qgsaction.h"
 #include "qgsfeature.h"
-#include "qgsexpressioncontext.h"
 
 class QDomNode;
 class QDomDocument;
 class QgsPythonUtils;
 class QgsVectorLayer;
-
+class QgsExpressionContext;
 
 /** \ingroup core
  * \class QgsActionManager

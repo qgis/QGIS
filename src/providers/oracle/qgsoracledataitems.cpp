@@ -21,6 +21,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>

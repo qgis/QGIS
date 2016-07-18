@@ -19,6 +19,8 @@
 #include "qgsnewnamedialog.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterprojector.h"
 #include "qgslogger.h"
 
 #include "qgsgrassprovidermodule.h"

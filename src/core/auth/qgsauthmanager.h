@@ -35,7 +35,6 @@
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
-#include "qgsdatasourceuri.h"
 
 namespace QCA
 {

@@ -18,8 +18,10 @@
 #ifndef QGSCOMPOSERTABLECOLUMN_H
 #define QGSCOMPOSERTABLECOLUMN_H
 
-#include "qgscomposertable.h"
 #include <QObject>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QColor>
 
 /** \ingroup core
  * Stores properties of a column in a QgsComposerTable. Some properties of a QgsComposerTableColumn

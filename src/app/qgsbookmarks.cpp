@@ -34,7 +34,7 @@
 #include <QSqlQuery>
 #include <QModelIndex>
 #include <QAbstractTableModel>
-
+#include <QToolButton>
 
 QgsBookmarks::QgsBookmarks( QWidget *parent )
     : QgsDockWidget( parent )

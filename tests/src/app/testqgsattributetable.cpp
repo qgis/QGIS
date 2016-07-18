@@ -15,6 +15,7 @@
 #include <QtTest/QtTest>
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"

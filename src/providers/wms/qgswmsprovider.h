@@ -21,6 +21,7 @@
 #define QGSWMSPROVIDER_H
 
 #include "qgsrasterdataprovider.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkreplyparser.h"
 #include "qgswmscapabilities.h"
 

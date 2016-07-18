@@ -17,11 +17,10 @@
 #ifndef QGSMAPTOOLADVANCEDDIGITIZE_H
 #define QGSMAPTOOLADVANCEDDIGITIZE_H
 
-#include "qgsmaptool.h"
 #include "qgsmaptooledit.h"
-#include "qgsadvanceddigitizingdockwidget.h"
 
 class QgsMapMouseEvent;
+class QgsAdvancedDigitizingDockWidget;
 
 /** \ingroup gui
  * @brief The QgsMapToolAdvancedDigitizing class is a QgsMapTool whcih gives event directly in map coordinates and allows filtering its events.

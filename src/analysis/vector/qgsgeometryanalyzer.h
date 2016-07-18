@@ -18,15 +18,13 @@
 #ifndef QGSGEOMETRYANALYZERH
 #define QGSGEOMETRYANALYZERH
 
-#include "qgsvectorlayer.h"
-#include "qgsfield.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsdistancearea.h"
 
 class QgsVectorFileWriter;
 class QProgressDialog;
-
+class QgsVectorDataProvider;
+class QgsDistanceArea;
 
 /** \ingroup analysis
  * The QGis class provides vector geometry analysis functions

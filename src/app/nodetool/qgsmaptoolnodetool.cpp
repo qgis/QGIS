@@ -19,6 +19,7 @@
 #include "nodetool/qgsvertexentry.h"
 #include "nodetool/qgsnodeeditor.h"
 
+#include "qgsfeatureiterator.h"
 #include "qgisapp.h"
 #include "qgslayertreeview.h"
 #include "qgslogger.h"

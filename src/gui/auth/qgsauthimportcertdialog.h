@@ -19,7 +19,6 @@
 
 #include <QDialog>
 #include "ui_qgsauthimportcertdialog.h"
-#include "qgsauthcertutils.h"
 
 #include <QSslCertificate>
 

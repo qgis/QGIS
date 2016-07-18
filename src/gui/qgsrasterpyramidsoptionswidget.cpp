@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrasterpyramidsoptionswidget.h"
+#include "qgsrasterdataprovider.h"
 #include "qgslogger.h"
 #include "qgsdialog.h"
 

@@ -17,7 +17,6 @@
 #define QGSMARKERSYMBOLLAYERV2_H
 
 #include "qgssymbollayerv2.h"
-#include "qgsvectorlayer.h"
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
 #define DEFAULT_SIMPLEMARKER_COLOR        QColor(255,0,0)

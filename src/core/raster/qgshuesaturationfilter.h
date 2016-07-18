@@ -18,7 +18,6 @@
 #ifndef QGSHUESATURATIONFILTER_H
 #define QGSHUESATURATIONFILTER_H
 
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;

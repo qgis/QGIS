@@ -17,8 +17,11 @@
 
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
+#include "qgsrasterprojector.h"
 
 #include <QProgressDialog>
 #include <QFile>

@@ -17,6 +17,7 @@
 #include "qgsfieldproxymodel.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsfieldmodel.h"
 
 QgsFieldComboBox::QgsFieldComboBox( QWidget *parent )
     : QComboBox( parent )

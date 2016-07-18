@@ -21,6 +21,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgsmapcanvas.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterdataprovider.h"
 
 QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent )
     : QWidget( parent )

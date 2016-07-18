@@ -26,8 +26,6 @@ class QTextCodec;
 #include "qgis.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
-#include "qgsrectangle.h"
 #include "qgsaggregatecalculator.h"
 
 typedef QList<int> QgsAttributeList;

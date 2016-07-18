@@ -26,6 +26,7 @@
 #include "qgscomposition.h"
 #include "qgscompositionwidget.h"
 #include "qgscomposermodel.h"
+#include "qgsdockwidget.h"
 #include "qgsatlascompositionwidget.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerpolygon.h"
@@ -65,6 +66,7 @@
 #include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsprevieweffect.h"
+#include "qgsvectorlayer.h"
 #include "qgscomposerimageexportoptionsdialog.h"
 #include "ui_qgssvgexportoptions.h"
 

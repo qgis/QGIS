@@ -21,6 +21,7 @@
 #include <attributetable/qgsdualview.h>
 #include "qgsattributeform.h"
 #include <qgsapplication.h>
+#include "qgsfeatureiterator.h"
 #include <qgsvectorlayer.h>
 #include "qgsvectordataprovider.h"
 #include <qgsmapcanvas.h>

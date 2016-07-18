@@ -27,6 +27,7 @@ back to QgsVectorLayer.
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
 #include <QHeaderView>

@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"

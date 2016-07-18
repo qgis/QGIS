@@ -17,7 +17,6 @@
 #define QGSMAPTOOLMOVEFEATURE_H
 
 #include "qgsmaptooledit.h"
-#include "qgsvectorlayer.h"
 
 /** Map tool for translating feature position by mouse drag*/
 class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolEdit

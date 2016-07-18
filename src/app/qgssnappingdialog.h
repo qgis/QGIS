@@ -18,11 +18,11 @@
 #ifndef QGSSNAPPINGDIALOG_H
 #define QGSSNAPPINGDIALOG_H
 
-#include "qgsmaplayer.h"
 #include "qgsdockwidget.h"
 #include "ui_qgssnappingdialogbase.h"
 
 class QgsMapCanvas;
+class QgsMapLayer;
 
 /** A dialog to enter advanced editing properties, e.g. topological editing, snapping settings
 for the individual layers*/

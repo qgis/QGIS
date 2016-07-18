@@ -25,11 +25,10 @@
 #include <QNetworkReply>
 #include <QStandardItem>
 
-#include "qgsstylev2groupselectiondialog.h"
-
 #include "ui_qgsstylev2exportimportdialogbase.h"
 
 class QgsStyleV2;
+class QgsStyleV2GroupSelectionDialog;
 
 /** \ingroup gui
  * \class QgsStyleV2ExportImportDialog

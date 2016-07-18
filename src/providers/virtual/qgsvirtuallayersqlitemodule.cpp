@@ -35,6 +35,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerblob.h"
 #include "qgsslottofunction.h"
+#include "qgsfeatureiterator.h"
 
 /**
  * Create metadata tables if needed

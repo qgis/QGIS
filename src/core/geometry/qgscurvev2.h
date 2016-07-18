@@ -19,7 +19,7 @@
 #define QGSCURVEV2_H
 
 #include "qgsabstractgeometryv2.h"
-#include "qgspointv2.h"
+#include "qgsrectangle.h"
 
 class QgsLineStringV2;
 class QPainterPath;

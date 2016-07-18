@@ -22,6 +22,7 @@
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerimport.h"
 #include "qgsmessageoutput.h"
+#include "qgsvectorlayer.h"
 
 #include <QAction>
 #include <QMessageBox>

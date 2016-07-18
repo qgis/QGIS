@@ -18,8 +18,6 @@
 #define QGSEXTERNALRESOURCEWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
-#include "qgsexternalresourceconfigdlg.h"
-#include "qgsexternalresourcewidgetwrapper.h"
 
 
 /** \ingroup gui

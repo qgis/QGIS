@@ -24,6 +24,7 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgscomposermap.h"
+#include "qgsvectorlayer.h"
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {

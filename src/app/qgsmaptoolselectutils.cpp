@@ -16,6 +16,7 @@ email                : jpalmer at linz dot govt dot nz
 #include <limits>
 
 #include "qgsmaptoolselectutils.h"
+#include "qgsfeatureiterator.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
 #include "qgsmapcanvas.h"

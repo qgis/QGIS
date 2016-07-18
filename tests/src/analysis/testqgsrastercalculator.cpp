@@ -16,6 +16,7 @@ Email                : nyall dot dawson at gmail dot com
 
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
 #include "qgsapplication.h"

@@ -20,6 +20,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgisgui.h"
 
 #include <QColorDialog>
 #include <QFontDialog>

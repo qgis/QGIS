@@ -18,10 +18,12 @@
 #ifndef QGSSINGLEBANDCOLORRENDERERWIDGET_H
 #define QGSSINGLEBANDCOLORRENDERERWIDGET_H
 
-#include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgscolorrampshader.h"
+#include "qgsrasterrenderer.h"
 #include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
+
+class QgsRasterMinMaxWidget;
 
 /** \ingroup gui
  * \class QgsSingleBandPseudoColorRendererWidget

@@ -19,6 +19,7 @@
 #include "qgsattributeforminterface.h"
 #include "qgsattributeformlegacyinterface.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsfeatureiterator.h"
 #include "qgsproject.h"
 #include "qgspythonrunner.h"
 #include "qgsrelationwidgetwrapper.h"
@@ -26,6 +27,8 @@
 #include "qgsattributeformeditorwidget.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsrelationmanager.h"
 
 #include <QDir>
 #include <QTextStream>

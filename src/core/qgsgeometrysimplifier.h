@@ -17,7 +17,11 @@
 #ifndef QGSGEOMETRYSIMPLIFIER_H
 #define QGSGEOMETRYSIMPLIFIER_H
 
-#include "qgsgeometry.h"
+#include <QVector>
+#include <QPointF>
+
+class QgsGeometry;
+class QgsRectangle;
 
 /** \ingroup core
  * Abstract base class for simplify geometries using a specific algorithm

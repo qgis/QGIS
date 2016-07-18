@@ -18,8 +18,6 @@
 
 #include "ui_qgsgroupwmsdatadialogbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
-
 #include "qgis.h"
 
 /** \ingroup gui

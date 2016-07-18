@@ -18,10 +18,13 @@
 #include "qgsoverlayanalyzer.h"
 
 #include "qgsapplication.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfield.h"
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsspatialindex.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectordataprovider.h"
 #include "qgsdistancearea.h"

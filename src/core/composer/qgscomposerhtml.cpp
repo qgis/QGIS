@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
 #include "qgsjsonutils.h"
+#include "qgsmapsettings.h"
 
 #include "qgswebpage.h"
 #include "qgswebframe.h"

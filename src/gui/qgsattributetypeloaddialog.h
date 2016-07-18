@@ -19,14 +19,13 @@
 
 #include "ui_qgsattributeloadfrommap.h"
 
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include <vector>
 
 class QDialog;
 class QLayout;
 class QgsField;
 class QgsMapCanvas;
+class QgsVectorLayer;
 
 /** \ingroup gui
  * \class QgsAttributeTypeLoadDialog

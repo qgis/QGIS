@@ -17,14 +17,14 @@
 #define QGSRELATIONREFERENCESEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include "qgsrelationreferencewidgetwrapper.h"
-#include "qgsrelationreferencewidget.h"
 
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
 
 class QgsRelationReferenceWidgetFactory;
+class QgsMapCanvas;
+class QgsRelationReferenceWidget;
 
 /** \ingroup gui
  * \class QgsRelationReferenceSearchWidgetWrapper

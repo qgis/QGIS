@@ -19,10 +19,7 @@
 
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgscompoundcurvev2.h"
-#include "qgspoint.h"
 #include "qgsgeometry.h"
-#include "qgslayertreeview.h"
-#include "qgspointlocator.h"
 
 #include <QPoint>
 #include <QList>

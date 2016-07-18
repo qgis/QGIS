@@ -21,6 +21,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
+#include <QColor>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand ):
     QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( nullptr )

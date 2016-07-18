@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgslabelfeature.h"
 #include "feature.h"
-
+#include "qgsgeometry.h"
 
 QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size )
     : mLayer( nullptr )

@@ -18,7 +18,6 @@
 #include <QColorDialog>
 #include <QToolButton>
 #include <QTemporaryFile>
-#include "qgscolorscheme.h"
 
 class QMimeData;
 class QgsColorSchemeRegistry;

@@ -32,9 +32,8 @@
 #include "qgscomposeritemcommand.h"
 #include "qgscomposermultiframecommand.h"
 #include "qgsatlascomposition.h"
-#include "qgspaperitem.h"
 #include "qgscomposerobject.h"
-#include "qgscomposeritem.h"
+#include "qgscomposeritem.h" // required for nested name
 #include "qgsobjectcustomproperties.h"
 
 class QgisApp;
@@ -66,6 +65,7 @@ class QgsComposer;
 class QgsFillSymbolV2;
 class QgsDataDefined;
 class QgsComposerModel;
+class QgsPaperItem;
 
 /** \ingroup core
  * Graphics scene for map printing. The class manages the paper item which always

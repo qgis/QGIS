@@ -19,10 +19,10 @@
 #define QGSRASTERMINMAXWIDGET_H
 
 #include "ui_qgsrasterminmaxwidgetbase.h"
-#include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 
 class QgsMapCanvas;
+class QgsRasterLayer;
 
 /** \ingroup gui
  * \class QgsRasterMinMaxWidget

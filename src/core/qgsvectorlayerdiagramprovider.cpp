@@ -15,6 +15,7 @@
 
 #include "qgsvectorlayerdiagramprovider.h"
 
+#include "qgsgeometry.h"
 #include "qgslabelsearchtree.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"

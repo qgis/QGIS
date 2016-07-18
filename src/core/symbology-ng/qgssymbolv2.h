@@ -20,8 +20,8 @@
 #include <QList>
 #include <QMap>
 #include "qgsmapunitscale.h"
-#include "qgsgeometry.h"
 #include "qgspointv2.h"
+#include "qgsfeature.h"
 
 class QColor;
 class QImage;
@@ -34,7 +34,6 @@ class QDomDocument;
 class QDomElement;
 //class
 
-class QgsFeature;
 class QgsFields;
 class QgsSymbolLayerV2;
 class QgsRenderContext;

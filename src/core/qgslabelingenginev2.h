@@ -16,8 +16,6 @@
 #ifndef QGSLABELINGENGINEV2_H
 #define QGSLABELINGENGINEV2_H
 
-#include "qgsgeometry.h"
-
 #include "qgsmapsettings.h"
 
 #include "qgspallabeling.h"

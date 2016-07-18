@@ -15,6 +15,9 @@
 
 #include "qgsactionmenu.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsactionmanager.h"
+#include "qgsfeatureiterator.h"
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer* layer, const QgsFeature* feature, QWidget*  parent )
     : QMenu( parent )

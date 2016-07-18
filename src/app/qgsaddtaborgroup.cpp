@@ -24,6 +24,7 @@
 #include <QTreeWidgetItem>
 #include <QComboBox>
 #include <QRadioButton>
+#include <QSettings>
 
 QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >& tabList, QWidget * parent )
     : QDialog( parent )

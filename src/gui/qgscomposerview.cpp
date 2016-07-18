@@ -47,6 +47,7 @@
 #include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
 #include "qgscursors.h"
 #include "qgscomposerutils.h"
+#include "qgscomposerattributetable.h"
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0

@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
 #include "qgsnewnamedialog.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
 #include <QInputDialog>

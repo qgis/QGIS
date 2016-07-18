@@ -20,6 +20,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgscrscache.h"
+#include "qgscsexception.h"
 
 QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
     : QgsMapCanvasItem( mapCanvas )

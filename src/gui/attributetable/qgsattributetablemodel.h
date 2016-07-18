@@ -25,14 +25,13 @@
 #include <QMap>
 
 #include "qgsvectorlayer.h" // QgsAttributeList
-#include "qgsvectorlayercache.h"
 #include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgsvectorlayercache.h"
 
 class QgsMapCanvas;
 class QgsMapLayerAction;
 class QgsEditorWidgetFactory;
-
 
 /** \ingroup gui
  * A model backed by a {@link QgsVectorLayerCache} which is able to provide

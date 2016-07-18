@@ -29,6 +29,7 @@
 #include "qgsmaprenderer.h"
 #include "qgspallabeling.h"
 #include "qgsfontutils.h"
+#include "qgsrasterdataprovider.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>

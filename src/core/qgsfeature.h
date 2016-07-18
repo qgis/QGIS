@@ -23,6 +23,7 @@ email                : sherman at mrcc.com
 #include <QHash>
 #include <QVector>
 #include <QSet>
+#include <QExplicitlySharedDataPointer>
 
 class QgsGeometry;
 class QgsRectangle;
@@ -169,8 +170,6 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 };
 
 class QgsField;
-
-#include "qgsfield.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

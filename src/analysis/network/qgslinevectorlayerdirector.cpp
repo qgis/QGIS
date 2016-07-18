@@ -18,6 +18,7 @@
 #include "qgsgraphbuilderintr.h"
 
 // Qgis includes
+#include "qgsfeatureiterator.h"
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgspoint.h>

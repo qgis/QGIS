@@ -19,6 +19,7 @@
 #include "qgscomposerutils.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgsmapsettings.h"
 #include <limits>
 
 QgsComposerPolygon::QgsComposerPolygon( QgsComposition* c )

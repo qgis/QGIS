@@ -23,6 +23,7 @@
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
 
+
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -32,6 +33,7 @@
 #include "qgsaddattrdialog.h"
 #include "qgsdelattrdialog.h"
 #include "qgsdockwidget.h"
+#include "qgsfeatureiterator.h"
 #include "qgssearchquerybuilder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"

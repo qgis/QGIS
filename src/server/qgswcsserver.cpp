@@ -17,6 +17,7 @@
 #include "qgswcsserver.h"
 #include "qgswcsprojectparser.h"
 #include "qgscrscache.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterprojector.h"

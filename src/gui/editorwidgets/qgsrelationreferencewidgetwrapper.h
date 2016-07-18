@@ -16,9 +16,11 @@
 #ifndef QGSRELATIONREFERENCEWIDGETWRAPPER_H
 #define QGSRELATIONREFERENCEWIDGETWRAPPER_H
 
-#include "qgsrelationreferencewidget.h"
 #include "qgseditorwidgetwrapper.h"
 
+class QgsRelationReferenceWidget;
+class QgsMapCanvas;
+class QgsMessageBar;
 
 /** \ingroup gui
  * Wraps a relation reference widget.

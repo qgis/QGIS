@@ -30,8 +30,6 @@
 #ifndef PAL_PROBLEM_H
 #define PAL_PROBLEM_H
 
-#include "pal.h"
-#include "rtree.hpp"
 #include <list>
 #include <QList>
 

@@ -19,7 +19,7 @@
 #define QGSDXFEXPORT_H
 
 #include "qgsgeometry.h"
-#include "qgssymbolv2.h"
+#include "qgssymbolv2.h" // for OutputUnit enum
 
 #include <QColor>
 #include <QList>

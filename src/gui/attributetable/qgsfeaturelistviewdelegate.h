@@ -18,8 +18,6 @@
 #include <QItemDelegate>
 #include <QItemSelectionModel>
 
-#include "qgsfeature.h"
-
 class QgsVectorLayer;
 class QgsFeatureListModel;
 class QgsFeatureSelectionModel;

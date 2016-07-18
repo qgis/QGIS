@@ -29,6 +29,7 @@
 #include "qgsdistancearea.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgscsexception.h"
 
 #include <QDomDocument>
 #include <QDomNode>

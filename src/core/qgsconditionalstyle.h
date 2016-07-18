@@ -7,7 +7,6 @@
 #include <QDomNode>
 #include <QDomDocument>
 
-#include "qgsfeature.h"
 #include "qgssymbolv2.h"
 
 class QgsConditionalStyle;

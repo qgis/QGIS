@@ -18,7 +18,6 @@
 #define QGSCOMPOSERVIEW_H
 
 #include <QGraphicsView>
-#include "qgsaddremoveitemcommand.h"
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include <QGraphicsPolygonItem>
 

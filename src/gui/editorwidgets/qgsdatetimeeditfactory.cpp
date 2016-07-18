@@ -17,6 +17,7 @@
 #include "qgsdatetimeeditconfig.h"
 #include "qgsdatetimeeditwrapper.h"
 #include "qgsdatetimesearchwidgetwrapper.h"
+#include "qgsdatetimeedit.h"
 
 #include <QSettings>
 

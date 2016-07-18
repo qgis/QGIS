@@ -22,6 +22,7 @@
 
 #include "qgslogger.h"
 #include "qgsrasterblock.h"
+#include "qgsrectangle.h"
 
 // See #9101 before any change of NODATA_COLOR!
 const QRgb QgsRasterBlock::mNoDataColor = qRgba( 0, 0, 0, 0 );

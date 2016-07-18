@@ -21,6 +21,7 @@
 #include <TriangleInterpolator.h>
 #include <MathUtils.h>
 #include "qgslogger.h"
+
 class QProgressDialog;
 
 /** \ingroup analysis

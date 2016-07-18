@@ -16,6 +16,9 @@
 
 #include "MathUtils.h"
 #include "qgslogger.h"
+#include "Point3D.h"
+#include "Vector3D.h"
+
 #include <qmath.h>
 
 bool MathUtils::calcBarycentricCoordinates( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result )

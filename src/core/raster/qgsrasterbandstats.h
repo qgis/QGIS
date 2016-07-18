@@ -23,7 +23,6 @@
 
 #include <limits>
 
-#include "qgscolorrampshader.h"
 #include "qgsrectangle.h"
 
 /** \ingroup core

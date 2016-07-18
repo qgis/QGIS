@@ -16,15 +16,17 @@
 #ifndef QGSEDITORWIDGETFACTORY_H
 #define QGSEDITORWIDGETFACTORY_H
 
-#include "qgseditorwidgetwrapper.h"
-#include "qgsapplication.h"
-#include "qgssearchwidgetwrapper.h"
-
 #include <QDomNode>
 #include <QMap>
 #include <QString>
+#include <QVariant>
+#include "qgseditorwidgetconfig.h"
 
 class QgsEditorConfigWidget;
+class QgsEditorWidgetWrapper;
+class QgsVectorLayer;
+class QWidget;
+class QgsSearchWidgetWrapper;
 
 /** \ingroup gui
  * Every attribute editor widget needs a factory, which inherits this class

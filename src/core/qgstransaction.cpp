@@ -18,6 +18,7 @@
 #include <QLibrary>
 
 #include "qgstransaction.h"
+#include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproviderregistry.h"

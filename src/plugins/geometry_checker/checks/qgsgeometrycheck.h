@@ -141,8 +141,8 @@ class QgsGeometryCheckError
     }
     virtual void update( const QgsGeometryCheckError* other )
     {
-      assert( mCheck == other->mCheck );
-      assert( mFeatureId == other->mFeatureId );
+      Q_ASSERT( mCheck == other->mCheck );
+      Q_ASSERT( mFeatureId == other->mFeatureId );
       mErrorLocation = other->mErrorLocation;
       mVidx = other->mVidx;
       mValue = other->mValue;

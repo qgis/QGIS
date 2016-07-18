@@ -20,6 +20,7 @@
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include "qgsattributeform.h"
 #include <qgsapplication.h>
+#include "qgseditorwidgetwrapper.h"
 #include <qgsvectorlayer.h>
 #include "qgsvectordataprovider.h"
 #include <qgsfeature.h>

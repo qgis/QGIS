@@ -17,7 +17,6 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSABSTRACTGEOMETRYV2
 
 #include "qgscoordinatetransform.h"
-#include "qgsrectangle.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
 
@@ -30,6 +29,8 @@ class QgsMultiPointV2;
 class QgsPointV2;
 struct QgsVertexId;
 class QPainter;
+class QDomDocument;
+class QDomElement;
 
 typedef QList< QgsPointV2 > QgsPointSequenceV2;
 typedef QList< QgsPointSequenceV2 > QgsRingSequenceV2;

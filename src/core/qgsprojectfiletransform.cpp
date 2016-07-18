@@ -28,6 +28,8 @@
 #include <cstdlib>
 #include "qgsproject.h"
 #include "qgsprojectproperty.h"
+#include "qgsrasterbandstats.h"
+#include "qgsrasterdataprovider.h"
 
 typedef QgsProjectVersion PFV;
 

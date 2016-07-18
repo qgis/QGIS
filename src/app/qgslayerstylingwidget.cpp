@@ -27,6 +27,7 @@
 #include "qgsrendererv2propertiesdialog.h"
 #include "qgsrendererrasterpropertieswidget.h"
 #include "qgsrasterhistogramwidget.h"
+#include "qgsrasterrenderer.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"

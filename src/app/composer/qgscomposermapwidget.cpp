@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
+#include "qgscomposermap.h"
 #include "qgscomposermapgrid.h"
 #include "qgscomposermapoverview.h"
 #include "qgscomposermapwidget.h"

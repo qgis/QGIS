@@ -21,7 +21,10 @@
 #include <ui_qgsvectorlayersaveasdialogbase.h>
 #include <QDialog>
 #include "qgscontexthelp.h"
+#include "qgsfield.h"
 #include "qgsvectorfilewriter.h"
+
+class QgsVectorLayer;
 
 /**
  *  Class to select destination file, type and CRS for ogr layers

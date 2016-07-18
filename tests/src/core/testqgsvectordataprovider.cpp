@@ -19,6 +19,7 @@
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
 #include <qgsfeaturerequest.h>
+#include "qgsfeatureiterator.h"
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 

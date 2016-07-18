@@ -16,8 +16,9 @@
 #ifndef QGSDISPLAYANGLE_H
 #define QGSDISPLAYANGLE_H
 
-#include "qgsmaptoolmeasureangle.h"
 #include "ui_qgsdisplayanglebase.h"
+
+class QgsMapToolMeasureAngle;
 
 /** A class that displays results of angle measurements with the proper unit*/
 class APP_EXPORT QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBase

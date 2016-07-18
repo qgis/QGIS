@@ -18,6 +18,7 @@
 #include "qgscrscache.h"
 #include "qgsfield.h"
 #include "qgsexpression.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"

@@ -17,6 +17,7 @@
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfeaturestore.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
@@ -27,6 +28,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
 #include "qgsmaplayer.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgscoordinatereferencesystem.h"
@@ -39,6 +41,7 @@
 #include "qgsgeometrycollectionv2.h"
 #include "qgscurvev2.h"
 #include "qgscoordinateutils.h"
+#include "qgscsexception.h"
 
 #include <QSettings>
 #include <QMouseEvent>

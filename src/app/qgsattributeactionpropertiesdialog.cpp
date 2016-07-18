@@ -19,6 +19,7 @@
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
+#include "qgsvectorlayer.h"
 
 #include <QComboBox>
 #include <QLineEdit>

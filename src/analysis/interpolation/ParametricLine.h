@@ -18,8 +18,9 @@
 #define PARAMETRICLINE_H
 
 #include "Point3D.h"
-#include "Vector3D.h"
 #include <QVector>
+
+class Vector3D;
 
 /** \ingroup analysis
  * ParametricLine is an Interface for parametric lines. It is possible, that a parametric line is composed of several parametric

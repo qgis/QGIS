@@ -21,18 +21,23 @@
 #include <QTimer>
 
 #include "qgsattributeform.h"
+#include "qgsattributetablefiltermodel.h"
 #include "qgsattributedialog.h"
 #include "qgsapplication.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
+#include "qgsfeaturelistmodel.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsrelationreferenceconfigdlg.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributetablemodel.h"
+#include "qgsmaptoolidentifyfeature.h"
+#include "qgsfeatureiterator.h"
 
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     : QWidget( parent )

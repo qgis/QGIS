@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsrastercalcnode.h"
 #include "qgsrasterblock.h"
+#include "qgsrastermatrix.h"
 #include <cfloat>
 
 QgsRasterCalcNode::QgsRasterCalcNode()

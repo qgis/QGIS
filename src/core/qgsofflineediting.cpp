@@ -30,6 +30,7 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsslconnect.h"
+#include "qgsfeatureiterator.h"
 
 #include <QDir>
 #include <QDomDocument>

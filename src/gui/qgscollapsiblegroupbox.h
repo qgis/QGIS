@@ -18,8 +18,6 @@
 #ifndef QGSCOLLAPSIBLEGROUPBOX_H
 #define QGSCOLLAPSIBLEGROUPBOX_H
 
-#include "qgisgui.h"
-
 #include <QGroupBox>
 #include <QSettings>
 #include <QPointer>

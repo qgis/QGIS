@@ -17,7 +17,7 @@
 #include "qgsmapcanvas.h"
 #include "qgslogger.h"
 #include "qgsunittypes.h"
-
+#include "qgsmaptoolmeasureangle.h"
 #include <QSettings>
 #include <cmath>
 

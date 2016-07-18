@@ -20,6 +20,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgspanelwidget.h"
+#include "qgsdatadefined.h"
 
 #include <QMessageBox>
 #include <QInputDialog>

@@ -22,6 +22,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgslogger.h"
+#include "qgsstylev2groupselectiondialog.h"
 
 #include <QInputDialog>
 #include <QCloseEvent>

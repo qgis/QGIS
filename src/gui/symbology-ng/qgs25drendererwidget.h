@@ -18,7 +18,8 @@
 
 #include "ui_qgs25drendererwidgetbase.h"
 #include "qgsrendererv2widget.h"
-#include "qgs25drenderer.h"
+
+class Qgs25DRenderer;
 
 /** \ingroup gui
  * \class Qgs25DRendererWidget

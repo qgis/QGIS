@@ -17,12 +17,14 @@
 #include <QtConcurrentMap>
 #include <qmath.h>
 
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometrysnapper.h"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometryutils.h"
 #include "qgssnapindex.h"
+#include "qgsmapsettings.h"
 
 QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer *adjustLayer, QgsVectorLayer *referenceLayer, bool selectedOnly, double snapToleranceMapUnits, const QgsMapSettings *mapSettings )
     : mAdjustLayer( adjustLayer )

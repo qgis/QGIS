@@ -25,6 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygonv2.h"
 #include "qgslogger.h"
 #include "qgspolygonv2.h"
+#include "qgsgeometry.h"
 #include <limits>
 #include <cstdio>
 #include <QtCore/qmath.h>

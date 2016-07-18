@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "ui_qgscompositionwidgetbase.h"
-#include "qgscomposeritem.h"
 
 class QgsComposition;
 class QgsComposerMap;

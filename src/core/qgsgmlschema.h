@@ -17,13 +17,8 @@
 
 #include <expat.h>
 #include "qgis.h"
-#include "qgsapplication.h"
-#include "qgsdataprovider.h"
 #include "qgserror.h"
-#include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgslogger.h"
-#include "qgspoint.h"
 #include <list>
 #include <set>
 #include <stack>
@@ -32,8 +27,10 @@
 #include <QDomElement>
 #include <QStringList>
 #include <QStack>
+
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
+class QgsFeature;
 
 /** \ingroup core
  * Description of feature class in GML

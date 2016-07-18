@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "qgsrubberselectid.h"
-
+#include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
 
 QgsRubberSelectId::QgsRubberSelectId( QgsMapCanvas* mapCanvas )

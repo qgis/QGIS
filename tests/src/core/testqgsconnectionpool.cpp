@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgspointv2.h"
 #include "qgslinestringv2.h"

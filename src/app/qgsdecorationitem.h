@@ -19,8 +19,7 @@
 #define QGSDECORATIONITEM_H
 
 #include <QObject>
-#include "qgslogger.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbolv2.h"
 
 class QPainter;
 

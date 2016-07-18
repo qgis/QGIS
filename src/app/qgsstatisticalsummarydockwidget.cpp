@@ -17,6 +17,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
 #include <QTableWidget>
 #include <QAction>
 #include <QSettings>

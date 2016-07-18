@@ -27,6 +27,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsgeos.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"

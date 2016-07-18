@@ -24,6 +24,7 @@
 
 #include <QAbstractProxyModel>
 #include <QSortFilterProxyModel>
+#include <QFileInfo>
 
 class QgsCptCityColorRampV2;
 class TreeFilterProxyModel;

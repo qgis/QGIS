@@ -20,10 +20,9 @@
 #include <QStackedWidget>
 #include <QStack>
 
-#include "qgspanelwidget.h"
-
 #include "ui_qgsrenderercontainerbase.h"
 
+class QgsPanelWidget;
 
 /** \ingroup gui
  * A stack widget to manage panels in the interface. Handles the open and close events

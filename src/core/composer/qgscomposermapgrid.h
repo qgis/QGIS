@@ -21,7 +21,6 @@
 #include "qgscomposermapitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgsrendercontext.h"
 #include <QString>
 #include <QPainter>
 
@@ -33,6 +32,7 @@ class QgsComposerMap;
 class QDomDocument;
 class QDomElement;
 class QPainter;
+class QgsRenderContext;
 
 /** \ingroup core
  * \class QgsComposerMapGridStack

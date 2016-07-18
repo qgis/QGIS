@@ -17,6 +17,7 @@
 
 #include "qgscurvev2.h"
 #include "qgslinestringv2.h"
+#include "qgspointv2.h"
 
 QgsCurveV2::QgsCurveV2(): QgsAbstractGeometryV2()
 {}

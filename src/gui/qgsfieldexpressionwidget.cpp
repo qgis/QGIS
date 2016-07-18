@@ -21,6 +21,8 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldproxymodel.h"
 #include "qgsdistancearea.h"
+#include "qgsfieldmodel.h"
+#include "qgsvectorlayer.h"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
     : QWidget( parent )

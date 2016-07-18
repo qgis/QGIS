@@ -23,6 +23,7 @@
 #include "qgsmssqlnewconnection.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerimport.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmssqlprovider.h"

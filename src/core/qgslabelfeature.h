@@ -1,9 +1,8 @@
 #ifndef QGSLABELFEATURE_H
 #define QGSLABELFEATURE_H
 
-#include "qgsgeometry.h"
-
 #include "qgspallabeling.h"
+#include "geos_c.h"
 
 namespace pal
 {

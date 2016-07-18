@@ -17,7 +17,6 @@
 #define QGSMAPTOOLDELETEPART_H
 
 #include "qgsmaptooledit.h"
-#include "qgsrubberband.h"
 
 class QgsVertexMarker;
 

@@ -20,6 +20,7 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscomposermodel.h"
+#include "qgsmapsettings.h"
 #include <QPainter>
 
 QgsComposerShape::QgsComposerShape( QgsComposition* composition )

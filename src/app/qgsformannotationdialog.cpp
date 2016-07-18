@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsformannotationdialog.h"
 #include "qgsannotationwidget.h"
+#include "qgsformannotationitem.h"
 #include "qgsvectorlayer.h"
 #include <QFileDialog>
 #include <QFileInfo>

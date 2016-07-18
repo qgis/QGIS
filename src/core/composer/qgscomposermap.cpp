@@ -27,6 +27,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendercontext.h"
 #include "qgsscalecalculator.h"

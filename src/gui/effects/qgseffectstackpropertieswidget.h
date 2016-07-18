@@ -17,7 +17,6 @@
 #define QGSEFFECTSTACKPROPERTIESWIDGET_H
 
 #include "qgsdialog.h"
-#include "effects/qgseffectstack.h"
 #include <QWidget>
 #include <QStandardItemModel>
 #include <qgspanelwidget.h>
@@ -29,6 +28,8 @@ class QgsPaintEffect;
 class QCheckBox;
 class QToolButton;
 class QgsPanelWidget;
+class QgsEffectStack;
+class QgsPaintEffect;
 
 /** \ingroup gui
  * \class QgsEffectStackPropertiesWidget
@@ -212,7 +213,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
      * @returns QgsPaintEffect modified by the widget
      * @see setPaintEffect
      */
-    QgsPaintEffect* paintEffect() const { return mStack; }
+    QgsPaintEffect* paintEffect() const;
 
     /** Sets the picture to use for effect previews for the dialog
      * @param picture preview picture

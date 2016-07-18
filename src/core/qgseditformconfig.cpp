@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgseditformconfig.h"
 #include "qgsproject.h"
+#include "qgsrelationmanager.h"
 
 QgsEditFormConfig::QgsEditFormConfig( QObject* parent )
     : QObject( parent )

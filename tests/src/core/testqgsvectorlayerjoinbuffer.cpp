@@ -19,6 +19,8 @@
 
 //qgis includes...
 #include <qgsvectorlayer.h>
+#include "qgsfeatureiterator.h"
+#include "qgslayertreegroup.h"
 #include <qgsvectordataprovider.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayerjoinbuffer.h>

@@ -19,8 +19,9 @@
 #include <QAbstractItemModel>
 #include <QItemSelectionModel>
 #include <QComboBox>
+#include "qgsfield.h"
 
-#include "qgsvectorlayer.h"
+class QgsVectorLayer;
 
 /** \ingroup gui
  * @brief The QgsFieldModel class is a model to display the list of fields of a layer in widgets.

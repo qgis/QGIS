@@ -32,6 +32,7 @@ email                : tim@linfiniti.com
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgscrscache.h"
+#include "qgscsexception.h"
 
 // qt includes
 #include <QPainter>

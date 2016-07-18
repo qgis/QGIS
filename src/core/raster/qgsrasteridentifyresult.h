@@ -19,9 +19,8 @@
 #define QGSRASTERIDENTIFYRESULT_H
 
 #include "qgis.h"
-#include "qgslogger.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsraster.h"
+#include "qgserror.h"
 
 /** \ingroup core
  * Raster identify results container.

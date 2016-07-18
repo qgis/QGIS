@@ -24,7 +24,6 @@
 #include "qgsfeature.h"
 #include "qgsmessagebar.h"
 #include "qgsrectangle.h"
-#include "qgspoint.h"
 #include "qgis.h"
 
 #include <QDomDocument>

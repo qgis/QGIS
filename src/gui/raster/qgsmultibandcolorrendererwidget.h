@@ -18,7 +18,6 @@
 #ifndef QGSMULTIBANDCOLORRENDERERWIDGET_H
 #define QGSMULTIBANDCOLORRENDERERWIDGET_H
 
-#include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgsmultibandcolorrendererwidgetbase.h"
 
@@ -27,6 +26,7 @@ class QgsMultiBandColorRenderer;
 class QgsRasterDataProvider;
 class QgsRasterLayer;
 class QLineEdit;
+class QgsRasterMinMaxWidget;
 
 /** \ingroup gui
  * \class QgsMultiBandColorRendererWidget

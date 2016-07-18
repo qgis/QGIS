@@ -16,9 +16,9 @@
 #define QGSWKBSIMPLIFIERPTR_H
 
 #include "qgswkbptr.h"
-#include "qgsvectorsimplifymethod.h"
 
 class QgsGeometry;
+class QgsVectorSimplifyMethod;
 
 /** \ingroup core
  * \class QgsConstWkbSimplifierPtr

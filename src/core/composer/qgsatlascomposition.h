@@ -16,9 +16,9 @@
 #ifndef QGSATLASCOMPOSITION_H
 #define QGSATLASCOMPOSITION_H
 
-#include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgsrectangle.h"
 
 #include <memory>
 #include <QString>

@@ -17,7 +17,7 @@
 #include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-
+#include "qgsrelationreferencewidget.h"
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsMapCanvas* canvas, QgsMessageBar* messageBar, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )

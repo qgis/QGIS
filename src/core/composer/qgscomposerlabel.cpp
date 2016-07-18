@@ -26,6 +26,7 @@
 #include "qgsdistancearea.h"
 #include "qgsfontutils.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmapsettings.h"
 
 #include "qgswebview.h"
 #include "qgswebframe.h"

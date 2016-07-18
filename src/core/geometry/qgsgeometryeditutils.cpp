@@ -14,6 +14,7 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsgeometryeditutils.h"
+#include "qgsfeatureiterator.h"
 #include "qgscurvev2.h"
 #include "qgscurvepolygonv2.h"
 #include "qgspolygonv2.h"

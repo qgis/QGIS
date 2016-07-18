@@ -19,7 +19,6 @@
 #include <QMenu>
 #include <QStackedWidget>
 #include "qgssymbolv2.h"
-#include "qgsdatadefined.h"
 #include "qgspanelwidget.h"
 
 class QgsVectorLayer;

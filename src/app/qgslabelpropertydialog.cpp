@@ -19,6 +19,7 @@
 #include <qgsdatadefined.h>
 #include <qgsfontutils.h>
 #include <qgslogger.h>
+#include "qgsfeatureiterator.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"

@@ -19,10 +19,12 @@
 #ifndef QGSVECTORLAYERIMPORT_H
 #define QGSVECTORLAYERIMPORT_H
 
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
+#include "qgsfeature.h"
 
 class QProgressDialog;
+class QgsVectorDataProvider;
+class QgsVectorLayer;
+class QgsFields;
 
 /** \ingroup core
   * A convenience class for writing vector files to disk.

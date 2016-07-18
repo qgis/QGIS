@@ -15,11 +15,14 @@
 
 #include "qgstracer.h"
 
+
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeos.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgscsexception.h"
 
 #include <queue>
 #include <vector>

@@ -22,6 +22,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgscrscache.h"
+#include "qgsvectorlayer.h"
 
 #include <QPushButton>
 #include <QComboBox>

@@ -19,9 +19,10 @@
 #define QGSGROUPUNGROUPITEMSCOMMAND_H
 
 #include <QUndoCommand>
-#include "qgscomposeritemgroup.h"
-class QgsComposerItem;
+#include "qgscomposeritem.h"
+
 class QgsComposition;
+class QgsComposerItemGroup;
 
 /** \ingroup core
  * A composer command class for grouping / ungrouping composer items.

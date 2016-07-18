@@ -22,10 +22,11 @@
 #include "qgis.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
-#include "qgswkbptr.h"
 
 #include <QVector>
 #include <QPolygonF>
+
+class QgsConstWkbPtr;
 
 /** \ingroup core
  * A class to trim lines and polygons to within a rectangular region.

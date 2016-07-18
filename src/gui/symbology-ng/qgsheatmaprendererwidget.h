@@ -16,10 +16,10 @@
 #define QGSHEATMAPRENDERERWIDGET_H
 
 #include "ui_qgsheatmaprendererwidgetbase.h"
-#include "qgsheatmaprenderer.h"
 #include "qgsrendererv2widget.h"
 
 class QMenu;
+class QgsHeatmapRenderer;
 
 /** \ingroup gui
  * \class QgsHeatmapRendererWidget

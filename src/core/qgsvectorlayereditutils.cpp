@@ -15,6 +15,7 @@
 #include "qgsvectorlayereditutils.h"
 
 #include "qgsvectordataprovider.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgslinestringv2.h"

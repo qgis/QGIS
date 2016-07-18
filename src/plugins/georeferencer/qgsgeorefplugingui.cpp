@@ -35,6 +35,7 @@
 #include "qgslegendinterface.h"
 #include "qgsapplication.h"
 
+#include "qgscomposition.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposermap.h"
 #include "qgscomposertexttable.h"

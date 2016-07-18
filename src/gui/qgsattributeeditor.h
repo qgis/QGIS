@@ -21,9 +21,6 @@
 #include <QMetaType>
 #include <QGridLayout>
 
-#include "qgsfeature.h"
-#include "qgsrelationmanager.h"
-
 class QgsAttributeEditorContext;
 class QgsAttributeEditorElement;
 class QgsDualView;

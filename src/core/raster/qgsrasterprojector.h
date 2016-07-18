@@ -28,12 +28,12 @@
 
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransform.h"
 #include "qgsrasterinterface.h"
 
 #include <cmath>
 
 class QgsPoint;
+class QgsCoordinateTransform;
 
 /** \ingroup core
  * \class QgsRasterProjector

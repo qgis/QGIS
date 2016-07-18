@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsmapcanvas.h"

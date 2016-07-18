@@ -20,7 +20,6 @@
 #include <QMap>
 #include <QExplicitlySharedDataPointer>
 #include "qgis.h"
-#include "qgsfield.h"
 #include "qgsexpressioncontext.h"
 
 class QgsExpression;

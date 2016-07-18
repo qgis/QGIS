@@ -19,6 +19,8 @@
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterformatsaveoptionswidget.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrastertransparency.h"
 #include "qgsgenericprojectionselector.h"
 
 #include "gdal.h"

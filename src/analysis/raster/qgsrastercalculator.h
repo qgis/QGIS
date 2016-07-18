@@ -18,7 +18,6 @@
 #ifndef QGSRASTERCALCULATOR_H
 #define QGSRASTERCALCULATOR_H
 
-#include "qgsfield.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QString>

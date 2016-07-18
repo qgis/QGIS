@@ -32,7 +32,8 @@ email                : morb at ozemail dot com dot au
 
 #include "qgsabstractgeometryv2.h"
 #include "qgspoint.h"
-#include "qgscoordinatetransform.h"
+#include "qgspointv2.h"
+
 #include "qgsfeature.h"
 #include <limits>
 #include <QSet>

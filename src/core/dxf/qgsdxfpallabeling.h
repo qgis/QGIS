@@ -18,8 +18,6 @@
 #ifndef QGSDXFPALLABELING_H
 #define QGSDXFPALLABELING_H
 
-#include "qgsmaprenderer.h"
-#include "qgsrendercontext.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsrulebasedlabeling.h"
 

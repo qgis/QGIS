@@ -20,7 +20,6 @@
 
 #include <QPair>
 
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;

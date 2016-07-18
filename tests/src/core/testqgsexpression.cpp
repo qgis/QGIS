@@ -22,10 +22,12 @@
 //header for class being tested
 #include <qgsexpression.h>
 #include <qgsfeature.h>
+#include "qgsfeatureiterator.h"
 #include <qgsfeaturerequest.h>
 #include <qgsgeometry.h>
 #include <qgsrenderchecker.h>
 #include "qgsexpressioncontext.h"
+#include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"

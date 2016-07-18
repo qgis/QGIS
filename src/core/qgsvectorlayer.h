@@ -24,11 +24,12 @@
 #include <QList>
 #include <QStringList>
 #include <QFont>
+#include <QMutex>
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
 #include "qgseditorwidgetconfig.h"
 #include "qgsfield.h"
 #include "qgssnapper.h"
@@ -50,7 +51,6 @@ class QgsDiagramRendererV2;
 class QgsEditorWidgetWrapper;
 class QgsExpressionFieldBuffer;
 class QgsFeatureRendererV2;
-class QgsFeatureRequest;
 class QgsGeometry;
 class QgsGeometryCache;
 class QgsGeometryVertexIndex;

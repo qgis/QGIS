@@ -18,6 +18,7 @@
 #include <QtAlgorithms>
 
 #include "qgsatlascomposition.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
@@ -29,6 +30,7 @@
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontext.h"
 #include "qgscrscache.h"
+#include "qgsmapsettings.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
     : mComposition( composition )

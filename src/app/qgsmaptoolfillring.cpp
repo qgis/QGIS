@@ -16,6 +16,7 @@
 
 #include "qgsmaptoolfillring.h"
 #include "qgsgeometry.h"
+#include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributedialog.h"

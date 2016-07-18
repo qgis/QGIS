@@ -21,6 +21,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
+#include "qgsfield.h"
 
 #include <QStringList>
 #include <QFile>

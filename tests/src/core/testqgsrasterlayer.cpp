@@ -39,6 +39,10 @@
 #include <qgsmultibandcolorrenderer.h>
 #include <qgsvectorcolorrampv2.h>
 #include <qgscptcityarchive.h>
+#include "qgscolorrampshader.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrastershader.h"
+#include "qgsrastertransparency.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>

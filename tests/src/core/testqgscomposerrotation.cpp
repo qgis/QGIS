@@ -26,6 +26,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsfontutils.h"
+#include "qgsrasterdataprovider.h"
 #include <QObject>
 #include <QtTest/QtTest>
 #include <QColor>

@@ -14,7 +14,9 @@
  ***************************************************************************/
 
 #include "qgscolorwidgetwrapper.h"
+#include "qgscolorbuttonv2.h"
 #include <QLayout>
+
 
 QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )

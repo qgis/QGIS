@@ -32,6 +32,7 @@
 #include "qgis.h"
 #include "qgsdataitem.h"
 
+#include "qgsapplication.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataprovider.h"

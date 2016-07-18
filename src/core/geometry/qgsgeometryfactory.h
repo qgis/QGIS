@@ -18,14 +18,12 @@
 #ifndef QGSGEOMETRYFACTORY_H
 #define QGSGEOMETRYFACTORY_H
 
-#include "qgsrectangle.h"
-#include "qgswkbtypes.h"
-#include "qgswkbptr.h"
-
 #include <QString>
 
 class QgsAbstractGeometryV2;
 class QgsLineStringV2;
+class QgsConstWkbPtr;
+class QgsRectangle;
 
 //compatibility with old classes
 #include "qgspoint.h"

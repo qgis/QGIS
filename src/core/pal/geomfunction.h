@@ -30,7 +30,7 @@
 #ifndef PAL_GEOM_FUNCTION
 #define PAL_GEOM_FUNCTION
 
-#include "util.h"
+#include "math.h"
 
 namespace pal
 {

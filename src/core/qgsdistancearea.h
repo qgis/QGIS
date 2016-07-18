@@ -18,12 +18,12 @@
 
 #include <QList>
 #include "qgscoordinatetransform.h"
-#include "qgswkbptr.h"
 #include "qgsunittypes.h"
 
 class QgsGeometry;
 class QgsAbstractGeometryV2;
 class QgsCurveV2;
+class QgsConstWkbPtr;
 
 /** \ingroup core
 General purpose distance and area calculator.

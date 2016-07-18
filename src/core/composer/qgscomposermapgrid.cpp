@@ -29,6 +29,7 @@
 #include "qgslogger.h"
 #include "qgsfontutils.h"
 #include "qgsexpressioncontext.h"
+#include "qgscsexception.h"
 
 #include <QPainter>
 #include <QPen>

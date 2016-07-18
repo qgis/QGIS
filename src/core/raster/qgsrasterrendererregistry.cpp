@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include "qgsrasterrendererregistry.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrastershader.h"
+#include "qgsrastertransparency.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspalettedrasterrenderer.h"
 #include "qgssinglebandcolordatarenderer.h"

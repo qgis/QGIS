@@ -23,6 +23,7 @@
 //#include <qaction.h>
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerimport.h"
+#include "qgsvectorlayer.h"
 
 #include <QSettings>
 #include <QMessageBox>

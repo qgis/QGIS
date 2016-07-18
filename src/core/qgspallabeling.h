@@ -28,9 +28,9 @@
 #include <QHash>
 #include <QList>
 #include <QRectF>
+#include "qgsfield.h"
 #include "qgspoint.h"
 #include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
-#include "qgsdiagramrendererv2.h"
 #include "qgsmapunitscale.h"
 
 namespace pal

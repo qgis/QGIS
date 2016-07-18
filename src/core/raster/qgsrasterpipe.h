@@ -20,16 +20,17 @@
 
 #include <QImage>
 #include <QObject>
-
-#include "qgsbrightnesscontrastfilter.h"
-#include "qgshuesaturationfilter.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
-#include "qgsrasternuller.h"
-#include "qgsrasterprojector.h"
-#include "qgsrasterrenderer.h"
-#include "qgsrasterresamplefilter.h"
-#include "qgsrectangle.h"
+
+class QgsRasterRenderer;
+class QgsRasterResampleFilter;
+class QgsBrightnessContrastFilter;
+class QgsHueSaturationFilter;
+class QgsRasterProjector;
+class QgsRasterNuller;
+class QgsRasterResampleFilter;
+class QgsContrastEnhancement;
+class QgsRasterDataProvider;
 
 #if defined(Q_OS_WIN)
 #undef interface

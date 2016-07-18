@@ -18,6 +18,10 @@
 #include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrastershader.h"
+#include "qgsrasterminmaxwidget.h"
+
 
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
 #include "qgsstylev2.h"

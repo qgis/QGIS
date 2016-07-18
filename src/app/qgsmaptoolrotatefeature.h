@@ -19,8 +19,6 @@
 #include <QWidget>
 
 #include "qgsmaptooledit.h"
-#include "qgsvectorlayer.h"
-
 
 class QgsDoubleSpinBox;
 class QHBoxLayout;

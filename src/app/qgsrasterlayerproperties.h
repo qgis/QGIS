@@ -22,11 +22,10 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgisgui.h"
-#include "qgsmaptool.h"
-#include "qgscolorrampshader.h"
 #include "qgscontexthelp.h"
 #include "qgsmaplayerstylemanager.h"
 
+class QgsPoint;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;

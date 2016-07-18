@@ -16,6 +16,7 @@
 
 #include "qgsmaphittest.h"
 
+#include "qgsfeatureiterator.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayerstylemanager.h"

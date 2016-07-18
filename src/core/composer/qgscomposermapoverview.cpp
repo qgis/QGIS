@@ -20,6 +20,8 @@
 #include "qgscomposition.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgsmapsettings.h"
+#include "qgsmaprenderer.h"
 
 #include <QPainter>
 

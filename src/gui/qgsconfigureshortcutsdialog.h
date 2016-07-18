@@ -19,9 +19,9 @@
 #include <QDialog>
 
 #include "ui_qgsconfigureshortcutsdialog.h"
-#include "qgsshortcutsmanager.h"
 
 class QShortcut;
+class QgsShortcutsManager;
 
 /** \ingroup gui
  * \class QgsConfigureShortcutsDialog

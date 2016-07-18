@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshtmlannotationdialog.h"
+#include "qgshtmlannotationitem.h"
 #include "qgsannotationwidget.h"
 #include "qgsvectorlayer.h"
 #include <QFileDialog>

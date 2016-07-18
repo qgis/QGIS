@@ -19,9 +19,13 @@
 #define QGSEDITFORMCONFIG_H
 
 #include <QMap>
+#include <QDomElement>
+#include <QDomDocument>
 
 #include "qgseditorwidgetconfig.h"
-#include "qgsrelationmanager.h"
+#include "qgsrelation.h"
+
+class QgsRelationManager;
 
 /** \ingroup core
  * This is an abstract base class for any elements of a drag and drop form.

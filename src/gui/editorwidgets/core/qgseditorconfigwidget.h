@@ -18,7 +18,7 @@
 
 #include <QWidget>
 
-#include "qgseditorwidgetwrapper.h"
+#include "qgseditorwidgetconfig.h"
 
 class QgsVectorLayer;
 

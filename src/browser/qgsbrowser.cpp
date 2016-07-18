@@ -36,6 +36,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgscredentialdialog.h"
+#include "qgsrasterdataprovider.h"
 
 #ifdef ANDROID
 #define QGIS_ICON_SIZE 32

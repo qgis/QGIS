@@ -18,7 +18,6 @@
 #define QGSFEATUREACTION_H
 
 #include "qgsfeature.h"
-#include "qgsvectorlayertools.h"
 
 #include <QList>
 #include <QPair>

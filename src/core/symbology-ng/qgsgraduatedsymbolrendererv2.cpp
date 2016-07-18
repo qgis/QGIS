@@ -24,6 +24,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgsscaleexpression.h"
 #include "qgsdatadefined.h"
+#include "qgssymbollayerv2.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"

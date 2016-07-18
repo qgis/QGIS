@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmovefeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"

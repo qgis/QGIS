@@ -20,6 +20,7 @@
 
 #include "qgsrulebasedrendererv2.h"
 class QMenu;
+class QgsSymbolV2SelectorWidget;
 
 ///////
 
@@ -173,7 +174,6 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
 #include <QDialog>
 
 #include "ui_qgsrendererrulepropsdialogbase.h"
-#include "qgssymbolv2selectordialog.h"
 
 /** \ingroup gui
  * \class QgsRendererRulePropsWidget

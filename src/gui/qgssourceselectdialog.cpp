@@ -28,6 +28,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgscrscache.h"
+#include "qgscsexception.h"
 
 #include <QItemDelegate>
 #include <QListWidgetItem>

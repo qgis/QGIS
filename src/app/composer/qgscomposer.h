@@ -17,9 +17,6 @@
 #ifndef QGSCOMPOSER_H
 #define QGSCOMPOSER_H
 #include "ui_qgscomposerbase.h"
-#include "qgscomposermap.h"
-#include "qgscontexthelp.h"
-#include "qgsdockwidget.h"
 
 class QgisApp;
 class QgsComposerArrow;
@@ -41,10 +38,17 @@ class QgsComposition;
 class QgsMapCanvas;
 class QgsAtlasComposition;
 class QgsMapLayerAction;
+class QgsComposerMap;
+class QgsComposerItem;
+class QgsDockWidget;
+class QgsMapLayer;
+class QgsFeature;
+class QgsVectorLayer;
 
 class QGridLayout;
 class QDomNode;
 class QDomDocument;
+class QDomElement;
 class QMoveEvent;
 class QResizeEvent;
 class QFile;

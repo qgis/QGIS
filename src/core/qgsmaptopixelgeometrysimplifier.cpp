@@ -19,7 +19,9 @@
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-
+#include "qgsrectangle.h"
+#include "qgswkbptr.h"
+#include "qgsgeometry.h"
 
 QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm )
     : mSimplifyFlags( simplifyFlags )

@@ -22,8 +22,6 @@
 #include <QMap>
 #include <QString>
 
-#include "qgsauthconfig.h"
-
 class QgsAuthMethod;
 class QgsAuthMethodMetadata;
 

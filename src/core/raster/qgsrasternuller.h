@@ -18,7 +18,6 @@
 #ifndef QGSRASTERNULLER_H
 #define QGSRASTERNULLER_H
 
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterrange.h"
 #include "qgsrasterinterface.h"
 

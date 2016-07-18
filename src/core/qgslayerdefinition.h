@@ -15,7 +15,11 @@
 #ifndef QGSLAYERDEFINITION_H
 #define QGSLAYERDEFINITION_H
 
-#include "qgslayertreegroup.h"
+
+#include <QString>
+
+class QgsLayerTreeGroup;
+class QgsLayerTreeNode;
 
 /** \ingroup core
  * @brief The QgsLayerDefinition class holds generic methods for loading/exporting QLR files.

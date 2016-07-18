@@ -15,10 +15,13 @@
 
 #ifndef QGSTOLERANCE_H
 #define QGSTOLERANCE_H
-#include "qgsmaptopixel.h"
-#include "qgsmaprenderer.h"
-#include "qgsmaplayer.h"
-#include "qgspoint.h"
+
+#include "qgis.h"
+
+class QgsMapSettings;
+class QgsMapLayer;
+class QgsMapRenderer;
+class QgsPoint;
 
 /** \ingroup core
  * This is the class is providing tolerance value in map unit values.

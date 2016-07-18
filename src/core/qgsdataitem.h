@@ -28,7 +28,6 @@
 #include <QTreeWidget>
 #include <QVector>
 
-#include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 

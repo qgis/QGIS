@@ -17,7 +17,6 @@
 #define QGSATTRIBUTEFORM_H
 
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include "qgsattributeeditorcontext.h"
 
 #include <QWidget>

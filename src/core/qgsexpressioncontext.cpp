@@ -26,6 +26,7 @@
 #include "qgscomposeritem.h"
 #include "qgsatlascomposition.h"
 #include "qgsapplication.h"
+#include "qgsmapsettings.h"
 #include <QSettings>
 #include <QDir>
 

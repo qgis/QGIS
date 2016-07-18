@@ -24,6 +24,7 @@ class QgsSymbolLayerV2Widget;
 class QgsVectorLayer;
 class QgsMapCanvas;
 class QgsPanelWidget;
+class QgsExpressionContext;
 
 class SymbolLayerItem;
 

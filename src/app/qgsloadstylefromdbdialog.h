@@ -18,7 +18,6 @@
 
 #include "ui_qgsloadstylefromdbdialog.h"
 #include "qgisgui.h"
-#include "qgsfield.h"
 
 class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadStyleFromDBDialogLayout
 {

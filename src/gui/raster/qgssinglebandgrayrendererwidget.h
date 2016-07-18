@@ -18,9 +18,10 @@
 #ifndef QGSSINGLEBANDGRAYRENDERERWIDGET_H
 #define QGSSINGLEBANDGRAYRENDERERWIDGET_H
 
-#include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
+
+class QgsRasterMinMaxWidget;
 
 /** \ingroup gui
  * \class QgsSingleBandGrayRendererWidget

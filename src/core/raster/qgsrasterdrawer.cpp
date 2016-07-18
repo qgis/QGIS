@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslogger.h"
+#include "qgsrasterblock.h"
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterviewport.h"

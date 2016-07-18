@@ -20,6 +20,7 @@
 #include "qgswkbptr.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscrscache.h"
+#include "qgsrectangle.h"
 
 #include <QColor>
 #include <QStringList>

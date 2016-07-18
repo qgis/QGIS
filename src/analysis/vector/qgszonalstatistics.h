@@ -18,12 +18,15 @@
 #ifndef QGSZONALSTATISTICS_H
 #define QGSZONALSTATISTICS_H
 
-#include "qgsrectangle.h"
 #include <QString>
+#include <QMap>
+#include <limits>
+#include <cfloat>
 
 class QgsGeometry;
 class QgsVectorLayer;
 class QProgressDialog;
+class QgsRectangle;
 
 /** \ingroup analysis
  *  A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/

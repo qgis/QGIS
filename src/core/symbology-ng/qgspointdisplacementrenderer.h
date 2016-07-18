@@ -20,7 +20,6 @@
 
 #include "qgsfeature.h"
 #include "qgssymbolv2.h"
-#include "qgspoint.h"
 #include "qgsrendererv2.h"
 #include <QFont>
 #include <QSet>

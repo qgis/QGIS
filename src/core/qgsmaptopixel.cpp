@@ -22,6 +22,7 @@
 #include <QTransform>
 
 #include "qgslogger.h"
+#include "qgspoint.h"
 
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               double xc,

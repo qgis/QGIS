@@ -17,13 +17,7 @@
 #define QGSRELATIONREFERENCEWIDGET_H
 
 #include "qgsattributeeditorcontext.h"
-#include "qgscollapsiblegroupbox.h"
 #include "qgsfeature.h"
-#include "qgshighlight.h"
-#include "qgsmaptoolidentifyfeature.h"
-#include "qgsattributetablemodel.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsfeaturelistmodel.h"
 
 #include <QComboBox>
 #include <QToolButton>
@@ -33,6 +27,16 @@
 
 class QgsAttributeForm;
 class QgsVectorLayerTools;
+class QgsMapCanvas;
+class QgsMessageBar;
+class QgsHighlight;
+class QgsMapToolIdentifyFeature;
+class QgsMessageBarItem;
+class QgsAttributeTableModel;
+class QgsAttributeTableFilterModel;
+class QgsFeatureListModel;
+class QgsCollapsibleGroupBox;
+class QLabel;
 
 /** \ingroup gui
  * \class QgsRelationReferenceWidget

@@ -20,7 +20,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsbilinearrasterresampler.h"
 #include "qgshillshaderenderer.h"
-
+#include "qgsrasterdataprovider.h"
 
 QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
     : QgsRasterRendererWidget( layer, extent )

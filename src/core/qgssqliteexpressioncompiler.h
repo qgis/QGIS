@@ -19,7 +19,6 @@
 ///@cond PRIVATE
 
 #include "qgssqlexpressioncompiler.h"
-#include "qgsexpression.h"
 
 /** \ingroup core
  * \class QgsSQLiteExpressionCompiler

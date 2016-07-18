@@ -16,6 +16,8 @@
 #include "qgsmaptoolcapture.h"
 
 #include "qgscursors.h"
+#include "qgscsexception.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
 #include "qgslayertreeview.h"
 #include "qgslinestringv2.h"
@@ -29,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 
+#include <QAction>
 #include <QCursor>
 #include <QPixmap>
 #include <QMouseEvent>

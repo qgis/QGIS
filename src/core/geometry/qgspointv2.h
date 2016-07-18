@@ -19,6 +19,7 @@
 #define QGSPOINTV2_H
 
 #include "qgsabstractgeometryv2.h"
+#include "qgsrectangle.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

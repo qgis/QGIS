@@ -22,7 +22,6 @@
 
 #include <QDoubleSpinBox>
 
-#include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
 
 /**

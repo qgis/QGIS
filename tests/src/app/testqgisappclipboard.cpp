@@ -22,6 +22,7 @@
 #include <qgisapp.h>
 #include <qgsapplication.h>
 #include <qgsfeature.h>
+#include "qgsfeaturestore.h"
 #include <qgsfield.h>
 #include <qgsclipboard.h>
 #include <qgsmaplayerregistry.h>

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdpart.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscurvepolygonv2.h"
 #include "qgsgeometry.h"
 #include "qgslinestringv2.h"

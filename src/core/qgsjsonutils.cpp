@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsjsonutils.h"
+#include "qgsfeatureiterator.h"
 #include "qgsogrutils.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
@@ -21,6 +22,7 @@
 #include "qgsrelation.h"
 #include "qgsrelationmanager.h"
 #include "qgsproject.h"
+#include "qgscsexception.h"
 
 QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer* vectorLayer, int precision )
     : mPrecision( precision )

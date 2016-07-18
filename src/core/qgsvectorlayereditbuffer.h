@@ -18,11 +18,9 @@
 #include <QList>
 #include <QSet>
 
-#include "qgsgeometry.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgsrectangle.h"
-#include "qgssnapper.h"
+#include "qgsgeometry.h"
 
 class QgsVectorLayer;
 

@@ -20,12 +20,14 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsdialog.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <QPushButton>
 #include <QTextEdit>
 #include <QTime>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
+#include <QSettings>
 
 /////////
 

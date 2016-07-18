@@ -20,6 +20,7 @@
 
 #include <QByteArray>
 #include <QTime>
+#include <QStringList>
 
 #include <qmath.h>
 

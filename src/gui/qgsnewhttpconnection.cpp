@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgsnewhttpconnection.h"
 #include "qgscontexthelp.h"
+#include "qgsauthconfigselect.h"
 #include <QSettings>
 #include <QMessageBox>
 #include <QUrl>

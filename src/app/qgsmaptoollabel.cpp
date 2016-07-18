@@ -17,6 +17,7 @@
 
 #include "qgsmaptoollabel.h"
 #include "qgsdatadefined.h"
+#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"

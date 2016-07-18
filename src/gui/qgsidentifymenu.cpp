@@ -20,7 +20,9 @@
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
 #include "qgshighlight.h"
-
+#include "qgsmapcanvas.h"
+#include "qgsactionmenu.h"
+#include "qgsvectorlayer.h"
 
 /// @cond PRIVATE
 CustomActionRegistry::CustomActionRegistry( QObject* parent )

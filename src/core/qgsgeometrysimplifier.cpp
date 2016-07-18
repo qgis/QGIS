@@ -16,6 +16,8 @@
 
 #include <limits>
 #include "qgsgeometrysimplifier.h"
+#include "qgsrectangle.h"
+#include "qgsgeometry.h"
 
 QgsAbstractGeometrySimplifier::~QgsAbstractGeometrySimplifier()
 {

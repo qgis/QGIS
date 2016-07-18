@@ -17,6 +17,7 @@
 #include "qgsdatetimeeditfactory.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
+#include "qgsdatetimeedit.h"
 
 #include <QDateTimeEdit>
 #include <QDateEdit>

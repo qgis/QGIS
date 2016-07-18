@@ -38,6 +38,7 @@
 #include "qgsconfig.h"
 #include "qgsproviderregistry.h"
 #include "qgspluginregistry.h"
+#include "qgspluginsortfilterproxymodel.h"
 #include "qgspythonrunner.h"
 #include "qgspluginmanager.h"
 #include "qgisplugin.h"

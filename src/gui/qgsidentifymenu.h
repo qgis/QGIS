@@ -18,10 +18,8 @@
 
 #include <QMenu>
 
-#include "qgsactionmenu.h"
-#include "qgsmapcanvas.h"
+#include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolidentify.h"
-#include "qgsvectorlayer.h"
 
 /// @cond PRIVATE
 class CustomActionRegistry : public QgsMapLayerActionRegistry

@@ -23,6 +23,7 @@
 #include "qgsfontutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsrelationmanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include <QObject>

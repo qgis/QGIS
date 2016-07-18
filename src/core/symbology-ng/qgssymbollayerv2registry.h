@@ -17,9 +17,9 @@
 #define QGSSYMBOLLAYERV2REGISTRY_H
 
 #include "qgssymbolv2.h"
-#include "qgssymbollayerv2.h"
 
 class QgsVectorLayer;
+class QgsSymbolLayerV2Widget;
 
 /** \ingroup core
  Stores metadata about one symbol layer class.

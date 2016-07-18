@@ -19,7 +19,9 @@
 
 #include "qgsactionmanager.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
+#include "qgsfeatureiterator.h"
 #include "qgsconditionalstyle.h"
 #include "qgsfield.h"
 #include "qgslogger.h"

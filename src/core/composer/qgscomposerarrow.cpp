@@ -20,6 +20,7 @@
 #include "qgscomposerutils.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssvgcache.h"
+#include "qgsmapsettings.h"
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QVector2D>

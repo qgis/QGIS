@@ -21,6 +21,8 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgssearchwidgetwrapper.h"
 
 // Editors
 #include "qgsclassificationwidgetwrapperfactory.h"

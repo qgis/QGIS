@@ -24,10 +24,6 @@
 #include <time.h>
 
 #include "ui_qgsattributetabledialog.h"
-#include "qgscontexthelp.h"
-
-#include "qgsattributedialog.h"
-#include "qgsvectorlayer.h" //QgsFeatureIds
 #include "qgssearchwidgetwrapper.h"
 #include "qgsdockwidget.h"
 

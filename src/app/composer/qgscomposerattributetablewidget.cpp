@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgscomposerattributetablewidget.h"
+#include "qgsatlascomposition.h"
+#include "qgscomposition.h"
 #include "qgscomposerframe.h"
 #include "qgsattributeselectiondialog.h"
 #include "qgscomposeritemwidget.h"

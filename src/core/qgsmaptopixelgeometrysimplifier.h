@@ -17,11 +17,13 @@
 #ifndef QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 #define QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 
-#include "qgsgeometry.h"
-#include "qgscoordinatetransform.h"
-#include "qgsmaptopixel.h"
-
+#include "qgis.h"
 #include "qgsgeometrysimplifier.h"
+#include <QPolygonF>
+
+class QgsWkbPtr;
+class QgsConstWkbPtr;
+
 
 /** \ingroup core
  * Implementation of GeometrySimplifier using the "MapToPixel" algorithm

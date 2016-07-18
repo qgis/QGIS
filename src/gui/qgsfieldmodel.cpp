@@ -21,7 +21,7 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
-
+#include "qgsvectorlayer.h"
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
     : QAbstractItemModel( parent )

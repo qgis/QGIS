@@ -21,7 +21,6 @@
 #include <QModelIndex>
 #include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"
-#include "qgsfield.h"
 #include "qgscontexthelp.h"
 
 class QgsVectorLayer;

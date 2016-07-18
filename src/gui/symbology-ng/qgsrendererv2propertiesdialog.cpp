@@ -28,6 +28,7 @@
 #include "qgs25drendererwidget.h"
 #include "qgsnullsymbolrendererwidget.h"
 #include "qgspanelwidget.h"
+#include "qgspainteffect.h"
 
 #include "qgsorderbydialog.h"
 #include "qgsapplication.h"

@@ -30,16 +30,13 @@
 #ifndef FEATURE_H
 #define FEATURE_H
 
-#include "qgsgeometry.h"
 #include "pointset.h"
-#include "util.h"
-#include "labelposition.h"
+#include "labelposition.h" // for LabelPosition enum
+#include "qgslabelfeature.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <QString>
-
-#include "qgslabelfeature.h"
 
 /** \ingroup core
  * \class pal::LabelInfo

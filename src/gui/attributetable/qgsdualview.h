@@ -20,14 +20,11 @@
 
 #include "ui_qgsdualviewbase.h"
 
-#include "qgsfieldconditionalformatwidget.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributetablefiltermodel.h"
-#include "qgscachedfeatureiterator.h"
 #include "qgsdistancearea.h"
 #include "qgsattributeform.h"
 
-class QgsAttributeForm;
 class QgsFeatureRequest;
 class QSignalMapper;
 class QgsMapLayerAction;

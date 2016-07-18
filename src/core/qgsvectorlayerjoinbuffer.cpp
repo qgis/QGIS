@@ -17,6 +17,8 @@
 
 #include "qgsvectorlayerjoinbuffer.h"
 
+#include "qgsfeatureiterator.h"
+#include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
 

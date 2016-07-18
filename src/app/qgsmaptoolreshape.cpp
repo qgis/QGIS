@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolreshape.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"

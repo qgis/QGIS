@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgstransectsample.h"
 #include "qgsdistancearea.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsspatialindex.h"
 #include "qgsvectorfilewriter.h"

@@ -21,7 +21,7 @@
 #include "qgsmaptool.h"
 #include "qgsmaprenderer.h"
 #include "qgspallabeling.h"
-#include "qgspoint.h"
+
 class QgsRubberBand;
 
 /** Base class for map tools that modify label properties*/

@@ -16,15 +16,19 @@
 #define QGSRASTERFILEWRITER_H
 
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterpipe.h"
-#include "qgsrectangle.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QString>
+#include <QStringList>
+
+#include "qgsraster.h"
 
 class QProgressDialog;
 class QgsRasterIterator;
+class QgsRasterPipe;
+class QgsRectangle;
+class QgsRasterDataProvider;
+class QgsRasterInterface;
 
 /** \ingroup core
  * The raster file writer which allows you to save a raster to a new file.

@@ -16,9 +16,12 @@
 #include "qgsmaptooldeletering.h"
 
 #include "qgsmapcanvas.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometry.h"
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
+#include "qgsrubberband.h"
 
 #include <QMouseEvent>
 #include <limits>

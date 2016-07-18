@@ -33,6 +33,8 @@
 #include "qgisgui.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgsstylev2.h"
+#include "qgsmapcanvas.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include <QList>
 #include <QMessageBox>

@@ -23,7 +23,7 @@
 #include <QSslCertificate>
 #include <QSslError>
 
-#include "qgsauthconfig.h"
+class QgsAuthConfigSslServer;
 
 #if QT_VERSION >= 0x050000
 #define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).value(0)

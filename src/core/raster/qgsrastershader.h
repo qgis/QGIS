@@ -20,10 +20,9 @@ email                : ersts@amnh.org
 #ifndef QGSRASTERSHADER_H
 #define QGSRASTERSHADER_H
 
-#include "qgsrastershaderfunction.h"
-
 class QDomDocument;
 class QDomElement;
+class QgsRasterShaderFunction;
 
 /** \ingroup core
  * Interface for all raster shaders.

@@ -17,7 +17,6 @@
 #define QGSEXPRESSIONSELECTIONDIALOG_H
 
 #include <QDialog>
-#include "qgsdistancearea.h"
 #include "ui_qgsexpressionselectiondialogbase.h"
 
 /** \ingroup gui

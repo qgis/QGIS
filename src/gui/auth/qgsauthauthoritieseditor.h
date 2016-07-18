@@ -21,6 +21,7 @@
 #include <QSslCertificate>
 
 #include "ui_qgsauthauthoritieseditor.h"
+#include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 
 class QgsMessageBar;

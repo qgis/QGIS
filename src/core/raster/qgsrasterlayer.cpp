@@ -15,13 +15,16 @@ email                : tim at linfiniti.com
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgsbrightnesscontrastfilter.h"
 #include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgshuesaturationfilter.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -29,6 +32,7 @@ email                : tim at linfiniti.com
 #include "qgsprojectfiletransform.h"
 #include "qgsproviderregistry.h"
 #include "qgspseudocolorshader.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
@@ -36,6 +40,8 @@ email                : tim at linfiniti.com
 #include "qgsrasterprojector.h"
 #include "qgsrasterrange.h"
 #include "qgsrasterrendererregistry.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgsrastershader.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
 #include "qgssinglebandcolordatarenderer.h"
@@ -1070,6 +1076,11 @@ void QgsRasterLayer::setSubLayerVisibility( const QString& name, bool vis )
     mDataProvider->setSubLayerVisibility( name, vis );
   }
 
+}
+
+QDateTime QgsRasterLayer::timestamp() const
+{
+  return mDataProvider->timestamp();
 }
 
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )

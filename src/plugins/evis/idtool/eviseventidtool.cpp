@@ -31,6 +31,7 @@
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsfeatureiterator.h"
 
 #include <QObject>
 #include <QMessageBox>

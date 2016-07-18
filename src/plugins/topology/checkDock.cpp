@@ -20,6 +20,7 @@
 
 #include "checkDock.h"
 
+#include "qgsfeatureiterator.h"
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 #include <qgsmaplayer.h>

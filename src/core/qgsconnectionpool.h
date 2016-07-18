@@ -25,7 +25,6 @@
 #include <QTimer>
 #include <QThread>
 
-#include "qgslogger.h"
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds

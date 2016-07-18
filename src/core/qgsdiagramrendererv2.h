@@ -22,16 +22,16 @@
 #include <QSizeF>
 #include <QDomDocument>
 
-#include "qgsfeature.h"
 #include "qgsexpressioncontext.h"
-#include "qgssymbollayerv2.h"
+#include "qgsfield.h"
+#include "qgscoordinatetransform.h"
+#include "qgssymbolv2.h"
 
 class QgsDiagram;
 class QgsDiagramRendererV2;
 class QgsFeature;
 class QgsRenderContext;
 class QDomElement;
-class QgsCoordinateTransform;
 class QgsMapToPixel;
 class QgsVectorLayer;
 class QgsLayerTreeModelLegendNode;

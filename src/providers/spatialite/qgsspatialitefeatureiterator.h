@@ -16,6 +16,7 @@
 #define QGSSPATIALITEFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
+#include "qgsfield.h"
 
 extern "C"
 {

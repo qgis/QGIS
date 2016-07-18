@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 #include "qgscoordinateutils.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgsproject.h"
 #include "qgis.h"
+#include "qgscsexception.h"
 
 ///@cond NOT_STABLE_API
 

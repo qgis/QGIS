@@ -30,6 +30,7 @@
 #include "qgseffectstack.h"
 
 #include "qgsdatadefined.h"
+#include "qgsvectorlayer.h"
 
 #include "qgsgeometry.h"
 #include "qgsmultipointv2.h"

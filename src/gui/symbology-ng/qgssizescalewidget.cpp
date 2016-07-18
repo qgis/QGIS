@@ -17,6 +17,7 @@
 #include "qgssizescalewidget.h"
 
 #include "qgsvectorlayer.h"
+#include "qgsfeatureiterator.h"
 #include "qgsmaplayerregistry.h"
 #include "qgssymbolv2.h"
 #include "qgslayertreelayer.h"

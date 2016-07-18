@@ -34,10 +34,9 @@ class QPaintDevice;
 class QgsFeature;
 class QgsField;
 class QgsLabelAttributes;
+class QgsRenderContext;
 
 #include "qgsfield.h"
-#include "qgsrectangle.h"
-#include "qgsrendercontext.h"
 
 typedef QList<int> QgsAttributeList;
 

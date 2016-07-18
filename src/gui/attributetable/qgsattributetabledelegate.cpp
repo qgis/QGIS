@@ -25,6 +25,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetableview.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetwrapper.h"
 #include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"

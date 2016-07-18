@@ -24,8 +24,6 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
-#include "qgsdataprovider.h"
-
 #include <QStringList>
 #include <QPushButton>
 #include <QNetworkRequest>

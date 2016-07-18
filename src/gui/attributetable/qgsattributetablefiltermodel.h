@@ -20,7 +20,6 @@
 #include <QSortFilterProxyModel>
 #include <QModelIndex>
 
-#include "qgsvectorlayer.h" //QgsFeatureIds
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
 

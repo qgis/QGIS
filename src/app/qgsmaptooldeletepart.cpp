@@ -15,10 +15,12 @@
 
 #include "qgsmaptooldeletepart.h"
 
+#include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
+#include "qgsrubberband.h"
 #include "qgssnappingutils.h"
 #include "qgstolerance.h"
 #include "qgisapp.h"

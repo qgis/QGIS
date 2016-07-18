@@ -15,6 +15,7 @@
 
 #include "qgsoracleconnpool.h"
 #include "qgsoracleconn.h"
+#include "qgslogger.h"
 
 QgsOracleConnPool* QgsOracleConnPool::sInstance = nullptr;
 

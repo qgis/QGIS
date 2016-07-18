@@ -24,6 +24,7 @@
 #include <QStandardItem>
 #include <QTextStream>
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfield.h"
 #include "qgssearchquerybuilder.h"
 #include "qgsexpression.h"

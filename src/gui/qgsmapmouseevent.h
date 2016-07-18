@@ -20,7 +20,6 @@
 
 #include "qgspoint.h"
 #include "qgspointlocator.h"
-#include "qgssnappingutils.h"
 
 class QgsMapCanvas;
 class QgsMapToolAdvancedDigitizing;

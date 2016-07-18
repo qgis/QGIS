@@ -24,13 +24,16 @@
 
 #include <qgsapplication.h>
 #include <qgscoordinatereferencesystem.h>
+#include "qgsfeatureiterator.h"
 #include <qgsgeometry.h>
 #include <qgslinestringv2.h>
 #include <qgspointv2.h>
 #include <qgspolygonv2.h>
 #include <qgsproviderregistry.h>
 #include <qgsrasterbandstats.h>
+#include "qgsrasterdataprovider.h"
 #include <qgsrasterlayer.h>
+#include "qgsrasterprojector.h"
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 

@@ -16,6 +16,8 @@
 
 #include "qgis.h"
 #include "qgsmapcanvas.h"
+#include "qgsbrightnesscontrastfilter.h"
+#include "qgshuesaturationfilter.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsrasterrendererregistry.h"

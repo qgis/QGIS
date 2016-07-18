@@ -17,6 +17,7 @@
 
 #include "qgsblureffect.h"
 #include "qgsimageoperation.h"
+#include "qgsrendercontext.h"
 
 QgsPaintEffect *QgsBlurEffect::create( const QgsStringMap &map )
 {

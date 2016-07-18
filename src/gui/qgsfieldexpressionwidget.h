@@ -24,6 +24,7 @@
 
 #include "qgsdistancearea.h"
 #include "qgsfieldproxymodel.h"
+#include "qgsexpressioncontext.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;

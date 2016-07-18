@@ -24,10 +24,10 @@
 #include <QCheckBox>
 #include <QUndoCommand>
 #include <QDomNode>
+#include <QTime>
 #include <QTimer>
 
 #include "ui_qgsmapstylingwidgetbase.h"
-#include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 
 class QgsLabelingWidget;

@@ -19,7 +19,8 @@
 #include "ui_qgsnewhttpconnectionbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
-#include "qgsauthconfigselect.h"
+
+class QgsAuthConfigSelect;
 
 /** \ingroup gui
  * \brief Dialog to allow the user to configure and save connection

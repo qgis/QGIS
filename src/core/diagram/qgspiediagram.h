@@ -18,7 +18,6 @@
 #define DIAGRAM_NAME_PIE "Pie"
 
 #include "qgsdiagram.h"
-#include "qgsfeature.h"
 #include <QPen>
 #include <QBrush>
 
@@ -26,7 +25,7 @@ class QPainter;
 class QPointF;
 class QgsDiagramSettings;
 class QgsDiagramInterpolationSettings;
-
+class QgsFeature;
 class QgsRenderContext;
 
 /** \ingroup core

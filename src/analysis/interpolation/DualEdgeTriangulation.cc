@@ -17,6 +17,8 @@
 
 #include "DualEdgeTriangulation.h"
 #include <map>
+#include "Line3D.h"
+#include "MathUtils.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsvectorfilewriter.h"

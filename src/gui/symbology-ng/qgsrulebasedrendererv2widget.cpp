@@ -16,6 +16,7 @@
 #include "qgsrulebasedrendererv2widget.h"
 
 #include "qgsrulebasedrendererv2.h"
+#include "qgsfeatureiterator.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
@@ -26,6 +27,7 @@
 #include "qstring.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgspanelwidget.h"
+#include "qgsmapcanvas.h"
 
 #include <QKeyEvent>
 #include <QMenu>

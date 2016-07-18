@@ -15,11 +15,14 @@
 #include <typeinfo>
 
 #include "qgsrasterfilewriter.h"
+#include "qgscoordinatetransform.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasternuller.h"
 
 #include <QCoreApplication>
 #include <QProgressDialog>

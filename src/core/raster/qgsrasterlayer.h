@@ -29,21 +29,11 @@
 #include <QVector>
 
 #include "qgis.h"
-#include "qgsbrightnesscontrastfilter.h"
-#include "qgscolorrampshader.h"
-#include "qgscontrastenhancement.h"
-#include "qgshuesaturationfilter.h"
 #include "qgsmaplayer.h"
-#include "qgspoint.h"
 #include "qgsraster.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterinterface.h"
 #include "qgsrasterpipe.h"
-#include "qgsrasterresamplefilter.h"
-#include "qgsrastershaderfunction.h"
-#include "qgsrastershader.h"
-#include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
+#include "qgscontrastenhancement.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
@@ -346,7 +336,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual void setSubLayerVisibility( const QString& name, bool vis ) override;
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
-    virtual QDateTime timestamp() const override { return mDataProvider->timestamp() ; }
+    virtual QDateTime timestamp() const override;
 
   public slots:
     void showStatusMessage( const QString & theMessage );

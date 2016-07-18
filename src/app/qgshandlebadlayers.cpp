@@ -18,6 +18,7 @@
 #include "qgshandlebadlayers.h"
 #include "qgisapp.h"
 #include "qgsauthconfigselect.h"
+#include "qgsdataprovider.h"
 #include "qgisgui.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"

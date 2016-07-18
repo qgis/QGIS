@@ -16,6 +16,7 @@
 #include "qgsgeometry.h"
 #include "qgssimplifymethod.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgsvectorsimplifymethod.h"
 
 QgsConstWkbSimplifierPtr::QgsConstWkbSimplifierPtr( const unsigned char *p, int size, const QgsVectorSimplifyMethod &simplifyMethod )
     : QgsConstWkbPtr( p, size )

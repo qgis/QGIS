@@ -17,6 +17,7 @@
 #ifndef RTREE_H
 #define RTREE_H
 
+#include "qgis.h"
 #include <cstdio>
 #include <cmath>
 #include <cassert>

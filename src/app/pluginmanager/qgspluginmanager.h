@@ -27,9 +27,10 @@
 #include "qgsoptionsdialogbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
-#include "qgspythonutils.h"
-#include "qgspluginsortfilterproxymodel.h"
 #include "qgsmessagebar.h"
+#include "qgspythonutils.h"
+
+class QgsPluginSortFilterProxyModel;
 
 const int PLUGMAN_TAB_ALL = 0;
 const int PLUGMAN_TAB_INSTALLED = 1;

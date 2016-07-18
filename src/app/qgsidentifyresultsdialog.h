@@ -19,14 +19,11 @@
 #define QGSIDENTIFYRESULTSDIALOG_H
 
 #include "ui_qgsidentifyresultsbase.h"
-#include "qgsactionmanager.h"
 #include "qgscontexthelp.h"
 #include "qgsfeature.h"
-#include "qgsfeaturestore.h"
 #include "qgsfield.h"
-#include "qgsmaptoolidentify.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsmaplayeractionregistry.h"
+#include "qgsmaptoolidentify.h"
 #include "qgswebview.h"
 
 #include <QWidget>
@@ -37,11 +34,13 @@ class QTreeWidgetItem;
 class QAction;
 class QMenu;
 
+class QgsFeatureStore;
 class QgsVectorLayer;
 class QgsRasterLayer;
 class QgsHighlight;
 class QgsMapCanvas;
 class QgsDockWidget;
+class QgsMapLayerAction;
 
 class QwtPlotCurve;
 

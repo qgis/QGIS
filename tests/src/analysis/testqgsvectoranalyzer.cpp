@@ -18,6 +18,7 @@ Email                : sherman at mrcc dot com
 #include <qgsgeometryanalyzer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
+#include "qgsvectorlayer.h"
 
 class TestQgsVectorAnalyzer : public QObject
 {

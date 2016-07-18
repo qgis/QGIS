@@ -18,6 +18,7 @@
 #include "qgsrelationeditorwidget.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsproject.h"
+#include "qgsrelationmanager.h"
 
 #include <QWidget>
 

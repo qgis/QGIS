@@ -16,7 +16,6 @@
 #ifndef QGSEXPRESSIONHIGHLIGHTER_H
 #define QGSEXPRESSIONHIGHLIGHTER_H
 
-#include "qgsfield.h"
 #include <QSyntaxHighlighter>
 
 #include <QHash>

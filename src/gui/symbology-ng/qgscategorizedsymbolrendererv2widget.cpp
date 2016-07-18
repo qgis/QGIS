@@ -27,6 +27,7 @@
 #include "qgsexpressionbuilderdialog.h"
 
 #include "qgsvectorlayer.h"
+#include "qgsfeatureiterator.h"
 
 #include "qgsproject.h"
 #include "qgsexpression.h"

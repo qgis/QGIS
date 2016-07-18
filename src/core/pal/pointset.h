@@ -30,11 +30,12 @@
 #ifndef POINTSET_H
 #define POINTSET_H
 
-#include "qgsgeometry.h"
-#include "rtree.hpp"
 #include <cfloat>
 #include <cmath>
 #include <QLinkedList>
+#include <geos_c.h>
+
+class RTree;
 
 namespace pal
 {

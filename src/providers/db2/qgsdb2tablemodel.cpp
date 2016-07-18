@@ -20,6 +20,7 @@
 #include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
+#include "qgsapplication.h"
 
 QgsDb2TableModel::QgsDb2TableModel()
     : QStandardItemModel()

@@ -439,6 +439,11 @@ void QgsEffectStackCompactWidget::setPaintEffect( QgsPaintEffect *effect )
   mButton->setEnabled( mStack->enabled() );
 }
 
+QgsPaintEffect* QgsEffectStackCompactWidget::paintEffect() const
+{
+  return mStack;
+}
+
 void QgsEffectStackCompactWidget::setPreviewPicture( const QPicture &picture )
 {
   delete mPreviewPicture;

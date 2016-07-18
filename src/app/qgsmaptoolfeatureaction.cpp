@@ -16,6 +16,7 @@
 #include "qgsmaptoolfeatureaction.h"
 
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -24,6 +25,7 @@
 #include "qgsmessageviewer.h"
 #include "qgsactionmanager.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"

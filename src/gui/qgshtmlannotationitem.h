@@ -20,12 +20,11 @@
 
 #include "qgsannotationitem.h"
 #include "qgsfeature.h"
-#include "qgswebview.h"
-#include "qgswebframe.h"
 
 #include <QObject>
 
 class QGraphicsProxyWidget;
+class QgsWebView;
 
 /** \ingroup gui
  * An annotation item that embedds a designer form showing the feature attribute*/

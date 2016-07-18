@@ -19,8 +19,6 @@
 #define QGSMAPTOOLPINLABELS_H
 
 #include "qgsmaptoollabel.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatetransform.h"
 
 class QgsRubberBand;
 class QgsLabelPosition;

@@ -20,7 +20,6 @@
 
 #include <QDialog>
 #include "ui_qgscomposerimageexportoptions.h"
-#include "qgscomposertablev2.h"
 
 
 /** A dialog for customising the properties of an exported image file.

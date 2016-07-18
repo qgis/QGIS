@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpression.h"
+#include "qgsrelationmanager.h"
 
 #include <QtDebug>
 #include <QDomDocument>
@@ -28,6 +29,7 @@
 
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometryutils.h"

@@ -18,8 +18,6 @@
 #define BEZIER3D_H
 
 #include "ParametricLine.h"
-#include "Vector3D.h"
-#include "MathUtils.h"
 #include "qgslogger.h"
 
 /** \ingroup analysis
