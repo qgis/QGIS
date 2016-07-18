@@ -159,6 +159,7 @@ void QgsWMSServer::executeRequest()
   {
     QStringList cacheKeyList;
     cacheKeyList << ( getProjectSettings ? "projectSettings" : version );
+    cacheKeyList << getenv( "SERVER_NAME" );
     bool cache = true;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     cache = mAccessControl->fillCacheKey( cacheKeyList );
