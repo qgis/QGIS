@@ -254,7 +254,6 @@ class ConfigDialog(BASE, WIDGET):
             setting.save()
         Processing.updateAlgsList()
         settingsWatcher.settingsChanged.emit()
-        updateMenus()
 
         QDialog.accept(self)
 
