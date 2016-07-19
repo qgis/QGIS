@@ -220,7 +220,10 @@ int QgsAtlasComposition::updateFeatures()
     {
       nameExpression.reset( nullptr );
     }
-    nameExpression->prepare( &expressionContext );
+    else
+    {
+      nameExpression->prepare( &expressionContext );
+    }
   }
 
   // We cannot use nextFeature() directly since the feature pointer is rewinded by the rendering process
