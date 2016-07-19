@@ -227,6 +227,8 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest();
     //! construct a request with feature ID filter
     explicit QgsFeatureRequest( QgsFeatureId fid );
+    //! construct a request with feature ID filter
+    explicit QgsFeatureRequest( QgsFeatureIds fids );
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
     //! construct a request with a filter expression

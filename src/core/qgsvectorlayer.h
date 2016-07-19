@@ -987,6 +987,41 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const;
 
+    /**
+     * Query the layer for features matching a given expression.
+     */
+    inline QgsFeatureIterator getFeatures( const QString& expression )
+    {
+      return getFeatures( QgsFeatureRequest( expression ) );
+    }
+
+    /**
+     * Query the layer for the feature with the given id.
+     * If there is no such feature, the returned feature will be invalid.
+     */
+    inline QgsFeature getFeature( QgsFeatureId fid )
+    {
+      QgsFeature feature;
+      getFeatures( QgsFeatureRequest( fid ) ).nextFeature( feature );
+      return feature;
+    }
+
+    /**
+     * Query the layer for the features with the given ids.
+     */
+    inline QgsFeatureIterator getFeatures( const QgsFeatureIds& fids )
+    {
+      return getFeatures( QgsFeatureRequest( fids ) );
+    }
+
+    /**
+     * Query the layer for the features which intersect the specified rectangle.
+     */
+    inline QgsFeatureIterator getFeatures( const QgsRectangle& rectangle )
+    {
+      return getFeatures( QgsFeatureRequest( rectangle ) );
+    }
+
     /** Adds a feature
         @param feature feature to add
         @param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.

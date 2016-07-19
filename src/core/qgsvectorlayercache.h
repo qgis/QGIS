@@ -156,6 +156,41 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& featureRequest = QgsFeatureRequest() );
 
     /**
+     * Query the layer for features matching a given expression.
+     */
+    inline QgsFeatureIterator getFeatures( const QString& expression )
+    {
+      return getFeatures( QgsFeatureRequest( expression ) );
+    }
+
+    /**
+     * Query the layer for the feature with the given id.
+     * If there is no such feature, the returned feature will be invalid.
+     */
+    inline QgsFeature getFeature( QgsFeatureId fid )
+    {
+      QgsFeature feature;
+      getFeatures( QgsFeatureRequest( fid ) ).nextFeature( feature );
+      return feature;
+    }
+
+    /**
+     * Query the layer for the features with the given ids.
+     */
+    inline QgsFeatureIterator getFeatures( const QgsFeatureIds& fids )
+    {
+      return getFeatures( QgsFeatureRequest( fids ) );
+    }
+
+    /**
+     * Query the layer for the features which intersect the specified rectangle.
+     */
+    inline QgsFeatureIterator getFeatures( const QgsRectangle& rectangle )
+    {
+      return getFeatures( QgsFeatureRequest( rectangle ) );
+    }
+
+    /**
      * Check if a certain feature id is cached.
      * @param  fid The feature id to look for
      * @return True if this id is in the cache
