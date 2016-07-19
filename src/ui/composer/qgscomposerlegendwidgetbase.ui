@@ -153,6 +153,13 @@
             </item>
            </widget>
           </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QCheckBox" name="mCheckboxResizeContents">
+            <property name="text">
+             <string>Resize to fit contents</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -1029,6 +1036,7 @@
   <tabstop>mTitleAlignCombo</tabstop>
   <tabstop>mMapComboBox</tabstop>
   <tabstop>mWrapCharLineEdit</tabstop>
+  <tabstop>mCheckboxResizeContents</tabstop>
   <tabstop>mLegendItemColGroupBox</tabstop>
   <tabstop>mCheckBoxAutoUpdate</tabstop>
   <tabstop>mUpdateAllPushButton</tabstop>
