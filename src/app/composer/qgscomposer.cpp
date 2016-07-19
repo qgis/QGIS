@@ -907,6 +907,21 @@ void QgsComposer::setTitle( const QString& title )
   }
 }
 
+bool QgsComposer::loadFromTemplate( const QDomDocument& templateDoc, bool clearExisting )
+{
+  // provide feedback, since composer will be hidden when loading template (much faster)
+  QScopedPointer< QDialog > dlg( new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ), this ) );
+  dlg->setStyleSheet( mQgis->styleSheet() );
+  dlg->show();
+
+  setUpdatesEnabled( false );
+  bool result = mComposition->loadFromTemplate( templateDoc, nullptr, false, clearExisting );
+  setUpdatesEnabled( true );
+
+  dlg->close();
+  return result;
+}
+
 void QgsComposer::updateStatusCursorPos( QPointF cursorPosition )
 {
   if ( !mComposition )
@@ -3089,11 +3104,9 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
 
 void QgsComposer::on_mActionLoadFromTemplate_triggered()
 {
-  loadTemplate( false );
-}
+  if ( !mComposition )
+    return;
 
-void QgsComposer::loadTemplate( const bool newComposer )
-{
   QSettings settings;
   QString openFileDir = settings.value( "UI/lastComposerTemplateDir", QDir::homePath() ).toString();
   QString openFileString = QFileDialog::getOpenFileName( nullptr, tr( "Load template" ), openFileDir, "*.qpt" );
@@ -3113,48 +3126,10 @@ void QgsComposer::loadTemplate( const bool newComposer )
     return;
   }
 
-  QgsComposer* c = nullptr;
-  QgsComposition* comp = nullptr;
-
-  if ( newComposer )
+  QDomDocument templateDoc;
+  if ( templateDoc.setContent( &templateFile ) )
   {
-    QString newTitle;
-    if ( !mQgis->uniqueComposerTitle( this, newTitle, true ) )
-    {
-      return;
-    }
-    c = mQgis->createNewComposer( newTitle );
-    if ( !c )
-    {
-      QMessageBox::warning( this, tr( "Composer error" ), tr( "Error, could not create new composer" ) );
-      return;
-    }
-    comp = c->composition();
-  }
-  else
-  {
-    c = this;
-    comp = mComposition;
-  }
-
-  if ( comp )
-  {
-    QDomDocument templateDoc;
-    if ( templateDoc.setContent( &templateFile ) )
-    {
-      // provide feedback, since composer will be hidden when loading template (much faster)
-      QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ) );
-      dlg->setStyleSheet( mQgis->styleSheet() );
-      dlg->show();
-
-      c->setUpdatesEnabled( false );
-      comp->loadFromTemplate( templateDoc, nullptr, false, newComposer );
-      c->setUpdatesEnabled( true );
-
-      dlg->close();
-      delete dlg;
-      dlg = nullptr;
-    }
+    loadFromTemplate( templateDoc, false );
   }
 }
 
