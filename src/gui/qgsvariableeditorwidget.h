@@ -65,12 +65,6 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      */
     QgsExpressionContext* context() const { return mContext.data(); }
 
-    /** Reloads all scopes from the editor's current context. This method should be called
-     * after adding or removing scopes from the attached context.
-     * @see context()
-     */
-    void reloadContext();
-
     /** Sets the editable scope for the widget. Only variables from the editable scope can
      * be modified by users.
      * @param scopeIndex index of current editable scope. Set to -1 to disable
@@ -106,6 +100,14 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * users via the widget.
      */
     QgsStringMap variablesInActiveScope() const;
+
+  public slots:
+
+    /** Reloads all scopes from the editor's current context. This method should be called
+     * after adding or removing scopes from the attached context.
+     * @see context()
+     */
+    void reloadContext();
 
   signals:
 

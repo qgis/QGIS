@@ -83,6 +83,7 @@ void TestQgsApplication::platformName()
   QCOMPARE( QgsApplication::platform(), QString( "desktop" ) );
 }
 
+
 void TestQgsApplication::checkPaths()
 {
   QString myPath = QgsApplication::authorsFilePath();

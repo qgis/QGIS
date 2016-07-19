@@ -84,6 +84,8 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 
     void resizeMarginsChanged();
 
+    void updateVariables();
+
   private:
     QgsComposition* mComposition;
     QMap<QString, QgsCompositionPaper> mPaperMap;

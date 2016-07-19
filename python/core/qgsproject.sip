@@ -391,6 +391,11 @@ class QgsProject : QObject
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
+    /** Emitted whenever the expression variables stored in the project have been changed.
+     * @note added in QGIS 3.0
+     */
+    void variablesChanged();
+
   public slots:
 
     /**
@@ -401,6 +406,13 @@ class QgsProject : QObject
      * @note promoted to public slot in 2.16
      */
     void setDirty( bool b = true );
+
+    /** Causes the project to emit the variablesChanged() signal. This should
+     * be called whenever expression variables related to the project are changed.
+     * @see variablesChanged()
+     * @note added in QGIS 3.0
+     */
+    void emitVariablesChanged();
 
   private:
 

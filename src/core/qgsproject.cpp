@@ -412,6 +412,11 @@ void QgsProject::setDirty( bool b )
   imp_->dirty = b;
 }
 
+void QgsProject::emitVariablesChanged()
+{
+  emit variablesChanged();
+}
+
 void QgsProject::setFileName( const QString& name )
 {
   imp_->file.setFileName( name );

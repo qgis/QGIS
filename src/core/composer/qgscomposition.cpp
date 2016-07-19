@@ -1068,6 +1068,8 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   updateBounds();
 
+  emit variablesChanged();
+
   return true;
 }
 
@@ -3505,6 +3507,9 @@ void QgsComposition::setDataDefinedProperty( const QgsComposerObject::DataDefine
 void QgsComposition::setCustomProperty( const QString& key, const QVariant& value )
 {
   mCustomProperties.setValue( key, value );
+
+  if ( key.startsWith( "variable" ) )
+    emit variablesChanged();
 }
 
 QVariant QgsComposition::customProperty( const QString& key, const QVariant& defaultValue ) const
