@@ -115,6 +115,89 @@ class TestQgsComposerLegend(unittest.TestCase):
 
         QgsMapLayerRegistry.instance().removeMapLayers([point_layer])
 
+    def testResizeDisabled(self):
+        """Test that test legend does not resize if auto size is disabled"""
+
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+
+        s = QgsMapSettings()
+        s.setLayers([point_layer.id()])
+        s.setCrsTransformEnabled(False)
+        composition = QgsComposition(s)
+        composition.setPaperSize(297, 210)
+
+        composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
+        composer_map.setFrameEnabled(True)
+        composition.addComposerMap(composer_map)
+        composer_map.setNewExtent(point_layer.extent())
+
+        legend = QgsComposerLegend(composition)
+        legend.setSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameOutlineWidth(2)
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        legend.setLegendFilterByMapEnabled(True)
+
+        #disable auto resizing
+        legend.setResizeToContents(False)
+
+        composition.addComposerLegend(legend)
+        legend.setComposerMap(composer_map)
+
+        composer_map.setNewExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
+
+        checker = QgsCompositionChecker(
+            'composer_legend_noresize', composition)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testComposition()
+        self.assertTrue(result, message)
+
+        QgsMapLayerRegistry.instance().removeMapLayers([point_layer])
+
+    def testResizeDisabledCrop(self):
+        """Test that if legend resizing is disabled, and legend is too small, then content is cropped"""
+
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+
+        s = QgsMapSettings()
+        s.setLayers([point_layer.id()])
+        s.setCrsTransformEnabled(False)
+        composition = QgsComposition(s)
+        composition.setPaperSize(297, 210)
+
+        composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
+        composer_map.setFrameEnabled(True)
+        composition.addComposerMap(composer_map)
+        composer_map.setNewExtent(point_layer.extent())
+
+        legend = QgsComposerLegend(composition)
+        legend.setSceneRect(QRectF(120, 20, 20, 20))
+        legend.setFrameEnabled(True)
+        legend.setFrameOutlineWidth(2)
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        legend.setLegendFilterByMapEnabled(True)
+
+        # disable auto resizing
+        legend.setResizeToContents(False)
+
+        composition.addComposerLegend(legend)
+        legend.setComposerMap(composer_map)
+
+        composer_map.setNewExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
+
+        checker = QgsCompositionChecker(
+            'composer_legend_noresize_crop', composition)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testComposition()
+        self.assertTrue(result, message)
+
+        QgsMapLayerRegistry.instance().removeMapLayers([point_layer])
 
 if __name__ == '__main__':
     unittest.main()
