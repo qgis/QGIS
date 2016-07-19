@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*-
 ############################################################################
 #
 # MODULE:    v.class.mlpy
@@ -110,10 +110,12 @@ def updateColumn(mapName, column, cats, values=None):
 
 
 class Classifier:
+
     """!Interface class between mlpy and other code
 
     It does not uses numpy in the interface bu this may be wrong.
     """
+
     def __init__(self):
         try:
             import mlpy
