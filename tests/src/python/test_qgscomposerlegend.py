@@ -75,7 +75,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer])
+        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
 
     def testResizeWithMapContent(self):
         """Test test legend resizes to match map content"""
@@ -113,7 +113,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer])
+        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
 
     def testResizeDisabled(self):
         """Test that test legend does not resize if auto size is disabled"""
@@ -155,7 +155,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer])
+        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
 
     def testResizeDisabledCrop(self):
         """Test that if legend resizing is disabled, and legend is too small, then content is cropped"""
@@ -197,7 +197,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer])
+        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
 
 if __name__ == '__main__':
     unittest.main()
