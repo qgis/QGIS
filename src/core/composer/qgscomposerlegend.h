@@ -296,6 +296,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     //! Will be false until the associated map scale and DPI have been calculated
     bool mInitialMapScaleCalculated;
+
+    //! Will be true if the legend size should be totally reset at next paint
+    bool mForceResize;
 };
 
 #endif

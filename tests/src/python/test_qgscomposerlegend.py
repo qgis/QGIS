@@ -22,7 +22,8 @@ from qgis.core import (QgsComposerLegend,
                        QgsVectorLayer,
                        QgsMapLayerRegistry,
                        QgsMarkerSymbolV2,
-                       QgsSingleSymbolRendererV2
+                       QgsSingleSymbolRendererV2,
+                       QgsRectangle
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -37,22 +38,19 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsComposerLegend(unittest.TestCase):
 
-    def __init__(self, methodName):
-        """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
-        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
-        self.point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayers([self.point_layer])
-
     def testInitialSizeSymbolMapUnits(self):
         """Test initial size of legend with a symbol size in map units"""
 
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+
         marker_symbol = QgsMarkerSymbolV2.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
 
-        self.point_layer.setRendererV2(QgsSingleSymbolRendererV2(marker_symbol))
+        point_layer.setRendererV2(QgsSingleSymbolRendererV2(marker_symbol))
 
         s = QgsMapSettings()
-        s.setLayers([self.point_layer.id()])
+        s.setLayers([point_layer.id()])
         s.setCrsTransformEnabled(False)
         composition = QgsComposition(s)
         composition.setPaperSize(297, 210)
@@ -60,7 +58,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
         composer_map.setFrameEnabled(True)
         composition.addComposerMap(composer_map)
-        composer_map.setNewExtent(self.point_layer.extent())
+        composer_map.setNewExtent(point_layer.extent())
 
         legend = QgsComposerLegend(composition)
         legend.setSceneRect(QRectF(120, 20, 80, 80))
@@ -76,6 +74,46 @@ class TestQgsComposerLegend(unittest.TestCase):
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testComposition()
         self.assertTrue(result, message)
+
+        QgsMapLayerRegistry.instance().removeMapLayers([point_layer])
+
+    def testResizeWithMapContent(self):
+        """Test test legend resizes to match map content"""
+
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+
+        s = QgsMapSettings()
+        s.setLayers([point_layer.id()])
+        s.setCrsTransformEnabled(False)
+        composition = QgsComposition(s)
+        composition.setPaperSize(297, 210)
+
+        composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
+        composer_map.setFrameEnabled(True)
+        composition.addComposerMap(composer_map)
+        composer_map.setNewExtent(point_layer.extent())
+
+        legend = QgsComposerLegend(composition)
+        legend.setSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameOutlineWidth(2)
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        legend.setLegendFilterByMapEnabled(True)
+        composition.addComposerLegend(legend)
+        legend.setComposerMap(composer_map)
+
+        composer_map.setNewExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
+
+        checker = QgsCompositionChecker(
+            'composer_legend_size_content', composition)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testComposition()
+        self.assertTrue(result, message)
+
+        QgsMapLayerRegistry.instance().removeMapLayers([point_layer])
 
 
 if __name__ == '__main__':
