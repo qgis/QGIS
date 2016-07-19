@@ -31,6 +31,7 @@ class TestQgsProject : public QObject
 
     void testReadPath();
     void testProjectUnits();
+    void variablesChanged();
 };
 
 void TestQgsProject::init()
@@ -122,6 +123,13 @@ void TestQgsProject::testProjectUnits()
   //test setting new units for project
   prj->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::Acres ) );
   QCOMPARE( prj->areaUnits(), QgsUnitTypes::Acres );
+}
+
+void TestQgsProject::variablesChanged()
+{
+  QSignalSpy spyVariablesChanged( QgsProject::instance(), SIGNAL( variablesChanged() ) );
+  QgsProject::instance()->emitVariablesChanged();
+  QVERIFY( spyVariablesChanged.count() == 1 );
 }
 
 

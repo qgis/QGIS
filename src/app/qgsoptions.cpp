@@ -1481,6 +1481,12 @@ void QgsOptions::saveOptions()
   }
 
   saveDefaultDatumTransformations();
+
+  QgsApplication* app = qobject_cast<QgsApplication*>( QgsApplication::instance() );
+  if ( app )
+  {
+    app->emitSettingsChanged();
+  }
 }
 
 void QgsOptions::rejectOptions()
