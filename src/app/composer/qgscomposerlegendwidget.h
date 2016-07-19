@@ -68,6 +68,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mColumnSpaceSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
     void composerMapChanged( QgsComposerItem* item );
+    void on_mCheckboxResizeContents_toggled( bool checked );
 
     void on_mRasterBorderGroupBox_toggled( bool state );
     void on_mRasterBorderWidthSpinBox_valueChanged( double d );

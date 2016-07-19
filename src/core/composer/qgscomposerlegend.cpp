@@ -44,6 +44,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mInAtlas( false )
     , mInitialMapScaleCalculated( false )
     , mForceResize( false )
+    , mSizeToContents( true )
 {
   mLegendModel2 = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
 
@@ -69,6 +70,7 @@ QgsComposerLegend::QgsComposerLegend()
     , mInAtlas( false )
     , mInitialMapScaleCalculated( false )
     , mForceResize( false )
+    , mSizeToContents( true )
 {
 
 }
@@ -120,28 +122,31 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   mInitialMapScaleCalculated = true;
 
   QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
-  legendRenderer.setLegendSize( mForceResize ? QSize() : rect().size() );
+  legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
 
   //adjust box if width or height is too small
-  QSizeF size = legendRenderer.minimumSize();
-  if ( mForceResize )
+  if ( mSizeToContents )
   {
-    mForceResize = false;
-    //set new rect, respecting position mode and data defined size/position
-    QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
-    setSceneRect( evalItemRect( targetRect, true ) );
-  }
-  else if ( size.height() > rect().height() || size.width() > rect().width() )
-  {
-    //need to resize box
-    QRectF targetRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
-    if ( size.height() > targetRect.height() )
-      targetRect.setHeight( size.height() );
-    if ( size.width() > rect().width() )
-      targetRect.setWidth( size.width() );
+    QSizeF size = legendRenderer.minimumSize();
+    if ( mForceResize )
+    {
+      mForceResize = false;
+      //set new rect, respecting position mode and data defined size/position
+      QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
+      setSceneRect( evalItemRect( targetRect, true ) );
+    }
+    else if ( size.height() > rect().height() || size.width() > rect().width() )
+    {
+      //need to resize box
+      QRectF targetRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
+      if ( size.height() > targetRect.height() )
+        targetRect.setHeight( size.height() );
+      if ( size.width() > rect().width() )
+        targetRect.setWidth( size.width() );
 
-    //set new rect, respecting position mode and data defined size/position
-    setSceneRect( evalItemRect( targetRect, true ) );
+      //set new rect, respecting position mode and data defined size/position
+      setSceneRect( evalItemRect( targetRect, true ) );
+    }
   }
 
   drawBackground( painter );
@@ -149,6 +154,13 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   //antialiasing on
   painter->setRenderHint( QPainter::Antialiasing, true );
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
+
+  if ( !mSizeToContents )
+  {
+    // set a clip region to crop out parts of legend which don't fit
+    QRectF thisPaintRect = QRectF( 0, 0, rect().width(), rect().height() );
+    painter->setClipRect( thisPaintRect );
+  }
 
   legendRenderer.drawLegend( painter );
 
@@ -180,6 +192,9 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
 void QgsComposerLegend::adjustBoxSize()
 {
+  if ( !mSizeToContents )
+    return;
+
   if ( !mInitialMapScaleCalculated )
   {
     // this is messy - but until we have painted the item we have no knowledge of the current DPI
@@ -200,6 +215,15 @@ void QgsComposerLegend::adjustBoxSize()
   }
 }
 
+void QgsComposerLegend::setResizeToContents( bool enabled )
+{
+  mSizeToContents = enabled;
+}
+
+bool QgsComposerLegend::resizeToContents() const
+{
+  return mSizeToContents;
+}
 
 void QgsComposerLegend::setCustomLayerTree( QgsLayerTreeGroup* rootGroup )
 {
@@ -362,6 +386,8 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "wrapChar", mSettings.wrapChar() );
   composerLegendElem.setAttribute( "fontColor", mSettings.fontColor().name() );
 
+  composerLegendElem.setAttribute( "resizeToContents", mSizeToContents );
+
   if ( mComposerMap )
   {
     composerLegendElem.setAttribute( "map", mComposerMap->id() );
@@ -487,6 +513,8 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   mSettings.setRasterBorderWidth( itemElem.attribute( "rasterBorderWidth", "0" ).toDouble() );
 
   mSettings.setWrapChar( itemElem.attribute( "wrapChar" ) );
+
+  mSizeToContents = itemElem.attribute( "resizeToContents", "1" ) != "0";
 
   //composer map
   mLegendFilterByMap = itemElem.attribute( "legendFilterByMap", "0" ).toInt();
