@@ -101,9 +101,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     const QString& title() const {return mTitle;}
     void setTitle( const QString& title );
 
-    //! Load template into current or blank composer
-    //! @param newComposer whether to create a new composer first
-    void loadTemplate( const bool newComposer );
+    /** Loads the contents of a template document into the composer's composition.
+     * @param templateDoc template document to load
+     * @param clearExisting set to true to remove all existing composition settings and items before loading template
+     * @returns true if template load was successful
+     */
+    bool loadFromTemplate( const QDomDocument& templateDoc, bool clearExisting );
 
   protected:
     //! Move event

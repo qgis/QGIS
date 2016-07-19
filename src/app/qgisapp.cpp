@@ -6602,8 +6602,7 @@ QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QString t
 
   // hiding composer until template is loaded is much faster, provide feedback to user
   newComposer->hide();
-  QApplication::setOverrideCursor( Qt::BusyCursor );
-  if ( !newComposer->composition()->loadFromTemplate( currentDoc, nullptr, false ) )
+  if ( !newComposer->loadFromTemplate( currentDoc, true ) )
   {
     deleteComposer( newComposer );
     newComposer = nullptr;
@@ -6611,7 +6610,6 @@ QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QString t
     return newComposer;
   }
   newComposer->activate();
-  QApplication::restoreOverrideCursor();
 
   return newComposer;
 }
