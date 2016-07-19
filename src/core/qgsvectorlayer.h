@@ -37,6 +37,7 @@
 #include "qgseditformconfig.h"
 #include "qgsattributetableconfig.h"
 #include "qgsaggregatecalculator.h"
+#include "qgsfeatureiterator.h"
 
 class QPainter;
 class QImage;
