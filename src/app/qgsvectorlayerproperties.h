@@ -30,7 +30,6 @@ class QgsMapLayer;
 
 class QgsAttributeActionDialog;
 class QgsApplyDialog;
-class QgsLabelDialog;
 class QgsVectorLayer;
 class QgsLabelingWidget;
 class QgsDiagramProperties;
@@ -90,9 +89,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     /** Slot to update layer display name as original is edited */
     void on_mLayerOrigNameLineEdit_textEdited( const QString& text );
 
-    /** Toggles on the label check box */
-    void setLabelCheckBox();
-
     /** Called when apply button is pressed or dialog is accepted */
     void apply();
 
@@ -113,8 +109,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void mOptionsStackedWidget_CurrentChanged( int indx );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_pbnUpdateExtents_clicked();
-
-    void enableLabelOptions( bool theFlag );
 
     void on_mButtonAddJoin_clicked();
     void on_mButtonEditJoin_clicked();
@@ -179,8 +173,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsRendererV2PropertiesDialog* mRendererDialog;
     /** Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel */
     QgsLabelingWidget* labelingDialog;
-    /** Label dialog. If apply is pressed, options are applied to vector's QgsLabel */
-    QgsLabelDialog* labelDialog;
     /** Actions dialog. If apply is pressed, the actions are stored for later use */
     QgsAttributeActionDialog* mActionDialog;
     /** Diagram dialog. If apply is pressed, options are applied to vector's diagrams*/

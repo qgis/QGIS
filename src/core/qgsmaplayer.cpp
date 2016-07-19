@@ -160,11 +160,6 @@ bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
   return false;
 }
 
-void QgsMapLayer::drawLabels( QgsRenderContext& rendererContext )
-{
-  Q_UNUSED( rendererContext );
-}
-
 bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
 {
   bool layerError;

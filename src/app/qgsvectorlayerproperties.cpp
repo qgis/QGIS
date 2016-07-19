@@ -32,9 +32,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfieldsproperties.h"
-#include "qgslabeldialog.h"
 #include "qgslabelingwidget.h"
-#include "qgslabel.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -84,7 +82,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     , mLoadStyleMenu( nullptr )
     , mRendererDialog( nullptr )
     , labelingDialog( nullptr )
-    , labelDialog( nullptr )
     , mActionDialog( nullptr )
     , diagramPropertiesDialog( nullptr )
     , mFieldsPropertiesDialog( nullptr )
@@ -140,22 +137,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     labelingDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
     layout->addWidget( labelingDialog );
     labelingFrame->setLayout( layout );
-
-    // Create the Labeling (deprecated) dialog tab
-    layout = new QVBoxLayout( labelOptionsFrame );
-    layout->setMargin( 0 );
-    labelDialog = new QgsLabelDialog( mLayer->label(), labelOptionsFrame );
-    labelDialog->layout()->setMargin( 0 );
-    layout->addWidget( labelDialog );
-    labelOptionsFrame->setLayout( layout );
-    connect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
   }
   else
   {
     labelingDialog = nullptr;
-    labelDialog = nullptr;
     mOptsPage_Labels->setEnabled( false ); // disable labeling item
-    mOptsPage_LabelsOld->setEnabled( false ); // disable labeling (deprecated) item
   }
 
   // Create the Actions dialog tab
@@ -309,10 +295,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
-  if ( mOptsPage_LabelsOld && labelDialog && mLayer->hasGeometryType() )
-  {
-    disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
-  }
 }
 
 void QgsVectorLayerProperties::toggleEditing()
@@ -323,11 +305,6 @@ void QgsVectorLayerProperties::toggleEditing()
   emit toggleEditing( mLayer );
 
   setPbnQueryBuilderEnabled();
-}
-
-void QgsVectorLayerProperties::setLabelCheckBox()
-{
-  labelCheckBox->setCheckState( Qt::Checked );
 }
 
 void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory* factory )
@@ -486,48 +463,7 @@ void QgsVectorLayerProperties::syncToLayer()
   if ( labelingDialog )
     labelingDialog->adaptToLayer();
 
-  // reset fields in label dialog
-  mLayer->label()->setFields( mLayer->fields() );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  if ( mOptsPage_LabelsOld )
-  {
-    if ( labelDialog && mLayer->hasGeometryType() )
-    {
-      labelDialog->init();
-    }
-    labelCheckBox->setChecked( mLayer->hasLabelsEnabled() );
-    labelOptionsFrame->setEnabled( mLayer->hasLabelsEnabled() );
-    QObject::connect( labelCheckBox, SIGNAL( clicked( bool ) ), this, SLOT( enableLabelOptions( bool ) ) );
-  }
-
   mFieldsPropertiesDialog->init();
-
-  if ( mLayer->hasLabelsEnabled() )
-  {
-    // though checked on projectRead, can reoccur after applying a style with enabled deprecated labels
-    // otherwise, the deprecated labels will render, but the tab to disable them will not show up
-    QgsProject::instance()->writeEntry( "DeprecatedLabels", "/Enabled", true );
-    // (this also overrides any '/Enabled, false' project property the user may have manually set)
-  }
-  Q_NOWARN_DEPRECATED_POP
-
-  // delete deprecated labels tab if not already used by project
-  // NOTE: this is not ideal, but a quick fix for QGIS 2.0 release
-  bool ok;
-  bool dl = QgsProject::instance()->readBoolEntry( "DeprecatedLabels", "/Enabled", false, &ok );
-  if ( !ok || !dl ) // project not flagged or set to use deprecated labels
-  {
-    if ( mOptsPage_LabelsOld )
-    {
-      if ( labelDialog )
-      {
-        disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
-      }
-      delete mOptsPage_LabelsOld;
-      mOptsPage_LabelsOld = nullptr;
-    }
-  }
 
   // set initial state for variable editor
   updateVariableEditor();
@@ -609,17 +545,6 @@ void QgsVectorLayerProperties::apply()
   attributeTableConfig.setColumns( columns );
 
   mLayer->setAttributeTableConfig( attributeTableConfig );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  if ( mOptsPage_LabelsOld )
-  {
-    if ( labelDialog )
-    {
-      labelDialog->apply();
-    }
-    mLayer->enableLabels( labelCheckBox->isChecked() );
-  }
-  Q_NOWARN_DEPRECATED_POP
 
   mLayer->setName( mLayerOrigNameLineEdit->text() );
 
@@ -1386,11 +1311,6 @@ void QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
   teMetadata->document()->setDefaultStyleSheet( myStyle );
   teMetadata->setHtml( metadata() );
   mMetadataFilled = true;
-}
-
-void QgsVectorLayerProperties::enableLabelOptions( bool theFlag )
-{
-  labelOptionsFrame->setEnabled( theFlag );
 }
 
 void QgsVectorLayerProperties::on_mSimplifyDrawingGroupBox_toggled( bool checked )

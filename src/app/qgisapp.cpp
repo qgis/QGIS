@@ -2731,12 +2731,6 @@ void QgisApp::setupConnections()
   connect( mActionPreviewProtanope, SIGNAL( triggered() ), this, SLOT( activateProtanopePreview() ) );
   connect( mActionPreviewDeuteranope, SIGNAL( triggered() ), this, SLOT( activateDeuteranopePreview() ) );
 
-  // handle deprecated labels in project for QGIS 2.0
-  connect( this, SIGNAL( newProject() ),
-           this, SLOT( checkForDeprecatedLabelsInProject() ) );
-  connect( this, SIGNAL( projectRead() ),
-           this, SLOT( checkForDeprecatedLabelsInProject() ) );
-
   // setup undo/redo actions
   connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT( updateUndoActions() ) );
 }
@@ -6261,42 +6255,6 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
   }
 
   delete dialog;
-}
-
-void QgisApp::checkForDeprecatedLabelsInProject()
-{
-  bool ok;
-  QgsProject::instance()->readBoolEntry( "DeprecatedLabels", "/Enabled", false, &ok );
-  if ( ok ) // project already flagged (regardless of project property value)
-  {
-    return;
-  }
-
-  if ( QgsMapLayerRegistry::instance()->count() > 0 )
-  {
-    bool depLabelsUsed = false;
-    QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
-    for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it )
-    {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
-      if ( !vl )
-      {
-        continue;
-      }
-
-      Q_NOWARN_DEPRECATED_PUSH
-      depLabelsUsed = vl->hasLabelsEnabled();
-      if ( depLabelsUsed )
-      {
-        break;
-      }
-      Q_NOWARN_DEPRECATED_POP
-    }
-    if ( depLabelsUsed )
-    {
-      QgsProject::instance()->writeEntry( "DeprecatedLabels", "/Enabled", true );
-    }
-  }
 }
 
 void QgisApp::layerProperties()

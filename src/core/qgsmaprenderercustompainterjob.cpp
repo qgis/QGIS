@@ -23,12 +23,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsrendererv2.h"
 
-#define LABELING_V2
 
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
     : QgsMapRendererJob( settings )
     , mPainter( painter )
-    , mLabelingEngine( nullptr )
     , mLabelingEngineV2( nullptr )
     , mActive( false )
     , mRenderSynchronously( false )
@@ -41,9 +39,6 @@ QgsMapRendererCustomPainterJob::~QgsMapRendererCustomPainterJob()
   QgsDebugMsg( "QPAINTER destruct" );
   Q_ASSERT( !mFutureWatcher.isRunning() );
   //cancel();
-
-  delete mLabelingEngine;
-  mLabelingEngine = nullptr;
 
   delete mLabelingEngineV2;
   mLabelingEngineV2 = nullptr;
@@ -77,26 +72,17 @@ void QgsMapRendererCustomPainterJob::start()
   Q_ASSERT_X( qgsDoubleNear( thePaintDevice->logicalDpiX(), mSettings.outputDpi() ), "Job::startRender()", errMsg.toAscii().data() );
 #endif
 
-  delete mLabelingEngine;
-  mLabelingEngine = nullptr;
-
   delete mLabelingEngineV2;
   mLabelingEngineV2 = nullptr;
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-#ifdef LABELING_V2
     mLabelingEngineV2 = new QgsLabelingEngineV2();
     mLabelingEngineV2->readSettingsFromProject();
     mLabelingEngineV2->setMapSettings( mSettings );
-#else
-    mLabelingEngine = new QgsPalLabeling;
-    mLabelingEngine->loadEngineSettings();
-    mLabelingEngine->init( mSettings );
-#endif
   }
 
-  mLayerJobs = prepareJobs( mPainter, mLabelingEngine, mLabelingEngineV2 );
+  mLayerJobs = prepareJobs( mPainter, mLabelingEngineV2 );
   // prepareJobs calls mapLayer->createMapRenderer may involve cloning a RasterDataProvider,
   // whose constructor may need to download some data (i.e. WMS, AMS) and doing so runs a
   // QEventLoop waiting for the network request to complete. If unluckily someone calls
@@ -177,9 +163,7 @@ bool QgsMapRendererCustomPainterJob::isActive() const
 
 QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
 {
-  if ( mLabelingEngine )
-    return mLabelingEngine->takeResults();
-  else if ( mLabelingEngineV2 )
+  if ( mLabelingEngineV2 )
     return mLabelingEngineV2->takeResults();
   else
     return nullptr;
@@ -281,13 +265,13 @@ void QgsMapRendererCustomPainterJob::doRender()
   QgsDebugMsg( "Done rendering map layers" );
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelingRenderContext.renderingStopped() )
-    drawLabeling( mSettings, mLabelingRenderContext, mLabelingEngine, mLabelingEngineV2, mPainter );
+    drawLabeling( mSettings, mLabelingRenderContext, mLabelingEngineV2, mPainter );
 
   QgsDebugMsg( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ) );
 }
 
 
-void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QgsLabelingEngineV2* labelingEngine2, QPainter* painter )
+void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsLabelingEngineV2* labelingEngine2, QPainter* painter )
 {
   QgsDebugMsg( "Draw labeling start" );
 
@@ -300,13 +284,6 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderC
   // TODO: this is not ideal - we could override rendering stopped flag that has been set in meanwhile
   renderContext = QgsRenderContext::fromMapSettings( settings );
   renderContext.setPainter( painter );
-  renderContext.setLabelingEngine( labelingEngine );
-
-#if !defined(QGIS_DISABLE_DEPRECATED)
-  // old labeling - to be removed at some point...
-  drawOldLabeling( settings, renderContext );
-#endif
-  drawNewLabeling( settings, renderContext, labelingEngine );
 
   if ( labelingEngine2 )
   {
@@ -320,60 +297,6 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderC
   QgsDebugMsg( QString( "Draw labeling took (seconds): %1" ).arg( t.elapsed() / 1000. ) );
 }
 
-
-void QgsMapRendererJob::drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext )
-{
-  // render all labels for vector layers in the stack, starting at the base
-  QListIterator<QString> li( settings.layers() );
-  li.toBack();
-  while ( li.hasPrevious() )
-  {
-    if ( renderContext.renderingStopped() )
-    {
-      break;
-    }
-
-    QString layerId = li.previous();
-
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-
-    if ( !ml || ( ml->type() != QgsMapLayer::VectorLayer ) )
-      continue;
-
-    // only make labels if the layer is visible
-    // after scale dep viewing settings are checked
-    if ( !ml->isInScaleRange( settings.scale() ) )
-      continue;
-
-    QgsRectangle r1 = settings.visibleExtent(), r2;
-
-    QgsCoordinateTransform ct = settings.layerTransform( ml );
-    if ( settings.hasCrsTransformEnabled() )
-    {
-      if ( ct.isValid() )
-        reprojectToLayerExtent( ml, ct, r1, r2 );
-    }
-
-    renderContext.setCoordinateTransform( ct );
-    renderContext.setExtent( r1 );
-
-    ml->drawLabels( renderContext );
-  }
-}
-
-
-void QgsMapRendererJob::drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine )
-{
-  if ( labelingEngine && !renderContext.renderingStopped() )
-  {
-    // set correct extent
-    renderContext.setExtent( settings.visibleExtent() );
-    renderContext.setCoordinateTransform( QgsCoordinateTransform() );
-
-    labelingEngine->drawLabeling( renderContext );
-    labelingEngine->exit();
-  }
-}
 
 void QgsMapRendererJob::updateLayerGeometryCaches()
 {

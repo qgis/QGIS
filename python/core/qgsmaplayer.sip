@@ -284,11 +284,6 @@ class QgsMapLayer : QObject
      */
     virtual bool draw( QgsRenderContext& rendererContext );
 
-    /** Draw labels
-     * @todo to be removed: used only in vector layers
-     */
-    virtual void drawLabels( QgsRenderContext& rendererContext );
-
     /** Returns the extent of the layer. */
     virtual QgsRectangle extent() const;
 

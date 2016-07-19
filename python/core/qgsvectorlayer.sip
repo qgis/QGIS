@@ -282,14 +282,6 @@ class QgsVectorLayer : QgsMapLayer
      */
     void updateExpressionField( int index, const QString& exp );
 
-    /** Get the label rendering properties associated with this layer */
-    QgsLabel *label();
-
-    /** Get the label rendering properties associated with this layer
-     * @note not available in python bindings
-     */
-    // const QgsLabel *label() const;
-
     QgsActionManager *actions();
 
     /**
@@ -804,16 +796,6 @@ class QgsVectorLayer : QgsMapLayer
      */
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults );
 
-    /** Set labels on
-     * @deprecated this method is for the old labeling engine
-     */
-    void enableLabels( bool on ) /Deprecated/;
-
-    /** Label is on
-     * @deprecated this method is for the old labeling engine, use labelsEnabled instead
-     */
-    bool hasLabelsEnabled() const /Deprecated/;
-
     /** Access to labeling configuration.
      * @note added in 2.12
      * @note not available in Python bindings
@@ -869,11 +851,6 @@ class QgsVectorLayer : QgsMapLayer
      *  @return false if an error occurred during drawing
      */
     bool draw( QgsRenderContext& rendererContext );
-
-    /** Draws the layer labels using the old labeling engine
-     * @deprecated will be removed in QGIS 3.0
-     */
-    void drawLabels( QgsRenderContext& rendererContext ) /Deprecated/;
 
     /** Return the extent of the layer */
     QgsRectangle extent() const;

@@ -21,7 +21,7 @@
 
 // QGIS includes
 #include <qgsfeature.h>
-#include <qgslabel.h>
+#include <qgsfeaturerequest.h>
 
 /**
  * \ingroup networkanalysis

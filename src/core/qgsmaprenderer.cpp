@@ -566,55 +566,6 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   // Reset the composition mode before rendering the labels
   mRenderContext.painter()->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
-  if ( !mOverview )
-  {
-    // render all labels for vector layers in the stack, starting at the base
-    li.toBack();
-    while ( li.hasPrevious() )
-    {
-      if ( mRenderContext.renderingStopped() )
-      {
-        break;
-      }
-
-      QString layerId = li.previous();
-
-      // TODO: emit drawingProgress((myRenderCounter++),zOrder.size());
-      QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-
-      if ( ml && ( ml->type() != QgsMapLayer::RasterLayer ) )
-      {
-        // only make labels if the layer is visible
-        // after scale dep viewing settings are checked
-        if ( ml->isInScaleRange( mScale ) )
-        {
-          bool split = false;
-
-          if ( hasCrsTransformEnabled() )
-          {
-            QgsRectangle r1 = mExtent;
-            split = splitLayersExtent( ml, r1, r2 );
-            ct = transformation( ml );
-            mRenderContext.setExtent( r1 );
-          }
-          else
-          {
-            ct = QgsCoordinateTransform();
-          }
-
-          mRenderContext.setCoordinateTransform( ct );
-
-          ml->drawLabels( mRenderContext );
-          if ( split )
-          {
-            mRenderContext.setExtent( r2 );
-            ml->drawLabels( mRenderContext );
-          }
-        }
-      }
-    }
-  } // if (!mOverview)
-
   // make sure progress bar arrives at 100%!
   emit drawingProgress( 1, 1 );
 
