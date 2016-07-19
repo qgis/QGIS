@@ -453,7 +453,10 @@ class DoxygenParser():
 
                         unacceptable_undocumented = undocumented - set(acceptable_missing)
 
-                        if len(unacceptable_undocumented) > 0:
+                        # do a case insensitive check too
+                        unacceptable_undocumented_insensitive = set([u.lower() for u in undocumented]) - set([u.lower() for u in acceptable_missing])
+
+                        if len(unacceptable_undocumented_insensitive) > 0:
                             self.undocumented_string += "Class {}, {}/{} members documented\n".format(class_name, documented, members)
                             for u in unacceptable_undocumented:
                                 self.undocumented_string += ' Missing: {}\n'.format(u)
