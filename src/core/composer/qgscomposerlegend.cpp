@@ -42,10 +42,9 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mFilterOutAtlas( false )
     , mFilterAskedForUpdate( false )
     , mInAtlas( false )
+    , mInitialMapScaleCalculated( false )
 {
   mLegendModel2 = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
-
-  adjustBoxSize();
 
   connect( &mLegendModel, SIGNAL( layersChanged() ), this, SLOT( synchronizeWithModel() ) );
 
@@ -115,12 +114,7 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
     ms.setOutputDpi( dpi );
     mSettings.setMapScale( ms.scale() );
   }
-
-  drawBackground( painter );
-  painter->save();
-  //antialiasing on
-  painter->setRenderHint( QPainter::Antialiasing, true );
-  painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
+  mInitialMapScaleCalculated = true;
 
   QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
   legendRenderer.setLegendSize( rect().size() );
@@ -139,6 +133,12 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
     //set new rect, respecting position mode and data defined size/position
     setSceneRect( evalItemRect( targetRect, true ) );
   }
+
+  drawBackground( painter );
+  painter->save();
+  //antialiasing on
+  painter->setRenderHint( QPainter::Antialiasing, true );
+  painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
 
   legendRenderer.drawLegend( painter );
 
@@ -170,6 +170,15 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
 void QgsComposerLegend::adjustBoxSize()
 {
+  if ( !mInitialMapScaleCalculated )
+  {
+    // this is messy - but until we have painted the item we have no knowledge of the current DPI
+    // and so cannot correctly calculate the map scale. This results in incorrect size calculations
+    // for marker symbols with size in map units, causing the legends to initially expand to huge
+    // sizes if we attempt to calculate the box size first.
+    return;
+  }
+
   QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
   QSizeF size = legendRenderer.minimumSize();
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );

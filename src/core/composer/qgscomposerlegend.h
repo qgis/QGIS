@@ -293,6 +293,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void doUpdateFilterByMap();
 
     bool mInAtlas;
+
+    //! Will be false until the associated map scale and DPI have been calculated
+    bool mInitialMapScaleCalculated;
 };
 
 #endif
