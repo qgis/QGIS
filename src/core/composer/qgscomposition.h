@@ -1146,6 +1146,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** Is emitted when the composition has an updated status bar message for the composer window*/
     void statusMsgChanged( const QString& message );
 
+    /** Emitted whenever the expression variables stored in the composition have been changed.
+     * @note added in QGIS 3.0
+     */
+    void variablesChanged();
+
     friend class QgsComposerObject; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
     friend class QgsComposerModel; //for accessing updateZValues (should not be public)
     friend class TestQgsComposition;

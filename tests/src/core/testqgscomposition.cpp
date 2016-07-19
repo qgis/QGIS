@@ -53,6 +53,7 @@ class TestQgsComposition : public QObject
     void resizeToContentsMargin();
     void resizeToContentsMultiPage();
     void georeference();
+    void variablesEdited();
 
   private:
     QgsComposition *mComposition;
@@ -581,6 +582,20 @@ void TestQgsComposition::georeference()
   delete[] t;
 
   delete composition;
+}
+
+void TestQgsComposition::variablesEdited()
+{
+  QgsMapSettings ms;
+  QgsComposition c( ms );
+  QSignalSpy spyVariablesChanged( &c, SIGNAL( variablesChanged() ) );
+
+  c.setCustomProperty( "not a variable", "1" );
+  QVERIFY( spyVariablesChanged.count() == 0 );
+  c.setCustomProperty( "variableNames", "1" );
+  QVERIFY( spyVariablesChanged.count() == 1 );
+  c.setCustomProperty( "variableValues", "1" );
+  QVERIFY( spyVariablesChanged.count() == 2 );
 }
 
 QTEST_MAIN( TestQgsComposition )
