@@ -31,7 +31,7 @@ QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
 const int QgsOracleConn::sGeomTypeSelectLimit = 100;
 
-QgsOracleConn *QgsOracleConn::connectDb( QgsDataSourceURI uri )
+QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceURI& uri )
 {
   QString conninfo = toPoolName( uri );
   if ( sConnections.contains( conninfo ) )
@@ -140,7 +140,7 @@ QgsOracleConn::~QgsOracleConn()
     mDatabase.close();
 }
 
-QString QgsOracleConn::toPoolName( QgsDataSourceURI uri )
+QString QgsOracleConn::toPoolName( const QgsDataSourceURI &uri )
 {
   QString conninfo = uri.connectionInfo();
   if ( uri.hasParam( "dbworkspace" ) )
