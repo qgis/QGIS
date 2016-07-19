@@ -31,8 +31,8 @@
 #include "qgsobjectcustomproperties.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsrendercontext.h"
 
-class QgsRenderContext;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;

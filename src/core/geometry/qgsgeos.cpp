@@ -1066,11 +1066,9 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometryV2* geom, double precisi
 
   if ( QgsWKBTypes::isMultiType( geom->wkbType() )  || QgsWKBTypes::flatType( geom->wkbType() ) == QgsWKBTypes::GeometryCollection )
   {
-    int geosType;
+    int geosType = GEOS_GEOMETRYCOLLECTION;
 
-    if ( QgsWKBTypes::flatType( geom->wkbType() ) == QgsWKBTypes::GeometryCollection )
-      geosType = GEOS_GEOMETRYCOLLECTION;
-    else
+    if ( QgsWKBTypes::flatType( geom->wkbType() ) != QgsWKBTypes::GeometryCollection )
     {
       switch ( QgsWKBTypes::geometryType( geom->wkbType() ) )
       {

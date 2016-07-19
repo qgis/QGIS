@@ -18,6 +18,8 @@
 #include "qgspainteffectregistry.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
+#include "qgsrendercontext.h"
+
 #include <QObject>
 #include <QtTest/QtTest>
 

@@ -286,7 +286,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
       if ( foundFieldThatCanBeExportedAsDisplayedValue )
       {
-        QgsEditorWidgetFactory *factory;
+        QgsEditorWidgetFactory *factory = nullptr;
         if ( flags == Qt::ItemIsEnabled &&
              mLayer->editFormConfig()->widgetType( i ) != "TextEdit" &&
              ( factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig()->widgetType( i ) ) ) )
