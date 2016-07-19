@@ -271,8 +271,9 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterCheckBox_stateChanged( int
   updateAtlasFeatures();
 }
 
-void QgsAtlasCompositionWidget::pageNameExpressionChanged( const QString& expression, bool valid )
+void QgsAtlasCompositionWidget::pageNameExpressionChanged( const QString&, bool valid )
 {
+  QString expression = mPageNameWidget->asExpression();
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap || ( !valid && !expression.isEmpty() ) )
   {
