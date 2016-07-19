@@ -299,7 +299,9 @@ void QgsComposerLegend::synchronizeWithModel()
 void QgsComposerLegend::updateLegend()
 {
   // take layer list from map renderer (to have legend order)
+  mLegendModel.blockSignals( true );
   mLegendModel.setLayerSet( mComposition ? mComposition->mapSettings().layers() : QStringList() );
+  mLegendModel.blockSignals( false );
   adjustBoxSize();
   updateItem();
 }
