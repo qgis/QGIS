@@ -289,19 +289,8 @@ void QgsComposerManager::on_mAddButton_clicked()
     QDomDocument templateDoc;
     if ( templateDoc.setContent( &templateFile, false ) )
     {
-      // provide feedback, since composer will be hidden when loading template (much faster)
-      // (not needed for empty composer)
-      QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ) );
-      dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
-      dlg->show();
-
-      newComposer->hide();
-      loadedOK = newComposer->composition()->loadFromTemplate( templateDoc, nullptr, false );
+      loadedOK = newComposer->loadFromTemplate( templateDoc, true );
       newComposer->activate();
-
-      dlg->close();
-      delete dlg;
-      dlg = nullptr;
     }
   }
 
