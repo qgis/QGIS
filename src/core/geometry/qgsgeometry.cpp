@@ -1618,7 +1618,7 @@ QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
   QList<QgsGeometry*>::const_iterator it = geometryList.constBegin();
   for ( ; it != geometryList.constEnd(); ++it )
   {
-    if ( *it )
+    if ( *it && !(( *it )->isEmpty() ) )
     {
       geomV2List.append(( *it )->geometry() );
     }
