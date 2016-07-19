@@ -51,6 +51,7 @@ class TestQgsComposition : public QObject
     void resizeToContents();
     void resizeToContentsMargin();
     void resizeToContentsMultiPage();
+    void variablesEdited();
 
   private:
     QgsComposition *mComposition;
@@ -509,6 +510,20 @@ void TestQgsComposition::resizeToContentsMultiPage()
   QVERIFY( checker.testComposition( mReport ) );
 
   delete composition;
+}
+
+void TestQgsComposition::variablesEdited()
+{
+  QgsMapSettings ms;
+  QgsComposition c( ms );
+  QSignalSpy spyVariablesChanged( &c, SIGNAL( variablesChanged() ) );
+
+  c.setCustomProperty( "not a variable", "1" );
+  QVERIFY( spyVariablesChanged.count() == 0 );
+  c.setCustomProperty( "variableNames", "1" );
+  QVERIFY( spyVariablesChanged.count() == 1 );
+  c.setCustomProperty( "variableValues", "1" );
+  QVERIFY( spyVariablesChanged.count() == 2 );
 }
 
 QTEST_MAIN( TestQgsComposition )

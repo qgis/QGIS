@@ -1361,3 +1361,8 @@ void QgsApplication::setMaxThreads( int maxThreads )
   QgsDebugMsg( QString( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 }
 
+void QgsApplication::emitSettingsChanged()
+{
+  emit settingsChanged();
+}
+

@@ -345,6 +345,20 @@ class QgsProject : QObject
 
     void snapSettingsChanged();
 
+    /** Emitted whenever the expression variables stored in the project have been changed.
+     * @note added in QGIS 3.0
+     */
+    void variablesChanged();
+
+  public slots:
+
+    /** Causes the project to emit the variablesChanged() signal. This should
+     * be called whenever expression variables related to the project are changed.
+     * @see variablesChanged()
+     * @note added in QGIS 3.0
+     */
+    void emitVariablesChanged();
+
   private:
 
     QgsProject(); // private 'cause it's a singleton

@@ -1151,6 +1151,7 @@ void QgsProjectProperties::apply()
 
   //save variables
   QgsExpressionContextUtils::setProjectVariables( mVariableEditor->variablesInActiveScope() );
+  QgsProject::instance()->emitVariablesChanged();
 
   emit refresh();
 }

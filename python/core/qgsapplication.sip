@@ -379,7 +379,23 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     bool x11EventFilter ( XEvent * event );
 %End
 
+  public slots:
+
+    /** Causes the application instance to emit the settingsChanged() signal. This should
+     * be called whenever global, application-wide settings are altered to advise listeners
+     * that they may need to update their state.
+     * @see settingsChanged()
+     * @note added in QGIS 3.0
+     */
+    void emitSettingsChanged();
+
   signals:
     //! @note not available in python bindings
     // void preNotify( QObject * receiver, QEvent * event, bool * done );
+
+    /** Emitted whenever any global, application-wide settings are changed.
+     * @note added in QGIS 3.0
+     * @see emitSettingsChanged()
+     */
+    void settingsChanged();
 };
