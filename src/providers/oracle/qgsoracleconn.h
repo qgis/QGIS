@@ -45,6 +45,10 @@ struct QgsOracleLayerProperty
   QStringList          pkCols;
   QString              sql;
 
+  QgsOracleLayerProperty()
+      : isView( false )
+  {}
+
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
   bool operator==( const QgsOracleLayerProperty& other )
@@ -107,7 +111,7 @@ class QgsOracleConn : public QObject
 {
     Q_OBJECT
   public:
-    static QgsOracleConn *connectDb( QgsDataSourceURI uri );
+    static QgsOracleConn *connectDb( const QgsDataSourceURI &uri );
     void disconnect();
 
     /** Double quote a Oracle identifier for placement in a SQL string.

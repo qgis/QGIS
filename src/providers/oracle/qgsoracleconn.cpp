@@ -31,7 +31,7 @@ QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
 const int QgsOracleConn::sGeomTypeSelectLimit = 100;
 
-QgsOracleConn *QgsOracleConn::connectDb( QgsDataSourceURI uri )
+QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceURI& uri )
 {
   QString conninfo = uri.connectionInfo();
 

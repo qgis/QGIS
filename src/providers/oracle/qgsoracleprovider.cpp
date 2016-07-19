@@ -1772,7 +1772,6 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry
     g.eleminfo.clear();
     g.ordinates.clear();
 
-    QString expr;
     int iOrdinate = 1;
     QGis::WkbType type = ( QGis::WkbType ) * ptr.iPtr++;
     int dim = 2;
@@ -1781,6 +1780,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry
     {
       case QGis::WKBPoint25D:
         dim = 3;
+        FALLTHROUGH;
+
       case QGis::WKBPoint:
         g.srid  = mSrid;
         g.gtype = SDO_GTYPE( dim, gtPoint );
@@ -1792,6 +1793,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry
       case QGis::WKBLineString25D:
       case QGis::WKBMultiLineString25D:
         dim = 3;
+        FALLTHROUGH;
+
       case QGis::WKBLineString:
       case QGis::WKBMultiLineString:
       {
@@ -1827,6 +1830,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry
       case QGis::WKBPolygon25D:
       case QGis::WKBMultiPolygon25D:
         dim = 3;
+        FALLTHROUGH;
+
       case QGis::WKBPolygon:
       case QGis::WKBMultiPolygon:
       {
@@ -1866,6 +1871,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry
 
       case QGis::WKBMultiPoint25D:
         dim = 3;
+        FALLTHROUGH;
+
       case QGis::WKBMultiPoint:
       {
         g.gtype = SDO_GTYPE( dim, gtMultiPoint );
@@ -2734,7 +2741,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
 
   QgsDebugMsg( QString( "layer %1 created" ).arg( ownerTableName ) );
 
-  // use the provider to edit the table
+  // use the provider to edit the table1
   dsUri.setDataSource( ownerName, tableName, geometryColumn, QString(), primaryKey );
   QgsOracleProvider *provider = new QgsOracleProvider( dsUri.uri() );
   if ( !provider->isValid() )
@@ -2749,8 +2756,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
   QgsDebugMsg( "layer loaded" );
 
   // add fields to the layer
-  if ( oldToNewAttrIdxMap )
-    oldToNewAttrIdxMap->clear();
+  oldToNewAttrIdxMap->clear();
 
   if ( fields.size() > 0 )
   {
