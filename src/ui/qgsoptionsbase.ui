@@ -1408,7 +1408,7 @@
                   <item>
                    <widget class="QCheckBox" name="cbxAttributeTableDocked">
                     <property name="text">
-                     <string>Open attribute table in a dock window (QGIS restart required)</string>
+                     <string>Open attribute table in a dock window</string>
                     </property>
                    </widget>
                   </item>
