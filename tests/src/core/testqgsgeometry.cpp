@@ -90,6 +90,8 @@ class TestQgsGeometry : public QObject
     void bufferCheck();
     void smoothCheck();
 
+    void unaryUnion();
+
     void dataStream();
 
     void exportToGeoJSON();
@@ -3254,6 +3256,20 @@ void TestQgsGeometry::smoothCheck()
                          <<  QgsPoint( 4.0, 3.8 ) << QgsPoint( 3.8, 4.0 ) << QgsPoint( 2.2, 4.0 ) << QgsPoint( 2.0, 3.8 )
                          << QgsPoint( 2, 2.2 ) << QgsPoint( 2.2, 2 ) ) );
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
+}
+
+void TestQgsGeometry::unaryUnion()
+{
+  //test QgsGeometry::unaryUnion with null geometry
+  QString wkt1 = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ))";
+  QString wkt2 = "Polygon ((2 2, 4 2, 4 4, 2 4, 2 2))";
+  QScopedPointer< QgsGeometry > geom1( QgsGeometry::fromWkt( wkt1 ) );
+  QScopedPointer< QgsGeometry > geom2( QgsGeometry::fromWkt( wkt2 ) );
+  QScopedPointer< QgsGeometry > empty( new QgsGeometry() );
+  QList< QgsGeometry* > list;
+  list << geom1.data() << empty.data() << geom2.data();
+
+  QScopedPointer< QgsGeometry > result( QgsGeometry::unaryUnion( list ) );
 }
 
 void TestQgsGeometry::dataStream()
