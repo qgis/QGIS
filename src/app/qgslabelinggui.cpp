@@ -478,6 +478,14 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
 void QgsLabelingGui::setDockMode( bool enabled )
 {
   mOptionsTab->setVisible( enabled );
+  mOptionsTab->setTabToolTip( 0, tr( "Text" ) );
+  mOptionsTab->setTabToolTip( 1, tr( "Formatting" ) );
+  mOptionsTab->setTabToolTip( 2, tr( "Buffer" ) );
+  mOptionsTab->setTabToolTip( 3, tr( "Background" ) );
+  mOptionsTab->setTabToolTip( 4, tr( "Shadow" ) );
+  mOptionsTab->setTabToolTip( 5, tr( "Placement" ) );
+  mOptionsTab->setTabToolTip( 6, tr( "Rendering" ) );
+
   mLabelingOptionsListFrame->setVisible( !enabled );
   groupBox_mPreview->setVisible( !enabled );
   mDockMode = enabled;
