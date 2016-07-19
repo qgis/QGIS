@@ -54,6 +54,7 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   mLockButton->setToolTip( tr( "Lock the scale to use magnifier to zoom in or out." ) );
   mLockButton->setCheckable( true );
   mLockButton->setChecked( false );
+  mLockButton->setAutoRaise( true );
 
   // layout
   mLayout = new QHBoxLayout( this );
