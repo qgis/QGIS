@@ -417,7 +417,7 @@
             <section label="Reclass category values">
                 <grass name="v.reclass.file"/>
                 <grass name="v.reclass.attr"/>
-                <grass name="v.class.mlpy.qgis" version_min="7.0" version_max="7.0"/>
+                <grass name="v.class.mlpy.qgis" version_min="7.0" />
             </section>
         </section>
         <section label="Work with vector points">
