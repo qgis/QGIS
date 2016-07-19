@@ -43,6 +43,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mFilterAskedForUpdate( false )
     , mInAtlas( false )
     , mInitialMapScaleCalculated( false )
+    , mForceResize( false )
 {
   mLegendModel2 = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
 
@@ -66,6 +67,8 @@ QgsComposerLegend::QgsComposerLegend()
     , mFilterOutAtlas( false )
     , mFilterAskedForUpdate( false )
     , mInAtlas( false )
+    , mInitialMapScaleCalculated( false )
+    , mForceResize( false )
 {
 
 }
@@ -117,11 +120,18 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   mInitialMapScaleCalculated = true;
 
   QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
-  legendRenderer.setLegendSize( rect().size() );
+  legendRenderer.setLegendSize( mForceResize ? QSize() : rect().size() );
 
   //adjust box if width or height is too small
   QSizeF size = legendRenderer.minimumSize();
-  if ( size.height() > rect().height() || size.width() > rect().width() )
+  if ( mForceResize )
+  {
+    mForceResize = false;
+    //set new rect, respecting position mode and data defined size/position
+    QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
+    setSceneRect( evalItemRect( targetRect, true ) );
+  }
+  else if ( size.height() > rect().height() || size.width() > rect().width() )
   {
     //need to resize box
     QRectF targetRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
@@ -673,6 +683,8 @@ void QgsComposerLegend::doUpdateFilterByMap()
   }
   else
     mLegendModel2->setLegendFilterByMap( nullptr );
+
+  mForceResize = true;
 }
 
 void QgsComposerLegend::setLegendFilterOutAtlas( bool doFilter )
