@@ -921,6 +921,15 @@ bool QgsComposer::loadFromTemplate( const QDomDocument& templateDoc, bool clearE
   setUpdatesEnabled( true );
 
   dlg->close();
+
+  if ( result )
+  {
+    // update composition widget
+    QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mGeneralDock->widget() );
+    delete oldCompositionWidget;
+    createCompositionWidget();
+  }
+
   return result;
 }
 
