@@ -29,8 +29,8 @@ class QgsDatumTransformStore
     QgsCoordinateTransform transformation( QgsMapLayer* layer ) const;
 
 
-    void readXML( const QDomNode& parentNode );
+    void readXml( const QDomNode& parentNode );
 
-    void writeXML( QDomNode& parentNode, QDomDocument& theDoc ) const;
+    void writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const;
 
 };

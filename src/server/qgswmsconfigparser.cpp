@@ -35,23 +35,23 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-QgsWMSConfigParser::QgsWMSConfigParser()
+QgsWmsConfigParser::QgsWmsConfigParser()
 {
 
 }
 
-QgsWMSConfigParser::~QgsWMSConfigParser()
+QgsWmsConfigParser::~QgsWmsConfigParser()
 {
 
 }
 
-QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
+QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
 {
   QStringList highlightLayers;
   return createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
 }
 
-QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
+QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
 {
   QList<QgsComposerMap*> composerMaps;
   QList<QgsComposerLegend*> composerLegends;
@@ -289,7 +289,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
   return c;
 }
 
-QStringList QgsWMSConfigParser::addHighlightLayers( const QMap<QString, QString>& parameterMap, QStringList& layerSet, const QString& parameterPrefix )
+QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>& parameterMap, QStringList& layerSet, const QString& parameterPrefix )
 {
   QStringList highlightLayers, geomSplit, symbolSplit, labelSplit, labelFontSplit, labelSizeSplit,
   labelWeightSplit, labelColorSplit, labelBufferColorSplit, labelBufferSizeSplit;
@@ -349,7 +349,7 @@ QStringList QgsWMSConfigParser::addHighlightLayers( const QMap<QString, QString>
   return highlightLayers;
 }
 
-QgsVectorLayer* QgsWMSConfigParser::createHighlightLayer( int i, const QString& crsString, QgsGeometry* geom, const QString& labelString, const QStringList& labelSizeSplit, const QStringList& labelColorSplit,
+QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& crsString, QgsGeometry* geom, const QString& labelString, const QStringList& labelSizeSplit, const QStringList& labelColorSplit,
     const QStringList& labelWeightSplit, const QStringList& labelFontSplit, const QStringList& labelBufferSizeSplit,
     const QStringList& labelBufferColorSplit )
 {
@@ -470,7 +470,7 @@ QgsVectorLayer* QgsWMSConfigParser::createHighlightLayer( int i, const QString& 
   return layer;
 }
 
-void QgsWMSConfigParser::highlightParameters( const QMap<QString, QString>& parameterMap, const QString& parameterPrefix, QStringList& geom, QStringList& symbol,
+void QgsWmsConfigParser::highlightParameters( const QMap<QString, QString>& parameterMap, const QString& parameterPrefix, QStringList& geom, QStringList& symbol,
     QStringList& label, QStringList& labelFont, QStringList& labelSize, QStringList& labelWeight, QStringList& labelColor,
     QStringList& labelBufferColor, QStringList& labelBufferSize )
 {
@@ -529,7 +529,7 @@ void QgsWMSConfigParser::highlightParameters( const QMap<QString, QString>& para
   }
 }
 
-void QgsWMSConfigParser::removeHighlightLayers( const QStringList& layerIds )
+void QgsWmsConfigParser::removeHighlightLayers( const QStringList& layerIds )
 {
   QStringList::const_iterator idIt = layerIds.constBegin();
   for ( ; idIt != layerIds.constEnd(); ++idIt )
@@ -538,7 +538,7 @@ void QgsWMSConfigParser::removeHighlightLayers( const QStringList& layerIds )
   }
 }
 
-void QgsWMSConfigParser::setLayerIdsToLegendModel( QgsLegendModelV2* model, const QStringList& layerSet, double scale )
+void QgsWmsConfigParser::setLayerIdsToLegendModel( QgsLegendModelV2* model, const QStringList& layerSet, double scale )
 {
   if ( !model )
   {

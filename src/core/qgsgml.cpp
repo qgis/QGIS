@@ -251,7 +251,7 @@ QgsCoordinateReferenceSystem QgsGml::crs() const
   QgsCoordinateReferenceSystem crs;
   if ( mParser.getEPSGCode() != 0 )
   {
-    crs = QgsCRSCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( mParser.getEPSGCode() ) );
+    crs = QgsCrsCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( mParser.getEPSGCode() ) );
   }
   return crs;
 }
@@ -1205,7 +1205,7 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int& epsgNr, const XML_Char** 
       epsgNr = eNr;
       mSrsName = epsgString;
 
-      QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgNr ) );
+      QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgNr ) );
       if ( crs.isValid() )
       {
         if ((( mAxisOrientationLogic == Honour_EPSG_if_urn && bIsUrn ) ||

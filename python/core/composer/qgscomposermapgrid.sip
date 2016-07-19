@@ -95,7 +95,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
      * @returns true if read was successful
      * @see writeXML
      */
-    bool readXML( const QDomElement& elem, const QDomDocument& doc );
+    bool readXml( const QDomElement& elem, const QDomDocument& doc );
 
     /** Calculates the maximum distance grids within the stack extend
      * beyond the QgsComposerMap's item rect
@@ -259,14 +259,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @param doc DOM document
      * @see readXML
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets grid state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * @param doc is DOM document
      * @see writeXML
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Sets the CRS for the grid.
      * @param crs coordinate reference system for grid

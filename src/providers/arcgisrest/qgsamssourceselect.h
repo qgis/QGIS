@@ -30,8 +30,8 @@ class QgsAmsSourceSelect: public QgsSourceSelectDialog
     QgsAmsSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode = false );
 
   protected:
-    bool connectToService( const QgsOWSConnection& connection ) override;
-    QString getLayerURI( const QgsOWSConnection &connection,
+    bool connectToService( const QgsOwsConnection& connection ) override;
+    QString getLayerURI( const QgsOwsConnection &connection,
                          const QString& layerTitle, const QString& layerName,
                          const QString& crs = QString(),
                          const QString& filter = QString(),

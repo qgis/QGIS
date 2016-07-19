@@ -49,8 +49,8 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void equality();
     void noEquality();
     void equalityInvalid();
-    void readXML();
-    void writeXML();
+    void readXml();
+    void writeXml();
     void setCustomSrsValidation();
     void customSrsValidation();
     void postgisSrid();
@@ -348,17 +348,17 @@ void TestQgsCoordinateReferenceSystem::equalityInvalid()
   QgsCoordinateReferenceSystem invalidCrs2;
   QVERIFY( invalidCrs1 == invalidCrs2 );
 }
-void TestQgsCoordinateReferenceSystem::readXML()
+void TestQgsCoordinateReferenceSystem::readXml()
 {
   //QgsCoordinateReferenceSystem myCrs;
   //myCrs.createFromSrid( GEOSRID );
   //QgsCoordinateReferenceSystem myCrs2;
-  //QVERIFY( myCrs2.readXML( QDomNode & theNode ) );
+  //QVERIFY( myCrs2.readXml( QDomNode & theNode ) );
 }
-void TestQgsCoordinateReferenceSystem::writeXML()
+void TestQgsCoordinateReferenceSystem::writeXml()
 {
   //QgsCoordinateReferenceSystem myCrs;
-  //bool writeXML( QDomNode & theNode, QDomDocument & theDoc ) const;
+  //bool writeXml( QDomNode & theNode, QDomDocument & theDoc ) const;
   //QVERIFY( myCrs.isValid() );
 }
 void TestQgsCoordinateReferenceSystem::setCustomSrsValidation()

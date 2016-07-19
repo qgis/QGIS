@@ -58,7 +58,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      *  @note added in 2.1 */
     void setLabel( int idx, const QString& label );
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
 

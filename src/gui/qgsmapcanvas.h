@@ -855,8 +855,10 @@ class QgsMapCanvasRendererSync : public QObject
     void onCrsTransformC2R();
     void onCrsTransformR2C();
 
-    void onDestCrsC2R();
-    void onDestCrsR2C();
+    //! Called when the canvas destination CRS is changed
+    void onDestinationCrsC2R();
+    //! Called when the renderer destination CRS is changed
+    void onDestinationCrsR2C();
 
     void onLayersC2R();
 

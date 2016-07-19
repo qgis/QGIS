@@ -110,7 +110,7 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
     }
   }
   QgsPalettedRasterRenderer* r = new QgsPalettedRasterRenderer( input, bandNumber, colors, nColors, labels );
-  r->readXML( elem );
+  r->readXml( elem );
   return r;
 }
 
@@ -240,7 +240,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
   return outputBlock;
 }
 
-void QgsPalettedRasterRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsPalettedRasterRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -248,7 +248,7 @@ void QgsPalettedRasterRenderer::writeXML( QDomDocument& doc, QDomElement& parent
   }
 
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
-  _writeXML( doc, rasterRendererElem );
+  _writeXml( doc, rasterRendererElem );
 
   rasterRendererElem.setAttribute( "band", mBand );
   QDomElement colorPaletteElem = doc.createElement( "colorPalette" );

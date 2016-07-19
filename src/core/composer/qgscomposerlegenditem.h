@@ -43,11 +43,11 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
       StyleItem
     };
 
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const = 0;
+    virtual void writeXml( QDomElement& elem, QDomDocument& doc ) const = 0;
     /** Read item content from xml
       @param itemElem item to read from
       @param xServerAvailable Read item icons if true (QIcon needs x-server)*/
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) = 0;
+    virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) = 0;
 
     virtual ItemType itemType() const = 0;
     virtual QStandardItem* clone() const override = 0;
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     virtual void setUserText( const QString & text ) { mUserText = text; }
 
   protected:
-    void writeXMLChildren( QDomElement& elem, QDomDocument& doc ) const;
+    void writeXmlChildren( QDomElement& elem, QDomDocument& doc ) const;
 
     QgsComposerLegendStyle::Style mStyle;
 
@@ -85,8 +85,8 @@ class CORE_EXPORT QgsComposerSymbolV2Item: public QgsComposerLegendItem
 
     virtual QStandardItem* clone() const override;
 
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const override;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) override;
+    virtual void writeXml( QDomElement& elem, QDomDocument& doc ) const override;
+    virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
     /** Set symbol (takes ownership)*/
     void setSymbolV2( QgsSymbolV2* s );
@@ -111,11 +111,11 @@ class CORE_EXPORT QgsComposerRasterSymbolItem : public QgsComposerLegendItem
 
     virtual QStandardItem* clone() const override;
 
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const override;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) override;
+    virtual void writeXml( QDomElement& elem, QDomDocument& doc ) const override;
+    virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
-    void setLayerID( const QString& id ) { mLayerID = id; }
-    QString layerID() const { return mLayerID; }
+    void setLayerId( const QString& id ) { mLayerID = id; }
+    QString layerId() const { return mLayerID; }
     ItemType itemType() const override { return RasterSymbolItem; }
 
     void setColor( const QColor& c ) { mColor = c; }
@@ -137,13 +137,13 @@ class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
     virtual ~QgsComposerLayerItem();
     virtual QStandardItem* clone() const override;
 
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const override;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) override;
+    virtual void writeXml( QDomElement& elem, QDomDocument& doc ) const override;
+    virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
     ItemType itemType() const override { return LayerItem; }
 
-    void setLayerID( const QString& id ) { mLayerID = id; }
-    QString layerID() const { return mLayerID; }
+    void setLayerId( const QString& id ) { mLayerID = id; }
+    QString layerId() const { return mLayerID; }
 
     void setShowFeatureCount( bool show ) { mShowFeatureCount = show; }
     bool showFeatureCount() const { return mShowFeatureCount; }
@@ -167,8 +167,8 @@ class CORE_EXPORT QgsComposerGroupItem: public QgsComposerLegendItem
     virtual ~QgsComposerGroupItem();
     virtual QStandardItem* clone() const override;
 
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const override;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) override;
+    virtual void writeXml( QDomElement& elem, QDomDocument& doc ) const override;
+    virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
     ItemType itemType() const override { return GroupItem; }
 };

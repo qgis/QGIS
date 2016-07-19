@@ -3793,7 +3793,7 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
 
 QString QgsSymbolLayerV2Utils::symbolPathToName( QString path )
 {
-  // copied from QgsSymbol::writeXML
+  // copied from QgsSymbol::writeXml
 
   QFileInfo fi( path );
   if ( !fi.exists() )

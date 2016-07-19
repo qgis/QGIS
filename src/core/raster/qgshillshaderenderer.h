@@ -53,7 +53,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      */
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height ) override;
 

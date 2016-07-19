@@ -337,11 +337,11 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
 
   //published WMS/WFS attributes
   QTableWidgetItem* wmsAttrItem = new QTableWidgetItem();
-  wmsAttrItem->setCheckState( mLayer->excludeAttributesWMS().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
+  wmsAttrItem->setCheckState( mLayer->excludeAttributesWms().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wmsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
   mFieldsList->setItem( row, attrWMSCol, wmsAttrItem );
   QTableWidgetItem* wfsAttrItem = new QTableWidgetItem();
-  wfsAttrItem->setCheckState( mLayer->excludeAttributesWFS().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
+  wfsAttrItem->setCheckState( mLayer->excludeAttributesWfs().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
   mFieldsList->setItem( row, attrWFSCol, wfsAttrItem );
 }
@@ -1002,8 +1002,8 @@ void QgsFieldsProperties::apply()
 
   mLayer->editFormConfig()->setSuppress(( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
 
-  mLayer->setExcludeAttributesWMS( excludeAttributesWMS );
-  mLayer->setExcludeAttributesWFS( excludeAttributesWFS );
+  mLayer->setExcludeAttributesWms( excludeAttributesWMS );
+  mLayer->setExcludeAttributesWfs( excludeAttributesWFS );
 
   // relations
   for ( int i = 0; i < mRelationsList->rowCount(); ++i )

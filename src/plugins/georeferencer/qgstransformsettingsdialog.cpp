@@ -65,7 +65,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   cmbCompressionComboBox->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lastcompression", 0 ).toInt() );
 
   QString targetCRSString = s.value( "/Plugin-GeoReferencer/targetsrs" ).toString();
-  QgsCoordinateReferenceSystem targetCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( targetCRSString );
+  QgsCoordinateReferenceSystem targetCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( targetCRSString );
   mCrsSelector->setCrs( targetCRS );
 
   mWorldFileCheckBox->setChecked( s.value( "/Plugin-Georeferencer/word_file_checkbox", false ).toBool() );

@@ -30,7 +30,7 @@
 /** \ingroup core
  * \brief Connections management
  */
-class CORE_EXPORT QgsOWSConnection : public QObject
+class CORE_EXPORT QgsOwsConnection : public QObject
 {
     Q_OBJECT
 
@@ -40,10 +40,10 @@ class CORE_EXPORT QgsOWSConnection : public QObject
      * @param theService service name: WMS,WFS,WCS
      * @param theConnName connection name
      */
-    QgsOWSConnection( const QString & theService, const QString & theConnName );
+    QgsOwsConnection( const QString & theService, const QString & theConnName );
 
     //! Destructor
-    ~QgsOWSConnection();
+    ~QgsOwsConnection();
 
     /** Returns the list of connections for the specified service */
     static QStringList connectionList( const QString & theService );

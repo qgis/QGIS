@@ -661,7 +661,7 @@ void QgsComposerScaleBar::setFont( const QFont& font )
   emit itemChanged();
 }
 
-bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerScaleBar::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {
@@ -740,10 +740,10 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   composerScaleBarElem.setAttribute( "alignment", QString::number( static_cast< int >( mAlignment ) ) );
 
   elem.appendChild( composerScaleBarElem );
-  return _writeXML( composerScaleBarElem, doc );
+  return _writeXml( composerScaleBarElem, doc );
 }
 
-bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
   {
@@ -894,7 +894,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   return true;

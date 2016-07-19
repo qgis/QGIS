@@ -106,18 +106,18 @@ void QgsRasterTransparencyWidget::syncToLayer()
     }
   }
 
-  if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
+  if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
   {
-    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) ) );
+    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
   }
   else
   {
     lblSrcNoDataValue->setText( tr( "not defined" ) );
   }
 
-  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSrcNoDataValue( 1 ) );
+  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSourceNoDataValue( 1 ) );
 
-  bool enableSrcNoData = mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) );
+  bool enableSrcNoData = mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) );
 
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
@@ -611,7 +611,7 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
   {
     // value
     QString valueString;
-    switch ( provider->srcDataType( 1 ) )
+    switch ( provider->sourceDataType( 1 ) )
     {
       case QGis::Float32:
       case QGis::Float64:

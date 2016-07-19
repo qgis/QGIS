@@ -227,7 +227,7 @@ void TestQgsComposerLabel::marginMethods()
   labelXml = "<ComposerLabel margin=\"9\"><ComposerItem></ComposerItem></ComposerLabel";
   labelDoc.setContent( labelXml );
   QgsComposerLabel label2( mComposition );
-  label2.readXML( labelDoc.firstChildElement(), labelDoc );
+  label2.readXml( labelDoc.firstChildElement(), labelDoc );
   QCOMPARE( label2.marginX(), 9.0 );
   QCOMPARE( label2.marginY(), 9.0 );
 
@@ -235,7 +235,7 @@ void TestQgsComposerLabel::marginMethods()
   labelXml = "<ComposerLabel marginX=\"11\" marginY=\"12\"><ComposerItem></ComposerItem></ComposerLabel";
   labelDoc.setContent( labelXml );
   QgsComposerLabel label3( mComposition );
-  label3.readXML( labelDoc.firstChildElement(), labelDoc );
+  label3.readXml( labelDoc.firstChildElement(), labelDoc );
   QCOMPARE( label3.marginX(), 11.0 );
   QCOMPARE( label3.marginY(), 12.0 );
 }

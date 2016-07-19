@@ -259,7 +259,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &theHistogram,
   theHistogram.maximum = theMaximum;
   theHistogram.includeOutOfRange = theIncludeOutOfRange;
 
-  int mySrcDataType = srcDataType( theBandNo );
+  int mySrcDataType = sourceDataType( theBandNo );
 
   if ( qIsNaN( theHistogram.minimum ) )
   {
@@ -516,7 +516,7 @@ void QgsRasterInterface::cumulativeCut( int theBandNo,
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 theLowerCount = %2 theUpperCount = %3 theSampleSize = %4" ).arg( theBandNo ).arg( theLowerCount ).arg( theUpperCount ).arg( theSampleSize ), 4 );
 
-  int mySrcDataType = srcDataType( theBandNo );
+  int mySrcDataType = sourceDataType( theBandNo );
 
   // Init to NaN is better than histogram min/max to catch errors
   theLowerValue = std::numeric_limits<double>::quiet_NaN();

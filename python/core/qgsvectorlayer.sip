@@ -1034,11 +1034,11 @@ class QgsVectorLayer : QgsMapLayer
 
     const QMap< QString, QString >& attributeAliases() const;
 
-    const QSet<QString>& excludeAttributesWMS() const;
-    void setExcludeAttributesWMS( const QSet<QString>& att );
+    const QSet<QString>& excludeAttributesWms() const;
+    void setExcludeAttributesWms( const QSet<QString>& att );
 
-    const QSet<QString>& excludeAttributesWFS() const;
-    void setExcludeAttributesWFS( const QSet<QString>& att );
+    const QSet<QString>& excludeAttributesWfs() const;
+    void setExcludeAttributesWfs( const QSet<QString>& att );
 
     /** Delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );

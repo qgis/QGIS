@@ -23,8 +23,8 @@ class QgsBrightnessContrastFilter : QgsRasterInterface
     void setContrast( int contrast );
     int contrast() const;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
     /** Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem );
+    void readXml( const QDomElement& filterElem );
 };

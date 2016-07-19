@@ -118,9 +118,9 @@ class QgsAlignRaster
     QSizeF cellSize() const;
 
     //! Set the output CRS in WKT format
-    void setDestinationCRS( const QString& crsWkt );
+    void setDestinationCrs( const QString& crsWkt );
     //! Get the output CRS in WKT format
-    QString destinationCRS() const;
+    QString destinationCrs() const;
 
     //! Configure clipping extent (region of interest).
     //! No extra clipping is done if the rectangle is null

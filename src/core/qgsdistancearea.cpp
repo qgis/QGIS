@@ -103,7 +103,7 @@ bool QgsDistanceArea::willUseEllipsoid() const
 
 void QgsDistanceArea::setSourceCrs( long srsid )
 {
-  QgsCoordinateReferenceSystem srcCRS = QgsCRSCache::instance()->crsBySrsId( srsid );
+  QgsCoordinateReferenceSystem srcCRS = QgsCrsCache::instance()->crsBySrsId( srsid );
   mCoordTransform.setSourceCrs( srcCRS );
 }
 
@@ -114,7 +114,7 @@ void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS )
 
 void QgsDistanceArea::setSourceAuthId( const QString& authId )
 {
-  QgsCoordinateReferenceSystem srcCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( authId );
+  QgsCoordinateReferenceSystem srcCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( authId );
   mCoordTransform.setSourceCrs( srcCRS );
 }
 
@@ -223,7 +223,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
 
   // get spatial ref system for ellipsoid
   QString proj4 = "+proj=longlat +ellps=" + ellipsoid + " +no_defs";
-  QgsCoordinateReferenceSystem destCRS = QgsCRSCache::instance()->crsByProj4( proj4 );
+  QgsCoordinateReferenceSystem destCRS = QgsCrsCache::instance()->crsByProj4( proj4 );
   //TODO: createFromProj4 used to save to the user database any new CRS
   // this behavior was changed in order to separate creation and saving.
   // Not sure if it necessary to save it here, should be checked by someone
@@ -233,7 +233,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
     QString myName = QString( " * %1 (%2)" )
                      .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                            destCRS.toProj4() );
-    destCRS.saveAsUserCRS( myName );
+    destCRS.saveAsUserCrs( myName );
   }
   //
 

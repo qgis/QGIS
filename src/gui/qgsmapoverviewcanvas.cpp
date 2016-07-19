@@ -266,7 +266,7 @@ void QgsMapOverviewCanvas::hasCrsTransformEnabled( bool flag )
   mSettings.setCrsTransformEnabled( flag );
 }
 
-void QgsMapOverviewCanvas::destinationSrsChanged()
+void QgsMapOverviewCanvas::destinationCrsChanged()
 {
   mSettings.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs() );
 }

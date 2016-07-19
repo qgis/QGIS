@@ -52,13 +52,13 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     //setters and getters
     QgsComposerShape::Shape shapeType() const { return mShape; }

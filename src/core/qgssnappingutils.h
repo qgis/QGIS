@@ -186,7 +186,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
   private:
     //! Get destination CRS from map settings, or an invalid CRS if projections are disabled
-    QgsCoordinateReferenceSystem destCRS() const;
+    QgsCoordinateReferenceSystem destinationCrs() const;
 
     //! delete all existing locators (e.g. when destination CRS has changed and we need to reindex)
     void clearAllLocators();

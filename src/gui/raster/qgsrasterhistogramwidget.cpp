@@ -94,7 +94,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
           ++myIteratorInt )
     {
       cboHistoBand->addItem( mRasterLayer->bandName( myIteratorInt ) );
-      QGis::DataType mySrcDataType = mRasterLayer->dataProvider()->srcDataType( myIteratorInt );
+      QGis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
       if ( !( mySrcDataType == QGis::Byte ||
               mySrcDataType == QGis::Int16 || mySrcDataType == QGis::Int32 ||
               mySrcDataType == QGis::UInt16 || mySrcDataType == QGis::UInt32 ) )
@@ -486,7 +486,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
 
     QgsDebugMsg( QString( "got raster histo for band %1 : min=%2 max=%3 count=%4" ).arg( myIteratorInt ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ) );
 
-    QGis::DataType mySrcDataType = mRasterLayer->dataProvider()->srcDataType( myIteratorInt );
+    QGis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
     bool myDrawLines = true;
     if ( ! mHistoDrawLines &&
          ( mySrcDataType == QGis::Byte ||

@@ -432,14 +432,14 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //XML, usually connected with QgsProject::readProject and QgsProject::writeProject
 
     //! Stores state in Dom node
-    void writeXML( QDomDocument& doc );
+    void writeXml( QDomDocument& doc );
 
     //! Stores only template as base Dom node
-    void templateXML( QDomDocument& doc );
+    void templateXml( QDomDocument& doc );
 
     //! Sets state from Dom document
-    void readXML( const QDomDocument& doc );
-    void readXML( const QDomElement& composerElem, const QDomDocument& doc, bool fromTemplate = false );
+    void readXml( const QDomDocument& doc );
+    void readXml( const QDomElement& composerElem, const QDomDocument& doc, bool fromTemplate = false );
 
     void setSelectionTool();
 
@@ -480,13 +480,13 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void setupUndoView();
 
     //! True if a composer map contains a WMS layer
-    bool containsWMSLayer() const;
+    bool containsWmsLayer() const;
 
     //! True if a composer contains advanced effects, such as blend modes
     bool containsAdvancedEffects() const;
 
     //! Displays a warning because of possible min/max size in WMS
-    void showWMSPrintingWarning();
+    void showWmsPrintingWarning();
 
     //! Displays a warning because of incompatibility between blend modes and QPrinter
     void showAdvancedEffectsWarning();
@@ -495,7 +495,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void cleanupAfterTemplateRead();
 
     //! Writes state under DOM element
-    void writeXML( QDomNode& parentNode, QDomDocument& doc );
+    void writeXml( QDomNode& parentNode, QDomDocument& doc );
 
     //! Removes all the item from the graphics scene and deletes them
     void deleteItemWidgets();

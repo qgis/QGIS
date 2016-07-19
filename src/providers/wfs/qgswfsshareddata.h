@@ -154,7 +154,7 @@ class QgsWFSSharedData : public QObject
     bool mMaxFeaturesWasSetFromDefaultForPaging;
 
     /** Server capabilities */
-    QgsWFSCapabilities::Capabilities mCaps;
+    QgsWfsCapabilities::Capabilities mCaps;
 
     /** Whether progress dialog should be hidden */
     bool mHideProgressDialog;
@@ -251,7 +251,7 @@ class QgsWFSSharedData : public QObject
 };
 
 /** Utility class to issue a GetFeature resultType=hits request */
-class QgsWFSFeatureHitsRequest: public QgsWFSRequest
+class QgsWFSFeatureHitsRequest: public QgsWfsRequest
 {
     Q_OBJECT
   public:
@@ -267,7 +267,7 @@ class QgsWFSFeatureHitsRequest: public QgsWFSRequest
 
 /** Utility class to issue a GetFeature requets with maxfeatures/count=1
  * Used by QgsWFSSharedData::endOfDownload() when capabilities extent are likely wrong */
-class QgsWFSSingleFeatureRequest: public QgsWFSRequest
+class QgsWFSSingleFeatureRequest: public QgsWfsRequest
 {
     Q_OBJECT
   public:

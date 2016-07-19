@@ -92,13 +92,13 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
 
   QgsDebugMsgLevel( QString( "reading from %1" ).arg( typeid( *iface ).name() ), 4 );
 
-  if ( !iface->srcInput() )
+  if ( !iface->sourceInput() )
   {
     QgsDebugMsg( "iface->srcInput() == 0" );
     return SourceProviderError;
   }
 #ifdef QGISDEBUG
-  const QgsRasterInterface &srcInput = *iface->srcInput();
+  const QgsRasterInterface &srcInput = *iface->sourceInput();
   QgsDebugMsgLevel( QString( "srcInput = %1" ).arg( typeid( srcInput ).name() ), 4 );
 #endif
 
@@ -150,7 +150,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     return SourceProviderError;
   }
 
-  QgsRasterDataProvider* srcProvider = const_cast<QgsRasterDataProvider*>( dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() ) );
+  QgsRasterDataProvider* srcProvider = const_cast<QgsRasterDataProvider*>( dynamic_cast<const QgsRasterDataProvider*>( iface->sourceInput() ) );
   if ( !srcProvider )
   {
     QgsDebugMsg( "Cannot get source data provider" );
@@ -169,10 +169,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
 
   //check if all the bands have the same data type size, otherwise we cannot write it to the provider
   //(at least not with the current interface)
-  int dataTypeSize = QgsRasterBlock::typeSize( srcProvider->srcDataType( 1 ) );
+  int dataTypeSize = QgsRasterBlock::typeSize( srcProvider->sourceDataType( 1 ) );
   for ( int i = 2; i <= nBands; ++i )
   {
-    if ( QgsRasterBlock::typeSize( srcProvider->srcDataType( 1 ) ) != dataTypeSize )
+    if ( QgsRasterBlock::typeSize( srcProvider->sourceDataType( 1 ) ) != dataTypeSize )
     {
       return DestProviderError;
     }
@@ -189,17 +189,17 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   {
     QgsRasterNuller *nuller = pipe->nuller();
 
-    bool srcHasNoDataValue = srcProvider->srcHasNoDataValue( bandNo );
+    bool srcHasNoDataValue = srcProvider->sourceHasNoDataValue( bandNo );
     bool destHasNoDataValue = false;
     double destNoDataValue = std::numeric_limits<double>::quiet_NaN();
-    QGis::DataType destDataType = srcProvider->srcDataType( bandNo );
+    QGis::DataType destDataType = srcProvider->sourceDataType( bandNo );
     // TODO: verify what happens/should happen if srcNoDataValue is disabled by setUseSrcNoDataValue
-    QgsDebugMsgLevel( QString( "srcHasNoDataValue = %1 srcNoDataValue = %2" ).arg( srcHasNoDataValue ).arg( srcProvider->srcNoDataValue( bandNo ) ), 4 );
+    QgsDebugMsgLevel( QString( "srcHasNoDataValue = %1 srcNoDataValue = %2" ).arg( srcHasNoDataValue ).arg( srcProvider->sourceNoDataValue( bandNo ) ), 4 );
     if ( srcHasNoDataValue )
     {
 
       // If source has no data value, it is used by provider
-      destNoDataValue = srcProvider->srcNoDataValue( bandNo );
+      destNoDataValue = srcProvider->sourceNoDataValue( bandNo );
       destHasNoDataValue = true;
     }
     else if ( nuller && !nuller->noData( bandNo ).isEmpty() )
@@ -213,9 +213,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       // Verify if we realy need no data value, i.e.
       QgsRectangle srcExtent = outputExtent;
       QgsRasterProjector *projector = pipe->projector();
-      if ( projector && projector->destCrs() != projector->srcCrs() )
+      if ( projector && projector->destinationCrs() != projector->sourceCrs() )
       {
-        QgsCoordinateTransform ct( projector->destCrs(), projector->srcCrs() );
+        QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs() );
         srcExtent = ct.transformBoundingBox( outputExtent );
       }
       if ( !srcProvider->extent().contains( srcExtent ) )
@@ -225,8 +225,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
         QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, srcExtent, 250000 );
 
         // Test if we have free (not used) values
-        double typeMinValue = QgsContrastEnhancement::maximumValuePossible( static_cast< QGis::DataType >( srcProvider->srcDataType( bandNo ) ) );
-        double typeMaxValue = QgsContrastEnhancement::maximumValuePossible( static_cast< QGis::DataType >( srcProvider->srcDataType( bandNo ) ) );
+        double typeMinValue = QgsContrastEnhancement::maximumValuePossible( static_cast< QGis::DataType >( srcProvider->sourceDataType( bandNo ) ) );
+        double typeMaxValue = QgsContrastEnhancement::maximumValuePossible( static_cast< QGis::DataType >( srcProvider->sourceDataType( bandNo ) ) );
         if ( stats.minimumValue > typeMinValue )
         {
           destNoDataValue = typeMinValue;
@@ -329,7 +329,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   QgsDebugMsgLevel( "Entered", 4 );
 
   const QgsRasterInterface* iface = iter->input();
-  const QgsRasterDataProvider *srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
+  const QgsRasterDataProvider *srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->sourceInput() );
   int nBands = iface->bandCount();
   QgsDebugMsgLevel( QString( "nBands = %1" ).arg( nBands ), 4 );
 

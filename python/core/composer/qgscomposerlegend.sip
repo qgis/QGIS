@@ -222,13 +222,13 @@ class QgsComposerLegend : QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     //Overridden to show legend title
     virtual QString displayName() const;

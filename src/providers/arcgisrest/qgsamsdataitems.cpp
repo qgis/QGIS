@@ -33,9 +33,9 @@ QVector<QgsDataItem*> QgsAmsRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOWSConnection::connectionList( "ArcGisMapServer" ) )
+  foreach ( QString connName, QgsOwsConnection::connectionList( "ArcGisMapServer" ) )
   {
-    QgsOWSConnection connection( "ArcGisMapServer", connName );
+    QgsOwsConnection connection( "ArcGisMapServer", connName );
     QString path = "ams:/" + connName;
     connections.append( new QgsAmsConnectionItem( this, connName, path, connection.uri().param( "url" ) ) );
   }
@@ -156,7 +156,7 @@ void QgsAmsConnectionItem::editConnection()
 
 void QgsAmsConnectionItem::deleteConnection()
 {
-  QgsOWSConnection::deleteConnection( "ArcGisMapServer", mName );
+  QgsOwsConnection::deleteConnection( "ArcGisMapServer", mName );
   mParent->refresh();
 }
 

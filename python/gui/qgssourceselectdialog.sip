@@ -26,11 +26,11 @@ class QgsSourceSelectDialog : public QDialog //, protected Ui::QgsSourceSelectBa
 
   protected:
     /** To be implemented in the child class. Called when a new connection is initiated. */
-    virtual bool connectToService( const QgsOWSConnection& connection ) = 0;
+    virtual bool connectToService( const QgsOwsConnection& connection ) = 0;
     /** May be implemented in child classes for services which support customized queries. */
-    virtual void buildQuery( const QgsOWSConnection&, const QModelIndex& );
+    virtual void buildQuery( const QgsOwsConnection&, const QModelIndex& );
     /** To be implemented in the child class. Constructs an URI for the specified service layer. */
-    virtual QString getLayerURI( const QgsOWSConnection& connection,
+    virtual QString getLayerURI( const QgsOwsConnection& connection,
                                  const QString& layerTitle,
                                  const QString& layerName,
                                  const QString& crs = QString(),

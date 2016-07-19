@@ -53,16 +53,16 @@ class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
     /** Writes properties specific to text tables
      * @param elem an existing QDomElement in which to store the text table's properties.
      * @param doc QDomDocument for the destination xml.
-     * @see readXML
+     * @see readXml
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Reads the properties specific to a text table from xml.
      * @param itemElem a QDomElement holding the text table's desired properties.
      * @param doc QDomDocument for the source xml.
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /** Queries the text table for text to show in the cells.
      * @param attributeMaps list of QgsAttributeMaps where the cell text will be stored

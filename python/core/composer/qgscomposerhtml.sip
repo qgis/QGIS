@@ -174,8 +174,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
     virtual QString displayName() const;
     QSizeF totalSize() const;
     void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
-    bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
     void addFrame( QgsComposerFrame* frame /Transfer/, bool recalcFrameSizes = true );
     //overridden to break frames without dividing lines of text
     double findNearbyPageBreak( double yPos );

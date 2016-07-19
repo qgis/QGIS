@@ -215,7 +215,7 @@ QGis::DataType QgsRasterProjector::dataType( int bandNo ) const
   return QGis::UnknownDataType;
 }
 
-void QgsRasterProjector::setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform, int destDatumTransform )
+void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform, int destDatumTransform )
 {
   mSrcCRS = theSrcCRS;
   mDestCRS = theDestCRS;
@@ -238,7 +238,7 @@ void QgsRasterProjector::calc()
   mMaxSrcYRes = 0;
   if ( mInput )
   {
-    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
+    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->sourceInput() );
     if ( provider )
     {
       if ( provider->capabilities() & QgsRasterDataProvider::Size )

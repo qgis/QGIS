@@ -86,7 +86,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, const Qt::Win
 
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << "id" << "Integer" << "10" << "" ) );
 
-  QgsCoordinateReferenceSystem defaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem defaultCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
   defaultCrs.validate();
   mCrsSelector->setCrs( defaultCrs );
 
@@ -276,7 +276,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
     {
       if ( geometrytype != QGis::WKBUnknown )
       {
-        QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( crsId );
+        QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsBySrsId( crsId );
         if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs ) )
         {
           return QString::null;

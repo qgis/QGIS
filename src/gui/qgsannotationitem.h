@@ -95,11 +95,11 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem
     void setFrameBackgroundColor( const QColor& c ) { mFrameBackgroundColor = c; }
     QColor frameBackgroundColor() const { return mFrameBackgroundColor; }
 
-    virtual void writeXML( QDomDocument& doc ) const = 0;
-    virtual void readXML( const QDomDocument& doc, const QDomElement& itemElem ) = 0;
+    virtual void writeXml( QDomDocument& doc ) const = 0;
+    virtual void readXml( const QDomDocument& doc, const QDomElement& itemElem ) = 0;
 
-    void _writeXML( QDomDocument& doc, QDomElement& itemElem ) const;
-    void _readXML( const QDomDocument& doc, const QDomElement& annotationElem );
+    void _writeXml( QDomDocument& doc, QDomElement& itemElem ) const;
+    void _readXml( const QDomDocument& doc, const QDomElement& annotationElem );
 
   protected:
     /** True: the item stays at the same map position, False: the item stays on same screen position*/

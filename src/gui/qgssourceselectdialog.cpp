@@ -72,7 +72,7 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString& serviceName, Servic
   connect( btnEdit, SIGNAL( clicked() ), this, SLOT( modifyEntryOfServerList() ) );
   connect( btnDelete, SIGNAL( clicked() ), this, SLOT( deleteEntryOfServerList() ) );
   connect( btnConnect, SIGNAL( clicked() ), this, SLOT( connectToServer() ) );
-  connect( btnChangeSpatialRefSys, SIGNAL( clicked() ), this, SLOT( changeCRS() ) );
+  connect( btnChangeSpatialRefSys, SIGNAL( clicked() ), this, SLOT( changeCrs() ) );
   connect( lineFilter, SIGNAL( textChanged( QString ) ), this, SLOT( filterChanged( QString ) ) );
   populateConnectionList();
   mProjectionSelector = new QgsGenericProjectionSelector( this );
@@ -166,7 +166,7 @@ QString QgsSourceSelectDialog::getSelectedImageEncoding() const
 
 void QgsSourceSelectDialog::populateConnectionList()
 {
-  QStringList conns = QgsOWSConnection::connectionList( mServiceName );
+  QStringList conns = QgsOwsConnection::connectionList( mServiceName );
   cmbConnections->clear();
   foreach ( const QString& item, conns )
   {
@@ -179,7 +179,7 @@ void QgsSourceSelectDialog::populateConnectionList()
   btnSave->setEnabled( connectionsAvailable );
 
   //set last used connection
-  QString selectedConnection = QgsOWSConnection::selectedConnection( mServiceName );
+  QString selectedConnection = QgsOwsConnection::selectedConnection( mServiceName );
   int index = cmbConnections->findText( selectedConnection );
   if ( index != -1 )
   {
@@ -197,7 +197,7 @@ QString QgsSourceSelectDialog::getPreferredCrs( const QSet<QString>& crsSet ) co
   //first: project CRS
   long ProjectCRSID = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
   //convert to EPSG
-  QgsCoordinateReferenceSystem projectRefSys = QgsCRSCache::instance()->crsBySrsId( ProjectCRSID );
+  QgsCoordinateReferenceSystem projectRefSys = QgsCrsCache::instance()->crsBySrsId( ProjectCRSID );
   QString ProjectCRS;
   if ( projectRefSys.isValid() )
   {
@@ -251,7 +251,7 @@ void QgsSourceSelectDialog::deleteEntryOfServerList()
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
-    QgsOWSConnection::deleteConnection( mServiceName, cmbConnections->currentText() );
+    QgsOwsConnection::deleteConnection( mServiceName, cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
     emit connectionsChanged();
     bool connectionsAvailable = cmbConnections->count() > 0;
@@ -269,7 +269,7 @@ void QgsSourceSelectDialog::connectToServer()
   mModel->setRowCount( 0 );
   mAvailableCRS.clear();
 
-  QgsOWSConnection connection( mServiceName, cmbConnections->currentText() );
+  QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
 
   setCursor( Qt::WaitCursor );
   bool success = connectToService( connection );
@@ -313,7 +313,7 @@ void QgsSourceSelectDialog::addButtonClicked()
     return;
   }
 
-  QgsOWSConnection connection( mServiceName, cmbConnections->currentText() );
+  QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
 
   QString pCrsString( labelCoordRefSys->text() );
   QgsCoordinateReferenceSystem pCrs( pCrsString );
@@ -365,7 +365,7 @@ void QgsSourceSelectDialog::addButtonClicked()
   accept();
 }
 
-void QgsSourceSelectDialog::changeCRS()
+void QgsSourceSelectDialog::changeCrs()
 {
   if ( mProjectionSelector->exec() )
   {
@@ -374,7 +374,7 @@ void QgsSourceSelectDialog::changeCRS()
   }
 }
 
-void QgsSourceSelectDialog::changeCRSFilter()
+void QgsSourceSelectDialog::changeCrsFilter()
 {
   QgsDebugMsg( "changeCRSFilter called" );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
@@ -398,7 +398,7 @@ void QgsSourceSelectDialog::changeCRSFilter()
         QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
         if ( !preferredCRS.isEmpty() )
         {
-          QgsCoordinateReferenceSystem refSys = QgsCRSCache::instance()->crsByOgcWmsCrs( preferredCRS );
+          QgsCoordinateReferenceSystem refSys = QgsCrsCache::instance()->crsByOgcWmsCrs( preferredCRS );
           mProjectionSelector->setSelectedCrsId( refSys.srsid() );
 
           labelCoordRefSys->setText( preferredCRS );
@@ -411,7 +411,7 @@ void QgsSourceSelectDialog::changeCRSFilter()
 void QgsSourceSelectDialog::on_cmbConnections_activated( int index )
 {
   Q_UNUSED( index );
-  QgsOWSConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
+  QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
 }
 
 void QgsSourceSelectDialog::on_btnSave_clicked()
@@ -438,7 +438,7 @@ void QgsSourceSelectDialog::on_btnLoad_clicked()
 void QgsSourceSelectDialog::treeWidgetItemDoubleClicked( const QModelIndex& index )
 {
   QgsDebugMsg( "double click called" );
-  QgsOWSConnection connection( mServiceName, cmbConnections->currentText() );
+  QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, index );
 }
 
@@ -446,7 +446,7 @@ void QgsSourceSelectDialog::treeWidgetCurrentRowChanged( const QModelIndex & cur
 {
   Q_UNUSED( previous )
   QgsDebugMsg( "treeWidget_currentRowChanged called" );
-  changeCRSFilter();
+  changeCrsFilter();
   if ( mServiceType == FeatureService )
   {
     mBuildQueryButton->setEnabled( current.isValid() );
@@ -457,7 +457,7 @@ void QgsSourceSelectDialog::treeWidgetCurrentRowChanged( const QModelIndex & cur
 void QgsSourceSelectDialog::buildQueryButtonClicked()
 {
   QgsDebugMsg( "mBuildQueryButton click called" );
-  QgsOWSConnection connection( mServiceName, cmbConnections->currentText() );
+  QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, treeView->selectionModel()->currentIndex() );
 }
 

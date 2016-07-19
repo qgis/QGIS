@@ -26,17 +26,17 @@
 #include <QSettings>
 #include <QStringList>
 
-QgsWFSCapabilities::QgsWFSCapabilities( const QString& theUri )
-    : QgsWFSRequest( theUri )
+QgsWfsCapabilities::QgsWfsCapabilities( const QString& theUri )
+    : QgsWfsRequest( theUri )
 {
   connect( this, SIGNAL( downloadFinished() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 
-QgsWFSCapabilities::~QgsWFSCapabilities()
+QgsWfsCapabilities::~QgsWfsCapabilities()
 {
 }
 
-bool QgsWFSCapabilities::requestCapabilities( bool synchronous )
+bool QgsWfsCapabilities::requestCapabilities( bool synchronous )
 {
   QUrl url( baseURL() );
   url.addQueryItem( "REQUEST", "GetCapabilities" );
@@ -56,12 +56,12 @@ bool QgsWFSCapabilities::requestCapabilities( bool synchronous )
   return true;
 }
 
-QgsWFSCapabilities::Capabilities::Capabilities()
+QgsWfsCapabilities::Capabilities::Capabilities()
 {
   clear();
 }
 
-void QgsWFSCapabilities::Capabilities::clear()
+void QgsWfsCapabilities::Capabilities::clear()
 {
   maxFeatures = 0;
   supportsHits = false;
@@ -77,7 +77,7 @@ void QgsWFSCapabilities::Capabilities::clear()
   useEPSGColumnFormat = false;
 }
 
-QString QgsWFSCapabilities::Capabilities::addPrefixIfNeeded( const QString& name ) const
+QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString& name ) const
 {
   if ( name.contains( ':' ) )
     return name;
@@ -86,7 +86,7 @@ QString QgsWFSCapabilities::Capabilities::addPrefixIfNeeded( const QString& name
   return mapUnprefixedTypenameToPrefixedTypename[name];
 }
 
-void QgsWFSCapabilities::capabilitiesReplyFinished()
+void QgsWfsCapabilities::capabilitiesReplyFinished()
 {
   const QByteArray& buffer = mResponse;
 
@@ -97,7 +97,7 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
   QDomDocument capabilitiesDocument;
   if ( !capabilitiesDocument.setContent( buffer, true, &capabilitiesDocError ) )
   {
-    mErrorCode = QgsWFSRequest::XmlError;
+    mErrorCode = QgsWfsRequest::XmlError;
     mErrorMessage = capabilitiesDocError;
     emit gotCapabilities();
     return;
@@ -111,7 +111,7 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
     QDomNode ex = doc.firstChild();
     QString exc = ex.toElement().attribute( "exceptionCode", "Exception" );
     QDomElement ext = ex.firstChild().toElement();
-    mErrorCode = QgsWFSRequest::ServerExceptionError;
+    mErrorCode = QgsWfsRequest::ServerExceptionError;
     mErrorMessage = exc + ": " + ext.firstChild().nodeValue();
     emit gotCapabilities();
     return;
@@ -332,12 +332,12 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
            featureType.bbox.xMinimum() >= -180 && featureType.bbox.yMinimum() >= -90 &&
            featureType.bbox.xMaximum() <= 180 && featureType.bbox.yMaximum() < 90 )
       {
-        QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( featureType.crslist[0] );
+        QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( featureType.crslist[0] );
         if ( !crs.geographicFlag() )
         {
           // If the CRS is projected then check that projecting the corner of the bbox, assumed to be in WGS84,
           // into the CRS, and then back to WGS84, works (check that we are in the validity area)
-          QgsCoordinateReferenceSystem crsWGS84 = QgsCRSCache::instance()->crsByOgcWmsCrs( "CRS:84" );
+          QgsCoordinateReferenceSystem crsWGS84 = QgsCrsCache::instance()->crsByOgcWmsCrs( "CRS:84" );
           QgsCoordinateTransform ct( crsWGS84, crs );
 
           QgsPoint ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
@@ -444,7 +444,7 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
   emit gotCapabilities();
 }
 
-QString QgsWFSCapabilities::NormalizeSRSName( QString crsName )
+QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
 {
   QRegExp re( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
   if ( re.exactMatch( crsName ) )
@@ -460,13 +460,13 @@ QString QgsWFSCapabilities::NormalizeSRSName( QString crsName )
   return crsName;
 }
 
-int QgsWFSCapabilities::defaultExpirationInSec()
+int QgsWfsCapabilities::defaultExpirationInSec()
 {
   QSettings s;
   return s.value( "/qgis/defaultCapabilitiesExpiry", "24" ).toInt() * 60 * 60;
 }
 
-void QgsWFSCapabilities::parseSupportedOperations( const QDomElement& operationsElem,
+void QgsWfsCapabilities::parseSupportedOperations( const QDomElement& operationsElem,
     bool& insertCap,
     bool& updateCap,
     bool& deleteCap )
@@ -522,9 +522,9 @@ void QgsWFSCapabilities::parseSupportedOperations( const QDomElement& operations
   }
 }
 
-static QgsWFSCapabilities::Function getSpatialPredicate( const QString& name )
+static QgsWfsCapabilities::Function getSpatialPredicate( const QString& name )
 {
-  QgsWFSCapabilities::Function f;
+  QgsWfsCapabilities::Function f;
   // WFS 1.0 advertize Intersect, but for conveniency we internally convert it to Intersects
   if ( name == "Intersect" )
     f.name = "ST_Intersects";
@@ -535,21 +535,21 @@ static QgsWFSCapabilities::Function getSpatialPredicate( const QString& name )
   {
     f.minArgs = 3;
     f.maxArgs = 3;
-    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
-    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
-    f.argumentList << QgsWFSCapabilities::Argument( "distance" );
+    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWfsCapabilities::Argument( "distance" );
   }
   else
   {
     f.minArgs = 2;
     f.maxArgs = 2;
-    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
-    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
   }
   return f;
 }
 
-void QgsWFSCapabilities::parseFilterCapabilities( const QDomElement& filterCapabilitiesElem )
+void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement& filterCapabilitiesElem )
 {
   // WFS 1.0
   QDomElement spatial_Operators = filterCapabilitiesElem.firstChildElement( "Spatial_Capabilities" ).firstChildElement( "Spatial_Operators" );
@@ -662,7 +662,7 @@ void QgsWFSCapabilities::parseFilterCapabilities( const QDomElement& filterCapab
   }
 }
 
-QString QgsWFSCapabilities::errorMessageWithReason( const QString& reason )
+QString QgsWfsCapabilities::errorMessageWithReason( const QString& reason )
 {
   return tr( "Download of capabilities failed: %1" ).arg( reason );
 }

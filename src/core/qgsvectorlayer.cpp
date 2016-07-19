@@ -1805,7 +1805,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   readStyle( node, errorMessage );
 
   // process the attribute actions
-  mActions->readXML( node );
+  mActions->readXml( node );
 
   mEditFormConfig->readXml( node );
 
@@ -1959,13 +1959,13 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     if ( !singleCatDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
-      mDiagramRenderer->readXML( singleCatDiagramElem, this );
+      mDiagramRenderer->readXml( singleCatDiagramElem, this );
     }
     QDomElement linearDiagramElem = node.firstChildElement( "LinearlyInterpolatedDiagramRenderer" );
     if ( !linearDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
-      mDiagramRenderer->readXML( linearDiagramElem, this );
+      mDiagramRenderer->readXml( linearDiagramElem, this );
     }
 
     if ( mDiagramRenderer )
@@ -1975,7 +1975,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
       {
         delete mDiagramLayerSettings;
         mDiagramLayerSettings = new QgsDiagramLayerSettings();
-        mDiagramLayerSettings->readXML( diagramSettingsElem, this );
+        mDiagramLayerSettings->readXml( diagramSettingsElem, this );
       }
     }
   }
@@ -2043,7 +2043,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( excludeWFSElem );
 
   // add attribute actions
-  mActions->writeXML( node, doc );
+  mActions->writeXml( node, doc );
   mAttributeTableConfig.writeXml( node );
   mEditFormConfig->writeXml( node );
   mConditionalStyles->writeXml( node, doc );
@@ -2104,9 +2104,9 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
     if ( mDiagramRenderer )
     {
-      mDiagramRenderer->writeXML( mapLayerNode, doc, this );
+      mDiagramRenderer->writeXml( mapLayerNode, doc, this );
       if ( mDiagramLayerSettings )
-        mDiagramLayerSettings->writeXML( mapLayerNode, doc, this );
+        mDiagramLayerSettings->writeXml( mapLayerNode, doc, this );
     }
   }
   return true;

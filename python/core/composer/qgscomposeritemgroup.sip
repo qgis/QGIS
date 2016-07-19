@@ -28,13 +28,13 @@ class QgsComposerItemGroup: QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc is the Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is the Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     QSet<QgsComposerItem*> items();
 

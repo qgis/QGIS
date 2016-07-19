@@ -81,7 +81,7 @@ void QgsTextAnnotationItem::paint( QPainter * painter )
   }
 }
 
-void QgsTextAnnotationItem::writeXML( QDomDocument& doc ) const
+void QgsTextAnnotationItem::writeXml( QDomDocument& doc ) const
 {
   QDomElement documentElem = doc.documentElement();
   if ( documentElem.isNull() )
@@ -93,11 +93,11 @@ void QgsTextAnnotationItem::writeXML( QDomDocument& doc ) const
   {
     annotationElem.setAttribute( "document", mDocument->toHtml() );
   }
-  _writeXML( doc, annotationElem );
+  _writeXml( doc, annotationElem );
   documentElem.appendChild( annotationElem );
 }
 
-void QgsTextAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsTextAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
 {
   delete mDocument;
   mDocument = new QTextDocument;
@@ -105,6 +105,6 @@ void QgsTextAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
   QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
   if ( !annotationElem.isNull() )
   {
-    _readXML( doc, annotationElem );
+    _readXml( doc, annotationElem );
   }
 }

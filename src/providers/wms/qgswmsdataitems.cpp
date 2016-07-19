@@ -291,7 +291,7 @@ QString QgsWMSLayerItem::createUri()
   QgsCoordinateReferenceSystem testCrs;
   Q_FOREACH ( const QString& c, mLayerProperty.crs )
   {
-    testCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( c );
+    testCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( c );
     if ( testCrs.isValid() )
     {
       crs = c;

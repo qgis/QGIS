@@ -1006,7 +1006,7 @@ QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
   QDomDocument doc;
   QDomElement rootElem = doc.createElement( "layer_tree_model_data" );
   Q_FOREACH ( QgsLayerTreeNode* node, nodesFinal )
-    node->writeXML( rootElem );
+    node->writeXml( rootElem );
   doc.appendChild( rootElem );
   QString txt = doc.toString();
 
@@ -1044,7 +1044,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData* data, Qt::DropAction acti
   QDomElement elem = rootElem.firstChildElement();
   while ( !elem.isNull() )
   {
-    QgsLayerTreeNode* node = QgsLayerTreeNode::readXML( elem );
+    QgsLayerTreeNode* node = QgsLayerTreeNode::readXml( elem );
     if ( node )
       nodes << node;
 

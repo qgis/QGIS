@@ -75,17 +75,17 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @param elem an existing QDomElement in which to store the attribute table's properties.
      * @param doc QDomDocument for the destination xml.
      * @param ignoreFrames ignore frames
-     * @see readXML
+     * @see readXml
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
 
     /** Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
      * @param doc QDomDocument for the source xml.
      * @param ignoreFrames ignore frames
-     * @see writeXML
+     * @see writeXml
      */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
 
     virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
 

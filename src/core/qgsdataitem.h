@@ -341,7 +341,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     /** Returns the supported CRS
      *  @note Added in 2.8
      */
-    QStringList supportedCRS() { return mSupportedCRS; }
+    QStringList supportedCrs() { return mSupportedCRS; }
 
     /** Returns the supported formats
      *  @note Added in 2.8

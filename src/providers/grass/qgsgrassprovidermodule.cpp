@@ -835,7 +835,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
         if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
         {
           QgsRasterProjector * projector = new QgsRasterProjector;
-          projector->setCRS( providerCrs, mapsetCrs );
+          projector->setCrs( providerCrs, mapsetCrs );
           if ( useSrcRegion )
           {
             projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),

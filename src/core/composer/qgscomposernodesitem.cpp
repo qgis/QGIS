@@ -278,7 +278,7 @@ bool QgsComposerNodesItem::moveNode( const int index, const QPointF &pt )
   return rc;
 }
 
-bool QgsComposerNodesItem::readXML( const QDomElement& itemElem,
+bool QgsComposerNodesItem::readXml( const QDomElement& itemElem,
                                     const QDomDocument& doc )
 {
   // restore general composer item properties
@@ -290,13 +290,13 @@ bool QgsComposerNodesItem::readXML( const QDomElement& itemElem,
     if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
       setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
 
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   // restore style
   QDomElement styleSymbolElem = itemElem.firstChildElement( "symbol" );
   if ( !styleSymbolElem.isNull() )
-    _readXMLStyle( styleSymbolElem );
+    _readXmlStyle( styleSymbolElem );
 
   // restore nodes
   mPolygon.clear();
@@ -359,12 +359,12 @@ void QgsComposerNodesItem::updateSceneRect()
   emit itemChanged();
 }
 
-bool QgsComposerNodesItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerNodesItem::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerPolygonElem = doc.createElement( mTagName );
 
   // style
-  _writeXMLStyle( doc, composerPolygonElem );
+  _writeXmlStyle( doc, composerPolygonElem );
 
   // write nodes
   QDomElement nodesElem = doc.createElement( "nodes" );
@@ -379,5 +379,5 @@ bool QgsComposerNodesItem::writeXML( QDomElement& elem, QDomDocument & doc ) con
 
   elem.appendChild( composerPolygonElem );
 
-  return _writeXML( composerPolygonElem, doc );
+  return _writeXml( composerPolygonElem, doc );
 }

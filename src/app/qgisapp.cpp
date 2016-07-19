@@ -422,12 +422,12 @@ static QgsMessageOutput *messageOutputViewer_()
 
 static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
 {
-  QgisApp::instance()->emitCustomSrsValidation( srs );
+  QgisApp::instance()->emitCustomCrsValidation( srs );
 }
 
-void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem &srs )
+void QgisApp::emitCustomCrsValidation( QgsCoordinateReferenceSystem &srs )
 {
-  emit customSrsValidation( srs );
+  emit customCrsValidation( srs );
 }
 
 void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
@@ -500,7 +500,7 @@ void QgisApp::activeLayerChanged( QgsMapLayer* layer )
  * - use project's CRS
  * - use predefined global CRS
  */
-void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
+void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 {
   static QString authid = QString::null;
   QSettings mySettings;
@@ -515,7 +515,7 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
     if ( authid.isNull() )
       authid = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
 
-    QgsCoordinateReferenceSystem defaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( authid );
+    QgsCoordinateReferenceSystem defaultCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( authid );
     if ( defaultCrs.isValid() )
     {
       mySelector->setSelectedCrsId( defaultCrs.srsid() );
@@ -883,9 +883,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsMessageLog::logMessage( tr( "QGIS starting..." ), QString::null, QgsMessageLog::INFO );
 
   // set QGIS specific srs validation
-  connect( this, SIGNAL( customSrsValidation( QgsCoordinateReferenceSystem& ) ),
-           this, SLOT( validateSrs( QgsCoordinateReferenceSystem& ) ) );
-  QgsCoordinateReferenceSystem::setCustomSrsValidation( customSrsValidation_ );
+  connect( this, SIGNAL( customCrsValidation( QgsCoordinateReferenceSystem& ) ),
+           this, SLOT( validateCrs( QgsCoordinateReferenceSystem& ) ) );
+  QgsCoordinateReferenceSystem::setCustomCrsValidation( customSrsValidation_ );
 
   // set graphical message output
   QgsMessageOutput::setMessageOutputCreator( messageOutputViewer_ );
@@ -1596,8 +1596,8 @@ void QgisApp::createActions()
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   connect( mActionDuplicateLayer, SIGNAL( triggered() ), this, SLOT( duplicateLayers() ) );
   connect( mActionSetLayerScaleVisibility, SIGNAL( triggered() ), this, SLOT( setLayerScaleVisibility() ) );
-  connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
-  connect( mActionSetProjectCRSFromLayer, SIGNAL( triggered() ), this, SLOT( setProjectCRSFromLayer() ) );
+  connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCrs() ) );
+  connect( mActionSetProjectCRSFromLayer, SIGNAL( triggered() ), this, SLOT( setProjectCrsFromLayer() ) );
   connect( mActionLayerProperties, SIGNAL( triggered() ), this, SLOT( layerProperties() ) );
   connect( mActionLayerSubsetString, SIGNAL( triggered() ), this, SLOT( layerSubsetString() ) );
   connect( mActionAddToOverview, SIGNAL( triggered() ), this, SLOT( isInOverview() ) );
@@ -1740,7 +1740,7 @@ void QgisApp::writeAnnotationItemsToProject( QDomDocument& doc )
     {
       continue;
     }
-    item->writeXML( doc );
+    item->writeXml( doc );
   }
 }
 
@@ -4414,7 +4414,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
   // set project CRS
   QString defCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByOgcWmsCrs( defCrs );
+  QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsByOgcWmsCrs( defCrs );
   mMapCanvas->setDestinationCrs( srs );
   // write the projections _proj string_ to project settings
   prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
@@ -4429,7 +4429,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   // enable OTF CRS transformation if necessary
   mMapCanvas->setCrsTransformEnabled( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
 
-  updateCRSStatusBar();
+  updateCrsStatusBar();
 
   /** New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
@@ -5993,7 +5993,7 @@ void QgisApp::saveAsRasterFile()
     if ( d.outputCrs() != rasterLayer->crs() )
     {
       QgsRasterProjector * projector = new QgsRasterProjector;
-      projector->setCRS( rasterLayer->crs(), d.outputCrs() );
+      projector->setCrs( rasterLayer->crs(), d.outputCrs() );
       if ( !pipe->insert( 2, projector ) )
       {
         QgsDebugMsg( "Cannot set pipe projector" );
@@ -6012,7 +6012,7 @@ void QgisApp::saveAsRasterFile()
       QgsDebugMsg( "Cannot get pipe projector" );
       return;
     }
-    projector->setCRS( rasterLayer->crs(), d.outputCrs() );
+    projector->setCrs( rasterLayer->crs(), d.outputCrs() );
   }
 
   if ( !pipe->last() )
@@ -6172,7 +6172,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     QgsWKBTypes::Type forcedGeometryType = dialog->geometryType();
 
     QgsCoordinateTransform ct;
-    destCRS = QgsCRSCache::instance()->crsBySrsId( dialog->crs() );
+    destCRS = QgsCrsCache::instance()->crsBySrsId( dialog->crs() );
 
     if ( destCRS.isValid() && destCRS != vlayer->crs() )
     {
@@ -6535,7 +6535,7 @@ QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QString t
 
   // test that current composer template write is valid
   QDomDocument currentDoc;
-  currentComposer->templateXML( currentDoc );
+  currentComposer->templateXml( currentDoc );
   QDomElement compositionElem = currentDoc.documentElement().firstChildElement( "Composition" );
   if ( compositionElem.isNull() )
   {
@@ -6589,7 +6589,7 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
     QTime t;
     t.start();
     QgsComposer* composer = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
-    composer->readXML( composerNodes.at( i ).toElement(), doc );
+    composer->readXml( composerNodes.at( i ).toElement(), doc );
     mPrintComposers.insert( composer );
     mPrintComposersMenu->addAction( composer->windowAction() );
 #ifndef Q_OS_MACX
@@ -6676,14 +6676,14 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
   for ( int i = 0; i < textItemList.size(); ++i )
   {
     QgsTextAnnotationItem* newTextItem = new QgsTextAnnotationItem( mMapCanvas );
-    newTextItem->readXML( doc, textItemList.at( i ).toElement() );
+    newTextItem->readXml( doc, textItemList.at( i ).toElement() );
   }
 
   QDomNodeList formItemList = doc.elementsByTagName( "FormAnnotationItem" );
   for ( int i = 0; i < formItemList.size(); ++i )
   {
     QgsFormAnnotationItem* newFormItem = new QgsFormAnnotationItem( mMapCanvas );
-    newFormItem->readXML( doc, formItemList.at( i ).toElement() );
+    newFormItem->readXml( doc, formItemList.at( i ).toElement() );
   }
 
 #ifdef WITH_QTWEBKIT
@@ -6691,7 +6691,7 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
   for ( int i = 0; i < htmlItemList.size(); ++i )
   {
     QgsHtmlAnnotationItem* newHtmlItem = new QgsHtmlAnnotationItem( mMapCanvas );
-    newHtmlItem->readXML( doc, htmlItemList.at( i ).toElement() );
+    newHtmlItem->readXml( doc, htmlItemList.at( i ).toElement() );
   }
 #endif
 
@@ -6699,7 +6699,7 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
   for ( int i = 0; i < svgItemList.size(); ++i )
   {
     QgsSvgAnnotationItem* newSvgItem = new QgsSvgAnnotationItem( mMapCanvas );
-    newSvgItem->readXML( doc, svgItemList.at( i ).toElement() );
+    newSvgItem->readXml( doc, svgItemList.at( i ).toElement() );
   }
   return true;
 }
@@ -8454,7 +8454,7 @@ void QgisApp::zoomToLayerScale()
   }
 }
 
-void QgisApp::setLayerCRS()
+void QgisApp::setLayerCrs()
 {
   if ( !( mLayerTreeView && mLayerTreeView->currentLayer() ) )
   {
@@ -8470,7 +8470,7 @@ void QgisApp::setLayerCRS()
     return;
   }
 
-  QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsBySrsId( mySelector.selectedCrsId() );
+  QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsBySrsId( mySelector.selectedCrsId() );
 
   Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
@@ -8499,7 +8499,7 @@ void QgisApp::setLayerCRS()
   mMapCanvas->refresh();
 }
 
-void QgisApp::setProjectCRSFromLayer()
+void QgisApp::setProjectCrsFromLayer()
 {
   if ( !( mLayerTreeView && mLayerTreeView->currentLayer() ) )
   {
@@ -8608,7 +8608,7 @@ void QgisApp::applyStyleToGroup()
   }
 }
 
-void QgisApp::legendGroupSetCRS()
+void QgisApp::legendGroupSetCrs()
 {
   if ( !mMapCanvas )
   {
@@ -8627,7 +8627,7 @@ void QgisApp::legendGroupSetCRS()
     return;
   }
 
-  QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsBySrsId( mySelector.selectedCrsId() );
+  QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsBySrsId( mySelector.selectedCrsId() );
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, currentGroup->findLayers() )
   {
     if ( nodeLayer->layer() )
@@ -8638,12 +8638,12 @@ void QgisApp::legendGroupSetCRS()
   }
 }
 
-void QgisApp::legendGroupSetWMSData()
+void QgisApp::legendGroupSetWmsData()
 {
   QgsLayerTreeGroup* currentGroup = mLayerTreeView->currentGroupNode();
   if ( !currentGroup )
     return;
-  QgsGroupWMSDataDialog* dlg = new QgsGroupWMSDataDialog( this );
+  QgsGroupWmsDataDialog* dlg = new QgsGroupWmsDataDialog( this );
   dlg->setGroupShortName( currentGroup->customProperty( "wmsShortName" ).toString() );
   dlg->setGroupTitle( currentGroup->customProperty( "wmsTitle" ).toString() );
   dlg->setGroupTitle( currentGroup->customProperty( "wmsAbstract" ).toString() );
@@ -9967,7 +9967,7 @@ void QgisApp::removeWebToolBarIcon( QAction *qAction )
   mWebToolBar->removeAction( qAction );
 }
 
-void QgisApp::updateCRSStatusBar()
+void QgisApp::updateCrsStatusBar()
 {
   mOnTheFlyProjectionStatusButton->setText( mMapCanvas->mapSettings().destinationCrs().authid() );
 
@@ -9988,14 +9988,14 @@ void QgisApp::updateCRSStatusBar()
 
 void QgisApp::destinationCrsChanged()
 {
-  updateCRSStatusBar();
+  updateCrsStatusBar();
 }
 
 void QgisApp::hasCrsTransformEnabled( bool theFlag )
 {
   // save this information to project
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectionsEnabled", ( theFlag ? 1 : 0 ) );
-  updateCRSStatusBar();
+  updateCrsStatusBar();
 }
 
 // slot to update the progress bar in the status bar

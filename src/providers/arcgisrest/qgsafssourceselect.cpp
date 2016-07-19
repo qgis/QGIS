@@ -34,7 +34,7 @@ QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget* parent, Qt::WindowFlags fl, boo
   }
 }
 
-bool QgsAfsSourceSelect::connectToService( const QgsOWSConnection &connection )
+bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 {
   QString errorTitle, errorMessage;
   QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( "url" ), errorTitle, errorMessage );
@@ -87,7 +87,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOWSConnection &connection )
   return true;
 }
 
-void QgsAfsSourceSelect::buildQuery( const QgsOWSConnection &connection, const QModelIndex& index )
+void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const QModelIndex& index )
 {
   if ( !index.isValid() )
   {
@@ -121,7 +121,7 @@ void QgsAfsSourceSelect::buildQuery( const QgsOWSConnection &connection, const Q
   }
 }
 
-QString QgsAfsSourceSelect::getLayerURI( const QgsOWSConnection& connection,
+QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection& connection,
     const QString& layerTitle, const QString& /*layerName*/,
     const QString& crs,
     const QString& filter,

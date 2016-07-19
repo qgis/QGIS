@@ -300,7 +300,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS, theRasterViewPort->mSrcDatumTransform, theRasterViewPort->mDestDatumTransform );
+    projector->setCrs( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS, theRasterViewPort->mSrcDatumTransform, theRasterViewPort->mDestDatumTransform );
   }
 
   // Drawer to pipe?
@@ -340,9 +340,9 @@ QString QgsRasterLayer::metadata() const
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   // TODO: all bands
-  if ( mDataProvider->srcHasNoDataValue( 1 ) )
+  if ( mDataProvider->sourceHasNoDataValue( 1 ) )
   {
-    myMetadata += QString::number( mDataProvider->srcNoDataValue( 1 ) );
+    myMetadata += QString::number( mDataProvider->sourceNoDataValue( 1 ) );
   }
   else
   {
@@ -356,7 +356,7 @@ QString QgsRasterLayer::metadata() const
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   //just use the first band
-  switch ( mDataProvider->srcDataType( 1 ) )
+  switch ( mDataProvider->sourceDataType( 1 ) )
   {
     case QGis::Byte:
       myMetadata += tr( "Byte - Eight bit unsigned integer" );
@@ -963,7 +963,7 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   }
   else if ( dynamic_cast<QgsMultiBandColorRenderer*>( renderer() ) )
   {
-    if ( QgsRasterBlock::typeSize( dataProvider()->srcDataType( 1 ) ) == 1 )
+    if ( QgsRasterBlock::typeSize( dataProvider()->sourceDataType( 1 ) ) == 1 )
     {
       myKey = "multiBandSingleByte";
       myDefault = "NoEnhancement";
@@ -1288,7 +1288,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   QDomElement brightnessElem = pipeNode.firstChildElement( "brightnesscontrast" );
   if ( !brightnessElem.isNull() )
   {
-    brightnessFilter->readXML( brightnessElem );
+    brightnessFilter->readXml( brightnessElem );
   }
 
   //hue/saturation
@@ -1299,7 +1299,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   QDomElement hueSaturationElem = pipeNode.firstChildElement( "huesaturation" );
   if ( !hueSaturationElem.isNull() )
   {
-    hueSaturationFilter->readXML( hueSaturationElem );
+    hueSaturationFilter->readXml( hueSaturationElem );
   }
 
   //resampler
@@ -1310,7 +1310,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   QDomElement resampleElem = pipeNode.firstChildElement( "rasterresampler" );
   if ( !resampleElem.isNull() )
   {
-    resampleFilter->readXML( resampleElem );
+    resampleFilter->readXml( resampleElem );
   }
 
   // get and set the blend mode if it exists
@@ -1333,7 +1333,7 @@ bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage )
 
   Raster layer project file XML of form:
 
-  @note Called by QgsMapLayer::readXML().
+  @note Called by QgsMapLayer::readXml().
 */
 bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 {
@@ -1447,7 +1447,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
     QgsDebugMsgLevel( QString( "bandNo = %1" ).arg( bandNo ), 4 );
     if ( ok && ( bandNo > 0 ) && ( bandNo <= mDataProvider->bandCount() ) )
     {
-      mDataProvider->setUseSrcNoDataValue( bandNo, bandElement.attribute( "useSrcNoData" ).toInt() );
+      mDataProvider->setUseSourceNoDataValue( bandNo, bandElement.attribute( "useSrcNoData" ).toInt() );
       QgsRasterRangeList myNoDataRangeList;
 
       QDomNodeList rangeList = bandElement.elementsByTagName( "noDataRange" );
@@ -1489,7 +1489,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   {
     QgsRasterInterface * interface = mPipe.at( i );
     if ( !interface ) continue;
-    interface->writeXML( document, pipeElement );
+    interface->writeXml( document, pipeElement );
   }
 
   layer_node.appendChild( pipeElement );
@@ -1511,7 +1511,7 @@ bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
 /*
  *  virtual
- *  @note Called by QgsMapLayer::writeXML().
+ *  @note Called by QgsMapLayer::writeXml().
  */
 bool QgsRasterLayer::writeXml( QDomNode & layer_node,
                                QDomDocument & document ) const
@@ -1542,7 +1542,7 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
   {
     QDomElement noDataRangeList = document.createElement( "noDataList" );
     noDataRangeList.setAttribute( "bandNo", bandNo );
-    noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
+    noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSourceNoDataValue( bandNo ) );
 
     Q_FOREACH ( QgsRasterRange range, mDataProvider->userNoDataValues( bandNo ) )
     {

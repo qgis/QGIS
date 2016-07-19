@@ -102,7 +102,7 @@ void QgsVectorLayerSaveAsDialog::setup()
     idx = 0;
   }
 
-  QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( mCRS );
+  QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsBySrsId( mCRS );
   mCrsSelector->setCrs( srs );
   mCrsSelector->setLayerCrs( srs );
   mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the vector file. "

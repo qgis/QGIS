@@ -18,7 +18,7 @@
 #include "qgswfsrequest.h"
 
 /** Manages the Transaction requests */
-class QgsWFSTransactionRequest : public QgsWFSRequest
+class QgsWFSTransactionRequest : public QgsWfsRequest
 {
     Q_OBJECT
   public:

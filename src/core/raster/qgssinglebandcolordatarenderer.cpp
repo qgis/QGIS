@@ -48,7 +48,7 @@ QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& el
 
   int band = elem.attribute( "band", "-1" ).toInt();
   QgsRasterRenderer* r = new QgsSingleBandColorDataRenderer( input, band );
-  r->readXML( elem );
+  r->readXml( elem );
   return r;
 }
 
@@ -100,13 +100,13 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   return outputBlock;
 }
 
-void QgsSingleBandColorDataRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsSingleBandColorDataRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
     return;
 
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
-  _writeXML( doc, rasterRendererElem );
+  _writeXml( doc, rasterRendererElem );
   rasterRendererElem.setAttribute( "band", mBand );
   parentElem.appendChild( rasterRendererElem );
 }

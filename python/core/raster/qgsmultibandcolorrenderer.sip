@@ -33,7 +33,7 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
     /** Takes ownership*/
     void setBlueContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
     QList<int> usesBands() const;
 

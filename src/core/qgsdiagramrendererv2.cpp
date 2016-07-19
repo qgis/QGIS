@@ -106,7 +106,7 @@ void QgsDiagramLayerSettings::setCoordinateTransform( const QgsCoordinateTransfo
   mCt = transform;
 }
 
-void QgsDiagramLayerSettings::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
+void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorLayer* layer )
 {
   Q_UNUSED( layer )
 
@@ -122,7 +122,7 @@ void QgsDiagramLayerSettings::readXML( const QDomElement& elem, const QgsVectorL
   showAll = ( elem.attribute( "showAll", "0" ) != "0" );
 }
 
-void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
+void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   Q_UNUSED( layer )
 
@@ -159,7 +159,7 @@ QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionCont
   return referenced;
 }
 
-void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
+void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer* layer )
 {
   Q_UNUSED( layer );
 
@@ -294,7 +294,7 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
   }
 }
 
-void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
+void QgsDiagramSettings::writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   Q_UNUSED( layer );
 
@@ -497,7 +497,7 @@ int QgsDiagramRendererV2::dpiPaintDevice( const QPainter* painter )
   return -1;
 }
 
-void QgsDiagramRendererV2::_readXML( const QDomElement& elem, const QgsVectorLayer* layer )
+void QgsDiagramRendererV2::_readXml( const QDomElement& elem, const QgsVectorLayer* layer )
 {
   Q_UNUSED( layer )
 
@@ -528,7 +528,7 @@ void QgsDiagramRendererV2::_readXML( const QDomElement& elem, const QgsVectorLay
   }
 }
 
-void QgsDiagramRendererV2::_writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
+void QgsDiagramRendererV2::_writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   Q_UNUSED( doc );
   Q_UNUSED( layer )
@@ -575,7 +575,7 @@ QList<QgsDiagramSettings> QgsSingleCategoryDiagramRenderer::diagramSettings() co
   return settingsList;
 }
 
-void QgsSingleCategoryDiagramRenderer::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
+void QgsSingleCategoryDiagramRenderer::readXml( const QDomElement& elem, const QgsVectorLayer* layer )
 {
   QDomElement categoryElem = elem.firstChildElement( "DiagramCategory" );
   if ( categoryElem.isNull() )
@@ -583,15 +583,15 @@ void QgsSingleCategoryDiagramRenderer::readXML( const QDomElement& elem, const Q
     return;
   }
 
-  mSettings.readXML( categoryElem, layer );
-  _readXML( elem, layer );
+  mSettings.readXml( categoryElem, layer );
+  _readXml( elem, layer );
 }
 
-void QgsSingleCategoryDiagramRenderer::writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
+void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   QDomElement rendererElem = doc.createElement( "SingleCategoryDiagramRenderer" );
-  mSettings.writeXML( rendererElem, doc, layer );
-  _writeXML( rendererElem, doc, layer );
+  mSettings.writeXml( rendererElem, doc, layer );
+  _writeXml( rendererElem, doc, layer );
   layerElem.appendChild( rendererElem );
 }
 
@@ -652,7 +652,7 @@ QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsFeature& fe
   return mDiagram->diagramSize( feature, c, mSettings, mInterpolationSettings );
 }
 
-void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
+void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement& elem, const QgsVectorLayer* layer )
 {
   mInterpolationSettings.lowerValue = elem.attribute( "lowerValue" ).toDouble();
   mInterpolationSettings.upperValue = elem.attribute( "upperValue" ).toDouble();
@@ -672,12 +672,12 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem, c
   QDomElement settingsElem = elem.firstChildElement( "DiagramCategory" );
   if ( !settingsElem.isNull() )
   {
-    mSettings.readXML( settingsElem, layer );
+    mSettings.readXml( settingsElem, layer );
   }
-  _readXML( elem, layer );
+  _readXml( elem, layer );
 }
 
-void QgsLinearlyInterpolatedDiagramRenderer::writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
+void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   QDomElement rendererElem = doc.createElement( "LinearlyInterpolatedDiagramRenderer" );
   rendererElem.setAttribute( "lowerValue", QString::number( mInterpolationSettings.lowerValue ) );
@@ -694,8 +694,8 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXML( QDomElement& layerElem, Q
   {
     rendererElem.setAttribute( "classificationAttribute", mInterpolationSettings.classificationAttribute );
   }
-  mSettings.writeXML( rendererElem, doc, layer );
-  _writeXML( rendererElem, doc, layer );
+  mSettings.writeXml( rendererElem, doc, layer );
+  _writeXml( rendererElem, doc, layer );
   layerElem.appendChild( rendererElem );
 }
 

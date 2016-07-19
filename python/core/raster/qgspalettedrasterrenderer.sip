@@ -30,7 +30,7 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
      *  @note added in 2.1 */
     void setLabel( int idx, const QString& label );
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 

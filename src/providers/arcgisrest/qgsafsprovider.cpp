@@ -40,7 +40,7 @@ QgsAfsProvider::QgsAfsProvider( const QString& uri )
   mDataSource = QgsDataSourceURI( uri );
 
   // Set CRS
-  mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( mDataSource.param( "crs" ) );
+  mSourceCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( mDataSource.param( "crs" ) );
 
   // Get layer info
   QString errorTitle, errorMessage;

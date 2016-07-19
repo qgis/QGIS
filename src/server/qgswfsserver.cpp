@@ -67,10 +67,10 @@ static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 static const QString QGS_NAMESPACE = "http://www.qgis.org/gml";
 
-QgsWFSServer::QgsWFSServer(
+QgsWfsServer::QgsWfsServer(
   const QString& configFilePath
   , QMap<QString, QString> &parameters
-  , QgsWFSProjectParser* cp
+  , QgsWfsProjectParser* cp
   , QgsRequestHandler* rh
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
@@ -89,7 +89,7 @@ QgsWFSServer::QgsWFSServer(
 {
 }
 
-QgsWFSServer::QgsWFSServer()
+QgsWfsServer::QgsWfsServer()
     : QgsOWSServer(
       QString()
       , QMap<QString, QString>()
@@ -103,11 +103,11 @@ QgsWFSServer::QgsWFSServer()
 {
 }
 
-QgsWFSServer::~QgsWFSServer()
+QgsWfsServer::~QgsWfsServer()
 {
 }
 
-void QgsWFSServer::executeRequest()
+void QgsWfsServer::executeRequest()
 {
   if ( !mConfigParser && !mRequestHandler )
   {
@@ -189,7 +189,7 @@ void QgsWFSServer::executeRequest()
   }
 }
 
-QDomDocument QgsWFSServer::getCapabilities()
+QDomDocument QgsWfsServer::getCapabilities()
 {
   QgsMessageLog::logMessage( "Entering." );
   QDomDocument doc;
@@ -334,7 +334,7 @@ QDomDocument QgsWFSServer::getCapabilities()
   return doc;
 }
 
-QDomDocument QgsWFSServer::describeFeatureType()
+QDomDocument QgsWfsServer::describeFeatureType()
 {
   QgsMessageLog::logMessage( "Entering." );
   QDomDocument doc;
@@ -397,7 +397,7 @@ QDomDocument QgsWFSServer::describeFeatureType()
   return doc;
 }
 
-int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format )
+int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format )
 {
   QgsMessageLog::logMessage( "Info format is:" + format );
 
@@ -498,7 +498,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
 
         //excluded attributes for this layer
-        const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
+        const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWfs();
 
         //get layer precision
         layerPrec = mConfigParser->wfsLayerPrecision( layer->id() );
@@ -885,7 +885,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
 
       //excluded attributes for this layer
-      const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
+      const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWfs();
 
       //get layer precision
       int layerPrec = mConfigParser->wfsLayerPrecision( layer->id() );
@@ -1191,7 +1191,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   return 0;
 }
 
-void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& format, int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect )
+void QgsWfsServer::startGetFeature( QgsRequestHandler& request, const QString& format, int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect )
 {
   QByteArray result;
   QString fcString;
@@ -1325,7 +1325,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
   fcString = "";
 }
 
-void QgsWFSServer::setGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
+void QgsWfsServer::setGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
 {
   if ( !feat->isValid() )
     return;
@@ -1366,7 +1366,7 @@ void QgsWFSServer::setGetFeature( QgsRequestHandler& request, const QString& for
   }
 }
 
-void QgsWFSServer::endGetFeature( QgsRequestHandler& request, const QString& format )
+void QgsWfsServer::endGetFeature( QgsRequestHandler& request, const QString& format )
 {
   QByteArray result;
   QString fcString;
@@ -1388,7 +1388,7 @@ void QgsWFSServer::endGetFeature( QgsRequestHandler& request, const QString& for
   }
 }
 
-QDomDocument QgsWFSServer::transaction( const QString& requestBody )
+QDomDocument QgsWfsServer::transaction( const QString& requestBody )
 {
   // Getting  the transaction document
   QDomDocument doc;
@@ -1815,7 +1815,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   return resp;
 }
 
-QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( const QDomElement& filterElem, QgsVectorLayer* layer )
+QgsFeatureIds QgsWfsServer::getFeatureIdsFromFilter( const QDomElement& filterElem, QgsVectorLayer* layer )
 {
   QgsFeatureIds fids;
 
@@ -1869,7 +1869,7 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( const QDomElement& filterEl
   return fids;
 }
 
-QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
+QString QgsWfsServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
 {
   QString id = QString( "%1.%2" ).arg( mTypeName, FID_TO_STRING( feat->id() ) );
 
@@ -1922,7 +1922,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
   return exporter.exportFeature( f, QVariantMap(), id );
 }
 
-QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
+QDomElement QgsWfsServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
 {
   //gml:FeatureMember
   QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
@@ -1999,7 +1999,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   return featureElement;
 }
 
-QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
+QDomElement QgsWfsServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
 {
   //gml:FeatureMember
   QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
@@ -2076,7 +2076,7 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   return featureElement;
 }
 
-QString QgsWFSServer::serviceUrl() const
+QString QgsWfsServer::serviceUrl() const
 {
   QUrl mapUrl( getenv( "REQUEST_URI" ) );
   mapUrl.setHost( getenv( "SERVER_NAME" ) );
@@ -2129,7 +2129,7 @@ QString QgsWFSServer::serviceUrl() const
   return mapUrl.toString();
 }
 
-void QgsWFSServer::addTransactionResult( QDomDocument& responseDoc, QDomElement& responseElem, const QString& status, const QString& locator, const QString& message )
+void QgsWfsServer::addTransactionResult( QDomDocument& responseDoc, QDomElement& responseElem, const QString& status, const QString& locator, const QString& message )
 {
   QDomElement trElem = responseDoc.createElement( "TransactionResult" );
   QDomElement stElem = responseDoc.createElement( "Status" );

@@ -117,7 +117,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bo
     if ( currentCRS != -1 )
     {
       //convert CRS id to epsg
-      QgsCoordinateReferenceSystem currentRefSys = QgsCRSCache::instance()->crsBySrsId( currentCRS );
+      QgsCoordinateReferenceSystem currentRefSys = QgsCrsCache::instance()->crsBySrsId( currentCRS );
       if ( currentRefSys.isValid() )
       {
         mDefaultCRS = mCRS = currentRefSys.authid();
@@ -618,7 +618,7 @@ void QgsWMSSourceSelect::on_btnChangeSpatialRefSys_clicked()
   mySelector->setOgcWmsCrsFilter( mCRSs );
 
   QString myDefaultCrs = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
-  QgsCoordinateReferenceSystem defaultCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( myDefaultCrs );
+  QgsCoordinateReferenceSystem defaultCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( myDefaultCrs );
   if ( defaultCRS.isValid() )
   {
     mySelector->setSelectedCrsId( defaultCRS.srsid() );
@@ -1087,7 +1087,7 @@ QString QgsWMSSourceSelect::descriptionForAuthId( const QString& authId )
   if ( mCrsNames.contains( authId ) )
     return mCrsNames[ authId ];
 
-  QgsCoordinateReferenceSystem qgisSrs = QgsCRSCache::instance()->crsByOgcWmsCrs( authId );
+  QgsCoordinateReferenceSystem qgisSrs = QgsCrsCache::instance()->crsByOgcWmsCrs( authId );
   mCrsNames.insert( authId, qgisSrs.description() );
   return qgisSrs.description();
 }

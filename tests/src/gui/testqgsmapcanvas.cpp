@@ -135,7 +135,7 @@ void TestQgsMapCanvas::testMapRendererInteraction()
 
   QgsCoordinateReferenceSystem crs2( "EPSG:4326" );
   QCOMPARE( crs2.isValid(), true );
-  QSignalSpy spy5( mr, SIGNAL( destinationSrsChanged() ) );
+  QSignalSpy spy5( mr, SIGNAL( destinationCrsChanged() ) );
   mCanvas->setDestinationCrs( crs2 );
   QCOMPARE( mCanvas->mapSettings().destinationCrs(), crs2 );
   QCOMPARE( mr->destinationCrs(), crs2 );

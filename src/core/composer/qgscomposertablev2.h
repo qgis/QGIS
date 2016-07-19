@@ -70,15 +70,15 @@ class CORE_EXPORT QgsComposerTableStyle
     /** Writes the style's properties to XML for storage.
      * @param styleElem an existing QDomElement in which to store the style's properties.
      * @param doc QDomDocument for the destination XML.
-     * @see readXML
+     * @see readXml
      */
-    bool writeXML( QDomElement& styleElem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& styleElem, QDomDocument & doc ) const;
 
     /** Reads the style's properties from XML.
      * @param styleElem a QDomElement holding the style's desired properties.
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& styleElem );
+    bool readXml( const QDomElement& styleElem );
 
 };
 
@@ -421,8 +421,8 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     //reimplemented to return min frame height
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const override;
 
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
     virtual QSizeF totalSize() const override;
     virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex ) override;
 

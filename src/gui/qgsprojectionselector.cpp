@@ -871,7 +871,7 @@ void QgsProjectionSelector::pushProjectionToFront()
 }
 
 
-long QgsProjectionSelector::getLargestCRSIDMatch( const QString& theSql )
+long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
 {
   long srsId = 0;
 

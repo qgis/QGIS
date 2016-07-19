@@ -19,12 +19,12 @@
 #include "qgsdatasourceuri.h"
 #include "qgswfscapabilities.h"
 
-class QgsWFSRootItem : public QgsDataCollectionItem
+class QgsWfsRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWFSRootItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsWFSRootItem();
+    QgsWfsRootItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsWfsRootItem();
 
     QVector<QgsDataItem*> createChildren() override;
 
@@ -37,14 +37,14 @@ class QgsWFSRootItem : public QgsDataCollectionItem
     void newConnection();
 };
 
-class QgsWFSConnection;
+class QgsWfsConnection;
 
-class QgsWFSConnectionItem : public QgsDataCollectionItem
+class QgsWfsConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
-    ~QgsWFSConnectionItem();
+    QgsWfsConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
+    ~QgsWfsConnectionItem();
 
     QVector<QgsDataItem*> createChildren() override;
     //virtual bool equal( const QgsDataItem *other );
@@ -58,17 +58,17 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
   private:
     QString mUri;
 
-    QgsWFSCapabilities* mCapabilities;
+    QgsWfsCapabilities* mCapabilities;
 };
 
 
-class QgsWFSLayerItem : public QgsLayerItem
+class QgsWfsLayerItem : public QgsLayerItem
 {
     Q_OBJECT
 
   public:
-    QgsWFSLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceURI &uri, QString featureType, QString title, QString crsString );
-    ~QgsWFSLayerItem();
+    QgsWfsLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceURI &uri, QString featureType, QString title, QString crsString );
+    ~QgsWfsLayerItem();
 
 };
 

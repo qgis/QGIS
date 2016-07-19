@@ -89,7 +89,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
         if ( conversionOk )
         {
           //set spatial ref sys
-          QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+          QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
           rl->setCrs( srs );
         }
       }

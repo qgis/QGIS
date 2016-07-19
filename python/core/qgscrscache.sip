@@ -26,7 +26,7 @@ class QgsCoordinateTransformCache
 };
 
 /** \ingroup core
- * \class QgsCRSCache
+ * \class QgsCrsCache
  * \brief Caches QgsCoordinateReferenceSystem construction, which may be expensive.
  *
  * QgsCRSCache maintains a cache of previously constructed coordinate systems, so that
@@ -36,7 +36,7 @@ class QgsCoordinateTransformCache
  * constructors.
  */
 
-class QgsCRSCache
+class QgsCrsCache
 {
 %TypeHeaderCode
 #include <qgscrscache.h>
@@ -45,7 +45,7 @@ class QgsCRSCache
   public:
 
     //! Returns a pointer to the QgsCRSCache singleton
-    static QgsCRSCache* instance();
+    static QgsCrsCache* instance();
 
     /** Returns the CRS for authid, e.g. 'EPSG:4326' (or an invalid CRS in case of error)
      * @deprecated use crsByOgcWmsCrs() instead
@@ -94,12 +94,12 @@ class QgsCRSCache
      * CRS has been changed.
      * @param authid CRS auth ID, eg "EPSG:4326" or "USER:100009"
      */
-    void updateCRSCache( const QString& authid );
+    void updateCrsCache( const QString& authid );
 
   protected:
-    QgsCRSCache();
+    QgsCrsCache();
 
   private:
 
-    QgsCRSCache( const QgsCRSCache& other );
+    QgsCrsCache( const QgsCrsCache& other );
 };

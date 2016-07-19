@@ -308,7 +308,7 @@ void TestQgsComposition::writeRetrieveCustomProperties()
       "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
   QDomDocument doc( documentType );
   QDomElement rootNode = doc.createElement( "qgis" );
-  QVERIFY( composition->writeXML( rootNode, doc ) );
+  QVERIFY( composition->writeXml( rootNode, doc ) );
 
   //check if composition node was written
   QDomNodeList evalNodeList = rootNode.elementsByTagName( "Composition" );
@@ -317,7 +317,7 @@ void TestQgsComposition::writeRetrieveCustomProperties()
 
   //test reading node containing custom properties
   QgsComposition* readComposition = new QgsComposition( *mMapSettings );
-  QVERIFY( readComposition->readXML( compositionElem, doc ) );
+  QVERIFY( readComposition->readXml( compositionElem, doc ) );
 
   //test retrieved custom properties
   QCOMPARE( readComposition->customProperties().length(), 2 );

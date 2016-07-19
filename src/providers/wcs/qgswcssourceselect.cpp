@@ -128,7 +128,7 @@ void QgsWCSSourceSelect::addClicked()
   //       without that param user is asked for CRS
   //if ( selectedLayersCRSs().size() > 1 )
   //{
-  uri.setParam( "crs", selectedCRS() );
+  uri.setParam( "crs", selectedCrs() );
   //}
 
   QgsDebugMsg( "selectedFormat = " +  selectedFormat() );
@@ -163,7 +163,7 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 
   populateFormats();
 
-  populateCRS();
+  populateCrs();
 
   updateButtons();
 
@@ -179,13 +179,13 @@ void QgsWCSSourceSelect::updateButtons()
   }
   else
   {
-    if ( selectedCRS().isEmpty() )
+    if ( selectedCrs().isEmpty() )
     {
       showStatusMessage( tr( "No CRS selected" ) );
     }
   }
 
-  mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCRS().isEmpty() && !selectedFormat().isEmpty() );
+  mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCrs().isEmpty() && !selectedFormat().isEmpty() );
 }
 
 QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
@@ -224,7 +224,7 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
   return c.supportedFormat;
 }
 
-QStringList QgsWCSSourceSelect::selectedLayersCRSs()
+QStringList QgsWCSSourceSelect::selectedLayersCrses()
 {
 
   QString identifier = selectedIdentifier();

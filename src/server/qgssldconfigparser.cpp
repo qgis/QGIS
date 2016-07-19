@@ -56,7 +56,7 @@
 #endif
 
 QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters )
-    : QgsWMSConfigParser()
+    : QgsWmsConfigParser()
     , mXMLDoc( doc )
     , mParameterMap( parameters )
     , mSLDNamespace( "http://www.opengis.net/sld" )
@@ -162,9 +162,9 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
         }
 
         //append geographic bbox and the CRS elements
-        QStringList crsNumbers = QgsConfigParserUtils::createCRSListForLayer( theMapLayer );
+        QStringList crsNumbers = QgsConfigParserUtils::createCrsListForLayer( theMapLayer );
         QStringList crsRestriction; //no crs restrictions in SLD parser
-        QgsConfigParserUtils::appendCRSElementsToLayer( layerElement, doc, crsNumbers, crsRestriction );
+        QgsConfigParserUtils::appendCrsElementsToLayer( layerElement, doc, crsNumbers, crsRestriction );
         QgsConfigParserUtils::appendLayerBoundingBoxes( layerElement, doc, theMapLayer->extent(), theMapLayer->crs(), crsNumbers, crsRestriction );
 
         //iterate over all <UserStyle> nodes within a user layer
@@ -697,20 +697,20 @@ double QgsSLDConfigParser::imageQuality() const
   return -1;
 }
 
-int QgsSLDConfigParser::WMSPrecision() const
+int QgsSLDConfigParser::wmsPrecision() const
 {
   if ( mFallbackParser )
   {
-    return mFallbackParser->WMSPrecision();
+    return mFallbackParser->wmsPrecision();
   }
   return -1;
 }
 
-bool QgsSLDConfigParser::WMSInspireActivated() const
+bool QgsSLDConfigParser::wmsInspireActivated() const
 {
   if ( mFallbackParser )
   {
-    return mFallbackParser->WMSInspireActivated();
+    return mFallbackParser->wmsInspireActivated();
   }
   return false;
 }
@@ -1323,7 +1323,7 @@ void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLay
     if ( conversionOk )
     {
       //set spatial ref sys
-      QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+      QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
       ml->setCrs( srs );
     }
   }
@@ -1332,7 +1332,7 @@ void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLay
     QString projString = layerElem.attribute( "proj", "" );
     if ( !projString.isEmpty() )
     {
-      QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByProj4( projString );
+      QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsByProj4( projString );
       //TODO: createFromProj4 used to save to the user database any new CRS
       // this behavior was changed in order to separate creation and saving.
       // Not sure if it necessary to save it here, should be checked by someone
@@ -1342,7 +1342,7 @@ void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLay
         QString myName = QString( " * %1 (%2)" )
                          .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                                srs.toProj4() );
-        srs.saveAsUserCRS( myName );
+        srs.saveAsUserCrs( myName );
       }
 
       ml->setCrs( srs );

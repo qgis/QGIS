@@ -80,7 +80,7 @@ class CORE_EXPORT QgsProperty
      *
      *  Used for restoring properties from project file
      */
-    virtual bool readXML( QDomNode & keyNode ) = 0;
+    virtual bool readXml( QDomNode & keyNode ) = 0;
 
     /**
      * adds property hierarchy to given Dom element
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsProperty
      * @param element the parent (or encompassing) property element
      * @param document the overall project file Dom document
      */
-    virtual bool writeXML( const QString & nodeName,
+    virtual bool writeXml( const QString & nodeName,
                            QDomElement   & element,
                            QDomDocument  & document ) = 0;
 
@@ -144,9 +144,9 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 
     void dump( int tabs = 0 ) const override;
 
-    bool readXML( QDomNode & keyNode ) override;
+    bool readXml( QDomNode & keyNode ) override;
 
-    bool writeXML( const QString & nodeName,
+    bool writeXml( const QString & nodeName,
                    QDomElement   & element,
                    QDomDocument  & document ) override;
 
@@ -248,9 +248,9 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 
     void dump( int tabs = 0 ) const override;
 
-    bool readXML( QDomNode & keyNode ) override;
+    bool readXml( QDomNode & keyNode ) override;
 
-    bool writeXML( const QString &nodeName, QDomElement & element, QDomDocument & document ) override;
+    bool writeXml( const QString &nodeName, QDomElement & element, QDomDocument & document ) override;
 
     /// how many elements are contained within this one?
     int count() const { return mProperties.count(); }

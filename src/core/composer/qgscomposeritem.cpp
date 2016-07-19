@@ -164,7 +164,7 @@ void QgsComposerItem::setSelected( bool s )
   update(); //to draw selection boxes
 }
 
-bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) const
+bool QgsComposerItem::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
 {
   if ( itemElem.isNull() )
   {
@@ -248,13 +248,13 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
 
   composerItemElem.setAttribute( "excludeFromExports", mExcludeFromExports );
 
-  QgsComposerObject::writeXML( composerItemElem, doc );
+  QgsComposerObject::writeXml( composerItemElem, doc );
   itemElem.appendChild( composerItemElem );
 
   return true;
 }
 
-bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerItem::_readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )
@@ -262,7 +262,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     return false;
   }
 
-  QgsComposerObject::readXML( itemElem, doc );
+  QgsComposerObject::readXml( itemElem, doc );
 
   //rotation
   setItemRotation( itemElem.attribute( "itemRotation", "0" ).toDouble() );

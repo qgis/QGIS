@@ -110,7 +110,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QGis::DataType srcDataType( int bandNo ) const override = 0;
+    virtual QGis::DataType sourceDataType( int bandNo ) const override = 0;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const
@@ -202,16 +202,16 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) override;
 
     /** Return true if source band has no data value */
-    virtual bool srcHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo -1 ); }
+    virtual bool sourceHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo -1 ); }
 
     /** \brief Get source nodata value usage */
-    virtual bool useSrcNoDataValue( int bandNo ) const { return mUseSrcNoDataValue.value( bandNo -1 ); }
+    virtual bool useSourceNoDataValue( int bandNo ) const { return mUseSrcNoDataValue.value( bandNo -1 ); }
 
     /** \brief Set source nodata value usage */
-    virtual void setUseSrcNoDataValue( int bandNo, bool use );
+    virtual void setUseSourceNoDataValue( int bandNo, bool use );
 
     /** Value representing no data value. */
-    virtual double srcNoDataValue( int bandNo ) const { return mSrcNoDataValue.value( bandNo -1 ); }
+    virtual double sourceNoDataValue( int bandNo ) const { return mSrcNoDataValue.value( bandNo -1 ); }
 
     virtual void setUserNoDataValue( int bandNo, const QgsRasterRangeList& noData );
 

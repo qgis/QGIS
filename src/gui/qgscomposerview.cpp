@@ -1505,10 +1505,10 @@ void QgsComposerView::copyItems( ClipboardMode mode )
       QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
       for ( ; it != groupedItems.end(); ++it )
       {
-        ( *it )->writeXML( documentElement, doc );
+        ( *it )->writeXml( documentElement, doc );
       }
     }
-    ( *itemIt )->writeXML( documentElement, doc );
+    ( *itemIt )->writeXml( documentElement, doc );
     if ( mode == ClipboardModeCut )
     {
       composition()->removeComposerItem( *itemIt );
@@ -1565,7 +1565,7 @@ void QgsComposerView::pasteItems( PasteMode mode )
           pt = mapToScene( viewport()->rect().center() );
         }
         bool pasteInPlace = ( mode == PasteModeInPlace );
-        composition()->addItemsFromXML( docElem, doc, nullptr, true, &pt, pasteInPlace );
+        composition()->addItemsFromXml( docElem, doc, nullptr, true, &pt, pasteInPlace );
       }
     }
   }

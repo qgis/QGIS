@@ -199,7 +199,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
                        .arg( OSRGetAuthorityName( hCRS, nullptr ),
                              OSRGetAuthorityCode( hCRS, nullptr ) );
       QgsDebugMsg( "authid recognized as " + authid );
-      mCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( authid );
+      mCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( authid );
     }
     else
     {
@@ -215,7 +215,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
       OGRFree( pszWkt );
 
       // create CRS from Wkt
-      mCrs = QgsCRSCache::instance()->crsByWkt( myWktString );
+      mCrs = QgsCrsCache::instance()->crsByWkt( myWktString );
     }
   }
 
@@ -392,9 +392,9 @@ QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theEx
 {
   //QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
   QgsRasterBlock *block;
-  if ( srcHasNoDataValue( theBandNo ) && useSrcNoDataValue( theBandNo ) )
+  if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
   {
-    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, srcNoDataValue( theBandNo ) );
+    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, sourceNoDataValue( theBandNo ) );
   }
   else
   {
@@ -1058,15 +1058,15 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Qg
 
     double value = myBlock->value( r, c );
 
-    if (( srcHasNoDataValue( i ) && useSrcNoDataValue( i ) &&
-          ( qIsNaN( value ) || qgsDoubleNear( value, srcNoDataValue( i ) ) ) ) ||
+    if (( sourceHasNoDataValue( i ) && useSourceNoDataValue( i ) &&
+          ( qIsNaN( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
         ( QgsRasterRange::contains( value, userNoDataValues( i ) ) ) )
     {
       results.insert( i, QVariant() ); // null QVariant represents no data
     }
     else
     {
-      if ( srcDataType( i ) == QGis::Float32 )
+      if ( sourceDataType( i ) == QGis::Float32 )
       {
         // Insert a float QVariant so that QgsMapToolIdentify::identifyRasterLayer()
         // can print a string without an excessive precision
@@ -1098,7 +1098,7 @@ int QgsGdalProvider::capabilities() const
   return capability;
 }
 
-QGis::DataType QgsGdalProvider::srcDataType( int bandNo ) const
+QGis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
@@ -1275,7 +1275,7 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
     return false;
   }
 
-  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+  if (( sourceHasNoDataValue( theBandNo ) && !useSourceNoDataValue( theBandNo ) ) ||
       !userNoDataValues( theBandNo ).isEmpty() )
   {
     QgsDebugMsg( "Custom no data values -> GDAL histogram not sufficient." );
@@ -1365,7 +1365,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
     }
   }
 
-  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+  if (( sourceHasNoDataValue( theBandNo ) && !useSourceNoDataValue( theBandNo ) ) ||
       !userNoDataValues( theBandNo ).isEmpty() )
   {
     QgsDebugMsg( "Custom no data values, using generic histogram." );
@@ -2272,7 +2272,7 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
-  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+  if (( sourceHasNoDataValue( theBandNo ) && !useSourceNoDataValue( theBandNo ) ) ||
       !userNoDataValues( theBandNo ).isEmpty() )
   {
     QgsDebugMsg( "Custom no data values -> GDAL statistics not sufficient." );
@@ -2366,7 +2366,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
 
   // We cannot use GDAL stats if user disabled src no data value or set
   // custom  no data values
-  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+  if (( sourceHasNoDataValue( theBandNo ) && !useSourceNoDataValue( theBandNo ) ) ||
       !userNoDataValues( theBandNo ).isEmpty() )
   {
     QgsDebugMsg( "Custom no data values, using generic statistics." );
@@ -2597,7 +2597,7 @@ void QgsGdalProvider::initBaseDataset()
          GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
     {
       // Warped VRT of RPC is in EPSG:4326
-      mCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( "EPSG:4326" );
+      mCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( "EPSG:4326" );
     }
     else
     {

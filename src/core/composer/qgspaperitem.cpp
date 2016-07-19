@@ -214,14 +214,14 @@ void QgsPaperItem::calculatePageMargin()
   mPageMargin = maxBleed - ( 25.4 / mComposition->printResolution() );
 }
 
-bool QgsPaperItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsPaperItem::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   Q_UNUSED( elem );
   Q_UNUSED( doc );
   return true;
 }
 
-bool QgsPaperItem::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsPaperItem::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   Q_UNUSED( itemElem );
   Q_UNUSED( doc );

@@ -28,7 +28,7 @@ QgsRelation::QgsRelation()
 {
 }
 
-QgsRelation QgsRelation::createFromXML( const QDomNode &node )
+QgsRelation QgsRelation::createFromXml( const QDomNode &node )
 {
   QDomElement elem = node.toElement();
 
@@ -90,7 +90,7 @@ QgsRelation QgsRelation::createFromXML( const QDomNode &node )
   return relation;
 }
 
-void QgsRelation::writeXML( QDomNode &node, QDomDocument &doc ) const
+void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( "relation" );
   elem.setAttribute( "id", mRelationId );

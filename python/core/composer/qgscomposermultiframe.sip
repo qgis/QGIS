@@ -144,7 +144,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see _writeXML
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const = 0;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const = 0;
 
     /** Stores state information about base multiframe object in DOM element. Implementations of writeXML
      * should call this method.
@@ -153,7 +153,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see writeXML
      */
-    bool _writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames = false ) const;
+    bool _writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames = false ) const;
 
     /** Reads multiframe state information from a DOM element. Implementations of readXML
      * should also call the _readXML method to restore general multiframe properties.
@@ -162,7 +162,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid read state information about child frames from DOM
      * @see _readXML
      */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) = 0;
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) = 0;
 
     /** Restores state information about base multiframe object from a DOM element. Implementations of readXML
      * should call this method.
@@ -171,7 +171,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid reading state information about child frames from DOM
      * @see readXML
      */
-    bool _readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    bool _readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
 
     /** Returns the parent composition for the multiframe.
      * @returns composition

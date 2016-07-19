@@ -105,7 +105,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mOkButton->setEnabled( false );
 
   // Set the SRID box to a default of WGS84
-  QgsCoordinateReferenceSystem defaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem defaultCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
   defaultCrs.validate();
   mCrsSelector->setCrs( defaultCrs );
 
@@ -389,7 +389,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   int crsId = mCrsSelector->crs().srsid();
   if ( wkbType != wkbNone && crsId > 0 )
   {
-    QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( crsId );
+    QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsBySrsId( crsId );
     QString srsWkt = srs.toWkt();
     hSRS = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
   }

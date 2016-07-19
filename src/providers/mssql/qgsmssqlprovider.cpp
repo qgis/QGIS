@@ -1412,7 +1412,7 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs() const
     {
       if ( query.next() )
       {
-        mCrs = QgsCRSCache::instance()->crsByWkt( query.value( 0 ).toString() );
+        mCrs = QgsCrsCache::instance()->crsByWkt( query.value( 0 ).toString() );
         if ( mCrs.isValid() )
           return mCrs;
       }
@@ -1425,7 +1425,7 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs() const
     execOk = query.exec( QString( "select well_known_text from sys.spatial_reference_systems where spatial_reference_id = %1" ).arg( QString::number( mSRId ) ) );
     if ( execOk && query.isActive() && query.next() )
     {
-      mCrs = QgsCRSCache::instance()->crsByWkt( query.value( 0 ).toString() );
+      mCrs = QgsCrsCache::instance()->crsByWkt( query.value( 0 ).toString() );
       if ( mCrs.isValid() )
         return mCrs;
     }

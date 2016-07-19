@@ -58,14 +58,14 @@ QgsRasterRenderer *QgsHillshadeRenderer::create( const QDomElement &elem, QgsRas
   double zFactor = elem.attribute( "zfactor", "1" ).toDouble();
   bool multiDirectional = elem.attribute( "multidirection", "0" ).toInt();
   QgsHillshadeRenderer* r = new QgsHillshadeRenderer( input, band, azimuth , angle );
-  r->readXML( elem );
+  r->readXml( elem );
 
   r->setZFactor( zFactor );
   r->setMultiDirectional( multiDirectional );
   return r;
 }
 
-void QgsHillshadeRenderer::writeXML( QDomDocument &doc, QDomElement &parentElem ) const
+void QgsHillshadeRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -73,7 +73,7 @@ void QgsHillshadeRenderer::writeXML( QDomDocument &doc, QDomElement &parentElem 
   }
 
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
-  _writeXML( doc, rasterRendererElem );
+  _writeXml( doc, rasterRendererElem );
 
   rasterRendererElem.setAttribute( "band", mBand );
   rasterRendererElem.setAttribute( "azimuth", QString::number( mLightAzimuth ) );

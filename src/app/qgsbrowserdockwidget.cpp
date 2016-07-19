@@ -516,7 +516,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
   if ( !layerItem )
     return;
 
-  QString uri = QgisApp::instance()->crsAndFormatAdjustedLayerUri( layerItem->uri(), layerItem->supportedCRS(), layerItem->supportedFormats() );
+  QString uri = QgisApp::instance()->crsAndFormatAdjustedLayerUri( layerItem->uri(), layerItem->supportedCrs(), layerItem->supportedFormats() );
   if ( uri.isEmpty() )
     return;
 

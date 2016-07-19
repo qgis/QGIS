@@ -343,7 +343,7 @@ void QgsHueSaturationFilter::setColorizeColor( const QColor& colorizeColor )
   mColorizeS = mColorizeColor.saturation();
 }
 
-void QgsHueSaturationFilter::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsHueSaturationFilter::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -363,7 +363,7 @@ void QgsHueSaturationFilter::writeXML( QDomDocument& doc, QDomElement& parentEle
   parentElem.appendChild( filterElem );
 }
 
-void QgsHueSaturationFilter::readXML( const QDomElement& filterElem )
+void QgsHueSaturationFilter::readXml( const QDomElement& filterElem )
 {
   if ( filterElem.isNull() )
   {

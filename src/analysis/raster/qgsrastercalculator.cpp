@@ -91,7 +91,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     if ( it->raster->crs() != mOutputCrs )
     {
       QgsRasterProjector proj;
-      proj.setCRS( it->raster->crs(), mOutputCrs );
+      proj.setCrs( it->raster->crs(), mOutputCrs );
       proj.setInput( it->raster->dataProvider() );
       proj.setPrecision( QgsRasterProjector::Exact );
 

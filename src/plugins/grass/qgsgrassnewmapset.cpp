@@ -816,7 +816,7 @@ void QgsGrassNewMapset::setSelectedRegion()
   {
     // Warning: QgsCoordinateReferenceSystem::EpsgCrsId is broken (using epsg_id)
     //QgsCoordinateReferenceSystem source ( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-    QgsCoordinateReferenceSystem source = QgsCRSCache::instance()->crsBySrsId( GEOCRS_ID );
+    QgsCoordinateReferenceSystem source = QgsCrsCache::instance()->crsBySrsId( GEOCRS_ID );
 
     if ( !source.isValid() )
     {
@@ -824,7 +824,7 @@ void QgsGrassNewMapset::setSelectedRegion()
       return;
     }
 
-    QgsCoordinateReferenceSystem dest = QgsCRSCache::instance()->crsBySrsId( mProjectionSelector->selectedCrsId() );
+    QgsCoordinateReferenceSystem dest = QgsCrsCache::instance()->crsBySrsId( mProjectionSelector->selectedCrsId() );
 
     if ( !dest.isValid() )
     {
@@ -1024,7 +1024,7 @@ void QgsGrassNewMapset::drawRegion()
   // Warning: seems that crashes if source == dest
   if ( mProjectionSelector->selectedCrsId() != GEOCRS_ID )
   {
-    QgsCoordinateReferenceSystem source = QgsCRSCache::instance()->crsBySrsId( mProjectionSelector->selectedCrsId() );
+    QgsCoordinateReferenceSystem source = QgsCrsCache::instance()->crsBySrsId( mProjectionSelector->selectedCrsId() );
 
     if ( !source.isValid() )
     {
@@ -1032,7 +1032,7 @@ void QgsGrassNewMapset::drawRegion()
       return;
     }
 
-    QgsCoordinateReferenceSystem dest = QgsCRSCache::instance()->crsBySrsId( GEOCRS_ID );
+    QgsCoordinateReferenceSystem dest = QgsCrsCache::instance()->crsBySrsId( GEOCRS_ID );
 
     if ( !dest.isValid() )
     {

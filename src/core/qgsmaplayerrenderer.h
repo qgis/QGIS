@@ -53,7 +53,7 @@ class CORE_EXPORT QgsMapLayerRenderer
     QStringList errors() const { return mErrors; }
 
     //! Get access to the ID of the layer rendered by this class
-    QString layerID() const { return mLayerID; }
+    QString layerId() const { return mLayerID; }
 
   protected:
     QStringList mErrors;

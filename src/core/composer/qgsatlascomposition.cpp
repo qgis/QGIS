@@ -635,7 +635,7 @@ QString QgsAtlasComposition::currentFilename() const
   return mCurrentFilename;
 }
 
-void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
+void QgsAtlasComposition::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement atlasElem = doc.createElement( "Atlas" );
   atlasElem.setAttribute( "enabled", mEnabled ? "true" : "false" );
@@ -673,7 +673,7 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
   elem.appendChild( atlasElem );
 }
 
-void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocument& )
+void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocument& )
 {
   mEnabled = atlasElem.attribute( "enabled", "false" ) == "true" ? true : false;
   emit toggled( mEnabled );
@@ -729,7 +729,7 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   emit parameterChanged();
 }
 
-void QgsAtlasComposition::readXMLMapSettings( const QDomElement &elem, const QDomDocument &doc )
+void QgsAtlasComposition::readXmlMapSettings( const QDomElement &elem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   //look for stored composer map, to upgrade pre 2.1 projects

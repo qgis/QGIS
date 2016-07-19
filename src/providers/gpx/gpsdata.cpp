@@ -42,7 +42,7 @@ QString QgsGPSObject::xmlify( const QString& str )
 }
 
 
-void QgsGPSObject::writeXML( QTextStream& stream )
+void QgsGPSObject::writeXml( QTextStream& stream )
 {
   if ( !name.isEmpty() )
     stream << "<name>" << xmlify( name ) << "</name>\n";
@@ -67,9 +67,9 @@ QgsGPSPoint::QgsGPSPoint()
 }
 
 
-void QgsGPSPoint::writeXML( QTextStream& stream )
+void QgsGPSPoint::writeXml( QTextStream& stream )
 {
-  QgsGPSObject::writeXML( stream );
+  QgsGPSObject::writeXml( stream );
   if ( ele != -std::numeric_limits<double>::max() )
     stream << "<ele>" << ele << "</ele>\n";
   if ( !sym.isEmpty() )
@@ -88,42 +88,42 @@ QgsGPSExtended::QgsGPSExtended()
 }
 
 
-void QgsGPSExtended::writeXML( QTextStream& stream )
+void QgsGPSExtended::writeXml( QTextStream& stream )
 {
-  QgsGPSObject::writeXML( stream );
+  QgsGPSObject::writeXml( stream );
   if ( number != std::numeric_limits<int>::max() )
     stream << "<number>" << number << "</number>\n";
 }
 
 
-void QgsWaypoint::writeXML( QTextStream& stream )
+void QgsWaypoint::writeXml( QTextStream& stream )
 {
   stream << "<wpt lat=\"" << QString::number( lat, 'f', OUTPUT_PRECISION ) <<
   "\" lon=\"" << QString::number( lon, 'f', OUTPUT_PRECISION ) << "\">\n";
-  QgsGPSPoint::writeXML( stream );
+  QgsGPSPoint::writeXml( stream );
   stream << "</wpt>\n";
 }
 
 
-void QgsRoute::writeXML( QTextStream& stream )
+void QgsRoute::writeXml( QTextStream& stream )
 {
   stream << "<rte>\n";
-  QgsGPSExtended::writeXML( stream );
+  QgsGPSExtended::writeXml( stream );
   for ( int i = 0; i < points.size(); ++i )
   {
     stream << "<rtept lat=\"" << QString::number( points[i].lat, 'f', OUTPUT_PRECISION )
     << "\" lon=\"" << QString::number( points[i].lon, 'f', OUTPUT_PRECISION ) << "\">\n";
-    points[i].writeXML( stream );
+    points[i].writeXml( stream );
     stream << "</rtept>\n";
   }
   stream << "</rte>\n";
 }
 
 
-void QgsTrack::writeXML( QTextStream& stream )
+void QgsTrack::writeXml( QTextStream& stream )
 {
   stream << "<trk>\n";
-  QgsGPSExtended::writeXML( stream );
+  QgsGPSExtended::writeXml( stream );
   for ( int i = 0; i < segments.size(); ++i )
   {
     stream << "<trkseg>\n";
@@ -133,7 +133,7 @@ void QgsTrack::writeXML( QTextStream& stream )
       QString::number( segments.at( i ).points.at( j ).lat, 'f', OUTPUT_PRECISION ) <<
       "\" lon=\"" << QString::number( segments.at( i ).points.at( j ).lon, 'f', OUTPUT_PRECISION ) <<
       "\">\n";
-      segments[i].points[j].writeXML( stream );
+      segments[i].points[j].writeXml( stream );
       stream << "</trkpt>\n";
     }
     stream << "</trkseg>\n";
@@ -349,18 +349,18 @@ void QgsGPSData::removeTracks( const QgsFeatureIds &ids )
 }
 
 
-void QgsGPSData::writeXML( QTextStream& stream )
+void QgsGPSData::writeXml( QTextStream& stream )
 {
   stream.setCodec( QTextCodec::codecForName( "UTF8" ) );
   stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
   << "<gpx version=\"1.0\" creator=\"QGIS\">\n";
   for ( WaypointIterator wIter = waypoints.begin();
         wIter != waypoints.end(); ++wIter )
-    wIter->writeXML( stream );
+    wIter->writeXml( stream );
   for ( RouteIterator rIter = routes.begin(); rIter != routes.end(); ++rIter )
-    rIter->writeXML( stream );
+    rIter->writeXml( stream );
   for ( TrackIterator tIter = tracks.begin(); tIter != tracks.end(); ++tIter )
-    tIter->writeXML( stream );
+    tIter->writeXml( stream );
   stream << "</gpx>\n";
   stream << flush;
 }

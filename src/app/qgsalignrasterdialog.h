@@ -44,7 +44,7 @@ class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
 
     void clipExtentChanged();
 
-    void updateCustomCRS();
+    void updateCustomCrs();
     void updateCustomCellSize();
     void updateCustomGridOffset();
 

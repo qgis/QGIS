@@ -290,7 +290,7 @@ QString QgsActionManager::expandAction( const QString& action, QgsFeature &feat,
 }
 
 
-bool QgsActionManager::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
+bool QgsActionManager::writeXml( QDomNode& layer_node, QDomDocument& doc ) const
 {
   QDomElement aActions = doc.createElement( "attributeactions" );
   aActions.setAttribute( "default", mDefaultAction );
@@ -312,7 +312,7 @@ bool QgsActionManager::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
   return true;
 }
 
-bool QgsActionManager::readXML( const QDomNode& layer_node )
+bool QgsActionManager::readXml( const QDomNode& layer_node )
 {
   mActions.clear();
 

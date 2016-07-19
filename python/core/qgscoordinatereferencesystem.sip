@@ -107,7 +107,7 @@
  * In some cases (most prominently when loading a map layer), QGIS will try to ensure
  * that the given map layer CRS is valid using validate() call. If not, a custom
  * validation function will be called - such function may for example show a GUI
- * for manual CRS selection. The validation function is configured using setCustomSrsValidation().
+ * for manual CRS selection. The validation function is configured using setCustomCrsValidation().
  * If validation fails or no validation function is set, the default CRS is assigned
  * (WGS84). QGIS application registers its validation function that will act according
  * to user's settings (either show CRS selector dialog or use project/custom CRS).
@@ -319,7 +319,7 @@ class QgsCoordinateReferenceSystem
      *
      * @note It is not usually necessary to use this function, unless you
      * are trying to force this CRS to be valid.
-     * @see setCustomSrsValidation(), customSrsValidation()
+     * @see setCustomCrsValidation(), customCrsValidation()
      */
     void validate();
 
@@ -347,21 +347,20 @@ class QgsCoordinateReferenceSystem
      * @param theNode The node from which state will be restored
      * @return bool True on success, False on failure
      */
-    bool readXML( const QDomNode & theNode );
-
+    bool readXml( const QDomNode & theNode );
     /** Stores state to the given Dom node in the given document.
      * @param theNode The node in which state will be restored
      * @param theDoc The document in which state will be stored
      * @return bool True on success, False on failure
      */
-    bool writeXML( QDomNode & theNode, QDomDocument & theDoc ) const;
+    bool writeXml( QDomNode & theNode, QDomDocument & theDoc ) const;
 
 
     /** Sets custom function to force valid CRS
-     *  QGIS uses implementation in QgisGui::customSrsValidation
+     *  QGIS uses implementation in QgisGui::customCrsValidation
      * @note not available in python bindings
      */
-    // static void setCustomSrsValidation( CUSTOM_CRS_VALIDATION f );
+    // static void setCustomCrsValidation( CUSTOM_CRS_VALIDATION f );
 
     /** Gets custom function
      * @note not available in python bindings
@@ -470,10 +469,10 @@ class QgsCoordinateReferenceSystem
     /** Save the proj4-string as a custom CRS
      * @returns bool true if success else false
      */
-    bool saveAsUserCRS( const QString& name );
+    bool saveAsUserCrs( const QString& name );
 
     /** Returns auth id of related geographic CRS*/
-    QString geographicCRSAuthId() const;
+    QString geographicCrsAuthId() const;
 
     /** Returns a list of recently used projections
      * @returns list of srsid for recently used projections

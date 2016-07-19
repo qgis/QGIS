@@ -235,13 +235,18 @@ class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
  *
  * @note added in 2.8
  */
-class QgsWMSLegendNode : QgsLayerTreeModelLegendNode
+class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
 {
 %TypeHeaderCode
 #include <qgslayertreemodellegendnode.h>
 %End
   public:
-    QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent /TransferThis/ = nullptr );
+
+    /** Constructor for QgsWmsLegendNode.
+     * @param nodeLayer layer node
+     * @param parent parent object
+     */
+    QgsWmsLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent /TransferThis/ = nullptr );
 
     virtual QVariant data( int role ) const;
 

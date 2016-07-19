@@ -638,7 +638,7 @@ QgsPointLocator::~QgsPointLocator()
   delete mExtent;
 }
 
-QgsCoordinateReferenceSystem QgsPointLocator::destCRS() const
+QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
 {
   return mTransform.isValid() ? mTransform.destinationCrs() : QgsCoordinateReferenceSystem();
 }

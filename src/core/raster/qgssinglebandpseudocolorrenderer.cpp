@@ -94,11 +94,11 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
   if ( !rasterShaderElem.isNull() )
   {
     shader = new QgsRasterShader();
-    shader->readXML( rasterShaderElem );
+    shader->readXml( rasterShaderElem );
   }
 
   QgsSingleBandPseudoColorRenderer* r = new QgsSingleBandPseudoColorRenderer( input, band, shader );
-  r->readXML( elem );
+  r->readXml( elem );
 
   // TODO: add _readXML in superclass?
   r->setClassificationMin( elem.attribute( "classificationMin", "NaN" ).toDouble() );
@@ -208,7 +208,7 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   return outputBlock;
 }
 
-void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsSingleBandPseudoColorRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -216,11 +216,11 @@ void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement&
   }
 
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
-  _writeXML( doc, rasterRendererElem );
+  _writeXml( doc, rasterRendererElem );
   rasterRendererElem.setAttribute( "band", mBand );
   if ( mShader )
   {
-    mShader->writeXML( doc, rasterRendererElem ); //todo: include color ramp items directly in this renderer
+    mShader->writeXml( doc, rasterRendererElem ); //todo: include color ramp items directly in this renderer
   }
   rasterRendererElem.setAttribute( "classificationMin", QgsRasterBlock::printValue( mClassificationMin ) );
   rasterRendererElem.setAttribute( "classificationMax", QgsRasterBlock::printValue( mClassificationMax ) );

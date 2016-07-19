@@ -28,14 +28,14 @@ class QgsComposerMapItem : QgsComposerObject
      * @param doc DOM document
      * @see readXML
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets map item state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * @param doc is DOM document
      * @see writeXML
      */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Sets composer map for the item
      * @param map composer map
@@ -121,7 +121,7 @@ class QgsComposerMapItemStack
      * @returns true if write was successful
      * @see readXML
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets the item stack's state from a DOM document
      * @param elem is DOM node corresponding to 'a ComposerMap' tag
@@ -129,7 +129,7 @@ class QgsComposerMapItemStack
      * @returns true if read was successful
      * @see writeXML
      */
-    virtual bool readXML( const QDomElement& elem, const QDomDocument& doc ) = 0;
+    virtual bool readXml( const QDomElement& elem, const QDomDocument& doc ) = 0;
 
     /** Draws the items from the stack on a specified painter
      * @param painter destination QPainter

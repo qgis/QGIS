@@ -57,14 +57,14 @@ class QgsRasterProjector : QgsRasterInterface
     int dataType( int bandNo ) const;
 
     /** \brief set source and destination CRS */
-    void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,
+    void setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 
     /** \brief Get source CRS */
-    QgsCoordinateReferenceSystem srcCrs() const;
+    QgsCoordinateReferenceSystem sourceCrs() const;
 
     /** \brief Get destination CRS */
-    QgsCoordinateReferenceSystem destCrs() const;
+    QgsCoordinateReferenceSystem destinationCrs() const;
 
     /** \brief set maximum source resolution */
     void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes );

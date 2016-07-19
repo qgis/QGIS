@@ -42,7 +42,7 @@ void QgsPropertyValue::dump( int tabs ) const
 } // QgsPropertyValue::dump()
 
 
-bool QgsPropertyValue::readXML( QDomNode & keyNode )
+bool QgsPropertyValue::readXml( QDomNode & keyNode )
 {
   // this *should* be a Dom element node
   QDomElement subkeyElement = keyNode.toElement();
@@ -217,13 +217,13 @@ bool QgsPropertyValue::readXML( QDomNode & keyNode )
 
   return true;
 
-} // QgsPropertyValue::readXML
+} // QgsPropertyValue::readXml
 
 
 /**
    keyElement created by parent QgsPropertyKey
 */
-bool QgsPropertyValue::writeXML( QString const & nodeName,
+bool QgsPropertyValue::writeXml( QString const & nodeName,
                                  QDomElement   & keyElement,
                                  QDomDocument  & document )
 {
@@ -261,7 +261,7 @@ bool QgsPropertyValue::writeXML( QString const & nodeName,
   keyElement.appendChild( valueElement );
 
   return true;
-} // QgsPropertyValue::writeXML
+} // QgsPropertyValue::writeXml
 
 
 QgsPropertyKey::QgsPropertyKey( const QString &name )
@@ -346,7 +346,7 @@ void QgsPropertyKey::dump( int tabs ) const
 
 
 
-bool QgsPropertyKey::readXML( QDomNode & keyNode )
+bool QgsPropertyKey::readXml( QDomNode & keyNode )
 {
   int i = 0;
   QDomNodeList subkeys = keyNode.childNodes();
@@ -365,7 +365,7 @@ bool QgsPropertyKey::readXML( QDomNode & keyNode )
 
       QDomNode subkey = subkeys.item( i );
 
-      if ( !mProperties[subkeys.item( i ).nodeName()]->readXML( subkey ) )
+      if ( !mProperties[subkeys.item( i ).nodeName()]->readXml( subkey ) )
       {
         QgsDebugMsg( QString( "unable to parse key value %1" ).arg( subkeys.item( i ).nodeName() ) );
       }
@@ -376,7 +376,7 @@ bool QgsPropertyKey::readXML( QDomNode & keyNode )
 
       QDomNode subkey = subkeys.item( i );
 
-      if ( !mProperties[subkeys.item( i ).nodeName()]->readXML( subkey ) )
+      if ( !mProperties[subkeys.item( i ).nodeName()]->readXml( subkey ) )
       {
         QgsDebugMsg( QString( "unable to parse subkey %1" ).arg( subkeys.item( i ).nodeName() ) );
       }
@@ -386,14 +386,14 @@ bool QgsPropertyKey::readXML( QDomNode & keyNode )
   }
 
   return true;
-} // QgsPropertyKey::readXML(QDomNode & keyNode)
+} // QgsPropertyKey::readXml(QDomNode & keyNode)
 
 
 /**
   Property keys will always create a Dom element for itself and then
-  recursively call writeXML for any constituent properties.
+  recursively call writeXml for any constituent properties.
 */
-bool QgsPropertyKey::writeXML( QString const &nodeName, QDomElement & element, QDomDocument & document )
+bool QgsPropertyKey::writeXml( QString const &nodeName, QDomElement & element, QDomDocument & document )
 {
   // If it's an _empty_ node (i.e., one with no properties) we need to emit
   // an empty place holder; else create new Dom elements as necessary.
@@ -406,7 +406,7 @@ bool QgsPropertyKey::writeXML( QString const &nodeName, QDomElement & element, Q
     while ( i.hasNext() )
     {
       i.next();
-      if ( !i.value()->writeXML( i.key(), keyElement, document ) )
+      if ( !i.value()->writeXml( i.key(), keyElement, document ) )
       {
         return false;
       }
@@ -416,7 +416,7 @@ bool QgsPropertyKey::writeXML( QString const &nodeName, QDomElement & element, Q
   element.appendChild( keyElement );
 
   return true;
-} // QgsPropertyKey::writeXML
+} // QgsPropertyKey::writeXml
 
 
 

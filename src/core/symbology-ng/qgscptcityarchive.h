@@ -298,7 +298,7 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
     QStringList selectionsList() const { return mSelectionsList; }
 
   protected:
-    void parseXML();
+    void parseXml();
     QStringList mSelectionsList;
 };
 

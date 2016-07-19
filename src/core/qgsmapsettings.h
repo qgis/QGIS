@@ -276,9 +276,9 @@ class CORE_EXPORT QgsMapSettings
 
     /* serialization */
 
-    void readXML( QDomNode& theNode );
+    void readXml( QDomNode& theNode );
 
-    void writeXML( QDomNode& theNode, QDomDocument& theDoc );
+    void writeXml( QDomNode& theNode, QDomDocument& theDoc );
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/

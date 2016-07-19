@@ -44,7 +44,7 @@ class QgsGPSObject
   public:
     virtual ~QgsGPSObject() {}
     QString xmlify( const QString& str );
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXml( QTextStream& stream );
     QString name, cmt, desc, src, url, urlname;
 };
 
@@ -56,7 +56,7 @@ class QgsGPSPoint : public QgsGPSObject
 {
   public:
     QgsGPSPoint();
-    virtual void writeXML( QTextStream& stream ) override;
+    virtual void writeXml( QTextStream& stream ) override;
     double lat, lon, ele;
     QString sym;
 };
@@ -69,7 +69,7 @@ class QgsGPSExtended : public QgsGPSObject
 {
   public:
     QgsGPSExtended();
-    virtual void writeXML( QTextStream& stream ) override;
+    virtual void writeXml( QTextStream& stream ) override;
     double xMin, xMax, yMin, yMax;
     int number;
 };
@@ -84,7 +84,7 @@ typedef QgsGPSPoint QgsTrackpoint;
 class QgsWaypoint : public QgsGPSPoint
 {
   public:
-    virtual void writeXML( QTextStream& stream ) override;
+    virtual void writeXml( QTextStream& stream ) override;
     QgsFeatureId id;
 };
 
@@ -94,7 +94,7 @@ class QgsWaypoint : public QgsGPSPoint
 class QgsRoute : public QgsGPSExtended
 {
   public:
-    virtual void writeXML( QTextStream& stream ) override;
+    virtual void writeXml( QTextStream& stream ) override;
     QVector<QgsRoutepoint> points;
     QgsFeatureId id;
 };
@@ -116,7 +116,7 @@ class QgsTrackSegment
 class QgsTrack : public QgsGPSExtended
 {
   public:
-    virtual void writeXML( QTextStream& stream ) override;
+    virtual void writeXml( QTextStream& stream ) override;
     QVector<QgsTrackSegment> segments;
     QgsFeatureId id;
 };
@@ -209,7 +209,7 @@ class QgsGPSData
 
     /** This function will write the contents of this GPSData object as XML to
         the given text stream. */
-    void writeXML( QTextStream& stream );
+    void writeXml( QTextStream& stream );
 
     /** This function returns a pointer to the GPSData object associated with
         the file @c file name. If the file does not exist or can't be parsed,

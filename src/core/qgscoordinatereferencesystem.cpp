@@ -135,7 +135,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &theDefinitio
           QString myName = QString( " * %1 (%2)" )
                            .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                                  toProj4() );
-          saveAsUserCRS( myName );
+          saveAsUserCrs( myName );
         }
       }
       else
@@ -263,7 +263,7 @@ void QgsCoordinateReferenceSystem::validate()
 
   if ( !d->mIsValid )
   {
-    *this = QgsCRSCache::instance()->crsByOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+    *this = QgsCrsCache::instance()->crsByOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
   }
 }
 
@@ -460,7 +460,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
     QString myName = QString( " * %1 (%2)" )
                      .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                            toProj4() );
-    saveAsUserCRS( myName );
+    saveAsUserCrs( myName );
   }
 
   CPLFree( proj4src );
@@ -1119,7 +1119,7 @@ QString QgsCoordinateReferenceSystem::toWkt() const
   return d->mWkt;
 }
 
-bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
+bool QgsCoordinateReferenceSystem::readXml( const QDomNode & theNode )
 {
   d.detach();
   QgsDebugMsg( "Reading Spatial Ref Sys from xml ------------------------!" );
@@ -1139,7 +1139,7 @@ bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
       myNode = srsNode.namedItem( "authid" );
       if ( !myNode.isNull() )
       {
-        operator=( QgsCRSCache::instance()->crsByOgcWmsCrs( myNode.toElement().text() ) );
+        operator=( QgsCrsCache::instance()->crsByOgcWmsCrs( myNode.toElement().text() ) );
         if ( isValid() )
         {
           initialized = true;
@@ -1151,7 +1151,7 @@ bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
         myNode = srsNode.namedItem( "epsg" );
         if ( !myNode.isNull() )
         {
-          operator=( QgsCRSCache::instance()->crsByEpsgId( myNode.toElement().text().toLong() ) );
+          operator=( QgsCrsCache::instance()->crsByEpsgId( myNode.toElement().text().toLong() ) );
           if ( isValid() )
           {
             initialized = true;
@@ -1227,7 +1227,7 @@ bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
         QString myName = QString( " * %1 (%2)" )
                          .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                                toProj4() );
-        saveAsUserCRS( myName );
+        saveAsUserCrs( myName );
       }
 
     }
@@ -1241,7 +1241,7 @@ bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
   return result;
 }
 
-bool QgsCoordinateReferenceSystem::writeXML( QDomNode & theNode, QDomDocument & theDoc ) const
+bool QgsCoordinateReferenceSystem::writeXml( QDomNode & theNode, QDomDocument & theDoc ) const
 {
 
   QDomElement myLayerNode = theNode.toElement();
@@ -1382,12 +1382,12 @@ int QgsCoordinateReferenceSystem::openDb( const QString& path, sqlite3 **db, boo
   return myResult;
 }
 
-void QgsCoordinateReferenceSystem::setCustomSrsValidation( CUSTOM_CRS_VALIDATION f )
+void QgsCoordinateReferenceSystem::setCustomCrsValidation( CUSTOM_CRS_VALIDATION f )
 {
   mCustomSrsValidation = f;
 }
 
-CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customSrsValidation()
+CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customCrsValidation()
 {
   return mCustomSrsValidation;
 }
@@ -1428,7 +1428,7 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-bool QgsCoordinateReferenceSystem::saveAsUserCRS( const QString& name )
+bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString& name )
 {
   if ( !d->mIsValid )
   {
@@ -1596,7 +1596,7 @@ bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const ch
   return true;
 }
 
-bool QgsCoordinateReferenceSystem::loadIDs( QHash<int, QString> &wkts )
+bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 {
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
@@ -1705,7 +1705,7 @@ int QgsCoordinateReferenceSystem::syncDb()
   QString proj4;
   QString sql;
   QHash<int, QString> wkts;
-  loadIDs( wkts );
+  loadIds( wkts );
   loadWkts( wkts, "epsg.wkt" );
 
   qDebug( "%d WKTs loaded", wkts.count() );
@@ -2125,7 +2125,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
   return true;
 }
 
-QString QgsCoordinateReferenceSystem::geographicCRSAuthId() const
+QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 {
   if ( geographicFlag() )
   {

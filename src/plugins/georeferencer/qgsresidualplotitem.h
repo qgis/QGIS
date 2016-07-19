@@ -42,8 +42,8 @@ class QgsResidualPlotItem: public QgsComposerItem
     void setConvertScaleToMapUnits( bool convert ) { mConvertScaleToMapUnits = convert; }
     bool convertScaleToMapUnits() const { return mConvertScaleToMapUnits; }
 
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
   private:
     //gcp list

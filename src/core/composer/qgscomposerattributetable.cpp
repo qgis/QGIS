@@ -516,7 +516,7 @@ QList<QPair<int, bool> > QgsComposerAttributeTable::sortAttributes() const
   return attributesBySortRank;
 }
 
-bool QgsComposerAttributeTable::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerAttributeTable::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerTableElem = doc.createElement( "ComposerAttributeTable" );
   composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );
@@ -538,11 +538,11 @@ bool QgsComposerAttributeTable::writeXML( QDomElement& elem, QDomDocument & doc 
   }
 
   elem.appendChild( composerTableElem );
-  bool ok = tableWriteXML( composerTableElem, doc );
+  bool ok = tableWriteXml( composerTableElem, doc );
   return ok;
 }
 
-bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerAttributeTable::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
   {
@@ -550,7 +550,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   }
 
   //read general table properties
-  if ( !tableReadXML( itemElem, doc ) )
+  if ( !tableReadXml( itemElem, doc ) )
   {
     return false;
   }

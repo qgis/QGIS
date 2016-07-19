@@ -130,7 +130,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // slot triggered by setChecked() might use it.
   mProjectSrsId = mMapCanvas->mapSettings().destinationCrs().srsid();
 
-  QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( mProjectSrsId );
+  QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsBySrsId( mProjectSrsId );
   updateGuiForMapUnits( srs.mapUnits() );
 
   QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
@@ -775,7 +775,7 @@ void QgsProjectProperties::apply()
   long myCRSID = projectionSelector->selectedCrsId();
   if ( myCRSID )
   {
-    QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( myCRSID );
+    QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsBySrsId( myCRSID );
     mMapCanvas->setDestinationCrs( srs );
     QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
     // write the currently selected projections _proj string_ to project settings
@@ -1304,7 +1304,7 @@ void QgsProjectProperties::srIdUpdated()
   if ( !isProjected() || !myCRSID )
     return;
 
-  QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( myCRSID );
+  QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsBySrsId( myCRSID );
   //set radio button to crs map unit type
   QGis::UnitType units = srs.mapUnits();
 
@@ -1397,7 +1397,7 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
   if ( cbxProjectionEnabled->isChecked() )
   {
-    QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( projectionSelector->selectedCrsId() );
+    QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsBySrsId( projectionSelector->selectedCrsId() );
     crsList << srs.authid();
   }
 

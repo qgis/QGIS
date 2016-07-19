@@ -21,11 +21,11 @@ class QgsPointLocator : QObject
   public:
 
     /** Construct point locator for a layer.
-     *  @arg destCRS if a valid QgsCoordinateReferenceSystem is passed then the locator will
+     *  @arg destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
      *  do the searches on data reprojected to the given CRS
      *  @arg extent  if not null, will index only a subset of the layer
      */
-    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem& destCRS = QgsCoordinateReferenceSystem(),
+    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem& destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsRectangle* extent = nullptr );
 
     ~QgsPointLocator();
@@ -35,7 +35,7 @@ class QgsPointLocator : QObject
     QgsVectorLayer* layer() const;
     //! Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
     //! @note added in QGIS 2.14
-    QgsCoordinateReferenceSystem destCRS() const;
+    QgsCoordinateReferenceSystem destinationCrs() const;
     //! Get extent of the area point locator covers - if null then it caches the whole layer
     //! @note added in QGIS 2.14
     const QgsRectangle* extent() const;

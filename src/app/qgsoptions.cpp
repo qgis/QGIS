@@ -388,7 +388,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
     radUseGlobalProjection->setChecked( true );
   }
   QString myLayerDefaultCrs = mSettings->value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  mLayerDefaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( myLayerDefaultCrs );
+  mLayerDefaultCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
   //on the fly CRS transformation settings
@@ -407,7 +407,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   }
 
   QString myDefaultCrs = mSettings->value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  mDefaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( myDefaultCrs );
+  mDefaultCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( myDefaultCrs );
   leProjectGlobalCrs->setCrs( mDefaultCrs );
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::DefaultCrs, false );
 

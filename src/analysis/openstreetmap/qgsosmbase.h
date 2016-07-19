@@ -49,7 +49,7 @@ class ANALYSIS_EXPORT QgsOSMElement
     bool isValid() const { return mElemID.type != QgsOSMElementID::Invalid; }
 
     // fetched automatically from DB
-    QgsOSMElementID elemID() const { return mElemID; }
+    QgsOSMElementID elemId() const { return mElemID; }
     QgsOSMId id() const { return mElemID.id; }
     //QString username() const;
     //QDateTime timestamp() const;

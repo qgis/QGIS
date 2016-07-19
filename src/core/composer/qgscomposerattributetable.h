@@ -69,16 +69,16 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     /** Writes properties specific to attribute tables
      * @param elem an existing QDomElement in which to store the attribute table's properties.
      * @param doc QDomDocument for the destination xml.
-     * @see readXML
+     * @see readXml
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
      * @param doc QDomDocument for the source xml.
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /** Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table

@@ -206,7 +206,7 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList & flist )
   if ( !file.open( QIODevice::WriteOnly ) )
     return false;
   QTextStream ostr( &file );
-  data->writeXML( ostr );
+  data->writeXml( ostr );
   return true;
 }
 
@@ -394,7 +394,7 @@ bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds & id )
   if ( !file.open( QIODevice::WriteOnly ) )
     return false;
   QTextStream ostr( &file );
-  data->writeXML( ostr );
+  data->writeXml( ostr );
   return true;
 }
 
@@ -444,7 +444,7 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( !file.open( QIODevice::WriteOnly ) )
     return false;
   QTextStream ostr( &file );
-  data->writeXML( ostr );
+  data->writeXml( ostr );
   return true;
 }
 

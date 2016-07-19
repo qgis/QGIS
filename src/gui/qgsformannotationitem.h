@@ -48,8 +48,8 @@ class GUI_EXPORT QgsFormAnnotationItem: public QObject, public QgsAnnotationItem
     void setDesignerForm( const QString& uiFile );
     QString designerForm() const { return mDesignerForm; }
 
-    void writeXML( QDomDocument& doc ) const override;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) override;
+    void writeXml( QDomDocument& doc ) const override;
+    void readXml( const QDomDocument& doc, const QDomElement& itemElem ) override;
 
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 

@@ -185,7 +185,7 @@ void QgsVisibilityPresetCollection::reconnectToLayersStyleManager()
   }
 }
 
-void QgsVisibilityPresetCollection::readXML( const QDomDocument& doc )
+void QgsVisibilityPresetCollection::readXml( const QDomDocument& doc )
 {
   clear();
 
@@ -238,7 +238,7 @@ void QgsVisibilityPresetCollection::readXML( const QDomDocument& doc )
   emit presetsChanged();
 }
 
-void QgsVisibilityPresetCollection::writeXML( QDomDocument& doc )
+void QgsVisibilityPresetCollection::writeXml( QDomDocument& doc )
 {
   QDomElement visPresetsElem = doc.createElement( "visibility-presets" );
   PresetRecordMap::const_iterator it = mPresets.constBegin();

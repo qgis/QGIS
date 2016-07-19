@@ -31,9 +31,9 @@ class QString;
 class QgsConfigParserUtils
 {
   public:
-    static void appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QStringList &crsList,
+    static void appendCrsElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QStringList &crsList,
                                           const QStringList& constrainedCrsList );
-    static void appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
+    static void appendCrsElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
                                          const QString& crsText, QDomDocument& doc );
     static void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
                                           const QgsCoordinateReferenceSystem& layerCRS, const QStringList &crsList,
@@ -41,7 +41,7 @@ class QgsConfigParserUtils
     static void appendLayerBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
                                         const QgsCoordinateReferenceSystem& layerCRS, const QString& crsText );
     /** Returns a list of supported EPSG coordinate system numbers from a layer*/
-    static QStringList createCRSListForLayer( QgsMapLayer* theMapLayer );
+    static QStringList createCrsListForLayer( QgsMapLayer* theMapLayer );
 
     /** Returns default service capabilities from wms_metadata.xml if nothing else is defined*/
     static void fallbackServiceCapabilities( QDomElement& parentElement, QDomDocument& doc );

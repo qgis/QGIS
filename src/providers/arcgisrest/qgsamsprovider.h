@@ -77,7 +77,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QString lastErrorTitle() override { return mErrorTitle; }
     QString lastError() override { return mError; }
     QGis::DataType dataType( int /*bandNo*/ ) const override { return QGis::ARGB32; }
-    QGis::DataType srcDataType( int /*bandNo*/ ) const override { return QGis::ARGB32; }
+    QGis::DataType sourceDataType( int /*bandNo*/ ) const override { return QGis::ARGB32; }
     QgsRasterInterface* clone() const override;
     QString metadata() override;
     QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) override;

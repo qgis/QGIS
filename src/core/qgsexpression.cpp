@@ -2968,10 +2968,10 @@ static QVariant fcnTransformGeometry( const QVariantList& values, const QgsExpre
   QString sAuthId = getStringValue( values.at( 1 ), parent );
   QString dAuthId = getStringValue( values.at( 2 ), parent );
 
-  QgsCoordinateReferenceSystem s = QgsCRSCache::instance()->crsByOgcWmsCrs( sAuthId );
+  QgsCoordinateReferenceSystem s = QgsCrsCache::instance()->crsByOgcWmsCrs( sAuthId );
   if ( ! s.isValid() )
     return QVariant::fromValue( fGeom );
-  QgsCoordinateReferenceSystem d = QgsCRSCache::instance()->crsByOgcWmsCrs( dAuthId );
+  QgsCoordinateReferenceSystem d = QgsCrsCache::instance()->crsByOgcWmsCrs( dAuthId );
   if ( ! d.isValid() )
     return QVariant::fromValue( fGeom );
 

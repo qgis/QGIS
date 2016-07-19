@@ -50,11 +50,11 @@ class QgsServerProjectParser
 
     void addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer ) const;
 
-    QgsRectangle layerBoundingBoxInProjectCRS( const QDomElement& layerElem, const QDomDocument &doc ) const;
+    QgsRectangle layerBoundingBoxInProjectCrs( const QDomElement& layerElem, const QDomDocument &doc ) const;
 
     bool crsSetForLayer( const QDomElement& layerElement, QSet<QString> &crsSet ) const;
 
-    const QgsCoordinateReferenceSystem& projectCRS() const;
+    const QgsCoordinateReferenceSystem& projectCrs() const;
 
     QgsRectangle mapRectangle() const;
 
@@ -71,7 +71,7 @@ class QgsServerProjectParser
     QDomElement propertiesElem() const;
 
     const QSet<QString>& restrictedLayers() const;
-    bool useLayerIDs() const;
+    bool useLayerIds() const;
 
     const QHash< QString, QDomElement >& projectLayerElementsByName() const;
     const QHash< QString, QDomElement >& projectLayerElementsById() const;

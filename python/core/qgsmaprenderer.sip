@@ -282,10 +282,10 @@ class QgsMapRenderer : QObject
     void updateFullExtent();
 
     //! read settings
-    bool readXML( QDomNode & theNode );
+    bool readXml( QDomNode & theNode );
 
     //! write settings
-    bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
+    bool writeXml( QDomNode & theNode, QDomDocument & theDoc );
 
     //! Accessor for render context
     QgsRenderContext* rendererContext();
@@ -344,7 +344,8 @@ class QgsMapRenderer : QObject
      *  @note Added in 2.4 */
     void hasCrsTransformEnabledChanged( bool flag );
 
-    void destinationSrsChanged();
+    //! Emitted when the renderer's destination CRS is changed
+    void destinationCrsChanged();
 
     //! @deprecated in 2.4 - not emitted anymore
     void updateMap();

@@ -44,16 +44,16 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @param columnElem an existing QDomElement in which to store the column's properties.
      * @param doc QDomDocument for the destination xml.
      * @note added in 2.3
-     * @see readXML
+     * @see readXml
      */
-    virtual bool writeXML( QDomElement& columnElem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& columnElem, QDomDocument & doc ) const;
 
     /** Reads the column's properties from xml.
      * @param columnElem a QDomElement holding the column's desired properties.
      * @note added in 2.3
-     * @see writeXML
+     * @see writeXml
      */
-    virtual bool readXML( const QDomElement& columnElem );
+    virtual bool readXml( const QDomElement& columnElem );
 
     /** Returns the width for a column.
      * @returns column width in mm, or 0 if column width is automatically calculated.

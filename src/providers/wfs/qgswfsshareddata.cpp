@@ -1194,7 +1194,7 @@ QgsGmlStreamingParser* QgsWFSSharedData::createParser()
 
 
 QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI& uri )
-    : QgsWFSRequest( uri.uri() )
+    : QgsWfsRequest( uri.uri() )
 {
 }
 
@@ -1260,7 +1260,7 @@ QString QgsWFSFeatureHitsRequest::errorMessageWithReason( const QString& reason 
 
 
 QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( QgsWFSSharedData* shared )
-    : QgsWFSRequest( shared->mURI.uri() ), mShared( shared )
+    : QgsWfsRequest( shared->mURI.uri() ), mShared( shared )
 {
 }
 
