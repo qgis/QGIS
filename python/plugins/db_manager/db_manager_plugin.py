@@ -24,6 +24,9 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsMapLayerRegistry, QgsMapLayer, QgsDataSourceURI
+import re
+
 from . import resources_rc  # NOQA
 
 
@@ -48,6 +51,15 @@ class DBManagerPlugin:
         else:
             self.iface.addPluginToMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
 
+        self.layerAction = QAction(QIcon(":/db_manager/icon"), QApplication.translate("DBManagerPlugin", "Update Sql Layer"),
+                                   self.iface.mainWindow())
+        self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
+        QObject.connect(self.layerAction, SIGNAL("triggered()"), self.onUpdateSqlLayer)
+        self.iface.legendInterface().addLegendLayerAction(self.layerAction, "", "dbManagerUpdateSqlLayer", QgsMapLayer.VectorLayer, False)
+        for l in QgsMapLayerRegistry.instance().mapLayers().values():
+            self.onLayerWasAdded(l)
+        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.onLayerWasAdded)
+
     def unload(self):
         # Remove the plugin menu item and icon
         if hasattr(self.iface, 'removePluginDatabaseMenu'):
@@ -59,8 +71,35 @@ class DBManagerPlugin:
         else:
             self.iface.removeToolBarIcon(self.action)
 
+        self.iface.legendInterface().removeLegendLayerAction(self.layerAction)
+        QgsMapLayerRegistry.instance().layerWasAdded.disconnect(self.onLayerWasAdded)
+
         if self.dlg is not None:
             self.dlg.close()
+
+    def onLayerWasAdded(self, aMapLayer):
+        if aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
+            uri = QgsDataSourceURI(aMapLayer.source())
+            if re.search('^\(SELECT .+ FROM .+\)$', uri.table(), re.S):
+                self.iface.legendInterface().addLegendLayerActionForLayer(self.layerAction, aMapLayer)
+        # virtual has QUrl source
+        # url = QUrl(QUrl.fromPercentEncoding(l.source()))
+        # url.queryItemValue('query')
+        # url.queryItemValue('uid')
+        # url.queryItemValue('geometry')
+
+    def onUpdateSqlLayer(self):
+        l = self.iface.legendInterface().currentLayer()
+        if l.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
+            uri = QgsDataSourceURI(l.source())
+            if re.search('^\(SELECT .+ FROM .+\)$', uri.table(), re.S):
+                self.run()
+                self.dlg.runSqlLayerWindow(l)
+        # virtual has QUrl source
+        # url = QUrl(QUrl.fromPercentEncoding(l.source()))
+        # url.queryItemValue('query')
+        # url.queryItemValue('uid')
+        # url.queryItemValue('geometry')
 
     def run(self):
         # keep opened only one instance
