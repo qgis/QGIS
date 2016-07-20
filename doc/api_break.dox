@@ -107,7 +107,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 <li>theMinScale and theMaxScale parameters in setMinimumScale and setMaximumScale were renamed to scale</li>
 <li>The layerCrsChanged() signal was renamed to crsChanged()</li>
 <li>theError parameter in appendError() and setError() were renamed to 'error'.</li>
-<li>drawLabels() mathod as removed. It used old deprecated labeling. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.</li>
+<li>drawLabels() method was removed. It used old deprecated labeling. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsMapRenderer QgsMapRenderer
