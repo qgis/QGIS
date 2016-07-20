@@ -334,6 +334,13 @@ class CORE_EXPORT QgsExpressionContext
      */
     int indexOfScope( QgsExpressionContextScope* scope ) const;
 
+    /** Returns the index of the first scope with a matching name within the context.
+     * @param scopeName name of scope to find
+     * @returns index of scope, or -1 if scope was not found within the context.
+     * @note added in QGIS 3.0
+     */
+    int indexOfScope( const QString& scopeName ) const;
+
     /** Returns a list of variables names set by all scopes in the context.
      * @returns list of unique variable names
      * @see filteredVariableNames
