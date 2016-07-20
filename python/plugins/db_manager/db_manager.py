@@ -199,6 +199,15 @@ class DBManager(QMainWindow):
         self.tabs.setCurrentIndex(index)
         query.nameChanged.connect(functools.partial(self.update_query_tab_name, index, dbname))
 
+    def runSqlLayerWindow(self, layer):
+        from dlg_sql_layer_window import DlgSqlLayerWindow
+        query = DlgSqlLayerWindow(self.iface, layer, self)
+        lname = layer.name()
+        tabname = self.tr("Layer") + u" (%s)" % lname
+        index = self.tabs.addTab(query, tabname)
+        #self.tabs.setTabIcon(index, db.connection().icon())
+        self.tabs.setCurrentIndex(index)
+
     def update_query_tab_name(self, index, dbname, queryname):
         if not queryname:
             queryname = self.tr("Query")
