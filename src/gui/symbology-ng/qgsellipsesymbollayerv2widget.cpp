@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsellipsesymbollayerv2widget.h"
-#include "qgsdatadefinedsymboldialog.h"
 #include "qgsellipsesymbollayerv2.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"

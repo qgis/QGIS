@@ -50,6 +50,13 @@ plugins calling these methods will need to be updated.</li>
 be returned in place of a null pointer.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsDataDefinedSymbolDialog QgsDataDefinedSymbolDialog
+
+<ul>
+<li>QgsDataDefinedSymbolDialog was removed. Code using this dialog should be reworked to use QgsDataDefinedButton
+instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsDiagramLayerSettings QgsDiagramLayerSettings
 
 <ul>
