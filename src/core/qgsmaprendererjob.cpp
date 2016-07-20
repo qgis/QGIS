@@ -169,7 +169,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 
 
 
-LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine, QgsLabelingEngineV2* labelingEngine2 )
+LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEngineV2* labelingEngine2 )
 {
   LayerRenderJobs layerJobs;
 
@@ -237,7 +237,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     if ( mCache && ml->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-      if ( vl->isEditable() || (( labelingEngine || labelingEngine2 ) && QgsPalLabeling::staticWillUseLayer( vl ) ) )
+      if ( vl->isEditable() || ( labelingEngine2 && QgsPalLabeling::staticWillUseLayer( vl ) ) )
         mCache->clearCacheImage( ml->id() );
     }
 
@@ -251,7 +251,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
 
     job.context = QgsRenderContext::fromMapSettings( mSettings );
     job.context.setPainter( painter );
-    job.context.setLabelingEngine( labelingEngine );
     job.context.setLabelingEngineV2( labelingEngine2 );
     job.context.setCoordinateTransform( ct );
     job.context.setExtent( r1 );

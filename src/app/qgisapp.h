@@ -1206,9 +1206,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! set the CAD dock widget visible
     void setCadDockVisible( bool visible );
 
-    /** Check if deprecated labels are used in project, and flag projects that use them */
-    void checkForDeprecatedLabelsInProject();
-
     //! save current vector layer
     void saveAsFile();
 

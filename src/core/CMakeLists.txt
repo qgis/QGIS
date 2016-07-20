@@ -126,8 +126,6 @@ SET(QGIS_CORE_SRCS
   qgshistogram.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
-  qgslabel.cpp
-  qgslabelattributes.cpp
   qgslabelfeature.cpp
   qgslabelingenginev2.cpp
   qgslabelsearchtree.cpp
@@ -657,8 +655,6 @@ SET(QGIS_CORE_HDRS
   qgsinterval.h
   qgsjsonutils.h
   qgslayerdefinition.h
-  qgslabel.h
-  qgslabelattributes.h
   qgslabelfeature.h
   qgslabelingenginev2.h
   qgslabelsearchtree.h

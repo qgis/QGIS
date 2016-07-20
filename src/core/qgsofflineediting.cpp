@@ -592,14 +592,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
         QList<QgsMapLayer *>() << newLayer );
 
       // copy style
-      Q_NOWARN_DEPRECATED_PUSH
-      bool hasLabels = layer->hasLabelsEnabled();
-      Q_NOWARN_DEPRECATED_POP
-      if ( !hasLabels )
-      {
-        // NOTE: copy symbology before adding the layer so it is displayed correctly
-        copySymbology( layer, newLayer );
-      }
+      copySymbology( layer, newLayer );
 
       QgsLayerTreeGroup* layerTreeRoot = QgsProject::instance()->layerTreeRoot();
       // Find the parent group of the original layer
@@ -621,12 +614,6 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
               grp->removeChildNode( newLayerTreeLayer );
           }
         }
-      }
-
-      if ( hasLabels )
-      {
-        // NOTE: copy symbology of layers with labels enabled after adding to project, as it will crash otherwise (WORKAROUND)
-        copySymbology( layer, newLayer );
       }
 
       // copy features

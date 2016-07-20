@@ -70,8 +70,6 @@
 %Include qgsdartmeasurement.sip
 %Include qgsexpressionfieldbuffer.sip
 %Include qgsfontutils.sip
-%Include qgslabel.sip
-%Include qgslabelattributes.sip
 %Include qgslabelsearchtree.sip
 %Include qgslegendrenderer.sip
 %Include qgslegendsettings.sip

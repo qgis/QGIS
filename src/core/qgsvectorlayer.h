@@ -55,7 +55,6 @@ class QgsFeatureRendererV2;
 class QgsGeometry;
 class QgsGeometryCache;
 class QgsGeometryVertexIndex;
-class QgsLabel;
 class QgsMapToPixel;
 class QgsRectangle;
 class QgsRectangle;
@@ -648,14 +647,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void updateExpressionField( int index, const QString& exp );
 
-    /** Get the label rendering properties associated with this layer */
-    QgsLabel *label();
-
-    /** Get the label rendering properties associated with this layer
-     * @note not available in python bindings
-     */
-    const QgsLabel *label() const;
-
     /**
      * Get all layer actions defined on this layer.
      *
@@ -1196,16 +1187,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults );
 
-    /** Set labels on
-     * @deprecated this method is for the old labeling engine
-     */
-    Q_DECL_DEPRECATED void enableLabels( bool on );
-
-    /** Label is on
-     * @deprecated this method is for the old labeling engine, use labelsEnabled instead
-     */
-    Q_DECL_DEPRECATED bool hasLabelsEnabled() const;
-
     /** Access to labeling configuration.
      * @note added in 2.12
      * @note not available in Python bindings
@@ -1267,11 +1248,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  @return false if an error occurred during drawing
      */
     bool draw( QgsRenderContext& rendererContext ) override;
-
-    /** Draws the layer labels using the old labeling engine
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED void drawLabels( QgsRenderContext& rendererContext ) override;
 
     QgsRectangle extent() const override;
 
@@ -2219,12 +2195,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Simplification object which holds the information about how to simplify the features for fast rendering */
     QgsVectorSimplifyMethod mSimplifyMethod;
-
-    /** Label [old deprecated implementation] */
-    QgsLabel *mLabel;
-
-    /** Display labels [old deprecated implementation] */
-    bool mLabelOn;
 
     /** Labeling configuration */
     QgsAbstractVectorLayerLabeling* mLabeling;

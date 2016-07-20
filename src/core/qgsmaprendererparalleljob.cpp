@@ -22,12 +22,10 @@
 
 #include <QtConcurrentMap>
 
-#define LABELING_V2
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
     , mStatus( Idle )
-    , mLabelingEngine( nullptr )
     , mLabelingEngineV2( nullptr )
 {
 }
@@ -38,9 +36,6 @@ QgsMapRendererParallelJob::~QgsMapRendererParallelJob()
   {
     cancel();
   }
-
-  delete mLabelingEngine;
-  mLabelingEngine = nullptr;
 
   delete mLabelingEngineV2;
   mLabelingEngineV2 = nullptr;
@@ -55,26 +50,17 @@ void QgsMapRendererParallelJob::start()
 
   mStatus = RenderingLayers;
 
-  delete mLabelingEngine;
-  mLabelingEngine = nullptr;
-
   delete mLabelingEngineV2;
   mLabelingEngineV2 = nullptr;
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-#ifdef LABELING_V2
     mLabelingEngineV2 = new QgsLabelingEngineV2();
     mLabelingEngineV2->readSettingsFromProject();
     mLabelingEngineV2->setMapSettings( mSettings );
-#else
-    mLabelingEngine = new QgsPalLabeling;
-    mLabelingEngine->loadEngineSettings();
-    mLabelingEngine->init( mSettings );
-#endif
   }
 
-  mLayerJobs = prepareJobs( nullptr, mLabelingEngine, mLabelingEngineV2 );
+  mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2 );
   // prepareJobs calls mapLayer->createMapRenderer may involve cloning a RasterDataProvider,
   // whose constructor may need to download some data (i.e. WMS, AMS) and doing so runs a
   // QEventLoop waiting for the network request to complete. If unluckily someone calls
@@ -171,9 +157,7 @@ bool QgsMapRendererParallelJob::isActive() const
 
 QgsLabelingResults* QgsMapRendererParallelJob::takeLabelingResults()
 {
-  if ( mLabelingEngine )
-    return mLabelingEngine->takeResults();
-  else if ( mLabelingEngineV2 )
+  if ( mLabelingEngineV2 )
     return mLabelingEngineV2->takeResults();
   else
     return nullptr;
@@ -269,7 +253,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* s
 
   try
   {
-    drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngine, self->mLabelingEngineV2, &painter );
+    drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngineV2, &painter );
   }
   catch ( QgsException & e )
   {

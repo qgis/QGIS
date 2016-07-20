@@ -36,8 +36,6 @@
 #include "qgsexpression.h"
 #include "qgsvisibilitypresetcollection.h"
 
-#include "qgslabel.h"
-#include "qgslabelattributes.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 
 #include <QGraphicsScene>

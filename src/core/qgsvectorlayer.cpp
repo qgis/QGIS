@@ -50,7 +50,6 @@
 #include "qgsfield.h"
 #include "qgsgeometrycache.h"
 #include "qgsgeometry.h"
-#include "qgslabel.h"
 #include "qgslegacyhelpers.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
@@ -132,8 +131,6 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mEditFormConfig( new QgsEditFormConfig( this ) )
     , mWkbType( QGis::WKBUnknown )
     , mRendererV2( nullptr )
-    , mLabel( nullptr )
-    , mLabelOn( false )
     , mLabeling( new QgsVectorLayerSimpleLabeling )
     , mLabelFontNotFoundNotified( false )
     , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
@@ -186,7 +183,6 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mJoinBuffer;
   delete mExpressionFieldBuffer;
   delete mCache;
-  delete mLabel;  // old deprecated implementation
   delete mLabeling;
   delete mDiagramLayerSettings;
   delete mDiagramRenderer;
@@ -310,68 +306,6 @@ void QgsVectorLayer::setDisplayField( const QString& fldName )
   }
 }
 
-// NOTE this is a temporary method added by Tim to prevent label clipping
-// which was occurring when labeller was called in the main draw loop
-// This method will probably be removed again in the near future!
-void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
-{
-  if ( !hasGeometryType() )
-    return;
-
-  QgsDebugMsg( "Starting draw of labels: " + id() );
-
-  if ( mRendererV2 && mLabelOn && mLabel &&
-       mLabel->isInScaleRange( rendererContext.rendererScale() ) )
-  {
-    QgsAttributeList attributes;
-    Q_FOREACH ( const QString& attrName, mRendererV2->usedAttributes() )
-    {
-      int attrNum = fieldNameIndex( attrName );
-      attributes.append( attrNum );
-    }
-    // make sure the renderer is ready for classification ("symbolForFeature")
-    mRendererV2->startRender( rendererContext, fields() );
-
-    // Add fields required for labels
-    mLabel->addRequiredFields( attributes );
-
-    QgsDebugMsg( "Selecting features based on view extent" );
-
-    int featureCount = 0;
-
-    try
-    {
-      // select the records in the extent. The provider sets a spatial filter
-      // and sets up the selection set for retrieval
-      QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                            .setFilterRect( rendererContext.extent() )
-                                            .setSubsetOfAttributes( attributes ) );
-
-      QgsFeature fet;
-      while ( fit.nextFeature( fet ) )
-      {
-        if ( mRendererV2->willRenderFeature( fet, rendererContext ) )
-        {
-          bool sel = mSelectedFeatureIds.contains( fet.id() );
-          mLabel->renderLabel( rendererContext, fet, sel, nullptr );
-        }
-        featureCount++;
-      }
-    }
-    catch ( QgsCsException &e )
-    {
-      Q_UNUSED( e );
-      QgsDebugMsg( "Error projecting label locations" );
-    }
-
-    if ( mRendererV2 )
-    {
-      mRendererV2->stopRender( rendererContext );
-    }
-
-    QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
-  }
-}
 
 void QgsVectorLayer::reload()
 {
@@ -1497,26 +1431,6 @@ int QgsVectorLayer::addTopologicalPoints( const QgsPoint& p )
   return utils.addTopologicalPoints( p );
 }
 
-QgsLabel *QgsVectorLayer::label()
-{
-  return mLabel;
-}
-
-const QgsLabel *QgsVectorLayer::label() const
-{
-  return mLabel;
-}
-
-void QgsVectorLayer::enableLabels( bool on )
-{
-  mLabelOn = on;
-}
-
-bool QgsVectorLayer::hasLabelsEnabled() const
-{
-  return mLabelOn;
-}
-
 void QgsVectorLayer::setLabeling( QgsAbstractVectorLayerLabeling* labeling )
 {
   if ( mLabeling == labeling )
@@ -1815,10 +1729,6 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       mDataSource.chop( 10 );
   }
 
-  // label
-  mLabel = new QgsLabel( mDataProvider->fields() );
-  mLabelOn = false;
-
   connect( mDataProvider, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
   connect( mDataProvider, SIGNAL( dataChanged() ), this, SLOT( removeSelection() ) );
 
@@ -2030,14 +1940,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
       setLayerTransparency( e.text().toInt() );
     }
 
-    // use scale dependent visibility flag
     QDomElement e = node.toElement();
-    if ( mLabel )
-    {
-      mLabel->setScaleBasedVisibility( e.attribute( "scaleBasedLabelVisibilityFlag", "0" ) == "1" );
-      mLabel->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
-      mLabel->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
-    }
 
     // get the simplification drawing settings
     mSimplifyMethod.setSimplifyHints( static_cast< QgsVectorSimplifyMethod::SimplifyHints >( e.attribute( "simplifyDrawingHints", "1" ).toInt() ) );
@@ -2048,29 +1951,6 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
 
     //also restore custom properties (for labeling-ng)
     readCustomProperties( node, "labeling" );
-
-    // Test if labeling is on or off
-    QDomNode labelnode = node.namedItem( "label" );
-    QDomElement element = labelnode.toElement();
-    int hasLabelsEnabled = element.text().toInt();
-    Q_NOWARN_DEPRECATED_PUSH
-    if ( hasLabelsEnabled < 1 )
-    {
-      enableLabels( false );
-    }
-    else
-    {
-      enableLabels( true );
-    }
-    Q_NOWARN_DEPRECATED_POP
-
-    QDomNode labelattributesnode = node.namedItem( "labelattributes" );
-
-    if ( !labelattributesnode.isNull() && mLabel )
-    {
-      QgsDebugMsg( "calling readXML" );
-      mLabel->readXML( labelattributesnode );
-    }
 
     //diagram renderer and diagram layer settings
     delete mDiagramRenderer;
@@ -2188,14 +2068,6 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       node.appendChild( labelingElement );
     }
 
-    // use scale dependent visibility flag
-    if ( mLabel )
-    {
-      mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", mLabel->scaleBasedVisibility() ? 1 : 0 );
-      mapLayerNode.setAttribute( "minLabelScale", QString::number( mLabel->minScale() ) );
-      mapLayerNode.setAttribute( "maxLabelScale", QString::number( mLabel->maxScale() ) );
-    }
-
     // save the simplification drawing settings
     mapLayerNode.setAttribute( "simplifyDrawingHints", QString::number( mSimplifyMethod.simplifyHints() ) );
     mapLayerNode.setAttribute( "simplifyAlgorithm", QString::number( mSimplifyMethod.simplifyAlgorithm() ) );
@@ -2229,40 +2101,6 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     QDomText dFieldText = doc.createTextNode( displayField() );
     dField.appendChild( dFieldText );
     node.appendChild( dField );
-
-    // add label node
-    QDomElement labelElem = doc.createElement( "label" );
-    QDomText labelText = doc.createTextNode( "" );
-
-    Q_NOWARN_DEPRECATED_PUSH
-    if ( hasLabelsEnabled() )
-    {
-      labelText.setData( "1" );
-    }
-    else
-    {
-      labelText.setData( "0" );
-    }
-    Q_NOWARN_DEPRECATED_POP
-    labelElem.appendChild( labelText );
-
-    node.appendChild( labelElem );
-
-    // Now we get to do all that all over again for QgsLabel
-
-    if ( mLabel )
-    {
-      QString fieldname = mLabel->labelField( QgsLabel::Text );
-      if ( fieldname != "" )
-      {
-        dField  = doc.createElement( "labelfield" );
-        dFieldText = doc.createTextNode( fieldname );
-        dField.appendChild( dFieldText );
-        node.appendChild( dField );
-      }
-
-      mLabel->writeXML( node, doc );
-    }
 
     if ( mDiagramRenderer )
     {
