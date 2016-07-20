@@ -308,7 +308,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -338,7 +338,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>723</width>
-                <height>670</height>
+                <height>640</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -676,17 +676,6 @@
                      <widget class="QCheckBox" name="mLiveColorDialogsChkBx">
                       <property name="text">
                        <string>Use live-updating color chooser dialogs</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_32">
-                    <item>
-                     <widget class="QCheckBox" name="cbxCanvasRotation">
-                      <property name="text">
-                       <string>Canvas rotation support (restart required)</string>
                       </property>
                      </widget>
                     </item>
@@ -2623,8 +2612,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>147</width>
-                <height>240</height>
+                <width>617</width>
+                <height>607</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2770,8 +2759,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>528</width>
-                <height>327</height>
+                <width>617</width>
+                <height>607</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3544,8 +3533,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>514</width>
-                <height>571</height>
+                <width>617</width>
+                <height>607</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3813,7 +3802,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>570</width>
+                <width>601</width>
                 <height>668</height>
                </rect>
               </property>
@@ -4358,8 +4347,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>474</width>
-                <height>372</height>
+                <width>617</width>
+                <height>607</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4497,7 +4486,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>574</width>
+                <width>601</width>
                 <height>644</height>
                </rect>
               </property>
@@ -4743,8 +4732,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>305</width>
-                <height>226</height>
+                <width>617</width>
+                <height>607</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4852,7 +4841,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>542</width>
+                <width>601</width>
                 <height>737</height>
                </rect>
               </property>
@@ -5430,7 +5419,6 @@
   <tabstop>mCustomGroupBoxChkBx</tabstop>
   <tabstop>mNativeColorDialogsChkBx</tabstop>
   <tabstop>mLiveColorDialogsChkBx</tabstop>
-  <tabstop>cbxCanvasRotation</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>
   <tabstop>mProjectOnLaunchPushBtn</tabstop>

@@ -97,6 +97,12 @@ objects are implicitly shared, returning a copy helps simplify and make code mor
 only affects third party c++ providers, and does not affect PyQGIS scripts.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsMapCanvas QgsMapCanvas
+
+<ul>
+<li>rotationEnabled() and enableRotation() have been removed, since map rotation is now always supported</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsMapLayer QgsMapLayer
 
 <ul>

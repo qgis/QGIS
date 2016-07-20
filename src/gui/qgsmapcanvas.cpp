@@ -1021,9 +1021,6 @@ double QgsMapCanvas::rotation() const
 
 void QgsMapCanvas::setRotation( double degrees )
 {
-  if ( !rotationEnabled() )
-    return;
-
   double current = rotation();
 
   if ( degrees == current )
@@ -2196,16 +2193,6 @@ bool QgsMapCanvas::event( QEvent * e )
   return done;
 }
 #endif
-
-bool QgsMapCanvas::rotationEnabled()
-{
-  return QSettings().value( "/qgis/canvasRotation", true ).toBool();
-}
-
-void QgsMapCanvas::enableRotation( bool enable )
-{
-  QSettings().setValue( "/qgis/canvasRotation", enable );
-}
 
 void QgsMapCanvas::refreshAllLayers()
 {
