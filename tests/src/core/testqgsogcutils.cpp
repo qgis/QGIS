@@ -32,8 +32,11 @@ class TestQgsOgcUtils : public QObject
 
     void initTestCase()
     {
+#if QT_VERSION >= 0x050000
       // Needed on Qt 5 so that the serialization of XML is consistant among all executions
-      qputenv( "QT_HASH_SEED", "1" );
+      extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed;
+      qt_qhash_seed.store( 0 );
+#endif
 
       //
       // Runs once before any tests are run
