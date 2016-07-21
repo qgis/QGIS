@@ -89,3 +89,11 @@ void QgsFormAnnotationDialog::deleteItem()
   mItem = nullptr;
 }
 
+void QgsFormAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applySettingsToItem();
+  }
+}
+

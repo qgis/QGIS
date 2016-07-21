@@ -35,6 +35,7 @@ class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnn
     void applySettingsToItem();
     void on_mBrowseToolButton_clicked();
     void deleteItem();
+    void on_mButtonBox_clicked( QAbstractButton* button );
 };
 
 #endif // QgsHTMLAnnotationDialog_H

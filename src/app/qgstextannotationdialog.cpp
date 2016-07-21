@@ -58,6 +58,15 @@ QgsTextAnnotationDialog::~QgsTextAnnotationDialog()
   delete mTextDocument;
 }
 
+void QgsTextAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applyTextToItem();
+    mEmbeddedWidget->apply();
+  }
+}
+
 void QgsTextAnnotationDialog::showEvent( QShowEvent* )
 {
   backgroundColorChanged( mItem ? mItem->frameBackgroundColor() : Qt::white );

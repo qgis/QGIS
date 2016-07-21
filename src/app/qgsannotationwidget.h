@@ -44,7 +44,7 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
 
   private:
     QgsAnnotationItem* mItem;
-    QgsMarkerSymbolV2* mMarkerSymbol;
+    QScopedPointer< QgsMarkerSymbolV2 > mMarkerSymbol;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();
