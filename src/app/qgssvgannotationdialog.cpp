@@ -89,3 +89,11 @@ void QgsSvgAnnotationDialog::deleteItem()
   delete mItem;
   mItem = nullptr;
 }
+
+void QgsSvgAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applySettingsToItem();
+  }
+}

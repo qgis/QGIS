@@ -57,7 +57,7 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
     const QgsMarkerSymbolV2* symbol = mItem->markerSymbol();
     if ( symbol )
     {
-      mMarkerSymbol = symbol->clone();
+      mMarkerSymbol.reset( symbol->clone() );
       updateCenterIcon();
     }
 
@@ -67,7 +67,6 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
 
 QgsAnnotationWidget::~QgsAnnotationWidget()
 {
-  delete mMarkerSymbol;
 }
 
 void QgsAnnotationWidget::apply()
@@ -78,8 +77,7 @@ void QgsAnnotationWidget::apply()
     mItem->setFrameBorderWidth( mFrameWidthSpinBox->value() );
     mItem->setFrameColor( mFrameColorButton->color() );
     mItem->setFrameBackgroundColor( mBackgroundColorButton->color() );
-    mItem->setMarkerSymbol( mMarkerSymbol );
-    mMarkerSymbol = nullptr; //item takes ownership
+    mItem->setMarkerSymbol( mMarkerSymbol->clone() );
     mItem->update();
   }
 }
@@ -106,8 +104,7 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
   }
   else
   {
-    delete mMarkerSymbol;
-    mMarkerSymbol = markerSymbol;
+    mMarkerSymbol.reset( markerSymbol );
     updateCenterIcon();
   }
 }
@@ -128,7 +125,7 @@ void QgsAnnotationWidget::updateCenterIcon()
   {
     return;
   }
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol, mMapMarkerButton->iconSize() );
+  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol.data(), mMapMarkerButton->iconSize() );
   mMapMarkerButton->setIcon( icon );
 }
 

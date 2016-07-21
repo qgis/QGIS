@@ -34,6 +34,7 @@ class APP_EXPORT QgsSvgAnnotationDialog: public QDialog, private Ui::QgsFormAnno
     void on_mBrowseToolButton_clicked();
     void applySettingsToItem();
     void deleteItem();
+    void on_mButtonBox_clicked( QAbstractButton* button );
 
   private:
     QgsSvgAnnotationDialog(); //forbidden

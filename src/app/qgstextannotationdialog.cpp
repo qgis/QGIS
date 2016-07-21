@@ -56,6 +56,15 @@ QgsTextAnnotationDialog::~QgsTextAnnotationDialog()
   delete mTextDocument;
 }
 
+void QgsTextAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applyTextToItem();
+    mEmbeddedWidget->apply();
+  }
+}
+
 void QgsTextAnnotationDialog::applyTextToItem()
 {
   if ( mItem && mTextDocument )
