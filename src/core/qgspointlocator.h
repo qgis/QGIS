@@ -207,8 +207,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
+  protected slots:
     void destroyIndex();
-
   private slots:
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
