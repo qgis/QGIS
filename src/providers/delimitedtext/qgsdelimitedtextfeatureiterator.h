@@ -46,7 +46,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     int mYFieldIndex;
     int mWktFieldIndex;
     bool mWktHasPrefix;
-    QGis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
     QString mDecimalPoint;
     bool mXyDms;
     QList<int> attributeColumns;

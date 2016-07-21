@@ -7,7 +7,7 @@ class QgsContrastEnhancementFunction
 %End
 
   public:
-    QgsContrastEnhancementFunction( QGis::DataType, double, double );
+    QgsContrastEnhancementFunction( Qgis::DataType, double, double );
     virtual ~QgsContrastEnhancementFunction();
 
     /** \brief A customizable method that takes in a double and returns a int between 0 and 255 */

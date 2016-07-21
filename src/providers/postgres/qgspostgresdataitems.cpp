@@ -224,7 +224,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 
     if ( srcLayer->isValid() )
     {
-      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QGis::NoGeometry ? "geom" : QString() );
+      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != Qgis::NoGeometry ? "geom" : QString() );
       QgsDebugMsg( "URI " + uri.uri( false ) );
 
       if ( !toSchema.isNull() )
@@ -449,7 +449,7 @@ QString QgsPGLayerItem::createUri()
 
   QgsDataSourceURI uri( QgsPostgresConn::connUri( connItem->name() ).connectionInfo( false ) );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
-  uri.setWkbType( QGis::fromOldWkbType( mLayerProperty.types.at( 0 ) ) );
+  uri.setWkbType( Qgis::fromOldWkbType( mLayerProperty.types.at( 0 ) ) );
   if ( uri.newWkbType() != QgsWKBTypes::NoGeometry )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
   QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri( false ) ) );
@@ -502,7 +502,7 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
       continue;
 
     if ( !layerProperty.geometryColName.isNull() &&
-         ( layerProperty.types.value( 0, QGis::WKBUnknown ) == QGis::WKBUnknown ||
+         ( layerProperty.types.value( 0, Qgis::WKBUnknown ) == Qgis::WKBUnknown ||
            layerProperty.srids.value( 0, INT_MIN ) == INT_MIN ) )
     {
       if ( dontResolveType )
@@ -655,7 +655,7 @@ void QgsPGSchemaItem::renameSchema()
 QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
 {
   //QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
-  QGis::WkbType wkbType = layerProperty.types.at( 0 );
+  Qgis::WkbType wkbType = layerProperty.types.at( 0 );
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
   if ( !layerProperty.tableComment.isEmpty() )
   {

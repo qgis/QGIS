@@ -2018,7 +2018,7 @@ int QgsWmsServer::configureMapRender( const QPaintDevice* paintDevice ) const
     throw QgsMapServiceException( "InvalidParameterValue", "Invalid BBOX parameter" );
   }
 
-  QGis::UnitType mapUnits = QGis::Degrees;
+  Qgis::UnitType mapUnits = Qgis::Degrees;
 
   QString crs = mParameters.value( "CRS", mParameters.value( "SRS" ) );
 
@@ -2277,7 +2277,7 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
     if ( infoFormat == "application/vnd.ogc.gml" )
     {
-      bool withGeom = layer->wkbType() != QGis::WKBNoGeometry && addWktGeometry;
+      bool withGeom = layer->wkbType() != Qgis::WKBNoGeometry && addWktGeometry;
       int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
       QString typeName =  layer->name();
       if ( mConfigParser && mConfigParser->useLayerIds() )
@@ -3209,7 +3209,7 @@ QDomElement QgsWmsServer::createFeatureGML(
   expressionContext.setFeature( *feat );
 
   // always add bounding box info if feature contains geometry
-  if ( geom && geom->type() != QGis::UnknownGeometry &&  geom->type() != QGis::NoGeometry )
+  if ( geom && geom->type() != Qgis::UnknownGeometry &&  geom->type() != Qgis::NoGeometry )
   {
     QgsRectangle box = feat->constGeometry()->boundingBox();
     if ( transform.isValid() )
@@ -3387,7 +3387,7 @@ QgsRectangle QgsWmsServer::featureInfoSearchRect( QgsVectorLayer* ml, QgsMapRend
   }
 
   double mapUnitTolerance = 0.0;
-  if ( ml->geometryType() == QGis::Polygon )
+  if ( ml->geometryType() == Qgis::Polygon )
   {
     QMap<QString, QString>::const_iterator tolIt = mParameters.find( "FI_POLYGON_TOLERANCE" );
     if ( tolIt != mParameters.constEnd() )
@@ -3399,7 +3399,7 @@ QgsRectangle QgsWmsServer::featureInfoSearchRect( QgsVectorLayer* ml, QgsMapRend
       mapUnitTolerance = mr->extent().width() / 400.0;
     }
   }
-  else if ( ml->geometryType() == QGis::Line )
+  else if ( ml->geometryType() == Qgis::Line )
   {
     QMap<QString, QString>::const_iterator tolIt = mParameters.find( "FI_LINE_TOLERANCE" );
     if ( tolIt != mParameters.constEnd() )

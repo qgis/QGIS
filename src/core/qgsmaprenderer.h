@@ -246,8 +246,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Recalculate the map scale
     void updateScale();
 
-    QGis::UnitType mapUnits() const;
-    void setMapUnits( QGis::UnitType u );
+    Qgis::UnitType mapUnits() const;
+    void setMapUnits( Qgis::UnitType u );
 
     //! sets whether map image will be for overview
     void enableOverviewMode( bool isOverview = true ) { mOverview = isOverview; }

@@ -413,31 +413,31 @@ void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
           }
           else
           {
-            QGis::WkbType wkbType = layer->wkbType();
+            Qgis::WkbType wkbType = layer->wkbType();
             switch ( wkbType )
             {
-              case QGis::WKBPoint25D:
-              case QGis::WKBPoint:
+              case Qgis::WKBPoint25D:
+              case Qgis::WKBPoint:
                 geomElem.setAttribute( "type", "gml:PointPropertyType" );
                 break;
-              case QGis::WKBLineString25D:
-              case QGis::WKBLineString:
+              case Qgis::WKBLineString25D:
+              case Qgis::WKBLineString:
                 geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
                 break;
-              case QGis::WKBPolygon25D:
-              case QGis::WKBPolygon:
+              case Qgis::WKBPolygon25D:
+              case Qgis::WKBPolygon:
                 geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
                 break;
-              case QGis::WKBMultiPoint25D:
-              case QGis::WKBMultiPoint:
+              case Qgis::WKBMultiPoint25D:
+              case Qgis::WKBMultiPoint:
                 geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
                 break;
-              case QGis::WKBMultiLineString25D:
-              case QGis::WKBMultiLineString:
+              case Qgis::WKBMultiLineString25D:
+              case Qgis::WKBMultiLineString:
                 geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
                 break;
-              case QGis::WKBMultiPolygon25D:
-              case QGis::WKBMultiPolygon:
+              case Qgis::WKBMultiPolygon25D:
+              case Qgis::WKBMultiPolygon:
                 geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
                 break;
               default:

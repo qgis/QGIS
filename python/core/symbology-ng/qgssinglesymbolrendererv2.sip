@@ -38,7 +38,7 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     virtual QgsSingleSymbolRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, Qgis::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();

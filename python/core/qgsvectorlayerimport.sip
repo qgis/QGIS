@@ -70,7 +70,7 @@ class QProgressDialog;
     QgsVectorLayerImport( const QString &uri,
                           const QString &provider,
                           const QgsFields &fields,
-                          QGis::WkbType geometryType,
+                          Qgis::WkbType geometryType,
                           const QgsCoordinateReferenceSystem& crs,
                           bool overwrite = false,
                           const QMap<QString, QVariant> *options = nullptr,

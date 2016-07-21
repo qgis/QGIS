@@ -41,6 +41,12 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 </ul>
 
+\subsection qgis_api_break_3_0_Qgis Qgis
+
+<ul>
+<li>The QGis class was renamed to Qgis for capitalisation consistency with other class names</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsAuthConfigUriEdit QgsAuthConfigUriEdit
 
 <ul>

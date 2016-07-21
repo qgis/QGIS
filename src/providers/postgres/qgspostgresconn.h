@@ -68,7 +68,7 @@ struct QgsPostgresSchemaProperty
 struct QgsPostgresLayerProperty
 {
   // Postgres/PostGIS layer properties
-  QList<QGis::WkbType>          types;
+  QList<Qgis::WkbType>          types;
   QString                       schemaName;
   QString                       tableName;
   QString                       geometryColName;
@@ -120,7 +120,7 @@ struct QgsPostgresLayerProperty
   QString toString() const
   {
     QString typeString;
-    Q_FOREACH ( QGis::WkbType type, types )
+    Q_FOREACH ( Qgis::WkbType type, types )
     {
       if ( !typeString.isEmpty() )
         typeString += '|';
@@ -312,17 +312,17 @@ class QgsPostgresConn : public QObject
 
     static const int sGeomTypeSelectLimit;
 
-    static QString displayStringForWkbType( QGis::WkbType wkbType );
+    static QString displayStringForWkbType( Qgis::WkbType wkbType );
     static QString displayStringForGeomType( QgsPostgresGeometryColumnType geomType );
-    static QGis::WkbType wkbTypeFromPostgis( const QString& dbType );
+    static Qgis::WkbType wkbTypeFromPostgis( const QString& dbType );
 
-    static QString postgisWkbTypeName( QGis::WkbType wkbType );
-    static int postgisWkbTypeDim( QGis::WkbType wkbType );
-    static void postgisWkbType( QGis::WkbType wkbType, QString &geometryType, int &dim );
+    static QString postgisWkbTypeName( Qgis::WkbType wkbType );
+    static int postgisWkbTypeDim( Qgis::WkbType wkbType );
+    static void postgisWkbType( Qgis::WkbType wkbType, QString &geometryType, int &dim );
 
     static QString postgisTypeFilter( QString geomCol, QgsWKBTypes::Type wkbType, bool castToGeometry );
 
-    static QGis::WkbType wkbTypeFromGeomType( QGis::GeometryType geomType );
+    static Qgis::WkbType wkbTypeFromGeomType( Qgis::GeometryType geomType );
     static QgsWKBTypes::Type wkbTypeFromOgcWkbType( unsigned int ogcWkbType );
 
     static QStringList connectionList();

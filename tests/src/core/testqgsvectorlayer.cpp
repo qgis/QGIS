@@ -283,7 +283,7 @@ void TestQgsVectorLayer::QgsVectorLayersetRendererV2()
   TestSignalReceiver receiver;
   QObject::connect( vLayer, SIGNAL( rendererChanged() ),
                     &receiver, SLOT( onRendererChanged() ) );
-  QgsSingleSymbolRendererV2* symbolRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( QGis::Point ) );
+  QgsSingleSymbolRendererV2* symbolRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( Qgis::Point ) );
 
   QCOMPARE( receiver.rendererChanged, false );
   vLayer->setRendererV2( symbolRenderer );

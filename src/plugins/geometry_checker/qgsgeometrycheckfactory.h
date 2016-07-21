@@ -27,7 +27,7 @@ class QgsGeometryCheckFactory
   public:
     virtual ~QgsGeometryCheckFactory() {}
     virtual void restorePrevious( Ui::QgsGeometryCheckerSetupTab& /*ui*/ ) const = 0;
-    virtual bool checkApplicability( Ui::QgsGeometryCheckerSetupTab& /*ui*/, QGis::GeometryType /*geomType*/ ) const = 0;
+    virtual bool checkApplicability( Ui::QgsGeometryCheckerSetupTab& /*ui*/, Qgis::GeometryType /*geomType*/ ) const = 0;
     virtual QgsGeometryCheck* createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const = 0;
 
   protected:
@@ -38,7 +38,7 @@ template<class T>
 class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
 {
     void restorePrevious( Ui::QgsGeometryCheckerSetupTab& /*ui*/ ) const override;
-    bool checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const override;
+    bool checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, Qgis::GeometryType geomType ) const override;
     QgsGeometryCheck* createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const override;
 };
 

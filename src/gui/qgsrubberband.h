@@ -67,7 +67,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
      *  @param geometryType Defines how the data should be drawn onto the screen. (Use QGis::Line, QGis::Polygon or QGis::Point)
      */
-    QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geometryType = QGis::Line );
+    QgsRubberBand( QgsMapCanvas* mapCanvas, Qgis::GeometryType geometryType = Qgis::Line );
     /**
      * Creates a new RubberBand.
      *  @deprecated Use the constructor which takes QGis::GeometryType as second argument instead
@@ -129,7 +129,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Sets the representation type according to geometryType.
      *  @param geometryType Defines how the data should be drawn onto the screen. (Use QGis::Line, QGis::Polygon or QGis::Point)
      */
-    void reset( QGis::GeometryType geometryType = QGis::Line );
+    void reset( Qgis::GeometryType geometryType = Qgis::Line );
 
     /**
      * @deprecated Use the reset method which takes QGis::GeometryType as second argument instead
@@ -272,7 +272,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Nested lists used for multitypes
      */
     QList< QList <QgsPoint> > mPoints;
-    QGis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
     double mTranslationOffsetX;
     double mTranslationOffsetY;
 

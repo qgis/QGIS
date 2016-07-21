@@ -613,8 +613,8 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
     QString valueString;
     switch ( provider->sourceDataType( 1 ) )
     {
-      case QGis::Float32:
-      case QGis::Float64:
+      case Qgis::Float32:
+      case Qgis::Float64:
         lineEdit->setValidator( new QDoubleValidator( nullptr ) );
         if ( !qIsNaN( value ) )
         {

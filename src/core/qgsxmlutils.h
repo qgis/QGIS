@@ -31,12 +31,12 @@ class CORE_EXPORT QgsXmlUtils
 
     /* reading */
 
-    static QGis::UnitType readMapUnits( const QDomElement& element );
+    static Qgis::UnitType readMapUnits( const QDomElement& element );
     static QgsRectangle readRectangle( const QDomElement& element );
 
     /* writing */
 
-    static QDomElement writeMapUnits( QGis::UnitType units, QDomDocument& doc );
+    static QDomElement writeMapUnits( Qgis::UnitType units, QDomDocument& doc );
     static QDomElement writeRectangle( const QgsRectangle& rect, QDomDocument& doc );
 };
 

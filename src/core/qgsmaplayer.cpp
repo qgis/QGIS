@@ -925,7 +925,7 @@ void QgsMapLayer::connectNotify( const char * signal )
 
 bool QgsMapLayer::isInScaleRange( double scale ) const
 {
-  return !mScaleBasedVisibility || ( mMinScale * QGis::SCALE_PRECISION < scale && scale < mMaxScale );
+  return !mScaleBasedVisibility || ( mMinScale * Qgis::SCALE_PRECISION < scale && scale < mMaxScale );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
@@ -1180,7 +1180,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMe
 
   // get style file version string, if any
   QgsProjectVersion fileVersion( myRoot.attribute( "version" ) );
-  QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
+  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
 
   if ( thisVersion > fileVersion )
   {
@@ -1227,7 +1227,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
   QDomDocument myDocument( documentType );
 
   QDomElement myRootNode = myDocument.createElement( "qgis" );
-  myRootNode.setAttribute( "version", QGis::QGIS_VERSION );
+  myRootNode.setAttribute( "version", Qgis::QGIS_VERSION );
   myDocument.appendChild( myRootNode );
 
   myRootNode.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );

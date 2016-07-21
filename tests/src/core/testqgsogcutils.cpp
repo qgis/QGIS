@@ -73,24 +73,24 @@ void TestQgsOgcUtils::testGeometryFromGML()
   // Test GML2
   QSharedPointer<QgsGeometry> geom( QgsOgcUtils::geometryFromGML( "<Point><coordinates>123,456</coordinates></Point>" ) );
   QVERIFY( geom );
-  QVERIFY( geom->wkbType() == QGis::WKBPoint );
+  QVERIFY( geom->wkbType() == Qgis::WKBPoint );
   QVERIFY( geom->asPoint() == QgsPoint( 123, 456 ) );
   geom.clear();
 
   QSharedPointer<QgsGeometry> geomBox( QgsOgcUtils::geometryFromGML( "<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>" ) );
   QVERIFY( geomBox );
-  QVERIFY( geomBox->wkbType() == QGis::WKBPolygon );
+  QVERIFY( geomBox->wkbType() == Qgis::WKBPolygon );
 
 
   // Test GML3
   geom = QSharedPointer<QgsGeometry>( QgsOgcUtils::geometryFromGML( "<Point><pos>123 456</pos></Point>" ) );
   QVERIFY( geom );
-  QVERIFY( geom->wkbType() == QGis::WKBPoint );
+  QVERIFY( geom->wkbType() == Qgis::WKBPoint );
   QVERIFY( geom->asPoint() == QgsPoint( 123, 456 ) );
 
   geomBox = QSharedPointer<QgsGeometry>( QgsOgcUtils::geometryFromGML( "<gml:Envelope srsName=\"foo\"><gml:lowerCorner>135.2239 34.4879</gml:lowerCorner><gml:upperCorner>135.8578 34.8471</gml:upperCorner></gml:Envelope>" ) );
   QVERIFY( geomBox );
-  QVERIFY( geomBox->wkbType() == QGis::WKBPolygon );
+  QVERIFY( geomBox->wkbType() == Qgis::WKBPolygon );
 }
 
 void TestQgsOgcUtils::testGeometryToGML()

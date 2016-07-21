@@ -74,19 +74,19 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   if ( !hasTransparency )
   {
     // Nothing to do, just retype if necessary
-    inputBlock->convert( QGis::ARGB32_Premultiplied );
+    inputBlock->convert( Qgis::ARGB32_Premultiplied );
     delete outputBlock;
     return inputBlock;
   }
 
-  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
     return outputBlock;
   }
 
   // make sure input is also premultiplied!
-  inputBlock->convert( QGis::ARGB32_Premultiplied );
+  inputBlock->convert( Qgis::ARGB32_Premultiplied );
 
   QRgb* inputBits = ( QRgb* )inputBlock->bits();
   QRgb* outputBits = ( QRgb* )outputBlock->bits();
@@ -133,8 +133,8 @@ bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface* input )
     return true;
   }
 
-  if ( input->dataType( 1 ) == QGis::ARGB32 ||
-       input->dataType( 1 ) == QGis::ARGB32_Premultiplied )
+  if ( input->dataType( 1 ) == Qgis::ARGB32 ||
+       input->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
   {
     mInput = input;
     return true;

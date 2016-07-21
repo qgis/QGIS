@@ -513,24 +513,24 @@ int QgsGrassRasterProvider::capabilities() const
   return capability;
 }
 
-QGis::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
+Qgis::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
 {
   return sourceDataType( bandNo );
 }
 
-QGis::DataType QgsGrassRasterProvider::sourceDataType( int bandNo ) const
+Qgis::DataType QgsGrassRasterProvider::sourceDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
   switch ( mGrassDataType )
   {
     case CELL_TYPE:
-      return QGis::Int32;
+      return Qgis::Int32;
     case FCELL_TYPE:
-      return QGis::Float32;
+      return Qgis::Float32;
     case DCELL_TYPE:
-      return QGis::Float64;
+      return Qgis::Float64;
   }
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
 int QgsGrassRasterProvider::bandCount() const

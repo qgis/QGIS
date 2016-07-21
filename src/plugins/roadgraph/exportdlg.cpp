@@ -58,7 +58,7 @@ RgExportDlg::RgExportDlg( QWidget* parent, Qt::WindowFlags fl )
     QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
     if ( !vl )
       continue;
-    if ( vl->geometryType() != QGis::Line )
+    if ( vl->geometryType() != Qgis::Line )
       continue;
     mcbLayers->insertItem( 0, vl->name(), QVariant( vl->id() ) );
   }

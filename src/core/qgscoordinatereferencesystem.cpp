@@ -852,7 +852,7 @@ bool QgsCoordinateReferenceSystem::geographicFlag() const
   return d->mIsGeographic;
 }
 
-QGis::UnitType QgsCoordinateReferenceSystem::mapUnits() const
+Qgis::UnitType QgsCoordinateReferenceSystem::mapUnits() const
 {
   return d->mMapUnits;
 }
@@ -938,7 +938,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   d.detach();
   if ( !d->mIsValid )
   {
-    d->mMapUnits = QGis::UnknownUnit;
+    d->mMapUnits = Qgis::UnknownUnit;
     return;
   }
 
@@ -967,13 +967,13 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     QgsDebugMsg( "Projection has linear units of " + unit );
 
     if ( qgsDoubleNear( toMeter, 1.0 ) ) //Unit name for meters would be "metre"
-      d->mMapUnits = QGis::Meters;
+      d->mMapUnits = Qgis::Meters;
     else if ( unit == "Foot" )
-      d->mMapUnits = QGis::Feet;
+      d->mMapUnits = Qgis::Feet;
     else
     {
       QgsDebugMsg( "Unsupported map units of " + unit );
-      d->mMapUnits = QGis::UnknownUnit;
+      d->mMapUnits = Qgis::UnknownUnit;
     }
   }
   else
@@ -981,11 +981,11 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     OSRGetAngularUnits( d->mCRS, &unitName );
     QString unit( unitName );
     if ( unit == "degree" )
-      d->mMapUnits = QGis::Degrees;
+      d->mMapUnits = Qgis::Degrees;
     else
     {
       QgsDebugMsg( "Unsupported map units of " + unit );
-      d->mMapUnits = QGis::UnknownUnit;
+      d->mMapUnits = Qgis::UnknownUnit;
     }
     QgsDebugMsgLevel( "Projection has angular units of " + unit, 3 );
   }
@@ -1400,15 +1400,15 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "* Proj4 : " + toProj4() );
   QgsDebugMsg( "* WKT   : " + toWkt() );
   QgsDebugMsg( "* Desc. : " + d->mDescription );
-  if ( mapUnits() == QGis::Meters )
+  if ( mapUnits() == Qgis::Meters )
   {
     QgsDebugMsg( "* Units : meters" );
   }
-  else if ( mapUnits() == QGis::Feet )
+  else if ( mapUnits() == Qgis::Feet )
   {
     QgsDebugMsg( "* Units : feet" );
   }
-  else if ( mapUnits() == QGis::Degrees )
+  else if ( mapUnits() == Qgis::Degrees )
   {
     QgsDebugMsg( "* Units : degrees" );
   }

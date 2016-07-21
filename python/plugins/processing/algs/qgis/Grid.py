@@ -29,7 +29,7 @@ import os
 import math
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, QGis, QgsField, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, Qgis, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterExtent
@@ -102,9 +102,9 @@ class Grid(GeoAlgorithm):
 
         #if self.types[idx].find(self.tr('polygon')) >= 0:
         if idx != 0:
-            geometryType = QGis.WKBPolygon
+            geometryType = Qgis.WKBPolygon
         else:
-            geometryType = QGis.WKBLineString
+            geometryType = Qgis.WKBLineString
 
         fields = [QgsField('left', QVariant.Double, '', 24, 16),
                   QgsField('top', QVariant.Double, '', 24, 16),

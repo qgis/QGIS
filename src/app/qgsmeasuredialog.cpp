@@ -109,7 +109,7 @@ void QgsMeasureDialog::unitsChanged( int index )
   if ( mMeasureArea )
     mAreaUnits = static_cast< QgsUnitTypes::AreaUnit >( mUnitsCombo->itemData( index ).toInt() );
   else
-    mDistanceUnits = static_cast< QGis::UnitType >( mUnitsCombo->itemData( index ).toInt() );
+    mDistanceUnits = static_cast< Qgis::UnitType >( mUnitsCombo->itemData( index ).toInt() );
   mTable->clear();
   mTotal = 0.;
   updateUi();
@@ -275,7 +275,7 @@ void QgsMeasureDialog::updateUi()
 
   if ( mMeasureArea )
   {
-    if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QGis::Degrees
+    if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == Qgis::Degrees
          && ( mAreaUnits == QgsUnitTypes::SquareDegrees || mAreaUnits == QgsUnitTypes::UnknownAreaUnit ) )
     {
       //both source and destination units are degrees
@@ -349,8 +349,8 @@ void QgsMeasureDialog::updateUi()
   }
   else
   {
-    if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QGis::Degrees
-         && mDistanceUnits == QGis::Degrees )
+    if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == Qgis::Degrees
+         && mDistanceUnits == Qgis::Degrees )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using cartesian calculations in degrees." ).arg(
@@ -360,7 +360,7 @@ void QgsMeasureDialog::updateUi()
     }
     else
     {
-      QGis::UnitType resultUnit = QGis::UnknownUnit;
+      Qgis::UnitType resultUnit = Qgis::UnknownUnit;
       if ( ! mTool->canvas()->hasCrsTransformEnabled() )
       {
         resultUnit =  mTool->canvas()->mapSettings().destinationCrs().mapUnits();
@@ -374,7 +374,7 @@ void QgsMeasureDialog::updateUi()
       {
         if ( mDa.willUseEllipsoid() )
         {
-          resultUnit = QGis::Meters;
+          resultUnit = Qgis::Meters;
           toolTip += "<br> * " + tr( "Project CRS transformation is turned on and ellipsoidal calculation is selected." ) + ' ';
           toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the distance is calculated in %2." ).arg( mDa.ellipsoid(),
                      QgsUnitTypes::toString( resultUnit ) );
@@ -393,13 +393,13 @@ void QgsMeasureDialog::updateUi()
            QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Standard )
       {
         toolTip += "<br> * Distance is roughly converted to meters by using scale at equator (1 degree = 111319.49 meters).";
-        resultUnit = QGis::Meters;
+        resultUnit = Qgis::Meters;
       }
       else if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Standard &&
                 QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Geographic )
       {
         toolTip += "<br> * Distance is roughly converted to degrees by using scale at equator (1 degree = 111319.49 meters).";
-        resultUnit = QGis::Degrees;
+        resultUnit = Qgis::Degrees;
       }
 
       if ( resultUnit != mDistanceUnits )
@@ -505,17 +505,17 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
   }
   else
   {
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Meters ), QGis::Meters );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Kilometers ), QGis::Kilometers );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Feet ), QGis::Feet );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Yards ), QGis::Yards );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Miles ), QGis::Miles );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Degrees ), QGis::Degrees );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::NauticalMiles ), QGis::NauticalMiles );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::Meters ), Qgis::Meters );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::Kilometers ), Qgis::Kilometers );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::Feet ), Qgis::Feet );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::Yards ), Qgis::Yards );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::Miles ), Qgis::Miles );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::Degrees ), Qgis::Degrees );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::NauticalMiles ), Qgis::NauticalMiles );
   }
 }
 
-double QgsMeasureDialog::convertLength( double length, QGis::UnitType toUnit ) const
+double QgsMeasureDialog::convertLength( double length, Qgis::UnitType toUnit ) const
 {
   return mDa.convertLengthMeasurement( length, toUnit );
 }

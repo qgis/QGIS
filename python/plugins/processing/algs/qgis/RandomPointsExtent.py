@@ -30,7 +30,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QGis, QgsGeometry, QgsRectangle, QgsFeature, QgsFields,
+from qgis.core import (Qgis, QgsGeometry, QgsRectangle, QgsFeature, QgsFields,
                        QgsField, QgsSpatialIndex, QgsPoint)
 from qgis.utils import iface
 
@@ -82,7 +82,7 @@ class RandomPointsExtent(GeoAlgorithm):
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
         mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QGis.WKBPoint, mapCRS)
+            fields, Qgis.WKBPoint, mapCRS)
 
         nPoints = 0
         nIterations = 0

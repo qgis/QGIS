@@ -18,10 +18,10 @@
 #include "qgsvectorlayer.h"
 
 QgsVectorSimplifyMethod::QgsVectorSimplifyMethod()
-    : mSimplifyHints( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorSimplifyMethod::FullSimplification : QgsVectorSimplifyMethod::GeometrySimplification )
+    : mSimplifyHints( Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorSimplifyMethod::FullSimplification : QgsVectorSimplifyMethod::GeometrySimplification )
     , mSimplifyAlgorithm( QgsVectorSimplifyMethod::Distance )
     , mTolerance( 1 )
-    , mThreshold( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
+    , mThreshold( Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD )
     , mLocalOptimization( true )
     , mMaximumScale( 1 )
 {

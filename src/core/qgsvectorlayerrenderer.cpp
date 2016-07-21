@@ -121,7 +121,7 @@ QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
 
 bool QgsVectorLayerRenderer::render()
 {
-  if ( mGeometryType == QGis::NoGeometry || mGeometryType == QGis::UnknownGeometry )
+  if ( mGeometryType == Qgis::NoGeometry || mGeometryType == Qgis::UnknownGeometry )
     return true;
 
   if ( !mRendererV2 )
@@ -344,7 +344,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
           QScopedPointer<QgsGeometry> obstacleGeometry;
           QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
 
-          if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
+          if ( !symbols.isEmpty() && fet.constGeometry()->type() == Qgis::Point )
           {
             obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
           }
@@ -446,7 +446,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       QScopedPointer<QgsGeometry> obstacleGeometry;
       QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
 
-      if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
+      if ( !symbols.isEmpty() && fet.constGeometry()->type() == Qgis::Point )
       {
         obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
       }

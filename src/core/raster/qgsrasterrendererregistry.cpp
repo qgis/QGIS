@@ -169,7 +169,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       int grayBand = 1;
       renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
 
-      QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QGis::DataType )(
+      QgsContrastEnhancement* ce = new QgsContrastEnhancement(( Qgis::DataType )(
             provider->dataType( grayBand ) ) );
 
 // Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).

@@ -61,7 +61,7 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
   }
 
   QgsProjectVersion fileVersion = getVersion( *doc );
-  QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
+  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
 
   if ( thisVersion != fileVersion )
   {

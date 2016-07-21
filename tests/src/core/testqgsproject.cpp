@@ -92,20 +92,20 @@ void TestQgsProject::testProjectUnits()
 
   //first set a default QGIS distance unit
   QSettings s;
-  s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Feet ) );
+  s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( Qgis::Feet ) );
 
   QgsProject* prj = QgsProject::instance();
   // new project should inherit QGIS default distance unit
   prj->clear();
-  QCOMPARE( prj->distanceUnits(), QGis::Feet );
+  QCOMPARE( prj->distanceUnits(), Qgis::Feet );
 
   //changing default QGIS unit should not affect existing project
-  s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::NauticalMiles ) );
-  QCOMPARE( prj->distanceUnits(), QGis::Feet );
+  s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( Qgis::NauticalMiles ) );
+  QCOMPARE( prj->distanceUnits(), Qgis::Feet );
 
   //test setting new units for project
-  prj->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QGis::NauticalMiles ) );
-  QCOMPARE( prj->distanceUnits(), QGis::NauticalMiles );
+  prj->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( Qgis::NauticalMiles ) );
+  QCOMPARE( prj->distanceUnits(), Qgis::NauticalMiles );
 
   // AREA
 

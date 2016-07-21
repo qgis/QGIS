@@ -35,9 +35,9 @@
 #include <qgswkbtypes.h>
 
 /** \ingroup core
- * The QGis class provides global constants for use throughout the application.
+ * The Qgis class provides global constants for use throughout the application.
  */
-class CORE_EXPORT QGis
+class CORE_EXPORT Qgis
 {
   public:
     // Version constants
@@ -107,10 +107,10 @@ class CORE_EXPORT QGis
     static int wkbDimensions( WkbType type );
 
     //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
-    static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type );
+    static QgsWKBTypes::Type fromOldWkbType( Qgis::WkbType type );
 
     //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
-    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
+    static Qgis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType
     {
@@ -176,23 +176,23 @@ class CORE_EXPORT QGis
 
     //! Provides the canonical name of the type value
     //! @deprecated use QgsUnitTypes::encodeUnit() instead
-    Q_DECL_DEPRECATED static QString toLiteral( QGis::UnitType unit );
+    Q_DECL_DEPRECATED static QString toLiteral( Qgis::UnitType unit );
 
     //! Converts from the canonical name to the type value
     //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
-    Q_DECL_DEPRECATED static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+    Q_DECL_DEPRECATED static UnitType fromLiteral( const QString& literal, Qgis::UnitType defaultType = UnknownUnit );
 
     //! Provides translated version of the type value
     //! @deprecated use QgsUnitTypes::toString() instead
-    Q_DECL_DEPRECATED static QString tr( QGis::UnitType unit );
+    Q_DECL_DEPRECATED static QString tr( Qgis::UnitType unit );
 
     //! Provides type value from translated version
     //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
-    Q_DECL_DEPRECATED static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+    Q_DECL_DEPRECATED static UnitType fromTr( const QString& literal, Qgis::UnitType defaultType = UnknownUnit );
 
     //! Returns the conversion factor between the specified units
     //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
-    Q_DECL_DEPRECATED static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+    Q_DECL_DEPRECATED static double fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit );
 
     /** Converts a string to a double in a permissive way, eg allowing for incorrect
      * numbers of digits between thousand separators

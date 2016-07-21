@@ -247,19 +247,19 @@ void QgsGeometryValidator::run()
 
   switch ( mG.wkbType() )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBPoint:
+    case Qgis::WKBPoint25D:
+    case Qgis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint25D:
       break;
 
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
+    case Qgis::WKBLineString:
+    case Qgis::WKBLineString25D:
       validatePolyline( 0, mG.asPolyline() );
       break;
 
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString25D:
     {
       QgsMultiPolyline mp = mG.asMultiPolyline();
       for ( int i = 0; !mStop && i < mp.size(); i++ )
@@ -267,15 +267,15 @@ void QgsGeometryValidator::run()
     }
     break;
 
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
+    case Qgis::WKBPolygon:
+    case Qgis::WKBPolygon25D:
     {
       validatePolygon( 0, mG.asPolygon() );
     }
     break;
 
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon25D:
     {
       QgsMultiPolygon mp = mG.asMultiPolygon();
       for ( int i = 0; !mStop && i < mp.size(); i++ )
@@ -316,8 +316,8 @@ void QgsGeometryValidator::run()
     }
     break;
 
-    case QGis::WKBNoGeometry:
-    case QGis::WKBUnknown:
+    case Qgis::WKBNoGeometry:
+    case Qgis::WKBUnknown:
       QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
       emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mG.wkbType() ) ) );
       mErrorCount++;

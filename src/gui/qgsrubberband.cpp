@@ -27,7 +27,7 @@
   \brief The QgsRubberBand class provides a transparent overlay widget
   for tracking the mouse while drawing polylines or polygons.
 */
-QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geometryType )
+QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, Qgis::GeometryType geometryType )
     : QgsMapCanvasItem( mapCanvas )
     , mIconSize( 5 )
     , mIconType( ICON_CIRCLE )
@@ -51,7 +51,7 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
     , mTranslationOffsetX( 0.0 )
     , mTranslationOffsetY( 0.0 )
 {
-  reset( isPolygon ? QGis::Polygon : QGis::Line );
+  reset( isPolygon ? Qgis::Polygon : Qgis::Line );
   QColor color( Qt::lightGray );
   color.setAlpha( 63 );
   setColor( color );
@@ -64,7 +64,7 @@ QgsRubberBand::QgsRubberBand()
     : QgsMapCanvasItem( nullptr )
     , mIconSize( 5 )
     , mIconType( ICON_CIRCLE )
-    , mGeometryType( QGis::Polygon )
+    , mGeometryType( Qgis::Polygon )
     , mTranslationOffsetX( 0.0 )
     , mTranslationOffsetY( 0.0 )
 {
@@ -133,7 +133,7 @@ void QgsRubberBand::setBrushStyle( Qt::BrushStyle brushStyle )
 /*!
   Remove all points from the shape being created.
   */
-void QgsRubberBand::reset( QGis::GeometryType geometryType )
+void QgsRubberBand::reset( Qgis::GeometryType geometryType )
 {
   mPoints.clear();
   mGeometryType = geometryType;
@@ -144,7 +144,7 @@ void QgsRubberBand::reset( QGis::GeometryType geometryType )
 void QgsRubberBand::reset( bool isPolygon )
 {
   mPoints.clear();
-  mGeometryType = isPolygon ? QGis::Polygon : QGis::Line;
+  mGeometryType = isPolygon ? Qgis::Polygon : Qgis::Line;
   updateRect();
   update();
 }
@@ -306,8 +306,8 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
   switch ( geom->wkbType() )
   {
 
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
+    case Qgis::WKBPoint:
+    case Qgis::WKBPoint25D:
     {
       QgsPoint pt;
       if ( layer )
@@ -323,8 +323,8 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     }
     break;
 
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint25D:
     {
       QgsMultiPoint mpt = geom->asMultiPoint();
       for ( int i = 0; i < mpt.size(); ++i, ++idx )
@@ -344,8 +344,8 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     }
     break;
 
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
+    case Qgis::WKBLineString:
+    case Qgis::WKBLineString25D:
     {
       QgsPolyline line = geom->asPolyline();
       for ( int i = 0; i < line.count(); i++ )
@@ -362,8 +362,8 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     }
     break;
 
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString25D:
     {
 
       QgsMultiPolyline mline = geom->asMultiPolyline();
@@ -391,8 +391,8 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     }
     break;
 
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
+    case Qgis::WKBPolygon:
+    case Qgis::WKBPolygon25D:
     {
       QgsPolygon poly = geom->asPolygon();
       QgsPolyline line = poly[0];
@@ -410,8 +410,8 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     }
     break;
 
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon25D:
     {
 
       QgsMultiPolygon multipoly = geom->asMultiPolygon();
@@ -434,7 +434,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     }
     break;
 
-    case QGis::WKBUnknown:
+    case Qgis::WKBUnknown:
     default:
       return;
   }
@@ -457,7 +457,7 @@ void QgsRubberBand::setToCanvasRectangle( QRect rect )
   QgsPoint ul = transform->toMapCoordinates( rect.left(), rect.top() );
   QgsPoint ur = transform->toMapCoordinates( rect.right(), rect.top() );
 
-  reset( QGis::Polygon );
+  reset( Qgis::Polygon );
   addPoint( ll, false );
   addPoint( lr, false );
   addPoint( ur, false );
@@ -486,13 +486,13 @@ void QgsRubberBand::paint( QPainter* p )
 
       switch ( mGeometryType )
       {
-        case QGis::Polygon:
+        case Qgis::Polygon:
         {
           p->drawPolygon( pts );
         }
         break;
 
-        case QGis::Point:
+        case Qgis::Point:
         {
           Q_FOREACH ( QPointF pt, pts )
           {
@@ -535,7 +535,7 @@ void QgsRubberBand::paint( QPainter* p )
         }
         break;
 
-        case QGis::Line:
+        case Qgis::Line:
         default:
         {
           p->drawPolyline( pts );
@@ -648,7 +648,7 @@ QgsGeometry *QgsRubberBand::asGeometry()
 
   switch ( mGeometryType )
   {
-    case QGis::Polygon:
+    case Qgis::Polygon:
     {
       QgsPolygon polygon;
       QList< QList<QgsPoint> >::const_iterator it = mPoints.constBegin();
@@ -660,7 +660,7 @@ QgsGeometry *QgsRubberBand::asGeometry()
       break;
     }
 
-    case QGis::Point:
+    case Qgis::Point:
     {
       QgsMultiPoint multiPoint;
 
@@ -673,7 +673,7 @@ QgsGeometry *QgsRubberBand::asGeometry()
       break;
     }
 
-    case QGis::Line:
+    case Qgis::Line:
     default:
     {
       if ( !mPoints.isEmpty() )

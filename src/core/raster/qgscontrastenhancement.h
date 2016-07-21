@@ -50,7 +50,7 @@ class CORE_EXPORT QgsContrastEnhancement
       UserDefinedEnhancement
     };
 
-    QgsContrastEnhancement( QGis::DataType theDatatype = QGis::Byte );
+    QgsContrastEnhancement( Qgis::DataType theDatatype = Qgis::Byte );
     QgsContrastEnhancement( const QgsContrastEnhancement& ce );
     ~QgsContrastEnhancement();
 
@@ -60,10 +60,10 @@ class CORE_EXPORT QgsContrastEnhancement
      *
      */
     /** \brief Helper function that returns the maximum possible value for a GDAL data type */
-    static double maximumValuePossible( QGis::DataType );
+    static double maximumValuePossible( Qgis::DataType );
 
     /** \brief Helper function that returns the minimum possible value for a GDAL data type */
-    static double minimumValuePossible( QGis::DataType );
+    static double minimumValuePossible( Qgis::DataType );
 
     /*
      *
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsContrastEnhancement
     double mMaximumValue;
 
     /** \brief Data type of the band */
-    QGis::DataType mRasterDataType;
+    Qgis::DataType mRasterDataType;
 
     /** \brief Maximum range of values for a given data type */
     double mRasterDataTypeRange;

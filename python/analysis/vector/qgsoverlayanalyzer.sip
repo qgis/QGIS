@@ -1,6 +1,6 @@
 
 /** \ingroup analysis
- * The QGis class provides vector overlay analysis functions
+ * The Qgis class provides vector overlay analysis functions
  */
 
 class QgsOverlayAnalyzer

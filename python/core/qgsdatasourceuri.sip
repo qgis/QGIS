@@ -165,14 +165,14 @@ class QgsDataSourceURI
 
     /** The (old) wkb type.
         @deprecated Will return QgsWKBTypes::Type in 3.0. Prefer newWkbType() in the meantime */
-    QGis::WkbType wkbType() const /Deprecated/;
+    Qgis::WkbType wkbType() const /Deprecated/;
 
     /** The wkb type.
         @note Will be removed in 3.0 */
     QgsWKBTypes::Type newWkbType() const;
 
     //! @deprecated See setWkbType( QgsWKBTypes::Type )
-    void setWkbType( QGis::WkbType type ) /Deprecated/;
+    void setWkbType( Qgis::WkbType type ) /Deprecated/;
 
     //! Sets the wkb type
     void setWkbType( QgsWKBTypes::Type type );

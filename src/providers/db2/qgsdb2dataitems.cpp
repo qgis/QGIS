@@ -357,7 +357,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
       }
 
       QString uri = connInfo() + " table=" + tableName;
-      if ( srcLayer->geometryType() != QGis::NoGeometry )
+      if ( srcLayer->geometryType() != Qgis::NoGeometry )
         uri += " (geom)";
 
       QgsVectorLayerImport::ImportError err;
@@ -502,7 +502,7 @@ QString QgsDb2LayerItem::createUri()
   QgsDataSourceURI uri = QgsDataSourceURI( connItem->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, mLayerProperty.pkColumnName );
   uri.setSrid( mLayerProperty.srid );
-  uri.setWkbType( QGis::fromOldWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) ) );
+  uri.setWkbType( Qgis::fromOldWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) ) );
   uri.setParam( "extents", mLayerProperty.extents );
   QString uriString = uri.uri( false );
   QgsDebugMsg( "Layer URI: " + uriString );
@@ -558,7 +558,7 @@ bool QgsDb2SchemaItem::handleDrop( const QMimeData* data, Qt::DropAction )
 
 QgsDb2LayerItem* QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, bool refresh )
 {
-  QGis::WkbType wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
+  Qgis::WkbType wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
   QString tip = tr( "DB2 *** %1 as %2 in %3" ).arg( layerProperty.geometryColName,
                 QgsDb2TableModel::displayStringForWkbType( wkbType ),
                 layerProperty.srid );
@@ -566,22 +566,22 @@ QgsDb2LayerItem* QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, 
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBPoint:
+    case Qgis::WKBPoint25D:
+    case Qgis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBLineString:
+    case Qgis::WKBLineString25D:
+    case Qgis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBPolygon:
+    case Qgis::WKBPolygon25D:
+    case Qgis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:

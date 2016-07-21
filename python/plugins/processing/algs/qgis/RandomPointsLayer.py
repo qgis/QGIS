@@ -30,7 +30,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QGis, QgsGeometry, QgsFields, QgsField, QgsSpatialIndex,
+from qgis.core import (Qgis, QgsGeometry, QgsFields, QgsField, QgsSpatialIndex,
                        QgsPoint, QgsFeature, QgsFeatureRequest)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -77,7 +77,7 @@ class RandomPointsLayer(GeoAlgorithm):
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QGis.WKBPoint, layer.dataProvider().crs())
+            fields, Qgis.WKBPoint, layer.dataProvider().crs())
 
         nPoints = 0
         nIterations = 0

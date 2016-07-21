@@ -133,7 +133,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
   QgsFeatureRequest r;
-  if ( mLayer->geometryType() != QGis::NoGeometry &&
+  if ( mLayer->geometryType() != Qgis::NoGeometry &&
        settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
@@ -141,7 +141,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     r.setFilterRect( extent );
 
     QgsGeometry *g = QgsGeometry::fromRect( extent );
-    mRubberBand = new QgsRubberBand( mc, QGis::Polygon );
+    mRubberBand = new QgsRubberBand( mc, Qgis::Polygon );
     mRubberBand->setToGeometry( g, theLayer );
     delete g;
 

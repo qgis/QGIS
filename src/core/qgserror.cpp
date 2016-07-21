@@ -58,7 +58,7 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
 #if defined(QGISDEBUG) && defined(QGS_GIT_REMOTE_URL)
   // TODO: verify if we are not ahead to origin (remote hash does not exist)
   //       and there are no local not commited changes
-  QString hash = QString( QGis::QGIS_DEV_VERSION );
+  QString hash = QString( Qgis::QGIS_DEV_VERSION );
   QString remote = QString( QGS_GIT_REMOTE_URL );
   if ( !hash.isEmpty() && !remote.isEmpty() && remote.contains( "github.com" ) )
   {

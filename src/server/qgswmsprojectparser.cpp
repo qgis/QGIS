@@ -1335,7 +1335,7 @@ void QgsWmsProjectParser::addLayers( QDomDocument &doc,
         QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
         if ( vLayer )
         {
-          if ( vLayer->wkbType() == QGis::WKBNoGeometry )
+          if ( vLayer->wkbType() == Qgis::WKBNoGeometry )
           {
             geometryLayer = false;
           }

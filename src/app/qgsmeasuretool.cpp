@@ -39,8 +39,8 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
 {
   mMeasureArea = measureArea;
 
-  mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QGis::Polygon : QGis::Line );
-  mRubberBandPoints = new QgsRubberBand( canvas, QGis::Point );
+  mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? Qgis::Polygon : Qgis::Line );
+  mRubberBandPoints = new QgsRubberBand( canvas, Qgis::Point );
 
   QPixmap myCrossHairQPixmap = QPixmap(( const char ** ) cross_hair_cursor );
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
@@ -109,8 +109,8 @@ void QgsMeasureTool::restart()
 {
   mPoints.clear();
 
-  mRubberBand->reset( mMeasureArea ? QGis::Polygon : QGis::Line );
-  mRubberBandPoints->reset( QGis::Point );
+  mRubberBand->reset( mMeasureArea ? Qgis::Polygon : Qgis::Line );
+  mRubberBandPoints->reset( Qgis::Point );
 
   mDone = true;
   mWrongProjectProjection = false;

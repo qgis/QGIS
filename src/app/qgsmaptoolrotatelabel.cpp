@@ -196,7 +196,7 @@ QgsRubberBand* QgsMapToolRotateLabel::createRotationPreviewBox()
     return nullptr;
   }
 
-  mRotationPreviewBox = new QgsRubberBand( mCanvas, QGis::Line );
+  mRotationPreviewBox = new QgsRubberBand( mCanvas, Qgis::Line );
   mRotationPreviewBox->setColor( QColor( 0, 0, 255, 65 ) );
   mRotationPreviewBox->setWidth( 3 );
   setRotationPreviewBox( mCurrentRotation - mStartRotation );

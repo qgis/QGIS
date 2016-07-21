@@ -157,7 +157,7 @@ void QgsMapToolAddCircularString::activate()
           mPoints.append( QgsPointV2( mapPoint ) );
           if ( !mTempRubberBand )
           {
-            mTempRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line, true );
+            mTempRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? Qgis::Polygon : Qgis::Line, true );
             mTempRubberBand->show();
           }
           QgsCircularStringV2* c = new QgsCircularStringV2();
@@ -179,7 +179,7 @@ void QgsMapToolAddCircularString::createCenterPointRubberBand()
     return;
   }
 
-  mCenterPointRubberBand = createGeometryRubberBand( QGis::Polygon );
+  mCenterPointRubberBand = createGeometryRubberBand( Qgis::Polygon );
   mCenterPointRubberBand->show();
 
   if ( mTempRubberBand )

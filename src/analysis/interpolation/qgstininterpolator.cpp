@@ -206,13 +206,13 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   //maybe a structure or break line
   Line3D* line = nullptr;
 
-  QGis::WkbType wkbType = g->wkbType();
+  Qgis::WkbType wkbType = g->wkbType();
   switch ( wkbType )
   {
-    case QGis::WKBPoint25D:
+    case Qgis::WKBPoint25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBPoint:
+    case Qgis::WKBPoint:
     {
       currentWkbPtr >> x >> y;
       if ( zCoord && hasZValue )
@@ -230,10 +230,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBMultiPoint25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint:
     {
       int nPoints;
       currentWkbPtr >> nPoints;
@@ -252,10 +252,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case QGis::WKBLineString25D:
+    case Qgis::WKBLineString25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBLineString:
+    case Qgis::WKBLineString:
     {
       if ( type != POINTS )
       {
@@ -292,10 +292,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBMultiLineString25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString:
     {
       int nLines;
       currentWkbPtr >> nLines;
@@ -336,10 +336,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case QGis::WKBPolygon25D:
+    case Qgis::WKBPolygon25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBPolygon:
+    case Qgis::WKBPolygon:
     {
       int nRings;
       currentWkbPtr >> nRings;
@@ -382,10 +382,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       break;
     }
 
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBMultiPolygon25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon:
     {
       int nPolys;
       currentWkbPtr >> nPolys;

@@ -39,7 +39,7 @@ QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRendererV2* su
   }
   else
   {
-    mSubRenderer.reset( QgsFeatureRendererV2::defaultRenderer( QGis::Polygon ) );
+    mSubRenderer.reset( QgsFeatureRendererV2::defaultRenderer( Qgis::Polygon ) );
   }
 }
 

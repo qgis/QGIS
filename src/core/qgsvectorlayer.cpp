@@ -129,7 +129,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mProviderKey( providerKey )
     , mReadOnly( false )
     , mEditFormConfig( new QgsEditFormConfig( this ) )
-    , mWkbType( QGis::WKBUnknown )
+    , mWkbType( Qgis::WKBUnknown )
     , mRendererV2( nullptr )
     , mLabeling( new QgsVectorLayerSimpleLabeling )
     , mLabelFontNotFoundNotified( false )
@@ -597,12 +597,12 @@ void QgsVectorLayer::setDiagramRenderer( QgsDiagramRendererV2* r )
   emit styleChanged();
 }
 
-QGis::GeometryType QgsVectorLayer::geometryType() const
+Qgis::GeometryType QgsVectorLayer::geometryType() const
 {
   if ( mValid && mDataProvider )
   {
-    QGis::WkbType type = mDataProvider->geometryType();
-    return static_cast< QGis::GeometryType >( QgsWKBTypes::geometryType( static_cast< QgsWKBTypes::Type >( type ) ) );
+    Qgis::WkbType type = mDataProvider->geometryType();
+    return static_cast< Qgis::GeometryType >( QgsWKBTypes::geometryType( static_cast< QgsWKBTypes::Type >( type ) ) );
   }
   else
   {
@@ -616,16 +616,16 @@ QGis::GeometryType QgsVectorLayer::geometryType() const
   // here.
   QgsDebugMsg( "WARNING: This code should never be reached. Problems may occur..." );
 
-  return QGis::UnknownGeometry;
+  return Qgis::UnknownGeometry;
 }
 
 bool QgsVectorLayer::hasGeometryType() const
 {
-  QGis::GeometryType t = geometryType();
-  return t != QGis::NoGeometry && t != QGis::UnknownGeometry;
+  Qgis::GeometryType t = geometryType();
+  return t != Qgis::NoGeometry && t != Qgis::UnknownGeometry;
 }
 
-QGis::WkbType QgsVectorLayer::wkbType() const
+Qgis::WkbType QgsVectorLayer::wkbType() const
 {
   return mWkbType;
 }
@@ -964,7 +964,7 @@ QgsRectangle QgsVectorLayer::extent() const
     QgsFeature fet;
     while ( fit.nextFeature( fet ) )
     {
-      if ( fet.constGeometry() && fet.constGeometry()->type() != QGis::UnknownGeometry )
+      if ( fet.constGeometry() && fet.constGeometry()->type() != Qgis::UnknownGeometry )
       {
         QgsRectangle bb = fet.constGeometry()->boundingBox();
         rect.combineExtentWith( bb );
@@ -1020,7 +1020,7 @@ bool QgsVectorLayer::setSubsetString( const QString& subset )
 
 bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const
 {
-  if ( mValid && mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != QGis::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
+  if ( mValid && mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != Qgis::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
   {
     double maximumSimplificationScale = mSimplifyMethod.maximumScale();
 
@@ -1377,7 +1377,7 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, const QgsFeat
   int returnValue = 0;
 
   //first test if geom really has type polygon or multipolygon
-  if ( geom->type() != QGis::Polygon )
+  if ( geom->type() != Qgis::Polygon )
   {
     return 1;
   }
@@ -1605,7 +1605,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
 void QgsVectorLayer::setDataSource( const QString& dataSource, const QString& baseName, const QString& provider, bool loadDefaultStyleFlag )
 {
-  QGis::GeometryType oldGeomType = mValid && mDataProvider ? geometryType() : QGis::UnknownGeometry;
+  Qgis::GeometryType oldGeomType = mValid && mDataProvider ? geometryType() : Qgis::UnknownGeometry;
 
   mDataSource = dataSource;
   mLayerName = capitaliseLayerName( baseName );
@@ -1755,7 +1755,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   mapLayerNode.setAttribute( "type", "vector" );
 
   // set the geometry type
-  mapLayerNode.setAttribute( "geometry", QGis::vectorGeometryType( geometryType() ) );
+  mapLayerNode.setAttribute( "geometry", Qgis::vectorGeometryType( geometryType() ) );
 
   // add provider node
   if ( mDataProvider )
@@ -2482,7 +2482,7 @@ QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest r
   if ( mSelectedFeatureIds.isEmpty() )
     return QgsFeatureIterator();
 
-  if ( geometryType() == QGis::NoGeometry )
+  if ( geometryType() == Qgis::NoGeometry )
     request.setFlags( QgsFeatureRequest::NoGeometry );
 
   if ( mSelectedFeatureIds.count() == 1 )
@@ -2635,7 +2635,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
   }
   if ( snap_to == QgsSnapper::SnapToSegment || snap_to == QgsSnapper::SnapToVertexAndSegment ) // snap to segment
   {
-    if ( geometryType() != QGis::Point ) // cannot snap to segment for points/multipoints
+    if ( geometryType() != Qgis::Point ) // cannot snap to segment for points/multipoints
     {
       sqrDistSegmentSnap = geom->closestSegmentWithContext( startPoint, snappedPoint, afterVertex, nullptr, crs().geographicFlag() ? 1e-12 : 1e-8 );
 
@@ -2705,7 +2705,7 @@ bool QgsVectorLayer::isEditable() const
 
 bool QgsVectorLayer::isSpatial() const
 {
-  return geometryType() != QGis::NoGeometry;
+  return geometryType() != Qgis::NoGeometry;
 }
 
 bool QgsVectorLayer::isReadOnly() const
@@ -3640,16 +3640,16 @@ QString QgsVectorLayer::metadata() const
 
   //geom type
 
-  QGis::GeometryType type = geometryType();
+  Qgis::GeometryType type = geometryType();
 
-  if ( type < 0 || type > QGis::NoGeometry )
+  if ( type < 0 || type > Qgis::NoGeometry )
   {
     QgsDebugMsg( "Invalid vector type" );
   }
   else
   {
-    QString typeString( QGis::vectorGeometryType( geometryType() ) );
-    QString wkbTypeString = QgsWKBTypes::displayString( QGis::fromOldWkbType( mWkbType ) );
+    QString typeString( Qgis::vectorGeometryType( geometryType() ) );
+    QString wkbTypeString = QgsWKBTypes::displayString( Qgis::fromOldWkbType( mWkbType ) );
 
     myMetadata += "<p class=\"glossy\">" + tr( "Geometry type of the features in this layer" ) + "</p>\n";
     myMetadata += QString( "<p>%1 (WKB type: \"%2\")</p>\n" ).arg( typeString, wkbTypeString );

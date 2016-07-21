@@ -255,10 +255,10 @@ class QgsMapCanvas : QGraphicsView
     bool isDirty() const /Deprecated/;
 
     //! Set map units (needed by project properties dialog)
-    void setMapUnits( QGis::UnitType mapUnits );
+    void setMapUnits( Qgis::UnitType mapUnits );
 
     //! Get the current canvas map units
-    QGis::UnitType mapUnits() const;
+    Qgis::UnitType mapUnits() const;
 
     //! Getter for stored overrides of styles for layers.
     //! @note added in 2.12

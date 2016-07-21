@@ -114,7 +114,7 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     , mLayerField( -1 )
     , mLayerType( POINT )
     , mGrassType( 0 )
-    , mQgisType( QGis::WKBUnknown )
+    , mQgisType( Qgis::WKBUnknown )
     , mLayer( 0 )
     , mMapVersion( 0 )
     , mNumberFeatures( 0 )
@@ -236,16 +236,16 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     case CENTROID:
     case TOPO_POINT:
     case TOPO_NODE:
-      mQgisType = QGis::WKBPoint;
+      mQgisType = Qgis::WKBPoint;
       break;
     case LINE:
     case BOUNDARY:
     case TOPO_LINE:
-      mQgisType = QGis::WKBLineString;
+      mQgisType = Qgis::WKBLineString;
       break;
     case POLYGON:
     case FACE:
-      mQgisType = QGis::WKBPolygon;
+      mQgisType = Qgis::WKBPolygon;
       break;
   }
 
@@ -443,7 +443,7 @@ QgsRectangle QgsGrassProvider::extent() const
 /**
 * Return the feature type
 */
-QGis::WkbType QgsGrassProvider::geometryType() const
+Qgis::WkbType QgsGrassProvider::geometryType() const
 {
   return mQgisType;
 }

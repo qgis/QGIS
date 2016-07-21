@@ -92,7 +92,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     int bandCount() const override;
 
-    QGis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType dataType( int bandNo ) const override;
 
     /** \brief set source and destination CRS */
     void setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,

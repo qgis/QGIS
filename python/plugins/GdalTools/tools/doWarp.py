@@ -25,7 +25,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QWidget
-from qgis.core import QGis
+from qgis.core import Qgis
 
 from .ui_widgetWarp import Ui_GdalToolsWidget as Ui_Widget
 from .widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
@@ -108,7 +108,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
-        self.maskSelector.setLayers([x for x in Utils.LayerRegistry.instance().getVectorLayers() if x.geometryType() == QGis.Polygon])
+        self.maskSelector.setLayers([x for x in Utils.LayerRegistry.instance().getVectorLayers() if x.geometryType() == Qgis.Polygon])
 
     def fillInputFile(self):
         lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()

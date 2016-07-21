@@ -56,7 +56,7 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRe
 
   if ( rubberBand )
   {
-    rubberBand->reset( QGis::Polygon );
+    rubberBand->reset( Qgis::Polygon );
     rubberBand->addPoint( ll, false );
     rubberBand->addPoint( lr, false );
     rubberBand->addPoint( ur, false );
@@ -69,7 +69,7 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
     QPoint point )
 {
   int boxSize = 0;
-  if ( vlayer->geometryType() != QGis::Polygon )
+  if ( vlayer->geometryType() != Qgis::Polygon )
   {
     //if point or line use an artificial bounding box of 10x10 pixels
     //to aid the user to click on a feature accurately
@@ -161,7 +161,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
 {
   QgsFeatureIds newSelectedFeatures;
 
-  if ( selectGeometry->type() != QGis::Polygon )
+  if ( selectGeometry->type() != Qgis::Polygon )
     return newSelectedFeatures;
 
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
@@ -180,7 +180,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
     {
       QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs() );
 
-      if ( !ct.isShortCircuited() && selectGeomTrans->type() == QGis::Polygon )
+      if ( !ct.isShortCircuited() && selectGeomTrans->type() == Qgis::Polygon )
       {
         // convert add more points to the edges of the rectangle
         // improve transformation result

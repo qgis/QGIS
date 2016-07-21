@@ -94,11 +94,11 @@ class QgsRasterInterface
     QString capabilitiesString() const;
 
     /** Returns data type for the band specified by number */
-    virtual QGis::DataType dataType( int bandNo ) const = 0;
+    virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
-    virtual QGis::DataType sourceDataType( int bandNo ) const;
+    virtual Qgis::DataType sourceDataType( int bandNo ) const;
 
     /**
      * Get the extent of the interface.

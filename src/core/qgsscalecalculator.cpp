@@ -21,7 +21,7 @@
 #include "qgsrectangle.h"
 #include "qgsscalecalculator.h"
 
-QgsScaleCalculator::QgsScaleCalculator( double dpi, QGis::UnitType mapUnits )
+QgsScaleCalculator::QgsScaleCalculator( double dpi, Qgis::UnitType mapUnits )
     : mDpi( dpi )
     , mMapUnits( mapUnits )
 {}
@@ -35,13 +35,13 @@ double QgsScaleCalculator::dpi()
   return mDpi;
 }
 
-void QgsScaleCalculator::setMapUnits( QGis::UnitType mapUnits )
+void QgsScaleCalculator::setMapUnits( Qgis::UnitType mapUnits )
 {
   QgsDebugMsgLevel( QString( "Map units set to %1" ).arg( QString::number( mapUnits ) ), 3 );
   mMapUnits = mapUnits;
 }
 
-QGis::UnitType QgsScaleCalculator::mapUnits() const
+Qgis::UnitType QgsScaleCalculator::mapUnits() const
 {
   QgsDebugMsgLevel( QString( "Map units returned as %1" ).arg( QString::number( mMapUnits ) ), 4 );
   return mMapUnits;
@@ -55,23 +55,23 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
   // users display, and the canvas width
   switch ( mMapUnits )
   {
-    case QGis::Meters:
+    case Qgis::Meters:
       // convert meters to inches
       conversionFactor = 39.3700787;
       delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
-    case QGis::Feet:
+    case Qgis::Feet:
       conversionFactor = 12.0;
       delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
-    case QGis::NauticalMiles:
+    case Qgis::NauticalMiles:
       // convert nautical miles to inches
       conversionFactor = 72913.4;
       delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
 
     default:
-    case QGis::Degrees:
+    case Qgis::Degrees:
       // degrees require conversion to meters first
       conversionFactor = 39.3700787;
       delta = calculateGeographicDistance( mapExtent );

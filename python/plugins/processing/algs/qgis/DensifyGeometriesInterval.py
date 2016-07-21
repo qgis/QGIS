@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 from math import sqrt
 
-from qgis.core import QGis, QgsPoint, QgsGeometry, QgsFeature
+from qgis.core import Qgis, QgsPoint, QgsGeometry, QgsFeature
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -59,7 +59,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
-        isPolygon = layer.geometryType() == QGis.Polygon
+        isPolygon = layer.geometryType() == Qgis.Polygon
 
         writer = self.getOutputFromName(
             self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),

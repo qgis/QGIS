@@ -137,8 +137,8 @@ void QgsOracleConnectionItem::setLayerType( QgsOracleLayerProperty layerProperty
 
   for ( int i = 0 ; i < layerProperty.size(); i++ )
   {
-    QGis::WkbType wkbType = layerProperty.types.at( i );
-    if ( wkbType == QGis::WKBUnknown )
+    Qgis::WkbType wkbType = layerProperty.types.at( i );
+    if ( wkbType == Qgis::WKBUnknown )
     {
       QgsDebugMsgLevel( "skip unknown geometry type", 3 );
       continue;
@@ -257,7 +257,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
     if ( srcLayer->isValid() )
     {
       uri.setDataSource( QString(), u.name.left( 30 ).toUpper(), "GEOM" );
-      uri.setWkbType( QGis::fromOldWkbType( srcLayer->wkbType() ) );
+      uri.setWkbType( Qgis::fromOldWkbType( srcLayer->wkbType() ) );
       QString authid = srcLayer->crs().authid();
       if ( authid.startsWith( "EPSG:", Qt::CaseInsensitive ) )
       {
@@ -374,7 +374,7 @@ QString QgsOracleLayerItem::createUri()
   QgsDataSourceURI uri = QgsOracleConn::connUri( connItem->name() );
   uri.setDataSource( mLayerProperty.ownerName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, QString::null );
   uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
-  uri.setWkbType( QGis::fromOldWkbType( mLayerProperty.types.at( 0 ) ) );
+  uri.setWkbType( Qgis::fromOldWkbType( mLayerProperty.types.at( 0 ) ) );
   if ( mLayerProperty.isView && mLayerProperty.pkCols.size() > 0 )
     uri.setKeyColumn( mLayerProperty.pkCols[0] );
   QgsDebugMsgLevel( QString( "layer uri: %1" ).arg( uri.uri() ), 3 );
@@ -405,32 +405,32 @@ void QgsOracleOwnerItem::addLayer( QgsOracleLayerProperty layerProperty )
   QgsDebugMsgLevel( layerProperty.toString(), 3 );
 
   Q_ASSERT( layerProperty.size() == 1 );
-  QGis::WkbType wkbType = layerProperty.types.at( 0 );
+  Qgis::WkbType wkbType = layerProperty.types.at( 0 );
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName ).arg( QgsOracleConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
 
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBPoint:
+    case Qgis::WKBPoint25D:
+    case Qgis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBLineString:
+    case Qgis::WKBLineString25D:
+    case Qgis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBPolygon:
+    case Qgis::WKBPolygon25D:
+    case Qgis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:
-      if ( wkbType == QGis::WKBNoGeometry && layerProperty.geometryColName.isEmpty() )
+      if ( wkbType == Qgis::WKBNoGeometry && layerProperty.geometryColName.isEmpty() )
       {
         layerType = QgsLayerItem::TableLayer;
         tip = tr( "as geometryless table" );

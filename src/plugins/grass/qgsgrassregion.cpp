@@ -39,8 +39,8 @@ QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
   mDraw = false;
-  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
-  mSrcRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+  mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
+  mSrcRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
   QString error;
   mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), error );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
@@ -58,8 +58,8 @@ QgsGrassRegionEdit::~QgsGrassRegionEdit()
 void QgsGrassRegionEdit::canvasPressEvent( QgsMapMouseEvent * event )
 {
   mDraw = true;
-  mRubberBand->reset( QGis::Polygon );
-  mSrcRubberBand->reset( QGis::Polygon );
+  mRubberBand->reset( Qgis::Polygon );
+  mSrcRubberBand->reset( Qgis::Polygon );
   emit captureStarted();
 
   mStartPoint = toMapCoordinates( event->pos() );
@@ -92,8 +92,8 @@ void QgsGrassRegionEdit::canvasReleaseEvent( QgsMapMouseEvent * event )
 //! called when map tool is about to get inactive
 void QgsGrassRegionEdit::deactivate()
 {
-  mRubberBand->reset( QGis::Polygon );
-  mSrcRubberBand->reset( QGis::Polygon );
+  mRubberBand->reset( Qgis::Polygon );
+  mSrcRubberBand->reset( Qgis::Polygon );
   QgsMapTool::deactivate();
 }
 
@@ -166,7 +166,7 @@ void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubber
   {
     transform( canvas, points, coordinateTransform );
   }
-  rubberBand->reset( isPolygon ? QGis::Polygon : QGis::Line );
+  rubberBand->reset( isPolygon ? Qgis::Polygon : Qgis::Line );
   for ( int i = 0; i < points.size(); i++ )
   {
     bool update = false; // true to update canvas
@@ -257,12 +257,12 @@ QString QgsGrassRegion::formatExtent( double v )
 {
   // format with precision approximately to meters
   // max length of degree of latitude on pole is 111694 m
-  return qgsDoubleToString( v, mCrs.mapUnits() == QGis::Degrees ? 6 : 1 );
+  return qgsDoubleToString( v, mCrs.mapUnits() == Qgis::Degrees ? 6 : 1 );
 }
 
 QString QgsGrassRegion::formatResolution( double v )
 {
-  return qgsDoubleToString( v, mCrs.mapUnits() == QGis::Degrees ? 10 : 4 );
+  return qgsDoubleToString( v, mCrs.mapUnits() == Qgis::Degrees ? 10 : 4 );
 }
 
 void QgsGrassRegion::readRegion()

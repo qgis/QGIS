@@ -47,12 +47,12 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     /** Gets the currently select map units
      */
-    QGis::UnitType mapUnits() const;
+    Qgis::UnitType mapUnits() const;
 
     /*!
      * Set the map units
      */
-    void setMapUnits( QGis::UnitType );
+    void setMapUnits( Qgis::UnitType );
 
     /*!
        Every project has a title
@@ -240,5 +240,5 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     static const char * GEO_NONE_DESC;
 
-    void updateGuiForMapUnits( QGis::UnitType units );
+    void updateGuiForMapUnits( Qgis::UnitType units );
 };

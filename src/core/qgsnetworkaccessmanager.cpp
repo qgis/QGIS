@@ -179,7 +179,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   QString userAgent = s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString();
   if ( !userAgent.isEmpty() )
     userAgent += ' ';
-  userAgent += QString( "QGIS/%1" ).arg( QGis::QGIS_VERSION );
+  userAgent += QString( "QGIS/%1" ).arg( Qgis::QGIS_VERSION );
   pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
 
 #ifndef QT_NO_OPENSSL

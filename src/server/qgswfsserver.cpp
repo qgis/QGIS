@@ -963,7 +963,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
       else if ( expFilterOk )
       {
         QgsFeatureRequest req;
-        if ( layer->wkbType() != QGis::WKBNoGeometry )
+        if ( layer->wkbType() != Qgis::WKBNoGeometry )
         {
           if ( bboxOk )
           {
@@ -1096,7 +1096,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
               throw QgsMapServiceException( "RequestNotWellFormed", QString( "OGC expression filter error message: %1." ).arg( filter->parserErrorString() ) );
             }
             QgsFeatureRequest req;
-            if ( layer->wkbType() != QGis::WKBNoGeometry )
+            if ( layer->wkbType() != Qgis::WKBNoGeometry )
             {
               if ( bboxOk )
               {
@@ -1142,7 +1142,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
       {
         //throw QgsMapServiceException( "RequestNotWellFormed", QString( "attrIndexes length: %1." ).arg( attrIndexes.count() ) );
         QgsFeatureRequest req;
-        if ( layer->wkbType() != QGis::WKBNoGeometry )
+        if ( layer->wkbType() != Qgis::WKBNoGeometry )
         {
           if ( bboxOk )
           {

@@ -2885,7 +2885,7 @@ void TestQgsGeometry::fromQgsPoint()
 {
   QgsPoint point( 1.0, 2.0 );
   QSharedPointer<QgsGeometry> result( QgsGeometry::fromPoint( point ) );
-  QCOMPARE( result->wkbType(), QGis::WKBPoint );
+  QCOMPARE( result->wkbType(), Qgis::WKBPoint );
   QgsPoint resultPoint = result->asPoint();
   QCOMPARE( resultPoint, point );
 }
@@ -2894,7 +2894,7 @@ void TestQgsGeometry::fromQPoint()
 {
   QPointF point( 1.0, 2.0 );
   QSharedPointer<QgsGeometry> result( QgsGeometry::fromQPointF( point ) );
-  QCOMPARE( result->wkbType(), QGis::WKBPoint );
+  QCOMPARE( result->wkbType(), Qgis::WKBPoint );
   QgsPoint resultPoint = result->asPoint();
   QCOMPARE( resultPoint.x(), 1.0 );
   QCOMPARE( resultPoint.y(), 2.0 );
@@ -2906,7 +2906,7 @@ void TestQgsGeometry::fromQPolygonF()
   QPolygonF polyline;
   polyline << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 );
   QSharedPointer<QgsGeometry> result( QgsGeometry::fromQPolygonF( polyline ) );
-  QCOMPARE( result->wkbType(), QGis::WKBLineString );
+  QCOMPARE( result->wkbType(), Qgis::WKBLineString );
   QgsPolyline resultLine = result->asPolyline();
   QCOMPARE( resultLine.size(), 4 );
   QCOMPARE( resultLine.at( 0 ), QgsPoint( 1.0, 2.0 ) );
@@ -2918,7 +2918,7 @@ void TestQgsGeometry::fromQPolygonF()
   QPolygonF polygon;
   polygon << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 ) << QPointF( 1.0, 2.0 );
   QSharedPointer<QgsGeometry> result2( QgsGeometry::fromQPolygonF( polygon ) );
-  QCOMPARE( result2->wkbType(), QGis::WKBPolygon );
+  QCOMPARE( result2->wkbType(), Qgis::WKBPolygon );
   QgsPolygon resultPolygon = result2->asPolygon();
   QCOMPARE( resultPolygon.size(), 1 );
   QCOMPARE( resultPolygon.at( 0 ).at( 0 ), QgsPoint( 1.0, 2.0 ) );
@@ -3029,8 +3029,8 @@ void TestQgsGeometry::simplifyCheck1()
   QVERIFY( mpPolylineGeometryD->simplify( 0.5 ) );
   // should be a single polygon as A intersect B
   QgsGeometry * mypSimplifyGeometry  =  mpPolylineGeometryD->simplify( 0.5 );
-  qDebug( "Geometry Type: %s", QGis::featureType( mypSimplifyGeometry->wkbType() ) );
-  QVERIFY( mypSimplifyGeometry->wkbType() == QGis::WKBLineString );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypSimplifyGeometry->wkbType() ) );
+  QVERIFY( mypSimplifyGeometry->wkbType() == Qgis::WKBLineString );
   QgsPolyline myLine = mypSimplifyGeometry->asPolyline();
   QVERIFY( myLine.size() > 0 ); //check that the union created a feature
   dumpPolyline( myLine );
@@ -3044,8 +3044,8 @@ void TestQgsGeometry::intersectionCheck1()
   QVERIFY( mpPolygonGeometryA->intersects( mpPolygonGeometryB ) );
   // should be a single polygon as A intersect B
   QgsGeometry * mypIntersectionGeometry  =  mpPolygonGeometryA->intersection( mpPolygonGeometryB );
-  qDebug( "Geometry Type: %s", QGis::featureType( mypIntersectionGeometry->wkbType() ) );
-  QVERIFY( mypIntersectionGeometry->wkbType() == QGis::WKBPolygon );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypIntersectionGeometry->wkbType() ) );
+  QVERIFY( mypIntersectionGeometry->wkbType() == Qgis::WKBPolygon );
   QgsPolygon myPolygon = mypIntersectionGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
@@ -3136,8 +3136,8 @@ void TestQgsGeometry::unionCheck1()
 {
   // should be a multipolygon with 2 parts as A does not intersect C
   QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->combine( mpPolygonGeometryC );
-  qDebug( "Geometry Type: %s", QGis::featureType( mypUnionGeometry->wkbType() ) );
-  QVERIFY( mypUnionGeometry->wkbType() == QGis::WKBMultiPolygon );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypUnionGeometry->wkbType() ) );
+  QVERIFY( mypUnionGeometry->wkbType() == Qgis::WKBMultiPolygon );
   QgsMultiPolygon myMultiPolygon = mypUnionGeometry->asMultiPolygon();
   QVERIFY( myMultiPolygon.size() > 0 ); //check that the union did not fail
   dumpMultiPolygon( myMultiPolygon );
@@ -3149,8 +3149,8 @@ void TestQgsGeometry::unionCheck2()
 {
   // should be a single polygon as A intersect B
   QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->combine( mpPolygonGeometryB );
-  qDebug( "Geometry Type: %s", QGis::featureType( mypUnionGeometry->wkbType() ) );
-  QVERIFY( mypUnionGeometry->wkbType() == QGis::WKBPolygon );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypUnionGeometry->wkbType() ) );
+  QVERIFY( mypUnionGeometry->wkbType() == Qgis::WKBPolygon );
   QgsPolygon myPolygon = mypUnionGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
@@ -3162,8 +3162,8 @@ void TestQgsGeometry::differenceCheck1()
 {
   // should be same as A since A does not intersect C so diff is 100% of A
   QSharedPointer<QgsGeometry> mypDifferenceGeometry( mpPolygonGeometryA->difference( mpPolygonGeometryC ) );
-  qDebug( "Geometry Type: %s", QGis::featureType( mypDifferenceGeometry->wkbType() ) );
-  QVERIFY( mypDifferenceGeometry->wkbType() == QGis::WKBPolygon );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypDifferenceGeometry->wkbType() ) );
+  QVERIFY( mypDifferenceGeometry->wkbType() == Qgis::WKBPolygon );
   QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union did not fail
   dumpPolygon( myPolygon );
@@ -3174,8 +3174,8 @@ void TestQgsGeometry::differenceCheck2()
 {
   // should be a single polygon as (A - B) = subset of A
   QSharedPointer<QgsGeometry> mypDifferenceGeometry( mpPolygonGeometryA->difference( mpPolygonGeometryB ) );
-  qDebug( "Geometry Type: %s", QGis::featureType( mypDifferenceGeometry->wkbType() ) );
-  QVERIFY( mypDifferenceGeometry->wkbType() == QGis::WKBPolygon );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypDifferenceGeometry->wkbType() ) );
+  QVERIFY( mypDifferenceGeometry->wkbType() == Qgis::WKBPolygon );
   QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
@@ -3185,8 +3185,8 @@ void TestQgsGeometry::bufferCheck()
 {
   // should be a single polygon
   QSharedPointer<QgsGeometry> mypBufferGeometry( mpPolygonGeometryB->buffer( 10, 10 ) );
-  qDebug( "Geometry Type: %s", QGis::featureType( mypBufferGeometry->wkbType() ) );
-  QVERIFY( mypBufferGeometry->wkbType() == QGis::WKBPolygon );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypBufferGeometry->wkbType() ) );
+  QVERIFY( mypBufferGeometry->wkbType() == Qgis::WKBPolygon );
   QgsPolygon myPolygon = mypBufferGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
   dumpPolygon( myPolygon );
@@ -3448,7 +3448,7 @@ void TestQgsGeometry::wkbInOut()
   // NOTE: wkb onwership transferred to QgsGeometry
   badHeader.fromWkb( wkb, size );
   QVERIFY( badHeader.isEmpty() );
-  QCOMPARE( badHeader.wkbType(), QGis::WKBUnknown );
+  QCOMPARE( badHeader.wkbType(), Qgis::WKBUnknown );
 }
 
 void TestQgsGeometry::segmentizeCircularString()

@@ -67,7 +67,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent* e )
     return;
   }
 
-  if ( vlayer->geometryType() != QGis::Polygon )
+  if ( vlayer->geometryType() != Qgis::Polygon )
   {
     emit messageEmitted( tr( "Delete ring can only be used in a polygon layer." ) );
     return;
@@ -141,7 +141,7 @@ QgsGeometry* QgsMapToolDeleteRing::ringUnderPoint( const QgsPoint& p, QgsFeature
     g = f.constGeometry();
     if ( !g )
       continue;
-    if ( g->wkbType() == QGis::WKBPolygon ||  g->wkbType()  == QGis::WKBPolygon25D )
+    if ( g->wkbType() == Qgis::WKBPolygon ||  g->wkbType()  == Qgis::WKBPolygon25D )
     {
       pol = QgsMultiPolygon() << g->asPolygon();
     }
@@ -180,14 +180,14 @@ void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, Qgs
   vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fId ) ).nextFeature( f );
 
   const QgsGeometry* g = f.constGeometry();
-  QGis::WkbType wkbtype = g->wkbType();
+  Qgis::WkbType wkbtype = g->wkbType();
   int ringNum, partNum = 0;
 
-  if ( wkbtype == QGis::WKBPolygon || wkbtype == QGis::WKBPolygon25D )
+  if ( wkbtype == Qgis::WKBPolygon || wkbtype == Qgis::WKBPolygon25D )
   {
     ringNum = ringNumInPolygon( g, beforeVertexNr );
   }
-  else if ( wkbtype == QGis::WKBMultiPolygon || wkbtype == QGis::WKBMultiPolygon25D )
+  else if ( wkbtype == Qgis::WKBMultiPolygon || wkbtype == Qgis::WKBMultiPolygon25D )
   {
     ringNum = ringNumInMultiPolygon( g, beforeVertexNr, partNum );
   }

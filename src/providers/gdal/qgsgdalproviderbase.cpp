@@ -140,37 +140,37 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   return ct;
 }
 
-QGis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType theGdalDataType ) const
+Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {
     case GDT_Byte:
-      return QGis::Byte;
+      return Qgis::Byte;
     case GDT_UInt16:
-      return QGis::UInt16;
+      return Qgis::UInt16;
     case GDT_Int16:
-      return QGis::Int16;
+      return Qgis::Int16;
     case GDT_UInt32:
-      return QGis::UInt32;
+      return Qgis::UInt32;
     case GDT_Int32:
-      return QGis::Int32;
+      return Qgis::Int32;
     case GDT_Float32:
-      return QGis::Float32;
+      return Qgis::Float32;
     case GDT_Float64:
-      return QGis::Float64;
+      return Qgis::Float64;
     case GDT_CInt16:
-      return QGis::CInt16;
+      return Qgis::CInt16;
     case GDT_CInt32:
-      return QGis::CInt32;
+      return Qgis::CInt32;
     case GDT_CFloat32:
-      return QGis::CFloat32;
+      return Qgis::CFloat32;
     case GDT_CFloat64:
-      return QGis::CFloat64;
+      return Qgis::CFloat64;
     case GDT_Unknown:
     case GDT_TypeCount:
-      return QGis::UnknownDataType;
+      return Qgis::UnknownDataType;
   }
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
 int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const

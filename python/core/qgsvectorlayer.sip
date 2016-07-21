@@ -445,13 +445,13 @@ class QgsVectorLayer : QgsMapLayer
     void setRendererV2( QgsFeatureRendererV2* r /Transfer/ );
 
     /** Returns point, line or polygon */
-    QGis::GeometryType geometryType() const;
+    Qgis::GeometryType geometryType() const;
 
     /** Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry */
     bool hasGeometryType() const;
 
     /** Returns the WKBType or WKBUnknown in case of error*/
-    QGis::WkbType wkbType() const;
+    Qgis::WkbType wkbType() const;
 
     /** Return the provider type for this layer */
     QString providerType() const;

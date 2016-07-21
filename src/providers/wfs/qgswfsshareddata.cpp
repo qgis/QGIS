@@ -273,7 +273,7 @@ bool QgsWFSSharedData::createCache()
     mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
     VSIUnlink( vsimemFilename.toStdString().c_str() );
     QgsVectorFileWriter* writer = new QgsVectorFileWriter( vsimemFilename, "",
-        cacheFields, QGis::WKBPolygon, QgsCoordinateReferenceSystem(), "SpatiaLite", datasourceOptions, layerOptions );
+        cacheFields, Qgis::WKBPolygon, QgsCoordinateReferenceSystem(), "SpatiaLite", datasourceOptions, layerOptions );
     if ( writer->hasError() == QgsVectorFileWriter::NoError )
     {
       delete writer;
@@ -1009,9 +1009,9 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
       {
         // Grow the extent by ~ 50 km (completely arbitrary number if you wonder!)
         // so that it is sufficiently zoomed out
-        if ( mSourceCRS.mapUnits() == QGis::Meters )
+        if ( mSourceCRS.mapUnits() == Qgis::Meters )
           mComputedExtent.grow( 50. * 1000. );
-        else if ( mSourceCRS.mapUnits() == QGis::Degrees )
+        else if ( mSourceCRS.mapUnits() == Qgis::Degrees )
           mComputedExtent.grow( 50. / 110 );
         QgsMessageLog::logMessage( tr( "Layer extent reported by the server is not correct. "
                                        "You may need to zoom on layer and then zoom out to see all features" ), tr( "WFS" ) );

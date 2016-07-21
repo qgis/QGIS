@@ -55,7 +55,7 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "WFS data provider";
 QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWfsCapabilities::Capabilities &caps )
     : QgsVectorDataProvider( uri )
     , mShared( new QgsWFSSharedData( uri ) )
-    , mWKBType( QGis::WKBUnknown )
+    , mWKBType( Qgis::WKBUnknown )
     , mValid( true )
     , mCapabilities( 0 )
 {
@@ -119,7 +119,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWfsCapabilities::Ca
   }
 
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
-  if ( mWKBType == QGis::WKBUnknown )
+  if ( mWKBType == Qgis::WKBUnknown )
   {
     QgsWFSFeatureDownloader downloader( mShared.data() );
     connect( &downloader, SIGNAL( featureReceived( QVector<QgsWFSFeatureGmlIdPair> ) ),
@@ -446,7 +446,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
   {
     QString geometryAttribute;
     QgsFields fields;
-    QGis::WkbType geomType;
+    Qgis::WkbType geomType;
     if ( !readAttributesFromSchema( describeFeatureDocument,
                                     typeName,
                                     geometryAttribute, fields, geomType, errorMsg ) )
@@ -714,7 +714,7 @@ void QgsWFSProvider::reloadData()
   QgsVectorDataProvider::reloadData();
 }
 
-QGis::WkbType QgsWFSProvider::geometryType() const
+Qgis::WkbType QgsWFSProvider::geometryType() const
 {
   return mWKBType;
 }
@@ -822,7 +822,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
       QDomElement geomElem = transactionDoc.createElementNS( mApplicationNamespace, mShared->mGeometryAttribute );
       QgsGeometry the_geom( *geometry );
       // convert to multi if the layer geom type is multi and the geom is not
-      if ( QGis::isMultiType( this->geometryType( ) ) && ! the_geom.isMultipart( ) )
+      if ( Qgis::isMultiType( this->geometryType( ) ) && ! the_geom.isMultipart( ) )
       {
         the_geom.convertToMultiType();
       }
@@ -1097,7 +1097,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   }
 }
 
-bool QgsWFSProvider::describeFeatureType( QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType )
+bool QgsWFSProvider::describeFeatureType( QString& geometryAttribute, QgsFields& fields, Qgis::WkbType& geomType )
 {
   fields.clear();
 
@@ -1138,7 +1138,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
     const QString& prefixedTypename,
     QString& geometryAttribute,
     QgsFields& fields,
-    QGis::WkbType& geomType,
+    Qgis::WkbType& geomType,
     QString& errorMsg )
 {
   //get the <schema> root element
@@ -1257,7 +1257,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
-      geomType = QGis::WKBMultiPolygon;
+      geomType = Qgis::WKBMultiPolygon;
     }
     //is it a geometry attribute?
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
@@ -1293,7 +1293,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
   }
   if ( !foundGeometryAttribute )
   {
-    geomType = QGis::WKBNoGeometry;
+    geomType = Qgis::WKBNoGeometry;
   }
 
   return true;
@@ -1509,25 +1509,25 @@ bool QgsWFSProvider::getCapabilities()
   return foundLayer;
 }
 
-QGis::WkbType QgsWFSProvider::geomTypeFromPropertyType( const QString& attName, const QString& propType )
+Qgis::WkbType QgsWFSProvider::geomTypeFromPropertyType( const QString& attName, const QString& propType )
 {
   Q_UNUSED( attName );
 
   QgsDebugMsg( QString( "DescribeFeatureType geometry attribute \"%1\" type is \"%2\"" )
                .arg( attName, propType ) );
   if ( propType == "Point" )
-    return QGis::WKBPoint;
+    return Qgis::WKBPoint;
   if ( propType == "LineString" || propType == "Curve" )
-    return QGis::WKBLineString;
+    return Qgis::WKBLineString;
   if ( propType == "Polygon" || propType == "Surface" )
-    return QGis::WKBPolygon;
+    return Qgis::WKBPolygon;
   if ( propType == "MultiPoint" )
-    return QGis::WKBMultiPoint;
+    return Qgis::WKBMultiPoint;
   if ( propType == "MultiLineString" || propType == "MultiCurve" )
-    return QGis::WKBMultiLineString;
+    return Qgis::WKBMultiLineString;
   if ( propType == "MultiPolygon" || propType == "MultiSurface" )
-    return QGis::WKBMultiPolygon;
-  return QGis::WKBUnknown;
+    return Qgis::WKBMultiPolygon;
+  return Qgis::WKBUnknown;
 }
 
 void QgsWFSProvider::handleException( const QDomDocument& serverResponse )

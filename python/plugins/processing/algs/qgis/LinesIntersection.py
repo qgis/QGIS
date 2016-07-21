@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -86,7 +86,7 @@ class LinesIntersection(GeoAlgorithm):
                      layerB.pendingFields()[idxB]]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                                                                     QGis.WKBPoint, layerA.dataProvider().crs())
+                                                                     Qgis.WKBPoint, layerA.dataProvider().crs())
 
         spatialIndex = vector.spatialindex(layerB)
 
@@ -115,7 +115,7 @@ class LinesIntersection(GeoAlgorithm):
 
                     if inGeom.intersects(tmpGeom):
                         tempGeom = inGeom.intersection(tmpGeom)
-                        if tempGeom.type() == QGis.Point:
+                        if tempGeom.type() == Qgis.Point:
                             if tempGeom.isMultipart():
                                 points = tempGeom.asMultiPoint()
                             else:

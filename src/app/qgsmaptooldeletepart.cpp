@@ -125,8 +125,8 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
 
   switch ( vlayer->geometryType() )
   {
-    case QGis::Point:
-    case QGis::Line:
+    case Qgis::Point:
+    case Qgis::Line:
     {
       QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Vertex | QgsPointLocator::Edge );
       if ( !match.isValid() )
@@ -141,14 +141,14 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
         delete geomPart;
         return QgsGeometry::fromPoint( match.point() );
       }
-      if ( g->wkbType() == QGis::WKBMultiPoint || g->wkbType() == QGis::WKBMultiPoint25D )
+      if ( g->wkbType() == Qgis::WKBMultiPoint || g->wkbType() == Qgis::WKBMultiPoint25D )
       {
         fid = match.featureId();
         partNum = snapVertex;
         delete geomPart;
         return QgsGeometry::fromPoint( match.point() );
       }
-      if ( g->wkbType() == QGis::WKBMultiLineString || g->wkbType() == QGis::WKBMultiLineString25D )
+      if ( g->wkbType() == Qgis::WKBMultiLineString || g->wkbType() == Qgis::WKBMultiLineString25D )
       {
         QgsMultiPolyline mline = g->asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )
@@ -165,7 +165,7 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
       }
       break;
     }
-    case QGis::Polygon:
+    case Qgis::Polygon:
     {
       QgsPoint layerCoords = toLayerCoordinates( vlayer, point );
       double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );

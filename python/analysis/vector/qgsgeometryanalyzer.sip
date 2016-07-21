@@ -1,5 +1,5 @@
 /** \ingroup analysis
- * The QGis class provides vector geometry analysis functions
+ * The Qgis class provides vector geometry analysis functions
  */
 
 class QgsGeometryAnalyzer

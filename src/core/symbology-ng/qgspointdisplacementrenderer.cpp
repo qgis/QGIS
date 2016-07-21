@@ -53,7 +53,7 @@ QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& label
     , mMaxLabelScaleDenominator( -1 )
     , mSpatialIndex( nullptr )
 {
-  mRenderer = QgsFeatureRendererV2::defaultRenderer( QGis::Point );
+  mRenderer = QgsFeatureRendererV2::defaultRenderer( Qgis::Point );
   mCenterSymbol = new QgsMarkerSymbolV2(); //the symbol for the center of a displacement group
   mDrawLabels = true;
 }
@@ -111,8 +111,8 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
 
   //point position in screen coords
   const QgsGeometry* geom = feature.constGeometry();
-  QGis::WkbType geomType = geom->wkbType();
-  if ( geomType != QGis::WKBPoint && geomType != QGis::WKBPoint25D )
+  Qgis::WkbType geomType = geom->wkbType();
+  if ( geomType != Qgis::WKBPoint && geomType != Qgis::WKBPoint25D )
   {
     //can only render point type
     return false;

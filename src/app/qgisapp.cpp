@@ -379,13 +379,13 @@ static void setTitleBarText_( QWidget & qgisApp )
 {
   QString caption = QgisApp::tr( "QGIS " );
 
-  if ( QGis::QGIS_VERSION.endsWith( "Master" ) )
+  if ( Qgis::QGIS_VERSION.endsWith( "Master" ) )
   {
-    caption += QString( "%1" ).arg( QGis::QGIS_DEV_VERSION );
+    caption += QString( "%1" ).arg( Qgis::QGIS_DEV_VERSION );
   }
   else
   {
-    caption += QGis::QGIS_VERSION;
+    caption += Qgis::QGIS_VERSION;
   }
 
   if ( QgsProject::instance()->title().isEmpty() )
@@ -877,7 +877,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( QgsMapLayerActionRegistry::instance(), SIGNAL( changed() ), this, SLOT( refreshActionFeatureAction() ) );
 
   // set application's caption
-  QString caption = tr( "QGIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION, QGis::QGIS_RELEASE_NAME );
+  QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::QGIS_VERSION, Qgis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
 
   QgsMessageLog::logMessage( tr( "QGIS starting..." ), QString::null, QgsMessageLog::INFO );
@@ -1033,7 +1033,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   zoomInToolShortCut->setWhatsThis( "Zoom in (secondary)" );
 
   // Show a nice tip of the day
-  if ( settings.value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() )
+  if ( settings.value( QString( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), true ).toBool() )
   {
     mSplash->hide();
     QgsTipGui myTip( this );
@@ -3366,17 +3366,17 @@ void QgisApp::about()
     QString versionString = "<html><body><div align='center'><table width='100%'>";
 
     versionString += "<tr>";
-    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + QGis::QGIS_VERSION + "</td><td>";
+    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + Qgis::QGIS_VERSION + "</td><td>";
 
 
-    if ( QString( QGis::QGIS_DEV_VERSION ) == "exported" )
+    if ( QString( Qgis::QGIS_DEV_VERSION ) == "exported" )
     {
       versionString += tr( "QGIS code branch" ) + QString( "</td><td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>" )
-                       .arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 );
+                       .arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 );
     }
     else
     {
-      versionString += tr( "QGIS code revision" ) + QString( "</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( QGis::QGIS_DEV_VERSION );
+      versionString += tr( "QGIS code revision" ) + QString( "</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( Qgis::QGIS_DEV_VERSION );
     }
 
     versionString += "</tr><tr>";
@@ -4421,7 +4421,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   prj->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
   prj->writeEntry( "SpatialRefSys", "/ProjectCRSID", static_cast< int >( srs.srsid() ) );
   prj->setDirty( false );
-  if ( srs.mapUnits() != QGis::UnknownUnit )
+  if ( srs.mapUnits() != Qgis::UnknownUnit )
   {
     mMapCanvas->setMapUnits( srs.mapUnits() );
   }
@@ -6160,7 +6160,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
   QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer, options, this );
 
   dialog->setCanvasExtent( mMapCanvas->mapSettings().visibleExtent(), mMapCanvas->mapSettings().destinationCrs() );
-  dialog->setIncludeZ( QgsWKBTypes::hasZ( QGis::fromOldWkbType( vlayer->wkbType() ) ) );
+  dialog->setIncludeZ( QgsWKBTypes::hasZ( Qgis::fromOldWkbType( vlayer->wkbType() ) ) );
 
   if ( dialog->exec() == QDialog::Accepted )
   {
@@ -6409,7 +6409,7 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
   }
 
   //convert unionGeom to a multipart geometry in case it is necessary to match the layer type
-  if ( QGis::isMultiType( vl->wkbType() ) && !unionGeom->isMultipart() )
+  if ( Qgis::isMultiType( vl->wkbType() ) && !unionGeom->isMultipart() )
   {
     unionGeom->convertToMultiType();
   }
@@ -7378,8 +7378,8 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     if ( featureIt->constGeometry() )
     {
       // convert geometry to match destination layer
-      QGis::GeometryType destType = pasteVectorLayer->geometryType();
-      bool destIsMulti = QGis::isMultiType( pasteVectorLayer->wkbType() );
+      Qgis::GeometryType destType = pasteVectorLayer->geometryType();
+      bool destIsMulti = Qgis::isMultiType( pasteVectorLayer->wkbType() );
       if ( pasteVectorLayer->dataProvider() &&
            !pasteVectorLayer->dataProvider()->doesStrictFeatureTypeCheck() )
       {
@@ -7387,7 +7387,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
         destIsMulti = true;
       }
 
-      if ( destType != QGis::UnknownGeometry )
+      if ( destType != Qgis::UnknownGeometry )
       {
         QgsGeometry* newGeometry = featureIt->constGeometry()->convertToType( destType, destIsMulti );
         if ( !newGeometry )
@@ -7485,7 +7485,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   QgsFields fields = clipboard()->fields();
 
   // Decide geometry type from features, switch to multi type if at least one multi is found
-  QMap<QGis::WkbType, int> typeCounts;
+  QMap<Qgis::WkbType, int> typeCounts;
   QgsFeatureList features = clipboard()->copyOf( fields );
   for ( int i = 0; i < features.size(); i++ )
   {
@@ -7493,37 +7493,37 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
     if ( !feature.constGeometry() )
       continue;
 
-    QGis::WkbType type = QGis::flatType( feature.constGeometry()->wkbType() );
+    Qgis::WkbType type = Qgis::flatType( feature.constGeometry()->wkbType() );
 
-    if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry )
+    if ( type == Qgis::WKBUnknown || type == Qgis::WKBNoGeometry )
       continue;
 
-    if ( QGis::isSingleType( type ) )
+    if ( Qgis::isSingleType( type ) )
     {
-      if ( typeCounts.contains( QGis::multiType( type ) ) )
+      if ( typeCounts.contains( Qgis::multiType( type ) ) )
       {
-        typeCounts[ QGis::multiType( type )] = typeCounts[ QGis::multiType( type )] + 1;
+        typeCounts[ Qgis::multiType( type )] = typeCounts[ Qgis::multiType( type )] + 1;
       }
       else
       {
         typeCounts[ type ] = typeCounts[ type ] + 1;
       }
     }
-    else if ( QGis::isMultiType( type ) )
+    else if ( Qgis::isMultiType( type ) )
     {
-      if ( typeCounts.contains( QGis::singleType( type ) ) )
+      if ( typeCounts.contains( Qgis::singleType( type ) ) )
       {
         // switch to multi type
-        typeCounts[type] = typeCounts[ QGis::singleType( type )];
-        typeCounts.remove( QGis::singleType( type ) );
+        typeCounts[type] = typeCounts[ Qgis::singleType( type )];
+        typeCounts.remove( Qgis::singleType( type ) );
       }
       typeCounts[type] = typeCounts[type] + 1;
     }
   }
 
-  QGis::WkbType wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QGis::WKBNoGeometry;
+  Qgis::WkbType wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : Qgis::WKBNoGeometry;
 
-  QString typeName = wkbType != QGis::WKBNoGeometry ? QString( QGis::featureType( wkbType ) ).remove( "WKB" ) : "none";
+  QString typeName = wkbType != Qgis::WKBNoGeometry ? QString( Qgis::featureType( wkbType ) ).remove( "WKB" ) : "none";
 
   if ( features.isEmpty() )
   {
@@ -7555,7 +7555,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   }
 
   layer->startEditing();
-  if ( wkbType != QGis::WKBNoGeometry )
+  if ( wkbType != Qgis::WKBNoGeometry )
     layer->setCrs( clipboard()->crs(), false );
 
   Q_FOREACH ( QgsField f, clipboard()->fields().toList() )
@@ -7578,16 +7578,16 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
     if ( !feature.constGeometry() )
       continue;
 
-    QGis::WkbType type = QGis::flatType( feature.constGeometry()->wkbType() );
-    if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry )
+    Qgis::WkbType type = Qgis::flatType( feature.constGeometry()->wkbType() );
+    if ( type == Qgis::WKBUnknown || type == Qgis::WKBNoGeometry )
       continue;
 
-    if ( QGis::singleType( wkbType ) != QGis::singleType( type ) )
+    if ( Qgis::singleType( wkbType ) != Qgis::singleType( type ) )
     {
       feature.setGeometry( nullptr );
     }
 
-    if ( QGis::isMultiType( wkbType ) &&  QGis::isSingleType( type ) )
+    if ( Qgis::isMultiType( wkbType ) &&  Qgis::isSingleType( type ) )
     {
       feature.geometry()->convertToMultiType();
     }
@@ -8068,7 +8068,7 @@ void QgisApp::duplicateVectorStyle( QgsVectorLayer* srcLayer, QgsVectorLayer* de
         "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
     QDomDocument doc( documentType );
     QDomElement rootNode = doc.createElement( "qgis" );
-    rootNode.setAttribute( "version", QGis::QGIS_VERSION );
+    rootNode.setAttribute( "version", Qgis::QGIS_VERSION );
     doc.appendChild( rootNode );
     QString errorMsg;
     srcLayer->writeSymbology( rootNode, doc, errorMsg );
@@ -8445,7 +8445,7 @@ void QgisApp::zoomToLayerScale()
     const double scale = mMapCanvas->scale();
     if ( scale > layer->maximumScale() )
     {
-      mMapCanvas->zoomScale( layer->maximumScale() * QGis::SCALE_PRECISION );
+      mMapCanvas->zoomScale( layer->maximumScale() * Qgis::SCALE_PRECISION );
     }
     else if ( scale <= layer->minimumScale() )
     {
@@ -8509,7 +8509,7 @@ void QgisApp::setProjectCrsFromLayer()
   QgsCoordinateReferenceSystem crs = mLayerTreeView->currentLayer()->crs();
   mMapCanvas->freeze();
   mMapCanvas->setDestinationCrs( crs );
-  if ( crs.mapUnits() != QGis::UnknownUnit )
+  if ( crs.mapUnits() != Qgis::UnknownUnit )
   {
     mMapCanvas->setMapUnits( crs.mapUnits() );
   }
@@ -8713,7 +8713,7 @@ void QgisApp::loadPythonSupport()
 #ifdef __MINGW32__
   pythonlibName.prepend( "lib" );
 #endif
-  QString version = QString( "%1.%2.%3" ).arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 ).arg( QGis::QGIS_VERSION_INT % 100 );
+  QString version = QString( "%1.%2.%3" ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ).arg( Qgis::QGIS_VERSION_INT % 100 );
   QgsDebugMsg( QString( "load library %1 (%2)" ).arg( pythonlibName, version ) );
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
@@ -9028,8 +9028,8 @@ void QgisApp::helpContents()
 {
   // We should really ship the HTML version of the docs local too.
   openURL( QString( "https://docs.qgis.org/%1.%2/%3/docs/user_manual/" )
-           .arg( QGis::QGIS_VERSION_INT / 10000 )
-           .arg( QGis::QGIS_VERSION_INT / 100 % 100 )
+           .arg( Qgis::QGIS_VERSION_INT / 10000 )
+           .arg( Qgis::QGIS_VERSION_INT / 100 % 100 )
            .arg( tr( "en", "documentation language" ) ),
            false );
 }
@@ -10521,7 +10521,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->isEmpty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
-      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != QGis::Point );
+      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != Qgis::Point );
       mActionCircularStringRadius->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) );
 
       //does provider allow deleting of features?
@@ -10542,7 +10542,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionMultiEditAttributes->setEnabled( false );
       }
 
-      bool isMultiPart = QGis::isMultiType( vlayer->wkbType() ) || !dprovider->doesStrictFeatureTypeCheck();
+      bool isMultiPart = Qgis::isMultiType( vlayer->wkbType() ) || !dprovider->doesStrictFeatureTypeCheck();
 
       // moving enabled if geometry changes are supported
       mActionAddPart->setEnabled( isEditable && canChangeGeometry );
@@ -10552,9 +10552,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
 
       mActionEnableTracing->setEnabled( isEditable && canAddFeatures &&
-                                        ( vlayer->geometryType() == QGis::Line || vlayer->geometryType() == QGis::Polygon ) );
+                                        ( vlayer->geometryType() == Qgis::Line || vlayer->geometryType() == Qgis::Polygon ) );
 
-      if ( vlayer->geometryType() == QGis::Point )
+      if ( vlayer->geometryType() == Qgis::Point )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePoint.svg" ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeaturePoint.svg" ) );
@@ -10582,7 +10582,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           }
         }
       }
-      else if ( vlayer->geometryType() == QGis::Line )
+      else if ( vlayer->geometryType() == Qgis::Line )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCaptureLine.svg" ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeatureLine.svg" ) );
@@ -10597,7 +10597,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionFillRing->setEnabled( false );
         mActionDeleteRing->setEnabled( false );
       }
-      else if ( vlayer->geometryType() == QGis::Polygon )
+      else if ( vlayer->geometryType() == Qgis::Polygon )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePolygon.svg" ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeature.svg" ) );
@@ -10611,7 +10611,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionDeleteRing->setEnabled( isEditable && canChangeGeometry );
         mActionOffsetCurve->setEnabled( false );
       }
-      else if ( vlayer->geometryType() == QGis::NoGeometry )
+      else if ( vlayer->geometryType() == Qgis::NoGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.svg" ) );
       }
@@ -10630,8 +10630,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
     const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
-    if ( rlayer->dataProvider()->dataType( 1 ) != QGis::ARGB32
-         && rlayer->dataProvider()->dataType( 1 ) != QGis::ARGB32_Premultiplied )
+    if ( rlayer->dataProvider()->dataType( 1 ) != Qgis::ARGB32
+         && rlayer->dataProvider()->dataType( 1 ) != Qgis::ARGB32_Premultiplied )
     {
       if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
       {

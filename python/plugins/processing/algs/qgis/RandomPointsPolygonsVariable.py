@@ -30,7 +30,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QGis, QgsFields, QgsField, QgsFeature, QgsPoint,
+from qgis.core import (Qgis, QgsFields, QgsField, QgsFeature, QgsPoint,
                        QgsGeometry, QgsSpatialIndex, QgsDistanceArea)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -84,7 +84,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QGis.WKBPoint, layer.dataProvider().crs())
+            fields, Qgis.WKBPoint, layer.dataProvider().crs())
 
         da = QgsDistanceArea()
 

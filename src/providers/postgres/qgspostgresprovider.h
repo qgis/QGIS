@@ -58,7 +58,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
-      QGis::WkbType wkbType,
+      Qgis::WkbType wkbType,
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
@@ -97,7 +97,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * WKBMultiPolygon
      * as defined in qgis.h
      */
-    QGis::WkbType geometryType() const override;
+    Qgis::WkbType geometryType() const override;
 
     /** Return the number of layers for the current data source
      * @note Should this be subLayerCount() instead?
@@ -379,9 +379,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString mGeometryColumn;          //! name of the geometry column
     mutable QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
 
-    QGis::WkbType mDetectedGeomType;  //! geometry type detected in the database
+    Qgis::WkbType mDetectedGeomType;  //! geometry type detected in the database
     bool mForce2d;                    //! geometry type needs to be forced to 2d (eg. ZM)
-    QGis::WkbType mRequestedGeomType; //! geometry type requested in the uri
+    Qgis::WkbType mRequestedGeomType; //! geometry type requested in the uri
     QString mDetectedSrid;            //! Spatial reference detected in the database
     QString mRequestedSrid;           //! Spatial reference requested in the uri
 

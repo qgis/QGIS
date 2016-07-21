@@ -54,7 +54,7 @@ QgsMapSettings::QgsMapSettings()
   updateDerived();
 
   // set default map units - we use WGS 84 thus use degrees
-  setMapUnits( QGis::Degrees );
+  setMapUnits( Qgis::Degrees );
 }
 
 void QgsMapSettings::setMagnificationFactor( double factor )
@@ -298,7 +298,7 @@ QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
 }
 
 
-void QgsMapSettings::setMapUnits( QGis::UnitType u )
+void QgsMapSettings::setMapUnits( Qgis::UnitType u )
 {
   mScaleCalculator.setMapUnits( u );
 
@@ -329,7 +329,7 @@ bool QgsMapSettings::testFlag( QgsMapSettings::Flag flag ) const
   return mFlags.testFlag( flag );
 }
 
-QGis::UnitType QgsMapSettings::mapUnits() const
+Qgis::UnitType QgsMapSettings::mapUnits() const
 {
   return mScaleCalculator.mapUnits();
 }
@@ -609,7 +609,7 @@ void QgsMapSettings::readXml( QDomNode& theNode )
 {
   // set units
   QDomNode mapUnitsNode = theNode.namedItem( "units" );
-  QGis::UnitType units = QgsXmlUtils::readMapUnits( mapUnitsNode.toElement() );
+  Qgis::UnitType units = QgsXmlUtils::readMapUnits( mapUnitsNode.toElement() );
   setMapUnits( units );
 
   // set projections flag

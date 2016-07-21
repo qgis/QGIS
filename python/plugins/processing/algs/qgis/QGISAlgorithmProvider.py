@@ -43,7 +43,7 @@ except:
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis
+from qgis.core import Qgis
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
@@ -218,7 +218,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
             from .Polygonize import Polygonize
             self.alglist.extend([Polygonize()])
 
-        if QGis.QGIS_VERSION_INT >= 21300:
+        if Qgis.QGIS_VERSION_INT >= 21300:
             from .ExecuteSQL import ExecuteSQL
             self.alglist.extend([ExecuteSQL()])
 

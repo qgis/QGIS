@@ -67,12 +67,12 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QgsRectangle extent() const = 0;
 
     /** Returns data type for the band specified by number */
-    virtual QGis::DataType dataType( int bandNo ) const = 0;
+    virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QGis::DataType sourceDataType( int bandNo ) const = 0;
+    virtual Qgis::DataType sourceDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const;
@@ -250,7 +250,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     static QgsRasterDataProvider* create( const QString &providerKey,
                                           const QString &uri,
                                           const QString& format, int nBands,
-                                          QGis::DataType type,
+                                          Qgis::DataType type,
                                           int width, int height, double* geoTransform,
                                           const QgsCoordinateReferenceSystem& crs,
                                           const QStringList& createOptions = QStringList() );

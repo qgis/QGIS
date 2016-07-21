@@ -36,17 +36,17 @@
 //
 
 // Version string
-QString QGis::QGIS_VERSION( QString::fromUtf8( VERSION ) );
+QString Qgis::QGIS_VERSION( QString::fromUtf8( VERSION ) );
 
 // development version
-const char* QGis::QGIS_DEV_VERSION = QGSVERSION;
+const char* Qgis::QGIS_DEV_VERSION = QGSVERSION;
 
 // Version number used for comparing versions using the
 // "Check QGIS Version" function
-const int QGis::QGIS_VERSION_INT = VERSION_INT;
+const int Qgis::QGIS_VERSION_INT = VERSION_INT;
 
 // Release name
-QString QGis::QGIS_RELEASE_NAME( QString::fromUtf8( RELEASE_NAME ) );
+QString Qgis::QGIS_RELEASE_NAME( QString::fromUtf8( RELEASE_NAME ) );
 
 #if GDAL_VERSION_NUM >= 1800
 const QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
@@ -75,23 +75,23 @@ const QString GEO_EPSG_CRS_AUTHID = "EPSG:4326";
 
 const QString GEO_NONE = "NONE";
 
-const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
-const double QGis::DEFAULT_SEARCH_RADIUS_MM = 2.;
+const double Qgis::DEFAULT_IDENTIFY_RADIUS = 0.5;
+const double Qgis::DEFAULT_SEARCH_RADIUS_MM = 2.;
 
 //! Default threshold between map coordinates and device coordinates for map2pixel simplification
-const float QGis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
+const float Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
 
-const QColor QGis::DEFAULT_HIGHLIGHT_COLOR = QColor( 255, 0, 0, 128 );
+const QColor Qgis::DEFAULT_HIGHLIGHT_COLOR = QColor( 255, 0, 0, 128 );
 
-double QGis::DEFAULT_HIGHLIGHT_BUFFER_MM = 0.5;
+double Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM = 0.5;
 
-double QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
+double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 
-double QGis::SCALE_PRECISION = 0.9999999999;
+double Qgis::SCALE_PRECISION = 0.9999999999;
 
 // description strings for units
 // Order must match enum indices
-const char* QGis::qgisUnitTypes[] =
+const char* Qgis::qgisUnitTypes[] =
 {
   QT_TRANSLATE_NOOP( "QGis::UnitType", "meters" ),
   QT_TRANSLATE_NOOP( "QGis::UnitType", "feet" ),
@@ -103,37 +103,37 @@ const char* QGis::qgisUnitTypes[] =
   QT_TRANSLATE_NOOP( "QGis::UnitType", "nautical miles" )
 };
 
-QgsWKBTypes::Type QGis::fromOldWkbType( QGis::WkbType type )
+QgsWKBTypes::Type Qgis::fromOldWkbType( Qgis::WkbType type )
 {
   switch ( type )
   {
-    case QGis::WKBPoint:
+    case Qgis::WKBPoint:
       return QgsWKBTypes::Point;
-    case QGis::WKBLineString:
+    case Qgis::WKBLineString:
       return QgsWKBTypes::LineString;
-    case QGis::WKBPolygon:
+    case Qgis::WKBPolygon:
       return QgsWKBTypes::Polygon;
-    case QGis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint:
       return QgsWKBTypes::MultiPoint;
-    case QGis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString:
       return QgsWKBTypes::MultiLineString;
-    case QGis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon:
       return QgsWKBTypes::MultiPolygon;
-    case QGis::WKBNoGeometry:
+    case Qgis::WKBNoGeometry:
       return QgsWKBTypes::NoGeometry;
-    case QGis::WKBPoint25D:
+    case Qgis::WKBPoint25D:
       return QgsWKBTypes::PointZ;
-    case QGis::WKBLineString25D:
+    case Qgis::WKBLineString25D:
       return QgsWKBTypes::LineStringZ;
-    case QGis::WKBPolygon25D:
+    case Qgis::WKBPolygon25D:
       return QgsWKBTypes::PolygonZ;
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBMultiPoint25D:
       return QgsWKBTypes::MultiPointZ;
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBMultiLineString25D:
       return QgsWKBTypes::MultiLineStringZ;
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBMultiPolygon25D:
       return QgsWKBTypes::MultiPolygonZ;
-    case QGis::WKBUnknown:
+    case Qgis::WKBUnknown:
       return QgsWKBTypes::Unknown;
     default:
       break;
@@ -143,88 +143,88 @@ QgsWKBTypes::Type QGis::fromOldWkbType( QGis::WkbType type )
   return static_cast< QgsWKBTypes::Type >( type );
 }
 
-QGis::WkbType QGis::fromNewWkbType( QgsWKBTypes::Type type )
+Qgis::WkbType Qgis::fromNewWkbType( QgsWKBTypes::Type type )
 {
   switch ( type )
   {
     case QgsWKBTypes::Point:
-      return QGis::WKBPoint;
+      return Qgis::WKBPoint;
     case QgsWKBTypes::LineString:
-      return QGis::WKBLineString;
+      return Qgis::WKBLineString;
     case QgsWKBTypes::Polygon:
-      return QGis::WKBPolygon;
+      return Qgis::WKBPolygon;
     case QgsWKBTypes::MultiPoint:
-      return QGis::WKBMultiPoint;
+      return Qgis::WKBMultiPoint;
     case QgsWKBTypes::MultiLineString:
-      return QGis::WKBMultiLineString;
+      return Qgis::WKBMultiLineString;
     case QgsWKBTypes::MultiPolygon:
-      return QGis::WKBMultiPolygon;
+      return Qgis::WKBMultiPolygon;
     case QgsWKBTypes::NoGeometry:
-      return QGis::WKBNoGeometry;
+      return Qgis::WKBNoGeometry;
     case QgsWKBTypes::PointZ:
     case QgsWKBTypes::Point25D:
-      return QGis::WKBPoint25D;
+      return Qgis::WKBPoint25D;
     case QgsWKBTypes::LineStringZ:
     case QgsWKBTypes::LineString25D:
-      return QGis::WKBLineString25D;
+      return Qgis::WKBLineString25D;
     case QgsWKBTypes::PolygonZ:
     case QgsWKBTypes::Polygon25D:
-      return QGis::WKBPolygon25D;
+      return Qgis::WKBPolygon25D;
     case QgsWKBTypes::MultiPointZ:
     case QgsWKBTypes::MultiPoint25D:
-      return QGis::WKBMultiPoint25D;
+      return Qgis::WKBMultiPoint25D;
     case QgsWKBTypes::MultiLineStringZ:
     case QgsWKBTypes::MultiLineString25D:
-      return QGis::WKBMultiLineString25D;
+      return Qgis::WKBMultiLineString25D;
     case QgsWKBTypes::MultiPolygonZ:
     case QgsWKBTypes::MultiPolygon25D:
-      return QGis::WKBMultiPolygon25D;
+      return Qgis::WKBMultiPolygon25D;
     default:
       break;
   }
 
   QgsDebugMsg( QString( "unexpected new wkbType=%1" ).arg( type ) );
-  return static_cast< QGis::WkbType >( type );
+  return static_cast< Qgis::WkbType >( type );
 }
 
 
-QGis::UnitType QGis::fromLiteral( const QString& literal, QGis::UnitType defaultType )
+Qgis::UnitType Qgis::fromLiteral( const QString& literal, Qgis::UnitType defaultType )
 {
   bool ok = false;
-  QGis::UnitType unit = QgsUnitTypes::decodeDistanceUnit( literal, &ok );
+  Qgis::UnitType unit = QgsUnitTypes::decodeDistanceUnit( literal, &ok );
   return ok ? unit : defaultType;
 }
 
-QString QGis::toLiteral( QGis::UnitType unit )
+QString Qgis::toLiteral( Qgis::UnitType unit )
 {
   return QgsUnitTypes::encodeUnit( unit );
 }
 
-QString QGis::tr( QGis::UnitType unit )
+QString Qgis::tr( Qgis::UnitType unit )
 {
   return QgsUnitTypes::toString( unit );
 }
 
-QGis::UnitType QGis::fromTr( const QString& literal, QGis::UnitType defaultType )
+Qgis::UnitType Qgis::fromTr( const QString& literal, Qgis::UnitType defaultType )
 {
   bool ok = false;
-  QGis::UnitType unit = QgsUnitTypes::stringToDistanceUnit( literal, &ok );
+  Qgis::UnitType unit = QgsUnitTypes::stringToDistanceUnit( literal, &ok );
   return ok ? unit : defaultType;
 }
 
-double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit )
+double Qgis::fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit )
 {
   return QgsUnitTypes::fromUnitToUnitFactor( fromUnit, toUnit );
 }
 
-double QGis::permissiveToDouble( QString string, bool &ok )
+double Qgis::permissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators
   string.remove( QLocale::system().groupSeparator() );
   return QLocale::system().toDouble( string, &ok );
 }
 
-int QGis::permissiveToInt( QString string, bool &ok )
+int Qgis::permissiveToInt( QString string, bool &ok )
 {
   //remove any thousands separators
   string.remove( QLocale::system().groupSeparator() );
@@ -356,7 +356,7 @@ QString qgsVsiPrefix( const QString& path )
     return "";
 }
 
-QGis::WkbType QGis::singleType( QGis::WkbType type )
+Qgis::WkbType Qgis::singleType( Qgis::WkbType type )
 {
   switch ( type )
   {
@@ -377,7 +377,7 @@ QGis::WkbType QGis::singleType( QGis::WkbType type )
   }
 }
 
-QGis::WkbType QGis::multiType( QGis::WkbType type )
+Qgis::WkbType Qgis::multiType( Qgis::WkbType type )
 {
   switch ( type )
   {
@@ -398,7 +398,7 @@ QGis::WkbType QGis::multiType( QGis::WkbType type )
   }
 }
 
-QGis::WkbType QGis::flatType( QGis::WkbType type )
+Qgis::WkbType Qgis::flatType( Qgis::WkbType type )
 {
   switch ( type )
   {
@@ -419,17 +419,17 @@ QGis::WkbType QGis::flatType( QGis::WkbType type )
   }
 }
 
-bool QGis::isSingleType( QGis::WkbType type )
+bool Qgis::isSingleType( Qgis::WkbType type )
 {
   return QgsWKBTypes::isSingleType( fromOldWkbType( type ) );
 }
 
-bool QGis::isMultiType( QGis::WkbType type )
+bool Qgis::isMultiType( Qgis::WkbType type )
 {
   return QgsWKBTypes::isMultiType( fromOldWkbType( type ) );
 }
 
-int QGis::wkbDimensions( QGis::WkbType type )
+int Qgis::wkbDimensions( Qgis::WkbType type )
 {
   if ( type == WKBUnknown || type == WKBNoGeometry )
     return 0;
@@ -438,7 +438,7 @@ int QGis::wkbDimensions( QGis::WkbType type )
   return 2 + ( QgsWKBTypes::hasZ( wkbType ) ? 1 : 0 ) + ( QgsWKBTypes::hasM( wkbType ) ? 1 : 0 );
 }
 
-const char *QGis::vectorGeometryType( QGis::GeometryType type )
+const char *Qgis::vectorGeometryType( Qgis::GeometryType type )
 {
   switch ( type )
   {
@@ -458,7 +458,7 @@ const char *QGis::vectorGeometryType( QGis::GeometryType type )
 }
 
 
-const char *QGis::featureType( QGis::WkbType type )
+const char *Qgis::featureType( Qgis::WkbType type )
 {
   switch ( type )
   {

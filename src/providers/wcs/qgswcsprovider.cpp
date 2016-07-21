@@ -842,21 +842,21 @@ void QgsWcsProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *blo
 
 
 // This could be shared with GDAL provider
-QGis::DataType QgsWcsProvider::sourceDataType( int bandNo ) const
+Qgis::DataType QgsWcsProvider::sourceDataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mSrcGdalDataType.size() )
   {
-    return QGis::UnknownDataType;
+    return Qgis::UnknownDataType;
   }
 
   return dataTypeFromGdal( mSrcGdalDataType[bandNo-1] );
 }
 
-QGis::DataType QgsWcsProvider::dataType( int bandNo ) const
+Qgis::DataType QgsWcsProvider::dataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mGdalDataType.size() )
   {
-    return QGis::UnknownDataType;
+    return Qgis::UnknownDataType;
   }
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
@@ -1397,13 +1397,13 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
       // set resolution approximately to 1mm
       switch ( mCrs.mapUnits() )
       {
-        case QGis::Meters:
+        case Qgis::Meters:
           xRes = 0.001;
           break;
-        case QGis::Feet:
+        case Qgis::Feet:
           xRes = 0.003;
           break;
-        case QGis::Degrees:
+        case Qgis::Degrees:
           // max length of degree of latitude on pole is 111694 m
           xRes = 1e-8;
           break;

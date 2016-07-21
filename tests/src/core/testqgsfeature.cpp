@@ -274,9 +274,9 @@ void TestQgsFeature::geometry()
   //test that non-const geometry triggers a detach
   copy = feature;
   QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
-  copy.geometry()->convertToType( QGis::Line );
+  copy.geometry()->convertToType( Qgis::Line );
   QScopedPointer<QgsGeometry> expected( new QgsGeometry( *mGeometry.data() ) );
-  expected->convertToType( QGis::Line );
+  expected->convertToType( Qgis::Line );
   QCOMPARE( *copy.constGeometry()->asWkb(), *expected->asWkb() );
   QCOMPARE( *feature.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
 

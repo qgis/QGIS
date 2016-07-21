@@ -34,7 +34,7 @@ QgsMapToolEdit::~QgsMapToolEdit()
 }
 
 
-QgsRubberBand* QgsMapToolEdit::createRubberBand( QGis::GeometryType geometryType, bool alternativeBand )
+QgsRubberBand* QgsMapToolEdit::createRubberBand( Qgis::GeometryType geometryType, bool alternativeBand )
 {
   QSettings settings;
   QgsRubberBand* rb = new QgsRubberBand( mCanvas, geometryType );
@@ -49,7 +49,7 @@ QgsRubberBand* QgsMapToolEdit::createRubberBand( QGis::GeometryType geometryType
     myAlpha = myAlpha * settings.value( "/qgis/digitizing/line_color_alpha_scale", 0.75 ).toDouble();
     rb->setLineStyle( Qt::DotLine );
   }
-  if ( geometryType == QGis::Polygon )
+  if ( geometryType == Qgis::Polygon )
   {
     color.setAlphaF( myAlpha );
   }
@@ -97,7 +97,7 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
   return 0;
 }
 
-QgsGeometryRubberBand* QgsMapToolEdit::createGeometryRubberBand( QGis::GeometryType geometryType, bool alternativeBand ) const
+QgsGeometryRubberBand* QgsMapToolEdit::createGeometryRubberBand( Qgis::GeometryType geometryType, bool alternativeBand ) const
 {
   QSettings settings;
   QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, geometryType );

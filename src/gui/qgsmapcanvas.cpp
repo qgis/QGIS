@@ -1395,7 +1395,7 @@ void QgsMapCanvas::beginZoomRect( QPoint pos )
   mZoomRect.setRect( 0, 0, 0, 0 );
   QApplication::setOverrideCursor( mZoomCursor );
   mZoomDragging = true;
-  mZoomRubberBand.reset( new QgsRubberBand( this, QGis::Polygon ) );
+  mZoomRubberBand.reset( new QgsRubberBand( this, Qgis::Polygon ) );
   QColor color( Qt::blue );
   color.setAlpha( 63 );
   mZoomRubberBand->setColor( color );
@@ -1835,7 +1835,7 @@ double QgsMapCanvas::mapUnitsPerPixel() const
 } // mapUnitsPerPixel
 
 
-void QgsMapCanvas::setMapUnits( QGis::UnitType u )
+void QgsMapCanvas::setMapUnits( Qgis::UnitType u )
 {
   if ( mSettings.mapUnits() == u )
     return;
@@ -1851,7 +1851,7 @@ void QgsMapCanvas::setMapUnits( QGis::UnitType u )
 }
 
 
-QGis::UnitType QgsMapCanvas::mapUnits() const
+Qgis::UnitType QgsMapCanvas::mapUnits() const
 {
   return mapSettings().mapUnits();
 }
@@ -1904,7 +1904,7 @@ void QgsMapCanvas::updateDatumTransformEntries()
       continue;
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vl && vl->geometryType() == QGis::NoGeometry )
+    if ( vl && vl->geometryType() == Qgis::NoGeometry )
       continue;
 
     // if there are more options, ask the user which datum transform to use

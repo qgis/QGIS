@@ -60,7 +60,7 @@ QgsFieldConditionalFormatWidget::~QgsFieldConditionalFormatWidget()
 
 void QgsFieldConditionalFormatWidget::updateIcon()
 {
-  mSymbol = QgsSymbolV2::defaultSymbol( QGis::Point );
+  mSymbol = QgsSymbolV2::defaultSymbol( Qgis::Point );
 
   QgsSymbolV2SelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( !dlg.exec() )

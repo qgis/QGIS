@@ -110,7 +110,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Get Vector layer from combobox
     QgsVectorLayer * getLayerFromCombobox( bool isTarget, int index );
     //! Get Icon for vector layer
-    QIcon getIconTypeGeometry( QGis::GeometryType geomType );
+    QIcon getIconTypeGeometry( Qgis::GeometryType geomType );
     //! Add layer in combobox (text, data and  tooltips)
     void addCbLayer( bool isTarget, QgsVectorLayer* lyr );
     //! Find Layer in combobox

@@ -44,11 +44,11 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
   contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
   contextMenu->addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
 
-  if ( mLayer && mLayer->geometryType() == QGis::Line )
+  if ( mLayer && mLayer->geometryType() == Qgis::Line )
   {
     contextMenu->addAction( tr( "Change width" ), this, SLOT( changeSymbolWidth() ) );
   }
-  else if ( mLayer && mLayer->geometryType() == QGis::Point )
+  else if ( mLayer && mLayer->geometryType() == Qgis::Point )
   {
     contextMenu->addAction( tr( "Change size" ), this, SLOT( changeSymbolSize() ) );
     contextMenu->addAction( tr( "Change angle" ), this, SLOT( changeSymbolAngle() ) );

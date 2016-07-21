@@ -208,11 +208,11 @@ int QgsRasterProjector::bandCount() const
   return 0;
 }
 
-QGis::DataType QgsRasterProjector::dataType( int bandNo ) const
+Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 {
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
 void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform, int destDatumTransform )

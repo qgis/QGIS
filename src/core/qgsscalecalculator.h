@@ -39,7 +39,7 @@ class CORE_EXPORT QgsScaleCalculator
      * QGis::UnitType enum (Meters, Feet, Degrees)
      */
     QgsScaleCalculator( double dpi = 0,
-                        QGis::UnitType mapUnits = QGis::Meters );
+                        Qgis::UnitType mapUnits = Qgis::Meters );
 
     /**
      * Set the dpi to be used in scale calculations
@@ -57,10 +57,10 @@ class CORE_EXPORT QgsScaleCalculator
      * Set the map units
      * @param mapUnits Units of the data on the map. Must match a value from the
      */
-    void setMapUnits( QGis::UnitType mapUnits );
+    void setMapUnits( Qgis::UnitType mapUnits );
 
     /** Returns current map units */
-    QGis::UnitType mapUnits() const;
+    Qgis::UnitType mapUnits() const;
 
     /**
      * Calculate the scale denominator
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsScaleCalculator
     double mDpi;
 
     //! map unit member
-    QGis::UnitType mMapUnits;
+    Qgis::UnitType mMapUnits;
 };
 
 #endif // #ifndef QGSSCALECALCULATOR_H

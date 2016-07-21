@@ -247,7 +247,7 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
   QgsDataSourceURI dataSource( dataSourceUri() );
 
   // Use of tiles currently only implemented if service CRS is meter based
-  if ( mServiceInfo["singleFusedMapCache"].toBool() && mCrs.mapUnits() == QGis::Meters )
+  if ( mServiceInfo["singleFusedMapCache"].toBool() && mCrs.mapUnits() == Qgis::Meters )
   {
     // Compute ideal resolution
     // - Measure distance in meters along lower and upper edge of bounding box

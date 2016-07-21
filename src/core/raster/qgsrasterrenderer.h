@@ -62,7 +62,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual int bandCount() const override;
 
-    virtual QGis::DataType dataType( int bandNo ) const override;
+    virtual Qgis::DataType dataType( int bandNo ) const override;
 
     virtual QString type() const { return mType; }
 

@@ -39,7 +39,7 @@ class QgsExpressionPrivate
         , mRowNumber( 0 )
         , mScale( 0 )
         , mCalc( nullptr )
-        , mDistanceUnit( QGis::UnknownUnit )
+        , mDistanceUnit( Qgis::UnknownUnit )
         , mAreaUnit( QgsUnitTypes::UnknownAreaUnit )
     {}
 
@@ -73,7 +73,7 @@ class QgsExpressionPrivate
     QString mExp;
 
     QSharedPointer<QgsDistanceArea> mCalc;
-    QGis::UnitType mDistanceUnit;
+    Qgis::UnitType mDistanceUnit;
     QgsUnitTypes::AreaUnit mAreaUnit;
 };
 ///@endcond

@@ -218,7 +218,7 @@ int QgsVectorLayerEditUtils::addPart( const QgsPointSequenceV2 &points, QgsFeatu
   int errorCode = geometry.addPart( points, L->geometryType() );
   if ( errorCode == 0 )
   {
-    if ( firstPart && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( L->wkbType() ) )
+    if ( firstPart && QgsWKBTypes::isSingleType( Qgis::fromOldWkbType( L->wkbType() ) )
          && L->dataProvider()->doesStrictFeatureTypeCheck() )
     {
       //convert back to single part if required by layer
@@ -257,7 +257,7 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
   int errorCode = geometry.addPart( ring, L->geometryType() );
   if ( errorCode == 0 )
   {
-    if ( firstPart && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( L->wkbType() ) )
+    if ( firstPart && QgsWKBTypes::isSingleType( Qgis::fromOldWkbType( L->wkbType() ) )
          && L->dataProvider()->doesStrictFeatureTypeCheck() )
     {
       //convert back to single part if required by layer
@@ -579,13 +579,13 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry* geom )
 
   int returnVal = 0;
 
-  QGis::WkbType wkbType = geom->wkbType();
+  Qgis::WkbType wkbType = geom->wkbType();
 
   switch ( wkbType )
   {
       //line
-    case QGis::WKBLineString25D:
-    case QGis::WKBLineString:
+    case Qgis::WKBLineString25D:
+    case Qgis::WKBLineString:
     {
       QgsPolyline theLine = geom->asPolyline();
       QgsPolyline::const_iterator line_it = theLine.constBegin();
@@ -600,8 +600,8 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry* geom )
     }
 
     //multiline
-    case QGis::WKBMultiLineString25D:
-    case QGis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString25D:
+    case Qgis::WKBMultiLineString:
     {
       QgsMultiPolyline theMultiLine = geom->asMultiPolyline();
       QgsPolyline currentPolyline;
@@ -621,8 +621,8 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry* geom )
     }
 
     //polygon
-    case QGis::WKBPolygon25D:
-    case QGis::WKBPolygon:
+    case Qgis::WKBPolygon25D:
+    case Qgis::WKBPolygon:
     {
       QgsPolygon thePolygon = geom->asPolygon();
       QgsPolyline currentRing;
@@ -643,8 +643,8 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry* geom )
     }
 
     //multipolygon
-    case QGis::WKBMultiPolygon25D:
-    case QGis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon25D:
+    case Qgis::WKBMultiPolygon:
     {
       QgsMultiPolygon theMultiPolygon = geom->asMultiPolygon();
       QgsPolygon currentPolygon;
@@ -688,11 +688,11 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint& p )
 
   //work with a tolerance because coordinate projection may introduce some rounding
   double threshold =  0.0000001;
-  if ( L->crs().mapUnits() == QGis::Meters )
+  if ( L->crs().mapUnits() == Qgis::Meters )
   {
     threshold = 0.001;
   }
-  else if ( L->crs().mapUnits() == QGis::Feet )
+  else if ( L->crs().mapUnits() == Qgis::Feet )
   {
     threshold = 0.0001;
   }

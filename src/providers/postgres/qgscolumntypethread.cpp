@@ -84,7 +84,7 @@ void QgsGeomColumnTypeThread::run()
                                   layerProperty.geometryColName ) );
 
       if ( !layerProperty.geometryColName.isNull() &&
-           ( layerProperty.types.value( 0, QGis::WKBUnknown ) == QGis::WKBUnknown ||
+           ( layerProperty.types.value( 0, Qgis::WKBUnknown ) == Qgis::WKBUnknown ||
              layerProperty.srids.value( 0, INT_MIN ) == INT_MIN ) )
       {
         if ( dontResolveType )

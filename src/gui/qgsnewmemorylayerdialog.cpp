@@ -39,30 +39,30 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
     return nullptr;
   }
 
-  QGis::WkbType geometrytype = dialog.selectedType();
+  Qgis::WkbType geometrytype = dialog.selectedType();
 
   QString geomType;
   switch ( geometrytype )
   {
-    case QGis::WKBPoint:
+    case Qgis::WKBPoint:
       geomType = "point";
       break;
-    case QGis::WKBLineString:
+    case Qgis::WKBLineString:
       geomType = "linestring";
       break;
-    case QGis::WKBPolygon:
+    case Qgis::WKBPolygon:
       geomType = "polygon";
       break;
-    case QGis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint:
       geomType = "multipoint";
       break;
-    case QGis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString:
       geomType = "multilinestring";
       break;
-    case QGis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon:
       geomType = "multipolygon";
       break;
-    case QGis::WKBNoGeometry:
+    case Qgis::WKBNoGeometry:
       geomType = "none";
       break;
     default:
@@ -70,7 +70,7 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
   }
 
   QString layerProperties = QString( "%1?" ).arg( geomType );
-  if ( QGis::WKBNoGeometry != geometrytype )
+  if ( Qgis::WKBNoGeometry != geometrytype )
     layerProperties.append( QString( "crs=%1&" ).arg( dialog.crs().authid() ) );
   layerProperties.append( QString( "memoryid=%1" ).arg( QUuid::createUuid().toString() ) );
 
@@ -102,37 +102,37 @@ QgsNewMemoryLayerDialog::~QgsNewMemoryLayerDialog()
   settings.setValue( "/Windows/NewMemoryLayer/geometry", saveGeometry() );
 }
 
-QGis::WkbType QgsNewMemoryLayerDialog::selectedType() const
+Qgis::WkbType QgsNewMemoryLayerDialog::selectedType() const
 {
   if ( !buttonGroupGeometry->isChecked() )
   {
-    return QGis::WKBNoGeometry;
+    return Qgis::WKBNoGeometry;
   }
   else if ( mPointRadioButton->isChecked() )
   {
-    return QGis::WKBPoint;
+    return Qgis::WKBPoint;
   }
   else if ( mLineRadioButton->isChecked() )
   {
-    return QGis::WKBLineString;
+    return Qgis::WKBLineString;
   }
   else if ( mPolygonRadioButton->isChecked() )
   {
-    return QGis::WKBPolygon;
+    return Qgis::WKBPolygon;
   }
   else if ( mMultiPointRadioButton->isChecked() )
   {
-    return QGis::WKBMultiPoint;
+    return Qgis::WKBMultiPoint;
   }
   else if ( mMultiLineRadioButton->isChecked() )
   {
-    return QGis::WKBMultiLineString;
+    return Qgis::WKBMultiLineString;
   }
   else if ( mMultiPolygonRadioButton->isChecked() )
   {
-    return QGis::WKBMultiPolygon;
+    return Qgis::WKBMultiPolygon;
   }
-  return QGis::WKBUnknown;
+  return Qgis::WKBUnknown;
 }
 
 QgsCoordinateReferenceSystem QgsNewMemoryLayerDialog::crs() const

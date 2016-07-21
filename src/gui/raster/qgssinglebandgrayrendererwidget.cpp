@@ -92,7 +92,7 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
   }
   int band = mGrayBandComboBox->itemData( mGrayBandComboBox->currentIndex() ).toInt();
 
-  QgsContrastEnhancement* e = new QgsContrastEnhancement(( QGis::DataType )(
+  QgsContrastEnhancement* e = new QgsContrastEnhancement(( Qgis::DataType )(
         provider->dataType( band ) ) );
   e->setMinimumValue( mMinLineEdit->text().toDouble() );
   e->setMaximumValue( mMaxLineEdit->text().toDouble() );

@@ -72,7 +72,7 @@
   * Modify dictionary to add math/string/aggregates functions/operators.
   * Can't open column values from query builder.
   * GEOM columns are not retrieved. (Done: don't grab them, just use GEOMETRY string instead to speed columns population)
-  * Can't open a query in QGis.
+  * Can't open a query in Qgis.
   * Find the srid of a query and add it as a layer parameter.
   * Open non geometric queries.
   * Show better statistic about query duration.
@@ -104,7 +104,7 @@
 
 * Connector
   * getVectorTablesCache should present only one line per table (don't show tables more than once).
-  * correspondance between Oracle SDO_GTYPE and QGis.WkbType in a class dict.
+  * correspondance between Oracle SDO_GTYPE and Qgis.WkbType in a class dict.
   * Show only one table/layer in the table tree even if entry is duplicated in cache. 
   * Reuse the pre-calculated extent metadata when updating.
   * Create a better privilege function using ALL_PRIVS_RECD
@@ -122,7 +122,7 @@
   * Bad comparison between metadata extent and calculated extent (was format syntax).
   * If user can't udpate metadata, don't pull the link for update action.
   * Can't update metadata extent: find if table is in USER_SDO_GEOM_METADATA.
-  * Print QGis Geometry Type in string instead of int.
+  * Print Qgis Geometry Type in string instead of int.
 
 * Constraints: 
   * Handle foreign keys information.

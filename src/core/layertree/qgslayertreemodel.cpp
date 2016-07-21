@@ -238,13 +238,13 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       }
       else if ( vlayer && layer->type() == QgsMapLayer::VectorLayer )
       {
-        if ( vlayer->geometryType() == QGis::Point )
+        if ( vlayer->geometryType() == Qgis::Point )
           icon = QgsLayerItem::iconPoint();
-        else if ( vlayer->geometryType() == QGis::Line )
+        else if ( vlayer->geometryType() == Qgis::Line )
           icon = QgsLayerItem::iconLine();
-        else if ( vlayer->geometryType() == QGis::Polygon )
+        else if ( vlayer->geometryType() == Qgis::Polygon )
           icon = QgsLayerItem::iconPolygon();
-        else if ( vlayer->geometryType() == QGis::NoGeometry )
+        else if ( vlayer->geometryType() == Qgis::NoGeometry )
           icon = QgsLayerItem::iconTable();
         else
           icon = QgsLayerItem::iconDefault();
@@ -274,7 +274,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
       if ( nodeLayer->layer() && nodeLayer->layer()->type() == QgsMapLayer::VectorLayer )
       {
-        if ( qobject_cast<QgsVectorLayer*>( nodeLayer->layer() )->geometryType() == QGis::NoGeometry )
+        if ( qobject_cast<QgsVectorLayer*>( nodeLayer->layer() )->geometryType() == Qgis::NoGeometry )
           return QVariant(); // do not show checkbox for non-spatial tables
       }
       return nodeLayer->isVisible();
@@ -627,7 +627,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings* settings, bool us
         }
       }
     }
-    bool polygonValid = !polygon.isEmpty() && polygon.type() == QGis::Polygon;
+    bool polygonValid = !polygon.isEmpty() && polygon.type() == Qgis::Polygon;
     if ( useExpressions && !useExtent && !polygonValid ) // only expressions
     {
       mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );

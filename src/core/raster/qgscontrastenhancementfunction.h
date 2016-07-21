@@ -31,7 +31,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
 {
 
   public:
-    QgsContrastEnhancementFunction( QGis::DataType, double, double );
+    QgsContrastEnhancementFunction( Qgis::DataType, double, double );
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction& f );
     virtual ~QgsContrastEnhancementFunction() {}
 
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     double mMinimumMaximumRange;
 
     /** \brief Data type of the band */
-    QGis::DataType mQgsRasterDataType;
+    Qgis::DataType mQgsRasterDataType;
 };
 
 #endif

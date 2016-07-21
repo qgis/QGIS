@@ -224,7 +224,7 @@ class QgsVectorFileWriter
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,
                          const QgsFields& fields,
-                         QGis::WkbType geometryType,
+                         Qgis::WkbType geometryType,
                          const QgsCoordinateReferenceSystem& srs = QgsCoordinateReferenceSystem(),
                          const QString& driverName = "ESRI Shapefile",
                          const QStringList &datasourceOptions = QStringList(),
@@ -271,7 +271,7 @@ class QgsVectorFileWriter
     QString errorMessage();
 
     /** Add feature to the currently opened data source */
-    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, QGis::UnitType outputUnit = QGis::Meters );
+    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, Qgis::UnitType outputUnit = Qgis::Meters );
 
     //! @note not available in python bindings
     // QMap<int, int> attrIdxToOgrIdx();
@@ -295,7 +295,7 @@ class QgsVectorFileWriter
 
   protected:
     //! @note not available in python bindings
-    // OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
+    // OGRGeometryH createEmptyGeometry( Qgis::WkbType wkbType );
 
   private:
 

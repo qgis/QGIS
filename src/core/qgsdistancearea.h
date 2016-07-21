@@ -193,13 +193,13 @@ class CORE_EXPORT QgsDistanceArea
      * @returns calculated distance between points. Distance units are stored in units parameter.
      * @note added in QGIS 2.12
      */
-    double measureLine( const QgsPoint& p1, const QgsPoint& p2, QGis::UnitType& units ) const;
+    double measureLine( const QgsPoint& p1, const QgsPoint& p2, Qgis::UnitType& units ) const;
 
     /** Returns the units of distance for length calculations made by this object.
      * @note added in QGIS 2.14
      * @see areaUnits()
      */
-    QGis::UnitType lengthUnits() const;
+    Qgis::UnitType lengthUnits() const;
 
     /** Returns the units of area for areal calculations made by this object.
      * @note added in QGIS 2.14
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsDistanceArea
      * @return formatted measurement string
      * @deprecated use formatDistance() or formatArea() instead
      */
-    Q_DECL_DEPRECATED static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
+    Q_DECL_DEPRECATED static QString textUnit( double value, int decimals, Qgis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
     /** Returns an distance formatted as a friendly string.
      * @param distance distance to format
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsDistanceArea
      * @note added in QGIS 2.16
      * @see formatArea()
      */
-    static QString formatDistance( double distance, int decimals, QGis::UnitType unit, bool keepBaseUnit = false );
+    static QString formatDistance( double distance, int decimals, Qgis::UnitType unit, bool keepBaseUnit = false );
 
     /** Returns an area formatted as a friendly string.
      * @param area area to format
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsDistanceArea
 
     //! Helper for conversion between physical units
     // TODO QGIS 3.0 - remove this method, as its behaviour is non-intuitive.
-    void convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea ) const;
+    void convertMeasurement( double &measure, Qgis::UnitType &measureUnits, Qgis::UnitType displayUnits, bool isArea ) const;
 
     /** Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
      * different distance unit.
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsDistanceArea
      * @see convertAreaMeasurement()
      * @note added in QGIS 2.14
      */
-    double convertLengthMeasurement( double length, QGis::UnitType toUnits ) const;
+    double convertLengthMeasurement( double length, Qgis::UnitType toUnits ) const;
 
     /** Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
      * different areal unit.

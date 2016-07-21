@@ -147,7 +147,7 @@ void TestQgsAtlasComposition::init()
   //create composition with composer map
   mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
   mMapSettings->setCrsTransformEnabled( true );
-  mMapSettings->setMapUnits( QGis::Meters );
+  mMapSettings->setMapUnits( Qgis::Meters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;

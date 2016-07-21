@@ -500,9 +500,9 @@ bool QgsVirtualLayerProvider::setSubsetString( const QString& subset, bool updat
 }
 
 
-QGis::WkbType QgsVirtualLayerProvider::geometryType() const
+Qgis::WkbType QgsVirtualLayerProvider::geometryType() const
 {
-  return static_cast<QGis::WkbType>( mDefinition.geometryWkbType() );
+  return static_cast<Qgis::WkbType>( mDefinition.geometryWkbType() );
 }
 
 long QgsVirtualLayerProvider::featureCount() const

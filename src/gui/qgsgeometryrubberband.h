@@ -60,7 +60,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
       ICON_FULL_BOX
     };
 
-    QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geomType = QGis::Line );
+    QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, Qgis::GeometryType geomType = Qgis::Line );
     ~QgsGeometryRubberBand();
 
     /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     QPen mPen;
     int mIconSize;
     IconType mIconType;
-    QGis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
 
     void drawVertex( QPainter* p, double x, double y );
     QgsRectangle rubberBandRectangle() const;

@@ -125,7 +125,7 @@ void TestQgsMapRenderer::initTestCase()
     QgsVectorFileWriter myWriter( myFileName,
                                   mEncoding,
                                   mFields,
-                                  QGis::WKBPolygon,
+                                  Qgis::WKBPolygon,
                                   mCRS );
     double myInterval = 0.5;
     for ( double i = -180.0; i <= 180.0; i += myInterval )

@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 
 from qgis.core import (
-    QGis,
+    Qgis,
     QgsField,
     QgsPoint,
     QgsMapLayer,
@@ -120,13 +120,13 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
             assert layer.isValid(), "Failed to create valid %s memory layer" % (v)
 
     def testLayerGeometry(self):
-        testVectors = [("Point", QGis.Point, QGis.WKBPoint),
-                       ("LineString", QGis.Line, QGis.WKBLineString),
-                       ("Polygon", QGis.Polygon, QGis.WKBPolygon),
-                       ("MultiPoint", QGis.Point, QGis.WKBMultiPoint),
-                       ("MultiLineString", QGis.Line, QGis.WKBMultiLineString),
-                       ("MultiPolygon", QGis.Polygon, QGis.WKBMultiPolygon),
-                       ("None", QGis.NoGeometry, QGis.WKBNoGeometry)]
+        testVectors = [("Point", Qgis.Point, Qgis.WKBPoint),
+                       ("LineString", Qgis.Line, Qgis.WKBLineString),
+                       ("Polygon", Qgis.Polygon, Qgis.WKBPolygon),
+                       ("MultiPoint", Qgis.Point, Qgis.WKBMultiPoint),
+                       ("MultiLineString", Qgis.Line, Qgis.WKBMultiLineString),
+                       ("MultiPolygon", Qgis.Polygon, Qgis.WKBMultiPolygon),
+                       ("None", Qgis.NoGeometry, Qgis.WKBNoGeometry)]
         for v in testVectors:
             layer = QgsVectorLayer(v[0], "test", "memory")
 
