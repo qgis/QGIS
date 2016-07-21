@@ -111,6 +111,22 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
         joinNode.toElement().setAttribute( "joinLayerId", newid );
       }
     }
+
+    // change IDs of dependencies
+    QDomNodeList dataDeps = doc.elementsByTagName( "dataDependencies" );
+    for ( int i = 0; i < dataDeps.size(); i++ )
+    {
+      QDomNodeList layers = dataDeps.at( i ).childNodes();
+      for ( int j = 0; j < layers.size(); j++ )
+      {
+        QDomElement elt = layers.at( j ).toElement();
+        if ( elt.attribute( "id" ) == oldid )
+        {
+          elt.setAttribute( "id", newid );
+        }
+      }
+    }
+
   }
 
   QDomElement layerTreeElem = doc.documentElement().firstChildElement( "layer-tree-group" );

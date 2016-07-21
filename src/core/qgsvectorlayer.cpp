@@ -1456,6 +1456,17 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   }
   updateFields();
 
+  QDomNode depsNode = layer_node.namedItem( "dataDependencies" );
+  QDomNodeList depsNodes = depsNode.childNodes();
+  QSet<QString> sources;
+  for ( int i = 0; i < depsNodes.count(); i++ )
+  {
+    QDomNode node = depsNodes.at( i );
+    QString source = depsNodes.at( i ).toElement().attribute( "id" );
+    sources << source;
+  }
+  setDataDependencies( sources );
+
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   return mValid;               // should be true if read successfully
@@ -1646,6 +1657,19 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     defaultsElem.appendChild( defaultElem );
   }
   layer_node.appendChild( defaultsElem );
+
+  // change dependencies
+  QDomElement dataDependenciesElement = document.createElement( "dataDependencies" );
+  Q_FOREACH ( QString layerId, dataDependencies() )
+  {
+    QDomElement depElem = document.createElement( "layer" );
+    depElem.setAttribute( "id", layerId );
+    dataDependenciesElement.appendChild( depElem );
+  }
+  layer_node.appendChild( dataDependenciesElement );
+
+  // save expression fields
+  mExpressionFieldBuffer->writeXml( layer_node, document );
 
   writeStyleManager( layer_node, document );
 
@@ -4068,4 +4092,50 @@ QSet<QString> QgsVectorLayer::layerDependencies() const
     return mDataProvider->layerDependencies();
   }
   return QSet<QString>();
+}
+
+QSet<QString> QgsVectorLayer::dataDependencies() const
+{
+  return layerDependencies() + mDataDependencies;
+}
+
+bool QgsVectorLayer::setDataDependencies( const QSet<QString>& layersIds )
+{
+  if ( hasDataDependencyCycle( layersIds ) )
+    return false;
+
+  QSet<QString> toAdd = layerDependencies() + layersIds - mDataDependencies;
+
+  // disconnect layers that are not present in the list of dependencies anymore
+  Q_FOREACH ( QString layerId, mDataDependencies )
+  {
+    QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+    if ( lyr == nullptr )
+      continue;
+    disconnect( lyr, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
+    disconnect( lyr, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
+    disconnect( lyr, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SIGNAL( dataChanged() ) );
+    disconnect( lyr, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
+  }
+
+  // assign new dependencies
+  mDataDependencies = layerDependencies() + layersIds;
+
+  // connect to new layers
+  Q_FOREACH ( QString layerId, mDataDependencies )
+  {
+    QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+    if ( lyr == nullptr )
+      continue;
+    connect( lyr, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
+    connect( lyr, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
+    connect( lyr, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SIGNAL( dataChanged() ) );
+    connect( lyr, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
+  }
+
+  // if new layers are present, emit a data change
+  if ( ! toAdd.isEmpty() )
+    emit dataChanged();
+
+  return true;
 }

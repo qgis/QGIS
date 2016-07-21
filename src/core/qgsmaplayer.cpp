@@ -1680,3 +1680,62 @@ void QgsMapLayer::setExtent( const QgsRectangle &r )
 {
   mExtent = r;
 }
+
+static QList<const QgsMapLayer*> _depOutEdges( const QgsMapLayer* vl, const QgsMapLayer* that, const QSet<QString>& layersIds )
+{
+  QList<const QgsMapLayer*> lst;
+  if ( vl == that )
+  {
+    Q_FOREACH ( QString layerId, layersIds )
+    {
+      if ( const QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+        lst << l;
+    }
+  }
+  else
+  {
+    Q_FOREACH ( QString layerId, vl->dataDependencies() )
+    {
+      if ( const QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+        lst << l;
+    }
+  }
+  return lst;
+}
+
+static bool _depHasCycleDFS( const QgsMapLayer* n, QHash<const QgsMapLayer*, int>& mark, const QgsMapLayer* that, const QSet<QString>& layersIds )
+{
+  if ( mark.value( n ) == 1 ) // temporary
+    return true;
+  if ( mark.value( n ) == 0 ) // not visited
+  {
+    mark[n] = 1; // temporary
+    Q_FOREACH ( const QgsMapLayer* m, _depOutEdges( n, that, layersIds ) )
+    {
+      if ( _depHasCycleDFS( m, mark, that, layersIds ) )
+        return true;
+    }
+    mark[n] = 2; // permanent
+  }
+  return false;
+}
+
+bool QgsMapLayer::hasDataDependencyCycle( const QSet<QString>& layersIds ) const
+{
+  QHash<const QgsMapLayer*, int> marks;
+  return _depHasCycleDFS( this, marks, this, layersIds );
+}
+
+bool QgsMapLayer::setDataDependencies( const QSet<QString>& layersIds )
+{
+  if ( hasDataDependencyCycle( layersIds ) )
+    return false;
+
+  mDataDependencies = layersIds;
+  return true;
+}
+
+QSet<QString> QgsMapLayer::dataDependencies() const
+{
+  return mDataDependencies;
+}

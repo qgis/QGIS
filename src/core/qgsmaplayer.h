@@ -698,6 +698,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void emitStyleChanged();
 
+    /**
+     * Sets the list of layers that may modify data/geometries of this layer when modified.
+     * @see dataDependencies
+     *
+     * @param layersIds IDs of the layers that this layer depends on
+     * @returns false if a dependency cycle has been detected (the change dependency set is not changed in that case)
+     */
+    virtual bool setDataDependencies( const QSet<QString>& layersIds );
+
+    /**
+     * Gets the list of layers that may modify data/geometries of this layer when modified.
+     * @see setDataDependencies
+     *
+     * @returns IDs of the layers that this layer depends on
+     */
+    virtual QSet<QString> dataDependencies() const;
+
   signals:
 
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
@@ -835,6 +852,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** \brief Error */
     QgsError mError;
+
+    //! List of layers that may modify this layer on modification
+    QSet<QString> mDataDependencies;
+
+    //! Checks whether a new set of data dependencies will introduce a cycle
+    bool hasDataDependencyCycle( const QSet<QString>& layersIds ) const;
 
   private:
     /**
