@@ -194,26 +194,6 @@ class CORE_EXPORT Qgis
     //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
     Q_DECL_DEPRECATED static double fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit );
 
-    /** Converts a string to a double in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand separators
-     * @param string string to convert
-     * @param ok will be set to true if conversion was successful
-     * @returns string converted to double if possible
-     * @note added in version 2.9
-     * @see permissiveToInt
-     */
-    static double permissiveToDouble( QString string, bool& ok );
-
-    /** Converts a string to an integer in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand separators
-     * @param string string to convert
-     * @param ok will be set to true if conversion was successful
-     * @returns string converted to int if possible
-     * @note added in version 2.9
-     * @see permissiveToDouble
-     */
-    static int permissiveToInt( QString string, bool& ok );
-
     //! User defined event types
     enum UserEvent
     {
@@ -387,6 +367,26 @@ inline double qgsRound( double x )
 {
   return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
 }
+
+/** Converts a string to a double in a permissive way, eg allowing for incorrect
+ * numbers of digits between thousand separators
+ * @param string string to convert
+ * @param ok will be set to true if conversion was successful
+ * @returns string converted to double if possible
+ * @note added in version 2.9
+ * @see permissiveToInt
+ */
+CORE_EXPORT double qgsPermissiveToDouble( QString string, bool& ok );
+
+/** Converts a string to an integer in a permissive way, eg allowing for incorrect
+ * numbers of digits between thousand separators
+ * @param string string to convert
+ * @param ok will be set to true if conversion was successful
+ * @returns string converted to int if possible
+ * @note added in version 2.9
+ * @see permissiveToDouble
+ */
+CORE_EXPORT int qgsPermissiveToInt( QString string, bool& ok );
 
 // Add missing qHash implementation for QDate, QTime, QDateTime
 // implementations taken from upstream Qt5 versions

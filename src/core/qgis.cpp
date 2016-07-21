@@ -217,14 +217,14 @@ double Qgis::fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUni
   return QgsUnitTypes::fromUnitToUnitFactor( fromUnit, toUnit );
 }
 
-double Qgis::permissiveToDouble( QString string, bool &ok )
+double qgsPermissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators
   string.remove( QLocale::system().groupSeparator() );
   return QLocale::system().toDouble( string, &ok );
 }
 
-int Qgis::permissiveToInt( QString string, bool &ok )
+int qgsPermissiveToInt( QString string, bool &ok )
 {
   //remove any thousands separators
   string.remove( QLocale::system().groupSeparator() );

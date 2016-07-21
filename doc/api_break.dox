@@ -45,6 +45,8 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 <ul>
 <li>The QGis class was renamed to Qgis for capitalisation consistency with other class names</li>
+<li>permissiveToDouble() and permissiveToInt() where moved out of the QGis class and renamed to qgsPermissiveToDouble() and
+qgsPermissiveToInt()</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsAuthConfigUriEdit QgsAuthConfigUriEdit

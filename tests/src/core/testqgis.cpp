@@ -69,34 +69,34 @@ void TestQgis::permissiveToDouble()
 {
   //good inputs
   bool ok = false;
-  double result = Qgis::permissiveToDouble( QString( "1000" ), ok );
+  double result = qgsPermissiveToDouble( QString( "1000" ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = Qgis::permissiveToDouble( QString( "1" ) + QLocale::system().groupSeparator() + "000", ok );
+  result = qgsPermissiveToDouble( QString( "1" ) + QLocale::system().groupSeparator() + "000", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = Qgis::permissiveToDouble( QString( "5" ) + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QString( "5" ) + QLocale::system().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 5.5 );
   ok = false;
-  result = Qgis::permissiveToDouble( QString( "1" ) + QLocale::system().groupSeparator() + "000" + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QString( "1" ) + QLocale::system().groupSeparator() + "000" + QLocale::system().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 
   //bad input
   ok = false;
-  ( void ) Qgis::permissiveToDouble( QString( "a" ), ok );
+  ( void ) qgsPermissiveToDouble( QString( "a" ), ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = Qgis::permissiveToDouble( QString( "10" ) + QLocale::system().groupSeparator() + "00", ok );
+  result = qgsPermissiveToDouble( QString( "10" ) + QLocale::system().groupSeparator() + "00", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = Qgis::permissiveToDouble( QString( "10" ) + QLocale::system().groupSeparator() + "00" + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QString( "10" ) + QLocale::system().groupSeparator() + "00" + QLocale::system().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 }
@@ -105,22 +105,22 @@ void TestQgis::permissiveToInt()
 {
   //good inputs
   bool ok = false;
-  int result = Qgis::permissiveToInt( QString( "1000" ), ok );
+  int result = qgsPermissiveToInt( QString( "1000" ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
   ok = false;
-  result = Qgis::permissiveToInt( QString( "1%01000" ).arg( QLocale::system().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( QString( "1%01000" ).arg( QLocale::system().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 
   //bad input
   ok = false;
-  ( void ) Qgis::permissiveToInt( QString( "a" ), ok );
+  ( void ) qgsPermissiveToInt( QString( "a" ), ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = Qgis::permissiveToInt( QString( "10%0100" ).arg( QLocale::system().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( QString( "10%0100" ).arg( QLocale::system().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 }

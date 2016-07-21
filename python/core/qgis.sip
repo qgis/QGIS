@@ -180,26 +180,6 @@ class Qgis
     //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
     static double fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit ) /Deprecated/;
 
-    /** Converts a string to a double in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand separators
-     * @param string string to convert
-     * @param ok will be set to true if conversion was successful
-     * @returns string converted to double if possible
-     * @note added in version 2.9
-     * @see permissiveToInt
-     */
-    static double permissiveToDouble( QString string, bool& ok );
-
-    /** Converts a string to an integer in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand separators
-     * @param string string to convert
-     * @param ok will be set to true if conversion was successful
-     * @returns string converted to int if possible
-     * @note added in version 2.9
-     * @see permissiveToDouble
-     */
-    static int permissiveToInt( QString string, bool& ok );
-
     //! User defined event types
     enum UserEvent
     {
@@ -242,6 +222,27 @@ class Qgis
      * @note added in 2.15*/
     static double SCALE_PRECISION;
 };
+
+
+/** Converts a string to a double in a permissive way, eg allowing for incorrect
+ * numbers of digits between thousand separators
+ * @param string string to convert
+ * @param ok will be set to true if conversion was successful
+ * @returns string converted to double if possible
+ * @note added in version 2.9
+ * @see permissiveToInt
+ */
+double qgsPermissiveToDouble( QString string, bool& ok );
+
+/** Converts a string to an integer in a permissive way, eg allowing for incorrect
+ * numbers of digits between thousand separators
+ * @param string string to convert
+ * @param ok will be set to true if conversion was successful
+ * @returns string converted to int if possible
+ * @note added in version 2.9
+ * @see permissiveToDouble
+ */
+int qgsPermissiveToInt( QString string, bool& ok );
 
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
