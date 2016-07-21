@@ -14,14 +14,54 @@
    <string>Edit Widget Properties</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="1">
-    <widget class="QCheckBox" name="isFieldEditableCheckBox">
-     <property name="text">
-      <string>Editable</string>
+   <item row="2" column="1">
+    <widget class="QgsCollapsibleGroupBox" name="groupBox">
+     <property name="title">
+      <string>Contraints</string>
      </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QCheckBox" name="notNullCheckBox">
+        <property name="text">
+         <string>Not null</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Constraint</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsFieldExpressionWidget" name="constraintExpression" native="true"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Constraint description</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="constraintExpressionDescription"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="1" column="1">
@@ -34,8 +74,8 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="11">
-    <widget class="QListWidget" name="selectionListWidget"/>
+   <item row="6" column="1">
+    <widget class="QStackedWidget" name="stackedWidget"/>
    </item>
    <item row="10" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -47,49 +87,18 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
-    <widget class="QStackedWidget" name="stackedWidget"/>
+   <item row="0" column="0" rowspan="11">
+    <widget class="QListWidget" name="selectionListWidget"/>
    </item>
-   <item row="2" column="1">
-    <widget class="QCheckBox" name="notNullCheckBox">
+   <item row="0" column="1">
+    <widget class="QCheckBox" name="isFieldEditableCheckBox">
      <property name="text">
-      <string>Not null</string>
+      <string>Editable</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
-   </item>
-   <item row="4" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Constraint</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsFieldExpressionWidget" name="constraintExpression" native="true"/>
-     </item>
-    </layout>
-   </item>
-   <item row="5" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Constraint description</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="constraintExpressionDescription"/>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>
@@ -98,6 +107,12 @@
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
