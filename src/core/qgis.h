@@ -206,10 +206,6 @@ class CORE_EXPORT Qgis
       ProviderCountCalcEvent
     };
 
-    /** Old search radius in % of canvas width
-     *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
-    Q_DECL_DEPRECATED static const double DEFAULT_IDENTIFY_RADIUS;
-
     /** Identify search radius in mm
      *  @note added in 2.3 */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -480,8 +476,6 @@ extern CORE_EXPORT const QString GEO_NONE;
 // Constants for point symbols
 //
 
-/** Magic number that determines the minimum allowable point size for point symbols */
-const double MINIMUM_POINT_SIZE = 0.1;
 /** Magic number that determines the default point size for point symbols */
 const double DEFAULT_POINT_SIZE = 2.0;
 const double DEFAULT_LINE_WIDTH = 0.26;
