@@ -552,8 +552,9 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setFieldEditable( cfg.mEditable );
   attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
   attributeTypeDialog.setNotNull( cfg.mNotNull );
-  attributeTypeDialog.setExpression( cfg.mConstraint );
-  attributeTypeDialog.setExpressionDescription( cfg.mConstraintDescription );
+  attributeTypeDialog.setConstraintExpression( cfg.mConstraint );
+  attributeTypeDialog.setConstraintExpressionDescription( cfg.mConstraintDescription );
+  attributeTypeDialog.setDefaultValueExpression( mLayer->defaultValueExpression( index ) );
 
   attributeTypeDialog.setWidgetConfig( cfg.mEditorWidgetConfig );
   attributeTypeDialog.setWidgetType( cfg.mEditorWidgetType );
@@ -564,8 +565,9 @@ void QgsFieldsProperties::attributeTypeDialog()
   cfg.mEditable = attributeTypeDialog.fieldEditable();
   cfg.mLabelOnTop = attributeTypeDialog.labelOnTop();
   cfg.mNotNull = attributeTypeDialog.notNull();
-  cfg.mConstraintDescription = attributeTypeDialog.expressionDescription();
-  cfg.mConstraint = attributeTypeDialog.expression();
+  cfg.mConstraintDescription = attributeTypeDialog.constraintExpressionDescription();
+  cfg.mConstraint = attributeTypeDialog.constraintExpression();
+  mLayer->setDefaultValueExpression( index, attributeTypeDialog.defaultValueExpression() );
 
   cfg.mEditorWidgetType = attributeTypeDialog.editorWidgetType();
   cfg.mEditorWidgetConfig = attributeTypeDialog.editorWidgetConfig();
