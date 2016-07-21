@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -35,7 +36,7 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename
 from processing.tools import vector
-
+from processing.core.SilentProgress import SilentProgress
 
 def runalg(alg, progress=None):
     """Executes a given algorithm, showing its progress in the
@@ -45,7 +46,7 @@ def runalg(alg, progress=None):
     could not be completed.
     """
     try:
-        alg.execute(progress)
+        alg.execute(progress or SilentProgress())
         return True
     except GeoAlgorithmExecutionException as e:
         ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
