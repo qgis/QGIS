@@ -110,7 +110,7 @@ void QgsWCSConnectionItem::editConnection()
 
 void QgsWCSConnectionItem::deleteConnection()
 {
-  QgsOWSConnection::deleteConnection( "WCS", mName );
+  QgsOwsConnection::deleteConnection( "WCS", mName );
   // the parent should be updated
   mParent->refresh();
 }
@@ -195,7 +195,7 @@ QString QgsWCSLayerItem::createUri()
   QgsCoordinateReferenceSystem testCrs;
   Q_FOREACH ( const QString& c, mCoverageSummary.supportedCrs )
   {
-    testCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( c );
+    testCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( c );
     if ( testCrs.isValid() )
     {
       crs = c;
@@ -231,9 +231,9 @@ QgsWCSRootItem::~QgsWCSRootItem()
 QVector<QgsDataItem*>QgsWCSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  Q_FOREACH ( const QString& connName, QgsOWSConnection::connectionList( "WCS" ) )
+  Q_FOREACH ( const QString& connName, QgsOwsConnection::connectionList( "WCS" ) )
   {
-    QgsOWSConnection connection( "WCS", connName );
+    QgsOwsConnection connection( "WCS", connName );
     QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + '/' + connName, connection.uri().encodedUri() );
     connections.append( conn );
   }
@@ -298,9 +298,9 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( thePath.startsWith( "wcs:/" ) )
   {
     QString connectionName = thePath.split( '/' ).last();
-    if ( QgsOWSConnection::connectionList( "WCS" ).contains( connectionName ) )
+    if ( QgsOwsConnection::connectionList( "WCS" ).contains( connectionName ) )
     {
-      QgsOWSConnection connection( "WCS", connectionName );
+      QgsOwsConnection connection( "WCS", connectionName );
       return new QgsWCSConnectionItem( parentItem, "WCS", thePath, connection.uri().encodedUri() );
     }
   }

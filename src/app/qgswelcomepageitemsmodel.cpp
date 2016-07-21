@@ -150,7 +150,7 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
     case CrsRole:
       if ( mRecentProjects.at( index.row() ).crs != "" )
       {
-        QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
+        QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
         return  QString( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );
       }
       else

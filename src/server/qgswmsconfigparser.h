@@ -29,12 +29,12 @@ class QgsMapLayer;
 class QgsLegendModelV2;
 
 
-class SERVER_EXPORT QgsWMSConfigParser
+class SERVER_EXPORT QgsWmsConfigParser
 {
   public:
 
-    QgsWMSConfigParser();
-    virtual ~QgsWMSConfigParser();
+    QgsWmsConfigParser();
+    virtual ~QgsWmsConfigParser();
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
@@ -104,10 +104,10 @@ class SERVER_EXPORT QgsWMSConfigParser
     virtual double imageQuality() const = 0;
 
     // WMS GetFeatureInfo precision (decimal places)
-    virtual int WMSPrecision() const = 0;
+    virtual int wmsPrecision() const = 0;
 
     // WMS inspire capabilities
-    virtual bool WMSInspireActivated() const = 0;
+    virtual bool wmsInspireActivated() const = 0;
     /** Adds inspire capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
@@ -134,7 +134,7 @@ class SERVER_EXPORT QgsWMSConfigParser
 
     virtual void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
-    virtual bool useLayerIDs() const = 0;
+    virtual bool useLayerIds() const = 0;
 
     /** Adds highlight layers to the layer registry and to the layer set. Returns the ids of the newly created layers (for later removal)*/
     static QStringList addHighlightLayers( const QMap<QString, QString>& parameterMap, QStringList& layerSet, const QString& parameterPrefix = QString() );

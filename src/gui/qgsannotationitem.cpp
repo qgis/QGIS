@@ -393,7 +393,7 @@ double QgsAnnotationItem::scaledSymbolSize() const
   return dpmm * mMarkerSymbol->size();
 }
 
-void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) const
+void QgsAnnotationItem::_writeXml( QDomDocument& doc, QDomElement& itemElem ) const
 {
   if ( itemElem.isNull() )
   {
@@ -404,7 +404,7 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   annotationElem.setAttribute( "mapPosX", qgsDoubleToString( mMapPosition.x() ) );
   annotationElem.setAttribute( "mapPosY", qgsDoubleToString( mMapPosition.y() ) );
   if ( mMapPositionCrs.isValid() )
-    mMapPositionCrs.writeXML( annotationElem, doc );
+    mMapPositionCrs.writeXml( annotationElem, doc );
   annotationElem.setAttribute( "offsetX", qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
   annotationElem.setAttribute( "offsetY", qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
   annotationElem.setAttribute( "frameWidth", QString::number( mFrameSize.width() ) );
@@ -429,7 +429,7 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   itemElem.appendChild( annotationElem );
 }
 
-void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& annotationElem )
+void QgsAnnotationItem::_readXml( const QDomDocument& doc, const QDomElement& annotationElem )
 {
   Q_UNUSED( doc );
   if ( annotationElem.isNull() )
@@ -444,7 +444,7 @@ void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& an
   mapPos.setX( annotationElem.attribute( "mapPosX", "0" ).toDouble() );
   mapPos.setY( annotationElem.attribute( "mapPosY", "0" ).toDouble() );
   mMapPosition = mapPos;
-  if ( !mMapPositionCrs.readXML( annotationElem ) )
+  if ( !mMapPositionCrs.readXml( annotationElem ) )
     mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
   mFrameBorderWidth = annotationElem.attribute( "frameBorderWidth", "0.5" ).toDouble();
   mFrameColor.setNamedColor( annotationElem.attribute( "frameColor", "#000000" ) );

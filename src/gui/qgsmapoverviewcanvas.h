@@ -69,8 +69,9 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     // ### QGIS 3: rename so it does not look like getter, make protected
     void hasCrsTransformEnabled( bool flag );
 
-    // ### QGIS 3: rename Srs to Crs, make protected
-    void destinationSrsChanged();
+    // ### QGIS 3: make protected
+    //! Should be called when the canvas destination CRS is changed
+    void destinationCrsChanged();
 
   protected slots:
     void mapRenderingFinished();

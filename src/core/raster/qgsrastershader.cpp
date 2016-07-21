@@ -131,7 +131,7 @@ void QgsRasterShader::setMinimumValue( double theValue )
   }
 }
 
-void QgsRasterShader::writeXML( QDomDocument& doc, QDomElement& parent ) const
+void QgsRasterShader::writeXml( QDomDocument& doc, QDomElement& parent ) const
 {
   if ( parent.isNull() || !mRasterShaderFunction )
   {
@@ -162,7 +162,7 @@ void QgsRasterShader::writeXML( QDomDocument& doc, QDomElement& parent ) const
   parent.appendChild( rasterShaderElem );
 }
 
-void QgsRasterShader::readXML( const QDomElement& elem )
+void QgsRasterShader::readXml( const QDomElement& elem )
 {
   //only colorrampshader
   QDomElement colorRampShaderElem = elem.firstChildElement( "colorrampshader" );

@@ -986,7 +986,7 @@ void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
   settings.setValue( "UI/lastMatchToSymbolsDir", openFileInfo.absolutePath() );
 
   QgsStyleV2 importedStyle;
-  if ( !importedStyle.importXML( fileName ) )
+  if ( !importedStyle.importXml( fileName ) )
   {
     QMessageBox::warning( this, tr( "Matching error" ),
                           tr( "An error occurred reading file:\n%1" ).arg( importedStyle.errorString() ) );

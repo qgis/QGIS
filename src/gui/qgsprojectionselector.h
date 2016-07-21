@@ -165,7 +165,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     /**
      * Utility method used in conjunction with name based searching tool
      */
-    long getLargestCRSIDMatch( const QString& theSql );
+    long getLargestCrsIdMatch( const QString& theSql );
 
     //! add recently used CRS
     void insertRecent( long theCrsId );

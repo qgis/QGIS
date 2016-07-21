@@ -49,7 +49,7 @@ QgsPointLocator* QgsSnappingUtils::locatorForLayer( QgsVectorLayer* vl )
 
   if ( !mLocators.contains( vl ) )
   {
-    QgsPointLocator* vlpl = new QgsPointLocator( vl, destCRS() );
+    QgsPointLocator* vlpl = new QgsPointLocator( vl, destinationCrs() );
     mLocators.insert( vl, vlpl );
   }
   return mLocators.value( vl );
@@ -84,7 +84,7 @@ QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl,
 
   QgsRectangle rect( pointMap.x() - tolerance, pointMap.y() - tolerance,
                      pointMap.x() + tolerance, pointMap.y() + tolerance );
-  QgsPointLocator* vlpl = new QgsPointLocator( vl, destCRS(), &rect );
+  QgsPointLocator* vlpl = new QgsPointLocator( vl, destinationCrs(), &rect );
   mTemporaryLocators.insert( vl, vlpl );
   return mTemporaryLocators.value( vl );
 }
@@ -572,7 +572,7 @@ QString QgsSnappingUtils::dump()
   return msg;
 }
 
-QgsCoordinateReferenceSystem QgsSnappingUtils::destCRS() const
+QgsCoordinateReferenceSystem QgsSnappingUtils::destinationCrs() const
 {
   return mMapSettings.hasCrsTransformEnabled() ? mMapSettings.destinationCrs() : QgsCoordinateReferenceSystem();
 }

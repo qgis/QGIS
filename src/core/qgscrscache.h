@@ -57,22 +57,22 @@ class CORE_EXPORT QgsCoordinateTransformCache
 
 
 /** \ingroup core
- * \class QgsCRSCache
+ * \class QgsCrsCache
  * \brief Caches QgsCoordinateReferenceSystem construction, which may be expensive.
  *
- * QgsCRSCache maintains a cache of previously constructed coordinate systems, so that
+ * QgsCrsCache maintains a cache of previously constructed coordinate systems, so that
  * creating a new CRS from the cache can reuse previously calculated parameters. The
  * constructors for QgsCoordinateReferenceSystem can be expensive, so it's recommended
- * to use QgsCRSCache instead of directly calling the QgsCoordinateReferenceSystem
+ * to use QgsCrsCache instead of directly calling the QgsCoordinateReferenceSystem
  * constructors.
  */
 
-class CORE_EXPORT QgsCRSCache
+class CORE_EXPORT QgsCrsCache
 {
   public:
 
-    //! Returns a pointer to the QgsCRSCache singleton
-    static QgsCRSCache* instance();
+    //! Returns a pointer to the QgsCrsCache singleton
+    static QgsCrsCache* instance();
 
     /** Returns the CRS for authid, e.g. 'EPSG:4326' (or an invalid CRS in case of error)
      * @deprecated use crsByOgcWmsCrs() instead
@@ -121,10 +121,10 @@ class CORE_EXPORT QgsCRSCache
      * CRS has been changed.
      * @param authid CRS auth ID, eg "EPSG:4326" or "USER:100009"
      */
-    void updateCRSCache( const QString& authid );
+    void updateCrsCache( const QString& authid );
 
   protected:
-    QgsCRSCache();
+    QgsCrsCache();
 
   private:
 
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsCRSCache
     /** CRS that is not initialized (returned in case of error)*/
     QgsCoordinateReferenceSystem mInvalidCRS;
 
-    QgsCRSCache( const QgsCRSCache& other );
+    QgsCrsCache( const QgsCrsCache& other );
 };
 
 #endif // QGSCRSCACHE_H

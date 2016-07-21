@@ -71,7 +71,7 @@ class CORE_EXPORT QgsRelation
      *
      * @return A relation
      */
-    static QgsRelation createFromXML( const QDomNode& node );
+    static QgsRelation createFromXml( const QDomNode& node );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsRelation
      * @param node The parent node in which the relation will be created
      * @param doc  The document in which the relation will be saved
      */
-    void writeXML( QDomNode& node, QDomDocument& doc ) const;
+    void writeXml( QDomNode& node, QDomDocument& doc ) const;
 
     /**
      * Set a name for this relation

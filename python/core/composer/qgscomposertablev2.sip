@@ -42,13 +42,13 @@ class QgsComposerTableStyle
      * @param doc QDomDocument for the destination XML.
      * @see readXML
      */
-    bool writeXML( QDomElement& styleElem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& styleElem, QDomDocument & doc ) const;
 
     /** Reads the style's properties from XML.
      * @param styleElem a QDomElement holding the style's desired properties.
      * @see writeXML
      */
-    bool readXML( const QDomElement& styleElem );
+    bool readXml( const QDomElement& styleElem );
 
 };
 
@@ -393,8 +393,8 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     //reimplemented to return min frame height
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
 
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
     virtual QSizeF totalSize() const;
     virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
 

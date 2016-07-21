@@ -89,7 +89,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, const Qt::Win
 
   mPointRadioButton->setChecked( true );
 
-  QgsCoordinateReferenceSystem defaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem defaultCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
   defaultCrs.validate();
   mCrsSelector->setCrs( defaultCrs );
 

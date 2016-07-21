@@ -1158,7 +1158,7 @@ void QgsComposerMap::updateItem()
   QgsComposerItem::updateItem();
 }
 
-bool QgsComposerMap::containsWMSLayer() const
+bool QgsComposerMap::containsWmsLayer() const
 {
   QStringList layers = mComposition->mapSettings().layers();
 
@@ -1262,7 +1262,7 @@ void QgsComposerMap::connectUpdateSlot()
   }
 }
 
-bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {
@@ -1352,10 +1352,10 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerMapElem.appendChild( gridElem );
 
   //grids
-  mGridStack->writeXML( composerMapElem, doc );
+  mGridStack->writeXml( composerMapElem, doc );
 
   //overviews
-  mOverviewStack->writeXML( composerMapElem, doc );
+  mOverviewStack->writeXml( composerMapElem, doc );
 
   //atlas
   QDomElement atlasElem = doc.createElement( "AtlasMap" );
@@ -1365,10 +1365,10 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerMapElem.appendChild( atlasElem );
 
   elem.appendChild( composerMapElem );
-  return _writeXML( composerMapElem, doc );
+  return _writeXml( composerMapElem, doc );
 }
 
-bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
   {
@@ -1482,10 +1482,10 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   mCacheUpdated = false;
 
   //overviews
-  mOverviewStack->readXML( itemElem, doc );
+  mOverviewStack->readXml( itemElem, doc );
 
   //grids
-  mGridStack->readXML( itemElem, doc );
+  mGridStack->readXml( itemElem, doc );
 
   //load grid / grid annotation in old xml format
   //only do this if the grid stack didn't load any grids, otherwise this will
@@ -1602,7 +1602,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
       mMapRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
     }
 
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   updateBoundingRect();

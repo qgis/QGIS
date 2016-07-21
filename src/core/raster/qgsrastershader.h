@@ -69,9 +69,9 @@ class CORE_EXPORT QgsRasterShader
     /** \brief Return the minimum value */
     void setMinimumValue( double );
 
-    void writeXML( QDomDocument& doc, QDomElement& parent ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parent ) const;
 
-    void readXML( const QDomElement& elem );
+    void readXml( const QDomElement& elem );
 
   private:
     /** \brief User defineable minimum value for the raster shader */

@@ -35,7 +35,7 @@ QgsComposerTableColumn::~QgsComposerTableColumn()
 
 }
 
-bool QgsComposerTableColumn::writeXML( QDomElement& columnElem, QDomDocument& doc ) const
+bool QgsComposerTableColumn::writeXml( QDomElement& columnElem, QDomDocument& doc ) const
 {
   //background color
   QDomElement bgColorElem = doc.createElement( "backgroundColor" );
@@ -59,7 +59,7 @@ bool QgsComposerTableColumn::writeXML( QDomElement& columnElem, QDomDocument& do
   return true;
 }
 
-bool QgsComposerTableColumn::readXML( const QDomElement& columnElem )
+bool QgsComposerTableColumn::readXml( const QDomElement& columnElem )
 {
   mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( "hAlignment", QString::number( Qt::AlignLeft ) ).toInt() );
   mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( "vAlignment", QString::number( Qt::AlignVCenter ) ).toInt() );

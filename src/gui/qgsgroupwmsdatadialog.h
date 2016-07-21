@@ -21,15 +21,15 @@
 #include "qgis.h"
 
 /** \ingroup gui
- * \class QgsGroupWMSDataDialog
+ * \class QgsGroupWmsDataDialog
  */
-class GUI_EXPORT QgsGroupWMSDataDialog: public QDialog, private Ui::QgsGroupWMSDataDialogBase
+class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSDataDialogBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsGroupWMSDataDialog( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+    QgsGroupWmsDataDialog( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
     //~QgsGroupWMSDataDialog();
 
     //! return group WMS title

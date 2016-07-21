@@ -184,7 +184,7 @@ void QgsVirtualLayerSourceSelect::onBrowseCRS()
   if ( crsSelector.exec() )
   {
     mCRS->setText( crsSelector.selectedAuthId() );
-    QgsCoordinateReferenceSystem newCrs = QgsCRSCache::instance()->crsBySrsId( crsSelector.selectedCrsId() );
+    QgsCoordinateReferenceSystem newCrs = QgsCrsCache::instance()->crsBySrsId( crsSelector.selectedCrsId() );
     mSrid = newCrs.postgisSrid();
   }
 }

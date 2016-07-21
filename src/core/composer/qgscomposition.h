@@ -500,10 +500,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     Q_DECL_DEPRECATED double pointFontSize( int pixelSize ) const;
 
     /** Writes settings to xml (paper dimension)*/
-    bool writeXML( QDomElement& composerElem, QDomDocument& doc );
+    bool writeXml( QDomElement& composerElem, QDomDocument& doc );
 
     /** Reads settings from xml file*/
-    bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& compositionElem, const QDomDocument& doc );
 
     /** Load a template document
      * @param doc template document
@@ -525,7 +525,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
      * @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
      */
-    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = nullptr,
+    void addItemsFromXml( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = nullptr,
                           bool addUndoCommands = false, QPointF* pos = nullptr, bool pasteInPlace = false );
 
     /** Adds item to z list. Usually called from constructor of QgsComposerItem*/
@@ -1028,7 +1028,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void removePaperItems();
     void deleteAndRemoveMultiFrames();
 
-    static QString encodeStringForXML( const QString& str );
+    static QString encodeStringForXml( const QString& str );
 
     //tries to return the current QGraphicsView attached to the composition
     QGraphicsView* graphicsView() const;

@@ -515,10 +515,10 @@ int QgsGrassRasterProvider::capabilities() const
 
 QGis::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
 {
-  return srcDataType( bandNo );
+  return sourceDataType( bandNo );
 }
 
-QGis::DataType QgsGrassRasterProvider::srcDataType( int bandNo ) const
+QGis::DataType QgsGrassRasterProvider::sourceDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
   switch ( mGrassDataType )

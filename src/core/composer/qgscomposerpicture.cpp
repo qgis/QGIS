@@ -735,7 +735,7 @@ QString QgsComposerPicture::picturePath() const
   return mSourcePath;
 }
 
-bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerPicture::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {
@@ -762,12 +762,12 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
     composerPictureElem.setAttribute( "mapId", mRotationMap->id() );
   }
 
-  _writeXML( composerPictureElem, doc );
+  _writeXml( composerPictureElem, doc );
   elem.appendChild( composerPictureElem );
   return true;
 }
 
-bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
   {
@@ -795,7 +795,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
       mPictureRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
     }
 
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   mDefaultSvgSize = QSize( 0, 0 );

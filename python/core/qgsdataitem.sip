@@ -287,7 +287,7 @@ class QgsLayerItem : QgsDataItem
     /** Returns the supported CRS
      *  @note Added in 2.8
      */
-    QStringList supportedCRS();
+    QStringList supportedCrs();
 
     /** Returns the supported formats
      *  @note Added in 2.8

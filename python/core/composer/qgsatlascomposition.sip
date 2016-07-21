@@ -179,7 +179,7 @@ public:
     /** Returns the current filename. Must be called after prepareForFeature() */
     QString currentFilename() const;
 
-    void writeXML( QDomElement& elem, QDomDocument& doc ) const;
+    void writeXml( QDomElement& elem, QDomDocument& doc ) const;
 
     /** Reads general atlas settings from xml
      * @param elem a QDomElement holding the atlas properties.
@@ -187,7 +187,7 @@ public:
      * @see readXMLMapSettings
      * @note This method should be called before restoring composer item properties
      */
-    void readXML( const QDomElement& elem, const QDomDocument& doc );
+    void readXml( const QDomElement& elem, const QDomDocument& doc );
 
     /** Reads old (pre 2.2) map related atlas settings from xml
      * @param elem a QDomElement holding the atlas map properties.
@@ -196,7 +196,7 @@ public:
      * @note This method should be called after restoring composer item properties
      * @note added in version 2.5
      */
-    void readXMLMapSettings( const QDomElement& elem, const QDomDocument& doc );
+    void readXmlMapSettings( const QDomElement& elem, const QDomDocument& doc );
 
     QgsComposition* composition();
 

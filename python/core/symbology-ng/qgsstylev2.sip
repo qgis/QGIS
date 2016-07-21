@@ -257,10 +257,10 @@ class QgsStyleV2 : QObject
     QStringList symbolsOfSmartgroup( StyleEntity type, int id );
 
     //! Exports the style as a XML file
-    bool exportXML( const QString& filename );
+    bool exportXml( const QString& filename );
 
     //! Imports the symbols and colorramps into the default style database from the given XML file
-    bool importXML( const QString& filename );
+    bool importXml( const QString& filename );
 
   signals:
     void symbolSaved( const QString& name, QgsSymbolV2* symbol );

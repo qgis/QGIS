@@ -34,7 +34,7 @@ typedef QPair<QgsFeature, QString> QgsWFSFeatureGmlIdPair;
 
 
 /** Utility class to issue a GetFeature resultType=hits request */
-class QgsWFSFeatureHitsAsyncRequest: public QgsWFSRequest
+class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
 {
     Q_OBJECT
   public:
@@ -85,7 +85,7 @@ class QgsWFSProgressDialog: public QProgressDialog
     A progress dialog may pop-up in GUI mode (if the download takes a certain time)
     to allow cancelling the download.
 */
-class QgsWFSFeatureDownloader: public QgsWFSRequest
+class QgsWFSFeatureDownloader: public QgsWfsRequest
 {
     Q_OBJECT
   public:

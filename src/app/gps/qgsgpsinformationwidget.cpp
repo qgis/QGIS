@@ -230,7 +230,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
     radRecenterWhenNeeded->setChecked( true );
   }
 
-  mWgs84CRS = QgsCRSCache::instance()->crsByOgcWmsCrs( "EPSG:4326" );
+  mWgs84CRS = QgsCrsCache::instance()->crsByOgcWmsCrs( "EPSG:4326" );
 
   mBtnDebug->setVisible( mySettings.value( "/gps/showDebug", "false" ).toBool() );  // use a registry setting to control - power users/devs could set it
 

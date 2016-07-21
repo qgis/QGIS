@@ -1170,7 +1170,7 @@ QgsCptCitySelectionItem::QgsCptCitySelectionItem( QgsCptCityDataItem* parent,
   mType = Selection;
   mValid = ! path.isNull();
   if ( mValid )
-    parseXML();
+    parseXml();
 }
 
 QgsCptCitySelectionItem::~QgsCptCitySelectionItem()
@@ -1220,7 +1220,7 @@ QVector<QgsCptCityDataItem*> QgsCptCitySelectionItem::createChildren()
   return children;
 }
 
-void QgsCptCitySelectionItem::parseXML()
+void QgsCptCitySelectionItem::parseXml()
 {
   QString filename = QgsCptCityArchive::defaultBaseDir() + '/' + mPath;
 

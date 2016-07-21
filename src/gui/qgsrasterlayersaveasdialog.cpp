@@ -543,7 +543,7 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
     lineEdit->setFrame( false );
     lineEdit->setContentsMargins( 1, 1, 1, 1 );
     QString valueString;
-    switch ( mRasterLayer->dataProvider()->srcDataType( 1 ) )
+    switch ( mRasterLayer->dataProvider()->sourceDataType( 1 ) )
     {
       case QGis::Float32:
       case QGis::Float64:

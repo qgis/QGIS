@@ -265,7 +265,7 @@ void QgsComposerTable::setColumns( const QList<QgsComposerTableColumn*>& columns
   mColumns.append( columns );
 }
 
-bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerTable::tableWriteXml( QDomElement& elem, QDomDocument & doc ) const
 {
   elem.setAttribute( "lineTextDist", QString::number( mLineTextDistance ) );
   elem.appendChild( QgsFontUtils::toXmlElement( mHeaderFont, doc, "headerFontProperties" ) );
@@ -283,15 +283,15 @@ bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) co
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
     QDomElement columnElem = doc.createElement( "column" );
-    ( *columnIt )->writeXML( columnElem, doc );
+    ( *columnIt )->writeXml( columnElem, doc );
     displayColumnsElem.appendChild( columnElem );
   }
   elem.appendChild( displayColumnsElem );
 
-  return _writeXML( elem, doc );
+  return _writeXml( elem, doc );
 }
 
-bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerTable::tableReadXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
   {
@@ -340,7 +340,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
     {
       QDomElement columnElem = columnEntryList.at( i ).toElement();
       QgsComposerTableColumn* column = new QgsComposerTableColumn;
-      column->readXML( columnElem );
+      column->readXml( columnElem );
       mColumns.append( column );
     }
   }
@@ -350,7 +350,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
   return true;
 }

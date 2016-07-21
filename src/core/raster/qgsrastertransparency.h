@@ -80,9 +80,9 @@ class CORE_EXPORT QgsRasterTransparency
     /** True if there are no entries in the pixel lists except the nodata value*/
     bool isEmpty() const;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
-    void readXML( const QDomElement& elem );
+    void readXml( const QDomElement& elem );
 
   private:
     /** \brief The list to hold transparency values for RGB layers */

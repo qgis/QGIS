@@ -113,8 +113,8 @@ QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMap
   connect( mCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ), this, SLOT( onCrsTransformC2R() ) );
   connect( mRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( onCrsTransformR2C() ) );
 
-  connect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( onDestCrsC2R() ) );
-  connect( mRenderer, SIGNAL( destinationSrsChanged() ), this, SLOT( onDestCrsR2C() ) );
+  connect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( onDestinationCrsC2R() ) );
+  connect( mRenderer, SIGNAL( destinationCrsChanged() ), this, SLOT( onDestinationCrsR2C() ) );
 
   connect( mCanvas, SIGNAL( layersChanged() ), this, SLOT( onLayersC2R() ) );
   // TODO: layers R2C ? (should not happen!)
@@ -173,12 +173,12 @@ void QgsMapCanvasRendererSync::onCrsTransformR2C()
   mCanvas->setCrsTransformEnabled( mRenderer->hasCrsTransformEnabled() );
 }
 
-void QgsMapCanvasRendererSync::onDestCrsC2R()
+void QgsMapCanvasRendererSync::onDestinationCrsC2R()
 {
   mRenderer->setDestinationCrs( mCanvas->mapSettings().destinationCrs(), true, false );
 }
 
-void QgsMapCanvasRendererSync::onDestCrsR2C()
+void QgsMapCanvasRendererSync::onDestinationCrsR2C()
 {
   mCanvas->setDestinationCrs( mRenderer->destinationCrs() );
 }
@@ -520,7 +520,7 @@ void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
     disconnect( this,       SIGNAL( hasCrsTransformEnabledChanged( bool ) ),
                 mMapOverview, SLOT( hasCrsTransformEnabled( bool ) ) );
     disconnect( this,       SIGNAL( destinationCrsChanged() ),
-                mMapOverview, SLOT( destinationSrsChanged() ) );
+                mMapOverview, SLOT( destinationCrsChanged() ) );
 
     // map overview is not owned by map canvas so don't delete it...
   }
@@ -533,7 +533,7 @@ void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
     connect( this,       SIGNAL( hasCrsTransformEnabledChanged( bool ) ),
              overview,     SLOT( hasCrsTransformEnabled( bool ) ) );
     connect( this,       SIGNAL( destinationCrsChanged() ),
-             overview,     SLOT( destinationSrsChanged() ) );
+             overview,     SLOT( destinationCrsChanged() ) );
   }
 }
 
@@ -2030,7 +2030,7 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
     QDomNode node = nodes.item( 0 );
 
     QgsMapSettings tmpSettings;
-    tmpSettings.readXML( node );
+    tmpSettings.readXml( node );
     setMapUnits( tmpSettings.mapUnits() );
     setCrsTransformEnabled( tmpSettings.hasCrsTransformEnabled() );
     setDestinationCrs( tmpSettings.destinationCrs() );
@@ -2049,7 +2049,7 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
 
 void QgsMapCanvas::writeProject( QDomDocument & doc )
 {
-  // create node "mapcanvas" and call mMapRenderer->writeXML()
+  // create node "mapcanvas" and call mMapRenderer->writeXml()
 
   QDomNodeList nl = doc.elementsByTagName( "qgis" );
   if ( !nl.count() )
@@ -2062,7 +2062,7 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   QDomElement mapcanvasNode = doc.createElement( "mapcanvas" );
   qgisNode.appendChild( mapcanvasNode );
 
-  mSettings.writeXML( mapcanvasNode, doc );
+  mSettings.writeXml( mapcanvasNode, doc );
   // TODO: store only units, extent, projections, dest CRS
 }
 
@@ -2086,8 +2086,8 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
     return;
   }
 
-  QgsCoordinateReferenceSystem srcCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( srcAuthId );
-  QgsCoordinateReferenceSystem destCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( destAuthId );
+  QgsCoordinateReferenceSystem srcCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( srcAuthId );
+  QgsCoordinateReferenceSystem destCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( destAuthId );
 
   if ( !s.value( "/Projections/showDatumTransformDialog", false ).toBool() )
   {

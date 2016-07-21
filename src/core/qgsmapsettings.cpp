@@ -38,7 +38,7 @@ QgsMapSettings::QgsMapSettings()
     , mRotation( 0.0 )
     , mMagnificationFactor( 1.0 )
     , mProjectionsEnabled( false )
-    , mDestCRS( QgsCRSCache::instance()->crsBySrsId( GEOCRS_ID ) )  // WGS 84
+    , mDestCRS( QgsCrsCache::instance()->crsBySrsId( GEOCRS_ID ) )  // WGS 84
     , mDatumTransformStore( mDestCRS )
     , mBackgroundColor( Qt::white )
     , mSelectionColor( Qt::yellow )
@@ -605,7 +605,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
 }
 
 
-void QgsMapSettings::readXML( QDomNode& theNode )
+void QgsMapSettings::readXml( QDomNode& theNode )
 {
   // set units
   QDomNode mapUnitsNode = theNode.namedItem( "units" );
@@ -619,7 +619,7 @@ void QgsMapSettings::readXML( QDomNode& theNode )
   // set destination CRS
   QgsCoordinateReferenceSystem srs;
   QDomNode srsNode = theNode.namedItem( "destinationsrs" );
-  srs.readXML( srsNode );
+  srs.readXml( srsNode );
   setDestinationCrs( srs );
 
   // set extent
@@ -643,12 +643,12 @@ void QgsMapSettings::readXML( QDomNode& theNode )
     setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == "1" ? true : false );
   }
 
-  mDatumTransformStore.readXML( theNode );
+  mDatumTransformStore.readXml( theNode );
 }
 
 
 
-void QgsMapSettings::writeXML( QDomNode& theNode, QDomDocument& theDoc )
+void QgsMapSettings::writeXml( QDomNode& theNode, QDomDocument& theDoc )
 {
   // units
   theNode.appendChild( QgsXmlUtils::writeMapUnits( mapUnits(), theDoc ) );
@@ -671,7 +671,7 @@ void QgsMapSettings::writeXML( QDomNode& theNode, QDomDocument& theDoc )
   // destination CRS
   QDomElement srsNode = theDoc.createElement( "destinationsrs" );
   theNode.appendChild( srsNode );
-  destinationCrs().writeXML( srsNode, theDoc );
+  destinationCrs().writeXml( srsNode, theDoc );
 
   //render map tile
   QDomElement renderMapTileElem = theDoc.createElement( "rendermaptile" );
@@ -679,5 +679,5 @@ void QgsMapSettings::writeXML( QDomNode& theNode, QDomDocument& theDoc )
   renderMapTileElem.appendChild( renderMapTileText );
   theNode.appendChild( renderMapTileElem );
 
-  mDatumTransformStore.writeXML( theNode, theDoc );
+  mDatumTransformStore.writeXml( theNode, theDoc );
 }

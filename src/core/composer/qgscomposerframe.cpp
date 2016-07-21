@@ -50,7 +50,7 @@ QgsComposerFrame::~QgsComposerFrame()
 {
 }
 
-bool QgsComposerFrame::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement frameElem = doc.createElement( "ComposerFrame" );
   frameElem.setAttribute( "sectionX", QString::number( mSection.x() ) );
@@ -61,10 +61,10 @@ bool QgsComposerFrame::writeXML( QDomElement& elem, QDomDocument & doc ) const
   frameElem.setAttribute( "hideBackgroundIfEmpty", mHideBackgroundIfEmpty );
   elem.appendChild( frameElem );
 
-  return _writeXML( frameElem, doc );
+  return _writeXml( frameElem, doc );
 }
 
-bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerFrame::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   double x = itemElem.attribute( "sectionX" ).toDouble();
   double y = itemElem.attribute( "sectionY" ).toDouble();
@@ -78,7 +78,7 @@ bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument&
   {
     return false;
   }
-  return _readXML( composerItem, doc );
+  return _readXml( composerItem, doc );
 }
 
 void QgsComposerFrame::setHidePageIfEmpty( const bool hidePageIfEmpty )

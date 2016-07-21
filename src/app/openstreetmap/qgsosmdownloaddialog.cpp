@@ -104,7 +104,7 @@ void QgsOSMDownloadDialog::onExtentCanvas()
 
   if ( QgisApp::instance()->mapCanvas()->hasCrsTransformEnabled() )
   {
-    QgsCoordinateReferenceSystem dst = QgsCRSCache::instance()->crsBySrsId( GEOCRS_ID );
+    QgsCoordinateReferenceSystem dst = QgsCrsCache::instance()->crsBySrsId( GEOCRS_ID );
 
     QgsCoordinateTransform ct( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), dst );
     r = ct.transformBoundingBox( r );
@@ -143,7 +143,7 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
   if ( !layer )
     return;
 
-  QgsCoordinateReferenceSystem dst = QgsCRSCache::instance()->crsBySrsId( GEOCRS_ID );
+  QgsCoordinateReferenceSystem dst = QgsCrsCache::instance()->crsBySrsId( GEOCRS_ID );
 
   QgsCoordinateTransform ct( layer->crs(), dst );
   QgsRectangle rect( ct.transformBoundingBox( layer->extent() ) );

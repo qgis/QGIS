@@ -106,7 +106,7 @@ QgsComposerMapGrid &QgsComposerMapGridStack::operator[]( int idx )
   return *grid;
 }
 
-bool QgsComposerMapGridStack::readXML( const QDomElement &elem, const QDomDocument &doc )
+bool QgsComposerMapGridStack::readXml( const QDomElement &elem, const QDomDocument &doc )
 {
   removeItems();
 
@@ -116,7 +116,7 @@ bool QgsComposerMapGridStack::readXML( const QDomElement &elem, const QDomDocume
   {
     QDomElement mapGridElem = mapGridNodeList.at( i ).toElement();
     QgsComposerMapGrid* mapGrid = new QgsComposerMapGrid( mapGridElem.attribute( "name" ), mComposerMap );
-    mapGrid->readXML( mapGridElem, doc );
+    mapGrid->readXml( mapGridElem, doc );
     mItems.append( mapGrid );
   }
 
@@ -273,7 +273,7 @@ void QgsComposerMapGrid::setGridLineColor( const QColor& c )
   }
 }
 
-bool QgsComposerMapGrid::writeXML( QDomElement& elem, QDomDocument& doc ) const
+bool QgsComposerMapGrid::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   if ( elem.isNull() )
   {
@@ -311,7 +311,7 @@ bool QgsComposerMapGrid::writeXML( QDomElement& elem, QDomDocument& doc ) const
   mapGridElem.setAttribute( "bottomFrameDivisions", mBottomFrameDivisions );
   if ( mCRS.isValid() )
   {
-    mCRS.writeXML( mapGridElem, doc );
+    mCRS.writeXml( mapGridElem, doc );
   }
 
   mapGridElem.setAttribute( "annotationFormat", mGridAnnotationFormat );
@@ -336,12 +336,12 @@ bool QgsComposerMapGrid::writeXML( QDomElement& elem, QDomDocument& doc ) const
   mapGridElem.setAttribute( "unit", mGridUnit );
   mapGridElem.setAttribute( "blendMode", mBlendMode );
 
-  bool ok = QgsComposerMapItem::writeXML( mapGridElem, doc );
+  bool ok = QgsComposerMapItem::writeXml( mapGridElem, doc );
   elem.appendChild( mapGridElem );
   return ok;
 }
 
-bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerMapGrid::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )
@@ -349,7 +349,7 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
     return false;
   }
 
-  bool ok = QgsComposerMapItem::readXML( itemElem, doc );
+  bool ok = QgsComposerMapItem::readXml( itemElem, doc );
 
   //grid
   mGridStyle = QgsComposerMapGrid::GridStyle( itemElem.attribute( "gridStyle", "0" ).toInt() );
@@ -401,7 +401,7 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
     }
   }
 
-  if ( !mCRS.readXML( itemElem ) )
+  if ( !mCRS.readXml( itemElem ) )
     mCRS = QgsCoordinateReferenceSystem();
 
   mBlendMode = static_cast< QPainter::CompositionMode >( itemElem.attribute( "blendMode", "0" ).toUInt() );
@@ -474,7 +474,7 @@ QPolygonF QgsComposerMapGrid::scalePolygon( const QPolygonF &polygon, const doub
   return t.map( polygon );
 }
 
-void QgsComposerMapGrid::drawGridCRSTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
+void QgsComposerMapGrid::drawGridCrsTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
     QList< QPair< double, QLineF > > &verticalLines, bool calculateLinesOnly )
 {
   if ( !mComposerMap || !mEnabled )
@@ -492,7 +492,7 @@ void QgsComposerMapGrid::drawGridCRSTransform( QgsRenderContext &context, double
 
   if ( mTransformDirty )
   {
-    calculateCRSTransformLines();
+    calculateCrsTransformLines();
   }
 
   //draw lines
@@ -557,7 +557,7 @@ void QgsComposerMapGrid::drawGridCRSTransform( QgsRenderContext &context, double
   }
 }
 
-void QgsComposerMapGrid::calculateCRSTransformLines()
+void QgsComposerMapGrid::calculateCrsTransformLines()
 {
   QgsRectangle crsBoundingRect;
   QgsCoordinateTransform inverseTr;
@@ -568,11 +568,11 @@ void QgsComposerMapGrid::calculateCRSTransformLines()
 
   //calculate x grid lines
   mTransformedXLines.clear();
-  xGridLinesCRSTransform( crsBoundingRect, inverseTr, mTransformedXLines );
+  xGridLinesCrsTransform( crsBoundingRect, inverseTr, mTransformedXLines );
 
   //calculate y grid lines
   mTransformedYLines.clear();
-  yGridLinesCRSTransform( crsBoundingRect, inverseTr, mTransformedYLines );
+  yGridLinesCrsTransform( crsBoundingRect, inverseTr, mTransformedYLines );
 
   if ( mGridStyle == QgsComposerMapGrid::Cross || mGridStyle == QgsComposerMapGrid::Markers )
   {
@@ -685,7 +685,7 @@ void QgsComposerMapGrid::draw( QPainter* p )
   //is grid in a different crs than map?
   if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != ms.destinationCrs() )
   {
-    drawGridCRSTransform( context, dotsPerMM, horizontalLines, verticalLines );
+    drawGridCrsTransform( context, dotsPerMM, horizontalLines, verticalLines );
   }
   else
   {
@@ -1727,7 +1727,7 @@ int QgsComposerMapGrid::yGridLines( QList< QPair< double, QLineF > >& lines ) co
   return 0;
 }
 
-int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const
+int QgsComposerMapGrid::xGridLinesCrsTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const
 {
   lines.clear();
   if ( !mComposerMap || mGridIntervalY <= 0.0 )
@@ -1803,7 +1803,7 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
   return 0;
 }
 
-int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const
+int QgsComposerMapGrid::yGridLinesCrsTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const
 {
   lines.clear();
   if ( !mComposerMap || mGridIntervalX <= 0.0 )
@@ -2107,7 +2107,7 @@ void QgsComposerMapGrid::calculateMaxExtension( double& top, double& right, doub
   QList< QPair< double, QLineF > > horizontalLines;
   if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != ms.destinationCrs() )
   {
-    drawGridCRSTransform( context, 0, horizontalLines, verticalLines, false );
+    drawGridCrsTransform( context, 0, horizontalLines, verticalLines, false );
   }
   else
   {

@@ -127,7 +127,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 2, item );
 
-    if ( QgsAuthConfigUriEdit::hasConfigID( datasource ) )
+    if ( QgsAuthConfigUriEdit::hasConfigId( datasource ) )
     {
       QToolButton *btn = new QToolButton( this );
       btn->setMaximumWidth( 75 );

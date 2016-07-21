@@ -55,7 +55,7 @@ QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, Q
 
   int grayBand = elem.attribute( "grayBand", "-1" ).toInt();
   QgsSingleBandGrayRenderer* r = new QgsSingleBandGrayRenderer( input, grayBand );
-  r->readXML( elem );
+  r->readXml( elem );
 
   if ( elem.attribute( "gradient" ) == "WhiteToBlack" )
   {
@@ -67,7 +67,7 @@ QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, Q
   {
     QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QGis::DataType )(
           input->dataType( grayBand ) ) );
-    ce->readXML( contrastEnhancementElem );
+    ce->readXml( contrastEnhancementElem );
     r->setContrastEnhancement( ce );
   }
   return r;
@@ -177,7 +177,7 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
   return outputBlock;
 }
 
-void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsSingleBandGrayRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -185,7 +185,7 @@ void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parent
   }
 
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
-  _writeXML( doc, rasterRendererElem );
+  _writeXml( doc, rasterRendererElem );
 
   rasterRendererElem.setAttribute( "grayBand", mGrayBand );
 
@@ -203,7 +203,7 @@ void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parent
   if ( mContrastEnhancement )
   {
     QDomElement contrastElem = doc.createElement( "contrastEnhancement" );
-    mContrastEnhancement->writeXML( doc, contrastElem );
+    mContrastEnhancement->writeXml( doc, contrastElem );
     rasterRendererElem.appendChild( contrastElem );
   }
   parentElem.appendChild( rasterRendererElem );

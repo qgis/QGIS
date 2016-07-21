@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 
-class QgsWMSProjectParser : public QgsWMSConfigParser
+class QgsWmsProjectParser : public QgsWmsConfigParser
 {
 %TypeHeaderCode
 #include "qgswmsprojectparser.h"
 
 %End
   public:
-    QgsWMSProjectParser( const QString& filePath, const QgsAccessControl* ac );
-    virtual ~QgsWMSProjectParser();
+    QgsWmsProjectParser( const QString& filePath, const QgsAccessControl* ac );
+    virtual ~QgsWmsProjectParser();
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
@@ -52,7 +52,7 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
     double maxWidth() const  /*override*/ ;
     double maxHeight() const  /*override*/ ;
     double imageQuality() const  /*override*/ ;
-    int WMSPrecision() const  /*override*/ ;
+    int wmsPrecision() const  /*override*/ ;
 
     //printing
     //QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, //QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const  /*override*/ ;
@@ -105,7 +105,7 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const  /*override*/ ;
 
-    bool useLayerIDs() const  /*override*/ ;
+    bool useLayerIds() const  /*override*/ ;
 
   private:
 

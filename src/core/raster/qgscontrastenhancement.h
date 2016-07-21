@@ -105,9 +105,9 @@ class CORE_EXPORT QgsContrastEnhancement
     /** \brief Return the minimum value for the contrast enhancement range. */
     void setMinimumValue( double, bool generateTable = true );
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
-    void readXML( const QDomElement& elem );
+    void readXml( const QDomElement& elem );
 
   private:
     /** \brief Current contrast enhancement algorithm */

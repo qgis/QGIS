@@ -19,8 +19,8 @@
 
 #include <QSettings>
 
-QgsWFSConnection::QgsWFSConnection( const QString & theConnName )
-    : QgsOWSConnection( "WFS", theConnName )
+QgsWfsConnection::QgsWfsConnection( const QString & theConnName )
+    : QgsOwsConnection( "WFS", theConnName )
 {
   const QString& key = QgsWFSConstants::CONNECTIONS_WFS + mConnName;
 
@@ -41,22 +41,22 @@ QgsWFSConnection::QgsWFSConnection( const QString & theConnName )
   QgsDebugMsg( QString( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ) );
 }
 
-QStringList QgsWFSConnection::connectionList()
+QStringList QgsWfsConnection::connectionList()
 {
-  return QgsOWSConnection::connectionList( "WFS" );
+  return QgsOwsConnection::connectionList( "WFS" );
 }
 
-void QgsWFSConnection::deleteConnection( const QString & name )
+void QgsWfsConnection::deleteConnection( const QString & name )
 {
-  QgsOWSConnection::deleteConnection( "WFS", name );
+  QgsOwsConnection::deleteConnection( "WFS", name );
 }
 
-QString QgsWFSConnection::selectedConnection()
+QString QgsWfsConnection::selectedConnection()
 {
-  return QgsOWSConnection::selectedConnection( "WFS" );
+  return QgsOwsConnection::selectedConnection( "WFS" );
 }
 
-void QgsWFSConnection::setSelectedConnection( const QString & name )
+void QgsWfsConnection::setSelectedConnection( const QString & name )
 {
-  QgsOWSConnection::setSelectedConnection( "WFS", name );
+  QgsOwsConnection::setSelectedConnection( "WFS", name );
 }

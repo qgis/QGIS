@@ -142,7 +142,7 @@ QSizeF QgsHtmlAnnotationItem::minimumFrameSize() const
   }
 }
 
-void QgsHtmlAnnotationItem::writeXML( QDomDocument& doc ) const
+void QgsHtmlAnnotationItem::writeXml( QDomDocument& doc ) const
 {
   QDomElement documentElem = doc.documentElement();
   if ( documentElem.isNull() )
@@ -159,11 +159,11 @@ void QgsHtmlAnnotationItem::writeXML( QDomDocument& doc ) const
   formAnnotationElem.setAttribute( "feature", mFeatureId );
   formAnnotationElem.setAttribute( "htmlfile", htmlPage() );
 
-  _writeXML( doc, formAnnotationElem );
+  _writeXml( doc, formAnnotationElem );
   documentElem.appendChild( formAnnotationElem );
 }
 
-void QgsHtmlAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsHtmlAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
 {
   mVectorLayer = nullptr;
   if ( itemElem.hasAttribute( "vectorLayer" ) )
@@ -182,7 +182,7 @@ void QgsHtmlAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
   QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
   if ( !annotationElem.isNull() )
   {
-    _readXML( doc, annotationElem );
+    _readXml( doc, annotationElem );
   }
 
   if ( mWebView )

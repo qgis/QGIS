@@ -207,7 +207,7 @@ bool QgsRasterLayerRenderer::render()
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCRS( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
+    projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
   }
 
   // Drawer to pipe?

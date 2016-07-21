@@ -113,7 +113,7 @@ void QgsManageConnectionsDialog::doExportImport()
         doc = saveOWSConnections( items, "WMS" );
         break;
       case WFS:
-        doc = saveWFSConnections( items );
+        doc = saveWfsConnections( items );
         break;
       case PostGIS:
         doc = savePgConnections( items );
@@ -178,7 +178,7 @@ void QgsManageConnectionsDialog::doExportImport()
         loadOWSConnections( doc, items, "WMS" );
         break;
       case WFS:
-        loadWFSConnections( doc, items );
+        loadWfsConnections( doc, items );
         break;
       case PostGIS:
         loadPgConnections( doc, items );
@@ -386,7 +386,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
   return doc;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveWFSConnections( const QStringList &connections )
+QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &connections )
 {
   QDomDocument doc( "connections" );
   QDomElement root = doc.createElement( "qgsWFSConnections" );
@@ -667,7 +667,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
   }
 }
 
-void QgsManageConnectionsDialog::loadWFSConnections( const QDomDocument &doc, const QStringList &items )
+void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, const QStringList &items )
 {
   QDomElement root = doc.documentElement();
   if ( root.tagName() != "qgsWFSConnections" )

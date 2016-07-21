@@ -124,10 +124,10 @@ class QgsActionManager
 
 
     //! Writes the actions out in XML format
-    bool writeXML( QDomNode& layer_node, QDomDocument& doc ) const;
+    bool writeXml( QDomNode& layer_node, QDomDocument& doc ) const;
 
     //! Reads the actions in in XML format
-    bool readXML( const QDomNode& layer_node );
+    bool readXml( const QDomNode& layer_node );
 
     int size() const;
     /**

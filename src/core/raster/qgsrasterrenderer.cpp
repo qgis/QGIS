@@ -97,7 +97,7 @@ void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency* t )
   mRasterTransparency = t;
 }
 
-void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const
+void QgsRasterRenderer::_writeXml( QDomDocument& doc, QDomElement& rasterRendererElem ) const
 {
   if ( rasterRendererElem.isNull() )
   {
@@ -110,11 +110,11 @@ void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendere
 
   if ( mRasterTransparency )
   {
-    mRasterTransparency->writeXML( doc, rasterRendererElem );
+    mRasterTransparency->writeXml( doc, rasterRendererElem );
   }
 }
 
-void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
+void QgsRasterRenderer::readXml( const QDomElement& rendererElem )
 {
   if ( rendererElem.isNull() )
   {
@@ -130,7 +130,7 @@ void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
   {
     delete mRasterTransparency;
     mRasterTransparency = new QgsRasterTransparency();
-    mRasterTransparency->readXML( rasterTransparencyElem );
+    mRasterTransparency->readXml( rasterTransparencyElem );
   }
 }
 

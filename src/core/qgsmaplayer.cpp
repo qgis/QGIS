@@ -160,7 +160,7 @@ bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
   return false;
 }
 
-bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
+bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
 {
   bool layerError;
 
@@ -373,15 +373,15 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   CUSTOM_CRS_VALIDATION savedValidation;
 
   QDomNode srsNode = layerElement.namedItem( "srs" );
-  mCRS.readXML( srsNode );
+  mCRS.readXml( srsNode );
   mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( mne.text() ) );
   mCRS.validate();
   savedCRS = mCRS;
 
   // Do not validate any projections in children, they will be overwritten anyway.
   // No need to ask the user for a projections when it is overwritten, is there?
-  savedValidation = QgsCoordinateReferenceSystem::customSrsValidation();
-  QgsCoordinateReferenceSystem::setCustomSrsValidation( nullptr );
+  savedValidation = QgsCoordinateReferenceSystem::customCrsValidation();
+  QgsCoordinateReferenceSystem::setCustomCrsValidation( nullptr );
 
   // now let the children grab what they need from the Dom node.
   layerError = !readXml( layerElement );
@@ -389,7 +389,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   // overwrite CRS with what we read from project file before the raster/vector
   // file readnig functions changed it. They will if projections is specfied in the file.
   // FIXME: is this necessary?
-  QgsCoordinateReferenceSystem::setCustomSrsValidation( savedValidation );
+  QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
   mCRS = savedCRS;
 
   // Abort if any error in layer, such as not found.
@@ -523,7 +523,7 @@ bool QgsMapLayer::readXml( const QDomNode& layer_node )
 
 
 
-bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath ) const
+bool QgsMapLayer::writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath ) const
 {
   // use scale dependent visibility flag
   layerElement.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
@@ -766,7 +766,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 
   // spatial reference system id
   QDomElement mySrsElement = document.createElement( "srs" );
-  mCRS.writeXML( mySrsElement, document );
+  mCRS.writeXml( mySrsElement, document );
   layerElement.appendChild( mySrsElement );
 
 #if 0
@@ -783,7 +783,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 
   return writeXml( layerElement, document );
 
-} // bool QgsMapLayer::writeXML
+} // bool QgsMapLayer::writeXml
 
 QDomDocument QgsMapLayer::asLayerDefinition( const QList<QgsMapLayer *>& layers, const QString& relativeBasePath )
 {
@@ -794,7 +794,7 @@ QDomDocument QgsMapLayer::asLayerDefinition( const QList<QgsMapLayer *>& layers,
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
-    layer->writeLayerXML( layerelm, doc, relativeBasePath );
+    layer->writeLayerXml( layerelm, doc, relativeBasePath );
     layerselm.appendChild( layerelm );
   }
   qgiselm.appendChild( layerselm );
@@ -831,7 +831,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document, bo
     if ( !layer )
       continue;
 
-    bool ok = layer->readLayerXML( layerElem );
+    bool ok = layer->readLayerXml( layerElem );
     if ( ok )
     {
       layers << layer;

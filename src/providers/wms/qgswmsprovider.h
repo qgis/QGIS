@@ -259,7 +259,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     int capabilities() const override;
 
     QGis::DataType dataType( int bandNo ) const override;
-    QGis::DataType srcDataType( int bandNo ) const override;
+    QGis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
 
     /**

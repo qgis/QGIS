@@ -202,13 +202,13 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @param elem is DOM element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from DOM document
      * @param itemElem is DOM node corresponding to item tag
      * @param doc is the document to read
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
   private:
 

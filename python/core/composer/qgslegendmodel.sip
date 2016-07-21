@@ -49,8 +49,8 @@ class QgsLegendModel : QStandardItemModel
     void updateItemText( QStandardItem* item );
 
 
-    bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const;
-    bool readXML( const QDomElement& legendModelElem, const QDomDocument& doc );
+    bool writeXml( QDomElement& composerLegendElem, QDomDocument& doc ) const;
+    bool readXml( const QDomElement& legendModelElem, const QDomDocument& doc );
 
     Qt::DropActions supportedDropActions() const;
     Qt::ItemFlags flags( const QModelIndex &index ) const;

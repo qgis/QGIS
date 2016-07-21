@@ -531,9 +531,9 @@ void _getProperties( const QDomDocument& doc, QgsPropertyKey& project_properties
 
   QDomNode propertyNode = properties.item( 0 );
 
-  if ( ! project_properties.readXML( propertyNode ) )
+  if ( ! project_properties.readXml( propertyNode ) )
   {
-    QgsDebugMsg( "Project_properties.readXML() failed" );
+    QgsDebugMsg( "Project_properties.readXml() failed" );
   }
 }
 
@@ -711,7 +711,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   Q_CHECK_PTR( mapLayer );
 
   // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readLayerXML( layerElem ) && mapLayer->isValid() )
+  if ( mapLayer->readLayerXml( layerElem ) && mapLayer->isValid() )
   {
     // postpone readMapLayer signal for vector layers with joins
     QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
@@ -846,7 +846,7 @@ bool QgsProject::read()
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( "layer-tree-group" );
   if ( !layerTreeElem.isNull() )
   {
-    mRootGroup->readChildrenFromXML( layerTreeElem );
+    mRootGroup->readChildrenFromXml( layerTreeElem );
   }
   else
   {
@@ -887,7 +887,7 @@ bool QgsProject::read()
   mRootGroup->removeCustomProperty( "loading" );
 
   mVisibilityPresetCollection.reset( new QgsVisibilityPresetCollection() );
-  mVisibilityPresetCollection->readXML( *doc );
+  mVisibilityPresetCollection->readXml( *doc );
 
 
   // read the project: used by map canvas and legend
@@ -1073,7 +1073,7 @@ bool QgsProject::write()
   QgsLayerTreeNode *clonedRoot = mRootGroup->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ) ); // convert absolute paths to relative paths if required
-  clonedRoot->writeXML( qgisNode );
+  clonedRoot->writeXml( qgisNode );
   delete clonedRoot;
 
   // let map canvas and legend write their information
@@ -1083,7 +1083,7 @@ bool QgsProject::write()
   const QMap<QString, QgsMapLayer*> &layers = QgsMapLayerRegistry::instance()->mapLayers();
 
   // Iterate over layers in zOrder
-  // Call writeXML() on each
+  // Call writeXml() on each
   QDomElement projectLayersNode = doc->createElement( "projectlayers" );
 
   QMap<QString, QgsMapLayer*>::ConstIterator li = layers.constBegin();
@@ -1099,7 +1099,7 @@ bool QgsProject::write()
         // general layer metadata
         QDomElement maplayerElem = doc->createElement( "maplayer" );
 
-        ml->writeLayerXML( maplayerElem, *doc );
+        ml->writeLayerXml( maplayerElem, *doc );
 
         emit writeMapLayer( ml, maplayerElem, *doc );
 
@@ -1133,10 +1133,10 @@ bool QgsProject::write()
   if ( !imp_->properties_.isEmpty() ) // only worry about properties if we
     // actually have any properties
   {
-    imp_->properties_.writeXML( "properties", qgisNode, *doc );
+    imp_->properties_.writeXml( "properties", qgisNode, *doc );
   }
 
-  mVisibilityPresetCollection->writeXML( *doc );
+  mVisibilityPresetCollection->writeXml( *doc );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -1847,7 +1847,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   QDomElement layerTreeElem = projectDocument.documentElement().firstChildElement( "layer-tree-group" );
   if ( !layerTreeElem.isNull() )
   {
-    root->readChildrenFromXML( layerTreeElem );
+    root->readChildrenFromXml( layerTreeElem );
   }
   else
   {

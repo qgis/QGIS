@@ -2164,7 +2164,7 @@ QgsCoordinateReferenceSystem QgsGrass::crs( const QString& gisdbase, const QStri
   {
     QString wkt = getInfo( "proj", gisdbase, location );
     QgsDebugMsg( "wkt: " + wkt );
-    crs = QgsCRSCache::instance()->crsByWkt( wkt );
+    crs = QgsCrsCache::instance()->crsByWkt( wkt );
     QgsDebugMsg( "crs.toWkt: " + crs.toWkt() );
   }
   catch ( QgsGrass::Exception &e )
@@ -2209,7 +2209,7 @@ QgsCoordinateReferenceSystem QgsGrass::crsDirect( const QString& gisdbase, const
     }
   }
 
-  QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByWkt( Wkt );
+  QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsByWkt( Wkt );
 
   return srs;
 }

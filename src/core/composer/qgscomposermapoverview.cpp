@@ -151,7 +151,7 @@ void QgsComposerMapOverview::draw( QPainter *painter )
   painter->restore();
 }
 
-bool QgsComposerMapOverview::writeXML( QDomElement &elem, QDomDocument &doc ) const
+bool QgsComposerMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   if ( elem.isNull() )
   {
@@ -169,12 +169,12 @@ bool QgsComposerMapOverview::writeXML( QDomElement &elem, QDomDocument &doc ) co
   QDomElement frameStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mFrameSymbol, doc );
   overviewFrameElem.appendChild( frameStyleElem );
 
-  bool ok = QgsComposerMapItem::writeXML( overviewFrameElem, doc );
+  bool ok = QgsComposerMapItem::writeXml( overviewFrameElem, doc );
   elem.appendChild( overviewFrameElem );
   return ok;
 }
 
-bool QgsComposerMapOverview::readXML( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsComposerMapOverview::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )
@@ -182,7 +182,7 @@ bool QgsComposerMapOverview::readXML( const QDomElement &itemElem, const QDomDoc
     return false;
   }
 
-  bool ok = QgsComposerMapItem::readXML( itemElem, doc );
+  bool ok = QgsComposerMapItem::readXml( itemElem, doc );
 
   setFrameMap( itemElem.attribute( "frameMap", "-1" ).toInt() );
   mBlendMode = QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) );
@@ -380,7 +380,7 @@ QList<QgsComposerMapOverview *> QgsComposerMapOverviewStack::asList() const
   return list;
 }
 
-bool QgsComposerMapOverviewStack::readXML( const QDomElement &elem, const QDomDocument &doc )
+bool QgsComposerMapOverviewStack::readXml( const QDomElement &elem, const QDomDocument &doc )
 {
   removeItems();
 
@@ -390,7 +390,7 @@ bool QgsComposerMapOverviewStack::readXML( const QDomElement &elem, const QDomDo
   {
     QDomElement mapOverviewElem = mapOverviewNodeList.at( i ).toElement();
     QgsComposerMapOverview* mapOverview = new QgsComposerMapOverview( mapOverviewElem.attribute( "name" ), mComposerMap );
-    mapOverview->readXML( mapOverviewElem, doc );
+    mapOverview->readXml( mapOverviewElem, doc );
     mItems.append( mapOverview );
   }
 

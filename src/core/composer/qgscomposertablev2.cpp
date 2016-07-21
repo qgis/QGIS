@@ -26,7 +26,7 @@
 // QgsComposerTableStyle
 //
 
-bool QgsComposerTableStyle::writeXML( QDomElement& styleElem, QDomDocument& doc ) const
+bool QgsComposerTableStyle::writeXml( QDomElement& styleElem, QDomDocument& doc ) const
 {
   Q_UNUSED( doc );
   styleElem.setAttribute( "cellBackgroundColor", QgsSymbolLayerV2Utils::encodeColor( cellBackgroundColor ) );
@@ -34,7 +34,7 @@ bool QgsComposerTableStyle::writeXML( QDomElement& styleElem, QDomDocument& doc 
   return true;
 }
 
-bool QgsComposerTableStyle::readXML( const QDomElement& styleElem )
+bool QgsComposerTableStyle::readXml( const QDomElement& styleElem )
 {
   cellBackgroundColor = QgsSymbolLayerV2Utils::decodeColor( styleElem.attribute( "cellBackgroundColor", "255,255,255,255" ) );
   enabled = ( styleElem.attribute( "enabled", "0" ) != "0" );
@@ -106,7 +106,7 @@ QgsComposerTableV2::~QgsComposerTableV2()
   mCellStyles.clear();
 }
 
-bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
+bool QgsComposerTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   elem.setAttribute( "cellMargin", QString::number( mCellMargin ) );
   elem.setAttribute( "emptyTableMode", QString::number( static_cast< int >( mEmptyTableMode ) ) );
@@ -130,7 +130,7 @@ bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool i
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
     QDomElement columnElem = doc.createElement( "column" );
-    ( *columnIt )->writeXML( columnElem, doc );
+    ( *columnIt )->writeXml( columnElem, doc );
     displayColumnsElem.appendChild( columnElem );
   }
   elem.appendChild( displayColumnsElem );
@@ -142,21 +142,21 @@ bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool i
   {
     QString styleName = it.value();
     QDomElement styleElem = doc.createElement( styleName );
-    mCellStyles.value( it.key() )->writeXML( styleElem, doc );
+    mCellStyles.value( it.key() )->writeXml( styleElem, doc );
     stylesElem.appendChild( styleElem );
   }
   elem.appendChild( stylesElem );
 
-  bool state = _writeXML( elem, doc, ignoreFrames );
+  bool state = _writeXml( elem, doc, ignoreFrames );
   return state;
 }
 
-bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames )
+bool QgsComposerTableV2::readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames )
 {
   deleteFrames();
 
   //first create the frames
-  if ( !_readXML( itemElem, doc, ignoreFrames ) )
+  if ( !_readXml( itemElem, doc, ignoreFrames ) )
   {
     return false;
   }
@@ -200,7 +200,7 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
     {
       QDomElement columnElem = columnEntryList.at( i ).toElement();
       QgsComposerTableColumn* column = new QgsComposerTableColumn;
-      column->readXML( columnElem );
+      column->readXml( columnElem );
       mColumns.append( column );
     }
   }
@@ -219,7 +219,7 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
       if ( !styleList.isEmpty() )
       {
         QDomElement styleElem = styleList.at( 0 ).toElement();
-        mCellStyles.value( it.key() )->readXML( styleElem );
+        mCellStyles.value( it.key() )->readXml( styleElem );
       }
     }
   }

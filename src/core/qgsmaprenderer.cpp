@@ -56,7 +56,7 @@ QgsMapRenderer::QgsMapRenderer()
   mSize = QSize( 0, 0 );
 
   mProjectionsEnabled = false;
-  mDestCRS = new QgsCoordinateReferenceSystem( QgsCRSCache::instance()->crsBySrsId( GEOCRS_ID ) ); //WGS 84
+  mDestCRS = new QgsCoordinateReferenceSystem( QgsCrsCache::instance()->crsBySrsId( GEOCRS_ID ) ); //WGS 84
 
   mOutputUnits = QgsMapRenderer::Millimeters;
   mFullExtent.setMinimal();
@@ -663,7 +663,7 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs,
       setExtent( rect );
     }
 
-    emit destinationSrsChanged();
+    emit destinationCrsChanged();
   }
 }
 
@@ -967,10 +967,10 @@ QStringList& QgsMapRenderer::layerSet()
   return mLayerSet;
 }
 
-bool QgsMapRenderer::readXML( QDomNode & theNode )
+bool QgsMapRenderer::readXml( QDomNode & theNode )
 {
   QgsMapSettings tmpSettings;
-  tmpSettings.readXML( theNode );
+  tmpSettings.readXml( theNode );
   //load coordinate transform into
   mLayerCoordinateTransformInfo.clear();
   QDomElement layerCoordTransformInfoElem = theNode.firstChildElement( "layer_coordinate_transform_info" );
@@ -1006,7 +1006,7 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
   return true;
 }
 
-bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
+bool QgsMapRenderer::writeXml( QDomNode & theNode, QDomDocument & theDoc )
 {
   QgsMapSettings tmpSettings;
   tmpSettings.setOutputDpi( outputDpi() );
@@ -1016,7 +1016,7 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   tmpSettings.setCrsTransformEnabled( hasCrsTransformEnabled() );
   tmpSettings.setDestinationCrs( destinationCrs() );
 
-  tmpSettings.writeXML( theNode, theDoc );
+  tmpSettings.writeXml( theNode, theDoc );
   // layer coordinate transform infos
   QDomElement layerCoordTransformInfo = theDoc.createElement( "layer_coordinate_transform_info" );
   QHash< QString, QgsLayerCoordinateTransform >::const_iterator coordIt = mLayerCoordinateTransformInfo.constBegin();

@@ -683,7 +683,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   //connect with signals from QgsProject to write project files
   if ( QgsProject::instance() )
   {
-    connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ), this, SLOT( writeXML( QDomDocument& ) ) );
+    connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ), this, SLOT( writeXml( QDomDocument& ) ) );
   }
 
 #if defined(ANDROID)
@@ -1621,9 +1621,9 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     return;
   }
 
-  if ( containsWMSLayer() )
+  if ( containsWmsLayer() )
   {
-    showWMSPrintingWarning();
+    showWmsPrintingWarning();
   }
 
   if ( containsAdvancedEffects() )
@@ -1872,9 +1872,9 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
     return;
   }
 
-  if ( containsWMSLayer() )
+  if ( containsWmsLayer() )
   {
-    showWMSPrintingWarning();
+    showWmsPrintingWarning();
   }
 
   if ( containsAdvancedEffects() )
@@ -1999,9 +1999,9 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     return;
   }
 
-  if ( containsWMSLayer() )
+  if ( containsWmsLayer() )
   {
-    showWMSPrintingWarning();
+    showWmsPrintingWarning();
   }
 
   QSettings settings;
@@ -2464,9 +2464,9 @@ private:
 
 void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
 {
-  if ( containsWMSLayer() )
+  if ( containsWmsLayer() )
   {
-    showWMSPrintingWarning();
+    showWmsPrintingWarning();
   }
 
   QString settingsLabel = "/UI/displaySVGWarning";
@@ -3105,7 +3105,7 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
   }
 
   QDomDocument saveDocument;
-  templateXML( saveDocument );
+  templateXml( saveDocument );
 
   if ( templateFile.write( saveDocument.toByteArray() ) == -1 )
   {
@@ -3449,7 +3449,7 @@ void QgsComposer::restoreWindowState()
   }
 }
 
-void  QgsComposer::writeXML( QDomDocument& doc )
+void  QgsComposer::writeXml( QDomDocument& doc )
 {
 
   QDomNodeList nl = doc.elementsByTagName( "qgis" );
@@ -3463,10 +3463,10 @@ void  QgsComposer::writeXML( QDomDocument& doc )
     return;
   }
 
-  writeXML( qgisElem, doc );
+  writeXml( qgisElem, doc );
 }
 
-void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
+void QgsComposer::writeXml( QDomNode& parentNode, QDomDocument& doc )
 {
   QDomElement composerElem = doc.createElement( "Composer" );
   composerElem.setAttribute( "title", mTitle );
@@ -3493,26 +3493,26 @@ void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
   //store composition
   if ( mComposition )
   {
-    mComposition->writeXML( composerElem, doc );
+    mComposition->writeXml( composerElem, doc );
   }
 
   // store atlas
-  mComposition->atlasComposition().writeXML( composerElem, doc );
+  mComposition->atlasComposition().writeXml( composerElem, doc );
 }
 
-void  QgsComposer::templateXML( QDomDocument& doc )
+void  QgsComposer::templateXml( QDomDocument& doc )
 {
-  writeXML( doc, doc );
+  writeXml( doc, doc );
 }
 
-void QgsComposer::readXML( const QDomDocument& doc )
+void QgsComposer::readXml( const QDomDocument& doc )
 {
   QDomNodeList composerNodeList = doc.elementsByTagName( "Composer" );
   if ( composerNodeList.size() < 1 )
   {
     return;
   }
-  readXML( composerNodeList.at( 0 ).toElement(), doc, true );
+  readXml( composerNodeList.at( 0 ).toElement(), doc, true );
   cleanupAfterTemplateRead();
 }
 
@@ -3530,7 +3530,7 @@ void QgsComposer::createCompositionWidget()
   mGeneralDock->setWidget( compositionWidget );
 }
 
-void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& doc, bool fromTemplate )
+void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& doc, bool fromTemplate )
 {
   // Set title only if reading from project file
   if ( !fromTemplate )
@@ -3556,7 +3556,7 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   if ( compositionNodeList.size() > 0 )
   {
     QDomElement compositionElem = compositionNodeList.at( 0 ).toElement();
-    mComposition->readXML( compositionElem, doc );
+    mComposition->readXml( compositionElem, doc );
   }
 
   connectViewSlots();
@@ -3568,9 +3568,9 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   {
     // read atlas parameters - must be done before adding items
     atlasElem = composerElem.firstChildElement( "Atlas" );
-    mComposition->atlasComposition().readXML( atlasElem, doc );
+    mComposition->atlasComposition().readXml( atlasElem, doc );
 
-    mComposition->addItemsFromXML( composerElem, doc, &mMapsToRestore );
+    mComposition->addItemsFromXml( composerElem, doc, &mMapsToRestore );
   }
 
   //restore grid settings
@@ -3598,7 +3598,7 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
 
   //read atlas map parameters (for pre 2.2 templates)
   //this part must be done after adding items
-  mComposition->atlasComposition().readXMLMapSettings( atlasElem, doc );
+  mComposition->atlasComposition().readXmlMapSettings( atlasElem, doc );
 
   //set state of atlas controls
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
@@ -3821,7 +3821,7 @@ void QgsComposer::setSelectionTool()
   on_mActionSelectMoveItem_triggered();
 }
 
-bool QgsComposer::containsWMSLayer() const
+bool QgsComposer::containsWmsLayer() const
 {
   QMap<QgsComposerItem*, QWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
   QgsComposerItem* currentItem = nullptr;
@@ -3833,7 +3833,7 @@ bool QgsComposer::containsWMSLayer() const
     currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
     if ( currentMap )
     {
-      if ( currentMap->containsWMSLayer() )
+      if ( currentMap->containsWmsLayer() )
       {
         return true;
       }
@@ -3867,7 +3867,7 @@ bool QgsComposer::containsAdvancedEffects() const
   return false;
 }
 
-void QgsComposer::showWMSPrintingWarning()
+void QgsComposer::showWmsPrintingWarning()
 {
   QString myQSettingsLabel = "/UI/displayComposerWMSWarning";
   QSettings myQSettings;

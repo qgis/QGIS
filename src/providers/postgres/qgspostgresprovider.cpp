@@ -3746,7 +3746,7 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
   {
     QgsPostgresResult result( connectionRO()->PQexec( QString( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
     if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-      srs = QgsCRSCache::instance()->crsByProj4( result.PQgetvalue( 0, 0 ) );
+      srs = QgsCrsCache::instance()->crsByProj4( result.PQgetvalue( 0, 0 ) );
   }
   return srs;
 }

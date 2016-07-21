@@ -47,13 +47,13 @@ QgsLayerTreeNode::~QgsLayerTreeNode()
   qDeleteAll( mChildren );
 }
 
-QgsLayerTreeNode* QgsLayerTreeNode::readXML( QDomElement& element )
+QgsLayerTreeNode* QgsLayerTreeNode::readXml( QDomElement& element )
 {
   QgsLayerTreeNode* node = nullptr;
   if ( element.tagName() == "layer-tree-group" )
-    node = QgsLayerTreeGroup::readXML( element );
+    node = QgsLayerTreeGroup::readXml( element );
   else if ( element.tagName() == "layer-tree-layer" )
-    node = QgsLayerTreeLayer::readXML( element );
+    node = QgsLayerTreeLayer::readXml( element );
 
   return node;
 }
@@ -97,12 +97,12 @@ QStringList QgsLayerTreeNode::customProperties() const
   return mProperties.keys();
 }
 
-void QgsLayerTreeNode::readCommonXML( QDomElement& element )
+void QgsLayerTreeNode::readCommonXml( QDomElement& element )
 {
   mProperties.readXml( element );
 }
 
-void QgsLayerTreeNode::writeCommonXML( QDomElement& element )
+void QgsLayerTreeNode::writeCommonXml( QDomElement& element )
 {
   QDomDocument doc( element.ownerDocument() );
   mProperties.writeXml( element, doc );

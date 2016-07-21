@@ -30,7 +30,7 @@
 
 #define ERR(message) QgsError(message, "Raster provider")
 
-void QgsRasterDataProvider::setUseSrcNoDataValue( int bandNo, bool use )
+void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
 {
   if ( mUseSrcNoDataValue.size() < bandNo )
   {
@@ -48,9 +48,9 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   QgsDebugMsgLevel( QString( "theExtent = %1" ).arg( theExtent.toString() ), 4 );
 
   QgsRasterBlock *block;
-  if ( srcHasNoDataValue( theBandNo ) && useSrcNoDataValue( theBandNo ) )
+  if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
   {
-    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, srcNoDataValue( theBandNo ) );
+    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, sourceNoDataValue( theBandNo ) );
   }
   else
   {
@@ -145,9 +145,9 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     QgsDebugMsgLevel( QString( "tmpExtent = %1" ).arg( tmpExtent.toString() ), 4 );
 
     QgsRasterBlock *tmpBlock;
-    if ( srcHasNoDataValue( theBandNo ) && useSrcNoDataValue( theBandNo ) )
+    if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
     {
-      tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight, srcNoDataValue( theBandNo ) );
+      tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight, sourceNoDataValue( theBandNo ) );
     }
     else
     {

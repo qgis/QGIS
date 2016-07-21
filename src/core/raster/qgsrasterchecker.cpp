@@ -92,15 +92,15 @@ bool QgsRasterChecker::runTest( const QString& theVerifiedKey, QString theVerifi
 
     // Data types may differ (?)
     bool typesOk = true;
-    compare( "Source data type", verifiedProvider->srcDataType( band ), expectedProvider->srcDataType( band ), mReport, typesOk );
+    compare( "Source data type", verifiedProvider->sourceDataType( band ), expectedProvider->sourceDataType( band ), mReport, typesOk );
     compare( "Data type", verifiedProvider->dataType( band ), expectedProvider->dataType( band ), mReport, typesOk );
 
     // Check nodata
     bool noDataOk = true;
-    compare( "No data (NULL) value existence flag", verifiedProvider->srcHasNoDataValue( band ), expectedProvider->srcHasNoDataValue( band ), mReport, noDataOk );
-    if ( verifiedProvider->srcHasNoDataValue( band ) && expectedProvider->srcHasNoDataValue( band ) )
+    compare( "No data (NULL) value existence flag", verifiedProvider->sourceHasNoDataValue( band ), expectedProvider->sourceHasNoDataValue( band ), mReport, noDataOk );
+    if ( verifiedProvider->sourceHasNoDataValue( band ) && expectedProvider->sourceHasNoDataValue( band ) )
     {
-      compare( "No data (NULL) value", verifiedProvider->srcNoDataValue( band ), expectedProvider->srcNoDataValue( band ), mReport, noDataOk );
+      compare( "No data (NULL) value", verifiedProvider->sourceNoDataValue( band ), expectedProvider->sourceNoDataValue( band ), mReport, noDataOk );
     }
 
     bool statsOk = true;

@@ -49,8 +49,8 @@ QgsCoordinateTransform QgsCoordinateTransformCache::transform( const QString& sr
   }
 
   //not found, insert new value
-  QgsCoordinateReferenceSystem srcCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( srcAuthId );
-  QgsCoordinateReferenceSystem destCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( destAuthId );
+  QgsCoordinateReferenceSystem srcCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( srcAuthId );
+  QgsCoordinateReferenceSystem destCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( destAuthId );
   QgsCoordinateTransform ct = QgsCoordinateTransform( srcCrs, destCrs );
   ct.setSourceDatumTransform( srcDatumTransform );
   ct.setDestinationDatumTransform( destDatumTransform );
@@ -82,20 +82,20 @@ void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
 }
 
 
-QgsCRSCache* QgsCRSCache::instance()
+QgsCrsCache* QgsCrsCache::instance()
 {
-  static QgsCRSCache mInstance;
+  static QgsCrsCache mInstance;
   return &mInstance;
 }
 
-QgsCRSCache::QgsCRSCache()
+QgsCrsCache::QgsCrsCache()
     : mCRSLock( QReadWriteLock::Recursive )
     , mCRSProj4Lock( QReadWriteLock::Recursive )
     , mCRSSrsIdLock( QReadWriteLock::Recursive )
 {
 }
 
-void QgsCRSCache::updateCRSCache( const QString& authid )
+void QgsCrsCache::updateCrsCache( const QString& authid )
 {
   QWriteLocker lock( &mCRSLock );
   QgsCoordinateReferenceSystem s;
@@ -111,12 +111,12 @@ void QgsCRSCache::updateCRSCache( const QString& authid )
   QgsCoordinateTransformCache::instance()->invalidateCrs( authid );
 }
 
-QgsCoordinateReferenceSystem QgsCRSCache::crsByAuthId( const QString& authid )
+QgsCoordinateReferenceSystem QgsCrsCache::crsByAuthId( const QString& authid )
 {
   return crsByOgcWmsCrs( authid );
 }
 
-QgsCoordinateReferenceSystem QgsCRSCache::crsByOgcWmsCrs( const QString& ogcCrs ) const
+QgsCoordinateReferenceSystem QgsCrsCache::crsByOgcWmsCrs( const QString& ogcCrs ) const
 {
   mCRSLock.lockForRead();
   QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.constFind( ogcCrs );
@@ -146,12 +146,12 @@ QgsCoordinateReferenceSystem QgsCRSCache::crsByOgcWmsCrs( const QString& ogcCrs 
   }
 }
 
-QgsCoordinateReferenceSystem QgsCRSCache::crsByEpsgId( long epsg ) const
+QgsCoordinateReferenceSystem QgsCrsCache::crsByEpsgId( long epsg ) const
 {
   return crsByOgcWmsCrs( "EPSG:" + QString::number( epsg ) );
 }
 
-QgsCoordinateReferenceSystem QgsCRSCache::crsByProj4( const QString& proj4 ) const
+QgsCoordinateReferenceSystem QgsCrsCache::crsByProj4( const QString& proj4 ) const
 {
   mCRSProj4Lock.lockForRead();
   QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRSProj4.constFind( proj4 );
@@ -181,7 +181,7 @@ QgsCoordinateReferenceSystem QgsCRSCache::crsByProj4( const QString& proj4 ) con
   }
 }
 
-QgsCoordinateReferenceSystem QgsCRSCache::crsByWkt( const QString& wkt ) const
+QgsCoordinateReferenceSystem QgsCrsCache::crsByWkt( const QString& wkt ) const
 {
   mCRSWktLock.lockForRead();
   QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRSWkt.constFind( wkt );
@@ -211,7 +211,7 @@ QgsCoordinateReferenceSystem QgsCRSCache::crsByWkt( const QString& wkt ) const
   }
 }
 
-QgsCoordinateReferenceSystem QgsCRSCache::crsBySrsId( long srsId ) const
+QgsCoordinateReferenceSystem QgsCrsCache::crsBySrsId( long srsId ) const
 {
   mCRSSrsIdLock.lockForRead();
   QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRSSrsId.constFind( srsId );

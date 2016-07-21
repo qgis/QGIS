@@ -131,7 +131,7 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
 
 void QgsWFSSourceSelect::populateConnectionList()
 {
-  QStringList keys = QgsWFSConnection::connectionList();
+  QStringList keys = QgsWfsConnection::connectionList();
 
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
@@ -159,16 +159,16 @@ void QgsWFSSourceSelect::populateConnectionList()
   }
 
   //set last used connection
-  QString selectedConnection = QgsWFSConnection::selectedConnection();
+  QString selectedConnection = QgsWfsConnection::selectedConnection();
   int index = cmbConnections->findText( selectedConnection );
   if ( index != -1 )
   {
     cmbConnections->setCurrentIndex( index );
   }
 
-  QgsWFSConnection connection( cmbConnections->currentText() );
+  QgsWfsConnection connection( cmbConnections->currentText() );
   delete mCapabilities;
-  mCapabilities = new QgsWFSCapabilities( connection.uri().uri() );
+  mCapabilities = new QgsWfsCapabilities( connection.uri().uri() );
   connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 
@@ -182,7 +182,7 @@ QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString>& crsSet ) const
   //first: project CRS
   long ProjectCRSID = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
   //convert to EPSG
-  QgsCoordinateReferenceSystem projectRefSys = QgsCRSCache::instance()->crsBySrsId( ProjectCRSID );
+  QgsCoordinateReferenceSystem projectRefSys = QgsCrsCache::instance()->crsBySrsId( ProjectCRSID );
   QString ProjectCRS;
   if ( projectRefSys.isValid() )
   {
@@ -210,19 +210,19 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
   if ( !mCapabilities )
     return;
-  QgsWFSCapabilities::ErrorCode err = mCapabilities->errorCode();
-  if ( err != QgsWFSCapabilities::NoError )
+  QgsWfsCapabilities::ErrorCode err = mCapabilities->errorCode();
+  if ( err != QgsWfsCapabilities::NoError )
   {
     QString title;
     switch ( err )
     {
-      case QgsWFSCapabilities::NetworkError:
+      case QgsWfsCapabilities::NetworkError:
         title = tr( "Network Error" );
         break;
-      case QgsWFSCapabilities::XmlError:
+      case QgsWfsCapabilities::XmlError:
         title = tr( "Capabilities document is not valid" );
         break;
-      case QgsWFSCapabilities::ServerExceptionError:
+      case QgsWfsCapabilities::ServerExceptionError:
         title = tr( "Server Exception" );
         break;
       default:
@@ -244,7 +244,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
   mCaps = mCapabilities->capabilities();
 
   mAvailableCRS.clear();
-  Q_FOREACH ( const QgsWFSCapabilities::FeatureType& featureType, mCaps.featureTypes )
+  Q_FOREACH ( const QgsWfsCapabilities::FeatureType& featureType, mCaps.featureTypes )
   {
     // insert the typenames, titles and abstracts into the tree view
     QStandardItem* titleItem = new QStandardItem( featureType.title );
@@ -322,7 +322,7 @@ void QgsWFSSourceSelect::deleteEntryOfServerList()
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
-    QgsWFSConnection::deleteConnection( cmbConnections->currentText() );
+    QgsWfsConnection::deleteConnection( cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
     emit connectionsChanged();
 
@@ -368,7 +368,7 @@ void QgsWFSSourceSelect::addLayer()
     return;
   }
 
-  QgsWFSConnection connection( cmbConnections->currentText() );
+  QgsWfsConnection connection( cmbConnections->currentText() );
 
   QString pCrsString( labelCoordRefSys->text() );
 
@@ -409,18 +409,18 @@ class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLV
   public:
     QgsWFSValidatorCallback( QObject* parent,
                              const QgsWFSDataSourceURI& uri, const QString& allSql,
-                             const QgsWFSCapabilities::Capabilities& caps );
+                             const QgsWfsCapabilities::Capabilities& caps );
     bool isValid( const QString& sql, QString& errorReason, QString& warningMsg ) override;
   private:
     QgsWFSDataSourceURI mURI;
     QString mAllSql;
-    const QgsWFSCapabilities::Capabilities& mCaps;
+    const QgsWfsCapabilities::Capabilities& mCaps;
 };
 
 QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject* parent,
     const QgsWFSDataSourceURI& uri,
     const QString& allSql,
-    const QgsWFSCapabilities::Capabilities& caps )
+    const QgsWfsCapabilities::Capabilities& caps )
     : QObject( parent )
     , mURI( uri )
     , mAllSql( allSql )
@@ -452,18 +452,18 @@ class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::
   public:
     QgsWFSTableSelectedCallback( QgsSQLComposerDialog* dialog,
                                  const QgsWFSDataSourceURI& uri,
-                                 const QgsWFSCapabilities::Capabilities& caps );
+                                 const QgsWfsCapabilities::Capabilities& caps );
     void tableSelected( const QString& name ) override;
 
   private:
     QgsSQLComposerDialog* mDialog;
     QgsWFSDataSourceURI mURI;
-    const QgsWFSCapabilities::Capabilities& mCaps;
+    const QgsWfsCapabilities::Capabilities& mCaps;
 };
 
 QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog* dialog,
     const QgsWFSDataSourceURI& uri,
-    const QgsWFSCapabilities::Capabilities& caps )
+    const QgsWfsCapabilities::Capabilities& caps )
     : QObject( dialog )
     , mDialog( dialog )
     , mURI( uri )
@@ -512,7 +512,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
   const QString typeName = index.sibling( index.row(), MODEL_IDX_NAME ).data().toString();
 
   //get available fields for wfs layer
-  QgsWFSConnection connection( cmbConnections->currentText() );
+  QgsWfsConnection connection( cmbConnections->currentText() );
   QgsWFSDataSourceURI uri( connection.uri().uri() );
   uri.setTypeName( typeName );
   QgsWFSProvider p( uri.uri(), mCaps );
@@ -551,7 +551,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
   d->setSupportMultipleTables( bSupportJoins, QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
 
   QMap< QString, QString > mapTypenameToTitle;
-  Q_FOREACH ( const QgsWFSCapabilities::FeatureType f, mCaps.featureTypes )
+  Q_FOREACH ( const QgsWfsCapabilities::FeatureType f, mCaps.featureTypes )
     mapTypenameToTitle[f.name] = f.title;
 
   QList< QgsSQLComposerDialog::PairNameTitle > tablenames;
@@ -577,14 +577,14 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
   d->addTableNames( tablenames );
 
   QList< QgsSQLComposerDialog::Function> functionList;
-  Q_FOREACH ( const QgsWFSCapabilities::Function& f, mCaps.functionList )
+  Q_FOREACH ( const QgsWfsCapabilities::Function& f, mCaps.functionList )
   {
     QgsSQLComposerDialog::Function dialogF;
     dialogF.name = f.name;
     dialogF.returnType = f.returnType;
     dialogF.minArgs = f.minArgs;
     dialogF.maxArgs = f.maxArgs;
-    Q_FOREACH ( const QgsWFSCapabilities::Argument& arg, f.argumentList )
+    Q_FOREACH ( const QgsWfsCapabilities::Argument& arg, f.argumentList )
     {
       dialogF.argumentList << QgsSQLComposerDialog::Argument( arg.name, arg.type );
     }
@@ -593,14 +593,14 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
   d->addFunctions( functionList );
 
   QList< QgsSQLComposerDialog::Function> spatialPredicateList;
-  Q_FOREACH ( const QgsWFSCapabilities::Function& f, mCaps.spatialPredicatesList )
+  Q_FOREACH ( const QgsWfsCapabilities::Function& f, mCaps.spatialPredicatesList )
   {
     QgsSQLComposerDialog::Function dialogF;
     dialogF.name = f.name;
     dialogF.returnType = f.returnType;
     dialogF.minArgs = f.minArgs;
     dialogF.maxArgs = f.maxArgs;
-    Q_FOREACH ( const QgsWFSCapabilities::Argument& arg, f.argumentList )
+    Q_FOREACH ( const QgsWfsCapabilities::Argument& arg, f.argumentList )
     {
       dialogF.argumentList << QgsSQLComposerDialog::Argument( arg.name, arg.type );
     }
@@ -703,7 +703,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
         QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
         if ( !preferredCRS.isEmpty() )
         {
-          QgsCoordinateReferenceSystem refSys = QgsCRSCache::instance()->crsByOgcWmsCrs( preferredCRS );
+          QgsCoordinateReferenceSystem refSys = QgsCrsCache::instance()->crsByOgcWmsCrs( preferredCRS );
           mProjectionSelector->setSelectedCrsId( refSys.srsid() );
 
           labelCoordRefSys->setText( preferredCRS );
@@ -716,12 +716,12 @@ void QgsWFSSourceSelect::changeCRSFilter()
 void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
 {
   Q_UNUSED( index );
-  QgsWFSConnection::setSelectedConnection( cmbConnections->currentText() );
+  QgsWfsConnection::setSelectedConnection( cmbConnections->currentText() );
 
-  QgsWFSConnection connection( cmbConnections->currentText() );
+  QgsWfsConnection connection( cmbConnections->currentText() );
 
   delete mCapabilities;
-  mCapabilities = new QgsWFSCapabilities( connection.uri().uri() );
+  mCapabilities = new QgsWfsCapabilities( connection.uri().uri() );
   connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 

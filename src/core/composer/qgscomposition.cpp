@@ -891,7 +891,7 @@ double QgsComposition::pointFontSize( int pixelSize ) const
   return QgsComposerUtils::mmToPoints( pixelSize );
 }
 
-bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
+bool QgsComposition::writeXml( QDomElement& composerElem, QDomDocument& doc )
 {
   if ( composerElem.isNull() )
   {
@@ -968,7 +968,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
     {
       if ( composerItem->type() != QgsComposerItem::ComposerPaper &&  composerItem->type() != QgsComposerItem::ComposerFrame )
       {
-        composerItem->writeXML( compositionElem, doc );
+        composerItem->writeXml( compositionElem, doc );
       }
     }
   }
@@ -977,7 +977,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   QSet<QgsComposerMultiFrame*>::const_iterator multiFrameIt = mMultiFrames.constBegin();
   for ( ; multiFrameIt != mMultiFrames.constEnd(); ++multiFrameIt )
   {
-    ( *multiFrameIt )->writeXML( compositionElem, doc );
+    ( *multiFrameIt )->writeXml( compositionElem, doc );
   }
   composerElem.appendChild( compositionElem );
 
@@ -990,7 +990,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   return true;
 }
 
-bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocument& doc )
+bool QgsComposition::readXml( const QDomElement& compositionElem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( compositionElem.isNull() )
@@ -1107,7 +1107,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     QMap<QString, QString>::const_iterator sIt = substitutionMap->constBegin();
     for ( ; sIt != substitutionMap->constEnd(); ++sIt )
     {
-      xmlString = xmlString.replace( '[' + sIt.key() + ']', encodeStringForXML( sIt.value() ) );
+      xmlString = xmlString.replace( '[' + sIt.key() + ']', encodeStringForXml( sIt.value() ) );
     }
 
     QString errorMsg;
@@ -1132,7 +1132,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
       return false;
     }
 
-    bool ok = readXML( compositionElem, importDoc );
+    bool ok = readXml( compositionElem, importDoc );
     if ( !ok )
     {
       return false;
@@ -1140,7 +1140,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
 
     // read atlas parameters - must be done before adding items
     atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
-    atlasComposition().readXML( atlasElem, importDoc );
+    atlasComposition().readXml( atlasElem, importDoc );
   }
 
   // remove all uuid attributes since we don't want duplicates UUIDS
@@ -1156,13 +1156,13 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   }
 
   //addItemsFromXML
-  addItemsFromXML( importDoc.documentElement(), importDoc, nullptr, addUndoCommands, nullptr );
+  addItemsFromXml( importDoc.documentElement(), importDoc, nullptr, addUndoCommands, nullptr );
 
   //read atlas map parameters (for pre 2.2 templates)
   //this can only be done after items have been added
   if ( clearComposition )
   {
-    atlasComposition().readXMLMapSettings( atlasElem, importDoc );
+    atlasComposition().readXmlMapSettings( atlasElem, importDoc );
   }
   return true;
 }
@@ -1196,7 +1196,7 @@ QPointF QgsComposition::minPointFromXml( const QDomElement& elem ) const
   }
 }
 
-void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore,
+void QgsComposition::addItemsFromXml( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore,
                                       bool addUndoCommands, QPointF* pos, bool pasteInPlace )
 {
   QPointF* pasteInPlacePt = nullptr;
@@ -1231,7 +1231,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerLabelElem = composerLabelList.at( i ).toElement();
     QgsComposerLabel* newLabel = new QgsComposerLabel( this );
-    newLabel->readXML( currentComposerLabelElem, doc );
+    newLabel->readXml( currentComposerLabelElem, doc );
     if ( pos )
     {
       if ( pasteInPlacePt )
@@ -1265,7 +1265,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newMap->setUpdatesEnabled( false );
     }
 
-    newMap->readXML( currentComposerMapElem, doc );
+    newMap->readXml( currentComposerMapElem, doc );
     newMap->assignFreeId();
 
     if ( mapsToRestore )
@@ -1319,7 +1319,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerArrowElem = composerArrowList.at( i ).toElement();
     QgsComposerArrow* newArrow = new QgsComposerArrow( this );
-    newArrow->readXML( currentComposerArrowElem, doc );
+    newArrow->readXml( currentComposerArrowElem, doc );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -1347,7 +1347,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerScaleBarElem = composerScaleBarList.at( i ).toElement();
     QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar( this );
-    newScaleBar->readXML( currentComposerScaleBarElem, doc );
+    newScaleBar->readXml( currentComposerScaleBarElem, doc );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -1375,7 +1375,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerShapeElem = composerShapeList.at( i ).toElement();
     QgsComposerShape* newShape = new QgsComposerShape( this );
-    newShape->readXML( currentComposerShapeElem, doc );
+    newShape->readXml( currentComposerShapeElem, doc );
     //new shapes should default to symbol v2
     newShape->setUseSymbolV2( true );
     if ( pos )
@@ -1406,7 +1406,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerPolygonElem = composerPolygonList.at( i ).toElement();
     QgsComposerPolygon* newPolygon = new QgsComposerPolygon( this );
-    newPolygon->readXML( currentComposerPolygonElem, doc );
+    newPolygon->readXml( currentComposerPolygonElem, doc );
 
     if ( pos )
     {
@@ -1437,7 +1437,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerPolylineElem = addComposerPolylineList.at( i ).toElement();
     QgsComposerPolyline* newPolyline = new QgsComposerPolyline( this );
-    newPolyline->readXML( currentComposerPolylineElem, doc );
+    newPolyline->readXml( currentComposerPolylineElem, doc );
 
     if ( pos )
     {
@@ -1468,7 +1468,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerPictureElem = composerPictureList.at( i ).toElement();
     QgsComposerPicture* newPicture = new QgsComposerPicture( this );
-    newPicture->readXML( currentComposerPictureElem, doc );
+    newPicture->readXml( currentComposerPictureElem, doc );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -1496,7 +1496,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerLegendElem = composerLegendList.at( i ).toElement();
     QgsComposerLegend* newLegend = new QgsComposerLegend( this );
-    newLegend->readXML( currentComposerLegendElem, doc );
+    newLegend->readXml( currentComposerLegendElem, doc );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -1524,7 +1524,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerTableElem = composerTableList.at( i ).toElement();
     QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( this );
-    newTable->readXML( currentComposerTableElem, doc );
+    newTable->readXml( currentComposerTableElem, doc );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -1553,7 +1553,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentHtmlElem = composerHtmlList.at( i ).toElement();
     QgsComposerHtml* newHtml = new QgsComposerHtml( this, false );
-    newHtml->readXML( currentHtmlElem, doc );
+    newHtml->readXml( currentHtmlElem, doc );
     newHtml->setCreateUndoCommands( true );
     this->addMultiFrame( newHtml );
 
@@ -1570,7 +1570,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentTableElem = composerAttributeTableV2List.at( i ).toElement();
     QgsComposerAttributeTableV2* newTable = new QgsComposerAttributeTableV2( this, false );
-    newTable->readXML( currentTableElem, doc );
+    newTable->readXml( currentTableElem, doc );
     newTable->setCreateUndoCommands( true );
     this->addMultiFrame( newTable );
 
@@ -1591,7 +1591,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement groupElem = groupList.at( i ).toElement();
     QgsComposerItemGroup *newGroup = new QgsComposerItemGroup( this );
-    newGroup->readXML( groupElem, doc );
+    newGroup->readXml( groupElem, doc );
     addItem( newGroup );
     if ( addUndoCommands )
     {
@@ -3240,7 +3240,7 @@ double* QgsComposition::computeGeoTransform( const QgsComposerMap* map, const QR
   return t;
 }
 
-QString QgsComposition::encodeStringForXML( const QString& str )
+QString QgsComposition::encodeStringForXml( const QString& str )
 {
   QString modifiedStr( str );
   modifiedStr.replace( '&', "&amp;" );

@@ -140,7 +140,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
 
   if ( mZoomedInResampler || mZoomedOutResampler )
   {
-    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
+    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->sourceInput() );
     if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
     {
       double xRes = extent.width() / width;
@@ -223,7 +223,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   return outputBlock; // No resampling
 }
 
-void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsRasterResampleFilter::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -244,7 +244,7 @@ void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentEl
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsRasterResampleFilter::readXML( const QDomElement& filterElem )
+void QgsRasterResampleFilter::readXml( const QDomElement& filterElem )
 {
   if ( filterElem.isNull() )
   {

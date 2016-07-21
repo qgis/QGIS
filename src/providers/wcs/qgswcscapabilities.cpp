@@ -955,7 +955,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     else
     {
       QgsRectangle box;
-      QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( authid );
+      QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( authid );
       if ( crs.isValid() && crs.axisInverted() )
       {
         box = QgsRectangle( low[1], low[0], high[1], high[0] );

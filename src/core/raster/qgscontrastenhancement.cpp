@@ -358,7 +358,7 @@ void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTabl
   }
 }
 
-void QgsContrastEnhancement::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsContrastEnhancement::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   //minimum value
   QDomElement minElem = doc.createElement( "minValue" );
@@ -379,7 +379,7 @@ void QgsContrastEnhancement::writeXML( QDomDocument& doc, QDomElement& parentEle
   parentElem.appendChild( algorithmElem );
 }
 
-void QgsContrastEnhancement::readXML( const QDomElement& elem )
+void QgsContrastEnhancement::readXml( const QDomElement& elem )
 {
   QDomElement minValueElem = elem.firstChildElement( "minValue" );
   if ( !minValueElem.isNull() )

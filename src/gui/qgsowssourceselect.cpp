@@ -76,7 +76,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent
   mAddButton->setToolTip( tr( "Add selected layers to map" ) );
   mAddButton->setEnabled( false );
 
-  clearCRS();
+  clearCrs();
 
   mTileWidthLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
   mTileHeightLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
@@ -98,7 +98,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent
     if ( currentCRS != -1 )
     {
       //convert CRS id to epsg
-      QgsCoordinateReferenceSystem currentRefSys = QgsCRSCache::instance()->crsBySrsId( currentCRS );
+      QgsCoordinateReferenceSystem currentRefSys = QgsCrsCache::instance()->crsBySrsId( currentCRS );
       if ( currentRefSys.isValid() )
       {
         mSelectedCRS = currentRefSys.authid();
@@ -238,7 +238,7 @@ void QgsOWSSourceSelect::clearTimes()
 void QgsOWSSourceSelect::populateConnectionList()
 {
   mConnectionsComboBox->clear();
-  mConnectionsComboBox->addItems( QgsOWSConnection::connectionList( mService ) );
+  mConnectionsComboBox->addItems( QgsOwsConnection::connectionList( mService ) );
 
   setConnectionListPosition();
 }
@@ -275,7 +275,7 @@ void QgsOWSSourceSelect::on_mDeleteButton_clicked()
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
-    QgsOWSConnection::deleteConnection( mService, mConnectionsComboBox->currentText() );
+    QgsOwsConnection::deleteConnection( mService, mConnectionsComboBox->currentText() );
     mConnectionsComboBox->removeItem( mConnectionsComboBox->currentIndex() );  // populateConnectionList();
     setConnectionListPosition();
     emit connectionsChanged();
@@ -347,11 +347,11 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
   mLayersTreeWidget->clear();
   clearFormats();
   clearTimes();
-  clearCRS();
+  clearCrs();
 
   mConnName = mConnectionsComboBox->currentText();
 
-  QgsOWSConnection connection( mService, mConnectionsComboBox->currentText() );
+  QgsOwsConnection connection( mService, mConnectionsComboBox->currentText() );
   mUri = connection.uri();
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -385,7 +385,7 @@ void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
   QString myDefaultCrs = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
-  QgsCoordinateReferenceSystem defaultCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( myDefaultCrs );
+  QgsCoordinateReferenceSystem defaultCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( myDefaultCrs );
   if ( defaultCRS.isValid() )
   {
     mySelector->setSelectedCrsId( defaultCRS.srsid() );
@@ -411,10 +411,10 @@ void QgsOWSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 {
 }
 
-void QgsOWSSourceSelect::populateCRS()
+void QgsOWSSourceSelect::populateCrs()
 {
-  clearCRS();
-  mSelectedLayersCRSs = selectedLayersCRSs().toSet();
+  clearCrs();
+  mSelectedLayersCRSs = selectedLayersCrses().toSet();
   mCRSLabel->setText( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) + ':' );
 
   mChangeCRSButton->setDisabled( mSelectedLayersCRSs.isEmpty() );
@@ -450,7 +450,7 @@ void QgsOWSSourceSelect::populateCRS()
   QgsDebugMsg( "mSelectedCRS = " + mSelectedCRS );
 }
 
-void QgsOWSSourceSelect::clearCRS()
+void QgsOWSSourceSelect::clearCrs()
 {
   mCRSLabel->setText( tr( "Coordinate Reference System" ) + ':' );
   mSelectedCRS = "";
@@ -505,7 +505,7 @@ QNetworkRequest::CacheLoadControl QgsOWSSourceSelect::selectedCacheLoadControl()
   return static_cast<QNetworkRequest::CacheLoadControl>( cache );
 }
 
-QString QgsOWSSourceSelect::selectedCRS()
+QString QgsOWSSourceSelect::selectedCrs()
 {
   return mSelectedCRS;
 }
@@ -517,7 +517,7 @@ QString QgsOWSSourceSelect::selectedTime()
 
 void QgsOWSSourceSelect::setConnectionListPosition()
 {
-  QString toSelect = QgsOWSConnection::selectedConnection( mService );
+  QString toSelect = QgsOwsConnection::selectedConnection( mService );
 
   mConnectionsComboBox->setCurrentIndex( mConnectionsComboBox->findText( toSelect ) );
 
@@ -546,7 +546,7 @@ void QgsOWSSourceSelect::setConnectionListPosition()
     mSaveButton->setEnabled( true );
   }
 
-  QgsOWSConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );
+  QgsOwsConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );
 }
 
 void QgsOWSSourceSelect::showStatusMessage( QString const &theMessage )
@@ -577,7 +577,7 @@ void QgsOWSSourceSelect::showError( QString const &theTitle, QString const &theF
 void QgsOWSSourceSelect::on_mConnectionsComboBox_activated( int )
 {
   // Remember which server was selected.
-  QgsOWSConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );
+  QgsOwsConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );
 }
 
 void QgsOWSSourceSelect::on_mAddDefaultButton_clicked()
@@ -590,7 +590,7 @@ QString QgsOWSSourceSelect::descriptionForAuthId( const QString& authId )
   if ( mCrsNames.contains( authId ) )
     return mCrsNames[ authId ];
 
-  QgsCoordinateReferenceSystem qgisSrs = QgsCRSCache::instance()->crsByOgcWmsCrs( authId );
+  QgsCoordinateReferenceSystem qgisSrs = QgsCrsCache::instance()->crsByOgcWmsCrs( authId );
   mCrsNames.insert( authId, qgisSrs.description() );
   return qgisSrs.description();
 }
@@ -625,17 +625,17 @@ void QgsOWSSourceSelect::addDefaultServers()
                             "need to set the proxy settings in the QGIS options dialog." ) + "</p>" );
 }
 
-void QgsOWSSourceSelect::addWMSListRow( const QDomElement& item, int row )
+void QgsOWSSourceSelect::addWmsListRow( const QDomElement& item, int row )
 {
   QDomElement title = item.firstChildElement( "title" );
-  addWMSListItem( title, row, 0 );
+  addWmsListItem( title, row, 0 );
   QDomElement description = item.firstChildElement( "description" );
-  addWMSListItem( description, row, 1 );
+  addWmsListItem( description, row, 1 );
   QDomElement link = item.firstChildElement( "link" );
-  addWMSListItem( link, row, 2 );
+  addWmsListItem( link, row, 2 );
 }
 
-void QgsOWSSourceSelect::addWMSListItem( const QDomElement& el, int row, int column )
+void QgsOWSSourceSelect::addWmsListItem( const QDomElement& el, int row, int column )
 {
   if ( !el.isNull() )
   {
@@ -691,7 +691,7 @@ void QgsOWSSourceSelect::searchFinished()
         if ( list.item( i ).isElement() )
         {
           QDomElement item = list.item( i ).toElement();
-          addWMSListRow( item, i );
+          addWmsListRow( item, i );
         }
       }
 
@@ -764,7 +764,7 @@ QStringList QgsOWSSourceSelect::selectedLayersFormats()
   return QStringList();
 }
 
-QStringList QgsOWSSourceSelect::selectedLayersCRSs()
+QStringList QgsOWSSourceSelect::selectedLayersCrses()
 {
   return QStringList();
 }

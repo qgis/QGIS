@@ -196,7 +196,7 @@ int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int a
   }
 }
 
-void QgsBrightnessContrastFilter::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsBrightnessContrastFilter::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -210,7 +210,7 @@ void QgsBrightnessContrastFilter::writeXML( QDomDocument& doc, QDomElement& pare
   parentElem.appendChild( filterElem );
 }
 
-void QgsBrightnessContrastFilter::readXML( const QDomElement& filterElem )
+void QgsBrightnessContrastFilter::readXml( const QDomElement& filterElem )
 {
   if ( filterElem.isNull() )
   {

@@ -295,7 +295,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setOffset( double xOffset, double yOffset );
 
     /** True if composer map renders a WMS layer*/
-    bool containsWMSLayer() const;
+    bool containsWmsLayer() const;
 
     /** True if composer map contains layers with blend modes or flattened layers for vectors */
     bool containsAdvancedEffects() const;
@@ -304,13 +304,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc Dom document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to 'ComposerMap' tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /** Enables a coordinate grid that is shown on top of this composermap.
      * @deprecated use grid()->setEnabled() or grids() instead

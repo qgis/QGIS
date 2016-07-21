@@ -158,7 +158,7 @@ void QgsBench::readProject( const QDomDocument &doc )
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
-    mMapSettings.readXML( node );
+    mMapSettings.readXml( node );
   }
   else
   {
@@ -189,7 +189,7 @@ void QgsBench::render()
   }
 
   // Maybe in future
-  //outputCRS = QgsCRSCache::instance()->crsByAuthId( crsId );
+  //outputCRS = QgsCrsCache::instance()->crsByAuthId( crsId );
   //mMapRenderer->setMapUnits( outputCRS.mapUnits() );
   //mMapRenderer->setDestinationCrs( outputCRS );
 

@@ -162,7 +162,7 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
     int relCount = relationNodes.count();
     for ( int i = 0; i < relCount; ++i )
     {
-      addRelation( QgsRelation::createFromXML( relationNodes.at( i ) ) );
+      addRelation( QgsRelation::createFromXml( relationNodes.at( i ) ) );
     }
   }
   else
@@ -189,7 +189,7 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
 
   Q_FOREACH ( const QgsRelation& relation, mRelations )
   {
-    relation.writeXML( relationsNode, doc );
+    relation.writeXml( relationsNode, doc );
   }
 }
 

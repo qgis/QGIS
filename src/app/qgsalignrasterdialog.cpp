@@ -94,7 +94,7 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   connect( mSpinGridOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
   connect( mSpinGridOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
 
-  connect( mChkCustomCRS, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCRS() ) );
+  connect( mChkCustomCRS, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCrs() ) );
   connect( mChkCustomCellSize, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCellSize() ) );
   connect( mChkCustomGridOffset, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomGridOffset() ) );
 
@@ -111,7 +111,7 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
 
   populateLayersView();
 
-  updateCustomCRS();
+  updateCustomCrs();
   updateCustomCellSize();
   updateCustomGridOffset();
 }
@@ -206,7 +206,7 @@ void QgsAlignRasterDialog::updateParametersFromReferenceLayer()
   // refresh values that may have changed
   if ( res )
   {
-    QgsCoordinateReferenceSystem destCRS( mAlign->destinationCRS() );
+    QgsCoordinateReferenceSystem destCRS( mAlign->destinationCrs() );
     mClipExtentGroupBox->setOutputCrs( destCRS );
     if ( !mChkCustomCRS->isChecked() )
     {
@@ -304,7 +304,7 @@ void QgsAlignRasterDialog::referenceLayerChanged()
 
 void QgsAlignRasterDialog::destinationCrsChanged()
 {
-  if ( mCrsSelector->crs().toWkt() == mAlign->destinationCRS() )
+  if ( mCrsSelector->crs().toWkt() == mAlign->destinationCrs() )
     return;
 
   int index = mCboReferenceLayer->currentIndex();
@@ -325,7 +325,7 @@ void QgsAlignRasterDialog::clipExtentChanged()
   updateAlignedRasterInfo();
 }
 
-void QgsAlignRasterDialog::updateCustomCRS()
+void QgsAlignRasterDialog::updateCustomCrs()
 {
   mCrsSelector->setEnabled( mChkCustomCRS->isChecked() );
   updateParametersFromReferenceLayer();

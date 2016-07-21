@@ -48,8 +48,8 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
     void setHTMLPage( const QString& htmlFile );
     QString htmlPage() const { return mHtmlFile; }
 
-    void writeXML( QDomDocument& doc ) const override;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) override;
+    void writeXml( QDomDocument& doc ) const override;
+    void readXml( const QDomDocument& doc, const QDomElement& itemElem ) override;
 
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 

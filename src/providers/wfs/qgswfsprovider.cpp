@@ -52,7 +52,7 @@
 static const QString TEXT_PROVIDER_KEY = "WFS";
 static const QString TEXT_PROVIDER_DESCRIPTION = "WFS data provider";
 
-QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Capabilities &caps )
+QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWfsCapabilities::Capabilities &caps )
     : QgsVectorDataProvider( uri )
     , mShared( new QgsWFSSharedData( uri ) )
     , mWKBType( QGis::WKBUnknown )
@@ -74,9 +74,9 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Ca
   if ( !srsname.isEmpty() )
   {
     if ( srsname == "EPSG:900913" )
-      mShared->mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( "EPSG:3857" );
+      mShared->mSourceCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( "EPSG:3857" );
     else
-      mShared->mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( srsname );
+      mShared->mSourceCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( srsname );
   }
 
   // Must be called first to establish the version, in case we are in auto-detection
@@ -140,8 +140,8 @@ class QgsWFSProviderSQLFunctionValidator: public QgsSQLStatement::RecursiveVisit
 {
   public:
     QgsWFSProviderSQLFunctionValidator(
-      const QList<QgsWFSCapabilities::Function>& spatialPredicatesList,
-      const QList<QgsWFSCapabilities::Function>& functionList );
+      const QList<QgsWfsCapabilities::Function>& spatialPredicatesList,
+      const QList<QgsWfsCapabilities::Function>& functionList );
 
     bool hasError() const { return mError; }
 
@@ -151,15 +151,15 @@ class QgsWFSProviderSQLFunctionValidator: public QgsSQLStatement::RecursiveVisit
     void visit( const QgsSQLStatement::NodeFunction& n ) override;
 
   private:
-    const QList<QgsWFSCapabilities::Function>& mSpatialPredicatesList;
-    const QList<QgsWFSCapabilities::Function>& mFunctionList;
+    const QList<QgsWfsCapabilities::Function>& mSpatialPredicatesList;
+    const QList<QgsWfsCapabilities::Function>& mFunctionList;
     bool mError;
     QString mErrorMessage;
 };
 
 QgsWFSProviderSQLFunctionValidator::QgsWFSProviderSQLFunctionValidator(
-  const QList<QgsWFSCapabilities::Function>& spatialPredicatesList,
-  const QList<QgsWFSCapabilities::Function>& functionList )
+  const QList<QgsWfsCapabilities::Function>& spatialPredicatesList,
+  const QList<QgsWfsCapabilities::Function>& functionList )
     : mSpatialPredicatesList( spatialPredicatesList )
     , mFunctionList( functionList )
     , mError( false )
@@ -171,7 +171,7 @@ void QgsWFSProviderSQLFunctionValidator::visit( const QgsSQLStatement::NodeFunct
   if ( !mError )
   {
     bool foundMatch = false;
-    Q_FOREACH ( const QgsWFSCapabilities::Function& f, mSpatialPredicatesList )
+    Q_FOREACH ( const QgsWfsCapabilities::Function& f, mSpatialPredicatesList )
     {
       if ( n.name().compare( f.name, Qt::CaseInsensitive ) == 0 ||
            ( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
@@ -179,7 +179,7 @@ void QgsWFSProviderSQLFunctionValidator::visit( const QgsSQLStatement::NodeFunct
         foundMatch = true;
       }
     }
-    Q_FOREACH ( const QgsWFSCapabilities::Function& f, mFunctionList )
+    Q_FOREACH ( const QgsWfsCapabilities::Function& f, mFunctionList )
     {
       if ( n.name().compare( f.name, Qt::CaseInsensitive ) == 0 )
       {
@@ -199,7 +199,7 @@ class QgsWFSProviderSQLColumnRefValidator: public QgsSQLStatement::RecursiveVisi
 {
   public:
     QgsWFSProviderSQLColumnRefValidator(
-      const QgsWFSCapabilities::Capabilities& caps,
+      const QgsWfsCapabilities::Capabilities& caps,
       const QString& defaultTypeName,
       const QMap< QString, QString >& mapTypenameAliasToTypename,
       const QMap < QString, QgsFields >& mapTypenameToFields,
@@ -213,7 +213,7 @@ class QgsWFSProviderSQLColumnRefValidator: public QgsSQLStatement::RecursiveVisi
     void visit( const QgsSQLStatement::NodeColumnRef& n ) override;
 
   private:
-    const QgsWFSCapabilities::Capabilities mCaps;
+    const QgsWfsCapabilities::Capabilities mCaps;
     QString mDefaultTypeName;
     const QMap< QString, QString >& mMapTableAliasToName;
     const QMap < QString, QgsFields >& mMapTypenameToFields;
@@ -223,7 +223,7 @@ class QgsWFSProviderSQLColumnRefValidator: public QgsSQLStatement::RecursiveVisi
 };
 
 QgsWFSProviderSQLColumnRefValidator::QgsWFSProviderSQLColumnRefValidator(
-  const QgsWFSCapabilities::Capabilities& caps,
+  const QgsWfsCapabilities::Capabilities& caps,
   const QString& defaultTypeName,
   const QMap< QString, QString >& mapTypenameAliasToTypename,
   const QMap < QString, QgsFields >& mapTypenameToFields,
@@ -1424,7 +1424,7 @@ bool QgsWFSProvider::getCapabilities()
 
   if ( mShared->mCaps.version.isEmpty() )
   {
-    QgsWFSCapabilities getCapabilities( mShared->mURI.uri() );
+    QgsWfsCapabilities getCapabilities( mShared->mURI.uri() );
     if ( !getCapabilities.requestCapabilities( true ) )
     {
       QgsMessageLog::logMessage( tr( "GetCapabilities failed for url %1: %2" ).
@@ -1432,7 +1432,7 @@ bool QgsWFSProvider::getCapabilities()
       return false;
     }
 
-    const QgsWFSCapabilities::Capabilities caps = getCapabilities.capabilities();
+    const QgsWfsCapabilities::Capabilities caps = getCapabilities.capabilities();
     mShared->mCaps = caps;
   }
 
@@ -1460,13 +1460,13 @@ bool QgsWFSProvider::getCapabilities()
       const QgsRectangle& r = mShared->mCaps.featureTypes[i].bbox;
       if ( mShared->mSourceCRS.authid().isEmpty() && mShared->mCaps.featureTypes[i].crslist.size() != 0 )
       {
-        mShared->mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
+        mShared->mSourceCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
       }
       if ( !r.isNull() )
       {
         if ( mShared->mCaps.featureTypes[i].bboxSRSIsWGS84 )
         {
-          QgsCoordinateReferenceSystem src = QgsCRSCache::instance()->crsByOgcWmsCrs( "CRS:84" );
+          QgsCoordinateReferenceSystem src = QgsCrsCache::instance()->crsByOgcWmsCrs( "CRS:84" );
           QgsCoordinateTransform ct( src, mShared->mSourceCRS );
 
           QgsDebugMsg( "latlon ext:" + r.toString() );

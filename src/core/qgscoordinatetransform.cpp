@@ -53,14 +53,14 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 
 QgsCoordinateTransform::QgsCoordinateTransform( long sourceSrsId, long destinationSrsId )
 {
-  d = new QgsCoordinateTransformPrivate( QgsCRSCache::instance()->crsBySrsId( sourceSrsId ),
-                                         QgsCRSCache::instance()->crsBySrsId( destinationSrsId ) );
+  d = new QgsCoordinateTransformPrivate( QgsCrsCache::instance()->crsBySrsId( sourceSrsId ),
+                                         QgsCrsCache::instance()->crsBySrsId( destinationSrsId ) );
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QString& sourceWkt, const QString& destinationWkt )
 {
-  d = new QgsCoordinateTransformPrivate( QgsCRSCache::instance()->crsByWkt( sourceWkt ),
-                                         QgsCRSCache::instance()->crsByWkt( destinationWkt ) );
+  d = new QgsCoordinateTransformPrivate( QgsCrsCache::instance()->crsByWkt( sourceWkt ),
+                                         QgsCrsCache::instance()->crsByWkt( destinationWkt ) );
 }
 
 
@@ -71,7 +71,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( long sourceSrid,
   QgsCoordinateReferenceSystem sourceCrs;
   sourceCrs.createFromId( sourceSrid, sourceCrsType );
 
-  d = new QgsCoordinateTransformPrivate( sourceCrs, QgsCRSCache::instance()->crsByWkt( destinationWkt ) );
+  d = new QgsCoordinateTransformPrivate( sourceCrs, QgsCrsCache::instance()->crsByWkt( destinationWkt ) );
 }
 
 void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& crs )
@@ -582,10 +582,10 @@ bool QgsCoordinateTransform::readXml( const QDomNode & theNode )
   QgsDebugMsg( "Reading Coordinate Transform from xml ------------------------!" );
 
   QDomNode mySrcNode = theNode.namedItem( "sourcesrs" );
-  d->mSourceCRS.readXML( mySrcNode );
+  d->mSourceCRS.readXml( mySrcNode );
 
   QDomNode myDestNode = theNode.namedItem( "destinationsrs" );
-  d->mDestCRS.readXML( myDestNode );
+  d->mDestCRS.readXml( myDestNode );
 
   d->mSourceDatumTransform = theNode.toElement().attribute( "sourceDatumTransform", "-1" ).toInt();
   d->mDestinationDatumTransform = theNode.toElement().attribute( "destinationDatumTransform", "-1" ).toInt();
@@ -601,11 +601,11 @@ bool QgsCoordinateTransform::writeXml( QDomNode & theNode, QDomDocument & theDoc
   myTransformElement.setAttribute( "destinationDatumTransform", QString::number( d->mDestinationDatumTransform ) );
 
   QDomElement mySourceElement = theDoc.createElement( "sourcesrs" );
-  d->mSourceCRS.writeXML( mySourceElement, theDoc );
+  d->mSourceCRS.writeXml( mySourceElement, theDoc );
   myTransformElement.appendChild( mySourceElement );
 
   QDomElement myDestElement = theDoc.createElement( "destinationsrs" );
-  d->mDestCRS.writeXML( myDestElement, theDoc );
+  d->mDestCRS.writeXml( myDestElement, theDoc );
   myTransformElement.appendChild( myDestElement );
 
   myNodeElement.appendChild( myTransformElement );
@@ -631,8 +631,8 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
 {
   QList< QList< int > > transformations;
 
-  QString srcGeoId = srcCRS.geographicCRSAuthId();
-  QString destGeoId = destCRS.geographicCRSAuthId();
+  QString srcGeoId = srcCRS.geographicCrsAuthId();
+  QString destGeoId = destCRS.geographicCrsAuthId();
 
   if ( srcGeoId.isEmpty() || destGeoId.isEmpty() )
   {
@@ -765,9 +765,9 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   preferred = sqlite3_column_int( stmt, 5 ) != 0;
   deprecated = sqlite3_column_int( stmt, 6 ) != 0;
 
-  QgsCoordinateReferenceSystem srcCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );
+  QgsCoordinateReferenceSystem srcCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );
   srcProjection = srcCrs.description();
-  QgsCoordinateReferenceSystem destCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( destCrsId ) );
+  QgsCoordinateReferenceSystem destCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( destCrsId ) );
   dstProjection = destCrs.description();
 
   sqlite3_finalize( stmt );

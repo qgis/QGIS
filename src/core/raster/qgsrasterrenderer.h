@@ -85,7 +85,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
 
     /** Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& rendererElem ) override;
+    void readXml( const QDomElement& rendererElem ) override;
 
     /** Copies common properties like opacity / transparency data from other renderer.
      *  Useful when cloning renderers.
@@ -101,8 +101,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
   protected:
 
-    /** Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
-    void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
+    /** Write upper class info into rasterrenderer element (called by writeXml method of subclasses)*/
+    void _writeXml( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
     QString mType;
 

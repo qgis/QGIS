@@ -33,7 +33,7 @@
 #include <QStyle>
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI& uri )
-    : QgsWFSRequest( uri.uri() )
+    : QgsWfsRequest( uri.uri() )
     , mNumberMatched( -1 )
 {
   connect( this, SIGNAL( downloadFinished() ), this, SLOT( hitsReplyFinished() ) );
@@ -79,7 +79,7 @@ QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString& re
 // -------------------------
 
 QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData* shared )
-    : QgsWFSRequest( shared->mURI.uri() )
+    : QgsWfsRequest( shared->mURI.uri() )
     , mShared( shared )
     , mStop( false )
     , mProgressDialog( nullptr )
@@ -550,7 +550,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
              !mShared->mURI.ignoreAxisOrientation() &&
              !mShared->mURI.invertAxisOrientation() )
         {
-          QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( parser->srsName() );
+          QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( parser->srsName() );
           if ( crs.isValid() && crs.axisInverted() &&
                !mShared->mCapabilityExtent.contains( parser->layerExtent() ) )
           {

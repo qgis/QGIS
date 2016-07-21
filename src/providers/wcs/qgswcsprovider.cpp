@@ -487,7 +487,7 @@ void QgsWcsProvider::setCoverageCrs( QString const & crs )
 
     mCoverageCrs = crs;
 
-    mCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( mCoverageCrs );
+    mCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( mCoverageCrs );
   }
 }
 
@@ -642,7 +642,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   if ( !mIgnoreAxisOrientation && ( mCapabilities.version().startsWith( "1.1" ) ) )
   {
     //create CRS from string
-    QgsCoordinateReferenceSystem theSrs = QgsCRSCache::instance()->crsByOgcWmsCrs( crs );
+    QgsCoordinateReferenceSystem theSrs = QgsCrsCache::instance()->crsByOgcWmsCrs( crs );
     if ( theSrs.isValid() && theSrs.axisInverted() )
     {
       changeXY = true;
@@ -842,7 +842,7 @@ void QgsWcsProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *blo
 
 
 // This could be shared with GDAL provider
-QGis::DataType QgsWcsProvider::srcDataType( int bandNo ) const
+QGis::DataType QgsWcsProvider::sourceDataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mSrcGdalDataType.size() )
   {
@@ -1086,8 +1086,8 @@ bool QgsWcsProvider::calculateExtent() const
     // box to the user's selected CRS
     if ( !mCoordinateTransform.isValid() )
     {
-      QgsCoordinateReferenceSystem qgisSrsSource = QgsCRSCache::instance()->crsByOgcWmsCrs( "EPSG:4326" );
-      QgsCoordinateReferenceSystem qgisSrsDest = QgsCRSCache::instance()->crsByOgcWmsCrs( mCoverageCrs );
+      QgsCoordinateReferenceSystem qgisSrsSource = QgsCrsCache::instance()->crsByOgcWmsCrs( "EPSG:4326" );
+      QgsCoordinateReferenceSystem qgisSrsDest = QgsCrsCache::instance()->crsByOgcWmsCrs( mCoverageCrs );
 
       //QgsDebugMsg( "qgisSrsSource: " + qgisSrsSource.toWkt() );
       //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );
@@ -1507,8 +1507,8 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
     }
 
     // Apply no data and user no data
-    if (( srcHasNoDataValue( i ) && useSrcNoDataValue( i ) &&
-          ( qIsNaN( value ) || qgsDoubleNear( value, srcNoDataValue( i ) ) ) ) ||
+    if (( sourceHasNoDataValue( i ) && useSourceNoDataValue( i ) &&
+          ( qIsNaN( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
         ( QgsRasterRange::contains( value, userNoDataValues( i ) ) ) )
     {
       results.insert( i, QVariant() );

@@ -16,5 +16,5 @@ class QgsMapLayerRenderer
     QStringList errors() const;
 
     //! Get access to the ID of the layer rendered by this class
-    QString layerID() const;
+    QString layerId() const;
 };

@@ -74,7 +74,7 @@ class CORE_EXPORT QgsRasterInterface
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
-    virtual QGis::DataType srcDataType( int bandNo ) const { return mInput ? mInput->srcDataType( bandNo ) : QGis::UnknownDataType; }
+    virtual QGis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : QGis::UnknownDataType; }
 
     /**
      * Get the extent of the interface.
@@ -128,15 +128,20 @@ class CORE_EXPORT QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual const QgsRasterInterface *srcInput() const
+    virtual const QgsRasterInterface *sourceInput() const
     {
       QgsDebugMsgLevel( "Entered", 4 );
-      return mInput ? mInput->srcInput() : this;
+      return mInput ? mInput->sourceInput() : this;
     }
-    virtual QgsRasterInterface * srcInput()
+
+    /** Get source / raw input, the first in pipe, usually provider.
+     *  It may be used to get info about original data, e.g. resolution to decide
+     *  resampling etc.
+     */
+    virtual QgsRasterInterface * sourceInput()
     {
       QgsDebugMsgLevel( "Entered", 4 );
-      return mInput ? mInput->srcInput() : this;
+      return mInput ? mInput->sourceInput() : this;
     }
 
     /** \brief Get band statistics.
@@ -207,9 +212,9 @@ class CORE_EXPORT QgsRasterInterface
                                 int theSampleSize = 0 );
 
     /** Write base class members to xml. */
-    virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
+    virtual void writeXml( QDomDocument& doc, QDomElement& parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
     /** Sets base class members from xml. Usually called from create() methods of subclasses */
-    virtual void readXML( const QDomElement& filterElem ) { Q_UNUSED( filterElem ); }
+    virtual void readXml( const QDomElement& filterElem ) { Q_UNUSED( filterElem ); }
 
   protected:
     // QgsRasterInterface used as input

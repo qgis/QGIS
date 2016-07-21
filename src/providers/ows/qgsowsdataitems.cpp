@@ -188,7 +188,7 @@ QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
   QStringList connNames;
   Q_FOREACH ( const QString& service, QStringList() << "WMS" << "WFS" << "WCS" )
   {
-    Q_FOREACH ( const QString& connName, QgsOWSConnection::connectionList( service ) )
+    Q_FOREACH ( const QString& connName, QgsOwsConnection::connectionList( service ) )
     {
       if ( !connNames.contains( connName ) )
       {

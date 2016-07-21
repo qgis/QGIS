@@ -166,7 +166,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // Reimplemented QgsRasterDataProvider virtual methods
     int capabilities() const override;
     QGis::DataType dataType( int bandNo ) const override;
-    QGis::DataType srcDataType( int bandNo ) const override;
+    QGis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
     //double noDataValue() const;
     int xBlockSize() const override;

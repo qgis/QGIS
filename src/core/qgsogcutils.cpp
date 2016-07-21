@@ -59,7 +59,7 @@ QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument& doc,
 {
   QgsCoordinateReferenceSystem crs;
   if ( !mSrsName.isEmpty() )
-    crs = QgsCRSCache::instance()->crsByOgcWmsCrs( mSrsName );
+    crs = QgsCrsCache::instance()->crsByOgcWmsCrs( mSrsName );
   if ( crs.isValid() )
   {
     if ( honourAxisOrientation && crs.axisInverted() )
@@ -2890,7 +2890,7 @@ bool QgsOgcUtilsSQLStatementToFilter::processSRSName( const QgsSQLStatement::Nod
 
   QgsCoordinateReferenceSystem crs;
   if ( !srsName.isEmpty() )
-    crs = QgsCRSCache::instance()->crsByOgcWmsCrs( srsName );
+    crs = QgsCrsCache::instance()->crsByOgcWmsCrs( srsName );
   if ( crs.isValid() )
   {
     if ( mHonourAxisOrientation && crs.axisInverted() )

@@ -38,7 +38,7 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 
     QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     QList<int> usesBands() const override;
 

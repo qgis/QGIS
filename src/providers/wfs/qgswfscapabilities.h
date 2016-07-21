@@ -22,12 +22,12 @@
 #include "qgswfsrequest.h"
 
 /** Manages the GetCapabilities request */
-class QgsWFSCapabilities : public QgsWFSRequest
+class QgsWfsCapabilities : public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWFSCapabilities( const QString& theUri );
-    virtual ~QgsWFSCapabilities();
+    explicit QgsWfsCapabilities( const QString& theUri );
+    virtual ~QgsWfsCapabilities();
 
     //! start network connection to get capabilities
     bool requestCapabilities( bool synchronous );

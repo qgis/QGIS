@@ -331,7 +331,7 @@ QString QgsAuthConfigUriEdit::dataSourceUri()
   return mDataUri;
 }
 
-bool QgsAuthConfigUriEdit::hasConfigID( const QString &txt )
+bool QgsAuthConfigUriEdit::hasConfigId( const QString &txt )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

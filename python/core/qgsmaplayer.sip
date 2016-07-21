@@ -346,7 +346,7 @@ class QgsMapLayer : QObject
 
        @returns true if successful
      */
-    bool readLayerXML( const QDomElement& layerElement );
+    bool readLayerXml( const QDomElement& layerElement );
 
     /** Stores state in Dom node
      * @param layerElement is a Dom element corresponding to ``maplayer'' tag
@@ -364,7 +364,7 @@ class QgsMapLayer : QObject
      *
      * @returns true if successful
      */
-    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null ) const;
+    bool writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null ) const;
 
     /** Returns the given layer as a layer definition document
      *  Layer definitions store the data source as well as styling and custom properties.

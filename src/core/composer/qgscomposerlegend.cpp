@@ -355,7 +355,7 @@ void QgsComposerLegend::updateItem()
   QgsComposerItem::updateItem();
 }
 
-bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {
@@ -397,16 +397,16 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   QDomElement composerLegendStyles = doc.createElement( "styles" );
   composerLegendElem.appendChild( composerLegendStyles );
 
-  style( QgsComposerLegendStyle::Title ).writeXML( "title", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Group ).writeXML( "group", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Subgroup ).writeXML( "subgroup", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Symbol ).writeXML( "symbol", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::SymbolLabel ).writeXML( "symbolLabel", composerLegendStyles, doc );
+  style( QgsComposerLegendStyle::Title ).writeXml( "title", composerLegendStyles, doc );
+  style( QgsComposerLegendStyle::Group ).writeXml( "group", composerLegendStyles, doc );
+  style( QgsComposerLegendStyle::Subgroup ).writeXml( "subgroup", composerLegendStyles, doc );
+  style( QgsComposerLegendStyle::Symbol ).writeXml( "symbol", composerLegendStyles, doc );
+  style( QgsComposerLegendStyle::SymbolLabel ).writeXml( "symbolLabel", composerLegendStyles, doc );
 
   if ( mCustomLayerTree )
   {
     // if not using auto-update - store the custom layer tree
-    mCustomLayerTree->writeXML( composerLegendElem );
+    mCustomLayerTree->writeXml( composerLegendElem );
   }
 
   if ( mLegendFilterByMap )
@@ -414,7 +414,7 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
     composerLegendElem.setAttribute( "legendFilterByMap", "1" );
   }
 
-  return _writeXML( composerLegendElem, doc );
+  return _writeXml( composerLegendElem, doc );
 }
 
 static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGroup )
@@ -457,7 +457,7 @@ static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGro
   }
 }
 
-bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
   {
@@ -484,7 +484,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
     {
       QDomElement styleElem = stylesNode.childNodes().at( i ).toElement();
       QgsComposerLegendStyle style;
-      style.readXML( styleElem, doc );
+      style.readXml( styleElem, doc );
       QString name = styleElem.attribute( "name" );
       QgsComposerLegendStyle::Style s;
       if ( name == "title" ) s = QgsComposerLegendStyle::Title;
@@ -536,7 +536,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   {
     // QGIS >= 2.6
     QDomElement layerTreeElem = itemElem.firstChildElement( "layer-tree-group" );
-    setCustomLayerTree( QgsLayerTreeGroup::readXML( layerTreeElem ) );
+    setCustomLayerTree( QgsLayerTreeGroup::readXml( layerTreeElem ) );
   }
 
   //restore general composer item properties
@@ -544,7 +544,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   // < 2.0 projects backward compatibility >>>>>

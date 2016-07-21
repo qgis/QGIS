@@ -469,7 +469,7 @@ void QgsComposerArrow::setMarkerMode( MarkerMode mode )
   adaptItemSceneRect();
 }
 
-bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerArrow::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerArrowElem = doc.createElement( "ComposerArrow" );
   composerArrowElem.setAttribute( "arrowHeadWidth", QString::number( mArrowHeadWidth ) );
@@ -499,10 +499,10 @@ bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerArrowElem.appendChild( stopPointElem );
 
   elem.appendChild( composerArrowElem );
-  return _writeXML( composerArrowElem, doc );
+  return _writeXml( composerArrowElem, doc );
 }
 
-bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   mArrowHeadWidth = itemElem.attribute( "arrowHeadWidth", "2.0" ).toDouble();
   mArrowHeadFillColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "arrowHeadFillColor", "0,0,0,255" ) );
@@ -572,7 +572,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   //start point

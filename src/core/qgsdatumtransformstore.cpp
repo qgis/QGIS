@@ -74,7 +74,7 @@ QgsCoordinateTransform QgsDatumTransformStore::transformation( QgsMapLayer* laye
   }
 }
 
-void QgsDatumTransformStore::readXML( const QDomNode& parentNode )
+void QgsDatumTransformStore::readXml( const QDomNode& parentNode )
 {
   clear();
 
@@ -102,7 +102,7 @@ void QgsDatumTransformStore::readXML( const QDomNode& parentNode )
   }
 }
 
-void QgsDatumTransformStore::writeXML( QDomNode& parentNode, QDomDocument& theDoc ) const
+void QgsDatumTransformStore::writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const
 {
   // layer coordinate transform infos
   QDomElement layerCoordTransformInfo = theDoc.createElement( "layer_coordinate_transform_info" );

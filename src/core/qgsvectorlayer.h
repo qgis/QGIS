@@ -828,12 +828,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QString providerType() const;
 
     /** Reads vector layer specific state from project file Dom node.
-     * @note Called by QgsMapLayer::readXML().
+     * @note Called by QgsMapLayer::readXml().
      */
     virtual bool readXml( const QDomNode& layer_node ) override;
 
     /** Write vector layer specific state to project file Dom node.
-     * @note Called by QgsMapLayer::writeXML().
+     * @note Called by QgsMapLayer::writeXml().
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const override;
 
@@ -1437,11 +1437,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     const QMap< QString, QString >& attributeAliases() const { return mAttributeAliasMap; }
 
-    const QSet<QString>& excludeAttributesWMS() const { return mExcludeAttributesWMS; }
-    void setExcludeAttributesWMS( const QSet<QString>& att ) { mExcludeAttributesWMS = att; }
+    const QSet<QString>& excludeAttributesWms() const { return mExcludeAttributesWMS; }
+    void setExcludeAttributesWms( const QSet<QString>& att ) { mExcludeAttributesWMS = att; }
 
-    const QSet<QString>& excludeAttributesWFS() const { return mExcludeAttributesWFS; }
-    void setExcludeAttributesWFS( const QSet<QString>& att ) { mExcludeAttributesWFS = att; }
+    const QSet<QString>& excludeAttributesWfs() const { return mExcludeAttributesWFS; }
+    void setExcludeAttributesWfs( const QSet<QString>& att ) { mExcludeAttributesWFS = att; }
 
     /** Delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );

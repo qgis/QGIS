@@ -2687,7 +2687,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
         QString myWktString = prjStream.readLine();
         prjFile.close();
 
-        srs = QgsCRSCache::instance()->crsByWkt( myWktString.toUtf8().constData() );
+        srs = QgsCrsCache::instance()->crsByWkt( myWktString.toUtf8().constData() );
         if ( srs.isValid() )
           return srs;
       }
@@ -2709,7 +2709,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
     char *pszWkt = nullptr;
     OSRExportToWkt( mySpatialRefSys, &pszWkt );
 
-    srs = QgsCRSCache::instance()->crsByWkt( pszWkt );
+    srs = QgsCrsCache::instance()->crsByWkt( pszWkt );
     OGRFree( pszWkt );
   }
   else

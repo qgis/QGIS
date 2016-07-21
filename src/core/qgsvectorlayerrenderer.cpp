@@ -303,7 +303,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
     {
       if ( mContext.renderingStopped() )
       {
-        QgsDebugMsg( QString( "Drawing of vector layer %1 cancelled." ).arg( layerID() ) );
+        QgsDebugMsg( QString( "Drawing of vector layer %1 cancelled." ).arg( layerId() ) );
         break;
       }
 

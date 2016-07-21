@@ -689,7 +689,7 @@ void QgsComposerAttributeTableV2::setWrapString( const QString &wrapString )
   emit changed();
 }
 
-bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
+bool QgsComposerAttributeTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement composerTableElem = doc.createElement( "ComposerAttributeTableV2" );
   composerTableElem.setAttribute( "source", QString::number( static_cast< int >( mSource ) ) );
@@ -715,14 +715,14 @@ bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & do
     composerTableElem.setAttribute( "vectorLayer", mVectorLayer->id() );
   }
 
-  bool ok = QgsComposerTableV2::writeXML( composerTableElem, doc, ignoreFrames );
+  bool ok = QgsComposerTableV2::writeXml( composerTableElem, doc, ignoreFrames );
 
   elem.appendChild( composerTableElem );
 
   return ok;
 }
 
-bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
+bool QgsComposerAttributeTableV2::readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
   if ( itemElem.isNull() )
   {
@@ -730,7 +730,7 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   }
 
   //read general table properties
-  if ( !QgsComposerTableV2::readXML( itemElem, doc, ignoreFrames ) )
+  if ( !QgsComposerTableV2::readXml( itemElem, doc, ignoreFrames ) )
   {
     return false;
   }

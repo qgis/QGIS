@@ -384,8 +384,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
     /** @note added in 2.4 */
     QAction *actionSetLayerScaleVisibility() { return mActionSetLayerScaleVisibility; }
-    QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
-    QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
+    QAction *actionSetLayerCrs() { return mActionSetLayerCRS; }
+    QAction *actionSetProjectCrsFromLayer() { return mActionSetProjectCRSFromLayer; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSubsetString() { return mActionLayerSubsetString; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
@@ -494,7 +494,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! emit initializationCompleted signal
     void completeInitialization();
 
-    void emitCustomSrsValidation( QgsCoordinateReferenceSystem &crs );
+    void emitCustomCrsValidation( QgsCoordinateReferenceSystem &crs );
 
     QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem *item ) { mDecorationItems.append( item ); }
@@ -713,7 +713,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   private slots:
     //! validate a SRS
-    void validateSrs( QgsCoordinateReferenceSystem &crs );
+    void validateCrs( QgsCoordinateReferenceSystem &crs );
 
     //! QGis Sponsors
     void sponsors();
@@ -763,9 +763,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Zoom to nearest scale such that current layer is visible
     void zoomToLayerScale();
     //! Set CRS of a layer
-    void setLayerCRS();
+    void setLayerCrs();
     //! Assign layer CRS to project
-    void setProjectCRSFromLayer();
+    void setProjectCrsFromLayer();
 
     /** Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
         Only works on raster layers*/
@@ -779,9 +779,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void applyStyleToGroup();
 
     /** Set the CRS of the current legend group*/
-    void legendGroupSetCRS();
+    void legendGroupSetCrs();
     /** Set the WMS data of the current legend group*/
-    void legendGroupSetWMSData();
+    void legendGroupSetWmsData();
 
     //! zoom to extent of layer
     void zoomToLayerExtent();
@@ -1362,7 +1362,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** This signal is emitted when QGIS' initialization is complete */
     void initializationCompleted();
 
-    void customSrsValidation( QgsCoordinateReferenceSystem &crs );
+    void customCrsValidation( QgsCoordinateReferenceSystem &crs );
 
     /** This signal is emitted when a layer has been saved using save as
        @note added in version 2.7
@@ -1454,7 +1454,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createOverview();
     void createCanvasTools();
     void createMapTips();
-    void updateCRSStatusBar();
+    void updateCrsStatusBar();
     void createDecorations();
 
     /** Do histogram stretch for singleband gray / multiband color rasters*/

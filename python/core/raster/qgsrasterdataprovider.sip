@@ -72,7 +72,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QGis::DataType srcDataType( int bandNo ) const = 0;
+    virtual QGis::DataType sourceDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const;
@@ -105,16 +105,16 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) / Factory /;
 
     /** Return true if source band has no data value */
-    virtual bool srcHasNoDataValue( int bandNo ) const;
+    virtual bool sourceHasNoDataValue( int bandNo ) const;
 
     /** \brief Get source nodata value usage */
-    virtual bool useSrcNoDataValue( int bandNo ) const;
+    virtual bool useSourceNoDataValue( int bandNo ) const;
 
     /** \brief Set source nodata value usage */
-    virtual void setUseSrcNoDataValue( int bandNo, bool use );
+    virtual void setUseSourceNoDataValue( int bandNo, bool use );
 
     /** Value representing no data value. */
-    virtual double srcNoDataValue( int bandNo ) const;
+    virtual double sourceNoDataValue( int bandNo ) const;
 
     virtual void setUserNoDataValue( int bandNo, const QgsRasterRangeList& noData );
 

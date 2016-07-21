@@ -33,9 +33,9 @@ class QgsComposerLegendStyle
     // set all margins
     void setMargin( double margin );
 
-    void writeXML( const QString& name, QDomElement& elem, QDomDocument & doc ) const;
+    void writeXml( const QString& name, QDomElement& elem, QDomDocument & doc ) const;
 
-    void readXML( const QDomElement& elem, const QDomDocument& doc );
+    void readXml( const QDomElement& elem, const QDomDocument& doc );
 
     /** Get name for style, used in project file */
     static QString styleName( Style s );

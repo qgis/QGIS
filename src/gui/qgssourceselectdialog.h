@@ -23,7 +23,7 @@
 class QStandardItemModel;
 class QSortFilterProxyModel;
 class QgsGenericProjectionSelector;
-class QgsOWSConnection;
+class QgsOwsConnection;
 
 /** \ingroup gui
  * Generic class listing layers available from a remote service.
@@ -64,11 +64,11 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     QgsCoordinateReferenceSystem mCanvasCrs;
 
     /** To be implemented in the child class. Called when a new connection is initiated. */
-    virtual bool connectToService( const QgsOWSConnection& connection ) = 0;
+    virtual bool connectToService( const QgsOwsConnection& connection ) = 0;
     /** May be implemented in child classes for services which support customized queries. */
-    virtual void buildQuery( const QgsOWSConnection&, const QModelIndex& ) {}
+    virtual void buildQuery( const QgsOwsConnection&, const QModelIndex& ) {}
     /** To be implemented in the child class. Constructs an URI for the specified service layer. */
-    virtual QString getLayerURI( const QgsOWSConnection& connection,
+    virtual QString getLayerURI( const QgsOwsConnection& connection,
                                  const QString& layerTitle,
                                  const QString& layerName,
                                  const QString& crs = QString(),
@@ -95,8 +95,8 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     void modifyEntryOfServerList();
     void addButtonClicked();
     void buildQueryButtonClicked();
-    void changeCRS();
-    void changeCRSFilter();
+    void changeCrs();
+    void changeCrsFilter();
     void connectToServer();
     void filterChanged( QString text );
     void on_btnLoad_clicked();

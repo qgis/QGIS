@@ -296,12 +296,17 @@ class QgsImageFetcher;
  *
  * @note added in 2.8
  */
-class CORE_EXPORT QgsWMSLegendNode : public QgsLayerTreeModelLegendNode
+class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 {
     Q_OBJECT
 
   public:
-    QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent = nullptr );
+
+    /** Constructor for QgsWmsLegendNode.
+     * @param nodeLayer layer node
+     * @param parent parent object
+     */
+    QgsWmsLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent = nullptr );
 
     virtual QVariant data( int role ) const override;
 

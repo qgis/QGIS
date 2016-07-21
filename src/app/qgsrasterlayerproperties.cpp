@@ -663,18 +663,18 @@ void QgsRasterLayerProperties::sync()
   //add current NoDataValue to NoDataValue line edit
   // TODO: should be per band
   // TODO: no data ranges
-  if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
+  if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
   {
-    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) ) );
+    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
   }
   else
   {
     lblSrcNoDataValue->setText( tr( "not defined" ) );
   }
 
-  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSrcNoDataValue( 1 ) );
+  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSourceNoDataValue( 1 ) );
 
-  bool enableSrcNoData = mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) );
+  bool enableSrcNoData = mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) );
 
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
@@ -728,9 +728,9 @@ void QgsRasterLayerProperties::sync()
   else
   {
     // TODO: all bands
-    if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
+    if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
     {
-      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) ) );
+      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
     }
     else
     {
@@ -850,7 +850,7 @@ void QgsRasterLayerProperties::apply()
   for ( int bandNo = 1; bandNo <= mRasterLayer->dataProvider()->bandCount(); bandNo++ )
   {
     mRasterLayer->dataProvider()->setUserNoDataValue( bandNo, myNoDataRangeList );
-    mRasterLayer->dataProvider()->setUseSrcNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
+    mRasterLayer->dataProvider()->setUseSourceNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
   }
 
   //set renderer from widget
@@ -1208,7 +1208,7 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
   {
     // value
     QString valueString;
-    switch ( provider->srcDataType( 1 ) )
+    switch ( provider->sourceDataType( 1 ) )
     {
       case QGis::Float32:
       case QGis::Float64:

@@ -1359,7 +1359,7 @@ QString QgsStyleV2::smartgroupOperator( int id )
   return op;
 }
 
-bool QgsStyleV2::exportXML( const QString& filename )
+bool QgsStyleV2::exportXml( const QString& filename )
 {
   if ( filename.isEmpty() )
   {
@@ -1403,7 +1403,7 @@ bool QgsStyleV2::exportXML( const QString& filename )
   return true;
 }
 
-bool QgsStyleV2::importXML( const QString& filename )
+bool QgsStyleV2::importXml( const QString& filename )
 {
   mErrorString = QString();
   QDomDocument doc( "style" );

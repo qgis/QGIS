@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 
-class QgsWMSConfigParser
+class QgsWmsConfigParser
 {
 %TypeHeaderCode
 #include "qgswmsconfigparser.h"
@@ -93,7 +93,7 @@ class QgsWMSConfigParser
     virtual double imageQuality() const = 0;
 
     // WMS GetFeatureInfo precision (decimal places)
-    virtual int WMSPrecision() const = 0;
+    virtual int wmsPrecision() const = 0;
 
     //printing
 
@@ -118,11 +118,11 @@ class QgsWMSConfigParser
 
     virtual void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
-    virtual bool useLayerIDs() const = 0;
+    virtual bool useLayerIds() const = 0;
 
   private:
 
-    QgsWMSConfigParser();
-    virtual ~QgsWMSConfigParser();
+    QgsWmsConfigParser();
+    virtual ~QgsWmsConfigParser();
 
 };

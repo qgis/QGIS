@@ -84,8 +84,8 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
     void updateItemText( QStandardItem* item );
 
 
-    bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const;
-    bool readXML( const QDomElement& legendModelElem, const QDomDocument& doc );
+    bool writeXml( QDomElement& composerLegendElem, QDomDocument& doc ) const;
+    bool readXml( const QDomElement& legendModelElem, const QDomDocument& doc );
 
     Qt::DropActions supportedDropActions() const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;

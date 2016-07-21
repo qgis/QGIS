@@ -517,7 +517,7 @@ QgsCoordinateReferenceSystem QgsDb2Provider::crs() const
     {
       if ( query.next() )
       {
-        mCrs = QgsCRSCache::instance()->crsByWkt( query.value( 0 ).toString() );
+        mCrs = QgsCrsCache::instance()->crsByWkt( query.value( 0 ).toString() );
         if ( mCrs.isValid() )
           return mCrs;
       }

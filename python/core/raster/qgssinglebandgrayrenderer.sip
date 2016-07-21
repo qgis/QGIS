@@ -27,7 +27,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
     void setGradient( Gradient theGradient );
     Gradient gradient() const;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 

@@ -87,7 +87,7 @@ void TestQgsGdalProvider::scaleDataType()
   QVERIFY( rp );
   //raster is an integer data type, but has a scale < 1, so data type must be float
   QCOMPARE( rp->dataType( 1 ), QGis::Float32 );
-  QCOMPARE( rp->srcDataType( 1 ), QGis::Float32 );
+  QCOMPARE( rp->sourceDataType( 1 ), QGis::Float32 );
   delete provider;
 }
 
@@ -119,7 +119,7 @@ void TestQgsGdalProvider::noData()
   QVERIFY( rp );
   if ( rp )
   {
-    QCOMPARE( rp->srcNoDataValue( 1 ), static_cast<double>( 255 ) );
+    QCOMPARE( rp->sourceNoDataValue( 1 ), static_cast<double>( 255 ) );
   }
   delete provider;
 }
@@ -133,7 +133,7 @@ void TestQgsGdalProvider::invalidNoDataInSourceIgnored()
   QVERIFY( rp );
   if ( rp )
   {
-    QCOMPARE( rp->srcHasNoDataValue( 1 ), false );
+    QCOMPARE( rp->sourceHasNoDataValue( 1 ), false );
   }
   delete provider;
 }

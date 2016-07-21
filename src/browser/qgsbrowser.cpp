@@ -304,7 +304,7 @@ void QgsBrowser::on_mActionSetProjection_triggered()
   mySelector->setSelectedCrsId( mLayer->crs().srsid() );
   if ( mySelector->exec() )
   {
-    QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsBySrsId( mySelector->selectedCrsId() );
+    QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsBySrsId( mySelector->selectedCrsId() );
 
     // TODO: open data source in write mode set crs and save
 #if 0

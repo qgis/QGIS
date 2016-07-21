@@ -436,10 +436,10 @@ class QgsComposition : QGraphicsScene
     double pointFontSize( int pixelSize ) const /Deprecated/;
 
     /** Writes settings to xml (paper dimension)*/
-    bool writeXML( QDomElement& composerElem, QDomDocument& doc );
+    bool writeXml( QDomElement& composerElem, QDomDocument& doc );
 
     /** Reads settings from xml file*/
-    bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& compositionElem, const QDomDocument& doc );
 
     /** Load a template document
      * @param doc template document
@@ -461,7 +461,7 @@ class QgsComposition : QGraphicsScene
      * @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
      * @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
      */
-    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc );
+    void addItemsFromXml( const QDomElement& elem, const QDomDocument& doc );
 
     /** Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );

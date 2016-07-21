@@ -240,7 +240,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTree
   // temporary solution for WMS. Ideally should be done with a delegate.
   if ( mLayer->dataProvider()->supportsLegendGraphic() )
   {
-    nodes << new QgsWMSLegendNode( nodeLayer );
+    nodes << new QgsWmsLegendNode( nodeLayer );
   }
 
   QgsLegendColorList rasterItemList = mLayer->legendSymbologyItems();

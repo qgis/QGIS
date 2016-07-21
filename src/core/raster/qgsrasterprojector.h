@@ -95,14 +95,14 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     QGis::DataType dataType( int bandNo ) const override;
 
     /** \brief set source and destination CRS */
-    void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,
+    void setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 
     /** \brief Get source CRS */
-    QgsCoordinateReferenceSystem srcCrs() const { return mSrcCRS; }
+    QgsCoordinateReferenceSystem sourceCrs() const { return mSrcCRS; }
 
     /** \brief Get destination CRS */
-    QgsCoordinateReferenceSystem destCrs() const { return mDestCRS; }
+    QgsCoordinateReferenceSystem destinationCrs() const { return mDestCRS; }
 
     /** \brief set maximum source resolution */
     void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes )

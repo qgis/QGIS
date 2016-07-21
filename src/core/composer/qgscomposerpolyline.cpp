@@ -124,7 +124,7 @@ void QgsComposerPolyline::_draw( QPainter *painter )
   painter->scale( dotsPerMM, dotsPerMM );
 }
 
-void QgsComposerPolyline::_readXMLStyle( const QDomElement &elmt )
+void QgsComposerPolyline::_readXmlStyle( const QDomElement &elmt )
 {
   mPolylineStyleSymbol.reset( QgsSymbolLayerV2Utils::loadSymbol<QgsLineSymbolV2>( elmt ) );
 }
@@ -136,7 +136,7 @@ void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbolV2* symbol )
   emit frameChanged();
 }
 
-void QgsComposerPolyline::_writeXMLStyle( QDomDocument &doc, QDomElement &elmt ) const
+void QgsComposerPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
   const QDomElement pe = QgsSymbolLayerV2Utils::saveSymbol( QString(),
                          mPolylineStyleSymbol.data(),

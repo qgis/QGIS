@@ -133,13 +133,13 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage
 
-    # Fails because addItemsFromXML has been commented out in sip
+    # Fails because addItemsFromXml has been commented out in sip
     @unittest.expectedFailure
     def testuniqueId(self):
         doc = QDomDocument()
         documentElement = doc.createElement('ComposerItemClipboard')
-        self.mComposition.writeXML(documentElement, doc)
-        self.mComposition.addItemsFromXML(documentElement, doc, 0, False)
+        self.mComposition.writeXml(documentElement, doc)
+        self.mComposition.addItemsFromXml(documentElement, doc, 0, False)
 
         # test if both composer maps have different ids
         newMap = QgsComposerMap()

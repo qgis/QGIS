@@ -37,9 +37,9 @@ QVector<QgsDataItem*> QgsAfsRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOWSConnection::connectionList( "ArcGisFeatureServer" ) )
+  foreach ( QString connName, QgsOwsConnection::connectionList( "ArcGisFeatureServer" ) )
   {
-    QgsOWSConnection connection( "ArcGisFeatureServer", connName );
+    QgsOwsConnection connection( "ArcGisFeatureServer", connName );
     QString path = "afs:/" + connName;
     connections.append( new QgsAfsConnectionItem( this, connName, path, connection.uri().param( "url" ) ) );
   }
@@ -141,7 +141,7 @@ void QgsAfsConnectionItem::editConnection()
 
 void QgsAfsConnectionItem::deleteConnection()
 {
-  QgsOWSConnection::deleteConnection( "ArcGisFeatureServer", mName );
+  QgsOwsConnection::deleteConnection( "ArcGisFeatureServer", mName );
   mParent->refresh();
 }
 
