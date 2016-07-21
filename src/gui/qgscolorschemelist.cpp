@@ -231,6 +231,11 @@ bool QgsColorSchemeList::isDirty() const
   return mModel->isDirty();
 }
 
+QgsColorScheme*QgsColorSchemeList::scheme()
+{
+  return mScheme;
+}
+
 //
 // QgsColorSchemeModel
 //

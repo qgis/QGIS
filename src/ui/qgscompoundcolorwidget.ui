@@ -513,7 +513,7 @@
      <item row="0" column="0">
       <widget class="QTabWidget" name="mTabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <property name="iconSize">
         <size>
@@ -897,6 +897,14 @@
    </property>
    <property name="toolTip">
     <string>Copy selected colors</string>
+   </property>
+  </action>
+  <action name="mActionShowInButtons">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show in Color Buttons</string>
    </property>
   </action>
  </widget>

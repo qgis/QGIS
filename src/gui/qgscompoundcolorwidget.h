@@ -106,6 +106,10 @@ class GUI_EXPORT QgsCompoundColorWidget : public QWidget, private Ui::QgsCompoun
     void on_mSampleButton_clicked();
     void on_mTabWidget_currentChanged( int index );
 
+  private slots:
+
+    void on_mActionShowInButtons_toggled( bool state );
+
   private:
 
     bool mAllowAlpha;
@@ -144,6 +148,9 @@ class GUI_EXPORT QgsCompoundColorWidget : public QWidget, private Ui::QgsCompoun
     /** Returns the path to the user's palette folder
      */
     QString gplFilePath();
+
+    //! Updates the state of actions for the current selected scheme
+    void updateActionsForCurrentScheme();
 };
 
 #endif // QGSCOMPOUNDCOLORWIDGET_H

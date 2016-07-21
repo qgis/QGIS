@@ -152,6 +152,8 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     virtual bool isEditable() const override { return true; }
 
+    virtual QgsColorScheme::SchemeFlags flags() const override;
+
     /** Sets the name for the scheme
      * @param name new name
      */
@@ -161,6 +163,12 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
      * @returns true if erase was successful
      */
     bool erase();
+
+    /** Sets whether a this scheme should be shown in color button menus.
+     * @param show set to true to show in color button menus, or false to hide from menus
+     * @note added in QGIS 3.0
+     */
+    void setShowSchemeInMenu( bool show );
 
   protected:
 

@@ -142,12 +142,19 @@ class QgsColorSchemeList: QTreeView
      */
     bool isDirty() const;
 
+    /** Returns the scheme currently selected in the list.
+     * @note added in QGIS 3.0
+     * @see setScheme()
+     */
+    QgsColorScheme* scheme();
+
   public slots:
 
     /** Sets the color scheme to show in the list
      * @param scheme QgsColorScheme for colors to show in the list
      * @param context context string provided to color scheme
      * @param baseColor base color for color scheme
+     * @see scheme()
      */
     void setScheme( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
