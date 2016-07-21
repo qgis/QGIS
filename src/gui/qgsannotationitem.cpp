@@ -53,13 +53,20 @@ void QgsAnnotationItem::setMarkerSymbol( QgsMarkerSymbolV2* symbol )
 void QgsAnnotationItem::setMapPosition( const QgsPoint& pos )
 {
   mMapPosition = pos;
+  // use a hack to make position accessible to composer (in core, so can't directly access this class)
+  // TODO - fix this hacky mess with an interface class
+  setData( 2, mMapPosition.x() );
+  setData( 3, mMapPosition.y() );
+
   setPos( toCanvasCoordinates( mMapPosition ) );
-  mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
+  setMapPositionCrs( mMapCanvas->mapSettings().destinationCrs() );
 }
 
 void QgsAnnotationItem::setMapPositionCrs( const QgsCoordinateReferenceSystem& crs )
 {
   mMapPositionCrs = crs;
+  // use a hack to make crs accessible to composer
+  setData( 4, qlonglong( crs.srsid() ) );
 }
 
 void QgsAnnotationItem::setOffsetFromReferencePoint( QPointF offset )
@@ -98,6 +105,10 @@ void QgsAnnotationItem::updatePosition()
   else
   {
     mMapPosition = toMapCoordinates( pos().toPoint() );
+    // use a hack to make position accessible to composer (in core, so can't directly access this class)
+    // TODO - fix this hacky mess with an interface class
+    setData( 2, mMapPosition.x() );
+    setData( 3, mMapPosition.y() );
   }
 }
 
@@ -444,8 +455,15 @@ void QgsAnnotationItem::_readXml( const QDomDocument& doc, const QDomElement& an
   mapPos.setX( annotationElem.attribute( "mapPosX", "0" ).toDouble() );
   mapPos.setY( annotationElem.attribute( "mapPosY", "0" ).toDouble() );
   mMapPosition = mapPos;
+  setData( 2, mMapPosition.x() );
+  setData( 3, mMapPosition.y() );
+
   if ( !mMapPositionCrs.readXml( annotationElem ) )
+  {
     mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
+  }
+  setMapPositionCrs( mMapPositionCrs );
+
   mFrameBorderWidth = annotationElem.attribute( "frameBorderWidth", "0.5" ).toDouble();
   mFrameColor.setNamedColor( annotationElem.attribute( "frameColor", "#000000" ) );
   mFrameColor.setAlpha( annotationElem.attribute( "frameColorAlpha", "255" ).toInt() );

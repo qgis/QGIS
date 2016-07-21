@@ -20,6 +20,7 @@
 #include "qgscomposermapoverview.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
+#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaprenderercustompainterjob.h"
@@ -2398,12 +2399,14 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
   QGraphicsItem* parent = item->parentItem();
   if ( !parent )
   {
+    // having no parent is a hack to indicate that annotation has a fixed position
     QPointF mapPos = composerMapPosForItem( item );
     itemX = mapPos.x();
     itemY = mapPos.y();
   }
   else //place item relative to the parent item
   {
+    // having a parent is a hack to indicate annotation has relative position
     QPointF itemScenePos = item->scenePos();
     QPointF parentScenePos = parent->scenePos();
 
@@ -2425,22 +2428,48 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
 
 QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
 {
-  if ( !item || !mMapCanvas )
+  if ( !item )
+    return QPointF( 0, 0 );
+
+  double mapX = 0.0;
+  double mapY = 0.0;
+  if ( item->parentItem() && !mMapCanvas )
   {
+    // having a parentItem is a hack used to indicate annotation has relative position
     return QPointF( 0, 0 );
   }
-
-  if ( currentMapExtent()->height() <= 0 || currentMapExtent()->width() <= 0 || mMapCanvas->width() <= 0 || mMapCanvas->height() <= 0 )
+  else if ( item->parentItem() )
   {
-    return QPointF( 0, 0 );
+    // TODO this is totally broken for rotated maps
+    if ( currentMapExtent()->height() <= 0 || currentMapExtent()->width() <= 0 || mMapCanvas->width() <= 0 || mMapCanvas->height() <= 0 )
+    {
+      return QPointF( 0, 0 );
+    }
+
+    QRectF graphicsSceneRect = mMapCanvas->sceneRect();
+    QPointF itemScenePos = item->scenePos();
+    QgsRectangle mapRendererExtent = mComposition->mapSettings().visibleExtent();
+
+    mapX = itemScenePos.x() / graphicsSceneRect.width() * mapRendererExtent.width() + mapRendererExtent.xMinimum();
+    mapY = mapRendererExtent.yMaximum() - itemScenePos.y() / graphicsSceneRect.height() * mapRendererExtent.height();
+  }
+  else
+  {
+    //fixed position, use a hack where the position is encoded in item's custom data
+    //(this whole annotation handling is a hack and needs to be rewritten)
+    mapX = item->data( 2 ).toDouble();
+    mapY = item->data( 3 ).toDouble();
+    long crsid = item->data( 4 ).toLongLong();
+
+    if ( crsid != mComposition->mapSettings().destinationCrs().srsid() )
+    {
+      //need to reproject
+      QgsCoordinateTransform t( QgsCrsCache::instance()->crsBySrsId( crsid ), mComposition->mapSettings().destinationCrs() );
+      double z = 0.0;
+      t.transformInPlace( mapX, mapY, z );
+    }
   }
 
-  QRectF graphicsSceneRect = mMapCanvas->sceneRect();
-  QPointF itemScenePos = item->scenePos();
-  QgsRectangle mapRendererExtent = mComposition->mapSettings().visibleExtent();
-
-  double mapX = itemScenePos.x() / graphicsSceneRect.width() * mapRendererExtent.width() + mapRendererExtent.xMinimum();
-  double mapY = mapRendererExtent.yMaximum() - itemScenePos.y() / graphicsSceneRect.height() * mapRendererExtent.height();
   return mapToItemCoords( QPointF( mapX, mapY ) );
 }
 
