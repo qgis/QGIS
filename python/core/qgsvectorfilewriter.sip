@@ -168,7 +168,7 @@ class QgsVectorFileWriter
                                             SymbologyExport symbologyExport = NoSymbology,
                                             double symbologyScale = 1.0,
                                             const QgsRectangle* filterExtent = 0,
-                                            QgsWKBTypes::Type overrideGeometryType = QgsWKBTypes::Unknown,
+                                            QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
                                             bool forceMulti = false,
                                             bool includeZ = false,
                                             QgsAttributeList attributes = QgsAttributeList(),
@@ -213,7 +213,7 @@ class QgsVectorFileWriter
                                             SymbologyExport symbologyExport = NoSymbology,
                                             double symbologyScale = 1.0,
                                             const QgsRectangle* filterExtent = 0,
-                                            QgsWKBTypes::Type overrideGeometryType = QgsWKBTypes::Unknown,
+                                            QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
                                             bool forceMulti = false,
                                             bool includeZ = false,
                                             QgsAttributeList attributes = QgsAttributeList(),
@@ -224,20 +224,7 @@ class QgsVectorFileWriter
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,
                          const QgsFields& fields,
-                         Qgis::WkbType geometryType,
-                         const QgsCoordinateReferenceSystem& srs = QgsCoordinateReferenceSystem(),
-                         const QString& driverName = "ESRI Shapefile",
-                         const QStringList &datasourceOptions = QStringList(),
-                         const QStringList &layerOptions = QStringList(),
-                         QString *newFilename = nullptr,
-                         SymbologyExport symbologyExport = NoSymbology
-                       );
-
-    /** Create a new vector file writer */
-    QgsVectorFileWriter( const QString& vectorFileName,
-                         const QString& fileEncoding,
-                         const QgsFields& fields,
-                         QgsWKBTypes::Type geometryType,
+                         QgsWkbTypes::Type geometryType,
                          const QgsCoordinateReferenceSystem& srs = QgsCoordinateReferenceSystem(),
                          const QString& driverName = "ESRI Shapefile",
                          const QStringList &datasourceOptions = QStringList(),
@@ -295,7 +282,7 @@ class QgsVectorFileWriter
 
   protected:
     //! @note not available in python bindings
-    // OGRGeometryH createEmptyGeometry( Qgis::WkbType wkbType );
+    // OGRGeometryH createEmptyGeometry( QgsWkbTypes::Type wkbType );
 
   private:
 

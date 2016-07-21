@@ -126,12 +126,12 @@ class QgsGeometry
     /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      * @see type
      */
-    Qgis::WkbType wkbType() const;
+    QgsWkbTypes::Type wkbType() const;
 
-    /** Returns type of the geometry as a Qgis::GeometryType
+    /** Returns type of the geometry as a QgsWkbTypes::GeometryType
      * @see wkbType
      */
-    Qgis::GeometryType type() const;
+    QgsWkbTypes::GeometryType type() const;
 
     /** Returns true if WKB of the geometry is of WKBMulti* type */
     bool isMultipart() const;
@@ -312,7 +312,7 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPoint> &points, Qgis::GeometryType geomType = Qgis::UnknownGeometry );
+    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
@@ -321,7 +321,7 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPointV2> &points, Qgis::GeometryType geomType = Qgis::UnknownGeometry );
+    int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
@@ -330,7 +330,7 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsAbstractGeometryV2* part /Transfer/, Qgis::GeometryType geomType = Qgis::UnknownGeometry );
+    int addPart( QgsAbstractGeometryV2* part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
      * @param newPart part to add. Ownership is NOT transferred.
@@ -531,7 +531,7 @@ class QgsGeometry
      * @return the converted geometry or nullptr if the conversion fails.
      * @note added in 2.2
      */
-    QgsGeometry convertToType( Qgis::GeometryType destType, bool destMultipart = false ) const;
+    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const /Factory/;
 
     /* Accessor functions for getting geometry data */
 

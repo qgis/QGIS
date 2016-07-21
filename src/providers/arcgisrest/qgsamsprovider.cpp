@@ -43,7 +43,7 @@ void QgsAmsLegendFetcher::start()
 {
   // http://resources.arcgis.com/en/help/rest/apiref/mslegend.html
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/CommunityAddressing/MapServer/legend?f=pjson
-  QgsDataSourceURI dataSource( mProvider->dataSourceUri() );
+  QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
   QUrl queryUrl( dataSource.param( "url" ) + "/legend" );
   queryUrl.addQueryItem( "f", "json" );
   mQuery->start( queryUrl, &mQueryReply );
@@ -64,7 +64,7 @@ void QgsAmsLegendFetcher::handleFinished()
   {
     emit error( QString( "Parsing error at line %1: %2" ).arg( parser.errorLine() ).arg( parser.errorString() ) );
   }
-  QgsDataSourceURI dataSource( mProvider->dataSourceUri() );
+  QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
   QList< QPair<QString, QImage> > legendEntries;
   foreach ( const QVariant& result, queryResults["layers"].toList() )
   {
@@ -124,7 +124,7 @@ QgsAmsProvider::QgsAmsProvider( const QString & uri )
 {
   mLegendFetcher = new QgsAmsLegendFetcher( this );
 
-  QgsDataSourceURI dataSource( dataSourceUri() );
+  QgsDataSourceUri dataSource( dataSourceUri() );
   mServiceInfo = QgsArcGisRestUtils::getServiceInfo( dataSource.param( "url" ), mErrorTitle, mError );
   mLayerInfo = QgsArcGisRestUtils::getLayerInfo( dataSource.param( "url" ) + "/" + dataSource.param( "layer" ), mErrorTitle, mError );
 
@@ -243,7 +243,7 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
   {
     return &mCachedImage;
   }
-  QgsDataSourceURI dataSource( dataSourceUri() );
+  QgsDataSourceUri dataSource( dataSourceUri() );
 
   // Use of tiles currently only implemented if service CRS is meter based
   if ( mServiceInfo["singleFusedMapCache"].toBool() && mCrs.mapUnits() == QgsUnitTypes::DistanceMeters )
@@ -376,7 +376,7 @@ QgsImageFetcher* QgsAmsProvider::getLegendGraphicFetcher( const QgsMapSettings* 
 QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight, int theDpi )
 {
   // http://resources.arcgis.com/en/help/rest/apiref/identify.html
-  QgsDataSourceURI dataSource( dataSourceUri() );
+  QgsDataSourceUri dataSource( dataSourceUri() );
   QUrl queryUrl( dataSource.param( "url" ) + "/identify" );
   queryUrl.addQueryItem( "f", "json" );
   queryUrl.addQueryItem( "geometryType", "esriGeometryPoint" );

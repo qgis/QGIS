@@ -47,7 +47,7 @@ void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent* e )
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
   delete mRubberBand;
-  mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
+  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
   mRubberBand->setFillColor( mFillColor );
   mRubberBand->setBorderColor( mBorderColour );
 }

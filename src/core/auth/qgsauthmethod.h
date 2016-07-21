@@ -47,9 +47,9 @@ class CORE_EXPORT QgsAuthMethod : public QObject
       // TODO: Figure out all different authentication expansions current layer providers use
       NetworkRequest       = 0x1,
       NetworkReply         = 0x2,
-      DataSourceURI        = 0x4,
-      GenericDataSourceURI = 0x8,
-      All = NetworkRequest | NetworkReply | DataSourceURI | GenericDataSourceURI
+      DataSourceUri        = 0x4,
+      GenericDataSourceUri = 0x8,
+      All = NetworkRequest | NetworkReply | DataSourceUri | GenericDataSourceUri
     };
     Q_DECLARE_FLAGS( Expansions, Expansion )
 

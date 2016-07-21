@@ -1,4 +1,4 @@
-class QgsWKBTypes
+class QgsWkbTypes
 {
 %TypeHeaderCode
 #include <qgswkbtypes.h>

@@ -39,7 +39,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     QgsNewVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewVectorLayerDialog();
     /** Returns the selected geometry type*/
-    Qgis::WkbType selectedType() const;
+    QgsWkbTypes::Type selectedType() const;
     /** Appends the chosen attribute names and types to at*/
     void attributes( QList< QPair<QString, QString> >& at ) const;
     /** Returns the file format for storage*/

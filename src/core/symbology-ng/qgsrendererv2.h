@@ -87,7 +87,7 @@ class CORE_EXPORT QgsFeatureRendererV2
     // renderer takes ownership of its symbols!
 
     //! return a new renderer - used by default in vector layers
-    static QgsFeatureRendererV2* defaultRenderer( Qgis::GeometryType geomType );
+    static QgsFeatureRendererV2* defaultRenderer( QgsWkbTypes::GeometryType geomType );
 
     QString type() const { return mType; }
 
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * went wrong
      * @return the renderer
      */
-    static QgsFeatureRendererV2* loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage );
+    static QgsFeatureRendererV2* loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage );
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const

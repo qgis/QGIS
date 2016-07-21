@@ -76,7 +76,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
 
   if ( mPressedFid != -1 )
   {
-    mRubberBand = createRubberBand( vlayer->geometryType() );
+    mRubberBand = createRubberBand( vlayer->geometryType() ) ;
 
     mRubberBand->setToGeometry( geomPart, vlayer );
     mRubberBand->show();
@@ -124,8 +124,8 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fi
 
   switch ( vlayer->geometryType() )
   {
-    case Qgis::Point:
-    case Qgis::Line:
+    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::LineGeometry:
     {
       QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Vertex | QgsPointLocator::Edge );
       if ( !match.isValid() )
@@ -139,13 +139,13 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fi
         fid = match.featureId();
         return QgsGeometry::fromPoint( match.point() );
       }
-      if ( g.wkbType() == Qgis::WKBMultiPoint || g.wkbType() == Qgis::WKBMultiPoint25D )
+      if ( g.wkbType() == QgsWkbTypes::MultiPoint || g.wkbType() == QgsWkbTypes::MultiPoint25D )
       {
         fid = match.featureId();
         partNum = snapVertex;
         return QgsGeometry::fromPoint( match.point() );
       }
-      if ( g.wkbType() == Qgis::WKBMultiLineString || g.wkbType() == Qgis::WKBMultiLineString25D )
+      if ( g.wkbType() == QgsWkbTypes::MultiLineString || g.wkbType() == QgsWkbTypes::MultiLineString25D )
       {
         QgsMultiPolyline mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )
@@ -161,7 +161,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fi
       }
       break;
     }
-    case Qgis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
     {
       QgsPoint layerCoords = toLayerCoordinates( vlayer, point );
       double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );

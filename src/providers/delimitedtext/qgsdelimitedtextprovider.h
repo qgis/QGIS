@@ -94,7 +94,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual Qgis::WkbType geometryType() const override;
+    virtual QgsWkbTypes::Type wkbType() const override;
 
     /**
      * Number of features in the layer
@@ -271,8 +271,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     // Coordinate reference sytem
     QgsCoordinateReferenceSystem mCrs;
 
-    Qgis::WkbType mWkbType;
-    Qgis::GeometryType mGeometryType;
+    QgsWkbTypes::Type mWkbType;
+    QgsWkbTypes::GeometryType mGeometryType;
 
     // Spatial index
     bool mBuildSpatialIndex;

@@ -42,7 +42,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsAbstractFeatureSource* featureSource() const override;
     QString storageType() const override { return "ESRI ArcGIS Feature Server"; }
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
-    Qgis::WkbType geometryType() const override { return static_cast<Qgis::WkbType>( mGeometryType ); }
+    QgsWkbTypes::Type wkbType() const override { return static_cast<QgsWkbTypes::Type>( mGeometryType ); }
     long featureCount() const override { return mObjectIds.size(); }
     QgsFields fields() const override { return mFields; }
     /* Read only for the moment
@@ -71,9 +71,9 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
   private:
     bool mValid;
-    QgsDataSourceURI mDataSource;
+    QgsDataSourceUri mDataSource;
     QgsRectangle mExtent;
-    QgsWKBTypes::Type mGeometryType;
+    QgsWkbTypes::Type mGeometryType;
     QgsFields mFields;
     int mObjectIdFieldIdx;
     QString mObjectIdFieldName;

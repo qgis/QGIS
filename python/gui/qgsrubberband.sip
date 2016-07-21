@@ -38,10 +38,9 @@ class QgsRubberBand: QgsMapCanvasItem
     /**
      * Creates a new RubberBand.
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
-     *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
+     *  @param geometryType Defines how the data should be drawn onto the screen. (Use QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry)
      */
-    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, Qgis::GeometryType geometryType = Qgis::Line );
-
+    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
     ~QgsRubberBand();
 
     /**
@@ -94,9 +93,9 @@ class QgsRubberBand: QgsMapCanvasItem
     /**
      * Clears all the geometries in this rubberband.
      * Sets the representation type according to geometryType.
-     *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
+     *  @param geometryType Defines how the data should be drawn onto the screen. (Use QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry)
      */
-    void reset( Qgis::GeometryType geometryType = Qgis::Line );
+    void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
      * Add a vertex to the rubberband and update canvas.

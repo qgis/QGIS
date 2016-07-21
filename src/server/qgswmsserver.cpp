@@ -2276,7 +2276,7 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
     if ( infoFormat == "application/vnd.ogc.gml" )
     {
-      bool withGeom = layer->wkbType() != Qgis::WKBNoGeometry && addWktGeometry;
+      bool withGeom = layer->wkbType() != QgsWkbTypes::NoGeometry && addWktGeometry;
       int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
       QString typeName =  layer->name();
       if ( mConfigParser && mConfigParser->useLayerIds() )
@@ -3205,7 +3205,7 @@ QDomElement QgsWmsServer::createFeatureGML(
   expressionContext.setFeature( *feat );
 
   // always add bounding box info if feature contains geometry
-  if ( !geom.isEmpty() && geom.type() != Qgis::UnknownGeometry && geom.type() != Qgis::NoGeometry )
+  if ( !geom.isEmpty() && geom.type() != QgsWkbTypes::UnknownGeometry && geom.type() != QgsWkbTypes::NullGeometry )
   {
     QgsRectangle box = feat->geometry().boundingBox();
     if ( transform.isValid() )
@@ -3384,7 +3384,7 @@ QgsRectangle QgsWmsServer::featureInfoSearchRect( QgsVectorLayer* ml, QgsMapRend
   }
 
   double mapUnitTolerance = 0.0;
-  if ( ml->geometryType() == Qgis::Polygon )
+  if ( ml->geometryType() == QgsWkbTypes::PolygonGeometry )
   {
     QMap<QString, QString>::const_iterator tolIt = mParameters.find( "FI_POLYGON_TOLERANCE" );
     if ( tolIt != mParameters.constEnd() )
@@ -3396,7 +3396,7 @@ QgsRectangle QgsWmsServer::featureInfoSearchRect( QgsVectorLayer* ml, QgsMapRend
       mapUnitTolerance = mr->extent().width() / 400.0;
     }
   }
-  else if ( ml->geometryType() == Qgis::Line )
+  else if ( ml->geometryType() == QgsWkbTypes::LineGeometry )
   {
     QMap<QString, QString>::const_iterator tolIt = mParameters.find( "FI_LINE_TOLERANCE" );
     if ( tolIt != mParameters.constEnd() )

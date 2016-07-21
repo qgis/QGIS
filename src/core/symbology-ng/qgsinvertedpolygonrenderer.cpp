@@ -39,7 +39,7 @@ QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRendererV2* su
   }
   else
   {
-    mSubRenderer.reset( QgsFeatureRendererV2::defaultRenderer( Qgis::Polygon ) );
+    mSubRenderer.reset( QgsFeatureRendererV2::defaultRenderer( QgsWkbTypes::PolygonGeometry ) );
   }
 }
 
@@ -288,13 +288,13 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       Q_FOREACH ( const QgsGeometry& geom, cit.geometries )
       {
         QgsMultiPolygon multi;
-        QgsWKBTypes::Type type = QgsWKBTypes::flatType( geom.geometry()->wkbType() );
+        QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.geometry()->wkbType() );
 
-        if (( type == QgsWKBTypes::Polygon ) || ( type == QgsWKBTypes::CurvePolygon ) )
+        if (( type == QgsWkbTypes::Polygon ) || ( type == QgsWkbTypes::CurvePolygon ) )
         {
           multi.append( geom.asPolygon() );
         }
-        else if (( type == QgsWKBTypes::MultiPolygon ) || ( type == QgsWKBTypes::MultiSurface ) )
+        else if (( type == QgsWkbTypes::MultiPolygon ) || ( type == QgsWkbTypes::MultiSurface ) )
         {
           multi = geom.asMultiPolygon();
         }

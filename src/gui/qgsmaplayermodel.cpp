@@ -180,22 +180,22 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
           {
             return QIcon();
           }
-          Qgis::GeometryType geomType = vl->geometryType();
+          QgsWkbTypes::GeometryType geomType = vl->geometryType();
           switch ( geomType )
           {
-            case Qgis::Point:
+            case QgsWkbTypes::PointGeometry:
             {
               return QgsLayerItem::iconPoint();
             }
-            case Qgis::Polygon :
+            case QgsWkbTypes::PolygonGeometry :
             {
               return QgsLayerItem::iconPolygon();
             }
-            case Qgis::Line :
+            case QgsWkbTypes::LineGeometry :
             {
               return QgsLayerItem::iconLine();
             }
-            case Qgis::NoGeometry :
+            case QgsWkbTypes::NullGeometry :
             {
               return QgsLayerItem::iconTable();
             }

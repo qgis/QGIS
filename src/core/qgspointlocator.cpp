@@ -331,25 +331,25 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   QgsConstWkbPtr wkbPtr( wkb, geom->wkbSize() );
   wkbPtr.readHeader();
 
-  Qgis::WkbType wkbType = geom->wkbType();
+  QgsWkbTypes::Type wkbType = geom->wkbType();
 
   bool hasZValue = false;
   switch ( wkbType )
   {
-    case Qgis::WKBPoint25D:
-    case Qgis::WKBPoint:
-    case Qgis::WKBMultiPoint25D:
-    case Qgis::WKBMultiPoint:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::MultiPoint25D:
+    case QgsWkbTypes::MultiPoint:
     {
       // Points have no lines
       return lst;
     }
 
-    case Qgis::WKBLineString25D:
+    case QgsWkbTypes::LineString25D:
       hasZValue = true;
       //intentional fall-through
       FALLTHROUGH;
-    case Qgis::WKBLineString:
+    case QgsWkbTypes::LineString:
     {
       int nPoints;
       wkbPtr >> nPoints;
@@ -379,11 +379,11 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       break;
     }
 
-    case Qgis::WKBMultiLineString25D:
+    case QgsWkbTypes::MultiLineString25D:
       hasZValue = true;
       //intentional fall-through
       FALLTHROUGH;
-    case Qgis::WKBMultiLineString:
+    case QgsWkbTypes::MultiLineString:
     {
       int nLines;
       wkbPtr >> nLines;
@@ -420,11 +420,11 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       break;
     }
 
-    case Qgis::WKBPolygon25D:
+    case QgsWkbTypes::Polygon25D:
       hasZValue = true;
       //intentional fall-through
       FALLTHROUGH;
-    case Qgis::WKBPolygon:
+    case QgsWkbTypes::Polygon:
     {
       int nRings;
       wkbPtr >> nRings;
@@ -461,11 +461,11 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       break;
     }
 
-    case Qgis::WKBMultiPolygon25D:
+    case QgsWkbTypes::MultiPolygon25D:
       hasZValue = true;
       //intentional fall-through
       FALLTHROUGH;
-    case Qgis::WKBMultiPolygon:
+    case QgsWkbTypes::MultiPolygon:
     {
       int nPolygons;
       wkbPtr >> nPolygons;
@@ -507,7 +507,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       break;
     }
 
-    case Qgis::WKBUnknown:
+    case QgsWkbTypes::Unknown:
     default:
       return lst;
   } // switch (wkbType)
@@ -672,8 +672,8 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
   QLinkedList<RTree::Data*> dataList;
   QgsFeature f;
-  Qgis::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == Qgis::NoGeometry )
+  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QgsWkbTypes::NullGeometry )
     return true; // nothing to index
 
   QgsFeatureRequest request;

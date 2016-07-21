@@ -204,7 +204,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         QgsRuleBasedRendererV2::Rule* clone() const /Factory/;
 
         void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props );
-        static QgsRuleBasedRendererV2::Rule* createFromSld( QDomElement& element, Qgis::GeometryType geomType ) /Factory/;
+        static QgsRuleBasedRendererV2::Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
         QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
 
@@ -368,7 +368,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, Qgis::GeometryType geomType ) /Factory/;
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
     virtual QgsSymbolV2List symbols( QgsRenderContext &context );
 

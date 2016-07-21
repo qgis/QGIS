@@ -92,7 +92,7 @@ class CORE_EXPORT QgsVectorLayerImport
     QgsVectorLayerImport( const QString &uri,
                           const QString &provider,
                           const QgsFields &fields,
-                          Qgis::WkbType geometryType,
+                          QgsWkbTypes::Type geometryType,
                           const QgsCoordinateReferenceSystem& crs,
                           bool overwrite = false,
                           const QMap<QString, QVariant> *options = nullptr,

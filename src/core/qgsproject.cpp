@@ -956,7 +956,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
       {
         if ( QgsTransaction::supportsTransaction( vlayer ) )
         {
-          QString connString = QgsDataSourceURI( vlayer->source() ).connectionInfo();
+          QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
           QString key = vlayer->providerType();
 
           QgsTransactionGroup* tg = mTransactionGroups.value( qMakePair( key, connString ) );
@@ -1739,7 +1739,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         QString datasource( dsElem.text() );
         if ( provider == "spatialite" )
         {
-          QgsDataSourceURI uri( datasource );
+          QgsDataSourceUri uri( datasource );
           QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + uri.database() );
           if ( absoluteDs.exists() )
           {

@@ -309,7 +309,7 @@ void TestQgsWcsPublicServers::test()
         myServerDir.mkdir( myVersionDirName );
       }
 
-      QgsDataSourceURI myServerUri;
+      QgsDataSourceUri myServerUri;
 
       myServerUri.setParam( "url", serverUrl );
       if ( !version.isEmpty() )
@@ -385,7 +385,7 @@ void TestQgsWcsPublicServers::test()
         myLog << "identifier:" + myCoverage.identifier;
         myCapabilities.describeCoverage( myCoverage.identifier );
         myCoverage = myCapabilities.coverage( myCoverage.identifier ); // get described
-        QgsDataSourceURI myUri = myServerUri;
+        QgsDataSourceUri myUri = myServerUri;
         myUri.setParam( "identifier", myCoverage.identifier );
         if ( !myCoverage.times.isEmpty() )
         {

@@ -130,7 +130,7 @@ class QgsWFSDataSourceURI
                           bool restrictToCurrentViewExtent = false );
 
   private:
-    QgsDataSourceURI    mURI;
+    QgsDataSourceUri    mURI;
     QgsWFSAuthorization mAuth;
 };
 

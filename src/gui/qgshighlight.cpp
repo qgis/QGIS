@@ -284,15 +284,15 @@ void QgsHighlight::paint( QPainter* p )
 
     switch ( mGeometry->wkbType() )
     {
-      case Qgis::WKBPoint:
-      case Qgis::WKBPoint25D:
+      case QgsWkbTypes::Point:
+      case QgsWkbTypes::Point25D:
       {
         paintPoint( p, mGeometry->asPoint() );
       }
       break;
 
-      case Qgis::WKBMultiPoint:
-      case Qgis::WKBMultiPoint25D:
+      case QgsWkbTypes::MultiPoint:
+      case QgsWkbTypes::MultiPoint25D:
       {
         QgsMultiPoint m = mGeometry->asMultiPoint();
         for ( int i = 0; i < m.size(); i++ )
@@ -302,15 +302,15 @@ void QgsHighlight::paint( QPainter* p )
       }
       break;
 
-      case Qgis::WKBLineString:
-      case Qgis::WKBLineString25D:
+      case QgsWkbTypes::LineString:
+      case QgsWkbTypes::LineString25D:
       {
         paintLine( p, mGeometry->asPolyline() );
       }
       break;
 
-      case Qgis::WKBMultiLineString:
-      case Qgis::WKBMultiLineString25D:
+      case QgsWkbTypes::MultiLineString:
+      case QgsWkbTypes::MultiLineString25D:
       {
         QgsMultiPolyline m = mGeometry->asMultiPolyline();
 
@@ -321,15 +321,15 @@ void QgsHighlight::paint( QPainter* p )
       }
       break;
 
-      case Qgis::WKBPolygon:
-      case Qgis::WKBPolygon25D:
+      case QgsWkbTypes::Polygon:
+      case QgsWkbTypes::Polygon25D:
       {
         paintPolygon( p, mGeometry->asPolygon() );
       }
       break;
 
-      case Qgis::WKBMultiPolygon:
-      case Qgis::WKBMultiPolygon25D:
+      case QgsWkbTypes::MultiPolygon:
+      case QgsWkbTypes::MultiPolygon25D:
       {
         QgsMultiPolygon m = mGeometry->asMultiPolygon();
         for ( int i = 0; i < m.size(); i++ )
@@ -339,7 +339,7 @@ void QgsHighlight::paint( QPainter* p )
       }
       break;
 
-      case Qgis::WKBUnknown:
+      case QgsWkbTypes::Unknown:
       default:
         return;
     }

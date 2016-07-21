@@ -280,7 +280,7 @@ QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, con
   else //snapped to a background layer
   {
     //if source layer is polygon / multipolygon, create a linestring from the snapped ring
-    if ( vl->geometryType() == Qgis::Polygon )
+    if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry )
     {
       //make linestring from polygon ring and return this geometry
       return linestringFromPolygon( snappedFeature.geometry(), partVertexNr );
@@ -414,16 +414,16 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& fea
     return QgsGeometry();
   }
 
-  Qgis::WkbType geomType = featureGeom.wkbType();
+  QgsWkbTypes::Type geomType = featureGeom.wkbType();
   int currentVertex = 0;
   QgsMultiPolygon multiPoly;
 
-  if ( geomType == Qgis::WKBPolygon || geomType == Qgis::WKBPolygon25D )
+  if ( geomType == QgsWkbTypes::Polygon || geomType == QgsWkbTypes::Polygon25D )
   {
     QgsPolygon polygon = featureGeom.asPolygon();
     multiPoly.append( polygon );
   }
-  else if ( geomType == Qgis::WKBMultiPolygon || geomType == Qgis::WKBMultiPolygon25D )
+  else if ( geomType == QgsWkbTypes::MultiPolygon || geomType == QgsWkbTypes::MultiPolygon25D )
   {
     //iterate all polygons / rings
     QgsMultiPolygon multiPoly = featureGeom.asMultiPolygon();
@@ -460,12 +460,12 @@ QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry& geom,
   }
 
   isMulti = false;
-  Qgis::WkbType geomType = geom.wkbType();
-  if ( geomType == Qgis::WKBLineString || geomType == Qgis::WKBLineString25D )
+  QgsWkbTypes::Type geomType = geom.wkbType();
+  if ( geomType == QgsWkbTypes::LineString || geomType == QgsWkbTypes::LineString25D )
   {
     return geom;
   }
-  else if ( geomType == Qgis::WKBMultiLineString || geomType == Qgis::WKBMultiLineString25D )
+  else if ( geomType == QgsWkbTypes::MultiLineString || geomType == QgsWkbTypes::MultiLineString25D )
   {
     //search vertex
     isMulti = true;

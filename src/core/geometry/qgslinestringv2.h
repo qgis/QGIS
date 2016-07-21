@@ -194,7 +194,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual bool dropZValue() override;
     virtual bool dropMValue() override;
 
-    bool convertTo( QgsWKBTypes::Type type ) override;
+    bool convertTo( QgsWkbTypes::Type type ) override;
 
   protected:
 
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
      * @param type WKB type
      * @param wkb WKB representation of line geometry
      */
-    void fromWkbPoints( QgsWKBTypes::Type type, const QgsConstWkbPtr& wkb );
+    void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr& wkb );
 
     friend class QgsPolygonV2;
 

@@ -44,7 +44,8 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 <li>All destCrs() methods have been renamed to destinationCrs()</li>
 <li>All exportXML() methods have been renamed to exportXml()</li>
 <li>All importXML() methods have been renamed to importXml()</li>
-
+<li>All methods taking or returning QGis::WkbType have been changed to use QgsWkbTypes::Type</li>
+<li>All methods taking or returning QGis::GeometryType have been changed to use QgsWkbTypes::GeometryType</li>
 </ul>
 
 
@@ -78,6 +79,18 @@ Some of these unit types have also been renamed - see the notes on QgsUnitTypes 
 QGis::UnitType parameters have been updated to take QgsUnitTypes::DistanceUnit instead.</li>
 <li>The unit handling methods toLiteral, fromLiteral, tr, fromTr, fromUnitToUnitFactor have been removed. Their
 corresponding counterparts in QgsUnitTypes should be used instead.</li>
+<li>The enum QGis::WkbType has been removed in favor of QgsWkbTypes::Type
+<li>The enum QGis::GeometryType has been removed in favor of QgsWkbTypes::GeometryType
+<li>singleType() has been removed. Use the equivalent QgsWkbTypes::singleType() instead
+<li>multiType() has been removed. Use the equivalent QgsWkbTypes::multiType() instead
+<li>flatType() has been removed. Use the equivalent QgsWkbTypes::flatType() instead
+<li>isSingleType() has been removed. Use the equivalent QgsWkbTypes::issingleType() instead
+<li>isMultiType() has been removed. Use the equivalent QgsWkbTypes::isMultiType() instead
+<li>wkbDimensions() has been removed. Use the equivalent QgsWkbTypes::wkbDimensions() instead
+<li>fromOldWkbType() has been removed. This is no longer required.
+<li>fromNewWkbType() has been removed. This is no longer required.
+<li>vectorGeometryType() has been removed. Use the equivalent QgsWkbTypes::geometrydisplayString() instead.
+<li>featureType() has been removed. Use the equivalent QgsWkbTypes::displayString() instead.
 </ul>
 
 \subsection qgis_api_break_3_0_QgsAtlasComposition QgsAtlasComposition
@@ -90,6 +103,12 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 
 <ul>
 <li>hasConfigID() has been renamed to hasConfigId()</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsAuthMethod QgsAuthMethod
+<ul>
+<li>DataSourceURI has been renamed to DataSourceUri</li>
+<li>GenericDataSourceURI has been renamed to GenericDataSourceUri</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsComposerLegendItem QgsComposerLegendItem
@@ -197,6 +216,13 @@ instead.</li>
 <li>isPopulated() has been removed. Use state() instead.</li>
 <li>capabilities() has been removed. Use capabilities2() instead (TODO: rename back to capabilities()).</li>
 <li>emitBeginInsertItems(), emitEndInsertItems(), emitBeginRemoveItems(), emitEndRemoveItems(), emitDataChanged(), emitStateChanged() have been removed.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsDatasourceUri QgsDataSourceURI
+
+<ul>
+<li>QgsDataSourceURI has been renamed to QgsDataSourceUri</li>
+<li>QgsDataSourceURI::SSLmode has been renamed to QgsDataSourceUri::SslMode. All items of this enum have been properly CamelCased.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsDatumTransformStore QgsDatumTransformStore
@@ -544,6 +570,7 @@ only affects third party c++ providers, and does not affect PyQGIS scripts.</li>
 capabilities have been removed, as they were unused and had no effect.</li>
 <li>capabilities() now returns a typesafe QgsVectorDataProvider::Capabilities object, not an integer.</li>
 <li>convertToProviderType() now takes a geometry reference, not a pointer.</li>
+<li>geometryType() has been renamed to wkbType() to be in line with QgsVectorLayer</li>
 </ul>
 
 

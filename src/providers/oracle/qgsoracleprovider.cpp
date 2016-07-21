@@ -48,8 +48,8 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
     , mValid( false )
     , mPrimaryKeyType( pktUnknown )
-    , mDetectedGeomType( Qgis::WKBUnknown )
-    , mRequestedGeomType( Qgis::WKBUnknown )
+    , mDetectedGeomType( QgsWkbTypes::Unknown )
+    , mRequestedGeomType( QgsWkbTypes::Unknown )
     , mHasSpatialIndex( false )
     , mSpatialIndexName( QString::null )
     , mShared( new QgsOracleSharedData )
@@ -499,9 +499,9 @@ void QgsOracleProvider::setExtent( QgsRectangle& newExtent )
 /**
  * Return the feature type
  */
-Qgis::WkbType QgsOracleProvider::geometryType() const
+QgsWkbTypes::Type QgsOracleProvider::geometryType() const
 {
-  return mRequestedGeomType != Qgis::WKBUnknown ? mRequestedGeomType : mDetectedGeomType;
+  return mRequestedGeomType != QgsWkbTypes::Unknown ? mRequestedGeomType : mDetectedGeomType;
 }
 
 const QgsField &QgsOracleProvider::field( int index ) const
@@ -1858,16 +1858,16 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
     g.ordinates.clear();
 
     int iOrdinate = 1;
-    Qgis::WkbType type = ( Qgis::WkbType ) * ptr.iPtr++;
+    QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) * ptr.iPtr++;
     int dim = 2;
 
     switch ( type )
     {
-      case Qgis::WKBPoint25D:
+      case QgsWkbTypes::Point25D:
         dim = 3;
         FALLTHROUGH;
 
-      case Qgis::WKBPoint:
+      case QgsWkbTypes::Point:
         g.srid  = mSrid;
         g.gtype = SDO_GTYPE( dim, gtPoint );
         g.x = *ptr.dPtr++;
@@ -1875,17 +1875,17 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
         g.z = dim == 3 ? *ptr.dPtr++ : 0.0;
         break;
 
-      case Qgis::WKBLineString25D:
-      case Qgis::WKBMultiLineString25D:
+      case QgsWkbTypes::LineString25D:
+      case QgsWkbTypes::MultiLineString25D:
         dim = 3;
         FALLTHROUGH;
 
-      case Qgis::WKBLineString:
-      case Qgis::WKBMultiLineString:
+      case QgsWkbTypes::LineString:
+      case QgsWkbTypes::MultiLineString:
       {
         g.gtype = SDO_GTYPE( dim, gtLine );
         int nLines = 1;
-        if ( type == Qgis::WKBMultiLineString25D || type == Qgis::WKBMultiLineString )
+        if ( type == QgsWkbTypes::MultiLineString25D || type == QgsWkbTypes::MultiLineString )
         {
           g.gtype = SDO_GTYPE( dim, gtMultiLine );
           nLines = *ptr.iPtr++;
@@ -1912,17 +1912,17 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
       }
       break;
 
-      case Qgis::WKBPolygon25D:
-      case Qgis::WKBMultiPolygon25D:
+      case QgsWkbTypes::Polygon25D:
+      case QgsWkbTypes::MultiPolygon25D:
         dim = 3;
         FALLTHROUGH;
 
-      case Qgis::WKBPolygon:
-      case Qgis::WKBMultiPolygon:
+      case QgsWkbTypes::Polygon:
+      case QgsWkbTypes::MultiPolygon:
       {
         g.gtype = SDO_GTYPE( dim, gtPolygon );
         int nPolygons = 1;
-        if ( type == Qgis::WKBMultiPolygon25D || type == Qgis::WKBMultiPolygon )
+        if ( type == QgsWkbTypes::MultiPolygon25D || type == QgsWkbTypes::MultiPolygon )
         {
           g.gtype = SDO_GTYPE( dim, gtMultiPolygon );
           nPolygons = *ptr.iPtr++;
@@ -1954,11 +1954,11 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
       }
       break;
 
-      case Qgis::WKBMultiPoint25D:
+      case QgsWkbTypes::MultiPoint25D:
         dim = 3;
         FALLTHROUGH;
 
-      case Qgis::WKBMultiPoint:
+      case QgsWkbTypes::MultiPoint:
       {
         g.gtype = SDO_GTYPE( dim, gtMultiPoint );
         int n = *ptr.iPtr++;
@@ -1978,8 +1978,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
       }
       break;
 
-      case Qgis::WKBUnknown:
-      case Qgis::WKBNoGeometry:
+      case QgsWkbTypes::Unknown:
+      case QgsWkbTypes::NoGeometry:
         g.isNull = true;
         break;
     }
@@ -2239,7 +2239,7 @@ bool QgsOracleProvider::getGeometryDetails()
 {
   if ( mGeometryColumn.isNull() )
   {
-    mDetectedGeomType = Qgis::WKBNoGeometry;
+    mDetectedGeomType = QgsWkbTypes::NoGeometry;
     mValid = true;
     return true;
   }
@@ -2265,7 +2265,7 @@ bool QgsOracleProvider::getGeometryDetails()
   }
 
   int detectedSrid = -1;
-  Qgis::WkbType detectedType = Qgis::WKBUnknown;
+  QgsWkbTypes::Type detectedType = QgsWkbTypes::Unknown;
   mHasSpatialIndex = false;
 
   if ( mIsQuery )
@@ -2310,12 +2310,12 @@ bool QgsOracleProvider::getGeometryDetails()
         detectedType = QgsOracleConn::wkbTypeFromDatabase( qry.value( 0 ).toInt() );
         if ( qry.next() )
         {
-          detectedType = Qgis::WKBUnknown;
+          detectedType = QgsWkbTypes::Unknown;
         }
       }
       else
       {
-        detectedType = Qgis::WKBUnknown;
+        detectedType = QgsWkbTypes::Unknown;
         QgsMessageLog::logMessage( tr( "%1 has no valid geometry types.\nSQL: %2" )
                                    .arg( mQuery )
                                    .arg( qry.lastQuery() ), tr( "Oracle" ) );
@@ -2330,7 +2330,7 @@ bool QgsOracleProvider::getGeometryDetails()
     }
   }
 
-  if ( detectedType == Qgis::WKBUnknown || detectedSrid <= 0 )
+  if ( detectedType == QgsWkbTypes::Unknown || detectedSrid <= 0 )
   {
     QgsOracleLayerProperty layerProperty;
 
@@ -2358,18 +2358,18 @@ bool QgsOracleProvider::getGeometryDetails()
     if ( layerProperty.types.isEmpty() )
     {
       // no data - so take what's requested
-      if ( mRequestedGeomType == Qgis::WKBUnknown )
+      if ( mRequestedGeomType == QgsWkbTypes::Unknown )
       {
         QgsMessageLog::logMessage( tr( "Geometry type and srid for empty column %1 of %2 undefined." ).arg( mGeometryColumn ).arg( mQuery ) );
       }
 
-      detectedType = Qgis::WKBUnknown;
+      detectedType = QgsWkbTypes::Unknown;
       detectedSrid = -1;
     }
     else
     {
       // requested type && srid is available
-      if ( mRequestedGeomType == Qgis::WKBUnknown || layerProperty.types.contains( mRequestedGeomType ) )
+      if ( mRequestedGeomType == QgsWkbTypes::Unknown || layerProperty.types.contains( mRequestedGeomType ) )
       {
         if ( layerProperty.size() == 1 )
         {
@@ -2380,7 +2380,7 @@ bool QgsOracleProvider::getGeometryDetails()
         else
         {
           // we need to filter
-          detectedType = Qgis::WKBUnknown;
+          detectedType = QgsWkbTypes::Unknown;
           detectedSrid = -1;
         }
       }
@@ -2388,7 +2388,7 @@ bool QgsOracleProvider::getGeometryDetails()
       {
         // geometry type undetermined or not unrequested
         QgsMessageLog::logMessage( tr( "Feature type or srid for %1 of %2 could not be determined or was not requested." ).arg( mGeometryColumn ).arg( mQuery ) );
-        detectedType = Qgis::WKBUnknown;
+        detectedType = QgsWkbTypes::Unknown;
         detectedSrid = -1;
       }
     }
@@ -2402,16 +2402,16 @@ bool QgsOracleProvider::getGeometryDetails()
   QgsDebugMsg( QString( "Detected type is %1" ).arg( mDetectedGeomType ) );
   QgsDebugMsg( QString( "Requested type is %1" ).arg( mRequestedGeomType ) );
 
-  mValid = ( mDetectedGeomType != Qgis::WKBUnknown || mRequestedGeomType != Qgis::WKBUnknown );
+  mValid = ( mDetectedGeomType != QgsWkbTypes::Unknown || mRequestedGeomType != QgsWkbTypes::Unknown );
 
   if ( !mValid )
     return false;
 
 
   // store whether the geometry includes measure value
-  if ( detectedType == Qgis::WKBPoint25D || detectedType == Qgis::WKBMultiPoint25D ||
-       detectedType == Qgis::WKBLineString25D || detectedType == Qgis::WKBMultiLineString25D ||
-       detectedType == Qgis::WKBPolygon25D || detectedType == Qgis::WKBMultiPolygon25D )
+  if ( detectedType == QgsWkbTypes::Point25D || detectedType == QgsWkbTypes::MultiPoint25D ||
+       detectedType == QgsWkbTypes::LineString25D || detectedType == QgsWkbTypes::MultiLineString25D ||
+       detectedType == QgsWkbTypes::Polygon25D || detectedType == QgsWkbTypes::MultiPolygon25D )
   {
     // explicitly disable adding new features and editing of geometries
     // as this would lead to corruption of measures
@@ -2419,7 +2419,7 @@ bool QgsOracleProvider::getGeometryDetails()
     mEnabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
   }
 
-  QgsDebugMsg( QString( "Feature type name is %1" ).arg( Qgis::featureType( geometryType() ) ) );
+  QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::featureType( geometryType() ) ) );
 
   return mValid;
 }
@@ -2583,7 +2583,7 @@ bool QgsOracleProvider::convertField( QgsField &field )
 QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
   const QString& uri,
   const QgsFields &fields,
-  Qgis::WkbType wkbType,
+  QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
@@ -3069,7 +3069,7 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
   const QgsFields &fields,
-  Qgis::WkbType wkbType,
+  QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,

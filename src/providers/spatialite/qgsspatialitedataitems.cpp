@@ -55,7 +55,7 @@ void QgsSLLayerItem::deleteLayer()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  QgsDataSourceURI uri( mUri );
+  QgsDataSourceUri uri( mUri );
   QString errCause;
   bool res = ::deleteLayer( uri.database(), uri.table(), errCause );
   if ( !res )
@@ -141,7 +141,7 @@ QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
   }
 
   QString connectionInfo = QString( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', "\\'" ) );
-  QgsDataSourceURI uri( connectionInfo );
+  QgsDataSourceUri uri( connectionInfo );
 
   Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
   {
@@ -200,7 +200,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
   // TODO: probably should show a GUI with settings etc
 
-  QgsDataSourceURI destUri;
+  QgsDataSourceUri destUri;
   destUri.setDatabase( mDbPath );
 
   qApp->setOverrideCursor( Qt::WaitCursor );
@@ -229,7 +229,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     if ( srcLayer->isValid() )
     {
-      destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != Qgis::NoGeometry ? "geom" : QString() );
+      destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? "geom" : QString() );
       QgsDebugMsg( "URI " + destUri.uri() );
       QgsVectorLayerImport::ImportError err;
       QString importError;

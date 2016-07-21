@@ -564,11 +564,11 @@ void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
 void QgsLabelingGui::init()
 {
   // show/hide options based upon geometry type
-  chkMergeLines->setVisible( mLayer->geometryType() == Qgis::Line );
-  mDirectSymbolsFrame->setVisible( mLayer->geometryType() == Qgis::Line );
-  mMinSizeFrame->setVisible( mLayer->geometryType() != Qgis::Point );
-  mPolygonObstacleTypeFrame->setVisible( mLayer->geometryType() == Qgis::Polygon );
-  mPolygonFeatureOptionsFrame->setVisible( mLayer->geometryType() == Qgis::Polygon );
+  chkMergeLines->setVisible( mLayer->geometryType() == QgsWkbTypes::LineGeometry );
+  mDirectSymbolsFrame->setVisible( mLayer->geometryType() == QgsWkbTypes::LineGeometry );
+  mMinSizeFrame->setVisible( mLayer->geometryType() != QgsWkbTypes::PointGeometry );
+  mPolygonObstacleTypeFrame->setVisible( mLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
+  mPolygonFeatureOptionsFrame->setVisible( mLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
 
   // field combo and expression button
   mFieldExpressionWidget->setLayer( mLayer );
@@ -581,22 +581,22 @@ void QgsLabelingGui::init()
   // set placement methods page based on geometry type
   switch ( mLayer->geometryType() )
   {
-    case Qgis::Point:
+    case QgsWkbTypes::PointGeometry:
       stackedPlacement->setCurrentWidget( pagePoint );
       break;
-    case Qgis::Line:
+    case QgsWkbTypes::LineGeometry:
       stackedPlacement->setCurrentWidget( pageLine );
       break;
-    case Qgis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
       stackedPlacement->setCurrentWidget( pagePolygon );
       break;
-    case Qgis::NoGeometry:
+    case QgsWkbTypes::NullGeometry:
       break;
-    case Qgis::UnknownGeometry:
+    case QgsWkbTypes::UnknownGeometry:
       qFatal( "unknown geometry type unexpected" );
   }
 
-  if ( mLayer->geometryType() == Qgis::Point )
+  if ( mLayer->geometryType() == QgsWkbTypes::PointGeometry )
   {
     // follow placement alignment is only valid for point layers
     if ( mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) ) == -1 )

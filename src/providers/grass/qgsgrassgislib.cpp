@@ -1060,7 +1060,7 @@ int GRASS_LIB_EXPORT G_get_cellhd( const char *name, const char *mapset, struct 
 
 double QgsGrassGisLib::G_database_units_to_meters_factor( void )
 {
-  return Qgis::fromUnitToUnitFactor( mCrs.mapUnits(), Qgis::Meters );
+  return QGis::fromUnitToUnitFactor( mCrs.mapUnits(), Qgis::Meters );
 }
 
 double QgsGrassGisLib::G_area_of_cell_at_row( int row )

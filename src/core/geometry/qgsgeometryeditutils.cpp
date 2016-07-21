@@ -88,9 +88,9 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring
       }
 
       //make sure dimensionality of ring matches geometry
-      if ( QgsWKBTypes::hasZ( geom->wkbType() ) )
+      if ( QgsWkbTypes::hasZ( geom->wkbType() ) )
         ring->addZValue( 0 );
-      if ( QgsWKBTypes::hasM( geom->wkbType() ) )
+      if ( QgsWkbTypes::hasM( geom->wkbType() ) )
         ring->addMValue( 0 );
 
       ( *polyIter )->addInteriorRing( ring );
@@ -121,14 +121,14 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
   }
 
   bool added = false;
-  if ( QgsWKBTypes::flatType( geom->wkbType() ) == QgsWKBTypes::MultiSurface
-       || QgsWKBTypes::flatType( geom->wkbType() ) == QgsWKBTypes::MultiPolygon )
+  if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiSurface
+       || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
   {
     QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( part );
     if ( curve && curve->isClosed() && curve->numPoints() >= 4 )
     {
       QgsCurvePolygonV2 *poly = nullptr;
-      if ( QgsWKBTypes::flatType( curve->wkbType() ) == QgsWKBTypes::LineString )
+      if ( QgsWkbTypes::flatType( curve->wkbType() ) == QgsWkbTypes::LineString )
       {
         poly = new QgsPolygonV2();
       }
@@ -139,11 +139,11 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
       poly->setExteriorRing( curve );
       added = geomCollection->addGeometry( poly );
     }
-    else if ( QgsWKBTypes::flatType( part->wkbType() ) == QgsWKBTypes::Polygon )
+    else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Polygon )
     {
       added = geomCollection->addGeometry( part );
     }
-    else if ( QgsWKBTypes::flatType( part->wkbType() ) == QgsWKBTypes::MultiPolygon )
+    else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiPolygon )
     {
       QgsGeometryCollectionV2 *parts = static_cast<QgsGeometryCollectionV2*>( part );
 
@@ -232,11 +232,11 @@ QgsAbstractGeometryV2* QgsGeometryEditUtils::avoidIntersections( const QgsAbstra
   {
     return nullptr;
   }
-  QgsWKBTypes::Type geomTypeBeforeModification = geom.wkbType();
+  QgsWkbTypes::Type geomTypeBeforeModification = geom.wkbType();
 
 
   //check if g has polygon type
-  if ( QgsWKBTypes::geometryType( geomTypeBeforeModification ) != QgsWKBTypes::PolygonGeometry )
+  if ( QgsWkbTypes::geometryType( geomTypeBeforeModification ) != QgsWkbTypes::PolygonGeometry )
   {
     return nullptr;
   }

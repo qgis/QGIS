@@ -127,7 +127,7 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
     else
     {
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
-      if ( vl && vl->geometryType() == Qgis::Polygon )
+      if ( vl && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
         QgsVectorDataProvider* provider  = vl->dataProvider();
         if ( provider->capabilities() & QgsVectorDataProvider::AddAttributes )

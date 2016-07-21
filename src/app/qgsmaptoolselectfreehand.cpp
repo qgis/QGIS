@@ -45,7 +45,7 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
 
   if ( !mRubberBand )
   {
-    mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
+    mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
     mRubberBand->setFillColor( mFillColor );
     mRubberBand->setBorderColor( mBorderColour );
   }
@@ -91,7 +91,7 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
       QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e );
   }
 
-  mRubberBand->reset( Qgis::Polygon );
+  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   delete mRubberBand;
   mRubberBand = nullptr;
   mDragging = false;

@@ -21,7 +21,7 @@
 
 void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
 {
-  Q_ASSERT( mFeaturePool->getLayer()->geometryType() == Qgis::Polygon );
+  Q_ASSERT( mFeaturePool->getLayer()->geometryType() == QgsWkbTypes::PolygonGeometry );
   if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
 
   // Collect geometries, build spatial index

@@ -40,7 +40,7 @@ QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
     : QgsAuthMethod()
 {
   setVersion( 2 );
-  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceURI );
+  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
   setDataProviders( QStringList()
                     << "ows"
                     << "wfs"  // convert to lowercase

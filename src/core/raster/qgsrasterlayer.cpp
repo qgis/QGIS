@@ -1371,7 +1371,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
     if ( !mDataSource.contains( "crs=" ) && !mDataSource.contains( "format=" ) )
     {
       QgsDebugMsgLevel( "Old WMS URI format detected -> adding params", 4 );
-      QgsDataSourceURI uri;
+      QgsDataSourceUri uri;
       uri.setEncodedUri( mDataSource );
       QDomElement layerElement = rpNode.firstChildElement( "wmsSublayer" );
       while ( !layerElement.isNull() )

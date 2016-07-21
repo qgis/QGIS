@@ -396,7 +396,7 @@ void QgsVectorLayerProperties::syncToLayer()
   }
 
   // disable simplification for point layers, now it is not implemented
-  if ( mLayer->geometryType() == Qgis::Point )
+  if ( mLayer->geometryType() == QgsWkbTypes::PointGeometry )
   {
     mSimplifyDrawingGroupBox->setChecked( false );
     mSimplifyDrawingGroupBox->setEnabled( false );

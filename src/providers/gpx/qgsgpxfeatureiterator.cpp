@@ -399,7 +399,7 @@ QgsGeometry *QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint& wpt
   unsigned char *geo = new unsigned char[size];
 
   QgsWkbPtr wkbPtr( geo, size );
-  wkbPtr << ( char ) QgsApplication::endian() << Qgis::WKBPoint << wpt.lon << wpt.lat;
+  wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::Point << wpt.lon << wpt.lat;
 
   QgsGeometry *g = new QgsGeometry();
   g->fromWkb( geo, size );
@@ -414,7 +414,7 @@ QgsGeometry *QgsGPXFeatureIterator::readRouteGeometry( const QgsRoute& rte )
   unsigned char *geo = new unsigned char[size];
 
   QgsWkbPtr wkbPtr( geo, size );
-  wkbPtr << ( char ) QgsApplication::endian() << Qgis::WKBLineString << rte.points.size();
+  wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::LineString << rte.points.size();
 
   for ( int i = 0; i < rte.points.size(); ++i )
   {
@@ -456,7 +456,7 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
   }
 
   QgsWkbPtr wkbPtr( geo, size );
-  wkbPtr << ( char ) QgsApplication::endian() << Qgis::WKBLineString << totalPoints;
+  wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::LineString << totalPoints;
 
   for ( int k = 0; k < trk.segments.size(); k++ )
   {

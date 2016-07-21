@@ -44,7 +44,7 @@ void QgsGeomColumnTypeThread::stop()
 
 void QgsGeomColumnTypeThread::run()
 {
-  QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( mName );
   mConn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
   if ( !mConn )
   {
@@ -84,7 +84,7 @@ void QgsGeomColumnTypeThread::run()
                                   layerProperty.geometryColName ) );
 
       if ( !layerProperty.geometryColName.isNull() &&
-           ( layerProperty.types.value( 0, Qgis::WKBUnknown ) == Qgis::WKBUnknown ||
+           ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
              layerProperty.srids.value( 0, INT_MIN ) == INT_MIN ) )
       {
         if ( dontResolveType )

@@ -51,7 +51,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
 {
   QVector<QgsDataItem*> children;
 
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   uri.setEncodedUri( mUri );
 
   QgsDebugMsg( "mUri = " + mUri );
@@ -230,7 +230,7 @@ void QgsWMSConnectionItem::deleteConnection()
 
 // ---------------------------------------------------------------------------
 
-QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceURI& dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri& dataSourceUri, const QgsWmsLayerProperty &layerProperty )
     : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wms" )
     , mCapabilitiesProperty( capabilitiesProperty )
     , mDataSourceUri( dataSourceUri )
@@ -312,7 +312,7 @@ QString QgsWMSLayerItem::createUri()
 QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
                                     const QString &name,
                                     const QString &path,
-                                    const QgsDataSourceURI &uri,
+                                    const QgsDataSourceUri &uri,
                                     const QString &id,
                                     const QString &format,
                                     const QString &style,
@@ -340,7 +340,7 @@ QString QgsWMTSLayerItem::createUri()
 {
   // TODO dimensions
 
-  QgsDataSourceURI uri( mDataSourceUri );
+  QgsDataSourceUri uri( mDataSourceUri );
   uri.setParam( "layers", mId );
   uri.setParam( "styles", mStyle );
   uri.setParam( "format", mFormat );

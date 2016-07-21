@@ -273,7 +273,7 @@ bool QgsWFSSharedData::createCache()
     mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
     VSIUnlink( vsimemFilename.toStdString().c_str() );
     QgsVectorFileWriter* writer = new QgsVectorFileWriter( vsimemFilename, "",
-        cacheFields, Qgis::WKBPolygon, QgsCoordinateReferenceSystem(), "SpatiaLite", datasourceOptions, layerOptions );
+        cacheFields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem(), "SpatiaLite", datasourceOptions, layerOptions );
     if ( writer->hasError() == QgsVectorFileWriter::NoError )
     {
       delete writer;
@@ -455,7 +455,7 @@ bool QgsWFSSharedData::createCache()
 
   // Some pragmas to speed-up writing. We don't need much integrity guarantee
   // regarding crashes, since this is a temporary DB
-  QgsDataSourceURI dsURI;
+  QgsDataSourceUri dsURI;
   dsURI.setDatabase( mCacheDbname );
   dsURI.setDataSource( "", mCacheTablename, geometryFieldname, "", fidName );
   QStringList pragmas;

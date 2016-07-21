@@ -68,7 +68,7 @@ struct QgsPostgresSchemaProperty
 struct QgsPostgresLayerProperty
 {
   // Postgres/PostGIS layer properties
-  QList<Qgis::WkbType>          types;
+  QList<QgsWkbTypes::Type>          types;
   QString                       schemaName;
   QString                       tableName;
   QString                       geometryColName;
@@ -120,7 +120,7 @@ struct QgsPostgresLayerProperty
   QString toString() const
   {
     QString typeString;
-    Q_FOREACH ( Qgis::WkbType type, types )
+    Q_FOREACH ( QgsWkbTypes::Type type, types )
     {
       if ( !typeString.isEmpty() )
         typeString += '|';
@@ -312,23 +312,23 @@ class QgsPostgresConn : public QObject
 
     static const int sGeomTypeSelectLimit;
 
-    static QString displayStringForWkbType( Qgis::WkbType wkbType );
+    static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
     static QString displayStringForGeomType( QgsPostgresGeometryColumnType geomType );
-    static Qgis::WkbType wkbTypeFromPostgis( const QString& dbType );
+    static QgsWkbTypes::Type wkbTypeFromPostgis( const QString& dbType );
 
-    static QString postgisWkbTypeName( Qgis::WkbType wkbType );
-    static int postgisWkbTypeDim( Qgis::WkbType wkbType );
-    static void postgisWkbType( Qgis::WkbType wkbType, QString &geometryType, int &dim );
+    static QString postgisWkbTypeName( QgsWkbTypes::Type wkbType );
+    static int postgisWkbTypeDim( QgsWkbTypes::Type wkbType );
+    static void postgisWkbType( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
 
-    static QString postgisTypeFilter( QString geomCol, QgsWKBTypes::Type wkbType, bool castToGeometry );
+    static QString postgisTypeFilter( QString geomCol, QgsWkbTypes::Type wkbType, bool castToGeometry );
 
-    static Qgis::WkbType wkbTypeFromGeomType( Qgis::GeometryType geomType );
-    static QgsWKBTypes::Type wkbTypeFromOgcWkbType( unsigned int ogcWkbType );
+    static QgsWkbTypes::Type wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType );
+    static QgsWkbTypes::Type wkbTypeFromOgcWkbType( unsigned int ogcWkbType );
 
     static QStringList connectionList();
     static QString selectedConnection();
     static void setSelectedConnection( const QString& theConnName );
-    static QgsDataSourceURI connUri( const QString& theConnName );
+    static QgsDataSourceUri connUri( const QString& theConnName );
     static bool publicSchemaOnly( const QString& theConnName );
     static bool geometryColumnsOnly( const QString& theConnName );
     static bool dontResolveType( const QString& theConnName );

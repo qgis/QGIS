@@ -22,7 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 QgsMultiPointV2::QgsMultiPointV2()
     : QgsGeometryCollectionV2()
 {
-  mWkbType = QgsWKBTypes::MultiPoint;
+  mWkbType = QgsWkbTypes::MultiPoint;
 }
 
 QgsMultiPointV2 *QgsMultiPointV2::clone() const
@@ -102,7 +102,7 @@ bool QgsMultiPointV2::addGeometry( QgsAbstractGeometryV2* g )
     delete g;
     return false;
   }
-  setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiPoint );
+  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPoint );
   return QgsGeometryCollectionV2::addGeometry( g );
 }
 

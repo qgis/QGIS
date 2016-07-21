@@ -55,15 +55,15 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    Q_FOREACH ( Qgis::WkbType type,
-                QList<Qgis::WkbType>()
-                << Qgis::WKBPoint
-                << Qgis::WKBLineString
-                << Qgis::WKBPolygon
-                << Qgis::WKBMultiPoint
-                << Qgis::WKBMultiLineString
-                << Qgis::WKBMultiPolygon
-                << Qgis::WKBNoGeometry )
+    Q_FOREACH ( QgsWkbTypes::Type type,
+                QList<QgsWkbTypes::Type>()
+                << QgsWkbTypes::Point
+                << QgsWkbTypes::LineString
+                << QgsWkbTypes::Polygon
+                << QgsWkbTypes::MultiPoint
+                << QgsWkbTypes::MultiLineString
+                << QgsWkbTypes::MultiPolygon
+                << QgsWkbTypes::NoGeometry )
     {
       cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
     }
@@ -157,10 +157,10 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   {
     if ( index.column() == QgsPgTableModel::dbtmType )
     {
-      Qgis::WkbType type = ( Qgis::WkbType ) cb->itemData( cb->currentIndex() ).toInt();
+      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->itemData( cb->currentIndex() ).toInt();
 
       model->setData( index, QgsPgTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != Qgis::WKBUnknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsPgTableModel::dbtmPkCol )
@@ -530,7 +530,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   // populate the table list
-  QgsDataSourceURI uri = QgsPostgresConn::connUri( cmbConnections->currentText() );
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( cmbConnections->currentText() );
 
   QgsDebugMsg( "Connection info: " + uri.connectionInfo( false ) );
 
@@ -586,7 +586,7 @@ QString QgsPgSourceSelect::connectionInfo( bool expandAuthCfg )
   return mDataSrcUri.connectionInfo( expandAuthCfg );
 }
 
-QgsDataSourceURI QgsPgSourceSelect::dataSourceUri()
+QgsDataSourceUri QgsPgSourceSelect::dataSourceUri()
 {
   return mDataSrcUri;
 }

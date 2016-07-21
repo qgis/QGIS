@@ -414,8 +414,7 @@ void extractLinework( const QgsGeometry& g, QgsMultiPolyline& mpl )
   QgsGeometry geom = g;
   // segmentize curved geometries - we will use noding algorithm from GEOS
   // to find all intersections a bit later (so we need them segmentized anyway)
-
-  if ( QgsWKBTypes::isCurvedType( g.geometry()->wkbType() ) )
+  if ( QgsWkbTypes::isCurvedType( g.geometry()->wkbType() ) )
   {
     QgsAbstractGeometryV2* segmentizedGeomV2 = g.geometry()->segmentize();
     if ( !segmentizedGeomV2 )
@@ -424,23 +423,23 @@ void extractLinework( const QgsGeometry& g, QgsMultiPolyline& mpl )
     geom = QgsGeometry( segmentizedGeomV2 );
   }
 
-  switch ( QgsWKBTypes::flatType( geom.geometry()->wkbType() ) )
+  switch ( QgsWkbTypes::flatType( geom.geometry()->wkbType() ) )
   {
-    case QgsWKBTypes::LineString:
+    case QgsWkbTypes::LineString:
       mpl << geom.asPolyline();
       break;
 
-    case QgsWKBTypes::Polygon:
+    case QgsWkbTypes::Polygon:
       Q_FOREACH ( const QgsPolyline& ring, geom.asPolygon() )
         mpl << ring;
       break;
 
-    case QgsWKBTypes::MultiLineString:
+    case QgsWkbTypes::MultiLineString:
       Q_FOREACH ( const QgsPolyline& linestring, geom.asMultiPolyline() )
         mpl << linestring;
       break;
 
-    case QgsWKBTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygon:
       Q_FOREACH ( const QgsPolygon& polygon, geom.asMultiPolygon() )
         Q_FOREACH ( const QgsPolyline& ring, polygon )
           mpl << ring;

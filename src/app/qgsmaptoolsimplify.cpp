@@ -137,7 +137,7 @@ int QgsMapToolSimplify::vertexCount( const QgsGeometry& g ) const
 {
   switch ( g.type() )
   {
-    case Qgis::Line:
+    case QgsWkbTypes::LineGeometry:
     {
       int count = 0;
       if ( g.isMultipart() )
@@ -149,7 +149,7 @@ int QgsMapToolSimplify::vertexCount( const QgsGeometry& g ) const
         count = g.asPolyline().count();
       return count;
     }
-    case Qgis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
     {
       int count = 0;
       if ( g.isMultipart() )
@@ -221,7 +221,7 @@ void QgsMapToolSimplify::canvasMoveEvent( QgsMapMouseEvent* e )
   {
     mDragging = true;
     delete mSelectionRubberBand;
-    mSelectionRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
+    mSelectionRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
     QColor color( Qt::blue );
     color.setAlpha( 63 );
     mSelectionRubberBand->setColor( color );

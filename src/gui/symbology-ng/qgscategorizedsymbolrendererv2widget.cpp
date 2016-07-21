@@ -958,9 +958,9 @@ int QgsCategorizedSymbolRendererV2Widget::matchToSymbols( QgsStyleV2* style )
     QString val = mRenderer->categories().at( catIdx ).value().toString();
     QgsSymbolV2* symbol = style->symbol( val );
     if ( symbol &&
-         (( symbol->type() == QgsSymbolV2::Marker && mLayer->geometryType() == Qgis::Point )
-          || ( symbol->type() == QgsSymbolV2::Line && mLayer->geometryType() == Qgis::Line )
-          || ( symbol->type() == QgsSymbolV2::Fill && mLayer->geometryType() == Qgis::Polygon ) ) )
+         (( symbol->type() == QgsSymbolV2::Marker && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
+          || ( symbol->type() == QgsSymbolV2::Line && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
+          || ( symbol->type() == QgsSymbolV2::Fill && mLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) ) )
     {
       matched++;
       mRenderer->updateCategorySymbol( catIdx, symbol->clone() );

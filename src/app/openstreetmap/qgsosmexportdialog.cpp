@@ -169,7 +169,7 @@ void QgsOSMExportDialog::onOK()
   // load the layer into canvas if that was requested
   if ( chkLoadWhenFinished->isChecked() )
   {
-    QgsDataSourceURI uri;
+    QgsDataSourceUri uri;
     uri.setDatabase( editDbFileName->text() );
     uri.setDataSource( QString(), editLayerName->text(), "geometry" );
     QgsVectorLayer* vlayer = new QgsVectorLayer( uri.uri(), editLayerName->text(), "spatialite" );

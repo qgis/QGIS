@@ -168,7 +168,7 @@ class QgsAuthManager : QObject
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
 
     /**
-     * Get supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
+     * Get supported authentication method expansion(s), e.g. NetworkRequest | DataSourceUri, as flags
      * @param authcfg
      */
     QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString &authcfg );
@@ -268,8 +268,8 @@ class QgsAuthManager : QObject
                              const QString &dataprovider = QString() );
 
     /**
-     * Provider call to update a QgsDataSourceURI with an authentication config
-     * @param connectionItems The connection items, e.g. username=myname, of QgsDataSourceURI
+     * Provider call to update a QgsDataSourceUri with an authentication config
+     * @param connectionItems The connection items, e.g. username=myname, of QgsDataSourceUri
      * @param authcfg Associated authentication config id
      * @param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded

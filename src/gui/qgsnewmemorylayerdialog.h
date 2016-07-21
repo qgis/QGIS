@@ -42,7 +42,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
     ~QgsNewMemoryLayerDialog();
 
     /** Returns the selected geometry type*/
-    Qgis::WkbType selectedType() const;
+    QgsWkbTypes::Type selectedType() const;
 
     /** Returns the selected crs*/
     QgsCoordinateReferenceSystem crs() const;

@@ -178,7 +178,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     //convert relative pathes to absolute ones if necessary
     if ( uri.startsWith( "dbname" ) ) //database
     {
-      QgsDataSourceURI dsUri( uri );
+      QgsDataSourceUri dsUri( uri );
       if ( dsUri.host().isEmpty() ) //only convert path for file based databases
       {
         QString dbnameUri = dsUri.database();
@@ -820,7 +820,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
     layerElem.setAttribute( "displayField", displayField );
 
     //geometry type
-    layerElem.setAttribute( "geometryType", Qgis::featureType( vLayer->wkbType() ) );
+    layerElem.setAttribute( "geometryType", QgsWkbTypes::displayString( vLayer->wkbType() ) );
 
     layerElem.appendChild( attributesElem );
   }

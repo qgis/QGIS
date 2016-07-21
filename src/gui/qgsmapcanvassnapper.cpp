@@ -325,7 +325,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
       QgsGeometry lineB = QgsGeometry::fromPolyline( vertexPoints );
       QgsGeometry intersectionPoint = lineA.intersection( lineB );
 
-      if ( !intersectionPoint.isEmpty() && intersectionPoint.type() == Qgis::Point )
+      if ( !intersectionPoint.isEmpty() && intersectionPoint.type() == QgsWkbTypes::PointGeometry )
       {
         //We have to check the intersection point is inside the tolerance distance for both layers
         double toleranceA = 0;

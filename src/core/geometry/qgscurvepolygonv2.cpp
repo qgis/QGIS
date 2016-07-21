@@ -29,7 +29,7 @@
 
 QgsCurvePolygonV2::QgsCurvePolygonV2(): QgsSurfaceV2(), mExteriorRing( nullptr )
 {
-  mWkbType = QgsWKBTypes::CurvePolygon;
+  mWkbType = QgsWkbTypes::CurvePolygon;
 }
 
 QgsCurvePolygonV2::~QgsCurvePolygonV2()
@@ -79,7 +79,7 @@ QgsCurvePolygonV2* QgsCurvePolygonV2::clone() const
 
 void QgsCurvePolygonV2::clear()
 {
-  mWkbType = QgsWKBTypes::CurvePolygon;
+  mWkbType = QgsWkbTypes::CurvePolygon;
   delete mExteriorRing;
   mExteriorRing = nullptr;
   qDeleteAll( mInteriorRings );
@@ -96,8 +96,8 @@ bool QgsCurvePolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
     return false;
   }
 
-  QgsWKBTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::CurvePolygon )
+  QgsWkbTypes::Type type = wkbPtr.readHeader();
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::CurvePolygon )
   {
     return false;
   }
@@ -109,18 +109,18 @@ bool QgsCurvePolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
   int currentCurveSize = 0;
   for ( int i = 0; i < nRings; ++i )
   {
-    QgsWKBTypes::Type curveType = wkbPtr.readHeader();
+    QgsWkbTypes::Type curveType = wkbPtr.readHeader();
     wkbPtr -= 1 + sizeof( int );
-    QgsWKBTypes::Type flatCurveType = QgsWKBTypes::flatType( curveType );
-    if ( flatCurveType == QgsWKBTypes::LineString )
+    QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( curveType );
+    if ( flatCurveType == QgsWkbTypes::LineString )
     {
       currentCurve = new QgsLineStringV2();
     }
-    else if ( flatCurveType == QgsWKBTypes::CircularString )
+    else if ( flatCurveType == QgsWkbTypes::CircularString )
     {
       currentCurve = new QgsCircularStringV2();
     }
-    else if ( flatCurveType == QgsWKBTypes::CompoundCurve )
+    else if ( flatCurveType == QgsWkbTypes::CompoundCurve )
     {
       currentCurve = new QgsCompoundCurveV2();
     }
@@ -148,9 +148,9 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
 {
   clear();
 
-  QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
+  QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::geometryType( parts.first ) != QgsWKBTypes::PolygonGeometry )
+  if ( QgsWkbTypes::geometryType( parts.first ) != QgsWkbTypes::PolygonGeometry )
     return false;
 
   mWkbType = parts.first;
@@ -159,14 +159,14 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
 
   Q_FOREACH ( const QString& childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
   {
-    QPair<QgsWKBTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
+    QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
-    QgsWKBTypes::Type flatCurveType = QgsWKBTypes::flatType( childParts.first );
-    if ( flatCurveType == QgsWKBTypes::LineString )
+    QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( childParts.first );
+    if ( flatCurveType == QgsWkbTypes::LineString )
       mInteriorRings.append( new QgsLineStringV2() );
-    else if ( flatCurveType == QgsWKBTypes::CircularString )
+    else if ( flatCurveType == QgsWkbTypes::CircularString )
       mInteriorRings.append( new QgsCircularStringV2() );
-    else if ( flatCurveType == QgsWKBTypes::CompoundCurve )
+    else if ( flatCurveType == QgsWkbTypes::CompoundCurve )
       mInteriorRings.append( new QgsCompoundCurveV2() );
     else
     {
@@ -489,13 +489,13 @@ void QgsCurvePolygonV2::setExteriorRing( QgsCurveV2* ring )
   mExteriorRing = ring;
 
   //set proper wkb type
-  if ( QgsWKBTypes::flatType( wkbType() ) == QgsWKBTypes::Polygon )
+  if ( QgsWkbTypes::flatType( wkbType() ) == QgsWkbTypes::Polygon )
   {
-    setZMTypeFromSubGeometry( ring, QgsWKBTypes::Polygon );
+    setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
   }
-  else if ( QgsWKBTypes::flatType( wkbType() ) == QgsWKBTypes::CurvePolygon )
+  else if ( QgsWkbTypes::flatType( wkbType() ) == QgsWkbTypes::CurvePolygon )
   {
-    setZMTypeFromSubGeometry( ring, QgsWKBTypes::CurvePolygon );
+    setZMTypeFromSubGeometry( ring, QgsWkbTypes::CurvePolygon );
   }
 
   //match dimensionality for rings
@@ -819,10 +819,10 @@ QgsPointV2 QgsCurvePolygonV2::vertexAt( QgsVertexId id ) const
 
 bool QgsCurvePolygonV2::addZValue( double zValue )
 {
-  if ( QgsWKBTypes::hasZ( mWkbType ) )
+  if ( QgsWkbTypes::hasZ( mWkbType ) )
     return false;
 
-  mWkbType = QgsWKBTypes::addZ( mWkbType );
+  mWkbType = QgsWkbTypes::addZ( mWkbType );
 
   if ( mExteriorRing )
     mExteriorRing->addZValue( zValue );
@@ -836,10 +836,10 @@ bool QgsCurvePolygonV2::addZValue( double zValue )
 
 bool QgsCurvePolygonV2::addMValue( double mValue )
 {
-  if ( QgsWKBTypes::hasM( mWkbType ) )
+  if ( QgsWkbTypes::hasM( mWkbType ) )
     return false;
 
-  mWkbType = QgsWKBTypes::addM( mWkbType );
+  mWkbType = QgsWkbTypes::addM( mWkbType );
 
   if ( mExteriorRing )
     mExteriorRing->addMValue( mValue );
@@ -856,7 +856,7 @@ bool QgsCurvePolygonV2::dropZValue()
   if ( !is3D() )
     return false;
 
-  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  mWkbType = QgsWkbTypes::dropZ( mWkbType );
   if ( mExteriorRing )
     mExteriorRing->dropZValue();
   Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
@@ -872,7 +872,7 @@ bool QgsCurvePolygonV2::dropMValue()
   if ( !isMeasure() )
     return false;
 
-  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  mWkbType = QgsWkbTypes::dropM( mWkbType );
   if ( mExteriorRing )
     mExteriorRing->dropMValue();
   Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )

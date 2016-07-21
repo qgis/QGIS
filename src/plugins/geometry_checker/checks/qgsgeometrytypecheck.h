@@ -24,10 +24,10 @@ class QgsGeometryTypeCheckError : public QgsGeometryCheckError
     QgsGeometryTypeCheckError( const QgsGeometryCheck* check,
                                QgsFeatureId featureId,
                                const QgsPointV2& errorLocation,
-                               QgsWKBTypes::Type flatType )
+                               QgsWkbTypes::Type flatType )
         : QgsGeometryCheckError( check, featureId, errorLocation )
     {
-      mTypeName = QgsWKBTypes::displayString( flatType );
+      mTypeName = QgsWkbTypes::displayString( flatType );
     }
 
     bool isEqual( QgsGeometryCheckError* other ) const override

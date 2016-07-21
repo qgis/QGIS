@@ -37,7 +37,7 @@ void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
     QgsGeometry featureGeom = feature.geometry();
     QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
-    QgsWKBTypes::Type type = QgsWKBTypes::flatType( geom->wkbType() );
+    QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
     if (( mAllowedTypes & ( 1 << type ) ) == 0 )
     {
       errors.append( new QgsGeometryTypeCheckError( this, featureid, geom->centroid(), type ) );
@@ -57,7 +57,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
   QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
   // Check if error still applies
-  QgsWKBTypes::Type type = QgsWKBTypes::flatType( geom->wkbType() );
+  QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
   if (( mAllowedTypes & ( 1 << type ) ) != 0 )
   {
     error->setObsolete();
@@ -72,7 +72,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
   else if ( method == Convert )
   {
     // Check if corresponding single type is allowed
-    if ( QgsWKBTypes::isMultiType( type ) && (( 1 << QgsWKBTypes::singleType( type ) ) & mAllowedTypes ) != 0 )
+    if ( QgsWkbTypes::isMultiType( type ) && (( 1 << QgsWkbTypes::singleType( type ) ) & mAllowedTypes ) != 0 )
     {
       // Explode multi-type feature into single-type features
       for ( int iPart = 1, nParts = geom->partCount(); iPart < nParts; ++iPart )
@@ -89,32 +89,32 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
       changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
     }
     // Check if corresponding multi type is allowed
-    else if ( QgsWKBTypes::isSingleType( type ) && (( 1 << QgsWKBTypes::multiType( type ) ) & mAllowedTypes ) != 0 )
+    else if ( QgsWkbTypes::isSingleType( type ) && (( 1 << QgsWkbTypes::multiType( type ) ) & mAllowedTypes ) != 0 )
     {
       QgsGeometryCollectionV2* geomCollection = nullptr;
-      switch ( QgsWKBTypes::multiType( type ) )
+      switch ( QgsWkbTypes::multiType( type ) )
       {
-        case QgsWKBTypes::MultiPoint:
+        case QgsWkbTypes::MultiPoint:
         {
           geomCollection = new QgsMultiPointV2();
           break;
         }
-        case QgsWKBTypes::MultiLineString:
+        case QgsWkbTypes::MultiLineString:
         {
           geomCollection = new QgsMultiLineStringV2();
           break;
         }
-        case QgsWKBTypes::MultiPolygon:
+        case QgsWkbTypes::MultiPolygon:
         {
           geomCollection = new QgsMultiPolygonV2();
           break;
         }
-        case QgsWKBTypes::MultiCurve:
+        case QgsWkbTypes::MultiCurve:
         {
           geomCollection = new QgsMultiCurveV2();
           break;
         }
-        case QgsWKBTypes::MultiSurface:
+        case QgsWkbTypes::MultiSurface:
         {
           geomCollection = new QgsMultiSurfaceV2();
           break;

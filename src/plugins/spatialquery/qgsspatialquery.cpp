@@ -141,18 +141,18 @@ QMap<QString, int>* QgsSpatialQuery::getTypesOperations( QgsVectorLayer* lyrTarg
 
 } // QMap<QString, int>* QgsSpatialQuery::getTypesOperators(QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference)
 
-short int QgsSpatialQuery::dimensionGeometry( Qgis::GeometryType geomType )
+short int QgsSpatialQuery::dimensionGeometry( QgsWkbTypes::GeometryType geomType )
 {
   int dimGeom = 0;
   switch ( geomType )
   {
-    case Qgis::Point:
+    case QgsWkbTypes::PointGeometry:
       dimGeom = 0;
       break;
-    case Qgis::Line:
+    case QgsWkbTypes::LineGeometry:
       dimGeom = 1;
       break;
-    case Qgis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
       dimGeom = 2;
       break;
     default:
@@ -161,7 +161,7 @@ short int QgsSpatialQuery::dimensionGeometry( Qgis::GeometryType geomType )
   }
   return dimGeom;
 
-} // int QgsSpatialQuery::dimensionGeometry(Qgis::GeometryType geomType)
+} // int QgsSpatialQuery::dimensionGeometry(QgsWkbTypes::GeometryType geomType)
 
 void QgsSpatialQuery::setQuery( QgsVectorLayer *layerTarget, QgsVectorLayer *layerReference )
 {

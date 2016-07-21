@@ -55,7 +55,7 @@ bool QgsMapToolOffsetPointSymbol::layerIsOffsetable( QgsMapLayer* ml )
   }
 
   //does it have point or multipoint type?
-  if ( vLayer->geometryType() != Qgis::Point )
+  if ( vLayer->geometryType() != QgsWkbTypes::PointGeometry )
   {
     return false;
   }

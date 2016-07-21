@@ -125,11 +125,11 @@ static float readMarkerSymbolSize( const QDomNode& synode )
 
 
 
-static QgsSymbolV2* readOldSymbol( const QDomNode& synode, Qgis::GeometryType geomType )
+static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryType geomType )
 {
   switch ( geomType )
   {
-    case Qgis::Point:
+    case QgsWkbTypes::PointGeometry:
     {
       QgsMarkerSymbolLayerV2* sl = nullptr;
       double size = readMarkerSymbolSize( synode );
@@ -156,7 +156,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, Qgis::GeometryType ge
       return new QgsMarkerSymbolV2( layers );
     }
 
-    case Qgis::Line:
+    case QgsWkbTypes::LineGeometry:
     {
       QColor color = readSymbolColor( synode, false );
       double width = readOutlineWidth( synode );
@@ -168,7 +168,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, Qgis::GeometryType ge
       return new QgsLineSymbolV2( layers );
     }
 
-    case Qgis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
     {
       QColor color = readSymbolColor( synode, true );
       QColor borderColor = readSymbolColor( synode, false );
@@ -189,7 +189,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, Qgis::GeometryType ge
 
 
 
-static QgsFeatureRendererV2* readOldSingleSymbolRenderer( const QDomNode& rnode, Qgis::GeometryType geomType )
+static QgsFeatureRendererV2* readOldSingleSymbolRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
 {
   QDomNode synode = rnode.namedItem( "symbol" );
   if ( synode.isNull() )
@@ -201,7 +201,7 @@ static QgsFeatureRendererV2* readOldSingleSymbolRenderer( const QDomNode& rnode,
 }
 
 
-static QgsFeatureRendererV2* readOldGraduatedSymbolRenderer( const QDomNode& rnode, Qgis::GeometryType geomType )
+static QgsFeatureRendererV2* readOldGraduatedSymbolRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
 {
   QDomNode modeNode = rnode.namedItem( "mode" );
   QString modeValue = modeNode.toElement().text();
@@ -250,7 +250,7 @@ static QgsFeatureRendererV2* readOldGraduatedSymbolRenderer( const QDomNode& rno
 
 
 
-static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, Qgis::GeometryType geomType )
+static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
 {
   QDomNode classnode = rnode.namedItem( "classificationfield" );
   QString classificationField = classnode.toElement().text();
@@ -282,7 +282,7 @@ static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, 
 
 
 
-QgsFeatureRendererV2* QgsSymbologyV2Conversion::readOldRenderer( const QDomNode& layerNode, Qgis::GeometryType geomType )
+QgsFeatureRendererV2* QgsSymbologyV2Conversion::readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType )
 {
   QDomNode singlenode = layerNode.namedItem( "singlesymbol" );
   QDomNode graduatednode = layerNode.namedItem( "graduatedsymbol" );

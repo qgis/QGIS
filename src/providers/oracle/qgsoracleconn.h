@@ -36,7 +36,7 @@ class QgsField;
 // Oracle layer properties
 struct QgsOracleLayerProperty
 {
-  QList<Qgis::WkbType> types;
+  QList<QgsWkbTypes::Type> types;
   QList<int>           srids;
   QString              ownerName;
   QString              tableName;
@@ -80,7 +80,7 @@ struct QgsOracleLayerProperty
   QString toString() const
   {
     QString typeString;
-    Q_FOREACH ( Qgis::WkbType type, types )
+    Q_FOREACH ( QgsWkbTypes::Type type, types )
     {
       if ( !typeString.isEmpty() )
         typeString += "|";
@@ -146,12 +146,12 @@ class QgsOracleConn : public QObject
 
     static const int sGeomTypeSelectLimit;
 
-    static QString displayStringForWkbType( Qgis::WkbType wkbType );
-    static Qgis::WkbType wkbTypeFromDatabase( int gtype );
+    static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
+    static QgsWkbTypes::Type wkbTypeFromDatabase( int gtype );
 
-    static QString databaseTypeFilter( QString alias, QString geomCol, Qgis::WkbType wkbType );
+    static QString databaseTypeFilter( QString alias, QString geomCol, QgsWkbTypes::Type wkbType );
 
-    static Qgis::WkbType wkbTypeFromGeomType( Qgis::GeometryType geomType );
+    static QgsWkbTypes::Type wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType );
 
     static QStringList connectionList();
     static QString selectedConnection();

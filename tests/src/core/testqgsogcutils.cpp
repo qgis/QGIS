@@ -76,23 +76,23 @@ void TestQgsOgcUtils::testGeometryFromGML()
   // Test GML2
   QgsGeometry geom( QgsOgcUtils::geometryFromGML( "<Point><coordinates>123,456</coordinates></Point>" ) );
   QVERIFY( geom );
-  QVERIFY( geom.wkbType() == Qgis::WKBPoint );
+  QVERIFY( geom.wkbType() == QgsWkbTypes::Point );
   QVERIFY( geom.asPoint() == QgsPoint( 123, 456 ) );
 
   QgsGeometry geomBox( QgsOgcUtils::geometryFromGML( "<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>" ) );
   QVERIFY( geomBox );
-  QVERIFY( geomBox.wkbType() == Qgis::WKBPolygon );
+  QVERIFY( geomBox.wkbType() == QgsWkbTypes::Polygon );
 
 
   // Test GML3
   geom = QgsOgcUtils::geometryFromGML( "<Point><pos>123 456</pos></Point>" );
   QVERIFY( geom );
-  QVERIFY( geom.wkbType() == Qgis::WKBPoint );
+  QVERIFY( geom.wkbType() == QgsWkbTypes::Point );
   QVERIFY( geom.asPoint() == QgsPoint( 123, 456 ) );
 
   geomBox = QgsOgcUtils::geometryFromGML( "<gml:Envelope srsName=\"foo\"><gml:lowerCorner>135.2239 34.4879</gml:lowerCorner><gml:upperCorner>135.8578 34.8471</gml:upperCorner></gml:Envelope>" );
   QVERIFY( geomBox );
-  QVERIFY( geomBox.wkbType() == Qgis::WKBPolygon );
+  QVERIFY( geomBox.wkbType() == QgsWkbTypes::Polygon );
 }
 
 void TestQgsOgcUtils::testGeometryToGML()

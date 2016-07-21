@@ -297,7 +297,7 @@ void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )
 {
   if ( atlasEnabled &&
        mComposerMap && mComposerMap->composition() && mComposerMap->composition()->atlasComposition().coverageLayer()
-       && mComposerMap->composition()->atlasComposition().coverageLayer()->wkbType() != Qgis::WKBNoGeometry )
+       && mComposerMap->composition()->atlasComposition().coverageLayer()->wkbType() != QgsWkbTypes::NoGeometry )
   {
     mAtlasCheckBox->setEnabled( true );
   }
@@ -787,10 +787,10 @@ void QgsComposerMapWidget::toggleAtlasScalingOptionsByLayerType()
 
   switch ( coverageLayer->wkbType() )
   {
-    case Qgis::WKBPoint:
-    case Qgis::WKBPoint25D:
-    case Qgis::WKBMultiPoint:
-    case Qgis::WKBMultiPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
       //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
       mAtlasFixedScaleRadio->setChecked( true );
       mAtlasMarginRadio->setEnabled( false );
@@ -1177,7 +1177,7 @@ void QgsComposerMapWidget::initAnnotationDirectionBox( QComboBox* c, QgsComposer
 
 void QgsComposerMapWidget::atlasLayerChanged( QgsVectorLayer* layer )
 {
-  if ( !layer || layer->wkbType() == Qgis::WKBNoGeometry )
+  if ( !layer || layer->wkbType() == QgsWkbTypes::NoGeometry )
   {
     //geometryless layer, disable atlas control
     mAtlasCheckBox->setChecked( false );

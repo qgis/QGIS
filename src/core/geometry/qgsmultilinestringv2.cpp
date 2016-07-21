@@ -25,7 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
 QgsMultiLineStringV2::QgsMultiLineStringV2()
     : QgsMultiCurveV2()
 {
-  mWkbType = QgsWKBTypes::MultiLineString;
+  mWkbType = QgsWkbTypes::MultiLineString;
 }
 
 QgsMultiLineStringV2* QgsMultiLineStringV2::clone() const
@@ -105,7 +105,7 @@ bool QgsMultiLineStringV2::addGeometry( QgsAbstractGeometryV2* g )
     return false;
   }
 
-  setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiLineString );
+  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiLineString );
   return QgsGeometryCollectionV2::addGeometry( g );
 }
 

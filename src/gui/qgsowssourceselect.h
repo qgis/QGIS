@@ -224,7 +224,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     QString mConnectionInfo;
 
     //! URI for selected connection
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
 
   private:
     //! Selected CRS

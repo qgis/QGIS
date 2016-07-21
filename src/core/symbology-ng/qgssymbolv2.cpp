@@ -110,9 +110,9 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
 
 QgsConstWkbPtr QgsSymbolV2::_getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr& wkbPtr )
 {
-  QgsWKBTypes::Type type = wkbPtr.readHeader();
+  QgsWkbTypes::Type type = wkbPtr.readHeader();
   wkbPtr >> pt.rx() >> pt.ry();
-  wkbPtr += ( QgsWKBTypes::coordDimensions( type ) - 2 ) * sizeof( double );
+  wkbPtr += ( QgsWkbTypes::coordDimensions( type ) - 2 ) * sizeof( double );
 
   if ( context.coordinateTransform().isValid() )
   {
@@ -127,7 +127,7 @@ QgsConstWkbPtr QgsSymbolV2::_getPoint( QPointF& pt, QgsRenderContext& context, Q
 
 QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr& wkbPtr, bool clipToExtent )
 {
-  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
+  QgsWkbTypes::Type wkbType = wkbPtr.readHeader();
   unsigned int nPoints;
   wkbPtr >> nPoints;
 
@@ -146,7 +146,7 @@ QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& co
   }
   else
   {
-    int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
+    int skipZM = ( QgsWkbTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
     Q_ASSERT( skipZM >= 0 );
 
     if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
@@ -177,7 +177,7 @@ QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& co
 
 QgsConstWkbPtr QgsSymbolV2::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, QgsConstWkbPtr& wkbPtr, bool clipToExtent )
 {
-  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
+  QgsWkbTypes::Type wkbType = wkbPtr.readHeader();
   unsigned int numRings;
   wkbPtr >> numRings;
 
@@ -193,7 +193,7 @@ QgsConstWkbPtr QgsSymbolV2::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes
   double ch = e.height() / 10;
   QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
 
-  int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
+  int skipZM = ( QgsWkbTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
   Q_ASSERT( skipZM >= 0 );
 
   for ( unsigned int idx = 0; idx < numRings; idx++ )
@@ -311,7 +311,7 @@ void QgsSymbolV2::setMapUnitScale( const QgsMapUnitScale &scale )
   }
 }
 
-QgsSymbolV2* QgsSymbolV2::defaultSymbol( Qgis::GeometryType geomType )
+QgsSymbolV2* QgsSymbolV2::defaultSymbol( QgsWkbTypes::GeometryType geomType )
 {
   QgsSymbolV2* s = nullptr;
 
@@ -319,13 +319,13 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( Qgis::GeometryType geomType )
   QString defaultSymbol;
   switch ( geomType )
   {
-    case Qgis::Point :
+    case QgsWkbTypes::PointGeometry :
       defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Marker", "" );
       break;
-    case Qgis::Line :
+    case QgsWkbTypes::LineGeometry :
       defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Line", "" );
       break;
-    case Qgis::Polygon :
+    case QgsWkbTypes::PolygonGeometry :
       defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Fill", "" );
       break;
     default:
@@ -340,13 +340,13 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( Qgis::GeometryType geomType )
   {
     switch ( geomType )
     {
-      case Qgis::Point:
+      case QgsWkbTypes::PointGeometry:
         s = new QgsMarkerSymbolV2();
         break;
-      case Qgis::Line:
+      case QgsWkbTypes::LineGeometry:
         s = new QgsLineSymbolV2();
         break;
-      case Qgis::Polygon:
+      case QgsWkbTypes::PolygonGeometry:
         s = new QgsFillSymbolV2();
         break;
       default:
@@ -714,7 +714,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
   bool tileMapRendering = context.testFlag( QgsRenderContext::RenderMapTile );
 
   //convert curve types to normal point/line/polygon ones
-  if ( QgsWKBTypes::isCurvedType( geom.geometry()->wkbType() ) )
+  if ( QgsWkbTypes::isCurvedType( geom->geometry().wkbType() ) )
   {
     QgsAbstractGeometryV2 *g = geom.geometry()->segmentize( context.segmentationTolerance(), context.segmentationToleranceType() );
     if ( !g )
@@ -739,9 +739,9 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
   // Collection of markers to paint, only used for no curve types.
   QPolygonF markers;
 
-  switch ( QgsWKBTypes::flatType( segmentizedGeometry.geometry()->wkbType() ) )
+  switch ( QgsWkbTypes::flatType( segmentizedGeometry.geometry()->wkbType() ) )
   {
-    case QgsWKBTypes::Point:
+    case QgsWkbTypes::Point:
     {
       QPointF pt;
       if ( mType != QgsSymbolV2::Marker )
@@ -768,7 +768,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
       }
     }
     break;
-    case QgsWKBTypes::LineString:
+    case QgsWkbTypes::LineString:
     {
       QPolygonF pts;
       if ( mType != QgsSymbolV2::Line )
@@ -786,7 +786,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
       }
     }
     break;
-    case QgsWKBTypes::Polygon:
+    case QgsWkbTypes::Polygon:
     {
       QPolygonF pts;
       QList<QPolygonF> holes;
@@ -811,7 +811,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     }
     break;
 
-    case QgsWKBTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint:
     {
       QPointF pt;
 
@@ -845,8 +845,8 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     }
     break;
 
-    case QgsWKBTypes::MultiCurve:
-    case QgsWKBTypes::MultiLineString:
+    case QgsWkbTypes::MultiCurve:
+    case QgsWkbTypes::MultiLineString:
     {
       QPolygonF pts;
 
@@ -894,8 +894,8 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     }
     break;
 
-    case QgsWKBTypes::MultiSurface:
-    case QgsWKBTypes::MultiPolygon:
+    case QgsWkbTypes::MultiSurface:
+    case QgsWkbTypes::MultiPolygon:
     {
       if ( mType != QgsSymbolV2::Fill )
       {
@@ -948,7 +948,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
       }
       break;
     }
-    case QgsWKBTypes::GeometryCollection:
+    case QgsWkbTypes::GeometryCollection:
     {
       QgsConstWkbPtr wkbPtr( segmentizedGeometry.asWkb(), segmentizedGeometry.wkbSize() );
       wkbPtr.readHeader();
@@ -967,7 +967,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     default:
       QgsDebugMsg( QString( "feature %1: unsupported wkb type %2/%3 for rendering" )
                    .arg( feature.id() )
-                   .arg( QgsWKBTypes::displayString( geom.geometry()->wkbType() ) )
+                   .arg( QgsWkbTypes::displayString( geom.geometry()->wkbType() ) )
                    .arg( geom.wkbType(), 0, 16 ) );
   }
 
