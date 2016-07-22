@@ -1439,6 +1439,7 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
+    QApplication::setOverrideCursor( Qt::ClosedHandCursor );
     mCanvasProperties->panSelectorDown = true;
     mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
   }
@@ -1477,6 +1478,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
+    QApplication::restoreOverrideCursor();
     mCanvasProperties->panSelectorDown = false;
     panActionEnd( mCanvasProperties->mouseLastXY );
   }
