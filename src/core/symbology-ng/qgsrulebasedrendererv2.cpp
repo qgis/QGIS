@@ -962,7 +962,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::clone() const
   QgsRuleBasedRendererV2::Rule* clonedRoot = mRootRule->clone();
 
   // normally with clone() the individual rules get new keys (UUID), but here we want to keep
-  // the tree of rules intact, so that other components that may use the rule keys work nicely (e.g. visibility presets)
+  // the tree of rules intact, so that other components that may use the rule keys work nicely (e.g. map themes)
   clonedRoot->setRuleKey( mRootRule->ruleKey() );
   RuleList origDescendants = mRootRule->descendants();
   RuleList clonedDescendants = clonedRoot->descendants();

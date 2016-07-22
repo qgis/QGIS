@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvisibilitypresetcollection.h
+  qgsmapthemecollection.h
   --------------------------------------
   Date                 : September 2014
   Copyright            : (C) 2014 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVISIBILITYPRESETCOLLECTION_H
-#define QGSVISIBILITYPRESETCOLLECTION_H
+#ifndef QGSMAPTHEMECOLLECTION_H
+#define QGSMAPTHEMECOLLECTION_H
 
 #include <QMap>
 #include <QObject>
@@ -26,14 +26,14 @@ class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 
 /**
-  \class QgsVisibilityPresetCollection
+  \class QgsMapThemeCollection
   \ingroup core
-  \brief Container class that allows storage of visibility presets consisting of visible
+  \brief Container class that allows storage of map themes consisting of visible
    map layers and layer styles.
   \note added in QGIS 2.12
 */
 
-class CORE_EXPORT QgsVisibilityPresetCollection : public QObject
+class CORE_EXPORT QgsMapThemeCollection : public QObject
 {
     Q_OBJECT
 
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsVisibilityPresetCollection : public QObject
         QMap<QString, QString> mPerLayerCurrentStyle;
     };
 
-    QgsVisibilityPresetCollection();
+    QgsMapThemeCollection();
 
     /** Returns whether a preset with a matching name exists.
      * @param name name of preset to check
@@ -168,4 +168,4 @@ class CORE_EXPORT QgsVisibilityPresetCollection : public QObject
 };
 
 
-#endif // QGSVISIBILITYPRESETCOLLECTION_H
+#endif // QGSMAPTHEMECOLLECTION_H

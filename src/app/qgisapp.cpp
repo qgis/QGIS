@@ -233,7 +233,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
-#include "qgsvisibilitypresets.h"
+#include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
 #include "qgsmaplayeractionregistry.h"
@@ -3004,10 +3004,10 @@ void QgisApp::initLayerTreeView()
   // visibility groups tool button
   QToolButton* btnVisibilityPresets = new QToolButton;
   btnVisibilityPresets->setAutoRaise( true );
-  btnVisibilityPresets->setToolTip( tr( "Manage Layer Visibility" ) );
+  btnVisibilityPresets->setToolTip( tr( "Manage Map Themes" ) );
   btnVisibilityPresets->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ) );
   btnVisibilityPresets->setPopupMode( QToolButton::InstantPopup );
-  btnVisibilityPresets->setMenu( QgsVisibilityPresets::instance()->menu() );
+  btnVisibilityPresets->setMenu( QgsMapThemes::instance()->menu() );
 
   // filter legend action
   mActionFilterLegend = new QAction( tr( "Filter Legend By Map Content" ), this );

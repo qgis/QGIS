@@ -223,7 +223,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorsimplifymethod.cpp
   qgsvirtuallayerdefinition.cpp
   qgsvirtuallayerdefinitionutils.cpp
-  qgsvisibilitypresetcollection.cpp
+  qgsmapthemecollection.cpp
   qgsxmlutils.cpp
 
   composer/qgsaddremoveitemcommand.cpp
@@ -493,7 +493,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditpassthrough.h
   qgsvectorlayer.h
   qgsvectorlayerjoinbuffer.h
-  qgsvisibilitypresetcollection.h
+  qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h
 
@@ -721,7 +721,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
   qgsvectorsimplifymethod.h
-  qgsvisibilitypresetcollection.h
+  qgsmapthemecollection.h
   qgsxmlutils.h
   qgswebpage.h
   qgswebframe.h

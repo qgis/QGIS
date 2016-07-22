@@ -179,7 +179,7 @@
             <item>
              <widget class="QCheckBox" name="mFollowVisibilityPresetCheckBox">
               <property name="text">
-               <string>Follow visibility preset</string>
+               <string>Follow map theme</string>
               </property>
              </widget>
             </item>

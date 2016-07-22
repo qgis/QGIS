@@ -1,15 +1,15 @@
 /**
-  \class QgsVisibilityPresetCollection
+  \class QgsMapThemeCollection
   \ingroup core
   \brief Container class that allows storage of visibility presets consisting of visible
    map layers and layer styles.
   \note added in QGIS 2.12
 */
 
-class QgsVisibilityPresetCollection : QObject
+class QgsMapThemeCollection : QObject
 {
 %TypeHeaderCode
-#include <qgsvisibilitypresetcollection.h>
+#include <qgsmapthemecollection.h>
 %End
   public:
 
@@ -19,8 +19,8 @@ class QgsVisibilityPresetCollection : QObject
     {
       public:
 
-        bool operator==( const QgsVisibilityPresetCollection::PresetRecord& other ) const;
-        bool operator!=( const QgsVisibilityPresetCollection::PresetRecord& other ) const;
+        bool operator==( const QgsMapThemeCollection::PresetRecord& other ) const;
+        bool operator!=( const QgsMapThemeCollection::PresetRecord& other ) const;
 
         //! Ordered list of layers that are visible
         QStringList mVisibleLayerIDs;
@@ -32,7 +32,7 @@ class QgsVisibilityPresetCollection : QObject
         QMap<QString, QString> mPerLayerCurrentStyle;
     };
 
-    QgsVisibilityPresetCollection();
+    QgsMapThemeCollection();
 
     /** Returns whether a preset with a matching name exists.
      * @param name name of preset to check

@@ -121,7 +121,7 @@ SET(QGIS_APP_SRCS
   qgstipgui.cpp
   qgstipfactory.cpp
   qgsvectorlayerproperties.cpp
-  qgsvisibilitypresets.cpp
+  qgsmapthemes.cpp
   qgshandlebadlayers.cpp
   qgsmaptooladdcircularstring.cpp
   qgsmaptoolcircularstringcurvepoint.cpp
@@ -296,7 +296,7 @@ SET (QGIS_APP_MOC_HDRS
   qgstipfactory.h
   qgsundowidget.h
   qgsvectorlayerproperties.h
-  qgsvisibilitypresets.h
+  qgsmapthemes.h
   qgshandlebadlayers.h
 
   composer/qgsattributeselectiondialog.h

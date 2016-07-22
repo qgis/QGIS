@@ -50,6 +50,18 @@ qgsPermissiveToInt()</li>
 <li>The constants DEFAULT_IDENTIFY_RADIUS and MINIMUM_POINT_SIZE were removed</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsProject QgsProject
+
+<ul>
+<li>visibilityPresetCollection() has been renamed to mapThemeCollection()</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsVisibilityPresetCollection QgsVisibilityPresetCollection
+
+<ul>
+<li>Has been renamed to QgsMapThemeCollection</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsAuthConfigUriEdit QgsAuthConfigUriEdit
 
 <ul>

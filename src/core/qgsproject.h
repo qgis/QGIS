@@ -45,7 +45,7 @@ class QgsMapLayer;
 class QgsProjectBadLayerHandler;
 class QgsRelationManager;
 class QgsVectorLayer;
-class QgsVisibilityPresetCollection;
+class QgsMapThemeCollection;
 class QgsTransactionGroup;
 class QgsTolerance;
 
@@ -325,10 +325,11 @@ class CORE_EXPORT QgsProject : public QObject
      */
     QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
 
-    /** Returns pointer to the project's visibility preset collection.
+    /** Returns pointer to the project's map theme collection.
      * @note added in QGIS 2.12
+     * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
-    QgsVisibilityPresetCollection* visibilityPresetCollection();
+    QgsMapThemeCollection* mapThemeCollection();
 
     /**
      * Set a list of layers which should not be taken into account on map identification
@@ -537,7 +538,7 @@ class CORE_EXPORT QgsProject : public QObject
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;
 
-    QScopedPointer<QgsVisibilityPresetCollection> mVisibilityPresetCollection;
+    QScopedPointer<QgsMapThemeCollection> mVisibilityPresetCollection;
 };
 
 
