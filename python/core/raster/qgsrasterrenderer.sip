@@ -38,7 +38,7 @@ class QgsRasterRenderer : QgsRasterInterface
 
     virtual bool setInput( QgsRasterInterface* input );
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0 / Factory /;
 
     bool usesTransparency() const;
 

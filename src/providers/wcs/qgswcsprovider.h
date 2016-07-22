@@ -149,12 +149,12 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
+    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void readBlock( int theBandNo, int xBlock, int yBlock, void *block ) override;
 
     /** Download cache */
-    void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = "" );
+    void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = "", QgsRasterBlockFeedback* feedback = nullptr );
 
     /** Return the extent for this data layer
      */
@@ -419,7 +419,7 @@ class QgsWcsDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError );
+    QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError, QgsRasterBlockFeedback* feedback );
     ~QgsWcsDownloadHandler();
 
     void blockingDownload();
@@ -427,6 +427,7 @@ class QgsWcsDownloadHandler : public QObject
   protected slots:
     void cacheReplyFinished();
     void cacheReplyProgress( qint64, qint64 );
+    void cancelled();
 
   protected:
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
