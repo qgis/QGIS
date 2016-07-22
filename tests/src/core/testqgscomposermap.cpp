@@ -26,7 +26,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
-#include "qgsvisibilitypresetcollection.h"
+#include "qgsmapthemecollection.h"
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -349,11 +349,11 @@ void TestQgsComposerMap::dataDefinedStyles()
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
 
-  QgsVisibilityPresetCollection::PresetRecord rec;
+  QgsMapThemeCollection::PresetRecord rec;
   rec.mVisibleLayerIDs << mPointsLayer->id();
   rec.mVisibleLayerIDs << mLinesLayer->id();
 
-  QgsProject::instance()->visibilityPresetCollection()->insert( "test preset", rec );
+  QgsProject::instance()->mapThemeCollection()->insert( "test preset", rec );
 
   // test following of preset
   mComposerMap->setFollowVisibilityPreset( true );

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvisibilitypresetcollection.cpp
+  qgsmapthemecollection.cpp
   --------------------------------------
   Date                 : September 2014
   Copyright            : (C) 2014 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvisibilitypresetcollection.h"
+#include "qgsmapthemecollection.h"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
@@ -26,13 +26,13 @@
 
 #include <QInputDialog>
 
-QgsVisibilityPresetCollection::QgsVisibilityPresetCollection()
+QgsMapThemeCollection::QgsMapThemeCollection()
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ),
            this, SLOT( registryLayersRemoved( QStringList ) ) );
 }
 
-void QgsVisibilityPresetCollection::addVisibleLayersToPreset( QgsLayerTreeGroup* parent, QgsVisibilityPresetCollection::PresetRecord& rec )
+void QgsMapThemeCollection::addVisibleLayersToPreset( QgsLayerTreeGroup* parent, QgsMapThemeCollection::PresetRecord& rec )
 {
   Q_FOREACH ( QgsLayerTreeNode* node, parent->children() )
   {
@@ -47,12 +47,12 @@ void QgsVisibilityPresetCollection::addVisibleLayersToPreset( QgsLayerTreeGroup*
   }
 }
 
-bool QgsVisibilityPresetCollection::hasPreset( const QString& name ) const
+bool QgsMapThemeCollection::hasPreset( const QString& name ) const
 {
   return mPresets.contains( name );
 }
 
-void QgsVisibilityPresetCollection::insert( const QString& name, const QgsVisibilityPresetCollection::PresetRecord& state )
+void QgsMapThemeCollection::insert( const QString& name, const QgsMapThemeCollection::PresetRecord& state )
 {
   mPresets.insert( name, state );
 
@@ -60,7 +60,7 @@ void QgsVisibilityPresetCollection::insert( const QString& name, const QgsVisibi
   emit presetsChanged();
 }
 
-void QgsVisibilityPresetCollection::update( const QString& name, const PresetRecord& state )
+void QgsMapThemeCollection::update( const QString& name, const PresetRecord& state )
 {
   if ( !mPresets.contains( name ) )
     return;
@@ -71,7 +71,7 @@ void QgsVisibilityPresetCollection::update( const QString& name, const PresetRec
   emit presetsChanged();
 }
 
-void QgsVisibilityPresetCollection::removePreset( const QString& name )
+void QgsMapThemeCollection::removePreset( const QString& name )
 {
   if ( !mPresets.contains( name ) )
     return;
@@ -82,7 +82,7 @@ void QgsVisibilityPresetCollection::removePreset( const QString& name )
   emit presetsChanged();
 }
 
-void QgsVisibilityPresetCollection::clear()
+void QgsMapThemeCollection::clear()
 {
   mPresets.clear();
 
@@ -90,18 +90,18 @@ void QgsVisibilityPresetCollection::clear()
   emit presetsChanged();
 }
 
-QStringList QgsVisibilityPresetCollection::presets() const
+QStringList QgsMapThemeCollection::presets() const
 {
   return mPresets.keys();
 }
 
-QStringList QgsVisibilityPresetCollection::presetVisibleLayers( const QString& name ) const
+QStringList QgsMapThemeCollection::presetVisibleLayers( const QString& name ) const
 {
   return mPresets.value( name ).mVisibleLayerIDs;
 }
 
 
-void QgsVisibilityPresetCollection::applyPresetCheckedLegendNodesToLayer( const QString& name, const QString& layerID )
+void QgsMapThemeCollection::applyPresetCheckedLegendNodesToLayer( const QString& name, const QString& layerID )
 {
   if ( !mPresets.contains( name ) )
     return;
@@ -131,14 +131,14 @@ void QgsVisibilityPresetCollection::applyPresetCheckedLegendNodesToLayer( const 
 }
 
 
-QMap<QString, QString> QgsVisibilityPresetCollection::presetStyleOverrides( const QString& presetName )
+QMap<QString, QString> QgsMapThemeCollection::presetStyleOverrides( const QString& presetName )
 {
   QMap<QString, QString> styleOverrides;
   if ( !mPresets.contains( presetName ) )
     return styleOverrides;
 
   QStringList lst = presetVisibleLayers( presetName );
-  const QgsVisibilityPresetCollection::PresetRecord& rec = mPresets[presetName];
+  const QgsMapThemeCollection::PresetRecord& rec = mPresets[presetName];
   Q_FOREACH ( const QString& layerID, lst )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
@@ -164,7 +164,7 @@ QMap<QString, QString> QgsVisibilityPresetCollection::presetStyleOverrides( cons
   return styleOverrides;
 }
 
-void QgsVisibilityPresetCollection::reconnectToLayersStyleManager()
+void QgsMapThemeCollection::reconnectToLayersStyleManager()
 {
   // disconnect( 0, 0, this, SLOT( layerStyleRenamed( QString, QString ) ) );
 
@@ -185,7 +185,7 @@ void QgsVisibilityPresetCollection::reconnectToLayersStyleManager()
   }
 }
 
-void QgsVisibilityPresetCollection::readXml( const QDomDocument& doc )
+void QgsMapThemeCollection::readXml( const QDomDocument& doc )
 {
   clear();
 
@@ -238,7 +238,7 @@ void QgsVisibilityPresetCollection::readXml( const QDomDocument& doc )
   emit presetsChanged();
 }
 
-void QgsVisibilityPresetCollection::writeXml( QDomDocument& doc )
+void QgsMapThemeCollection::writeXml( QDomDocument& doc )
 {
   QDomElement visPresetsElem = doc.createElement( "visibility-presets" );
   PresetRecordMap::const_iterator it = mPresets.constBegin();
@@ -278,7 +278,7 @@ void QgsVisibilityPresetCollection::writeXml( QDomDocument& doc )
   doc.firstChildElement( "qgis" ).appendChild( visPresetsElem );
 }
 
-void QgsVisibilityPresetCollection::registryLayersRemoved( const QStringList& layerIDs )
+void QgsMapThemeCollection::registryLayersRemoved( const QStringList& layerIDs )
 {
   Q_FOREACH ( const QString& layerID, layerIDs )
   {
@@ -294,7 +294,7 @@ void QgsVisibilityPresetCollection::registryLayersRemoved( const QStringList& la
   emit presetsChanged();
 }
 
-void QgsVisibilityPresetCollection::layerStyleRenamed( const QString& oldName, const QString& newName )
+void QgsMapThemeCollection::layerStyleRenamed( const QString& oldName, const QString& newName )
 {
   QgsMapLayerStyleManager* styleMgr = qobject_cast<QgsMapLayerStyleManager*>( sender() );
   if ( !styleMgr )

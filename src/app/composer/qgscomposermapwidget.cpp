@@ -37,8 +37,8 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
-#include "qgsvisibilitypresetcollection.h"
-#include "qgsvisibilitypresets.h"
+#include "qgsmapthemecollection.h"
+#include "qgsmapthemes.h"
 #include "qgisgui.h"
 
 #include <QMessageBox>
@@ -128,7 +128,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
   // follow preset combo
   mFollowVisibilityPresetCombo->setModel( new QStringListModel( mFollowVisibilityPresetCombo ) );
   connect( mFollowVisibilityPresetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( followVisibilityPresetSelected( int ) ) );
-  connect( QgsProject::instance()->visibilityPresetCollection(), SIGNAL( presetsChanged() ),
+  connect( QgsProject::instance()->mapThemeCollection(), SIGNAL( presetsChanged() ),
            this, SLOT( onPresetsChanged() ) );
   onPresetsChanged();
 
@@ -136,7 +136,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
   QMenu* menuKeepLayers = new QMenu( this );
   mLayerListFromPresetButton->setMenu( menuKeepLayers );
   mLayerListFromPresetButton->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
-  mLayerListFromPresetButton->setToolTip( tr( "Set layer list from a visibility preset" ) );
+  mLayerListFromPresetButton->setToolTip( tr( "Set layer list from a map theme" ) );
   connect( menuKeepLayers, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowKeepLayersVisibilityPresetsMenu() ) );
 
   if ( composerMap )
@@ -318,7 +318,7 @@ void QgsComposerMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu()
     return;
 
   menu->clear();
-  Q_FOREACH ( const QString& presetName, QgsProject::instance()->visibilityPresetCollection()->presets() )
+  Q_FOREACH ( const QString& presetName, QgsProject::instance()->mapThemeCollection()->presets() )
   {
     menu->addAction( presetName, this, SLOT( keepLayersVisibilityPresetSelected() ) );
   }
@@ -358,7 +358,7 @@ void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
     return;
 
   QString presetName = action->text();
-  QStringList lst = QgsVisibilityPresets::instance()->orderedPresetVisibleLayers( presetName );
+  QStringList lst = QgsMapThemes::instance()->orderedPresetVisibleLayers( presetName );
   if ( mComposerMap )
   {
     mKeepLayerListCheckBox->setChecked( true );
@@ -366,7 +366,7 @@ void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
 
     mKeepLayerStylesCheckBox->setChecked( true );
 
-    mComposerMap->setLayerStyleOverrides( QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName ) );
+    mComposerMap->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->presetStyleOverrides( presetName ) );
 
     mComposerMap->cache();
     mComposerMap->update();
@@ -379,7 +379,7 @@ void QgsComposerMapWidget::onPresetsChanged()
   {
     QStringList lst;
     lst.append( tr( "(none)" ) );
-    lst += QgsProject::instance()->visibilityPresetCollection()->presets();
+    lst += QgsProject::instance()->mapThemeCollection()->presets();
     model->setStringList( lst );
 
     // select the previously selected item again

@@ -157,7 +157,7 @@
 %Include qgsvectorlayerfeatureiterator.sip
 %Include qgsvirtuallayerdefinition.sip
 %Include qgsvirtuallayerdefinitionutils.sip
-%Include qgsvisibilitypresetcollection.sip
+%Include qgsmapthemecollection.sip
 %Include qgsxmlutils.sip
 
 %Include auth/qgsauthcertutils.sip

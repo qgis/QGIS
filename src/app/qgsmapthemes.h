@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvisibilitypresets.h
+  qgsmapthemes.h
   --------------------------------------
   Date                 : September 2014
   Copyright            : (C) 2014 by Martin Dobias
@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVISIBILITYPRESETS_H
-#define QGSVISIBILITYPRESETS_H
+#ifndef QGSMAPTHEMES_H
+#define QGSMAPTHEMES_H
 
-#include "qgsvisibilitypresetcollection.h"
+#include "qgsmapthemecollection.h"
 #include <QMap>
 #include <QObject>
 #include <QSet>
@@ -30,16 +30,16 @@ class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 
 /**
- * Contains methods for app-specific visibility preset functions.
+ * Contains methods for app-specific map theme functions.
  */
-class APP_EXPORT QgsVisibilityPresets : public QObject
+class APP_EXPORT QgsMapThemes : public QObject
 {
     Q_OBJECT
   public:
 
     /** Returns the instance QgsVisibilityPresets.
      */
-    static QgsVisibilityPresets* instance();
+    static QgsMapThemes* instance();
 
     //! Add a new preset using the current state of project's layer tree
     void addPreset( const QString& name );
@@ -71,22 +71,22 @@ class APP_EXPORT QgsVisibilityPresets : public QObject
     void menuAboutToShow();
 
   protected:
-    QgsVisibilityPresets(); // singleton
+    QgsMapThemes(); // singleton
 
     //! Applies current layer state to a preset record
-    void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsVisibilityPresetCollection::PresetRecord& rec );
+    void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsMapThemeCollection::PresetRecord& rec );
     //! Applies layer checked legend symbols to a preset record
-    void addPerLayerCheckedLegendSymbols( QgsVisibilityPresetCollection::PresetRecord& rec );
+    void addPerLayerCheckedLegendSymbols( QgsMapThemeCollection::PresetRecord& rec );
     //! Applies current layer styles to a preset record
-    void addPerLayerCurrentStyle( QgsVisibilityPresetCollection::PresetRecord& rec );
+    void addPerLayerCurrentStyle( QgsMapThemeCollection::PresetRecord& rec );
 
     //! Returns the current state of the map canvas as a preset record
-    QgsVisibilityPresetCollection::PresetRecord currentState();
+    QgsMapThemeCollection::PresetRecord currentState();
 
     //! Applies a preset for the project's collection to the canvas
     void applyState( const QString& presetName );
 
-    static QgsVisibilityPresets* sInstance;
+    static QgsMapThemes* sInstance;
 
     QMenu* mMenu;
     QMenu* mReplaceMenu;
@@ -98,4 +98,4 @@ class APP_EXPORT QgsVisibilityPresets : public QObject
 };
 
 
-#endif // QGSVISIBILITYPRESETS_H
+#endif // QGSMAPTHEMES_H

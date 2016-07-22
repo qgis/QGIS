@@ -64,6 +64,18 @@ QGis::UnitType parameters have been updated to take QgsUnitTypes::DistanceUnit i
 corresponding counterparts in QgsUnitTypes should be used instead.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsProject QgsProject
+
+<ul>
+<li>visibilityPresetCollection() has been renamed to mapThemeCollection()</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsVisibilityPresetCollection QgsVisibilityPresetCollection
+
+<ul>
+<li>Has been renamed to QgsMapThemeCollection</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsAuthConfigUriEdit QgsAuthConfigUriEdit
 
 <ul>

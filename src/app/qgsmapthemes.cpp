@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvisibilitypresets.cpp
+  qgsmapthemes.cpp
   --------------------------------------
   Date                 : September 2014
   Copyright            : (C) 2014 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvisibilitypresets.h"
-#include "qgsvisibilitypresetcollection.h"
+#include "qgsmapthemes.h"
+#include "qgsmapthemecollection.h"
 
 #include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
@@ -32,10 +32,10 @@
 #include <QInputDialog>
 
 
-QgsVisibilityPresets* QgsVisibilityPresets::sInstance;
+QgsMapThemes* QgsMapThemes::sInstance;
 
 
-QgsVisibilityPresets::QgsVisibilityPresets()
+QgsMapThemes::QgsMapThemes()
     : mMenu( new QMenu )
 {
 
@@ -45,17 +45,17 @@ QgsVisibilityPresets::QgsVisibilityPresets()
   mMenu->addAction( QgisApp::instance()->actionHideSelectedLayers() );
   mMenu->addSeparator();
 
-  mReplaceMenu = new QMenu( tr( "Replace Preset" ) );
+  mReplaceMenu = new QMenu( tr( "Replace Theme" ) );
   mMenu->addMenu( mReplaceMenu );
-  mActionAddPreset = mMenu->addAction( tr( "Add Preset..." ), this, SLOT( addPreset() ) );
+  mActionAddPreset = mMenu->addAction( tr( "Add Theme..." ), this, SLOT( addPreset() ) );
   mMenuSeparator = mMenu->addSeparator();
 
-  mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Preset" ), this, SLOT( removeCurrentPreset() ) );
+  mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, SLOT( removeCurrentPreset() ) );
 
   connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
 }
 
-void QgsVisibilityPresets::addPerLayerCheckedLegendSymbols( QgsVisibilityPresetCollection::PresetRecord& rec )
+void QgsMapThemes::addPerLayerCheckedLegendSymbols( QgsMapThemeCollection::PresetRecord& rec )
 {
   QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
 
@@ -86,7 +86,7 @@ void QgsVisibilityPresets::addPerLayerCheckedLegendSymbols( QgsVisibilityPresetC
   }
 }
 
-void QgsVisibilityPresets::addPerLayerCurrentStyle( QgsVisibilityPresetCollection::PresetRecord& rec )
+void QgsMapThemes::addPerLayerCurrentStyle( QgsMapThemeCollection::PresetRecord& rec )
 {
   QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
 
@@ -100,37 +100,37 @@ void QgsVisibilityPresets::addPerLayerCurrentStyle( QgsVisibilityPresetCollectio
   }
 }
 
-QgsVisibilityPresetCollection::PresetRecord QgsVisibilityPresets::currentState()
+QgsMapThemeCollection::PresetRecord QgsMapThemes::currentState()
 {
-  QgsVisibilityPresetCollection::PresetRecord rec;
+  QgsMapThemeCollection::PresetRecord rec;
   QgsLayerTreeGroup* root = QgsProject::instance()->layerTreeRoot();
-  QgsVisibilityPresetCollection::addVisibleLayersToPreset( root, rec );
+  QgsMapThemeCollection::addVisibleLayersToPreset( root, rec );
   addPerLayerCheckedLegendSymbols( rec );
   addPerLayerCurrentStyle( rec );
   return rec;
 }
 
-QgsVisibilityPresets* QgsVisibilityPresets::instance()
+QgsMapThemes* QgsMapThemes::instance()
 {
   if ( !sInstance )
-    sInstance = new QgsVisibilityPresets();
+    sInstance = new QgsMapThemes();
 
   return sInstance;
 }
 
-void QgsVisibilityPresets::addPreset( const QString& name )
+void QgsMapThemes::addPreset( const QString& name )
 {
-  QgsProject::instance()->visibilityPresetCollection()->insert( name, currentState() );
+  QgsProject::instance()->mapThemeCollection()->insert( name, currentState() );
 }
 
-void QgsVisibilityPresets::updatePreset( const QString& name )
+void QgsMapThemes::updatePreset( const QString& name )
 {
-  QgsProject::instance()->visibilityPresetCollection()->update( name, currentState() );
+  QgsProject::instance()->mapThemeCollection()->update( name, currentState() );
 }
 
-QStringList QgsVisibilityPresets::orderedPresetVisibleLayers( const QString& name ) const
+QStringList QgsMapThemes::orderedPresetVisibleLayers( const QString& name ) const
 {
-  QStringList visibleIds = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( name );
+  QStringList visibleIds = QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( name );
 
   // also make sure to order the layers according to map canvas order
   QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
@@ -145,20 +145,20 @@ QStringList QgsVisibilityPresets::orderedPresetVisibleLayers( const QString& nam
   return order2;
 }
 
-QMenu* QgsVisibilityPresets::menu()
+QMenu* QgsMapThemes::menu()
 {
   return mMenu;
 }
 
 
-void QgsVisibilityPresets::addPreset()
+void QgsMapThemes::addPreset()
 {
-  QStringList existingNames = QgsProject::instance()->visibilityPresetCollection()->presets();
-  QgsNewNameDialog dlg( tr( "preset" ) , tr( "Preset" ), QStringList(), existingNames, QRegExp(), Qt::CaseInsensitive, mMenu );
-  dlg.setWindowTitle( tr( "Visibility Presets" ) );
-  dlg.setHintString( tr( "Name of the new preset" ) );
+  QStringList existingNames = QgsProject::instance()->mapThemeCollection()->presets();
+  QgsNewNameDialog dlg( tr( "theme" ) , tr( "Theme" ), QStringList(), existingNames, QRegExp(), Qt::CaseInsensitive, mMenu );
+  dlg.setWindowTitle( tr( "Map Themes" ) );
+  dlg.setHintString( tr( "Name of the new theme" ) );
   dlg.setOverwriteEnabled( false );
-  dlg.setConflictingNameWarning( tr( "A preset with this name already exists" ) );
+  dlg.setConflictingNameWarning( tr( "A theme with this name already exists" ) );
   if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
     return;
 
@@ -166,7 +166,7 @@ void QgsVisibilityPresets::addPreset()
 }
 
 
-void QgsVisibilityPresets::presetTriggered()
+void QgsMapThemes::presetTriggered()
 {
   QAction* actionPreset = qobject_cast<QAction*>( sender() );
   if ( !actionPreset )
@@ -175,7 +175,7 @@ void QgsVisibilityPresets::presetTriggered()
   applyState( actionPreset->text() );
 }
 
-void QgsVisibilityPresets::replaceTriggered()
+void QgsMapThemes::replaceTriggered()
 {
   QAction* actionPreset = qobject_cast<QAction*>( sender() );
   if ( !actionPreset )
@@ -185,7 +185,7 @@ void QgsVisibilityPresets::replaceTriggered()
   addPreset( actionPreset->text() );
 }
 
-void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsVisibilityPresetCollection::PresetRecord& rec )
+void QgsMapThemes::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsMapThemeCollection::PresetRecord& rec )
 {
   Q_FOREACH ( QgsLayerTreeNode* node, parent->children() )
   {
@@ -234,30 +234,30 @@ void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent
 }
 
 
-void QgsVisibilityPresets::applyState( const QString& presetName )
+void QgsMapThemes::applyState( const QString& presetName )
 {
-  if ( !QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
+  if ( !QgsProject::instance()->mapThemeCollection()->hasPreset( presetName ) )
     return;
 
-  applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), QgsProject::instance()->visibilityPresetCollection()->presetState( presetName ) );
+  applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), QgsProject::instance()->mapThemeCollection()->presetState( presetName ) );
 
   // also make sure that the preset is up-to-date (not containing any non-existent legend items)
-  QgsProject::instance()->visibilityPresetCollection()->update( presetName, currentState() );
+  QgsProject::instance()->mapThemeCollection()->update( presetName, currentState() );
 }
 
-void QgsVisibilityPresets::removeCurrentPreset()
+void QgsMapThemes::removeCurrentPreset()
 {
   Q_FOREACH ( QAction* a, mMenuPresetActions )
   {
     if ( a->isChecked() )
     {
-      QgsProject::instance()->visibilityPresetCollection()->removePreset( a->text() );
+      QgsProject::instance()->mapThemeCollection()->removePreset( a->text() );
       break;
     }
   }
 }
 
-void QgsVisibilityPresets::menuAboutToShow()
+void QgsMapThemes::menuAboutToShow()
 {
   qDeleteAll( mMenuPresetActions );
   mMenuPresetActions.clear();
@@ -265,14 +265,14 @@ void QgsVisibilityPresets::menuAboutToShow()
   qDeleteAll( mMenuReplaceActions );
   mMenuReplaceActions.clear();
 
-  QgsVisibilityPresetCollection::PresetRecord rec = currentState();
+  QgsMapThemeCollection::PresetRecord rec = currentState();
   bool hasCurrent = false;
 
-  Q_FOREACH ( const QString& grpName, QgsProject::instance()->visibilityPresetCollection()->presets() )
+  Q_FOREACH ( const QString& grpName, QgsProject::instance()->mapThemeCollection()->presets() )
   {
     QAction* a = new QAction( grpName, mMenu );
     a->setCheckable( true );
-    if ( !hasCurrent && rec == QgsProject::instance()->visibilityPresetCollection()->presetState( grpName ) )
+    if ( !hasCurrent && rec == QgsProject::instance()->mapThemeCollection()->presetState( grpName ) )
     {
       a->setChecked( true );
       hasCurrent = true;

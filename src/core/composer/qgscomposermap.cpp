@@ -34,7 +34,7 @@
 #include "qgsvectorlayer.h"
 #include "qgspallabeling.h"
 #include "qgsexpression.h"
-#include "qgsvisibilitypresetcollection.h"
+#include "qgsmapthemecollection.h"
 #include "qgsannotation.h"
 
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
@@ -543,8 +543,8 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
-      renderLayerSet = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
+    if ( QgsProject::instance()->mapThemeCollection()->hasPreset( presetName ) )
+      renderLayerSet = QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( presetName );
     else  // fallback to using map canvas layers
       renderLayerSet = mComposition->mapSettings().layers();
   }
@@ -604,8 +604,8 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
-      return QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName );
+    if ( QgsProject::instance()->mapThemeCollection()->hasPreset( presetName ) )
+      return QgsProject::instance()->mapThemeCollection()->presetStyleOverrides( presetName );
     else
       return QMap<QString, QString>();
   }
@@ -1306,7 +1306,7 @@ bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
   extentElem.setAttribute( "ymax", qgsDoubleToString( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
 
-  // follow visibility preset
+  // follow map theme
   composerMapElem.setAttribute( "followPreset", mFollowVisibilityPreset ? "true" : "false" );
   composerMapElem.setAttribute( "followPresetName", mFollowVisibilityPresetName );
 
@@ -1411,7 +1411,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     mMapRotation = itemElem.attribute( "mapRotation", "0" ).toDouble();
   }
 
-  // follow visibility preset
+  // follow map theme
   mFollowVisibilityPreset = itemElem.attribute( "followPreset" ).compare( "true" ) == 0;
   mFollowVisibilityPresetName = itemElem.attribute( "followPresetName" );
 
