@@ -227,7 +227,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>7</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -256,8 +256,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>565</width>
-                <height>685</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -276,7 +276,7 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
-                  <item row="2" column="0" colspan="4">
+                  <item row="2" column="0" colspan="5">
                    <layout class="QHBoxLayout" name="horizontalLayout_5">
                     <item>
                      <widget class="QLabel" name="textLabel1">
@@ -363,32 +363,6 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_3">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Save paths</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>cbxAbsolutePath</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1" colspan="3">
-                   <widget class="QLineEdit" name="titleEdit">
-                    <property name="toolTip">
-                     <string>Descriptive project name</string>
-                    </property>
-                    <property name="text">
-                     <string>Default project title</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_2">
                     <property name="sizePolicy">
@@ -399,9 +373,6 @@
                     </property>
                     <property name="text">
                      <string>Project title</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>projectFileName</cstring>
                     </property>
                    </widget>
                   </item>
@@ -421,23 +392,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="projectFileName">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Project title</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>titleEdit</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="2" colspan="2">
+                  <item row="3" column="3" colspan="2">
                    <spacer>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -464,13 +419,46 @@
                     </item>
                    </widget>
                   </item>
-                  <item row="4" column="0" colspan="4">
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_3">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Save paths</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>cbxAbsolutePath</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0" colspan="5">
                    <widget class="QCheckBox" name="mMapTileRenderingCheckBox">
                     <property name="toolTip">
                      <string>Checking this setting avoids visible edge artifacts when rendering this project as separate map tiles. Rendering performance will be degraded.</string>
                     </property>
                     <property name="text">
                      <string>Avoid artifacts when project is rendered as map tiles (degrades performance)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1" colspan="4">
+                   <widget class="QLineEdit" name="titleEdit">
+                    <property name="toolTip">
+                     <string>Descriptive project name</string>
+                    </property>
+                    <property name="text">
+                     <string>Default project title</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1" colspan="4">
+                   <widget class="QLineEdit" name="mProjectFileLineEdit">
+                    <property name="readOnly">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -758,8 +746,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>294</width>
-                <height>59</height>
+                <width>368</width>
+                <height>46</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -903,8 +891,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>764</height>
+                <width>379</width>
+                <height>564</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1370,8 +1358,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>2317</height>
+                <width>663</width>
+                <height>2249</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2436,8 +2424,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>764</height>
+                <width>168</width>
+                <height>46</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2620,6 +2608,7 @@
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea_2</tabstop>
+  <tabstop>mProjectFileLineEdit</tabstop>
   <tabstop>titleEdit</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
@@ -2723,6 +2712,8 @@
   <tabstop>mWMSInspireMetadataUrlType</tabstop>
   <tabstop>pbnLaunchOWSChecker</tabstop>
   <tabstop>teOWSChecker</tabstop>
+  <tabstop>mAutoTransaction</tabstop>
+  <tabstop>mEvaluateDefaultValues</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
