@@ -140,28 +140,28 @@ QString QgsUnitTypes::toString( Qgis::UnitType unit )
   switch ( unit )
   {
     case Qgis::Meters:
-      return QCoreApplication::translate( "QGis::UnitType", "meters" );
+      return QCoreApplication::translate( "Qgis::UnitType", "meters" );
 
     case Qgis::Kilometers:
-      return QCoreApplication::translate( "QGis::UnitType", "kilometers" );
+      return QCoreApplication::translate( "Qgis::UnitType", "kilometers" );
 
     case Qgis::Feet:
-      return QCoreApplication::translate( "QGis::UnitType", "feet" );
+      return QCoreApplication::translate( "Qgis::UnitType", "feet" );
 
     case Qgis::Yards:
-      return QCoreApplication::translate( "QGis::UnitType", "yards" );
+      return QCoreApplication::translate( "Qgis::UnitType", "yards" );
 
     case Qgis::Miles:
-      return QCoreApplication::translate( "QGis::UnitType", "miles" );
+      return QCoreApplication::translate( "Qgis::UnitType", "miles" );
 
     case Qgis::Degrees:
-      return QCoreApplication::translate( "QGis::UnitType", "degrees" );
+      return QCoreApplication::translate( "Qgis::UnitType", "degrees" );
 
     case Qgis::UnknownUnit:
-      return QCoreApplication::translate( "QGis::UnitType", "<unknown>" );
+      return QCoreApplication::translate( "Qgis::UnitType", "<unknown>" );
 
     case Qgis::NauticalMiles:
-      return QCoreApplication::translate( "QGis::UnitType", "nautical miles" );
+      return QCoreApplication::translate( "Qgis::UnitType", "nautical miles" );
   }
   return QString();
 }

@@ -597,7 +597,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, 
     //int verticesAfter = usedBaseline->asMultiPolyline().count();
 
     //debug: write to file
-    /*QgsVectorFileWriter debugWriter( "/tmp/debug.shp", "utf-8", QgsFields(), QGis::WKBLineString, &( mStrataLayer->crs() ) );
+    /*QgsVectorFileWriter debugWriter( "/tmp/debug.shp", "utf-8", QgsFields(), Qgis::WKBLineString, &( mStrataLayer->crs() ) );
     QgsFeature debugFeature; debugFeature.setGeometry( usedBaseline );
     debugWriter.addFeature( debugFeature );*/
   }

@@ -65,12 +65,12 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Creates a new RubberBand.
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
-     *  @param geometryType Defines how the data should be drawn onto the screen. (Use QGis::Line, QGis::Polygon or QGis::Point)
+     *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
     QgsRubberBand( QgsMapCanvas* mapCanvas, Qgis::GeometryType geometryType = Qgis::Line );
     /**
      * Creates a new RubberBand.
-     *  @deprecated Use the constructor which takes QGis::GeometryType as second argument instead
+     *  @deprecated Use the constructor which takes Qgis::GeometryType as second argument instead
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
@@ -127,12 +127,12 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Clears all the geometries in this rubberband.
      * Sets the representation type according to geometryType.
-     *  @param geometryType Defines how the data should be drawn onto the screen. (Use QGis::Line, QGis::Polygon or QGis::Point)
+     *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
     void reset( Qgis::GeometryType geometryType = Qgis::Line );
 
     /**
-     * @deprecated Use the reset method which takes QGis::GeometryType as second argument instead
+     * @deprecated Use the reset method which takes Qgis::GeometryType as second argument instead
      * Clears all the geometries in this rubberband.
      * Sets the representation type according to isPolygon.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring

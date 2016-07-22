@@ -594,7 +594,7 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
 
   QString outputFormat = "GTiff";
   int nBands = 1;
-  QGis::DataType type = qgisRasterType( wr_type );
+  Qgis::DataType type = qgisRasterType( wr_type );
   QgsDebugMsg( QString( "type = %1" ).arg( type ) );
   double geoTransform[6];
   geoTransform[0] = mExtent.xMinimum();
@@ -792,7 +792,7 @@ int QgsGrassGisLib::readRasterRow( int fd, void * buf, int row, RASTER_MAP_TYPE 
   QgsRasterBlock *block = raster.input->block( raster.band, blockRect, mColumns, 1 );
   if ( !block ) return -1;
 
-  QGis::DataType requestedType = qgisRasterType( data_type );
+  Qgis::DataType requestedType = qgisRasterType( data_type );
 
   //QgsDebugMsg( QString("data_type = %1").arg(data_type) );
   //QgsDebugMsg( QString("requestedType = %1").arg(requestedType) );
@@ -936,7 +936,7 @@ int QgsGrassGisLib::putRasterRow( int fd, const void *buf, RASTER_MAP_TYPE data_
     return -1;
   }
 
-  QGis::DataType inputType = qgisRasterType( data_type );
+  Qgis::DataType inputType = qgisRasterType( data_type );
   //QgsDebugMsg( QString("data_type = %1").arg(data_type) );
   //QgsDebugMsg( QString("inputType = %1").arg(inputType) );
   //QgsDebugMsg( QString("provider->dataType = %1").arg( rast.provider->dataType( rast.band ) ) );
@@ -1060,7 +1060,7 @@ int GRASS_LIB_EXPORT G_get_cellhd( const char *name, const char *mapset, struct 
 
 double QgsGrassGisLib::G_database_units_to_meters_factor( void )
 {
-  return QGis::fromUnitToUnitFactor( mCrs.mapUnits(), QGis::Meters );
+  return Qgis::fromUnitToUnitFactor( mCrs.mapUnits(), Qgis::Meters );
 }
 
 double QgsGrassGisLib::G_area_of_cell_at_row( int row )
@@ -1224,46 +1224,46 @@ int GRASS_LIB_EXPORT G_get_ellipsoid_parameters( double *a, double *e2 )
   return QgsGrassGisLib::instance()->G_get_ellipsoid_parameters( a, e2 );
 }
 
-QGis::DataType QgsGrassGisLib::qgisRasterType( RASTER_MAP_TYPE grassType )
+Qgis::DataType QgsGrassGisLib::qgisRasterType( RASTER_MAP_TYPE grassType )
 {
   switch ( grassType )
   {
     case CELL_TYPE:
-      return QGis::Int32;
+      return Qgis::Int32;
       break;
     case FCELL_TYPE:
-      return QGis::Float32;
+      return Qgis::Float32;
       break;
     case DCELL_TYPE:
-      return QGis::Float64;
+      return Qgis::Float64;
       break;
     default:
       break;
   }
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
-RASTER_MAP_TYPE QgsGrassGisLib::grassRasterType( QGis::DataType qgisType )
+RASTER_MAP_TYPE QgsGrassGisLib::grassRasterType( Qgis::DataType qgisType )
 {
   switch ( qgisType )
   {
-    case QGis::Byte:
-    case QGis::UInt16:
-    case QGis::Int16:
-    case QGis::UInt32:
-    case QGis::Int32:
+    case Qgis::Byte:
+    case Qgis::UInt16:
+    case Qgis::Int16:
+    case Qgis::UInt32:
+    case Qgis::Int32:
       return CELL_TYPE;
-    case QGis::Float32:
+    case Qgis::Float32:
       return FCELL_TYPE;
-    case QGis::Float64:
+    case Qgis::Float64:
       return DCELL_TYPE;
       // Not supported types:
-    case QGis::CInt16:
-    case QGis::CInt32:
-    case QGis::CFloat32:
-    case QGis::CFloat64:
-    case QGis::ARGB32:
-    case QGis::ARGB32_Premultiplied:
+    case Qgis::CInt16:
+    case Qgis::CInt32:
+    case Qgis::CFloat32:
+    case Qgis::CFloat64:
+    case Qgis::ARGB32:
+    case Qgis::ARGB32_Premultiplied:
     default:
       return -1;
   }

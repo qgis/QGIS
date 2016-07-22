@@ -955,7 +955,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
 // Don't really do anything with it at this point
 #if 0
   QgsGeometry *geom = it.geometry();
-  QGis::WkbType wkbType = geom->wkbType();
+  Qgis::WkbType wkbType = geom->wkbType();
   QgsDebugMsg( QString( "wkbType: %1" ).arg( wkbType ) );
   QgsDebugMsg( QString( "mWkbType: %1" ).arg( mWkbType ) );
 #endif

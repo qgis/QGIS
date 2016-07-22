@@ -611,7 +611,7 @@ Qgis::GeometryType QgsVectorLayer::geometryType() const
 
   // We shouldn't get here, and if we have, other things are likely to
   // go wrong. Code that uses the type() return value should be
-  // rewritten to cope with a value of QGis::Unknown. To make this
+  // rewritten to cope with a value of Qgis::Unknown. To make this
   // need known, the following message is printed every time we get
   // here.
   QgsDebugMsg( "WARNING: This code should never be reached. Problems may occur..." );

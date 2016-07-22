@@ -36,7 +36,7 @@ class CORE_EXPORT QgsScaleCalculator
      * Constructor
      * @param dpi Monitor resolution in dots per inch
      * @param mapUnits Units of the data on the map. Must match a value from the
-     * QGis::UnitType enum (Meters, Feet, Degrees)
+     * Qgis::UnitType enum (Meters, Feet, Degrees)
      */
     QgsScaleCalculator( double dpi = 0,
                         Qgis::UnitType mapUnits = Qgis::Meters );

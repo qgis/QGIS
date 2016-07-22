@@ -161,7 +161,7 @@ short int QgsSpatialQuery::dimensionGeometry( Qgis::GeometryType geomType )
   }
   return dimGeom;
 
-} // int QgsSpatialQuery::dimensionGeometry(QGis::GeometryType geomType)
+} // int QgsSpatialQuery::dimensionGeometry(Qgis::GeometryType geomType)
 
 void QgsSpatialQuery::setQuery( QgsVectorLayer *layerTarget, QgsVectorLayer *layerReference )
 {

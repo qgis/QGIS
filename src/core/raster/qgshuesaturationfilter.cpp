@@ -185,7 +185,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
     myColor.getRgb( &r, &g, &b );
     if ( alpha != 255 )
     {
-      // Semi-transparent pixel. We need to adjust the colors since we are using QGis::ARGB32_Premultiplied
+      // Semi-transparent pixel. We need to adjust the colors since we are using Qgis::ARGB32_Premultiplied
       // and color values have been premultiplied by alpha
       alphaFactor = alpha / 255.;
       r /= alphaFactor;

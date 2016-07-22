@@ -92,14 +92,14 @@ double Qgis::SCALE_PRECISION = 0.9999999999;
 // Order must match enum indices
 const char* Qgis::qgisUnitTypes[] =
 {
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "meters" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "feet" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "<unknown>" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "nautical miles" )
+  QT_TRANSLATE_NOOP( "Qgis::UnitType", "meters" ),
+  QT_TRANSLATE_NOOP( "Qgis::UnitType", "feet" ),
+  QT_TRANSLATE_NOOP( "Qgis::UnitType", "degrees" ),
+  QT_TRANSLATE_NOOP( "Qgis::UnitType", "<unknown>" ),
+  QT_TRANSLATE_NOOP( "Qgis::UnitType", "degrees" ),
+  QT_TRANSLATE_NOOP( "Qgis::UnitType", "degrees" ),
+  QT_TRANSLATE_NOOP( "Qgis::UnitType", "degrees" ),
+  QT_TRANSLATE_NOOP( "Qgis::UnitType", "nautical miles" )
 };
 
 QgsWKBTypes::Type Qgis::fromOldWkbType( Qgis::WkbType type )

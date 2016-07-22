@@ -11828,7 +11828,7 @@ LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
                        .arg( QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" ) )
                        .arg( GetCurrentProcessId() )
                        .arg( GetCurrentThreadId() )
-                       .arg( QGis::QGIS_DEV_VERSION )
+                       .arg( Qgis::QGIS_DEV_VERSION )
                      );
 
   QString msg;

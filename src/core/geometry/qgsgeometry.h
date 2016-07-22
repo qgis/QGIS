@@ -171,7 +171,7 @@ class CORE_EXPORT QgsGeometry
      */
     Qgis::WkbType wkbType() const;
 
-    /** Returns type of the geometry as a QGis::GeometryType
+    /** Returns type of the geometry as a Qgis::GeometryType
      * @see wkbType
      */
     Qgis::GeometryType type() const;

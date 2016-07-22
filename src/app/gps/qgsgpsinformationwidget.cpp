@@ -853,7 +853,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     }
 
     delete f;
-  } // layerWKBType == QGis::WKBPoint
+  } // layerWKBType == Qgis::WKBPoint
   else // Line or poly
   {
     mNmea->disconnect( this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
@@ -932,14 +932,14 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       }
     }
     // Should never get here, as preconditions should have removed any that aren't handled
-    else // layerWKBType == QGis::WKBPolygon  -  unknown type
+    else // layerWKBType == Qgis::WKBPolygon  -  unknown type
     {
       QMessageBox::critical( nullptr, tr( "Error" ), tr( "Cannot add feature. "
                              "Unknown WKB type. Choose a different layer and try again." ) );
       connectGpsSlot();
       delete f;
       return; //unknown wkbtype
-    } // layerWKBType == QGis::WKBPolygon
+    } // layerWKBType == Qgis::WKBPolygon
 
     QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
     if ( action.addFeature() )
@@ -966,7 +966,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
 
     delete f;
     connectGpsSlot();
-  } // layerWKBType == QGis::WKBPoint
+  } // layerWKBType == Qgis::WKBPoint
   mpCanvas->refresh();  // NOTE: cancelling feature add refreshes canvas, OK does not; this may change, however, so do it anyway
 
   // force focus back to GPS window/ Add Feature button for ease of use by keyboard

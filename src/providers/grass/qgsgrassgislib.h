@@ -111,10 +111,10 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     int G_get_ellipsoid_parameters( double *a, double *e2 );
 
     /** Get QGIS raster type for GRASS raster type */
-    QGis::DataType qgisRasterType( RASTER_MAP_TYPE grassType );
+    Qgis::DataType qgisRasterType( RASTER_MAP_TYPE grassType );
 
     /** Get GRASS raster type for QGIS raster type */
-    RASTER_MAP_TYPE grassRasterType( QGis::DataType qgisType );
+    RASTER_MAP_TYPE grassRasterType( Qgis::DataType qgisType );
 
     /** Get no data value for GRASS data type */
     double noDataValueForGrassType( RASTER_MAP_TYPE grassType );

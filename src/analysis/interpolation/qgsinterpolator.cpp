@@ -158,10 +158,10 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, d
       break;
     }
 #if 0
-    case QGis::WKBPolygon25D:
+    case Qgis::WKBPolygon25D:
       hasZValue = true;
       //intentional fall-through
-    case QGis::WKBPolygon:
+    case Qgis::WKBPolygon:
     {
       int nRings;
       wkbPtr >> nRings;
@@ -203,10 +203,10 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, d
       }
       break;
     }
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBMultiPoint25D:
       hasZValue = true;
       //intentional fall-through
-    case QGis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint:
     {
       int nPoints;
       wkbPtr >> nPoints;
@@ -228,10 +228,10 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, d
       }
       break;
     }
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBMultiLineString25D:
       hasZValue = true;
       //intentional fall-through
-    case QGis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString:
     {
       int nLines;
       wkbPtr >> nLines;
@@ -274,10 +274,10 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, d
       }
       break;
     }
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBMultiPolygon25D:
       hasZValue = true;
       //intentional fall-through
-    case QGis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon:
     {
       int nPolys;
       wkbPtr >> nPolys;
