@@ -25,7 +25,7 @@
 // constructor used when the query builder must make its own
 // connection to the database
 QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
-                                  QWidget *parent, const Qt::WindowFlags& fl )
+                                  QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mPreviousFieldRow( -1 )
     , mLayer( layer )

@@ -17,7 +17,7 @@
 #include "qgsgroupwmsdatadialog.h"
 
 
-QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( QWidget *parent, const Qt::WindowFlags& fl )
+QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );

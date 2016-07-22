@@ -32,7 +32,7 @@
 #include "qgslogger.h"
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
-    QWidget *parent, const Qt::WindowFlags& fl )
+    QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mLayer( layer )
 {

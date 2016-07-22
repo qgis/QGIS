@@ -47,7 +47,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * @param fl dialog flags
      */
     QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent = nullptr,
-                     const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+                     Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     ~QgsQueryBuilder();
 

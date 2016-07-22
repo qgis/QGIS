@@ -23,7 +23,7 @@
 
 
 QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString& name,
-                                        QWidget* parent, const Qt::WindowFlags& fl )
+                                        QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mName( name )
     , mShowCount( false )

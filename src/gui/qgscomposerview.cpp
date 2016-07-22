@@ -52,7 +52,7 @@
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
 
-QgsComposerView::QgsComposerView( QWidget* parent, const char* name, const Qt::WindowFlags& f )
+QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowFlags f )
     : QGraphicsView( parent )
     , mCurrentTool( Select )
     , mPreviousTool( Select )
