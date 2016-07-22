@@ -99,14 +99,14 @@ QgsMapSettings QgsGlobeTileImage::createSettings( int dpi , const QStringList &l
 {
   QgsMapSettings settings;
   settings.setBackgroundColor( QColor( Qt::transparent ) );
-  settings.setDestinationCrs( QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID ) );
+  settings.setDestinationCrs( QgsCrsCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID ) );
   settings.setCrsTransformEnabled( true );
   settings.setExtent( mTileExtent );
   settings.setLayers( layerSet );
   settings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   settings.setFlag( QgsMapSettings::DrawLabeling, false );
   settings.setFlag( QgsMapSettings::DrawSelection, false );
-  settings.setMapUnits( QGis::Degrees );
+  settings.setMapUnits( Qgis::Degrees );
   settings.setOutputSize( QSize( mTileSize, mTileSize ) );
   settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
   settings.setOutputDpi( dpi );

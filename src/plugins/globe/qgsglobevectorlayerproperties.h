@@ -25,6 +25,7 @@
 
 class QgsGlobeVectorLayerConfig;
 class QgsMapLayer;
+class QgsVectorLayer;
 class QDomDocument;
 class QDomElement;
 class QListWidgetItem;

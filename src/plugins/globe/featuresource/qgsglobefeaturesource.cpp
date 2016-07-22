@@ -95,13 +95,13 @@ osgEarth::Features::Geometry::Type QgsGlobeFeatureSource::getGeometryType() cons
 {
   switch ( mLayer->geometryType() )
   {
-    case  QGis::Point:
+    case Qgis::Point:
       return osgEarth::Features::Geometry::TYPE_POINTSET;
 
-    case QGis::Line:
+    case Qgis::Line:
       return osgEarth::Features::Geometry::TYPE_LINESTRING;
 
-    case QGis::Polygon:
+    case Qgis::Polygon:
       return osgEarth::Features::Geometry::TYPE_POLYGON;
 
     default:
