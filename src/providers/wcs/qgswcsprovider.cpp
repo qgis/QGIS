@@ -69,7 +69,7 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 
 // TODO: colortable - use comon baseclass with gdal, mapserver does not support http://trac.osgeo.org/mapserver/ticket/1671
 
-QgsWcsProvider::QgsWcsProvider( QString const &uri )
+QgsWcsProvider::QgsWcsProvider( const QString& uri )
     : QgsRasterDataProvider( uri )
     , QgsGdalProviderBase()
     , mHttpUri( QString::null )

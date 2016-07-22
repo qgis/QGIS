@@ -427,8 +427,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mTreeView->setEditTriggers( QAbstractItemView::AllEditTriggers );
   mTreeView->setItemDelegate( mFieldSelectorDelegate );
 
-  QgsLayerTreeModel *model = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
-  model->setFlags( nullptr );
+  QgsLayerTreeModel* model = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
+  model->setFlags( 0 );
   mTreeView->setModel( model );
   mTreeView->resizeColumnToContents( 0 );
   mTreeView->header()->show();

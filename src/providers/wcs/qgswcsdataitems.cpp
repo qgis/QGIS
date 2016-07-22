@@ -252,9 +252,9 @@ QList<QAction*> QgsWCSRootItem::actions()
 }
 
 
-QWidget * QgsWCSRootItem::paramWidget()
+QWidget* QgsWCSRootItem::paramWidget()
 {
-  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, nullptr, true, true );
+  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, 0, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }

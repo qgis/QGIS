@@ -1094,7 +1094,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 } // QgisApp ctor
 
 QgisApp::QgisApp()
-    : QMainWindow( nullptr, nullptr )
+    : QMainWindow( nullptr, 0 )
     , mProfiler( nullptr )
     , mStyleSheetBuilder( nullptr )
     , mActionPluginSeparator1( nullptr )
@@ -5955,7 +5955,7 @@ void QgisApp::saveAsRasterFile()
     fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
   }
 
-  QProgressDialog pd( nullptr, tr( "Abort..." ), 0, 0 );
+  QProgressDialog pd( QString(), tr( "Abort..." ), 0, 0 );
   // Show the dialo immediately because cloning pipe can take some time (WCS)
   pd.setLabelText( tr( "Reading raster" ) );
   pd.setWindowTitle( tr( "Saving raster" ) );

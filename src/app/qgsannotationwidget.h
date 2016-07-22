@@ -29,7 +29,7 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
 {
     Q_OBJECT
   public:
-    QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsAnnotationWidget();
 
     void apply();

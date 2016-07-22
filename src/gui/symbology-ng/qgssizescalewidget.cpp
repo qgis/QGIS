@@ -230,14 +230,14 @@ void QgsSizeScaleWidget::updatePreview()
       symbol->setDataDefinedSize( QgsDataDefined() );
       symbol->setDataDefinedAngle( QgsDataDefined() ); // to avoid symbol not beeing drawn
       symbol->setSize( expr->size( breaks[i] ) );
-      node.reset( new QgsSymbolV2LegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), nullptr ) ) );
+      node.reset( new QgsSymbolV2LegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), QString() ) ) );
     }
     else if ( dynamic_cast<const QgsLineSymbolV2*>( mSymbol ) )
     {
       QScopedPointer< QgsLineSymbolV2 > symbol( static_cast<QgsLineSymbolV2*>( mSymbol->clone() ) );
       symbol->setDataDefinedWidth( QgsDataDefined() );
       symbol->setWidth( expr->size( breaks[i] ) );
-      node.reset( new QgsSymbolV2LegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), nullptr ) ) );
+      node.reset( new QgsSymbolV2LegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), QString() ) ) );
 
     }
 

@@ -350,7 +350,7 @@ void QgsLabelingEngineV2::readSettingsFromProject()
   mCandLine = prj->readNumEntry( "PAL", "/CandidatesLine", 8, &saved );
   mCandPolygon = prj->readNumEntry( "PAL", "/CandidatesPolygon", 8, &saved );
 
-  mFlags = nullptr;
+  mFlags = 0;
   if ( prj->readBoolEntry( "PAL", "/ShowingCandidates", false, &saved ) ) mFlags |= DrawCandidates;
   if ( prj->readBoolEntry( "PAL", "/DrawRectOnly", false, &saved ) ) mFlags |= DrawLabelRectOnly;
   if ( prj->readBoolEntry( "PAL", "/ShowingShadowRects", false, &saved ) ) mFlags |= DrawShadowRects;

@@ -162,7 +162,7 @@ QList<QAction*> QgsWfsRootItem::actions()
 
 QWidget * QgsWfsRootItem::paramWidget()
 {
-  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, nullptr, true );
+  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, 0, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }

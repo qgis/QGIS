@@ -179,7 +179,7 @@ QString QgsZonalStatisticsDialog::attributePrefix() const
 
 QgsZonalStatistics::Statistics QgsZonalStatisticsDialog::selectedStats() const
 {
-  QgsZonalStatistics::Statistics stats = nullptr;
+  QgsZonalStatistics::Statistics stats = 0;
   for ( int i = 0; i < mStatsListWidget->count(); ++i )
   {
     QListWidgetItem* item = mStatsListWidget->item( i );

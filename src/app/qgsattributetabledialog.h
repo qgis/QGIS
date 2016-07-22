@@ -230,7 +230,7 @@ class QgsAttributeTableDock : public QgsDockWidget
     Q_OBJECT
 
   public:
-    QgsAttributeTableDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsAttributeTableDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = 0 );
 
     virtual void closeEvent( QCloseEvent * ev ) override;
 };

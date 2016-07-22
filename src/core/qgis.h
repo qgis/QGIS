@@ -528,7 +528,7 @@ typedef unsigned long long qgssize;
 #endif
 
 #if defined(__clang__)
-#define FALLTHROUGH [[clang::fallthrough]]
+#define FALLTHROUGH //[[clang::fallthrough]]
 #else
 #define FALLTHROUGH
 #endif

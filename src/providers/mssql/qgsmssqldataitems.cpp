@@ -638,7 +638,7 @@ QList<QAction*> QgsMssqlRootItem::actions()
 
 QWidget *QgsMssqlRootItem::paramWidget()
 {
-  QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, nullptr, true, true );
+  QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, 0, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }

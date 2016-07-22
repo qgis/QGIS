@@ -435,7 +435,7 @@ done:
 QString QgsPythonUtilsImpl::getTypeAsString( PyObject* obj )
 {
   if ( !obj )
-    return nullptr;
+    return QString();
 
 #if (PY_VERSION_HEX < 0x03000000)
   if ( PyClass_Check( obj ) )

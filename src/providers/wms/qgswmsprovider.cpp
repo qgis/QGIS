@@ -1199,7 +1199,7 @@ bool QgsWmsProvider::isValid() const
 QString QgsWmsProvider::wmsVersion()
 {
   // TODO
-  return nullptr;
+  return QString();
 }
 
 

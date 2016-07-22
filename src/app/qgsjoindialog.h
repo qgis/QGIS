@@ -27,7 +27,7 @@ class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
 {
     Q_OBJECT
   public:
-    QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> alreadyJoinedLayers, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> alreadyJoinedLayers, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsJoinDialog();
 
     /** Configure the dialog for an existing join */

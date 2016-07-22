@@ -319,9 +319,9 @@ QList<QAction*> QgsSLRootItem::actions()
   return lst;
 }
 
-QWidget * QgsSLRootItem::paramWidget()
+QWidget* QgsSLRootItem::paramWidget()
 {
-  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, nullptr, true );
+  QgsSpatiaLiteSourceSelect* select = new QgsSpatiaLiteSourceSelect( nullptr, 0, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }

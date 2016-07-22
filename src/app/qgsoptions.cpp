@@ -1571,7 +1571,7 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   if ( driverName.isEmpty() )
     return;
 
-  QgsDialog dlg( this, nullptr, QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  QgsDialog dlg( this, 0, QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   QVBoxLayout *layout = dlg.layout();
   QString title = tr( "Create Options - %1 Driver" ).arg( driverName );
   if ( driverName == "_pyramids" )

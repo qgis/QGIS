@@ -510,7 +510,7 @@ void QgsAttributeTableDialog::replaceSearchWidget( QWidget* oldw, QWidget* neww 
 {
   mFilterLayout->removeWidget( oldw );
   oldw->setVisible( false );
-  mFilterLayout->addWidget( neww, 0, 0, nullptr );
+  mFilterLayout->addWidget( neww, 0, 0, 0 );
   neww->setVisible( true );
 }
 

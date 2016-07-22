@@ -223,7 +223,7 @@ void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )
       itemElem = itemElem.nextSiblingElement( "item" );
     }
 
-    setHasCustomLayerOrder( customOrderElem.attribute( "enabled", nullptr ).toInt() );
+    setHasCustomLayerOrder( customOrderElem.attribute( "enabled", QString() ).toInt() );
     setCustomLayerOrder( order );
   }
 }

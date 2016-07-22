@@ -47,7 +47,7 @@ class GUI_EXPORT QgsColorDialog : public QObject
     static QColor getLiveColor( const QColor& initialColor, QObject* updateObject, const char* updateSlot,
                                 QWidget* parent = nullptr,
                                 const QString& title = "",
-                                const QColorDialog::ColorDialogOptions& options = nullptr );
+                                const QColorDialog::ColorDialogOptions& options = 0 );
 };
 
 

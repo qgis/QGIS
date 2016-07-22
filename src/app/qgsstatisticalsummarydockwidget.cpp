@@ -183,7 +183,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly
   }
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
-  QgsStatisticalSummary::Statistics statsToCalc = nullptr;
+  QgsStatisticalSummary::Statistics statsToCalc = 0;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )

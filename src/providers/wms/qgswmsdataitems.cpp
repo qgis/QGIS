@@ -391,7 +391,7 @@ QList<QAction*> QgsWMSRootItem::actions()
 
 QWidget * QgsWMSRootItem::paramWidget()
 {
-  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, nullptr, true, true );
+  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, 0, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }

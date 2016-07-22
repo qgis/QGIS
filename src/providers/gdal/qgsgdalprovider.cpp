@@ -1742,7 +1742,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   }
 
   //emit drawingProgress( 0, 0 );
-  return nullptr; // returning null on success
+  return QString(); // returning null on success
 }
 
 #if 0

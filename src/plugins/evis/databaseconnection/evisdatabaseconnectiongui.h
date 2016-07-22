@@ -50,7 +50,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
 
   public:
     /** \brief Constructor */
-    eVisDatabaseConnectionGui( QList<QTemporaryFile*>*, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
+    eVisDatabaseConnectionGui( QList<QTemporaryFile*>*, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
 
     /** \brief Destructor */
     ~eVisDatabaseConnectionGui();

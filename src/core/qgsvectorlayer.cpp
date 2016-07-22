@@ -199,7 +199,7 @@ QString QgsVectorLayer::storageType() const
   {
     return mDataProvider->storageType();
   }
-  return nullptr;
+  return QString();
 }
 
 
@@ -209,7 +209,7 @@ QString QgsVectorLayer::capabilitiesString() const
   {
     return mDataProvider->capabilitiesString();
   }
-  return nullptr;
+  return QString();
 }
 
 QString QgsVectorLayer::dataComment() const
@@ -992,7 +992,7 @@ QString QgsVectorLayer::subsetString() const
   if ( !mValid || !mDataProvider )
   {
     QgsDebugMsg( "invoked with invalid layer or null mDataProvider" );
-    return nullptr;
+    return QString();
   }
   return mDataProvider->subsetString();
 }

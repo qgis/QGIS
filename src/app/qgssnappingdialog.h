@@ -107,7 +107,7 @@ class QgsSnappingDock : public QgsDockWidget
     Q_OBJECT
 
   public:
-    QgsSnappingDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsSnappingDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = 0 );
 
     virtual void closeEvent( QCloseEvent *e ) override;
 

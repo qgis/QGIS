@@ -30,7 +30,7 @@ class QgsRasterTerrainAnalysisDialog: public QDialog, private Ui::QgsRasterTerra
       ReliefInput
     };
 
-    QgsRasterTerrainAnalysisDialog( DisplayMode mode = NoParameter, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsRasterTerrainAnalysisDialog( DisplayMode mode = NoParameter, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsRasterTerrainAnalysisDialog();
 
     QList< QgsRelief::ReliefColor > reliefColors() const;

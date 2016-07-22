@@ -41,8 +41,8 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
       AllOptions = ~0
     };
 
-    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;

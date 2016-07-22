@@ -362,7 +362,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   // not a top-level projection node
   QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
   if ( !lvi || lvi->text( QGIS_CRS_ID_COLUMN ).isEmpty() )
-    return nullptr;
+    return QString();
 
   //
   // Determine if this is a user projection or a system on
@@ -374,7 +374,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
     databaseFileName = QgsApplication::qgisUserDbFilePath();
     if ( !QFileInfo( databaseFileName ).exists() )
     {
-      return nullptr;
+      return QString();
     }
   }
   else
@@ -392,7 +392,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   if ( rc )
   {
     showDBMissingWarning( databaseFileName );
-    return nullptr;
+    return QString();
   }
 
   // prepare the sql statement

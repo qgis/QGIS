@@ -738,7 +738,7 @@ QList< QgsLayerTreeModelLegendNode* > QgsLinearlyInterpolatedDiagramRenderer::le
     Q_FOREACH ( double v, QgsSymbolLayerV2Utils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
     {
       double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
-      QgsLegendSymbolItemV2 si( mSizeLegendSymbol.data(), QString::number( v ), nullptr );
+      QgsLegendSymbolItemV2 si( mSizeLegendSymbol.data(), QString::number( v ), QString() );
       QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
       s->setSize( size );
       s->setSizeUnit( mSettings.sizeType );

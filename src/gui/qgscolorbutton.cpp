@@ -126,7 +126,7 @@ void QgsColorButton::onButtonClicked()
     }
     else
     {
-      QgsColorDialogV2 dialog( this, nullptr, color() );
+      QgsColorDialogV2 dialog( this, 0, color() );
       dialog.setTitle( mColorDialogTitle );
       dialog.setAllowAlpha( mColorDialogOptions & QColorDialog::ShowAlphaChannel );
 
