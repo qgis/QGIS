@@ -65,7 +65,7 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
                 << QgsWkbTypes::MultiPolygon
                 << QgsWkbTypes::NoGeometry )
     {
-      cb->addItem( QgsDb2TableModel::iconForWkbType( type ), QgsDb2TableModel::displayStringForWkbType( type ), type );
+      cb->addItem( QgsDb2TableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), type );
     }
     cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
@@ -105,7 +105,7 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
       QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->itemData( cb->currentIndex() ).toInt();
 
       model->setData( index, QgsDb2TableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsDb2TableModel::displayStringForWkbType( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsDb2TableModel::dbtmPkCol )

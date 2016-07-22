@@ -1082,41 +1082,27 @@ void QgsGPSInformationWidget::updateCloseFeatureButton( QgsMapLayer * lyr )
     QgsVectorDataProvider* provider = vlayer->dataProvider();
     QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
 
+    QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( layerWKBType );
+
     bool enable =
       ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) &&  // layer can add features
       vlayer->isEditable() && // layer is editing
       ( // layer has geometry type that can be handled
-        layerWKBType == QgsWkbTypes::Point ||
-        layerWKBType == QgsWkbTypes::LineString ||
-        layerWKBType == QgsWkbTypes::Polygon
+        flatType == QgsWkbTypes::Point ||
+        flatType == QgsWkbTypes::LineString ||
+        flatType == QgsWkbTypes::Polygon
         // add more types here as they are handled
       )
       ;
-    switch ( layerWKBType )
-    {
-      case QgsWkbTypes::Point:
-        buttonLabel = tr( "&Add Point" );
-        break;
-      case QgsWkbTypes::LineString:
-        buttonLabel = tr( "&Add Line" );
-        break;
-      case QgsWkbTypes::Polygon:
-        buttonLabel = tr( "&Add Polygon" );
-        break;
-        // for the future (also prevent compiler warnings)
-      case QgsWkbTypes::MultiPoint:
-      case QgsWkbTypes::MultiLineString:
-      case QgsWkbTypes::MultiPolygon:
-      case QgsWkbTypes::Point25D:
-      case QgsWkbTypes::LineString25D:
-      case QgsWkbTypes::Polygon25D:
-      case QgsWkbTypes::MultiPoint25D:
-      case QgsWkbTypes::MultiLineString25D:
-      case QgsWkbTypes::MultiPolygon25D:
-      case QgsWkbTypes::Unknown:
-      case QgsWkbTypes::NoGeometry:
-        ;
-    }
+
+    if ( flatType == QgsWkbTypes::Point )
+      buttonLabel = tr( "&Add Point" );
+    else if ( flatType == QgsWkbTypes::LineString )
+      buttonLabel = tr( "&Add Line" );
+    else if ( flatType == QgsWkbTypes::Polygon )
+      buttonLabel = tr( "&Add Polygon" );
+    // TODO: Add multi types
+
     mBtnCloseFeature->setEnabled( enable );
   }
   else

@@ -556,7 +556,7 @@ bool QgsMssqlSchemaItem::handleDrop( const QMimeData* data, Qt::DropAction )
 QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty& layerProperty, bool refresh )
 {
   QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
-  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsMssqlTableModel::displayStringForWkbType( wkbType ), layerProperty.srid );
+  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::displayString( wkbType ), layerProperty.srid );
 
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )

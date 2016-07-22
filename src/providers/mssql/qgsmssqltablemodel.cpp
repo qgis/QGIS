@@ -85,7 +85,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
       needToDetect
       ? tr( "Detecting..." )
-      : QgsMssqlTableModel::displayStringForWkbType( wkbType ) );
+      : QgsWkbTypes::displayString( wkbType ) );
   typeItem->setData( needToDetect, Qt::UserRole + 1 );
   typeItem->setData( wkbType, Qt::UserRole + 2 );
 
@@ -270,7 +270,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList.at( 0 ) );
 
         row[ dbtmType ]->setIcon( iconForWkbType( wkbType ) );
-        row[ dbtmType ]->setText( QgsMssqlTableModel::displayStringForWkbType( wkbType ) );
+        row[ dbtmType ]->setText( QgsWkbTypes::displayString( wkbType ) );
         row[ dbtmType ]->setData( false, Qt::UserRole + 1 );
         row[ dbtmType ]->setData( wkbType, Qt::UserRole + 2 );
 
@@ -298,26 +298,22 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
 
 QIcon QgsMssqlTableModel::iconForWkbType( QgsWkbTypes::Type type )
 {
-  switch ( type )
+  switch ( QgsWkbTypes::geometryType( type ) )
+
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
+    case QgsWkbTypes::PointGeometry:
       return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
+      break;
+    case QgsWkbTypes::LineGeometry:
       return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
+      break;
+    case QgsWkbTypes::PolygonGeometry:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-    case QgsWkbTypes::NoGeometry:
+      break;
+    case QgsWkbTypes::NullGeometry:
       return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
-    case QgsWkbTypes::Unknown:
+      break;
+    case QgsWkbTypes::UnknownGeometry:
       break;
   }
   return QgsApplication::getThemeIcon( "/mIconLayer.png" );
@@ -461,43 +457,4 @@ QgsWkbTypes::Type QgsMssqlTableModel::wkbTypeFromMssql( QString type )
   {
     return QgsWkbTypes::Unknown;
   }
-}
-
-QString QgsMssqlTableModel::displayStringForWkbType( QgsWkbTypes::Type type )
-{
-  switch ( type )
-  {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
-      return tr( "Point" );
-
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
-      return tr( "Multipoint" );
-
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
-      return tr( "Line" );
-
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
-      return tr( "Multiline" );
-
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
-      return tr( "Polygon" );
-
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
-      return tr( "Multipolygon" );
-
-    case QgsWkbTypes::NoGeometry:
-      return tr( "No Geometry" );
-
-    case QgsWkbTypes::Unknown:
-      return tr( "Unknown Geometry" );
-  }
-
-  Q_ASSERT( !"unexpected wkbType" );
-  return QString::null;
 }

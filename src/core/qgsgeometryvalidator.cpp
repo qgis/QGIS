@@ -197,7 +197,7 @@ void QgsGeometryValidator::run()
 {
   mErrorCount = 0;
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
-    ( (GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR>=3) || GEOS_VERSION_MAJOR>3)
+  ( (GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR>=3) || GEOS_VERSION_MAJOR>3)
   QSettings settings;
   if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 2 )
   {
@@ -245,76 +245,68 @@ void QgsGeometryValidator::run()
 
   QgsDebugMsg( "validation thread started." );
 
-  switch ( QgsWkbTypes::flatType( mG.wkbType() ) )
+  QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( mG.wkbType() );
+  //if ( flatType == QgsWkbTypes::Point || flatType == QgsWkbTypes::MultiPoint )
+  //    break;
+  if ( flatType == QgsWkbTypes::LineString )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::MultiPoint:
-      break;
-
-    case QgsWkbTypes::LineString:
-      validatePolyline( 0, mG.asPolyline() );
-      break;
-
-    case QgsWkbTypes::MultiLineString:
+    validatePolyline( 0, mG.asPolyline() );
+  }
+  else if ( flatType == QgsWkbTypes::MultiLineString )
+  {
+    QgsMultiPolyline mp = mG.asMultiPolyline();
+    for ( int i = 0; !mStop && i < mp.size(); i++ )
+      validatePolyline( i, mp[i] );
+  }
+  else if ( flatType == QgsWkbTypes::Polygon )
+  {
+    validatePolygon( 0, mG.asPolygon() );
+  }
+  else if ( flatType == QgsWkbTypes::MultiPolygon )
+  {
+    QgsMultiPolygon mp = mG.asMultiPolygon();
+    for ( int i = 0; !mStop && i < mp.size(); i++ )
     {
-      QgsMultiPolyline mp = mG.asMultiPolyline();
-      for ( int i = 0; !mStop && i < mp.size(); i++ )
-        validatePolyline( i, mp[i] );
+      validatePolygon( i, mp[i] );
     }
-    break;
 
-    case QgsWkbTypes::Polygon:
+    for ( int i = 0; !mStop && i < mp.size(); i++ )
     {
-      validatePolygon( 0, mG.asPolygon() );
-    }
-    break;
-
-    case QgsWkbTypes::MultiPolygon:
-    {
-      QgsMultiPolygon mp = mG.asMultiPolygon();
-      for ( int i = 0; !mStop && i < mp.size(); i++ )
+      if ( mp[i].isEmpty() )
       {
-        validatePolygon( i, mp[i] );
+        emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 has no rings" ).arg( i ) ) );
+        mErrorCount++;
+        continue;
       }
 
-      for ( int i = 0; !mStop && i < mp.size(); i++ )
+      for ( int j = i + 1;  !mStop && j < mp.size(); j++ )
       {
-        if ( mp[i].isEmpty() )
-        {
-          emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 has no rings" ).arg( i ) ) );
-          mErrorCount++;
+        if ( mp[j].isEmpty() )
           continue;
-        }
 
-        for ( int j = i + 1;  !mStop && j < mp.size(); j++ )
+        if ( ringInRing( mp[i][0], mp[j][0] ) )
         {
-          if ( mp[j].isEmpty() )
-            continue;
-
-          if ( ringInRing( mp[i][0], mp[j][0] ) )
-          {
-            emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( i ).arg( j ) ) );
-            mErrorCount++;
-          }
-          else if ( ringInRing( mp[j][0], mp[i][0] ) )
-          {
-            emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( j ).arg( i ) ) );
-            mErrorCount++;
-          }
-          else
-          {
-            checkRingIntersections( i, 0, mp[i][0], j, 0, mp[j][0] );
-          }
+          emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( i ).arg( j ) ) );
+          mErrorCount++;
+        }
+        else if ( ringInRing( mp[j][0], mp[i][0] ) )
+        {
+          emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( j ).arg( i ) ) );
+          mErrorCount++;
+        }
+        else
+        {
+          checkRingIntersections( i, 0, mp[i][0], j, 0, mp[j][0] );
         }
       }
     }
-    break;
+  }
 
-    case QgsWkbTypes::Unknown:
-      QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
-      emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mG.wkbType() ) ) );
-      mErrorCount++;
-      break;
+  else if ( flatType == QgsWkbTypes::Unknown )
+  {
+    QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
+    emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mG.wkbType() ) ) );
+    mErrorCount++;
   }
 
   QgsDebugMsg( "validation finished." );

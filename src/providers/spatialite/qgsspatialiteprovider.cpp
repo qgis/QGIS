@@ -3577,30 +3577,7 @@ QString QgsSpatiaLiteProvider::geomParam() const
 {
   QString geometry;
 
-  bool forceMulti = false;
-
-  switch ( wkbType() )
-  {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::LineString25D:
-    case QgsWkbTypes::Polygon25D:
-    case QgsWkbTypes::Unknown:
-    case QgsWkbTypes::NoGeometry:
-      forceMulti = false;
-      break;
-
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPoint25D:
-    case QgsWkbTypes::MultiLineString25D:
-    case QgsWkbTypes::MultiPolygon25D:
-      forceMulti = true;
-      break;
-  }
+  bool forceMulti = QgsWkbTypes::isMultiType( wkbType() );
 
   // ST_Multi function is available from QGIS >= 2.4
   bool hasMultiFunction = mSpatialiteVersionMajor > 2 ||

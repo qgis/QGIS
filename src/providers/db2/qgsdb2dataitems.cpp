@@ -560,7 +560,7 @@ QgsDb2LayerItem* QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, 
 {
   QgsWkbTypes::Type wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
   QString tip = tr( "DB2 *** %1 as %2 in %3" ).arg( layerProperty.geometryColName,
-                QgsDb2TableModel::displayStringForWkbType( wkbType ),
+                QgsWkbTypes::displayString( wkbType ),
                 layerProperty.srid );
   QgsDebugMsg( tip );
   QgsLayerItem::LayerType layerType;
