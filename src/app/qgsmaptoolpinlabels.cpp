@@ -52,7 +52,7 @@ void QgsMapToolPinLabels::canvasPressEvent( QgsMapMouseEvent* e )
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );
-  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+  mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
 }
 
 void QgsMapToolPinLabels::canvasMoveEvent( QgsMapMouseEvent* e )
@@ -105,7 +105,7 @@ void QgsMapToolPinLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
 
     delete selectGeom;
 
-    mRubberBand->reset( QGis::Polygon );
+    mRubberBand->reset( Qgis::Polygon );
     delete mRubberBand;
     mRubberBand = nullptr;
   }
@@ -143,7 +143,7 @@ void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition& labelpos,
     const QColor& color )
 {
   QgsRectangle rect = labelpos.labelRect;
-  QgsRubberBand *rb = new QgsRubberBand( mCanvas, QGis::Polygon );
+  QgsRubberBand *rb = new QgsRubberBand( mCanvas, Qgis::Polygon );
   rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
   rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
   rb->addPoint( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );

@@ -25,7 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis
+from qgis.core import Qgis
 from qgis.core import QgsCoordinateReferenceSystem
 from qgis.core import QgsFeature
 from qgis.core import QgsGeometry
@@ -65,7 +65,7 @@ class PointsLayerFromTable(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
-        writer = output.getVectorWriter(fields, QGis.WKBPoint, self.crs)
+        writer = output.getVectorWriter(fields, Qgis.WKBPoint, self.crs)
         xfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.XFIELD))
         yfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.YFIELD))
 

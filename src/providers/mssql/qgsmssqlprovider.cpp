@@ -58,7 +58,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mNumberFeatures( 0 )
     , mCrs()
-    , mWkbType( QGis::WKBUnknown )
+    , mWkbType( Qgis::WKBUnknown )
 {
   QgsDataSourceURI anUri = QgsDataSourceURI( uri );
 
@@ -67,7 +67,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
   else
     mSRId = -1;
 
-  mWkbType = QGis::fromNewWkbType( anUri.newWkbType() );
+  mWkbType = Qgis::fromNewWkbType( anUri.newWkbType() );
 
   mValid = true;
 
@@ -132,7 +132,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
     if ( !anUri.geometryColumn().isEmpty() )
       mGeometryColName = anUri.geometryColumn();
 
-    if ( mSRId < 0 || mWkbType == QGis::WKBUnknown || mGeometryColName.isEmpty() )
+    if ( mSRId < 0 || mWkbType == Qgis::WKBUnknown || mGeometryColName.isEmpty() )
     {
       loadMetadata();
     }
@@ -142,7 +142,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
     if ( mGeometryColName.isEmpty() )
     {
       // table contains no geometries
-      mWkbType = QGis::WKBNoGeometry;
+      mWkbType = Qgis::WKBNoGeometry;
       mSRId = 0;
     }
   }
@@ -348,7 +348,7 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( const QString& sqlTypeName )
 void QgsMssqlProvider::loadMetadata()
 {
   mSRId = 0;
-  mWkbType = QGis::WKBUnknown;
+  mWkbType = Qgis::WKBUnknown;
 
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
@@ -740,7 +740,7 @@ QgsRectangle QgsMssqlProvider::extent() const
 /**
  * Return the feature type
  */
-QGis::WkbType QgsMssqlProvider::geometryType() const
+Qgis::WkbType QgsMssqlProvider::geometryType() const
 {
   return mWkbType;
 }
@@ -1554,105 +1554,105 @@ bool QgsMssqlProvider::convertField( QgsField &field )
   return true;
 }
 
-void QgsMssqlProvider::mssqlWkbTypeAndDimension( QGis::WkbType wkbType, QString &geometryType, int &dim )
+void QgsMssqlProvider::mssqlWkbTypeAndDimension( Qgis::WkbType wkbType, QString &geometryType, int &dim )
 {
   switch ( wkbType )
   {
-    case QGis::WKBPoint25D:
+    case Qgis::WKBPoint25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBPoint:
+    case Qgis::WKBPoint:
       geometryType = "POINT";
       break;
 
-    case QGis::WKBLineString25D:
+    case Qgis::WKBLineString25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBLineString:
+    case Qgis::WKBLineString:
       geometryType = "LINESTRING";
       break;
 
-    case QGis::WKBPolygon25D:
+    case Qgis::WKBPolygon25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBPolygon:
+    case Qgis::WKBPolygon:
       geometryType = "POLYGON";
       break;
 
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBMultiPoint25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint:
       geometryType = "MULTIPOINT";
       break;
 
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBMultiLineString25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString:
       geometryType = "MULTILINESTRING";
       break;
 
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBMultiPolygon25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon:
       geometryType = "MULTIPOLYGON";
       break;
 
-    case QGis::WKBUnknown:
+    case Qgis::WKBUnknown:
       geometryType = "GEOMETRY";
       break;
 
-    case QGis::WKBNoGeometry:
+    case Qgis::WKBNoGeometry:
     default:
       dim = 0;
       break;
   }
 }
 
-QGis::WkbType QgsMssqlProvider::getWkbType( const QString& geometryType, int dim )
+Qgis::WkbType QgsMssqlProvider::getWkbType( const QString& geometryType, int dim )
 {
   if ( dim == 3 )
   {
     if ( geometryType == "POINT" )
-      return QGis::WKBPoint25D;
+      return Qgis::WKBPoint25D;
     if ( geometryType == "LINESTRING" )
-      return QGis::WKBLineString25D;
+      return Qgis::WKBLineString25D;
     if ( geometryType == "POLYGON" )
-      return QGis::WKBPolygon25D;
+      return Qgis::WKBPolygon25D;
     if ( geometryType == "MULTIPOINT" )
-      return QGis::WKBMultiPoint25D;
+      return Qgis::WKBMultiPoint25D;
     if ( geometryType == "MULTILINESTRING" )
-      return QGis::WKBMultiLineString25D;
+      return Qgis::WKBMultiLineString25D;
     if ( geometryType == "MULTIPOLYGON" )
-      return QGis::WKBMultiPolygon25D;
+      return Qgis::WKBMultiPolygon25D;
     else
-      return QGis::WKBUnknown;
+      return Qgis::WKBUnknown;
   }
   else
   {
     if ( geometryType == "POINT" )
-      return QGis::WKBPoint;
+      return Qgis::WKBPoint;
     if ( geometryType == "LINESTRING" )
-      return QGis::WKBLineString;
+      return Qgis::WKBLineString;
     if ( geometryType == "POLYGON" )
-      return QGis::WKBPolygon;
+      return Qgis::WKBPolygon;
     if ( geometryType == "MULTIPOINT" )
-      return QGis::WKBMultiPoint;
+      return Qgis::WKBMultiPoint;
     if ( geometryType == "MULTILINESTRING" )
-      return QGis::WKBMultiLineString;
+      return Qgis::WKBMultiLineString;
     if ( geometryType == "MULTIPOLYGON" )
-      return QGis::WKBMultiPolygon;
+      return Qgis::WKBMultiPolygon;
     else
-      return QGis::WKBUnknown;
+      return Qgis::WKBUnknown;
   }
 }
 
 
 QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QString& uri,
     const QgsFields &fields,
-    QGis::WkbType wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem& srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
@@ -1687,7 +1687,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
   if ( schemaName.isEmpty() )
     schemaName = "dbo";
 
-  if ( wkbType != QGis::WKBNoGeometry && geometryColumn.isEmpty() )
+  if ( wkbType != Qgis::WKBNoGeometry && geometryColumn.isEmpty() )
     geometryColumn = "geom";
 
   if ( primaryKey.isEmpty() )
@@ -1956,7 +1956,7 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
   const QgsFields &fields,
-  QGis::WkbType wkbType,
+  Qgis::WkbType wkbType,
   const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,

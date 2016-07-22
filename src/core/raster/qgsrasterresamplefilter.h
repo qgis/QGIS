@@ -37,7 +37,7 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
     int bandCount() const override;
 
-    QGis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType dataType( int bandNo ) const override;
 
     bool setInput( QgsRasterInterface* input ) override;
 

@@ -77,7 +77,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &theVectorFileName,
   const QString &theFileEncoding,
   const QgsFields& fields,
-  QGis::WkbType geometryType,
+  Qgis::WkbType geometryType,
   const QgsCoordinateReferenceSystem& srs,
   const QString& driverName,
   const QStringList &datasourceOptions,
@@ -91,12 +91,12 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     , mGeom( nullptr )
     , mError( NoError )
     , mCodec( nullptr )
-    , mWkbType( QGis::fromOldWkbType( geometryType ) )
+    , mWkbType( Qgis::fromOldWkbType( geometryType ) )
     , mSymbologyExport( symbologyExport )
     , mSymbologyScaleDenominator( 1.0 )
     , mFieldValueConverter( nullptr )
 {
-  init( theVectorFileName, theFileEncoding, fields, QGis::fromOldWkbType( geometryType ),
+  init( theVectorFileName, theFileEncoding, fields, Qgis::fromOldWkbType( geometryType ),
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr );
 }
 
@@ -1776,7 +1776,7 @@ QString QgsVectorFileWriter::errorMessage()
   return mErrorMessage;
 }
 
-bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer, QGis::UnitType outputUnit )
+bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer, Qgis::UnitType outputUnit )
 {
   // create the feature
   OGRFeatureH poFeature = createFeature( feature );
@@ -2172,7 +2172,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     outputCRS = layer->crs();
   }
 
-  QgsWKBTypes::Type destWkbType = QGis::fromOldWkbType( layer->wkbType() );
+  QgsWKBTypes::Type destWkbType = Qgis::fromOldWkbType( layer->wkbType() );
   if ( overrideGeometryType != QgsWKBTypes::Unknown )
   {
     destWkbType = QgsWKBTypes::flatType( overrideGeometryType );
@@ -2288,7 +2288,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   writer->addRendererAttributes( layer, attributes );
 
   QgsFeatureRequest req;
-  if ( layer->wkbType() == QGis::WKBNoGeometry )
+  if ( layer->wkbType() == Qgis::WKBNoGeometry )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
   }
@@ -2318,7 +2318,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   int n = 0, errors = 0;
 
   //unit type
-  QGis::UnitType mapUnits = layer->crs().mapUnits();
+  Qgis::UnitType mapUnits = layer->crs().mapUnits();
   if ( ct.isValid() )
   {
     mapUnits = ct.destinationCrs().mapUnits();
@@ -2600,7 +2600,7 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
   }
 
   //unit type
-  QGis::UnitType mapUnits = vl->crs().mapUnits();
+  Qgis::UnitType mapUnits = vl->crs().mapUnits();
   if ( ct.isValid() )
   {
     mapUnits = ct.destinationCrs().mapUnits();
@@ -2651,7 +2651,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   QHash< QgsSymbolV2*, QList<QgsFeature> > features;
 
   //unit type
-  QGis::UnitType mapUnits = layer->crs().mapUnits();
+  Qgis::UnitType mapUnits = layer->crs().mapUnits();
   if ( ct.isValid() )
   {
     mapUnits = ct.destinationCrs().mapUnits();
@@ -2775,7 +2775,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   return ( nErrors > 0 ) ? QgsVectorFileWriter::ErrFeatureWriteFailed : QgsVectorFileWriter::NoError;
 }
 
-double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits )
+double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, Qgis::UnitType mapUnits )
 {
   if ( symbolUnits == QgsSymbolV2::MM )
   {
@@ -2784,7 +2784,7 @@ double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsSymbolV2:
   else
   {
     //conversion factor map units -> mm
-    if ( mapUnits == QGis::Meters )
+    if ( mapUnits == Qgis::Meters )
     {
       return 1000 / scaleDenominator;
     }
@@ -2793,7 +2793,7 @@ double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsSymbolV2:
   return 1.0; //todo: map units
 }
 
-double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits )
+double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, Qgis::UnitType mapUnits )
 {
   if ( symbolUnits == QgsSymbolV2::MapUnit )
   {
@@ -2801,7 +2801,7 @@ double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsSymb
   }
   else
   {
-    if ( symbolUnits == QgsSymbolV2::MM && mapUnits == QGis::Meters )
+    if ( symbolUnits == QgsSymbolV2::MM && mapUnits == Qgis::Meters )
     {
       return scaleDenominator / 1000;
     }

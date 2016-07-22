@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-from qgis.core import QGis, QgsProject, QgsVectorFileWriter, QgsMapLayer, QgsRasterLayer, \
+from qgis.core import Qgis, QgsProject, QgsVectorFileWriter, QgsMapLayer, QgsRasterLayer, \
     QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
 from qgis.gui import QgsSublayersDialog
 from qgis.PyQt.QtCore import QSettings
@@ -174,9 +174,9 @@ def load(fileName, name=None, crs=None, style=None):
         if crs is not None and qgslayer.crs() is None:
             qgslayer.setCrs(crs, False)
         if style is None:
-            if qgslayer.geometryType() == QGis.Point:
+            if qgslayer.geometryType() == Qgis.Point:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
-            elif qgslayer.geometryType() == QGis.Line:
+            elif qgslayer.geometryType() == Qgis.Line:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
             else:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
@@ -376,7 +376,7 @@ def exportTable(table):
         or unicode(table.source()).endswith('shp')
     if not isDbf or not isASCII:
         writer = QgsVectorFileWriter(output, systemEncoding,
-                                     provider.fields(), QGis.WKBNoGeometry,
+                                     provider.fields(), Qgis.WKBNoGeometry,
                                      QgsCoordinateReferenceSystem('4326'))
         for feat in table.getFeatures():
             writer.addFeature(feat)

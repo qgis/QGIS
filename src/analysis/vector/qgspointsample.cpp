@@ -43,7 +43,7 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
     return 1;
   }
 
-  if ( mInputLayer->geometryType() != QGis::Polygon )
+  if ( mInputLayer->geometryType() != Qgis::Polygon )
   {
     return 2;
   }
@@ -61,7 +61,7 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
   outputFields.append( QgsField( "stratum_id", QVariant::Int ) );
   QgsVectorFileWriter writer( mOutputLayer, "UTF-8",
                               outputFields,
-                              QGis::WKBPoint,
+                              Qgis::WKBPoint,
                               mInputLayer->crs() );
 
   //check if creation of output layer successfull

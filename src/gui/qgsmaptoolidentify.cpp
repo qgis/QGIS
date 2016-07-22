@@ -359,7 +359,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   calc.setSourceCrs( layer->crs().srsid() );
 
   QgsWKBTypes::Type wkbType = QgsWKBTypes::NoGeometry;
-  QGis::GeometryType geometryType = QGis::NoGeometry;
+  Qgis::GeometryType geometryType = Qgis::NoGeometry;
 
   QgsVertexId vId;
   QgsPointV2 closestPoint;
@@ -379,7 +379,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     derivedAttributes.insert( tr( "Part number" ), str );
   }
 
-  if ( geometryType == QGis::Line )
+  if ( geometryType == Qgis::Line )
   {
     double dist = calc.measureLength( feature->constGeometry() );
     dist = calc.convertLengthMeasurement( dist, displayDistanceUnits() );
@@ -408,7 +408,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
       derivedAttributes.insert( tr( "lastY" ), str );
     }
   }
-  else if ( geometryType == QGis::Polygon )
+  else if ( geometryType == Qgis::Polygon )
   {
     double area = calc.measureArea( feature->constGeometry() );
     area = calc.convertAreaMeasurement( area, displayAreaUnits() );
@@ -426,7 +426,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     //add details of closest vertex to identify point
     closestVertexAttributes( *feature->constGeometry()->geometry(), vId, layer, derivedAttributes );
   }
-  else if ( geometryType == QGis::Point &&
+  else if ( geometryType == Qgis::Point &&
             QgsWKBTypes::flatType( wkbType ) == QgsWKBTypes::Point )
   {
     // Include the x and y coordinates of the point as a derived attribute
@@ -660,13 +660,13 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   return true;
 }
 
-void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea )
+void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &measure, Qgis::UnitType &u, bool isArea )
 {
   // Helper for converting between units
   // The parameter &u is out only...
 
   // Get the canvas units
-  QGis::UnitType myUnits = mCanvas->mapUnits();
+  Qgis::UnitType myUnits = mCanvas->mapUnits();
 
   Q_NOWARN_DEPRECATED_PUSH
   calc.convertMeasurement( measure, myUnits, displayUnits(), isArea );
@@ -674,12 +674,12 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
   Q_NOWARN_DEPRECATED_POP
 }
 
-QGis::UnitType QgsMapToolIdentify::displayUnits()
+Qgis::UnitType QgsMapToolIdentify::displayUnits()
 {
   return mCanvas->mapUnits();
 }
 
-QGis::UnitType QgsMapToolIdentify::displayDistanceUnits() const
+Qgis::UnitType QgsMapToolIdentify::displayDistanceUnits() const
 {
   return mCanvas->mapUnits();
 }

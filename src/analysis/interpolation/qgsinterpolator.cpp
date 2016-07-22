@@ -113,14 +113,14 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, d
   currentWkbPtr.readHeader();
   vertexData theVertex; //the current vertex
 
-  QGis::WkbType wkbType = geom->wkbType();
+  Qgis::WkbType wkbType = geom->wkbType();
   switch ( wkbType )
   {
-    case QGis::WKBPoint25D:
+    case Qgis::WKBPoint25D:
       hasZValue = true;
       //intentional fall-through
       FALLTHROUGH;
-    case QGis::WKBPoint:
+    case Qgis::WKBPoint:
     {
       currentWkbPtr >> theVertex.x >> theVertex.y;
       if ( zCoord && hasZValue )
@@ -134,11 +134,11 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, d
       mCachedBaseData.push_back( theVertex );
       break;
     }
-    case QGis::WKBLineString25D:
+    case Qgis::WKBLineString25D:
       hasZValue = true;
       //intentional fall-through
       FALLTHROUGH;
-    case QGis::WKBLineString:
+    case Qgis::WKBLineString:
     {
       int nPoints;
       currentWkbPtr >> nPoints;

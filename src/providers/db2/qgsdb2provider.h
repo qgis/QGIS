@@ -58,7 +58,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const override;
+    virtual Qgis::WkbType geometryType() const override;
 
     /**
      * Number of features in the layer
@@ -124,7 +124,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
-      QGis::WkbType wkbType,
+      Qgis::WkbType wkbType,
       const QgsCoordinateReferenceSystem& srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
@@ -145,7 +145,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     void loadFields();
 
   private:
-    static void db2WkbTypeAndDimension( QGis::WkbType wkbType, QString &geometryType, int &dim );
+    static void db2WkbTypeAndDimension( Qgis::WkbType wkbType, QString &geometryType, int &dim );
     static QString db2TypeName( int typeId );
 
     QgsFields mAttributeFields; //fields
@@ -163,7 +163,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     mutable QString mGeometryColName, mGeometryColType;
     QString mLastError; //string containing the last reported error message
     mutable QgsCoordinateReferenceSystem mCrs; //coordinate reference system
-    QGis::WkbType mWkbType;
+    Qgis::WkbType mWkbType;
     QSqlQuery mQuery; //current SQL query
     QString mConnInfo; // full connection information
     QString mSchemaName, mTableName; //current layer schema/name

@@ -311,7 +311,7 @@ void QgsSymbolV2::setMapUnitScale( const QgsMapUnitScale &scale )
   }
 }
 
-QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
+QgsSymbolV2* QgsSymbolV2::defaultSymbol( Qgis::GeometryType geomType )
 {
   QgsSymbolV2* s = nullptr;
 
@@ -319,13 +319,13 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
   QString defaultSymbol;
   switch ( geomType )
   {
-    case QGis::Point :
+    case Qgis::Point :
       defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Marker", "" );
       break;
-    case QGis::Line :
+    case Qgis::Line :
       defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Line", "" );
       break;
-    case QGis::Polygon :
+    case Qgis::Polygon :
       defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Fill", "" );
       break;
     default:
@@ -340,13 +340,13 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
   {
     switch ( geomType )
     {
-      case QGis::Point:
+      case Qgis::Point:
         s = new QgsMarkerSymbolV2();
         break;
-      case QGis::Line:
+      case Qgis::Line:
         s = new QgsLineSymbolV2();
         break;
-      case QGis::Polygon:
+      case Qgis::Polygon:
         s = new QgsFillSymbolV2();
         break;
       default:

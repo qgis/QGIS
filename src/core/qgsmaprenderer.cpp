@@ -51,7 +51,7 @@ QgsMapRenderer::QgsMapRenderer()
   mOverview = false;
 
   // set default map units - we use WGS 84 thus use degrees
-  setMapUnits( QGis::Degrees );
+  setMapUnits( Qgis::Degrees );
 
   mSize = QSize( 0, 0 );
 
@@ -584,7 +584,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   mDrawing = false;
 }
 
-void QgsMapRenderer::setMapUnits( QGis::UnitType u )
+void QgsMapRenderer::setMapUnits( Qgis::UnitType u )
 {
   mScaleCalculator->setMapUnits( u );
 
@@ -594,7 +594,7 @@ void QgsMapRenderer::setMapUnits( QGis::UnitType u )
   emit mapUnitsChanged();
 }
 
-QGis::UnitType QgsMapRenderer::mapUnits() const
+Qgis::UnitType QgsMapRenderer::mapUnits() const
 {
   return mScaleCalculator->mapUnits();
 }

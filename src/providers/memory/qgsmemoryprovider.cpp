@@ -49,21 +49,21 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
 
   geometry = geometry.toLower();
   if ( geometry == "point" )
-    mWkbType = QGis::WKBPoint;
+    mWkbType = Qgis::WKBPoint;
   else if ( geometry == "linestring" )
-    mWkbType = QGis::WKBLineString;
+    mWkbType = Qgis::WKBLineString;
   else if ( geometry == "polygon" )
-    mWkbType = QGis::WKBPolygon;
+    mWkbType = Qgis::WKBPolygon;
   else if ( geometry == "multipoint" )
-    mWkbType = QGis::WKBMultiPoint;
+    mWkbType = Qgis::WKBMultiPoint;
   else if ( geometry == "multilinestring" )
-    mWkbType = QGis::WKBMultiLineString;
+    mWkbType = Qgis::WKBMultiLineString;
   else if ( geometry == "multipolygon" )
-    mWkbType = QGis::WKBMultiPolygon;
+    mWkbType = Qgis::WKBMultiPolygon;
   else if ( geometry == "none" )
-    mWkbType = QGis::WKBNoGeometry;
+    mWkbType = Qgis::WKBNoGeometry;
   else
-    mWkbType = QGis::WKBUnknown;
+    mWkbType = Qgis::WKBUnknown;
 
   if ( url.hasQueryItem( "crs" ) )
   {
@@ -205,25 +205,25 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
   QString geometry;
   switch ( mWkbType )
   {
-    case QGis::WKBPoint :
+    case Qgis::WKBPoint :
       geometry = "Point";
       break;
-    case QGis::WKBLineString :
+    case Qgis::WKBLineString :
       geometry = "LineString";
       break;
-    case QGis::WKBPolygon :
+    case Qgis::WKBPolygon :
       geometry = "Polygon";
       break;
-    case QGis::WKBMultiPoint :
+    case Qgis::WKBMultiPoint :
       geometry = "MultiPoint";
       break;
-    case QGis::WKBMultiLineString :
+    case Qgis::WKBMultiLineString :
       geometry = "MultiLineString";
       break;
-    case QGis::WKBMultiPolygon :
+    case Qgis::WKBMultiPolygon :
       geometry = "MultiPolygon";
       break;
-    case QGis::WKBNoGeometry :
+    case Qgis::WKBNoGeometry :
       geometry = "None";
       break;
     default:
@@ -288,7 +288,7 @@ QgsRectangle QgsMemoryProvider::extent() const
   return mExtent;
 }
 
-QGis::WkbType QgsMemoryProvider::geometryType() const
+Qgis::WkbType QgsMemoryProvider::geometryType() const
 {
   return mWkbType;
 }
@@ -316,7 +316,7 @@ QgsFields QgsMemoryProvider::fields() const
 
 bool QgsMemoryProvider::isValid() const
 {
-  return ( mWkbType != QGis::WKBUnknown );
+  return ( mWkbType != Qgis::WKBUnknown );
 }
 
 QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const

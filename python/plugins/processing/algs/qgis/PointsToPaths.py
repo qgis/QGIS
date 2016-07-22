@@ -29,7 +29,7 @@ import os
 from datetime import datetime
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QGis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsDistanceArea
+from qgis.core import Qgis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsDistanceArea
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -81,7 +81,7 @@ class PointsToPaths(GeoAlgorithm):
         fields.append(QgsField('begin', QVariant.String, '', 254, 0))
         fields.append(QgsField('end', QVariant.String, '', 254, 0))
         writer = self.getOutputFromName(self.OUTPUT_LINES).getVectorWriter(
-            fields, QGis.WKBLineString, layer.dataProvider().crs())
+            fields, Qgis.WKBLineString, layer.dataProvider().crs())
 
         points = dict()
         features = vector.features(layer)

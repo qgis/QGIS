@@ -46,7 +46,7 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
     return false;
   }
 
-  QGis::WkbType outputType = dpA->geometryType();
+  Qgis::WkbType outputType = dpA->geometryType();
   QgsCoordinateReferenceSystem crs = layerA->crs();
   QgsFields fieldsA = layerA->fields();
   QgsFields fieldsB = layerB->fields();

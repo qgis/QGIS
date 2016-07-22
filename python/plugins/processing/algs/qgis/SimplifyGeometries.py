@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -94,14 +94,14 @@ class SimplifyGeometries(GeoAlgorithm):
     def geomVertexCount(self, geometry):
         geomType = geometry.type()
 
-        if geomType == QGis.Line:
+        if geomType == Qgis.Line:
             if geometry.isMultipart():
                 pointsList = geometry.asMultiPolyline()
                 points = sum(pointsList, [])
             else:
                 points = geometry.asPolyline()
             return len(points)
-        elif geomType == QGis.Polygon:
+        elif geomType == Qgis.Polygon:
             if geometry.isMultipart():
                 polylinesList = geometry.asMultiPolygon()
                 polylines = sum(polylinesList, [])

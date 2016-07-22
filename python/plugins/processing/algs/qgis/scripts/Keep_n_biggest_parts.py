@@ -3,7 +3,7 @@
 ##To_keep=number 1
 ##Biggest parts=output vector
 
-from qgis.core import QGis, QgsGeometry
+from qgis.core import Qgis, QgsGeometry
 from operator import itemgetter
 
 To_keep = int(To_keep)
@@ -16,7 +16,7 @@ polyLayer = processing.getObject(Polygons)
 polyPrder = polyLayer.dataProvider()
 count = polyLayer.featureCount()
 writer = processing.VectorWriter(Results, None, polyPrder.fields(),
-                                 QGis.WKBMultiPolygon, polyPrder.crs())
+                                 Qgis.WKBMultiPolygon, polyPrder.crs())
 
 
 for n, feat in enumerate(processing.features(polyLayer)):

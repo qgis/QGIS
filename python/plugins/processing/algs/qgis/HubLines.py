@@ -25,7 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -71,7 +71,7 @@ class HubLines(GeoAlgorithm):
                 self.tr('Same layer given for both hubs and spokes'))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layerSpoke.pendingFields(), QGis.WKBLineString, layerSpoke.crs())
+            layerSpoke.pendingFields(), Qgis.WKBLineString, layerSpoke.crs())
 
         spokes = vector.features(layerSpoke)
         hubs = vector.features(layerHub)

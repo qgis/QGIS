@@ -55,7 +55,7 @@ class QgsGdalProviderBase
     static int gdalGetOverviewCount( GDALRasterBandH hBand );
   protected:
 
-    QGis::DataType dataTypeFromGdal( const GDALDataType theGdalDataType ) const;
+    Qgis::DataType dataTypeFromGdal( const GDALDataType theGdalDataType ) const;
 
     int colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const;
 

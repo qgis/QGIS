@@ -83,7 +83,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const override;
+    virtual Qgis::WkbType geometryType() const override;
 
     /**
      * Number of features in the layer
@@ -192,7 +192,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
-      QGis::WkbType wkbType,
+      Qgis::WkbType wkbType,
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
@@ -237,7 +237,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     // Coordinate reference sytem
     mutable QgsCoordinateReferenceSystem mCrs;
 
-    mutable QGis::WkbType mWkbType;
+    mutable Qgis::WkbType mWkbType;
 
     // The database object
     QSqlDatabase mDatabase;
@@ -273,8 +273,8 @@ class QgsMssqlProvider : public QgsVectorDataProvider
       mLastError = error;
     }
 
-    static void mssqlWkbTypeAndDimension( QGis::WkbType wkbType, QString &geometryType, int &dim );
-    static QGis::WkbType getWkbType( const QString& geometryType, int dim );
+    static void mssqlWkbTypeAndDimension( Qgis::WkbType wkbType, QString &geometryType, int &dim );
+    static Qgis::WkbType getWkbType( const QString& geometryType, int dim );
 
     friend class QgsMssqlFeatureSource;
 

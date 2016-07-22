@@ -158,15 +158,15 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   connect( mCalculate, SIGNAL( clicked( bool ) ), this, SLOT( findingPath() ) );
   connect( mClear, SIGNAL( clicked( bool ) ), this, SLOT( clear() ) );
 
-  mrbFrontPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Polygon );
+  mrbFrontPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), Qgis::Polygon );
   mrbFrontPoint->setColor( QColor( 0, 255, 0, 65 ) );
   mrbFrontPoint->setWidth( 2 );
 
-  mrbBackPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Polygon );
+  mrbBackPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), Qgis::Polygon );
   mrbBackPoint->setColor( QColor( 255, 0, 0, 65 ) );
   mrbBackPoint->setWidth( 2 );
 
-  mrbPath = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Line );
+  mrbPath = new QgsRubberBand( mPlugin->iface()->mapCanvas(), Qgis::Line );
   mrbPath->setWidth( 2 );
 
   connect( mPlugin->iface()->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( mapCanvasExtentsChanged() ) );
@@ -205,7 +205,7 @@ void RgShortestPathWidget::setFrontPoint( const QgsPoint& pt )
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
 
-  mrbFrontPoint->reset( QGis::Polygon );
+  mrbFrontPoint->reset( Qgis::Polygon );
   mrbFrontPoint->addPoint( QgsPoint( pt.x() - mupp, pt.y() - mupp ), false );
   mrbFrontPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() - mupp ), false );
   mrbFrontPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() + mupp ), false );
@@ -228,7 +228,7 @@ void RgShortestPathWidget::setBackPoint( const QgsPoint& pt )
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
 
-  mrbBackPoint->reset( QGis::Polygon );
+  mrbBackPoint->reset( Qgis::Polygon );
   mrbBackPoint->addPoint( QgsPoint( pt.x() - mupp, pt.y() - mupp ), false );
   mrbBackPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() - mupp ), false );
   mrbBackPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() + mupp ), false );
@@ -335,7 +335,7 @@ void RgShortestPathWidget::findingPath()
   if ( !path )
     return;
 
-  mrbPath->reset( QGis::Line );
+  mrbPath->reset( Qgis::Line );
   double time = 0.0;
   double cost = 0.0;
 
@@ -380,10 +380,10 @@ void RgShortestPathWidget::findingPath()
 void RgShortestPathWidget::clear()
 {
   mFrontPointLineEdit->setText( QString() );
-  mrbFrontPoint->reset( QGis::Polygon );
+  mrbFrontPoint->reset( Qgis::Polygon );
   mBackPointLineEdit->setText( QString() );
-  mrbBackPoint->reset( QGis::Polygon );
-  mrbPath->reset( QGis::Line );
+  mrbBackPoint->reset( Qgis::Polygon );
+  mrbPath->reset( Qgis::Line );
   mPathCostLineEdit->setText( QString() );
   mPathTimeLineEdit->setText( QString() );
 }

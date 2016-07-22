@@ -63,10 +63,10 @@ int QgsRasterNuller::bandCount() const
   return 0;
 }
 
-QGis::DataType QgsRasterNuller::dataType( int bandNo ) const
+Qgis::DataType QgsRasterNuller::dataType( int bandNo ) const
 {
   if ( mInput ) return mInput->dataType( bandNo );
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
 QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & extent, int width, int height )

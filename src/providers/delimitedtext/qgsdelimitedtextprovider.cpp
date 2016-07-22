@@ -78,8 +78,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     , mShowInvalidLines( true )
     , mRescanRequired( false )
     , mCrs()
-    , mWkbType( QGis::WKBNoGeometry )
-    , mGeometryType( QGis::UnknownGeometry )
+    , mWkbType( Qgis::WKBNoGeometry )
+    , mGeometryType( Qgis::UnknownGeometry )
     , mBuildSpatialIndex( false )
     , mSpatialIndex( nullptr )
 {
@@ -103,13 +103,13 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
   if ( url.hasQueryItem( "geomType" ) )
   {
     QString gtype = url.queryItemValue( "geomType" ).toLower();
-    if ( gtype == "point" ) mGeometryType = QGis::Point;
-    else if ( gtype == "line" ) mGeometryType = QGis::Line;
-    else if ( gtype == "polygon" ) mGeometryType = QGis::Polygon;
-    else if ( gtype == "none " ) mGeometryType = QGis::NoGeometry;
+    if ( gtype == "point" ) mGeometryType = Qgis::Point;
+    else if ( gtype == "line" ) mGeometryType = Qgis::Line;
+    else if ( gtype == "polygon" ) mGeometryType = Qgis::Polygon;
+    else if ( gtype == "none " ) mGeometryType = Qgis::NoGeometry;
   }
 
-  if ( mGeometryType != QGis::NoGeometry )
+  if ( mGeometryType != Qgis::NoGeometry )
   {
     if ( url.hasQueryItem( "wktField" ) )
     {
@@ -120,7 +120,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     else if ( url.hasQueryItem( "xField" ) && url.hasQueryItem( "yField" ) )
     {
       mGeomRep = GeomAsXy;
-      mGeometryType = QGis::Point;
+      mGeometryType = Qgis::Point;
       mXFieldName = url.queryItemValue( "xField" );
       mYFieldName = url.queryItemValue( "yField" );
       QgsDebugMsg( "xField is: " + mXFieldName );
@@ -133,7 +133,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     }
     else
     {
-      mGeometryType = QGis::NoGeometry;
+      mGeometryType = Qgis::NoGeometry;
     }
   }
 
@@ -456,10 +456,10 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
         if ( geom )
         {
-          QGis::WkbType type = geom->wkbType();
-          if ( type != QGis::WKBNoGeometry )
+          Qgis::WkbType type = geom->wkbType();
+          if ( type != Qgis::WKBNoGeometry )
           {
-            if ( mGeometryType == QGis::UnknownGeometry || geom->type() == mGeometryType )
+            if ( mGeometryType == Qgis::UnknownGeometry || geom->type() == mGeometryType )
             {
               mGeometryType = geom->type();
               if ( !foundFirstGeometry )
@@ -530,8 +530,8 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
           {
             // Extent for the first point is just the first point
             mExtent.set( pt.x(), pt.y(), pt.x(), pt.y() );
-            mWkbType = QGis::WKBPoint;
-            mGeometryType = QGis::Point;
+            mWkbType = Qgis::WKBPoint;
+            mGeometryType = Qgis::Point;
             foundFirstGeometry = true;
           }
           mNumberFeatures++;
@@ -553,7 +553,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     }
     else
     {
-      mWkbType = QGis::WKBNoGeometry;
+      mWkbType = Qgis::WKBNoGeometry;
       mNumberFeatures++;
     }
 
@@ -709,7 +709,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   mUseSpatialIndex = buildSpatialIndex;
 
-  mValid = mGeometryType != QGis::UnknownGeometry;
+  mValid = mGeometryType != Qgis::UnknownGeometry;
   mLayerValid = mValid;
 
   // If it is valid, then watch for changes to the file
@@ -787,7 +787,7 @@ void QgsDelimitedTextProvider::rescanFile() const
   bool foundFirstGeometry = false;
   while ( fi.nextFeature( f ) )
   {
-    if ( mGeometryType != QGis::NoGeometry && f.constGeometry() )
+    if ( mGeometryType != Qgis::NoGeometry && f.constGeometry() )
     {
       if ( !foundFirstGeometry )
       {
@@ -1120,7 +1120,7 @@ QgsRectangle QgsDelimitedTextProvider::extent() const
 /**
  * Return the feature type
  */
-QGis::WkbType QgsDelimitedTextProvider::geometryType() const
+Qgis::WkbType QgsDelimitedTextProvider::geometryType() const
 {
   return mWkbType;
 }

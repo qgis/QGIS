@@ -132,7 +132,7 @@ void QgsMapToolMeasureAngle::deactivate()
 void QgsMapToolMeasureAngle::createRubberBand()
 {
   delete mRubberBand;
-  mRubberBand = new QgsRubberBand( mCanvas, QGis::Line );
+  mRubberBand = new QgsRubberBand( mCanvas, Qgis::Line );
 
   QSettings settings;
   int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();

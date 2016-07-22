@@ -109,7 +109,7 @@ class QgsSymbolLayerV2Utils
      */
     static QString symbolProperties( QgsSymbolV2* symbol );
 
-    static bool createSymbolLayerV2ListFromSld( QDomElement& element, QGis::GeometryType geomType, QgsSymbolLayerV2List &layers );
+    static bool createSymbolLayerV2ListFromSld( QDomElement& element, Qgis::GeometryType geomType, QgsSymbolLayerV2List &layers );
 
     static QgsSymbolLayerV2* createFillLayerFromSld( QDomElement &element );
     static QgsSymbolLayerV2* createLineLayerFromSld( QDomElement &element );

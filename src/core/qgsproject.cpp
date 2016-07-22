@@ -790,13 +790,13 @@ bool QgsProject::read()
 
   // get project version string, if any
   QgsProjectVersion fileVersion =  getVersion( *doc );
-  QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
+  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
 
   if ( thisVersion > fileVersion )
   {
     QgsLogger::warning( "Loading a file that was saved with an older "
                         "version of qgis (saved in " + fileVersion.text() +
-                        ", loaded in " + QGis::QGIS_VERSION +
+                        ", loaded in " + Qgis::QGIS_VERSION +
                         "). Problems may occur." );
 
     QgsProjectFileTransform projectFile( *doc, fileVersion );
@@ -1050,7 +1050,7 @@ bool QgsProject::write()
 
   QDomElement qgisNode = doc->createElement( "qgis" );
   qgisNode.setAttribute( "projectname", title() );
-  qgisNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
+  qgisNode.setAttribute( "version", QString( "%1" ).arg( Qgis::QGIS_VERSION ) );
 
   doc->appendChild( qgisNode );
 
@@ -2076,7 +2076,7 @@ bool QgsProject::topologicalEditing() const
   return ( QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 ) > 0 );
 }
 
-QGis::UnitType QgsProject::distanceUnits() const
+Qgis::UnitType QgsProject::distanceUnits() const
 {
   QString distanceUnitString = QgsProject::instance()->readEntry( "Measurement", "/DistanceUnits", QString() );
   if ( !distanceUnitString.isEmpty() )
@@ -2085,8 +2085,8 @@ QGis::UnitType QgsProject::distanceUnits() const
   //fallback to QGIS default measurement unit
   QSettings s;
   bool ok = false;
-  QGis::UnitType type = QgsUnitTypes::decodeDistanceUnit( s.value( "/qgis/measure/displayunits" ).toString(), &ok );
-  return ok ? type : QGis::Meters;
+  Qgis::UnitType type = QgsUnitTypes::decodeDistanceUnit( s.value( "/qgis/measure/displayunits" ).toString(), &ok );
+  return ok ? type : Qgis::Meters;
 }
 
 QgsUnitTypes::AreaUnit QgsProject::areaUnits() const

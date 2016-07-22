@@ -442,7 +442,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
                          mSource->mRequestedSrid );
   }
 
-  if ( mSource->mRequestedGeomType != QGis::WKBUnknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
+  if ( mSource->mRequestedGeomType != Qgis::WKBUnknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
   {
     whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, ( QgsWKBTypes::Type )mSource->mRequestedGeomType, castToGeometry ) );
   }
@@ -486,13 +486,13 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
                    geom );
     }
 
-    QGis::WkbType usedGeomType = mSource->mRequestedGeomType != QGis::WKBUnknown
+    Qgis::WkbType usedGeomType = mSource->mRequestedGeomType != Qgis::WKBUnknown
                                  ? mSource->mRequestedGeomType : mSource->mDetectedGeomType;
 
     if ( !mRequest.simplifyMethod().forceLocalOptimization() &&
          mRequest.simplifyMethod().methodType() != QgsSimplifyMethod::NoSimplification &&
-         QGis::flatType( QGis::singleType( usedGeomType ) ) != QGis::WKBPoint &&
-         !QgsWKBTypes::isCurvedType( QGis::fromOldWkbType( usedGeomType ) ) )
+         Qgis::flatType( Qgis::singleType( usedGeomType ) ) != Qgis::WKBPoint &&
+         !QgsWKBTypes::isCurvedType( Qgis::fromOldWkbType( usedGeomType ) ) )
     {
       // PostGIS simplification method to use
       QString simplifyPostgisMethod;

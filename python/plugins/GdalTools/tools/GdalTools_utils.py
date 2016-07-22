@@ -501,8 +501,8 @@ class FileFilter:
         if self.rastersFilter == '':
             self.rastersFilter = QgsProviderRegistry.instance().fileRasterFilters()
 
-            # workaround for QGis < 1.5 (see #2376)
-            # removed as this is a core plugin QGis >= 1.9
+            # workaround for Qgis < 1.5 (see #2376)
+            # removed as this is a core plugin Qgis >= 1.9
 
         return self.rastersFilter
 
@@ -946,10 +946,10 @@ def setMacOSXDefaultEnvironment():
     qgis_app = u"%s/.." % QgsApplication.prefixPath()
     qgis_app = QDir(qgis_app).absolutePath()
 
-    qgis_bin = u"%s/bin" % QgsApplication.prefixPath()   # path to QGis bin folder
-    qgis_python = u"%s/Resources/python" % qgis_app    # path to QGis python folder
+    qgis_bin = u"%s/bin" % QgsApplication.prefixPath()   # path to Qgis bin folder
+    qgis_python = u"%s/Resources/python" % qgis_app    # path to Qgis python folder
 
-    # path to the GDAL framework within the Qgis application folder (QGis standalone only)
+    # path to the GDAL framework within the Qgis application folder (Qgis standalone only)
     qgis_standalone_gdal_path = u"%s/Frameworks/GDAL.framework" % qgis_app
 
     # path to the GDAL framework when installed as external framework
@@ -957,10 +957,10 @@ def setMacOSXDefaultEnvironment():
     gdal_base_path = u"/Library/Frameworks/GDAL.framework/Versions/%s.%s" % (gdal_versionsplit[0], gdal_versionsplit[1])
 
     if os.path.exists(qgis_standalone_gdal_path):  # qgis standalone
-        # GDAL executables are in the QGis bin folder
+        # GDAL executables are in the Qgis bin folder
         if getGdalBinPath() == '':
             setGdalBinPath(qgis_bin)
-        # GDAL pymods are in the QGis python folder
+        # GDAL pymods are in the Qgis python folder
         if getGdalPymodPath() == '':
             setGdalPymodPath(qgis_python)
         # GDAL help is in the framework folder

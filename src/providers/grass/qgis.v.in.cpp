@@ -154,9 +154,9 @@ int main( int argc, char **argv )
   qint32 typeQint32;
   stdinStream >> typeQint32;
   checkStream( stdinStream );
-  QGis::WkbType wkbType = ( QGis::WkbType )typeQint32;
-  QGis::WkbType wkbFlatType = QGis::flatType( wkbType );
-  bool isPolygon = QGis::singleType( wkbFlatType ) == QGis::WKBPolygon;
+  Qgis::WkbType wkbType = ( Qgis::WkbType )typeQint32;
+  Qgis::WkbType wkbFlatType = Qgis::flatType( wkbType );
+  bool isPolygon = Qgis::singleType( wkbFlatType ) == Qgis::WKBPolygon;
 
   finalMap = QgsGrass::vectNewMapStruct();
   Vect_open_new( finalMap, mapOption->answer, 0 );
@@ -249,19 +249,19 @@ int main( int argc, char **argv )
     if ( geometry )
     {
       // geometry type may be probably different from provider type (e.g. multi x single)
-      QGis::WkbType geometryType = QGis::flatType( geometry->wkbType() );
+      Qgis::WkbType geometryType = Qgis::flatType( geometry->wkbType() );
       if ( !isPolygon )
       {
         Vect_reset_cats( cats );
         Vect_cat_set( cats, 1, ( int )feature.id() + fidToCatPlus );
       }
 
-      if ( geometryType == QGis::WKBPoint )
+      if ( geometryType == Qgis::WKBPoint )
       {
         QgsPoint point = geometry->asPoint();
         writePoint( map, GV_POINT, point, cats );
       }
-      else if ( geometryType == QGis::WKBMultiPoint )
+      else if ( geometryType == Qgis::WKBMultiPoint )
       {
         QgsMultiPoint multiPoint = geometry->asMultiPoint();
         Q_FOREACH ( const QgsPoint& point, multiPoint )
@@ -269,12 +269,12 @@ int main( int argc, char **argv )
           writePoint( map, GV_POINT, point, cats );
         }
       }
-      else if ( geometryType == QGis::WKBLineString )
+      else if ( geometryType == Qgis::WKBLineString )
       {
         QgsPolyline polyline = geometry->asPolyline();
         writePolyline( map, GV_LINE, polyline, cats );
       }
-      else if ( geometryType == QGis::WKBMultiLineString )
+      else if ( geometryType == Qgis::WKBMultiLineString )
       {
         QgsMultiPolyline multiPolyline = geometry->asMultiPolyline();
         Q_FOREACH ( const QgsPolyline& polyline, multiPolyline )
@@ -282,7 +282,7 @@ int main( int argc, char **argv )
           writePolyline( map, GV_LINE, polyline, cats );
         }
       }
-      else if ( geometryType == QGis::WKBPolygon )
+      else if ( geometryType == Qgis::WKBPolygon )
       {
         QgsPolygon polygon = geometry->asPolygon();
         Q_FOREACH ( const QgsPolyline& polyline, polygon )
@@ -290,7 +290,7 @@ int main( int argc, char **argv )
           writePolyline( map, GV_BOUNDARY, polyline, cats );
         }
       }
-      else if ( geometryType == QGis::WKBMultiPolygon )
+      else if ( geometryType == Qgis::WKBMultiPolygon )
       {
         QgsMultiPolygon multiPolygon = geometry->asMultiPolygon();
         Q_FOREACH ( const QgsPolygon& polygon, multiPolygon )

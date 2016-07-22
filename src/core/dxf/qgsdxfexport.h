@@ -86,14 +86,14 @@ class CORE_EXPORT QgsDxfExport
      * Set map units
      * @param u unit
      */
-    void setMapUnits( QGis::UnitType u ) { mMapUnits = u; }
+    void setMapUnits( Qgis::UnitType u ) { mMapUnits = u; }
 
     /**
      * Retrieve map units
      * @returns unit
      * @see setMapUnits
      */
-    QGis::UnitType mapUnits() const { return mMapUnits; }
+    Qgis::UnitType mapUnits() const { return mMapUnits; }
 
     /**
      * Set symbology export mode
@@ -352,7 +352,7 @@ class CORE_EXPORT QgsDxfExport
     //! @note added in 2.15
     void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor& color );
 
-    static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+    static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, Qgis::UnitType mapUnits );
 
     //! Return cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );
@@ -387,7 +387,7 @@ class CORE_EXPORT QgsDxfExport
     /** Scale for symbology export (used if symbols units are mm)*/
     double mSymbologyScaleDenominator;
     SymbologyExport mSymbologyExport;
-    QGis::UnitType mMapUnits;
+    Qgis::UnitType mMapUnits;
     bool mLayerTitleAsName;
 
     QTextStream mTextStream;

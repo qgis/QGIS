@@ -35,9 +35,9 @@ class QgsMapToolEdit: QgsMapTool
      *   @param geometryType
      *   @param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
      */
-    QgsRubberBand* createRubberBand( QGis::GeometryType geometryType = QGis::Line, bool alternativeBand = false );
+    QgsRubberBand* createRubberBand( Qgis::GeometryType geometryType = Qgis::Line, bool alternativeBand = false );
 
-    QgsGeometryRubberBand* createGeometryRubberBand( QGis::GeometryType geometryType = QGis::Line, bool alternativeBand = false ) const;
+    QgsGeometryRubberBand* createGeometryRubberBand( Qgis::GeometryType geometryType = Qgis::Line, bool alternativeBand = false ) const;
 
     /** Returns the current vector layer of the map canvas or 0*/
     QgsVectorLayer* currentVectorLayer();

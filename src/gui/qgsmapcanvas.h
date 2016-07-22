@@ -325,10 +325,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     Q_DECL_DEPRECATED bool isDirty() const;
 
     //! Set map units (needed by project properties dialog)
-    void setMapUnits( QGis::UnitType mapUnits );
+    void setMapUnits( Qgis::UnitType mapUnits );
 
     //! Get the current canvas map units
-    QGis::UnitType mapUnits() const;
+    Qgis::UnitType mapUnits() const;
 
     //! Getter for stored overrides of styles for layers.
     //! @note added in 2.12

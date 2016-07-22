@@ -144,15 +144,15 @@ QgsRectangle QgsGPXProvider::extent() const
 /**
  * Return the feature type
  */
-QGis::WkbType QgsGPXProvider::geometryType() const
+Qgis::WkbType QgsGPXProvider::geometryType() const
 {
   if ( mFeatureType == WaypointType )
-    return QGis::WKBPoint;
+    return Qgis::WKBPoint;
 
   if ( mFeatureType == RouteType || mFeatureType == TrackType )
-    return QGis::WKBLineString;
+    return Qgis::WKBLineString;
 
-  return QGis::WKBUnknown;
+  return Qgis::WKBUnknown;
 }
 
 
@@ -214,14 +214,14 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList & flist )
 bool QgsGPXProvider::addFeature( QgsFeature& f )
 {
   const unsigned char* geo = f.constGeometry()->asWkb();
-  QGis::WkbType wkbType = f.constGeometry()->wkbType();
+  Qgis::WkbType wkbType = f.constGeometry()->wkbType();
   bool success = false;
   QgsGPSObject* obj = nullptr;
   QgsAttributes attrs = f.attributes();
   QgsAttributeMap::const_iterator it;
 
   // is it a waypoint?
-  if ( mFeatureType == WaypointType && geo && wkbType == QGis::WKBPoint )
+  if ( mFeatureType == WaypointType && geo && wkbType == Qgis::WKBPoint )
   {
 
     // add geometry
@@ -251,7 +251,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   }
 
   // is it a route?
-  if ( mFeatureType == RouteType && geo && wkbType == QGis::WKBLineString )
+  if ( mFeatureType == RouteType && geo && wkbType == Qgis::WKBLineString )
   {
 
     QgsRoute rte;
@@ -298,7 +298,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   }
 
   // is it a track?
-  if ( mFeatureType == TrackType && geo && wkbType == QGis::WKBLineString )
+  if ( mFeatureType == TrackType && geo && wkbType == Qgis::WKBLineString )
   {
 
     QgsTrack trk;

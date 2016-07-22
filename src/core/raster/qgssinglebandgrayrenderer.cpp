@@ -65,7 +65,7 @@ QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, Q
   QDomElement contrastEnhancementElem = elem.firstChildElement( "contrastEnhancement" );
   if ( !contrastEnhancementElem.isNull() )
   {
-    QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QGis::DataType )(
+    QgsContrastEnhancement* ce = new QgsContrastEnhancement(( Qgis::DataType )(
           input->dataType( grayBand ) ) );
     ce->readXml( contrastEnhancementElem );
     r->setContrastEnhancement( ce );
@@ -116,7 +116,7 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
     delete alphaBlock;

@@ -17,7 +17,7 @@ class QgsContrastEnhancement
       UserDefinedEnhancement
     };
 
-    QgsContrastEnhancement( QGis::DataType theDatatype = QGis::Byte );
+    QgsContrastEnhancement( Qgis::DataType theDatatype = Qgis::Byte );
     ~QgsContrastEnhancement();
 
     /*
@@ -26,10 +26,10 @@ class QgsContrastEnhancement
      *
      */
     /** \brief Helper function that returns the maximum possible value for a GDAL data type */
-    static double maximumValuePossible( QGis::DataType );
+    static double maximumValuePossible( Qgis::DataType );
 
     /** \brief Helper function that returns the minimum possible value for a GDAL data type */
-    static double minimumValuePossible( QGis::DataType );
+    static double minimumValuePossible( Qgis::DataType );
 
     /*
      *

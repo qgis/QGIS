@@ -79,8 +79,8 @@ void QgsGeometrySnapperDialog::updateLayers()
   {
     if ( qobject_cast<QgsVectorLayer*>( layer ) )
     {
-      QGis::WkbType type = QGis::flatType( QGis::singleType( static_cast<QgsVectorLayer*>( layer )->wkbType() ) );
-      if ( type == QGis::WKBPolygon || type == QGis::WKBLineString )
+      Qgis::WkbType type = Qgis::flatType( Qgis::singleType( static_cast<QgsVectorLayer*>( layer )->wkbType() ) );
+      if ( type == Qgis::WKBPolygon || type == Qgis::WKBLineString )
       {
         comboBoxInputLayer->addItem( layer->name(), layer->id() );
         comboBoxReferenceLayer->addItem( layer->name(), layer->id() );

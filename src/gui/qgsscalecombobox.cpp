@@ -209,7 +209,7 @@ double QgsScaleComboBox::toDouble( const QString& scaleString, bool * returnOk )
   bool ok = false;
   QString scaleTxt( scaleString );
 
-  double scale = QGis::permissiveToDouble( scaleTxt, ok );
+  double scale = qgsPermissiveToDouble( scaleTxt, ok );
   if ( ok )
   {
     // Create a text version and set that text and rescan
@@ -224,8 +224,8 @@ double QgsScaleComboBox::toDouble( const QString& scaleString, bool * returnOk )
     {
       bool okX = false;
       bool okY = false;
-      int x = QGis::permissiveToInt( txtList[ 0 ], okX );
-      int y = QGis::permissiveToInt( txtList[ 1 ], okY );
+      int x = qgsPermissiveToInt( txtList[ 0 ], okX );
+      int y = qgsPermissiveToInt( txtList[ 1 ], okY );
       if ( okX && okY )
       {
         // Scale is fraction of x and y

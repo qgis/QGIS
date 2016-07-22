@@ -89,7 +89,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   outputPointFields.append( QgsField( "start_lat", QVariant::Double ) );
   outputPointFields.append( QgsField( "start_long", QVariant::Double ) );
 
-  QgsVectorFileWriter outputPointWriter( mOutputPointLayer, "utf-8", outputPointFields, QGis::WKBPoint,
+  QgsVectorFileWriter outputPointWriter( mOutputPointLayer, "utf-8", outputPointFields, Qgis::WKBPoint,
                                          mStrataLayer->crs() );
   if ( outputPointWriter.hasError() != QgsVectorFileWriter::NoError )
   {
@@ -97,7 +97,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   }
 
   outputPointFields.append( QgsField( "bearing", QVariant::Double ) ); //add bearing attribute for lines
-  QgsVectorFileWriter outputLineWriter( mOutputLineLayer, "utf-8", outputPointFields, QGis::WKBLineString,
+  QgsVectorFileWriter outputLineWriter( mOutputLineLayer, "utf-8", outputPointFields, Qgis::WKBLineString,
                                         mStrataLayer->crs() );
   if ( outputLineWriter.hasError() != QgsVectorFileWriter::NoError )
   {
@@ -107,7 +107,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   QgsFields usedBaselineFields;
   usedBaselineFields.append( QgsField( "stratum_id", stratumIdType ) );
   usedBaselineFields.append( QgsField( "ok", QVariant::String ) );
-  QgsVectorFileWriter usedBaselineWriter( mUsedBaselineLayer, "utf-8", usedBaselineFields, QGis::WKBLineString,
+  QgsVectorFileWriter usedBaselineWriter( mUsedBaselineLayer, "utf-8", usedBaselineFields, Qgis::WKBLineString,
                                           mStrataLayer->crs() );
   if ( usedBaselineWriter.hasError() != QgsVectorFileWriter::NoError )
   {
@@ -119,7 +119,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   QString bufferClipLineOutput = outputPointInfo.absolutePath() + "/out_buffer_clip_line.shp";
   QgsFields bufferClipLineFields;
   bufferClipLineFields.append( QgsField( "id", stratumIdType ) );
-  QgsVectorFileWriter bufferClipLineWriter( bufferClipLineOutput, "utf-8", bufferClipLineFields, QGis::WKBLineString, mStrataLayer->crs() );
+  QgsVectorFileWriter bufferClipLineWriter( bufferClipLineOutput, "utf-8", bufferClipLineFields, Qgis::WKBLineString, mStrataLayer->crs() );
 
   //configure distanceArea depending on minDistance units and output CRS
   QgsDistanceArea distanceArea;
@@ -181,13 +181,13 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
     double minDistanceLayerUnits = minDistance;
     //if minDistance is in meters and the data in degrees, we need to apply a rough conversion for the buffer distance
     double bufferDist = bufferDistance( minDistance );
-    if ( mMinDistanceUnits == Meters && mStrataLayer->crs().mapUnits() == QGis::DecimalDegrees )
+    if ( mMinDistanceUnits == Meters && mStrataLayer->crs().mapUnits() == Qgis::DecimalDegrees )
     {
       minDistanceLayerUnits = minDistance / 111319.9;
     }
 
     QgsGeometry* clippedBaseline = strataGeom->intersection( baselineGeom );
-    if ( !clippedBaseline || clippedBaseline->wkbType() == QGis::WKBUnknown )
+    if ( !clippedBaseline || clippedBaseline->wkbType() == Qgis::WKBUnknown )
     {
       delete clippedBaseline;
       continue;
@@ -271,8 +271,8 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       }
 
       //if lineClipStratum is a multiline, take the part line closest to sampleQgsPoint
-      if ( lineClipStratum->wkbType() == QGis::WKBMultiLineString
-           || lineClipStratum->wkbType() == QGis::WKBMultiLineString25D )
+      if ( lineClipStratum->wkbType() == Qgis::WKBMultiLineString
+           || lineClipStratum->wkbType() == Qgis::WKBMultiLineString25D )
       {
         QgsGeometry* singleLine = closestMultilineElement( sampleQgsPoint, lineClipStratum );
         if ( singleLine )
@@ -415,14 +415,14 @@ bool QgsTransectSample::otherTransectWithinDistance( QgsGeometry* geom, double m
 
 bool QgsTransectSample::closestSegmentPoints( QgsGeometry& g1, QgsGeometry& g2, double& dist, QgsPoint& pt1, QgsPoint& pt2 )
 {
-  QGis::WkbType t1 = g1.wkbType();
-  if ( t1 != QGis::WKBLineString && t1 != QGis::WKBLineString25D )
+  Qgis::WkbType t1 = g1.wkbType();
+  if ( t1 != Qgis::WKBLineString && t1 != Qgis::WKBLineString25D )
   {
     return false;
   }
 
-  QGis::WkbType t2 = g2.wkbType();
-  if ( t2 != QGis::WKBLineString && t2 != QGis::WKBLineString25D )
+  Qgis::WkbType t2 = g2.wkbType();
+  if ( t2 != Qgis::WKBLineString && t2 != Qgis::WKBLineString25D )
   {
     return false;
   }
@@ -545,8 +545,8 @@ bool QgsTransectSample::closestSegmentPoints( QgsGeometry& g1, QgsGeometry& g2, 
 
 QgsGeometry* QgsTransectSample::closestMultilineElement( const QgsPoint& pt, QgsGeometry* multiLine )
 {
-  if ( !multiLine || ( multiLine->wkbType() != QGis::WKBMultiLineString
-                       && multiLine->wkbType() != QGis::WKBMultiLineString25D ) )
+  if ( !multiLine || ( multiLine->wkbType() != Qgis::WKBMultiLineString
+                       && multiLine->wkbType() != Qgis::WKBMultiLineString25D ) )
   {
     return nullptr;
   }
@@ -580,7 +580,7 @@ QgsGeometry* QgsTransectSample::closestMultilineElement( const QgsPoint& pt, Qgs
 
 QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, QgsGeometry* clippedBaseline, double tolerance )
 {
-  if ( !stratumGeom || !clippedBaseline || clippedBaseline->wkbType() == QGis::WKBUnknown )
+  if ( !stratumGeom || !clippedBaseline || clippedBaseline->wkbType() == Qgis::WKBUnknown )
   {
     return nullptr;
   }
@@ -658,11 +658,11 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, 
     bufferLineClipped = bufferLine->intersection( stratumGeom );
     delete bufferLine;
 
-    if ( bufferLineClipped && bufferLineClipped->type() == QGis::Line )
+    if ( bufferLineClipped && bufferLineClipped->type() == Qgis::Line )
     {
       //if stratumGeom is a multipolygon, bufferLineClipped must intersect each part
       bool bufferLineClippedIntersectsStratum = true;
-      if ( stratumGeom->wkbType() == QGis::WKBMultiPolygon || stratumGeom->wkbType() == QGis::WKBMultiPolygon25D )
+      if ( stratumGeom->wkbType() == Qgis::WKBMultiPolygon || stratumGeom->wkbType() == Qgis::WKBMultiPolygon25D )
       {
         QVector<QgsPolygon> multiPoly = stratumGeom->asMultiPolygon();
         QVector<QgsPolygon>::const_iterator multiIt = multiPoly.constBegin();
@@ -710,7 +710,7 @@ double QgsTransectSample::bufferDistance( double minDistanceFromAttribute ) cons
     bufferDist = mBaselineBufferDistance;
   }
 
-  if ( mMinDistanceUnits == Meters && mStrataLayer->crs().mapUnits() == QGis::DecimalDegrees )
+  if ( mMinDistanceUnits == Meters && mStrataLayer->crs().mapUnits() == Qgis::DecimalDegrees )
   {
     bufferDist /= 111319.9;
   }

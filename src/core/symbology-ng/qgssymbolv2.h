@@ -101,7 +101,7 @@ class CORE_EXPORT QgsSymbolV2
     virtual ~QgsSymbolV2();
 
     //! return new default symbol for specified geometry type
-    static QgsSymbolV2* defaultSymbol( QGis::GeometryType geomType );
+    static QgsSymbolV2* defaultSymbol( Qgis::GeometryType geomType );
 
     SymbolType type() const { return mType; }
 

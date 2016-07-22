@@ -38,7 +38,7 @@ from qgis.core import (QgsGeometry,
                        QgsLineSymbolV2,
                        QgsRenderContext,
                        QgsFeature,
-                       QGis,
+                       Qgis,
                        QgsMapSettings,
                        QgsRenderChecker,
                        QgsSimpleMarkerSymbolLayerV2
@@ -152,17 +152,17 @@ class TestQgsSymbolV2(unittest.TestCase):
         painter.begin(image)
         image.fill(QColor(0, 0, 0))
 
-        if geom.type() == QGis.Polygon:
+        if geom.type() == Qgis.Polygon:
             self.fill_symbol.startRender(context)
             self.fill_symbol.renderFeature(f, context)
             self.fill_symbol.stopRender(context)
 
-        elif geom.type() == QGis.Line:
+        elif geom.type() == Qgis.Line:
             self.line_symbol.startRender(context)
             self.line_symbol.renderFeature(f, context)
             self.line_symbol.stopRender(context)
 
-        elif geom.type() == QGis.Point:
+        elif geom.type() == Qgis.Point:
             self.marker_symbol.startRender(context)
             self.marker_symbol.renderFeature(f, context)
             self.marker_symbol.stopRender(context)

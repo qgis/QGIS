@@ -19,9 +19,9 @@
 
 
 /** \ingroup core
- * The QGis class provides global constants for use throughout the application.
+ * The Qgis class provides global constants for use throughout the application.
  */
-class QGis
+class Qgis
 {
 %TypeHeaderCode
 #include <qgis.h>
@@ -93,10 +93,10 @@ class QGis
     static int wkbDimensions( WkbType type );
 
     //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
-    static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type );
+    static QgsWKBTypes::Type fromOldWkbType( Qgis::WkbType type );
 
     //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
-    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
+    static Qgis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType
     {
@@ -162,43 +162,23 @@ class QGis
 
     //! Provides the canonical name of the type value
     //! @deprecated use QgsUnitTypes::encodeUnit() instead
-    static QString toLiteral( QGis::UnitType unit ) /Deprecated/;
+    static QString toLiteral( Qgis::UnitType unit ) /Deprecated/;
 
     //! Converts from the canonical name to the type value
     //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
-    static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit ) /Deprecated/;
+    static UnitType fromLiteral( const QString& literal, Qgis::UnitType defaultType = UnknownUnit ) /Deprecated/;
 
     //! Provides translated version of the type value
     //! @deprecated use QgsUnitTypes::toString() instead
-    static QString tr( QGis::UnitType unit ) /Deprecated/;
+    static QString tr( Qgis::UnitType unit ) /Deprecated/;
 
     //! Provides type value from translated version
     //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
-    static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit ) /Deprecated/;
+    static UnitType fromTr( const QString& literal, Qgis::UnitType defaultType = UnknownUnit ) /Deprecated/;
 
     //! Returns the conversion factor between the specified units
     //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit ) /Deprecated/;
-
-    /** Converts a string to a double in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand separators
-     * @param string string to convert
-     * @param ok will be set to true if conversion was successful
-     * @returns string converted to double if possible
-     * @note added in version 2.9
-     * @see permissiveToInt
-     */
-    static double permissiveToDouble( QString string, bool& ok );
-
-    /** Converts a string to an integer in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand separators
-     * @param string string to convert
-     * @param ok will be set to true if conversion was successful
-     * @returns string converted to int if possible
-     * @note added in version 2.9
-     * @see permissiveToDouble
-     */
-    static int permissiveToInt( QString string, bool& ok );
+    static double fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit ) /Deprecated/;
 
     //! User defined event types
     enum UserEvent
@@ -211,10 +191,6 @@ class QGis
       //! The row count has been calculated by a provider of a layer
       ProviderCountCalcEvent
     };
-
-    /** Old search radius in % of canvas width
-     *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
-    static const double DEFAULT_IDENTIFY_RADIUS;
 
     /** Identify search radius in mm
      *  @note added in 2.3 */
@@ -242,6 +218,27 @@ class QGis
      * @note added in 2.15*/
     static double SCALE_PRECISION;
 };
+
+
+/** Converts a string to a double in a permissive way, eg allowing for incorrect
+ * numbers of digits between thousand separators
+ * @param string string to convert
+ * @param ok will be set to true if conversion was successful
+ * @returns string converted to double if possible
+ * @note added in version 2.9
+ * @see permissiveToInt
+ */
+double qgsPermissiveToDouble( QString string, bool& ok );
+
+/** Converts a string to an integer in a permissive way, eg allowing for incorrect
+ * numbers of digits between thousand separators
+ * @param string string to convert
+ * @param ok will be set to true if conversion was successful
+ * @returns string converted to int if possible
+ * @note added in version 2.9
+ * @see permissiveToDouble
+ */
+int qgsPermissiveToInt( QString string, bool& ok );
 
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
@@ -288,8 +285,6 @@ const QString GEO_NONE;
 // Constants for point symbols
 //
 
-/** Magic number that determines the minimum allowable point size for point symbols */
-const double MINIMUM_POINT_SIZE;
 /** Magic number that determines the default point size for point symbols */
 const double DEFAULT_POINT_SIZE;
 const double DEFAULT_LINE_WIDTH;

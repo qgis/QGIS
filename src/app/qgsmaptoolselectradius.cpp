@@ -63,7 +63,7 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent* e )
   {
     if ( !mRubberBand )
     {
-      mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+      mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
       mRubberBand->setFillColor( mFillColor );
       mRubberBand->setBorderColor( mBorderColour );
     }
@@ -83,7 +83,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
   {
     if ( !mRubberBand )
     {
-      mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+      mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
       mRubberBand->setFillColor( mFillColor );
       mRubberBand->setBorderColor( mBorderColour );
     }
@@ -94,7 +94,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
   QgsGeometry* radiusGeometry = mRubberBand->asGeometry();
   QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, radiusGeometry, e );
   delete radiusGeometry;
-  mRubberBand->reset( QGis::Polygon );
+  mRubberBand->reset( Qgis::Polygon );
   delete mRubberBand;
   mRubberBand = nullptr;
   mDragging = false;
@@ -104,7 +104,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
 void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPoint & radiusEdge )
 {
   double r = sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
-  mRubberBand->reset( QGis::Polygon );
+  mRubberBand->reset( Qgis::Polygon );
   for ( int i = 0; i <= RADIUS_SEGMENTS; ++i )
   {
     double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );

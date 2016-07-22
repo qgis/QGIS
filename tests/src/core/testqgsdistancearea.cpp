@@ -158,13 +158,13 @@ void TestQgsDistanceArea::unit_conversions()
   myDa.setEllipsoidalMode( false );
 
   double inputValue;
-  QGis::UnitType inputUnit;
-  QGis::UnitType outputUnit;
+  Qgis::UnitType inputUnit;
+  Qgis::UnitType outputUnit;
 
   inputValue = 10000.0;
-  inputUnit = QGis::Meters;
-  outputUnit = QGis::Feet;
-  //outputUnit = QGis::Meters;
+  inputUnit = Qgis::Meters;
+  outputUnit = Qgis::Feet;
+  //outputUnit = Qgis::Meters;
 
   // First, convert from sq.meter to sq.feet
   Q_NOWARN_DEPRECATED_PUSH
@@ -238,20 +238,20 @@ void TestQgsDistanceArea::measureUnits()
   calc.setEllipsoidalMode( false );
   calc.setEllipsoid( "NONE" );
   calc.setSourceCrs( 254L );
-  QGis::UnitType units;
+  Qgis::UnitType units;
   QgsPoint p1( 1341683.9854275715, 408256.9562717728 );
   QgsPoint p2( 1349321.7807031618, 408256.9562717728 );
 
   double result = calc.measureLine( p1, p2, units );
   //no OTF, result will be in CRS unit (feet)
-  QCOMPARE( units, QGis::Feet );
+  QCOMPARE( units, Qgis::Feet );
   QGSCOMPARENEAR( result, 7637.7952755903825, 0.001 );
 
   calc.setEllipsoidalMode( true );
   calc.setEllipsoid( "WGS84" );
   result = calc.measureLine( p1, p2, units );
   //OTF, result will be in meters
-  QCOMPARE( units, QGis::Meters );
+  QCOMPARE( units, Qgis::Meters );
   QGSCOMPARENEAR( result, 2328.0988253106957, 0.001 );
 }
 

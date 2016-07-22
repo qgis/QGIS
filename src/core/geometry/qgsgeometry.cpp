@@ -305,26 +305,26 @@ const GEOSGeometry* QgsGeometry::asGeos( double precision ) const
 }
 
 
-QGis::WkbType QgsGeometry::wkbType() const
+Qgis::WkbType QgsGeometry::wkbType() const
 {
   if ( !d->geometry )
   {
-    return QGis::WKBUnknown;
+    return Qgis::WKBUnknown;
   }
   else
   {
-    return QGis::fromNewWkbType( d->geometry->wkbType() );
+    return Qgis::fromNewWkbType( d->geometry->wkbType() );
   }
 }
 
 
-QGis::GeometryType QgsGeometry::type() const
+Qgis::GeometryType QgsGeometry::type() const
 {
   if ( !d->geometry )
   {
-    return QGis::UnknownGeometry;
+    return Qgis::UnknownGeometry;
   }
-  return static_cast< QGis::GeometryType >( QgsWKBTypes::geometryType( d->geometry->wkbType() ) );
+  return static_cast< Qgis::GeometryType >( QgsWKBTypes::geometryType( d->geometry->wkbType() ) );
 }
 
 bool QgsGeometry::isMultipart() const
@@ -612,14 +612,14 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
   return QgsGeometryEditUtils::addRing( d->geometry, ring );
 }
 
-int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
+int QgsGeometry::addPart( const QList<QgsPoint> &points, Qgis::GeometryType geomType )
 {
   QgsPointSequenceV2 l;
   convertPointList( points, l );
   return addPart( l, geomType );
 }
 
-int QgsGeometry::addPart( const QgsPointSequenceV2 &points, QGis::GeometryType geomType )
+int QgsGeometry::addPart( const QgsPointSequenceV2 &points, Qgis::GeometryType geomType )
 {
   QgsAbstractGeometryV2* partGeom = nullptr;
   if ( points.size() == 1 )
@@ -635,20 +635,20 @@ int QgsGeometry::addPart( const QgsPointSequenceV2 &points, QGis::GeometryType g
   return addPart( partGeom, geomType );
 }
 
-int QgsGeometry::addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomType )
+int QgsGeometry::addPart( QgsAbstractGeometryV2* part, Qgis::GeometryType geomType )
 {
   if ( !d->geometry )
   {
     detach( false );
     switch ( geomType )
     {
-      case QGis::Point:
+      case Qgis::Point:
         d->geometry = new QgsMultiPointV2();
         break;
-      case QGis::Line:
+      case Qgis::Line:
         d->geometry = new QgsMultiLineStringV2();
         break;
-      case QGis::Polygon:
+      case Qgis::Polygon:
         d->geometry = new QgsMultiPolygonV2();
         break;
       default:
@@ -939,17 +939,17 @@ QString QgsGeometry::exportToGeoJSON( int precision ) const
   return d->geometry->asJSON( precision );
 }
 
-QgsGeometry* QgsGeometry::convertToType( QGis::GeometryType destType, bool destMultipart ) const
+QgsGeometry* QgsGeometry::convertToType( Qgis::GeometryType destType, bool destMultipart ) const
 {
   switch ( destType )
   {
-    case QGis::Point:
+    case Qgis::Point:
       return convertToPoint( destMultipart );
 
-    case QGis::Line:
+    case Qgis::Line:
       return convertToLine( destMultipart );
 
-    case QGis::Polygon:
+    case Qgis::Polygon:
       return convertToPolygon( destMultipart );
 
     default:
@@ -1499,12 +1499,12 @@ QPolygonF QgsGeometry::asQPolygonF() const
 {
   QPolygonF result;
   QgsPolyline polyline;
-  QGis::WkbType type = wkbType();
-  if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D )
+  Qgis::WkbType type = wkbType();
+  if ( type == Qgis::WKBLineString || type == Qgis::WKBLineString25D )
   {
     polyline = asPolyline();
   }
-  else if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D )
+  else if ( type == Qgis::WKBPolygon || type == Qgis::WKBPolygon25D )
   {
     QgsPolygon polygon = asPolygon();
     if ( polygon.size() < 1 )
@@ -1903,22 +1903,22 @@ QgsGeometry* QgsGeometry::smooth( const unsigned int iterations, const double of
 {
   switch ( wkbType() )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBPoint:
+    case Qgis::WKBPoint25D:
+    case Qgis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint25D:
       //can't smooth a point based geometry
       return new QgsGeometry( *this );
 
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
+    case Qgis::WKBLineString:
+    case Qgis::WKBLineString25D:
     {
       QgsPolyline line = asPolyline();
       return QgsGeometry::fromPolyline( smoothLine( line, iterations, offset ) );
     }
 
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString25D:
     {
       QgsMultiPolyline multiline = asMultiPolyline();
       QgsMultiPolyline resultMultiline;
@@ -1930,15 +1930,15 @@ QgsGeometry* QgsGeometry::smooth( const unsigned int iterations, const double of
       return QgsGeometry::fromMultiPolyline( resultMultiline );
     }
 
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
+    case Qgis::WKBPolygon:
+    case Qgis::WKBPolygon25D:
     {
       QgsPolygon poly = asPolygon();
       return QgsGeometry::fromPolygon( smoothPolygon( poly, iterations, offset ) );
     }
 
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon25D:
     {
       QgsMultiPolygon multipoly = asMultiPolygon();
       QgsMultiPolygon resultMultipoly;
@@ -1950,7 +1950,7 @@ QgsGeometry* QgsGeometry::smooth( const unsigned int iterations, const double of
       return QgsGeometry::fromMultiPolygon( resultMultipoly );
     }
 
-    case QGis::WKBUnknown:
+    case Qgis::WKBUnknown:
     default:
       return new QgsGeometry( *this );
   }
@@ -2014,7 +2014,7 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart ) const
 {
   switch ( type() )
   {
-    case QGis::Point:
+    case Qgis::Point:
     {
       bool srcIsMultipart = isMultipart();
 
@@ -2041,7 +2041,7 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart ) const
       return nullptr;
     }
 
-    case QGis::Line:
+    case Qgis::Line:
     {
       // only possible if destination is multipart
       if ( !destMultipart )
@@ -2067,7 +2067,7 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart ) const
       return nullptr;
     }
 
-    case QGis::Polygon:
+    case Qgis::Polygon:
     {
       // can only transform if destination is multipoint
       if ( !destMultipart )
@@ -2105,7 +2105,7 @@ QgsGeometry* QgsGeometry::convertToLine( bool destMultipart ) const
 {
   switch ( type() )
   {
-    case QGis::Point:
+    case Qgis::Point:
     {
       if ( !isMultipart() )
         return nullptr;
@@ -2120,7 +2120,7 @@ QgsGeometry* QgsGeometry::convertToLine( bool destMultipart ) const
         return fromPolyline( multiPoint );
     }
 
-    case QGis::Line:
+    case Qgis::Line:
     {
       bool srcIsMultipart = isMultipart();
 
@@ -2147,7 +2147,7 @@ QgsGeometry* QgsGeometry::convertToLine( bool destMultipart ) const
       return nullptr;
     }
 
-    case QGis::Polygon:
+    case Qgis::Polygon:
     {
       // input geometry is multipolygon
       if ( isMultipart() )
@@ -2212,7 +2212,7 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
 {
   switch ( type() )
   {
-    case QGis::Point:
+    case Qgis::Point:
     {
       if ( !isMultipart() )
         return nullptr;
@@ -2231,7 +2231,7 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
         return fromPolygon( polygon );
     }
 
-    case QGis::Line:
+    case Qgis::Line:
     {
       // input geometry is multiline
       if ( isMultipart() )
@@ -2293,7 +2293,7 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
       return nullptr;
     }
 
-    case QGis::Polygon:
+    case Qgis::Polygon:
     {
       bool srcIsMultipart = isMultipart();
 

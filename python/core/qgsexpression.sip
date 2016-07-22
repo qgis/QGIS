@@ -167,14 +167,14 @@ class QgsExpression
      * @note added in QGIS 2.14
      * @see setDistanceUnits()
      */
-    QGis::UnitType distanceUnits() const;
+    Qgis::UnitType distanceUnits() const;
 
     /** Sets the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see distanceUnits()
      */
-    void setDistanceUnits( QGis::UnitType unit );
+    void setDistanceUnits( Qgis::UnitType unit );
 
     /** Returns the desired areal units for calculations involving geomCalculator(), eg "$area".
      * @note areas are only converted when a geomCalculator() has been set

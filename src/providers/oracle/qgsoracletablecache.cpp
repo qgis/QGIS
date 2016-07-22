@@ -167,7 +167,7 @@ bool QgsOracleTableCache::saveToCache( const QString& connName, CacheFlags flags
     sqlite3_bind_text( stmtInsert, 6, item.pkCols.join( "," ).toUtf8().data(), -1, SQLITE_TRANSIENT );
 
     QStringList geomTypes;
-    Q_FOREACH ( QGis::WkbType geomType, item.types )
+    Q_FOREACH ( Qgis::WkbType geomType, item.types )
       geomTypes.append( QString::number( static_cast<ulong>( geomType ) ) );
     sqlite3_bind_text( stmtInsert, 7, geomTypes.join( "," ).toUtf8().data(), -1, SQLITE_TRANSIENT );
 
@@ -222,7 +222,7 @@ bool QgsOracleTableCache::loadFromCache( const QString& connName, CacheFlags fla
 
     QString geomTypes = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 6 ) );
     Q_FOREACH ( QString geomType, geomTypes.split( ",", QString::SkipEmptyParts ) )
-      layer.types.append( static_cast<QGis::WkbType>( geomType.toInt() ) );
+      layer.types.append( static_cast<Qgis::WkbType>( geomType.toInt() ) );
 
     QString geomSrids = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 7 ) );
     Q_FOREACH ( QString geomSrid, geomSrids.split( ",", QString::SkipEmptyParts ) )

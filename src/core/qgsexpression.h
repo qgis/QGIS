@@ -289,7 +289,7 @@ class CORE_EXPORT QgsExpression
      * @see setDistanceUnits()
      * @see areaUnits()
      */
-    QGis::UnitType distanceUnits() const;
+    Qgis::UnitType distanceUnits() const;
 
     /** Sets the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsExpression
      * @see distanceUnits()
      * @see setAreaUnits()
      */
-    void setDistanceUnits( QGis::UnitType unit );
+    void setDistanceUnits( Qgis::UnitType unit );
 
     /** Returns the desired areal units for calculations involving geomCalculator(), eg "$area".
      * @note areas are only converted when a geomCalculator() has been set

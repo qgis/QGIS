@@ -816,13 +816,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void setRendererV2( QgsFeatureRendererV2* r );
 
     /** Returns point, line or polygon */
-    QGis::GeometryType geometryType() const;
+    Qgis::GeometryType geometryType() const;
 
     /** Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry */
     bool hasGeometryType() const;
 
     /** Returns the WKBType or WKBUnknown in case of error*/
-    QGis::WkbType wkbType() const;
+    Qgis::WkbType wkbType() const;
 
     /** Return the provider type for this layer */
     QString providerType() const;
@@ -2188,7 +2188,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QSet<QString> mExcludeAttributesWFS;
 
     /** Geometry type as defined in enum WkbType (qgis.h) */
-    QGis::WkbType mWkbType;
+    Qgis::WkbType mWkbType;
 
     /** Renderer object which holds the information about how to display the features */
     QgsFeatureRendererV2 *mRendererV2;

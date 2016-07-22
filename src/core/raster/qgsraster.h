@@ -116,7 +116,7 @@ class CORE_EXPORT QgsRaster
      * @param dataType
      * @note added in version 2.16
      *  @note not available in Python bindings */
-    static bool isRepresentableValue( double value, QGis::DataType dataType );
+    static bool isRepresentableValue( double value, Qgis::DataType dataType );
 
     /** Get value representable by given data type.
      * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsRaster
      * @param value
      * @param dataType
      * @note added in version 2.1 */
-    static double representableValue( double value, QGis::DataType dataType );
+    static double representableValue( double value, Qgis::DataType dataType );
 };
 
 #endif

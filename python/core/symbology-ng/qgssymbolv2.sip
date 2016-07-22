@@ -63,7 +63,7 @@ class QgsSymbolV2
     virtual ~QgsSymbolV2();
 
     //! return new default symbol for specified geometry type
-    static QgsSymbolV2* defaultSymbol( QGis::GeometryType geomType ) /Factory/;
+    static QgsSymbolV2* defaultSymbol( Qgis::GeometryType geomType ) /Factory/;
 
     SymbolType type() const;
 

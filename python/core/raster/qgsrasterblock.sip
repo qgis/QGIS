@@ -14,7 +14,7 @@ class QgsRasterBlock
      *  @param theHeight height of data matrix
      *  @note not available in python bindings (use variant with theNoDataValue)
      */
-    // QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight );
+    // QgsRasterBlock( Qgis::DataType theDataType, int theWidth, int theHeight );
 
     /** \brief Constructor which allocates data block in memory
      *  @param theDataType raster data type
@@ -22,7 +22,7 @@ class QgsRasterBlock
      *  @param theHeight height of data matrix
      *  @param theNoDataValue the value representing no data (NULL)
      */
-    QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
+    QgsRasterBlock( Qgis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     virtual ~QgsRasterBlock();
 
@@ -33,7 +33,7 @@ class QgsRasterBlock
      *  @return true on success
      *  @note not available in python bindings (use variant with theNoDataValue)
      */
-    // bool reset( QGis::DataType theDataType, int theWidth, int theHeight );
+    // bool reset( Qgis::DataType theDataType, int theWidth, int theHeight );
 
     /** \brief Reset block
      *  @param theDataType raster data type
@@ -42,7 +42,7 @@ class QgsRasterBlock
      *  @param theNoDataValue the value representing no data (NULL)
      *  @return true on success
      */
-    bool reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
+    bool reset( Qgis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
@@ -68,16 +68,16 @@ class QgsRasterBlock
     int dataTypeSize() const;
 
     /** Returns true if data type is numeric */
-    static bool typeIsNumeric( QGis::DataType type );
+    static bool typeIsNumeric( Qgis::DataType type );
 
     /** Returns true if data type is color */
-    static bool typeIsColor( QGis::DataType type );
+    static bool typeIsColor( Qgis::DataType type );
 
     /** Returns data type */
-    QGis::DataType dataType() const;
+    Qgis::DataType dataType() const;
 
     /** For given data type returns wider type and sets no data value */
-    static QGis::DataType typeWithNoDataValue( QGis::DataType dataType, double *noDataValue );
+    static Qgis::DataType typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue );
 
     /** True if the block has no data value.
      * @return true if the block has no data value */
@@ -98,7 +98,7 @@ class QgsRasterBlock
      * @param theDataType data type
      * @param theValue value
      * @return byte array representing the value */
-    static QByteArray valueBytes( QGis::DataType theDataType, double theValue );
+    static QByteArray valueBytes( Qgis::DataType theDataType, double theValue );
 
     /** \brief Read a single value if type of block is numeric. If type is color,
      *  returned value is undefined.
@@ -225,7 +225,7 @@ class QgsRasterBlock
     /** \brief Convert data to different type.
      *  @param destDataType dest data type
      *  @return true on success */
-    bool convert( QGis::DataType destDataType );
+    bool convert( Qgis::DataType destDataType );
 
     /** \brief Get image if type is color.
     *   @return image */
@@ -237,10 +237,10 @@ class QgsRasterBlock
     bool setImage( const QImage * image );
 
     // @note not available in python bindings
-    // inline static double readValue( void *data, QGis::DataType type, qgssize index );
+    // inline static double readValue( void *data, Qgis::DataType type, qgssize index );
 
     // @note not available in python bindings
-    // inline static void writeValue( void *data, QGis::DataType type, qgssize index, double value );
+    // inline static void writeValue( void *data, Qgis::DataType type, qgssize index, double value );
 
     void applyNoDataValues( const QgsRasterRangeList & rangeList );
 

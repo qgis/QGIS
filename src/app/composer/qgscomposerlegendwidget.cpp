@@ -958,7 +958,7 @@ void QgsComposerLegendWidget::setCurrentNodeStyleFromAction()
 void QgsComposerLegendWidget::updateFilterLegendByAtlasButton()
 {
   const QgsAtlasComposition& atlas = mLegend->composition()->atlasComposition();
-  mFilterLegendByAtlasCheckBox->setEnabled( atlas.enabled() && atlas.coverageLayer() && atlas.coverageLayer()->geometryType() == QGis::Polygon );
+  mFilterLegendByAtlasCheckBox->setEnabled( atlas.enabled() && atlas.coverageLayer() && atlas.coverageLayer()->geometryType() == Qgis::Polygon );
 }
 
 void QgsComposerLegendWidget::on_mItemTreeView_doubleClicked( const QModelIndex &idx )

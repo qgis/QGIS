@@ -61,12 +61,12 @@ bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, 
 }
 
 //! Returns the BBOX of the specified WKB-point stream
-inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, QgsConstWkbPtr wkbPtr, int numPoints )
+inline static QgsRectangle calculateBoundingBox( Qgis::WkbType wkbType, QgsConstWkbPtr wkbPtr, int numPoints )
 {
   QgsRectangle r;
   r.setMinimal();
 
-  int skipZM = ( QGis::wkbDimensions( wkbType ) - 2 ) * sizeof( double );
+  int skipZM = ( Qgis::wkbDimensions( wkbType ) - 2 ) * sizeof( double );
   Q_ASSERT( skipZM >= 0 );
 
   for ( int i = 0; i < numPoints; ++i )
@@ -108,20 +108,20 @@ double* getPoint_internal( const POINTARRAY* inpts, int pointIndex )
 
 //! Generalize the WKB-geometry using the BBOX of the original geometry
 static bool generalizeWkbGeometryByBoundingBox(
-  QGis::WkbType wkbType,
+  Qgis::WkbType wkbType,
   QgsConstWkbPtr sourceWkbPtr,
   QgsWkbPtr targetWkbPtr,
   int &targetWkbSize,
   const QgsRectangle &envelope, bool writeHeader )
 {
   QgsWkbPtr savedTargetWkb( targetWkbPtr );
-  unsigned int geometryType = QGis::singleType( QGis::flatType( wkbType ) );
+  unsigned int geometryType = Qgis::singleType( Qgis::flatType( wkbType ) );
 
-  int skipZM = ( QGis::wkbDimensions( wkbType ) - 2 ) * sizeof( double );
+  int skipZM = ( Qgis::wkbDimensions( wkbType ) - 2 ) * sizeof( double );
   Q_ASSERT( skipZM >= 0 );
 
   // If the geometry is already minimal skip the generalization
-  int minimumSize = geometryType == QGis::WKBLineString ? 4 + 2 * ( 2 * sizeof( double ) + skipZM ) : 8 + 5 * ( 2 * sizeof( double ) + skipZM );
+  int minimumSize = geometryType == Qgis::WKBLineString ? 4 + 2 * ( 2 * sizeof( double ) + skipZM ) : 8 + 5 * ( 2 * sizeof( double ) + skipZM );
 
   if ( writeHeader )
     minimumSize += 5;
@@ -142,14 +142,14 @@ static bool generalizeWkbGeometryByBoundingBox(
   {
     targetWkbPtr << ( char ) QgsApplication::endian() << geometryType;
 
-    if ( geometryType == QGis::WKBPolygon ) // numRings
+    if ( geometryType == Qgis::WKBPolygon ) // numRings
     {
       targetWkbPtr << 1;
     }
   }
 
   // Write the generalized geometry
-  if ( geometryType == QGis::WKBLineString )
+  if ( geometryType == Qgis::WKBLineString )
   {
     targetWkbPtr << 2 << x1 << y1 << x2 << y2;
   }
@@ -167,7 +167,7 @@ static bool generalizeWkbGeometryByBoundingBox(
 bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
   int simplifyFlags,
   SimplifyAlgorithm simplifyAlgorithm,
-  QGis::WkbType wkbType,
+  Qgis::WkbType wkbType,
   QgsConstWkbPtr sourceWkbPtr,
   QgsWkbPtr targetWkbPtr,
   int &targetWkbSize,
@@ -204,17 +204,17 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     targetWkbSize += targetWkbPtr - targetPrevWkbPtr;
   }
 
-  unsigned int flatType = QGis::flatType( wkbType );
+  unsigned int flatType = Qgis::flatType( wkbType );
 
   // Write the geometry
-  if ( flatType == QGis::WKBLineString || isaLinearRing )
+  if ( flatType == Qgis::WKBLineString || isaLinearRing )
   {
     QgsWkbPtr savedTargetWkbPtr( targetWkbPtr );
     double x = 0.0, y = 0.0, lastX = 0, lastY = 0;
     QgsRectangle r;
     r.setMinimal();
 
-    int skipZM = ( QGis::wkbDimensions( wkbType ) - 2 ) * sizeof( double );
+    int skipZM = ( Qgis::wkbDimensions( wkbType ) - 2 ) * sizeof( double );
     Q_ASSERT( skipZM >= 0 );
 
     int numPoints;
@@ -281,7 +281,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
 
       POINTARRAY inpts;
       inpts.pointlist = ( double* )( const unsigned char* )sourceWkbPtr;
-      inpts.dimension = QGis::wkbDimensions( wkbType );
+      inpts.dimension = Qgis::wkbDimensions( wkbType );
       inpts.npoints = numPoints;
       inpts.flags = 0;
 
@@ -386,7 +386,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
 
     result = !badLuck && numTargetPoints > 0;
   }
-  else if ( flatType == QGis::WKBPolygon )
+  else if ( flatType == Qgis::WKBPolygon )
   {
     int numRings;
     sourceWkbPtr >> numRings;
@@ -402,7 +402,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
 
       sourceWkbPtr -= sizeof( int );
 
-      int sourceWkbSize_i = sizeof( int ) + numPoints_i * QGis::wkbDimensions( wkbType ) * sizeof( double );
+      int sourceWkbSize_i = sizeof( int ) + numPoints_i * Qgis::wkbDimensions( wkbType ) * sizeof( double );
       int targetWkbSize_i = 0;
 
       result |= simplifyWkbGeometry( simplifyFlags, simplifyAlgorithm, wkbType, sourceWkbPtr, targetWkbPtr, targetWkbSize_i, envelope_i, map2pixelTol, false, true );
@@ -412,7 +412,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       targetWkbSize += targetWkbSize_i;
     }
   }
-  else if ( flatType == QGis::WKBMultiLineString || flatType == QGis::WKBMultiPolygon )
+  else if ( flatType == Qgis::WKBMultiLineString || flatType == Qgis::WKBMultiPolygon )
   {
     int numGeoms;
     sourceWkbPtr >> numGeoms;
@@ -429,12 +429,12 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       sourceWkbPtr2.readHeader();
 
       // ... calculate the wkb-size of the current child complex geometry
-      if ( flatType == QGis::WKBMultiLineString )
+      if ( flatType == Qgis::WKBMultiLineString )
       {
         int numPoints_i;
         sourceWkbPtr2 >> numPoints_i;
 
-        int wkbSize_i = numPoints_i * QGis::wkbDimensions( wkbType ) * sizeof( double );
+        int wkbSize_i = numPoints_i * Qgis::wkbDimensions( wkbType ) * sizeof( double );
 
         sourceWkbSize_i += 9 + wkbSize_i;
         sourceWkbPtr2 += wkbSize_i;
@@ -450,13 +450,13 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
           int numPoints_i;
           sourceWkbPtr2 >> numPoints_i;
 
-          int wkbSize_i = numPoints_i * QGis::wkbDimensions( wkbType ) * sizeof( double );
+          int wkbSize_i = numPoints_i * Qgis::wkbDimensions( wkbType ) * sizeof( double );
 
           sourceWkbSize_i += 4 + wkbSize_i;
           sourceWkbPtr2 += wkbSize_i;
         }
       }
-      result |= simplifyWkbGeometry( simplifyFlags, simplifyAlgorithm, QGis::singleType( wkbType ), sourceWkbPtr, targetWkbPtr, targetWkbSize_i, envelope, map2pixelTol, true, false );
+      result |= simplifyWkbGeometry( simplifyFlags, simplifyAlgorithm, Qgis::singleType( wkbType ), sourceWkbPtr, targetWkbPtr, targetWkbSize_i, envelope, map2pixelTol, true, false );
       sourceWkbPtr += sourceWkbSize_i;
       targetWkbPtr += targetWkbSize_i;
 
@@ -496,12 +496,12 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry *geometry, int simpl
   int finalWkbSize = 0;
 
   // Check whether the geometry can be simplified using the map2pixel context
-  QGis::GeometryType geometryType = geometry->type();
-  if ( !( geometryType == QGis::Line || geometryType == QGis::Polygon ) )
+  Qgis::GeometryType geometryType = geometry->type();
+  if ( !( geometryType == Qgis::Line || geometryType == Qgis::Polygon ) )
     return false;
 
   QgsRectangle envelope = geometry->boundingBox();
-  QGis::WkbType wkbType = geometry->wkbType();
+  Qgis::WkbType wkbType = geometry->wkbType();
 
   QgsConstWkbPtr wkbPtr( geometry->asWkb(), geometry->wkbSize() );
 
@@ -553,7 +553,7 @@ bool QgsMapToPixelSimplifier::simplifyPoints( QgsWKBTypes::Type wkbType, QgsCons
   if ( numPoints <= ( isaLinearRing ? 6 : 3 ) )
     return false;
 
-  QgsRectangle envelope = calculateBoundingBox( QGis::fromNewWkbType( singleType ), QgsConstWkbPtr( sourceWkbPtr ), numPoints );
+  QgsRectangle envelope = calculateBoundingBox( Qgis::fromNewWkbType( singleType ), QgsConstWkbPtr( sourceWkbPtr ), numPoints );
   sourceWkbPtr -= sizeof( int );
 
   int targetWkbSize = 5 + sizeof( int ) + numPoints * ( 2 * sizeof( double ) );
@@ -566,13 +566,13 @@ bool QgsMapToPixelSimplifier::simplifyPoints( QgsWKBTypes::Type wkbType, QgsCons
     targetWkbPtr << ( char ) QgsApplication::endian() << flatType;
     targetWkbSize = 5;
 
-    if ( simplifyWkbGeometry( simplifyFlags, simplifyAlgorithm, QGis::fromNewWkbType( singleType ), sourceWkbPtr, targetWkbPtr, targetWkbSize, envelope, tolerance, false, isaLinearRing ) )
+    if ( simplifyWkbGeometry( simplifyFlags, simplifyAlgorithm, Qgis::fromNewWkbType( singleType ), sourceWkbPtr, targetWkbPtr, targetWkbSize, envelope, tolerance, false, isaLinearRing ) )
     {
       QgsConstWkbPtr finalWkbPtr( targetWkb, targetWkbSize );
       finalWkbPtr.readHeader();
       finalWkbPtr >> targetPoints;
 
-      int skipZM = ( QGis::wkbDimensions( QGis::fromNewWkbType( wkbType ) ) - 2 ) * sizeof( double );
+      int skipZM = ( Qgis::wkbDimensions( Qgis::fromNewWkbType( wkbType ) ) - 2 ) * sizeof( double );
       sourceWkbPtr += sizeof( int ) + numPoints * ( 2 * sizeof( double ) + skipZM );
 
       delete [] targetWkb;

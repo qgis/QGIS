@@ -630,7 +630,7 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry* ge
     return nullptr;
   }
 
-  QgsWKBTypes::Type providerGeomType = QGis::fromOldWkbType( geometryType() );
+  QgsWKBTypes::Type providerGeomType = Qgis::fromOldWkbType( geometryType() );
 
   //geom is already in the provider geometry type
   if ( geometry->wkbType() == providerGeomType )

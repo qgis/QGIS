@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QSettings, QVariant
 
-from qgis.core import QGis, QgsGeometry, QgsFeature, QgsField
+from qgis.core import Qgis, QgsGeometry, QgsFeature, QgsField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -128,7 +128,7 @@ class CheckValidity(GeoAlgorithm):
                      len=255)]
         error_writer = error_ouput.getVectorWriter(
             error_fields,
-            QGis.WKBPoint,
+            Qgis.WKBPoint,
             layer.crs())
         error_count = 0
 

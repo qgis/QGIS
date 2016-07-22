@@ -493,7 +493,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /** Returns the units for the projection used by the CRS.
      */
-    QGis::UnitType mapUnits() const;
+    Qgis::UnitType mapUnits() const;
 
 
     // Mutators -----------------------------------

@@ -75,7 +75,7 @@ void TestQgsGeometryImport::pointWkt()
 
   QgsGeometry* geom = QgsGeometry::fromWkt( wktString );
 
-  QCOMPARE( geom->wkbType(), QGis::WKBPoint );
+  QCOMPARE( geom->wkbType(), Qgis::WKBPoint );
   QgsPoint point = geom->asPoint();
   delete geom;
 
@@ -100,13 +100,13 @@ void TestQgsGeometryImport::pointWkb()
   char byteOrder = QgsApplication::endian();
   unsigned char* geomPtr = new unsigned char[21];
   QgsWkbPtr wkb( geomPtr, 21 );
-  wkb << byteOrder << QGis::WKBPoint << x << y;
+  wkb << byteOrder << Qgis::WKBPoint << x << y;
 
   QgsGeometry geom;
   geom.fromWkb( geomPtr, 21 );
   QgsPoint point = geom.asPoint();
 
-  QCOMPARE( geom.wkbType(), QGis::WKBPoint );
+  QCOMPARE( geom.wkbType(), Qgis::WKBPoint );
   QVERIFY( qgsDoubleNear( point.x(), x ) );
   QVERIFY( qgsDoubleNear( point.y(), y ) );
 }
@@ -131,7 +131,7 @@ void TestQgsGeometryImport::pointGeos()
 
   QgsGeometry geom;
   geom.fromGeos( geosPt );
-  QVERIFY( geom.wkbType() == QGis::WKBPoint );
+  QVERIFY( geom.wkbType() == Qgis::WKBPoint );
 
   QgsPoint geomPt = geom.asPoint();
 
@@ -156,7 +156,7 @@ void TestQgsGeometryImport::linestringWkt()
   QFETCH( QVariantList, line );
 
   QgsGeometry* geom = QgsGeometry::fromWkt( wktString );
-  QCOMPARE( geom->wkbType(), QGis::WKBLineString );
+  QCOMPARE( geom->wkbType(), Qgis::WKBLineString );
 
   QgsPolyline polyLine = geom->asPolyline();
   QVERIFY( compareLineStrings( polyLine, line ) );
@@ -179,7 +179,7 @@ void TestQgsGeometryImport::linestringWkb()
   int wkbSize = 1 + 2 * sizeof( int ) + line.size() * 2 * sizeof( double );
   unsigned char* geomPtr = new unsigned char[wkbSize];
   QgsWkbPtr wkb( geomPtr, wkbSize );
-  wkb << byteOrder << QGis::WKBLineString << line.size();
+  wkb << byteOrder << Qgis::WKBLineString << line.size();
 
   for ( int i = 0; i < line.size(); ++i )
   {
@@ -190,7 +190,7 @@ void TestQgsGeometryImport::linestringWkb()
   QgsGeometry geom;
   geom.fromWkb( geomPtr, wkbSize );
 
-  QVERIFY( geom.wkbType() == QGis::WKBLineString );
+  QVERIFY( geom.wkbType() == Qgis::WKBLineString );
   QgsPolyline polyline = geom.asPolyline();
   QVERIFY( compareLineStrings( polyline, line ) );
 }
@@ -218,7 +218,7 @@ void TestQgsGeometryImport::linestringGeos()
   GEOSGeometry* geosLine = GEOSGeom_createLineString( coord );
   QgsGeometry geom;
   geom.fromGeos( geosLine );
-  QVERIFY( geom.wkbType() == QGis::WKBLineString );
+  QVERIFY( geom.wkbType() == Qgis::WKBLineString );
 
   QgsPolyline polyline = geom.asPolyline();
   QVERIFY( compareLineStrings( polyline, line ) );

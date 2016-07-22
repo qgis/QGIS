@@ -110,23 +110,23 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
   mIdentifyHighlightColorButton->setAllowAlpha( true );
   mIdentifyHighlightColorButton->setContext( "gui" );
-  mIdentifyHighlightColorButton->setDefaultColor( QGis::DEFAULT_HIGHLIGHT_COLOR );
+  mIdentifyHighlightColorButton->setDefaultColor( Qgis::DEFAULT_HIGHLIGHT_COLOR );
 
   mSettings = new QSettings();
 
-  double identifyValue = mSettings->value( "/Map/searchRadiusMM", QGis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  double identifyValue = mSettings->value( "/Map/searchRadiusMM", Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
   QgsDebugMsg( QString( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );
   if ( identifyValue <= 0.0 )
-    identifyValue = QGis::DEFAULT_SEARCH_RADIUS_MM;
+    identifyValue = Qgis::DEFAULT_SEARCH_RADIUS_MM;
   spinBoxIdentifyValue->setMinimum( 0.0 );
   spinBoxIdentifyValue->setValue( identifyValue );
-  QColor highlightColor = QColor( mSettings->value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  int highlightAlpha = mSettings->value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+  QColor highlightColor = QColor( mSettings->value( "/Map/highlight/color", Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  int highlightAlpha = mSettings->value( "/Map/highlight/colorAlpha", Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
   highlightColor.setAlpha( highlightAlpha );
   mIdentifyHighlightColorButton->setColor( highlightColor );
-  double highlightBuffer = mSettings->value( "/Map/highlight/buffer", QGis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+  double highlightBuffer = mSettings->value( "/Map/highlight/buffer", Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
   mIdentifyHighlightBufferSpinBox->setValue( highlightBuffer );
-  double highlightMinWidth = mSettings->value( "/Map/highlight/minWidth", QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+  double highlightMinWidth = mSettings->value( "/Map/highlight/minWidth", Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
   mIdentifyHighlightMinWidthSpinBox->setValue( highlightMinWidth );
 
   // custom environment variables
@@ -461,19 +461,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   }
 
   // Set the units for measuring
-  mDistanceUnitsComboBox->addItem( tr( "Meters" ), QGis::Meters );
-  mDistanceUnitsComboBox->addItem( tr( "Kilometers" ), QGis::Kilometers );
-  mDistanceUnitsComboBox->addItem( tr( "Feet" ), QGis::Feet );
-  mDistanceUnitsComboBox->addItem( tr( "Yards" ), QGis::Yards );
-  mDistanceUnitsComboBox->addItem( tr( "Miles" ), QGis::Miles );
-  mDistanceUnitsComboBox->addItem( tr( "Nautical miles" ), QGis::NauticalMiles );
-  mDistanceUnitsComboBox->addItem( tr( "Degrees" ), QGis::Degrees );
-  mDistanceUnitsComboBox->addItem( tr( "Map units" ), QGis::UnknownUnit );
+  mDistanceUnitsComboBox->addItem( tr( "Meters" ), Qgis::Meters );
+  mDistanceUnitsComboBox->addItem( tr( "Kilometers" ), Qgis::Kilometers );
+  mDistanceUnitsComboBox->addItem( tr( "Feet" ), Qgis::Feet );
+  mDistanceUnitsComboBox->addItem( tr( "Yards" ), Qgis::Yards );
+  mDistanceUnitsComboBox->addItem( tr( "Miles" ), Qgis::Miles );
+  mDistanceUnitsComboBox->addItem( tr( "Nautical miles" ), Qgis::NauticalMiles );
+  mDistanceUnitsComboBox->addItem( tr( "Degrees" ), Qgis::Degrees );
+  mDistanceUnitsComboBox->addItem( tr( "Map units" ), Qgis::UnknownUnit );
 
   bool ok = false;
-  QGis::UnitType distanceUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( "/qgis/measure/displayunits" ).toString(), &ok );
+  Qgis::UnitType distanceUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( "/qgis/measure/displayunits" ).toString(), &ok );
   if ( !ok )
-    distanceUnits = QGis::Meters;
+    distanceUnits = Qgis::Meters;
   mDistanceUnitsComboBox->setCurrentIndex( mDistanceUnitsComboBox->findData( distanceUnits ) );
 
   mAreaUnitsComboBox->addItem( tr( "Square meters" ), QgsUnitTypes::SquareMeters );
@@ -575,7 +575,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   // Default simplify drawing configuration
   mSimplifyDrawingGroupBox->setChecked( mSettings->value( "/qgis/simplifyDrawingHints", ( int )QgsVectorSimplifyMethod::GeometrySimplification ).toInt() != QgsVectorSimplifyMethod::NoSimplification );
-  mSimplifyDrawingSpinBox->setValue( mSettings->value( "/qgis/simplifyDrawingTol", QGis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
+  mSimplifyDrawingSpinBox->setValue( mSettings->value( "/qgis/simplifyDrawingTol", Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
   mSimplifyDrawingAtProvider->setChecked( !mSettings->value( "/qgis/simplifyLocal", true ).toBool() );
 
   //segmentation tolerance type
@@ -623,7 +623,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mLegendLayersBoldChkBx->setChecked( mSettings->value( "/qgis/legendLayersBold", true ).toBool() );
   mLegendGroupsBoldChkBx->setChecked( mSettings->value( "/qgis/legendGroupsBold", false ).toBool() );
   cbxHideSplash->setChecked( mSettings->value( "/qgis/hideSplash", false ).toBool() );
-  cbxShowTips->setChecked( mSettings->value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() );
+  cbxShowTips->setChecked( mSettings->value( QString( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), true ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( "/qgis/checkVersion", true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( "/qgis/dockAttributeTable", false ).toBool() );
   cbxSnappingOptionsDocked->setChecked( mSettings->value( "/qgis/dockSnapping", false ).toBool() );
@@ -1172,7 +1172,7 @@ void QgsOptions::saveOptions()
   bool legendGroupsBold = mSettings->value( "/qgis/legendGroupsBold", false ).toBool();
   mSettings->setValue( "/qgis/legendGroupsBold", mLegendGroupsBoldChkBx->isChecked() );
   mSettings->setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
-  mSettings->setValue( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), cbxShowTips->isChecked() );
+  mSettings->setValue( QString( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), cbxShowTips->isChecked() );
   mSettings->setValue( "/qgis/checkVersion", cbxCheckVersion->isChecked() );
   mSettings->setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
   mSettings->setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->itemData( cmbAttrTableBehaviour->currentIndex() ) );
@@ -1303,7 +1303,7 @@ void QgsOptions::saveOptions()
 
   //measurement settings
 
-  QGis::UnitType distanceUnit = static_cast< QGis::UnitType >( mDistanceUnitsComboBox->itemData( mDistanceUnitsComboBox->currentIndex() ).toInt() );
+  Qgis::UnitType distanceUnit = static_cast< Qgis::UnitType >( mDistanceUnitsComboBox->itemData( mDistanceUnitsComboBox->currentIndex() ).toInt() );
   mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( distanceUnit ) );
 
   QgsUnitTypes::AreaUnit areaUnit = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsComboBox->itemData( mAreaUnitsComboBox->currentIndex() ).toInt() );

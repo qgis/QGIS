@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -50,7 +50,7 @@ class Explode(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
-        writer = output.getVectorWriter(fields, QGis.WKBLineString,
+        writer = output.getVectorWriter(fields, Qgis.WKBLineString,
                                         vlayer.crs())
         outFeat = QgsFeature()
         features = vector.features(vlayer)

@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QCheckBox
-from qgis.core import QGis, QgsVectorLayer
+from qgis.core import Qgis, QgsVectorLayer
 
 from processing.core.parameters import ParameterGeometryPredicate
 
@@ -41,20 +41,20 @@ WIDGET, BASE = uic.loadUiType(
 class GeometryPredicateSelectionPanel(BASE, WIDGET):
 
     unusablePredicates = {
-        QGis.Point: {
-            QGis.Point: ('touches', 'crosses'),
-            QGis.Line: ('equals', 'contains', 'overlaps'),
-            QGis.Polygon: ('equals', 'contains', 'overlaps')
+        Qgis.Point: {
+            Qgis.Point: ('touches', 'crosses'),
+            Qgis.Line: ('equals', 'contains', 'overlaps'),
+            Qgis.Polygon: ('equals', 'contains', 'overlaps')
         },
-        QGis.Line: {
-            QGis.Point: ('equals', 'within', 'overlaps'),
-            QGis.Line: [],
-            QGis.Polygon: ('equals', 'contains', 'overlaps')
+        Qgis.Line: {
+            Qgis.Point: ('equals', 'within', 'overlaps'),
+            Qgis.Line: [],
+            Qgis.Polygon: ('equals', 'contains', 'overlaps')
         },
-        QGis.Polygon: {
-            QGis.Point: ('equals', 'within', 'overlaps'),
-            QGis.Line: ('equals', 'within', 'overlaps'),
-            QGis.Polygon: ('crosses')
+        Qgis.Polygon: {
+            Qgis.Point: ('equals', 'within', 'overlaps'),
+            Qgis.Line: ('equals', 'within', 'overlaps'),
+            Qgis.Polygon: ('crosses')
         }
     }
 

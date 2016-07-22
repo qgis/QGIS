@@ -1066,7 +1066,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Qg
     }
     else
     {
-      if ( sourceDataType( i ) == QGis::Float32 )
+      if ( sourceDataType( i ) == Qgis::Float32 )
       {
         // Insert a float QVariant so that QgsMapToolIdentify::identifyRasterLayer()
         // can print a string without an excessive precision
@@ -1098,11 +1098,11 @@ int QgsGdalProvider::capabilities() const
   return capability;
 }
 
-QGis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
+Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
-  QGis::DataType myDataType = dataTypeFromGdal( myGdalDataType );
+  Qgis::DataType myDataType = dataTypeFromGdal( myGdalDataType );
 
   // define if the band has scale and offset to apply
   double myScale = bandScale( bandNo );
@@ -1112,34 +1112,34 @@ QGis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
     // if the band has scale or offset to apply change dataType
     switch ( myDataType )
     {
-      case QGis::UnknownDataType:
-      case QGis::ARGB32:
-      case QGis::ARGB32_Premultiplied:
+      case Qgis::UnknownDataType:
+      case Qgis::ARGB32:
+      case Qgis::ARGB32_Premultiplied:
         return myDataType;
-      case QGis::Byte:
-      case QGis::UInt16:
-      case QGis::Int16:
-      case QGis::UInt32:
-      case QGis::Int32:
-      case QGis::Float32:
-      case QGis::CInt16:
-        myDataType = QGis::Float32;
+      case Qgis::Byte:
+      case Qgis::UInt16:
+      case Qgis::Int16:
+      case Qgis::UInt32:
+      case Qgis::Int32:
+      case Qgis::Float32:
+      case Qgis::CInt16:
+        myDataType = Qgis::Float32;
         break;
-      case QGis::Float64:
-      case QGis::CInt32:
-      case QGis::CFloat32:
-        myDataType = QGis::Float64;
+      case Qgis::Float64:
+      case Qgis::CInt32:
+      case Qgis::CFloat32:
+        myDataType = Qgis::Float64;
         break;
-      case QGis::CFloat64:
+      case Qgis::CFloat64:
         return myDataType;
     }
   }
   return myDataType;
 }
 
-QGis::DataType QgsGdalProvider::dataType( int bandNo ) const
+Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
-  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return QGis::UnknownDataType;
+  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return Qgis::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
 }
@@ -2769,7 +2769,7 @@ bool QgsGdalProvider::create( const QString& format, int nBands,
 QGISEXTERN QgsGdalProvider * create(
   const QString &uri,
   const QString& format, int nBands,
-  QGis::DataType type,
+  Qgis::DataType type,
   int width, int height, double* geoTransform,
   const QgsCoordinateReferenceSystem& crs,
   QStringList createOptions )

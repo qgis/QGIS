@@ -108,7 +108,7 @@ QgsFeatureRendererV2::~QgsFeatureRendererV2()
   delete mPaintEffect;
 }
 
-QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType geomType )
+QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( Qgis::GeometryType geomType )
 {
   return new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( geomType ) );
 }
@@ -249,7 +249,7 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage )
+QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage )
 {
   QDomElement element = node.toElement();
   if ( element.isNull() )

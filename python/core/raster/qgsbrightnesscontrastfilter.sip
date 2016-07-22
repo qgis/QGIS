@@ -11,7 +11,7 @@ class QgsBrightnessContrastFilter : QgsRasterInterface
 
     int bandCount() const;
 
-    QGis::DataType dataType( int bandNo ) const;
+    Qgis::DataType dataType( int bandNo ) const;
 
     bool setInput( QgsRasterInterface* input );
 

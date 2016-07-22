@@ -523,7 +523,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         type += "Z";
       else if ( dim == 4 )
         type += "ZM";
-      layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
+      layerProperty.types = QList<Qgis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
       layerProperty.relKind = relkind;
@@ -626,7 +626,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       //QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
-      layerProperty.types = QList<QGis::WkbType>() << QGis::WKBUnknown;
+      layerProperty.types = QList<Qgis::WkbType>() << Qgis::WKBUnknown;
       layerProperty.srids = QList<int>() << INT_MIN;
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
@@ -713,7 +713,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       //QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
-      layerProperty.types = QList<QGis::WkbType>() << QGis::WKBNoGeometry;
+      layerProperty.types = QList<Qgis::WkbType>() << Qgis::WKBNoGeometry;
       layerProperty.srids = QList<int>() << INT_MIN;
       layerProperty.schemaName = schema;
       layerProperty.tableName = table;
@@ -1382,8 +1382,8 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
     bool castToGeometry = layerProperty.geometryColType == sctGeography ||
                           layerProperty.geometryColType == sctPcPatch;
 
-    QGis::WkbType type = layerProperty.types.value( 0, QGis::WKBUnknown );
-    if ( type == QGis::WKBUnknown )
+    Qgis::WkbType type = layerProperty.types.value( 0, Qgis::WKBUnknown );
+    if ( type == Qgis::WKBUnknown )
     {
       query += QString( "upper(geometrytype(%1%2))" )
                .arg( quotedIdentifier( layerProperty.geometryColName ),
@@ -1440,8 +1440,8 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
 
         // if both multi and single types exists, go for the multi type,
         // so that st_multi can be applied if necessary.
-        QGis::WkbType wkbType0 = QGis::flatType( QgsPostgresConn::wkbTypeFromPostgis( type ) );
-        QGis::WkbType multiType0 = QGis::multiType( wkbType0 );
+        Qgis::WkbType wkbType0 = Qgis::flatType( QgsPostgresConn::wkbTypeFromPostgis( type ) );
+        Qgis::WkbType multiType0 = Qgis::multiType( wkbType0 );
 
         int j;
         for ( j = 0; j < layerProperty.size(); j++ )
@@ -1449,8 +1449,8 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
           if ( layerProperty.srids.at( j ) != srid.toInt() )
             continue;
 
-          QGis::WkbType wkbType1 = layerProperty.types.at( j );
-          QGis::WkbType multiType1 = QGis::multiType( wkbType1 );
+          Qgis::WkbType wkbType1 = layerProperty.types.at( j );
+          Qgis::WkbType multiType1 = Qgis::multiType( wkbType1 );
           if ( multiType0 == multiType1 && wkbType0 != wkbType1 )
           {
             layerProperty.types[j] = multiType0;
@@ -1468,64 +1468,64 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
   }
 }
 
-void QgsPostgresConn::postgisWkbType( QGis::WkbType wkbType, QString &geometryType, int &dim )
+void QgsPostgresConn::postgisWkbType( Qgis::WkbType wkbType, QString &geometryType, int &dim )
 {
   switch ( wkbType )
   {
-    case QGis::WKBPoint25D:
+    case Qgis::WKBPoint25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBPoint:
+    case Qgis::WKBPoint:
       geometryType = "POINT";
       break;
 
-    case QGis::WKBLineString25D:
+    case Qgis::WKBLineString25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBLineString:
+    case Qgis::WKBLineString:
       geometryType = "LINESTRING";
       break;
 
-    case QGis::WKBPolygon25D:
+    case Qgis::WKBPolygon25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBPolygon:
+    case Qgis::WKBPolygon:
       geometryType = "POLYGON";
       break;
 
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBMultiPoint25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint:
       geometryType = "MULTIPOINT";
       break;
 
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBMultiLineString25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString:
       geometryType = "MULTILINESTRING";
       break;
 
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBMultiPolygon25D:
       dim = 3;
       FALLTHROUGH;
-    case QGis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon:
       geometryType = "MULTIPOLYGON";
       break;
 
-    case QGis::WKBUnknown:
+    case Qgis::WKBUnknown:
       geometryType = "GEOMETRY";
       break;
 
-    case QGis::WKBNoGeometry:
+    case Qgis::WKBNoGeometry:
     default:
       dim = 0;
       break;
   }
 }
 
-QString QgsPostgresConn::postgisWkbTypeName( QGis::WkbType wkbType )
+QString QgsPostgresConn::postgisWkbTypeName( Qgis::WkbType wkbType )
 {
   QString geometryType;
   int dim;
@@ -1557,7 +1557,7 @@ QString QgsPostgresConn::postgisTypeFilter( QString geomCol, QgsWKBTypes::Type w
   }
 }
 
-int QgsPostgresConn::postgisWkbTypeDim( QGis::WkbType wkbType )
+int QgsPostgresConn::postgisWkbTypeDim( Qgis::WkbType wkbType )
 {
   QString geometryType;
   int dim;
@@ -1567,7 +1567,7 @@ int QgsPostgresConn::postgisWkbTypeDim( QGis::WkbType wkbType )
   return dim;
 }
 
-QGis::WkbType QgsPostgresConn::wkbTypeFromPostgis( const QString& type )
+Qgis::WkbType QgsPostgresConn::wkbTypeFromPostgis( const QString& type )
 {
   // Polyhedral surfaces and TIN are stored in PostGIS as geometry collections
   // of Polygons and Triangles.
@@ -1575,13 +1575,13 @@ QGis::WkbType QgsPostgresConn::wkbTypeFromPostgis( const QString& type )
   // we consider them as multipolygons. WKB will be converted by the feature iterator
   if (( type == "POLYHEDRALSURFACE" ) || ( type == "TIN" ) )
   {
-    return QGis::WKBMultiPolygon;
+    return Qgis::WKBMultiPolygon;
   }
   else if ( type == "TRIANGLE" )
   {
-    return QGis::WKBPolygon;
+    return Qgis::WKBPolygon;
   }
-  return ( QGis::WkbType )QgsWKBTypes::parseType( type );
+  return ( Qgis::WkbType )QgsWKBTypes::parseType( type );
 }
 
 QgsWKBTypes::Type QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
@@ -1598,7 +1598,7 @@ QgsWKBTypes::Type QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
   return ( QgsWKBTypes::Type ) wkbType;
 }
 
-QString QgsPostgresConn::displayStringForWkbType( QGis::WkbType type )
+QString QgsPostgresConn::displayStringForWkbType( Qgis::WkbType type )
 {
   return QgsWKBTypes::displayString( QgsWKBTypes::Type( type ) );
 }
@@ -1623,24 +1623,24 @@ QString QgsPostgresConn::displayStringForGeomType( QgsPostgresGeometryColumnType
   return QString::null;
 }
 
-QGis::WkbType QgsPostgresConn::wkbTypeFromGeomType( QGis::GeometryType geomType )
+Qgis::WkbType QgsPostgresConn::wkbTypeFromGeomType( Qgis::GeometryType geomType )
 {
   switch ( geomType )
   {
-    case QGis::Point:
-      return QGis::WKBPoint;
-    case QGis::Line:
-      return QGis::WKBLineString;
-    case QGis::Polygon:
-      return QGis::WKBPolygon;
-    case QGis::NoGeometry:
-      return QGis::WKBNoGeometry;
-    case QGis::UnknownGeometry:
-      return QGis::WKBUnknown;
+    case Qgis::Point:
+      return Qgis::WKBPoint;
+    case Qgis::Line:
+      return Qgis::WKBLineString;
+    case Qgis::Polygon:
+      return Qgis::WKBPolygon;
+    case Qgis::NoGeometry:
+      return Qgis::WKBNoGeometry;
+    case Qgis::UnknownGeometry:
+      return Qgis::WKBUnknown;
   }
 
   Q_ASSERT( !"unexpected geomType" );
-  return QGis::WKBUnknown;
+  return Qgis::WKBUnknown;
 }
 
 QStringList QgsPostgresConn::connectionList()

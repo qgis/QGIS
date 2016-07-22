@@ -91,7 +91,7 @@ QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl,
 
 bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer* vl, const QgsRectangle& areaOfInterest )
 {
-  if ( vl->geometryType() == QGis::NoGeometry || mStrategy == IndexNeverFull )
+  if ( vl->geometryType() == Qgis::NoGeometry || mStrategy == IndexNeverFull )
     return false;
 
   QgsPointLocator* loc = locatorForLayer( vl );
@@ -131,7 +131,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& p
 
   // get intersection points
   QList<QgsPoint> newPoints;
-  if ( g->wkbType() == QGis::WKBLineString )
+  if ( g->wkbType() == Qgis::WKBLineString )
   {
     Q_FOREACH ( const QgsPoint& p, g->asPolyline() )
     {
@@ -139,7 +139,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& p
         newPoints << p;
     }
   }
-  if ( g->wkbType() == QGis::WKBMultiLineString )
+  if ( g->wkbType() == Qgis::WKBMultiLineString )
   {
     Q_FOREACH ( const QgsPolyline& pl, g->asMultiPolyline() )
     {
@@ -330,7 +330,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest>& layers
   Q_FOREACH ( const LayerAndAreaOfInterest& entry, layers )
   {
     QgsVectorLayer* vl = entry.first;
-    if ( vl->geometryType() == QGis::NoGeometry || mStrategy == IndexNeverFull )
+    if ( vl->geometryType() == Qgis::NoGeometry || mStrategy == IndexNeverFull )
       continue;
 
     if ( !isIndexPrepared( vl, entry.second ) )

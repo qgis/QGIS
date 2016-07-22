@@ -80,8 +80,8 @@ class TestQgsRuleBasedRenderer: public QObject
       f3.setAttribute( idx, QVariant( 100 ) );
 
       // prepare renderer
-      QgsSymbolV2* s1 = QgsSymbolV2::defaultSymbol( QGis::Point );
-      QgsSymbolV2* s2 = QgsSymbolV2::defaultSymbol( QGis::Point );
+      QgsSymbolV2* s1 = QgsSymbolV2::defaultSymbol( Qgis::Point );
+      QgsSymbolV2* s2 = QgsSymbolV2::defaultSymbol( Qgis::Point );
       RRule* rootRule = new RRule( nullptr );
       rootRule->appendChild( new RRule( s1, 0, 0, "fld >= 5 and fld <= 20" ) );
       rootRule->appendChild( new RRule( s2, 0, 0, "fld <= 10" ) );

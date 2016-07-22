@@ -14,10 +14,10 @@ class QgsScaleCalculator
      * Constructor
      * @param dpi Monitor resolution in dots per inch
      * @param mapUnits Units of the data on the map. Must match a value from the
-     * QGis::UnitType enum (Meters, Feet, Degrees)
+     * Qgis::UnitType enum (Meters, Feet, Degrees)
      */
     QgsScaleCalculator( double dpi = 0,
-                        QGis::UnitType mapUnits = QGis::Meters );
+                        Qgis::UnitType mapUnits = Qgis::Meters );
 
     /**
      * Set the dpi to be used in scale calculations
@@ -35,10 +35,10 @@ class QgsScaleCalculator
      * Set the map units
      * @param mapUnits Units of the data on the map. Must match a value from the
      */
-    void setMapUnits( QGis::UnitType mapUnits );
+    void setMapUnits( Qgis::UnitType mapUnits );
 
     /** Returns current map units */
-    QGis::UnitType mapUnits() const;
+    Qgis::UnitType mapUnits() const;
 
     /**
      * Calculate the scale denominator

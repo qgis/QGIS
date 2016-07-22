@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsWKBTypes
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsWKBTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -111,7 +111,7 @@ class Clip(GeoAlgorithm):
                 if found:
                     cur_geom = QgsGeometry(outFeat.geometry())
                     new_geom = QgsGeometry(geom.intersection(cur_geom))
-                    if new_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                    if new_geom.wkbType() == Qgis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                         int_com = QgsGeometry(geom.combine(cur_geom))
                         int_sym = QgsGeometry(geom.symDifference(cur_geom))
                         new_geom = QgsGeometry(int_com.difference(int_sym))

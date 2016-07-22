@@ -26,7 +26,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* s
     return;
 
   // the renderer only applies to point vector layers
-  if ( layer->geometryType() != QGis::Polygon )
+  if ( layer->geometryType() != Qgis::Polygon )
   {
     //setup blank dialog
     QGridLayout* layout = new QGridLayout( this );

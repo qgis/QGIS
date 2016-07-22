@@ -26,7 +26,7 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -60,7 +60,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         fieldList = layerA.pendingFields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                                                                     QGis.WKBLineString, layerA.dataProvider().crs())
+                                                                     Qgis.WKBLineString, layerA.dataProvider().crs())
 
         spatialIndex = vector.spatialindex(layerB)
 

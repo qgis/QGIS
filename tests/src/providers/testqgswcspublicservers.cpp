@@ -236,7 +236,7 @@ int TestQgsWcsPublicServers::issueOffender( const QString & url, const QString &
     }
     else
     {
-      offender |= QGisOffender;
+      offender |= QgisOffender;
     }
   }
   return offender;
@@ -681,7 +681,7 @@ void TestQgsWcsPublicServers::report()
               {
                 cls = "cell-err-server";
               }
-              else if ( offender == QGisOffender )
+              else if ( offender == QgisOffender )
               {
                 cls = "cell-err-qgis";
               }

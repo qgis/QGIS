@@ -263,34 +263,34 @@ bool QgsGrassRasterImport::import()
       blueBand = band;
     }
 
-    QGis::DataType qgis_out_type = QGis::UnknownDataType;
+    Qgis::DataType qgis_out_type = Qgis::UnknownDataType;
 #ifdef QGISDEBUG
     RASTER_MAP_TYPE data_type = -1;
 #endif
     switch ( provider->dataType( band ) )
     {
-      case QGis::Byte:
-      case QGis::UInt16:
-      case QGis::Int16:
-      case QGis::UInt32:
-      case QGis::Int32:
-        qgis_out_type = QGis::Int32;
+      case Qgis::Byte:
+      case Qgis::UInt16:
+      case Qgis::Int16:
+      case Qgis::UInt32:
+      case Qgis::Int32:
+        qgis_out_type = Qgis::Int32;
         break;
-      case QGis::Float32:
-        qgis_out_type = QGis::Float32;
+      case Qgis::Float32:
+        qgis_out_type = Qgis::Float32;
         break;
-      case QGis::Float64:
-        qgis_out_type = QGis::Float64;
+      case Qgis::Float64:
+        qgis_out_type = Qgis::Float64;
         break;
-      case QGis::ARGB32:
-      case QGis::ARGB32_Premultiplied:
-        qgis_out_type = QGis::Int32;  // split to multiple bands?
+      case Qgis::ARGB32:
+      case Qgis::ARGB32_Premultiplied:
+        qgis_out_type = Qgis::Int32;  // split to multiple bands?
         break;
-      case QGis::CInt16:
-      case QGis::CInt32:
-      case QGis::CFloat32:
-      case QGis::CFloat64:
-      case QGis::UnknownDataType:
+      case Qgis::CInt16:
+      case Qgis::CInt32:
+      case Qgis::CFloat32:
+      case Qgis::CFloat64:
+      case Qgis::UnknownDataType:
         setError( tr( "Data type %1 not supported" ).arg( provider->dataType( band ) ) );
         return false;
     }
@@ -377,13 +377,13 @@ bool QgsGrassRasterImport::import()
         {
           switch ( qgis_out_type )
           {
-            case QGis::Int32:
+            case Qgis::Int32:
               noDataValue = -2147483648.0;
               break;
-            case QGis::Float32:
+            case Qgis::Float32:
               noDataValue = std::numeric_limits<float>::max() * -1.0;
               break;
-            case QGis::Float64:
+            case Qgis::Float64:
               noDataValue = std::numeric_limits<double>::max() * -1.0;
               break;
             default: // should not happen
@@ -595,8 +595,8 @@ bool QgsGrassVectorImport::import()
   QDataStream outStream( mProcess );
   mProcess->setReadChannel( QProcess::StandardOutput );
 
-  QGis::WkbType wkbType = mProvider->geometryType();
-  bool isPolygon = QGis::singleType( QGis::flatType( wkbType ) ) == QGis::WKBPolygon;
+  Qgis::WkbType wkbType = mProvider->geometryType();
+  bool isPolygon = Qgis::singleType( Qgis::flatType( wkbType ) ) == Qgis::WKBPolygon;
   outStream << ( qint32 )wkbType;
 
   outStream << mProvider->fields();

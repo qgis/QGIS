@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 from qgis.core import (QgsCrsCache,
                        QgsCoordinateReferenceSystem,
-                       QGis,
+                       Qgis,
                        QgsUnitTypes
                        )
 

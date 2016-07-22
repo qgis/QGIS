@@ -182,7 +182,7 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVec
 
   spinOffset->setClearValue( 0.0 );
 
-  if ( vl && vl->geometryType() != QGis::Polygon )
+  if ( vl && vl->geometryType() != Qgis::Polygon )
   {
     //draw inside polygon checkbox only makes sense for polygon layers
     mDrawInsideCheckBox->hide();

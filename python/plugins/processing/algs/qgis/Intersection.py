@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWKBTypes
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWKBTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -41,9 +41,9 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 wkbTypeGroups = {
-    'Point': (QGis.WKBPoint, QGis.WKBMultiPoint, QGis.WKBPoint25D, QGis.WKBMultiPoint25D,),
-    'LineString': (QGis.WKBLineString, QGis.WKBMultiLineString, QGis.WKBLineString25D, QGis.WKBMultiLineString25D,),
-    'Polygon': (QGis.WKBPolygon, QGis.WKBMultiPolygon, QGis.WKBPolygon25D, QGis.WKBMultiPolygon25D,),
+    'Point': (Qgis.WKBPoint, Qgis.WKBMultiPoint, Qgis.WKBPoint25D, Qgis.WKBMultiPoint25D,),
+    'LineString': (Qgis.WKBLineString, Qgis.WKBMultiLineString, Qgis.WKBLineString25D, Qgis.WKBMultiLineString25D,),
+    'Polygon': (Qgis.WKBPolygon, Qgis.WKBMultiPolygon, Qgis.WKBPolygon25D, Qgis.WKBMultiPolygon25D,),
 }
 for key, value in wkbTypeGroups.items():
     for const in value:
@@ -95,7 +95,7 @@ class Intersection(GeoAlgorithm):
                 if geom.intersects(tmpGeom):
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
-                    if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                    if int_geom.wkbType() == Qgis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                         int_com = geom.combine(tmpGeom)
                         int_sym = geom.symDifference(tmpGeom)
                         int_geom = QgsGeometry(int_com.difference(int_sym))

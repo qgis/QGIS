@@ -666,7 +666,7 @@ void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolV2Rend
     if ( f )
     {
       const QgsGeometry *g = f->constGeometry();
-      if ( g && g->type() == QGis::Point )
+      if ( g && g->type() == Qgis::Point )
       {
         const QgsMapToPixel& m2p = context.renderContext().mapToPixel();
         angle += m2p.mapRotation();
@@ -2131,7 +2131,7 @@ void QgsSvgMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2RenderCon
     if ( f )
     {
       const QgsGeometry *g = f->constGeometry();
-      if ( g && g->type() == QGis::Point )
+      if ( g && g->type() == Qgis::Point )
       {
         const QgsMapToPixel& m2p = context.renderContext().mapToPixel();
         angle += m2p.mapRotation();
@@ -2661,7 +2661,7 @@ void QgsFontMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2RenderCo
     if ( f )
     {
       const QgsGeometry *g = f->constGeometry();
-      if ( g && g->type() == QGis::Point )
+      if ( g && g->type() == Qgis::Point )
       {
         const QgsMapToPixel& m2p = context.renderContext().mapToPixel();
         angle += m2p.mapRotation();

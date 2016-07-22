@@ -59,7 +59,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
-      QGis::WkbType wkbType,
+      Qgis::WkbType wkbType,
       const QgsCoordinateReferenceSystem& srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
@@ -106,7 +106,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * WKBMultiPolygon
      * as defined in qgis.h
      */
-    QGis::WkbType geometryType() const override;
+    Qgis::WkbType geometryType() const override;
 
     /** Return the number of layers for the current data source
      *
@@ -336,7 +336,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QString mIndexGeometry;
 
     //! Geometry type
-    QGis::WkbType mGeomType;
+    Qgis::WkbType mGeomType;
 
     //! SQLite handle
     sqlite3 *mSqliteHandle;

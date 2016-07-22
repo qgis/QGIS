@@ -422,7 +422,7 @@ void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRange
 
 typedef QgsRasterDataProvider * createFunction_t( const QString&,
     const QString&, int,
-    QGis::DataType,
+    Qgis::DataType,
     int, int, double*,
     const QgsCoordinateReferenceSystem&,
     QStringList );
@@ -430,7 +430,7 @@ typedef QgsRasterDataProvider * createFunction_t( const QString&,
 QgsRasterDataProvider* QgsRasterDataProvider::create( const QString &providerKey,
     const QString &uri,
     const QString& format, int nBands,
-    QGis::DataType type,
+    Qgis::DataType type,
     int width, int height, double* geoTransform,
     const QgsCoordinateReferenceSystem& crs,
     const QStringList& createOptions )

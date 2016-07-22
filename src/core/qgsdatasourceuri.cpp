@@ -699,9 +699,9 @@ void QgsDataSourceURI::setDatabase( const QString &database )
   mDatabase = database;
 }
 
-QGis::WkbType QgsDataSourceURI::wkbType() const
+Qgis::WkbType QgsDataSourceURI::wkbType() const
 {
-  return QGis::fromNewWkbType( mWkbType );
+  return Qgis::fromNewWkbType( mWkbType );
 }
 
 QgsWKBTypes::Type QgsDataSourceURI::newWkbType() const
@@ -709,9 +709,9 @@ QgsWKBTypes::Type QgsDataSourceURI::newWkbType() const
   return mWkbType;
 }
 
-void QgsDataSourceURI::setWkbType( QGis::WkbType wkbType )
+void QgsDataSourceURI::setWkbType( Qgis::WkbType wkbType )
 {
-  mWkbType = QGis::fromOldWkbType( wkbType );
+  mWkbType = Qgis::fromOldWkbType( wkbType );
 }
 
 void QgsDataSourceURI::setWkbType( QgsWKBTypes::Type wkbType )

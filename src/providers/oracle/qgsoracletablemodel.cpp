@@ -55,16 +55,16 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
-    QGis::WkbType wkbType = layerProperty.types[ i ];
+    Qgis::WkbType wkbType = layerProperty.types[ i ];
     int srid = layerProperty.srids[ i ];
 
 
     QString tip;
-    if ( wkbType == QGis::WKBUnknown )
+    if ( wkbType == Qgis::WKBUnknown )
     {
       tip = tr( "Specify a geometry type" );
     }
-    else if ( wkbType != QGis::WKBNoGeometry && srid == 0 )
+    else if ( wkbType != Qgis::WKBNoGeometry && srid == 0 )
     {
       tip = tr( "Enter a SRID" );
     }
@@ -75,16 +75,16 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     }
 
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
-    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QGis::WKBUnknown ? tr( "Select..." ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
-    typeItem->setData( wkbType == QGis::WKBUnknown, Qt::UserRole + 1 );
+    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == Qgis::WKBUnknown ? tr( "Select..." ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
+    typeItem->setData( wkbType == Qgis::WKBUnknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
-    if ( wkbType == QGis::WKBUnknown )
+    if ( wkbType == Qgis::WKBUnknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != QGis::WKBNoGeometry ? QString::number( srid ) : "" );
-    sridItem->setEditable( wkbType != QGis::WKBNoGeometry && srid == 0 );
+    QStandardItem *sridItem  = new QStandardItem( wkbType != Qgis::WKBNoGeometry ? QString::number( srid ) : "" );
+    sridItem->setEditable( wkbType != Qgis::WKBNoGeometry && srid == 0 );
     if ( sridItem->isEditable() )
     {
       sridItem->setText( tr( "Enter..." ) );
@@ -225,28 +225,28 @@ void QgsOracleTableModel::setSql( const QModelIndex &index, const QString &sql )
   }
 }
 
-QIcon QgsOracleTableModel::iconForWkbType( QGis::WkbType type )
+QIcon QgsOracleTableModel::iconForWkbType( Qgis::WkbType type )
 {
   switch ( type )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case Qgis::WKBPoint:
+    case Qgis::WKBPoint25D:
+    case Qgis::WKBMultiPoint:
+    case Qgis::WKBMultiPoint25D:
       return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case Qgis::WKBLineString:
+    case Qgis::WKBLineString25D:
+    case Qgis::WKBMultiLineString:
+    case Qgis::WKBMultiLineString25D:
       return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBPolygon:
+    case Qgis::WKBPolygon25D:
+    case Qgis::WKBMultiPolygon:
+    case Qgis::WKBMultiPolygon25D:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-    case QGis::WKBNoGeometry:
+    case Qgis::WKBNoGeometry:
       return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
-    case QGis::WKBUnknown:
+    case Qgis::WKBUnknown:
       break;
   }
   return QgsApplication::getThemeIcon( "/mIconLayer.png" );
@@ -259,14 +259,14 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
 
   if ( idx.column() == dbtmType || idx.column() == dbtmSrid || idx.column() == dbtmPkCol )
   {
-    QGis::WkbType wkbType = ( QGis::WkbType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
+    Qgis::WkbType wkbType = ( Qgis::WkbType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
 
     QString tip;
-    if ( wkbType == QGis::WKBUnknown )
+    if ( wkbType == Qgis::WKBUnknown )
     {
       tip = tr( "Specify a geometry type" );
     }
-    else if ( wkbType != QGis::WKBNoGeometry )
+    else if ( wkbType != Qgis::WKBNoGeometry )
     {
       bool ok;
       int srid = idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
@@ -312,8 +312,8 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
     return QString::null;
   }
 
-  QGis::WkbType wkbType = ( QGis::WkbType ) itemFromIndex( index.sibling( index.row(), dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
-  if ( wkbType == QGis::WKBUnknown )
+  Qgis::WkbType wkbType = ( Qgis::WkbType ) itemFromIndex( index.sibling( index.row(), dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  if ( wkbType == Qgis::WKBUnknown )
   {
     QgsDebugMsg( "unknown geometry type" );
     // no geometry type selected
@@ -337,7 +337,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
 
   QString geomColumnName;
   QString srid;
-  if ( wkbType != QGis::WKBNoGeometry )
+  if ( wkbType != Qgis::WKBNoGeometry )
   {
     geomColumnName = index.sibling( index.row(), dbtmGeomCol ).data( Qt::DisplayRole ).toString();
 

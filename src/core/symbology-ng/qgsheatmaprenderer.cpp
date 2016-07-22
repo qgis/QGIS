@@ -110,7 +110,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
     return false;
   }
 
-  if ( !feature.constGeometry() || feature.constGeometry()->type() != QGis::Point )
+  if ( !feature.constGeometry() || feature.constGeometry()->type() != Qgis::Point )
   {
     //can only render point type
     return false;

@@ -81,7 +81,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSetti
     bool ownsSource, QgsFeatureRendererV2* renderer )
     : QgsAbstractLabelProvider( layerId )
     , mSettings( settings )
-    , mLayerGeometryType( QGis::UnknownGeometry )
+    , mLayerGeometryType( Qgis::UnknownGeometry )
     , mRenderer( renderer )
     , mFields( fields )
     , mCrs( crs )
@@ -105,7 +105,7 @@ void QgsVectorLayerLabelProvider::init()
   if ( mSettings.labelPerPart ) mFlags |= LabelPerFeaturePart;
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
-  if ( mLayerGeometryType == QGis::Point && mRenderer )
+  if ( mLayerGeometryType == Qgis::Point && mRenderer )
   {
     //override obstacle type to treat any intersection of a label with the point symbol as a high cost conflict
     mObstacleType = QgsPalLayerSettings::PolygonWhole;
@@ -290,7 +290,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
     if ( mRenderer )
     {
       QgsSymbolV2List symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
-      if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
+      if ( !symbols.isEmpty() && fet.constGeometry()->type() == Qgis::Point )
       {
         //point feature, use symbol bounds as obstacle
         obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols ) );
@@ -323,7 +323,7 @@ void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRende
 
 QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolV2List& symbols )
 {
-  if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() || fet.constGeometry()->type() != QGis::Point )
+  if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() || fet.constGeometry()->type() != Qgis::Point )
     return nullptr;
 
   bool isMultiPoint = fet.constGeometry()->geometry()->nCoordinates() > 1;

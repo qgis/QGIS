@@ -21,7 +21,7 @@ email                : lorenxo86@gmail.com
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QLocale, QFileInfo, QTranslator
 from qgis.PyQt.QtWidgets import QMessageBox, QMenu, QAction
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QGis
+from qgis.core import Qgis
 import qgis.utils
 
 # are all dependencies satisfied?
@@ -35,7 +35,7 @@ try:
 except ImportError as e:
     valid = False
 
-    # if the plugin is shipped with QGis catch the exception and
+    # if the plugin is shipped with Qgis catch the exception and
     # display an error message
     import os.path
     qgisUserPluginPath = qgis.utils.home_plugin_path
@@ -62,11 +62,11 @@ class GdalTools:
         # Save reference to the QGIS interface
         self.iface = iface
         try:
-            self.QgisVersion = unicode(QGis.QGIS_VERSION_INT)
+            self.QgisVersion = unicode(Qgis.QGIS_VERSION_INT)
         except:
-            self.QgisVersion = unicode(QGis.qgisVersion)[0]
+            self.QgisVersion = unicode(Qgis.qgisVersion)[0]
 
-        if QGis.QGIS_VERSION[0:3] < "1.5":
+        if Qgis.QGIS_VERSION[0:3] < "1.5":
             # For i18n support
             userPluginPath = qgis.utils.home_plugin_path + "/GdalTools"
             systemPluginPath = qgis.utils.sys_plugin_path + "/GdalTools"

@@ -220,7 +220,7 @@ private:
     }
 
     QgsVectorDataProvider* provider = mLayer ? mLayer->dataProvider() : mProvider;
-    if ( provider->geometryType() != QGis::WKBNoGeometry )
+    if ( provider->geometryType() != Qgis::WKBNoGeometry )
     {
       // we have here a convenient hack
       // the type of a column can be declared with two numeric arguments, usually for setting numeric precision
@@ -313,7 +313,7 @@ struct VTableCursor
 void getGeometryType( const QgsVectorDataProvider* provider, QString& geometryTypeStr, int& geometryDim, int& geometryWkbType, long& srid )
 {
   srid = const_cast<QgsVectorDataProvider*>( provider )->crs().postgisSrid();
-  QgsWKBTypes::Type t = QGis::fromOldWkbType( provider->geometryType() );
+  QgsWKBTypes::Type t = Qgis::fromOldWkbType( provider->geometryType() );
   geometryTypeStr = QgsWKBTypes::displayString( t );
   geometryDim = QgsWKBTypes::coordDimensions( t );
   if (( t != QgsWKBTypes::NoGeometry ) && ( t != QgsWKBTypes::Unknown ) )

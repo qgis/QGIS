@@ -95,7 +95,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 QgsVectorLayerImport::ImportError
 QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
     const QgsFields &fields,
-    QGis::WkbType wkbType,
+    Qgis::WkbType wkbType,
     const QgsCoordinateReferenceSystem& srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
@@ -227,53 +227,53 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
 
       switch ( wkbType )
       {
-        case QGis::WKBPoint25D:
+        case Qgis::WKBPoint25D:
           dim = 3;
           FALLTHROUGH;
-        case QGis::WKBPoint:
+        case Qgis::WKBPoint:
           geometryType = "POINT";
           break;
 
-        case QGis::WKBLineString25D:
+        case Qgis::WKBLineString25D:
           dim = 3;
           FALLTHROUGH;
-        case QGis::WKBLineString:
+        case Qgis::WKBLineString:
           geometryType = "LINESTRING";
           break;
 
-        case QGis::WKBPolygon25D:
+        case Qgis::WKBPolygon25D:
           dim = 3;
           FALLTHROUGH;
-        case QGis::WKBPolygon:
+        case Qgis::WKBPolygon:
           geometryType = "POLYGON";
           break;
 
-        case QGis::WKBMultiPoint25D:
+        case Qgis::WKBMultiPoint25D:
           dim = 3;
           FALLTHROUGH;
-        case QGis::WKBMultiPoint:
+        case Qgis::WKBMultiPoint:
           geometryType = "MULTIPOINT";
           break;
 
-        case QGis::WKBMultiLineString25D:
+        case Qgis::WKBMultiLineString25D:
           dim = 3;
           FALLTHROUGH;
-        case QGis::WKBMultiLineString:
+        case Qgis::WKBMultiLineString:
           geometryType = "MULTILINESTRING";
           break;
 
-        case QGis::WKBMultiPolygon25D:
+        case Qgis::WKBMultiPolygon25D:
           dim = 3;
           FALLTHROUGH;
-        case QGis::WKBMultiPolygon:
+        case Qgis::WKBMultiPolygon:
           geometryType = "MULTIPOLYGON";
           break;
 
-        case QGis::WKBUnknown:
+        case Qgis::WKBUnknown:
           geometryType = "GEOMETRY";
           break;
 
-        case QGis::WKBNoGeometry:
+        case Qgis::WKBNoGeometry:
         default:
           dim = 0;
           break;
@@ -418,7 +418,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     , mViewBased( false )
     , mVShapeBased( false )
     , mReadOnly( false )
-    , mGeomType( QGis::WKBUnknown )
+    , mGeomType( Qgis::WKBUnknown )
     , mSqliteHandle( nullptr )
     , mSrid( -1 )
     , mNumberFeatures( 0 )
@@ -3310,7 +3310,7 @@ size_t QgsSpatiaLiteProvider::layerCount() const
 /**
  * Return the feature type
  */
-QGis::WkbType QgsSpatiaLiteProvider::geometryType() const
+Qgis::WkbType QgsSpatiaLiteProvider::geometryType() const
 {
   return mGeomType;
 }
@@ -3584,23 +3584,23 @@ QString QgsSpatiaLiteProvider::geomParam() const
 
   switch ( geometryType() )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBLineString:
-    case QGis::WKBPolygon:
-    case QGis::WKBPoint25D:
-    case QGis::WKBLineString25D:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBUnknown:
-    case QGis::WKBNoGeometry:
+    case Qgis::WKBPoint:
+    case Qgis::WKBLineString:
+    case Qgis::WKBPolygon:
+    case Qgis::WKBPoint25D:
+    case Qgis::WKBLineString25D:
+    case Qgis::WKBPolygon25D:
+    case Qgis::WKBUnknown:
+    case Qgis::WKBNoGeometry:
       forceMulti = false;
       break;
 
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPoint25D:
-    case QGis::WKBMultiLineString25D:
-    case QGis::WKBMultiPolygon25D:
+    case Qgis::WKBMultiPoint:
+    case Qgis::WKBMultiLineString:
+    case Qgis::WKBMultiPolygon:
+    case Qgis::WKBMultiPoint25D:
+    case Qgis::WKBMultiLineString25D:
+    case Qgis::WKBMultiPolygon25D:
       forceMulti = true;
       break;
   }
@@ -4418,25 +4418,25 @@ bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayer
   switch ( lyr->GeometryType )
   {
     case GAIA_VECTOR_POINT:
-      mGeomType = QGis::WKBPoint;
+      mGeomType = Qgis::WKBPoint;
       break;
     case GAIA_VECTOR_LINESTRING:
-      mGeomType = QGis::WKBLineString;
+      mGeomType = Qgis::WKBLineString;
       break;
     case GAIA_VECTOR_POLYGON:
-      mGeomType = QGis::WKBPolygon;
+      mGeomType = Qgis::WKBPolygon;
       break;
     case GAIA_VECTOR_MULTIPOINT:
-      mGeomType = QGis::WKBMultiPoint;
+      mGeomType = Qgis::WKBMultiPoint;
       break;
     case GAIA_VECTOR_MULTILINESTRING:
-      mGeomType = QGis::WKBMultiLineString;
+      mGeomType = Qgis::WKBMultiLineString;
       break;
     case GAIA_VECTOR_MULTIPOLYGON:
-      mGeomType = QGis::WKBMultiPolygon;
+      mGeomType = Qgis::WKBMultiPolygon;
       break;
     default:
-      mGeomType = QGis::WKBUnknown;
+      mGeomType = Qgis::WKBUnknown;
       break;
   }
 
@@ -4519,7 +4519,7 @@ bool QgsSpatiaLiteProvider::getGeometryDetails()
   bool ret = false;
   if ( mGeometryColumn.isEmpty() )
   {
-    mGeomType = QGis::WKBNoGeometry;
+    mGeomType = Qgis::WKBNoGeometry;
     return true;
   }
 
@@ -4566,27 +4566,27 @@ bool QgsSpatiaLiteProvider::getTableGeometryDetails()
 
       if ( fType == "POINT" )
       {
-        mGeomType = QGis::WKBPoint;
+        mGeomType = Qgis::WKBPoint;
       }
       else if ( fType == "MULTIPOINT" )
       {
-        mGeomType = QGis::WKBMultiPoint;
+        mGeomType = Qgis::WKBMultiPoint;
       }
       else if ( fType == "LINESTRING" )
       {
-        mGeomType = QGis::WKBLineString;
+        mGeomType = Qgis::WKBLineString;
       }
       else if ( fType == "MULTILINESTRING" )
       {
-        mGeomType = QGis::WKBMultiLineString;
+        mGeomType = Qgis::WKBMultiLineString;
       }
       else if ( fType == "POLYGON" )
       {
-        mGeomType = QGis::WKBPolygon;
+        mGeomType = Qgis::WKBPolygon;
       }
       else if ( fType == "MULTIPOLYGON" )
       {
-        mGeomType = QGis::WKBMultiPolygon;
+        mGeomType = Qgis::WKBMultiPolygon;
       }
       mSrid = xSrid.toInt();
       if ( spatialIndex.toInt() == 1 )
@@ -4618,7 +4618,7 @@ bool QgsSpatiaLiteProvider::getTableGeometryDetails()
   }
   sqlite3_free_table( results );
 
-  if ( mGeomType == QGis::WKBUnknown || mSrid < 0 )
+  if ( mGeomType == Qgis::WKBUnknown || mSrid < 0 )
     goto error;
 
   return getSridDetails();
@@ -4665,27 +4665,27 @@ bool QgsSpatiaLiteProvider::getViewGeometryDetails()
 
       if ( fType == "POINT" )
       {
-        mGeomType = QGis::WKBPoint;
+        mGeomType = Qgis::WKBPoint;
       }
       else if ( fType == "MULTIPOINT" )
       {
-        mGeomType = QGis::WKBMultiPoint;
+        mGeomType = Qgis::WKBMultiPoint;
       }
       else if ( fType == "LINESTRING" )
       {
-        mGeomType = QGis::WKBLineString;
+        mGeomType = Qgis::WKBLineString;
       }
       else if ( fType == "MULTILINESTRING" )
       {
-        mGeomType = QGis::WKBMultiLineString;
+        mGeomType = Qgis::WKBMultiLineString;
       }
       else if ( fType == "POLYGON" )
       {
-        mGeomType = QGis::WKBPolygon;
+        mGeomType = Qgis::WKBPolygon;
       }
       else if ( fType == "MULTIPOLYGON" )
       {
-        mGeomType = QGis::WKBMultiPolygon;
+        mGeomType = Qgis::WKBMultiPolygon;
       }
       mSrid = xSrid.toInt();
       if ( spatialIndex.toInt() == 1 )
@@ -4701,7 +4701,7 @@ bool QgsSpatiaLiteProvider::getViewGeometryDetails()
   }
   sqlite3_free_table( results );
 
-  if ( mGeomType == QGis::WKBUnknown || mSrid < 0 )
+  if ( mGeomType == Qgis::WKBUnknown || mSrid < 0 )
     goto error;
 
   return getSridDetails();
@@ -4743,27 +4743,27 @@ bool QgsSpatiaLiteProvider::getVShapeGeometryDetails()
 
       if ( fType == "POINT" )
       {
-        mGeomType = QGis::WKBPoint;
+        mGeomType = Qgis::WKBPoint;
       }
       else if ( fType == "MULTIPOINT" )
       {
-        mGeomType = QGis::WKBMultiPoint;
+        mGeomType = Qgis::WKBMultiPoint;
       }
       else if ( fType == "LINESTRING" )
       {
-        mGeomType = QGis::WKBLineString;
+        mGeomType = Qgis::WKBLineString;
       }
       else if ( fType == "MULTILINESTRING" )
       {
-        mGeomType = QGis::WKBMultiLineString;
+        mGeomType = Qgis::WKBMultiLineString;
       }
       else if ( fType == "POLYGON" )
       {
-        mGeomType = QGis::WKBPolygon;
+        mGeomType = Qgis::WKBPolygon;
       }
       else if ( fType == "MULTIPOLYGON" )
       {
-        mGeomType = QGis::WKBMultiPolygon;
+        mGeomType = Qgis::WKBMultiPolygon;
       }
       mSrid = xSrid.toInt();
 
@@ -4771,7 +4771,7 @@ bool QgsSpatiaLiteProvider::getVShapeGeometryDetails()
   }
   sqlite3_free_table( results );
 
-  if ( mGeomType == QGis::WKBUnknown || mSrid < 0 )
+  if ( mGeomType == Qgis::WKBUnknown || mSrid < 0 )
     goto error;
 
   return getSridDetails();
@@ -4862,32 +4862,32 @@ bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
 
     if ( fType == "POINT" )
     {
-      mGeomType = QGis::WKBPoint;
+      mGeomType = Qgis::WKBPoint;
     }
     else if ( fType == "MULTIPOINT" )
     {
-      mGeomType = QGis::WKBMultiPoint;
+      mGeomType = Qgis::WKBMultiPoint;
     }
     else if ( fType == "LINESTRING" )
     {
-      mGeomType = QGis::WKBLineString;
+      mGeomType = Qgis::WKBLineString;
     }
     else if ( fType == "MULTILINESTRING" )
     {
-      mGeomType = QGis::WKBMultiLineString;
+      mGeomType = Qgis::WKBMultiLineString;
     }
     else if ( fType == "POLYGON" )
     {
-      mGeomType = QGis::WKBPolygon;
+      mGeomType = Qgis::WKBPolygon;
     }
     else if ( fType == "MULTIPOLYGON" )
     {
-      mGeomType = QGis::WKBMultiPolygon;
+      mGeomType = Qgis::WKBMultiPolygon;
     }
     mSrid = xSrid.toInt();
   }
 
-  if ( mGeomType == QGis::WKBUnknown || mSrid < 0 )
+  if ( mGeomType == Qgis::WKBUnknown || mSrid < 0 )
     goto error;
 
   return getSridDetails();
@@ -5073,7 +5073,7 @@ QGISEXTERN bool isProvider()
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
   const QgsFields &fields,
-  QGis::WkbType wkbType,
+  Qgis::WkbType wkbType,
   const QgsCoordinateReferenceSystem& srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,

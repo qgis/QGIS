@@ -32,7 +32,7 @@ class QgsRasterRenderer : QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual QGis::DataType dataType( int bandNo ) const;
+    virtual Qgis::DataType dataType( int bandNo ) const;
 
     virtual QString type() const;
 

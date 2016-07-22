@@ -87,7 +87,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
      */
     void repopulateComboBoxUnits( bool isArea );
 
-    double convertLength( double length, QGis::UnitType toUnit ) const;
+    double convertLength( double length, Qgis::UnitType toUnit ) const;
 
     double convertArea( double area, QgsUnitTypes::AreaUnit toUnit ) const;
 
@@ -100,10 +100,10 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     int mDecimalPlaces;
 
     //! Current unit for input values
-    QGis::UnitType mCanvasUnits;
+    Qgis::UnitType mCanvasUnits;
 
     //! Current unit for distance values
-    QGis::UnitType mDistanceUnits;
+    Qgis::UnitType mDistanceUnits;
 
     //! Current unit for area values
     QgsUnitTypes::AreaUnit mAreaUnits;

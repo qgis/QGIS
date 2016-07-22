@@ -120,7 +120,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     bool mVertexMarkerOnlyForSelection;
     int mVertexMarkerStyle, mVertexMarkerSize;
 
-    QGis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
 
     QStringList mAttrNames;
 

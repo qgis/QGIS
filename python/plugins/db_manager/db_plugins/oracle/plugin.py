@@ -379,9 +379,9 @@ class ORTable(Table):
         from .data_model import ORTableDataModel
         return ORTableDataModel(self, parent)
 
-    def getValidQGisUniqueFields(self, onlyOne=False):
-        """ list of fields valid to load the table as layer in QGis canvas.
-        QGis automatically search for a valid unique field, so it's
+    def getValidQgisUniqueFields(self, onlyOne=False):
+        """ list of fields valid to load the table as layer in Qgis canvas.
+        Qgis automatically search for a valid unique field, so it's
         needed only for queries and views.
         """
 
@@ -421,7 +421,7 @@ class ORTable(Table):
         schema = self.schemaName() if self.schemaName() else ''
         geomCol = self.geomColumn if self.type in [
             Table.VectorType, Table.RasterType] else ""
-        uniqueCol = self.getValidQGisUniqueFields(
+        uniqueCol = self.getValidQgisUniqueFields(
             True) if self.isView else None
         uri.setDataSource(schema, self.name, geomCol if geomCol else None,
                           None, uniqueCol.name if uniqueCol else "")

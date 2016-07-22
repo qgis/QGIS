@@ -928,15 +928,15 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 }
 
 
-QGis::DataType QgsWmsProvider::dataType( int bandNo ) const
+Qgis::DataType QgsWmsProvider::dataType( int bandNo ) const
 {
   return sourceDataType( bandNo );
 }
 
-QGis::DataType QgsWmsProvider::sourceDataType( int bandNo ) const
+Qgis::DataType QgsWmsProvider::sourceDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
-  return QGis::ARGB32;
+  return Qgis::ARGB32;
 }
 
 int QgsWmsProvider::bandCount() const
@@ -2110,13 +2110,13 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       // set resolution approximately to 1mm
       switch ( crs.mapUnits() )
       {
-        case QGis::Meters:
+        case Qgis::Meters:
           xRes = 0.001;
           break;
-        case QGis::Feet:
+        case Qgis::Feet:
           xRes = 0.003;
           break;
-        case QGis::Degrees:
+        case Qgis::Degrees:
           // max length of degree of latitude on pole is 111694 m
           xRes = 1e-8;
           break;
@@ -2524,7 +2524,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
         QgsDebugMsg( "GML UTF-8 (first 2000 bytes):\n" + gmlByteArray.left( 2000 ) );
 
-        QGis::WkbType wkbType;
+        Qgis::WkbType wkbType;
         QgsGmlSchema gmlSchema;
 
         if ( xsdPart >= 0 )  // XSD available

@@ -24,7 +24,7 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtWidgets import QWidget
-from qgis.core import QGis
+from qgis.core import Qgis
 
 from .ui_widgetClipper import Ui_GdalToolsWidget as Ui_Widget
 from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -109,7 +109,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
-        self.maskSelector.setLayers([x for x in Utils.LayerRegistry.instance().getVectorLayers() if x.geometryType() == QGis.Polygon])
+        self.maskSelector.setLayers([x for x in Utils.LayerRegistry.instance().getVectorLayers() if x.geometryType() == Qgis.Polygon])
         self.checkRun()
 
     def fillInputFileEdit(self):

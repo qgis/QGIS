@@ -189,14 +189,14 @@ class CORE_EXPORT QgsDataSourceURI
 
     /** The (old) wkb type.
         @deprecated Will return QgsWKBTypes::Type in 3.0. Prefer newWkbType() in the meantime */
-    Q_DECL_DEPRECATED QGis::WkbType wkbType() const;
+    Q_DECL_DEPRECATED Qgis::WkbType wkbType() const;
 
     /** The wkb type.
         @note Will be removed in 3.0 */
     QgsWKBTypes::Type newWkbType() const;
 
     //! @deprecated See setWkbType( QgsWKBTypes::Type )
-    Q_DECL_DEPRECATED void setWkbType( QGis::WkbType type );
+    Q_DECL_DEPRECATED void setWkbType( Qgis::WkbType type );
 
     //! Sets the wkb type
     void setWkbType( QgsWKBTypes::Type type );

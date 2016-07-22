@@ -101,7 +101,7 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
   QDomElement redContrastElem = elem.firstChildElement( "redContrastEnhancement" );
   if ( !redContrastElem.isNull() )
   {
-    redContrastEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
+    redContrastEnhancement = new QgsContrastEnhancement(( Qgis::DataType )(
           input->dataType( redBand ) ) );
     redContrastEnhancement->readXml( redContrastElem );
   }
@@ -110,7 +110,7 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
   QDomElement greenContrastElem = elem.firstChildElement( "greenContrastEnhancement" );
   if ( !greenContrastElem.isNull() )
   {
-    greenContrastEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
+    greenContrastEnhancement = new QgsContrastEnhancement(( Qgis::DataType )(
           input->dataType( greenBand ) ) );
     greenContrastEnhancement->readXml( greenContrastElem );
   }
@@ -119,7 +119,7 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
   QDomElement blueContrastElem = elem.firstChildElement( "blueContrastEnhancement" );
   if ( !blueContrastElem.isNull() )
   {
-    blueContrastEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
+    blueContrastEnhancement = new QgsContrastEnhancement(( Qgis::DataType )(
           input->dataType( blueBand ) ) );
     blueContrastEnhancement->readXml( blueContrastElem );
   }
@@ -216,7 +216,7 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     alphaBlock = bandBlocks[mAlphaBand];
   }
 
-  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
     for ( int i = 0; i < bandBlocks.size(); i++ )
     {

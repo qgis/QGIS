@@ -71,7 +71,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
 
-    QGis::WkbType geometryType() const override;
+    Qgis::WkbType geometryType() const override;
     long featureCount() const override;
 
     QgsFields fields() const override;
@@ -155,7 +155,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QString mSubsetString;
 
     /** Geometry type of the features in this layer*/
-    mutable QGis::WkbType mWKBType;
+    mutable Qgis::WkbType mWKBType;
     /** Flag if provider is valid*/
     bool mValid;
     /** Namespace URL of the server (comes from DescribeFeatureDocument)*/
@@ -172,14 +172,14 @@ class QgsWFSProvider : public QgsVectorDataProvider
        The method gives back the name of
        the geometry attribute and the thematic attributes with their types*/
     bool describeFeatureType( QString& geometryAttribute,
-                              QgsFields& fields, QGis::WkbType& geomType );
+                              QgsFields& fields, Qgis::WkbType& geomType );
 
     /** For a given typename, reads the name of the geometry attribute, the
         thematic attributes and their types from a dom document. Returns true in case of success*/
     bool readAttributesFromSchema( QDomDocument& schemaDoc,
                                    const QString& prefixedTypename,
                                    QString& geometryAttribute,
-                                   QgsFields& fields, QGis::WkbType& geomType, QString& errorMsg );
+                                   QgsFields& fields, Qgis::WkbType& geomType, QString& errorMsg );
 
     //helper methods for WFS-T
 
@@ -200,7 +200,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     /** Records provider error*/
     void handleException( const QDomDocument& serverResponse );
     /** Converts DescribeFeatureType schema geometry property type to WKBType*/
-    QGis::WkbType geomTypeFromPropertyType( const QString& attName, const QString& propType );
+    Qgis::WkbType geomTypeFromPropertyType( const QString& attName, const QString& propType );
     /** Convert the value to its appropriate XML representation */
     QString convertToXML( const QVariant& value );
 

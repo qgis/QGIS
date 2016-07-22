@@ -67,7 +67,7 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; }
     inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
     inline const QgsWkbPtr &operator>>( QgsWKBTypes::Type &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( QGis::WkbType &v ) const { read( v ); return *this; }
+    inline const QgsWkbPtr &operator>>( Qgis::WkbType &v ) const { read( v ); return *this; }
 
     inline QgsWkbPtr &operator<<( const double &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const float &r ) { double v = r; write( v ); return *this; }
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsWkbPtr
     inline QgsWkbPtr &operator<<( const unsigned int &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const char &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const QgsWKBTypes::Type &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const QGis::WkbType &v ) { write( v ); return *this; }
+    inline QgsWkbPtr &operator<<( const Qgis::WkbType &v ) { write( v ); return *this; }
 
     inline void operator+=( int n ) { verifyBound( n ); mP += n; }
 

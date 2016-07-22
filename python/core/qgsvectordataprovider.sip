@@ -107,7 +107,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const = 0;
+    virtual Qgis::WkbType geometryType() const = 0;
 
     /**
      * Number of features in the layer

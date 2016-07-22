@@ -56,7 +56,7 @@ class TestQgsWcsPublicServers: public QObject
     {
       NoOffender      = 0,
       ServerOffender  = 1,
-      QGisOffender    = 1 << 1
+      QgisOffender    = 1 << 1
     };
 
     TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server = QString(), const QString & coverage = QString(), const QString &version = QString(), bool force = false );

@@ -54,7 +54,7 @@ QgsZonalStatistics::QgsZonalStatistics()
 
 int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 {
-  if ( !mPolygonLayer || mPolygonLayer->geometryType() != QGis::Polygon )
+  if ( !mPolygonLayer || mPolygonLayer->geometryType() != Qgis::Polygon )
   {
     return 1;
   }

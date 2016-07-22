@@ -166,7 +166,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      */
     static QString symbolProperties( QgsSymbolV2* symbol );
 
-    static bool createSymbolLayerV2ListFromSld( QDomElement& element, QGis::GeometryType geomType, QgsSymbolLayerV2List &layers );
+    static bool createSymbolLayerV2ListFromSld( QDomElement& element, Qgis::GeometryType geomType, QgsSymbolLayerV2List &layers );
 
     static QgsSymbolLayerV2* createFillLayerFromSld( QDomElement &element );
     static QgsSymbolLayerV2* createLineLayerFromSld( QDomElement &element );
@@ -486,7 +486,7 @@ class QPolygonF;
 //! @deprecated since 2.4 - calculate line shifted by a specified distance
 QList<QPolygonF> offsetLine( const QPolygonF& polyline, double dist );
 //! calculate geometry shifted by a specified distance
-QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType geometryType );
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, Qgis::GeometryType geometryType );
 
 #endif
 

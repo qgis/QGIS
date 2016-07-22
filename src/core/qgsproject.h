@@ -301,7 +301,7 @@ class CORE_EXPORT QgsProject : public QObject
      * @note added in QGIS 2.14
      * @see areaUnits()
      */
-    QGis::UnitType distanceUnits() const;
+    Qgis::UnitType distanceUnits() const;
 
     /** Convenience function to query default area measurement units for project.
      * @note added in QGIS 2.14

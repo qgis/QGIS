@@ -49,7 +49,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( layerCache->layer() );
 
-  if ( layerCache->layer()->geometryType() == QGis::NoGeometry )
+  if ( layerCache->layer()->geometryType() == Qgis::NoGeometry )
   {
     mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
   }

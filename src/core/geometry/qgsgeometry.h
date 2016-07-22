@@ -169,12 +169,12 @@ class CORE_EXPORT QgsGeometry
     /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      * @see type
      */
-    QGis::WkbType wkbType() const;
+    Qgis::WkbType wkbType() const;
 
     /** Returns type of the geometry as a QGis::GeometryType
      * @see wkbType
      */
-    QGis::GeometryType type() const;
+    Qgis::GeometryType type() const;
 
     /** Returns true if WKB of the geometry is of WKBMulti* type */
     bool isMultipart() const;
@@ -355,7 +355,7 @@ class CORE_EXPORT QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
+    int addPart( const QList<QgsPoint> &points, Qgis::GeometryType geomType = Qgis::UnknownGeometry );
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
@@ -364,7 +364,7 @@ class CORE_EXPORT QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequenceV2 &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
+    int addPart( const QgsPointSequenceV2 &points, Qgis::GeometryType geomType = Qgis::UnknownGeometry );
 
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomType = QGis::UnknownGeometry );
+    int addPart( QgsAbstractGeometryV2* part, Qgis::GeometryType geomType = Qgis::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
      * @param newPart part to add. Ownership is NOT transferred.
@@ -557,7 +557,7 @@ class CORE_EXPORT QgsGeometry
      * @return the converted geometry or nullptr if the conversion fails.
      * @note added in 2.2
      */
-    QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false ) const;
+    QgsGeometry* convertToType( Qgis::GeometryType destType, bool destMultipart = false ) const;
 
     /* Accessor functions for getting geometry data */
 

@@ -487,11 +487,11 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
 
 double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const
 {
-  QGis::UnitType units;
+  Qgis::UnitType units;
   return measureLine( p1, p2, units );
 }
 
-double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGis::UnitType& units ) const
+double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, Qgis::UnitType& units ) const
 {
   double result;
   units = mCoordTransform.sourceCrs().mapUnits();
@@ -503,7 +503,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGi
     QgsDebugMsgLevel( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
     if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
     {
-      units = QGis::Meters;
+      units = Qgis::Meters;
       QgsDebugMsgLevel( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
       QgsDebugMsgLevel( QString( "From proj4 : %1" ).arg( mCoordTransform.sourceCrs().toProj4() ), 4 );
       QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform.destinationCrs().toProj4() ), 4 );
@@ -528,9 +528,9 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGi
   return result;
 }
 
-QGis::UnitType QgsDistanceArea::lengthUnits() const
+Qgis::UnitType QgsDistanceArea::lengthUnits() const
 {
-  return willUseEllipsoid() ? QGis::Meters : mCoordTransform.sourceCrs().mapUnits();
+  return willUseEllipsoid() ? Qgis::Meters : mCoordTransform.sourceCrs().mapUnits();
 }
 
 QgsUnitTypes::AreaUnit QgsDistanceArea::areaUnits() const
@@ -967,13 +967,13 @@ double QgsDistanceArea::computePolygonFlatArea( const QList<QgsPoint>& points ) 
   return qAbs( area ); // All areas are positive!
 }
 
-QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit )
+QString QgsDistanceArea::textUnit( double value, int decimals, Qgis::UnitType u, bool isArea, bool keepBaseUnit )
 {
   QString unitLabel;
 
   switch ( u )
   {
-    case QGis::Meters:
+    case Qgis::Meters:
       if ( isArea )
       {
         if ( keepBaseUnit )
@@ -1022,7 +1022,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
         }
       }
       break;
-    case QGis::Feet:
+    case Qgis::Feet:
       if ( isArea )
       {
         if ( keepBaseUnit  || qAbs( value ) <= 0.5*43560.0 )
@@ -1063,7 +1063,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
         }
       }
       break;
-    case QGis::NauticalMiles:
+    case Qgis::NauticalMiles:
       if ( isArea )
       {
         unitLabel = QObject::tr( " sq. NM" );
@@ -1073,7 +1073,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
         unitLabel = QObject::tr( " NM" );
       }
       break;
-    case QGis::Degrees:
+    case Qgis::Degrees:
       if ( isArea )
       {
         unitLabel = QObject::tr( " sq.deg." );
@@ -1086,7 +1086,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
           unitLabel = QObject::tr( " degrees" );
       }
       break;
-    case QGis::UnknownUnit:
+    case Qgis::UnknownUnit:
       unitLabel.clear();
       break;
     default:
@@ -1097,13 +1097,13 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
   return QString( "%L1%2" ).arg( value, 0, 'f', decimals ).arg( unitLabel );
 }
 
-QString QgsDistanceArea::formatDistance( double distance, int decimals, QGis::UnitType unit, bool keepBaseUnit )
+QString QgsDistanceArea::formatDistance( double distance, int decimals, Qgis::UnitType unit, bool keepBaseUnit )
 {
   QString unitLabel;
 
   switch ( unit )
   {
-    case QGis::Meters:
+    case Qgis::Meters:
       if ( keepBaseUnit || qAbs( distance ) == 0.0 )
       {
         unitLabel = QObject::tr( " m" );
@@ -1129,7 +1129,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QGis::Un
       }
       break;
 
-    case QGis::Kilometers:
+    case Qgis::Kilometers:
       if ( keepBaseUnit || qAbs( distance ) >= 1.0 )
       {
         unitLabel = QObject::tr( " km" );
@@ -1141,7 +1141,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QGis::Un
       }
       break;
 
-    case QGis::Feet:
+    case Qgis::Feet:
       if ( qAbs( distance ) <= 5280.0 || keepBaseUnit )
       {
         unitLabel = QObject::tr( " ft" );
@@ -1153,7 +1153,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QGis::Un
       }
       break;
 
-    case QGis::Yards:
+    case Qgis::Yards:
       if ( qAbs( distance ) <= 1760.0 || keepBaseUnit )
       {
         unitLabel = QObject::tr( " yd" );
@@ -1165,7 +1165,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QGis::Un
       }
       break;
 
-    case QGis::Miles:
+    case Qgis::Miles:
       if ( qAbs( distance ) >= 1.0 || keepBaseUnit )
       {
         unitLabel = QObject::tr( " mi" );
@@ -1177,11 +1177,11 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QGis::Un
       }
       break;
 
-    case QGis::NauticalMiles:
+    case Qgis::NauticalMiles:
       unitLabel = QObject::tr( " NM" );
       break;
 
-    case QGis::Degrees:
+    case Qgis::Degrees:
 
       if ( qAbs( distance ) == 1.0 )
         unitLabel = QObject::tr( " degree" );
@@ -1189,7 +1189,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QGis::Un
         unitLabel = QObject::tr( " degrees" );
       break;
 
-    case QGis::UnknownUnit:
+    case Qgis::UnknownUnit:
       unitLabel.clear();
       break;
     default:
@@ -1335,17 +1335,17 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
   return QString( "%L1%2" ).arg( area, 0, 'f', decimals ).arg( unitLabel );
 }
 
-void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea ) const
+void QgsDistanceArea::convertMeasurement( double &measure, Qgis::UnitType &measureUnits, Qgis::UnitType displayUnits, bool isArea ) const
 {
   // Helper for converting between meters and feet and degrees and NauticalMiles...
   // The parameters measure and measureUnits are in/out
 
-  if (( measureUnits == QGis::Degrees || measureUnits == QGis::Feet || measureUnits == QGis::NauticalMiles ) &&
+  if (( measureUnits == Qgis::Degrees || measureUnits == Qgis::Feet || measureUnits == Qgis::NauticalMiles ) &&
       mEllipsoid != GEO_NONE &&
       mEllipsoidalMode )
   {
     // Measuring on an ellipsoid returned meters. Force!
-    measureUnits = QGis::Meters;
+    measureUnits = Qgis::Meters;
     QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
   }
   else if ( mEllipsoidalMode && mEllipsoid == GEO_NONE )
@@ -1366,10 +1366,10 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
   measureUnits = displayUnits;
 }
 
-double QgsDistanceArea::convertLengthMeasurement( double length, QGis::UnitType toUnits ) const
+double QgsDistanceArea::convertLengthMeasurement( double length, Qgis::UnitType toUnits ) const
 {
   // get the conversion factor between the specified units
-  QGis::UnitType measureUnits = lengthUnits();
+  Qgis::UnitType measureUnits = lengthUnits();
   double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
   double result = length * factorUnits;

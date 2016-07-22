@@ -100,7 +100,7 @@ class QgsSpatialQuery
      * \param geomType          Geometry Type
      * \returns short int       Topologic Dimension
      */
-    static short int dimensionGeometry( QGis::GeometryType geomType );
+    static short int dimensionGeometry( Qgis::GeometryType geomType );
 
   private:
 

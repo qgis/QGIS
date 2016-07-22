@@ -237,10 +237,10 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRendererV2* renderer = new QgsCategorizedSymbolRendererV2();
   renderer->setClassAttribute( "col1" );
-  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( QGis::Point ) );
-  renderer->addCategory( QgsRendererCategoryV2( "a", QgsSymbolV2::defaultSymbol( QGis::Point ), "a" ) );
-  renderer->addCategory( QgsRendererCategoryV2( "b", QgsSymbolV2::defaultSymbol( QGis::Point ), "b" ) );
-  renderer->addCategory( QgsRendererCategoryV2( "c", QgsSymbolV2::defaultSymbol( QGis::Point ), "c" ) );
+  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( Qgis::Point ) );
+  renderer->addCategory( QgsRendererCategoryV2( "a", QgsSymbolV2::defaultSymbol( Qgis::Point ), "a" ) );
+  renderer->addCategory( QgsRendererCategoryV2( "b", QgsSymbolV2::defaultSymbol( Qgis::Point ), "b" ) );
+  renderer->addCategory( QgsRendererCategoryV2( "c", QgsSymbolV2::defaultSymbol( Qgis::Point ), "c" ) );
   vl->setRendererV2( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -287,10 +287,10 @@ void TestQgsLayerTree::testFindLegendNode()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRendererV2* renderer = new QgsCategorizedSymbolRendererV2();
   renderer->setClassAttribute( "col1" );
-  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( QGis::Point ) );
-  renderer->addCategory( QgsRendererCategoryV2( "a", QgsSymbolV2::defaultSymbol( QGis::Point ), "a" ) );
-  renderer->addCategory( QgsRendererCategoryV2( "b", QgsSymbolV2::defaultSymbol( QGis::Point ), "b" ) );
-  renderer->addCategory( QgsRendererCategoryV2( "c", QgsSymbolV2::defaultSymbol( QGis::Point ), "c" ) );
+  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( Qgis::Point ) );
+  renderer->addCategory( QgsRendererCategoryV2( "a", QgsSymbolV2::defaultSymbol( Qgis::Point ), "a" ) );
+  renderer->addCategory( QgsRendererCategoryV2( "b", QgsSymbolV2::defaultSymbol( Qgis::Point ), "b" ) );
+  renderer->addCategory( QgsRendererCategoryV2( "c", QgsSymbolV2::defaultSymbol( Qgis::Point ), "c" ) );
   vl->setRendererV2( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -323,7 +323,7 @@ void TestQgsLayerTree::testLegendSymbolCategorized()
   //test retrieving/setting a categorized renderer's symbol through the legend node
   QgsCategorizedSymbolRendererV2* renderer = new QgsCategorizedSymbolRendererV2();
   renderer->setClassAttribute( "col1" );
-  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( QGis::Point ) );
+  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( Qgis::Point ) );
   QgsStringMap props;
   props.insert( "color", "#ff0000" );
   renderer->addCategory( QgsRendererCategoryV2( "a", QgsMarkerSymbolV2::createSimple( props ), "a" ) );
@@ -339,7 +339,7 @@ void TestQgsLayerTree::testLegendSymbolGraduated()
   //test retrieving/setting a graduated renderer's symbol through the legend node
   QgsGraduatedSymbolRendererV2* renderer = new QgsGraduatedSymbolRendererV2();
   renderer->setClassAttribute( "col1" );
-  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( QGis::Point ) );
+  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( Qgis::Point ) );
   QgsStringMap props;
   props.insert( "color", "#ff0000" );
   renderer->addClass( QgsRendererRangeV2( 1, 2, QgsMarkerSymbolV2::createSimple( props ), "a" ) );

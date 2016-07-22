@@ -102,7 +102,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
         if ( reshapeReturn == 0 )
         {
           //avoid intersections on polygon layers
-          if ( vlayer->geometryType() == QGis::Polygon )
+          if ( vlayer->geometryType() == Qgis::Polygon )
           {
             //ignore all current layer features as they should be reshaped too
             QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures;

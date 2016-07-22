@@ -76,14 +76,14 @@ class CORE_EXPORT QgsUnitTypes
 
     /** Returns the type for a distance unit.
      */
-    static DistanceUnitType unitType( QGis::UnitType unit );
+    static DistanceUnitType unitType( Qgis::UnitType unit );
 
     /** Encodes a distance unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeDistanceUnit()
      */
-    static QString encodeUnit( QGis::UnitType unit );
+    static QString encodeUnit( Qgis::UnitType unit );
 
     /** Decodes a distance unit from a string.
      * @param string string to decode
@@ -91,27 +91,27 @@ class CORE_EXPORT QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
      */
-    static QGis::UnitType decodeDistanceUnit( const QString& string, bool *ok = 0 );
+    static Qgis::UnitType decodeDistanceUnit( const QString& string, bool *ok = 0 );
 
     /** Returns a translated string representing a distance unit.
      * @param unit unit to convert to string
      * @see stringToDistanceUnit()
      */
-    static QString toString( QGis::UnitType unit );
+    static QString toString( Qgis::UnitType unit );
 
     /** Converts a translated string to a distance unit.
      * @param string string representing a distance unit
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
-    static QGis::UnitType stringToDistanceUnit( const QString& string, bool *ok = 0 );
+    static Qgis::UnitType stringToDistanceUnit( const QString& string, bool *ok = 0 );
 
     /** Returns the conversion factor between the specified distance units.
      * @param fromUnit distance unit to convert from
      * @param toUnit distance unit to convert to
      * @returns multiplication factor to convert between units
      */
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+    static double fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit );
 
     // AREAL UNITS
 
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsUnitTypes
      * @param distanceUnit distance unit to convert
      * @return matching areal unit
      */
-    static AreaUnit distanceToAreaUnit( QGis::UnitType distanceUnit );
+    static AreaUnit distanceToAreaUnit( Qgis::UnitType distanceUnit );
 
     // ANGULAR UNITS
 

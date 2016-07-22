@@ -94,10 +94,10 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
           ++myIteratorInt )
     {
       cboHistoBand->addItem( mRasterLayer->bandName( myIteratorInt ) );
-      QGis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
-      if ( !( mySrcDataType == QGis::Byte ||
-              mySrcDataType == QGis::Int16 || mySrcDataType == QGis::Int32 ||
-              mySrcDataType == QGis::UInt16 || mySrcDataType == QGis::UInt32 ) )
+      Qgis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
+      if ( !( mySrcDataType == Qgis::Byte ||
+              mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
+              mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
         isInt = false;
     }
 
@@ -486,12 +486,12 @@ void QgsRasterHistogramWidget::refreshHistogram()
 
     QgsDebugMsg( QString( "got raster histo for band %1 : min=%2 max=%3 count=%4" ).arg( myIteratorInt ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ) );
 
-    QGis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
+    Qgis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
     bool myDrawLines = true;
     if ( ! mHistoDrawLines &&
-         ( mySrcDataType == QGis::Byte ||
-           mySrcDataType == QGis::Int16 || mySrcDataType == QGis::Int32 ||
-           mySrcDataType == QGis::UInt16 || mySrcDataType == QGis::UInt32 ) )
+         ( mySrcDataType == Qgis::Byte ||
+           mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
+           mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
     {
       myDrawLines = false;
     }
@@ -539,7 +539,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
 #endif
 
     // calculate first bin x value and bin step size if not Byte data
-    if ( mySrcDataType != QGis::Byte )
+    if ( mySrcDataType != Qgis::Byte )
     {
       myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
       myBinX = myHistogram.minimum + myBinXStep / 2.0;

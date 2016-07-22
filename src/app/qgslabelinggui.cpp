@@ -563,11 +563,11 @@ void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
 void QgsLabelingGui::init()
 {
   // show/hide options based upon geometry type
-  chkMergeLines->setVisible( mLayer->geometryType() == QGis::Line );
-  mDirectSymbolsFrame->setVisible( mLayer->geometryType() == QGis::Line );
-  mMinSizeFrame->setVisible( mLayer->geometryType() != QGis::Point );
-  mPolygonObstacleTypeFrame->setVisible( mLayer->geometryType() == QGis::Polygon );
-  mPolygonFeatureOptionsFrame->setVisible( mLayer->geometryType() == QGis::Polygon );
+  chkMergeLines->setVisible( mLayer->geometryType() == Qgis::Line );
+  mDirectSymbolsFrame->setVisible( mLayer->geometryType() == Qgis::Line );
+  mMinSizeFrame->setVisible( mLayer->geometryType() != Qgis::Point );
+  mPolygonObstacleTypeFrame->setVisible( mLayer->geometryType() == Qgis::Polygon );
+  mPolygonFeatureOptionsFrame->setVisible( mLayer->geometryType() == Qgis::Polygon );
 
   // field combo and expression button
   mFieldExpressionWidget->setLayer( mLayer );
@@ -580,22 +580,22 @@ void QgsLabelingGui::init()
   // set placement methods page based on geometry type
   switch ( mLayer->geometryType() )
   {
-    case QGis::Point:
+    case Qgis::Point:
       stackedPlacement->setCurrentWidget( pagePoint );
       break;
-    case QGis::Line:
+    case Qgis::Line:
       stackedPlacement->setCurrentWidget( pageLine );
       break;
-    case QGis::Polygon:
+    case Qgis::Polygon:
       stackedPlacement->setCurrentWidget( pagePolygon );
       break;
-    case QGis::NoGeometry:
+    case Qgis::NoGeometry:
       break;
-    case QGis::UnknownGeometry:
+    case Qgis::UnknownGeometry:
       qFatal( "unknown geometry type unexpected" );
   }
 
-  if ( mLayer->geometryType() == QGis::Point )
+  if ( mLayer->geometryType() == Qgis::Point )
   {
     // follow placement alignment is only valid for point layers
     if ( mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) ) == -1 )
