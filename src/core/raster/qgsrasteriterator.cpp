@@ -19,12 +19,13 @@
 
 QgsRasterIterator::QgsRasterIterator( QgsRasterInterface* input )
     : mInput( input )
+    , mFeedback( nullptr )
     , mMaximumTileWidth( 2000 )
     , mMaximumTileHeight( 2000 )
 {
 }
 
-void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent )
+void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent, QgsRasterBlockFeedback* feedback )
 {
   if ( !mInput )
   {
@@ -32,6 +33,7 @@ void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, c
   }
 
   mExtent = extent;
+  mFeedback = feedback;
 
   //remove any previous part on that band
   removePartInfo( bandNumber );
@@ -93,7 +95,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
   double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
   QgsRectangle blockRect( xmin, ymin, xmax, ymax );
 
-  *block = mInput->block( bandNumber, blockRect, nCols, nRows );
+  *block = mInput->block( bandNumber, blockRect, nCols, nRows, mFeedback );
   topLeftCol = pInfo.currentCol;
   topLeftRow = pInfo.currentRow;
 

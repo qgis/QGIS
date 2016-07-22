@@ -21,6 +21,7 @@
 class QPainter;
 
 class QgsMapToPixel;
+class QgsRasterBlockFeedback;
 class QgsRasterLayer;
 class QgsRasterPipe;
 struct QgsRasterViewPort;
@@ -40,6 +41,8 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     virtual bool render() override;
 
+    virtual QgsFeedback* feedback() const override;
+
   protected:
 
     QPainter* mPainter;
@@ -48,6 +51,8 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     QgsRasterPipe* mPipe;
     QgsRenderContext& mContext;
+
+    QgsRasterBlockFeedback* mFeedback;
 };
 
 #endif // QGSRASTERLAYERRENDERER_H

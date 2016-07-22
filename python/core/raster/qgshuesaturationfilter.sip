@@ -25,7 +25,7 @@ class QgsHueSaturationFilter : QgsRasterInterface
 
     bool setInput( QgsRasterInterface* input );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) /Factory/;
 
     void setSaturation( int saturation );
     int saturation() const;
