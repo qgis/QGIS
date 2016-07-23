@@ -36,6 +36,7 @@ class QPainter;
 class QgsFillSymbolV2;
 class QgsLineSymbolV2;
 class QgsVectorLayer;
+class QgsAnnotation;
 
 /** \ingroup core
  *  \class QgsComposerMap
@@ -968,8 +969,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void transformShift( double& xShift, double& yShift ) const;
 
     void drawCanvasItems( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
-    void drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
-    QPointF composerMapPosForItem( const QGraphicsItem* item ) const;
+    void drawCanvasItem( const QgsAnnotation* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
+    QPointF composerMapPosForItem( const QgsAnnotation* item ) const;
 
     enum PartType
     {
