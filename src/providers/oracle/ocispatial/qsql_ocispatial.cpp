@@ -658,6 +658,7 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
                           ba.data(),
                           ba.capacity(),
                           SQLT_STR, indPtr, tmpSize, 0, 0, 0, OCI_DEFAULT );
+        tmpStorage.append( ba );
       }
       else
       {
@@ -669,7 +670,6 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
       }
       if ( r == OCI_SUCCESS )
         setCharset( *hbnd, OCI_HTYPE_BIND );
-      tmpStorage.append( ba );
       break;
     } // default case
   } // switch
