@@ -169,7 +169,7 @@ class TestAlignRaster : public QObject
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
       rasters << QgsAlignRaster::Item( SRC_FILE, tmpFile );
-      rasters[0].resampleMethod = QgsAlignRaster::RA_Bilinear;
+      rasters[0].resampleMethod = QgsAlignRaster::RA_Average;
       align.setRasters( rasters );
       align.setParametersFromRaster( SRC_FILE, QString(), QSizeF( 0.4, 0.4 ) );
       bool res = align.run();
@@ -190,7 +190,7 @@ class TestAlignRaster : public QObject
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
       rasters << QgsAlignRaster::Item( SRC_FILE, tmpFile );
-      rasters[0].resampleMethod = QgsAlignRaster::RA_Bilinear;
+      rasters[0].resampleMethod = QgsAlignRaster::RA_Average;
       rasters[0].rescaleValues = true;
       align.setRasters( rasters );
       align.setParametersFromRaster( SRC_FILE, QString(), QSizeF( 0.4, 0.4 ) );
