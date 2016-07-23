@@ -190,6 +190,47 @@ class QgsCoordinateReferenceSystem
     // TODO QGIS 3: remove theType and always use EPSG code
     QgsCoordinateReferenceSystem( const long theId, CrsType theType = PostgisCrsId );
 
+    // static creators
+
+    /** Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
+     * @param ogcCrs OGR compliant CRS definition, eg "EPSG:4326"
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 3.0
+     * @see createFromOgcWmsCrs()
+    */
+    static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString& ogcCrs );
+
+    /** Creates a CRS from a given EPSG ID.
+     * @param epsg epsg CRS ID
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 3.0
+    */
+    static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
+
+    /** Creates a CRS from a proj4 style formatted string.
+     * @param proj4 proj4 format string
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 3.0
+     * @see createFromProj4()
+    */
+    static QgsCoordinateReferenceSystem fromProj4( const QString& proj4 );
+
+    /** Creates a CRS from a WKT spatial ref sys definition string.
+     * @param wkt WKT for the desired spatial reference system.
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 3.0
+     * @see createFromWkt()
+    */
+    static QgsCoordinateReferenceSystem fromWkt( const QString& wkt );
+
+    /** Creates a CRS from a specified QGIS SRS ID.
+     * @param srsId internal QGIS SRS ID
+     * @returns matching CRS, or an invalid CRS if ID could not be found
+     * @note added in QGIS 3.0
+     * @see createFromSrsId()
+    */
+    static QgsCoordinateReferenceSystem fromSrsId( long srsId );
+
     // Misc helper functions -----------------------
 
     /**

@@ -78,6 +78,39 @@ QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const Qgs
   return *this;
 }
 
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromOgcWmsCrs( const QString& ogcCrs )
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromOgcWmsCrs( ogcCrs );
+  return crs;
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromEpsgId( long epsg )
+{
+  return fromOgcWmsCrs( "EPSG:" + QString::number( epsg ) );
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProj4( const QString& proj4 )
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromProj4( proj4 );
+  return crs;
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromWkt( const QString& wkt )
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromWkt( wkt );
+  return crs;
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromSrsId( long srsId )
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromSrsId( srsId );
+  return crs;
+}
+
 QgsCoordinateReferenceSystem::~QgsCoordinateReferenceSystem()
 {
 }

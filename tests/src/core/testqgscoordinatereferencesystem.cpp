@@ -38,12 +38,16 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void copyCtor();
     void assignmentCtor();
     void createFromId();
+    void fromEpsgId();
     void createFromOgcWmsCrs();
     void createFromSrid();
     void createFromWkt();
+    void fromWkt();
     void createFromESRIWkt();
-    void createFromSrsId();
+    void createFromSrId();
+    void fromSrsId();
     void createFromProj4();
+    void fromProj4();
     void isValid();
     void validate();
     void equality();
@@ -161,6 +165,16 @@ void TestQgsCoordinateReferenceSystem::createFromId()
                       QgsCoordinateReferenceSystem::EpsgCrsId );
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.srsid(), GEOCRS_ID );
+}
+
+void TestQgsCoordinateReferenceSystem::fromEpsgId()
+{
+  QgsCoordinateReferenceSystem myCrs = QgsCoordinateReferenceSystem::fromEpsgId( GEO_EPSG_CRS_ID );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.srsid(), GEOCRS_ID );
+  myCrs = QgsCoordinateReferenceSystem::fromEpsgId( -999 );
+  QVERIFY( !myCrs.isValid() );
 }
 void TestQgsCoordinateReferenceSystem::createFromOgcWmsCrs()
 {
@@ -175,6 +189,7 @@ void TestQgsCoordinateReferenceSystem::createFromSrid()
   myCrs.createFromSrid( GEOSRID );
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.srsid(), GEOCRS_ID );
 }
 void TestQgsCoordinateReferenceSystem::createFromWkt()
 {
@@ -182,6 +197,16 @@ void TestQgsCoordinateReferenceSystem::createFromWkt()
   myCrs.createFromWkt( GEOWKT );
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.srsid(), GEOCRS_ID );
+}
+
+void TestQgsCoordinateReferenceSystem::fromWkt()
+{
+  QgsCoordinateReferenceSystem myCrs = QgsCoordinateReferenceSystem::fromWkt( GEOWKT );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.srsid(), GEOCRS_ID );
+  myCrs = QgsCoordinateReferenceSystem::fromWkt( "not wkt" );
+  QVERIFY( !myCrs.isValid() );
 }
 
 QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateReferenceSystem &myCrs )
@@ -297,17 +322,41 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 
   //  QVERIFY( bOK );
 }
-void TestQgsCoordinateReferenceSystem::createFromSrsId()
+void TestQgsCoordinateReferenceSystem::createFromSrId()
 {
   QgsCoordinateReferenceSystem myCrs;
   QVERIFY( myCrs.createFromSrid( GEOSRID ) );
   debugPrint( myCrs );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.srsid(), GEOCRS_ID );
+}
+
+void TestQgsCoordinateReferenceSystem::fromSrsId()
+{
+  QgsCoordinateReferenceSystem myCrs = QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID );
+  debugPrint( myCrs );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.srsid(), GEOCRS_ID );
+  myCrs = QgsCoordinateReferenceSystem::fromSrsId( -9999 );
+  QVERIFY( !myCrs.isValid() );
 }
 void TestQgsCoordinateReferenceSystem::createFromProj4()
 {
   QgsCoordinateReferenceSystem myCrs;
   QVERIFY( myCrs.createFromProj4( GEOPROJ4 ) );
   debugPrint( myCrs );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.srsid(), GEOCRS_ID );
+}
+
+void TestQgsCoordinateReferenceSystem::fromProj4()
+{
+  QgsCoordinateReferenceSystem myCrs = QgsCoordinateReferenceSystem::fromProj4( GEOPROJ4 );
+  debugPrint( myCrs );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.srsid(), GEOCRS_ID );
+  myCrs = QgsCoordinateReferenceSystem::fromProj4( "" );
+  QVERIFY( !myCrs.isValid() );
 }
 void TestQgsCoordinateReferenceSystem::isValid()
 {
@@ -434,7 +483,7 @@ void TestQgsCoordinateReferenceSystem::isGeographic()
 
   QgsCoordinateReferenceSystem nonGeographic;
   nonGeographic.createFromId( 3857, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QVERIFY( !geographic.nonGeographic() );
+  QVERIFY( !nonGeographic.isGeographic() );
 }
 void TestQgsCoordinateReferenceSystem::mapUnits()
 {

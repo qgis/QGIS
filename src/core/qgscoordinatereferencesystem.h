@@ -237,6 +237,47 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Assignment operator
     QgsCoordinateReferenceSystem& operator=( const QgsCoordinateReferenceSystem& srs );
 
+    // static creators
+
+    /** Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
+     * @param ogcCrs OGR compliant CRS definition, eg "EPSG:4326"
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 3.0
+     * @see createFromOgcWmsCrs()
+    */
+    static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString& ogcCrs );
+
+    /** Creates a CRS from a given EPSG ID.
+     * @param epsg epsg CRS ID
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 3.0
+    */
+    static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
+
+    /** Creates a CRS from a proj4 style formatted string.
+     * @param proj4 proj4 format string
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 3.0
+     * @see createFromProj4()
+    */
+    static QgsCoordinateReferenceSystem fromProj4( const QString& proj4 );
+
+    /** Creates a CRS from a WKT spatial ref sys definition string.
+     * @param wkt WKT for the desired spatial reference system.
+     * @returns matching CRS, or an invalid CRS if string could not be matched
+     * @note added in QGIS 3.0
+     * @see createFromWkt()
+    */
+    static QgsCoordinateReferenceSystem fromWkt( const QString& wkt );
+
+    /** Creates a CRS from a specified QGIS SRS ID.
+     * @param srsId internal QGIS SRS ID
+     * @returns matching CRS, or an invalid CRS if ID could not be found
+     * @note added in QGIS 3.0
+     * @see createFromSrsId()
+    */
+    static QgsCoordinateReferenceSystem fromSrsId( long srsId );
+
     // Misc helper functions -----------------------
 
     /**
@@ -256,6 +297,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * and refer to QGIS internal CRS IDs.
      * @note this method is expensive. Consider using QgsCRSCache::crsByOgcWmsCrs() instead.
      * @return True on success else false
+     * @see fromOgcWmsCrs()
      */
     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
     bool createFromOgcWmsCrs( const QString& theCrs );
@@ -277,6 +319,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note this method is expensive. Consider using QgsCRSCache::crsByWkt() instead.
      * @param theWkt The WKT for the desired spatial reference system.
      * @return True on success else false
+     * @see fromWkt()
      */
     bool createFromWkt( const QString &theWkt );
 
@@ -287,6 +330,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note this method is expensive. Consider using QgsCRSCache::crsBySrsId() instead.
      * @param theSrsId The internal QGIS CRS ID for the desired spatial reference system.
      * @return True on success else false
+     * @see fromSrsId()
      */
     bool createFromSrsId( const long theSrsId );
 
@@ -310,6 +354,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note this method is expensive. Consider using QgsCRSCache::crsByProj4() instead.
      * @param theProjString A proj4 format string
      * @return True on success else false
+     * @see fromProj4()
      */
     bool createFromProj4( const QString &theProjString );
 
