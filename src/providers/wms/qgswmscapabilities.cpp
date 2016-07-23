@@ -1293,7 +1293,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
     s.crs = crs.authid();
 
-    bool invert = !mParserSettings.ignoreAxisOrientation && crs.axisInverted();
+    bool invert = !mParserSettings.ignoreAxisOrientation && crs.hasAxisInverted();
     if ( mParserSettings.invertAxisOrientation )
       invert = !invert;
 
@@ -1428,7 +1428,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
           {
             bb.crs = crs.authid();
 
-            bool invert = !mParserSettings.ignoreAxisOrientation && crs.axisInverted();
+            bool invert = !mParserSettings.ignoreAxisOrientation && crs.hasAxisInverted();
             if ( mParserSettings.invertAxisOrientation )
               invert = !invert;
 
@@ -1832,7 +1832,7 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
 
     //create CRS from string
     QgsCoordinateReferenceSystem theSrs = QgsCrsCache::instance()->crsByOgcWmsCrs( ogcCrs );
-    if ( theSrs.isValid() && theSrs.axisInverted() )
+    if ( theSrs.isValid() && theSrs.hasAxisInverted() )
     {
       changeXY = true;
     }

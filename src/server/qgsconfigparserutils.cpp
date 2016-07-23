@@ -136,7 +136,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
   }
 
   QgsRectangle r( layerExtent );
-  if ( version != "1.1.1" && layerCRS.axisInverted() )
+  if ( version != "1.1.1" && layerCRS.hasAxisInverted() )
   {
     r.invert();
   }
@@ -203,7 +203,7 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
     bBoxElement.setAttribute( version == "1.1.1" ? "SRS" : "CRS", crs.authid() );
   }
 
-  if ( version != "1.1.1" && crs.axisInverted() )
+  if ( version != "1.1.1" && crs.hasAxisInverted() )
   {
     crsExtent.invert();
   }

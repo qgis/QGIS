@@ -643,7 +643,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   {
     //create CRS from string
     QgsCoordinateReferenceSystem theSrs = QgsCrsCache::instance()->crsByOgcWmsCrs( crs );
-    if ( theSrs.isValid() && theSrs.axisInverted() )
+    if ( theSrs.isValid() && theSrs.hasAxisInverted() )
     {
       changeXY = true;
     }

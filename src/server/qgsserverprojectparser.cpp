@@ -873,7 +873,7 @@ QgsRectangle QgsServerProjectParser::layerBoundingBoxInProjectCrs( const QDomEle
   BBox.setYMinimum( miny );
   BBox.setYMaximum( maxy );
 
-  if ( version != "1.1.1" && layerCrs.axisInverted() )
+  if ( version != "1.1.1" && layerCrs.hasAxisInverted() )
   {
     BBox.invert();
   }

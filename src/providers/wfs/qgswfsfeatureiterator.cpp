@@ -295,7 +295,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
   {
     bool invertAxis = false;
     if ( !mShared->mWFSVersion.startsWith( "1.0" ) && !mShared->mURI.ignoreAxisOrientation() &&
-         mShared->mSourceCRS.axisInverted() )
+         mShared->mSourceCRS.hasAxisInverted() )
     {
       invertAxis = true;
     }
@@ -551,7 +551,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
              !mShared->mURI.invertAxisOrientation() )
         {
           QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( parser->srsName() );
-          if ( crs.isValid() && crs.axisInverted() &&
+          if ( crs.isValid() && crs.hasAxisInverted() &&
                !mShared->mCapabilityExtent.contains( parser->layerExtent() ) )
           {
             QgsRectangle invertedRectangle( parser->layerExtent() );

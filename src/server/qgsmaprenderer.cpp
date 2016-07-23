@@ -695,7 +695,7 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
       static const double splitCoord = 180.0;
 
       QgsCoordinateTransform transform = transformation( layer );
-      if ( layer->crs().geographicFlag() )
+      if ( layer->crs().isGeographic() )
       {
         // Note: ll = lower left point
         //   and ur = upper right point

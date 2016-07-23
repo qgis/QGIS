@@ -333,7 +333,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
            featureType.bbox.xMaximum() <= 180 && featureType.bbox.yMaximum() < 90 )
       {
         QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( featureType.crslist[0] );
-        if ( !crs.geographicFlag() )
+        if ( !crs.isGeographic() )
         {
           // If the CRS is projected then check that projecting the corner of the bbox, assumed to be in WGS84,
           // into the CRS, and then back to WGS84, works (check that we are in the validity area)

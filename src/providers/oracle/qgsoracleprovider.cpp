@@ -2437,7 +2437,7 @@ bool QgsOracleProvider::createSpatialIndex()
 
   QSqlQuery qry( *mConnection );
 
-  if ( !crs().geographicFlag() )
+  if ( !crs().isGeographic() )
   {
     // TODO: make precision configurable
     QgsRectangle r( extent() );
@@ -2721,7 +2721,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
 
     // TODO: make precision configurable
     QString diminfo;
-    if ( srs->geographicFlag() )
+    if ( srs->isGeographic() )
     {
       diminfo = "mdsys.sdo_dim_array("
                 "mdsys.sdo_dim_element('Longitude', -180, 180, 0.001),"
@@ -2784,7 +2784,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
                                   " VALUES (%1,%2,%3,%4,'TRUE','TRUE','GDAL/OGR via QGIS')" )
                     .arg( srid )
                     .arg( quotedValue( srs->description() ) )
-                    .arg( quotedValue( srs->geographicFlag() ? "GEOGRAPHIC2D" : "PROJECTED" ) )
+                    .arg( quotedValue( srs->isGeographic() ? "GEOGRAPHIC2D" : "PROJECTED" ) )
                     .arg( quotedValue( wkt ) ) ) )
         {
           throw OracleException( tr( "CRS not found and could not be created." ), qry );

@@ -113,7 +113,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
 
     //Change x- and y- of extent for WMS 1.3.0 if axis inverted
     QString version = parameterMap.value( "VERSION" );
-    if ( version == "1.3.0" && mapRenderer && mapRenderer->destinationCrs().axisInverted() )
+    if ( version == "1.3.0" && mapRenderer && mapRenderer->destinationCrs().hasAxisInverted() )
     {
       r.invert();
     }

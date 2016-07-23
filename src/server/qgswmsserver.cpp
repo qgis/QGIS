@@ -2066,7 +2066,7 @@ int QgsWmsServer::configureMapRender( const QPaintDevice* paintDevice ) const
 
   // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
   QString version = mParameters.value( "VERSION", "1.3.0" );
-  if ( version != "1.1.1" && outputCRS.axisInverted() )
+  if ( version != "1.1.1" && outputCRS.hasAxisInverted() )
   {
     mapExtent.invert();
   }

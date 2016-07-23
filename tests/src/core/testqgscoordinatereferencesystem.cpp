@@ -57,10 +57,10 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void ellipsoidAcronym();
     void toWkt();
     void toProj4();
-    void geographicFlag();
+    void isGeographic();
     void mapUnits();
     void setValidationHint();
-    void axisInverted();
+    void hasAxisInverted();
     void createFromProj4Invalid();
   private:
     void debugPrint( QgsCoordinateReferenceSystem &theCrs );
@@ -425,12 +425,16 @@ void TestQgsCoordinateReferenceSystem::toProj4()
   //second by gdal 1.7
   QVERIFY( myCrs.toProj4() == GEOPROJ4 );
 }
-void TestQgsCoordinateReferenceSystem::geographicFlag()
+void TestQgsCoordinateReferenceSystem::isGeographic()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  QVERIFY( myCrs.geographicFlag() );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem geographic;
+  geographic.createFromSrid( GEOSRID );
+  QVERIFY( geographic.isGeographic() );
+  debugPrint( geographic );
+
+  QgsCoordinateReferenceSystem nonGeographic;
+  nonGeographic.createFromId( 3857, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QVERIFY( !geographic.nonGeographic() );
 }
 void TestQgsCoordinateReferenceSystem::mapUnits()
 {
@@ -447,19 +451,19 @@ void TestQgsCoordinateReferenceSystem::setValidationHint()
   debugPrint( myCrs );
 }
 
-void TestQgsCoordinateReferenceSystem::axisInverted()
+void TestQgsCoordinateReferenceSystem::hasAxisInverted()
 {
   // this is used by WMS 1.3 to determine whether to switch axes or not
 
   QgsCoordinateReferenceSystem crs;
   crs.createFromOgcWmsCrs( "EPSG:4326" ); // WGS 84 with inverted axes
-  QVERIFY( crs.axisInverted() );
+  QVERIFY( crs.hasAxisInverted() );
 
   crs.createFromOgcWmsCrs( "CRS:84" ); // WGS 84 without inverted axes
-  QVERIFY( !crs.axisInverted() );
+  QVERIFY( !crs.hasAxisInverted() );
 
   crs.createFromOgcWmsCrs( "EPSG:32633" ); // "WGS 84 / UTM zone 33N" - projected CRS without invertex axes
-  QVERIFY( !crs.axisInverted() );
+  QVERIFY( !crs.hasAxisInverted() );
 }
 
 

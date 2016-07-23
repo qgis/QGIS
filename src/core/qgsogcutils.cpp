@@ -62,7 +62,7 @@ QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument& doc,
     crs = QgsCrsCache::instance()->crsByOgcWmsCrs( mSrsName );
   if ( crs.isValid() )
   {
-    if ( honourAxisOrientation && crs.axisInverted() )
+    if ( honourAxisOrientation && crs.hasAxisInverted() )
     {
       mInvertAxisOrientation = !mInvertAxisOrientation;
     }
@@ -2893,7 +2893,7 @@ bool QgsOgcUtilsSQLStatementToFilter::processSRSName( const QgsSQLStatement::Nod
     crs = QgsCrsCache::instance()->crsByOgcWmsCrs( srsName );
   if ( crs.isValid() )
   {
-    if ( mHonourAxisOrientation && crs.axisInverted() )
+    if ( mHonourAxisOrientation && crs.hasAxisInverted() )
     {
       axisInversion = !axisInversion;
     }

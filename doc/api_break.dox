@@ -106,6 +106,8 @@ qgsPermissiveToInt()</li>
 <li>setCustomSrsValidation() has been renamed to setCustomCrsValidation()</li>
 <li>saveAsUserCRS() has been renamed to saveAsUserCrs()</li>
 <li>geographicCRSAuthId() has been renamed to geographicCrsAuthId()</li>
+<li>geographicFlag() was renamed to isGeographic()</li>
+<li>axisInverted() was renamed to hasAxisInverted()</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsCoordinateTransform QgsCoordinateTransform

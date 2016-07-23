@@ -914,7 +914,7 @@ void QgsWmsProjectParser::owsGeneralAndResourceList( QDomElement& parentElement,
   QgsCoordinateReferenceSystem projectCrs = mProjectParser->projectCrs();
   QDomElement bboxElem = doc.createElement( "ows:BoundingBox" );
   bboxElem.setAttribute( "crs", projectCrs.authid() );
-  if ( projectCrs.axisInverted() )
+  if ( projectCrs.hasAxisInverted() )
   {
     combinedBBox.invert();
   }

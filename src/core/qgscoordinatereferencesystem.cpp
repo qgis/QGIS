@@ -365,7 +365,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString&
   return d->mIsValid;
 }
 
-bool QgsCoordinateReferenceSystem::axisInverted() const
+bool QgsCoordinateReferenceSystem::hasAxisInverted() const
 {
   if ( d->mAxisInverted == -1 )
   {
@@ -847,7 +847,7 @@ QString QgsCoordinateReferenceSystem::toProj4() const
   return d->mProj4.trimmed();
 }
 
-bool QgsCoordinateReferenceSystem::geographicFlag() const
+bool QgsCoordinateReferenceSystem::isGeographic() const
 {
   return d->mIsGeographic;
 }
@@ -1277,7 +1277,7 @@ bool QgsCoordinateReferenceSystem::writeXml( QDomNode & theNode, QDomDocument & 
 
   QDomElement myGeographicFlagElement  = theDoc.createElement( "geographicflag" );
   QString myGeoFlagText = "false";
-  if ( geographicFlag() )
+  if ( isGeographic() )
   {
     myGeoFlagText = "true";
   }
@@ -2127,7 +2127,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
 QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 {
-  if ( geographicFlag() )
+  if ( isGeographic() )
   {
     return d->mAuthId;
   }

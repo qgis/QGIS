@@ -228,7 +228,7 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
   {
     QgsCoordinateReferenceSystem outputCRS = mapCanvas->mapSettings().destinationCrs();
 
-    if ( outputCRS.isValid() && !outputCRS.geographicFlag() )
+    if ( outputCRS.isValid() && !outputCRS.isGeographic() )
     {
       // Use a geographic CRS to get lat/long to work out direction
       QgsCoordinateReferenceSystem ourCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( GEO_EPSG_CRS_AUTHID );

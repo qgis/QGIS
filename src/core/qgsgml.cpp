@@ -1209,7 +1209,7 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int& epsgNr, const XML_Char** 
       if ( crs.isValid() )
       {
         if ((( mAxisOrientationLogic == Honour_EPSG_if_urn && bIsUrn ) ||
-             mAxisOrientationLogic == Honour_EPSG ) && crs.axisInverted() )
+             mAxisOrientationLogic == Honour_EPSG ) && crs.hasAxisInverted() )
         {
           mInvertAxisOrientation = !mInvertAxisOrientationRequest;
         }

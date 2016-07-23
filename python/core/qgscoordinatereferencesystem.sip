@@ -436,13 +436,12 @@ class QgsCoordinateReferenceSystem
     /** Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
      * @returns true if CRS is geographic, or false if it is a projected CRS
      */
-    //TODO QGIS 3.0 - rename to isGeographic
-    bool geographicFlag() const;
+    bool isGeographic() const;
 
     /** Returns whether axis is inverted (eg. for WMS 1.3) for the CRS.
      * @returns true if CRS axis is inverted
      */
-    bool axisInverted() const;
+    bool hasAxisInverted() const;
 
     /** Returns the units for the projection used by the CRS.
      */
