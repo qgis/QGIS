@@ -1,10 +1,9 @@
-#!/bin/bash
 ###########################################################################
-#    script.sh
+#    before_install.sh
 #    ---------------------
-#    Date                 : August 2015
-#    Copyright            : (C) 2015 by Nyall Dawson
-#    Email                : nyall dot dawson at gmail dot com
+#    Date                 : March 2016
+#    Copyright            : (C) 2016 by Matthias Kuhn
+#    Email                : matthias at opengis dot ch
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -14,6 +13,12 @@
 #                                                                         #
 ###########################################################################
 
+export DEBIAN_FRONTEND=noninteractive
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-${DIR}/qt${QT_VERSION}/script.sh
+pushd ${HOME}
+
+curl -L https://github.com/opengisch/osgeo4travis/archive/qt4bin.tar.gz | tar -xzC /home/travis --strip-components=1
+curl -L https://cmake.org/files/v3.5/cmake-3.5.0-Linux-x86_64.tar.gz | tar --strip-components=1 -zxC /home/travis/osgeo4travis
+
+popd
+pip install --user autopep8 nose2 pyyaml mock future

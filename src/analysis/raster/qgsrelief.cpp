@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslogger.h"
 #include "qgsrelief.h"
 #include "qgsaspectfilter.h"
 #include "qgshillshadefilter.h"
@@ -202,7 +203,8 @@ int QgsRelief::processRaster( QProgressDialog* p )
       {
         scanLine1[a] = mInputNodataValue;
       }
-      GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, scanLine2, xSize, 1, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, scanLine2, xSize, 1, GDT_Float32, 0, 0 )  != CE_None )
+        QgsDebugMsg( "Raster IO Error" );
     }
     else
     {
@@ -222,7 +224,8 @@ int QgsRelief::processRaster( QProgressDialog* p )
     }
     else
     {
-      GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, scanLine3, xSize, 1, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, scanLine3, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+        QgsDebugMsg( "Raster IO Error" );
     }
 
     for ( int j = 0; j < xSize; ++j )
@@ -254,9 +257,12 @@ int QgsRelief::processRaster( QProgressDialog* p )
       }
     }
 
-    GDALRasterIO( outputRedBand, GF_Write, 0, i, xSize, 1, resultRedLine, xSize, 1, GDT_Byte, 0, 0 );
-    GDALRasterIO( outputGreenBand, GF_Write, 0, i, xSize, 1, resultGreenLine, xSize, 1, GDT_Byte, 0, 0 );
-    GDALRasterIO( outputBlueBand, GF_Write, 0, i, xSize, 1, resultBlueLine, xSize, 1, GDT_Byte, 0, 0 );
+    if ( GDALRasterIO( outputRedBand, GF_Write, 0, i, xSize, 1, resultRedLine, xSize, 1, GDT_Byte, 0, 0 ) != CE_None )
+      QgsDebugMsg( "Raster IO Error" );
+    if ( GDALRasterIO( outputGreenBand, GF_Write, 0, i, xSize, 1, resultGreenLine, xSize, 1, GDT_Byte, 0, 0 ) != CE_None )
+      QgsDebugMsg( "Raster IO Error" );
+    if ( GDALRasterIO( outputBlueBand, GF_Write, 0, i, xSize, 1, resultBlueLine, xSize, 1, GDT_Byte, 0, 0 ) != CE_None )
+      QgsDebugMsg( "Raster IO Error" );
   }
 
   if ( p )
@@ -531,9 +537,13 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
 
   for ( int i = 0; i < nCellsY; ++i )
   {
-    GDALRasterIO( elevationBand, GF_Read, 0, i, nCellsX, 1,
-                  scanLine, nCellsX, 1, GDT_Float32,
-                  0, 0 );
+    if ( GDALRasterIO( elevationBand, GF_Read, 0, i, nCellsX, 1,
+                       scanLine, nCellsX, 1, GDT_Float32,
+                       0, 0 ) != CE_None )
+    {
+      QgsDebugMsg( "Raster IO Error" );
+    }
+
     for ( int j = 0; j < nCellsX; ++j )
     {
       elevationClass = frequencyClassForElevation( scanLine[j], minMax[0], frequencyClassRange );
@@ -614,9 +624,12 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
 
   for ( int i = 0; i < nCellsY; ++i )
   {
-    GDALRasterIO( elevationBand, GF_Read, 0, i, nCellsX, 1,
-                  scanLine, nCellsX, 1, GDT_Float32,
-                  0, 0 );
+    if ( GDALRasterIO( elevationBand, GF_Read, 0, i, nCellsX, 1,
+                       scanLine, nCellsX, 1, GDT_Float32,
+                       0, 0 ) != CE_None )
+    {
+      QgsDebugMsg( "Raster IO Error" );
+    }
     for ( int j = 0; j < nCellsX; ++j )
     {
       elevationClass = frequencyClassForElevation( scanLine[j], minMax[0], frequencyClassRange );

@@ -1,10 +1,9 @@
-#!/bin/bash
 ###########################################################################
 #    script.sh
 #    ---------------------
-#    Date                 : August 2015
-#    Copyright            : (C) 2015 by Nyall Dawson
-#    Email                : nyall dot dawson at gmail dot com
+#    Date                 : March 2016
+#    Copyright            : (C) 2016 by Matthias Kuhn
+#    Email                : matthias at opengis dot ch
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -14,6 +13,15 @@
 #                                                                         #
 ###########################################################################
 
+export PYTHONPATH=${HOME}/osgeo4travis/lib/python2.7/site-packages/
+export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${PATH}
+export LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib
+export CTEST_PARALLEL_LEVEL=1
+export CCACHE_CPP2=yes
+export CCACHE_TEMPDIR=/tmp
+if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+  export CCACHE_READONLY=yes
+  chmod -R ugo-w ~/.ccache
+fi
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-${DIR}/qt${QT_VERSION}/script.sh
+xvfb-run ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest' -S ./qgis-test-travis.ctest --output-on-failure
