@@ -103,6 +103,9 @@ qgsPermissiveToInt()</li>
 \subsection qgis_api_break_3_0_QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem
 
 <ul>
+<li>QgsCoordinateReferenceSystem now uses internal caches to avoid expensive database lookups
+when CRS objects are initialized. This is handled internally, but invalidateCache() must be
+called if changes are made to the CRS database.</li>
 <li>setCustomSrsValidation() has been renamed to setCustomCrsValidation()</li>
 <li>saveAsUserCRS() has been renamed to saveAsUserCrs()</li>
 <li>geographicCRSAuthId() has been renamed to geographicCrsAuthId()</li>

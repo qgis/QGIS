@@ -25,6 +25,7 @@
 #include <QString>
 #include <QMap>
 #include <QHash>
+#include <QReadWriteLock>
 
 class QDomNode;
 class QDomDocument;
@@ -165,19 +166,11 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
  * constructor that automatically recognizes definition format from the given string.
  *
  * Creation of CRS object involves some queries in a local SQLite database, which may
- * be potentially expensive. It is therefore recommended to use QgsCRSCache methods
- * that return possibly cached CRS objects instead of constructing new instances that
- * involve the lookup overhead.
+ * be potentially expensive. Consequently, CRS creation methods use an internal cache to avoid
+ * unnecessary database lookups. If the CRS database is modified, then it is necessary to call
+ * invalidateCache() to ensure that outdated records are not being returned from the cache.
  *
  * Since QGIS 2.16 QgsCoordinateReferenceSystem objects are implicitly shared.
- *
- * The following table summarizes equivalents for non-cached and cached CRS lookup:
- *
- * Definition  | Non-cached            | Cached
- * ----------- | --------------------- | ------------------------------
- * Auth + Code | createFromOgcWmsCrs() | QgsCRSCache::crsByOgcWmsCrs()
- * PROJ.4      | createFromProj4()     | QgsCRSCache::crsByProj4()
- * WKT         | createFromWkt()       | QgsCRSCache::crsByWkt()
  *
  * Caveats
  * =======
@@ -186,7 +179,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
  * used by ESRI. They look very similar, but they are not the same. QGIS is able to consume
  * both flavours.
  *
- * \see QgsCoordinateTransform, QgsCRSCache
+ * \see QgsCoordinateTransform
  */
 class CORE_EXPORT QgsCoordinateReferenceSystem
 {
@@ -295,7 +288,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Accepts both "<auth>:<code>" format and OGC URN "urn:ogc:def:crs:<auth>:[<version>]:<code>".
      * It also recognizes "QGIS", "USER", "CUSTOM" authorities, which all have the same meaning
      * and refer to QGIS internal CRS IDs.
-     * @note this method is expensive. Consider using QgsCRSCache::crsByOgcWmsCrs() instead.
+     * @note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * @return True on success else false
      * @see fromOgcWmsCrs()
      */
@@ -316,7 +309,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Otherwise the WKT will be converted to a proj4 string and createFromProj4()
      * set up the object.
      * @note Some members may be left blank if no match can be found in CRS database.
-     * @note this method is expensive. Consider using QgsCRSCache::crsByWkt() instead.
+     * @note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * @param theWkt The WKT for the desired spatial reference system.
      * @return True on success else false
      * @see fromWkt()
@@ -327,7 +320,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * If the srsid is < USER_CRS_START_ID, system CRS database is used, otherwise
      * user's local CRS database from home directory is used.
-     * @note this method is expensive. Consider using QgsCRSCache::crsBySrsId() instead.
+     * @note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * @param theSrsId The internal QGIS CRS ID for the desired spatial reference system.
      * @return True on success else false
      * @see fromSrsId()
@@ -351,7 +344,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * - if none of the above match, use findMatchingProj()
      *
      * @note Some members may be left blank if no match can be found in CRS database.
-     * @note this method is expensive. Consider using QgsCRSCache::crsByProj4() instead.
+     * @note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * @param theProjString A proj4 format string
      * @return True on success else false
      * @see fromProj4()
@@ -571,6 +564,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static QStringList recentProjections();
 
+    /** Clears the internal cache used to initialise QgsCoordinateReferenceSystem objects.
+     * This should be called whenever the srs database has been modified in order to ensure
+     * that outdated CRS objects are not created.
+     * @note added in QGIS 3.0
+     */
+    static void invalidateCache();
+
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they wont create
     // a fully valid crs. Programmers should use the createFrom* methods rather
@@ -669,6 +669,24 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     //! Function for CRS validation. May be null.
     static CUSTOM_CRS_VALIDATION mCustomSrsValidation;
+
+
+    // cache
+
+    static QReadWriteLock mSrIdCacheLock;
+    static QHash< long, QgsCoordinateReferenceSystem > mSrIdCache;
+    static QReadWriteLock mOgcLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > mOgcCache;
+    static QReadWriteLock mProj4CacheLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > mProj4Cache;
+    static QReadWriteLock mCRSWktLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > mWktCache;
+    static QReadWriteLock mCRSSrsIdLock;
+    static QHash< long, QgsCoordinateReferenceSystem > mSrsIdCache;
+    static QReadWriteLock mCrsStringLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > mStringCache;
+
+    friend class TestQgsCoordinateReferenceSystem;
 };
 
 

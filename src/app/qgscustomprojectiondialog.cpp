@@ -167,6 +167,7 @@ bool  QgsCustomProjectionDialog::deleteCrs( const QString& id )
   sqlite3_close( myDatabase );
 
   QgsCrsCache::instance()->updateCrsCache( QString( "USER:%1" ).arg( id ) );
+  QgsCoordinateReferenceSystem::invalidateCache();
 
   return myResult == SQLITE_OK;
 }
@@ -292,6 +293,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, con
   existingCRSnames[myId] = myName;
 
   QgsCrsCache::instance()->updateCrsCache( QString( "USER:%1" ).arg( myId ) );
+  QgsCoordinateReferenceSystem::invalidateCache();
 
   // If we have a projection acronym not in the user db previously, add it.
   // This is a must, or else we can't select it from the vw_srs table.
