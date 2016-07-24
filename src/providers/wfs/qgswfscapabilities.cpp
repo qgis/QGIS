@@ -20,7 +20,6 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
-#include "qgscrscache.h"
 
 #include <QDomDocument>
 #include <QSettings>
@@ -332,12 +331,12 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
            featureType.bbox.xMinimum() >= -180 && featureType.bbox.yMinimum() >= -90 &&
            featureType.bbox.xMaximum() <= 180 && featureType.bbox.yMaximum() < 90 )
       {
-        QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( featureType.crslist[0] );
+        QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( featureType.crslist[0] );
         if ( !crs.isGeographic() )
         {
           // If the CRS is projected then check that projecting the corner of the bbox, assumed to be in WGS84,
           // into the CRS, and then back to WGS84, works (check that we are in the validity area)
-          QgsCoordinateReferenceSystem crsWGS84 = QgsCrsCache::instance()->crsByOgcWmsCrs( "CRS:84" );
+          QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "CRS:84" );
           QgsCoordinateTransform ct( crsWGS84, crs );
 
           QgsPoint ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );

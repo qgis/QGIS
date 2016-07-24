@@ -30,7 +30,6 @@ email                : tim@linfiniti.com
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgscrscache.h"
 #include "qgscsexception.h"
 
 // qt includes
@@ -231,7 +230,7 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
     if ( outputCRS.isValid() && !outputCRS.isGeographic() )
     {
       // Use a geographic CRS to get lat/long to work out direction
-      QgsCoordinateReferenceSystem ourCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsCoordinateReferenceSystem ourCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
       assert( ourCRS.isValid() );
 
       QgsCoordinateTransform transform( outputCRS, ourCRS );

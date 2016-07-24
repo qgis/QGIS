@@ -21,7 +21,6 @@
 #include <QtConcurrentMap>
 #include <QSettings>
 
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayer.h"

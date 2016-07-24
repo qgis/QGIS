@@ -29,7 +29,6 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgsproviderregistry.h>
 
 #include "qgsembeddedlayerselectdialog.h"
-#include "qgscrscache.h"
 
 #include <QUrl>
 #include <Qsci/qscilexer.h>
@@ -184,7 +183,7 @@ void QgsVirtualLayerSourceSelect::onBrowseCRS()
   if ( crsSelector.exec() )
   {
     mCRS->setText( crsSelector.selectedAuthId() );
-    QgsCoordinateReferenceSystem newCrs = QgsCrsCache::instance()->crsBySrsId( crsSelector.selectedCrsId() );
+    QgsCoordinateReferenceSystem newCrs = QgsCoordinateReferenceSystem::fromSrsId( crsSelector.selectedCrsId() );
     mSrid = newCrs.postgisSrid();
   }
 }

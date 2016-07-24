@@ -35,7 +35,6 @@
 #include "qgspolygonv2.h"
 #include "qgssurfacev2.h"
 #include "qgsunittypes.h"
-#include "qgscrscache.h"
 #include "qgscsexception.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h
@@ -103,7 +102,7 @@ bool QgsDistanceArea::willUseEllipsoid() const
 
 void QgsDistanceArea::setSourceCrs( long srsid )
 {
-  QgsCoordinateReferenceSystem srcCRS = QgsCrsCache::instance()->crsBySrsId( srsid );
+  QgsCoordinateReferenceSystem srcCRS = QgsCoordinateReferenceSystem::fromSrsId( srsid );
   mCoordTransform.setSourceCrs( srcCRS );
 }
 
@@ -114,7 +113,7 @@ void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS )
 
 void QgsDistanceArea::setSourceAuthId( const QString& authId )
 {
-  QgsCoordinateReferenceSystem srcCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( authId );
+  QgsCoordinateReferenceSystem srcCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
   mCoordTransform.setSourceCrs( srcCRS );
 }
 
@@ -223,7 +222,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
 
   // get spatial ref system for ellipsoid
   QString proj4 = "+proj=longlat +ellps=" + ellipsoid + " +no_defs";
-  QgsCoordinateReferenceSystem destCRS = QgsCrsCache::instance()->crsByProj4( proj4 );
+  QgsCoordinateReferenceSystem destCRS = QgsCoordinateReferenceSystem::fromProj4( proj4 );
   //TODO: createFromProj4 used to save to the user database any new CRS
   // this behavior was changed in order to separate creation and saving.
   // Not sure if it necessary to save it here, should be checked by someone

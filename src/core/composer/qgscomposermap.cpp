@@ -20,7 +20,6 @@
 #include "qgscomposermapoverview.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaplayerregistry.h"
@@ -2457,7 +2456,7 @@ QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
     if ( crsid != mComposition->mapSettings().destinationCrs().srsid() )
     {
       //need to reproject
-      QgsCoordinateTransform t( QgsCrsCache::instance()->crsBySrsId( crsid ), mComposition->mapSettings().destinationCrs() );
+      QgsCoordinateTransform t( QgsCoordinateReferenceSystem::fromSrsId( crsid ), mComposition->mapSettings().destinationCrs() );
       double z = 0.0;
       t.transformInPlace( mapX, mapY, z );
     }

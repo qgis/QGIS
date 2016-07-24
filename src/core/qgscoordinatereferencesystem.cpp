@@ -31,7 +31,6 @@
 #include <QSettings>
 
 #include "qgsapplication.h"
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgis.h" //const vals declared here
@@ -351,7 +350,7 @@ void QgsCoordinateReferenceSystem::validate()
 
   if ( !d->mIsValid )
   {
-    *this = QgsCrsCache::instance()->crsByOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+    *this = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
   }
 }
 
@@ -1304,7 +1303,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode & theNode )
       myNode = srsNode.namedItem( "authid" );
       if ( !myNode.isNull() )
       {
-        operator=( QgsCrsCache::instance()->crsByOgcWmsCrs( myNode.toElement().text() ) );
+        operator=( QgsCoordinateReferenceSystem::fromOgcWmsCrs( myNode.toElement().text() ) );
         if ( isValid() )
         {
           initialized = true;
@@ -1316,7 +1315,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode & theNode )
         myNode = srsNode.namedItem( "epsg" );
         if ( !myNode.isNull() )
         {
-          operator=( QgsCrsCache::instance()->crsByEpsgId( myNode.toElement().text().toLong() ) );
+          operator=( QgsCoordinateReferenceSystem::fromEpsgId( myNode.toElement().text().toLong() ) );
           if ( isValid() )
           {
             initialized = true;

@@ -26,7 +26,6 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgscrscache.h"
 #include <sqlite3.h>
 
 //layer builders
@@ -1323,7 +1322,7 @@ void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLay
     if ( conversionOk )
     {
       //set spatial ref sys
-      QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+      QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
       ml->setCrs( srs );
     }
   }
@@ -1332,7 +1331,7 @@ void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLay
     QString projString = layerElem.attribute( "proj", "" );
     if ( !projString.isEmpty() )
     {
-      QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsByProj4( projString );
+      QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromProj4( projString );
       //TODO: createFromProj4 used to save to the user database any new CRS
       // this behavior was changed in order to separate creation and saving.
       // Not sure if it necessary to save it here, should be checked by someone

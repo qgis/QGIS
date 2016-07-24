@@ -18,7 +18,6 @@
 #include "qgswmsserver.h"
 #include "qgscapabilitiescache.h"
 #include "qgscsexception.h"
-#include "qgscrscache.h"
 #include "qgsdxfexport.h"
 #include "qgsfield.h"
 #include "qgsfeatureiterator.h"
@@ -2038,7 +2037,7 @@ int QgsWmsServer::configureMapRender( const QPaintDevice* paintDevice ) const
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectionsEnabled", 1 );
 
     //destination SRS
-    outputCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( crs );
+    outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
     if ( !outputCRS.isValid() )
     {
       QgsMessageLog::logMessage( "Error, could not create output CRS from EPSG" );

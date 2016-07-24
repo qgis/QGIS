@@ -32,7 +32,6 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
-#include "qgscrscache.h"
 #include "qgspoint.h"
 
 #include <QImage>
@@ -199,7 +198,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
                        .arg( OSRGetAuthorityName( hCRS, nullptr ),
                              OSRGetAuthorityCode( hCRS, nullptr ) );
       QgsDebugMsg( "authid recognized as " + authid );
-      mCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( authid );
+      mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid );
     }
     else
     {
@@ -215,7 +214,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
       OGRFree( pszWkt );
 
       // create CRS from Wkt
-      mCrs = QgsCrsCache::instance()->crsByWkt( myWktString );
+      mCrs = QgsCoordinateReferenceSystem::fromWkt( myWktString );
     }
   }
 
@@ -2597,7 +2596,7 @@ void QgsGdalProvider::initBaseDataset()
          GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
     {
       // Warped VRT of RPC is in EPSG:4326
-      mCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( "EPSG:4326" );
+      mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "EPSG:4326" );
     }
     else
     {

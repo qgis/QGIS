@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswfsserver.h"
-#include "qgscrscache.h"
 #include "qgsfield.h"
 #include "qgsexpression.h"
 #include "qgsfeatureiterator.h"

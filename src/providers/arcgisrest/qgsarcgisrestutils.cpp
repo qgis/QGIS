@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestutils.h"
-#include "qgscrscache.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"

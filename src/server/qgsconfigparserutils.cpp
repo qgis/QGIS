@@ -19,7 +19,6 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-#include "qgscrscache.h"
 #include "qgsmaplayer.h"
 #include "qgsrectangle.h"
 
@@ -85,7 +84,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
     return;
   }
 
-  QgsCoordinateReferenceSystem wgs84 = QgsCrsCache::instance()->crsByOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+  QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
 
   QString version = doc.documentElement().attribute( "version" );
 
@@ -186,7 +185,7 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
 
   QString version = doc.documentElement().attribute( "version" );
 
-  QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( crsText );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsText );
 
   //transform the layers native CRS into CRS
   QgsRectangle crsExtent;

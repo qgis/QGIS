@@ -30,7 +30,6 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
 #include "qgsdualview.h"
-#include "qgscrscache.h"
 #include "qgsrasterlayer.h"
 
 #include "qgsattributetablefiltermodel.h"
@@ -387,7 +386,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
     radUseGlobalProjection->setChecked( true );
   }
   QString myLayerDefaultCrs = mSettings->value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  mLayerDefaultCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( myLayerDefaultCrs );
+  mLayerDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
   //on the fly CRS transformation settings
@@ -406,7 +405,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   }
 
   QString myDefaultCrs = mSettings->value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  mDefaultCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( myDefaultCrs );
+  mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myDefaultCrs );
   leProjectGlobalCrs->setCrs( mDefaultCrs );
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::DefaultCrs, false );
 

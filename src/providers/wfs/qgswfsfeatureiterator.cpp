@@ -24,7 +24,6 @@
 #include "qgswfsprovider.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
-#include "qgscrscache.h"
 
 #include <QDir>
 #include <QProgressDialog>
@@ -550,7 +549,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
              !mShared->mURI.ignoreAxisOrientation() &&
              !mShared->mURI.invertAxisOrientation() )
         {
-          QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( parser->srsName() );
+          QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( parser->srsName() );
           if ( crs.isValid() && crs.hasAxisInverted() &&
                !mShared->mCapabilityExtent.contains( parser->layerExtent() ) )
           {

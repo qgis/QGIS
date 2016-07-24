@@ -20,7 +20,6 @@
 #include "qgsapplication.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
-#include "qgscrscache.h"
 #include <QSettings>
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
@@ -42,13 +41,13 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
     //only show project CRS if OTF reprojection is enabled - otherwise the
     //CRS stored in the project can be misleading
     QString projectCrsString = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs" );
-    mProjectCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( projectCrsString );
+    mProjectCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( projectCrsString );
     addProjectCrsOption();
   }
 
   QSettings settings;
   QString defCrsString = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  mDefaultCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( defCrsString );
+  mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrsString );
   if ( mDefaultCrs.authid() != mProjectCrs.authid() )
   {
     //only show default CRS option if it's different to the project CRS, avoids
@@ -87,7 +86,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
     case QgsProjectionSelectionWidget::RecentCrs:
     {
       long srsid = mCrsComboBox->itemData( mCrsComboBox->currentIndex(), Qt::UserRole + 1 ).toLongLong();
-      QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsBySrsId( srsid );
+      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
       return crs;
     }
   }
@@ -144,7 +143,7 @@ void QgsProjectionSelectionWidget::selectCrs()
     mCrsComboBox->blockSignals( true );
     mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
     mCrsComboBox->blockSignals( false );
-    QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsByOgcWmsCrs( mDialog->selectedAuthId() );
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mDialog->selectedAuthId() );
     setCrs( crs );
     emit crsChanged( crs );
   }
@@ -173,7 +172,7 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
     case QgsProjectionSelectionWidget::RecentCrs:
     {
       long srsid = mCrsComboBox->itemData( idx, Qt::UserRole + 1 ).toLongLong();
-      QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsBySrsId( srsid );
+      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
       emit crsChanged( crs );
       return;
     }
@@ -250,7 +249,7 @@ void QgsProjectionSelectionWidget::addRecentCrs()
     }
 
     i++;
-    QgsCoordinateReferenceSystem crs = QgsCrsCache::instance()->crsBySrsId( srsid );
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
     if ( crs.isValid() )
     {
       mCrsComboBox->addItem( tr( "%1 - %2" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::RecentCrs );

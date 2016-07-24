@@ -20,7 +20,6 @@
 #include "qgsproject.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
-#include "qgscrscache.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmslayercache.h"
@@ -862,7 +861,7 @@ QgsRectangle QgsServerProjectParser::layerBoundingBoxInProjectCrs( const QDomEle
   QString version = doc.documentElement().attribute( "version" );
 
   //create layer crs
-  QgsCoordinateReferenceSystem layerCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( boundingBoxElem.attribute( version == "1.1.1" ? "SRS" : "CRS" ) );
+  QgsCoordinateReferenceSystem layerCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( boundingBoxElem.attribute( version == "1.1.1" ? "SRS" : "CRS" ) );
   if ( !layerCrs.isValid() )
   {
     return BBox;
@@ -920,10 +919,10 @@ QgsCoordinateReferenceSystem QgsServerProjectParser::projectCrs() const
                              firstChildElement( "spatialrefsys" ).firstChildElement( "authid" );
     if ( !authIdElem.isNull() )
     {
-      return QgsCrsCache::instance()->crsByOgcWmsCrs( authIdElem.text() );
+      return QgsCoordinateReferenceSystem::fromOgcWmsCrs( authIdElem.text() );
     }
   }
-  return QgsCrsCache::instance()->crsByEpsgId( GEO_EPSG_CRS_ID );
+  return QgsCoordinateReferenceSystem::fromEpsgId( GEO_EPSG_CRS_ID );
 }
 
 QgsRectangle QgsServerProjectParser::mapRectangle() const
