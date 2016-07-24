@@ -56,7 +56,6 @@ class QgsHighlight;
 class QgsVectorLayer;
 
 class QgsLabelingResults;
-class QgsMapRenderer;
 class QgsMapRendererCache;
 class QgsMapRendererQImageJob;
 class QgsMapSettings;
