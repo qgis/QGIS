@@ -74,16 +74,12 @@ class TestQgsPalLabeling(unittest.TestCase):
     """:type: QFont"""
     _MapRegistry = None
     """:type: QgsMapLayerRegistry"""
-    _MapRenderer = None
-    """:type: QgsMapRenderer"""
     _MapSettings = None
     """:type: QgsMapSettings"""
     _Canvas = None
     """:type: QgsMapCanvas"""
     _Pal = None
     """:type: QgsPalLabeling"""
-    _PalEngine = None
-    """:type: QgsLabelingEngineInterface"""
     _BaseSetup = False
 
     @classmethod
@@ -115,7 +111,6 @@ class TestQgsPalLabeling(unittest.TestCase):
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         # noinspection PyArgumentList
         cls._MapRegistry = QgsMapLayerRegistry.instance()
-        cls._MapRenderer = cls._Canvas.mapRenderer()
 
         cls._MapSettings = cls.getBaseMapSettings()
         osize = cls._MapSettings.outputSize()
@@ -126,7 +121,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         cls.setDefaultEngineSettings()
         msg = ('\nCould not initialize PAL labeling engine, '
                'SKIPPING TEST SUITE')
-        assert cls._PalEngine, msg
+        assert cls._Pal, msg
 
         cls._BaseSetup = True
 
@@ -143,8 +138,6 @@ class TestQgsPalLabeling(unittest.TestCase):
     def setDefaultEngineSettings(cls):
         """Restore default settings for pal labelling"""
         cls._Pal = QgsPalLabeling()
-        cls._MapRenderer.setLabelingEngine(cls._Pal)
-        cls._PalEngine = cls._MapRenderer.labelingEngine()
 
     @classmethod
     def removeAllLayers(cls):
@@ -413,7 +406,7 @@ class TestPALConfig(TestQgsPalLabeling):
         lyr = self.defaultLayerSettings()
         lyr.writeToLayer(self.layer)
         msg = '\nLayer labeling not activated, as reported by labelingEngine'
-        self.assertTrue(self._PalEngine.willUseLayer(self.layer), msg)
+        self.assertTrue(self._Pal.willUseLayer(self.layer), msg)
 
     def test_write_read_settings(self):
         # Verify written PAL settings are same when read from layer

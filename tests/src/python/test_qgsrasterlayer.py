@@ -25,7 +25,7 @@ from qgis.core import (QgsRaster,
                        QgsColorRampShader,
                        QgsContrastEnhancement,
                        QgsMapLayerRegistry,
-                       QgsMapRenderer,
+                       QgsMapSettings,
                        QgsPoint,
                        QgsRasterShader,
                        QgsRasterTransparency,
@@ -134,16 +134,13 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer, ])
 
-        myMapRenderer = QgsMapRenderer()
-
-        myLayers = []
-        myLayers.append(myRasterLayer.id())
-        myMapRenderer.setLayerSet(myLayers)
-        myMapRenderer.setExtent(myRasterLayer.extent())
+        myMapSettings = QgsMapSettings()
+        myMapSettings.setLayers([myRasterLayer.id()])
+        myMapSettings.setExtent(myRasterLayer.extent())
 
         myChecker = QgsRenderChecker()
         myChecker.setControlName("expected_raster_transparency")
-        myChecker.setMapRenderer(myMapRenderer)
+        myChecker.setMapSettings(myMapSettings)
 
         myResultFlag = myChecker.runTest("raster_transparency_python")
         assert myResultFlag, "Raster transparency rendering test failed"

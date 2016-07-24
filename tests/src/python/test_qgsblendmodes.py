@@ -36,7 +36,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsMultiRenderChecker,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
-                       QgsRectangle
+                       QgsRectangle,
+                       QgsMapSettings
                        )
 
 from qgis.testing import start_app, unittest
