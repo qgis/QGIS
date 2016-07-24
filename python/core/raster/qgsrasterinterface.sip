@@ -1,6 +1,8 @@
 
 /** \ingroup core
  * Feedback object tailored for raster block reading.
+ *
+ * @note added in QGIS 3.0
  */
 class QgsRasterBlockFeedback : QgsFeedback
 {
