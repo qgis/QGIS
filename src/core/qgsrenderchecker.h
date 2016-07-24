@@ -84,9 +84,6 @@ class CORE_EXPORT QgsRenderChecker
      */
     QString renderedImage() { return mRenderedImageFile; }
 
-    //! @deprecated since 2.4 - use setMapSettings()
-    Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *thepMapRenderer );
-
     //! @note added in 2.4
     void setMapSettings( const QgsMapSettings& mapSettings );
 

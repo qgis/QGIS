@@ -53,7 +53,6 @@ email                : sherman at mrcc.com
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptopixel.h"
 #include "qgsmapoverviewcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaprenderercache.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaprendererparalleljob.h"

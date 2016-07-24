@@ -19,7 +19,6 @@
 #include "qgsbookmarks.h"
 #include "qgscontexthelp.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
 #include "qgscrscache.h"

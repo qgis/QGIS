@@ -27,7 +27,6 @@
 #include "qgsexpression.h"
 #include "qgsfontutils.h"
 #include "qgisapp.h"
-#include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerv2utils.h"

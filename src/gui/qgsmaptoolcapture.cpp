@@ -25,7 +25,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsmapmouseevent.h"
-#include "qgsmaprenderer.h"
 #include "qgspolygonv2.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"

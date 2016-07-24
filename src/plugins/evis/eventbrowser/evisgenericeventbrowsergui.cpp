@@ -28,7 +28,6 @@
 
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsmapcanvas.h"
 #include "qgsgeometry.h"

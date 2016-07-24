@@ -54,8 +54,8 @@
 #include <qgsvectorlayerdiagramprovider.h>
 #include <qgsvectorlayerlabelprovider.h>
 #include <qgsgeometry.h>
-#include <qgsmaprenderer.h>
 #include <qgsmarkersymbollayerv2.h>
+#include <qgspainting.h>
 #include <qgsproject.h>
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
@@ -843,8 +843,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont.setWordSpacing( layer->customProperty( "labeling/fontWordSpacing", QVariant( 0.0 ) ).toDouble() );
   textColor = _readColor( layer, "labeling/textColor", Qt::black, false );
   textTransp = layer->customProperty( "labeling/textTransp" ).toInt();
-  blendMode = QgsMapRenderer::getCompositionMode(
-                static_cast< QgsMapRenderer::BlendMode >( layer->customProperty( "labeling/blendMode", QVariant( QgsMapRenderer::BlendNormal ) ).toUInt() ) );
+  blendMode = QgsPainting::getCompositionMode(
+                static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/blendMode", QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
   previewBkgrdColor = QColor( layer->customProperty( "labeling/previewBkgrdColor", QVariant( "#ffffff" ) ).toString() );
 
 
@@ -895,8 +895,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   }
   bufferColor = _readColor( layer, "labeling/bufferColor", Qt::white, false );
   bufferTransp = layer->customProperty( "labeling/bufferTransp" ).toInt();
-  bufferBlendMode = QgsMapRenderer::getCompositionMode(
-                      static_cast< QgsMapRenderer::BlendMode >( layer->customProperty( "labeling/bufferBlendMode", QVariant( QgsMapRenderer::BlendNormal ) ).toUInt() ) );
+  bufferBlendMode = QgsPainting::getCompositionMode(
+                      static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/bufferBlendMode", QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
   bufferJoinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( "labeling/bufferJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt() );
   bufferNoFill = layer->customProperty( "labeling/bufferNoFill", QVariant( false ) ).toBool();
 
@@ -962,8 +962,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   }
   shapeJoinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( "labeling/shapeJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt() );
   shapeTransparency = layer->customProperty( "labeling/shapeTransparency", QVariant( 0 ) ).toInt();
-  shapeBlendMode = QgsMapRenderer::getCompositionMode(
-                     static_cast< QgsMapRenderer::BlendMode >( layer->customProperty( "labeling/shapeBlendMode", QVariant( QgsMapRenderer::BlendNormal ) ).toUInt() ) );
+  shapeBlendMode = QgsPainting::getCompositionMode(
+                     static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/shapeBlendMode", QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
 
   // drop shadow
   shadowDraw = layer->customProperty( "labeling/shadowDraw", QVariant( false ) ).toBool();
@@ -998,8 +998,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   shadowTransparency = layer->customProperty( "labeling/shadowTransparency", QVariant( 30 ) ).toInt();
   shadowScale = layer->customProperty( "labeling/shadowScale", QVariant( 100 ) ).toInt();
   shadowColor = _readColor( layer, "labeling/shadowColor", Qt::black, false );
-  shadowBlendMode = QgsMapRenderer::getCompositionMode(
-                      static_cast< QgsMapRenderer::BlendMode >( layer->customProperty( "labeling/shadowBlendMode", QVariant( QgsMapRenderer::BlendMultiply ) ).toUInt() ) );
+  shadowBlendMode = QgsPainting::getCompositionMode(
+                      static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/shadowBlendMode", QVariant( QgsPainting::BlendMultiply ) ).toUInt() ) );
 
   // placement
   placement = static_cast< Placement >( layer->customProperty( "labeling/placement" ).toInt() );
@@ -1124,7 +1124,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/fontLetterSpacing", textFont.letterSpacing() );
   layer->setCustomProperty( "labeling/fontWordSpacing", textFont.wordSpacing() );
   layer->setCustomProperty( "labeling/textTransp", textTransp );
-  layer->setCustomProperty( "labeling/blendMode", QgsMapRenderer::getBlendModeEnum( blendMode ) );
+  layer->setCustomProperty( "labeling/blendMode", QgsPainting::getBlendModeEnum( blendMode ) );
   layer->setCustomProperty( "labeling/previewBkgrdColor", previewBkgrdColor.name() );
 
   // text formatting
@@ -1149,7 +1149,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/bufferNoFill", bufferNoFill );
   layer->setCustomProperty( "labeling/bufferTransp", bufferTransp );
   layer->setCustomProperty( "labeling/bufferJoinStyle", static_cast< unsigned int >( bufferJoinStyle ) );
-  layer->setCustomProperty( "labeling/bufferBlendMode", QgsMapRenderer::getBlendModeEnum( bufferBlendMode ) );
+  layer->setCustomProperty( "labeling/bufferBlendMode", QgsPainting::getBlendModeEnum( bufferBlendMode ) );
 
   // background
   layer->setCustomProperty( "labeling/shapeDraw", shapeDraw );
@@ -1177,7 +1177,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/shapeBorderWidthMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shapeBorderWidthMapUnitScale ) );
   layer->setCustomProperty( "labeling/shapeJoinStyle", static_cast< unsigned int >( shapeJoinStyle ) );
   layer->setCustomProperty( "labeling/shapeTransparency", shapeTransparency );
-  layer->setCustomProperty( "labeling/shapeBlendMode", QgsMapRenderer::getBlendModeEnum( shapeBlendMode ) );
+  layer->setCustomProperty( "labeling/shapeBlendMode", QgsPainting::getBlendModeEnum( shapeBlendMode ) );
 
   // drop shadow
   layer->setCustomProperty( "labeling/shadowDraw", shadowDraw );
@@ -1194,7 +1194,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/shadowTransparency", shadowTransparency );
   layer->setCustomProperty( "labeling/shadowScale", shadowScale );
   _writeColor( layer, "labeling/shadowColor", shadowColor, false );
-  layer->setCustomProperty( "labeling/shadowBlendMode", QgsMapRenderer::getBlendModeEnum( shadowBlendMode ) );
+  layer->setCustomProperty( "labeling/shadowBlendMode", QgsPainting::getBlendModeEnum( shadowBlendMode ) );
 
   // placement
   layer->setCustomProperty( "labeling/placement", placement );
@@ -1294,8 +1294,8 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   textFont.setWordSpacing( textStyleElem.attribute( "fontWordSpacing", "0" ).toDouble() );
   textColor = QgsSymbolLayerV2Utils::decodeColor( textStyleElem.attribute( "textColor", QgsSymbolLayerV2Utils::encodeColor( Qt::black ) ) );
   textTransp = textStyleElem.attribute( "textTransp" ).toInt();
-  blendMode = QgsMapRenderer::getCompositionMode(
-                static_cast< QgsMapRenderer::BlendMode >( textStyleElem.attribute( "blendMode", QString::number( QgsMapRenderer::BlendNormal ) ).toUInt() ) );
+  blendMode = QgsPainting::getCompositionMode(
+                static_cast< QgsPainting::BlendMode >( textStyleElem.attribute( "blendMode", QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
   previewBkgrdColor = QColor( textStyleElem.attribute( "previewBkgrdColor", "#ffffff" ) );
 
 
@@ -1348,8 +1348,8 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   }
   bufferColor = QgsSymbolLayerV2Utils::decodeColor( textBufferElem.attribute( "bufferColor", QgsSymbolLayerV2Utils::encodeColor( Qt::white ) ) );
   bufferTransp = textBufferElem.attribute( "bufferTransp" ).toInt();
-  bufferBlendMode = QgsMapRenderer::getCompositionMode(
-                      static_cast< QgsMapRenderer::BlendMode >( textBufferElem.attribute( "bufferBlendMode", QString::number( QgsMapRenderer::BlendNormal ) ).toUInt() ) );
+  bufferBlendMode = QgsPainting::getCompositionMode(
+                      static_cast< QgsPainting::BlendMode >( textBufferElem.attribute( "bufferBlendMode", QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
   bufferJoinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( "bufferJoinStyle", QString::number( Qt::BevelJoin ) ).toUInt() );
   bufferNoFill = textBufferElem.attribute( "bufferNoFill", "0" ).toInt();
 
@@ -1416,8 +1416,8 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   }
   shapeJoinStyle = static_cast< Qt::PenJoinStyle >( backgroundElem.attribute( "shapeJoinStyle", QString::number( Qt::BevelJoin ) ).toUInt() );
   shapeTransparency = backgroundElem.attribute( "shapeTransparency", "0" ).toInt();
-  shapeBlendMode = QgsMapRenderer::getCompositionMode(
-                     static_cast< QgsMapRenderer::BlendMode >( backgroundElem.attribute( "shapeBlendMode", QString::number( QgsMapRenderer::BlendNormal ) ).toUInt() ) );
+  shapeBlendMode = QgsPainting::getCompositionMode(
+                     static_cast< QgsPainting::BlendMode >( backgroundElem.attribute( "shapeBlendMode", QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
 
   // drop shadow
   QDomElement shadowElem = elem.firstChildElement( "shadow" );
@@ -1453,8 +1453,8 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   shadowTransparency = shadowElem.attribute( "shadowTransparency", "30" ).toInt();
   shadowScale = shadowElem.attribute( "shadowScale", "100" ).toInt();
   shadowColor = QgsSymbolLayerV2Utils::decodeColor( shadowElem.attribute( "shadowColor", QgsSymbolLayerV2Utils::encodeColor( Qt::black ) ) );
-  shadowBlendMode = QgsMapRenderer::getCompositionMode(
-                      static_cast< QgsMapRenderer::BlendMode >( shadowElem.attribute( "shadowBlendMode", QString::number( QgsMapRenderer::BlendMultiply ) ).toUInt() ) );
+  shadowBlendMode = QgsPainting::getCompositionMode(
+                      static_cast< QgsPainting::BlendMode >( shadowElem.attribute( "shadowBlendMode", QString::number( QgsPainting::BlendMultiply ) ).toUInt() ) );
 
   // placement
   QDomElement placementElem = elem.firstChildElement( "placement" );
@@ -1561,7 +1561,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   textStyleElem.setAttribute( "fontLetterSpacing", textFont.letterSpacing() );
   textStyleElem.setAttribute( "fontWordSpacing", textFont.wordSpacing() );
   textStyleElem.setAttribute( "textTransp", textTransp );
-  textStyleElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( blendMode ) );
+  textStyleElem.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( blendMode ) );
   textStyleElem.setAttribute( "previewBkgrdColor", previewBkgrdColor.name() );
 
   // text formatting
@@ -1588,7 +1588,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   textBufferElem.setAttribute( "bufferNoFill", bufferNoFill );
   textBufferElem.setAttribute( "bufferTransp", bufferTransp );
   textBufferElem.setAttribute( "bufferJoinStyle", static_cast< unsigned int >( bufferJoinStyle ) );
-  textBufferElem.setAttribute( "bufferBlendMode", QgsMapRenderer::getBlendModeEnum( bufferBlendMode ) );
+  textBufferElem.setAttribute( "bufferBlendMode", QgsPainting::getBlendModeEnum( bufferBlendMode ) );
 
   // background
   QDomElement backgroundElem = doc.createElement( "background" );
@@ -1617,7 +1617,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   backgroundElem.setAttribute( "shapeBorderWidthMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shapeBorderWidthMapUnitScale ) );
   backgroundElem.setAttribute( "shapeJoinStyle", static_cast< unsigned int >( shapeJoinStyle ) );
   backgroundElem.setAttribute( "shapeTransparency", shapeTransparency );
-  backgroundElem.setAttribute( "shapeBlendMode", QgsMapRenderer::getBlendModeEnum( shapeBlendMode ) );
+  backgroundElem.setAttribute( "shapeBlendMode", QgsPainting::getBlendModeEnum( shapeBlendMode ) );
 
   // drop shadow
   QDomElement shadowElem = doc.createElement( "shadow" );
@@ -1635,7 +1635,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   shadowElem.setAttribute( "shadowTransparency", shadowTransparency );
   shadowElem.setAttribute( "shadowScale", shadowScale );
   shadowElem.setAttribute( "shadowColor", QgsSymbolLayerV2Utils::encodeColor( shadowColor ) );
-  shadowElem.setAttribute( "shadowBlendMode", QgsMapRenderer::getBlendModeEnum( shadowBlendMode ) );
+  shadowElem.setAttribute( "shadowBlendMode", QgsPainting::getBlendModeEnum( shadowBlendMode ) );
 
   // placement
   QDomElement placementElem = doc.createElement( "placement" );
@@ -4190,12 +4190,6 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
 {
   if ( QgsVectorLayerDiagramProvider* provider = mDiagramProviders.value( layerID, nullptr ) )
     provider->registerFeature( feat, context );
-}
-
-
-void QgsPalLabeling::init( QgsMapRenderer* mr )
-{
-  init( mr->mapSettings() );
 }
 
 

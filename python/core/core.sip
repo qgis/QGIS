@@ -100,6 +100,7 @@
 %Include qgsogcutils.sip
 %Include qgsowsconnection.sip
 %Include qgspaintenginehack.sip
+%Include qgspainting.sip
 %Include qgspallabeling.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip

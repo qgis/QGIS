@@ -44,7 +44,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
 

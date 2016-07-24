@@ -19,7 +19,6 @@
 #define QGSMAPTOOLLABEL_H
 
 #include "qgsmaptool.h"
-#include "qgsmaprenderer.h"
 #include "qgspallabeling.h"
 
 class QgsRubberBand;

@@ -16,7 +16,6 @@
 #include "qgsgcpcanvasitem.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsrasterlayer.h"
 
 QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsGeorefDataPoint* dataPoint, bool isGCPSource )

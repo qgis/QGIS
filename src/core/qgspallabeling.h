@@ -51,7 +51,6 @@ class QFontMetricsF;
 class QPainter;
 class QPicture;
 class QgsGeometry;
-class QgsMapRenderer;
 class QgsCoordinateTransform;
 class QgsLabelSearchTree;
 class QgsMapSettings;
@@ -926,9 +925,6 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     // implemented methods from labeling engine interface
 
-    //! called when we're going to start with rendering
-    //! @deprecated since 2.4 - use override with QgsMapSettings
-    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mr ) override;
     //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings ) override;
     //! called to find out whether the layer is used for labeling

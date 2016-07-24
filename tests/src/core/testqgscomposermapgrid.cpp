@@ -21,7 +21,6 @@
 #include "qgscomposermap.h"
 #include "qgscomposermapgrid.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsfontutils.h"
 #include <QObject>
 #include <QtTest/QtTest>

@@ -30,7 +30,6 @@ email                : tim@linfiniti.com
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgscrscache.h"
 #include "qgscsexception.h"
 

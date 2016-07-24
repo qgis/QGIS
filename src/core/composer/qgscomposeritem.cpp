@@ -40,7 +40,7 @@
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
-#include "qgsmaprenderer.h" //for getCompositionMode
+#include "qgspainting.h"
 #include "qgsexpressioncontext.h"
 
 #include <cmath>
@@ -241,7 +241,7 @@ bool QgsComposerItem::_writeXml( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.appendChild( bgColorElem );
 
   //blend mode
-  composerItemElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( mBlendMode ) );
+  composerItemElem.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( mBlendMode ) );
 
   //transparency
   composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
@@ -391,7 +391,7 @@ bool QgsComposerItem::_readXml( const QDomElement& itemElem, const QDomDocument&
   }
 
   //blend mode
-  setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) ) );
+  setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) ) );
 
   //transparency
   setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );

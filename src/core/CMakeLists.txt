@@ -163,6 +163,7 @@ SET(QGIS_CORE_SRCS
   qgsogrutils.cpp
   qgsowsconnection.cpp
   qgspaintenginehack.cpp
+  qgspainting.cpp
   qgspallabeling.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
@@ -675,6 +676,7 @@ SET(QGIS_CORE_HDRS
   qgsogcutils.h
   qgsowsconnection.h
   qgspaintenginehack.h
+  qgspainting.h
   qgspallabeling.h
   qgspluginlayerregistry.h
   qgspoint.h

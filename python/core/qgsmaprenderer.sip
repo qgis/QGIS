@@ -36,9 +36,6 @@ class QgsLabelingEngineInterface
     virtual ~QgsLabelingEngineInterface();
 
     //! called when we're going to start with rendering
-    //! @deprecated since 2.4 - use override with QgsMapSettings
-    virtual void init( QgsMapRenderer *mp ) = 0 /Deprecated/;
-    //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings ) = 0;
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
@@ -104,37 +101,6 @@ class QgsMapRenderer : QObject
       Millimeters,
       Pixels
       //MAP_UNITS probably supported in future versions
-    };
-
-    /** Blending modes enum defining the available composition modes that can
-     * be used when rendering a layer
-     */
-    enum BlendMode
-    {
-      BlendNormal,
-      BlendLighten,
-      BlendScreen,
-      BlendDodge,
-      BlendAddition,
-      BlendDarken,
-      BlendMultiply,
-      BlendBurn,
-      BlendOverlay,
-      BlendSoftLight,
-      BlendHardLight,
-      BlendDifference,
-      BlendSubtract,
-      BlendSource,
-      BlendDestinationOver,
-      BlendClear,
-      BlendDestination,
-      BlendSourceIn,
-      BlendDestinationIn,
-      BlendSourceOut,
-      BlendDestinationOut,
-      BlendSourceAtop,
-      BlendDestinationAtop,
-      BlendXor,
     };
 
     //! constructor
@@ -296,11 +262,6 @@ class QgsMapRenderer : QObject
     //! Set labeling engine. Previous engine (if any) is deleted.
     //! Takes ownership of the engine.
     void setLabelingEngine( QgsLabelingEngineInterface* iface /Transfer/ );
-
-    //! Returns a QPainter::CompositionMode corresponding to a BlendMode
-    static QPainter::CompositionMode getCompositionMode( QgsMapRenderer::BlendMode blendMode );
-    //! Returns a BlendMode corresponding to a QPainter::CompositionMode
-    static QgsMapRenderer::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
     void clearLayerCoordinateTransforms();

@@ -25,7 +25,6 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsmaprenderer.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"

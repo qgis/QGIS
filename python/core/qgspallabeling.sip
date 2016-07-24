@@ -836,9 +836,6 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
-    //! @deprecated since 2.4 - use override with QgsMapSettings
-    virtual void init( QgsMapRenderer* mr ) /Deprecated/;
-    //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings );
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer );

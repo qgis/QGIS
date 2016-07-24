@@ -23,7 +23,6 @@
 #include "qgisappstylesheet.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgstolerance.h"

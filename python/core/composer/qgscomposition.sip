@@ -40,8 +40,6 @@ class QgsComposition : QGraphicsScene
       Landscape
     };
 
-    //! @deprecated since 2.4 - use the constructor with QgsMapSettings
-    QgsComposition( QgsMapRenderer* mapRenderer ) /Deprecated/;
     explicit QgsComposition( const QgsMapSettings& mapSettings );
 
     /** Composition atlas modes*/
@@ -412,10 +410,6 @@ class QgsComposition : QGraphicsScene
     bool useAdvancedEffects() const;
     /** Used to enable or disable advanced effects such as blend modes in a composition */
     void setUseAdvancedEffects( const bool effectsEnabled );
-
-    /** Returns pointer to map renderer of qgis map canvas*/
-    //! @deprecated since 2.4 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
-    QgsMapRenderer* mapRenderer() /Deprecated/;
 
     //! Return setting of QGIS map canvas
     //! @note added in 2.4

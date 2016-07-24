@@ -40,7 +40,6 @@ class QgisApp;
 class QgsComposerFrame;
 class QgsComposerMap;
 class QGraphicsRectItem;
-class QgsMapRenderer;
 class QDomElement;
 class QgsComposerArrow;
 class QgsComposerPolygon;
@@ -106,8 +105,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       Landscape
     };
 
-    //! @deprecated since 2.4 - use the constructor with QgsMapSettings
-    Q_DECL_DEPRECATED QgsComposition( QgsMapRenderer* mapRenderer );
     explicit QgsComposition( const QgsMapSettings& mapSettings );
 
     /** Composition atlas modes*/
@@ -476,10 +473,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
     /** Used to enable or disable advanced effects such as blend modes in a composition */
     void setUseAdvancedEffects( const bool effectsEnabled );
-
-    /** Returns pointer to map renderer of qgis map canvas*/
-    //! @deprecated since 2.4 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
-    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer() { return mMapRenderer; }
 
     //! Return setting of QGIS map canvas
     //! @note added in 2.4
@@ -923,8 +916,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
 
   private:
-    /** Pointer to map renderer of QGIS main map*/
-    QgsMapRenderer* mMapRenderer;
+    /** Reference to map settings of QGIS main map*/
     const QgsMapSettings& mMapSettings;
 
     QgsComposition::PlotStyle mPlotStyle;
