@@ -20,6 +20,8 @@
 
 #include <QPainter>
 
+/// @cond PRIVATE
+
 QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
     : QgsMapCanvasItem( canvas )
 {
@@ -74,3 +76,5 @@ void QgsMapCanvasMap::paint( QPainter* painter )
   painter->drawRoundedRect( br, rad, rad );
 #endif
 }
+
+/// @endcond
