@@ -25,6 +25,7 @@ class QgsMapCanvas;
  * A rectangular graphics item representing the map on the canvas.
  *
  * @note This class is not a part of public API
+ * @note not available in Python bindings
  */
 class QgsMapCanvasMap : public QgsMapCanvasItem
 {
