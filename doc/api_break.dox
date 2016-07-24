@@ -129,6 +129,9 @@ called if changes are made to the CRS database.</li>
 <ul>
 <li>QgsCoordinateTransform is no longer a QObject. readXml, writeXml and initialise are all normal public members now,
 not slots. The invalidTransformInput() signal has been removed.</li>
+<li>The extra QgsCoordinateTransform constructors (those not taking QgsCoordinateReferenceSystem arguments) have been
+removed. Now, QgsCoordinateTransform must be created using an already existing source and destination
+QgsCoordinateReferenceSystem object.</li>
 <li>QgsCoordinateTransform::clone() has been removed. Just use direct copies instead.</li>
 <li>sourceCrs() and destCrs() now return a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling these methods will need to be updated.</li>

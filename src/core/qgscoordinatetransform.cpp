@@ -50,29 +50,6 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   d = new QgsCoordinateTransformPrivate( source, destination );
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform( long sourceSrsId, long destinationSrsId )
-{
-  d = new QgsCoordinateTransformPrivate( QgsCoordinateReferenceSystem::fromSrsId( sourceSrsId ),
-                                         QgsCoordinateReferenceSystem::fromSrsId( destinationSrsId ) );
-}
-
-QgsCoordinateTransform::QgsCoordinateTransform( const QString& sourceWkt, const QString& destinationWkt )
-{
-  d = new QgsCoordinateTransformPrivate( QgsCoordinateReferenceSystem::fromWkt( sourceWkt ),
-                                         QgsCoordinateReferenceSystem::fromWkt( destinationWkt ) );
-}
-
-
-QgsCoordinateTransform::QgsCoordinateTransform( long sourceSrid,
-    const QString& destinationWkt,
-    QgsCoordinateReferenceSystem::CrsType sourceCrsType )
-{
-  QgsCoordinateReferenceSystem sourceCrs;
-  sourceCrs.createFromId( sourceSrid, sourceCrsType );
-
-  d = new QgsCoordinateTransformPrivate( sourceCrs, QgsCoordinateReferenceSystem::fromWkt( destinationWkt ) );
-}
-
 void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& crs )
 {
   d.detach();
