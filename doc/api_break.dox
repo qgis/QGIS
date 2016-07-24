@@ -22,6 +22,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 <ul>
 <li>QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.</li>
+<li>QgsMapCanvasMap. It is an internal class used by map canvas.
 </ul>
 
 \subsection qgis_api_break_3_0_global General changes
@@ -218,6 +219,17 @@ only affects third party c++ providers, and does not affect PyQGIS scripts.</li>
 
 <ul>
 <li>rotationEnabled() and enableRotation() have been removed, since map rotation is now always supported</li>
+<li>The "name" parameter has been removed from constructor. Use QObject::setObjectName() to set canvas name if necessary.</li>
+<li>map() has been removed because QgsMapCanvasMap is not available in API anymore.</li>
+<li>mapRenderer() has been removed. Use directly map canvas methods to get/set configuration or mapSettings() (for reading only).</li>
+<li>canvasPaintDevice() has been removed. Use map canvas items to draw anything on top of canvas.</li>
+<li>clear() has been removed. Use refresh() instead.</li>
+<li>setCanvasColor() and canvasColor() are not virtual methods anymore.</li>
+<li>updateFullExtent() has been removed. No need to call it explicitly. Full extent calculation is done in QgsMapSettings.</li>
+<li>setDirty() and isDirty() have been removed. Use refresh() to refresh canvas content.</li>
+<li>setWheelAction() and WheelAction enum have been removed. Custom wheel actions are not supported anymore.</li>
+<li>updateMap(), showError(), useImageToRender() have been removed. They did nothing since 2.4.</li>
+<li>setProgress() signal has been removed. It was not emitted since 2.0.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsMapLayer QgsMapLayer

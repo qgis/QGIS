@@ -104,18 +104,14 @@ class GUI_EXPORT QgsMapCanvasLayer
  * Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
-Q_NOWARN_DEPRECATED_PUSH
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 {
     Q_OBJECT
 
   public:
 
-    //TODO QGIS 3 remove this
-    enum WheelAction { WheelZoom, WheelZoomAndRecenter, WheelZoomToMouseCursor, WheelNothing };
-
     //! Constructor
-    QgsMapCanvas( QWidget * parent = nullptr, const char *name = nullptr );
+    QgsMapCanvas( QWidget * parent = nullptr );
 
     //! Destructor
     ~QgsMapCanvas();
@@ -182,26 +178,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.4
     int mapUpdateInterval() const;
 
-    //! @deprecated since 2.4 - there could be more than just one "map" items
-    Q_DECL_DEPRECATED QgsMapCanvasMap *map();
-
-    //! @deprecated since 2.4 - use mapSettings() for anything related to current renderer settings
-    //// SIP: removed /Transfer/ because it crashes after few calls to iface.mapCanvas().mapRenderer().hasCrsTransformEnabled()
-    //// and in fact there is no transfer of ownership from c++ to python!
-    //// Actually the problem comes from the fact that "hasCrsTransformEnabled" is both a signal and a normal method
-    //// /KeepReference/ is necessary because otherwise mapRenderer().hasCrsTransformEnabled() was crashing
-    Q_DECL_DEPRECATED QgsMapRenderer *mapRenderer();
-
-    //! Accessor for the canvas paint device
-    //! @deprecated since 2.4
-    Q_DECL_DEPRECATED QPaintDevice &canvasPaintDevice();
-
     //! Get the last reported scale of the canvas
     double scale();
-
-    //! Clear the map canvas
-    //! @deprecated since 2.4 - use refresh() - clear does the same thing
-    Q_DECL_DEPRECATED void clear();
 
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
@@ -275,9 +253,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapTool* mapTool();
 
     /** Write property of QColor bgColor. */
-    virtual void setCanvasColor( const QColor & _newVal );
+    void setCanvasColor( const QColor & _newVal );
     /** Read property of QColor bgColor. */
-    virtual QColor canvasColor() const;
+    QColor canvasColor() const;
 
     /** Set color of selected vector features */
     //! @note added in 2.4
@@ -285,10 +263,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Emits signal scaleChanged to update scale in main window */
     void updateScale();
-
-    /** Updates the full extent */
-    //! @deprecated since v2.4 - does nothing
-    Q_DECL_DEPRECATED void updateFullExtent() {}
 
     //! return the map layer at position index in the layer stack
     QgsMapLayer *layer( int index );
@@ -316,14 +290,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     bool isFrozen();
 
-    //! Flag the canvas as dirty and needed a refresh
-    //! @deprecated since 2.4 - use refresh() to trigger a refresh (clients should not decide explicitly whether canvas is dirty or not)
-    Q_DECL_DEPRECATED void setDirty( bool _dirty );
-
-    //! Return the state of the canvas (dirty or not)
-    //! @deprecated since 2.4 - dirty flag is not kept anymore - always returns false
-    Q_DECL_DEPRECATED bool isDirty() const;
-
     //! Set map units (needed by project properties dialog)
     void setMapUnits( Qgis::UnitType mapUnits );
 
@@ -346,10 +312,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! returns current layer (set by legend widget)
     QgsMapLayer* currentLayer();
-
-    //! set wheel action and zoom factor (should be greater than 1)
-    //! @deprecated No more options for wheel action
-    Q_DECL_DEPRECATED void setWheelAction( WheelAction action, double factor = 2 );
 
     //! set wheel zoom factor (should be greater than 1)
     void setWheelFactor( double factor );
@@ -377,10 +339,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! sets map tile rendering flag
     void enableMapTileRendering( bool theFlag );
-
-    //! Select which Qt class to render with
-    //! @deprecated since 2.4 - does nothing because now we always render to QImage
-    Q_DECL_DEPRECATED void useImageToRender( bool theFlag );
 
     // following 2 methods should be moved elsewhere or changed to private
     // currently used by pan map tool
@@ -497,15 +455,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** A simple helper method to find out if on the fly projections are enabled or not */
     bool hasCrsTransformEnabled();
 
-    //! @deprecated in 2.4 - does nothing - kept for API compatibility
-    Q_DECL_DEPRECATED void updateMap();
-
     //! stop rendering (if there is any right now)
     //! @note added in 2.4
     void stopRendering();
-
-    //! @deprecated since 2.4 - does nothing - errors are reported by different means
-    Q_DECL_DEPRECATED void showError( QgsMapLayer * mapLayer );
 
     //! called to read map canvas settings from project
     void readProject( const QDomDocument & );
@@ -545,10 +497,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void refreshMap();
 
   signals:
-    /** Let the owner know how far we are with render operations */
-    //! @deprecated since 2.4 - already unused in 2.0 anyway
-    Q_DECL_DEPRECATED void setProgress( int, int );
-
     /** Emits current mouse position
         \note changed in 1.3 */
     void xyCoordinates( const QgsPoint &p );
@@ -711,9 +659,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! encompases all map settings necessary for map rendering
     QgsMapSettings mSettings;
 
-    //! all map rendering is done in this class
-    QgsMapRenderer* mMapRenderer;
-
     //! owns pixmap with rendered map and controls rendering
     QgsMapCanvasMap* mMap;
 
@@ -820,54 +765,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     friend class TestQgsMapCanvas;
 
 }; // class QgsMapCanvas
-Q_NOWARN_DEPRECATED_POP
 
-
-
-
-/** \ingroup gui
- * Class that does synchronization between QgsMapCanvas and its associated QgsMapRenderer:
- *   - changes done in map canvas settings are pushed to map renderer
- *   - changes done in map renderer are pushed to map canvas settings
- *
- * This class can be removed within API cleanup when QgsMapRenderer will not be accessible from canvas API anymore.
- * Added in 2.4. This class is not a part of public API!
- * @note not available in Python bindings
- */
-class QgsMapCanvasRendererSync : public QObject
-{
-    Q_OBJECT
-  public:
-    QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMapRenderer* renderer );
-
-  protected slots:
-    void onExtentC2R();
-    void onExtentR2C();
-
-    void onMapUnitsC2R();
-    void onMapUnitsR2C();
-
-    //! @note added in 2.8
-    void onMapRotationC2R();
-    //! @note added in 2.8
-    void onMapRotationR2C();
-
-    void onCrsTransformC2R();
-    void onCrsTransformR2C();
-
-    //! Called when the canvas destination CRS is changed
-    void onDestinationCrsC2R();
-    //! Called when the renderer destination CRS is changed
-    void onDestinationCrsR2C();
-
-    void onLayersC2R();
-
-  protected:
-    QgsMapCanvas* mCanvas;
-    QgsMapRenderer* mRenderer;
-
-    bool mSyncingExtent;
-};
 
 
 #endif

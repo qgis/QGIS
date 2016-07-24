@@ -76,8 +76,3 @@ void QgsMapCanvasMap::paint( QPainter* painter )
   painter->drawRoundedRect( br, rad, rad );
 #endif
 }
-
-QPaintDevice& QgsMapCanvasMap::paintDevice()
-{
-  return mImage;
-}

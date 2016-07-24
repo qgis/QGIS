@@ -98,7 +98,6 @@
 %Include qgsmanageconnectionsdialog.sip
 %Include qgsmapcanvas.sip
 %Include qgsmapcanvasitem.sip
-%Include qgsmapcanvasmap.sip
 %Include qgsmapcanvassnapper.sip
 %Include qgsmapcanvassnappingutils.sip
 %Include qgsmapcanvastracer.sip

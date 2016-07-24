@@ -54,7 +54,6 @@ class TestQgsMapCanvas : public QObject
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
-    void testMapRendererInteraction();
     void testPanByKeyboard();
     void testMagnification();
     void testMagnificationExtent();
@@ -80,69 +79,6 @@ void TestQgsMapCanvas::cleanupTestCase()
 {
 }
 
-void TestQgsMapCanvas::testMapRendererInteraction()
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  QgsMapRenderer* mr = mCanvas->mapRenderer();
-  Q_NOWARN_DEPRECATED_POP
-
-  // CRS transforms
-
-  QSignalSpy spy0( mCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ) );
-  mr->setProjectionsEnabled( true );
-  QCOMPARE( mr->hasCrsTransformEnabled(), true );
-  QCOMPARE( mCanvas->hasCrsTransformEnabled(), true );
-  QCOMPARE( spy0.count(), 1 );
-
-  QSignalSpy spy1( mr, SIGNAL( hasCrsTransformEnabled( bool ) ) );
-  mCanvas->setCrsTransformEnabled( false );
-  QCOMPARE( mr->hasCrsTransformEnabled(), false );
-  QCOMPARE( mCanvas->hasCrsTransformEnabled(), false );
-  QCOMPARE( spy1.count(), 1 );
-
-  // Extent
-
-  QSignalSpy spy2( mCanvas, SIGNAL( extentsChanged() ) );
-  QgsRectangle r1( 10, 10, 20, 20 );
-  mr->setExtent( r1 );
-  QgsRectangle r2 = mr->extent();
-  QGSCOMPARENEAR( mCanvas->extent().xMinimum(), r2.xMinimum(), 0.0000000001 );
-  QGSCOMPARENEAR( mCanvas->extent().yMinimum(), r2.yMinimum(), 0.0000000001 );
-  QGSCOMPARENEAR( mCanvas->extent().xMaximum(), r2.xMaximum(), 0.0000000001 );
-  QGSCOMPARENEAR( mCanvas->extent().yMaximum(), r2.yMaximum(), 0.0000000001 );
-  QCOMPARE( spy2.count(), 1 );
-
-  QgsRectangle r3( 100, 100, 200, 200 );
-  QSignalSpy spy3( mr, SIGNAL( extentsChanged() ) );
-  mCanvas->setExtent( r3 );
-  QgsRectangle r4 = mCanvas->extent();
-  QGSCOMPARENEAR( mr->extent().xMinimum(), r4.xMinimum(), 0.0000000001 );
-  QGSCOMPARENEAR( mr->extent().yMinimum(), r4.yMinimum(), 0.0000000001 );
-  QGSCOMPARENEAR( mr->extent().xMaximum(), r4.xMaximum(), 0.0000000001 );
-  QGSCOMPARENEAR( mr->extent().yMaximum(), r4.yMaximum(), 0.0000000001 );
-  QCOMPARE( spy3.count(), 1 );
-
-  // Destination CRS
-
-  QgsCoordinateReferenceSystem crs1( "EPSG:27700" );
-  QCOMPARE( crs1.isValid(), true );
-  QSignalSpy spy4( mCanvas, SIGNAL( destinationCrsChanged() ) );
-  mr->setDestinationCrs( crs1 );
-  qDebug( " crs %s vs %s", mCanvas->mapSettings().destinationCrs().authid().toAscii().data(), crs1.authid().toAscii().data() );
-  QCOMPARE( mCanvas->mapSettings().destinationCrs(), crs1 );
-  QCOMPARE( mr->destinationCrs(), crs1 );
-  QCOMPARE( spy4.count(), 1 );
-
-  QgsCoordinateReferenceSystem crs2( "EPSG:4326" );
-  QCOMPARE( crs2.isValid(), true );
-  QSignalSpy spy5( mr, SIGNAL( destinationCrsChanged() ) );
-  mCanvas->setDestinationCrs( crs2 );
-  QCOMPARE( mCanvas->mapSettings().destinationCrs(), crs2 );
-  QCOMPARE( mr->destinationCrs(), crs2 );
-  QCOMPARE( spy5.count(), 1 );
-
-  // TODO: set map units
-}
 
 void TestQgsMapCanvas::testPanByKeyboard()
 {

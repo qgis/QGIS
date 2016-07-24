@@ -95,105 +95,10 @@ class QgsMapCanvas::CanvasProperties
 };
 
 
-QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMapRenderer* renderer )
-    : QObject( canvas )
-    , mCanvas( canvas )
-    , mRenderer( renderer )
-    , mSyncingExtent( false )
-{
-  connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( onExtentC2R() ) );
-  connect( mRenderer, SIGNAL( extentsChanged() ), this, SLOT( onExtentR2C() ) );
 
-  connect( mCanvas, SIGNAL( mapUnitsChanged() ), this, SLOT( onMapUnitsC2R() ) );
-  connect( mRenderer, SIGNAL( mapUnitsChanged() ), this, SLOT( onMapUnitsR2C() ) );
-
-  connect( mCanvas, SIGNAL( rotationChanged( double ) ), this, SLOT( onMapRotationC2R() ) );
-  connect( mRenderer, SIGNAL( rotationChanged( double ) ), this, SLOT( onMapRotationR2C() ) );
-
-  connect( mCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ), this, SLOT( onCrsTransformC2R() ) );
-  connect( mRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( onCrsTransformR2C() ) );
-
-  connect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( onDestinationCrsC2R() ) );
-  connect( mRenderer, SIGNAL( destinationCrsChanged() ), this, SLOT( onDestinationCrsR2C() ) );
-
-  connect( mCanvas, SIGNAL( layersChanged() ), this, SLOT( onLayersC2R() ) );
-  // TODO: layers R2C ? (should not happen!)
-
-}
-
-void QgsMapCanvasRendererSync::onExtentC2R()
-{
-  // protection against possible bounce back
-  if ( mSyncingExtent )
-    return;
-
-  mSyncingExtent = true;
-  mRenderer->setExtent( mCanvas->mapSettings().extent() );
-  mSyncingExtent = false;
-}
-
-void QgsMapCanvasRendererSync::onExtentR2C()
-{
-  // protection against possible bounce back
-  if ( mSyncingExtent )
-    return;
-
-  mSyncingExtent = true;
-  mCanvas->setExtent( mRenderer->extent() );
-  mSyncingExtent = false;
-}
-
-void QgsMapCanvasRendererSync::onMapUnitsC2R()
-{
-  mRenderer->setMapUnits( mCanvas->mapSettings().mapUnits() );
-}
-
-void QgsMapCanvasRendererSync::onMapUnitsR2C()
-{
-  mCanvas->setMapUnits( mRenderer->mapUnits() );
-}
-
-void QgsMapCanvasRendererSync::onMapRotationR2C()
-{
-  mCanvas->setRotation( mRenderer->rotation() );
-}
-
-void QgsMapCanvasRendererSync::onMapRotationC2R()
-{
-  mRenderer->setRotation( mCanvas->rotation() );
-}
-
-void QgsMapCanvasRendererSync::onCrsTransformC2R()
-{
-  mRenderer->setProjectionsEnabled( mCanvas->mapSettings().hasCrsTransformEnabled() );
-}
-
-void QgsMapCanvasRendererSync::onCrsTransformR2C()
-{
-  mCanvas->setCrsTransformEnabled( mRenderer->hasCrsTransformEnabled() );
-}
-
-void QgsMapCanvasRendererSync::onDestinationCrsC2R()
-{
-  mRenderer->setDestinationCrs( mCanvas->mapSettings().destinationCrs(), true, false );
-}
-
-void QgsMapCanvasRendererSync::onDestinationCrsR2C()
-{
-  mCanvas->setDestinationCrs( mRenderer->destinationCrs() );
-}
-
-void QgsMapCanvasRendererSync::onLayersC2R()
-{
-  mRenderer->setLayerSet( mCanvas->mapSettings().layers() );
-}
-
-
-
-QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
+QgsMapCanvas::QgsMapCanvas( QWidget * parent )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
-    , mMapRenderer( nullptr )
     , mMap( nullptr )
     , mMapOverview( nullptr )
     , mFrozen( false )
@@ -218,15 +123,12 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mExpressionContextScope( tr( "Map Canvas" ) )
     , mZoomDragging( false )
 {
-  setObjectName( name );
   mScene = new QGraphicsScene();
   setScene( mScene );
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setMouseTracking( true );
   setFocusPolicy( Qt::StrongFocus );
-
-  mMapRenderer = new QgsMapRenderer;
 
   mResizeTimer = new QTimer( this );
   mResizeTimer->setSingleShot( true );
@@ -253,13 +155,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 
   mWheelZoomFactor = settings.value( "/qgis/zoom_factor", 2 ).toDouble();
 
-  // class that will sync most of the changes between canvas and (legacy) map renderer
-  // it is parented to map canvas, will be deleted automatically
-  new QgsMapCanvasRendererSync( this, mMapRenderer );
-
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
-  mMapRenderer->setOutputSize( s, mSettings.outputDpi() );
   setSceneRect( 0, 0, s.width(), s.height() );
   mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
 
@@ -311,7 +208,6 @@ QgsMapCanvas::~QgsMapCanvas()
 
   mScene->deleteLater();  // crashes in python tests on windows
 
-  delete mMapRenderer;
   // mCanvasProperties auto-deleted via QScopedPointer
   // CanvasProperties struct has its own dtor for freeing resources
 
@@ -362,22 +258,6 @@ void QgsMapCanvas::enableMapTileRendering( bool theFlag )
   mSettings.setFlag( QgsMapSettings::RenderMapTile, theFlag );
 }
 
-void QgsMapCanvas::useImageToRender( bool theFlag )
-{
-  Q_UNUSED( theFlag );
-}
-
-QgsMapCanvasMap* QgsMapCanvas::map()
-{
-  return mMap;
-}
-
-QgsMapRenderer* QgsMapCanvas::mapRenderer()
-{
-  return mMapRenderer;
-}
-
-
 QgsMapLayer* QgsMapCanvas::layer( int index )
 {
   const QStringList& layers = mapSettings().layers();
@@ -398,17 +278,6 @@ double QgsMapCanvas::scale()
 {
   return mapSettings().scale();
 } // scale
-
-void QgsMapCanvas::setDirty( bool dirty )
-{
-  if ( dirty )
-    refresh();
-}
-
-bool QgsMapCanvas::isDirty() const
-{
-  return false;
-}
 
 bool QgsMapCanvas::isDrawing()
 {
@@ -837,10 +706,6 @@ void QgsMapCanvas::stopRendering()
   }
 }
 
-void QgsMapCanvas::updateMap()
-{
-}
-
 //the format defaults to "PNG" if not specified
 void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap, const QString& theFormat )
 {
@@ -1040,12 +905,6 @@ void QgsMapCanvas::updateScale()
 {
   emit scaleChanged( mapSettings().scale() );
 }
-
-
-void QgsMapCanvas::clear()
-{
-  refresh();
-} // clear
 
 
 void QgsMapCanvas::zoomToFullExtent()
@@ -1533,7 +1392,6 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
   QSize lastSize = viewport()->size();
 
   mSettings.setOutputSize( lastSize );
-  mMapRenderer->setOutputSize( lastSize, mSettings.outputDpi() );
 
   mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
 
@@ -1604,12 +1462,6 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
                       mousePos.y() + (( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 
   zoomByFactor( signedWheelFactor, &newCenter );
-}
-
-void QgsMapCanvas::setWheelAction( WheelAction action, double factor )
-{
-  Q_UNUSED( action );
-  setWheelFactor( factor );
 }
 
 void QgsMapCanvas::setWheelFactor( double factor )
@@ -1824,13 +1676,6 @@ bool QgsMapCanvas::isFrozen()
 } // freeze
 
 
-QPaintDevice &QgsMapCanvas::canvasPaintDevice()
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  return mMap->paintDevice();
-  Q_NOWARN_DEPRECATED_POP
-}
-
 double QgsMapCanvas::mapUnitsPerPixel() const
 {
   return mapSettings().mapUnitsPerPixel();
@@ -1958,11 +1803,6 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
   setSceneRect( -pnt.x(), -pnt.y(), viewport()->size().width(), viewport()->size().height() );
 }
 
-void QgsMapCanvas::showError( QgsMapLayer * mapLayer )
-{
-  Q_UNUSED( mapLayer );
-}
-
 QPoint QgsMapCanvas::mouseLastXY()
 {
   return mCanvasProperties->mouseLastXY;
@@ -2084,7 +1924,6 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
   {
     mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
-    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
     return;
   }
 
@@ -2095,7 +1934,6 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   {
     // just use the default transform
     mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );
-    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
     return;
   }
 
@@ -2123,7 +1961,6 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
       destTransform = t.at( 1 );
     }
     mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
-    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
     if ( d.rememberSelection() )
     {
       s.setValue( settingsString + "_srcTransform", srcTransform );
@@ -2133,7 +1970,6 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   else
   {
     mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );
-    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
   }
 }
 
