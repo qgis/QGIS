@@ -15,7 +15,6 @@
 
 #include <qgsrubberband.h>
 #include <qgsmapcanvas.h>
-#include <qgsmaprenderer.h>
 #include <osg/View>
 #include <osgEarth/SpatialReference>
 #include <osgEarth/Terrain>
@@ -27,7 +26,7 @@ QgsGlobeFrustumHighlightCallback::QgsGlobeFrustumHighlightCallback( osg::View* v
     , mView( view )
     , mTerrain( terrain )
     , mRubberBand( new QgsRubberBand( mapCanvas, Qgis::Polygon ) )
-    , mSrs( osgEarth::SpatialReference::create( mapCanvas->mapRenderer()->destinationCrs().toWkt().toStdString() ) )
+    , mSrs( osgEarth::SpatialReference::create( mapCanvas->mapSettings().destinationCrs().toWkt().toStdString() ) )
 {
   mRubberBand->setColor( color );
 }

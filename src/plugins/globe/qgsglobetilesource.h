@@ -109,7 +109,7 @@ class QgsGlobeTileUpdateManager : public QObject
 class QgsGlobeTileSource : public osgEarth::TileSource
 {
   public:
-    QgsGlobeTileSource( QgsMapCanvas* canvas, const osgEarth::TileSourceOptions& options = osgEarth::TileSourceOptions() );
+    QgsGlobeTileSource( const osgEarth::TileSourceOptions& options = osgEarth::TileSourceOptions() );
     Status initialize( const osgDB::Options *dbOptions ) override;
     osg::Image* createImage( const osgEarth::TileKey& key, osgEarth::ProgressCallback* progress ) override;
     osg::HeightField* createHeightField( const osgEarth::TileKey &/*key*/, osgEarth::ProgressCallback* /*progress*/ ) override { return 0; }
@@ -125,7 +125,6 @@ class QgsGlobeTileSource : public osgEarth::TileSource
 
     QMutex mTileListLock;
     QList<QgsGlobeTileImage*> mTiles;
-    QgsMapCanvas* mCanvas;
     QStringList mLayerSet;
     QgsGlobeTileUpdateManager mTileUpdateManager;
 

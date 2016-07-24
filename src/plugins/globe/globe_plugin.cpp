@@ -363,7 +363,7 @@ void GlobePlugin::run()
     osgEarth::TileSourceOptions opts;
     opts.L2CacheSize() = 0;
     opts.tileSize() = 128;
-    mTileSource = new QgsGlobeTileSource( mQGisIface->mapCanvas(), opts );
+    mTileSource = new QgsGlobeTileSource( opts );
 
     osgEarth::ImageLayerOptions options( "QGIS" );
     options.driver()->L2CacheSize() = 0;
@@ -1024,7 +1024,7 @@ void GlobePlugin::rebuildQGISLayer()
     osgEarth::TileSourceOptions opts;
     opts.L2CacheSize() = 0;
     opts.tileSize() = 128;
-    mTileSource = new QgsGlobeTileSource( mQGisIface->mapCanvas(), opts );
+    mTileSource = new QgsGlobeTileSource( opts );
 
     osgEarth::ImageLayerOptions options( "QGIS" );
     options.driver()->L2CacheSize() = 0;

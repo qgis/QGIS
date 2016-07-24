@@ -22,7 +22,6 @@
 #include "qgsglobetilesource.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaprendererparalleljob.h"
 
@@ -215,9 +214,8 @@ void QgsGlobeTileUpdateManager::renderingFinished()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsGlobeTileSource::QgsGlobeTileSource( QgsMapCanvas* canvas, const osgEarth::TileSourceOptions& options )
+QgsGlobeTileSource::QgsGlobeTileSource( const osgEarth::TileSourceOptions& options )
     : TileSource( options )
-    , mCanvas( canvas )
 {
   osgEarth::GeoExtent geoextent( osgEarth::SpatialReference::get( "wgs84" ), -180., -90., 180., 90. );
   osgEarth::DataExtentList extents;
