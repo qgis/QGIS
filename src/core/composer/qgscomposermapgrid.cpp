@@ -21,7 +21,7 @@
 #include "qgsgeometry.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
-#include "qgsmaprenderer.h"
+#include "qgsmapsettings.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"

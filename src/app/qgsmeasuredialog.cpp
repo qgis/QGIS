@@ -22,7 +22,6 @@
 #include "qgscontexthelp.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsunittypes.h"

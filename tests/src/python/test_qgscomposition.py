@@ -24,7 +24,7 @@ from qgis.core import (QgsComposition,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
                        QgsMapLayerRegistry,
-                       QgsMapRenderer
+                       QgsMapSettings
                        )
 
 from qgis.testing import start_app, unittest
@@ -57,7 +57,7 @@ class TestQgsComposition(unittest.TestCase):
         myText = 'Latitude: %s, Longitude: %s' % (myLatitude, myLongitude)
 
         # Load the composition with the substitutions
-        myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
+        myComposition = QgsComposition(self.iface.mapCanvas().mapSettings())
         mySubstitutionMap = {'replace-me': myText}
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
@@ -73,7 +73,7 @@ class TestQgsComposition(unittest.TestCase):
 
     def testNoSubstitutionMap(self):
         """Test that we can get a map if we use no text substitutions."""
-        myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
+        myComposition = QgsComposition(self.iface.mapCanvas().mapSettings())
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
             myTemplateContent = f.read()
@@ -101,13 +101,11 @@ class TestQgsComposition(unittest.TestCase):
 
         QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
 
-        myMapRenderer = QgsMapRenderer()
-        myLayerStringList = []
-        myLayerStringList.append(myRasterLayer.id())
-        myMapRenderer.setLayerSet(myLayerStringList)
-        myMapRenderer.setProjectionsEnabled(False)
+        myMapSettings = QgsMapSettings()
+        myMapSettings.setLayers([myRasterLayer.id()])
+        myMapSettings.setCrsTransformEnabled(False)
 
-        myComposition = QgsComposition(myMapRenderer)
+        myComposition = QgsComposition(myMapSettings)
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
             myTemplateContent = f.read()

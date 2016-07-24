@@ -27,7 +27,6 @@
 #include "qgsgpsdetector.h"
 #include "qgslayertreeview.h"
 #include "qgslogger.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgsnmeaconnection.h"
 #include "qgspoint.h"

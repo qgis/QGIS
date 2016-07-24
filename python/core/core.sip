@@ -80,7 +80,6 @@
 %Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
 %Include qgsmaplayerstylemanager.sip
-%Include qgsmaprenderer.sip
 %Include qgsmaprenderercache.sip
 %Include qgsmaprenderercustompainterjob.sip
 %Include qgsmaprendererjob.sip
@@ -100,6 +99,7 @@
 %Include qgsogcutils.sip
 %Include qgsowsconnection.sip
 %Include qgspaintenginehack.sip
+%Include qgspainting.sip
 %Include qgspallabeling.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip

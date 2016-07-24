@@ -23,7 +23,6 @@
 #include "qgsatlascomposition.h"
 #include "qgscomposerlabel.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgssymbolv2.h"

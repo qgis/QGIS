@@ -22,6 +22,8 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 <ul>
 <li>QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.</li>
+<li>QgsMapCanvasMap. It is an internal class used by map canvas.</li>
+<li>QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_global General changes
@@ -72,6 +74,7 @@ qgsPermissiveToInt()</li>
 
 <ul>
 <li>containsWMSLayer() has been renamed to containsWmsLayer()</li>
+<li>mapRenderer() has been removed. Use mapSettings() instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsComposerNodesItem QgsComposerNodesItem
@@ -93,6 +96,8 @@ qgsPermissiveToInt()</li>
 
 <ul>
 <li>addItemsFromXML() has been renamed to addItemsFromXml()</li>
+<li>Constructor with QgsMapRenderer parameter has been removed. Use the variant with QgsMapSettings parameter.</li>
+<li>mapRenderer() has been removed. Use mapSettings() instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem
@@ -201,6 +206,12 @@ objects are implicitly shared, returning a copy helps simplify and make code mor
 only affects third party c++ providers, and does not affect PyQGIS scripts.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsLabelingEngineInterface QgsLabelingEngineInterface
+
+<ul>
+<li>init(QgsMapRenderer*) has been removed. Use init(const QgsMapSettings&) instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsLayerTreeGroup QgsLayerTreeGroup
 
 <ul>
@@ -218,6 +229,17 @@ only affects third party c++ providers, and does not affect PyQGIS scripts.</li>
 
 <ul>
 <li>rotationEnabled() and enableRotation() have been removed, since map rotation is now always supported</li>
+<li>The "name" parameter has been removed from constructor. Use QObject::setObjectName() to set canvas name if necessary.</li>
+<li>map() has been removed because QgsMapCanvasMap is not available in API anymore.</li>
+<li>mapRenderer() has been removed. Use directly map canvas methods to get/set configuration or mapSettings() (for reading only).</li>
+<li>canvasPaintDevice() has been removed. Use map canvas items to draw anything on top of canvas.</li>
+<li>clear() has been removed. Use refresh() instead.</li>
+<li>setCanvasColor() and canvasColor() are not virtual methods anymore.</li>
+<li>updateFullExtent() has been removed. No need to call it explicitly. Full extent calculation is done in QgsMapSettings.</li>
+<li>setDirty() and isDirty() have been removed. Use refresh() to refresh canvas content.</li>
+<li>setWheelAction() and WheelAction enum have been removed. Custom wheel actions are not supported anymore.</li>
+<li>updateMap(), showError(), useImageToRender() have been removed. They did nothing since 2.4.</li>
+<li>setProgress() signal has been removed. It was not emitted since 2.0.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsMapLayer QgsMapLayer
@@ -254,6 +276,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 <li>transformation() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
 be returned instead of a null pointer if no transformation is required.</li>
 <li>destinationSrsChanged() was renamed to destinationCrsChanged()</li>
+<li>getCompositionMode(), getBlendModeEnum() and BlendMode enum have been moved to QgsPainting utility class.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsMapRendererJob QgsMapRendererJob
@@ -270,6 +293,12 @@ be used instead of a null pointer if no transformation is required.</li>
 <ul>
 <li>layerTransform() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
 be returned instead of a null pointer if no transformation is required.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsPalLabeling QgsPalLabeling
+
+<ul>
+<li>init(QgsMapRenderer*) has been removed. Use init(const QgsMapSettings&) instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsOSMElement QgsOSMElement
@@ -318,6 +347,12 @@ be returned instead of a null pointer if no transformation is required.</li>
 <li>createFromXML() has been renamed to createFromXml()</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsRenderChecker QgsRenderChecker
+
+<ul>
+<li>setMapRenderer() has been removed. Use setMapSettings() instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsRenderContext QgsRenderContext
 
 <ul>
@@ -332,6 +367,18 @@ be returned instead of a null pointer if no transformation is required.</li>
 <li>ct is now a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
 be used instead of a null pointer if no transformation is required.</li>
 <li>prepareGeometry() and geometryRequiresPreparation() now take a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSnapper QgsSnapper
+
+<ul>
+<li>Constructor variant with QgsMapRenderer has been removed. Use the variant with QgsMapSettings.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsTolerance QgsTolerance
+
+<ul>
+<li>vertexSearchRadius(), defaultTolerance(), toleranceInMapUnits() do not have variant with QgsMapRenderer anymore. Use the variants with QgsMapSettings.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsJSONExporter QgsJSONExporter

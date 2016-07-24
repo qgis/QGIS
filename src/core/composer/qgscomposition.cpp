@@ -36,7 +36,7 @@
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
 #include "qgsgroupungroupitemscommand.h"
-#include "qgsmaprenderer.h"
+#include "qgsmapsettings.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
 #include "qgsproject.h"
@@ -62,18 +62,8 @@
 #include "gdal.h"
 #include "cpl_conv.h"
 
-QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
-    : QGraphicsScene( nullptr )
-    , mMapRenderer( mapRenderer )
-    , mMapSettings( mapRenderer->mapSettings() )
-    , mAtlasComposition( this )
-{
-  init();
-}
-
 QgsComposition::QgsComposition( const QgsMapSettings& mapSettings )
     : QGraphicsScene( nullptr )
-    , mMapRenderer( nullptr )
     , mMapSettings( mapSettings )
     , mAtlasComposition( this )
 {
@@ -155,42 +145,6 @@ void QgsComposition::init()
   mItemsModel = new QgsComposerModel( this );
 }
 
-
-/*
-QgsComposition::QgsComposition()
-    : QGraphicsScene( 0 )
-    , mMapRenderer( 0 )
-    , mPlotStyle( QgsComposition::Preview )
-    , mPageWidth( 297 )
-    , mPageHeight( 210 )
-    , mSpaceBetweenPages( 10 )
-    , mPageStyleSymbol( 0 )
-    , mPrintAsRaster( false )
-    , mGenerateWorldFile( false )
-    , mUseAdvancedEffects( true )
-    , mSnapToGrid( false )
-    , mGridVisible( false )
-    , mSnapGridResolution( 0 )
-    , mSnapGridTolerance( 0 )
-    , mSnapGridOffsetX( 0 )
-    , mSnapGridOffsetY( 0 )
-    , mAlignmentSnap( true )
-    , mGuidesVisible( true )
-    , mSmartGuides( true )
-    , mAlignmentSnapTolerance( 0 )
-    , mSelectionHandles( 0 )
-    , mActiveItemCommand( 0 )
-    , mActiveMultiFrameCommand( 0 )
-    , mAtlasComposition( this )
-    , mAtlasMode( QgsComposition::AtlasOff )
-    , mPreventCursorChange( false )
-    , mItemsModel( 0 )
-{
-  //load default composition settings
-  loadDefaults();
-  loadSettings();
-  mItemsModel = new QgsComposerModel( this );
-}*/
 
 QgsComposition::~QgsComposition()
 {

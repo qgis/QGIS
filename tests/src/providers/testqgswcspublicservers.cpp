@@ -30,7 +30,7 @@
 #include <qgsdatasourceuri.h>
 #include <qgslogger.h>
 #include <qgsmaplayerregistry.h>
-#include <qgsmaprenderer.h>
+#include <qgsmaprenderersequentialjob.h>
 #include <qgsproviderregistry.h>
 #include <qgsrasterdataprovider.h>
 #include <qgsrasterinterface.h>
@@ -457,25 +457,17 @@ void TestQgsWcsPublicServers::test()
               myLog << provider + "_max:" + QString::number( myStats.maximumValue );
             }
 
-            QgsMapRenderer myMapRenderer;
-            QList<QgsMapLayer *> myLayersList;
+            QgsMapLayerRegistry::instance()->addMapLayer( myLayer, false );
 
-            myLayersList.append( myLayer );
-            QgsMapLayerRegistry::instance()->addMapLayers( myLayersList, false );
+            QgsMapSettings mapSettings;
+            mapSettings.setLayers( QStringList( myLayer->id() ) );
+            mapSettings.setExtent( myLayer->extent() );
+            mapSettings.setOutputSize( QSize( myWidth, myHeight ) );
 
-            QMap<QString, QgsMapLayer*> myLayersMap = QgsMapLayerRegistry::instance()->mapLayers();
-
-            myMapRenderer.setLayerSet( myLayersMap.keys() );
-
-            myMapRenderer.setExtent( myLayer->extent() );
-
-            QImage myImage( myWidth, myHeight, QImage::Format_ARGB32_Premultiplied );
-            myImage.fill( 0 );
-
-            myMapRenderer.setOutputSize( QSize( myWidth, myHeight ), myImage.logicalDpiX() );
-
-            QPainter myPainter( &myImage );
-            myMapRenderer.render( &myPainter );
+            QgsMapRendererSequentialJob job( mapSettings );
+            job.start();
+            job.waitForFinished();
+            QImage myImage( job.renderedImage() );
 
             // Save rendered image
             QString myPngPath = myPath + "-" + provider + ".png";

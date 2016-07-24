@@ -31,7 +31,6 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsrendercontext.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 
 #include <QPainter>
 #include <QAction>

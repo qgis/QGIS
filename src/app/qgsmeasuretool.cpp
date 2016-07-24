@@ -16,7 +16,6 @@
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"

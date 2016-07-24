@@ -79,11 +79,6 @@ QString QgsRenderChecker::imageToHash( const QString& theImageFile )
   return myHash.result().toHex().constData();
 }
 
-void QgsRenderChecker::setMapRenderer( QgsMapRenderer* thepMapRenderer )
-{
-  mMapSettings = thepMapRenderer->mapSettings();
-}
-
 void QgsRenderChecker::setMapSettings( const QgsMapSettings& mapSettings )
 {
   mMapSettings = mapSettings;

@@ -17,20 +17,12 @@
 
 #include "qgssnapper.h"
 #include "qgsmapsettings.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsvectorlayer.h"
 #include <QMultiMap>
 #include <QPoint>
 #include <cmath>
 
-
-QgsSnapper::QgsSnapper( QgsMapRenderer* mapRenderer )
-    : mMapSettings( mapRenderer->mapSettings() )
-    , mSnapMode( SnapWithOneResult )
-{
-
-}
 
 QgsSnapper::QgsSnapper( const QgsMapSettings& mapSettings )
     : mMapSettings( mapSettings )

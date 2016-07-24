@@ -21,7 +21,6 @@
 #include <qgslogger.h>
 #include "qgsfeatureiterator.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"

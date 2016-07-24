@@ -36,7 +36,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsMultiRenderChecker,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
-                       QgsRectangle
+                       QgsRectangle,
+                       QgsMapSettings
                        )
 
 from qgis.testing import start_app, unittest
@@ -91,11 +92,9 @@ class TestQgsBlendModes(unittest.TestCase):
         self.mMapRegistry.addMapLayer(self.mRasterLayer2)
 
         # to match blend modes test comparisons background
-        self.mCanvas = self.iface.mapCanvas()
-        self.mCanvas.setCanvasColor(QColor(152, 219, 249))
-        self.mMap = self.mCanvas.map()
-        self.mMap.resize(QSize(400, 400))
-        self.mapSettings = self.mCanvas.mapSettings()
+        self.mapSettings = QgsMapSettings()
+        self.mapSettings.setLayers([self.mRasterLayer1.id(), self.mRasterLayer2.id()])
+        self.mapSettings.setBackgroundColor(QColor(152, 219, 249))
         self.mapSettings.setOutputSize(QSize(400, 400))
         self.mapSettings.setOutputDpi(96)
 

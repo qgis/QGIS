@@ -22,7 +22,6 @@
 #include "qgisinterface.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptool.h"
 #include "qgscsexception.h"
 

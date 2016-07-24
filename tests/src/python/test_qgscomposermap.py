@@ -24,7 +24,7 @@ from qgis.core import (QgsComposerMap,
                        QgsRectangle,
                        QgsRasterLayer,
                        QgsComposition,
-                       QgsMapRenderer,
+                       QgsMapSettings,
                        QgsMapLayerRegistry,
                        QgsMultiBandColorRenderer,
                        )
@@ -54,12 +54,10 @@ class TestQgsComposerMap(unittest.TestCase):
         QgsMapLayerRegistry.instance().addMapLayers([mRasterLayer])
 
         # create composition with composer map
-        self.mMapRenderer = QgsMapRenderer()
-        layerStringList = []
-        layerStringList.append(mRasterLayer.id())
-        self.mMapRenderer.setLayerSet(layerStringList)
-        self.mMapRenderer.setProjectionsEnabled(False)
-        self.mComposition = QgsComposition(self.mMapRenderer)
+        self.mMapSettings = QgsMapSettings()
+        self.mMapSettings.setLayers([mRasterLayer.id()])
+        self.mMapSettings.setCrsTransformEnabled(False)
+        self.mComposition = QgsComposition(self.mMapSettings)
         self.mComposition.setPaperSize(297, 210)
         self.mComposerMap = QgsComposerMap(self.mComposition, 20, 20, 200, 100)
         self.mComposerMap.setFrameEnabled(True)

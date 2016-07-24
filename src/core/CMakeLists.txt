@@ -140,7 +140,6 @@ SET(QGIS_CORE_SRCS
   qgsmaplayerlegend.cpp
   qgsmaplayerregistry.cpp
   qgsmaplayerstylemanager.cpp
-  qgsmaprenderer.cpp
   qgsmaprenderercache.cpp
   qgsmaprenderercustompainterjob.cpp
   qgsmaprendererjob.cpp
@@ -163,6 +162,7 @@ SET(QGIS_CORE_SRCS
   qgsogrutils.cpp
   qgsowsconnection.cpp
   qgspaintenginehack.cpp
+  qgspainting.cpp
   qgspallabeling.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
@@ -466,7 +466,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaplayerstylemanager.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
-  qgsmaprenderer.h
   qgsmaprendererjob.h
   qgsmaprendererparalleljob.h
   qgsmaprenderersequentialjob.h
@@ -675,6 +674,7 @@ SET(QGIS_CORE_HDRS
   qgsogcutils.h
   qgsowsconnection.h
   qgspaintenginehack.h
+  qgspainting.h
   qgspallabeling.h
   qgspluginlayerregistry.h
   qgspoint.h

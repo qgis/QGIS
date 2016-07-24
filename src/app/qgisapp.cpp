@@ -173,7 +173,6 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmapoverviewcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsmapsettings.h"
 #include "qgsmaptip.h"
 #include "qgsmergeattributesdialog.h"
@@ -238,7 +237,6 @@
 #include "qgsdataitem.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgswelcomepage.h"
-#include "qgsmaprendererparalleljob.h"
 #include "qgsversioninfo.h"
 #include "qgslegendfilterbutton.h"
 #include "qgsvirtuallayerdefinition.h"
@@ -671,7 +669,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // "theMapCanvas" used to find this canonical instance later
   startProfile( "Creating map canvas" );
-  mMapCanvas = new QgsMapCanvas( centralWidget, "theMapCanvas" );
+  mMapCanvas = new QgsMapCanvas( centralWidget );
+  mMapCanvas->setObjectName( "theMapCanvas" );
   connect( mMapCanvas, SIGNAL( messageEmitted( const QString&, const QString&, QgsMessageBar::MessageLevel ) ),
            this, SLOT( displayMessage( const QString&, const QString&, QgsMessageBar::MessageLevel ) ) );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "

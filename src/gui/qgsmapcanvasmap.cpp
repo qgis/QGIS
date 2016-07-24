@@ -16,9 +16,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
-#include "qgsmaprenderer.h"
 #include "qgsmapsettings.h"
-#include "qgsmaplayer.h"
 
 #include <QPainter>
 
@@ -75,9 +73,4 @@ void QgsMapCanvasMap::paint( QPainter* painter )
   br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   painter->drawRoundedRect( br, rad, rad );
 #endif
-}
-
-QPaintDevice& QgsMapCanvasMap::paintDevice()
-{
-  return mImage;
 }

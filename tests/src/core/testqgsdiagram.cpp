@@ -26,7 +26,6 @@
 // #include <qgisapp.h>
 #include <diagram/qgspiediagram.h>
 #include <qgsdiagramrendererv2.h>
-#include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>

@@ -21,7 +21,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
 #include "qgsmapsettings.h"
-#include "qgsmaprenderer.h"
+#include "qgspainting.h"
 
 #include <QPainter>
 
@@ -162,7 +162,7 @@ bool QgsComposerMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) co
   QDomElement overviewFrameElem = doc.createElement( "ComposerMapOverview" );
 
   overviewFrameElem.setAttribute( "frameMap", mFrameMapId );
-  overviewFrameElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( mBlendMode ) );
+  overviewFrameElem.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( mBlendMode ) );
   overviewFrameElem.setAttribute( "inverted", mInverted );
   overviewFrameElem.setAttribute( "centered", mCentered );
 
@@ -185,7 +185,7 @@ bool QgsComposerMapOverview::readXml( const QDomElement &itemElem, const QDomDoc
   bool ok = QgsComposerMapItem::readXml( itemElem, doc );
 
   setFrameMap( itemElem.attribute( "frameMap", "-1" ).toInt() );
-  mBlendMode = QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) );
+  mBlendMode = QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) );
   mInverted = ( itemElem.attribute( "inverted", "0" ) != "0" );
   mCentered = ( itemElem.attribute( "centered", "0" ) != "0" );
 

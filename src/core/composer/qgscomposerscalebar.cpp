@@ -21,7 +21,7 @@
 #include "qgsdistancearea.h"
 #include "qgsscalebarstyle.h"
 #include "qgsdoubleboxscalebarstyle.h"
-#include "qgsmaprenderer.h"
+#include "qgsmapsettings.h"
 #include "qgsnumericscalebarstyle.h"
 #include "qgssingleboxscalebarstyle.h"
 #include "qgsticksscalebarstyle.h"

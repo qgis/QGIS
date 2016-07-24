@@ -33,7 +33,6 @@
 #include <qgisinterface.h>
 #include <qgsrubberband.h>
 #include <qgsmaptopixel.h>
-#include <qgsmaprenderer.h>
 #include <qgsfeature.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>

@@ -24,7 +24,6 @@
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaprenderer.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerv2.h"
 #include "qgssymbolv2.h"

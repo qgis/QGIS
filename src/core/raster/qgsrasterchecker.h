@@ -18,7 +18,6 @@
 
 #include <QDir>
 #include <QString>
-#include <qgsmaprenderer.h>
 class QImage;
 
 /** \ingroup core

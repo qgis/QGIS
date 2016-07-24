@@ -22,11 +22,11 @@
 #include "qgscomposerutils.h"
 #include "qgscrscache.h"
 #include "qgslogger.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptopixel.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
@@ -518,13 +518,6 @@ void QgsComposerMap::layersChanged()
 void QgsComposerMap::setCacheUpdated( bool u )
 {
   mCacheUpdated = u;
-}
-
-const QgsMapRenderer *QgsComposerMap::mapRenderer() const
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  return mComposition->mapRenderer();
-  Q_NOWARN_DEPRECATED_POP
 }
 
 QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context ) const
@@ -1509,7 +1502,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     mapGrid->setFramePenColor( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "framePenColor", "0,0,0" ) ) );
     mapGrid->setFrameFillColor1( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor1", "255,255,255,255" ) ) );
     mapGrid->setFrameFillColor2( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor2", "0,0,0,255" ) ) );
-    mapGrid->setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) ) );
+    mapGrid->setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) ) );
     QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
     QgsLineSymbolV2* lineSymbol = nullptr;
     if ( gridSymbolElem.isNull() )
@@ -1560,7 +1553,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     QgsComposerMapOverview* mapOverview = new QgsComposerMapOverview( tr( "Overview %1" ).arg( mOverviewStack->size() + 1 ), this );
 
     mapOverview->setFrameMap( overviewFrameElem.attribute( "overviewFrameMap", "-1" ).toInt() );
-    mapOverview->setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( overviewFrameElem.attribute( "overviewBlendMode", "0" ).toUInt() ) ) );
+    mapOverview->setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( overviewFrameElem.attribute( "overviewBlendMode", "0" ).toUInt() ) ) );
     mapOverview->setInverted( overviewFrameElem.attribute( "overviewInverted" ).compare( "true", Qt::CaseInsensitive ) == 0 );
     mapOverview->setCentered( overviewFrameElem.attribute( "overviewCentered" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 

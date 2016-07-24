@@ -21,7 +21,6 @@
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"

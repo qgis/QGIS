@@ -19,7 +19,6 @@
 #include "qgscomposition.h"
 #include "qgscomposerlabel.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmultirenderchecker.h"

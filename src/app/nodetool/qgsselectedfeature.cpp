@@ -24,7 +24,6 @@
 #include <qgsvectorlayer.h>
 #include <qgsrubberband.h>
 #include <qgisapp.h>
-#include <qgsmaprenderer.h>
 #include <qgslayertreeview.h>
 #include <qgsproject.h>
 

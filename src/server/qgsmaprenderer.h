@@ -25,8 +25,8 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgsfeature.h"
 #include "qgsmapsettings.h"
+#include "qgspallabeling.h"
 
 class QDomDocument;
 class QDomNode;
@@ -34,119 +34,14 @@ class QPainter;
 
 class QgsMapToPixel;
 class QgsMapLayer;
-class QgsMapRenderer;
 class QgsScaleCalculator;
 class QgsCoordinateReferenceSystem;
 class QgsDistanceArea;
 class QgsVectorLayer;
 
-class QgsPalLayerSettings;
-class QgsDiagramLayerSettings;
 
-/** \ingroup core
- * \class QgsLabelPosition
- */
-class CORE_EXPORT QgsLabelPosition
-{
-  public:
-    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, const QFont& labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString& providerId = QString() )
-        : featureId( id )
-        , rotation( r )
-        , cornerPoints( corners )
-        , labelRect( rect )
-        , width( w )
-        , height( h )
-        , layerID( layer )
-        , labelText( labeltext )
-        , labelFont( labelfont )
-        , upsideDown( upside_down )
-        , isDiagram( diagram )
-        , isPinned( pinned )
-        , providerID( providerId )
-    {}
-    QgsLabelPosition()
-        : featureId( -1 )
-        , rotation( 0 )
-        , labelRect( QgsRectangle() )
-        , width( 0 )
-        , height( 0 )
-        , layerID( "" )
-        , labelText( "" )
-        , labelFont( QFont() )
-        , upsideDown( false )
-        , isDiagram( false )
-        , isPinned( false )
-    {}
-    int featureId;
-    double rotation;
-    QVector< QgsPoint > cornerPoints;
-    QgsRectangle labelRect;
-    double width;
-    double height;
-    QString layerID;
-    QString labelText;
-    QFont labelFont;
-    bool upsideDown;
-    bool isDiagram;
-    bool isPinned;
-    //! @note added in 2.14
-    QString providerID;
-};
 
-/** \ingroup core
- * Labeling engine interface.
-*/
-class CORE_EXPORT QgsLabelingEngineInterface
-{
-  public:
-
-    virtual ~QgsLabelingEngineInterface() {}
-
-    //! called when we're going to start with rendering
-    //! @deprecated since 2.4 - use override with QgsMapSettings
-    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer *mp ) = 0;
-    //! called when we're going to start with rendering
-    virtual void init( const QgsMapSettings& mapSettings ) = 0;
-    //! called to find out whether the layer is used for labeling
-    virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
-    //! clears all PAL layer settings for registered layers
-    virtual void clearActiveLayers() = 0;
-    //! clears data defined objects from PAL layer settings for a registered layer
-    virtual void clearActiveLayer( const QString& layerID ) = 0;
-    //! called when starting rendering of a layer
-    virtual int prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) = 0;
-    //! returns PAL layer settings for a registered layer
-    //! @deprecated since 2.12 - if direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
-    Q_DECL_DEPRECATED virtual QgsPalLayerSettings &layer( const QString &layerName ) = 0;
-    //! adds a diagram layer to the labeling engine
-    //! @note added in QGIS 2.12
-    virtual int prepareDiagramLayer( QgsVectorLayer *layer, QStringList &attrNames, QgsRenderContext &ctx )
-    { Q_UNUSED( layer ); Q_UNUSED( attrNames ); Q_UNUSED( ctx ); return 0; }
-    //! adds a diagram layer to the labeling engine
-    //! @deprecated since 2.12 - use prepareDiagramLayer()
-    Q_DECL_DEPRECATED virtual int addDiagramLayer( QgsVectorLayer *layer, const QgsDiagramLayerSettings *s )
-    { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }
-    //! called for every feature
-    virtual void registerFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context ) = 0;
-    //! called for every diagram feature
-    virtual void registerDiagramFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context )
-    { Q_UNUSED( layerID ); Q_UNUSED( feat ); Q_UNUSED( context ); }
-    //! called when the map is drawn and labels should be placed
-    virtual void drawLabeling( QgsRenderContext& context ) = 0;
-    //! called when we're done with rendering
-    virtual void exit() = 0;
-    //! return infos about labels at a given (map) position
-    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
-    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0;
-    //! return infos about labels within a given (map) rectangle
-    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
-    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0;
-
-    //! called when passing engine among map renderers
-    virtual QgsLabelingEngineInterface* clone() = 0;
-};
-
-struct CORE_EXPORT QgsLayerCoordinateTransform
+struct SERVER_EXPORT QgsLayerCoordinateTransform
 {
   QString srcAuthId;
   QString destAuthId;
@@ -160,7 +55,7 @@ struct CORE_EXPORT QgsLayerCoordinateTransform
  * A non GUI class for rendering a map layer set onto a QPainter.
  */
 
-class CORE_EXPORT QgsMapRenderer : public QObject
+class SERVER_EXPORT QgsMapRenderer : public QObject
 {
     Q_OBJECT
 
@@ -172,37 +67,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
       Millimeters,
       Pixels
       //MAP_UNITS probably supported in future versions
-    };
-
-    /** Blending modes enum defining the available composition modes that can
-     * be used when rendering a layer
-     */
-    enum BlendMode
-    {
-      BlendNormal,
-      BlendLighten,
-      BlendScreen,
-      BlendDodge,
-      BlendAddition,
-      BlendDarken,
-      BlendMultiply,
-      BlendBurn,
-      BlendOverlay,
-      BlendSoftLight,
-      BlendHardLight,
-      BlendDifference,
-      BlendSubtract,
-      BlendSource,
-      BlendDestinationOver,
-      BlendClear,
-      BlendDestination,
-      BlendSourceIn,
-      BlendDestinationIn,
-      BlendSourceOut,
-      BlendDestinationOut,
-      BlendSourceAtop,
-      BlendDestinationAtop,
-      BlendXor,
     };
 
     //! constructor
@@ -364,11 +228,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Set labeling engine. Previous engine (if any) is deleted.
     //! Takes ownership of the engine.
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
-
-    //! Returns a QPainter::CompositionMode corresponding to a BlendMode
-    static QPainter::CompositionMode getCompositionMode( BlendMode blendMode );
-    //! Returns a BlendMode corresponding to a QPainter::CompositionMode
-    static QgsMapRenderer::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
     void clearLayerCoordinateTransforms();

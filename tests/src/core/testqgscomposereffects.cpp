@@ -19,7 +19,6 @@
 #include "qgscomposition.h"
 #include "qgsmultirenderchecker.h"
 #include "qgscomposershape.h"
-#include "qgsmaprenderer.h"
 #include <QObject>
 #include <QtTest/QtTest>
 #include <QColor>

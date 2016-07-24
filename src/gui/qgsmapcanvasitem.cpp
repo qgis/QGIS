@@ -16,7 +16,6 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
 #include <QGraphicsScene>

@@ -23,7 +23,7 @@
 #include <QVector>
 #include <pointset.h>
 #include <labelposition.h>
-#include "qgsmaprenderer.h"
+#include "qgspallabeling.h"
 #include "rtree.hpp"
 
 class QgsPoint;

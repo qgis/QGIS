@@ -22,7 +22,6 @@
 #include <QRegExp>
 #include <QList>
 
-#include <qgsmaprenderer.h>
 #include <qgslogger.h>
 #include <qgsmapsettings.h>
 #include <qgsdartmeasurement.h>
@@ -83,9 +82,6 @@ class CORE_EXPORT QgsRenderChecker
      * @return The path to the rendered image
      */
     QString renderedImage() { return mRenderedImageFile; }
-
-    //! @deprecated since 2.4 - use setMapSettings()
-    Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *thepMapRenderer );
 
     //! @note added in 2.4
     void setMapSettings( const QgsMapSettings& mapSettings );

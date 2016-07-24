@@ -28,7 +28,6 @@ class QgsComposerMapOverviewStack;
 class QgsComposerMapOverview;
 class QgsComposerMapGridStack;
 class QgsComposerMapGrid;
-class QgsMapRenderer;
 class QgsMapToPixel;
 class QDomNode;
 class QDomDocument;
@@ -287,9 +286,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setCacheUpdated( bool u = false );
 
     QgsRectangle extent() const {return mExtent;}
-
-    //! @deprecated since 2.4 - use mapSettings() - may return 0 if not initialized with QgsMapRenderer
-    Q_DECL_DEPRECATED const QgsMapRenderer* mapRenderer() const;
 
     /** Sets offset values to shift image (useful for live updates when moving item content)*/
     void setOffset( double xOffset, double yOffset );

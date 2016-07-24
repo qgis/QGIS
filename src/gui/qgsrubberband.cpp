@@ -18,7 +18,6 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
 #include <QPainter>
 
