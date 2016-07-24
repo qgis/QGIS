@@ -1,11 +1,13 @@
 
-/** Feedback object tailored for raster block reading. */
+/** \ingroup core
+ * Feedback object tailored for raster block reading.
+ */
 class QgsRasterBlockFeedback : QgsFeedback
 {
 %TypeHeaderCode
 #include <qgsrasterinterface.h>
 %End
-  // TODO: extend with preview functionality??
+    // TODO: extend with preview functionality??
 };
 
 

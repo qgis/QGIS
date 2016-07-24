@@ -30,10 +30,12 @@
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
 
-/** Feedback object tailored for raster block reading. */
+/** \ingroup core
+ * Feedback object tailored for raster block reading.
+ */
 class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 {
-  // TODO: extend with preview functionality??
+    // TODO: extend with preview functionality??
 };
 
 
