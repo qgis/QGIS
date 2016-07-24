@@ -24,7 +24,6 @@
 #include "qgsapplication.h"
 #include <qgspoint.h>
 #include <qgsmapcanvas.h>
-#include <qgsmaprenderer.h>
 #include <qgis.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgscoordinatetransform.h>

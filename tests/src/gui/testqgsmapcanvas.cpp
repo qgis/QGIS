@@ -18,7 +18,6 @@
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 #include <qgsvectorlayer.h>
-#include <qgsmaprenderer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsrenderchecker.h>
 #include <qgsvectordataprovider.h>

@@ -21,7 +21,6 @@
 #include <qgsmapcanvas.h>
 #include <qgsproject.h>
 #include <qgsmaptoolemitpoint.h>
-#include <qgsmaprenderer.h>
 
 #include <qgsmaplayerregistry.h>
 #include <qgsvectorlayer.h>

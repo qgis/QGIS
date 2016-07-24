@@ -31,7 +31,6 @@
 #include <qgsapplication.h> //search path for srs.db
 #include <qgsfield.h>
 #include <qgis.h> //defines GEOWkt
-#include <qgsmaprenderer.h>
 #include "qgsmaprenderersequentialjob.h"
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
@@ -43,23 +42,23 @@
 #include "qgsrenderchecker.h"
 
 /** \ingroup UnitTests
- * This is a unit test for the QgsMapRenderer class.
+ * This is a unit test for the QgsMapRendererJob class.
  * It will do some performance testing too
  *
  */
-class TestQgsMapRenderer : public QObject
+class TestQgsMapRendererJob : public QObject
 {
     Q_OBJECT
 
   public:
-    TestQgsMapRenderer()
+    TestQgsMapRendererJob()
         : mError( QgsVectorFileWriter::NoError )
         , mMapSettings( 0 )
         , mpPolysLayer( 0 )
     {
     }
 
-    ~TestQgsMapRenderer()
+    ~TestQgsMapRendererJob()
     {
       delete mMapSettings;
     }
@@ -90,7 +89,7 @@ class TestQgsMapRenderer : public QObject
 };
 
 
-void TestQgsMapRenderer::initTestCase()
+void TestQgsMapRendererJob::initTestCase()
 {
   //
   // Runs once before any tests are run
@@ -190,7 +189,7 @@ void TestQgsMapRenderer::initTestCase()
   mReport += "<h1>Map Render Tests</h1>\n";
 }
 
-void TestQgsMapRenderer::cleanupTestCase()
+void TestQgsMapRendererJob::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 
@@ -205,7 +204,7 @@ void TestQgsMapRenderer::cleanupTestCase()
   }
 }
 
-void TestQgsMapRenderer::performanceTest()
+void TestQgsMapRendererJob::performanceTest()
 {
   mMapSettings->setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
@@ -218,7 +217,7 @@ void TestQgsMapRenderer::performanceTest()
   QVERIFY( myResultFlag );
 }
 
-void TestQgsMapRenderer::testFourAdjacentTiles_data()
+void TestQgsMapRendererJob::testFourAdjacentTiles_data()
 {
   QTest::addColumn<QStringList>( "bboxList" );
   QTest::addColumn<QString>( "controlName" );
@@ -255,7 +254,7 @@ void TestQgsMapRenderer::testFourAdjacentTiles_data()
   QTest::newRow( "adjacent_dashed_line" ) << bboxList2 << controlName << shapeFile << qmlFile;
 }
 
-void TestQgsMapRenderer::testFourAdjacentTiles()
+void TestQgsMapRendererJob::testFourAdjacentTiles()
 {
   QFETCH( QStringList, bboxList );
   QFETCH( QString, controlName );
@@ -333,7 +332,7 @@ void TestQgsMapRenderer::testFourAdjacentTiles()
 }
 
 
-QTEST_MAIN( TestQgsMapRenderer )
-#include "testqgsmaprenderer.moc"
+QTEST_MAIN( TestQgsMapRendererJob )
+#include "testqgsmaprendererjob.moc"
 
 

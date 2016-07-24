@@ -30,7 +30,6 @@
 #include <qgsdatasourceuri.h>
 #include <qgslogger.h>
 #include <qgsmaplayerregistry.h>
-#include <qgsmaprenderer.h>
 #include <qgsmaprenderersequentialjob.h>
 #include <qgsproviderregistry.h>
 #include <qgsrasterdataprovider.h>

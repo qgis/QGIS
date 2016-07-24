@@ -33,7 +33,6 @@
 #include <qgsrasteridentifyresult.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
-#include <qgsmaprenderer.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
 #include <qgsmultibandcolorrenderer.h>

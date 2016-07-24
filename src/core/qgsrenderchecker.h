@@ -22,7 +22,6 @@
 #include <QRegExp>
 #include <QList>
 
-#include <qgsmaprenderer.h>
 #include <qgslogger.h>
 #include <qgsmapsettings.h>
 #include <qgsdartmeasurement.h>

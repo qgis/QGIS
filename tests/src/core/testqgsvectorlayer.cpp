@@ -22,7 +22,6 @@
 #include <QDesktopServices>
 
 //qgis includes...
-#include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
