@@ -280,7 +280,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess 
   return hDS;
 }
 
-static int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszMessage, void *pProgressArg )
+int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
   Q_UNUSED( dfComplete );
   Q_UNUSED( pszMessage );

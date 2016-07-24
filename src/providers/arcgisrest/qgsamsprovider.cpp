@@ -437,8 +437,10 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
   return QgsRasterIdentifyResult( theFormat, entries );
 }
 
-void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle & viewExtent, int width, int height, void *data )
+void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback )
 {
+  Q_UNUSED( feedback );  // TODO: make use of the feedback object
+
   // TODO: optimize to avoid writing to QImage
   // returned image is actually mCachedImage, no need to delete
   QImage *image = draw( viewExtent, width, height );
