@@ -108,6 +108,13 @@ ADD_DEFINITIONS("\"-DSERVER_EXPORT=${DLLEXPORT}\"")
 
 QT4_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
 
+IF(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(${qgis_mapserv_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
+ELSE(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(${qgis_mapserv_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
+ENDIF(MSVC)
+
+
 ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})
 
 #generate unversioned libs for android
