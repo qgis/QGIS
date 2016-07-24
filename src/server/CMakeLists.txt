@@ -30,6 +30,7 @@ SET ( qgis_mapserv_SRCS
   qgswfsserver.cpp
   qgswcsserver.cpp
   qgsmapserviceexception.cpp
+  qgsmaprenderer.cpp
   qgsmslayercache.cpp
   qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp
@@ -64,6 +65,7 @@ ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
 SET (qgis_mapserv_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
+  qgsmaprenderer.h
   qgsmslayercache.h
   qgsserverlogger.h
   qgsserverstreamingdevice.h

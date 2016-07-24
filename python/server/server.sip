@@ -18,6 +18,7 @@
 %Include qgsaccesscontrol.sip
 %End
 
+%Include qgsmaprenderer.sip
 %Include qgsmapserviceexception.sip
 %Include qgscapabilitiescache.sip
 %Include qgsrequesthandler.sip

@@ -1,6 +1,10 @@
 
 struct QgsLayerCoordinateTransform
 {
+%TypeHeaderCode
+#include <qgsmaprenderer.h>
+%End
+
   QString srcAuthId;
   QString destAuthId;
   int srcDatumTransform; //-1 if unknown or not specified

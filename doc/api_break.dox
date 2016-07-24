@@ -22,7 +22,8 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 <ul>
 <li>QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.</li>
-<li>QgsMapCanvasMap. It is an internal class used by map canvas.
+<li>QgsMapCanvasMap. It is an internal class used by map canvas.</li>
+<li>QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_global General changes

@@ -80,7 +80,6 @@
 %Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
 %Include qgsmaplayerstylemanager.sip
-%Include qgsmaprenderer.sip
 %Include qgsmaprenderercache.sip
 %Include qgsmaprenderercustompainterjob.sip
 %Include qgsmaprendererjob.sip

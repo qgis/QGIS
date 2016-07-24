@@ -41,7 +41,7 @@ class QgsVectorLayer;
 
 
 
-struct CORE_EXPORT QgsLayerCoordinateTransform
+struct SERVER_EXPORT QgsLayerCoordinateTransform
 {
   QString srcAuthId;
   QString destAuthId;
@@ -55,7 +55,7 @@ struct CORE_EXPORT QgsLayerCoordinateTransform
  * A non GUI class for rendering a map layer set onto a QPainter.
  */
 
-class CORE_EXPORT QgsMapRenderer : public QObject
+class SERVER_EXPORT QgsMapRenderer : public QObject
 {
     Q_OBJECT
 
