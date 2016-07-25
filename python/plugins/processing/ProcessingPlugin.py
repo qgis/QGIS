@@ -117,7 +117,7 @@ class ProcessingPlugin:
         self.commanderAction.triggered.connect(self.openCommander)
         self.menu.addAction(self.commanderAction)
         self.iface.registerMainWindowAction(self.commanderAction,
-                                            self.tr('Ctrl+Alt+M'))
+                                            self.tr('Ctrl+Alt+D'))
 
     def unload(self):
         self.toolbox.setVisible(False)
