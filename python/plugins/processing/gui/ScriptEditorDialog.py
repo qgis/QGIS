@@ -193,10 +193,10 @@ class ScriptEditorDialog(BASE, WIDGET):
                 return
 
         if self.algType == self.SCRIPT_PYTHON:
-            scriptDir = ScriptUtils.defaultScriptsFolder()
+            scriptDir = ScriptUtils.scriptsFolders()[0]
             filterName = self.tr('Python scripts (*.py)')
         elif self.algType == self.SCRIPT_R:
-            scriptDir = RUtils.defaultRScriptsFolder()
+            scriptDir = RUtils.RScriptsFolders()[0]
             filterName = self.tr('Processing R script (*.rsx)')
 
         self.filename = QFileDialog.getOpenFileName(
@@ -224,10 +224,10 @@ class ScriptEditorDialog(BASE, WIDGET):
     def saveScript(self, saveAs):
         if self.filename is None or saveAs:
             if self.algType == self.SCRIPT_PYTHON:
-                scriptDir = ScriptUtils.defaultScriptsFolder()
+                scriptDir = ScriptUtils.scriptsFolders()[0]
                 filterName = self.tr('Python scripts (*.py)')
             elif self.algType == self.SCRIPT_R:
-                scriptDir = RUtils.defaultRScriptsFolder()
+                scriptDir = RUtils.RScriptsFolders()[0]
                 filterName = self.tr('Processing R script (*.rsx)')
 
             self.filename = unicode(QFileDialog.getSaveFileName(self,
