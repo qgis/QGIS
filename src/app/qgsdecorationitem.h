@@ -19,7 +19,7 @@
 #define QGSDECORATIONITEM_H
 
 #include <QObject>
-#include "qgssymbolv2.h"
+#include "qgsunittypes.h"
 
 class QPainter;
 

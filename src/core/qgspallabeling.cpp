@@ -57,7 +57,6 @@
 #include <qgsmarkersymbollayerv2.h>
 #include <qgspainting.h>
 #include <qgsproject.h>
-#include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include <QMessageBox>

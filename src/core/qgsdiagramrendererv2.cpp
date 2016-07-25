@@ -21,7 +21,6 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgsfontutils.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgssymbolv2.h"
 
 #include <QDomElement>
 #include <QPainter>

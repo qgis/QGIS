@@ -75,7 +75,6 @@
 #include "qgsvectorlayerundocommand.h"
 #include "qgspointv2.h"
 #include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsdiagramrendererv2.h"
