@@ -118,7 +118,7 @@ class ProcessingPlugin:
         self.commanderAction.triggered.connect(self.openCommander)
         self.menu.addAction(self.commanderAction)
         self.iface.registerMainWindowAction(self.commanderAction,
-                                            self.tr('Ctrl+Alt+M'))
+                                            self.tr('Ctrl+Alt+D'))
 
         initializeMenus()
         createMenus()
