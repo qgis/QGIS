@@ -200,7 +200,7 @@ class ScriptEditorDialog(BASE, WIDGET):
             filterName = self.tr('Processing R script (*.rsx)')
 
         self.filename = QFileDialog.getOpenFileName(
-            self, self.tr('Save script'), scriptDir, filterName)
+            self, self.tr('Open script'), scriptDir, filterName)
 
         if self.filename == '':
             return
