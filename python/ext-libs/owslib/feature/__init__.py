@@ -5,13 +5,19 @@
 #
 # =============================================================================
 
+from __future__ import (absolute_import, division, print_function)
+
 from owslib.crs import Crs
 
-from urllib import urlencode
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
 import logging
 from owslib.util import log
+from owslib.feature.schema import get_schema
 
-class WebFeatureService_:
+class WebFeatureService_(object):
     """Base class for WebFeatureService implementations"""
 
     def getBBOXKVP (self,bbox,typename):
@@ -75,8 +81,8 @@ class WebFeatureService_:
             return None
 
     def getGETGetFeatureRequest(self, typename=None, filter=None, bbox=None, featureid=None,
-                   featureversion=None, propertyname=None, maxfeatures=None,storedQueryID=None, storedQueryParams={},
-                   outputFormat=None, method='Get'):
+                   featureversion=None, propertyname=None, maxfeatures=None,storedQueryID=None, storedQueryParams=None,
+                   outputFormat=None, method='Get', startindex=None):
         """Formulate proper GetFeature request using KVP encoding
         ----------
         typename : list
@@ -97,6 +103,8 @@ class WebFeatureService_:
             Qualified name of the HTTP DCP method to use.
         outputFormat: string (optional)
             Requested response format of the request.
+        startindex: int (optional)
+            Start position to return feature set (paging in combination with maxfeatures)
 
         There are 3 different modes of use
 
@@ -104,6 +112,7 @@ class WebFeatureService_:
         2) typename and filter (==query) (more expressive)
         3) featureid (direct access to known features)
         """
+        storedQueryParams = storedQueryParams or {}
 
         base_url = next((m.get('url') for m in self.getOperationByName('GetFeature').methods if m.get('type').lower() == method.lower()))
         base_url = base_url if base_url.endswith("?") else base_url+"?"
@@ -126,6 +135,8 @@ class WebFeatureService_:
             request['featureversion'] = str(featureversion)
         if maxfeatures: 
             request['maxfeatures'] = str(maxfeatures)
+        if startindex:
+            request['startindex'] = str(startindex)
         if storedQueryID: 
             request['storedQuery_id']=str(storedQueryID)
             for param in storedQueryParams:
@@ -136,3 +147,13 @@ class WebFeatureService_:
         data = urlencode(request)
 
         return base_url+data
+
+
+    def get_schema(self, typename):
+        """
+        Get layer schema compatible with :class:`fiona` schema object
+        """
+
+        return get_schema(self.url, typename, self.version)
+    
+
