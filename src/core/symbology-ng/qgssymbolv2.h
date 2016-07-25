@@ -193,7 +193,7 @@ class CORE_EXPORT QgsSymbolV2
      * @param unit output units
      * @see outputUnit()
      */
-    void setOutputUnit( QgsUnitTypes::RenderUnit u );
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     QgsMapUnitScale mapUnitScale() const;
     void setMapUnitScale( const QgsMapUnitScale& scale );

@@ -73,7 +73,17 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setOutlineColor( const QColor& c ) override { mOutlineColor = c; }
     QColor outlineColor() const override { return mOutlineColor; }
 
+    /** Sets the units for the symbol's width.
+     * @param unit symbol units
+     * @see symbolWidthUnit()
+     * @see setSymbolHeightUnit()
+    */
     void setSymbolWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolWidthUnit = unit; }
+
+    /** Returns the units for the symbol's width.
+     * @see setSymbolWidthUnit()
+     * @see symbolHeightUnit()
+    */
     QgsUnitTypes::RenderUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
 
     void setSymbolWidthMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolWidthMapUnitScale = scale; }
@@ -82,11 +92,13 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     /** Sets the units for the symbol's height.
      * @param unit symbol units
      * @see symbolHeightUnit()
+     * @see setSymbolWidthUnit()
     */
     void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolHeightUnit = unit; }
 
     /** Returns the units for the symbol's height.
      * @see setSymbolHeightUnit()
+     * @see symbolWidthUnit()
     */
     QgsUnitTypes::RenderUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
 
