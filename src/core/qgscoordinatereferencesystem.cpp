@@ -938,7 +938,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   d.detach();
   if ( !d->mIsValid )
   {
-    d->mMapUnits = QgsUnitTypes::UnknownDistanceUnit;
+    d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     return;
   }
 
@@ -967,13 +967,13 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     QgsDebugMsg( "Projection has linear units of " + unit );
 
     if ( qgsDoubleNear( toMeter, 1.0 ) ) //Unit name for meters would be "metre"
-      d->mMapUnits = QgsUnitTypes::Meters;
+      d->mMapUnits = QgsUnitTypes::DistanceMeters;
     else if ( unit == "Foot" )
-      d->mMapUnits = QgsUnitTypes::Feet;
+      d->mMapUnits = QgsUnitTypes::DistanceFeet;
     else
     {
       QgsDebugMsg( "Unsupported map units of " + unit );
-      d->mMapUnits = QgsUnitTypes::UnknownDistanceUnit;
+      d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     }
   }
   else
@@ -981,11 +981,11 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     OSRGetAngularUnits( d->mCRS, &unitName );
     QString unit( unitName );
     if ( unit == "degree" )
-      d->mMapUnits = QgsUnitTypes::Degrees;
+      d->mMapUnits = QgsUnitTypes::DistanceDegrees;
     else
     {
       QgsDebugMsg( "Unsupported map units of " + unit );
-      d->mMapUnits = QgsUnitTypes::UnknownDistanceUnit;
+      d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     }
     QgsDebugMsgLevel( "Projection has angular units of " + unit, 3 );
   }
@@ -1400,15 +1400,15 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "* Proj4 : " + toProj4() );
   QgsDebugMsg( "* WKT   : " + toWkt() );
   QgsDebugMsg( "* Desc. : " + d->mDescription );
-  if ( mapUnits() == QgsUnitTypes::Meters )
+  if ( mapUnits() == QgsUnitTypes::DistanceMeters )
   {
     QgsDebugMsg( "* Units : meters" );
   }
-  else if ( mapUnits() == QgsUnitTypes::Feet )
+  else if ( mapUnits() == QgsUnitTypes::DistanceFeet )
   {
     QgsDebugMsg( "* Units : feet" );
   }
-  else if ( mapUnits() == QgsUnitTypes::Degrees )
+  else if ( mapUnits() == QgsUnitTypes::DistanceDegrees )
   {
     QgsDebugMsg( "* Units : degrees" );
   }

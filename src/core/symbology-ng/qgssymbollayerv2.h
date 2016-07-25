@@ -137,10 +137,10 @@ class CORE_EXPORT QgsSymbolLayerV2
      * symbol layer subclasses will interpret this in different ways, eg a marker symbol
      * layer may use it to specify the units for the marker size, while a line symbol
      * layer may use it to specify the units for the line width.
-     * @returns output unit, or UnknownRenderUnit if the symbol layer contains mixed units
+     * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol layer contains mixed units
      * @see setOutputUnit()
      */
-    virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::UnknownRenderUnit; }
+    virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::RenderUnknownUnit; }
 
     virtual void setMapUnitScale( const QgsMapUnitScale& scale ) { Q_UNUSED( scale ); }
     virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); }

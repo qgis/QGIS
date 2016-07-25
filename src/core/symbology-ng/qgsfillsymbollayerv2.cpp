@@ -58,7 +58,7 @@ QgsUnitTypes::RenderUnit QgsSimpleFillSymbolLayerV2::outputUnit() const
   QgsUnitTypes::RenderUnit unit = mBorderWidthUnit;
   if ( mOffsetUnit != unit )
   {
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
 }
@@ -1538,7 +1538,7 @@ QgsUnitTypes::RenderUnit QgsShapeburstFillSymbolLayerV2::outputUnit() const
   {
     return mDistanceUnit;
   }
-  return QgsUnitTypes::UnknownRenderUnit;
+  return QgsUnitTypes::RenderUnknownUnit;
 }
 
 void QgsShapeburstFillSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -1785,7 +1785,7 @@ QgsUnitTypes::RenderUnit QgsSVGFillSymbolLayer::outputUnit() const
   QgsUnitTypes::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
   if ( mPatternWidthUnit != unit || mSvgOutlineWidthUnit != unit || mOutlineWidthUnit != unit )
   {
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
 }
@@ -2394,7 +2394,7 @@ QgsUnitTypes::RenderUnit QgsLinePatternFillSymbolLayer::outputUnit() const
   QgsUnitTypes::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
   if ( mDistanceUnit != unit || mLineWidthUnit != unit || mOffsetUnit != unit )
   {
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
 }
@@ -3071,7 +3071,7 @@ QgsUnitTypes::RenderUnit QgsPointPatternFillSymbolLayer::outputUnit() const
   QgsUnitTypes::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
   if ( mDistanceXUnit != unit || mDistanceYUnit != unit || mDisplacementXUnit != unit || mDisplacementYUnit != unit )
   {
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
 }
@@ -3602,7 +3602,7 @@ QgsUnitTypes::RenderUnit QgsCentroidFillSymbolLayerV2::outputUnit() const
   {
     return mMarker->outputUnit();
   }
-  return QgsUnitTypes::UnknownRenderUnit; //mOutputUnit;
+  return QgsUnitTypes::RenderUnknownUnit; //mOutputUnit;
 }
 
 void QgsCentroidFillSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale &scale )

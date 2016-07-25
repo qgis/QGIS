@@ -24,12 +24,12 @@ QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement& element
 {
   if ( "unknown" == element.text() )
   {
-    return QgsUnitTypes::UnknownDistanceUnit;
+    return QgsUnitTypes::DistanceUnknownUnit;
   }
   else
   {
     QgsUnitTypes::DistanceUnit unit = QgsUnitTypes::decodeDistanceUnit( element.text() );
-    return unit == QgsUnitTypes::UnknownDistanceUnit ? QgsUnitTypes::Degrees : unit;
+    return unit == QgsUnitTypes::DistanceUnknownUnit ? QgsUnitTypes::DistanceDegrees : unit;
   }
 }
 
@@ -67,7 +67,7 @@ QDomElement QgsXmlUtils::writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDo
 {
   QString unitsString = QgsUnitTypes::encodeUnit( units );
   // maintain compatibility with old projects
-  if ( units == QgsUnitTypes::UnknownDistanceUnit )
+  if ( units == QgsUnitTypes::DistanceUnknownUnit )
     unitsString = "unknown";
 
   QDomElement unitsNode = doc.createElement( "units" );

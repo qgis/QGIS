@@ -94,7 +94,7 @@ void QgsDecorationGrid::projectRead()
 
   mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
   mMapUnits = static_cast< QgsUnitTypes::DistanceUnit >( QgsProject::instance()->readNumEntry( mNameConfig, "/MapUnits",
-              QgsUnitTypes::UnknownDistanceUnit ) );
+              QgsUnitTypes::DistanceUnknownUnit ) );
   mGridStyle = static_cast< GridStyle >( QgsProject::instance()->readNumEntry( mNameConfig, "/Style",
                                          QgsDecorationGrid::Line ) );
   mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalX", 10 );
@@ -751,7 +751,7 @@ void QgsDecorationGrid::checkMapUnitsChanged()
   if ( mEnabled && ( mMapUnits != mapUnits ) )
   {
     mEnabled = false;
-    mMapUnits = QgsUnitTypes::UnknownDistanceUnit; // make sure isDirty() returns true
+    mMapUnits = QgsUnitTypes::DistanceUnknownUnit; // make sure isDirty() returns true
     if ( ! QgisApp::instance()->mapCanvas()->isFrozen() )
     {
       update();
@@ -763,7 +763,7 @@ bool QgsDecorationGrid::isDirty()
 {
   // checks if stored map units is undefined or different from canvas map units
   // or if interval is 0
-  if ( mMapUnits == QgsUnitTypes::UnknownDistanceUnit ||
+  if ( mMapUnits == QgsUnitTypes::DistanceUnknownUnit ||
        mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
        qgsDoubleNear( mGridIntervalX, 0.0 ) || qgsDoubleNear( mGridIntervalY, 0.0 ) )
     return true;
@@ -774,7 +774,7 @@ void QgsDecorationGrid::setDirty( bool dirty )
 {
   if ( dirty )
   {
-    mMapUnits = QgsUnitTypes::UnknownDistanceUnit;
+    mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
   }
   else
   {

@@ -2784,7 +2784,7 @@ double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsUnitTypes
   else
   {
     //conversion factor map units -> mm
-    if ( mapUnits == QgsUnitTypes::Meters )
+    if ( mapUnits == QgsUnitTypes::DistanceMeters )
     {
       return 1000 / scaleDenominator;
     }
@@ -2801,7 +2801,7 @@ double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsUnit
   }
   else
   {
-    if ( symbolUnits == QgsUnitTypes::RenderMillimeters && mapUnits == QgsUnitTypes::Meters )
+    if ( symbolUnits == QgsUnitTypes::RenderMillimeters && mapUnits == QgsUnitTypes::DistanceMeters )
     {
       return scaleDenominator / 1000;
     }

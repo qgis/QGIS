@@ -306,20 +306,20 @@ double QgsComposerScaleBar::mapWidth() const
     da.setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
     da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
 
-    QgsUnitTypes::DistanceUnit units = QgsUnitTypes::Meters;
+    QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceMeters;
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),
                                      QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ),
                                      units );
     switch ( mUnits )
     {
       case QgsComposerScaleBar::Feet:
-        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::Feet, units );
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, units );
         break;
       case QgsComposerScaleBar::NauticalMiles:
-        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::NauticalMiles, units );
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceNauticalMiles, units );
         break;
       case QgsComposerScaleBar::Meters:
-        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::Meters, units );
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, units );
         break;
       case QgsComposerScaleBar::MapUnits:
         //avoid warning

@@ -503,7 +503,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, Qgs
     QgsDebugMsgLevel( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
     if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
     {
-      units = QgsUnitTypes::Meters;
+      units = QgsUnitTypes::DistanceMeters;
       QgsDebugMsgLevel( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
       QgsDebugMsgLevel( QString( "From proj4 : %1" ).arg( mCoordTransform.sourceCrs().toProj4() ), 4 );
       QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform.destinationCrs().toProj4() ), 4 );
@@ -530,12 +530,12 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, Qgs
 
 QgsUnitTypes::DistanceUnit QgsDistanceArea::lengthUnits() const
 {
-  return willUseEllipsoid() ? QgsUnitTypes::Meters : mCoordTransform.sourceCrs().mapUnits();
+  return willUseEllipsoid() ? QgsUnitTypes::DistanceMeters : mCoordTransform.sourceCrs().mapUnits();
 }
 
 QgsUnitTypes::AreaUnit QgsDistanceArea::areaUnits() const
 {
-  return willUseEllipsoid() ? QgsUnitTypes::SquareMeters :
+  return willUseEllipsoid() ? QgsUnitTypes::AreaSquareMeters :
          QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() );
 }
 
@@ -973,7 +973,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QgsUnitTypes::Dis
 
   switch ( u )
   {
-    case QgsUnitTypes::Meters:
+    case QgsUnitTypes::DistanceMeters:
       if ( isArea )
       {
         if ( keepBaseUnit )
@@ -1022,7 +1022,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QgsUnitTypes::Dis
         }
       }
       break;
-    case QgsUnitTypes::Feet:
+    case QgsUnitTypes::DistanceFeet:
       if ( isArea )
       {
         if ( keepBaseUnit  || qAbs( value ) <= 0.5*43560.0 )
@@ -1063,7 +1063,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QgsUnitTypes::Dis
         }
       }
       break;
-    case QgsUnitTypes::NauticalMiles:
+    case QgsUnitTypes::DistanceNauticalMiles:
       if ( isArea )
       {
         unitLabel = QObject::tr( " sq. NM" );
@@ -1073,7 +1073,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QgsUnitTypes::Dis
         unitLabel = QObject::tr( " NM" );
       }
       break;
-    case QgsUnitTypes::Degrees:
+    case QgsUnitTypes::DistanceDegrees:
       if ( isArea )
       {
         unitLabel = QObject::tr( " sq.deg." );
@@ -1086,7 +1086,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QgsUnitTypes::Dis
           unitLabel = QObject::tr( " degrees" );
       }
       break;
-    case QgsUnitTypes::UnknownDistanceUnit:
+    case QgsUnitTypes::DistanceUnknownUnit:
       unitLabel.clear();
       break;
     default:
@@ -1103,7 +1103,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitT
 
   switch ( unit )
   {
-    case QgsUnitTypes::Meters:
+    case QgsUnitTypes::DistanceMeters:
       if ( keepBaseUnit || qAbs( distance ) == 0.0 )
       {
         unitLabel = QObject::tr( " m" );
@@ -1129,7 +1129,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitT
       }
       break;
 
-    case QgsUnitTypes::Kilometers:
+    case QgsUnitTypes::DistanceKilometers:
       if ( keepBaseUnit || qAbs( distance ) >= 1.0 )
       {
         unitLabel = QObject::tr( " km" );
@@ -1141,7 +1141,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitT
       }
       break;
 
-    case QgsUnitTypes::Feet:
+    case QgsUnitTypes::DistanceFeet:
       if ( qAbs( distance ) <= 5280.0 || keepBaseUnit )
       {
         unitLabel = QObject::tr( " ft" );
@@ -1153,7 +1153,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitT
       }
       break;
 
-    case QgsUnitTypes::Yards:
+    case QgsUnitTypes::DistanceYards:
       if ( qAbs( distance ) <= 1760.0 || keepBaseUnit )
       {
         unitLabel = QObject::tr( " yd" );
@@ -1165,7 +1165,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitT
       }
       break;
 
-    case QgsUnitTypes::Miles:
+    case QgsUnitTypes::DistanceMiles:
       if ( qAbs( distance ) >= 1.0 || keepBaseUnit )
       {
         unitLabel = QObject::tr( " mi" );
@@ -1177,11 +1177,11 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitT
       }
       break;
 
-    case QgsUnitTypes::NauticalMiles:
+    case QgsUnitTypes::DistanceNauticalMiles:
       unitLabel = QObject::tr( " NM" );
       break;
 
-    case QgsUnitTypes::Degrees:
+    case QgsUnitTypes::DistanceDegrees:
 
       if ( qAbs( distance ) == 1.0 )
         unitLabel = QObject::tr( " degree" );
@@ -1189,7 +1189,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitT
         unitLabel = QObject::tr( " degrees" );
       break;
 
-    case QgsUnitTypes::UnknownDistanceUnit:
+    case QgsUnitTypes::DistanceUnknownUnit:
       unitLabel.clear();
       break;
     default:
@@ -1206,21 +1206,21 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
 
   switch ( unit )
   {
-    case QgsUnitTypes::SquareMeters:
+    case QgsUnitTypes::AreaSquareMeters:
     {
       if ( keepBaseUnit )
       {
         unitLabel = QObject::trUtf8( " m²" );
       }
-      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareKilometers, QgsUnitTypes::SquareMeters ) )
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareKilometers, QgsUnitTypes::AreaSquareMeters ) )
       {
         unitLabel = QObject::trUtf8( " km²" );
-        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareMeters, QgsUnitTypes::SquareKilometers );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMeters, QgsUnitTypes::AreaSquareKilometers );
       }
-      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::Hectares, QgsUnitTypes::SquareMeters ) )
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaHectares, QgsUnitTypes::AreaSquareMeters ) )
       {
         unitLabel = QObject::tr( " ha" );
-        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareMeters, QgsUnitTypes::Hectares );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMeters, QgsUnitTypes::AreaHectares );
       }
       else
       {
@@ -1229,22 +1229,22 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
       break;
     }
 
-    case QgsUnitTypes::SquareKilometers:
+    case QgsUnitTypes::AreaSquareKilometers:
     {
       unitLabel = QObject::trUtf8( " km²" );
       break;
     }
 
-    case QgsUnitTypes::SquareFeet:
+    case QgsUnitTypes::AreaSquareFeet:
     {
       if ( keepBaseUnit )
       {
         unitLabel = QObject::trUtf8( " ft²" );
       }
-      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareMiles, QgsUnitTypes::SquareFeet ) )
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaSquareFeet ) )
       {
         unitLabel = QObject::trUtf8( " mi²" );
-        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareFeet, QgsUnitTypes::SquareMiles );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareFeet, QgsUnitTypes::AreaSquareMiles );
       }
       else
       {
@@ -1253,16 +1253,16 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
       break;
     }
 
-    case QgsUnitTypes::SquareYards:
+    case QgsUnitTypes::AreaSquareYards:
     {
       if ( keepBaseUnit )
       {
         unitLabel = QObject::trUtf8( " yd²" );
       }
-      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareMiles, QgsUnitTypes::SquareYards ) )
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaSquareYards ) )
       {
         unitLabel = QObject::trUtf8( " mi²" );
-        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareYards, QgsUnitTypes::SquareMiles );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareYards, QgsUnitTypes::AreaSquareMiles );
       }
       else
       {
@@ -1271,22 +1271,22 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
       break;
     }
 
-    case QgsUnitTypes::SquareMiles:
+    case QgsUnitTypes::AreaSquareMiles:
     {
       unitLabel = QObject::trUtf8( " mi²" );
       break;
     }
 
-    case QgsUnitTypes::Hectares:
+    case QgsUnitTypes::AreaHectares:
     {
       if ( keepBaseUnit )
       {
         unitLabel = QObject::trUtf8( " ha" );
       }
-      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareKilometers, QgsUnitTypes::Hectares ) )
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareKilometers, QgsUnitTypes::AreaHectares ) )
       {
         unitLabel = QObject::trUtf8( " km²" );
-        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::Hectares, QgsUnitTypes::SquareKilometers );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaHectares, QgsUnitTypes::AreaSquareKilometers );
       }
       else
       {
@@ -1295,16 +1295,16 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
       break;
     }
 
-    case QgsUnitTypes::Acres:
+    case QgsUnitTypes::AreaAcres:
     {
       if ( keepBaseUnit )
       {
         unitLabel = QObject::trUtf8( " ac" );
       }
-      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareMiles, QgsUnitTypes::Acres ) )
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaAcres ) )
       {
         unitLabel = QObject::trUtf8( " mi²" );
-        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::Acres, QgsUnitTypes::SquareMiles );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaAcres, QgsUnitTypes::AreaSquareMiles );
       }
       else
       {
@@ -1313,19 +1313,19 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
       break;
     }
 
-    case QgsUnitTypes::SquareNauticalMiles:
+    case QgsUnitTypes::AreaSquareNauticalMiles:
     {
       unitLabel = QObject::trUtf8( " nm²" );
       break;
     }
 
-    case QgsUnitTypes::SquareDegrees:
+    case QgsUnitTypes::AreaSquareDegrees:
     {
       unitLabel = QObject::tr( " sq.deg." );
       break;
     }
 
-    case QgsUnitTypes::UnknownAreaUnit:
+    case QgsUnitTypes::AreaUnknownUnit:
     {
       unitLabel.clear();
       break;
@@ -1340,12 +1340,12 @@ void QgsDistanceArea::convertMeasurement( double &measure, QgsUnitTypes::Distanc
   // Helper for converting between meters and feet and degrees and NauticalMiles...
   // The parameters measure and measureUnits are in/out
 
-  if (( measureUnits == QgsUnitTypes::Degrees || measureUnits == QgsUnitTypes::Feet || measureUnits == QgsUnitTypes::NauticalMiles ) &&
+  if (( measureUnits == QgsUnitTypes::DistanceDegrees || measureUnits == QgsUnitTypes::DistanceFeet || measureUnits == QgsUnitTypes::DistanceNauticalMiles ) &&
       mEllipsoid != GEO_NONE &&
       mEllipsoidalMode )
   {
     // Measuring on an ellipsoid returned meters. Force!
-    measureUnits = QgsUnitTypes::Meters;
+    measureUnits = QgsUnitTypes::DistanceMeters;
     QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
   }
   else if ( mEllipsoidalMode && mEllipsoid == GEO_NONE )

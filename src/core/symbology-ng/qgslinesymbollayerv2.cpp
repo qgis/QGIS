@@ -57,7 +57,7 @@ QgsUnitTypes::RenderUnit  QgsSimpleLineSymbolLayerV2::outputUnit() const
   QgsUnitTypes::RenderUnit unit = QgsLineSymbolLayerV2::outputUnit();
   if ( mWidthUnit != unit || mOffsetUnit != unit || mCustomDashPatternUnit != unit )
   {
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
 }
@@ -1564,7 +1564,7 @@ QgsUnitTypes::RenderUnit QgsMarkerLineSymbolLayerV2::outputUnit() const
   QgsUnitTypes::RenderUnit unit = QgsLineSymbolLayerV2::outputUnit();
   if ( mIntervalUnit != unit || mOffsetUnit != unit || mOffsetAlongLineUnit != unit )
   {
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
 }

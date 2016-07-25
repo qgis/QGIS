@@ -643,7 +643,7 @@ QgsUnitTypes::RenderUnit QgsMarkerSymbolLayerV2::outputUnit() const
 {
   if ( mOffsetUnit != mSizeUnit )
   {
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return mOffsetUnit;
 }

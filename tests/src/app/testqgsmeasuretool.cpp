@@ -98,7 +98,7 @@ void TestQgsMeasureTool::testLengthCalculation()
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
   QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::Meters ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceMeters ) );
 
   // run length calculation
   QScopedPointer< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, false ) );
@@ -117,7 +117,7 @@ void TestQgsMeasureTool::testLengthCalculation()
   QGSCOMPARENEAR( measured, expected, 0.001 );
 
   // change project length unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::Feet ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
   QScopedPointer< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, false ) );
   QScopedPointer< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.data() ) );
 
@@ -167,7 +167,7 @@ void TestQgsMeasureTool::testAreaCalculation()
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
   QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMeters ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMeters ) );
 
   // run length calculation
   QScopedPointer< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, true ) );
@@ -188,7 +188,7 @@ void TestQgsMeasureTool::testAreaCalculation()
   QGSCOMPARENEAR( measured, expected, 1.0 );
 
   // change project area unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMiles ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMiles ) );
   QScopedPointer< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, true ) );
   QScopedPointer< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.data() ) );
 

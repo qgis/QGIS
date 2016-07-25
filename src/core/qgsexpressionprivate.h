@@ -39,8 +39,8 @@ class QgsExpressionPrivate
         , mRowNumber( 0 )
         , mScale( 0 )
         , mCalc( nullptr )
-        , mDistanceUnit( QgsUnitTypes::UnknownDistanceUnit )
-        , mAreaUnit( QgsUnitTypes::UnknownAreaUnit )
+        , mDistanceUnit( QgsUnitTypes::DistanceUnknownUnit )
+        , mAreaUnit( QgsUnitTypes::AreaUnknownUnit )
     {}
 
     QgsExpressionPrivate( const QgsExpressionPrivate& other )

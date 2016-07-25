@@ -39,14 +39,14 @@ class CORE_EXPORT QgsUnitTypes
     //! Units of distance
     enum DistanceUnit
     {
-      Meters = 0, /*!< meters */
-      Kilometers, /*!< kilometers */
-      Feet, /*!< imperial feet */
-      NauticalMiles, /*!< nautical miles */
-      Yards, /*!< imperial yards */
-      Miles, /*!< terrestial miles */
-      Degrees, /*!< degrees, for planar geographic CRS distance measurements */
-      UnknownDistanceUnit, /*!< unknown distance unit */
+      DistanceMeters = 0, /*!< meters */
+      DistanceKilometers, /*!< kilometers */
+      DistanceFeet, /*!< imperial feet */
+      DistanceNauticalMiles, /*!< nautical miles */
+      DistanceYards, /*!< imperial yards */
+      DistanceMiles, /*!< terrestial miles */
+      DistanceDegrees, /*!< degrees, for planar geographic CRS distance measurements */
+      DistanceUnknownUnit, /*!< unknown distance unit */
     };
 
     /** Types of distance units
@@ -61,28 +61,28 @@ class CORE_EXPORT QgsUnitTypes
     //! Units of area
     enum AreaUnit
     {
-      SquareMeters = 0, /*!< square meters */
-      SquareKilometers, /*!< square kilometers */
-      SquareFeet, /*!< square feet */
-      SquareYards, /*!< square yards */
-      SquareMiles, /*!< square miles */
-      Hectares, /*!< hectares */
-      Acres, /*!< acres */
-      SquareNauticalMiles, /*!< square nautical miles */
-      SquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
-      UnknownAreaUnit, /*!< unknown areal unit */
+      AreaSquareMeters = 0, /*!< square meters */
+      AreaSquareKilometers, /*!< square kilometers */
+      AreaSquareFeet, /*!< square feet */
+      AreaSquareYards, /*!< square yards */
+      AreaSquareMiles, /*!< square miles */
+      AreaHectares, /*!< hectares */
+      AreaAcres, /*!< acres */
+      AreaSquareNauticalMiles, /*!< square nautical miles */
+      AreaSquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
+      AreaUnknownUnit, /*!< unknown areal unit */
     };
 
     //! Units of angles
     enum AngleUnit
     {
       AngleDegrees = 0, /*!< degrees */
-      Radians, /*!< square kilometers */
-      Gon, /*!< gon/gradian */
-      MinutesOfArc, /*!< minutes of arc */
-      SecondsOfArc, /*!< seconds of arc */
-      Turn, /*!< turn/revolutions */
-      UnknownAngleUnit, /*!< unknown angle unit */
+      AngleRadians, /*!< square kilometers */
+      AngleGon, /*!< gon/gradian */
+      AngleMinutesOfArc, /*!< minutes of arc */
+      AngleSecondsOfArc, /*!< seconds of arc */
+      AngleTurn, /*!< turn/revolutions */
+      AngleUnknownUnit, /*!< unknown angle unit */
     };
 
     //! Rendering size units
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsUnitTypes
       RenderMapUnits, //!< map units
       RenderPixels, //!< pixels
       RenderPercentage, //!< percentage of another measurement (eg canvas size, feature size)
-      UnknownRenderUnit, //!< mixed or unknown units
+      RenderUnknownUnit, //!< mixed or unknown units
     };
 
     //! List of render units

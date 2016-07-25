@@ -51,7 +51,7 @@ QgsMapRenderer::QgsMapRenderer()
   mOverview = false;
 
   // set default map units - we use WGS 84 thus use degrees
-  setMapUnits( QgsUnitTypes::Degrees );
+  setMapUnits( QgsUnitTypes::DistanceDegrees );
 
   mSize = QSize( 0, 0 );
 

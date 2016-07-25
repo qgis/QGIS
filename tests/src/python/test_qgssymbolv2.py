@@ -260,7 +260,7 @@ class TestQgsMarkerSymbolV2(unittest.TestCase):
         markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
         markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 30))
         # should now be mixed size units
-        self.assertEqual(markerSymbol.sizeUnit(), QgsUnitTypes.UnknownRenderUnit)
+        self.assertEqual(markerSymbol.sizeUnit(), QgsUnitTypes.RenderUnknownUnit)
         markerSymbol.setSizeUnit(QgsUnitTypes.RenderPixels)
         self.assertEqual(markerSymbol.sizeUnit(), QgsUnitTypes.RenderPixels)
         # all layers should have size unit set

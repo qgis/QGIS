@@ -1462,7 +1462,7 @@ QgsUnitTypes::RenderUnit QgsSimpleMarkerSymbolLayerV2::outputUnit() const
   {
     return mOutlineWidthUnit;
   }
-  return QgsUnitTypes::UnknownRenderUnit;
+  return QgsUnitTypes::RenderUnknownUnit;
 }
 
 void QgsSimpleMarkerSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale& scale )
@@ -2199,7 +2199,7 @@ QgsUnitTypes::RenderUnit QgsSvgMarkerSymbolLayerV2::outputUnit() const
   QgsUnitTypes::RenderUnit unit = QgsMarkerSymbolLayerV2::outputUnit();
   if ( unit != mOutlineWidthUnit )
   {
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
 }

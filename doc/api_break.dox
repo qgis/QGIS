@@ -54,8 +54,8 @@ qgsPermissiveToInt()</li>
 with the general Degrees unit</li>
 <li>The distance unit types QGis::UnitType (including QGis::Meters, QGis::Feet, QGis::Degrees, QGis::NauticalMiles,
 QGis::Kilometers, QGis::Yards, QGis::Miles and QGis::UnknownUnit have been moved to QgsUnitTypes::DistanceUnit.
-Additionally, UnknownUnit was renamed to UnknownDistanceUnit. All methods which accepted QGis::UnitType parameters
-have been updated to take QgsUnitTypes::DistanceUnit instead.</li>
+Some of these unit types have also been renamed - see the notes on QgsUnitTypes below. All methods which accepted
+QGis::UnitType parameters have been updated to take QgsUnitTypes::DistanceUnit instead.</li>
 <li>The unit handling methods toLiteral, fromLiteral, tr, fromTr, fromUnitToUnitFactor have been removed. Their
 corresponding counterparts in QgsUnitTypes should be used instead.</li>
 </ul>
@@ -466,6 +466,23 @@ parameters or QgsSymbolV2::OutputUnitList parameters now take QgsUnitTypes::Rend
 <ul>
 <li>QgsTreeWidgetItem is no longer a QObject and does not emit the itemEdited signal. Instead,
 use QgsTreeWidgetItemObject which is an upgraded version of the original QgsTreeWidgetItem</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsUnitTypes QgsUnitTypes
+
+<ul>
+<li>All distance enumeration values were renamed to have a "Distance" prefix, including
+Meters (to DistanceMeters), Kilometers (to DistanceKilometers), Feet (to DistanceFeet),
+NauticalMiles (to DistanceNauticalMiles), Yards (to DistanceYards), Miles (to DistanceMiles),
+Degrees (to DistanceDegrees) and UnknownDistanceUnit to DistanceUnknownUnit</li>
+<li>All area enumeration values were renamed to have a "Area" prefix, including
+SquareMeters (to AreaSquareMeters), SquareKilometers (to AreaSquareKilometers), SquareFeet (to AreaSquareFeet),
+SquareYards (to AreaSquareYards), SquareMiles (to AreaSquareMiles), Hectares (to AreaHectares),
+Acres (to AreaAcres), SquareNauticalMiles (to AreaSquareNauticalMiles), SquareDegrees (to AreaSquareDegrees)
+and UnknownAreaUnit to AreaUnknownUnit</li>
+<li>All angle enumeration values were renamed to have a "Angle" prefix, including
+Radians (to AngleRadians), Gon (to AngleGon), MinutesOfArc (to AngleMinutesOfArc),
+SecondsOfArc (to AngleSecondsOfArc), Turn (to AngleTurn) and UnknownAngleUnit to AngleUnknownUnit</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayer QgsVectorLayer

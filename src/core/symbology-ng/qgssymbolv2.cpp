@@ -254,7 +254,7 @@ QgsUnitTypes::RenderUnit QgsSymbolV2::outputUnit() const
 {
   if ( mLayers.empty() )
   {
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
 
   QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin();
@@ -265,7 +265,7 @@ QgsUnitTypes::RenderUnit QgsSymbolV2::outputUnit() const
   {
     if (( *it )->outputUnit() != unit )
     {
-      return QgsUnitTypes::UnknownRenderUnit;
+      return QgsUnitTypes::RenderUnknownUnit;
     }
   }
   return unit;
@@ -1290,7 +1290,7 @@ void QgsMarkerSymbolV2::setSizeUnit( QgsUnitTypes::RenderUnit unit )
 QgsUnitTypes::RenderUnit QgsMarkerSymbolV2::sizeUnit() const
 {
   bool first = true;
-  QgsUnitTypes::RenderUnit unit = QgsUnitTypes::UnknownRenderUnit;
+  QgsUnitTypes::RenderUnit unit = QgsUnitTypes::RenderUnknownUnit;
 
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
@@ -1303,7 +1303,7 @@ QgsUnitTypes::RenderUnit QgsMarkerSymbolV2::sizeUnit() const
     else
     {
       if ( unit != markerLayer->sizeUnit() )
-        return QgsUnitTypes::UnknownRenderUnit;
+        return QgsUnitTypes::RenderUnknownUnit;
     }
 
     first = false;

@@ -271,7 +271,7 @@ class QgsVectorFileWriter
     QString errorMessage();
 
     /** Add feature to the currently opened data source */
-    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::Meters );
+    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
     //! @note not available in python bindings
     // QMap<int, int> attrIdxToOgrIdx();

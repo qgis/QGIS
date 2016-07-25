@@ -244,7 +244,7 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPoint& startPoint
       factor = 1.0;
       break;
 
-    case QgsUnitTypes::UnknownRenderUnit:
+    case QgsUnitTypes::RenderUnknownUnit:
     case QgsUnitTypes::RenderPercentage:
       //no sensible value
       factor = 1.0;

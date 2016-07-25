@@ -55,23 +55,23 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
   // users display, and the canvas width
   switch ( mMapUnits )
   {
-    case QgsUnitTypes::Meters:
+    case QgsUnitTypes::DistanceMeters:
       // convert meters to inches
       conversionFactor = 39.3700787;
       delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
-    case QgsUnitTypes::Feet:
+    case QgsUnitTypes::DistanceFeet:
       conversionFactor = 12.0;
       delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
-    case QgsUnitTypes::NauticalMiles:
+    case QgsUnitTypes::DistanceNauticalMiles:
       // convert nautical miles to inches
       conversionFactor = 72913.4;
       delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
 
     default:
-    case QgsUnitTypes::Degrees:
+    case QgsUnitTypes::DistanceDegrees:
       // degrees require conversion to meters first
       conversionFactor = 39.3700787;
       delta = calculateGeographicDistance( mapExtent );

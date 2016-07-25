@@ -3343,7 +3343,7 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, Q
     }
     case QgsUnitTypes::RenderPixels:
       return 1.0 / c.rasterScaleFactor();
-    case QgsUnitTypes::UnknownRenderUnit:
+    case QgsUnitTypes::RenderUnknownUnit:
     case QgsUnitTypes::RenderPercentage:
       //no sensible value
       return 1.0;
@@ -3410,7 +3410,7 @@ double QgsSymbolLayerV2Utils::convertToMapUnits( const QgsRenderContext &c, doub
       return size * mup;
     }
 
-    case QgsUnitTypes::UnknownRenderUnit:
+    case QgsUnitTypes::RenderUnknownUnit:
     case QgsUnitTypes::RenderPercentage:
       //no sensible value
       return 0.0;
@@ -3438,7 +3438,7 @@ double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, Q
     }
     case QgsUnitTypes::RenderPixels:
       return 1.0;
-    case QgsUnitTypes::UnknownRenderUnit:
+    case QgsUnitTypes::RenderUnknownUnit:
     case QgsUnitTypes::RenderPercentage:
       //no sensible value
       return 1.0;
@@ -3458,7 +3458,7 @@ double QgsSymbolLayerV2Utils::mapUnitScaleFactor( const QgsRenderContext &c, Qgs
     }
     case QgsUnitTypes::RenderPixels:
       return scale.computeMapUnitsPerPixel( c );
-    case QgsUnitTypes::UnknownRenderUnit:
+    case QgsUnitTypes::RenderUnknownUnit:
     case QgsUnitTypes::RenderPercentage:
       //no sensible value
       return 1.0;

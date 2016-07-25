@@ -143,7 +143,7 @@ class QgsSymbolV2
      * symbol layer definitions will interpret this in different ways, eg a marker symbol
      * may use it to specify the units for the marker size, while a line symbol
      * may use it to specify the units for the line width.
-     * @returns output unit, or UnknownRenderUnit if the symbol contains mixed units
+     * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol contains mixed units
      * @see setOutputUnit()
      */
     QgsUnitTypes::RenderUnit outputUnit() const;

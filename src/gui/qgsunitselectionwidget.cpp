@@ -149,7 +149,7 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
 QgsUnitTypes::RenderUnit QgsUnitSelectionWidget::unit() const
 {
   if ( mUnitCombo->count() == 0 )
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
 
   QVariant currentData = mUnitCombo->itemData( mUnitCombo->currentIndex() );
   if ( currentData.isValid() )
@@ -157,7 +157,7 @@ QgsUnitTypes::RenderUnit QgsUnitSelectionWidget::unit() const
     return ( QgsUnitTypes::RenderUnit ) currentData.toInt();
   }
   //unknown
-  return QgsUnitTypes::UnknownRenderUnit;
+  return QgsUnitTypes::RenderUnknownUnit;
 }
 
 void QgsUnitSelectionWidget::setUnit( int unitIndex )
@@ -197,7 +197,7 @@ void QgsUnitSelectionWidget::showDialog()
 
 void QgsUnitSelectionWidget::toggleUnitRangeButton()
 {
-  if ( unit() != QgsUnitTypes::UnknownRenderUnit )
+  if ( unit() != QgsUnitTypes::RenderUnknownUnit )
   {
     mMapScaleButton->setVisible( unit() == QgsUnitTypes::RenderMapUnits );
   }

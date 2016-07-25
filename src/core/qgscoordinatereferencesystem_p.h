@@ -45,7 +45,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     explicit QgsCoordinateReferenceSystemPrivate()
         : mSrsId( 0 )
         , mIsGeographic( false )
-        , mMapUnits( QgsUnitTypes::UnknownDistanceUnit )
+        , mMapUnits( QgsUnitTypes::DistanceUnknownUnit )
         , mSRID( 0 )
         , mIsValid( 0 )
         , mCRS( OSRNewSpatialReference( nullptr ) )

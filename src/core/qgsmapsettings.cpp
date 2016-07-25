@@ -54,7 +54,7 @@ QgsMapSettings::QgsMapSettings()
   updateDerived();
 
   // set default map units - we use WGS 84 thus use degrees
-  setMapUnits( QgsUnitTypes::Degrees );
+  setMapUnits( QgsUnitTypes::DistanceDegrees );
 }
 
 void QgsMapSettings::setMagnificationFactor( double factor )

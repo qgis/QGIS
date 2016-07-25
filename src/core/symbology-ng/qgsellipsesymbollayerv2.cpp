@@ -650,7 +650,7 @@ QgsUnitTypes::RenderUnit QgsEllipseSymbolLayerV2::outputUnit() const
   QgsUnitTypes::RenderUnit unit = QgsMarkerSymbolLayerV2::outputUnit();
   if ( mSymbolWidthUnit != unit || mSymbolHeightUnit != unit || mOutlineWidthUnit != unit )
   {
-    return QgsUnitTypes::UnknownRenderUnit;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
 }

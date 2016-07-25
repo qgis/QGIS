@@ -39,7 +39,7 @@ class CORE_EXPORT QgsScaleCalculator
      * @param mapUnits Units of the data on the map
      */
     QgsScaleCalculator( double dpi = 0,
-                        QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::Meters );
+                        QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceMeters );
 
     /**
      * Set the dpi to be used in scale calculations

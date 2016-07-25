@@ -51,7 +51,7 @@ QgsUnitTypes::RenderUnit QgsVectorFieldSymbolLayer::outputUnit() const
   {
     return mDistanceUnit;
   }
-  return QgsUnitTypes::UnknownRenderUnit;
+  return QgsUnitTypes::RenderUnknownUnit;
 }
 
 void QgsVectorFieldSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )

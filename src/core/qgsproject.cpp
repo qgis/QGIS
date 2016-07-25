@@ -2086,7 +2086,7 @@ QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const
   QSettings s;
   bool ok = false;
   QgsUnitTypes::DistanceUnit type = QgsUnitTypes::decodeDistanceUnit( s.value( "/qgis/measure/displayunits" ).toString(), &ok );
-  return ok ? type : QgsUnitTypes::Meters;
+  return ok ? type : QgsUnitTypes::DistanceMeters;
 }
 
 QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
@@ -2099,7 +2099,7 @@ QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
   QSettings s;
   bool ok = false;
   QgsUnitTypes::AreaUnit type = QgsUnitTypes::decodeAreaUnit( s.value( "/qgis/measure/areaunits" ).toString(), &ok );
-  return ok ? type : QgsUnitTypes::SquareMeters;
+  return ok ? type : QgsUnitTypes::AreaSquareMeters;
 }
 
 void QgsProjectBadLayerDefaultHandler::handleBadLayers( const QList<QDomNode>& /*layers*/, const QDomDocument& /*projectDom*/ )

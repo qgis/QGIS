@@ -48,7 +48,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         layerStringList.append(mVectorLayer.id())
         self.mapSettings.setLayers(layerStringList)
         self.mapSettings.setCrsTransformEnabled(True)
-        self.mapSettings.setMapUnits(QgsUnitTypes.Meters)
+        self.mapSettings.setMapUnits(QgsUnitTypes.DistanceMeters)
 
         # select epsg:2154
         crs = QgsCoordinateReferenceSystem()
