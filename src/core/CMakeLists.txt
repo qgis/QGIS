@@ -298,7 +298,6 @@ SET(QGIS_CORE_SRCS
   raster/qgscontrastenhancementfunction.cpp
   raster/qgslinearminmaxenhancement.cpp
   raster/qgslinearminmaxenhancementwithclip.cpp
-  raster/qgspseudocolorshader.cpp
   raster/qgsraster.cpp
   raster/qgsrasterblock.cpp
   raster/qgsrasterchecker.cpp
@@ -779,7 +778,6 @@ SET(QGIS_CORE_HDRS
   raster/qgslinearminmaxenhancementwithclip.h
   raster/qgsmultibandcolorrenderer.h
   raster/qgspalettedrasterrenderer.h
-  raster/qgspseudocolorshader.h
   raster/qgsraster.h
   raster/qgsrasterbandstats.h
   raster/qgsrasterblock.h

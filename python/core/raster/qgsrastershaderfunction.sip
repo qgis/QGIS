@@ -3,14 +3,11 @@ class QgsRasterShaderFunction
 %TypeHeaderCode
 #include <qgsrastershaderfunction.h>
 #include <qgscolorrampshader.h>
-#include <qgspseudocolorshader.h>
 %End
 
 %ConvertToSubClassCode
   if (dynamic_cast<QgsColorRampShader*>(sipCpp) != NULL)
     sipType = sipType_QgsColorRampShader;
-  else if (dynamic_cast<QgsPseudoColorShader*>(sipCpp) != NULL)
-    sipType = sipType_QgsPseudoColorShader;
   else
     sipType = 0;
 %End

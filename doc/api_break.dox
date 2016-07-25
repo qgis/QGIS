@@ -27,6 +27,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <li>QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).</li>
+<li>QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_global General changes
