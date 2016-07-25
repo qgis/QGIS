@@ -58,7 +58,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
                                             ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
 
     def modelsFolder(self):
-        return ModelerUtils.modelsFolder()
+        return ModelerUtils.modelsFolders()[0]
 
     def getDescription(self):
         return self.tr('Models', 'ModelerAlgorithmProvider')
