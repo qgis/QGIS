@@ -71,6 +71,6 @@ class AddModelFromFileAction(ToolboxAction):
                                     self.tr('Error reading model', 'AddModelFromFileAction'),
                                     self.tr('Cannot read file', 'AddModelFromFileAction'))
                 return
-            destFilename = os.path.join(ModelerUtils.modelsFolder(), os.path.basename(filename))
+            destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
             shutil.copyfile(filename, destFilename)
             algList.reloadProvider('model')

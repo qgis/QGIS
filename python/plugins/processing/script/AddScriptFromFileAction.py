@@ -65,7 +65,7 @@ class AddScriptFromFileAction(ToolboxAction):
                                     self.tr('Error reading script', 'AddScriptFromFileAction'),
                                     self.tr('The selected file does not contain a valid script', 'AddScriptFromFileAction'))
                 return
-            destFilename = os.path.join(ScriptUtils.scriptsFolder(), os.path.basename(filename))
+            destFilename = os.path.join(ScriptUtils.scriptsFolders()[0], os.path.basename(filename))
             with open(destFilename, 'w') as f:
                 f.write(script.script)
             algList.reloadProvider('script')
