@@ -21,7 +21,6 @@
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscrscache.h"
 
 #include <QDomElement>
 
@@ -89,7 +88,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
         if ( conversionOk )
         {
           //set spatial ref sys
-          QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+          QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
           rl->setCrs( srs );
         }
       }

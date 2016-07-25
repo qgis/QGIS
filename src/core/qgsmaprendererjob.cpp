@@ -21,7 +21,6 @@
 #include <QtConcurrentMap>
 #include <QSettings>
 
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayer.h"
@@ -81,9 +80,9 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
     // extent separately.
     static const double splitCoord = 180.0;
 
-    if ( ml->crs().geographicFlag() )
+    if ( ml->crs().isGeographic() )
     {
-      if ( ml->type() == QgsMapLayer::VectorLayer && !ct.destinationCrs().geographicFlag() )
+      if ( ml->type() == QgsMapLayer::VectorLayer && !ct.destinationCrs().isGeographic() )
       {
         // if we transform from a projected coordinate system check
         // check if transforming back roughly returns the input
@@ -144,7 +143,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
     }
     else // can't cross 180
     {
-      if ( ct.destinationCrs().geographicFlag() &&
+      if ( ct.destinationCrs().isGeographic() &&
            ( extent.xMinimum() <= -180 || extent.xMaximum() >= 180 ||
              extent.yMinimum() <=  -90 || extent.yMaximum() >=  90 ) )
         // Use unlimited rectangle because otherwise we may end up transforming wrong coordinates.

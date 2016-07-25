@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatetransform.h"
-#include "qgscrscache.h"
 #include "qgscoordinatetransform_p.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
@@ -53,14 +52,14 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 
 QgsCoordinateTransform::QgsCoordinateTransform( long sourceSrsId, long destinationSrsId )
 {
-  d = new QgsCoordinateTransformPrivate( QgsCrsCache::instance()->crsBySrsId( sourceSrsId ),
-                                         QgsCrsCache::instance()->crsBySrsId( destinationSrsId ) );
+  d = new QgsCoordinateTransformPrivate( QgsCoordinateReferenceSystem::fromSrsId( sourceSrsId ),
+                                         QgsCoordinateReferenceSystem::fromSrsId( destinationSrsId ) );
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QString& sourceWkt, const QString& destinationWkt )
 {
-  d = new QgsCoordinateTransformPrivate( QgsCrsCache::instance()->crsByWkt( sourceWkt ),
-                                         QgsCrsCache::instance()->crsByWkt( destinationWkt ) );
+  d = new QgsCoordinateTransformPrivate( QgsCoordinateReferenceSystem::fromWkt( sourceWkt ),
+                                         QgsCoordinateReferenceSystem::fromWkt( destinationWkt ) );
 }
 
 
@@ -71,7 +70,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( long sourceSrid,
   QgsCoordinateReferenceSystem sourceCrs;
   sourceCrs.createFromId( sourceSrid, sourceCrsType );
 
-  d = new QgsCoordinateTransformPrivate( sourceCrs, QgsCrsCache::instance()->crsByWkt( destinationWkt ) );
+  d = new QgsCoordinateTransformPrivate( sourceCrs, QgsCoordinateReferenceSystem::fromWkt( destinationWkt ) );
 }
 
 void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& crs )
@@ -765,9 +764,9 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   preferred = sqlite3_column_int( stmt, 5 ) != 0;
   deprecated = sqlite3_column_int( stmt, 6 ) != 0;
 
-  QgsCoordinateReferenceSystem srcCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );
+  QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );
   srcProjection = srcCrs.description();
-  QgsCoordinateReferenceSystem destCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( destCrsId ) );
+  QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( destCrsId ) );
   dstProjection = destCrs.description();
 
   sqlite3_finalize( stmt );

@@ -18,7 +18,6 @@
 #include "qgswmsserver.h"
 #include "qgscapabilitiescache.h"
 #include "qgscsexception.h"
-#include "qgscrscache.h"
 #include "qgsdxfexport.h"
 #include "qgsfield.h"
 #include "qgsfeatureiterator.h"
@@ -2038,7 +2037,7 @@ int QgsWmsServer::configureMapRender( const QPaintDevice* paintDevice ) const
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectionsEnabled", 1 );
 
     //destination SRS
-    outputCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( crs );
+    outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
     if ( !outputCRS.isValid() )
     {
       QgsMessageLog::logMessage( "Error, could not create output CRS from EPSG" );
@@ -2066,7 +2065,7 @@ int QgsWmsServer::configureMapRender( const QPaintDevice* paintDevice ) const
 
   // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
   QString version = mParameters.value( "VERSION", "1.3.0" );
-  if ( version != "1.1.1" && outputCRS.axisInverted() )
+  if ( version != "1.1.1" && outputCRS.hasAxisInverted() )
   {
     mapExtent.invert();
   }

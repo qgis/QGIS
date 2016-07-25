@@ -27,7 +27,6 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmanageconnectionsdialog.h"
-#include "qgscrscache.h"
 #include "qgscsexception.h"
 
 #include <QItemDelegate>
@@ -197,7 +196,7 @@ QString QgsSourceSelectDialog::getPreferredCrs( const QSet<QString>& crsSet ) co
   //first: project CRS
   long ProjectCRSID = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
   //convert to EPSG
-  QgsCoordinateReferenceSystem projectRefSys = QgsCrsCache::instance()->crsBySrsId( ProjectCRSID );
+  QgsCoordinateReferenceSystem projectRefSys = QgsCoordinateReferenceSystem::fromSrsId( ProjectCRSID );
   QString ProjectCRS;
   if ( projectRefSys.isValid() )
   {
@@ -398,7 +397,7 @@ void QgsSourceSelectDialog::changeCrsFilter()
         QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
         if ( !preferredCRS.isEmpty() )
         {
-          QgsCoordinateReferenceSystem refSys = QgsCrsCache::instance()->crsByOgcWmsCrs( preferredCRS );
+          QgsCoordinateReferenceSystem refSys = QgsCoordinateReferenceSystem::fromOgcWmsCrs( preferredCRS );
           mProjectionSelector->setSelectedCrsId( refSys.srsid() );
 
           labelCoordRefSys->setText( preferredCRS );

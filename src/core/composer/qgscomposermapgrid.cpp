@@ -1442,13 +1442,13 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
 {
   //check if we are using degrees (ie, geographic crs)
   bool geographic = false;
-  if ( mCRS.isValid() && mCRS.geographicFlag() )
+  if ( mCRS.isValid() && mCRS.isGeographic() )
   {
     geographic = true;
   }
   else if ( mComposerMap && mComposerMap->composition() )
   {
-    geographic = mComposerMap->composition()->mapSettings().destinationCrs().geographicFlag();
+    geographic = mComposerMap->composition()->mapSettings().destinationCrs().isGeographic();
   }
 
   if ( geographic && coord == QgsComposerMapGrid::Longitude &&
@@ -1744,7 +1744,7 @@ int QgsComposerMapGrid::xGridLinesCrsTransform( const QgsRectangle& bbox, const 
 
   bool crosses180 = false;
   bool crossed180 = false;
-  if ( mCRS.geographicFlag() && ( minX > maxX ) )
+  if ( mCRS.isGeographic() && ( minX > maxX ) )
   {
     //handle 180 degree longitude crossover
     crosses180 = true;
@@ -1823,7 +1823,7 @@ int QgsComposerMapGrid::yGridLinesCrsTransform( const QgsRectangle& bbox, const 
 
   bool crosses180 = false;
   bool crossed180 = false;
-  if ( mCRS.geographicFlag() && ( bbox.xMinimum() > bbox.xMaximum() ) )
+  if ( mCRS.isGeographic() && ( bbox.xMinimum() > bbox.xMaximum() ) )
   {
     //handle 180 degree longitude crossover
     crosses180 = true;
@@ -2379,7 +2379,7 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTrans
     QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );
 
 
-    if ( mCRS.geographicFlag() )
+    if ( mCRS.isGeographic() )
     {
       //handle crossing the 180 degree longitude line
       QgsPoint lowerLeft( mapBoundingRect.xMinimum(), mapBoundingRect.yMinimum() );

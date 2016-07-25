@@ -96,7 +96,7 @@ class CORE_EXPORT QgsDistanceArea
     long sourceCrsId() const { return mCoordTransform.sourceCrs().srsid(); }
 
     //! What sort of coordinate system is being used?
-    bool geographic() const { return mCoordTransform.sourceCrs().geographicFlag(); }
+    bool geographic() const { return mCoordTransform.sourceCrs().isGeographic(); }
 
     /** Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
      * both the ellipsoid has been set and ellipsoidalEnabled() is true.

@@ -18,7 +18,6 @@
 #include "qgsafsprovider.h"
 #include "qgsarcgisrestutils.h"
 #include "qgsafsfeatureiterator.h"
-#include "qgscrscache.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "geometry/qgsgeometry.h"
@@ -40,7 +39,7 @@ QgsAfsProvider::QgsAfsProvider( const QString& uri )
   mDataSource = QgsDataSourceURI( uri );
 
   // Set CRS
-  mSourceCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( mDataSource.param( "crs" ) );
+  mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mDataSource.param( "crs" ) );
 
   // Get layer info
   QString errorTitle, errorMessage;

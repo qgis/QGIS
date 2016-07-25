@@ -20,7 +20,6 @@
 #include "qgsmaptopixel.h"
 #include "qgslogger.h"
 
-#include "qgscrscache.h"
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
@@ -38,7 +37,7 @@ QgsMapSettings::QgsMapSettings()
     , mRotation( 0.0 )
     , mMagnificationFactor( 1.0 )
     , mProjectionsEnabled( false )
-    , mDestCRS( QgsCrsCache::instance()->crsBySrsId( GEOCRS_ID ) )  // WGS 84
+    , mDestCRS( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) )  // WGS 84
     , mDatumTransformStore( mDestCRS )
     , mBackgroundColor( Qt::white )
     , mSelectionColor( Qt::yellow )

@@ -56,7 +56,7 @@ QgsMapRenderer::QgsMapRenderer()
   mSize = QSize( 0, 0 );
 
   mProjectionsEnabled = false;
-  mDestCRS = new QgsCoordinateReferenceSystem( QgsCrsCache::instance()->crsBySrsId( GEOCRS_ID ) ); //WGS 84
+  mDestCRS = new QgsCoordinateReferenceSystem( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) ); //WGS 84
 
   mOutputUnits = QgsMapRenderer::Millimeters;
   mFullExtent.setMinimal();
@@ -695,7 +695,7 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
       static const double splitCoord = 180.0;
 
       QgsCoordinateTransform transform = transformation( layer );
-      if ( layer->crs().geographicFlag() )
+      if ( layer->crs().isGeographic() )
       {
         // Note: ll = lower left point
         //   and ur = upper right point

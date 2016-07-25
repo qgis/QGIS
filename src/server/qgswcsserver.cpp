@@ -16,7 +16,6 @@
  ***************************************************************************/
 #include "qgswcsserver.h"
 #include "qgswcsprojectparser.h"
-#include "qgscrscache.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpipe.h"
@@ -368,7 +367,7 @@ QByteArray* QgsWCSServer::getCoverage()
     throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
   }
 
-  QgsCoordinateReferenceSystem requestCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( crs );
+  QgsCoordinateReferenceSystem requestCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
   if ( !requestCRS.isValid() )
   {
     mErrors << QString( "Could not create request CRS" );
@@ -393,7 +392,7 @@ QByteArray* QgsWCSServer::getCoverage()
     crs = mParameters.value( "RESPONSE_CRS", "" );
     if ( crs != "" )
     {
-      responseCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( crs );
+      responseCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
       if ( !responseCRS.isValid() )
       {
         responseCRS = rLayer->crs();

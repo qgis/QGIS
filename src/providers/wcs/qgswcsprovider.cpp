@@ -30,7 +30,6 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkreplyparser.h"
 #include "qgsmessagelog.h"
-#include "qgscrscache.h"
 #include "qgscsexception.h"
 
 #include <QNetworkRequest>
@@ -487,7 +486,7 @@ void QgsWcsProvider::setCoverageCrs( QString const & crs )
 
     mCoverageCrs = crs;
 
-    mCrs = QgsCrsCache::instance()->crsByOgcWmsCrs( mCoverageCrs );
+    mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mCoverageCrs );
   }
 }
 
@@ -642,8 +641,8 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   if ( !mIgnoreAxisOrientation && ( mCapabilities.version().startsWith( "1.1" ) ) )
   {
     //create CRS from string
-    QgsCoordinateReferenceSystem theSrs = QgsCrsCache::instance()->crsByOgcWmsCrs( crs );
-    if ( theSrs.isValid() && theSrs.axisInverted() )
+    QgsCoordinateReferenceSystem theSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+    if ( theSrs.isValid() && theSrs.hasAxisInverted() )
     {
       changeXY = true;
     }
@@ -1086,8 +1085,8 @@ bool QgsWcsProvider::calculateExtent() const
     // box to the user's selected CRS
     if ( !mCoordinateTransform.isValid() )
     {
-      QgsCoordinateReferenceSystem qgisSrsSource = QgsCrsCache::instance()->crsByOgcWmsCrs( "EPSG:4326" );
-      QgsCoordinateReferenceSystem qgisSrsDest = QgsCrsCache::instance()->crsByOgcWmsCrs( mCoverageCrs );
+      QgsCoordinateReferenceSystem qgisSrsSource = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "EPSG:4326" );
+      QgsCoordinateReferenceSystem qgisSrsDest = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mCoverageCrs );
 
       //QgsDebugMsg( "qgisSrsSource: " + qgisSrsSource.toWkt() );
       //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );

@@ -18,7 +18,7 @@
 #include <osgEarth/Registry>
 #include <osgEarth/ImageUtils>
 
-#include "qgscrscache.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsglobetilesource.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
@@ -98,7 +98,7 @@ QgsMapSettings QgsGlobeTileImage::createSettings( int dpi , const QStringList &l
 {
   QgsMapSettings settings;
   settings.setBackgroundColor( QColor( Qt::transparent ) );
-  settings.setDestinationCrs( QgsCrsCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID ) );
+  settings.setDestinationCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ) );
   settings.setCrsTransformEnabled( true );
   settings.setExtent( mTileExtent );
   settings.setLayers( layerSet );

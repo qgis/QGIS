@@ -24,6 +24,9 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <li>QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.</li>
 <li>QgsMapCanvasMap. It is an internal class used by map canvas.</li>
 <li>QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.</li>
+<li>QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
+so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
+should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).</li>
 </ul>
 
 \subsection qgis_api_break_3_0_global General changes
@@ -103,9 +106,14 @@ qgsPermissiveToInt()</li>
 \subsection qgis_api_break_3_0_QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem
 
 <ul>
+<li>QgsCoordinateReferenceSystem now uses internal caches to avoid expensive database lookups
+when CRS objects are initialized. This is handled internally, but invalidateCache() must be
+called if changes are made to the CRS database.</li>
 <li>setCustomSrsValidation() has been renamed to setCustomCrsValidation()</li>
 <li>saveAsUserCRS() has been renamed to saveAsUserCrs()</li>
 <li>geographicCRSAuthId() has been renamed to geographicCrsAuthId()</li>
+<li>geographicFlag() was renamed to isGeographic()</li>
+<li>axisInverted() was renamed to hasAxisInverted()</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsCoordinateTransform QgsCoordinateTransform

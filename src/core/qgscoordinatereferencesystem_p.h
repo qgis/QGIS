@@ -49,6 +49,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
         , mSRID( 0 )
         , mIsValid( 0 )
         , mCRS( OSRNewSpatialReference( nullptr ) )
+        , mAxisInvertedDirty( false )
         , mAxisInverted( false )
     {
     }
@@ -68,6 +69,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
         , mValidationHint( other.mValidationHint )
         , mWkt( other.mWkt )
         , mProj4( other.mProj4 )
+        , mAxisInvertedDirty( other.mAxisInvertedDirty )
         , mAxisInverted( other.mAxisInverted )
     {
       if ( mIsValid )
@@ -114,8 +116,11 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     mutable QString mWkt;
     mutable QString mProj4;
 
+    //! True if presence of an inverted axis needs to be recaculated
+    mutable bool mAxisInvertedDirty;
+
     //! Whether this is a coordinate system has inverted axis
-    mutable int mAxisInverted;
+    mutable bool mAxisInverted;
 
 };
 

@@ -19,7 +19,6 @@
 #include "qgsgeometry.h"
 #include "qgswkbptr.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscrscache.h"
 #include "qgsrectangle.h"
 
 #include <QColor>
@@ -59,10 +58,10 @@ QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument& doc,
 {
   QgsCoordinateReferenceSystem crs;
   if ( !mSrsName.isEmpty() )
-    crs = QgsCrsCache::instance()->crsByOgcWmsCrs( mSrsName );
+    crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mSrsName );
   if ( crs.isValid() )
   {
-    if ( honourAxisOrientation && crs.axisInverted() )
+    if ( honourAxisOrientation && crs.hasAxisInverted() )
     {
       mInvertAxisOrientation = !mInvertAxisOrientation;
     }
@@ -2890,10 +2889,10 @@ bool QgsOgcUtilsSQLStatementToFilter::processSRSName( const QgsSQLStatement::Nod
 
   QgsCoordinateReferenceSystem crs;
   if ( !srsName.isEmpty() )
-    crs = QgsCrsCache::instance()->crsByOgcWmsCrs( srsName );
+    crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srsName );
   if ( crs.isValid() )
   {
-    if ( mHonourAxisOrientation && crs.axisInverted() )
+    if ( mHonourAxisOrientation && crs.hasAxisInverted() )
     {
       axisInversion = !axisInversion;
     }

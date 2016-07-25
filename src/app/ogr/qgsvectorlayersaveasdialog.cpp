@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslogger.h"
-#include "qgscrscache.h"
 #include "qgsvectorlayersaveasdialog.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsvectordataprovider.h"
@@ -102,7 +101,7 @@ void QgsVectorLayerSaveAsDialog::setup()
     idx = 0;
   }
 
-  QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsBySrsId( mCRS );
+  QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( mCRS );
   mCrsSelector->setCrs( srs );
   mCrsSelector->setLayerCrs( srs );
   mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the vector file. "

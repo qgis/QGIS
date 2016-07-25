@@ -22,7 +22,6 @@
 #include "qgisinterface.h"
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
@@ -816,7 +815,7 @@ void QgsGrassNewMapset::setSelectedRegion()
   {
     // Warning: QgsCoordinateReferenceSystem::EpsgCrsId is broken (using epsg_id)
     //QgsCoordinateReferenceSystem source ( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-    QgsCoordinateReferenceSystem source = QgsCrsCache::instance()->crsBySrsId( GEOCRS_ID );
+    QgsCoordinateReferenceSystem source = QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID );
 
     if ( !source.isValid() )
     {
@@ -824,7 +823,7 @@ void QgsGrassNewMapset::setSelectedRegion()
       return;
     }
 
-    QgsCoordinateReferenceSystem dest = QgsCrsCache::instance()->crsBySrsId( mProjectionSelector->selectedCrsId() );
+    QgsCoordinateReferenceSystem dest = QgsCoordinateReferenceSystem::fromSrsId( mProjectionSelector->selectedCrsId() );
 
     if ( !dest.isValid() )
     {
@@ -1024,7 +1023,7 @@ void QgsGrassNewMapset::drawRegion()
   // Warning: seems that crashes if source == dest
   if ( mProjectionSelector->selectedCrsId() != GEOCRS_ID )
   {
-    QgsCoordinateReferenceSystem source = QgsCrsCache::instance()->crsBySrsId( mProjectionSelector->selectedCrsId() );
+    QgsCoordinateReferenceSystem source = QgsCoordinateReferenceSystem::fromSrsId( mProjectionSelector->selectedCrsId() );
 
     if ( !source.isValid() )
     {
@@ -1032,7 +1031,7 @@ void QgsGrassNewMapset::drawRegion()
       return;
     }
 
-    QgsCoordinateReferenceSystem dest = QgsCrsCache::instance()->crsBySrsId( GEOCRS_ID );
+    QgsCoordinateReferenceSystem dest = QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID );
 
     if ( !dest.isValid() )
     {

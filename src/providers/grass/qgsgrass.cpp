@@ -33,7 +33,6 @@
 #include "qgsgrassvector.h"
 
 #include "qgsapplication.h"
-#include "qgscrscache.h"
 #include "qgsconfig.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfield.h"
@@ -2164,7 +2163,7 @@ QgsCoordinateReferenceSystem QgsGrass::crs( const QString& gisdbase, const QStri
   {
     QString wkt = getInfo( "proj", gisdbase, location );
     QgsDebugMsg( "wkt: " + wkt );
-    crs = QgsCrsCache::instance()->crsByWkt( wkt );
+    crs = QgsCoordinateReferenceSystem::fromWkt( wkt );
     QgsDebugMsg( "crs.toWkt: " + crs.toWkt() );
   }
   catch ( QgsGrass::Exception &e )
@@ -2209,7 +2208,7 @@ QgsCoordinateReferenceSystem QgsGrass::crsDirect( const QString& gisdbase, const
     }
   }
 
-  QgsCoordinateReferenceSystem srs = QgsCrsCache::instance()->crsByWkt( Wkt );
+  QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromWkt( Wkt );
 
   return srs;
 }

@@ -39,7 +39,6 @@ email                : sherman at mrcc.com
 
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgscrscache.h"
 #include "qgscsexception.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsfeatureiterator.h"
@@ -1926,8 +1925,8 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
     return;
   }
 
-  QgsCoordinateReferenceSystem srcCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( srcAuthId );
-  QgsCoordinateReferenceSystem destCRS = QgsCrsCache::instance()->crsByOgcWmsCrs( destAuthId );
+  QgsCoordinateReferenceSystem srcCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srcAuthId );
+  QgsCoordinateReferenceSystem destCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( destAuthId );
 
   if ( !s.value( "/Projections/showDatumTransformDialog", false ).toBool() )
   {

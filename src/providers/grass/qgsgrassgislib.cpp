@@ -1071,7 +1071,7 @@ double QgsGrassGisLib::G_area_of_cell_at_row( int row )
   QgsGeometry* geo = QgsGeometry::fromRect( rect );
   double area = mDistanceArea.measure( geo );
   delete geo;
-  if ( !mCrs.geographicFlag() )
+  if ( !mCrs.isGeographic() )
   {
     area *= qPow( G_database_units_to_meters_factor(), 2 );
   }
@@ -1095,7 +1095,7 @@ double QgsGrassGisLib::G_area_of_polygon( const double *x, const double *y, int 
   QgsGeometry* geo = QgsGeometry::fromPolygon( polygon );
   double area = mDistanceArea.measure( geo );
   delete geo;
-  if ( !mCrs.geographicFlag() )
+  if ( !mCrs.isGeographic() )
   {
     area *= qPow( G_database_units_to_meters_factor(), 2 );
   }
@@ -1115,7 +1115,7 @@ double GRASS_LIB_EXPORT G_database_units_to_meters_factor( void )
 int QgsGrassGisLib::beginCalculations( void )
 {
   if ( !mCrs.isValid() ) return 0;
-  if ( !mCrs.geographicFlag() ) return 1; // planimetric
+  if ( !mCrs.isGeographic() ) return 1; // planimetric
   return 2; // non-planimetric
 }
 
@@ -1147,7 +1147,7 @@ double QgsGrassGisLib::distance( double e1, double n1, double e2, double n2 )
   // QgsDistanceArea states that results are in meters, but it does not
   // seem to be true,
   double dist = mDistanceArea.measureLine( QgsPoint( e1, n1 ), QgsPoint( e2, n2 ) );
-  if ( !mCrs.geographicFlag() )
+  if ( !mCrs.isGeographic() )
   {
     dist *= G_database_units_to_meters_factor();
   }
@@ -1199,7 +1199,7 @@ double QgsGrassGisLib::G_geodesic_distance_lon_to_lon( double lon1, double lon2 
 {
   double dist = mDistanceArea.measureLine( QgsPoint( lon1, mLat1 ), QgsPoint( lon2, mLat2 ) );
   // TODO: not sure about this
-  if ( !mCrs.geographicFlag() )
+  if ( !mCrs.isGeographic() )
   {
     dist *= G_database_units_to_meters_factor();
   }
