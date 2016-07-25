@@ -91,7 +91,7 @@ class QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
      */
-    static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString& string, bool *ok = 0 );
+    static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns a translated string representing a distance unit.
      * @param unit unit to convert to string
@@ -104,7 +104,7 @@ class QgsUnitTypes
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
-    static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString& string, bool *ok = 0 );
+    static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns the conversion factor between the specified distance units.
      * @param fromUnit distance unit to convert from
@@ -130,7 +130,7 @@ class QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
     */
-    static AreaUnit decodeAreaUnit( const QString& string, bool *ok = 0 );
+    static AreaUnit decodeAreaUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns a translated string representing an areal unit.
      * @param unit unit to convert to string
@@ -143,7 +143,7 @@ class QgsUnitTypes
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
-    static AreaUnit stringToAreaUnit( const QString& string, bool *ok = 0 );
+    static AreaUnit stringToAreaUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns the conversion factor between the specified areal units.
      * @param fromUnit area unit to convert from
@@ -173,7 +173,7 @@ class QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
     */
-    static AngleUnit decodeAngleUnit( const QString& string, bool *ok = 0 );
+    static AngleUnit decodeAngleUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns a translated string representing an angular unit.
      * @param unit unit to convert to string
@@ -210,7 +210,7 @@ class QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
      */
-    static RenderUnit decodeRenderUnit( const QString& string, bool *ok = 0 );
+    static RenderUnit decodeRenderUnit( const QString& string, bool *ok /Out/ = 0 );
 
 };
 
