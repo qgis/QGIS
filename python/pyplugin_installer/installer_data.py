@@ -761,7 +761,7 @@ class Plugins(QObject):
                         # other remote metadata is preffered:
                         for attrib in ["name", "plugin_id", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                                        "tracker", "code_repository", "experimental", "deprecated", "version_available", "zip_repository",
-                                       "download_url", "filename", "downloads", "average_vote", "rating_votes"]:
+                                       "download_url", "filename", "downloads", "average_vote", "rating_votes", "trusted"]:
                             if attrib not in translatableAttributes or attrib == "name":  # include name!
                                 if plugin[attrib]:
                                     self.mPlugins[key][attrib] = plugin[attrib]
