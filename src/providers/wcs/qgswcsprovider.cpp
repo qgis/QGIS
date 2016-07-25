@@ -588,7 +588,9 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
         return;
       }
       if ( GDALRasterIO( gdalBand, GF_Read, 0, 0, width, height, tmpData, width, height, ( GDALDataType ) mGdalDataType.at( bandNo - 1 ), 0, 0 ) != CE_None )
+      {
         QgsDebugMsg( "Raster IO Error" );
+      }
       for ( int i = 0; i < pixelHeight; i++ )
       {
         for ( int j = 0; j < pixelWidth; j++ )
@@ -603,15 +605,21 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     else if ( width == pixelWidth && height == pixelHeight )
     {
       if ( GDALRasterIO( gdalBand, GF_Read, 0, 0, pixelWidth, pixelHeight, block, pixelWidth, pixelHeight, ( GDALDataType ) mGdalDataType.at( bandNo - 1 ), 0, 0 ) != CE_None )
+      {
         QgsDebugMsg( "Raster IO Error" );
+      }
       else
+      {
         QgsDebugMsg( "Block read OK" );
+      }
     }
     else
     {
       // This should not happen, but it is better to give distorted result + warning
       if ( GDALRasterIO( gdalBand, GF_Read, 0, 0, width, height, block, pixelWidth, pixelHeight, ( GDALDataType ) mGdalDataType.at( bandNo - 1 ), 0, 0 ) != CE_None )
+      {
         QgsDebugMsg( "Raster IO Error" );
+      }
       QgsMessageLog::logMessage( tr( "Received coverage has wrong size %1 x %2 (expected %3 x %4)" ).arg( width ).arg( height ).arg( pixelWidth ).arg( pixelHeight ), tr( "WCS" ) );
     }
   }
