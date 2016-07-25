@@ -15,8 +15,11 @@
 # TMS as defined in:
 # http://wiki.osgeo.org/wiki/Tile_Map_Service_Specification
 
-from etree import etree
-from .util import openURL, testXMLValue
+from __future__ import (absolute_import, division, print_function)
+
+from .etree import etree
+from .util import openURL, testXMLValue, ServiceException
+
 
 FORCE900913 = False
 
@@ -37,14 +40,13 @@ class TileMapService(object):
     Implements IWebMapService.
     """
 
-    def __init__(self, url, version='1.0.0', xml=None,
-                username=None, password=None, parse_remote_metadata=False
-                ):
+    def __init__(self, url, version='1.0.0', xml=None, username=None, password=None, parse_remote_metadata=False, timeout=30):
         """Initialize."""
         self.url = url
         self.username = username
         self.password = password
         self.version = version
+        self.timeout = timeout
         self.services = None
         self._capabilities = None
         self.contents={}
@@ -56,7 +58,7 @@ class TileMapService(object):
         if xml:  # read from stored xml
             self._capabilities = reader.readString(xml)
         else:  # read from server
-            self._capabilities = reader.read(self.url)
+            self._capabilities = reader.read(self.url, timeout=self.timeout)
 
         # build metadata objects
         self._buildMetadata(parse_remote_metadata)
@@ -114,22 +116,22 @@ class TileMapService(object):
                     items.append((item,self.contents[item]))
         return items
 
-    def _gettilefromset(self, tilesets, x, y,z, ext):
+    def _gettilefromset(self, tilesets, x, y,z, ext, timeout=None):
         for tileset in tilesets:
             if tileset['order'] == z:
                 url = tileset['href'] + '/' + str(x) +'/' + str(y) + '.' + ext
                 u = openURL(url, '', username = self.username,
-                            password = self.password)
+                            password = self.password, timeout=timeout or self.timeout)
                 return u
         else:
             raise ValueError('cannot find zoomlevel %i for TileMap' % z)
 
-    def gettile(self, x,y,z, id=None, title=None, srs=None, mimetype=None):
+    def gettile(self, x,y,z, id=None, title=None, srs=None, mimetype=None, timeout=None):
         if not id and not title and not srs:
             raise ValueError('either id or title and srs must be specified')
         if id:
             return self._gettilefromset(self.contents[id].tilemap.tilesets,
-                x, y, z, self.contents[id].tilemap.extension)
+                x, y, z, self.contents[id].tilemap.extension, timeout=timeout)
 
         elif title and srs:
             for tm in self.contents.values():
@@ -137,12 +139,12 @@ class TileMapService(object):
                     if mimetype:
                         if tm.tilemap.mimetype == mimetype:
                             return self._gettilefromset(tm.tilemap.tilesets,
-                                x, y, z, tm.tilemap.extension)
+                                x, y, z, tm.tilemap.extension, timeout=timeout)
                     else:
                         #if no format is given we return the tile from the
                         # first tilemap that matches name and srs
                         return self._gettilefromset(tm.tilemap.tilesets,
-                            x, y,z, tm.tilemap.extension)
+                            x, y,z, tm.tilemap.extension, timeout=timeout)
             else:
                 raise ValueError('cannot find %s with projection %s for zoomlevel %i'
                         %(title, srs, z) )
@@ -158,7 +160,7 @@ class ServiceIdentification(object):
     def __init__(self, infoset, version):
         self._root=infoset
         if self._root.tag != 'TileMapService':
-            raise ServiceException
+            raise ServiceException("Expected TileMapService tag, got %s" % self._root.tag)
         self.version = version
         self.title = testXMLValue(self._root.find('Title'))
         self.abstract = testXMLValue(self._root.find('Abstract'))
@@ -315,11 +317,11 @@ class TMSCapabilitiesReader(object):
         self.password = pw
 
 
-    def read(self, service_url):
+    def read(self, service_url, timeout=30):
         """Get and parse a TMS capabilities document, returning an
         elementtree instance
         """
-        u = openURL(service_url, '', method='Get', username = self.username, password = self.password)
+        u = openURL(service_url, '', method='Get', username=self.username, password=self.password, timeout=timeout)
         return etree.fromstring(u.read())
 
     def readString(self, st):

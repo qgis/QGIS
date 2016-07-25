@@ -25,6 +25,7 @@ owslib/dif.py
 owslib/etree.py
 owslib/fes.py
 owslib/fgdc.py
+owslib/gm03.py
 owslib/interfaces.py
 owslib/iso.py
 owslib/namespaces.py
@@ -41,9 +42,11 @@ owslib/wps.py
 owslib/coverage/__init__.py
 owslib/coverage/wcs100.py
 owslib/coverage/wcs110.py
+owslib/coverage/wcs111.py
 owslib/coverage/wcsBase.py
 owslib/coverage/wcsdecoder.py
 owslib/feature/__init__.py
+owslib/feature/schema.py
 owslib/feature/wfs100.py
 owslib/feature/wfs110.py
 owslib/feature/wfs200.py

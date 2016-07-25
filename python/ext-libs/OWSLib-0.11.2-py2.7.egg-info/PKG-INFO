@@ -1,8 +1,8 @@
 Metadata-Version: 1.1
 Name: OWSLib
-Version: 0.8.8
+Version: 0.11.2
 Summary: OGC Web Service utility library
-Home-page: https://geopython.github.io/OWSLib
+Home-page: http://geopython.github.io/OWSLib
 Author: Tom Kralidis
 Author-email: tomkralidis@gmail.com
 License: BSD
