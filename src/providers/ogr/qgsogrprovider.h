@@ -154,7 +154,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
         be prudent to check this value per intended operation.
         See the OGRLayer::TestCapability API for details.
       */
-    virtual int capabilities() const override;
+    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
     virtual void setEncoding( const QString& e ) override;
 
@@ -369,7 +369,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     void computeCapabilities();
 
-    int mCapabilities;
+    QgsVectorDataProvider::Capabilities mCapabilities;
 
     bool doInitialActionsForEdition();
 };

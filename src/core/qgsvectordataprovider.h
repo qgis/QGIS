@@ -71,24 +71,16 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       AddAttributes =                               1 <<  3,
       /** Allows deletion of attributes (fields) */
       DeleteAttributes =                            1 <<  4,
-      /** DEPRECATED - do not use */
-      SaveAsShapefile =                             1 <<  5,
       /** Allows creation of spatial index */
       CreateSpatialIndex =                          1 <<  6,
       /** Fast access to features using their ID */
       SelectAtId =                                  1 <<  7,
       /** Allows modifications of geometries */
       ChangeGeometries =                            1 <<  8,
-      /** DEPRECATED - do not use */
-      SelectGeometryAtId =                          1 <<  9,
-      /** DEPRECATED - do not use */
-      RandomSelectGeometryAtId =                    1 << 10,
-      /** DEPRECATED - do not use */
-      SequentialSelectGeometryAtId =                1 << 11,
-      /** DEPRECATED - do not use */
-      CreateAttributeIndex =                        1 << 12,
       /** Allows user to select encoding */
       SelectEncoding =                              1 << 13,
+      /** DEPRECATED - do not use */
+      CreateAttributeIndex =                        1 << 12,
       /** Supports simplification of geometries on provider side according to a distance tolerance */
       SimplifyGeometries =                          1 << 14,
       /** Supports topological simplification of geometries on provider side according to a distance tolerance */
@@ -104,6 +96,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       /** Supports renaming attributes (fields). Added in QGIS 2.16 */
       RenameAttributes =                            1 << 19,
     };
+
+    Q_DECLARE_FLAGS( Capabilities, Capability )
 
     /** Bitmask of all provider's editing capabilities */
     const static int EditingCapabilities = AddFeatures | DeleteFeatures |
@@ -304,12 +298,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** Create an attribute index on the datasource*/
     virtual bool createAttributeIndex( int field );
 
-    /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on whether
+    /** Returns flags containing the supported capabilities
+        @note, some capabilities may change depending on whether
         a spatial filter is active on this provider, so it may
         be prudent to check this value per intended operation.
      */
-    virtual int capabilities() const;
+    virtual Capabilities capabilities() const;
 
     /**
      *  Returns the above in friendly format.
@@ -483,6 +477,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual void setTransaction( QgsTransaction* /*transaction*/ ) {}
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorDataProvider::Capabilities )
 
 
 #endif

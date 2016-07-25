@@ -63,7 +63,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     virtual ~QgsGrassProvider();
 
-    virtual int capabilities() const override;
+    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
 

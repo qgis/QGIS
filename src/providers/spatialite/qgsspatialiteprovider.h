@@ -163,7 +163,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     /** Returns a bitmask containing the supported capabilities*/
-    int capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** The SpatiaLite provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
@@ -368,7 +368,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! this Geometry is supported by an MBR cache spatial index
     bool mSpatialIndexMbrCache;
 
-    int mEnabledCapabilities;
+    QgsVectorDataProvider::Capabilities mEnabledCapabilities;
 
     const QgsField &field( int index ) const;
 

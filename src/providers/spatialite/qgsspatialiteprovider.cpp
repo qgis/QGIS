@@ -509,7 +509,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     closeDb();
     return;
   }
-  mEnabledCapabilities = mPrimaryKey.isEmpty() ? 0 : ( QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId );
+  mEnabledCapabilities = mPrimaryKey.isEmpty() ? QgsVectorDataProvider::Capabilities() : ( QgsVectorDataProvider::SelectAtId );
   if (( mTableBased || mViewBased ) &&  !mReadOnly )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
@@ -612,12 +612,10 @@ void QgsSpatiaLiteProvider::updatePrimaryKeyCapabilities()
   if ( mPrimaryKey.isEmpty() )
   {
     mEnabledCapabilities &= ~QgsVectorDataProvider::SelectAtId;
-    mEnabledCapabilities &= ~QgsVectorDataProvider::SelectGeometryAtId;
   }
   else
   {
     mEnabledCapabilities |= QgsVectorDataProvider::SelectAtId;
-    mEnabledCapabilities |= QgsVectorDataProvider::SelectGeometryAtId;
   }
 }
 
@@ -4148,7 +4146,7 @@ abort:
   return false;
 }
 
-int QgsSpatiaLiteProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsSpatiaLiteProvider::capabilities() const
 {
   return mEnabledCapabilities;
 }

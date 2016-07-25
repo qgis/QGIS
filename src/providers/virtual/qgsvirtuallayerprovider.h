@@ -68,7 +68,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     bool isValid() const override;
 
     /** Returns a bitmask containing the supported capabilities*/
-    int capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** Return the provider name */
     QString name() const override;

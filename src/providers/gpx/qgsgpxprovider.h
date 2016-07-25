@@ -91,7 +91,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
 
-    virtual int capabilities() const override;
+    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
     virtual QVariant defaultValue( int fieldId ) const override;
 

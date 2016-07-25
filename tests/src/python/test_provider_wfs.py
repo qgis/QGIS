@@ -557,10 +557,10 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert vl.isValid()
 
         self.assertEqual(vl.dataProvider().capabilities(),
-                         QgsVectorDataProvider.AddFeatures +
-                         QgsVectorDataProvider.ChangeAttributeValues +
-                         QgsVectorDataProvider.ChangeGeometries +
-                         QgsVectorDataProvider.DeleteFeatures +
+                         QgsVectorDataProvider.AddFeatures |
+                         QgsVectorDataProvider.ChangeAttributeValues |
+                         QgsVectorDataProvider.ChangeGeometries |
+                         QgsVectorDataProvider.DeleteFeatures |
                          QgsVectorDataProvider.SelectAtId)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])

@@ -203,7 +203,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual bool supportsSubsetString() const override { return true; }
 
     /** Returns a bitmask containing the supported capabilities*/
-    int capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** The Postgres provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
@@ -430,7 +430,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     // A function that determines if the given columns contain unique entries
     bool uniqueData( const QString& quotedColNames );
 
-    int mEnabledCapabilities;
+    QgsVectorDataProvider::Capabilities mEnabledCapabilities;
 
     void appendGeomParam( const QgsGeometry *geom, QStringList &param ) const;
     void appendPkParams( QgsFeatureId fid, QStringList &param ) const;

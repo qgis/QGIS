@@ -1739,14 +1739,14 @@ bool QgsOgrProvider::doInitialActionsForEdition()
   return true;
 }
 
-int QgsOgrProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsOgrProvider::capabilities() const
 {
   return mCapabilities;
 }
 
 void QgsOgrProvider::computeCapabilities()
 {
-  int ability = 0;
+  QgsVectorDataProvider::Capabilities ability = 0;
 
   // collect abilities reported by OGR
   if ( ogrLayer )
@@ -1764,7 +1764,7 @@ void QgsOgrProvider::computeCapabilities()
       //       (vs read from disk every time) based on this setting.
     {
       // the latter flag is here just for compatibility
-      ability |= QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+      ability |= QgsVectorDataProvider::SelectAtId;
     }
 
     if ( mWriteAccessPossible && OGR_L_TestCapability( ogrLayer, "SequentialWrite" ) )

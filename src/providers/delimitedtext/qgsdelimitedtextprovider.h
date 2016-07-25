@@ -109,7 +109,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * a spatial filter is active on this provider, so it may
      * be prudent to check this value per intended operation.
      */
-    virtual int capabilities() const override;
+    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** Creates a spatial index on the data
      * @return indexCreated  Returns true if a spatial index is created

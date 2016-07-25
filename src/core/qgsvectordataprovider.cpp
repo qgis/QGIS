@@ -124,7 +124,7 @@ bool QgsVectorDataProvider::createAttributeIndex( int field )
   return true;
 }
 
-int QgsVectorDataProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsVectorDataProvider::capabilities() const
 {
   return QgsVectorDataProvider::NoCapabilities;
 }

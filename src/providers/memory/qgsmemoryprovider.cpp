@@ -526,11 +526,11 @@ bool QgsMemoryProvider::createSpatialIndex()
   return true;
 }
 
-int QgsMemoryProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const
 {
   return AddFeatures | DeleteFeatures | ChangeGeometries |
          ChangeAttributeValues | AddAttributes | DeleteAttributes | RenameAttributes | CreateSpatialIndex |
-         SelectAtId | SelectGeometryAtId | CircularGeometries;
+         SelectAtId | CircularGeometries;
 }
 
 

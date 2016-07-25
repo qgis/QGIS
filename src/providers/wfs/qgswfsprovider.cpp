@@ -1309,7 +1309,7 @@ QString QgsWFSProvider::description() const
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-int QgsWFSProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsWFSProvider::capabilities() const
 {
   return mCapabilities;
 }

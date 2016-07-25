@@ -240,7 +240,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     virtual bool supportsSubsetString() const override { return true; }
 
     /** Returns a bitmask containing the supported capabilities*/
-    int capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** Return a provider name
      *
@@ -350,7 +350,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     mutable QgsRectangle mLayerExtent; //! Rectangle that contains the extent (bounding box) of the layer
     mutable long mFeaturesCounted;     //! Number of features in the layer
     int mSrid;                         //! srid of column
-    int mEnabledCapabilities;          //! capabilities of layer
+    QgsVectorDataProvider::Capabilities mEnabledCapabilities;          //! capabilities of layer
 
     Qgis::WkbType mDetectedGeomType;   //! geometry type detected in the database
     Qgis::WkbType mRequestedGeomType;  //! geometry type requested in the uri
