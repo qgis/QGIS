@@ -581,6 +581,7 @@ SET(QGIS_CORE_HDRS
   ../plugins/qgisplugin.h
 
   qgis.h
+  qgsannotation.h
   qgsattributeaction.h
   qgscachedfeatureiterator.h
   qgscacheindex.h

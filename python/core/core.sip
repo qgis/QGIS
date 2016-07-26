@@ -18,6 +18,7 @@
 
 %Include qgis.sip
 
+%Include qgsannotation.sip
 %Include qgsapplication.sip
 %Include qgsattributeaction.sip
 %Include qgsbrowsermodel.sip
