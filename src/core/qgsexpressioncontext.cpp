@@ -311,6 +311,19 @@ int QgsExpressionContext::indexOfScope( QgsExpressionContextScope* scope ) const
   return mStack.indexOf( scope );
 }
 
+int QgsExpressionContext::indexOfScope( const QString& scopeName ) const
+{
+  int index = 0;
+  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+  {
+    if ( scope->name() == scopeName )
+      return index;
+
+    index++;
+  }
+  return -1;
+}
+
 QStringList QgsExpressionContext::variableNames() const
 {
   QStringList names;
