@@ -290,18 +290,7 @@ def exportVectorLayer(layer, supported=None):
     settings = QSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
 
-    filename = os.path.basename(unicode(layer.source()))
-    idx = filename.rfind('.')
-    if idx != -1:
-        filename = filename[:idx]
-
-    filename = unicode(layer.name())
-    validChars = \
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
-    filename = ''.join(c for c in filename if c in validChars)
-    if len(filename) == 0:
-        filename = 'layer'
-    output = getTempFilenameInTempFolder(filename + '.shp')
+    output = getTempFilename('shp')
     provider = layer.dataProvider()
     useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
     if useSelection and layer.selectedFeatureCount() != 0:
