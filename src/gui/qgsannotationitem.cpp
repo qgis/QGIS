@@ -407,12 +407,12 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
     mMapPositionCrs.writeXML( annotationElem, doc );
   annotationElem.setAttribute( "offsetX", qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
   annotationElem.setAttribute( "offsetY", qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
-  annotationElem.setAttribute( "frameWidth", QString::number( mFrameSize.width() ) );
-  annotationElem.setAttribute( "frameHeight", QString::number( mFrameSize.height() ) );
+  annotationElem.setAttribute( "frameWidth", qgsDoubleToString( mFrameSize.width() ) );
+  annotationElem.setAttribute( "frameHeight", qgsDoubleToString( mFrameSize.height() ) );
   QPointF canvasPos = pos();
   annotationElem.setAttribute( "canvasPosX", qgsDoubleToString( canvasPos.x() ) );
   annotationElem.setAttribute( "canvasPosY", qgsDoubleToString( canvasPos.y() ) );
-  annotationElem.setAttribute( "frameBorderWidth", QString::number( mFrameBorderWidth ) );
+  annotationElem.setAttribute( "frameBorderWidth", qgsDoubleToString( mFrameBorderWidth ) );
   annotationElem.setAttribute( "frameColor", mFrameColor.name() );
   annotationElem.setAttribute( "frameColorAlpha", mFrameColor.alpha() );
   annotationElem.setAttribute( "frameBackgroundColor", mFrameBackgroundColor.name() );
