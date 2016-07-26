@@ -39,28 +39,6 @@ class QgsCoordinateTransform
     QgsCoordinateTransform( const QgsCoordinateReferenceSystem& source,
                             const QgsCoordinateReferenceSystem& destination );
 
-    /** Constructs a QgsCoordinateTransform using CRS ID of source and destination CRS */
-    QgsCoordinateTransform( long sourceSrsId, long destinationSrsId );
-
-    /*!
-     * Constructs a QgsCoordinateTransform using the Well Known Text representation
-     * of the layer and map canvas coordinate systems
-     * @param sourceWkt WKT, typically of the layer's coordinate system
-     * @param destinationWkt WKT, typically of the map canvas coordinate system
-     */
-    QgsCoordinateTransform( const QString& sourceWkt, const QString& destinationWkt );
-
-    /*!
-     * Constructs a QgsCoordinateTransform using a Spatial Reference Id
-     * of the layer and map canvas coordinate system as Wkt
-     * @param sourceSrid Spatial Ref Id of the layer's coordinate system
-     * @param destinationWkt Wkt of the map canvas coordinate system
-     * @param sourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CrsType
-     */
-    QgsCoordinateTransform( long sourceSrid,
-                            const QString& destinationWkt,
-                            QgsCoordinateReferenceSystem::CrsType sourceCRSType = QgsCoordinateReferenceSystem::PostgisCrsId );
-
     /*!
      * Returns true if the coordinate transform is valid, ie both the source and destination
      * CRS have been set and are valid.
