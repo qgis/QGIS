@@ -103,6 +103,11 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
 
 
     SET(SIPCMD ${SIP_BINARY_PATH} ${_sip_tags} -w -e ${_sip_x} ${SIP_EXTRA_OPTIONS} -j ${SIP_CONCAT_PARTS} -c ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} ${_sip_includes} ${_abs_module_sip})
+    SET(SUPPRESS_SIP_WARNINGS FALSE CACHE BOOL "Hide SIP warnings")
+    MARK_AS_ADVANCED(SUPPRESS_SIP_WARNINGS)
+    IF(SUPPRESS_SIP_WARNINGS)
+      SET(SIPCMD ${SIPCMD} 2> /dev/null || true)
+    ENDIF(SUPPRESS_SIP_WARNINGS)
 
     ADD_CUSTOM_COMMAND(
         OUTPUT ${_sip_output_files}
@@ -110,6 +115,7 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
         COMMAND ${CMAKE_COMMAND} -E touch ${_sip_output_files}
         COMMAND ${SIPCMD}
         DEPENDS ${_abs_module_sip} ${SIP_EXTRA_FILES_DEPEND}
+        VERBATIM
     )
     # not sure if type MODULE could be uses anywhere, limit to cygwin for now
     IF (CYGWIN OR APPLE)
