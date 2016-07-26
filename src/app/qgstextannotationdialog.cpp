@@ -27,6 +27,8 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, Q
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
+  connect( mEmbeddedWidget, SIGNAL( backgroundColorChanged( QColor ) ), this, SLOT( backgroundColorChanged( QColor ) ) );
+  mTextEdit->setAttribute( Qt::WA_TranslucentBackground );
   if ( mItem )
   {
     mTextDocument = mItem->document();
@@ -54,6 +56,18 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, Q
 QgsTextAnnotationDialog::~QgsTextAnnotationDialog()
 {
   delete mTextDocument;
+}
+
+void QgsTextAnnotationDialog::showEvent( QShowEvent* )
+{
+  backgroundColorChanged( mItem ? mItem->frameBackgroundColor() : Qt::white );
+}
+
+void QgsTextAnnotationDialog::backgroundColorChanged( const QColor& color )
+{
+  QPalette p = mTextEdit->viewport()->palette();
+  p.setColor( QPalette::Base, color );
+  mTextEdit->viewport()->setPalette( p );
 }
 
 void QgsTextAnnotationDialog::applyTextToItem()
