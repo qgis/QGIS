@@ -238,9 +238,12 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString& theCrs )
   if ( wmsCrs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 ||
        wmsCrs.compare( "OGC:CRS84", Qt::CaseInsensitive ) == 0 )
   {
-    d.detach();
     createFromOgcWmsCrs( "EPSG:4326" );
-    d->mAxisInverted = 0;
+
+    d.detach();
+    d->mAxisInverted = false;
+    d->mAxisInvertedDirty = false;
+
     return d->mIsValid;
   }
 
@@ -337,7 +340,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString&
     d->mSRID = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 5 ) ) ).toLong() ;
     d->mAuthId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 6 ) ) );
     d->mIsGeographic = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 7 ) ) ).toInt() != 0;
-    d->mAxisInverted = -1;
+    d->mAxisInvertedDirty = true;
 
     if ( d->mSrsId >= USER_CRS_START_ID && d->mAuthId.isEmpty() )
     {
@@ -367,7 +370,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString&
 
 bool QgsCoordinateReferenceSystem::axisInverted() const
 {
-  if ( d->mAxisInverted == -1 )
+  if ( d->mAxisInvertedDirty )
   {
     OGRAxisOrientation orientation;
     OSRGetAxis( d->mCRS, OSRIsGeographic( d->mCRS ) ? "GEOGCS" : "PROJCS", 0, &orientation );
@@ -386,9 +389,10 @@ bool QgsCoordinateReferenceSystem::axisInverted() const
     }
 
     d->mAxisInverted = orientation == OAO_North;
+    d->mAxisInvertedDirty = false;
   }
 
-  return d->mAxisInverted != 0;
+  return d->mAxisInverted;
 }
 
 bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
