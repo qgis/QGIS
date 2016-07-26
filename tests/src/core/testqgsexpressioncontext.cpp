@@ -37,6 +37,7 @@ class TestQgsExpressionContext : public QObject
     void contextScopeCopy();
     void contextScopeFunctions();
     void contextStack();
+    void scopeByName();
     void contextCopy();
     void contextStackFunctions();
     void evaluate();
@@ -298,6 +299,17 @@ void TestQgsExpressionContext::contextStack()
   delete context.popScope();
   QCOMPARE( scopes.length(), 2 );
   QCOMPARE( scopes.at( 0 ), scope1 );
+}
+
+void TestQgsExpressionContext::scopeByName()
+{
+  QgsExpressionContext context;
+  QCOMPARE( context.indexOfScope( "test1" ), -1 );
+  context << new QgsExpressionContextScope( "test1" );
+  context << new QgsExpressionContextScope( "test2" );
+  QCOMPARE( context.indexOfScope( "test1" ), 0 );
+  QCOMPARE( context.indexOfScope( "test2" ), 1 );
+  QCOMPARE( context.indexOfScope( "not in context" ), -1 );
 }
 
 void TestQgsExpressionContext::contextCopy()

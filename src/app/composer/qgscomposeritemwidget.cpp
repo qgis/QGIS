@@ -114,7 +114,9 @@ void QgsComposerItemWidget::updateVariables()
 {
   QgsExpressionContext* context = mItem->createExpressionContext();
   mVariableEditor->setContext( context );
-  mVariableEditor->setEditableScopeIndex( context->scopeCount() - 1 );
+  int editableIndex = context->indexOfScope( tr( "Composer Item" ) );
+  if ( editableIndex >= 0 )
+    mVariableEditor->setEditableScopeIndex( editableIndex );
   delete context;
 }
 
