@@ -2514,7 +2514,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
 
   GEOSGeometry* geos_geom_clone;
-  if ( GEOSGeomTypeId_r( QgsGeometry::getGEOSHandler(), geos_geom ) == GEOS_POLYGON && repeatDistance > 0 && placement == Line )
+  GEOSGeomTypes geomType = (GEOSGeomTypes) GEOSGeomTypeId_r( QgsGeometry::getGEOSHandler(), geos_geom );
+  if ( (geomType == GEOS_POLYGON || geomType == GEOS_MULTIPOLYGON) && repeatDistance > 0 && placement == Line )
   {
     geos_geom_clone = GEOSBoundary_r( QgsGeometry::getGEOSHandler(), geos_geom );
   }
