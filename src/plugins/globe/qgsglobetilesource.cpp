@@ -105,7 +105,7 @@ QgsMapSettings QgsGlobeTileImage::createSettings( int dpi , const QStringList &l
   settings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   settings.setFlag( QgsMapSettings::DrawLabeling, false );
   settings.setFlag( QgsMapSettings::DrawSelection, false );
-  settings.setMapUnits( Qgis::Degrees );
+  settings.setMapUnits( QgsUnitTypes::DistanceDegrees );
   settings.setOutputSize( QSize( mTileSize, mTileSize ) );
   settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
   settings.setOutputDpi( dpi );
