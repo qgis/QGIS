@@ -36,8 +36,6 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
 
   private slots:
     void on_mMapMarkerButton_clicked();
-    void on_mFrameColorButton_colorChanged( const QColor &color );
-    void on_mBackgroundColorButton_colorChanged( const QColor &color );
 
   private:
     QgsAnnotationItem* mItem;
