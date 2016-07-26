@@ -28,7 +28,13 @@ class QStyleOptionGraphicsItem;
  * \class QgsAnnotation
  * \note added in QGIS 3.0
  *
- *  An interface for annotation type items.
+ * \brief An interface for annotation items which are drawn over a map.
+ *
+ * QgsAnnotation is an interface class for map annotation items. These annotations can be
+ * drawn within a map, and have either a fixed map position (retrieved using mapPosition())
+ * or are placed relative to the map's frame (retrieved using relativePosition()).
+ * Annotations with a fixed map position also have a corresponding
+ * QgsCoordinateReferenceSystem, which can be determined by calling mapPositionCrs().
  */
 
 class CORE_EXPORT QgsAnnotation
