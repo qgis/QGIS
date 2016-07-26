@@ -453,6 +453,7 @@ class DoxygenParser():
         for m in e.getiterator('memberdef'):
             if self.elemIsBindableMember(m):
                 bindable_member = [e.find('compoundname').text, m.find('name').text]
+
                 if not bindable_member in bindable_members:
                     bindable_members.append(bindable_member)
             if self.elemIsDocumentableMember(m):
@@ -480,6 +481,17 @@ class DoxygenParser():
         """ Tests whether an member should be included in SIP bindings
             :param elem: XML element for a class member
         """
+
+        name = elem.find('name').text
+        # hack to work around doxygen mistakenly flagging some private members as public
+        if name in ['runBlockOperationInThreads',
+                    'runLineOperation',
+                    'runLineOperationOnWholeImage',
+                    'runPixelOperation',
+                    'runPixelOperationOnWholeImage',
+                    'runRectOperation',
+                    'runRectOperationOnWholeImage']:
+            return False
 
         # only public or protected members are bindable
         if not self.visibility(elem) in ('public', 'protected'):
