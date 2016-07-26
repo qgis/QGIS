@@ -30,6 +30,10 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
     QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsTextAnnotationDialog();
 
+  protected:
+
+    virtual void showEvent( QShowEvent * event ) override;
+
   private:
     QgsTextAnnotationItem* mItem;
     /** Text document (a clone of the annotation items document)*/
@@ -45,6 +49,7 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
     void setCurrentFontPropertiesToGui();
     void deleteItem();
     void on_mButtonBox_clicked( QAbstractButton* button );
+    void backgroundColorChanged( const QColor& color );
 };
 
 #endif // QGSTEXTANNOTATIONDIALOG_H

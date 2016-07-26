@@ -27,11 +27,14 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, Q
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
+  connect( mEmbeddedWidget, SIGNAL( backgroundColorChanged( QColor ) ), this, SLOT( backgroundColorChanged( QColor ) ) );
+  mTextEdit->setAttribute( Qt::WA_TranslucentBackground );
   if ( mItem )
   {
     mTextDocument = mItem->document();
     mTextEdit->setDocument( mTextDocument );
   }
+
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setAllowAlpha( true );
   mFontColorButton->setContext( "symbology" );
@@ -45,7 +48,6 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, Q
   QObject::connect( mItalicsPushButton, SIGNAL( toggled( bool ) ), this, SLOT( changeCurrentFormat() ) );
   QObject::connect( mTextEdit, SIGNAL( cursorPositionChanged() ), this, SLOT( setCurrentFontPropertiesToGui() ) );
 
-  QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applySettingsToItem() ) );
   QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, SIGNAL( clicked() ), this, SLOT( deleteItem() ) );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
@@ -56,6 +58,11 @@ QgsTextAnnotationDialog::~QgsTextAnnotationDialog()
   delete mTextDocument;
 }
 
+void QgsTextAnnotationDialog::showEvent( QShowEvent* )
+{
+  backgroundColorChanged( mItem ? mItem->frameBackgroundColor() : Qt::white );
+}
+
 void QgsTextAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
@@ -63,6 +70,13 @@ void QgsTextAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
     applyTextToItem();
     mEmbeddedWidget->apply();
   }
+}
+
+void QgsTextAnnotationDialog::backgroundColorChanged( const QColor& color )
+{
+  QPalette p = mTextEdit->viewport()->palette();
+  p.setColor( QPalette::Base, color );
+  mTextEdit->viewport()->setPalette( p );
 }
 
 void QgsTextAnnotationDialog::applyTextToItem()
