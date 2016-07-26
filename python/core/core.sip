@@ -257,7 +257,6 @@
 %Include raster/qgslinearminmaxenhancementwithclip.sip
 %Include raster/qgsmultibandcolorrenderer.sip
 %Include raster/qgspalettedrasterrenderer.sip
-%Include raster/qgspseudocolorshader.sip
 %Include raster/qgsraster.sip
 %Include raster/qgsrasterbandstats.sip
 %Include raster/qgsrasterblock.sip
