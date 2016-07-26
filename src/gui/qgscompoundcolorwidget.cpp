@@ -29,6 +29,7 @@
 #include <QMouseEvent>
 #include <QInputDialog>
 
+
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& color )
     : QWidget( parent )
     , mAllowAlpha( true )
@@ -51,13 +52,9 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   activeScheme = activeScheme >= mSchemeComboBox->count() ? 0 : activeScheme;
 
   mSchemeList->setScheme( schemeList.at( activeScheme ) );
+
   mSchemeComboBox->setCurrentIndex( activeScheme );
-  mActionImportColors->setEnabled( schemeList.at( activeScheme )->isEditable() );
-  mActionPasteColors->setEnabled( schemeList.at( activeScheme )->isEditable() );
-  mAddColorToSchemeButton->setEnabled( schemeList.at( activeScheme )->isEditable() );
-  mRemoveColorsFromSchemeButton->setEnabled( schemeList.at( activeScheme )->isEditable() );
-  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( schemeList.at( activeScheme ) );
-  mActionRemovePalette->setEnabled( userScheme ? true : false );
+  updateActionsForCurrentScheme();
 
   //listen out for selection changes in list, so we can enable/disable the copy colors option
   connect( mSchemeList->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( listSelectionChanged( QItemSelection, QItemSelection ) ) );
@@ -83,6 +80,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   schemeMenu->addAction( mActionNewPalette );
   schemeMenu->addAction( mActionImportPalette );
   schemeMenu->addAction( mActionRemovePalette );
+  schemeMenu->addAction( mActionShowInButtons );
   mSchemeToolButton->setMenu( schemeMenu );
 
   connect( mSchemeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( schemeIndexChanged( int ) ) );
@@ -479,12 +477,8 @@ void QgsCompoundColorWidget::schemeIndexChanged( int index )
 
   QgsColorScheme* scheme = schemeList.at( index );
   mSchemeList->setScheme( scheme );
-  mActionImportColors->setEnabled( scheme->isEditable() );
-  mActionPasteColors->setEnabled( scheme->isEditable() );
-  mAddColorToSchemeButton->setEnabled( scheme->isEditable() );
-  mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
-  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( scheme );
-  mActionRemovePalette->setEnabled( userScheme ? true : false );
+
+  updateActionsForCurrentScheme();
 
   //copy action defaults to disabled
   mActionCopyColors->setEnabled( false );
@@ -577,6 +571,15 @@ void QgsCompoundColorWidget::on_mTabWidget_currentChanged( int index )
   mHueRadio->setEnabled( enabled );
   mSaturationRadio->setEnabled( enabled );
   mValueRadio->setEnabled( enabled );
+}
+
+void QgsCompoundColorWidget::on_mActionShowInButtons_toggled( bool state )
+{
+  QgsUserColorScheme* scheme = dynamic_cast< QgsUserColorScheme* >( mSchemeList->scheme() );
+  if ( scheme )
+  {
+    scheme->setShowSchemeInMenu( state );
+  }
 }
 
 void QgsCompoundColorWidget::saveSettings()
@@ -837,4 +840,27 @@ void QgsCompoundColorWidget::on_mBlueRadio_toggled( bool checked )
 void QgsCompoundColorWidget::on_mAddColorToSchemeButton_clicked()
 {
   mSchemeList->addColor( mColorPreview->color(), QgsSymbolLayerV2Utils::colorToName( mColorPreview->color() ) );
+}
+
+void QgsCompoundColorWidget::updateActionsForCurrentScheme()
+{
+  QgsColorScheme* scheme = mSchemeList->scheme();
+
+  mActionImportColors->setEnabled( scheme->isEditable() );
+  mActionPasteColors->setEnabled( scheme->isEditable() );
+  mAddColorToSchemeButton->setEnabled( scheme->isEditable() );
+  mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
+
+  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( scheme );
+  mActionRemovePalette->setEnabled( userScheme ? true : false );
+  if ( userScheme )
+  {
+    mActionShowInButtons->setEnabled( true );
+    whileBlocking( mActionShowInButtons )->setChecked( userScheme->flags() & QgsColorScheme::ShowInColorButtonMenu );
+  }
+  else
+  {
+    whileBlocking( mActionShowInButtons )->setChecked( false );
+    mActionShowInButtons->setEnabled( false );
+  }
 }
