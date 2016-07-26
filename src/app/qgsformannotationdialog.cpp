@@ -24,7 +24,6 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsFormAnnotationItem* item, Q
 {
   setupUi( this );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 

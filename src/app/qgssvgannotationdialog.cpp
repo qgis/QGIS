@@ -28,7 +28,6 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWid
   setupUi( this );
   setWindowTitle( tr( "SVG annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 

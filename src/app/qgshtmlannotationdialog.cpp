@@ -25,7 +25,6 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, Q
   setupUi( this );
   setWindowTitle( tr( "HTML annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
