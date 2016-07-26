@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.tools import dataobjects
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,6 +32,7 @@ from PyQt4.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.tools import dataobjects
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -59,7 +58,7 @@ class GdalAlgorithm(GeoAlgorithm):
                     c = c.replace(layer.source(), exported)
                     if os.path.isfile(layer.source()):
                         fileName = os.path.splitext(os.path.split(layer.source())[1])[0]
-                        c = c.replace(fileName, exportedFileName)
+                        c = c.replace(' ' + fileName + ' ', ' ' + exportedFileName + ' ')
 
             commands[i] = c
         GdalUtils.runGdal(commands, progress)
