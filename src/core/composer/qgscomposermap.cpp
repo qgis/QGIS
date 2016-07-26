@@ -35,6 +35,7 @@
 #include "qgspallabeling.h"
 #include "qgsexpression.h"
 #include "qgsvisibilitypresetcollection.h"
+#include "qgsannotation.h"
 
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 
@@ -2365,18 +2366,19 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
   for ( int i = itemList.size() - 1; i >= 0; --i )
   {
     currentItem = itemList.at( i );
-    //don't draw mapcanvasmap (has z value -10)
-    if ( !currentItem || currentItem->data( 0 ).toString() != "AnnotationItem" )
+
+    const QgsAnnotation* annotation = dynamic_cast< const QgsAnnotation* >( currentItem );
+    if ( !annotation )
     {
       continue;
     }
-    drawCanvasItem( currentItem, painter, itemStyle );
+    drawCanvasItem( annotation, painter, itemStyle );
   }
 }
 
-void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
+void QgsComposerMap::drawCanvasItem( const QgsAnnotation* annotation, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
 {
-  if ( !item || !mMapCanvas || !item->isVisible() )
+  if ( !annotation || !annotation->showItem() )
   {
     return;
   }
@@ -2384,82 +2386,50 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
   painter->save();
   painter->setRenderHint( QPainter::Antialiasing );
 
-  //determine scale factor according to graphics view dpi
-  double scaleFactor = 1.0 / mMapCanvas->logicalDpiX() * 25.4;
+  double scaleFactor = annotation->scaleFactor();
 
   double itemX, itemY;
-  QGraphicsItem* parent = item->parentItem();
-  if ( !parent )
+  if ( annotation->mapPositionFixed() )
   {
-    // having no parent is a hack to indicate that annotation has a fixed position
-    QPointF mapPos = composerMapPosForItem( item );
+    QPointF mapPos = composerMapPosForItem( annotation );
     itemX = mapPos.x();
     itemY = mapPos.y();
   }
-  else //place item relative to the parent item
+  else
   {
-    // having a parent is a hack to indicate annotation has relative position
-    QPointF itemScenePos = item->scenePos();
-    QPointF parentScenePos = parent->scenePos();
-
-    QPointF mapPos = composerMapPosForItem( parent );
-
-    itemX = mapPos.x() + ( itemScenePos.x() - parentScenePos.x() ) * scaleFactor;
-    itemY = mapPos.y() + ( itemScenePos.y() - parentScenePos.y() ) * scaleFactor;
+    itemX = annotation->relativePosition().x() * rect().width();
+    itemY = annotation->relativePosition().y() * rect().height();
   }
-  painter->translate( itemX, itemY );
 
+  painter->translate( itemX, itemY );
   painter->scale( scaleFactor, scaleFactor );
 
   //a little trick to let the item know that the paint request comes from the composer
-  item->setData( 1, "composer" );
-  item->paint( painter, itemStyle, nullptr );
-  item->setData( 1, "" );
+  const_cast< QgsAnnotation* >( annotation )->setItemData( 1, "composer" );
+  const_cast< QgsAnnotation* >( annotation )->paint( painter, itemStyle, nullptr );
+  const_cast< QgsAnnotation* >( annotation )->setItemData( 1, "" );
+
   painter->restore();
 }
 
-QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
+QPointF QgsComposerMap::composerMapPosForItem( const QgsAnnotation* annotation ) const
 {
-  if ( !item )
+  if ( !annotation )
     return QPointF( 0, 0 );
 
   double mapX = 0.0;
   double mapY = 0.0;
-  if ( item->parentItem() && !mMapCanvas )
-  {
-    // having a parentItem is a hack used to indicate annotation has relative position
-    return QPointF( 0, 0 );
-  }
-  else if ( item->parentItem() )
-  {
-    // TODO this is totally broken for rotated maps
-    if ( currentMapExtent()->height() <= 0 || currentMapExtent()->width() <= 0 || mMapCanvas->width() <= 0 || mMapCanvas->height() <= 0 )
-    {
-      return QPointF( 0, 0 );
-    }
 
-    QRectF graphicsSceneRect = mMapCanvas->sceneRect();
-    QPointF itemScenePos = item->scenePos();
-    QgsRectangle mapRendererExtent = mComposition->mapSettings().visibleExtent();
+  mapX = annotation->mapPosition().x();
+  mapY = annotation->mapPosition().y();
+  QgsCoordinateReferenceSystem crs = annotation->mapPositionCrs();
 
-    mapX = itemScenePos.x() / graphicsSceneRect.width() * mapRendererExtent.width() + mapRendererExtent.xMinimum();
-    mapY = mapRendererExtent.yMaximum() - itemScenePos.y() / graphicsSceneRect.height() * mapRendererExtent.height();
-  }
-  else
+  if ( crs != mComposition->mapSettings().destinationCrs() )
   {
-    //fixed position, use a hack where the position is encoded in item's custom data
-    //(this whole annotation handling is a hack and needs to be rewritten)
-    mapX = item->data( 2 ).toDouble();
-    mapY = item->data( 3 ).toDouble();
-    long crsid = item->data( 4 ).toLongLong();
-
-    if ( crsid != mComposition->mapSettings().destinationCrs().srsid() )
-    {
-      //need to reproject
-      QgsCoordinateTransform t( QgsCoordinateReferenceSystem::fromSrsId( crsid ), mComposition->mapSettings().destinationCrs() );
-      double z = 0.0;
-      t.transformInPlace( mapX, mapY, z );
-    }
+    //need to reproject
+    QgsCoordinateTransform t( crs, mComposition->mapSettings().destinationCrs() );
+    double z = 0.0;
+    t.transformInPlace( mapX, mapY, z );
   }
 
   return mapToItemCoords( QPointF( mapX, mapY ) );
