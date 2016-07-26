@@ -440,8 +440,8 @@ void TestQgsPaintEffect::dropShadow()
   QCOMPARE( effect->offsetAngle(), 77 );
   effect->setOffsetDistance( 9.7 );
   QCOMPARE( effect->offsetDistance(), 9.7 );
-  effect->setOffsetUnit( QgsSymbolV2::MapUnit );
-  QCOMPARE( effect->offsetUnit(), QgsSymbolV2::MapUnit );
+  effect->setOffsetUnit( QgsUnitTypes::RenderMapUnits );
+  QCOMPARE( effect->offsetUnit(), QgsUnitTypes::RenderMapUnits );
   effect->setOffsetMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
   QCOMPARE( effect->offsetMapUnitScale().minScale, 1.0 );
   QCOMPARE( effect->offsetMapUnitScale().maxScale, 2.0 );
@@ -535,8 +535,8 @@ void TestQgsPaintEffect::glow()
   QCOMPARE( effect->blurLevel(), 6 );
   effect->setSpread( 7.8 );
   QCOMPARE( effect->spread(), 7.8 );
-  effect->setSpreadUnit( QgsSymbolV2::MapUnit );
-  QCOMPARE( effect->spreadUnit(), QgsSymbolV2::MapUnit );
+  effect->setSpreadUnit( QgsUnitTypes::RenderMapUnits );
+  QCOMPARE( effect->spreadUnit(), QgsUnitTypes::RenderMapUnits );
   effect->setSpreadMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
   QCOMPARE( effect->spreadMapUnitScale().minScale, 1.0 );
   QCOMPARE( effect->spreadMapUnitScale().maxScale, 2.0 );
@@ -841,7 +841,7 @@ void TestQgsPaintEffect::mapUnits()
   QgsOuterGlowEffect* effect = new QgsOuterGlowEffect();
   effect->setColor( QColor( 255, 0, 0 ) );
   effect->setSpread( 3 );
-  effect->setSpreadUnit( QgsSymbolV2::MapUnit );
+  effect->setSpreadUnit( QgsUnitTypes::RenderMapUnits );
   renderer->setPaintEffect( effect );
 
   lineLayer->setRendererV2( renderer );

@@ -91,9 +91,9 @@ class QgsMapSettings
     QgsCoordinateReferenceSystem destinationCrs() const;
 
     //! Get units of map's geographical coordinates - used for scale calculation
-    Qgis::UnitType mapUnits() const;
+    QgsUnitTypes::DistanceUnit mapUnits() const;
     //! Set units of map's geographical coordinates - used for scale calculation
-    void setMapUnits( Qgis::UnitType u );
+    void setMapUnits( QgsUnitTypes::DistanceUnit u );
 
     //! Set the background color of the map
     void setBackgroundColor( const QColor& color );

@@ -45,7 +45,7 @@ QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& label
     , mLabelAttributeName( labelAttributeName )
     , mLabelIndex( -1 )
     , mTolerance( 3 )
-    , mToleranceUnit( QgsSymbolV2::MM )
+    , mToleranceUnit( QgsUnitTypes::RenderMillimeters )
     , mPlacement( Ring )
     , mCircleWidth( 0.4 )
     , mCircleColor( QColor( 125, 125, 125 ) )
@@ -189,7 +189,7 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
     }
   }
 
-  QgsSymbolV2RenderContext symbolContext( context, QgsSymbolV2::MM, 1.0, selected );
+  QgsSymbolV2RenderContext symbolContext( context, QgsUnitTypes::RenderMillimeters, 1.0, selected );
 
   QList<QPointF> symbolPositions;
   QList<QPointF> labelPositions;
@@ -411,7 +411,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
   r->setCircleRadiusAddition( symbologyElem.attribute( "circleRadiusAddition", "0.0" ).toDouble() );
   r->setMaxLabelScaleDenominator( symbologyElem.attribute( "maxLabelScaleDenominator", "-1" ).toDouble() );
   r->setTolerance( symbologyElem.attribute( "tolerance", "0.00001" ).toDouble() );
-  r->setToleranceUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( symbologyElem.attribute( "toleranceUnit", "MapUnit" ) ) );
+  r->setToleranceUnit( QgsUnitTypes::decodeRenderUnit( symbologyElem.attribute( "toleranceUnit", "MapUnit" ) ) );
   r->setToleranceMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( symbologyElem.attribute( "toleranceUnitScale" ) ) );
 
   //look for an embedded renderer <renderer-v2>
@@ -444,7 +444,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   rendererElement.setAttribute( "placement", static_cast< int >( mPlacement ) );
   rendererElement.setAttribute( "maxLabelScaleDenominator", QString::number( mMaxLabelScaleDenominator ) );
   rendererElement.setAttribute( "tolerance", QString::number( mTolerance ) );
-  rendererElement.setAttribute( "toleranceUnit", QgsSymbolLayerV2Utils::encodeOutputUnit( mToleranceUnit ) );
+  rendererElement.setAttribute( "toleranceUnit", QgsUnitTypes::encodeUnit( mToleranceUnit ) );
   rendererElement.setAttribute( "toleranceUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mToleranceMapUnitScale ) );
 
   if ( mRenderer )

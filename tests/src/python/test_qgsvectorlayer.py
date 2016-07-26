@@ -1269,7 +1269,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectCRSID", srs.srsid())
         QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectCrs", srs.authid())
         QgsProject.instance().writeEntry("Measure", "/Ellipsoid", "WGS84")
-        QgsProject.instance().writeEntry("Measurement", "/DistanceUnits", QgsUnitTypes.encodeUnit(Qgis.Meters))
+        QgsProject.instance().writeEntry("Measurement", "/DistanceUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.DistanceMeters))
 
         idx = temp_layer.addExpressionField('$length', QgsField('length', QVariant.Double))  # NOQA
 
@@ -1279,7 +1279,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertAlmostEqual(f['length'], expected, 3)
 
         # change project length unit, check calculation respects unit
-        QgsProject.instance().writeEntry("Measurement", "/DistanceUnits", QgsUnitTypes.encodeUnit(Qgis.Feet))
+        QgsProject.instance().writeEntry("Measurement", "/DistanceUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.DistanceFeet))
         f = next(temp_layer.getFeatures())
         expected = 88360.0918635
         self.assertAlmostEqual(f['length'], expected, 3)
@@ -1299,7 +1299,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectCRSID", srs.srsid())
         QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectCrs", srs.authid())
         QgsProject.instance().writeEntry("Measure", "/Ellipsoid", "WGS84")
-        QgsProject.instance().writeEntry("Measurement", "/AreaUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.SquareMeters))
+        QgsProject.instance().writeEntry("Measurement", "/AreaUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.AreaSquareMeters))
 
         idx = temp_layer.addExpressionField('$area', QgsField('area', QVariant.Double))  # NOQA
 
@@ -1309,7 +1309,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertAlmostEqual(f['area'], expected, delta=1.0)
 
         # change project area unit, check calculation respects unit
-        QgsProject.instance().writeEntry("Measurement", "/AreaUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.SquareMiles))
+        QgsProject.instance().writeEntry("Measurement", "/AreaUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.AreaSquareMiles))
         f = next(temp_layer.getFeatures())
         expected = 389.6117565069
         self.assertAlmostEqual(f['area'], expected, 3)

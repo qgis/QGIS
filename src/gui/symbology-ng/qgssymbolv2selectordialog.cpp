@@ -147,7 +147,7 @@ class SymbolLayerItem : public QStandardItem
     {
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( mLayer, QgsSymbolV2::MM, QSize( 16, 16 ) ); //todo: make unit a parameter
+        icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) ); //todo: make unit a parameter
       else
         icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mSymbol, QSize( 16, 16 ) );
       setIcon( icon );

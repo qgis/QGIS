@@ -136,50 +136,6 @@ class Qgis
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied,
     };
 
-
-    /** Map units that qgis supports
-     * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
-     * @note and QGIS >1.8 returns to that
-     */
-    //TODO QGIS 3.0 - clean up and move to QgsUnitTypes and rename to DistanceUnit
-    enum UnitType
-    {
-      Meters, /*!< meters */
-      Feet, /*!< imperial feet */
-      Degrees, /*!< degrees, for planar geographic CRS distance measurements */ //for 1.0 api backwards compatibility
-      NauticalMiles, /*!< nautical miles */
-      Kilometers, /*!< kilometers */
-      Yards, /*!< imperial yards */
-      Miles, /*!< terrestial miles */
-
-      UnknownUnit, /*!< unknown distance unit */
-
-      // for [1.4;1.8] api compatibility
-      DecimalDegrees,         // was 2
-      DegreesMinutesSeconds,  // was 4
-      DegreesDecimalMinutes,  // was 5
-    };
-
-    //! Provides the canonical name of the type value
-    //! @deprecated use QgsUnitTypes::encodeUnit() instead
-    static QString toLiteral( Qgis::UnitType unit ) /Deprecated/;
-
-    //! Converts from the canonical name to the type value
-    //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
-    static UnitType fromLiteral( const QString& literal, Qgis::UnitType defaultType = UnknownUnit ) /Deprecated/;
-
-    //! Provides translated version of the type value
-    //! @deprecated use QgsUnitTypes::toString() instead
-    static QString tr( Qgis::UnitType unit ) /Deprecated/;
-
-    //! Provides type value from translated version
-    //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
-    static UnitType fromTr( const QString& literal, Qgis::UnitType defaultType = UnknownUnit ) /Deprecated/;
-
-    //! Returns the conversion factor between the specified units
-    //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
-    static double fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit ) /Deprecated/;
-
     //! User defined event types
     enum UserEvent
     {

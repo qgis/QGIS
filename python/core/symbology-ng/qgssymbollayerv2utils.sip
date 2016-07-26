@@ -51,11 +51,21 @@ class QgsSymbolLayerV2Utils
     static QString encodeSldRealVector( const QVector<qreal>& v );
     static QVector<qreal> decodeSldRealVector( const QString& s );
 
-    static QString encodeOutputUnit( QgsSymbolV2::OutputUnit unit );
-    static QgsSymbolV2::OutputUnit decodeOutputUnit( const QString& str );
+    /** Encodes a render unit into an SLD unit of measure string.
+     * @param unit unit to encode
+     * @param scaleFactor if specified, will be set to scale factor for unit of measure
+     * @returns encoded string
+     * @see decodeSldUom()
+     */
+    static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
 
-    static QString encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor );
-    static QgsSymbolV2::OutputUnit decodeSldUom( const QString& str, double *scaleFactor );
+    /** Decodes a SLD unit of measure string to a render unit.
+     * @param str string to decode
+     * @param scaleFactor if specified, will be set to scale factor for unit of measure
+     * @returns matching render unit
+     * @see encodeSldUom()
+     */
+    static QgsUnitTypes::RenderUnit decodeSldUom( const QString& str, double *scaleFactor );
 
     static QString encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     static QgsSymbolV2::ScaleMethod decodeScaleMethod( const QString& str );
@@ -71,10 +81,20 @@ class QgsSymbolLayerV2Utils
      * @param scale map unit scale for preview
      * @returns QPicture containing symbol layer preview
      * @note added in QGIS 2.9
+     * @see symbolLayerPreviewIcon()
      */
-    static QPicture symbolLayerPreviewPicture( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit units, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( QgsSymbolLayerV2* layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    /** Draws a symbol layer preview to an icon.
+     * @param layer symbol layer to draw
+     * @param u size units
+     * @param size target size of preview icon
+     * @param scale map unit scale for preview
+     * @returns icon containing symbol layer preview
+     * @see symbolLayerPreviewPicture()
+     */
+    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
     static void drawStippledBackground( QPainter* painter, QRect rect );
@@ -327,7 +347,7 @@ class QgsSymbolLayerV2Utils
      * @param scale map unit scale, specifying limits for the map units to convert from
      * @see convertToPainterUnits()
      */
-    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Converts a size from the specied units to painter units. The conversion respects the limits
      * specified by the optional scale parameter.
@@ -339,7 +359,7 @@ class QgsSymbolLayerV2Utils
      * @see lineWidthScaleFactor()
      * @see convertToMapUnits()
      */
-    static double convertToPainterUnits( const QgsRenderContext&c, double size, QgsSymbolV2::OutputUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static double convertToPainterUnits( const QgsRenderContext&c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Converts a size from the specied units to map units. The conversion respects the limits
      * specified by the optional scale parameter.
@@ -350,13 +370,13 @@ class QgsSymbolLayerV2Utils
      * @note added in QGIS 2.16
      * @see convertToPainterUnits()
      */
-    static double convertToMapUnits( const QgsRenderContext&c, double size, QgsSymbolV2::OutputUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static double convertToMapUnits( const QgsRenderContext&c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Returns scale factor painter units -> map units*/
-    static double mapUnitScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static double mapUnitScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );

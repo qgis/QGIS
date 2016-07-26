@@ -86,25 +86,25 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes" ), DegreesMinutes );
   mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes, seconds" ), DegreesMinutesSeconds );
 
-  mDistanceUnitsCombo->addItem( tr( "Meters" ), Qgis::Meters );
-  mDistanceUnitsCombo->addItem( tr( "Kilometers" ), Qgis::Kilometers );
-  mDistanceUnitsCombo->addItem( tr( "Feet" ), Qgis::Feet );
-  mDistanceUnitsCombo->addItem( tr( "Yards" ), Qgis::Yards );
-  mDistanceUnitsCombo->addItem( tr( "Miles" ), Qgis::Miles );
-  mDistanceUnitsCombo->addItem( tr( "Nautical miles" ), Qgis::NauticalMiles );
-  mDistanceUnitsCombo->addItem( tr( "Degrees" ), Qgis::Degrees );
-  mDistanceUnitsCombo->addItem( tr( "Map units" ), Qgis::UnknownUnit );
+  mDistanceUnitsCombo->addItem( tr( "Meters" ), QgsUnitTypes::DistanceMeters );
+  mDistanceUnitsCombo->addItem( tr( "Kilometers" ), QgsUnitTypes::DistanceKilometers );
+  mDistanceUnitsCombo->addItem( tr( "Feet" ), QgsUnitTypes::DistanceFeet );
+  mDistanceUnitsCombo->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
+  mDistanceUnitsCombo->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
+  mDistanceUnitsCombo->addItem( tr( "Nautical miles" ), QgsUnitTypes::DistanceNauticalMiles );
+  mDistanceUnitsCombo->addItem( tr( "Degrees" ), QgsUnitTypes::DistanceDegrees );
+  mDistanceUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
 
-  mAreaUnitsCombo->addItem( tr( "Square meters" ), QgsUnitTypes::SquareMeters );
-  mAreaUnitsCombo->addItem( tr( "Square kilometers" ), QgsUnitTypes::SquareKilometers );
-  mAreaUnitsCombo->addItem( tr( "Square feet" ), QgsUnitTypes::SquareFeet );
-  mAreaUnitsCombo->addItem( tr( "Square yards" ), QgsUnitTypes::SquareYards );
-  mAreaUnitsCombo->addItem( tr( "Square miles" ), QgsUnitTypes::SquareMiles );
-  mAreaUnitsCombo->addItem( tr( "Hectares" ), QgsUnitTypes::Hectares );
-  mAreaUnitsCombo->addItem( tr( "Acres" ), QgsUnitTypes::Acres );
-  mAreaUnitsCombo->addItem( tr( "Square nautical miles" ), QgsUnitTypes::SquareNauticalMiles );
-  mAreaUnitsCombo->addItem( tr( "Square degrees" ), QgsUnitTypes::SquareDegrees );
-  mAreaUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::UnknownAreaUnit );
+  mAreaUnitsCombo->addItem( tr( "Square meters" ), QgsUnitTypes::AreaSquareMeters );
+  mAreaUnitsCombo->addItem( tr( "Square kilometers" ), QgsUnitTypes::AreaSquareKilometers );
+  mAreaUnitsCombo->addItem( tr( "Square feet" ), QgsUnitTypes::AreaSquareFeet );
+  mAreaUnitsCombo->addItem( tr( "Square yards" ), QgsUnitTypes::AreaSquareYards );
+  mAreaUnitsCombo->addItem( tr( "Square miles" ), QgsUnitTypes::AreaSquareMiles );
+  mAreaUnitsCombo->addItem( tr( "Hectares" ), QgsUnitTypes::AreaHectares );
+  mAreaUnitsCombo->addItem( tr( "Acres" ), QgsUnitTypes::AreaAcres );
+  mAreaUnitsCombo->addItem( tr( "Square nautical miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
+  mAreaUnitsCombo->addItem( tr( "Square degrees" ), QgsUnitTypes::AreaSquareDegrees );
+  mAreaUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::AreaUnknownUnit );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
@@ -732,17 +732,17 @@ QgsProjectProperties::~QgsProjectProperties()
 }
 
 // return the map units
-Qgis::UnitType QgsProjectProperties::mapUnits() const
+QgsUnitTypes::DistanceUnit QgsProjectProperties::mapUnits() const
 {
   return mMapCanvas->mapSettings().mapUnits();
 }
 
-void QgsProjectProperties::setMapUnits( Qgis::UnitType unit )
+void QgsProjectProperties::setMapUnits( QgsUnitTypes::DistanceUnit unit )
 {
   // select the button
-  if ( unit == Qgis::UnknownUnit )
+  if ( unit == QgsUnitTypes::DistanceUnknownUnit )
   {
-    unit = Qgis::Meters;
+    unit = QgsUnitTypes::DistanceMeters;
   }
 
   mMapCanvas->setMapUnits( unit );
@@ -787,7 +787,7 @@ void QgsProjectProperties::apply()
     {
       // If we couldn't get the map units, default to the value in the
       // projectproperties dialog box (set above)
-      if ( srs.mapUnits() != Qgis::UnknownUnit )
+      if ( srs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
         mMapCanvas->setMapUnits( srs.mapUnits() );
     }
 
@@ -831,7 +831,7 @@ void QgsProjectProperties::apply()
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
 
-  Qgis::UnitType distanceUnits = static_cast< Qgis::UnitType >( mDistanceUnitsCombo->itemData( mDistanceUnitsCombo->currentIndex() ).toInt() );
+  QgsUnitTypes::DistanceUnit distanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsCombo->itemData( mDistanceUnitsCombo->currentIndex() ).toInt() );
   QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( distanceUnits ) );
 
   QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->itemData( mAreaUnitsCombo->currentIndex() ).toInt() );
@@ -1274,7 +1274,7 @@ void QgsProjectProperties::cbxWCSPubliedStateChanged( int aIdx )
   }
 }
 
-void QgsProjectProperties::updateGuiForMapUnits( Qgis::UnitType units )
+void QgsProjectProperties::updateGuiForMapUnits( QgsUnitTypes::DistanceUnit units )
 {
   //make sure map units option is shown in coordinate display combo
   int idx = mCoordinateDisplayComboBox->findData( MapUnits );
@@ -1282,13 +1282,13 @@ void QgsProjectProperties::updateGuiForMapUnits( Qgis::UnitType units )
   mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
 
   //also update unit combo boxes
-  idx = mDistanceUnitsCombo->findData( Qgis::UnknownUnit );
+  idx = mDistanceUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit );
   if ( idx >= 0 )
   {
     QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
     mDistanceUnitsCombo->setItemText( idx, mapUnitString );
   }
-  idx = mAreaUnitsCombo->findData( QgsUnitTypes::UnknownAreaUnit );
+  idx = mAreaUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit );
   if ( idx >= 0 )
   {
     QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( QgsUnitTypes::distanceToAreaUnit( units ) ) );
@@ -1304,7 +1304,7 @@ void QgsProjectProperties::srIdUpdated()
 
   QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( myCRSID );
   //set radio button to crs map unit type
-  Qgis::UnitType units = srs.mapUnits();
+  QgsUnitTypes::DistanceUnit units = srs.mapUnits();
 
   updateGuiForMapUnits( units );
 

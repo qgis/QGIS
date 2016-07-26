@@ -184,7 +184,7 @@ void TestQgsShapeburst::shapeburstMaxDistanceMm()
   mReport += "<h2>Shapeburst symbol renderer maximum distance MM </h2>\n";
   mShapeburstFill->setUseWholeShape( false );
   mShapeburstFill->setMaxDistance( 3 );
-  mShapeburstFill->setDistanceUnit( QgsSymbolV2::MM );
+  mShapeburstFill->setDistanceUnit( QgsUnitTypes::RenderMillimeters );
   QVERIFY( imageCheck( "shapeburst_maxdistance_mm" ) );
   mShapeburstFill->setUseWholeShape( true );
 }
@@ -194,10 +194,10 @@ void TestQgsShapeburst::shapeburstMaxDistanceMapUnits()
   mReport += "<h2>Shapeburst symbol renderer maximum distance map units</h2>\n";
   mShapeburstFill->setUseWholeShape( false );
   mShapeburstFill->setMaxDistance( 10 );
-  mShapeburstFill->setDistanceUnit( QgsSymbolV2::MapUnit );
+  mShapeburstFill->setDistanceUnit( QgsUnitTypes::RenderMapUnits );
   QVERIFY( imageCheck( "shapeburst_maxdistance_mapunit" ) );
   mShapeburstFill->setUseWholeShape( true );
-  mShapeburstFill->setDistanceUnit( QgsSymbolV2::MM );
+  mShapeburstFill->setDistanceUnit( QgsUnitTypes::RenderMillimeters );
 }
 
 void TestQgsShapeburst::shapeburstIgnoreRings()

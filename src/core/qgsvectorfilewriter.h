@@ -338,7 +338,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QString errorMessage();
 
     /** Add feature to the currently opened data source */
-    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = nullptr, Qgis::UnitType outputUnit = Qgis::Meters );
+    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = nullptr, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
     //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
@@ -443,14 +443,14 @@ class CORE_EXPORT QgsVectorFileWriter
     QgsRenderContext mRenderContext;
 
     static QMap<QString, MetaData> initMetaData();
-    void createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform& ct, OGRDataSourceH ds );
+    void createSymbolLayerTable( QgsVectorLayer* vl, const QgsCoordinateTransform& ct, OGRDataSourceH ds );
     OGRFeatureH createFeature( QgsFeature& feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
     /** Writes features considering symbol level order*/
     WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit, const QgsCoordinateTransform& ct, QString* errorMessage = nullptr );
-    double mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, Qgis::UnitType mapUnits );
-    double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, Qgis::UnitType mapUnits );
+    double mmScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+    double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
     void startRender( QgsVectorLayer* vl );
     void stopRender( QgsVectorLayer* vl );

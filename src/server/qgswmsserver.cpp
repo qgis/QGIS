@@ -2017,7 +2017,7 @@ int QgsWmsServer::configureMapRender( const QPaintDevice* paintDevice ) const
     throw QgsMapServiceException( "InvalidParameterValue", "Invalid BBOX parameter" );
   }
 
-  Qgis::UnitType mapUnits = Qgis::Degrees;
+  QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceDegrees;
 
   QString crs = mParameters.value( "CRS", mParameters.value( "SRS" ) );
 

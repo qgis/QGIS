@@ -679,7 +679,7 @@ void TestQgsCoordinateReferenceSystem::mapUnits()
 {
   QgsCoordinateReferenceSystem myCrs;
   myCrs.createFromSrid( GEOSRID );
-  QVERIFY( myCrs.mapUnits() == Qgis::Degrees );
+  QVERIFY( myCrs.mapUnits() == QgsUnitTypes::DistanceDegrees );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::setValidationHint()
@@ -718,15 +718,15 @@ void TestQgsCoordinateReferenceSystem::debugPrint(
   QgsDebugMsg( "* Proj4 : " + theCrs.toProj4() );
   QgsDebugMsg( "* WKT   : " + theCrs.toWkt() );
   QgsDebugMsg( "* Desc. : " + theCrs.description() );
-  if ( theCrs.mapUnits() == Qgis::Meters )
+  if ( theCrs.mapUnits() == QgsUnitTypes::DistanceMeters )
   {
     QgsDebugMsg( "* Units : meters" );
   }
-  else if ( theCrs.mapUnits() == Qgis::Feet )
+  else if ( theCrs.mapUnits() == QgsUnitTypes::DistanceFeet )
   {
     QgsDebugMsg( "* Units : feet" );
   }
-  else if ( theCrs.mapUnits() == Qgis::Degrees )
+  else if ( theCrs.mapUnits() == QgsUnitTypes::DistanceDegrees )
   {
     QgsDebugMsg( "* Units : degrees" );
   }

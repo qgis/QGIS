@@ -54,6 +54,7 @@ from qgis.core import (QgsCentroidFillSymbolLayerV2,
                        QgsShapeburstFillSymbolLayerV2,
                        QgsArrowSymbolLayer,
                        QgsSymbolV2,
+                       QgsUnitTypes
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -383,7 +384,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsSymbolV2.MapUnit
+        mExpectedValue = QgsUnitTypes.RenderMapUnits
         mGradientLayer.setOffsetUnit(mExpectedValue)
         mValue = mGradientLayer.offsetUnit()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)

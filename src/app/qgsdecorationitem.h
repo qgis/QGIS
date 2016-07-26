@@ -19,7 +19,7 @@
 #define QGSDECORATIONITEM_H
 
 #include <QObject>
-#include "qgssymbolv2.h"
+#include "qgsunittypes.h"
 
 class QPainter;
 
@@ -85,7 +85,7 @@ class APP_EXPORT QgsDecorationItem: public QObject
     //! Placement of the decoration
     Placement mPlacement;
     //! Units used for the decoration placement margin
-    QgsSymbolV2::OutputUnit mMarginUnit;
+    QgsUnitTypes::RenderUnit mMarginUnit;
 
     QString mName;
     QString mNameConfig;

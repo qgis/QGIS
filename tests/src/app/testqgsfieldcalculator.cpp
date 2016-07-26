@@ -90,7 +90,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
   QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( Qgis::Meters ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceMeters ) );
 
   // run length calculation
   tempLayer->startEditing();
@@ -112,7 +112,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 
   // change project length unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( Qgis::Feet ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
   tempLayer->startEditing();
   QScopedPointer< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.data() ) );
   calc2->mUpdateExistingGroupBox->setChecked( true );
@@ -153,7 +153,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
   QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMeters ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMeters ) );
 
   // run area calculation
   tempLayer->startEditing();
@@ -175,7 +175,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 1.0 ) );
 
   // change project area unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMiles ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMiles ) );
   tempLayer->startEditing();
   QScopedPointer< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.data() ) );
   calc2->mUpdateExistingGroupBox->setChecked( true );

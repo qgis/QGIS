@@ -37,7 +37,7 @@ QgsHeatmapRenderer::QgsHeatmapRenderer()
     , mRadius( 10 )
     , mRadiusPixels( 0 )
     , mRadiusSquared( 0 )
-    , mRadiusUnit( QgsSymbolV2::MM )
+    , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
     , mWeightAttrNum( -1 )
     , mGradientRamp( nullptr )
     , mInvertRamp( false )
@@ -307,14 +307,14 @@ void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderCon
   //we need to expand out the request extent so that it includes points which are up to the heatmap radius outside of the
   //actual visible extent
   double extension = 0.0;
-  if ( mRadiusUnit == QgsSymbolV2::Pixel )
+  if ( mRadiusUnit == QgsUnitTypes::RenderPixels )
   {
-    extension = mRadius / QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsSymbolV2::MapUnit, QgsMapUnitScale() );
+    extension = mRadius / QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
   }
-  else if ( mRadiusUnit == QgsSymbolV2::MM )
+  else if ( mRadiusUnit == QgsUnitTypes::RenderMillimeters )
   {
-    double pixelSize = mRadius * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsSymbolV2::MM, QgsMapUnitScale() );
-    extension = pixelSize / QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsSymbolV2::MapUnit, QgsMapUnitScale() );
+    double pixelSize = mRadius * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMillimeters, QgsMapUnitScale() );
+    extension = pixelSize / QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
   }
   else
   {
@@ -330,7 +330,7 @@ QgsFeatureRendererV2* QgsHeatmapRenderer::create( QDomElement& element )
 {
   QgsHeatmapRenderer* r = new QgsHeatmapRenderer();
   r->setRadius( element.attribute( "radius", "50.0" ).toFloat() );
-  r->setRadiusUnit( static_cast< QgsSymbolV2::OutputUnit >( element.attribute( "radius_unit", "0" ).toInt() ) );
+  r->setRadiusUnit( static_cast< QgsUnitTypes::RenderUnit >( element.attribute( "radius_unit", "0" ).toInt() ) );
   r->setRadiusMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( element.attribute( "radius_map_unit_scale", QString() ) ) );
   r->setMaximumValue( element.attribute( "max_value", "0.0" ).toFloat() );
   r->setRenderQuality( element.attribute( "quality", "0" ).toInt() );

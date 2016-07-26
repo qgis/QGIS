@@ -39,9 +39,9 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the arrow width */
     void setArrowWidth( double width );
     /** Get the unit for the arrow width */
-    QgsSymbolV2::OutputUnit arrowWidthUnit() const;
+    QgsUnitTypes::RenderUnit arrowWidthUnit() const;
     /** Set the unit for the arrow width */
-    void setArrowWidthUnit( QgsSymbolV2::OutputUnit unit );
+    void setArrowWidthUnit( QgsUnitTypes::RenderUnit unit );
     /** Get the scale for the arrow width */
     QgsMapUnitScale arrowWidthUnitScale() const;
     /** Set the scale for the arrow width */
@@ -52,9 +52,9 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the arrow start width */
     void setArrowStartWidth( double width );
     /** Get the unit for the arrow start width */
-    QgsSymbolV2::OutputUnit arrowStartWidthUnit() const;
+    QgsUnitTypes::RenderUnit arrowStartWidthUnit() const;
     /** Set the unit for the arrow start width */
-    void setArrowStartWidthUnit( QgsSymbolV2::OutputUnit unit );
+    void setArrowStartWidthUnit( QgsUnitTypes::RenderUnit unit );
     /** Get the scale for the arrow start width */
     QgsMapUnitScale arrowStartWidthUnitScale() const;
     /** Set the scale for the arrow start width */
@@ -65,9 +65,9 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the arrow head length */
     void setHeadLength( double length );
     /** Get the unit for the head length */
-    QgsSymbolV2::OutputUnit headLengthUnit() const;
+    QgsUnitTypes::RenderUnit headLengthUnit() const;
     /** Set the unit for the head length */
-    void setHeadLengthUnit( QgsSymbolV2::OutputUnit unit );
+    void setHeadLengthUnit( QgsUnitTypes::RenderUnit unit );
     /** Get the scale for the head length */
     QgsMapUnitScale headLengthUnitScale() const;
     /** Set the scale for the head length */
@@ -78,9 +78,9 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the arrow head height */
     void setHeadThickness( double thickness );
     /** Get the unit for the head height */
-    QgsSymbolV2::OutputUnit headThicknessUnit() const;
+    QgsUnitTypes::RenderUnit headThicknessUnit() const;
     /** Set the unit for the head height */
-    void setHeadThicknessUnit( QgsSymbolV2::OutputUnit unit );
+    void setHeadThicknessUnit( QgsUnitTypes::RenderUnit unit );
     /** Get the scale for the head height */
     QgsMapUnitScale headThicknessUnitScale() const;
     /** Set the scale for the head height */

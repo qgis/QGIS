@@ -76,7 +76,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     QgsIdentifyResultsDialog *resultsDialog();
 
-    virtual Qgis::UnitType displayDistanceUnits() const override;
+    virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const override;
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const override;
 
 };

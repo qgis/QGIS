@@ -53,6 +53,14 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 <li>permissiveToDouble() and permissiveToInt() where moved out of the QGis class and renamed to qgsPermissiveToDouble() and
 qgsPermissiveToInt()</li>
 <li>The constants DEFAULT_IDENTIFY_RADIUS and MINIMUM_POINT_SIZE were removed</li>
+<li>QGis::DecimalDegrees, DegreesMinutesSeconds and DegreesDecimalMinutes have been removed, and have all been replaced
+with the general Degrees unit</li>
+<li>The distance unit types QGis::UnitType (including QGis::Meters, QGis::Feet, QGis::Degrees, QGis::NauticalMiles,
+QGis::Kilometers, QGis::Yards, QGis::Miles and QGis::UnknownUnit have been moved to QgsUnitTypes::DistanceUnit.
+Some of these unit types have also been renamed - see the notes on QgsUnitTypes below. All methods which accepted
+QGis::UnitType parameters have been updated to take QgsUnitTypes::DistanceUnit instead.</li>
+<li>The unit handling methods toLiteral, fromLiteral, tr, fromTr, fromUnitToUnitFactor have been removed. Their
+corresponding counterparts in QgsUnitTypes should be used instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsAuthConfigUriEdit QgsAuthConfigUriEdit
@@ -447,11 +455,42 @@ has improved sort capabilities including the ability to set custom sort values f
 and for forcing certain items to always sort on top.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsSymbolV2 QgsSymbolV2
+
+<ul>
+<li>The OutputUnit enum, including QgsSymbolV2::MM, QgsSymbolV2::MapUnit, QgsSymbolV2::Mixed, QgsSymbolV2::Pixel and QgsSymbolV2::Percentage has been moved to QgsUnitTypes
+and renamed to RenderUnit. QgsSymbolV2::OutputUnitList was renamed to QgsUnitTypes::RenderUnitList. All methods which previously accepted QgsSymbolV2::OutputUnit
+parameters or QgsSymbolV2::OutputUnitList parameters now take QgsUnitTypes::RenderUnit or QgsUnitTypes::RenderUnitList parameters respectively.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSymbolLayerV2Utils QgsSymbolLayerV2Utils
+
+<ul>
+<li>encodeOutputUnit() and decodeOutputUnit() were removed. QgsUnitTypes::encodeUnit() and QgsUnitTypes::decodeRenderUnit() should be used instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsTreeWidgetItem QgsTreeWidgetItem
 
 <ul>
 <li>QgsTreeWidgetItem is no longer a QObject and does not emit the itemEdited signal. Instead,
 use QgsTreeWidgetItemObject which is an upgraded version of the original QgsTreeWidgetItem</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsUnitTypes QgsUnitTypes
+
+<ul>
+<li>All distance enumeration values were renamed to have a "Distance" prefix, including
+Meters (to DistanceMeters), Kilometers (to DistanceKilometers), Feet (to DistanceFeet),
+NauticalMiles (to DistanceNauticalMiles), Yards (to DistanceYards), Miles (to DistanceMiles),
+Degrees (to DistanceDegrees) and UnknownDistanceUnit to DistanceUnknownUnit</li>
+<li>All area enumeration values were renamed to have a "Area" prefix, including
+SquareMeters (to AreaSquareMeters), SquareKilometers (to AreaSquareKilometers), SquareFeet (to AreaSquareFeet),
+SquareYards (to AreaSquareYards), SquareMiles (to AreaSquareMiles), Hectares (to AreaHectares),
+Acres (to AreaAcres), SquareNauticalMiles (to AreaSquareNauticalMiles), SquareDegrees (to AreaSquareDegrees)
+and UnknownAreaUnit to AreaUnknownUnit</li>
+<li>All angle enumeration values were renamed to have a "Angle" prefix, including
+Radians (to AngleRadians), Gon (to AngleGon), MinutesOfArc (to AngleMinutesOfArc),
+SecondsOfArc (to AngleSecondsOfArc), Turn (to AngleTurn) and UnknownAngleUnit to AngleUnknownUnit</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayer QgsVectorLayer

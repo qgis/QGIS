@@ -407,50 +407,16 @@ QgsMapUnitScale QgsSymbolLayerV2Utils::decodeMapUnitScale( const QString& str )
   return s;
 }
 
-QString QgsSymbolLayerV2Utils::encodeOutputUnit( QgsSymbolV2::OutputUnit unit )
+QString QgsSymbolLayerV2Utils::encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor )
 {
   switch ( unit )
   {
-    case QgsSymbolV2::MM:
-      return "MM";
-    case QgsSymbolV2::MapUnit:
-      return "MapUnit";
-    case QgsSymbolV2::Pixel:
-      return "Pixel";
-    case QgsSymbolV2::Percentage:
-      return "Percentage";
-    default:
-      return "MM";
-  }
-}
-
-QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeOutputUnit( const QString& string )
-{
-  QString normalized = string.trimmed().toLower();
-
-  if ( normalized == encodeOutputUnit( QgsSymbolV2::MM ).toLower() )
-    return QgsSymbolV2::MM;
-  if ( normalized == encodeOutputUnit( QgsSymbolV2::MapUnit ).toLower() )
-    return QgsSymbolV2::MapUnit;
-  if ( normalized == encodeOutputUnit( QgsSymbolV2::Pixel ).toLower() )
-    return QgsSymbolV2::Pixel;
-  if ( normalized == encodeOutputUnit( QgsSymbolV2::Percentage ).toLower() )
-    return QgsSymbolV2::Percentage;
-
-  // millimeters are default
-  return QgsSymbolV2::MM;
-}
-
-QString QgsSymbolLayerV2Utils::encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor )
-{
-  switch ( unit )
-  {
-    case QgsSymbolV2::MapUnit:
+    case QgsUnitTypes::RenderMapUnits:
       if ( scaleFactor )
         *scaleFactor = 0.001; // from millimeters to meters
       return "http://www.opengeospatial.org/se/units/metre";
 
-    case QgsSymbolV2::MM:
+    case QgsUnitTypes::RenderMillimeters:
     default:
       // pixel is the SLD default uom. The "standardized rendering pixel
       // size" is defined to be 0.28mm × 0.28mm (millimeters).
@@ -462,26 +428,26 @@ QString QgsSymbolLayerV2Utils::encodeSldUom( QgsSymbolV2::OutputUnit unit, doubl
   }
 }
 
-QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeSldUom( const QString& str, double *scaleFactor )
+QgsUnitTypes::RenderUnit QgsSymbolLayerV2Utils::decodeSldUom( const QString& str, double *scaleFactor )
 {
   if ( str == "http://www.opengeospatial.org/se/units/metre" )
   {
     if ( scaleFactor )
       *scaleFactor = 1000.0;  // from meters to millimeters
-    return QgsSymbolV2::MapUnit;
+    return QgsUnitTypes::RenderMapUnits;
   }
   else if ( str == "http://www.opengeospatial.org/se/units/foot" )
   {
     if ( scaleFactor )
       *scaleFactor = 304.8; // from feet to meters
-    return QgsSymbolV2::MapUnit;
+    return QgsUnitTypes::RenderMapUnits;
   }
 
   // pixel is the SLD default uom. The "standardized rendering pixel
   // size" is defined to be 0.28mm x 0.28mm (millimeters).
   if ( scaleFactor )
     *scaleFactor = 1 / 0.00028; // from pixels to millimeters
-  return QgsSymbolV2::MM;
+  return QgsUnitTypes::RenderMillimeters;
 }
 
 QString QgsSymbolLayerV2Utils::encodeRealVector( const QVector<qreal>& v )
@@ -625,7 +591,7 @@ double QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( QgsSymbolV2* symbol )
   return maxBleed;
 }
 
-QPicture QgsSymbolLayerV2Utils::symbolLayerPreviewPicture( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit units, QSize size, const QgsMapUnitScale& scale )
+QPicture QgsSymbolLayerV2Utils::symbolLayerPreviewPicture( QgsSymbolLayerV2* layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale& scale )
 {
   QPicture picture;
   QPainter painter;
@@ -639,7 +605,7 @@ QPicture QgsSymbolLayerV2Utils::symbolLayerPreviewPicture( QgsSymbolLayerV2* lay
   return picture;
 }
 
-QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale )
+QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -1004,7 +970,7 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( const QDomElement &element )
 
   if ( element.hasAttribute( "outputUnit" ) )
   {
-    symbol->setOutputUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+    symbol->setOutputUnit( QgsUnitTypes::decodeRenderUnit( element.attribute( "outputUnit" ) ) );
   }
   if ( element.hasAttribute(( "mapUnitScale" ) ) )
   {
@@ -3357,13 +3323,13 @@ QColor QgsSymbolLayerV2Utils::parseColorWithAlpha( const QString& colorStr, bool
   return QColor();
 }
 
-double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale )
+double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale )
 {
   switch ( u )
   {
-    case QgsSymbolV2::MM:
+    case QgsUnitTypes::RenderMillimeters:
       return c.scaleFactor();
-    case QgsSymbolV2::MapUnit:
+    case QgsUnitTypes::RenderMapUnits:
     {
       double mup = scale.computeMapUnitsPerPixel( c );
       if ( mup > 0 )
@@ -3375,22 +3341,22 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, Q
         return 1.0;
       }
     }
-    case QgsSymbolV2::Pixel:
+    case QgsUnitTypes::RenderPixels:
       return 1.0 / c.rasterScaleFactor();
-    case QgsSymbolV2::Mixed:
-    case QgsSymbolV2::Percentage:
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
       //no sensible value
       return 1.0;
   }
   return 1.0;
 }
 
-double QgsSymbolLayerV2Utils::convertToPainterUnits( const QgsRenderContext &c, double size, QgsSymbolV2::OutputUnit unit, const QgsMapUnitScale &scale )
+double QgsSymbolLayerV2Utils::convertToPainterUnits( const QgsRenderContext &c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale )
 {
   double conversionFactor = lineWidthScaleFactor( c, unit, scale );
   double convertedSize = size * conversionFactor;
 
-  if ( unit == QgsSymbolV2::MapUnit )
+  if ( unit == QgsUnitTypes::RenderMapUnits )
   {
     //check max/min size
     if ( scale.minSizeMMEnabled )
@@ -3402,13 +3368,13 @@ double QgsSymbolLayerV2Utils::convertToPainterUnits( const QgsRenderContext &c, 
   return convertedSize;
 }
 
-double QgsSymbolLayerV2Utils::convertToMapUnits( const QgsRenderContext &c, double size, QgsSymbolV2::OutputUnit unit, const QgsMapUnitScale &scale )
+double QgsSymbolLayerV2Utils::convertToMapUnits( const QgsRenderContext &c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale )
 {
   double mup = c.mapToPixel().mapUnitsPerPixel();
 
   switch ( unit )
   {
-    case QgsSymbolV2::MapUnit:
+    case QgsUnitTypes::RenderMapUnits:
     {
       // check scale
       double minSizeMU = -DBL_MAX;
@@ -3435,30 +3401,30 @@ double QgsSymbolLayerV2Utils::convertToMapUnits( const QgsRenderContext &c, doub
 
       return size;
     }
-    case QgsSymbolV2::MM:
+    case QgsUnitTypes::RenderMillimeters:
     {
       return size * c.scaleFactor() * c.rasterScaleFactor() * mup;
     }
-    case QgsSymbolV2::Pixel:
+    case QgsUnitTypes::RenderPixels:
     {
       return size * mup;
     }
 
-    case QgsSymbolV2::Mixed:
-    case QgsSymbolV2::Percentage:
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
       //no sensible value
       return 0.0;
   }
   return 0.0;
 }
 
-double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale )
+double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale )
 {
   switch ( u )
   {
-    case QgsSymbolV2::MM:
+    case QgsUnitTypes::RenderMillimeters:
       return ( c.scaleFactor() * c.rasterScaleFactor() );
-    case QgsSymbolV2::MapUnit:
+    case QgsUnitTypes::RenderMapUnits:
     {
       double mup = scale.computeMapUnitsPerPixel( c );
       if ( mup > 0 )
@@ -3470,30 +3436,30 @@ double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, Q
         return 1.0;
       }
     }
-    case QgsSymbolV2::Pixel:
+    case QgsUnitTypes::RenderPixels:
       return 1.0;
-    case QgsSymbolV2::Mixed:
-    case QgsSymbolV2::Percentage:
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
       //no sensible value
       return 1.0;
   }
   return 1.0;
 }
 
-double QgsSymbolLayerV2Utils::mapUnitScaleFactor( const QgsRenderContext &c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale &scale )
+double QgsSymbolLayerV2Utils::mapUnitScaleFactor( const QgsRenderContext &c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale &scale )
 {
   switch ( u )
   {
-    case QgsSymbolV2::MM:
+    case QgsUnitTypes::RenderMillimeters:
       return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor();
-    case QgsSymbolV2::MapUnit:
+    case QgsUnitTypes::RenderMapUnits:
     {
       return 1.0;
     }
-    case QgsSymbolV2::Pixel:
+    case QgsUnitTypes::RenderPixels:
       return scale.computeMapUnitsPerPixel( c );
-    case QgsSymbolV2::Mixed:
-    case QgsSymbolV2::Percentage:
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
       //no sensible value
       return 1.0;
   }

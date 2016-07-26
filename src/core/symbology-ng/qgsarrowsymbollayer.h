@@ -57,9 +57,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the arrow width */
     void setArrowWidth( double width ) { mArrowWidth = width; }
     /** Get the unit for the arrow width */
-    QgsSymbolV2::OutputUnit arrowWidthUnit() const { return mArrowWidthUnit; }
+    QgsUnitTypes::RenderUnit arrowWidthUnit() const { return mArrowWidthUnit; }
     /** Set the unit for the arrow width */
-    void setArrowWidthUnit( QgsSymbolV2::OutputUnit unit ) { mArrowWidthUnit = unit; }
+    void setArrowWidthUnit( QgsUnitTypes::RenderUnit unit ) { mArrowWidthUnit = unit; }
     /** Get the scale for the arrow width */
     QgsMapUnitScale arrowWidthUnitScale() const { return mArrowWidthUnitScale; }
     /** Set the scale for the arrow width */
@@ -70,9 +70,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the arrow start width */
     void setArrowStartWidth( double width ) { mArrowStartWidth = width; }
     /** Get the unit for the arrow start width */
-    QgsSymbolV2::OutputUnit arrowStartWidthUnit() const { return mArrowStartWidthUnit; }
+    QgsUnitTypes::RenderUnit arrowStartWidthUnit() const { return mArrowStartWidthUnit; }
     /** Set the unit for the arrow start width */
-    void setArrowStartWidthUnit( QgsSymbolV2::OutputUnit unit ) { mArrowStartWidthUnit = unit; }
+    void setArrowStartWidthUnit( QgsUnitTypes::RenderUnit unit ) { mArrowStartWidthUnit = unit; }
     /** Get the scale for the arrow start width */
     QgsMapUnitScale arrowStartWidthUnitScale() const { return mArrowStartWidthUnitScale; }
     /** Set the scale for the arrow start width */
@@ -83,9 +83,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the arrow head length */
     void setHeadLength( double length ) { mHeadLength = length; }
     /** Get the unit for the head length */
-    QgsSymbolV2::OutputUnit headLengthUnit() const { return mHeadLengthUnit; }
+    QgsUnitTypes::RenderUnit headLengthUnit() const { return mHeadLengthUnit; }
     /** Set the unit for the head length */
-    void setHeadLengthUnit( QgsSymbolV2::OutputUnit unit ) { mHeadLengthUnit = unit; }
+    void setHeadLengthUnit( QgsUnitTypes::RenderUnit unit ) { mHeadLengthUnit = unit; }
     /** Get the scale for the head length */
     QgsMapUnitScale headLengthUnitScale() const { return mHeadLengthUnitScale; }
     /** Set the scale for the head length */
@@ -96,9 +96,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the arrow head height */
     void setHeadThickness( double thickness ) { mHeadThickness = thickness; }
     /** Get the unit for the head height */
-    QgsSymbolV2::OutputUnit headThicknessUnit() const { return mHeadThicknessUnit; }
+    QgsUnitTypes::RenderUnit headThicknessUnit() const { return mHeadThicknessUnit; }
     /** Set the unit for the head height */
-    void setHeadThicknessUnit( QgsSymbolV2::OutputUnit unit ) { mHeadThicknessUnit = unit; }
+    void setHeadThicknessUnit( QgsUnitTypes::RenderUnit unit ) { mHeadThicknessUnit = unit; }
     /** Get the scale for the head height */
     QgsMapUnitScale headThicknessUnitScale() const { return mHeadThicknessUnitScale; }
     /** Set the scale for the head height */
@@ -170,18 +170,18 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     QScopedPointer<QgsFillSymbolV2> mSymbol;
 
     double mArrowWidth;
-    QgsSymbolV2::OutputUnit mArrowWidthUnit;
+    QgsUnitTypes::RenderUnit mArrowWidthUnit;
     QgsMapUnitScale mArrowWidthUnitScale;
 
     double mArrowStartWidth;
-    QgsSymbolV2::OutputUnit mArrowStartWidthUnit;
+    QgsUnitTypes::RenderUnit mArrowStartWidthUnit;
     QgsMapUnitScale mArrowStartWidthUnitScale;
 
     double mHeadLength;
-    QgsSymbolV2::OutputUnit mHeadLengthUnit;
+    QgsUnitTypes::RenderUnit mHeadLengthUnit;
     QgsMapUnitScale mHeadLengthUnitScale;
     double mHeadThickness;
-    QgsSymbolV2::OutputUnit mHeadThicknessUnit;
+    QgsUnitTypes::RenderUnit mHeadThicknessUnit;
     QgsMapUnitScale mHeadThicknessUnitScale;
 
     HeadType mHeadType;

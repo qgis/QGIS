@@ -20,21 +20,6 @@ class QgsSymbolV2
   public:
 
     /**
-     * The unit of the output
-     */
-    //TODO QGIS 3.0 - move to QgsUnitTypes and rename to SymbolUnit
-    enum OutputUnit
-    {
-      MM = 0,     //!< The output shall be in millimeters
-      MapUnit,    //!< The output shall be in map unitx
-      Mixed,      //!< Mixed units in symbol layers
-      Pixel,      //!< The output shall be in pixels
-      Percentage,  //!< The ouput shall be a percentage of another measurement (eg canvas size, feature size)
-    };
-
-    typedef QList<QgsSymbolV2::OutputUnit> OutputUnitList;
-
-    /**
      * Type of the symbol
      */
     enum SymbolType
@@ -154,8 +139,23 @@ class QgsSymbolV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
-    OutputUnit outputUnit() const;
-    void setOutputUnit( OutputUnit u );
+    /** Returns the units to use for sizes and widths within the symbol. Individual
+     * symbol layer definitions will interpret this in different ways, eg a marker symbol
+     * may use it to specify the units for the marker size, while a line symbol
+     * may use it to specify the units for the line width.
+     * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol contains mixed units
+     * @see setOutputUnit()
+     */
+    QgsUnitTypes::RenderUnit outputUnit() const;
+
+    /** Sets the units to use for sizes and widths within the symbol. Individual
+     * symbol definitions will interpret this in different ways, eg a marker symbol
+     * may use it to specify the units for the marker size, while a line symbol
+     * may use it to specify the units for the line width.
+     * @param unit output units
+     * @see outputUnit()
+     */
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     QgsMapUnitScale mapUnitScale() const;
     void setMapUnitScale( const QgsMapUnitScale& scale );
@@ -281,7 +281,18 @@ class QgsSymbolV2RenderContext
 %End
 
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* fields = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+
+    /** Constructor for QgsSymbolV2RenderContext
+     * @param c
+     * @param u
+     * @param alpha
+     * @param selected set to true if symbol should be drawn in a "selected" state
+     * @param renderHints
+     * @param f
+     * @param fields
+     * @param mapUnitScale
+     */
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* fields = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext();
@@ -294,8 +305,11 @@ class QgsSymbolV2RenderContext
      */
     void setOriginalValueVariable( const QVariant& value );
 
-    QgsSymbolV2::OutputUnit outputUnit() const;
-    void setOutputUnit( QgsSymbolV2::OutputUnit u );
+    //! Returns the output unit for the context
+    QgsUnitTypes::RenderUnit outputUnit() const;
+
+    //! Sets the output unit for the context
+    void setOutputUnit( QgsUnitTypes::RenderUnit u );
 
     QgsMapUnitScale mapUnitScale() const;
     void setMapUnitScale( const QgsMapUnitScale& scale );
@@ -447,7 +461,7 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
      * @see setSizeMapUnitScale()
      * @see setSize()
      */
-    void setSizeUnit( OutputUnit unit );
+    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
 
     /** Returns the size units for the whole symbol (including all symbol layers).
      * @returns size units, or mixed units if symbol layers have different units
@@ -456,7 +470,7 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
      * @see sizeMapUnitScale()
      * @see size()
      */
-    OutputUnit sizeUnit() const;
+    QgsUnitTypes::RenderUnit sizeUnit() const;
 
     /** Sets the size map unit scale for the whole symbol (including all symbol layers).
      * @param scale map unit scale

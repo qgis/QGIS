@@ -75,14 +75,14 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
      * @see setRadiusUnit
      * @see radiusMapUnitScale
      */
-    QgsSymbolV2::OutputUnit radiusUnit() const;
+    QgsUnitTypes::RenderUnit radiusUnit() const;
     /** Sets the units used for the heatmap's radius
      * @param unit units for heatmap radius
      * @see radiusUnit
      * @see setRadius
      * @see radiusMapUnitScale
      */
-    void setRadiusUnit( const QgsSymbolV2::OutputUnit unit );
+    void setRadiusUnit( const QgsUnitTypes::RenderUnit unit );
 
     /** Returns the map unit scale used for the heatmap's radius
      * @returns map unit scale for heatmap's radius

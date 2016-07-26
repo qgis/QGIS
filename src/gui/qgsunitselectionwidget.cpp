@@ -118,7 +118,7 @@ void QgsUnitSelectionWidget::setUnits( const QStringList &units, int mapUnitIdx 
   blockSignals( false );
 }
 
-void QgsUnitSelectionWidget::setUnits( const QgsSymbolV2::OutputUnitList &units )
+void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units )
 {
   blockSignals( true );
   mUnitCombo->clear();
@@ -127,37 +127,37 @@ void QgsUnitSelectionWidget::setUnits( const QgsSymbolV2::OutputUnitList &units 
   //to ensure that the widget always keeps the same order for units, regardless of the
   //order specified in the units list
   mMapUnitIdx = -1;
-  if ( units.contains( QgsSymbolV2::MM ) )
+  if ( units.contains( QgsUnitTypes::RenderMillimeters ) )
   {
-    mUnitCombo->addItem( tr( "Millimeter" ), QgsSymbolV2::MM );
+    mUnitCombo->addItem( tr( "Millimeter" ), QgsUnitTypes::RenderMillimeters );
   }
-  if ( units.contains( QgsSymbolV2::Pixel ) )
+  if ( units.contains( QgsUnitTypes::RenderPixels ) )
   {
-    mUnitCombo->addItem( tr( "Pixels" ), QgsSymbolV2::Pixel );
+    mUnitCombo->addItem( tr( "Pixels" ), QgsUnitTypes::RenderPixels );
   }
-  if ( units.contains( QgsSymbolV2::MapUnit ) )
+  if ( units.contains( QgsUnitTypes::RenderMapUnits ) )
   {
-    mUnitCombo->addItem( tr( "Map unit" ), QgsSymbolV2::MapUnit );
+    mUnitCombo->addItem( tr( "Map unit" ), QgsUnitTypes::RenderMapUnits );
   }
-  if ( units.contains( QgsSymbolV2::Percentage ) )
+  if ( units.contains( QgsUnitTypes::RenderPercentage ) )
   {
-    mUnitCombo->addItem( tr( "Percentage" ), QgsSymbolV2::Percentage );
+    mUnitCombo->addItem( tr( "Percentage" ), QgsUnitTypes::RenderPercentage );
   }
   blockSignals( false );
 }
 
-QgsSymbolV2::OutputUnit QgsUnitSelectionWidget::unit() const
+QgsUnitTypes::RenderUnit QgsUnitSelectionWidget::unit() const
 {
   if ( mUnitCombo->count() == 0 )
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::RenderUnknownUnit;
 
   QVariant currentData = mUnitCombo->itemData( mUnitCombo->currentIndex() );
   if ( currentData.isValid() )
   {
-    return ( QgsSymbolV2::OutputUnit ) currentData.toInt();
+    return ( QgsUnitTypes::RenderUnit ) currentData.toInt();
   }
   //unknown
-  return QgsSymbolV2::Mixed;
+  return QgsUnitTypes::RenderUnknownUnit;
 }
 
 void QgsUnitSelectionWidget::setUnit( int unitIndex )
@@ -167,7 +167,7 @@ void QgsUnitSelectionWidget::setUnit( int unitIndex )
   blockSignals( false );
 }
 
-void QgsUnitSelectionWidget::setUnit( QgsSymbolV2::OutputUnit unit )
+void QgsUnitSelectionWidget::setUnit( QgsUnitTypes::RenderUnit unit )
 {
   int idx = mUnitCombo->findData( QVariant(( int ) unit ) );
   mUnitCombo->setCurrentIndex( idx == -1 ? 0 : idx );
@@ -197,9 +197,9 @@ void QgsUnitSelectionWidget::showDialog()
 
 void QgsUnitSelectionWidget::toggleUnitRangeButton()
 {
-  if ( unit() != QgsSymbolV2::Mixed )
+  if ( unit() != QgsUnitTypes::RenderUnknownUnit )
   {
-    mMapScaleButton->setVisible( unit() == QgsSymbolV2::MapUnit );
+    mMapScaleButton->setVisible( unit() == QgsUnitTypes::RenderMapUnits );
   }
   else
   {

@@ -1288,7 +1288,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
     s.wkScaleSet = e0.firstChildElement( "WellKnownScaleSet" ).text();
 
-    double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::Meters );
+    double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
 
     s.crs = crs.authid();
 
@@ -1796,7 +1796,7 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
     return false;
 
   const QgsWmtsTileMatrix& tm = *tmIt;
-  double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::Meters );
+  double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
   double res = tm.scaleDenom * 0.00028 / metersPerUnit;
   QgsPoint bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
                         tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );

@@ -147,11 +147,11 @@ void QgsRendererV2Widget::changeSymbolUnit()
     return;
 
   bool ok;
-  int currentUnit = ( firstSymbol->outputUnit() == QgsSymbolV2::MM ) ? 0 : 1;
+  int currentUnit = ( firstSymbol->outputUnit() == QgsUnitTypes::RenderMillimeters ) ? 0 : 1;
   QString item = QInputDialog::getItem( this, tr( "Symbol unit" ), tr( "Select symbol unit" ), QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), currentUnit, false, &ok );
   if ( ok )
   {
-    QgsSymbolV2::OutputUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsSymbolV2::MM : QgsSymbolV2::MapUnit;
+    QgsUnitTypes::RenderUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
 
     Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
     {

@@ -101,8 +101,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
   connect( mFixedSizeRadio, SIGNAL( toggled( bool ) ), this, SLOT( scalingTypeChanged() ) );
   connect( mAttributeBasedScalingRadio, SIGNAL( toggled( bool ) ), this, SLOT( scalingTypeChanged() ) );
 
-  mDiagramUnitComboBox->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
-  mDiagramLineUnitComboBox->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mDiagramUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
+  mDiagramLineUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
   Qgis::GeometryType layerType = layer->geometryType();
   if ( layerType == Qgis::UnknownGeometry || layerType == Qgis::NoGeometry )
@@ -201,8 +201,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
     mDiagramTypeComboBox->setCurrentIndex( 0 );
     mDiagramTypeComboBox->blockSignals( false );
     mFixedSizeRadio->setChecked( true );
-    mDiagramUnitComboBox->setUnit( QgsSymbolV2::MM );
-    mDiagramLineUnitComboBox->setUnit( QgsSymbolV2::MM );
+    mDiagramUnitComboBox->setUnit( QgsUnitTypes::RenderMillimeters );
+    mDiagramLineUnitComboBox->setUnit( QgsUnitTypes::RenderMillimeters );
     mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
     mDiagramSizeSpinBox->setEnabled( true );
     mDiagramSizeSpinBox->setValue( 15 );

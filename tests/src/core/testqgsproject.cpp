@@ -92,37 +92,37 @@ void TestQgsProject::testProjectUnits()
 
   //first set a default QGIS distance unit
   QSettings s;
-  s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( Qgis::Feet ) );
+  s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
 
   QgsProject* prj = QgsProject::instance();
   // new project should inherit QGIS default distance unit
   prj->clear();
-  QCOMPARE( prj->distanceUnits(), Qgis::Feet );
+  QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceFeet );
 
   //changing default QGIS unit should not affect existing project
-  s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( Qgis::NauticalMiles ) );
-  QCOMPARE( prj->distanceUnits(), Qgis::Feet );
+  s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceNauticalMiles ) );
+  QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceFeet );
 
   //test setting new units for project
-  prj->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( Qgis::NauticalMiles ) );
-  QCOMPARE( prj->distanceUnits(), Qgis::NauticalMiles );
+  prj->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceNauticalMiles ) );
+  QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceNauticalMiles );
 
   // AREA
 
   //first set a default QGIS area unit
-  s.setValue( "/qgis/measure/areaunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareYards ) );
+  s.setValue( "/qgis/measure/areaunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareYards ) );
 
   // new project should inherit QGIS default area unit
   prj->clear();
-  QCOMPARE( prj->areaUnits(), QgsUnitTypes::SquareYards );
+  QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaSquareYards );
 
   //changing default QGIS unit should not affect existing project
-  s.setValue( "/qgis/measure/areaunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::Acres ) );
-  QCOMPARE( prj->areaUnits(), QgsUnitTypes::SquareYards );
+  s.setValue( "/qgis/measure/areaunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaAcres ) );
+  QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaSquareYards );
 
   //test setting new units for project
-  prj->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::Acres ) );
-  QCOMPARE( prj->areaUnits(), QgsUnitTypes::Acres );
+  prj->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaAcres ) );
+  QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaAcres );
 }
 
 void TestQgsProject::variablesChanged()

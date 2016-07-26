@@ -24,7 +24,7 @@
 QgsGlowEffect::QgsGlowEffect()
     : QgsPaintEffect()
     , mSpread( 2.0 )
-    , mSpreadUnit( QgsSymbolV2::MM )
+    , mSpreadUnit( QgsUnitTypes::RenderMillimeters )
     , mRamp( nullptr )
     , mBlurLevel( 3 )
     , mTransparency( 0.5 )
@@ -124,7 +124,7 @@ QgsStringMap QgsGlowEffect::properties() const
   props.insert( "transparency", QString::number( mTransparency ) );
   props.insert( "blur_level", QString::number( mBlurLevel ) );
   props.insert( "spread", QString::number( mSpread ) );
-  props.insert( "spread_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mSpreadUnit ) );
+  props.insert( "spread_unit", QgsUnitTypes::encodeUnit( mSpreadUnit ) );
   props.insert( "spread_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mSpreadMapUnitScale ) );
   props.insert( "color_type", QString::number( static_cast< int >( mColorType ) ) );
   props.insert( "single_color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
@@ -162,7 +162,7 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
   {
     mSpread = spread;
   }
-  mSpreadUnit = QgsSymbolLayerV2Utils::decodeOutputUnit( props.value( "spread_unit" ) );
+  mSpreadUnit = QgsUnitTypes::decodeRenderUnit( props.value( "spread_unit" ) );
   mSpreadMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( props.value( "spread_unit_scale" ) );
   QgsGlowEffect::GlowColorType type = static_cast< QgsGlowEffect::GlowColorType >( props.value( "color_type" ).toInt( &ok ) );
   if ( ok )

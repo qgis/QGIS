@@ -285,7 +285,7 @@ class QgsDiagramSettings
 
     /** Diagram size unit
      */
-    QgsSymbolV2::OutputUnit sizeType;
+    QgsUnitTypes::RenderUnit sizeType;
 
     /** Diagram size unit scale
      * @note added in 2.16
@@ -295,7 +295,7 @@ class QgsDiagramSettings
     /** Line unit index
      * @note added in 2.16
      */
-    QgsSymbolV2::OutputUnit lineSizeUnit;
+    QgsUnitTypes::RenderUnit lineSizeUnit;
 
     /** Line unit scale
      * @note added in 2.16

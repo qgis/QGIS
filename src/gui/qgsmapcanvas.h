@@ -290,10 +290,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool isFrozen();
 
     //! Set map units (needed by project properties dialog)
-    void setMapUnits( Qgis::UnitType mapUnits );
+    void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
 
     //! Get the current canvas map units
-    Qgis::UnitType mapUnits() const;
+    QgsUnitTypes::DistanceUnit mapUnits() const;
 
     //! Getter for stored overrides of styles for layers.
     //! @note added in 2.12

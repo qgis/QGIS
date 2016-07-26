@@ -85,14 +85,22 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     void setAngleUnits( AngleUnits units ) { mAngleUnits = units; }
     AngleUnits angleUnits() const { return mAngleUnits; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
-    QgsSymbolV2::OutputUnit outputUnit() const override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
 
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    void setDistanceUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceUnit = unit; }
-    QgsSymbolV2::OutputUnit distanceUnit() const { return mDistanceUnit; }
+    /** Sets the units for the distance.
+     * @param unit distance units
+     * @see distanceUnit()
+    */
+    void setDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceUnit = unit; }
+
+    /** Returns the units for the distance.
+     * @see setDistanceUnit()
+    */
+    QgsUnitTypes::RenderUnit distanceUnit() const { return mDistanceUnit; }
 
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale ) { mDistanceMapUnitScale = scale; }
     const QgsMapUnitScale& distanceMapUnitScale() const { return mDistanceMapUnitScale; }
@@ -100,7 +108,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
   private:
     QString mXAttribute;
     QString mYAttribute;
-    QgsSymbolV2::OutputUnit mDistanceUnit;
+    QgsUnitTypes::RenderUnit mDistanceUnit;
     QgsMapUnitScale mDistanceMapUnitScale;
     double mScale;
     VectorFieldType mVectorFieldType;

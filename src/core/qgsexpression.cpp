@@ -3796,12 +3796,12 @@ QgsDistanceArea* QgsExpression::geomCalculator()
   return d->mCalc.data();
 }
 
-Qgis::UnitType QgsExpression::distanceUnits() const
+QgsUnitTypes::DistanceUnit QgsExpression::distanceUnits() const
 {
   return d->mDistanceUnit;
 }
 
-void QgsExpression::setDistanceUnits( Qgis::UnitType unit )
+void QgsExpression::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
 {
   d->mDistanceUnit = unit;
 }

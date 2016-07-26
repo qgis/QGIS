@@ -77,7 +77,7 @@ void TestQgsComposition::initTestCase()
 
   //create composition
   mMapSettings->setCrsTransformEnabled( true );
-  mMapSettings->setMapUnits( Qgis::Meters );
+  mMapSettings->setMapUnits( QgsUnitTypes::DistanceMeters );
   mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposition->setNumPages( 3 );

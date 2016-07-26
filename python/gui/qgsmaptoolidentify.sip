@@ -114,18 +114,18 @@ class QgsMapToolIdentify : QgsMapTool
 
     //! Private helper
     //! @deprecated use displayDistanceUnits() and displayAreaUnits() instead
-    virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, Qgis::UnitType &u, bool isArea ) /Deprecated/;
+    virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QgsUnitTypes::DistanceUnit &u, bool isArea ) /Deprecated/;
 
     /** Transforms the measurements of derived attributes in the desired units
      * @deprecated use displayDistanceUnits() and displayAreaUnits() instead
     */
-    virtual Qgis::UnitType displayUnits() /Deprecated/;
+    virtual QgsUnitTypes::DistanceUnit displayUnits() /Deprecated/;
 
     /** Desired units for distance display.
      * @note added in QGIS 2.14
      * @see displayAreaUnits()
      */
-    virtual Qgis::UnitType displayDistanceUnits() const;
+    virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const;
 
     /** Desired units for area display.
      * @note added in QGIS 2.14
