@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslinestringv2.h"
 #include "qgspolygonv2.h"
 #include "qgscurvepolygonv2.h"
+#include "qgsmultilinestringv2.h"
 
 QgsMultiPolygonV2::QgsMultiPolygonV2()
     : QgsMultiSurfaceV2()
@@ -132,4 +133,39 @@ QgsAbstractGeometryV2* QgsMultiPolygonV2::toCurveType() const
     multiSurface->addGeometry( mGeometries.at( i )->clone() );
   }
   return multiSurface;
+}
+
+QgsAbstractGeometryV2* QgsMultiPolygonV2::boundary() const
+{
+  QgsMultiLineStringV2* multiLine = new QgsMultiLineStringV2();
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    if ( QgsPolygonV2* polygon = dynamic_cast<QgsPolygonV2*>( mGeometries.at( i ) ) )
+    {
+      QgsAbstractGeometryV2* polygonBoundary = polygon->boundary();
+
+      if ( QgsLineStringV2* lineStringBoundary = dynamic_cast< QgsLineStringV2* >( polygonBoundary ) )
+      {
+        multiLine->addGeometry( lineStringBoundary );
+      }
+      else if ( QgsMultiLineStringV2* multiLineStringBoundary = dynamic_cast< QgsMultiLineStringV2* >( polygonBoundary ) )
+      {
+        for ( int j = 0; j < multiLineStringBoundary->numGeometries(); ++j )
+        {
+          multiLine->addGeometry( multiLineStringBoundary->geometryN( j )->clone() );
+        }
+        delete multiLineStringBoundary;
+      }
+      else
+      {
+        delete polygonBoundary;
+      }
+    }
+  }
+  if ( multiLine->numGeometries() == 0 )
+  {
+    delete multiLine;
+    return nullptr;
+  }
+  return multiLine;
 }

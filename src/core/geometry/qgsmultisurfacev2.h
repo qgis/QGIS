@@ -43,6 +43,8 @@ class CORE_EXPORT QgsMultiSurfaceV2: public QgsGeometryCollectionV2
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
+
+    virtual QgsAbstractGeometryV2* boundary() const override;
 };
 
 #endif // QGSMULTISURFACEV2_H

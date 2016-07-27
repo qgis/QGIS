@@ -105,3 +105,8 @@ bool QgsMultiPointV2::addGeometry( QgsAbstractGeometryV2* g )
   setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiPoint );
   return QgsGeometryCollectionV2::addGeometry( g );
 }
+
+QgsAbstractGeometryV2* QgsMultiPointV2::boundary() const
+{
+  return nullptr;
+}

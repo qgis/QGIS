@@ -75,6 +75,11 @@ void QgsGeometryCollectionV2::clear()
   clearCache(); //set bounding box invalid
 }
 
+QgsAbstractGeometryV2*QgsGeometryCollectionV2::boundary() const
+{
+  return nullptr;
+}
+
 int QgsGeometryCollectionV2::numGeometries() const
 {
   return mGeometries.size();

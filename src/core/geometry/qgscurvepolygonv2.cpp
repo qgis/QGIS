@@ -23,6 +23,7 @@
 #include "qgslinestringv2.h"
 #include "qgspolygonv2.h"
 #include "qgswkbptr.h"
+#include "qgsmulticurvev2.h"
 #include <QPainter>
 #include <QPainterPath>
 
@@ -418,6 +419,25 @@ QgsPolygonV2* QgsCurvePolygonV2::surfaceToPolygon() const
   }
   polygon->setInteriorRings( interiors );
   return polygon;
+}
+
+QgsAbstractGeometryV2* QgsCurvePolygonV2::boundary() const
+{
+  if ( mInteriorRings.isEmpty() )
+  {
+    return mExteriorRing->clone();
+  }
+  else
+  {
+    QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
+    multiCurve->addGeometry( mExteriorRing->clone() );
+    int nInteriorRings = mInteriorRings.size();
+    for ( int i = 0; i < nInteriorRings; ++i )
+    {
+      multiCurve->addGeometry( mInteriorRings.at( i )->clone() );
+    }
+    return multiCurve;
+  }
 }
 
 QgsPolygonV2* QgsCurvePolygonV2::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const

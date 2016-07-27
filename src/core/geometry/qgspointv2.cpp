@@ -281,6 +281,11 @@ QgsCoordinateSequenceV2 QgsPointV2::coordinateSequence() const
   return cs;
 }
 
+QgsAbstractGeometryV2* QgsPointV2::boundary() const
+{
+  return nullptr;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

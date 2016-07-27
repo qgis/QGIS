@@ -33,6 +33,9 @@
 #include "qgspointv2.h"
 #include "qgslinestringv2.h"
 #include "qgspolygonv2.h"
+#include "qgsmultipointv2.h"
+#include "qgsmultilinestringv2.h"
+#include "qgsmultipolygonv2.h"
 #include "qgscircularstringv2.h"
 #include "qgsgeometrycollectionv2.h"
 #include "qgsgeometryfactory.h"
@@ -60,9 +63,15 @@ class TestQgsGeometry : public QObject
     void assignment();
     void asVariant(); //test conversion to and from a QVariant
     void isEmpty();
+
+    // geometry types
     void pointV2(); //test QgsPointV2
     void lineStringV2(); //test QgsLineStringV2
     void polygonV2(); //test QgsPolygonV2
+    void multiPoint();
+    void multiLineString();
+    void multiPolygon();
+    void geometryCollection();
 
     void fromQgsPoint();
     void fromQPoint();
@@ -771,6 +780,10 @@ void TestQgsGeometry::pointV2()
   QCOMPARE( p29.z(), 0.0 );
   QCOMPARE( p29.m(), 0.0 );
   QVERIFY( !p29.convertTo( QgsWKBTypes::Polygon ) );
+
+  //boundary
+  QgsPointV2 p30( 1.0, 2.0 );
+  QVERIFY( !p30.boundary() );
 }
 
 void TestQgsGeometry::lineStringV2()
@@ -2155,6 +2168,38 @@ void TestQgsGeometry::lineStringV2()
   QVERIFY( l39.numPoints() == 2 );
   l39.deleteVertex( QgsVertexId( 0, 0, 1 ) );
   QVERIFY( l39.numPoints() == 0 );
+
+  //boundary
+  QgsLineStringV2 boundary1;
+  QVERIFY( !boundary1.boundary() );
+  boundary1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) << QgsPointV2( 1, 1 ) );
+  QgsAbstractGeometryV2* boundary = boundary1.boundary();
+  QgsMultiPointV2* mpBoundary = dynamic_cast< QgsMultiPointV2* >( boundary );
+  QVERIFY( mpBoundary );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
+  delete boundary;
+
+  // closed string = no boundary
+  boundary1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 0 ) );
+  QVERIFY( !boundary1.boundary() );
+  \
+
+  //boundary with z
+  boundary1.setPoints( QList<QgsPointV2>() << QgsPointV2( QgsWKBTypes::PointZ, 0, 0, 10 ) << QgsPointV2( QgsWKBTypes::PointZ, 1, 0, 15 ) << QgsPointV2( QgsWKBTypes::PointZ, 1, 1, 20 ) );
+  boundary = boundary1.boundary();
+  mpBoundary = dynamic_cast< QgsMultiPointV2* >( boundary );
+  QVERIFY( mpBoundary );
+  QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWKBTypes::PointZ );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->z(), 10.0 );
+  QCOMPARE( mpBoundary->geometryN( 1 )->wkbType(), QgsWKBTypes::PointZ );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );
 }
 
 void TestQgsGeometry::polygonV2()
@@ -2879,6 +2924,277 @@ void TestQgsGeometry::polygonV2()
   QVERIFY( p20.exteriorRing() );
   p20.deleteVertex( QgsVertexId( 0, 0, 2 ) );
   QVERIFY( !p20.exteriorRing() );
+
+  //boundary
+  QgsLineStringV2 boundary1;
+  boundary1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) << QgsPointV2( 1, 1 )  << QgsPointV2( 0, 0 ) );
+  QgsPolygonV2 boundaryPolygon;
+  QVERIFY( !boundaryPolygon.boundary() );
+
+  boundaryPolygon.setExteriorRing( boundary1.clone() );
+  QgsAbstractGeometryV2* boundary = boundaryPolygon.boundary();
+  QgsLineStringV2* lineBoundary = dynamic_cast< QgsLineStringV2* >( boundary );
+  QVERIFY( lineBoundary );
+  QCOMPARE( lineBoundary->numPoints(), 4 );
+  QCOMPARE( lineBoundary->xAt( 0 ), 0.0 );
+  QCOMPARE( lineBoundary->xAt( 1 ), 1.0 );
+  QCOMPARE( lineBoundary->xAt( 2 ), 1.0 );
+  QCOMPARE( lineBoundary->xAt( 3 ), 0.0 );
+  QCOMPARE( lineBoundary->yAt( 0 ), 0.0 );
+  QCOMPARE( lineBoundary->yAt( 1 ), 0.0 );
+  QCOMPARE( lineBoundary->yAt( 2 ), 1.0 );
+  QCOMPARE( lineBoundary->yAt( 3 ), 0.0 );
+  delete boundary;
+
+  // add interior rings
+  QgsLineStringV2 boundaryRing1;
+  boundaryRing1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0.1, 0.1 ) << QgsPointV2( 0.2, 0.1 ) << QgsPointV2( 0.2, 0.2 )  << QgsPointV2( 0.1, 0.1 ) );
+  QgsLineStringV2 boundaryRing2;
+  boundaryRing2.setPoints( QList<QgsPointV2>() << QgsPointV2( 0.8, 0.8 ) << QgsPointV2( 0.9, 0.8 ) << QgsPointV2( 0.9, 0.9 )  << QgsPointV2( 0.8, 0.8 ) );
+  boundaryPolygon.setInteriorRings( QList< QgsCurveV2* >() << boundaryRing1.clone() << boundaryRing2.clone() );
+  boundary = boundaryPolygon.boundary();
+  QgsMultiLineStringV2* multiLineBoundary = dynamic_cast< QgsMultiLineStringV2* >( boundary );
+  QVERIFY( multiLineBoundary );
+  QCOMPARE( multiLineBoundary->numGeometries(), 3 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 4 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 4 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 0.1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 0.2 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 0.2 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->xAt( 3 ), 0.1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 0.1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 0.1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 0.2 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->yAt( 3 ), 0.1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 4 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 0.8 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 0.9 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 0.9 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->xAt( 3 ), 0.8 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 0.8 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 0.8 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 0.9 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->yAt( 3 ), 0.8 );
+  boundaryPolygon.setInteriorRings( QList< QgsCurveV2* >() );
+  delete boundary;
+
+  //test boundary with z
+  boundary1.setPoints( QList<QgsPointV2>() << QgsPointV2( QgsWKBTypes::PointZ, 0, 0, 10 ) << QgsPointV2( QgsWKBTypes::PointZ, 1, 0, 15 )
+                       << QgsPointV2( QgsWKBTypes::PointZ, 1, 1, 20 )  << QgsPointV2( QgsWKBTypes::PointZ, 0, 0, 10 ) );
+  boundaryPolygon.setExteriorRing( boundary1.clone() );
+  boundary = boundaryPolygon.boundary();
+  lineBoundary = dynamic_cast< QgsLineStringV2* >( boundary );
+  QVERIFY( lineBoundary );
+  QCOMPARE( lineBoundary->numPoints(), 4 );
+  QCOMPARE( lineBoundary->wkbType(), QgsWKBTypes::LineStringZ );
+  QCOMPARE( lineBoundary->zAt( 0 ), 10.0 );
+  QCOMPARE( lineBoundary->zAt( 1 ), 15.0 );
+  QCOMPARE( lineBoundary->zAt( 2 ), 20.0 );
+  QCOMPARE( lineBoundary->zAt( 3 ), 10.0 );
+  delete boundary;
+
+}
+
+void TestQgsGeometry::multiPoint()
+{
+  //boundary
+
+  //multipoints have no boundary defined
+  QgsMultiPointV2 boundaryMP;
+  QVERIFY( !boundaryMP.boundary() );
+  // add some points and retest, should still be undefined
+  boundaryMP.addGeometry( new QgsPointV2( 0, 0 ) );
+  boundaryMP.addGeometry( new QgsPointV2( 1, 1 ) );
+  QVERIFY( !boundaryMP.boundary() );
+}
+
+void TestQgsGeometry::multiLineString()
+{
+  //boundary
+  QgsMultiLineStringV2 multiLine1;
+  QVERIFY( !multiLine1.boundary() );
+  QgsLineStringV2 boundaryLine1;
+  boundaryLine1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) << QgsPointV2( 1, 1 ) );
+  multiLine1.addGeometry( boundaryLine1.clone() );
+  QgsAbstractGeometryV2* boundary = multiLine1.boundary();
+  QgsMultiPointV2* mpBoundary = dynamic_cast< QgsMultiPointV2* >( boundary );
+  QVERIFY( mpBoundary );
+  QCOMPARE( mpBoundary->numGeometries(), 2 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
+  delete boundary;
+  // add another linestring
+  QgsLineStringV2 boundaryLine2;
+  boundaryLine2.setPoints( QList<QgsPointV2>() << QgsPointV2( 10, 10 ) << QgsPointV2( 11, 10 ) << QgsPointV2( 11, 11 ) );
+  multiLine1.addGeometry( boundaryLine2.clone() );
+  boundary = multiLine1.boundary();
+  mpBoundary = dynamic_cast< QgsMultiPointV2* >( boundary );
+  QVERIFY( mpBoundary );
+  QCOMPARE( mpBoundary->numGeometries(), 4 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 2 ) )->x(), 10.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 2 ) )->y(), 10.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 3 ) )->x(), 11.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 3 ) )->y(), 11.0 );
+  delete boundary;
+
+  // add a closed string = no boundary
+  QgsLineStringV2 boundaryLine3;
+  boundaryLine3.setPoints( QList<QgsPointV2>() << QgsPointV2( 20, 20 ) << QgsPointV2( 21, 20 ) << QgsPointV2( 21, 21 ) << QgsPointV2( 20, 20 ) );
+  multiLine1.addGeometry( boundaryLine3.clone() );
+  boundary = multiLine1.boundary();
+  mpBoundary = dynamic_cast< QgsMultiPointV2* >( boundary );
+  QVERIFY( mpBoundary );
+  QCOMPARE( mpBoundary->numGeometries(), 4 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 2 ) )->x(), 10.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 2 ) )->y(), 10.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 3 ) )->x(), 11.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 3 ) )->y(), 11.0 );
+  delete boundary;
+
+  //boundary with z
+  QgsLineStringV2 boundaryLine4;
+  boundaryLine4.setPoints( QList<QgsPointV2>() << QgsPointV2( QgsWKBTypes::PointZ, 0, 0, 10 ) << QgsPointV2( QgsWKBTypes::PointZ, 1, 0, 15 ) << QgsPointV2( QgsWKBTypes::PointZ, 1, 1, 20 ) );
+  QgsLineStringV2 boundaryLine5;
+  boundaryLine5.setPoints( QList<QgsPointV2>() << QgsPointV2( QgsWKBTypes::PointZ, 10, 10, 100 ) << QgsPointV2( QgsWKBTypes::PointZ, 10, 20, 150 ) << QgsPointV2( QgsWKBTypes::PointZ, 20, 20, 200 ) );
+  QgsMultiLineStringV2 multiLine2;
+  multiLine2.addGeometry( boundaryLine4.clone() );
+  multiLine2.addGeometry( boundaryLine5.clone() );
+
+  boundary = multiLine2.boundary();
+  mpBoundary = dynamic_cast< QgsMultiPointV2* >( boundary );
+  QVERIFY( mpBoundary );
+  QCOMPARE( mpBoundary->numGeometries(), 4 );
+  QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWKBTypes::PointZ );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 0 ) )->z(), 10.0 );
+  QCOMPARE( mpBoundary->geometryN( 1 )->wkbType(), QgsWKBTypes::PointZ );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );
+  QCOMPARE( mpBoundary->geometryN( 2 )->wkbType(), QgsWKBTypes::PointZ );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 2 ) )->x(), 10.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 2 ) )->y(), 10.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 2 ) )->z(), 100.0 );
+  QCOMPARE( mpBoundary->geometryN( 3 )->wkbType(), QgsWKBTypes::PointZ );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 3 ) )->x(), 20.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 3 ) )->y(), 20.0 );
+  QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 3 ) )->z(), 200.0 );
+}
+
+void TestQgsGeometry::multiPolygon()
+{
+  //boundary
+  QgsMultiPolygonV2 multiPolygon1;
+  QVERIFY( !multiPolygon1.boundary() );
+
+  QgsLineStringV2 ring1;
+  ring1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) << QgsPointV2( 1, 1 )  << QgsPointV2( 0, 0 ) );
+  QgsPolygonV2 polygon1;
+  polygon1.setExteriorRing( ring1.clone() );
+  multiPolygon1.addGeometry( polygon1.clone() );
+
+  QgsAbstractGeometryV2* boundary = multiPolygon1.boundary();
+  QgsMultiLineStringV2* lineBoundary = dynamic_cast< QgsMultiLineStringV2* >( boundary );
+  QVERIFY( lineBoundary );
+  QCOMPARE( lineBoundary->numGeometries(), 1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( lineBoundary->geometryN( 0 ) )->numPoints(), 4 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( lineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( lineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( lineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( lineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( lineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( lineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( lineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( lineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
+  delete boundary;
+
+  // add polygon with interior rings
+  QgsLineStringV2 ring2;
+  ring2.setPoints( QList<QgsPointV2>() << QgsPointV2( 10, 10 ) << QgsPointV2( 11, 10 ) << QgsPointV2( 11, 11 )  << QgsPointV2( 10, 10 ) );
+  QgsPolygonV2 polygon2;
+  polygon2.setExteriorRing( ring2.clone() );
+  QgsLineStringV2 boundaryRing1;
+  boundaryRing1.setPoints( QList<QgsPointV2>() << QgsPointV2( 10.1, 10.1 ) << QgsPointV2( 10.2, 10.1 ) << QgsPointV2( 10.2, 10.2 )  << QgsPointV2( 10.1, 10.1 ) );
+  QgsLineStringV2 boundaryRing2;
+  boundaryRing2.setPoints( QList<QgsPointV2>() << QgsPointV2( 10.8, 10.8 ) << QgsPointV2( 10.9, 10.8 ) << QgsPointV2( 10.9, 10.9 )  << QgsPointV2( 10.8, 10.8 ) );
+  polygon2.setInteriorRings( QList< QgsCurveV2* >() << boundaryRing1.clone() << boundaryRing2.clone() );
+  multiPolygon1.addGeometry( polygon2.clone() );
+
+  boundary = multiPolygon1.boundary();
+  QgsMultiLineStringV2* multiLineBoundary = dynamic_cast< QgsMultiLineStringV2* >( boundary );
+  QVERIFY( multiLineBoundary );
+  QCOMPARE( multiLineBoundary->numGeometries(), 4 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 4 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 4 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 10.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 11.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 11.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->xAt( 3 ), 10.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 10.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 10.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 11.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 1 ) )->yAt( 3 ), 10.0 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 4 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 10.1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 10.2 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 10.2 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->xAt( 3 ), 10.1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 10.1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 10.1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 10.2 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 2 ) )->yAt( 3 ), 10.1 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 3 ) )->numPoints(), 4 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 3 ) )->xAt( 0 ), 10.8 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 3 ) )->xAt( 1 ), 10.9 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 3 ) )->xAt( 2 ), 10.9 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 3 ) )->xAt( 3 ), 10.8 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 3 ) )->yAt( 0 ), 10.8 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 3 ) )->yAt( 1 ), 10.8 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 3 ) )->yAt( 2 ), 10.9 );
+  QCOMPARE( dynamic_cast< QgsLineStringV2* >( multiLineBoundary->geometryN( 3 ) )->yAt( 3 ), 10.8 );
+  delete boundary;
+}
+
+void TestQgsGeometry::geometryCollection()
+{
+
+  //boundary
+
+  // collections have no boundary defined
+  QgsGeometryCollectionV2 boundaryCollection;
+  QVERIFY( !boundaryCollection.boundary() );
+  // add a geometry and retest, should still be undefined
+  QgsLineStringV2* lineBoundary = new QgsLineStringV2();
+  lineBoundary->setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) );
+  boundaryCollection.addGeometry( lineBoundary );
+  QVERIFY( !boundaryCollection.boundary() );
 }
 
 void TestQgsGeometry::fromQgsPoint()

@@ -118,3 +118,4 @@ QgsAbstractGeometryV2* QgsMultiLineStringV2::toCurveType() const
   }
   return multiCurve;
 }
+
