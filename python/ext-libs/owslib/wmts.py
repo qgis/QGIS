@@ -16,37 +16,81 @@
 
 Abstract
 --------
-The wmts module of the OWSlib package provides client-side functionality for fetching tiles from an OGC Web Map Tile Service (WMTS)
+The wmts module of the OWSlib package provides client-side functionality
+for fetching tiles from an OGC Web Map Tile Service (WMTS)
 
 
 Disclaimer
 ----------
-PLEASE NOTE: the owslib wmts module should be considered in early-beta state: it has been tested against only one WMTS server (NASA EODSIS).
-More extensive testing is needed and feedback (to bradh@frogmouth.net) would be appreciated.
+PLEASE NOTE: the owslib wmts module should be considered in early-beta
+state: it has been tested against only one WMTS server (NASA EODSIS).
+More extensive testing is needed and feedback (to bradh@frogmouth.net)
+would be appreciated.
 
 """
 
+from __future__ import (absolute_import, division, print_function)
+
+from random import randint
 import warnings
-import urlparse
-import urllib2
-from urllib import urlencode
-from etree import etree
+import six
+from six.moves import filter
+try:                    # Python 3
+    from urllib.parse import (urlencode, urlparse, urlunparse, parse_qs,
+                              ParseResult)
+except ImportError:      # Python 2
+    from urllib import urlencode
+    from urlparse import urlparse, urlunparse, parse_qs, ParseResult
+from .etree import etree
 from .util import openURL, testXMLValue, getXMLInteger
-from fgdc import Metadata
-from iso import MD_Metadata
-from ows import ServiceProvider, ServiceIdentification, OperationsMetadata
+from .fgdc import Metadata
+from .iso import MD_Metadata
+from .ows import ServiceProvider, ServiceIdentification, OperationsMetadata
 
 
+_OWS_NS = '{http://www.opengis.net/ows/1.1}'
 _WMTS_NS = '{http://www.opengis.net/wmts/1.0}'
+_XLINK_NS = '{http://www.w3.org/1999/xlink}'
+
+_ABSTRACT_TAG = _OWS_NS + 'Abstract'
+_IDENTIFIER_TAG = _OWS_NS + 'Identifier'
+_LOWER_CORNER_TAG = _OWS_NS + 'LowerCorner'
+_OPERATIONS_METADATA_TAG = _OWS_NS + 'OperationsMetadata'
+_SERVICE_IDENTIFICATION_TAG = _OWS_NS + 'ServiceIdentification'
+_SERVICE_PROVIDER_TAG = _OWS_NS + 'ServiceProvider'
+_SUPPORTED_CRS_TAG = _OWS_NS + 'SupportedCRS'
+_TITLE_TAG = _OWS_NS + 'Title'
+_UPPER_CORNER_TAG = _OWS_NS + 'UpperCorner'
+_WGS84_BOUNDING_BOX_TAG = _OWS_NS + 'WGS84BoundingBox'
+
+_CONTENTS_TAG = _WMTS_NS + 'Contents'
+_FORMAT_TAG = _WMTS_NS + 'Format'
+_INFO_FORMAT_TAG = _WMTS_NS + 'InfoFormat'
+_LAYER_TAG = _WMTS_NS + 'Layer'
+_LAYER_REF_TAG = _WMTS_NS + 'LayerRef'
+_MATRIX_HEIGHT_TAG = _WMTS_NS + 'MatrixHeight'
+_MATRIX_WIDTH_TAG = _WMTS_NS + 'MatrixWidth'
+_MAX_TILE_COL_TAG = _WMTS_NS + 'MaxTileCol'
+_MAX_TILE_ROW_TAG = _WMTS_NS + 'MaxTileRow'
+_MIN_TILE_COL_TAG = _WMTS_NS + 'MinTileCol'
+_MIN_TILE_ROW_TAG = _WMTS_NS + 'MinTileRow'
+_RESOURCE_URL_TAG = _WMTS_NS + 'ResourceURL'
+_SCALE_DENOMINATOR_TAG = _WMTS_NS + 'ScaleDenominator'
+_SERVICE_METADATA_URL_TAG = _WMTS_NS + 'ServiceMetadataURL'
+_STYLE_TAG = _WMTS_NS + 'Style'
+_THEME_TAG = _WMTS_NS + 'Theme'
+_THEMES_TAG = _WMTS_NS + 'Themes'
+_TILE_HEIGHT_TAG = _WMTS_NS + 'TileHeight'
 _TILE_MATRIX_SET_LINK_TAG = _WMTS_NS + 'TileMatrixSetLink'
 _TILE_MATRIX_SET_TAG = _WMTS_NS + 'TileMatrixSet'
 _TILE_MATRIX_SET_LIMITS_TAG = _WMTS_NS + 'TileMatrixSetLimits'
 _TILE_MATRIX_LIMITS_TAG = _WMTS_NS + 'TileMatrixLimits'
 _TILE_MATRIX_TAG = _WMTS_NS + 'TileMatrix'
-_MIN_TILE_ROW_TAG = _WMTS_NS + 'MinTileRow'
-_MAX_TILE_ROW_TAG = _WMTS_NS + 'MaxTileRow'
-_MIN_TILE_COL_TAG = _WMTS_NS + 'MinTileCol'
-_MAX_TILE_COL_TAG = _WMTS_NS + 'MaxTileCol'
+_TILE_WIDTH_TAG = _WMTS_NS + 'TileWidth'
+_TOP_LEFT_CORNER_TAG = _WMTS_NS + 'TopLeftCorner'
+_KEYWORDS_TAG = _OWS_NS + 'Keywords'
+_KEYWORD_TAG = _OWS_NS + 'Keyword'
+_HREF_TAG = _XLINK_NS + 'href'
 
 
 class ServiceException(Exception):
@@ -75,35 +119,57 @@ class WebMapTileService(object):
     Implements IWebMapService.
     """
 
-    def __getitem__(self,name):
-        ''' check contents dictionary to allow dict like access to service layers'''
-        if name in self.__getattribute__('contents').keys():
+    def __getitem__(self, name):
+        '''Check contents dictionary to allow dict like access to
+        service layers'''
+        if name in self.__getattribute__('contents'):
             return self.__getattribute__('contents')[name]
         else:
-            raise KeyError, "No content named %s" % name
+            raise KeyError("No content named %s" % name)
 
+    def __init__(self, url, version='1.0.0', xml=None, username=None,
+                 password=None, parse_remote_metadata=False,
+                 vendor_kwargs=None):
+        """Initialize.
 
-    def __init__(self, url, version='1.0.0', xml=None,
-                username=None, password=None, parse_remote_metadata=False
-                ):
-        """Initialize."""
+        Parameters
+        ----------
+        url : string
+            Base URL for the WMTS service.
+        version : string
+            Optional WMTS version. Defaults to '1.0.0'.
+        xml : string
+            Optional XML content to use as the content for the initial
+            GetCapabilities request. Typically only used for testing.
+        username : string
+            Optional user name for authentication.
+        password : string
+            Optional password for authentication.
+        parse_remote_metadata: string
+            Currently unused.
+        vendor_kwargs : dict
+            Optional vendor-specific parameters to be included in all
+            requests.
+
+        """
         self.url = url
         self.username = username
         self.password = password
         self.version = version
+        self.vendor_kwargs = vendor_kwargs
         self._capabilities = None
 
         # Authentication handled by Reader
-        reader = WMTSCapabilitiesReader(
-                self.version, url=self.url, un=self.username, pw=self.password
-                )
+        reader = WMTSCapabilitiesReader(self.version, url=self.url,
+                                        un=self.username, pw=self.password)
 
         if xml:  # read from stored xml
             self._capabilities = reader.readString(xml)
         else:  # read from server
-            self._capabilities = reader.read(self.url)
+            self._capabilities = reader.read(self.url, self.vendor_kwargs)
 
-        # avoid building capabilities metadata if the response is a ServiceExceptionReport
+        # Avoid building capabilities metadata if the response is a
+        # ServiceExceptionReport.
         # TODO: check if this needs a namespace
         se = self._capabilities.find('ServiceException')
         if se is not None:
@@ -118,70 +184,82 @@ class WebMapTileService(object):
             reader = WMTSCapabilitiesReader(
                 self.version, url=self.url, un=self.username, pw=self.password
                 )
-            self._capabilities = ServiceMetadata(reader.read(self.url))
+            xml = reader.read(self.url, self.vendor_kwargs)
+            self._capabilities = ServiceMetadata(xml)
         return self._capabilities
 
     def _buildMetadata(self, parse_remote_metadata=False):
         ''' set up capabilities metadata objects '''
 
-        #serviceIdentification metadata
-        serviceident=self._capabilities.find('{http://www.opengis.net/ows/1.1}ServiceIdentification')
-        self.identification=ServiceIdentification(serviceident)
+        # serviceIdentification metadata
+        serviceident = self._capabilities.find(_SERVICE_IDENTIFICATION_TAG)
+        self.identification = ServiceIdentification(serviceident)
 
-        #serviceProvider metadata
-        serviceprov=self._capabilities.find('{http://www.opengis.net/ows/1.1}ServiceProvider')
-        self.provider=ServiceProvider(serviceprov)
+        # serviceProvider metadata
+        serviceprov = self._capabilities.find(_SERVICE_PROVIDER_TAG)
+        if serviceprov is not None:
+            self.provider = ServiceProvider(serviceprov)
 
-        #serviceOperations metadata
-        self.operations=[]
-        for elem in self._capabilities.find('{http://www.opengis.net/ows/1.1}OperationsMetadata')[:]:
-            self.operations.append(OperationsMetadata(elem))
+        # serviceOperations metadata
+        self.operations = []
+        serviceop = self._capabilities.find(_OPERATIONS_METADATA_TAG)
+        #  REST only WMTS does not have any Operations
+        if serviceop is not None:
+            for elem in serviceop[:]:
+                self.operations.append(OperationsMetadata(elem))
 
-        #serviceContents metadata: our assumption is that services use a top-level
-        #layer as a metadata organizer, nothing more.
-        self.contents={}
-        caps = self._capabilities.find('{http://www.opengis.net/wmts/1.0}Contents')
+        # serviceContents metadata: our assumption is that services use
+        # a top-level layer as a metadata organizer, nothing more.
+        self.contents = {}
+        caps = self._capabilities.find(_CONTENTS_TAG)
 
         def gather_layers(parent_elem, parent_metadata):
-            for index, elem in enumerate(parent_elem.findall('{http://www.opengis.net/wmts/1.0}Layer')):
-                cm = ContentMetadata(elem, parent=parent_metadata, index=index+1, parse_remote_metadata=parse_remote_metadata)
+            for index, elem in enumerate(parent_elem.findall(_LAYER_TAG)):
+                cm = ContentMetadata(
+                    elem, parent=parent_metadata, index=index+1,
+                    parse_remote_metadata=parse_remote_metadata)
                 if cm.id:
                     if cm.id in self.contents:
-                        raise KeyError('Content metadata for layer "%s" already exists' % cm.id)
+                        raise KeyError('Content metadata for layer "%s" '
+                                       'already exists' % cm.id)
                     self.contents[cm.id] = cm
                 gather_layers(elem, cm)
         gather_layers(caps, None)
 
         self.tilematrixsets = {}
-        for elem in caps.findall('{http://www.opengis.net/wmts/1.0}TileMatrixSet'):
+        for elem in caps.findall(_TILE_MATRIX_SET_TAG):
             tms = TileMatrixSet(elem)
             if tms.identifier:
                 if tms.identifier in self.tilematrixsets:
-                    raise KeyError('TileMatrixSet with identifier "%s" already exists' % tms.identifier)
+                    raise KeyError('TileMatrixSet with identifier "%s" '
+                                   'already exists' % tms.identifier)
                 self.tilematrixsets[tms.identifier] = tms
 
         self.themes = {}
-        for elem in self._capabilities.findall('{http://www.opengis.net/wmts/1.0}Themes/{http://www.opengis.net/wmts/1.0}Theme'):
+        for elem in self._capabilities.findall(_THEMES_TAG + '/' + _THEME_TAG):
             theme = Theme(elem)
             if theme.identifier:
                 if theme.identifier in self.themes:
-                    raise KeyError('Theme with identifier "%s" already exists' % theme.identifier)
+                    raise KeyError('Theme with identifier "%s" already exists'
+                                   % theme.identifier)
                 self.themes[theme.identifier] = theme
 
-        serviceMetadataURL = self._capabilities.find('{http://www.opengis.net/wmts/1.0}ServiceMetadataURL')
+        serviceMetadataURL = self._capabilities.find(_SERVICE_METADATA_URL_TAG)
         if serviceMetadataURL is not None:
-            self.serviceMetadataURL = serviceMetadataURL.attrib['{http://www.w3.org/1999/xlink}href']
+            self.serviceMetadataURL = serviceMetadataURL.attrib[_HREF_TAG]
         else:
             self.serviceMetadataURL = None
 
     def items(self):
         '''supports dict-like items() access'''
-        items=[]
+        items = []
         for item in self.contents:
-            items.append((item,self.contents[item]))
+            items.append((item, self.contents[item]))
         return items
 
-    def buildTileRequest(self, layer=None, style=None, format=None, tilematrixset=None, tilematrix=None, row=None, column=None, **kwargs):
+    def buildTileRequest(self, layer=None, style=None, format=None,
+                         tilematrixset=None, tilematrix=None, row=None,
+                         column=None, **kwargs):
         """Return the URL-encoded parameters for a GetTile request.
 
         Parameters
@@ -221,12 +299,11 @@ LAYER=VIIRS_CityLights_2012&STYLE=default&TILEMATRIXSET=EPSG4326_500m&\
 TILEMATRIX=6&TILEROW=4&TILECOL=4&FORMAT=image%2Fjpeg'
 
         """
-        request = {'version': self.version, 'request': 'GetTile'}
 
         if (layer is None):
             raise ValueError("layer is mandatory (cannot be None)")
         if style is None:
-            style = self[layer].styles.keys()[0]
+            style = list(self[layer].styles.keys())[0]
         if format is None:
             format = self[layer].formats[0]
         if tilematrixset is None:
@@ -251,13 +328,67 @@ TILEMATRIX=6&TILEROW=4&TILECOL=4&FORMAT=image%2Fjpeg'
         request.append(('TILECOL', str(column)))
         request.append(('FORMAT', format))
 
-        for key, value in kwargs.iteritems():
-            request.append(key, value)
+        for key, value in six.iteritems(kwargs):
+            request.append((key, value))
 
         data = urlencode(request, True)
         return data
 
-    def gettile(self, base_url=None, layer=None, style=None, format=None, tilematrixset=None, tilematrix=None, row=None, column=None, **kwargs):
+    def buildTileResource(self, layer=None, style=None, format=None,
+                          tilematrixset=None, tilematrix=None, row=None,
+                          column=None, **kwargs):
+
+        tileresourceurls = []
+        for resourceURL in self[layer].resourceURLs:
+            if resourceURL['resourceType'] == 'tile':
+                tileresourceurls.append(resourceURL)
+        numres = len(tileresourceurls)
+        if numres > 0:
+            # choose random ResourceURL if more than one available
+            resindex = randint(0, numres - 1)
+            resurl = tileresourceurls[resindex]['template']
+            if tilematrixset:
+                resurl = resurl.replace('{TileMatrixSet}', tilematrixset)
+            resurl = resurl.replace('{TileMatrix}', tilematrix)
+            resurl = resurl.replace('{TileRow}', row)
+            resurl = resurl.replace('{TileCol}', column)
+            if style:
+                resurl = resurl.replace('{Style}', style)
+            return resurl
+
+        return None
+
+    @property
+    def restonly(self):
+
+        # if OperationsMetadata is missing completely --> use REST
+        if len(self.operations) == 0:
+            return True
+
+        # check if KVP or RESTful are available
+        restenc = False
+        kvpenc = False
+        for operation in self.operations:
+            if operation.name == 'GetTile':
+                for method in operation.methods:
+                    if 'kvp' in str(method['constraints']).lower():
+                        kvpenc = True
+                    if 'rest' in str(method['constraints']).lower():
+                        restenc = True
+
+        # if KVP is available --> use KVP
+        if kvpenc:
+            return False
+
+        # if the operation has no constraint --> use KVP
+        if not kvpenc and not restenc:
+            return False
+
+        return restenc
+
+    def gettile(self, base_url=None, layer=None, style=None, format=None,
+                tilematrixset=None, tilematrix=None, row=None, column=None,
+                **kwargs):
         """Return a tile from the WMTS.
 
         Returns the tile image as a file-like object.
@@ -299,19 +430,40 @@ TILEMATRIX=6&TILEROW=4&TILECOL=4&FORMAT=image%2Fjpeg'
                                    tilematrix='6',\
                                    row=4, column=4)
             >>> out = open('tile.jpg', 'wb')
-            >>> out.write(img.read())
+            >>> bytes_written = out.write(img.read())
             >>> out.close()
 
         """
-        data = self.buildTileRequest(layer, style, format, tilematrixset, tilematrix, row, column, **kwargs)
+        vendor_kwargs = self.vendor_kwargs or {}
+        vendor_kwargs.update(kwargs)
+
+        # REST only WMTS
+        if self.restonly:
+            resurl = self.buildTileResource(
+                layer, style, format, tilematrixset, tilematrix,
+                row, column, **vendor_kwargs)
+            u = openURL(resurl, username=self.username, password=self.password)
+            return u
+
+        # KVP implemetation
+        data = self.buildTileRequest(layer, style, format, tilematrixset,
+                                     tilematrix, row, column, **vendor_kwargs)
 
         if base_url is None:
             base_url = self.url
             try:
-                get_verbs = filter(lambda x: x.get('type').lower() == 'get', self.getOperationByName('GetTile').methods)
+                methods = self.getOperationByName('GetTile').methods
+                get_verbs = [x for x in methods
+                             if x.get('type').lower() == 'get']
                 if len(get_verbs) > 1:
                     # Filter by constraints
-                    base_url = next(x for x in filter(list, ([pv.get('url') for const in pv.get('constraints') if 'kvp' in map(lambda x: x.lower(), const.values)] for pv in get_verbs if pv.get('constraints'))))[0]
+                    base_url = next(
+                        x for x in filter(
+                            list,
+                            ([pv.get('url')
+                                for const in pv.get('constraints')
+                                if 'kvp' in [x.lower() for x in const.values]]
+                             for pv in get_verbs if pv.get('constraints'))))[0]
                 elif len(get_verbs) == 1:
                     base_url = get_verbs[0].get('url')
             except StopIteration:
@@ -323,7 +475,7 @@ TILEMATRIX=6&TILEROW=4&TILECOL=4&FORMAT=image%2Fjpeg'
         if u.info()['Content-Type'] == 'application/vnd.ogc.se_xml':
             se_xml = u.read()
             se_tree = etree.fromstring(se_xml)
-            err_message = unicode(se_tree.find('ServiceException').text)
+            err_message = six.text_type(se_tree.find('ServiceException').text)
             raise ServiceException(err_message.strip(), se_xml)
         return u
 
@@ -341,74 +493,80 @@ TILEMATRIX=6&TILEROW=4&TILECOL=4&FORMAT=image%2Fjpeg'
         for item in self.operations:
             if item.name == name:
                 return item
-        raise KeyError, "No operation named %s" % name
+        raise KeyError("No operation named %s" % name)
+
 
 class TileMatrixSet(object):
     '''Holds one TileMatrixSet'''
     def __init__(self, elem):
-        if elem.tag != '{http://www.opengis.net/wmts/1.0}TileMatrixSet':
+        if elem.tag != _TILE_MATRIX_SET_TAG:
             raise ValueError('%s should be a TileMatrixSet' % (elem,))
-        self.identifier = testXMLValue(elem.find('{http://www.opengis.net/ows/1.1}Identifier')).strip()
-        self.crs = testXMLValue(elem.find('{http://www.opengis.net/ows/1.1}SupportedCRS')).strip()
-        if (self.crs == None) or (self.identifier == None):
+        self.identifier = testXMLValue(elem.find(_IDENTIFIER_TAG)).strip()
+        self.crs = testXMLValue(elem.find(_SUPPORTED_CRS_TAG)).strip()
+        if self.crs is None or self.identifier is None:
             raise ValueError('%s incomplete TileMatrixSet' % (elem,))
         self.tilematrix = {}
-        for tilematrix in elem.findall('{http://www.opengis.net/wmts/1.0}TileMatrix'):
+        for tilematrix in elem.findall(_TILE_MATRIX_TAG):
             tm = TileMatrix(tilematrix)
             if tm.identifier:
                 if tm.identifier in self.tilematrix:
-                    raise KeyError('TileMatrix with identifier "%s" already exists' % tm.identifier)
+                    raise KeyError('TileMatrix with identifier "%s" '
+                                   'already exists' % tm.identifier)
                 self.tilematrix[tm.identifier] = tm
+
 
 class TileMatrix(object):
     '''Holds one TileMatrix'''
     def __init__(self, elem):
-        if elem.tag != '{http://www.opengis.net/wmts/1.0}TileMatrix':
+        if elem.tag != _TILE_MATRIX_TAG:
             raise ValueError('%s should be a TileMatrix' % (elem,))
-        self.identifier = testXMLValue(elem.find('{http://www.opengis.net/ows/1.1}Identifier')).strip()
-        sd = testXMLValue(elem.find('{http://www.opengis.net/wmts/1.0}ScaleDenominator'))
+        self.identifier = testXMLValue(elem.find(_IDENTIFIER_TAG)).strip()
+        sd = testXMLValue(elem.find(_SCALE_DENOMINATOR_TAG))
         if sd is None:
             raise ValueError('%s is missing ScaleDenominator' % (elem,))
         self.scaledenominator = float(sd)
-        tl = testXMLValue(elem.find('{http://www.opengis.net/wmts/1.0}TopLeftCorner'))
+        tl = testXMLValue(elem.find(_TOP_LEFT_CORNER_TAG))
         if tl is None:
             raise ValueError('%s is missing TopLeftCorner' % (elem,))
         (lon, lat) = tl.split(" ")
         self.topleftcorner = (float(lon), float(lat))
-        width = testXMLValue(elem.find('{http://www.opengis.net/wmts/1.0}TileWidth'))
-        height = testXMLValue(elem.find('{http://www.opengis.net/wmts/1.0}TileHeight'))
+        width = testXMLValue(elem.find(_TILE_WIDTH_TAG))
+        height = testXMLValue(elem.find(_TILE_HEIGHT_TAG))
         if (width is None) or (height is None):
-            raise ValueError('%s is missing TileWidth and/or TileHeight' % (elem,))
+            msg = '%s is missing TileWidth and/or TileHeight' % (elem,)
+            raise ValueError(msg)
         self.tilewidth = int(width)
         self.tileheight = int(height)
-        mw = testXMLValue(elem.find('{http://www.opengis.net/wmts/1.0}MatrixWidth'))
-        mh = testXMLValue(elem.find('{http://www.opengis.net/wmts/1.0}MatrixHeight'))
+        mw = testXMLValue(elem.find(_MATRIX_WIDTH_TAG))
+        mh = testXMLValue(elem.find(_MATRIX_HEIGHT_TAG))
         if (mw is None) or (mh is None):
-            raise ValueError('%s is missing MatrixWidth and/or MatrixHeight' % (elem,))
+            msg = '%s is missing MatrixWidth and/or MatrixHeight' % (elem,)
+            raise ValueError(msg)
         self.matrixwidth = int(mw)
         self.matrixheight = int(mh)
+
 
 class Theme:
     """
     Abstraction for a WMTS theme
     """
     def __init__(self, elem):
-        if elem.tag != '{http://www.opengis.net/wmts/1.0}Theme':
+        if elem.tag != _THEME_TAG:
             raise ValueError('%s should be a Theme' % (elem,))
-        self.identifier = testXMLValue(elem.find('{http://www.opengis.net/ows/1.1}Identifier')).strip()
-        title = testXMLValue(elem.find('{http://www.opengis.net/ows/1.1}Title'))
+        self.identifier = testXMLValue(elem.find(_IDENTIFIER_TAG)).strip()
+        title = testXMLValue(elem.find(_TITLE_TAG))
         if title is not None:
             self.title = title.strip()
         else:
             self.title = None
-        abstract = testXMLValue(elem.find('{http://www.opengis.net/ows/1.1}Abstract'))
+        abstract = testXMLValue(elem.find(_ABSTRACT_TAG))
         if abstract is not None:
             self.abstract = abstract.strip()
         else:
             self.abstract = None
 
         self.layerRefs = []
-        layerRefs = elem.findall('{http://www.opengis.net/wmts/1.0}LayerRef')
+        layerRefs = elem.findall(_LAYER_REF_TAG)
         for layerRef in layerRefs:
             if layerRef.text is not None:
                 self.layerRefs.append(layerRef.text)
@@ -465,9 +623,9 @@ class TileMatrixSetLink(object):
                 set_limits_elements = link_element.findall(
                     _TILE_MATRIX_SET_LIMITS_TAG)
                 if set_limits_elements:
-                   raise ValueError('Multiple instances of TileMatrixSet'
-                                    ' plus TileMatrixSetLimits in %s' %
-                                    link_element)
+                    raise ValueError('Multiple instances of TileMatrixSet'
+                                     ' plus TileMatrixSetLimits in %s' %
+                                     link_element)
                 for matrix_set_element in matrix_set_elements:
                     uri = matrix_set_element.text.strip()
                     links.append(TileMatrixSetLink(uri))
@@ -475,12 +633,15 @@ class TileMatrixSetLink(object):
                 uri = matrix_set_elements[0].text.strip()
 
                 tilematrixlimits = {}
-                path = '%s/%s' % (_TILE_MATRIX_SET_LIMITS_TAG, _TILE_MATRIX_LIMITS_TAG)
+                path = '%s/%s' % (_TILE_MATRIX_SET_LIMITS_TAG,
+                                  _TILE_MATRIX_LIMITS_TAG)
                 for limits_element in link_element.findall(path):
                     tml = TileMatrixLimits(limits_element)
                     if tml.tilematrix:
                         if tml.tilematrix in tilematrixlimits:
-                            raise KeyError('TileMatrixLimits with tileMatrix "%s" already exists' % tml.tilematrix)
+                            msg = ('TileMatrixLimits with tileMatrix "%s" '
+                                   'already exists' % tml.tilematrix)
+                            raise KeyError(msg)
                         tilematrixlimits[tml.tilematrix] = tml
 
                 links.append(TileMatrixSetLink(uri, tilematrixlimits))
@@ -506,8 +667,9 @@ class ContentMetadata:
 
     Implements IContentMetadata.
     """
-    def __init__(self, elem, parent=None, index=0, parse_remote_metadata=False):
-        if elem.tag != '{http://www.opengis.net/wmts/1.0}Layer':
+    def __init__(self, elem, parent=None, index=0,
+                 parse_remote_metadata=False):
+        if elem.tag != _LAYER_TAG:
             raise ValueError('%s should be a Layer' % (elem,))
 
         self.parent = parent
@@ -516,25 +678,26 @@ class ContentMetadata:
         else:
             self.index = str(index)
 
-        self.id = self.name = testXMLValue(elem.find('{http://www.opengis.net/ows/1.1}Identifier'))
+        self.id = self.name = testXMLValue(elem.find(_IDENTIFIER_TAG))
         # title is mandatory property
         self.title = None
-        title = testXMLValue(elem.find('{http://www.opengis.net/ows/1.1}Title'))
+        title = testXMLValue(elem.find(_TITLE_TAG))
         if title is not None:
             self.title = title.strip()
 
-        self.abstract = testXMLValue(elem.find('{http://www.opengis.net/ows/1.1}Abstract'))
+        self.abstract = testXMLValue(elem.find(_ABSTRACT_TAG))
 
         # bboxes
-        b = elem.find('{http://www.opengis.net/ows/1.1}WGS84BoundingBox')
+        b = elem.find(_WGS84_BOUNDING_BOX_TAG)
         self.boundingBox = None
         if b is not None:
-            lc = b.find("{http://www.opengis.net/ows/1.1}LowerCorner")
-            uc = b.find("{http://www.opengis.net/ows/1.1}UpperCorner")
+            lc = b.find(_LOWER_CORNER_TAG)
+            uc = b.find(_UPPER_CORNER_TAG)
             ll = [float(s) for s in lc.text.split()]
             ur = [float(s) for s in uc.text.split()]
-            self.boundingBoxWGS84 = (ll[0],ll[1],ur[0],ur[1])
-        # TODO: there is probably some more logic here, and it should probably be shared code
+            self.boundingBoxWGS84 = (ll[0], ll[1], ur[0], ur[1])
+        # TODO: there is probably some more logic here, and it should
+        # probably be shared code
 
         self._tilematrixsets = [f.text.strip() for f in
                                 elem.findall(_TILE_MATRIX_SET_LINK_TAG + '/' +
@@ -552,32 +715,34 @@ class ContentMetadata:
                 self.tilematrixsetlinks[tmsl.tilematrixset] = tmsl
 
         self.resourceURLs = []
-        for resourceURL in elem.findall('{http://www.opengis.net/wmts/1.0}ResourceURL'):
+        for resourceURL in elem.findall(_RESOURCE_URL_TAG):
             resource = {}
             for attrib in ['format', 'resourceType', 'template']:
                 resource[attrib] = resourceURL.attrib[attrib]
             self.resourceURLs.append(resource)
 
-        #Styles
+        # Styles
         self.styles = {}
-        for s in elem.findall('{http://www.opengis.net/wmts/1.0}Style'):
+        for s in elem.findall(_STYLE_TAG):
             style = {}
             isdefaulttext = s.attrib.get('isDefault')
             style['isDefault'] = (isdefaulttext == "true")
-            identifier = s.find('{http://www.opengis.net/ows/1.1}Identifier')
+            identifier = s.find(_IDENTIFIER_TAG)
             if identifier is None:
                 raise ValueError('%s missing identifier' % (s,))
-            title = s.find('{http://www.opengis.net/ows/1.1}Title')
+            title = s.find(_TITLE_TAG)
             if title is not None:
                 style['title'] = title.text
             self.styles[identifier.text] = style
 
-        self.formats = [f.text for f in elem.findall('{http://www.opengis.net/wmts/1.0}Format')]
+        self.formats = [f.text for f in elem.findall(_FORMAT_TAG)]
 
-        self.infoformats = [f.text for f in elem.findall('{http://www.opengis.net/wmts/1.0}InfoFormat')]
+        self.keywords = [f.text for f in elem.findall(
+                         _KEYWORDS_TAG+'/'+_KEYWORD_TAG)]
+        self.infoformats = [f.text for f in elem.findall(_INFO_FORMAT_TAG)]
 
         self.layers = []
-        for child in elem.findall('{http://www.opengis.net/wmts/1.0}Layer'):
+        for child in elem.findall(_LAYER_TAG):
             self.layers.append(ContentMetadata(child, self))
 
     @property
@@ -606,37 +771,41 @@ class WMTSCapabilitiesReader:
         self.username = un
         self.password = pw
 
-    def capabilities_url(self, service_url):
+    def capabilities_url(self, service_url, vendor_kwargs=None):
         """Return a capabilities url
         """
-        qs = []
-        if service_url.find('?') != -1:
-            qs = urlparse.parse_qsl(service_url.split('?')[1])
+        # Ensure the 'service', 'request', and 'version' parameters,
+        # and any vendor-specific parameters are included in the URL.
+        pieces = urlparse(service_url)
+        args = parse_qs(pieces.query)
+        if 'service' not in args:
+            args['service'] = 'WMTS'
+        if 'request' not in args:
+            args['request'] = 'GetCapabilities'
+        if 'version' not in args:
+            args['version'] = self.version
+        if vendor_kwargs:
+            args.update(vendor_kwargs)
+        query = urlencode(args, doseq=True)
+        pieces = ParseResult(pieces.scheme, pieces.netloc,
+                             pieces.path, pieces.params,
+                             query, pieces.fragment)
+        return urlunparse(pieces)
 
-        params = [x[0] for x in qs]
-
-        if 'service' not in params:
-            qs.append(('service', 'WMTS'))
-        if 'request' not in params:
-            qs.append(('request', 'GetCapabilities'))
-        if 'version' not in params:
-            qs.append(('version', self.version))
-
-        urlqs = urlencode(tuple(qs))
-        return service_url.split('?')[0] + '?' + urlqs
-
-    def read(self, service_url):
+    def read(self, service_url, vendor_kwargs=None):
         """Get and parse a WMTS capabilities document, returning an
         elementtree instance
 
         service_url is the base url, to which is appended the service,
-        version, and request parameters
+        version, and request parameters. Optional vendor-specific
+        parameters can also be supplied as a dict.
         """
-        getcaprequest = self.capabilities_url(service_url)
+        getcaprequest = self.capabilities_url(service_url, vendor_kwargs)
 
-        #now split it up again to use the generic openURL function...
-        spliturl=getcaprequest.split('?')
-        u = openURL(spliturl[0], spliturl[1], method='Get', username = self.username, password = self.password)
+        # now split it up again to use the generic openURL function...
+        spliturl = getcaprequest.split('?')
+        u = openURL(spliturl[0], spliturl[1], method='Get',
+                    username=self.username, password=self.password)
         return etree.fromstring(u.read())
 
     def readString(self, st):
@@ -644,6 +813,7 @@ class WMTSCapabilitiesReader:
 
         string should be an XML capabilities document
         """
-        if not isinstance(st, str):
-            raise ValueError("String must be of type string, not %s" % type(st))
+        if not isinstance(st, str) and not isinstance(st, bytes):
+            msg = 'String must be of type string or bytes, not %s' % type(st)
+            raise ValueError(msg)
         return etree.fromstring(st)
