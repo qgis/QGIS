@@ -71,9 +71,9 @@ Pal::Pal()
 
   setSearch( CHAIN );
 
-  point_p = 8;
-  line_p = 8;
-  poly_p = 8;
+  point_p = 16;
+  line_p = 50;
+  poly_p = 30;
 
   showPartial = true;
 }
