@@ -219,6 +219,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mPlacePolygonBtnGrp->addButton( radPolygonHorizontal, ( int )QgsPalLayerSettings::Horizontal );
   mPlacePolygonBtnGrp->addButton( radPolygonFree, ( int )QgsPalLayerSettings::Free );
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, ( int )QgsPalLayerSettings::Line );
+  mPlacePolygonBtnGrp->addButton( radPolygonPerimeterCurved, ( int )QgsPalLayerSettings::PerimeterCurved );
   mPlacePolygonBtnGrp->setExclusive( true );
   connect( mPlacePolygonBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePlacementWidgets() ) );
 
@@ -464,6 +465,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << radPolygonFree
   << radPolygonHorizontal
   << radPolygonPerimeter
+  << radPolygonPerimeterCurved
   << radPredefinedOrder
   << mFieldExpressionWidget;
   connectValueChanged( widgets, SLOT( updatePreview() ) );
@@ -670,6 +672,9 @@ void QgsLabelingGui::init()
       break;
     case QgsPalLayerSettings::Free:
       radPolygonFree->setChecked( true );
+      break;
+    case QgsPalLayerSettings::PerimeterCurved:
+      radPolygonPerimeterCurved->setChecked( true );
       break;
   }
 
@@ -961,11 +966,17 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
   }
   else if (( curPlacementWdgt == pageLine && radLineParallel->isChecked() )
-           || ( curPlacementWdgt == pagePolygon && radPolygonPerimeter->isChecked() )
-           || ( curPlacementWdgt == pageLine && radLineCurved->isChecked() ) )
+           || ( curPlacementWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) )
   {
-    bool curved = ( curPlacementWdgt == pageLine && radLineCurved->isChecked() );
-    lyr.placement = ( curved ? QgsPalLayerSettings::Curved : QgsPalLayerSettings::Line );
+    lyr.placement = QgsPalLayerSettings::Line;
+  }
+  else if ( curPlacementWdgt == pageLine && radLineCurved->isChecked() )
+  {
+    lyr.placement = QgsPalLayerSettings::Curved;
+  }
+  else if ( curPlacementWdgt == pagePolygon && radPolygonPerimeterCurved->isChecked() )
+  {
+    lyr.placement = QgsPalLayerSettings::PerimeterCurved;
   }
   else if (( curPlacementWdgt == pageLine && radLineHorizontal->isChecked() )
            || ( curPlacementWdgt == pagePolygon && radPolygonHorizontal->isChecked() ) )
@@ -1706,7 +1717,8 @@ void QgsLabelingGui::updatePlacementWidgets()
   }
   else if (( curWdgt == pageLine && radLineParallel->isChecked() )
            || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() )
-           || ( curWdgt == pageLine && radLineCurved->isChecked() ) )
+           || ( curWdgt == pageLine && radLineCurved->isChecked() )
+           || ( curWdgt == pagePolygon && radPolygonPerimeterCurved->isChecked() ) )
   {
     showLineFrame = true;
     showDistanceFrame = true;
@@ -1716,9 +1728,11 @@ void QgsLabelingGui::updatePlacementWidgets()
     chkLineOrientationDependent->setEnabled( offline );
     mPlacementDistanceFrame->setEnabled( offline );
 
-    showMaxCharAngleFrame = ( curWdgt == pageLine && radLineCurved->isChecked() );
+    bool isCurved = ( curWdgt == pageLine && radLineCurved->isChecked() )
+                    || ( curWdgt == pagePolygon && radPolygonPerimeterCurved->isChecked() );
+    showMaxCharAngleFrame = isCurved;
     // TODO: enable mMultiLinesFrame when supported for curved labels
-    enableMultiLinesFrame = !( curWdgt == pageLine && radLineCurved->isChecked() );
+    enableMultiLinesFrame = !isCurved;
   }
 
   mPlacementLineFrame->setVisible( showLineFrame );
@@ -1730,7 +1744,8 @@ void QgsLabelingGui::updatePlacementWidgets()
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
   mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
-  mPlacementRepeatDistanceFrame->setVisible( curWdgt == pageLine || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) );
+  mPlacementRepeatDistanceFrame->setVisible( curWdgt == pageLine || ( curWdgt == pagePolygon &&
+      ( radPolygonPerimeter->isChecked() || radPolygonPerimeterCurved->isChecked() ) ) );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
   mMultiLinesFrame->setEnabled( enableMultiLinesFrame );

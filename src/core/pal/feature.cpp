@@ -1008,10 +1008,21 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
   // and the line has right-to-left direction
   bool reversed = ( !( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
 
+  // an orientation of 0 means try both orientations and choose the best
+  int orientation = 0;
+  if ( !( flags & FLAG_MAP_ORIENTATION )
+       && mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
+  {
+    //... but if we are labeling the perimeter of a polygon and using line orientation flags,
+    // then we can only accept a single orientation, as we need to ensure that the labels fall
+    // inside or outside the polygon (and not mixed)
+    orientation = reversed ? -1 : 1;
+  }
+
   // generate curved labels
   for ( int i = 0; i*delta < total_distance; i++ )
   {
-    LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, 0, 1, i * delta );
+    LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i * delta );
 
     if ( slp )
     {
@@ -1325,6 +1336,8 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
       case GEOS_LINESTRING:
         if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Curved )
           createCurvedCandidatesAlongLine( lPos, mapShape );
+        else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
+          createCurvedCandidatesAlongLine( lPos, mapShape );
         else
           createCandidatesAlongLine( lPos, mapShape );
         break;
@@ -1343,6 +1356,9 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
             break;
           case QgsPalLayerSettings::Line:
             createCandidatesAlongLine( lPos, mapShape );
+            break;
+          case QgsPalLayerSettings::PerimeterCurved:
+            createCurvedCandidatesAlongLine( lPos, mapShape );
             break;
           default:
             createCandidatesForPolygon( lPos, mapShape );

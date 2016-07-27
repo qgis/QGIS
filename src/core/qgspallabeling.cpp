@@ -2371,7 +2371,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   double maxcharanglein = 20.0; // range 20.0-60.0
   double maxcharangleout = -20.0; // range 20.0-95.0
 
-  if ( placement == QgsPalLayerSettings::Curved )
+  if ( placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved )
   {
     maxcharanglein = maxCurvedCharAngleIn;
     maxcharangleout = maxCurvedCharAngleOut;
@@ -2514,8 +2514,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
 
   GEOSGeometry* geos_geom_clone;
-  GEOSGeomTypes geomType = (GEOSGeomTypes) GEOSGeomTypeId_r( QgsGeometry::getGEOSHandler(), geos_geom );
-  if ( (geomType == GEOS_POLYGON || geomType == GEOS_MULTIPOLYGON) && repeatDistance > 0 && placement == Line )
+  GEOSGeomTypes geomType = ( GEOSGeomTypes ) GEOSGeomTypeId_r( QgsGeometry::getGEOSHandler(), geos_geom );
+  if (( geomType == GEOS_POLYGON || geomType == GEOS_MULTIPOLYGON ) && repeatDistance > 0 && ( placement == Line || placement == PerimeterCurved ) )
   {
     geos_geom_clone = GEOSBoundary_r( QgsGeometry::getGEOSHandler(), geos_geom );
   }
@@ -2876,7 +2876,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 
   // TODO: only for placement which needs character info
   // account for any data defined font metrics adjustments
-  lf->calculateInfo( placement == QgsPalLayerSettings::Curved, labelFontMetrics.data(), xform, rasterCompressFactor, maxcharanglein, maxcharangleout );
+  lf->calculateInfo( placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved,
+                     labelFontMetrics.data(), xform, rasterCompressFactor, maxcharanglein, maxcharangleout );
   // for labelFeature the LabelInfo is passed to feat when it is registered
 
   // TODO: allow layer-wide feature dist in PAL...?

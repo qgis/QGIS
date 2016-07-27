@@ -14,7 +14,16 @@
    <string>Layer labeling settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <property name="verticalSpacing">
@@ -35,7 +44,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_23">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item row="0" column="0">
@@ -94,7 +112,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>487</width>
+               <width>482</width>
                <height>300</height>
               </rect>
              </property>
@@ -314,10 +332,19 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_17">
-          <property name="horizontalSpacing">
+          <property name="leftMargin">
            <number>0</number>
           </property>
-          <property name="margin">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <property name="horizontalSpacing">
            <number>0</number>
           </property>
           <item row="0" column="0">
@@ -591,11 +618,20 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>5</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>0</number>
                   </property>
                   <item>
@@ -611,8 +647,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>465</width>
-                       <height>385</height>
+                       <width>448</width>
+                       <height>411</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -643,7 +679,16 @@
                          </size>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_6">
-                         <property name="margin">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
                           <number>0</number>
                          </property>
                          <item row="10" column="1" colspan="2">
@@ -856,7 +901,16 @@
                             </sizepolicy>
                            </property>
                            <layout class="QHBoxLayout" name="horizontalLayout_23">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <item>
@@ -1245,7 +1299,16 @@
                          <item row="2" column="1">
                           <widget class="QFrame" name="mFontFamilyFrame">
                            <layout class="QHBoxLayout" name="horizontalLayout_5">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <item>
@@ -1321,7 +1384,16 @@ font-style: italic;</string>
                 </widget>
                 <widget class="QWidget" name="mLabelPage_Formatting">
                  <layout class="QVBoxLayout" name="verticalLayout_15">
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>0</number>
                   </property>
                   <item>
@@ -1344,8 +1416,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>465</width>
-                       <height>366</height>
+                       <width>448</width>
+                       <height>389</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1528,7 +1600,16 @@ font-style: italic;</string>
                       <item>
                        <widget class="QFrame" name="mDirectSymbolsFrame">
                         <layout class="QGridLayout" name="gridLayout_33">
-                         <property name="margin">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
                           <number>0</number>
                          </property>
                          <property name="verticalSpacing">
@@ -1594,7 +1675,16 @@ font-style: italic;</string>
                                <property name="spacing">
                                 <number>0</number>
                                </property>
-                               <property name="margin">
+                               <property name="leftMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="rightMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
                                 <number>0</number>
                                </property>
                                <item>
@@ -1696,7 +1786,16 @@ font-style: italic;</string>
                                <property name="spacing">
                                 <number>0</number>
                                </property>
-                               <property name="margin">
+                               <property name="leftMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="rightMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
                                 <number>0</number>
                                </property>
                                <item>
@@ -1741,7 +1840,16 @@ font-style: italic;</string>
                             <item row="2" column="1">
                              <widget class="QFrame" name="mDirectSymbPlacementFrame">
                               <layout class="QHBoxLayout" name="horizontalLayout_17">
-                               <property name="margin">
+                               <property name="leftMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="rightMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
                                 <number>0</number>
                                </property>
                                <item>
@@ -1918,7 +2026,16 @@ font-style: italic;</string>
                 </widget>
                 <widget class="QWidget" name="mLabelPage_Buffer">
                  <layout class="QVBoxLayout" name="verticalLayout_7">
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>0</number>
                   </property>
                   <item>
@@ -1934,8 +2051,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>465</width>
-                       <height>385</height>
+                       <width>464</width>
+                       <height>364</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2088,7 +2205,16 @@ font-style: italic;</string>
                               </sizepolicy>
                              </property>
                              <layout class="QHBoxLayout" name="horizontalLayout_10">
-                              <property name="margin">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
                                <number>0</number>
                               </property>
                               <item>
@@ -2285,7 +2411,16 @@ font-style: italic;</string>
                 </widget>
                 <widget class="QWidget" name="mLabelPage_Background">
                  <layout class="QVBoxLayout" name="verticalLayout_20">
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>0</number>
                   </property>
                   <item>
@@ -2301,8 +2436,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>448</width>
-                       <height>589</height>
+                       <width>454</width>
+                       <height>720</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -2506,7 +2641,16 @@ font-style: italic;</string>
                            <item row="6" column="1" colspan="2">
                             <widget class="QFrame" name="mShapeRotationFrame">
                              <layout class="QHBoxLayout" name="horizontalLayout_36">
-                              <property name="margin">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
                                <number>0</number>
                               </property>
                              </layout>
@@ -2829,7 +2973,16 @@ font-style: italic;</string>
                            <item row="1" column="1" colspan="2">
                             <widget class="QFrame" name="mShapeSVGPathFrame">
                              <layout class="QHBoxLayout" name="horizontalLayout_26">
-                              <property name="margin">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
                                <number>0</number>
                               </property>
                               <item>
@@ -3085,7 +3238,16 @@ font-style: italic;</string>
                 </widget>
                 <widget class="QWidget" name="mLabelPage_Shadow">
                  <layout class="QVBoxLayout" name="verticalLayout_18">
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>0</number>
                   </property>
                   <item>
@@ -3101,8 +3263,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>465</width>
-                       <height>385</height>
+                       <width>448</width>
+                       <height>447</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3563,7 +3725,16 @@ font-style: italic;</string>
                 </widget>
                 <widget class="QWidget" name="mLabelPage_Placement">
                  <layout class="QVBoxLayout" name="verticalLayout_10">
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>0</number>
                   </property>
                   <item>
@@ -3593,7 +3764,7 @@ font-style: italic;</string>
                        <x>0</x>
                        <y>0</y>
                        <width>448</width>
-                       <height>758</height>
+                       <height>917</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3624,7 +3795,16 @@ font-style: italic;</string>
                          <enum>QFrame::Sunken</enum>
                         </property>
                         <layout class="QVBoxLayout" name="verticalLayout_9">
-                         <property name="margin">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
                           <number>0</number>
                          </property>
                          <item>
@@ -3636,11 +3816,20 @@ font-style: italic;</string>
                             <enum>QFrame::Sunken</enum>
                            </property>
                            <property name="currentIndex">
-                            <number>1</number>
+                            <number>2</number>
                            </property>
                            <widget class="QWidget" name="pagePoint">
                             <layout class="QGridLayout" name="gridLayout_13" columnstretch="0,0,0,0">
-                             <property name="margin">
+                             <property name="leftMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="topMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="rightMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="bottomMargin">
                               <number>0</number>
                              </property>
                              <item row="0" column="1">
@@ -3693,7 +3882,16 @@ font-style: italic;</string>
                            </widget>
                            <widget class="QWidget" name="pageLine">
                             <layout class="QGridLayout" name="gridLayout_14">
-                             <property name="margin">
+                             <property name="leftMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="topMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="rightMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="bottomMargin">
                               <number>0</number>
                              </property>
                              <item row="0" column="1">
@@ -3736,9 +3934,6 @@ font-style: italic;</string>
                            </widget>
                            <widget class="QWidget" name="pagePolygon">
                             <layout class="QGridLayout" name="gridLayout_18">
-                             <property name="margin">
-                              <number>0</number>
-                             </property>
                              <item row="0" column="0">
                               <widget class="QRadioButton" name="radOverCentroid">
                                <property name="sizePolicy">
@@ -3755,6 +3950,13 @@ font-style: italic;</string>
                                </property>
                               </widget>
                              </item>
+                             <item row="0" column="1">
+                              <widget class="QRadioButton" name="radPolygonHorizontal">
+                               <property name="text">
+                                <string>Horizontal (slow)</string>
+                               </property>
+                              </widget>
+                             </item>
                              <item row="1" column="0">
                               <widget class="QRadioButton" name="radAroundCentroid">
                                <property name="sizePolicy">
@@ -3768,13 +3970,6 @@ font-style: italic;</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="0" column="1">
-                              <widget class="QRadioButton" name="radPolygonHorizontal">
-                               <property name="text">
-                                <string>Horizontal (slow)</string>
-                               </property>
-                              </widget>
-                             </item>
                              <item row="1" column="1">
                               <widget class="QRadioButton" name="radPolygonFree">
                                <property name="text">
@@ -3782,7 +3977,7 @@ font-style: italic;</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="2" column="0" colspan="2">
+                             <item row="2" column="0">
                               <widget class="QRadioButton" name="radPolygonPerimeter">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -3794,6 +3989,32 @@ font-style: italic;</string>
                                 <string>Using perimeter</string>
                                </property>
                               </widget>
+                             </item>
+                             <item row="2" column="1">
+                              <widget class="QRadioButton" name="radPolygonPerimeterCurved">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="text">
+                                <string>Using perimeter (curved)</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="1" column="2">
+                              <spacer name="horizontalSpacer_26">
+                               <property name="orientation">
+                                <enum>Qt::Horizontal</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>40</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                              </spacer>
                              </item>
                             </layout>
                            </widget>
@@ -3820,7 +4041,16 @@ font-style: italic;</string>
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_10">
-                         <property name="margin">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
                           <number>0</number>
                          </property>
                          <item row="0" column="0">
@@ -3895,7 +4125,16 @@ font-style: italic;</string>
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_25">
-                         <property name="margin">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
                           <number>0</number>
                          </property>
                          <item row="0" column="0">
@@ -3975,11 +4214,20 @@ font-style: italic;</string>
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_27">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
                          <property name="verticalSpacing">
                           <number>12</number>
-                         </property>
-                         <property name="margin">
-                          <number>0</number>
                          </property>
                          <item row="0" column="1">
                           <widget class="QgsDoubleSpinBox" name="mLineDistanceSpnBx">
@@ -4045,11 +4293,20 @@ font-style: italic;</string>
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_40">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
                          <property name="verticalSpacing">
                           <number>12</number>
-                         </property>
-                         <property name="margin">
-                          <number>0</number>
                          </property>
                          <item row="0" column="0">
                           <widget class="QLabel" name="label_42">
@@ -4076,7 +4333,16 @@ font-style: italic;</string>
                       <item>
                        <widget class="QFrame" name="mPlacementQuadrantFrame">
                         <layout class="QGridLayout" name="gridLayout_19">
-                         <property name="margin">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
                           <number>0</number>
                          </property>
                          <item row="0" column="2">
@@ -4089,7 +4355,16 @@ font-style: italic;</string>
                          <item row="0" column="1" rowspan="3">
                           <widget class="QFrame" name="mPlacementFixedQuadrantFrame">
                            <layout class="QGridLayout" name="gridLayout_3">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <property name="spacing">
@@ -4345,7 +4620,16 @@ font-style: italic;</string>
                       <item>
                        <widget class="QFrame" name="mPlacementCartographicFrame">
                         <layout class="QGridLayout" name="gridLayout_39">
-                         <property name="margin">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
                           <number>0</number>
                          </property>
                          <item row="0" column="2">
@@ -4358,7 +4642,16 @@ font-style: italic;</string>
                          <item row="0" column="1" rowspan="2">
                           <widget class="QFrame" name="mPlacementFixedQuadrantFrame_2">
                            <layout class="QGridLayout" name="gridLayout_11">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <property name="spacing">
@@ -4411,11 +4704,20 @@ font-style: italic;</string>
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_15">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
                          <property name="verticalSpacing">
                           <number>12</number>
-                         </property>
-                         <property name="margin">
-                          <number>0</number>
                          </property>
                          <item row="0" column="2">
                           <widget class="QgsDoubleSpinBox" name="mPointOffsetYSpinBox">
@@ -4521,7 +4823,16 @@ font-style: italic;</string>
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_26">
-                         <property name="margin">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
                           <number>0</number>
                          </property>
                          <item row="0" column="0">
@@ -4581,11 +4892,20 @@ font-style: italic;</string>
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_24">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
                          <property name="verticalSpacing">
                           <number>12</number>
-                         </property>
-                         <property name="margin">
-                          <number>0</number>
                          </property>
                          <item row="0" column="0">
                           <widget class="QLabel" name="label_7">
@@ -4636,11 +4956,20 @@ font-style: italic;</string>
                       <item>
                        <widget class="QFrame" name="mPlacementMaxCharAngleFrame">
                         <layout class="QGridLayout" name="gridLayout_22">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
                          <property name="verticalSpacing">
                           <number>12</number>
-                         </property>
-                         <property name="margin">
-                          <number>0</number>
                          </property>
                          <item row="1" column="0">
                           <spacer name="horizontalSpacer_19">
@@ -4878,7 +5207,16 @@ font-style: italic;</string>
                          <item row="1" column="1">
                           <widget class="QFrame" name="mCoordAlignmentFrame">
                            <layout class="QHBoxLayout" name="horizontalLayout_27">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <item>
@@ -5019,7 +5357,16 @@ font-style: italic;</string>
                 </widget>
                 <widget class="QWidget" name="mLabelPage_Rendering">
                  <layout class="QVBoxLayout" name="verticalLayout_13">
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>0</number>
                   </property>
                   <item>
@@ -5043,7 +5390,7 @@ font-style: italic;</string>
                        <x>0</x>
                        <y>0</y>
                        <width>448</width>
-                       <height>668</height>
+                       <height>799</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -5409,7 +5756,16 @@ font-style: italic;</string>
                             <enum>QFrame::Raised</enum>
                            </property>
                            <layout class="QGridLayout" name="gridLayout_5">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <property name="verticalSpacing">
@@ -5507,7 +5863,16 @@ font-style: italic;</string>
                          <item>
                           <widget class="QFrame" name="mUpsidedownFrame">
                            <layout class="QGridLayout" name="gridLayout">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <property name="verticalSpacing">
@@ -5610,7 +5975,16 @@ font-style: italic;</string>
                          <item>
                           <widget class="QFrame" name="mLimitLabelFrame">
                            <layout class="QGridLayout" name="gridLayout_20">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <property name="verticalSpacing">
@@ -5667,7 +6041,16 @@ font-style: italic;</string>
                          <item>
                           <widget class="QFrame" name="mMinSizeFrame">
                            <layout class="QGridLayout" name="gridLayout_21">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <property name="verticalSpacing">
@@ -5715,7 +6098,16 @@ font-style: italic;</string>
                             <enum>QFrame::Raised</enum>
                            </property>
                            <layout class="QHBoxLayout" name="horizontalLayout_12">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <item>
@@ -5787,7 +6179,16 @@ font-style: italic;</string>
                          <item>
                           <widget class="QFrame" name="mObstaclePriorityFrame">
                            <layout class="QHBoxLayout" name="horizontalLayout_18">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <item>
@@ -5848,7 +6249,16 @@ font-style: italic;</string>
                             <enum>QFrame::Raised</enum>
                            </property>
                            <layout class="QHBoxLayout" name="horizontalLayout_11">
-                            <property name="margin">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
                              <number>0</number>
                             </property>
                             <item>
@@ -5902,7 +6312,16 @@ font-style: italic;</string>
    <item row="5" column="0">
     <widget class="QFrame" name="frameLabelWith">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
@@ -6162,6 +6581,7 @@ font-style: italic;</string>
   <tabstop>radOverCentroid</tabstop>
   <tabstop>radAroundCentroid</tabstop>
   <tabstop>radPolygonPerimeter</tabstop>
+  <tabstop>radPolygonPerimeterCurved</tabstop>
   <tabstop>radPolygonHorizontal</tabstop>
   <tabstop>radPolygonFree</tabstop>
   <tabstop>chkLineAbove</tabstop>
@@ -6239,6 +6659,7 @@ font-style: italic;</string>
   <tabstop>mObstacleFactorSlider</tabstop>
   <tabstop>mObstacleFactorDDBtn</tabstop>
   <tabstop>mObstacleTypeComboBox</tabstop>
+  <tabstop>mOptionsTab</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
