@@ -13,6 +13,8 @@
 #decoder=wcsdecoder.WCSDecoder(u)
 #decoder.getCoverages()
 
+from __future__ import (absolute_import, division, print_function)
+
 import os
 from owslib.etree import etree
 import email
@@ -66,9 +68,9 @@ class MpartMime(object):
         #create the directory if it doesn't exist:
         try:
             os.mkdir(unpackdir)
-        except OSError, e:
+        except OSError as e:
             # Ignore directory exists error
-            if e.errno <> errno.EEXIST:
+            if e.errno != errno.EEXIST:
                 raise
                
         #now walk through the multipart mime and write out files
