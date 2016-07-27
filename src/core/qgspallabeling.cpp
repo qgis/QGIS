@@ -786,6 +786,9 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 {
   if ( layer->customProperty( "labeling" ).toString() != QLatin1String( "pal" ) )
   {
+    if ( layer->geometryType() == Qgis::Point )
+      placement = OrderedPositionsAroundPoint;
+
     // for polygons the "over point" (over centroid) placement is better than the default
     // "around point" (around centroid) which is more suitable for points
     if ( layer->geometryType() == Qgis::Polygon )
