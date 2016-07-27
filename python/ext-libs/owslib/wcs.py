@@ -13,29 +13,29 @@
 Web Coverage Server (WCS) methods and metadata. Factory function.
 """
 
+from __future__ import (absolute_import, division, print_function)
 
-import urllib2
-import etree
-from coverage import wcs100, wcs110, wcsBase
+from . import etree
+from .coverage import wcs100, wcs110, wcs111, wcsBase
+from owslib.util import openURL
+
 
 def WebCoverageService(url, version=None, xml=None, cookies=None, timeout=30):
     ''' wcs factory function, returns a version specific WebCoverageService object '''
-    
+
     if version is None:
         if xml is None:
             reader = wcsBase.WCSCapabilitiesReader()
             request = reader.capabilities_url(url)
-            if cookies is None:
-                xml = urllib2.urlopen(request, timeout=timeout).read()
-            else:
-                req = urllib2.Request(request)
-                req.add_header('Cookie', cookies)   
-                xml=urllib2.urlopen(req, timeout=timeout)
+            xml = openURL(request, cookies=cookies, timeout=timeout).read()
+
         capabilities = etree.etree.fromstring(xml)
         version = capabilities.get('version')
         del capabilities
-        
+
     if version == '1.0.0':
         return wcs100.WebCoverageService_1_0_0.__new__(wcs100.WebCoverageService_1_0_0, url, xml, cookies)
     elif version == '1.1.0':
         return wcs110.WebCoverageService_1_1_0.__new__(wcs110.WebCoverageService_1_1_0,url, xml, cookies)
+    elif version == '1.1.1':
+        return wcs111.WebCoverageService_1_1_1.__new__(wcs111.WebCoverageService_1_1_1,url, xml, cookies)

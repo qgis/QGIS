@@ -13,6 +13,7 @@
 ../owslib/fgdc.py
 ../owslib/wcs.py
 ../owslib/wmts.py
+../owslib/gm03.py
 ../owslib/interfaces.py
 ../owslib/__init__.py
 ../owslib/dif.py
@@ -26,10 +27,12 @@
 ../owslib/feature/wfs200.py
 ../owslib/feature/wfs100.py
 ../owslib/feature/__init__.py
+../owslib/feature/schema.py
 ../owslib/swe/common.py
 ../owslib/swe/__init__.py
 ../owslib/coverage/wcsBase.py
 ../owslib/coverage/wcs100.py
+../owslib/coverage/wcs111.py
 ../owslib/coverage/wcs110.py
 ../owslib/coverage/__init__.py
 ../owslib/coverage/wcsdecoder.py
@@ -53,6 +56,7 @@
 ../owslib/fgdc.pyc
 ../owslib/wcs.pyc
 ../owslib/wmts.pyc
+../owslib/gm03.pyc
 ../owslib/interfaces.pyc
 ../owslib/__init__.pyc
 ../owslib/dif.pyc
@@ -66,10 +70,12 @@
 ../owslib/feature/wfs200.pyc
 ../owslib/feature/wfs100.pyc
 ../owslib/feature/__init__.pyc
+../owslib/feature/schema.pyc
 ../owslib/swe/common.pyc
 ../owslib/swe/__init__.pyc
 ../owslib/coverage/wcsBase.pyc
 ../owslib/coverage/wcs100.pyc
+../owslib/coverage/wcs111.pyc
 ../owslib/coverage/wcs110.pyc
 ../owslib/coverage/__init__.pyc
 ../owslib/coverage/wcsdecoder.pyc
