@@ -365,7 +365,8 @@ void TestQgsDistanceArea::regression14675()
   calc.setEllipsoid( "GRS80" );
   calc.setSourceCrs( 145L );
   QgsGeometry geom( QgsGeometryFactory::geomFromWkt( "Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))" ) );
-  QVERIFY( qgsDoubleNear( calc.measureArea( &geom ), 0.83301, 0.0001 ) );
+  //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
+  QVERIFY( qgsDoubleNear( calc.measureArea( &geom ), 0.83301, 0.02 ) );
 }
 
 QTEST_MAIN( TestQgsDistanceArea )
