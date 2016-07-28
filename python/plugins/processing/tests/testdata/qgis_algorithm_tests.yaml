@@ -291,6 +291,18 @@ tests:
         name: expected/eliminate_largest_area.gml
         type: vector
 
+  - algorithm: qgis:dissolve
+    name: Dissolve using field
+    params:
+      DISSOLVE_ALL: false
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/dissolve_field.gml
+        type: vector
 
   - name: Dissolve with geometries reported as valid but as invalid with isGeosValid
     algorithm: qgis:dissolve
@@ -404,3 +416,4 @@ tests:
         name: expected/merge_lines.gml
         type: vector
 
+  
