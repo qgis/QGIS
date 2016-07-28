@@ -23,7 +23,7 @@ __copyright__ = '(C) 2011, Alexander Bruy'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMutex
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMutex, pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QApplication, QMessageBox
 from qgis.PyQt.QtGui import QCursor
 
@@ -184,6 +184,10 @@ def extractProjection(filename, createPrj):
 
 class ExtractThread(QThread):
 
+    fileProcessed = pyqtSignal()
+    processFinished = pyqtSignal()
+    processInterrupted = pyqtSignal()
+
     def __init__(self, files, needPrj):
         QThread.__init__(self, QThread.currentThread())
         self.inFiles = files
@@ -213,7 +217,7 @@ class ExtractThread(QThread):
         if not interrupted:
             self.processFinished.emit()
         else:
-            self.processIterrupted.emit()
+            self.processInterrupted.emit()
 
     def stop(self):
         self.mutex.lock()
