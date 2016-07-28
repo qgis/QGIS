@@ -1212,6 +1212,7 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
   if ( !rect.isNull() )
   {
     setCenter( rect.center() );
+    refresh();
   }
   else
   {
