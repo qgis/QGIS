@@ -1084,7 +1084,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     // the latter flag is here just for compatibility
     if ( !mSelectAtIdDisabled )
     {
-      mEnabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+      mEnabledCapabilities = QgsVectorDataProvider::SelectAtId;
     }
 
     if ( !inRecovery )
@@ -1209,7 +1209,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
     if ( !mSelectAtIdDisabled )
     {
-      mEnabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+      mEnabledCapabilities = QgsVectorDataProvider::SelectAtId;
     }
   }
 
@@ -2829,7 +2829,7 @@ QgsAttributeList QgsPostgresProvider::attributeIndexes() const
   return lst;
 }
 
-int QgsPostgresProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsPostgresProvider::capabilities() const
 {
   return mEnabledCapabilities;
 }

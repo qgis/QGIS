@@ -293,7 +293,7 @@ QgsGrassProvider::~QgsGrassProvider()
   }
 }
 
-int QgsGrassProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
 {
   // Because of bug in GRASS https://trac.osgeo.org/grass/ticket/2775 it is not possible
   // close db drivers in random order on Unix and probably Mac -> disable editing if another layer is edited

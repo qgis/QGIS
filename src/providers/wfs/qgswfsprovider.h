@@ -92,7 +92,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
 
-    virtual int capabilities() const override;
+    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /* new functions */
 
@@ -161,7 +161,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     /** Namespace URL of the server (comes from DescribeFeatureDocument)*/
     QString mApplicationNamespace;
     /** Server capabilities for this layer (generated from capabilities document)*/
-    int mCapabilities;
+    QgsVectorDataProvider::Capabilities mCapabilities;
     /** Fields of this typename. Might be different from mShared->mFields in case of SELECT */
     QgsFields mThisTypenameFields;
 

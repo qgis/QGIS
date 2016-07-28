@@ -764,7 +764,7 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 {
   QgsDebugMsg( "Checking for permissions on the relation" );
 
-  mEnabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+  mEnabledCapabilities = QgsVectorDataProvider::SelectAtId;
 
   QSqlQuery qry( *mConnection );
   if ( !mIsQuery )
@@ -2064,7 +2064,7 @@ bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
   return returnvalue;
 }
 
-int QgsOracleProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsOracleProvider::capabilities() const
 {
   return mEnabledCapabilities;
 }

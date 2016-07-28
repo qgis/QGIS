@@ -563,11 +563,11 @@ bool QgsVirtualLayerProvider::isValid() const
   return mValid;
 }
 
-int QgsVirtualLayerProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsVirtualLayerProvider::capabilities() const
 {
   if ( !mDefinition.uid().isNull() )
   {
-    return SelectAtId | SelectGeometryAtId;
+    return SelectAtId;
   }
   return 0;
 }

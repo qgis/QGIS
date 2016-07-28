@@ -53,7 +53,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override{ return false; }
     bool changeGeometryValues( QgsGeometryMap & geometry_map ) override{ return false; }
     */
-    int capabilities() const override { return QgsVectorDataProvider::NoCapabilities; }
+    QgsVectorDataProvider::Capabilities capabilities() const override { return QgsVectorDataProvider::NoCapabilities; }
     QgsAttributeList pkAttributeIndexes() const override { return QgsAttributeList() << mObjectIdFieldIdx; }
     QgsAttrPalIndexNameHash palAttributeIndexNames() const override { return QgsAttrPalIndexNameHash(); }
 

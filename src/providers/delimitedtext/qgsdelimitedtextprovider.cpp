@@ -1145,7 +1145,7 @@ bool QgsDelimitedTextProvider::isValid() const
   return mLayerValid;
 }
 
-int QgsDelimitedTextProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsDelimitedTextProvider::capabilities() const
 {
   return SelectAtId | CreateSpatialIndex | CircularGeometries;
 }

@@ -1179,9 +1179,9 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
   return true;
 }
 
-int QgsDb2Provider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsDb2Provider::capabilities() const
 {
-  int cap = AddFeatures;
+  QgsVectorDataProvider::Capabilities cap = AddFeatures;
   bool hasGeom = false;
   if ( !mGeometryColName.isEmpty() )
   {
@@ -1194,7 +1194,7 @@ int QgsDb2Provider::capabilities() const
   else
   {
     if ( hasGeom )
-      cap |= ChangeGeometries | QgsVectorDataProvider::SelectGeometryAtId;
+      cap |= ChangeGeometries;
 
     return cap | DeleteFeatures | ChangeAttributeValues |
            QgsVectorDataProvider::SelectAtId;

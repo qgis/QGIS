@@ -1310,9 +1310,9 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
   return true;
 }
 
-int QgsMssqlProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsMssqlProvider::capabilities() const
 {
-  int cap = CreateAttributeIndex | AddFeatures | AddAttributes;
+  QgsVectorDataProvider::Capabilities cap = CreateAttributeIndex | AddFeatures | AddAttributes;
   bool hasGeom = false;
   if ( !mGeometryColName.isEmpty() )
   {
@@ -1325,7 +1325,7 @@ int QgsMssqlProvider::capabilities() const
   else
   {
     if ( hasGeom )
-      cap |= ChangeGeometries | QgsVectorDataProvider::SelectGeometryAtId;
+      cap |= ChangeGeometries;
 
     return cap | DeleteFeatures | ChangeAttributeValues | DeleteAttributes |
            QgsVectorDataProvider::SelectAtId;

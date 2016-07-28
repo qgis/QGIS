@@ -25,20 +25,12 @@ class QgsVectorDataProvider : QgsDataProvider
       AddAttributes,
       /** Allows deletion of attributes (fields) */
       DeleteAttributes,
-      /** DEPRECATED - do not use */
-      SaveAsShapefile,
       /** Allows creation of spatial index */
       CreateSpatialIndex,
       /** Fast access to features using their ID */
       SelectAtId,
       /** Allows modifications of geometries */
       ChangeGeometries,
-      /** DEPRECATED - do not use */
-      SelectGeometryAtId,
-      /** DEPRECATED - do not use */
-      RandomSelectGeometryAtId,
-      /** DEPRECATED - do not use */
-      SequentialSelectGeometryAtId,
       /** DEPRECATED - do not use */
       CreateAttributeIndex,
       /** Allows user to select encoding */
@@ -58,6 +50,7 @@ class QgsVectorDataProvider : QgsDataProvider
       /** Supports renaming attributes (fields). Added in QGIS 2.16 */
       RenameAttributes,
     };
+    typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;
 
     /** Bitmask of all provider's editing capabilities */
     static const int EditingCapabilities;
@@ -257,11 +250,11 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual bool createAttributeIndex( int field );
 
     /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on whether
+        @note, some capabilities may change depending on whether
         a spatial filter is active on this provider, so it may
         be prudent to check this value per intended operation.
      */
-    virtual int capabilities() const;
+    virtual Capabilities capabilities() const;
 
     /**
      *  Returns the above in friendly format.
@@ -394,3 +387,5 @@ class QgsVectorDataProvider : QgsDataProvider
     @return the converted geometry or nullptr if no conversion was necessary or possible*/
     QgsGeometry* convertToProviderType( const QgsGeometry* geom ) const /Factory/;
 };
+
+QFlags<QgsVectorDataProvider::Capability> operator|(QgsVectorDataProvider::Capability f1, QFlags<QgsVectorDataProvider::Capability> f2);
