@@ -672,6 +672,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "boundary point" ) << "boundary(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
       QTest::newRow( "boundary polygon" ) << "geom_to_wkt(boundary(geometry:=geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))" << false << QVariant( "LineString (-1 -1, 4 0, 4 2, 0 2, -1 -1)" );
       QTest::newRow( "boundary line" ) << "geom_to_wkt(boundary(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)')))" << false << QVariant( "MultiPoint ((0 0),(2 2))" );
+      QTest::newRow( "line_merge not geom" ) << "line_merge('g')" << true << QVariant();
+      QTest::newRow( "line_merge null" ) << "line_merge(NULL)" << false << QVariant();
+      QTest::newRow( "line_merge point" ) << "line_merge(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
+      QTest::newRow( "line_merge line" ) << "geom_to_wkt(line_merge(geometry:=geom_from_wkt('LineString(0 0, 10 10)')))" << false << QVariant( "LineString (0 0, 10 10)" );
+      QTest::newRow( "line_merge multiline" ) << "geom_to_wkt(line_merge(geom_from_wkt('MultiLineString((0 0, 10 10),(10 10, 20 20))')))" << false << QVariant( "LineString (0 0, 10 10, 20 20)" );
       QTest::newRow( "start_point point" ) << "geom_to_wkt(start_point(geom_from_wkt('POINT(2 0)')))" << false << QVariant( "Point (2 0)" );
       QTest::newRow( "start_point multipoint" ) << "geom_to_wkt(start_point(geom_from_wkt('MULTIPOINT((3 3), (1 1), (2 2))')))" << false << QVariant( "Point (3 3)" );
       QTest::newRow( "start_point line" ) << "geom_to_wkt(start_point(geom_from_wkt('LINESTRING(4 1, 1 1, 2 2)')))" << false << QVariant( "Point (4 1)" );

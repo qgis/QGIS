@@ -1422,6 +1422,23 @@ QgsGeometry* QgsGeometry::combine( const QgsGeometry* geometry ) const
   return new QgsGeometry( resultGeom );
 }
 
+QgsGeometry QgsGeometry::mergeLines() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWKBTypes::flatType( d->geometry->wkbType() ) == QgsWKBTypes::LineString )
+  {
+    // special case - a single linestring was passed
+    return QgsGeometry( *this );
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.mergeLines();
+}
+
 QgsGeometry* QgsGeometry::difference( const QgsGeometry* geometry ) const
 {
   if ( !d->geometry || !geometry->d->geometry )

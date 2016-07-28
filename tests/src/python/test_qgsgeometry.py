@@ -3360,5 +3360,35 @@ class TestQgsGeometry(unittest.TestCase):
         wkb2 = geom.asWkb()
         self.assertEqual(wkb1, wkb2)
 
+    def testMergeLines(self):
+        """ test merging linestrings """
+
+        # not a (multi)linestring
+        geom = QgsGeometry.fromWkt('Point(1 2)')
+        result = geom.mergeLines()
+        self.assertTrue(result.isEmpty())
+
+        # linestring should be returned intact
+        geom = QgsGeometry.fromWkt('LineString(0 0, 10 10)')
+        result = geom.mergeLines().exportToWkt()
+        exp = 'LineString(0 0, 10 10)'
+        self.assertTrue(compareWkt(result, exp, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        # multilinestring
+        geom = QgsGeometry.fromWkt('MultiLineString((0 0, 10 10),(10 10, 20 20))')
+        result = geom.mergeLines().exportToWkt()
+        exp = 'LineString(0 0, 10 10, 20 20)'
+        self.assertTrue(compareWkt(result, exp, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        geom = QgsGeometry.fromWkt('MultiLineString((0 0, 10 10),(12 2, 14 4),(10 10, 20 20))')
+        result = geom.mergeLines().exportToWkt()
+        exp = 'MultiLineString((0 0, 10 10, 20 20),(12 2, 14 4))'
+        self.assertTrue(compareWkt(result, exp, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        geom = QgsGeometry.fromWkt('MultiLineString((0 0, 10 10),(12 2, 14 4))')
+        result = geom.mergeLines().exportToWkt()
+        exp = 'MultiLineString((0 0, 10 10),(12 2, 14 4))'
+        self.assertTrue(compareWkt(result, exp, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
 if __name__ == '__main__':
     unittest.main()
