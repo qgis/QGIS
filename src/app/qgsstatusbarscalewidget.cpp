@@ -50,7 +50,7 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   mScale->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
 
   mLockButton = new QToolButton();
-  mLockButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/locked.svg" ) ) );
+  mLockButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/lockedGray.svg" ) ) );
   mLockButton->setToolTip( tr( "Lock the scale to use magnifier to zoom in or out." ) );
   mLockButton->setCheckable( true );
   mLockButton->setChecked( false );
