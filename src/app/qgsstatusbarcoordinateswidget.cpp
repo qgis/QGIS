@@ -67,6 +67,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "tracking.svg" ) );
   mToggleExtentsViewButton->setToolTip( tr( "Toggle extents and mouse position display" ) );
   mToggleExtentsViewButton->setCheckable( true );
+  mToggleExtentsViewButton->setAutoRaise( true );
   connect( mToggleExtentsViewButton, SIGNAL( toggled( bool ) ), this, SLOT( extentsViewToggled( bool ) ) );
 
   QHBoxLayout* layout = new QHBoxLayout( this );
