@@ -47,6 +47,9 @@ class CORE_EXPORT QgsMultiCurveV2: public QgsGeometryCollectionV2
      * @note added in QGIS 2.14
      */
     QgsMultiCurveV2* reversed() const;
+
+    virtual QgsAbstractGeometryV2* boundary() const override;
+
 };
 
 #endif // QGSMULTICURVEV2_H

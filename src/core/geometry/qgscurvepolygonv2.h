@@ -55,6 +55,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     virtual double area() const override;
     virtual double perimeter() const override;
     QgsPolygonV2* surfaceToPolygon() const override;
+    virtual QgsAbstractGeometryV2* boundary() const override;
 
     //curve polygon interface
     int numInteriorRings() const;

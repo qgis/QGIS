@@ -44,6 +44,8 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollectionV2
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
 
+    virtual QgsAbstractGeometryV2* boundary() const override;
+
   protected:
 
     virtual bool wktOmitChildType() const override { return true; }

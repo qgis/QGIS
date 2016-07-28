@@ -24,6 +24,8 @@ class QgsMultiPolygonV2: public QgsMultiSurfaceV2
     @return the converted geometry. Caller takes ownership*/
     QgsAbstractGeometryV2* toCurveType() const /Factory/;
 
+    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+
   protected:
 
     virtual bool wktOmitChildType() const;

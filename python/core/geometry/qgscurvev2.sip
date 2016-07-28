@@ -75,6 +75,8 @@ class QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual QgsCurveV2* reversed() const = 0 /Factory/;
 
+    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+
     /** Returns a geometry without curves. Caller takes ownership
     * @param tolerance segmentation tolerance
     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
