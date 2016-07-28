@@ -80,6 +80,7 @@ class TestQgsBlendModes : public QObject
 
 void TestQgsBlendModes::initTestCase()
 {
+  std::cout << "CTEST_FULL_OUTPUT" << std::endl;
 
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
@@ -241,6 +242,15 @@ bool TestQgsBlendModes::imageCheck( const QString& theTestType )
   myChecker.setColorTolerance( 5 );
   bool myResultFlag = myChecker.runTest( theTestType, 20 );
   mReport += myChecker.report();
+
+
+
+  QFile file( myChecker.renderedImage() );
+  if ( !file.open( QIODevice::ReadOnly ) ) return false;
+  QByteArray blob = file.readAll();
+  QgsDebugMsg( "rendered file (Base64):\n" + QString( blob.toBase64() ) + "\n\nend" );
+  file.close();
+
   return myResultFlag;
 }
 

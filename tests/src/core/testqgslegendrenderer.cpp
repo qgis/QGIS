@@ -391,30 +391,17 @@ void TestQgsLegendRenderer::testFilterByMap()
 
 void TestQgsLegendRenderer::testFilterByMapSameSymbol()
 {
-  QgsVectorLayer* vl4 = new QgsVectorLayer( "Point", "Point Layer", "memory" );
-  {
-    QgsVectorDataProvider* pr = vl4->dataProvider();
-    QList<QgsField> attrs;
-    attrs << QgsField( "test_attr", QVariant::Int );
-    pr->addAttributes( attrs );
-
-    QgsFields fields;
-    fields.append( attrs.back() );
-
-    QList<QgsFeature> features;
-    QgsFeature f1( fields, 1 );
-    f1.setAttribute( 0, 1 );
-    f1.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) ) );
-    QgsFeature f2( fields, 2 );
-    f2.setAttribute( 0, 2 );
-    f2.setGeometry( QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) ) );
-    QgsFeature f3( fields, 3 );
-    f3.setAttribute( 0, 3 );
-    f3.setGeometry( QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) ) );
-    features << f1 << f2 << f3;
-    pr->addFeatures( features );
-    vl4->updateFields();
-  }
+  QgsVectorLayer* vl4 = new QgsVectorLayer( "Point?field=test_attr:int", "Point Layer", "memory" );
+  QgsFeature f1( vl4->dataProvider()->fields(), 1 );
+  f1.setAttribute( 0, 1 );
+  f1.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) ) );
+  QgsFeature f2( vl4->dataProvider()->fields(), 2 );
+  f2.setAttribute( 0, 2 );
+  f2.setGeometry( QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) ) );
+  QgsFeature f3( vl4->dataProvider()->fields(), 3 );
+  f3.setAttribute( 0, 3 );
+  f3.setGeometry( QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) ) );
+  vl4->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 );
   QgsMapLayerRegistry::instance()->addMapLayer( vl4 );
 
   //setup categorized renderer with duplicate symbols
