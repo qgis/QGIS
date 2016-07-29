@@ -1769,7 +1769,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsLegendFilterButton* mLegendExpressionFilterButton;
 
-    QgsSnappingUtils* mSnappingUtils;
+    QScopedPointer<QgsSnappingUtils> mSnappingUtils;
 
     QList<QgsMapLayerConfigWidgetFactory*> mMapLayerPanelFactories;
 

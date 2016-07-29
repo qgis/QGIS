@@ -482,6 +482,25 @@ void QgsSnappingUtils::setLayers( const QList<QgsSnappingUtils::LayerConfig>& la
     emit configChanged();
 }
 
+void QgsSnappingUtils::setSideEffectLayers( const QVector<QgsVectorLayer*>& layers )
+{
+  Q_FOREACH ( const QgsVectorLayer* layer, mSideEffectLayers )
+  {
+    // disconnect signal, if any
+    disconnect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( clearAllLocators() ) );
+    disconnect( layer, SIGNAL( featuresDeleted( const QgsFeatureIds& ) ), this, SLOT( clearAllLocators() ) );
+    disconnect( layer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( clearAllLocators() ) );
+  }
+  mSideEffectLayers = layers;
+  Q_FOREACH ( const QgsVectorLayer* layer, mSideEffectLayers )
+  {
+    connect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( clearAllLocators() ) );
+    connect( layer, SIGNAL( featuresDeleted( const QgsFeatureIds& ) ), this, SLOT( clearAllLocators() ) );
+    connect( layer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( clearAllLocators() ) );
+  }
+  emit configChanged();
+}
+
 void QgsSnappingUtils::setSnapOnIntersections( bool enabled )
 {
   if ( mSnapOnIntersection == enabled )
@@ -607,6 +626,7 @@ void QgsSnappingUtils::readConfigFromProject()
   QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", QStringList(), &ok );
   QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", QStringList(), &ok );
   QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", QStringList(), &ok );
+  QStringList sideEffectLayersList = QgsProject::instance()->readListEntry( "Digitizing", "/SideEffectLayersList", QStringList(), &ok );
 
   // lists must have the same size, otherwise something is wrong
   if ( layerIdList.size() != enabledList.size() ||
@@ -651,8 +671,15 @@ void QgsSnappingUtils::readConfigFromProject()
                             );
     mLayers.append( LayerConfig( vlayer, t, tolIt->toDouble(), static_cast< QgsTolerance::UnitType >( tolUnitIt->toInt() ) ) );
   }
-
-  emit configChanged();
+  QVector<QgsVectorLayer*> sideEffects;
+  Q_FOREACH ( const QString& layerId, sideEffectLayersList )
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+    if ( !vlayer )
+      continue;
+    sideEffects.append( vlayer );
+  }
+  setSideEffectLayers( sideEffects );
 }
 
 void QgsSnappingUtils::onLayersWillBeRemoved( const QStringList& layerIds )

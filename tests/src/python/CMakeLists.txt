@@ -103,6 +103,7 @@ ADD_PYTHON_TEST(PyQgsLayerDefinition test_qgslayerdefinition.py)
 ADD_PYTHON_TEST(PyQgsWFSProvider test_provider_wfs.py)
 ADD_PYTHON_TEST(PyQgsWFSProviderGUI test_provider_wfs_gui.py)
 ADD_PYTHON_TEST(PyQgsConsole test_console.py)
+ADD_PYTHON_TEST(PyQgsSnappingUtils test_qgssnappingutils.py)
 
 IF (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)

@@ -155,6 +155,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /** Query layers used for snapping */
     QList<LayerConfig> layers() const { return mLayers; }
 
+    /** Set layers which have side effects, i.e. which may create or modify geometries in other layers */
+    void setSideEffectLayers( const QVector<QgsVectorLayer*>& layers );
+    /** Query layers with side effects */
+    QVector<QgsVectorLayer*> sideEffectLayers() const { return mSideEffectLayers; }
+
     /** Set whether to consider intersections of nearby segments for snapping */
     void setSnapOnIntersections( bool enabled );
     /** Query whether to consider intersections of nearby segments for snapping */
@@ -184,12 +189,12 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
   private slots:
     void onLayersWillBeRemoved( const QStringList& layerIds );
 
+    //! delete all existing locators (e.g. when destination CRS has changed and we need to reindex)
+    void clearAllLocators();
+
   private:
     //! Get destination CRS from map settings, or an invalid CRS if projections are disabled
     QgsCoordinateReferenceSystem destinationCrs() const;
-
-    //! delete all existing locators (e.g. when destination CRS has changed and we need to reindex)
-    void clearAllLocators();
 
     //! return a locator (temporary or not) according to the indexing strategy
     QgsPointLocator* locatorForLayerUsingStrategy( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance );
@@ -239,6 +244,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
     bool mIsIndexing;
+
+    //! side effect layers, i.e. layers that may create/modify geometries in other layers
+    QVector<QgsVectorLayer*> mSideEffectLayers;
 };
 
 

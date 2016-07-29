@@ -89,6 +89,11 @@ class QgsSnappingUtils : QObject
     /** Query layers used for snapping */
     QList<QgsSnappingUtils::LayerConfig> layers() const;
 
+    /** Set layers which have side effects, i.e. which may create or modify geometries in other layers */
+    void setSideEffectLayers( const QVector<QgsVectorLayer*>& layers );
+    /** Query layers with side effects */
+    QVector<QgsVectorLayer*> sideEffectLayers() const;
+
     /** Set whether to consider intersections of nearby segments for snapping */
     void setSnapOnIntersections( bool enabled );
     /** Query whether to consider intersections of nearby segments for snapping */
