@@ -304,6 +304,19 @@ tests:
         name: expected/dissolve_field.gml
         type: vector
 
+  - algorithm: qgis:dissolve
+    name: Dissolve using two fields
+    params:
+      DISSOLVE_ALL: false
+      FIELD: intval;name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/dissolve_two_fields.gml
+        type: vector
+
   - name: Dissolve with geometries reported as valid but as invalid with isGeosValid
     algorithm: qgis:dissolve
     params:
