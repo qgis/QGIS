@@ -1,0 +1,17 @@
+PyQgsComposerPicture
+PyQgsGeometryTest
+PyQgsJSONUtils
+PyQgsLocalServer
+PyQgsMapUnitScale
+PyQgsPalLabelingServer
+PyQgsRelationEditWidget
+PyQgsServer
+PyQgsServerAccessControl
+PyQgsSipCoverage
+PyQgsSpatialiteProvider
+PyQgsVirtualLayerDefinition
+PyQgsVirtualLayerProvider
+qgis_composermapgridtest
+qgis_composerutils
+ProcessingGrass7AlgorithmsImageryTest
+ProcessingGrass7AlgorithmsRasterTest

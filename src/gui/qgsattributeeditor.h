@@ -21,26 +21,24 @@
 #include <QMetaType>
 #include <QGridLayout>
 
-#include "qgsfeature.h"
-#include "qgsrelationmanager.h"
-
 class QgsAttributeEditorContext;
 class QgsAttributeEditorElement;
 class QgsDualView;
 class QgsRelationManager;
 class QgsVectorLayer;
 
-/**
+/** \ingroup gui
  * \brief create attribute widget for editing
  *
  * @deprecated
  */
+// TODO QGIS 3.0 - remove
 class GUI_EXPORT QgsAttributeEditor : public QObject
 {
     Q_OBJECT
 
   public:
-    QgsAttributeEditor( QObject* parent, QgsVectorLayer* vl = 0, int idx = -1 )
+    QgsAttributeEditor( QObject* parent, QgsVectorLayer* vl = nullptr, int idx = -1 )
         : QObject( parent )
     {
       Q_UNUSED( vl )

@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 1.3.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -33,7 +33,7 @@ QgsRelationManager::QgsRelationManager( QgsProject* project )
 void QgsRelationManager::setRelations( const QList<QgsRelation>& relations )
 {
   mRelations.clear();
-  foreach ( const QgsRelation& rel, relations )
+  Q_FOREACH ( const QgsRelation& rel, relations )
   {
     addRelation( rel );
   }
@@ -52,7 +52,8 @@ void QgsRelationManager::addRelation( const QgsRelation& relation )
 
   mRelations.insert( relation.id(), relation );
 
-  mProject->dirty( true );
+  if ( mProject )
+    mProject->setDirty( true );
   emit changed();
 }
 
@@ -73,13 +74,26 @@ QgsRelation QgsRelationManager::relation( const QString& id ) const
   return mRelations.value( id );
 }
 
+QList<QgsRelation> QgsRelationManager::relationsByName( const QString& name ) const
+{
+  QList<QgsRelation> relations;
+
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
+  {
+    if ( QString::compare( rel.name(), name, Qt::CaseInsensitive ) == 0 )
+      relations << rel;
+  }
+
+  return relations;
+}
+
 void QgsRelationManager::clear()
 {
   mRelations.clear();
   emit changed();
 }
 
-QList<QgsRelation> QgsRelationManager::referencingRelations( QgsVectorLayer* layer, int fieldIdx ) const
+QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLayer* layer, int fieldIdx ) const
 {
   if ( !layer )
   {
@@ -88,14 +102,14 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( QgsVectorLayer* lay
 
   QList<QgsRelation> relations;
 
-  foreach ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
   {
     if ( rel.referencingLayer() == layer )
     {
       if ( fieldIdx != -2 )
       {
         bool containsField = false;
-        foreach ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
+        Q_FOREACH ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
         {
           if ( fieldIdx == layer->fieldNameIndex( fp.referencingField() ) )
           {
@@ -125,7 +139,7 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer* laye
 
   QList<QgsRelation> relations;
 
-  foreach ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
   {
     if ( rel.referencedLayer() == layer )
     {
@@ -148,7 +162,7 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
     int relCount = relationNodes.count();
     for ( int i = 0; i < relCount; ++i )
     {
-      addRelation( QgsRelation::createFromXML( relationNodes.at( i ) ) );
+      addRelation( QgsRelation::createFromXml( relationNodes.at( i ) ) );
     }
   }
   else
@@ -156,7 +170,7 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
     QgsDebugMsg( "No relations data present in this document" );
   }
 
-  emit( relationsLoaded() );
+  emit relationsLoaded();
   emit changed();
 }
 
@@ -173,9 +187,9 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
   QDomElement relationsNode = doc.createElement( "relations" );
   qgisNode.appendChild( relationsNode );
 
-  foreach ( const QgsRelation& relation, mRelations )
+  Q_FOREACH ( const QgsRelation& relation, mRelations )
   {
-    relation.writeXML( relationsNode, doc );
+    relation.writeXml( relationsNode, doc );
   }
 }
 

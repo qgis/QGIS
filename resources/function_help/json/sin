@@ -1,0 +1,7 @@
+{
+  "name": "sin",
+  "type": "function",
+  "description": "Returns the sine of an angle.",
+  "arguments": [ {"arg":"angle","description":"angle in radians"}],
+  "examples": [ { "expression":"sin(1.571)", "returns":"0.999999682931835"}]
+}

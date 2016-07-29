@@ -22,8 +22,8 @@
 #include "qgsproject.h"
 #include <QSettings>
 
-QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent ) :
-    QWidget( parent )
+QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
+    : QWidget( parent )
 {
   mDialog = new QgsGenericProjectionSelector( this );
 
@@ -34,19 +34,20 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent ) :
 
   mCrsComboBox = new QComboBox( this );
   mCrsComboBox->addItem( tr( "invalid projection" ), QgsProjectionSelectionWidget::CurrentCrs );
+  mCrsComboBox->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
 
   if ( QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 ) )
   {
     //only show project CRS if OTF reprojection is enabled - otherwise the
     //CRS stored in the project can be misleading
     QString projectCrsString = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs" );
-    mProjectCrs.createFromOgcWmsCrs( projectCrsString );
+    mProjectCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( projectCrsString );
     addProjectCrsOption();
   }
 
   QSettings settings;
   QString defCrsString = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  mDefaultCrs.createFromOgcWmsCrs( defCrsString );
+  mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrsString );
   if ( mDefaultCrs.authid() != mProjectCrs.authid() )
   {
     //only show default CRS option if it's different to the project CRS, avoids
@@ -85,8 +86,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
     case QgsProjectionSelectionWidget::RecentCrs:
     {
       long srsid = mCrsComboBox->itemData( mCrsComboBox->currentIndex(), Qt::UserRole + 1 ).toLongLong();
-      QgsCoordinateReferenceSystem crs;
-      crs.createFromSrsId( srsid );
+      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
       return crs;
     }
   }
@@ -143,8 +143,7 @@ void QgsProjectionSelectionWidget::selectCrs()
     mCrsComboBox->blockSignals( true );
     mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
     mCrsComboBox->blockSignals( false );
-    QgsCoordinateReferenceSystem crs;
-    crs.createFromOgcWmsCrs( mDialog->selectedAuthId() );
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mDialog->selectedAuthId() );
     setCrs( crs );
     emit crsChanged( crs );
   }
@@ -173,8 +172,7 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
     case QgsProjectionSelectionWidget::RecentCrs:
     {
       long srsid = mCrsComboBox->itemData( idx, Qt::UserRole + 1 ).toLongLong();
-      QgsCoordinateReferenceSystem crs;
-      crs.createFromSrsId( srsid );
+      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
       emit crsChanged( crs );
       return;
     }
@@ -186,7 +184,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem& c
   if ( crs.isValid() )
   {
     mCrsComboBox->setItemText( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ),
-                               tr( "Selected CRS (%1, %2)" ).arg( crs.authid() ).arg( crs.description() ) );
+                               tr( "Selected CRS (%1, %2)" ).arg( crs.authid(), crs.description() ) );
     mCrsComboBox->blockSignals( true );
     mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
     mCrsComboBox->blockSignals( false );
@@ -206,11 +204,11 @@ void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSyst
   {
     if ( layerItemIndex > -1 )
     {
-      mCrsComboBox->setItemText( layerItemIndex, tr( "Layer CRS (%1, %2)" ).arg( crs.authid() ).arg( crs.description() ) );
+      mCrsComboBox->setItemText( layerItemIndex, tr( "Layer CRS (%1, %2)" ).arg( crs.authid(), crs.description() ) );
     }
     else
     {
-      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS (%1, %2)" ).arg( crs.authid() ).arg( crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
+      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS (%1, %2)" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
     }
   }
   else
@@ -227,20 +225,20 @@ void QgsProjectionSelectionWidget::addProjectCrsOption()
 {
   if ( mProjectCrs.isValid() )
   {
-    mCrsComboBox->addItem( tr( "Project CRS (%1 - %2)" ).arg( mProjectCrs.authid() ).arg( mProjectCrs.description() ), QgsProjectionSelectionWidget::ProjectCrs );
+    mCrsComboBox->addItem( tr( "Project CRS (%1 - %2)" ).arg( mProjectCrs.authid(), mProjectCrs.description() ), QgsProjectionSelectionWidget::ProjectCrs );
   }
 }
 
 void QgsProjectionSelectionWidget::addDefaultCrsOption()
 {
-  mCrsComboBox->addItem( tr( "Default CRS (%1 - %2)" ).arg( mDefaultCrs.authid() ).arg( mDefaultCrs.description() ), QgsProjectionSelectionWidget::DefaultCrs );
+  mCrsComboBox->addItem( tr( "Default CRS (%1 - %2)" ).arg( mDefaultCrs.authid(), mDefaultCrs.description() ), QgsProjectionSelectionWidget::DefaultCrs );
 }
 
 void QgsProjectionSelectionWidget::addRecentCrs()
 {
   QStringList recentProjections = QgsCoordinateReferenceSystem::recentProjections();
   int i = 0;
-  foreach ( QString projection, recentProjections )
+  Q_FOREACH ( const QString& projection, recentProjections )
   {
     long srsid = projection.toLong();
 
@@ -251,11 +249,10 @@ void QgsProjectionSelectionWidget::addRecentCrs()
     }
 
     i++;
-    QgsCoordinateReferenceSystem crs;
-    crs.createFromSrsId( srsid );
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
     if ( crs.isValid() )
     {
-      mCrsComboBox->addItem( tr( "%1 - %2" ).arg( crs.authid() ).arg( crs.description() ), QgsProjectionSelectionWidget::RecentCrs );
+      mCrsComboBox->addItem( tr( "%1 - %2" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::RecentCrs );
       mCrsComboBox->setItemData( mCrsComboBox->count() - 1, QVariant(( long long )srsid ), Qt::UserRole + 1 );
     }
     if ( i >= 4 )

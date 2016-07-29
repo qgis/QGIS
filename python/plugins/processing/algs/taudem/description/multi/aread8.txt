@@ -1,0 +1,8 @@
+D8 Contributing Area (multifile)
+aread8
+Basic Grid Analysis tools
+ParameterFile|-p|D8 Flow Direction Grid|True|False
+ParameterVector|-o|Outlets Shapefile|0|True
+ParameterFile|-wg|Weight Grid|True|True
+ParameterBoolean|-nc|Check for edge contamination|True
+OutputDirectory|-ad8|D8 Contributing Area Grid

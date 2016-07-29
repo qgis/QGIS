@@ -14,8 +14,8 @@ class QgsBusyIndicatorDialog : QDialog
      * @param message Text to show above busy progress indicator.
      * @param parent parent object (owner)
      * @param fl widget flags
-    */
-    QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+     */
+    QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
     ~QgsBusyIndicatorDialog();
 
     QString message() const;

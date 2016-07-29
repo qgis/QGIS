@@ -19,15 +19,17 @@
 
 #include "ui_qgsattributeloadfrommap.h"
 
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include <vector>
 
 class QDialog;
 class QLayout;
 class QgsField;
 class QgsMapCanvas;
+class QgsVectorLayer;
 
+/** \ingroup gui
+ * \class QgsAttributeTypeLoadDialog
+ */
 class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttributeLoadValues
 {
     Q_OBJECT
@@ -94,11 +96,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
     void loadDataToValueMap();
 
     QgsVectorLayer *mLayer;
-    int mIndex;
-
-
     QMap<QString, QVariant> mValueMap;
-    QgsVectorLayer::EditType mEditType;
 };
 
 #endif

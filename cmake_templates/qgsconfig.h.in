@@ -40,15 +40,11 @@
 
 #cmakedefine USING_NMAKE
 
+#cmakedefine USING_NINJA
+
 #cmakedefine HAVE_POSTGRESQL
 
-#cmakedefine HAVE_SPATIALITE
-
-#cmakedefine HAVE_MSSQL
-
 #cmakedefine HAVE_ORACLE
-
-#cmakedefine HAVE_PYTHON
 
 #cmakedefine HAVE_TOUCH
 
@@ -59,6 +55,8 @@
 #cmakedefine HAVE_SERVER_PYTHON_PLUGINS
 
 #cmakedefine ENABLE_MODELTEST
+
+#cmakedefine WITH_ARCGIS
 
 #endif
 

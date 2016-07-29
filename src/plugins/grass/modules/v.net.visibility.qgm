@@ -3,7 +3,9 @@
 
 <qgisgrassmodule label="Visibility graph construction" module="v.net.visibility">
 	<option key="input" />
-	<option key="coordinate" />
-	<option key="vis" />
+	<option key="coordinate" version_max="6"/>
+	<option key="coordinates" version_min="7"/>
+	<option key="vis" version_max="6"/>
+	<option key="visibility" version_min="7"/>
 	<option key="output" />
 </qgisgrassmodule>

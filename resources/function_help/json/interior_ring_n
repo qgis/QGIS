@@ -1,0 +1,8 @@
+{
+  "name": "interior_ring_n",
+  "type": "function",
+  "description": "Returns a specific interior ring from a polygon geometry, or null if the geometry is not a polygon.",
+  "arguments": [ {"arg":"geometry","description":"polygon geometry"},
+  {"arg":"index","description":"index of interior to return, where 1 is the first interior ring"} ],
+  "examples": [ { "expression":"geom_to_wkt(interior_ring_n(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1),(-0.1 -0.1, 0.4 0, 0.4 0.2, 0 0.2, -0.1 -0.1),(-1 -1, 4 0, 4 2, 0 2, -1 -1))'),1))", "returns":"'LineString (-0.1 -0.1, 0.4 0, 0.4 0.2, 0 0.2, -0.1 -0.1))'"}]
+}

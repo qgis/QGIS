@@ -255,9 +255,12 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>lstCoordinateSystems</tabstop>
-  <tabstop>teProjection</tabstop>
   <tabstop>leSearch</tabstop>
+  <tabstop>lstRecent</tabstop>
+  <tabstop>cbxHideDeprecated</tabstop>
+  <tabstop>lstCoordinateSystems</tabstop>
+  <tabstop>teSelected</tabstop>
+  <tabstop>teProjection</tabstop>
  </tabstops>
  <resources/>
  <connections/>

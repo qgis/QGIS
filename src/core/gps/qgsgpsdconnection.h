@@ -22,12 +22,13 @@
 
 #include <QAbstractSocket>
 
-/**Evaluates NMEA sentences coming from gpsd*/
+/** \ingroup core
+ * Evaluates NMEA sentences coming from gpsd*/
 class CORE_EXPORT QgsGpsdConnection: public QgsNMEAConnection
 {
     Q_OBJECT
   public:
-    QgsGpsdConnection( QString host, qint16 port, QString device );
+    QgsGpsdConnection( const QString& host, qint16 port, const QString& device );
     ~QgsGpsdConnection();
 
   private slots:

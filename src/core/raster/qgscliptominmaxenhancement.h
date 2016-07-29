@@ -31,7 +31,7 @@ class CORE_EXPORT QgsClipToMinMaxEnhancement : public QgsContrastEnhancementFunc
 {
 
   public:
-    QgsClipToMinMaxEnhancement( QGis::DataType, double, double );
+    QgsClipToMinMaxEnhancement( Qgis::DataType, double, double );
 
     int enhance( double ) override;
 

@@ -25,13 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsWKBTypes
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class Clip(GeoAlgorithm):
@@ -40,25 +47,28 @@ class Clip(GeoAlgorithm):
     OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'clip.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Clip'
-        self.group = 'Vector overlay tools'
+        self.name, self.i18n_name = self.trAlgorithm('Clip')
+        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Clip.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(Clip.OVERLAY,
-            self.tr('Clip layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Clip layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(
-                self.getParameterValue(Clip.INPUT))
+            self.getParameterValue(Clip.INPUT))
         layerB = dataobjects.getObjectFromUri(
-                self.getParameterValue(Clip.OVERLAY))
+            self.getParameterValue(Clip.OVERLAY))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-                layerA.pendingFields(),
-                layerA.dataProvider().geometryType(),
-                layerA.dataProvider().crs())
+            layerA.pendingFields(),
+            layerA.dataProvider().geometryType(),
+            layerA.dataProvider().crs())
 
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
@@ -68,10 +78,9 @@ class Clip(GeoAlgorithm):
 
         selectionA = vector.features(layerA)
 
-        current = 0
-        total = 100.0 / float(len(selectionA))
+        total = 100.0 / len(selectionA)
 
-        for inFeatA in selectionA:
+        for current, inFeatA in enumerate(selectionA):
             geom = QgsGeometry(inFeatA.geometry())
             attrs = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
@@ -80,8 +89,8 @@ class Clip(GeoAlgorithm):
             if len(intersects) > 0:
                 for i in intersects:
                     layerB.getFeatures(
-                            QgsFeatureRequest().setFilterFid(i)).nextFeature(
-                                    inFeatB)
+                        QgsFeatureRequest().setFilterFid(i)).nextFeature(
+                            inFeatB)
                     tmpGeom = QgsGeometry(inFeatB.geometry())
                     if tmpGeom.intersects(geom):
                         found = True
@@ -89,42 +98,39 @@ class Clip(GeoAlgorithm):
                             outFeat.setGeometry(QgsGeometry(tmpGeom))
                             first = False
                         else:
-                            try:
-                                cur_geom = QgsGeometry(outFeat.geometry())
-                                new_geom = QgsGeometry(
-                                        cur_geom.combine(tmpGeom))
-                                outFeat.setGeometry(QgsGeometry(new_geom))
-                            except:
+                            cur_geom = QgsGeometry(outFeat.geometry())
+                            new_geom = QgsGeometry(cur_geom.combine(tmpGeom))
+                            if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
                                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                    self.tr('GEOS geoprocessing error: One or '
-                                            'more input features have invalid '
-                                            'geometry.'))
+                                                       self.tr('GEOS geoprocessing error: One or '
+                                                               'more input features have invalid '
+                                                               'geometry.'))
                                 break
+
+                            outFeat.setGeometry(QgsGeometry(new_geom))
                 if found:
-                    try:
-                        cur_geom = QgsGeometry(outFeat.geometry())
-                        new_geom = QgsGeometry(geom.intersection(cur_geom))
-                        if new_geom.wkbType() == 0:
-                            int_com = QgsGeometry(geom.combine(cur_geom))
-                            int_sym = QgsGeometry(geom.symDifference(cur_geom))
-                            new_geom = QgsGeometry(int_com.difference(int_sym))
-                        try:
-                            outFeat.setGeometry(new_geom)
-                            outFeat.setAttributes(attrs)
-                            writer.addFeature(outFeat)
-                        except:
+                    cur_geom = QgsGeometry(outFeat.geometry())
+                    new_geom = QgsGeometry(geom.intersection(cur_geom))
+                    if new_geom.wkbType() == Qgis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                        int_com = QgsGeometry(geom.combine(cur_geom))
+                        int_sym = QgsGeometry(geom.symDifference(cur_geom))
+                        new_geom = QgsGeometry(int_com.difference(int_sym))
+                        if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                self.tr('Feature geometry error: One or more '
-                                        'output features ignored due to '
-                                        'invalid geometry.'))
+                                                   self.tr('GEOS geoprocessing error: One or more '
+                                                           'input features have invalid geometry.'))
                             continue
+                    try:
+                        outFeat.setGeometry(new_geom)
+                        outFeat.setAttributes(attrs)
+                        writer.addFeature(outFeat)
                     except:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            self.tr('GEOS geoprocessing error: One or more '
-                                    'input features have invalid geometry.'))
+                                               self.tr('Feature geometry error: One or more '
+                                                       'output features ignored due to '
+                                                       'invalid geometry.'))
                         continue
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

@@ -22,7 +22,7 @@
 #include <QStyle>
 #include <QFocusEvent>
 
-QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, QString nullValue )
+QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
     : QLineEdit( parent )
     , mNullValue( nullValue )
     , mFocusInEvent( false )

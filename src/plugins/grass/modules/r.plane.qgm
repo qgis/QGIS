@@ -7,5 +7,6 @@
 	<option key="easting" />
 	<option key="northing" />
 	<option key="elevation" />
-	<option key="name" />
+	<option key="name" version_max="6"/>
+	<option key="output" version_min="7"/>
 </qgisgrassmodule>

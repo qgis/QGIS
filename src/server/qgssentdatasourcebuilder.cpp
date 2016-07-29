@@ -50,7 +50,7 @@ QgsMapLayer* QgsSentDataSourceBuilder::createMapLayer( const QDomElement& elem,
   {
     return vectorLayerFromSentVDS( elem, filesToRemove, layersToRemove );
   }
-  return 0;
+  return nullptr;
 }
 
 QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElement& sentVDSElem, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove ) const
@@ -67,14 +67,14 @@ QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElem
     }
     else
     {
-      return 0;
+      return nullptr;
     }
 
     QgsVectorLayer* theVectorLayer = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), "WFS" );
     if ( !theVectorLayer || !theVectorLayer->isValid() )
     {
       QgsDebugMsg( "invalid maplayer" );
-      return 0;
+      return nullptr;
     }
     QgsDebugMsg( "returning maplayer" );
 
@@ -82,11 +82,11 @@ QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElem
 
     if ( !theVectorLayer || !theVectorLayer->isValid() )
     {
-      return 0;
+      return nullptr;
     }
     return theVectorLayer;
   }
-  return 0;
+  return nullptr;
 }
 
 QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElement& sentRDSElem, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove ) const
@@ -95,7 +95,7 @@ QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElem
   QString tempFilePath = createTempFile();
   if ( tempFilePath.isEmpty() )
   {
-    return 0;
+    return nullptr;
   }
   QFile tempFile( tempFilePath );
 
@@ -114,7 +114,7 @@ QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElem
     else
     {
       delete tmpFile;
-      return 0;
+      return nullptr;
     }
 
   }
@@ -128,7 +128,7 @@ QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElem
     else
     {
       delete tmpFile;
-      return 0;
+      return nullptr;
     }
   }
 

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgswmscapabilities.h
+    ---------------------
+    begin                : January 2014
+    copyright            : (C) 2014 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSWMSCAPABILITIES_H
 #define QGSWMSCAPABILITIES_H
 
@@ -7,6 +21,7 @@
 #include <QStringList>
 #include <QVector>
 
+#include "qgsauthmanager.h"
 #include "qgsraster.h"
 #include "qgsrectangle.h"
 
@@ -289,7 +304,7 @@ struct QgsWmtsTheme
   QgsWmtsTheme *subTheme;
   QStringList layerRefs;
 
-  QgsWmtsTheme() : subTheme( 0 ) {}
+  QgsWmtsTheme() : subTheme( nullptr ) {}
   ~QgsWmtsTheme() { delete subTheme; }
 };
 
@@ -384,7 +399,12 @@ struct QgsWmsCapabilityProperty
 {
   QgsWmsRequestProperty                request;
   QgsWmsExceptionProperty              exception;
-  QgsWmsLayerProperty                  layer;
+
+  // Top level layer should normally be present max once
+  // <element name="Capability">
+  //    <element ref="wms:Layer" minOccurs="0"/>  - default maxOccurs=1
+  // but there are a few non conformant capabilities around (#13762)
+  QList<QgsWmsLayerProperty>           layers;
 
   QList<QgsWmtsTileLayer>              tileLayers;
   QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets;
@@ -420,34 +440,46 @@ enum QgsWmsDpiMode
   dpiQGIS = 1,
   dpiUMN = 2,
   dpiGeoServer = 4,
-  dpiAll = dpiQGIS | dpiUMN | dpiUMN,
+  dpiAll = dpiQGIS | dpiUMN | dpiGeoServer,
 };
 
 
 
 struct QgsWmsParserSettings
 {
-  QgsWmsParserSettings( bool ignAxis = false, bool invAxis = false ) : ignoreAxisOrientation( ignAxis ), invertAxisOrientation( invAxis ) {}
+  QgsWmsParserSettings( bool ignAxis = false, bool invAxis = false )
+      : ignoreAxisOrientation( ignAxis )
+      , invertAxisOrientation( invAxis )
+  {}
   bool ignoreAxisOrientation;
   bool invertAxisOrientation;
 };
 
 struct QgsWmsAuthorization
 {
-  QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString() )
-      : mUserName( userName ), mPassword( password ), mReferer( referer ) {}
+  QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString(), const QString& authcfg = QString() )
+      : mUserName( userName )
+      , mPassword( password )
+      , mReferer( referer )
+      , mAuthCfg( authcfg )
+  {}
 
-  void setAuthorization( QNetworkRequest &request ) const
+  bool setAuthorization( QNetworkRequest &request ) const
   {
-    if ( !mUserName.isNull() || !mPassword.isNull() )
+    if ( !mAuthCfg.isEmpty() )
     {
-      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
+      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+    }
+    else if ( !mUserName.isNull() || !mPassword.isNull() )
+    {
+      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName, mPassword ).toAscii().toBase64() );
     }
 
     if ( !mReferer.isNull() )
     {
       request.setRawHeader( "Referer", QString( "%1" ).arg( mReferer ).toAscii() );
     }
+    return true;
   }
 
   //! Username for basic http authentication
@@ -459,7 +491,8 @@ struct QgsWmsAuthorization
   //! Referer for http requests
   QString mReferer;
 
-
+  //! Authentication configuration ID
+  QString mAuthCfg;
 };
 
 
@@ -468,7 +501,7 @@ class QgsWmsSettings
 {
   public:
 
-    bool parseUri( QString uriString );
+    bool parseUri( const QString& uriString );
 
     QString baseUrl() const { return mBaseUrl; }
     QgsWmsAuthorization authorization() const { return mAuth; }
@@ -530,7 +563,7 @@ class QgsWmsSettings
 };
 
 
-/** keeps information about capabilities of particular URI */
+/** Keeps information about capabilities of particular URI */
 class QgsWmsCapabilities
 {
   public:
@@ -577,6 +610,9 @@ class QgsWmsCapabilities
     /** Find out whether to invert axis orientation when parsing/writing coordinates */
     bool shouldInvertAxisOrientation( const QString& ogcCrs );
 
+    /** Find out identify capabilities */
+    int identifyCapabilities() const;
+
   protected:
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty );
 
@@ -590,7 +626,7 @@ class QgsWmsCapabilities
     void parseCapability( QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty );
     void parseRequest( QDomElement const & e, QgsWmsRequestProperty& requestProperty );
     void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
-    void parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty, QgsWmsLayerProperty *parentProperty = 0 );
+    void parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
     void parseStyle( QDomElement const & e, QgsWmsStyleProperty& styleProperty );
 
     void parseOperationType( QDomElement const & e, QgsWmsOperationType& operationType );
@@ -604,7 +640,7 @@ class QgsWmsCapabilities
     void parseKeywords( const QDomNode &e, QStringList &keywords );
     void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
 
-    QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
+    QString nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue = QString::null );
 
     /**
      * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.
@@ -631,11 +667,6 @@ class QgsWmsCapabilities
      * Used in determining if the Identify map tool can be useful on the rendered WMS map layer.
      */
     QMap<QString, bool> mQueryableForLayer;
-
-    /**
-     * available CRSs per layer
-     */
-    QMap<QString, QStringList > mCrsForLayer;
 
     /**
      * layers hosted by the WMS
@@ -674,19 +705,29 @@ class QgsWmsCapabilities
 
 
 
-/** class that handles download of capabilities */
+/** Class that handles download of capabilities.
+ */
 class QgsWmsCapabilitiesDownload : public QObject
 {
     Q_OBJECT
 
   public:
-    QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject* parent = 0 );
+    explicit QgsWmsCapabilitiesDownload( bool forceRefresh, QObject* parent = nullptr );
+
+    QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, bool forceRefresh, QObject* parent = nullptr );
+
+    virtual ~QgsWmsCapabilitiesDownload();
 
     bool downloadCapabilities();
+
+    bool downloadCapabilities( const QString& baseUrl, const QgsWmsAuthorization& auth );
 
     QString lastError() const { return mError; }
 
     QByteArray response() const { return mHttpCapabilitiesResponse; }
+
+    //! Abort network request immediately
+    void abort();
 
   signals:
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
@@ -717,6 +758,8 @@ class QgsWmsCapabilitiesDownload : public QObject
     /** Capabilities of the WMS (raw) */
     QByteArray mHttpCapabilitiesResponse;
 
+    bool mIsAborted;
+    bool mForceRefresh;
 };
 
 

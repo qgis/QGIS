@@ -26,34 +26,46 @@ __copyright__ = '(C) 201, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+
+from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QSettings, QFileInfo
+
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.WrongScriptException import WrongScriptException
 from processing.script.ScriptUtils import ScriptUtils
+from processing.core.alglist import algList
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class AddScriptFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Add script from file', 'AddScriptFromFileAction')
-        self.group = self.tr('Tools', 'AddScriptFromFileAction')
+        self.name, self.i18n_name = self.trAction('Add script from file')
+        self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QtGui.QIcon(':/processing/images/script.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
 
     def execute(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self.toolbox,
-           self.tr('Script files', 'AddScriptFromFileAction'), None,
-           self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
+        settings = QSettings()
+        lastDir = settings.value('Processing/lastScriptsDir', '')
+        filename = QFileDialog.getOpenFileName(self.toolbox,
+                                               self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
+                                               self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
         if filename:
             try:
+                settings.setValue('Processing/lastScriptsDir',
+                                  QFileInfo(filename).absoluteDir().absolutePath())
                 script = ScriptAlgorithm(filename)
             except WrongScriptException:
-                QtGui.QMessageBox.warning(self.toolbox,
-                    self.tr('Error reading script', 'AddScriptFromFileAction'),
-                    self.tr('The selected file does not contain a valid script', 'AddScriptFromFileAction'))
+                QMessageBox.warning(self.toolbox,
+                                    self.tr('Error reading script', 'AddScriptFromFileAction'),
+                                    self.tr('The selected file does not contain a valid script', 'AddScriptFromFileAction'))
                 return
-            destFilename = os.path.join(ScriptUtils.scriptsFolder(), os.path.basename(filename))
+            destFilename = os.path.join(ScriptUtils.scriptsFolders()[0], os.path.basename(filename))
             with open(destFilename, 'w') as f:
                 f.write(script.script)
-            self.toolbox.updateProvider('script')
+            algList.reloadProvider('script')

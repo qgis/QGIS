@@ -105,7 +105,7 @@ Qt::CheckState QgsMessageViewer::checkBoxState()
   return checkBox->checkState();
 }
 
-void QgsMessageViewer::setCheckBoxQSettingsLabel( QString label )
+void QgsMessageViewer::setCheckBoxQSettingsLabel( const QString& label )
 {
   mCheckBoxQSettingsLabel = label;
 }

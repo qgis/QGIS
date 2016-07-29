@@ -10,15 +10,19 @@ class QgsFieldProxyModel : QSortFilterProxyModel
 %End
 
   public:
+
+    //! Field type filters
     enum Filter
     {
-      String,
-      Int,
-      LongLong,
-      Double,
-      Numeric,
-      Date,
-      All
+      String, /*!< String fields */
+      Int, /*!< Integer fields */
+      LongLong, /*!< Longlong fields */
+      Double, /*!< Double fields */
+      Numeric, /*!< All numeric fields */
+      Date, /*!< Date or datetime fields */
+      Time, /*!< Time fields */
+      HideReadOnly,  /*!< Hide read-only fields */
+      All, /*!< All field types */
     };
     typedef QFlags<QgsFieldProxyModel::Filter> Filters;
 
@@ -28,15 +32,19 @@ class QgsFieldProxyModel : QSortFilterProxyModel
      */
     explicit QgsFieldProxyModel( QObject *parent /TransferThis/ = 0 );
 
-    //! sourceFieldModel returns the QgsFieldModel used in this QSortFilterProxyModel
+    //! Returns the QgsFieldModel used in this QSortFilterProxyModel
     QgsFieldModel* sourceFieldModel();
 
     /**
-     * @brief setFilters set flags that affect how fields are filtered
+     * Set flags that affect how fields are filtered in the model.
      * @param filters are Filter flags
-     * @note added in 2.3
+     * @see filters()
      */
-    QgsFieldProxyModel* setFilters( Filters filters );
+    QgsFieldProxyModel* setFilters( const Filters& filters );
+
+    /** Returns the filters controlling displayed fields.
+     * @see setFilters()
+     */
     const Filters& filters() const;
 
     // QSortFilterProxyModel interface

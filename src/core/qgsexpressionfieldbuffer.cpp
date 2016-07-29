@@ -3,7 +3,7 @@
                           ---------------------------
     begin                : May 27, 2014
     copyright            : (C) 2014 by Matthias Kuhn
-    email                : matthias dot kuhn at gmx dot ch
+    email                : matthias at opengis dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -31,6 +31,12 @@ void QgsExpressionFieldBuffer::addExpression( const QString& exp, const QgsField
 void QgsExpressionFieldBuffer::removeExpression( int index )
 {
   mExpressions.removeAt( index );
+}
+
+void QgsExpressionFieldBuffer::updateExpression( int index, const QString& exp )
+{
+  mExpressions[index].expression = exp;
+  mExpressions[index].cachedExpression = QgsExpression( exp );
 }
 
 void QgsExpressionFieldBuffer::writeXml( QDomNode& layerNode, QDomDocument& document ) const
@@ -64,7 +70,7 @@ void QgsExpressionFieldBuffer::readXml( const QDomNode& layerNode )
   {
     QDomNodeList fields = expressionFieldsElem.elementsByTagName( "field" );
 
-    for ( unsigned int i = 0; i < fields.length(); ++i )
+    for ( int i = 0; i < fields.size(); ++i )
     {
       QDomElement field = fields.at( i ).toElement();
       QString exp = field.attribute( "expression" );
@@ -72,7 +78,7 @@ void QgsExpressionFieldBuffer::readXml( const QDomNode& layerNode )
       QString comment = field.attribute( "comment" );
       int precision = field.attribute( "precision" ).toInt();
       int length = field.attribute( "length" ).toInt();
-      QVariant::Type type = ( QVariant::Type )( field.attribute( "type" ).toInt() );
+      QVariant::Type type = static_cast< QVariant::Type >( field.attribute( "type" ).toInt() );
       QString typeName = field.attribute( "typeName" );
 
       mExpressions.append( ExpressionField( exp, QgsField( name, type, typeName, length, precision, comment ) ) );

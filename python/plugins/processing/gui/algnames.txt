@@ -1,0 +1,34 @@
+gdalogr:executesql,Execute SQL on vector layer
+gdalogr:rasterinfo,Raster layer information
+gdalogr:merge,Merge raster layers
+gdalogr:ogr2ogr,Export vector layer
+gdalogr:vectorinfo,Vector layer information
+gdalogr:pcttorgb,PCT to RGB
+gdalogr:rgbtopct,RGB to PCT
+gdalogr:sieve,Remove small pixel clumps (nearest neighbour)
+gdalogr:translate,Export raster layer
+gdalogr:warpreproject,Reproject raster layer
+gdalogr:polygonize,Vectorize raster layer
+gdalogr:gridrasterize,Rasterize vector layer
+gdalogr:gridnearestneighbor,Interpolate (Nearest Neighbor)
+gdalogr:griddatametrics,Interpolate (Data metrics)
+gdalogr:gridinvdist,Interpolate (Inverse distance weighting)
+gdalogr:gridaverage,Interpolate (Average)
+gdalogr:contour,Contour lines
+qgis:creategrid,Create graticule
+saga:changegridvalues,Reclassify (simple)
+saga:creategraticule,Create graticule from extent
+saga:cubicsplineapproximation,Interpolate (Cubic spline)
+saga:filterclumps,Remove small pixel clumps (to no-data)
+saga:mergeshapeslayers,Merge vector layers
+saga:modifedquadraticshepard,Interpolate (Modified quadratic shepard)
+saga:naturalneighbour,Interpolate (Natural neighbor)
+saga:polygondissolvebyattribute,Polygon dissolve (by attribute)
+saga:polygondissolveallpolygons,Polygon dissolve (all polygons)
+saga:intersect,Polygon intersection
+saga:difference,Polygon difference
+saga:update,Polygon update
+saga:identity,Polygon identity
+saga:union,Polygon union
+saga:symmetricaldifference,Polygon symmetrical difference
+saga:simulation,Fire spreading simulation

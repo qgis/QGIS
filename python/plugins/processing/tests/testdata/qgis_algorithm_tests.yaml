@@ -1,0 +1,394 @@
+# See ../README.md for a description of the file format
+
+tests:
+  - name: Centroid # Human readable identifier
+    algorithm: qgis:polygoncentroids # Algorithm name
+    params: # A list of parameters (only 1 here)
+      - type: vector    # Param is a vector layer
+        name: polys.gml # file name
+    results: # A map of results (only one here)
+      OUTPUT_LAYER:
+        type: vector   # Expected result is a vector layer
+        name: expected/polys_centroid.gml # The relative filepath from the processing testdata directory
+        compare:
+          geometry:
+            precision: 7
+
+  - name: Delete Holes
+    algorithm: qgis:deleteholes
+    params:
+    - name: polys.gml
+      type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_deleteholes.gml
+        type: vector
+        
+  - algorithm: qgis:clip
+    name: Clip lines by polygons
+    params:
+      INPUT:
+        name: custom/lines2.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_lines_by_polygon.gml
+        type: vector
+          
+        
+  - algorithm: qgis:clip
+    name: Clip lines by multipolygon
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      OVERLAY:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_lines_by_multipolygon.gml
+        type: vector
+          
+  - algorithm: qgis:clip
+    name: Clip polygons by multipolygons
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      OVERLAY:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_polys_by_multipolygon.gml
+        type: vector
+        
+  - algorithm: qgis:clip
+    name: Clip multipolygons by polygons
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_multipolygons_by_polygons.gml
+        type: vector
+          
+  - algorithm: qgis:clip
+    name: Clip points by polygons
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_points_by_polygons.gml
+        type: vector
+    
+  - algorithm: qgis:clip
+    name: Clip points by multipolygons
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      OVERLAY:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_points_by_multipolygons.gml
+        type: vector
+  
+            
+  # These datasets should produce a geometry collection and not a polygon only
+  # dataset. If the algorithm is fixed, a new test should be introduced to
+  # check this behavior.
+  # This test should stay in place because for shapefiles there should always
+  # be a polygon result created since it does not support geometry collections.
+  - name: Intersection (Collection Fallback)
+    algorithm: qgis:intersection
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      INPUT2:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection_collection_fallback.shp
+        type: vector
+
+  - name: Densify geometries
+    algorithm: qgis:densifygeometries
+    params:
+    - name: multipolys.gml
+      type: vector
+    - '4'
+    results:
+      OUTPUT:
+        name: expected/multipolys_densify.gml
+        type: vector
+
+  - name: Polygons to Lines
+    algorithm: qgis:polygonstolines
+    params:
+    - name: multipolys.gml
+      type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_to_lines.gml
+        type: vector
+
+  - algorithm: qgis:basicstatisticsfornumericfields
+    name: Test (qgis:basicstatisticsfornumericfields)
+    params:
+    - name: multipolys.gml
+      type: vector
+    - 'Bfloatval'
+    results:
+      OUTPUT_HTML_FILE:
+        name: basic_statistics_numeric_float.html
+        type: regex
+        rules:
+          - 'Analyzed layer: multipolys.gml'
+          - 'Analyzed field: Bfloatval'
+          - 'Count: 3'
+          - 'Unique values: 3'
+          - 'Minimum value: -0.123'
+          - 'Maximum value: 0.123'
+          - 'Range: 0.246'
+          - 'Sum: 0.0'
+          - 'Mean value: 0.0'
+          - 'Median value: 0.0'
+          - 'Standard deviation: 0.100429079454'
+          - 'Coefficient of Variation: 0'
+          - 'Minority \(rarest occurring value\): -0.123'
+          - 'Majority \(most frequently occurring value\): -0.123'
+          - 'First quartile: -0.0615'
+          - 'Third quartile: 0.0615'
+          - 'NULL \(missing\) values: 1'
+          - 'Interquartile Range \(IQR\): 0.123'
+
+  - algorithm: qgis:basicstatisticsfortextfields
+    name: Test (qgis:basicstatisticsfortextfields)
+    params:
+    - name: multipolys.gml
+      type: vector
+    - 'Bname'
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_string.html
+        type: file
+
+  # Split lines with lines considers two cases
+  # case 1: two different layers
+  - algorithm: qgis:splitlineswithlines
+    name: Split lines with lines
+    params:
+      INPUT_A:
+        name: lines.gml
+        type: vector
+      INPUT_B:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_split_with_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  # case 2 split line layer with iself
+  - algorithm: qgis:splitlineswithlines
+    name: Split lines with same lines
+    params:
+      INPUT_A:
+        name: custom/lines2.gml
+        type: vector
+      INPUT_B:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_split_with_same_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:addautoincrementalfield
+    name: Add autoincremental field
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field.gml
+        type: vector
+
+  # Eliminate sliver polygons
+  # case 1: merge with largest area
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons largest area
+    params:
+      ATTRIBUTE: 'fid'
+      COMPARISON: '0'
+      COMPARISONVALUE: 'polys.5'
+      INPUT:
+        name: polys.gml
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '0'
+    results:
+      OUTPUT:
+        name: expected/eliminate_largest_area.gml
+        type: vector
+
+  # case 2: merge with smallest area
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons smallest area
+    params:
+      ATTRIBUTE: 'fid'
+      COMPARISON: '0'
+      COMPARISONVALUE: 'polys.5'
+      INPUT:
+        name: polys.gml
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '1'
+    results:
+      OUTPUT:
+        name: expected/eliminate_smallest_area.gml
+        type: vector
+
+  # case 3: merge with longest common boundary
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons largest area
+    params:
+      ATTRIBUTE: 'fid'
+      COMPARISON: '0'
+      COMPARISONVALUE: 'polys.5'
+      INPUT:
+        name: polys.gml
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '2'
+    results:
+      OUTPUT:
+        name: expected/eliminate_largest_area.gml
+        type: vector
+
+
+  - name: Dissolve with geometries reported as valid but as invalid with isGeosValid
+    algorithm: qgis:dissolve
+    params:
+      DISSOLVE_ALL: 'True'
+      FIELD: None
+      INPUT:
+        name: custom/innerRingTouchesOuterRing.gml
+        type: vector
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/innerRingTouchesOuterRing_output.gml
+        compare:
+          geometry:
+            precision: 5
+
+  - name: Dissolve with NULL geometries
+    algorithm: qgis:dissolve
+    params:
+      DISSOLVE_ALL: 'True'
+      FIELD: None
+      INPUT:
+        name: custom/nullGeometryDissolve.gml
+        type: vector
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/nullGeometryDissolve_output.gml
+        compare:
+          geometry:
+            precision: 7
+
+  - name: Dissolve with invalid geometries
+    algorithm: qgis:dissolve
+    params:
+      DISSOLVE_ALL: 'True'
+      FIELD: None
+      INPUT:
+        name: custom/PolygonDissolveTest.gml
+        type: vector
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/PolygonDissolveTest_output.gml
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Basic polygon buffer
+    params:
+      DISSOLVE: 'False'
+      DISTANCE: 0.5
+      INPUT:
+        name: polys.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Polygon buffer with dissolve
+    params:
+      DISSOLVE: 'True'
+      DISTANCE: 0.5
+      INPUT:
+        name: polys.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_polys_dissolve.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:rectanglesovalsdiamondsfixed
+    name: Create fixed distance rectange buffers around points
+    params:
+      HEIGHT: 0.25
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      ROTATION: 45
+      SEGMENTS: 36
+      SHAPE: 0
+      WIDTH: 0.5
+    results:
+      OUTPUT_LAYER:
+        name: expected/rectanglesovalsdiamondsfixed.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7

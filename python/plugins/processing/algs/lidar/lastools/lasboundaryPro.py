@@ -4,7 +4,7 @@
 ***************************************************************************
     lasboundaryPro.py
     ---------------------
-    Date                 : October 2014
+    Date                 : October 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -24,34 +24,35 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 
+
 class lasboundaryPro(LAStoolsAlgorithm):
 
     MODE = "MODE"
-    MODES = ["points", "spatial index (the *.lax file)", "bounding box"]
+    MODES = ["points", "spatial index (the *.lax file)", "bounding box", "tile bounding box"]
     CONCAVITY = "CONCAVITY"
     DISJOINT = "DISJOINT"
     HOLES = "HOLES"
 
     def defineCharacteristics(self):
-        self.name = "lasboundaryPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasboundaryPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParameter(ParameterSelection(lasboundaryPro.MODE,
-            self.tr("compute boundary based on"), lasboundaryPro.MODES, 0))
+                                             self.tr("compute boundary based on"), lasboundaryPro.MODES, 0))
         self.addParameter(ParameterNumber(lasboundaryPro.CONCAVITY,
-            self.tr("concavity"), 0, None, 50.0))
+                                          self.tr("concavity"), 0, None, 50.0))
         self.addParameter(ParameterBoolean(lasboundaryPro.HOLES,
-            self.tr("interior holes"), False))
+                                           self.tr("interior holes"), False))
         self.addParameter(ParameterBoolean(lasboundaryPro.DISJOINT,
-            self.tr("disjoint polygon"), False))
+                                           self.tr("disjoint polygon"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersVectorOutputFormatGUI()
@@ -68,12 +69,14 @@ class lasboundaryPro(LAStoolsAlgorithm):
         if (mode != 0):
             if (mode == 1):
                 commands.append("-use_lax")
-            else:
+            elif (mode == 2):
                 commands.append("-use_bb")
+            else:
+                commands.append("-use_tile_bb")
         else:
             concavity = self.getParameterValue(lasboundaryPro.CONCAVITY)
             commands.append("-concavity")
-            commands.append(str(concavity))
+            commands.append(unicode(concavity))
             if self.getParameterValue(lasboundaryPro.HOLES):
                 commands.append("-holes")
             if self.getParameterValue(lasboundaryPro.DISJOINT):

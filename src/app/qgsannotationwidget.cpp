@@ -24,7 +24,7 @@
 #include <QColorDialog>
 
 
-QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QWidget( parent, f ), mItem( item ), mMarkerSymbol( 0 )
+QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QWidget( parent, f ), mItem( item ), mMarkerSymbol( nullptr )
 {
   setupUi( this );
 
@@ -54,10 +54,12 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
     mBackgroundColorButton->setNoColorString( tr( "Transparent" ) );
     mBackgroundColorButton->setShowNoColor( true );
 
+    connect( mBackgroundColorButton, SIGNAL( colorChanged( QColor ) ), this, SIGNAL( backgroundColorChanged( QColor ) ) );
+
     const QgsMarkerSymbolV2* symbol = mItem->markerSymbol();
     if ( symbol )
     {
-      mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( symbol->clone() );
+      mMarkerSymbol.reset( symbol->clone() );
       updateCenterIcon();
     }
 
@@ -67,7 +69,6 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
 
 QgsAnnotationWidget::~QgsAnnotationWidget()
 {
-  delete mMarkerSymbol;
 }
 
 void QgsAnnotationWidget::apply()
@@ -78,8 +79,7 @@ void QgsAnnotationWidget::apply()
     mItem->setFrameBorderWidth( mFrameWidthSpinBox->value() );
     mItem->setFrameColor( mFrameColorButton->color() );
     mItem->setFrameBackgroundColor( mBackgroundColorButton->color() );
-    mItem->setMarkerSymbol( mMarkerSymbol );
-    mMarkerSymbol = 0; //item takes ownership
+    mItem->setMarkerSymbol( mMarkerSymbol->clone() );
     mItem->update();
   }
 }
@@ -98,28 +98,17 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
   {
     return;
   }
-  QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mMarkerSymbol->clone() );
-  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
+  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;
   }
   else
   {
-    delete mMarkerSymbol;
-    mMarkerSymbol = markerSymbol;
+    mMarkerSymbol.reset( markerSymbol );
     updateCenterIcon();
   }
-}
-
-void QgsAnnotationWidget::on_mFrameColorButton_colorChanged( const QColor &color )
-{
-  if ( !mItem )
-  {
-    return;
-  }
-
-  mItem->setFrameColor( color );
 }
 
 void QgsAnnotationWidget::updateCenterIcon()
@@ -128,17 +117,7 @@ void QgsAnnotationWidget::updateCenterIcon()
   {
     return;
   }
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol, mMapMarkerButton->iconSize() );
+  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol.data(), mMapMarkerButton->iconSize() );
   mMapMarkerButton->setIcon( icon );
-}
-
-void QgsAnnotationWidget::on_mBackgroundColorButton_colorChanged( const QColor &color )
-{
-  if ( !mItem )
-  {
-    return;
-  }
-
-  mItem->setFrameBackgroundColor( color );
 }
 

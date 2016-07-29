@@ -25,7 +25,7 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 
 
-/**
+/** \ingroup core
  * The QgsMapLayerLegend class is abstract interface for implementations
  * of legends for one map layer.
  *
@@ -35,7 +35,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsMapLayerLegend( QObject *parent = 0 );
+    explicit QgsMapLayerLegend( QObject *parent = nullptr );
 
     // TODO: type, load/save settings
 
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 };
 
 
-/**
+/** \ingroup core
  * Miscellaneous utility functions for handling of map layer legend
  *
  * @note added in 2.6
@@ -85,11 +85,14 @@ class CORE_EXPORT QgsMapLayerLegendUtils
 
 #include <QHash>
 
-/** Default legend implementation for vector layers
+/** \ingroup core
+ * Default legend implementation for vector layers
  * @note added in 2.6
  */
 class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 {
+    Q_OBJECT
+
   public:
     explicit QgsDefaultVectorLayerLegend( QgsVectorLayer* vl );
 
@@ -100,11 +103,14 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 };
 
 
-/** Default legend implementation for raster layers
+/** \ingroup core
+ * Default legend implementation for raster layers
  * @note added in 2.6
  */
 class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 {
+    Q_OBJECT
+
   public:
     explicit QgsDefaultRasterLayerLegend( QgsRasterLayer* rl );
 
@@ -115,11 +121,14 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 };
 
 
-/** Default legend implementation for plugin layers
+/** \ingroup core
+ * Default legend implementation for plugin layers
  * @note added in 2.6
  */
 class CORE_EXPORT QgsDefaultPluginLayerLegend : public QgsMapLayerLegend
 {
+    Q_OBJECT
+
   public:
     explicit QgsDefaultPluginLayerLegend( QgsPluginLayer* pl );
 

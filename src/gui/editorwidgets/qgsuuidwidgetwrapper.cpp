@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,11 +18,13 @@
 #include <QUuid>
 
 QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mLabel( nullptr )
+    , mLineEdit( nullptr )
 {
 }
 
-QVariant QgsUuidWidgetWrapper::value()
+QVariant QgsUuidWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -45,6 +47,11 @@ void QgsUuidWidgetWrapper::initWidget( QWidget* editor )
   mLabel = qobject_cast<QLabel*>( editor );
   if ( mLineEdit )
     mLineEdit->setEnabled( false );
+}
+
+bool QgsUuidWidgetWrapper::valid() const
+{
+  return mLineEdit || mLabel;
 }
 
 void QgsUuidWidgetWrapper::setValue( const QVariant& value )

@@ -3,12 +3,16 @@
 
 <qgisgrassmodule label="Bicubic or bilinear spline interpolation with Tykhonov regularization" module="v.surf.bspline">
 	<option key="input"/>
-	<option key="sparse" />
-        <option key="sie" advanced="yes"/>
-        <option key="sin" advanced="yes"/>
+	<option key="sparse" version_max="6"/>
+	<option key="sparse_input" version_min="7"/>
+        <option key="sie" advanced="yes" version_max="6"/>
+        <option key="ew_step" advanced="yes" version_min="7"/>
+        <option key="sin" advanced="yes" version_max="6"/>
+        <option key="ns_step" advanced="yes" version_min="7"/>
         <option key="method" advanced="yes"/>
         <option key="lambda_i" advanced="yes"/>
         <option key="output" advanced="yes"/>
-	<option key="raster" />
+	<option key="raster" version_max="6"/>
+	<option key="raster_output" version_min="7"/>
 	<flag key="c" />
 </qgisgrassmodule>

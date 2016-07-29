@@ -18,7 +18,7 @@
 
 #include <QStringList>
 
-/**
+/** \ingroup core
  * Base class for utility classes that encapsulate information necessary
  * for rendering of map layers. The rendering is typically done in a background
  * thread, so it is necessary to keep all structures required for rendering away
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsMapLayerRenderer
     QStringList errors() const { return mErrors; }
 
     //! Get access to the ID of the layer rendered by this class
-    QString layerID() const { return mLayerID; }
+    QString layerId() const { return mLayerID; }
 
   protected:
     QStringList mErrors;

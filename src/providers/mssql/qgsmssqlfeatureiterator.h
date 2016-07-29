@@ -20,6 +20,7 @@
 
 #include "qgsmssqlgeometryparser.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfield.h"
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
@@ -29,7 +30,7 @@ class QgsMssqlProvider;
 class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsMssqlFeatureSource( const QgsMssqlProvider* p );
+    explicit QgsMssqlFeatureSource( const QgsMssqlProvider* p );
     ~QgsMssqlFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
@@ -65,6 +66,7 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
     bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
 
     friend class QgsMssqlFeatureIterator;
+    friend class QgsMssqlExpressionCompiler;
 };
 
 class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
@@ -83,9 +85,16 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
   protected:
     void BuildStatement( const QgsFeatureRequest& request );
 
-  private:
+
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
+
+    //! fetch next feature filter expression
+    bool nextFeatureFilterExpression( QgsFeature& f ) override;
+
+  private:
+
+    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     // The current database
     QSqlDatabase mDatabase;
@@ -95,6 +104,9 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
 
     // The current sql statement
     QString mStatement;
+    QString mOrderByClause;
+
+    QString mFallbackStatement;
 
     // Field index of FID column
     long mFidCol;
@@ -104,6 +116,9 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
 
     // for parsing sql geometries
     QgsMssqlGeometryParser mParser;
+
+    bool mExpressionCompiled;
+    bool mOrderByCompiled;
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H

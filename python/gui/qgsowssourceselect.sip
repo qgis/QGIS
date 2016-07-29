@@ -23,7 +23,7 @@ class QgsOWSSourceSelect : QDialog
     };
 
     //! Constructor
-    QgsOWSSourceSelect( QString service, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( const QString& service, QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOWSSourceSelect();
 
@@ -40,9 +40,9 @@ class QgsOWSSourceSelect : QDialog
     //! Loads connections from the file
     void on_mLoadButton_clicked();
 
-    /*! Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+    /** Connects to the database using the stored connection parameters.
+     * Once connected, available layers are displayed.
+     */
     void on_mConnectButton_clicked();
 
     //! Determines the layers the user selected
@@ -87,12 +87,12 @@ class QgsOWSSourceSelect : QDialog
     virtual QStringList selectedLayersFormats();
 
     //! Server CRS supported for currently selected layer item(s)
-    virtual QStringList selectedLayersCRSs();
+    virtual QStringList selectedLayersCrses();
 
     //! List of times (temporalDomain timePosition/timePeriod for currently selected layer item(s)
     virtual QStringList selectedLayersTimes();
 
-    //virtual QStringList layerCRS( int id );
+    //virtual QStringList layerCrs( int id );
 
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -104,10 +104,10 @@ class QgsOWSSourceSelect : QDialog
     void clearFormats();
 
     //! Set supported CRSs
-    void populateCRS();
+    void populateCrs();
 
     //! Clear CRSs
-    void clearCRS();
+    void clearCrs();
 
     //! Populate times
     void populateTimes();
@@ -146,10 +146,10 @@ class QgsOWSSourceSelect : QDialog
     */
 
     //! Returns a textual description for the authority id
-    QString descriptionForAuthId( QString authId );
+    QString descriptionForAuthId( const QString& authId );
 
-    void addWMSListRow( const QDomElement& item, int row );
-    void addWMSListItem( const QDomElement& el, int row, int column );
+    void addWmsListRow( const QDomElement& item, int row );
+    void addWmsListItem( const QDomElement& el, int row, int column );
 
     virtual void enableLayersForCrs( QTreeWidgetItem *item );
 
@@ -157,7 +157,7 @@ class QgsOWSSourceSelect : QDialog
     QString selectedFormat();
 
     //! Returns currently selected Crs
-    QString selectedCRS();
+    QString selectedCrs();
 
     //! Returns currently selected time
     QString selectedTime();

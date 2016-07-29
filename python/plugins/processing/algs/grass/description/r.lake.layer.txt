@@ -5,4 +5,4 @@ ParameterRaster|dem|Elevation|False
 ParameterNumber|wl|Water level|None|None|1000.0
 ParameterRaster|seed|Raster layer with starting point(s) (at least 1 cell > 0)|False
 ParameterBoolean|-n|Use negative depth values for lake raster layer|False
-OutputRaster|lake|Output raster map with lake
+OutputRaster|lake|Lake

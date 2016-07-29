@@ -14,9 +14,11 @@
  * namespace.
  *
  * Written by Christian Stigen Larsen
- * 2012-01-11 -- http://csl.sublevel3.org
+ * http://csl.name
  *
  * Distributed under the modified BSD license.
+ *
+ * 2015-02-17
  */
 
 #ifndef MERSENNE_TWISTER_H

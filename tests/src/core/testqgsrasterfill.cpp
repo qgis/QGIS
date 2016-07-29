@@ -16,13 +16,11 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmapsettings.h>
 #include <qgsmaplayer.h>
@@ -42,6 +40,16 @@
 class TestQgsRasterFill : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsRasterFill()
+        : mTestHasError( false )
+        , mpPolysLayer( 0 )
+        , mRasterFill( 0 )
+        , mFillSymbol( 0 )
+        , mSymbolRenderer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -56,8 +64,8 @@ class TestQgsRasterFill : public QObject
 
   private:
     bool mTestHasError;
-    bool setQml( QString theType );
-    bool imageCheck( QString theType );
+    bool setQml( const QString& theType );
+    bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QgsRasterFillSymbolLayer* mRasterFill;
@@ -78,7 +86,7 @@ void TestQgsRasterFill::initTestCase()
 
   //create some objects that will be used in all tests...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
@@ -113,7 +121,7 @@ void TestQgsRasterFill::initTestCase()
 }
 void TestQgsRasterFill::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -127,9 +135,9 @@ void TestQgsRasterFill::cleanupTestCase()
 
 void TestQgsRasterFill::init()
 {
-  mRasterFill->setImageFilePath( mTestDataDir + QString( "sample_image.png" ) );
+  mRasterFill->setImageFilePath( mTestDataDir + QLatin1String( "sample_image.png" ) );
   mRasterFill->setWidth( 30.0 );
-  mRasterFill->setWidthUnit( QgsSymbolV2::Pixel );
+  mRasterFill->setWidthUnit( QgsUnitTypes::RenderPixels );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );
   mRasterFill->setAlpha( 1.0 );
   mRasterFill->setOffset( QPointF( 0, 0 ) );
@@ -166,7 +174,7 @@ void TestQgsRasterFill::alpha()
 void TestQgsRasterFill::offset()
 {
   mReport += "<h2>Raster fill offset</h2>\n";
-  mRasterFill->setOffset( QPointF( 5, 10 ) );;
+  mRasterFill->setOffset( QPointF( 5, 10 ) );
   bool result = imageCheck( "rasterfill_offset" );
   QVERIFY( result );
 }
@@ -174,7 +182,7 @@ void TestQgsRasterFill::offset()
 void TestQgsRasterFill::width()
 {
   mReport += "<h2>Raster fill width</h2>\n";
-  mRasterFill->setWidthUnit( QgsSymbolV2::MM );
+  mRasterFill->setWidthUnit( QgsUnitTypes::RenderMillimeters );
   mRasterFill->setWidth( 5.0 );
   bool result = imageCheck( "rasterfill_width" );
   QVERIFY( result );
@@ -184,7 +192,7 @@ void TestQgsRasterFill::width()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsRasterFill::setQml( QString theType )
+bool TestQgsRasterFill::setQml( const QString& theType )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -199,12 +207,14 @@ bool TestQgsRasterFill::setQml( QString theType )
   return myStyleFlag;
 }
 
-bool TestQgsRasterFill::imageCheck( QString theTestType )
+bool TestQgsRasterFill::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "symbol_rasterfill" );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );

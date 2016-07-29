@@ -4,7 +4,7 @@
   -------------------
          begin                : August 2012
          copyright            : (C) Matthias Kuhn
-         email                : matthias dot kuhn at gmx dot ch
+         email                : matthias at opengis dot ch
 
  ***************************************************************************
  *                                                                         *
@@ -22,30 +22,35 @@
 #include <ui_qgsdiagrampropertiesbase.h>
 
 class QgsVectorLayer;
+class QgsMapCanvas;
 
 class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase
 {
     Q_OBJECT
 
   public:
-    QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent );
-    /**Adds an attribute from the list of available attributes to the assigned attributes with a random color.*/
+    QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas *canvas );
+
+    ~QgsDiagramProperties();
+
+    /** Adds an attribute from the list of available attributes to the assigned attributes with a random color.*/
     void addAttribute( QTreeWidgetItem * item );
 
   public slots:
     void apply();
     void on_mDiagramTypeComboBox_currentIndexChanged( int index );
-    void on_mTransparencySlider_valueChanged( int value );
     void on_mAddCategoryPushButton_clicked();
     void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
     void on_mFindMaximumValueButton_clicked();
-    void on_mDisplayDiagramsGroupBox_toggled( bool checked );
     void on_mRemoveCategoryPushButton_clicked();
     void on_mDiagramFontButton_clicked();
     void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
     void on_mEngineSettingsButton_clicked();
-    void showSizeAttributeExpressionDialog();
     void showAddAttributeExpressionDialog();
+    void on_mDiagramStackedWidget_currentChanged( int index );
+    void on_mPlacementComboBox_currentIndexChanged( int index );
+    void on_mButtonSizeLegendSymbol_clicked();
+    void scalingTypeChanged();
 
   protected:
     QFont mDiagramFont;
@@ -53,7 +58,12 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     QgsVectorLayer* mLayer;
 
   private:
-    int mAvailableAttributes;
+    // Keeps track of the diagram type to properly save / restore settings when the diagram type combo box is set to no diagram.
+    QString mDiagramType;
+    QScopedPointer< QgsMarkerSymbolV2 > mSizeLegendSymbol;
+
+    QString guessLegendText( const QString &expression );
+    QgsMapCanvas *mMapCanvas;
 };
 
 #endif // QGSDIAGRAMPROPERTIES_H

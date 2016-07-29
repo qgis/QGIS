@@ -15,22 +15,23 @@
 #ifndef QGSDIAGRAM_H
 #define QGSDIAGRAM_H
 
-#include "qgsfeature.h"
 #include <QPen>
 #include <QBrush>
+#include "qgsexpression.h" //for QMap with QgsExpression
 
 class QPainter;
 class QPointF;
 class QgsDiagramSettings;
 class QgsDiagramInterpolationSettings;
-
+class QgsFeature;
 class QgsRenderContext;
+class QgsExpressionContext;
+class QgsFields;
+class QgsAttributes;
 
-class QgsExpression;
 
-
-
-/**Base class for all diagram types*/
+/** \ingroup core
+ * Base class for all diagram types*/
 class CORE_EXPORT QgsDiagram
 {
   public:
@@ -40,18 +41,36 @@ class CORE_EXPORT QgsDiagram
     virtual QgsDiagram* clone() const = 0;
 
     void clearCache();
-    QgsExpression* getExpression( const QString& expression, const QgsFields* fields );
+
+    //! @deprecated use QgsExpressionContext variant instead
+    Q_DECL_DEPRECATED QgsExpression* getExpression( const QString& expression, const QgsFields* fields );
+
+    /** Returns a prepared expression for the specified context.
+     * @param expression expression string
+     * @param context expression context
+     * @note added in QGIS 2.12
+     */
+    QgsExpression* getExpression( const QString& expression, const QgsExpressionContext& context );
+
     /** @deprecated `void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )` should be used instead */
-    virtual Q_DECL_DEPRECATED void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
-    /**Draws the diagram at the given position (in pixel coordinates)*/
-    virtual void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) = 0;
+    virtual Q_DECL_DEPRECATED void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position );
+    /** Draws the diagram at the given position (in pixel coordinates)*/
+    virtual void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position ) = 0;
     virtual QString diagramName() const = 0;
-    /**Returns the size in map units the diagram will use to render.*/
+    /** Returns the size in map units the diagram will use to render.*/
     virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) = 0;
     /** @deprecated `QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )` should be used instead */
     virtual Q_DECL_DEPRECATED QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
-    /**Returns the size in map units the diagram will use to render. Interpolate size*/
+    /** Returns the size in map units the diagram will use to render. Interpolate size*/
     virtual QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) = 0;
+
+    /** Returns the size of the legend item for the diagram corresponding to a specified value.
+     * @param value value to return legend item size for
+     * @param s diagram settings
+     * @param is interpolation settings
+     * @note added in QGIS 2.16
+     */
+    virtual double legendSize( double value, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) const = 0;
 
   protected:
     QgsDiagram();
@@ -71,7 +90,7 @@ class CORE_EXPORT QgsDiagram
      *
      *  @return The converted size for rendering
      */
-    QSizeF sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c );
+    QSizeF sizePainterUnits( QSizeF size, const QgsDiagramSettings& s, const QgsRenderContext& c );
 
     /** Calculates a length to match the current settings and rendering context
      *  @param l    The length to convert
@@ -89,6 +108,14 @@ class CORE_EXPORT QgsDiagram
      *  @return The properly scaled font for rendering
      */
     QFont scaledFont( const QgsDiagramSettings& s, const QgsRenderContext& c );
+
+    /** Returns the scaled size of a diagram for a value, respecting the specified diagram interpolation settings.
+     * @param value value to calculate corresponding circular size for
+     * @param s diagram settings
+     * @param is interpolation settings
+     * @note added in QGIS 2.16
+     */
+    QSizeF sizeForValue( double value, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) const;
 
   private:
     QMap<QString, QgsExpression*> mExpressions;

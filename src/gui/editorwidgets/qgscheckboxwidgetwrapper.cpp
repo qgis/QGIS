@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,12 +16,14 @@
 #include "qgscheckboxwidgetwrapper.h"
 
 QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mCheckBox( nullptr )
+    , mGroupBox( nullptr )
 {
 }
 
 
-QVariant QgsCheckboxWidgetWrapper::value()
+QVariant QgsCheckboxWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -33,6 +35,14 @@ QVariant QgsCheckboxWidgetWrapper::value()
 
 
   return v;
+}
+
+void QgsCheckboxWidgetWrapper::showIndeterminateState()
+{
+  if ( mCheckBox )
+  {
+    whileBlocking( mCheckBox )->setCheckState( Qt::PartiallyChecked );
+  }
 }
 
 QWidget* QgsCheckboxWidgetWrapper::createWidget( QWidget* parent )
@@ -51,15 +61,21 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget* editor )
     connect( mGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( valueChanged( bool ) ) );
 }
 
+bool QgsCheckboxWidgetWrapper::valid() const
+{
+  return mCheckBox || mGroupBox;
+}
+
 void QgsCheckboxWidgetWrapper::setValue( const QVariant& value )
 {
+  bool state = ( value == config( "CheckedState" ) );
   if ( mGroupBox )
   {
-    mGroupBox->setChecked( value == config( "CheckedState" ) );
+    mGroupBox->setChecked( state );
   }
 
   if ( mCheckBox )
   {
-    mCheckBox->setChecked( value == config( "CheckedState" ) );
+    mCheckBox->setChecked( state );
   }
 }

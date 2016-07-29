@@ -1,4 +1,4 @@
-/**Interface class for interpolations. Interpolators take
+/** Interface class for interpolations. Interpolators take
 the vertices of a vector layer as base data. The z-Value
 can be an attribute or the z-coordinates in case of 25D types*/
 class QgsInterpolator
@@ -8,7 +8,7 @@ class QgsInterpolator
 %End
 
   public:
-    /**Describes the type of input data*/
+    /** Describes the type of input data*/
     enum InputType
     {
       POINTS,
@@ -16,7 +16,7 @@ class QgsInterpolator
       BREAK_LINES
     };
 
-    /**A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)*/
+    /** A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)*/
     struct LayerData
     {
       QgsVectorLayer* vectorLayer;
@@ -29,7 +29,7 @@ class QgsInterpolator
 
     virtual ~QgsInterpolator();
 
-    /**Calculates interpolation value for map coordinates x, y
+    /** Calculates interpolation value for map coordinates x, y
        @param x x-coordinate (in map units)
        @param y y-coordinate (in map units)
        @param result out: interpolation result
@@ -40,7 +40,7 @@ class QgsInterpolator
     // const QList<LayerData>& layerData() const;
 
   protected:
-    /**Caches the vertex and value data from the provider. All the vertex data
+    /** Caches the vertex and value data from the provider. All the vertex data
      will be held in virtual memory
     @return 0 in case of success*/
     int cacheBaseData();

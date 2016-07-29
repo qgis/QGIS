@@ -144,6 +144,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mDatumTransformTreeWidget</tabstop>
+  <tabstop>mRememberSelectionCheckBox</tabstop>
+  <tabstop>mHideDeprecatedCheckBox</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

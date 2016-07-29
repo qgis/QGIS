@@ -33,30 +33,29 @@ CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas )
   QPixmap myCursor = QPixmap(( const char ** ) capture_point_cursor );
   mCursor = QCursor( myCursor, 8, 8 ); //8,8 is the point in the cursor where clicks register
   mpMapCanvas = thepCanvas;
-  mpRubberBand = new QgsRubberBand( mpMapCanvas, QGis::Polygon );
+  mpRubberBand = new QgsRubberBand( mpMapCanvas, Qgis::Polygon );
   mpRubberBand->setColor( Qt::red );
   mpRubberBand->setWidth( 1 );
 }
 
 CoordinateCaptureMapTool::~CoordinateCaptureMapTool()
 {
-  if ( mpRubberBand != 0 )
-    delete mpRubberBand;
+  delete mpRubberBand;
 }
 
-void CoordinateCaptureMapTool::canvasMoveEvent( QMouseEvent * thepEvent )
+void CoordinateCaptureMapTool::canvasMoveEvent( QgsMapMouseEvent * thepEvent )
 {
   QgsPoint myOriginalPoint =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x(), thepEvent->y() );
   emit mouseMoved( myOriginalPoint );
 }
 
-void CoordinateCaptureMapTool::canvasPressEvent( QMouseEvent * thepEvent )
+void CoordinateCaptureMapTool::canvasPressEvent( QgsMapMouseEvent * thepEvent )
 {
   Q_UNUSED( thepEvent );
 }
 
-void CoordinateCaptureMapTool::canvasReleaseEvent( QMouseEvent * thepEvent )
+void CoordinateCaptureMapTool::canvasReleaseEvent( QgsMapMouseEvent * thepEvent )
 {
   QgsPoint myOriginalPoint =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x(), thepEvent->y() );
@@ -73,7 +72,7 @@ void CoordinateCaptureMapTool::canvasReleaseEvent( QMouseEvent * thepEvent )
   QgsPoint myPoint4 =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x() - 1, thepEvent->y() + 1 );
 
-  mpRubberBand->reset( QGis::Polygon );
+  mpRubberBand->reset( Qgis::Polygon );
   // convert screen coordinates to map coordinates
   mpRubberBand->addPoint( myPoint1, false ); //true - update canvas
   mpRubberBand->addPoint( myPoint2, false ); //true - update canvas
@@ -85,6 +84,6 @@ void CoordinateCaptureMapTool::canvasReleaseEvent( QMouseEvent * thepEvent )
 
 void CoordinateCaptureMapTool::deactivate()
 {
-  mpRubberBand->reset( QGis::Line );
+  mpRubberBand->reset( Qgis::Line );
   QgsMapTool::deactivate();
 }

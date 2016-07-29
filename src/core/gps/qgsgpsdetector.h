@@ -27,12 +27,14 @@
 class QgsGPSConnection;
 struct QgsGPSInformation;
 
-// Class to detect the GPS port
+/** \ingroup core
+ * Class to detect the GPS port
+ */
 class CORE_EXPORT QgsGPSDetector : public QObject
 {
     Q_OBJECT
   public:
-    QgsGPSDetector( QString portName );
+    QgsGPSDetector( const QString& portName );
     ~QgsGPSDetector();
 
     static QList< QPair<QString, QString> > availablePorts();

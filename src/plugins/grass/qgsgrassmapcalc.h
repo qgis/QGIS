@@ -14,6 +14,7 @@
 #ifndef QGSGRASSMAPCALC_H
 #define QGSGRASSMAPCALC_H
 
+#include "qgsgrassmoduleinput.h"
 #include "ui_qgsgrassmapcalcbase.h"
 #include "qgsgrassmodule.h"
 
@@ -67,7 +68,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all ) override;
     QStringList output( int type ) override;
     bool hasOutput( int type ) override
-    { Q_UNUSED( type ); return true; }
+      { Q_UNUSED( type ); return true; }
 
     /** \brief receives contentsMousePressEvent from view */
     void mousePressEvent( QMouseEvent* ) override;
@@ -123,8 +124,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     void setTool( int );
 
     //! Map selection changed
-    void on_mMapComboBox_activated() { mapChanged(); }
-    void mapChanged();
+    void mapChanged( const QString & text );
 
     //! Constant changed
     void on_mConstantLineEdit_textChanged() { constantChanged(); }
@@ -152,7 +152,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QgsGrassMapcalcView *mView;
 
     // Canvas
-    QGraphicsScene *mCanvas;
+    QGraphicsScene *mCanvasScene;
 
     // Tool
     int mTool;
@@ -164,11 +164,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     // Pointer to current connector
     QgsGrassMapcalcConnector *mConnector;
 
-    // Update combobox with maps
-    void updateMaps();
-
-    //! Vector of map@mapset in the combobox
-    std::vector<QString> mMaps;
+    QgsGrassModuleInputComboBox *mMapComboBox;
 
     //! Last point position
     QPoint mLastPoint;
@@ -219,11 +215,11 @@ class QgsGrassMapcalcFunction
       Function
     };
 
-    QgsGrassMapcalcFunction() {};
+    QgsGrassMapcalcFunction();
     QgsGrassMapcalcFunction( int type, QString name, int count = 2,
                              QString description = "", QString label = "",
                              QString labels = "", bool drawLabel = true );
-    ~QgsGrassMapcalcFunction() {};
+    ~QgsGrassMapcalcFunction();
 
     QString name() { return mName; }
     int     type() { return mType; }
@@ -269,8 +265,8 @@ class QgsGrassMapcalcItem
     QgsGrassMapcalcItem();
     virtual ~QgsGrassMapcalcItem();
 
-    virtual void setSelected( bool s );
-    bool selected( void );
+    virtual void setSelected( bool s ) { mSelected = s; }
+    bool selected( void ) { return mSelected; }
 //    virtual void paint ( QPainter * painter,
 //      const QStyleOptionGraphicsItem * option, QWidget * widget );
 //
@@ -329,7 +325,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
       None
     };
 
-    QgsGrassMapcalcObject( int type );
+    explicit QgsGrassMapcalcObject( int type );
     ~QgsGrassMapcalcObject();
 
     // Set map name, constant value or function/operator
@@ -454,7 +450,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
 class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalcItem
 {
   public:
-    QgsGrassMapcalcConnector( QGraphicsScene * );
+    explicit QgsGrassMapcalcConnector( QGraphicsScene * );
     ~QgsGrassMapcalcConnector();
 
     void paint( QPainter * painter,

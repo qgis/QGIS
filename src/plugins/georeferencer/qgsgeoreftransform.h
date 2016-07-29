@@ -20,7 +20,7 @@
 #include <gdal_alg.h> // just needed for GDALTransformerFunc, forward?
 
 #include <qgspoint.h>
-#include <vector>
+#include <QVector>
 #include <stdexcept>
 
 #include "qgsrasterchangecoords.h"
@@ -30,12 +30,12 @@ class QgsGeorefTransformInterface
   public:
     virtual ~QgsGeorefTransformInterface() { }
 
-    virtual bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) = 0;
+    virtual bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) = 0;
 
     /**
      * Returns the minimum number of GCPs required for parameter fitting.
      */
-    virtual uint getMinimumGCPCount() const = 0;
+    virtual int getMinimumGCPCount() const = 0;
 
     /**
      * Return funtion pointer to the GDALTransformer function.
@@ -72,7 +72,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
       InvalidTransform = 65535
     };
 
-    QgsGeorefTransform( TransformParametrisation parametrisation );
+    explicit QgsGeorefTransform( TransformParametrisation parametrisation );
     QgsGeorefTransform();
     ~QgsGeorefTransform();
 
@@ -98,10 +98,10 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     //! \brief The transform parametrisation currently in use.
     TransformParametrisation transformParametrisation() const;
 
-    /**True for linear, Helmert, first order polynomial*/
+    /** True for linear, Helmert, first order polynomial*/
     bool providesAccurateInverseTransformation() const;
 
-    //! \returns whether the parameters of this transform have been initialised by \ref updateParametersFromGCPs
+    //! \returns whether the parameters of this transform have been initialized by \ref updateParametersFromGCPs
     bool parametersInitialized() const;
 
     /**
@@ -109,10 +109,10 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
      *
      * \returns true on success, false on failure
      */
-    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) override;
+    bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) override;
 
     //! \brief Returns the minimum number of GCPs required for parameter fitting.
-    uint getMinimumGCPCount() const override;
+    int getMinimumGCPCount() const override;
 
     /**
      * \brief Return funtion pointer to the GDALTransformer function.

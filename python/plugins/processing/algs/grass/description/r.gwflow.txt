@@ -1,5 +1,5 @@
 r.gwflow
-r.gwflow - Numerical calculation program for transient, confined and unconfined groundwater flow in two dimensions.
+Numerical calculation program for transient, confined and unconfined groundwater flow in two dimensions.
 Raster (r.*)
 ParameterString|phead|The initial piezometric head in [m]|
 ParameterString|status|Boundary condition status, 0-inactive, 1-active, 2-dirichlet|
@@ -22,4 +22,4 @@ ParameterNumber|error|Error break criteria for iterative solvers (jacobi, sor, c
 ParameterSelection|solver|The type of solver which should solve the symmetric linear equation system|gauss;lu;cholesky;jacobi;sor;cg;bicgstab;pcg
 ParameterString|relax|The relaxation parameter used by the jacobi and sor solver for speedup or stabilizing|1
 ParameterBoolean|-s|Use a sparse matrix, only available with iterative solvers|False
-OutputRaster|output|The map storing the numerical result [m]
+OutputRaster|output|Groundwater flow

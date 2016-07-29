@@ -18,10 +18,11 @@
 #include "qgstilescalewidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
+#include "qgsdockwidget.h"
 
-#include <QDockWidget>
 #include <QMainWindow>
 #include <QMenu>
 #include <QGraphicsView>
@@ -52,13 +53,13 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   QVariant res = rl->dataProvider()->property( "resolutions" );
 
   mResolutions.clear();
-  foreach ( QVariant r, res.toList() )
+  Q_FOREACH ( const QVariant& r, res.toList() )
   {
     QgsDebugMsg( QString( "found resolution: %1" ).arg( r.toDouble() ) );
     mResolutions << r.toDouble();
   }
 
-  if ( mResolutions.size() == 0 )
+  if ( mResolutions.isEmpty() )
     return;
 
   mSlider->setRange( 0, mResolutions.size() - 1 );
@@ -77,24 +78,24 @@ void QgsTileScaleWidget::scaleChanged( double scale )
 {
   Q_UNUSED( scale );
 
-  if ( mResolutions.size() == 0 )
+  if ( mResolutions.isEmpty() )
     return;
 
   double mupp = mMapCanvas->mapUnitsPerPixel();
   QgsDebugMsg( QString( "resolution changed to %1" ).arg( mupp ) );
 
   int i;
-  for ( i = 0; i < mResolutions.size() && mResolutions[i] < mupp; i++ )
-    QgsDebugMsg( QString( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions[i] ).arg( mupp - mResolutions[i] ) );
+  for ( i = 0; i < mResolutions.size() && mResolutions.at( i ) < mupp; i++ )
+    QgsDebugMsg( QString( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions.at( i ) ).arg( mupp - mResolutions.at( i ) ) );
 
   if ( i == mResolutions.size() ||
-       ( i > 0 && mResolutions[i] - mupp > mupp - mResolutions[i-1] ) )
+       ( i > 0 && mResolutions.at( i ) - mupp > mupp - mResolutions.at( i - 1 ) ) )
   {
     QgsDebugMsg( "previous resolution" );
     i--;
   }
 
-  QgsDebugMsg( QString( "selected resolution %1: %2" ).arg( i ).arg( mResolutions[i] ) );
+  QgsDebugMsg( QString( "selected resolution %1: %2" ).arg( i ).arg( mResolutions.at( i ) ) );
   mSlider->blockSignals( true );
   mSlider->setValue( i );
   mSlider->blockSignals( false );
@@ -103,13 +104,13 @@ void QgsTileScaleWidget::scaleChanged( double scale )
 void QgsTileScaleWidget::on_mSlider_valueChanged( int value )
 {
   Q_UNUSED( value );
-  QgsDebugMsg( QString( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions[mSlider->value()] ) );
-  mMapCanvas->zoomByFactor( mResolutions[mSlider->value()] / mMapCanvas->mapUnitsPerPixel() );
+  QgsDebugMsg( QString( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );
+  mMapCanvas->zoomByFactor( mResolutions.at( mSlider->value() ) / mMapCanvas->mapUnitsPerPixel() );
 }
 
 void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
 {
-  QDockWidget *dock = mainWindow->findChild<QDockWidget *>( "theTileScaleDock" );
+  QgsDockWidget *dock = mainWindow->findChild<QgsDockWidget *>( "theTileScaleDock" );
   if ( dock )
   {
     dock->setVisible( dock->isHidden() );
@@ -139,7 +140,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
 
   //create the dock widget
-  dock = new QDockWidget( tr( "Tile scale" ), mainWindow );
+  dock = new QgsDockWidget( tr( "Tile Scale Panel" ), mainWindow );
   dock->setObjectName( "theTileScaleDock" );
   dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mainWindow->addDockWidget( Qt::RightDockWidgetArea, dock );

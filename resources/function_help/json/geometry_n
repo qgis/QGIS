@@ -1,0 +1,8 @@
+{
+  "name": "geometry_n",
+  "type": "function",
+  "description": "Returns a specific geometry from a geometry collection, or null if the input geometry is not a collection.",
+  "arguments": [ {"arg":"geometry","description":"geometry collection"},
+  {"arg":"index","description":"index of geometry to return, where 1 is the first geometry in the collection"} ],
+  "examples": [ { "expression":"geom_to_wkt(geometry_n(geom_from_wkt('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))'),3))", "returns":"'Point (1 0)'"}]
+}

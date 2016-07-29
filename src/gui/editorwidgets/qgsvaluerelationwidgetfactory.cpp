@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,8 +19,9 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationconfigdlg.h"
-#include "qgsvaluerelationwidgetfactory.h"
+#include "qgsvaluerelationsearchwidgetwrapper.h"
 #include "qgsvectorlayer.h"
+#include "qgsvaluerelationwidgetwrapper.h"
 
 #include <QSettings>
 
@@ -32,6 +33,11 @@ QgsValueRelationWidgetFactory::QgsValueRelationWidgetFactory( const QString& nam
 QgsEditorWidgetWrapper* QgsValueRelationWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsValueRelationWidgetWrapper( vl, fieldIdx, editor, parent );
+}
+
+QgsSearchWidgetWrapper *QgsValueRelationWidgetFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
+{
+  return new QgsValueRelationSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
 QgsEditorConfigWidget* QgsValueRelationWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
@@ -53,6 +59,7 @@ QgsEditorWidgetConfig QgsValueRelationWidgetFactory::readConfig( const QDomEleme
   cfg.insert( "OrderByValue", configElement.attribute( "OrderByValue" ) );
   cfg.insert( "AllowMulti", configElement.attribute( "AllowMulti" ) );
   cfg.insert( "AllowNull", configElement.attribute( "AllowNull" ) );
+  cfg.insert( "UseCompleter", configElement.attribute( "UseCompleter" ) );
 
   return cfg;
 }
@@ -70,6 +77,7 @@ void QgsValueRelationWidgetFactory::writeConfig( const QgsEditorWidgetConfig& co
   configElement.setAttribute( "OrderByValue", config.value( "OrderByValue" ).toBool() );
   configElement.setAttribute( "AllowMulti", config.value( "AllowMulti" ).toBool() );
   configElement.setAttribute( "AllowNull", config.value( "AllowNull" ).toBool() );
+  configElement.setAttribute( "UseCompleter", config.value( "UseCompleter" ).toBool() );
 }
 
 QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
@@ -90,7 +98,7 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
 
   if ( config.value( "AllowMulti" ).toBool() )
   {
-    QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
+    QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
     QStringList valueList;
 
     Q_FOREACH ( const QgsValueRelationWidgetWrapper::ValueRelationItem& item, vrCache )
@@ -121,6 +129,22 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
   }
 
   return QString( "(%1)" ).arg( value.toString() );
+}
+
+QVariant QgsValueRelationWidgetFactory::sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
+{
+  return representValue( vl, fieldIdx, config, cache, value );
+}
+
+Qt::AlignmentFlag QgsValueRelationWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
+{
+  Q_UNUSED( vl );
+  Q_UNUSED( fieldIdx );
+  Q_UNUSED( config );
+
+  QgsDebugMsg( "Entered" );
+
+  return Qt::AlignLeft;
 }
 
 QVariant QgsValueRelationWidgetFactory::createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config )

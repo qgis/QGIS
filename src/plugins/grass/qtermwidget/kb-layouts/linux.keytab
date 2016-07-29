@@ -7,7 +7,7 @@ keyboard "Linux console"
 
 # --------------------------------------------------------------
 #
-# This configuration table allows customizing the
+# This configuration table allows to customize the
 # meaning of the keys.
 #
 # The syntax is that each entry has the form : 
@@ -43,7 +43,7 @@ keyboard "Linux console"
 #
 # If the key is not found here, the text of the
 # key event as provided by QT is emitted, possibly
-# preceded by ESC if the Alt key is pressed.
+# preceeded by ESC if the Alt key is pressed.
 #
 # --------------------------------------------------------------
 
@@ -83,6 +83,11 @@ key Up   -Shift+Ansi-AppCuKeys : "\E[A"
 key Down -Shift+Ansi-AppCuKeys : "\E[B"
 key Right-Shift+Ansi-AppCuKeys : "\E[C"
 key Left -Shift+Ansi-AppCuKeys : "\E[D"
+
+key Up    -Shift+AnyMod+Ansi           : "\E[1;*A"
+key Down  -Shift+AnyMod+Ansi           : "\E[1;*B"
+key Right -Shift+AnyMod+Ansi           : "\E[1;*C"
+key Left  -Shift+AnyMod+Ansi           : "\E[1;*D"
 
 # linux functions keys F1-F5 differ from xterm
 

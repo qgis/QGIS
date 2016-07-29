@@ -1,20 +1,14 @@
 /****************************************************************************
-** $Id: dl_extrusion.h 273 2005-02-28 18:14:39Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2013 RibbonSoft, GmbH. All rights reserved.
 **
 ** This file is part of the dxflib project.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-** 
-** This program is free software; you can redistribute it and/or modify  
+** This file is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
-** the Free Software Foundation; version 2 of the License
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
 **
-** Licensees holding valid dxflib Professional Edition licenses may use
+** Licensees holding valid dxflib Professional Edition licenses may use 
 ** this file in accordance with the dxflib Commercial License
 ** Agreement provided with the Software.
 **
@@ -31,6 +25,8 @@
 #ifndef DL_EXTRUSION_H
 #define DL_EXTRUSION_H
 
+#include "dl_global.h"
+
 #include <math.h>
 
 
@@ -40,28 +36,25 @@
  *
  * @author Andrew Mustun
  */
-class DL_Extrusion
-{
+class DXFLIB_EXPORT DL_Extrusion {
 
-  public:
+public:
 
     /**
      * Default constructor.
      */
-    DL_Extrusion()
-    {
-      direction = new double[3];
-      setDirection( 0.0, 0.0, 1.0 );
-      setElevation( 0.0 );
+    DL_Extrusion() {
+        direction = new double[3];
+        setDirection(0.0, 0.0, 1.0);
+        setElevation(0.0);
     }
 
 
     /**
      * Destructor.
      */
-    ~DL_Extrusion()
-    {
-      delete direction;
+    ~DL_Extrusion() {
+        delete[] direction ;
     }
 
 
@@ -73,33 +66,21 @@ class DL_Extrusion
      * @param elevation Distance of the entities XY plane from the origin of the
      *                  world coordinate system
      */
-    DL_Extrusion( double dx, double dy, double dz, double elevation )
-    {
-      direction = new double[3];
-      setDirection( dx, dy, dz );
-      setElevation( elevation );
+    DL_Extrusion(double dx, double dy, double dz, double elevation) {
+        direction = new double[3];
+        setDirection(dx, dy, dz);
+        setElevation(elevation);
     }
 
 
 
     /**
-     * Sets the direction vector.
+     * Sets the direction vector. 
      */
-    void setDirection( double dx, double dy, double dz )
-    {
-      direction[0] = dx;
-      direction[1] = dy;
-      direction[2] = dz;
-    }
-
-
-
-    /**
-     * @return direction vector.
-     */
-    double* getDirection() const
-    {
-      return direction;
+    void setDirection(double dx, double dy, double dz) {
+        direction[0]=dx;
+        direction[1]=dy;
+        direction[2]=dz;
     }
 
 
@@ -107,11 +88,19 @@ class DL_Extrusion
     /**
      * @return direction vector.
      */
-    void getDirection( double dir[] ) const
-    {
-      dir[0] = direction[0];
-      dir[1] = direction[1];
-      dir[2] = direction[2];
+    double* getDirection() const {
+        return direction;
+    }
+
+
+
+    /**
+     * @return direction vector.
+     */
+    void getDirection(double dir[]) const {
+        dir[0]=direction[0];
+        dir[1]=direction[1];
+        dir[2]=direction[2];
     }
 
 
@@ -119,9 +108,8 @@ class DL_Extrusion
     /**
      * Sets the elevation.
      */
-    void setElevation( double elevation )
-    {
-      this->elevation = elevation;
+    void setElevation(double elevation) {
+        this->elevation = elevation;
     }
 
 
@@ -129,9 +117,8 @@ class DL_Extrusion
     /**
      * @return Elevation.
      */
-    double getElevation() const
-    {
-      return elevation;
+    double getElevation() const {
+        return elevation;
     }
 
 
@@ -139,23 +126,19 @@ class DL_Extrusion
     /**
      * Copies extrusion (deep copies) from another extrusion object.
      */
-    DL_Extrusion &operator= ( const DL_Extrusion& extru )
-    {
-      setDirection( extru.direction[0], extru.direction[1], extru.direction[2] );
-      setElevation( extru.elevation );
+    DL_Extrusion operator = (const DL_Extrusion& extru) {
+        setDirection(extru.direction[0], extru.direction[1], extru.direction[2]);
+        setElevation(extru.elevation);
 
-      return *this;
+        return *this;
     }
 
 
 
-  private:
+private:
     double *direction;
     double elevation;
-
-    DL_Extrusion(const DL_Extrusion &);
 };
 
 #endif
 
-// EOF

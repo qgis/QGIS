@@ -5,4 +5,4 @@ INSTALL (FILES ${MODULE_FILES}
 
 FILE (GLOB CONFIG *.qgc)
 INSTALL (FILES ${CONFIG}
-         DESTINATION ${QGIS_DATA_DIR}/grass/config)
+         DESTINATION ${QGIS_DATA_DIR}/grass/modules)

@@ -22,7 +22,9 @@
 class QgsComposerItem;
 class QgsComposition;
 
-/**A composer command class for adding / removing composer items. If mState == Removed, the command owns the item*/
+/** \ingroup core
+ * A composer command class for adding / removing composer items. If mState == Removed, the command owns the item
+*/
 class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
 {
     Q_OBJECT
@@ -35,7 +37,7 @@ class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
       Removed
     };
 
-    QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent = 0 );
+    QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent = nullptr );
     ~QgsAddRemoveItemCommand();
 
     void redo() override;

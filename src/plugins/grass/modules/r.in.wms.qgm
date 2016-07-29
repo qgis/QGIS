@@ -2,18 +2,29 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Download and import data from WMS server" module="r.in.wms">
-	<option key="mapserver" />
+	<option key="mapserver" version_max="6.4"/>
+	<option key="url" version_min="7.0"/>
 	<option key="layers" />
 	<option key="srs" />
 	<option key="format" />
-	<option key="wmsquery" />
-	<flag key="d" answer="off" />
+	<option key="wms_version" version_min="7.0"/>
+	<option key="wmsquery" version_max="6.4"/>
+	<flag key="d" answer="off" version_max="6.4"/>
 	<flag key="c" answer="off" />
-	<option key="folder" />
-	<option key="wgetoptions" />
-	<option key="curloptions" />
-	<flag key="k" answer="off" />
-	<flag key="p" answer="off" />
+	<option key="folder" version_max="6.4"/>
+	<option key="wgetoptions" version_max="6.4"/>
+	<option key="curloptions" version_max="6.4"/>
+	<flag key="k" answer="off" version_max="6.4"/>
+	<flag key="o" answer="off"/>
+	<flag key="p" answer="off" version_max="6.4"/>
 	<option key="method" />
 	<option key="output" />
+	<option key="maxcols" advanced="yes" version_min="7.0"/>
+	<option key="maxrows" advanced="yes" version_min="7.0"/>
+	<option key="username" advanced="yes" version_min="7.0"/>
+	<option key="password" advanced="yes" version_min="7.0"/>
+	<option key="method" advanced="yes" version_min="7.0"/>
+	<option key="region" advanced="yes" version_min="7.0"/>
+	<option key="bgcolor" advanced="yes" version_min="7.0"/>
+	<option key="urlparams" advanced="yes" version_min="7.0"/>
 </qgisgrassmodule>

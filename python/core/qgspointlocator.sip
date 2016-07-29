@@ -1,4 +1,17 @@
-
+/***************************************************************************
+  qgspointlocator.sip
+  --------------------------------------
+  Date                 : November 2014
+  Copyright            : (C) 2014 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 class QgsPointLocator : QObject
 {
 %TypeHeaderCode
@@ -6,18 +19,49 @@ class QgsPointLocator : QObject
 %End
 
   public:
+
     /** Construct point locator for a layer.
-     *  @arg destCRS if not null, will do the searches on data reprojected to the given CRS
+     *  @arg destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
+     *  do the searches on data reprojected to the given CRS
      *  @arg extent  if not null, will index only a subset of the layer
      */
-    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS = 0, const QgsRectangle* extent = 0 );
+    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem& destinationCrs = QgsCoordinateReferenceSystem(),
+                              const QgsRectangle* extent = nullptr );
 
     ~QgsPointLocator();
 
-    enum Type { Invalid, Vertex, Edge, Area, All };
+    //! Get associated layer
+    //! @note added in QGIS 2.14
+    QgsVectorLayer* layer() const;
+    //! Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
+    //! @note added in QGIS 2.14
+    QgsCoordinateReferenceSystem destinationCrs() const;
+    //! Get extent of the area point locator covers - if null then it caches the whole layer
+    //! @note added in QGIS 2.14
+    const QgsRectangle* extent() const;
+    //! Configure extent - if not null, it will index only that area
+    //! @note added in QGIS 2.14
+    void setExtent( const QgsRectangle* extent );
 
-    /** Prepare the index for queries. Does nothing if the index already exists */
-    void init();
+    enum Type
+    {
+      Invalid, //!< Invalid
+      Vertex,  //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
+      Edge,    //!< Snapped to an edge
+      Area,    //!< Snapped to an area
+      All      //!< Combination of vertex, edge and area
+    };
+
+    typedef QFlags<QgsPointLocator::Type> Types;
+
+    /** Prepare the index for queries. Does nothing if the index already exists.
+     * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
+     * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
+     * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true */
+    bool init( int maxFeaturesToIndex = -1 );
+
+    /** Indicate whether the data have been already indexed */
+    bool hasIndex() const;
 
     struct Match
     {
@@ -27,6 +71,7 @@ class QgsPointLocator : QObject
       Match( QgsPointLocator::Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0 );
 
       QgsPointLocator::Type type() const;
+
 
       bool isValid() const;
       bool hasVertex() const;
@@ -60,6 +105,7 @@ class QgsPointLocator : QObject
     //! Implement the interface and pass its instance to QgsPointLocator or QgsSnappingUtils methods.
     struct MatchFilter
     {
+      virtual ~MatchFilter();
       virtual bool acceptMatch( const QgsPointLocator::Match& match ) = 0;
     };
 
@@ -83,5 +129,13 @@ class QgsPointLocator : QObject
     //! find out if the point is in any polygons
     MatchList pointInPolygon( const QgsPoint& point );
 
+    //
 
+    //! Return how many geometries are cached in the index
+    //! @note added in QGIS 2.14
+    int cachedGeometryCount() const;
+
+  protected:
+    bool rebuildIndex( int maxFeaturesToIndex = -1 );
+    void destroyIndex();
 };

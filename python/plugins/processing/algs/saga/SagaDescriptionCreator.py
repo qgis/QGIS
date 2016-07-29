@@ -44,7 +44,7 @@ class SagaDescriptionCreator:
                 stdin=open(os.devnull),
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
-                )
+            )
             f2.close()
         f.close()
 
@@ -64,7 +64,7 @@ class SagaDescriptionCreator:
                 self.map[libFile[:-8]] = algs
                 f.close()
 
-        print str(self.map)
+        print unicode(self.map)
 
     def createDescriptionFiles(self):
         for lib in self.map.keys():
@@ -72,7 +72,7 @@ class SagaDescriptionCreator:
             for alg in algs:
                 command = ['c:\\saga\\saga_cmd.exe', lib, alg]
                 f = open('c:\\saga\\desc\\' + lib + '_' + alg + '.txt', 'w')
-                print str(command)
+                print unicode(command)
                 subprocess.Popen(
                     command,
                     shell=True,
@@ -80,7 +80,7 @@ class SagaDescriptionCreator:
                     stdin=open(os.devnull),
                     stderr=f,
                     universal_newlines=True,
-                    )
+                )
                 f.close()
 
     def create(self):

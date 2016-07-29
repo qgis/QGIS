@@ -16,15 +16,16 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis  # NOQA
+
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 
-from qgis.core import *
+from qgis.PyQt.QtCore import Qt, QPointF
+from qgis.PyQt.QtGui import QFont
 
-from utilities import (
-    svgSymbolsPath
-)
+from qgis.core import QgsPalLayerSettings
+
+from utilities import svgSymbolsPath
 
 
 # noinspection PyPep8Naming
@@ -57,8 +58,8 @@ class TestPointBase(object):
 
     def test_default_label(self):
         # Default label placement, with text size in points
-        self._Mismatches['TestCanvasPoint'] = 776;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_text_size_map_unit(self):
@@ -67,13 +68,13 @@ class TestPointBase(object):
         font = QFont(self._TestFont)
         font.setPointSizeF(460)
         self.lyr.textFont = font
-        self._Mismatches['TestCanvasPoint'] = 776;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_text_color(self):
-        self._Mismatches['TestCanvasPoint'] = 774;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 774
+        self._ColorTols['TestComposerPdfPoint'] = 2
         # Label color change
         self.lyr.textColor = Qt.blue
         self.checkTest()
@@ -82,8 +83,8 @@ class TestPointBase(object):
         self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
         self._Mismatches['TestComposerImagePoint'] = 800
         self.lyr.shapeDraw = True
-        self._Mismatches['TestCanvasPoint'] = 776;
-        self._ColorTols['TestComposerPdfPoint'] = 1;
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 1
         self.checkTest()
 
     def test_background_rect_w_offset(self):
@@ -102,8 +103,8 @@ class TestPointBase(object):
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2900.0, -450.0)
 
-        self._Mismatches['TestCanvasPoint'] = 774;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 774
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_background_svg(self):
@@ -122,8 +123,8 @@ class TestPointBase(object):
         self.lyr.shapeSizeType = QgsPalLayerSettings.SizeBuffer
         self.lyr.shapeSize = QPointF(100.0, 0.0)
         self._Mismatches['TestComposerPdfVsComposerPoint'] = 580
-        self._Mismatches['TestCanvasPoint'] = 776;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_background_svg_w_offset(self):
@@ -145,8 +146,8 @@ class TestPointBase(object):
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2850.0, 500.0)
         self._Mismatches['TestComposerPdfVsComposerPoint'] = 760
-        self._Mismatches['TestCanvasPoint'] = 776;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_partials_labels_enabled(self):
@@ -157,8 +158,8 @@ class TestPointBase(object):
         # Enable partials labels
         self._Pal.setShowingPartialsLabels(True)
         self._Pal.saveEngineSettings()
-        self._Mismatches['TestCanvasPoint'] = 779;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 779
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_partials_labels_disabled(self):
@@ -169,6 +170,113 @@ class TestPointBase(object):
         # Disable partials labels
         self._Pal.setShowingPartialsLabels(False)
         self._Pal.saveEngineSettings()
+        self.checkTest()
+
+    def test_buffer(self):
+        # Label with buffer
+        self.lyr.bufferDraw = True
+        self.lyr.bufferSize = 2
+        self.checkTest()
+
+    def test_shadow(self):
+        # Label with shadow
+        self.lyr.shadowDraw = True
+        self.lyr.shadowOffsetDist = 2
+        self.lyr.shadowTransparency = 0
+        self.checkTest()
+
+    def test_letter_spacing(self):
+        # Modified letter spacing
+        font = QFont(self._TestFont)
+        font.setLetterSpacing(QFont.AbsoluteSpacing, 3.5)
+        font.setPointSizeF(30)
+        self.lyr.textFont = font
+        self.checkTest()
+
+    def test_word_spacing(self):
+        # Modified word spacing
+        font = QFont(self._TestFont)
+        font.setPointSizeF(30)
+        font.setWordSpacing(20.5)
+        self.lyr.textFont = font
+        self.checkTest()
+
+# noinspection PyPep8Naming
+
+
+class TestLineBase(object):
+
+    def __init__(self):
+        """Dummy assignments, intended to be overridden in subclasses"""
+        self.lyr = QgsPalLayerSettings()
+        """:type: QgsPalLayerSettings"""
+        # noinspection PyArgumentList
+        self._TestFont = QFont()  # will become a standard test font
+        self._Pal = None
+        """:type: QgsPalLabeling"""
+        self._Canvas = None
+        """:type: QgsMapCanvas"""
+        # custom mismatches per group/test (should not mask any needed anomaly)
+        # e.g. self._Mismatches['TestClassName'] = 300
+        # check base output class's checkTest() or sublcasses for any defaults
+        self._Mismatches = dict()
+        # custom color tolerances per group/test: 1 - 20 (0 default, 20 max)
+        # (should not mask any needed anomaly)
+        # e.g. self._ColorTols['TestClassName'] = 10
+        # check base output class's checkTest() or sublcasses for any defaults
+        self._ColorTols = dict()
+
+    # noinspection PyMethodMayBeStatic
+    def checkTest(self, **kwargs):
+        """Intended to be overridden in subclasses"""
+        pass
+
+    def test_line_placement_above_line_orientation(self):
+        # Line placement, above, follow line orientation
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine
+        self.checkTest()
+
+    def test_line_placement_online(self):
+        # Line placement, on line
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.OnLine
+        self.checkTest()
+
+    def test_line_placement_below_line_orientation(self):
+        # Line placement, below, follow line orientation
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.BelowLine
+        self.checkTest()
+
+    def test_line_placement_above_map_orientation(self):
+        # Line placement, above, follow map orientation
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+
+    def test_line_placement_below_map_orientation(self):
+        # Line placement, below, follow map orientation
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+
+    def test_curved_placement_online(self):
+        # Curved placement, on line
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.OnLine
+        self.checkTest()
+
+    def test_curved_placement_above(self):
+        # Curved placement, on line
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+
+    def test_curved_placement_below(self):
+        # Curved placement, on line
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
         self.checkTest()
 
 

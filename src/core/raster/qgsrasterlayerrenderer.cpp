@@ -16,15 +16,19 @@
 #include "qgsrasterlayerrenderer.h"
 
 #include "qgsmessagelog.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
-
+#include "qgsrasterprojector.h"
+#include "qgsrendercontext.h"
+#include "qgscsexception.h"
 
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext )
     : QgsMapLayerRenderer( layer->id() )
-    , mRasterViewPort( 0 )
-    , mPipe( 0 )
+    , mRasterViewPort( nullptr )
+    , mPipe( nullptr )
+    , mContext( rendererContext )
 {
 
   mPainter = rendererContext.painter();
@@ -48,12 +52,12 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   QgsRectangle myProjectedViewExtent;
   QgsRectangle myProjectedLayerExtent;
 
-  if ( rendererContext.coordinateTransform() )
+  if ( rendererContext.coordinateTransform().isValid() )
   {
-    QgsDebugMsg( "coordinateTransform set -> project extents." );
+    QgsDebugMsgLevel( "coordinateTransform set -> project extents.", 4 );
     try
     {
-      myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox( rendererContext.extent() );
+      myProjectedViewExtent = rendererContext.coordinateTransform().transformBoundingBox( rendererContext.extent() );
     }
     catch ( QgsCsException &cs )
     {
@@ -63,17 +67,17 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
 
     try
     {
-      myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox( layer->extent() );
+      myProjectedLayerExtent = rendererContext.coordinateTransform().transformBoundingBox( layer->extent() );
     }
     catch ( QgsCsException &cs )
     {
       QgsMessageLog::logMessage( QObject::tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
-      myProjectedViewExtent.setMinimal();
+      myProjectedLayerExtent.setMinimal();
     }
   }
   else
   {
-    QgsDebugMsg( "coordinateTransform not set" );
+    QgsDebugMsgLevel( "coordinateTransform not set", 4 );
     myProjectedViewExtent = rendererContext.extent();
     myProjectedLayerExtent = layer->extent();
   }
@@ -87,10 +91,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
     return;
   }
 
-  QgsDebugMsg( "theViewExtent is " + rendererContext.extent().toString() );
-  QgsDebugMsg( "myProjectedViewExtent is " + myProjectedViewExtent.toString() );
-  QgsDebugMsg( "myProjectedLayerExtent is " + myProjectedLayerExtent.toString() );
-  QgsDebugMsg( "myRasterExtent is " + myRasterExtent.toString() );
+  QgsDebugMsgLevel( "theViewExtent is " + rendererContext.extent().toString(), 4 );
+  QgsDebugMsgLevel( "myProjectedViewExtent is " + myProjectedViewExtent.toString(), 4 );
+  QgsDebugMsgLevel( "myProjectedLayerExtent is " + myProjectedLayerExtent.toString(), 4 );
+  QgsDebugMsgLevel( "myRasterExtent is " + myRasterExtent.toString(), 4 );
 
   //
   // The first thing we do is set up the QgsRasterViewPort. This struct stores all the settings
@@ -102,12 +106,12 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   mRasterViewPort = new QgsRasterViewPort();
 
   mRasterViewPort->mDrawnExtent = myRasterExtent;
-  if ( rendererContext.coordinateTransform() )
+  if ( rendererContext.coordinateTransform().isValid() )
   {
     mRasterViewPort->mSrcCRS = layer->crs();
-    mRasterViewPort->mDestCRS = rendererContext.coordinateTransform()->destCRS();
-    mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform()->sourceDatumTransform();
-    mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform()->destinationDatumTransform();
+    mRasterViewPort->mDestCRS = rendererContext.coordinateTransform().destinationCrs();
+    mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform().sourceDatumTransform();
+    mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform().destinationDatumTransform();
   }
   else
   {
@@ -203,15 +207,15 @@ bool QgsRasterLayerRenderer::render()
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCRS( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
+    projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
   }
 
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
-  drawer.draw( mPainter, mRasterViewPort, mMapToPixel );
+  drawer.draw( mPainter, mRasterViewPort, mMapToPixel, &mContext );
 
-  QgsDebugMsg( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ) );
+  QgsDebugMsgLevel( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 
   return true;
 }

@@ -31,11 +31,11 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer* vl )
   {
     bool canDeleteAttributes = vl->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
     listBox2->clear();
-    const QgsFields& layerAttributes = vl->pendingFields();
+    const QgsFields& layerAttributes = vl->fields();
     for ( int idx = 0; idx < layerAttributes.count(); ++idx )
     {
       QListWidgetItem* item = new QListWidgetItem( layerAttributes[idx].name(), listBox2 );
-      switch ( vl->pendingFields().fieldOrigin( idx ) )
+      switch ( vl->fields().fieldOrigin( idx ) )
       {
         case QgsFields::OriginExpression:
           item->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );

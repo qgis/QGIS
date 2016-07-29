@@ -1,0 +1,8 @@
+{
+  "name": "z",
+  "type": "function",
+  "description": "Returns the z coordinate of a point geometry.",
+  "arguments": [ {"arg":"geom","description":"a point geometry"}],
+  "examples": [ { "expression":"z( geom_from_wkt( 'POINTZ(2 5 7)' ) )", "returns":"7"}
+  ]
+}

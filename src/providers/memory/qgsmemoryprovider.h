@@ -15,7 +15,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
-
+#include "qgsfield.h"
 
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
@@ -28,7 +28,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    QgsMemoryProvider( QString uri = QString() );
+    explicit QgsMemoryProvider( const QString& uri = QString() );
 
     virtual ~QgsMemoryProvider();
 
@@ -40,20 +40,20 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      * Returns the permanent storage type for this layer as a friendly name.
      */
 
-    virtual QString dataSourceUri() const override;
+    virtual QString dataSourceUri( bool expandAuthConfig = true ) const override;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
     virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
 
     /**
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const override;
+    virtual Qgis::WkbType geometryType() const override;
 
     /**
      * Number of features in the layer
@@ -61,12 +61,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     virtual long featureCount() const override;
 
-    /**
-     * Return a map of indexes with field names for this layer
-     * @return map of fields
-     */
-    virtual const QgsFields & fields() const override;
-
+    virtual QgsFields fields() const override;
 
     /**
       * Adds a list of features
@@ -89,6 +84,8 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     virtual bool addAttributes( const QList<QgsField> &attributes ) override;
 
+    virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
+
     /**
      * Deletes existing attributes
      * @param attributes a set containing names of attributes
@@ -109,15 +106,14 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      *                       the second map parameter being the new geometries themselves
      * @return               true in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map ) override;
+    virtual bool changeGeometryValues( const QgsGeometryMap & geometry_map ) override;
 
-    /** Accessor for sql where clause used to limit dataset */
-    QString subsetString() override;
+    QString subsetString() const override;
 
-    /** mutator for sql where clause used to limit dataset size */
-    bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    /** Mutator for sql where clause used to limit dataset size */
+    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() override { return true; }
+    virtual bool supportsSubsetString() const override { return true; }
 
     /**
      * Creates a spatial index
@@ -130,8 +126,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     a spatial filter is active on this provider, so it may
     be prudent to check this value per intended operation.
      */
-    virtual int capabilities() const override;
-
+    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /* Implementation of functions from QgsDataProvider */
 
@@ -145,17 +140,10 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     QString description() const override;
 
-    /**
-     * Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
+    virtual QgsRectangle extent() const override;
+    bool isValid() const override;
 
-    /**
-     * Returns true if this is a valid provider
-     */
-    bool isValid() override;
-
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
   protected:
 
@@ -168,7 +156,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
 
     // fields
     QgsFields mFields;
-    QGis::WkbType mWkbType;
+    Qgis::WkbType mWkbType;
     QgsRectangle mExtent;
 
     // features

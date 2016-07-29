@@ -24,56 +24,60 @@
 class QgsComposerItem;
 class QgsComposerMultiFrame;
 
-/**Undo command to undo/redo all composer item related changes*/
+/** \ingroup core
+ * Undo command to undo/redo all composer item related changes
+*/
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
-    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = 0 );
+    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = nullptr );
     virtual ~QgsComposerItemCommand();
 
-    /**Reverses the command*/
+    /** Reverses the command*/
     void undo() override;
-    /**Replays the command*/
+    /** Replays the command*/
     void redo() override;
 
-    /**Saves current item state as previous state*/
+    /** Saves current item state as previous state*/
     void savePreviousState();
-    /**Saves current item state as after state*/
+    /** Saves current item state as after state*/
     void saveAfterState();
 
     QDomDocument previousState() const { return mPreviousState.cloneNode().toDocument(); }
     QDomDocument afterState() const { return mAfterState.cloneNode().toDocument(); }
 
-    /**Returns true if previous state and after state are valid and different*/
+    /** Returns true if previous state and after state are valid and different*/
     bool containsChange() const;
 
-    /**Returns the target item the command applies to.
+    /** Returns the target item the command applies to.
      * @returns target composer item
-    */
+     */
     QgsComposerItem *item() const;
 
   protected:
-    /**Target item of the command*/
+    /** Target item of the command*/
     QgsComposerItem* mItem;
-    /**XML that saves the state before executing the command*/
+    /** XML that saves the state before executing the command*/
     QDomDocument mPreviousState;
-    /**XML containing the state after executing the command*/
+    /** XML containing the state after executing the command*/
     QDomDocument mAfterState;
 
-    /**Parameters for frame items*/
-    /**Parent multiframe*/
+    /** Parameters for frame items*/
+    /** Parent multiframe*/
     QgsComposerMultiFrame* mMultiFrame;
     int mFrameNumber;
 
-    /**Flag to prevent the first redo() if the command is pushed to the undo stack*/
+    /** Flag to prevent the first redo() if the command is pushed to the undo stack*/
     bool mFirstRun;
 
     void saveState( QDomDocument& stateDoc ) const;
     void restoreState( QDomDocument& stateDoc ) const;
 };
 
-/**A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
-  newest after state. The purpose is to avoid too many micro changes in the history*/
+/** \ingroup core
+ * A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
+  newest after state. The purpose is to avoid too many micro changes in the history
+*/
 class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
 {
   public:
@@ -102,6 +106,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       LegendIconSymbolSpace,
       LegendBoxSpace,
       LegendColumnSpace,
+      LegendRasterBorderWidth,
       //composer picture
       ComposerPictureRotation,
       // composer scalebar
@@ -136,7 +141,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
     ~QgsComposerMergeCommand();
 
     bool mergeWith( const QUndoCommand * command ) override;
-    int id() const override { return ( int )mContext; }
+    int id() const override { return static_cast< int >( mContext ); }
 
   private:
     Context mContext;

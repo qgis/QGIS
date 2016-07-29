@@ -7,15 +7,15 @@ class QgsProjectFileTransform
     //Default constructor
     ~QgsProjectFileTransform();
 
-    /*! Create an instance from a Dom and a supplied version
+    /** Create an instance from a Dom and a supplied version
      * @param domDocument The Dom document to use as content
      * @param version Version number
      */
     QgsProjectFileTransform( QDomDocument & domDocument,
-                             QgsProjectVersion version );
-    bool updateRevision( QgsProjectVersion version );
+                             const QgsProjectVersion& version );
+    bool updateRevision( const QgsProjectVersion& version );
 
-    /*! Prints the contents via QgsDebugMsg()
+    /** Prints the contents via QgsDebugMsg()
      */
     void dump();
 

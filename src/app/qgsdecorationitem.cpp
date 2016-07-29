@@ -26,6 +26,7 @@
 #include "qgspoint.h"
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
+#include "qgsunittypes.h"
 
 #include <QPainter>
 #include <QAction>
@@ -44,8 +45,10 @@
 
 QgsDecorationItem::QgsDecorationItem( QObject* parent )
     : QObject( parent )
+    , mEnabled( false )
+    , mPlacement( TopLeft )
+    , mMarginUnit( QgsUnitTypes::RenderMillimeters )
 {
-  mEnabled = false;
 }
 
 QgsDecorationItem::~QgsDecorationItem()
@@ -61,20 +64,23 @@ void QgsDecorationItem::update()
 
 void QgsDecorationItem::projectRead()
 {
-  QgsDebugMsg( "Entered" );
   mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
+  mPlacement = static_cast< Placement >( QgsProject::instance()->readNumEntry( mNameConfig, "/Placement", static_cast< int >( mPlacement ) ) );
+  mMarginUnit = QgsUnitTypes::decodeRenderUnit( QgsProject::instance()->readEntry( mNameConfig, "/MarginUnit", QgsUnitTypes::encodeUnit( mMarginUnit ) ) );
 }
 
 void QgsDecorationItem::saveToProject()
 {
-  QgsDebugMsg( "Entered" );
   QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Placement", static_cast< int >( mPlacement ) );
+  QgsProject::instance()->writeEntry( mNameConfig, "/MarginUnit", QgsUnitTypes::encodeUnit( mMarginUnit ) );
 }
+
 void QgsDecorationItem::setName( const char *name )
 {
   mName = name;
   mNameConfig = name;
-  mNameConfig.remove( " " );
+  mNameConfig.remove( ' ' );
   mNameTranslated = tr( name );
-  QgsDebugMsg( QString( "name=%1 nameconfig=%2 nametrans=%3" ).arg( mName ).arg( mNameConfig ).arg( mNameTranslated ) );
+  QgsDebugMsg( QString( "name=%1 nameconfig=%2 nametrans=%3" ).arg( mName, mNameConfig, mNameTranslated ) );
 }

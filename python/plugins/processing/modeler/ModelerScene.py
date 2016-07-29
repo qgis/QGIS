@@ -26,25 +26,27 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui
+from qgis.PyQt.QtCore import QPointF, Qt
+from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
 from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput
 
-class ModelerScene(QtGui.QGraphicsScene):
+
+class ModelerScene(QGraphicsScene):
 
     def __init__(self, parent=None):
         super(ModelerScene, self).__init__(parent)
         self.paramItems = {}
         self.algItems = {}
         self.outputItems = {}
-        self.setItemIndexMethod(QtGui.QGraphicsScene.NoIndex)
+        self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
     def getParameterPositions(self):
-        return {key : item.pos() for key,item in self.paramItems.iteritems()}
+        return {key: item.pos() for key, item in self.paramItems.iteritems()}
 
     def getAlgorithmPositions(self):
-        return {key : item.pos() for key,item in self.algItems.iteritems()}
+        return {key: item.pos() for key, item in self.algItems.iteritems()}
 
     def getOutputPositions(self):
         pos = {}
@@ -78,8 +80,8 @@ class ModelerScene(QtGui.QGraphicsScene):
         # Inputs
         for inp in model.inputs.values():
             item = ModelerGraphicItem(inp, model)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
+            item.setFlag(QGraphicsItem.ItemIsMovable, True)
+            item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
             item.setPos(inp.pos.x(), inp.pos.y())
             self.paramItems[inp.param.name] = item
@@ -87,8 +89,8 @@ class ModelerScene(QtGui.QGraphicsScene):
         # We add the algs
         for alg in model.algs.values():
             item = ModelerGraphicItem(alg, model)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
+            item.setFlag(QGraphicsItem.ItemIsMovable, True)
+            item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
             item.setPos(alg.pos.x(), alg.pos.y())
             self.algItems[alg.name] = item
@@ -98,15 +100,24 @@ class ModelerScene(QtGui.QGraphicsScene):
             idx = 0
             for parameter in alg.algorithm.parameters:
                 if not parameter.hidden:
-                    value = alg.params[parameter.name]
+                    if parameter.name in alg.params:
+                        value = alg.params[parameter.name]
+                    else:
+                        value = None
                     sourceItems = self.getItemsFromParamValue(value)
                     for sourceItem, sourceIdx in sourceItems:
                         arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.name], idx)
+                        sourceItem.addArrow(arrow)
+                        self.algItems[alg.name].addArrow(arrow)
+                        arrow.updatePath()
                         self.addItem(arrow)
                     idx += 1
             for depend in alg.dependencies:
                 arrow = ModelerArrowItem(self.algItems[depend], -1,
-                        self.algItems[alg.name], -1)
+                                         self.algItems[alg.name], -1)
+                self.algItems[depend].addArrow(arrow)
+                self.algItems[alg.name].addArrow(arrow)
+                arrow.updatePath()
                 self.addItem(arrow)
 
         # And finally the outputs
@@ -118,17 +129,20 @@ class ModelerScene(QtGui.QGraphicsScene):
                 out = outputs[key]
                 if out is not None:
                     item = ModelerGraphicItem(out, model)
-                    item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
-                    item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
+                    item.setFlag(QGraphicsItem.ItemIsMovable, True)
+                    item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                     self.addItem(item)
                     pos = alg.outputs[key].pos
                     if pos is None:
-                        pos = (alg.pos + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH, 0)
-                            + self.algItems[alg.name].getLinkPointForOutput(idx))
+                        pos = (alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, 0)
+                               + self.algItems[alg.name].getLinkPointForOutput(idx))
                     item.setPos(pos)
                     outputItems[key] = item
                     arrow = ModelerArrowItem(self.algItems[alg.name], idx, item,
-                            -1)
+                                             -1)
+                    self.algItems[alg.name].addArrow(arrow)
+                    item.addArrow(arrow)
+                    arrow.updatePath()
                     self.addItem(arrow)
                     idx += 1
                 else:
@@ -136,6 +150,6 @@ class ModelerScene(QtGui.QGraphicsScene):
             self.outputItems[alg.name] = outputItems
 
     def mousePressEvent(self, mouseEvent):
-        if mouseEvent.button() != QtCore.Qt.LeftButton:
+        if mouseEvent.button() != Qt.LeftButton:
             return
         super(ModelerScene, self).mousePressEvent(mouseEvent)

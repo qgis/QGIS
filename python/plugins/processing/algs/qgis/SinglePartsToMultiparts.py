@@ -25,15 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
+from qgis.core import Qgis, QgsFeature, QgsGeometry
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class SinglePartsToMultiparts(GeoAlgorithm):
@@ -42,26 +47,27 @@ class SinglePartsToMultiparts(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'single_to_multi.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Singleparts to multipart'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Singleparts to multipart')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Unique ID field'), self.INPUT))
+                                              self.tr('Unique ID field'), self.INPUT))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
 
         geomType = self.singleToMultiGeom(layer.dataProvider().geometryType())
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                                             geomType, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            layer.pendingFields().toList(), geomType, layer.crs())
 
         inFeat = QgsFeature()
         outFeat = QgsFeature()
@@ -73,8 +79,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
         current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features) * len(unique))
-
+        total = 100.0 / (len(features) * len(unique))
         if not len(unique) == layer.featureCount():
             for i in unique:
                 multi_feature = []
@@ -97,7 +102,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
                 outFeat.setAttributes(attrs)
                 outGeom = QgsGeometry(self.convertGeometry(multi_feature,
-                                      vType))
+                                                           vType))
                 outFeat.setGeometry(outGeom)
                 writer.addFeature(outFeat)
 
@@ -107,30 +112,30 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
     def singleToMultiGeom(self, wkbType):
         try:
-            if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint,
-                           QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
-                return QGis.WKBMultiPoint
-            elif wkbType in (QGis.WKBLineString, QGis.WKBMultiLineString,
-                             QGis.WKBMultiLineString25D,
-                             QGis.WKBLineString25D):
+            if wkbType in (Qgis.WKBPoint, Qgis.WKBMultiPoint,
+                           Qgis.WKBPoint25D, Qgis.WKBMultiPoint25D):
+                return Qgis.WKBMultiPoint
+            elif wkbType in (Qgis.WKBLineString, Qgis.WKBMultiLineString,
+                             Qgis.WKBMultiLineString25D,
+                             Qgis.WKBLineString25D):
 
-                return QGis.WKBMultiLineString
-            elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon,
-                             QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
+                return Qgis.WKBMultiLineString
+            elif wkbType in (Qgis.WKBPolygon, Qgis.WKBMultiPolygon,
+                             Qgis.WKBMultiPolygon25D, Qgis.WKBPolygon25D):
 
-                return QGis.WKBMultiPolygon
+                return Qgis.WKBMultiPolygon
             else:
-                return QGis.WKBUnknown
-        except Exception, err:
+                return Qgis.WKBUnknown
+        except Exception:
             pass
 
     def extractAsMulti(self, geom):
-        if geom.type() == QGis.Point:
+        if geom.type() == Qgis.Point:
             if geom.isMultipart():
                 return geom.asMultiPoint()
             else:
                 return [geom.asPoint()]
-        elif geom.type() == QGis.Line:
+        elif geom.type() == Qgis.Line:
             if geom.isMultipart():
                 return geom.asMultiPolyline()
             else:
@@ -142,9 +147,9 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 return [geom.asPolygon()]
 
     def convertGeometry(self, geom_list, vType):
-        if vType == QGis.Point:
+        if vType == Qgis.Point:
             return QgsGeometry().fromMultiPoint(geom_list)
-        elif vType == QGis.Line:
+        elif vType == Qgis.Line:
             return QgsGeometry().fromMultiPolyline(geom_list)
         else:
             return QgsGeometry().fromMultiPolygon(geom_list)

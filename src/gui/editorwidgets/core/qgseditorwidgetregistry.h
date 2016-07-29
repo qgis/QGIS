@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 24.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,15 +18,21 @@
 
 #include <QObject>
 #include <QMap>
-
+#include "qgseditorwidgetconfig.h"
 #include "qgseditorwidgetfactory.h"
+#include "qgsattributeeditorcontext.h"
 
 class QgsMapLayer;
 class QDomNode;
 class QgsMapCanvas;
 class QgsMessageBar;
+class QgsSearchWidgetWrapper;
+class QgsEditorWidgetWrapper;
+class QgsEditorConfigWidget;
+class QgsVectorLayer;
 
-/**
+
+/** \ingroup gui
  * This class manages all known edit widget factories
  */
 class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
@@ -52,7 +58,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @note Added in QGIS 2.8
      * @note Not required for plugins, the QGIS application does that already
      */
-    static void initEditors( QgsMapCanvas* mapCanvas = 0, QgsMessageBar* messageBar = 0 );
+    static void initEditors( QgsMapCanvas* mapCanvas = nullptr, QgsMessageBar* messageBar = nullptr );
 
     /**
      * Destructor
@@ -79,8 +85,16 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     QgsVectorLayer* vl,
                                     int fieldIdx,
                                     const QgsEditorWidgetConfig& config,
-                                    QWidget* editor, QWidget* parent,
-                                    const QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+                                    QWidget* editor,
+                                    QWidget* parent,
+                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+
+    QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
+        QgsVectorLayer* vl,
+        int fieldIdx,
+        const QgsEditorWidgetConfig& config,
+        QWidget* parent,
+        const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     /**
      * Creates a configuration widget
@@ -166,6 +180,13 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     void mapLayerAdded( QgsMapLayer* mapLayer );
 
     /**
+     * Will disconnect to appropriate signals from map layers to load and save style
+     *
+     * @param mapLayer The layer to disconnect
+     */
+    void mapLayerWillBeRemoved( QgsMapLayer* mapLayer );
+
+    /**
      * Loads layer symbology for the layer that emitted the signal
      *
      * @param element The XML element containing the style information
@@ -185,7 +206,10 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     void writeSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage );
 
   private:
+    QString findSuitableWrapper( QWidget* editor , const QString& defaultWidget );
+
     QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
+    QMap<const char*, QPair<int, QString> > mFactoriesByType;
 };
 
 #endif // QGSEDITORWIDGETREGISTRY_H

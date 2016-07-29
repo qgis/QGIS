@@ -28,8 +28,7 @@ __revision__ = '$Format:%H$'
 
 from math import sqrt
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import Qgis, QgsPoint, QgsGeometry, QgsFeature
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -45,42 +44,39 @@ class DensifyGeometriesInterval(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Densify geometries given an interval'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Densify geometries given an interval')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterNumber(self.INTERVAL,
-            self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
+                                          self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
-        isPolygon = layer.geometryType() == QGis.Polygon
+        isPolygon = layer.geometryType() == Qgis.Polygon
 
         writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                                             layer.wkbType(), layer.crs())
+            self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+                                         layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        current = 0
-        for f in features:
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             featGeometry = QgsGeometry(f.geometry())
             attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, interval,
-                    isPolygon)
+                                               isPolygon)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)
             writer.addFeature(feature)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

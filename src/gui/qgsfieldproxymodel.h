@@ -18,9 +18,9 @@
 
 #include <QSortFilterProxyModel>
 
-#include "qgsfieldmodel.h"
+class QgsFieldModel;
 
-/**
+/** \ingroup gui
  * @brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
  * @note added in 2.3
  */
@@ -30,15 +30,19 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
     Q_FLAGS( Filters )
 
   public:
+
+    //! Field type filters
     enum Filter
     {
-      String = 1,
-      Int = 2,
-      LongLong = 4,
-      Double = 8,
-      Numeric = Int | LongLong | Double,
-      Date = 16,
-      All = Numeric | Date | String
+      String = 1, /*!< String fields */
+      Int = 2, /*!< Integer fields */
+      LongLong = 4, /*!< Longlong fields */
+      Double = 8, /*!< Double fields */
+      Numeric = Int | LongLong | Double, /*!< All numeric fields */
+      Date = 16, /*!< Date or datetime fields */
+      Time = 32, /*!< Time fields */
+      HideReadOnly = 64,  /*!< Hide read-only fields */
+      All = Numeric | Date | String | Time, /*!< All field types */ //TODO QGIS 3 - rename to AllTypes
     };
     Q_DECLARE_FLAGS( Filters, Filter )
 
@@ -46,22 +50,29 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
      * @brief QgsFieldProxModel creates a proxy model with a QgsFieldModel as source model.
      * It can be used to filter the fields based on their types.
      */
-    explicit QgsFieldProxyModel( QObject *parent = 0 );
+    explicit QgsFieldProxyModel( QObject *parent = nullptr );
 
-    //! sourceFieldModel returns the QgsFieldModel used in this QSortFilterProxyModel
+    //! Returns the QgsFieldModel used in this QSortFilterProxyModel
     QgsFieldModel* sourceFieldModel() { return mModel; }
 
     /**
-     * @brief setFilters set flags that affect how fields are filtered
+     * Set flags that affect how fields are filtered in the model.
      * @param filters are Filter flags
-     * @note added in 2.3
+     * @see filters()
      */
-    QgsFieldProxyModel* setFilters( Filters filters );
+    QgsFieldProxyModel* setFilters( const QgsFieldProxyModel::Filters& filters );
+
+    /** Returns the filters controlling displayed fields.
+     * @see setFilters()
+     */
     const Filters& filters() const { return mFilters; }
 
   private:
     Filters mFilters;
     QgsFieldModel* mModel;
+
+    //! Returns true if the specified index represents a read only field
+    bool isReadOnly( const QModelIndex& index ) const;
 
     // QSortFilterProxyModel interface
   public:

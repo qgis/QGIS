@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Prints attributes of vector maps registered in a space time vector dataset" module="t.vect.db.select">
+	<option key="input"/>
+	<field key="columns" layer="input"/>
+	<option key="where"/>
+	<option key="t_where"/>
+	<option key="layer" advanced="yes"/>
+	<option key="separator" advanced="yes"/>
+</qgisgrassmodule>

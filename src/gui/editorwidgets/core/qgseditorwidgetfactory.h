@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 21.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,16 +16,19 @@
 #ifndef QGSEDITORWIDGETFACTORY_H
 #define QGSEDITORWIDGETFACTORY_H
 
-#include "qgseditorwidgetwrapper.h"
-#include "qgsapplication.h"
-
 #include <QDomNode>
 #include <QMap>
 #include <QString>
+#include <QVariant>
+#include "qgseditorwidgetconfig.h"
 
 class QgsEditorConfigWidget;
+class QgsEditorWidgetWrapper;
+class QgsVectorLayer;
+class QWidget;
+class QgsSearchWidgetWrapper;
 
-/**
+/** \ingroup gui
  * Every attribute editor widget needs a factory, which inherits this class
  *
  * It provides metadata for the widgets such as the name (human readable), it serializes
@@ -59,6 +62,8 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @return         A new widget wrapper
      */
     virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0;
+
+    virtual QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const;
 
     /**
      * Return The human readable identifier name of this widget type
@@ -113,6 +118,16 @@ class GUI_EXPORT QgsEditorWidgetFactory
     inline bool supportsField( QgsVectorLayer* vl, int fieldIdx ) { return isFieldSupported( vl, fieldIdx ); }
 
     /**
+     * Returns a list of widget types which this editor widget supports.
+     * Each widget type can have a priority value attached, the factory with the highest one
+     * will be used.
+     *
+     * @return A map of widget type names and weight values
+     * @note not available in Python bindings
+     */
+    virtual QMap<const char*, int> supportedWidgetTypes() { return QMap<const char*, int>(); }
+
+    /**
      * Create a pretty String representation of the value.
      *
      * @param vl        The vector layer.
@@ -126,6 +141,31 @@ class GUI_EXPORT QgsEditorWidgetFactory
     virtual QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const;
 
     /**
+     * If the default sort order should be overwritten for this widget, you can transform the value in here.
+     *
+     * @param vl        The vector layer.
+     * @param fieldIdx  The index of the field.
+     * @param config    The editor widget config.
+     * @param cache     The editor widget cache.
+     * @param value     The value to represent.
+     *
+     * @return By default the value is returned unmodified.
+     *
+     * @note Added in 2.16
+     */
+    virtual QVariant sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const;
+
+    /**
+     * Return the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
+     * values are represented.
+     * @param vl       The vector layer.
+     * @param fieldIdx The index of the field.
+     * @param config   The editor widget config.
+     * @return The alignment flag, normally Qt::AlignRight or Qt::AlignLeft
+     */
+    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const;
+
+    /**
      * Create a cache for a given field.
      *
      * @param vl        The vector layer.
@@ -136,7 +176,6 @@ class GUI_EXPORT QgsEditorWidgetFactory
      */
     virtual QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config );
 
-  private:
     /**
      * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
      *
@@ -148,6 +187,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      */
     virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
 
+  private:
     /**
      * This method allows disabling this editor widget type for a certain field.
      * By default, it returns true for all fields.

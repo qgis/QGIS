@@ -3,4 +3,4 @@ r.reclass.area.lesser - Reclassifies a raster layer, selecting areas lower than 
 Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterNumber|lesser|Area threshold [hectares]|0|None|1.0
-OutputRaster|output|Output raster layer
+OutputRaster|output|Reclassified

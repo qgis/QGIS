@@ -28,22 +28,23 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterRaster
+
 
 class lascolor(LAStoolsAlgorithm):
 
     ORTHO = "ORTHO"
 
     def defineCharacteristics(self):
-        self.name = "lascolor"
-        self.group = "LAStools"
-        self.addParametersVerboseGUI();
+        self.name, self.i18n_name = self.trAlgorithm('lascolor')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
+        self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterRaster(lascolor.ORTHO,
-            self.tr("Input ortho")))
+                                          self.tr("Input ortho")))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -52,7 +53,7 @@ class lascolor(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         ortho = self.getParameterValue(lascolor.ORTHO)
-        if ortho != None:
+        if ortho is not None:
             commands.append("-image")
             commands.append(ortho)
         self.addParametersPointOutputCommands(commands)

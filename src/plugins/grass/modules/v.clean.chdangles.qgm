@@ -4,6 +4,7 @@
 <qgisgrassmodule label="Change the type of boundary dangle to line" module="v.clean">
 	<option key="input" typemask="area"/>
 	<option key="tool" answer="chdangle" hidden="yes"/>
-	<option key="thresh"/>
+	<option key="thresh" version_max="6"/>
+	<option key="threshold" version_min="7"/>
 	<option key="output"/>
 </qgisgrassmodule>

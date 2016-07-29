@@ -38,7 +38,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, QString cdt, QgsColorSchemeRegistry* registry )
+QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, const QString& cdt, QgsColorSchemeRegistry* registry )
     : QToolButton( parent )
     , mBehaviour( QgsColorButtonV2::ShowDialog )
     , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
@@ -49,8 +49,9 @@ QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, QString cdt, QgsColorScheme
     , mColorSet( false )
     , mShowNoColorOption( false )
     , mNoColorString( tr( "No color" ) )
+    , mShowNull( false )
     , mPickingColor( false )
-    , mMenu( 0 )
+    , mMenu( nullptr )
 
 {
   //if a color scheme registry was specified, use it, otherwise use the global instance
@@ -155,11 +156,36 @@ void QgsColorButtonV2::setToDefaultColor()
   setColor( mDefaultColor );
 }
 
+void QgsColorButtonV2::setToNull()
+{
+  setColor( QColor() );
+}
+
+bool QgsColorButtonV2::event( QEvent *e )
+{
+  if ( e->type() == QEvent::ToolTip )
+  {
+    QString name = this->color().name();
+    int hue = this->color().hue();
+    int value = this->color().value();
+    int saturation = this->color().saturation();
+    QString info = QString( "HEX: %1 \n"
+                            "RGB: %2 \n"
+                            "HSV: %3,%4,%4" ).arg( name )
+                   .arg( QgsSymbolLayerV2Utils::encodeColor( this->color() ) )
+                   .arg( hue ).arg( value ).arg( saturation );
+    setToolTip( info );
+  }
+  return QToolButton::event( e );
+}
+
 void QgsColorButtonV2::setToNoColor()
 {
   if ( mAllowAlpha )
   {
-    setColor( QColor( 0, 0, 0, 0 ) );
+    QColor noColor = QColor( mColor );
+    noColor.setAlpha( 0 );
+    setColor( noColor );
   }
 }
 
@@ -172,7 +198,12 @@ void QgsColorButtonV2::mousePressEvent( QMouseEvent *e )
     return;
   }
 
-  if ( e->button() == Qt::LeftButton )
+  if ( e->button() == Qt::RightButton )
+  {
+    QToolButton::showMenu();
+    return;
+  }
+  else if ( e->button() == Qt::LeftButton )
   {
     mDragStartPosition = e->pos();
   }
@@ -386,6 +417,14 @@ void QgsColorButtonV2::prepareMenu()
   //menu is opened, otherwise color schemes like the recent color scheme grid are meaningless
   mMenu->clear();
 
+  if ( mShowNull )
+  {
+    QAction* nullAction = new QAction( tr( "Clear color" ), this );
+    nullAction->setIcon( createMenuIcon( Qt::transparent, false ) );
+    mMenu->addAction( nullAction );
+    connect( nullAction, SIGNAL( triggered() ), this, SLOT( setToNull() ) );
+  }
+
   //show default color option if set
   if ( mDefaultColor.isValid() )
   {
@@ -402,6 +441,15 @@ void QgsColorButtonV2::prepareMenu()
     mMenu->addAction( noColorAction );
     connect( noColorAction, SIGNAL( triggered() ), this, SLOT( setToNoColor() ) );
   }
+
+  mMenu->addSeparator();
+  QgsColorWheel* colorWheel = new QgsColorWheel( mMenu );
+  colorWheel->setColor( color() );
+  QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, mMenu, mMenu );
+  colorAction->setDismissOnColorSelection( false );
+  connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
+  mMenu->addAction( colorAction );
+
 
   if ( mColorSchemeRegistry )
   {
@@ -508,38 +556,7 @@ void QgsColorButtonV2::setColor( const QColor &color )
 
 void QgsColorButtonV2::addRecentColor( const QColor& color )
 {
-  if ( !color.isValid() )
-  {
-    return;
-  }
-
-  //strip alpha from color
-  QColor opaqueColor = color;
-  opaqueColor.setAlpha( 255 );
-
-  QSettings settings;
-  QList< QVariant > recentColorVariants = settings.value( QString( "/colors/recent" ) ).toList();
-
-  //remove colors by name
-  for ( int colorIdx = recentColorVariants.length() - 1; colorIdx >= 0; --colorIdx )
-  {
-    if (( recentColorVariants.at( colorIdx ).value<QColor>() ).name() == opaqueColor.name() )
-    {
-      recentColorVariants.removeAt( colorIdx );
-    }
-  }
-
-  //add color
-  QVariant colorVariant = QVariant( opaqueColor );
-  recentColorVariants.prepend( colorVariant );
-
-  //trim to 20 colors
-  while ( recentColorVariants.count() > 20 )
-  {
-    recentColorVariants.pop_back();
-  }
-
-  settings.setValue( QString( "/colors/recent" ), recentColorVariants );
+  QgsRecentColorScheme::addRecentColor( color );
 }
 
 void QgsColorButtonV2::setButtonBackground( const QColor &color )
@@ -652,7 +669,7 @@ void QgsColorButtonV2::setAllowAlpha( const bool allowAlpha )
   mAllowAlpha = allowAlpha;
 }
 
-void QgsColorButtonV2::setColorDialogTitle( const QString title )
+void QgsColorButtonV2::setColorDialogTitle( const QString& title )
 {
   mColorDialogTitle = title;
 }
@@ -664,7 +681,7 @@ QString QgsColorButtonV2::colorDialogTitle() const
 
 void QgsColorButtonV2::setShowMenu( const bool showMenu )
 {
-  setMenu( showMenu ? mMenu : 0 );
+  setMenu( showMenu ? mMenu : nullptr );
   setPopupMode( showMenu ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
   //force recalculation of icon size
   mIconSize = QSize();
@@ -676,8 +693,23 @@ void QgsColorButtonV2::setBehaviour( const QgsColorButtonV2::Behaviour behaviour
   mBehaviour = behaviour;
 }
 
-void QgsColorButtonV2::setDefaultColor( const QColor color )
+void QgsColorButtonV2::setDefaultColor( const QColor& color )
 {
   mDefaultColor = color;
+}
+
+void QgsColorButtonV2::setShowNull( bool showNull )
+{
+  mShowNull = showNull;
+}
+
+bool QgsColorButtonV2::showNull() const
+{
+  return mShowNull;
+}
+
+bool QgsColorButtonV2::isNull() const
+{
+  return !mColor.isValid();
 }
 

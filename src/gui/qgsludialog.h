@@ -21,17 +21,19 @@
 #include "ui_qgsludialogbase.h"
 #include "qgisgui.h"
 
-
+/** \ingroup gui
+ * \class QgsLUDialog
+ */
 class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
 {
     Q_OBJECT
   public:
-    QgsLUDialog( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsLUDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsLUDialog();
     QString lowerValue() const;
-    void setLowerValue( QString val );
+    void setLowerValue( const QString& val );
     QString upperValue() const;
-    void setUpperValue( QString val );
+    void setUpperValue( const QString& val );
 };
 
 #endif

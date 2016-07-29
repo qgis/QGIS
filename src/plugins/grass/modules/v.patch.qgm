@@ -2,8 +2,8 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Create new vector by combining other vectors" module="v.patch">
-	<flag key="a" answer="off" hidden="no" />
-	<flag key="e" answer="off" hidden="no" label="Copy also attribute table (only the table of layer 1 is currently supported)" />
-	<file key="input" label="Type in map names separated by a comma" />
+	<option key="input"/>
+	<flag key="a" answer="off" hidden="no" advanced="yes"/>
+	<flag key="e" answer="off" hidden="no" label="Copy also attribute table (only the table of layer 1 is currently supported)" advanced="yes"/>
 	<option key="output" />
 </qgisgrassmodule>

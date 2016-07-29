@@ -18,7 +18,6 @@
 #include "qgsapplication.h"
 #include "qgscomposermodel.h"
 #include "qgscomposition.h"
-#include "qgscomposeritem.h"
 #include "qgspaperitem.h"
 #include "qgslogger.h"
 #include <QApplication>
@@ -46,7 +45,7 @@ QgsComposerItem* QgsComposerModel::itemFromIndex( const QModelIndex &index ) con
   //try to return the QgsComposerItem corresponding to a QModelIndex
   if ( !index.isValid() )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsComposerItem * item = static_cast<QgsComposerItem*>( index.internalPointer() );
@@ -158,6 +157,9 @@ QVariant QgsComposerModel::data( const QModelIndex &index, int role ) const
     case Qt::UserRole:
       //store item uuid in userrole so we can later get the QModelIndex for a specific item
       return item->uuid();
+    case Qt::UserRole+1:
+      //user role stores reference in column object
+      return qVariantFromValue( qobject_cast<QObject *>( item ) );
 
     case Qt::TextAlignmentRole:
       return Qt::AlignLeft & Qt::AlignVCenter;
@@ -183,11 +185,7 @@ QVariant QgsComposerModel::data( const QModelIndex &index, int role ) const
         boldFont.setBold( true );
         return boldFont;
       }
-      else
-      {
-        return QVariant();
-      }
-      break;
+      return QVariant();
 
     default:
       return QVariant();
@@ -212,19 +210,16 @@ bool QgsComposerModel::setData( const QModelIndex & index, const QVariant & valu
     case Visibility:
       //first column is item visibility
       item->setVisibility( value.toBool() );
-      emit dataChanged( index, index );
       return true;
 
     case LockStatus:
       //second column is item lock state
       item->setPositionLock( value.toBool() );
-      emit dataChanged( index, index );
       return true;
 
     case ItemId:
       //last column is item id
       item->setId( value.toString() );
-      emit dataChanged( index, index );
       return true;
   }
 
@@ -248,11 +243,7 @@ QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation,
       {
         return tr( "Item" );
       }
-      else
-      {
-        return QVariant();
-      }
-      break;
+      return QVariant();
     }
 
     case Qt::DecorationRole:
@@ -265,11 +256,8 @@ QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation,
       {
         return qVariantFromValue( lockIcon );
       }
-      else
-      {
-        return QVariant();
-      }
-      break;
+
+      return QVariant();
     }
 
     case Qt::TextAlignmentRole:
@@ -300,7 +288,7 @@ QMimeData* QgsComposerModel::mimeData( const QModelIndexList &indexes ) const
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  foreach ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex &index, indexes )
   {
     if ( index.isValid() && index.column() == ItemId )
     {
@@ -487,17 +475,16 @@ void QgsComposerModel::rebuildSceneItemList()
 {
   //step through the z list and rebuild the items in scene list,
   //emitting signals as required
-  QList<QgsComposerItem*>::iterator zListIt = mItemZList.begin();
   int row = 0;
-  for ( ; zListIt != mItemZList.end(); ++zListIt )
+  Q_FOREACH ( QgsComposerItem* item, mItemZList )
   {
-    if ((( *zListIt )->type() == QgsComposerItem::ComposerPaper ) || ( *zListIt )->isRemoved() )
+    if (( item->type() == QgsComposerItem::ComposerPaper ) || item->isRemoved() )
     {
       //item not in scene, skip it
       continue;
     }
 
-    int sceneListPos = mItemsInScene.indexOf( *zListIt );
+    int sceneListPos = mItemsInScene.indexOf( item );
     if ( sceneListPos == row )
     {
       //already in list in correct position, nothing to do
@@ -508,14 +495,14 @@ void QgsComposerModel::rebuildSceneItemList()
       //in list, but in wrong spot
       beginMoveRows( QModelIndex(), sceneListPos, sceneListPos, QModelIndex(), row );
       mItemsInScene.removeAt( sceneListPos );
-      mItemsInScene.insert( row, *zListIt );
+      mItemsInScene.insert( row, item );
       endMoveRows();
     }
     else
     {
       //needs to be inserted into list
       beginInsertRows( QModelIndex(), row, row );
-      mItemsInScene.insert( row, *zListIt );
+      mItemsInScene.insert( row, item );
       endInsertRows();
     }
     row++;
@@ -698,7 +685,7 @@ bool QgsComposerModel::reorderItemUp( QgsComposerItem *item )
     return false;
   }
 
-  if ( mItemsInScene.first() == item )
+  if ( mItemsInScene.at( 0 ) == item )
   {
     //item is already topmost item present in scene, nothing to do
     return false;
@@ -798,7 +785,7 @@ bool QgsComposerModel::reorderItemToTop( QgsComposerItem *item )
     return false;
   }
 
-  if ( mItemsInScene.first() == item )
+  if ( mItemsInScene.at( 0 ) == item )
   {
     //item is already topmost item present in scene, nothing to do
     return false;
@@ -881,7 +868,7 @@ QgsComposerItem* QgsComposerModel::getComposerItemAbove( QgsComposerItem* item )
       it.previous();
     }
   }
-  return 0;
+  return nullptr;
 }
 
 QgsComposerItem* QgsComposerModel::getComposerItemBelow( QgsComposerItem* item ) const
@@ -900,7 +887,7 @@ QgsComposerItem* QgsComposerModel::getComposerItemBelow( QgsComposerItem* item )
       it.next();
     }
   }
-  return 0;
+  return nullptr;
 }
 
 QList<QgsComposerItem *>* QgsComposerModel::zOrderList()
@@ -915,7 +902,7 @@ Qt::ItemFlags QgsComposerModel::flags( const QModelIndex & index ) const
 
   if ( ! index.isValid() )
   {
-    return flags | Qt::ItemIsDropEnabled;;
+    return flags | Qt::ItemIsDropEnabled;
   }
 
   switch ( index.column() )
@@ -957,3 +944,82 @@ void QgsComposerModel::setSelected( const QModelIndex &index )
 
   mComposition->setSelectedItem( item );
 }
+
+
+//
+// QgsComposerFilteredModel
+//
+
+QgsComposerProxyModel::QgsComposerProxyModel( QgsComposition *composition, QObject *parent )
+    : QSortFilterProxyModel( parent )
+    , mComposition( composition )
+    , mItemTypeFilter( QgsComposerItem::ComposerItem )
+{
+  if ( mComposition )
+    setSourceModel( mComposition->itemsModel() );
+
+  // TODO doesn't seem to work correctly - not updated when item changes
+  setDynamicSortFilter( true );
+  setSortLocaleAware( true );
+  sort( QgsComposerModel::ItemId );
+}
+
+bool QgsComposerProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+  //sort by item id
+  const QgsComposerItem* item1 = itemFromSourceIndex( left );
+  const QgsComposerItem* item2 = itemFromSourceIndex( right );
+  if ( !item1 )
+    return false;
+
+  if ( !item2 )
+    return true;
+
+  return QString::localeAwareCompare( item1->displayName(), item2->displayName() ) < 0;
+}
+
+QgsComposerItem* QgsComposerProxyModel::itemFromSourceIndex( const QModelIndex &sourceIndex ) const
+{
+  if ( !mComposition )
+    return nullptr;
+
+  //get column corresponding to an index from the source model
+  QVariant itemAsVariant = sourceModel()->data( sourceIndex, Qt::UserRole + 1 );
+  return qobject_cast<QgsComposerItem *>( itemAsVariant.value<QObject *>() );
+}
+
+void QgsComposerProxyModel::setFilterType( QgsComposerItem::ItemType itemType )
+{
+  mItemTypeFilter = itemType;
+  invalidate();
+}
+
+void QgsComposerProxyModel::setExceptedItemList( const QList< QgsComposerItem*>& exceptList )
+{
+  if ( mExceptedList == exceptList )
+    return;
+
+  mExceptedList = exceptList;
+  invalidateFilter();
+}
+
+bool QgsComposerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  //get QgsComposerItem corresponding to row
+  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+  QgsComposerItem* item = itemFromSourceIndex( index );
+
+  if ( !item )
+    return false;
+
+  // specific exceptions
+  if ( mExceptedList.contains( item ) )
+    return false;
+
+  // filter by type
+  if ( mItemTypeFilter != QgsComposerItem::ComposerItem && item->type() != mItemTypeFilter )
+    return false;
+
+  return true;
+}
+

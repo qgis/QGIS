@@ -25,13 +25,14 @@ class APP_EXPORT QgsDecorationScaleBarDialog : public QDialog, private Ui::QgsDe
     Q_OBJECT
 
   public:
-    QgsDecorationScaleBarDialog( QgsDecorationScaleBar& deco, int units, QWidget* parent = 0 );
+    QgsDecorationScaleBarDialog( QgsDecorationScaleBar& deco, int units, QWidget* parent = nullptr );
     ~QgsDecorationScaleBarDialog();
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
+    void apply();
 
   protected:
     QgsDecorationScaleBar& mDeco;

@@ -9,11 +9,17 @@
 # Contact email: d.lowe@rl.ac.uk
 # =============================================================================
 
-from urllib import urlencode
-from urllib2 import urlopen, Request
+from __future__ import (absolute_import, division, print_function)
+
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
 from owslib.etree import etree
 import cgi
-from StringIO import StringIO
+from six.moves import cStringIO as StringIO
+import six
+from owslib.util import openURL
 
 
 class ServiceException(Exception):
@@ -106,19 +112,14 @@ class WCSCapabilitiesReader(object):
         @return: An elementtree tree representation of the capabilities document
         """
         request = self.capabilities_url(service_url)
-        req = Request(request)
-        if self.cookies is not None:
-            req.add_header('Cookie', self.cookies)   
-        u = urlopen(req, timeout=timeout)
+        u = openURL(request, timeout=timeout, cookies=self.cookies)
         return etree.fromstring(u.read())
-    
+
     def readString(self, st):
         """Parse a WCS capabilities document, returning an
         instance of WCSCapabilitiesInfoset
         string should be an XML capabilities document
         """
-        if not isinstance(st, str):
-            raise ValueError("String must be of type string, not %s" % type(st))
         return etree.fromstring(st)
 
 class DescribeCoverageReader(object):
@@ -157,7 +158,7 @@ class DescribeCoverageReader(object):
         if self.version == '1.0.0':
             if 'coverage' not in params:
                 qs.append(('coverage', self.identifier))
-        elif self.version == '1.1.0':
+        elif self.version == '1.1.0' or self.version == '1.1.1':
             #NOTE: WCS 1.1.0 is ambigous about whether it should be identifier
             #or identifiers (see tables 9, 10 of specification)  
             if 'identifiers' not in params:
@@ -179,10 +180,6 @@ class DescribeCoverageReader(object):
         @return: An elementtree tree representation of the capabilities document
         """
         request = self.descCov_url(service_url)
-        req = Request(request)
-        if self.cookies is not None:
-            req.add_header('Cookie', self.cookies)   
-        u = urlopen(req, timeout=timeout)
+        u = openURL(request, cookies=self.cookies, timeout=timeout)
         return etree.fromstring(u.read())
-    
-       
+

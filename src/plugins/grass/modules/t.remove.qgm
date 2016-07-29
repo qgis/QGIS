@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Removes space time datasets from temporal database." module="t.remove">
+	<option key="inputs"/>
+	<option key="type"/>
+	<file key="file" type="old" advanced="yes"/>
+	<flag key="r" hidden="no" advanced="yes"/>
+	<flag key="f" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

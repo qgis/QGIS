@@ -22,12 +22,15 @@
 
 class QgsVectorColorBrewerColorRampV2;
 
+/** \ingroup gui
+ * \class QgsVectorColorBrewerColorRampV2Dialog
+ */
 class GUI_EXPORT QgsVectorColorBrewerColorRampV2Dialog : public QDialog, private Ui::QgsVectorColorBrewerColorRampV2DialogBase
 {
     Q_OBJECT
 
   public:
-    QgsVectorColorBrewerColorRampV2Dialog( QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent = NULL );
+    QgsVectorColorBrewerColorRampV2Dialog( QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent = nullptr );
 
   public slots:
     void setSchemeName();

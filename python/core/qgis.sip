@@ -1,4 +1,4 @@
-/*!  \mainpage QGIS
+/** \mainpage QGIS
 *
 *  \section about  About QGIS
 * QGIS is a user friendly Open Source Geographic Information
@@ -18,7 +18,10 @@
 %End
 
 
-class QGis
+/** \ingroup core
+ * The Qgis class provides global constants for use throughout the application.
+ */
+class Qgis
 {
 %TypeHeaderCode
 #include <qgis.h>
@@ -28,11 +31,11 @@ class QGis
     // Version constants
     //
     // Version string
-    static const char* QGIS_VERSION;
+    static QString QGIS_VERSION;
     // Version number used for comparing versions using the "Check QGIS Version" function
     static const int QGIS_VERSION_INT;
     // Release name
-    static const char* QGIS_RELEASE_NAME;
+    static QString QGIS_RELEASE_NAME;
     // The development version
     static const char* QGIS_DEV_VERSION;
 
@@ -59,12 +62,41 @@ class QGis
       WKBMultiPolygon25D,
     };
 
+    //! Map multi to single type
+    // @deprecated use QgsWKBTypes::singleType
+    /* Q_DECL_DEPRECATED */
     static WkbType singleType( WkbType type );
+
+    //! Map single to multitype type
+    // @deprecated use QgsWKBTypes::multiType
+    /* Q_DECL_DEPRECATED */
     static WkbType multiType( WkbType type );
+
+    //! Map 2d+ to 2d type
+    // @deprecated use QgsWKBTypes::flatType
+    /* Q_DECL_DEPRECATED */
     static WkbType flatType( WkbType type );
+
+    //! Return if type is a single type
+    // @deprecated use QgsWKBTypes::isSingleType
+    /* Q_DECL_DEPRECATED */
     static bool isSingleType( WkbType type );
+
+    //! Return if type is a multi type
+    // @deprecated use QgsWKBTypes::isMultiType
+    /* Q_DECL_DEPRECATED */
     static bool isMultiType( WkbType type );
+
+    // get dimension of points
+    // @deprecated use QgsWKBTypes::coordDimensions()
+    /* Q_DECL_DEPRECATED */
     static int wkbDimensions( WkbType type );
+
+    //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
+    static QgsWKBTypes::Type fromOldWkbType( Qgis::WkbType type );
+
+    //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
+    static Qgis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType
     {
@@ -86,51 +118,23 @@ class QGis
      */
     enum DataType
     {
-      /*! Unknown or unspecified type */                UnknownDataType,
-      /*! Eight bit unsigned integer (quint8) */        Byte,
-      /*! Sixteen bit unsigned integer (quint16) */     UInt16,
-      /*! Sixteen bit signed integer (qint16) */        Int16,
-      /*! Thirty two bit unsigned integer (quint32) */  UInt32,
-      /*! Thirty two bit signed integer (qint32) */     Int32,
-      /*! Thirty two bit floating point (float) */      Float32,
-      /*! Sixty four bit floating point (double) */     Float64,
-      /*! Complex Int16 */                              CInt16,
-      /*! Complex Int32 */                              CInt32,
-      /*! Complex Float32 */                            CFloat32,
-      /*! Complex Float64 */                            CFloat64,
-      /*! Color, alpha, red, green, blue, 4 bytes the same as
+      /** Unknown or unspecified type */                UnknownDataType,
+      /** Eight bit unsigned integer (quint8) */        Byte,
+      /** Sixteen bit unsigned integer (quint16) */     UInt16,
+      /** Sixteen bit signed integer (qint16) */        Int16,
+      /** Thirty two bit unsigned integer (quint32) */  UInt32,
+      /** Thirty two bit signed integer (qint32) */     Int32,
+      /** Thirty two bit floating point (float) */      Float32,
+      /** Sixty four bit floating point (double) */     Float64,
+      /** Complex Int16 */                              CInt16,
+      /** Complex Int32 */                              CInt32,
+      /** Complex Float32 */                            CFloat32,
+      /** Complex Float64 */                            CFloat64,
+      /** Color, alpha, red, green, blue, 4 bytes the same as
           QImage::Format_ARGB32 */                      ARGB32,
-      /*! Color, alpha, red, green, blue, 4 bytes  the same as
+      /** Color, alpha, red, green, blue, 4 bytes  the same as
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied,
     };
-
-
-    /** Map units that qgis supports
-     * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
-     * @note and QGIS >1.8 returns to that
-     */
-    enum UnitType
-    {
-      Meters,
-      Feet,
-      Degrees, //for 1.0 api backwards compatibility
-      UnknownUnit,
-
-      // for [1.4;1.8] api compatibility
-      DecimalDegrees,         // was 2
-      DegreesMinutesSeconds,  // was 4
-      DegreesDecimalMinutes,  // was 5
-      NauticalMiles
-    };
-
-    //! Provides the canonical name of the type value
-    static QString toLiteral( QGis::UnitType unit );
-    //! Converts from the canonical name to the type value
-    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
-    //! Provides translated version of the type value
-    static QString tr( QGis::UnitType unit );
-    //! Returns the conversion factor between the specified units
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
     //! User defined event types
     enum UserEvent
@@ -143,10 +147,6 @@ class QGis
       //! The row count has been calculated by a provider of a layer
       ProviderCountCalcEvent
     };
-
-    /** Old search radius in % of canvas width
-     *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
-    static const double DEFAULT_IDENTIFY_RADIUS;
 
     /** Identify search radius in mm
      *  @note added in 2.3 */
@@ -167,8 +167,46 @@ class QGis
     /** Default highlight line/outline minimum width in mm.
      *  @note added in 2.3 */
     static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
+
+    /** Fudge factor used to compare two scales. The code is often going from scale to scale
+     *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
+     *  To avoid that, use this factor instead of using <= or >=.
+     * @note added in 2.15*/
+    static double SCALE_PRECISION;
 };
 
+
+/** Converts a string to a double in a permissive way, eg allowing for incorrect
+ * numbers of digits between thousand separators
+ * @param string string to convert
+ * @param ok will be set to true if conversion was successful
+ * @returns string converted to double if possible
+ * @note added in version 2.9
+ * @see permissiveToInt
+ */
+double qgsPermissiveToDouble( QString string, bool& ok );
+
+/** Converts a string to an integer in a permissive way, eg allowing for incorrect
+ * numbers of digits between thousand separators
+ * @param string string to convert
+ * @param ok will be set to true if conversion was successful
+ * @returns string converted to int if possible
+ * @note added in version 2.9
+ * @see permissiveToDouble
+ */
+int qgsPermissiveToInt( QString string, bool& ok );
+
+//! Compares two QVariant values and returns whether the first is less than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantGreaterThan()
+bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+
+//! Compares two QVariant values and returns whether the first is greater than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantLessThan()
+bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
 /** Wkt string that represents a geographic coord sys
  * @note added to replace GEOWkt
@@ -203,16 +241,14 @@ const QString GEO_NONE;
 // Constants for point symbols
 //
 
-/** Magic number that determines the minimum allowable point size for point symbols */
-const double MINIMUM_POINT_SIZE;
 /** Magic number that determines the default point size for point symbols */
 const double DEFAULT_POINT_SIZE;
 const double DEFAULT_LINE_WIDTH;
 
-/** default snapping tolerance for segments */
+/** Default snapping tolerance for segments */
 const double DEFAULT_SEGMENT_EPSILON;
 
-/** qgssize is used instead of size_t, because size_t is stdlib type, unknown
+/** Qgssize is used instead of size_t, because size_t is stdlib type, unknown
  *  by SIP, and it would be hard to define size_t correctly in SIP.
  *  Currently used "unsigned long long" was introduced in C++11 (2011)
  *  but it was supported already before C++11 on common platforms.

@@ -14,7 +14,7 @@
 void QextSerialPort::platformSpecificInit()
 {
     fd = 0;
-    readNotifier = 0;
+    readNotifier = nullptr;
 }
 
 /*!
@@ -663,11 +663,11 @@ void QextSerialPort::setTimeout(long millisec)
     Posix_Copy_Timeout.tv_usec = millisec % 1000;
     if (isOpen()) {
         if (millisec == -1)
-            fcntl(fd, F_SETFL, O_NDELAY);
+            (void)fcntl(fd, F_SETFL, O_NDELAY);
         else
             //O_SYNC should enable blocking ::write()
             //however this seems not working on Linux 2.6.21 (works on OpenBSD 4.2)
-            fcntl(fd, F_SETFL, O_SYNC);
+            (void)fcntl(fd, F_SETFL, O_SYNC);
         tcgetattr(fd, & Posix_CommConfig);
         Posix_CommConfig.c_cc[VTIME] = millisec/100;
         tcsetattr(fd, TCSAFLUSH, & Posix_CommConfig);
@@ -750,7 +750,7 @@ void QextSerialPort::close()
         ::close(fd);
         if(readNotifier) {
             delete readNotifier;
-            readNotifier = 0;
+            readNotifier = nullptr;
         }
     }
 }

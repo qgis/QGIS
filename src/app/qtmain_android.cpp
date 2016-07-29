@@ -122,7 +122,7 @@ static int registerNativeMethods( JNIEnv* env, const char* className,
   if ( !constr )
   {
     __android_log_print( ANDROID_LOG_FATAL, "Qt", "Native registration unable to find  constructor for class '%s'", className );
-    return JNI_FALSE;;
+    return JNI_FALSE;
   }
   jobject obj = env->NewObject( clazz, constr );
   objptr = env->NewGlobalRef( obj );

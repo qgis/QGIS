@@ -18,6 +18,7 @@ Build-Depends:
  libproj-dev,
  libqt4-dev (>= 4.7.0),
  libqt4-opengl-dev,
+ libqca2-dev, libqca2-plugin-ossl,
  libqtwebkit-dev,
  libqwt5-qt4-dev | libqwt-dev,
  libspatialite-dev,
@@ -30,6 +31,7 @@ Build-Depends:
  python-dev,
  python-qt4-dev (>= 4.1.0),
  python-sip-dev (>= 4.5.0) | python-sip4-dev (>= 4.5.0) | sip4 (>= 4.5),
+ libosgearth-dev,
  git,
  txt2tags,
  doxygen
@@ -271,7 +273,7 @@ Description: QGIS server providing various OGC services
  .
  This package contains the QGIS server.
 
-Package: libqgis-customwidgets{QGIS_ABI}
+Package: libqgis-customwidgets
 Architecture: any
 Depends:
  qt4-designer,

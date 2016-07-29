@@ -21,29 +21,24 @@
 # Note the .pro file must NOT be named qgis.pro as this
 # name is reserved for the Windows qmake project file
 
-echo "deprecated - use push_ts.sh and pull_ts.sh"
-exit 1
+echo "deprecated - use push_ts.sh and pull_ts.sh" >&2
 
 set -e
 
 cleanup() {
-	if [ -f i18n/python_ts.tar ]; then
-		tar -xf i18n/python_ts.tar
-	fi
 	if [ -f i18n/qgis_ts.tar ]; then
 		echo Restoring excluded translations
 		tar -xf i18n/qgis_ts.tar
 	fi
 
 	echo Removing temporary files
-	perl -i.bak -ne 'print unless /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
+	perl -i.bak -ne 'print unless /^\s+<location.*(python-i18n|_texts)\.cpp.*$/;' i18n/qgis_*.ts
 	for i in \
 		python/python-i18n.{ts,cpp} \
 		python/plugins/*/python-i18n.{ts,cpp} \
 		i18n/qgis_*.ts.bak \
 		src/plugins/grass/grasslabels-i18n.cpp \
 		i18n/qgis_ts.tar \
-		i18n/python_ts.tar \
 		qgis_ts.pro
 	do
 		[ -f "$i" ] && rm "$i"
@@ -105,10 +100,20 @@ done
 
 trap cleanup EXIT
 
-tar --remove-file -cf i18n/python_ts.tar $(find python -name "*.ts")
 if [ "$exclude" != "--exclude i18n/qgis_en.ts" -o -n "$add" ]; then
   echo Saving excluded translations
   tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts $exclude
+fi
+
+builddir=$1
+if [ -d "$builddir" ]; then
+	echo Build directory not found
+	exit 1
+fi
+
+if [ ! -f "$builddir/src/core/qgsexpression_texts.cpp" -o ! -f "$builddir/src/core/qgscontexthelp_texts.cpp" ]; then
+	echo Generated help files not found
+	exit 1
 fi
 
 echo Updating python translations
@@ -134,7 +139,7 @@ for i in \
 do
 	[ -f "$i" ] && mv "$i" "$i.save"
 done
-$QMAKE -project -o qgis_ts.pro -nopwd src python i18n
+$QMAKE -project -o qgis_ts.pro -nopwd src python i18n "$builddir/src/core/qgsexpression_texts.cpp" "$builddir/src/core/qgscontexthelp_texts.cpp"
 if [ -n "$add" ]; then
 	for i in $add; do
 		echo "Adding translation for $i"

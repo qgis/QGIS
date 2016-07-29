@@ -1,0 +1,7 @@
+{
+  "name": "start_point",
+  "type": "function",
+  "description": "Returns the first node from a geometry.",
+  "arguments": [ {"arg":"geometry","description":"geometry object"} ],
+  "examples": [ { "expression":"geom_to_wkt(start_point(geom_from_wkt('LINESTRING(4 0, 4 2, 0 2)')))", "returns":"'Point (4 0)'"}]
+}

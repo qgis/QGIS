@@ -28,11 +28,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
+
 
 class lasgroundPro(LAStoolsAlgorithm):
 
@@ -43,16 +44,16 @@ class lasgroundPro(LAStoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def defineCharacteristics(self):
-        self.name = "lasgroundPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasgroundPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
         self.addParameter(ParameterBoolean(lasgroundPro.NO_BULGE,
-            self.tr("no triangle bulging during TIN refinement"), False))
+                                           self.tr("no triangle bulging during TIN refinement"), False))
         self.addParameter(ParameterSelection(lasgroundPro.TERRAIN,
-            self.tr("terrain type"), lasgroundPro.TERRAINS, 1))
+                                             self.tr("terrain type"), lasgroundPro.TERRAINS, 1))
         self.addParameter(ParameterSelection(lasgroundPro.GRANULARITY,
-            self.tr("preprocessing"), lasgroundPro.GRANULARITIES, 1))
+                                             self.tr("preprocessing"), lasgroundPro.GRANULARITIES, 1))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()

@@ -29,7 +29,7 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *roo
     , mHasCustomLayerOrder( false )
     , mAutoSetupOnFirstLayer( true )
     , mAutoEnableCrsTransform( true )
-    , mLastLayerCount( root->findLayers().count() )
+    , mLastLayerCount( !root->findLayers().isEmpty() )
 {
   connect( root, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( root, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
@@ -60,7 +60,7 @@ void QgsLayerTreeMapCanvasBridge::defaultLayerOrder( QgsLayerTreeNode* node, QSt
     order << nodeLayer->layerId();
   }
 
-  foreach ( QgsLayerTreeNode* child, node->children() )
+  Q_FOREACH ( QgsLayerTreeNode* child, node->children() )
     defaultLayerOrder( child, order );
 }
 
@@ -82,14 +82,31 @@ void QgsLayerTreeMapCanvasBridge::setCustomLayerOrder( const QStringList& order 
     return;
 
   // verify that the new order is correct
-  QStringList defOrder = defaultLayerOrder();
-  QStringList sortedNewOrder = order;
+  QStringList defOrder( defaultLayerOrder() );
+  QStringList newOrder( order );
+  QStringList sortedNewOrder( order );
   qSort( defOrder );
   qSort( sortedNewOrder );
+
+  if ( defOrder.size() < sortedNewOrder.size() )
+  {
+    // might contain bad layers, but also duplicates
+    QSet<QString> ids( defOrder.toSet() );
+
+    for ( int i = 0; i < sortedNewOrder.size(); i++ )
+    {
+      if ( !ids.contains( sortedNewOrder[i] ) )
+      {
+        newOrder.removeAll( sortedNewOrder[i] );
+        sortedNewOrder.removeAt( i-- );
+      }
+    }
+  }
+
   if ( defOrder != sortedNewOrder )
     return; // must be permutation of the default order
 
-  mCustomLayerOrder = order;
+  mCustomLayerOrder = newOrder;
   emit customLayerOrderChanged( mCustomLayerOrder );
 
   if ( mHasCustomLayerOrder )
@@ -102,7 +119,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
   if ( mHasCustomLayerOrder )
   {
-    foreach ( QString layerId, mCustomLayerOrder )
+    Q_FOREACH ( const QString& layerId, mCustomLayerOrder )
     {
       QgsLayerTreeLayer* nodeLayer = mRoot->findLayer( layerId );
       if ( nodeLayer )
@@ -121,14 +138,12 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     // also setup destination CRS and map units if the OTF projections are not yet enabled
     if ( !mCanvas->mapSettings().hasCrsTransformEnabled() )
     {
-      foreach ( QgsLayerTreeLayer* layerNode, layerNodes )
+      Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
       {
-        if ( layerNode->layer() &&
-             (
-               qobject_cast<QgsVectorLayer *>( layerNode->layer() ) == 0 ||
-               qobject_cast<QgsVectorLayer *>( layerNode->layer() )->geometryType() != QGis::NoGeometry
-             )
-           )
+        if ( !layerNode->layer() )
+          continue;
+
+        if ( layerNode->layer()->isSpatial() )
         {
           mCanvas->setDestinationCrs( layerNode->layer()->crs() );
           mCanvas->setMapUnits( layerNode->layer()->crs().mapUnits() );
@@ -149,7 +164,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
   if ( !mFirstCRS.isValid() )
   {
     // find out what is the first used CRS in case we may need to turn on OTF projections later
-    foreach ( QgsLayerTreeLayer* layerNode, layerNodes )
+    Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
     {
       if ( layerNode->layer() && layerNode->layer()->crs().isValid() )
       {
@@ -162,7 +177,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
   if ( mAutoEnableCrsTransform && mFirstCRS.isValid() && !mCanvas->mapSettings().hasCrsTransformEnabled() )
   {
     // check whether all layers still have the same CRS
-    foreach ( QgsLayerTreeLayer* layerNode, layerNodes )
+    Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
     {
       if ( layerNode->layer() && layerNode->layer()->crs().isValid() && layerNode->layer()->crs() != mFirstCRS )
       {
@@ -182,6 +197,8 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
 void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )
 {
+  mFirstCRS = QgsCoordinateReferenceSystem(); // invalidate on project load
+
   QDomElement elem = doc.documentElement().firstChildElement( "layer-tree-canvas" );
   if ( elem.isNull() )
   {
@@ -206,7 +223,7 @@ void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )
       itemElem = itemElem.nextSiblingElement( "item" );
     }
 
-    setHasCustomLayerOrder( customOrderElem.attribute( "enabled", 0 ).toInt() );
+    setHasCustomLayerOrder( customOrderElem.attribute( "enabled", QString() ).toInt() );
     setCustomLayerOrder( order );
   }
 }
@@ -217,7 +234,7 @@ void QgsLayerTreeMapCanvasBridge::writeProject( QDomDocument& doc )
   QDomElement customOrderElem = doc.createElement( "custom-order" );
   customOrderElem.setAttribute( "enabled", mHasCustomLayerOrder ? 1 : 0 );
 
-  foreach ( QString layerId, mCustomLayerOrder )
+  Q_FOREACH ( const QString& layerId, mCustomLayerOrder )
   {
     QDomElement itemElem = doc.createElement( "item" );
     itemElem.appendChild( doc.createTextNode( layerId ) );
@@ -236,7 +253,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList
     layers << QgsMapCanvasLayer( nodeLayer->layer(), nodeLayer->isVisible() == Qt::Checked, nodeLayer->customProperty( "overview", 0 ).toInt() );
   }
 
-  foreach ( QgsLayerTreeNode* child, node->children() )
+  Q_FOREACH ( QgsLayerTreeNode* child, node->children() )
     setCanvasLayers( child, layers );
 }
 
@@ -265,12 +282,12 @@ void QgsLayerTreeMapCanvasBridge::nodeAddedChildren( QgsLayerTreeNode* node, int
     }
     else if ( QgsLayerTree::isGroup( child ) )
     {
-      foreach ( QgsLayerTreeLayer* nodeL, QgsLayerTree::toGroup( child )->findLayers() )
+      Q_FOREACH ( QgsLayerTreeLayer* nodeL, QgsLayerTree::toGroup( child )->findLayers() )
         layerIds << nodeL->layerId();
     }
   }
 
-  foreach ( QString layerId, layerIds )
+  Q_FOREACH ( const QString& layerId, layerIds )
   {
     if ( !mCustomLayerOrder.contains( layerId ) )
       mCustomLayerOrder.append( layerId );
@@ -305,7 +322,7 @@ void QgsLayerTreeMapCanvasBridge::nodeVisibilityChanged()
   deferredSetCanvasLayers();
 }
 
-void QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged( QgsLayerTreeNode* node, QString key )
+void QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key )
 {
   Q_UNUSED( node );
   if ( key == "overview" )

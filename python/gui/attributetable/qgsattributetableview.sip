@@ -5,7 +5,7 @@ class QgsAttributeTableView : QTableView
 %End
 
   public:
-    QgsAttributeTableView( QWidget* parent = 0 );
+    QgsAttributeTableView( QWidget* parent /TransferThis/ = 0 );
     virtual ~QgsAttributeTableView();
 
     virtual void setModel( QgsAttributeTableFilterModel* filterModel );
@@ -19,7 +19,7 @@ class QgsAttributeTableView : QTableView
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
      * events. These are used to disable / enable live synchronisation with the map canvas selection
-     * which can be slow due to recurring canvas repaints. Updating the
+     * which can be slow due to recurring canvas repaints.
      *
      * @param object The object which is the target of the event.
      * @param event  The intercepted event
@@ -27,6 +27,13 @@ class QgsAttributeTableView : QTableView
      * @return Returns always false, so the event gets processed
      */
     virtual bool eventFilter( QObject* object, QEvent* event );
+
+    /**
+     * Set the attribute table config which should be used to control
+     * the appearance of the attribute table.
+     * @note added in QGIS 2.16
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
   protected:
     /**
@@ -85,12 +92,19 @@ class QgsAttributeTableView : QTableView
      * @param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
      *                 In most cases, this will be a @link QgsAttributeTableFilterModel @endlink
      */
-    void willShowContextMenu( QMenu* menu, QModelIndex atIndex );
+    void willShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
     void finished();
 
+    /** Emitted when a column in the view has been resized.
+     * @param column column index (starts at 0)
+     * @param width new width in pixel
+     * @note added in QGIS 2.16
+     */
+    void columnResized( int column, int width );
+
   public slots:
-    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested( const QModelIndexList& indexes );
     void repaintRequested();
     virtual void selectAll();
     virtual void selectRow( int row );

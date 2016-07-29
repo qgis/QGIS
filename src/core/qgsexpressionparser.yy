@@ -38,7 +38,7 @@ extern int exp_lex_destroy(yyscan_t scanner);
 extern int exp_lex(YYSTYPE* yylval_param, yyscan_t yyscanner);
 extern YY_BUFFER_STATE exp__scan_string(const char* buffer, yyscan_t scanner);
 
-/** returns parsed tree, otherwise returns NULL and sets parserErrorMsg
+/** returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
     (interface function to be called from QgsExpression)
   */
 QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg);
@@ -77,8 +77,10 @@ struct expression_parser_context
 {
   QgsExpression::Node* node;
   QgsExpression::NodeList* nodelist;
+  QgsExpression::NamedNode* namednode;
   double numberFloat;
   int    numberInt;
+  bool   boolVal;
   QString* text;
   QgsExpression::BinaryOperator b_op;
   QgsExpression::UnaryOperator u_op;
@@ -101,12 +103,13 @@ struct expression_parser_context
 // literals
 %token <numberFloat> NUMBER_FLOAT
 %token <numberInt> NUMBER_INT
+%token <boolVal> BOOLEAN
 %token NULLVALUE
 
 // tokens for conditional expressions
 %token CASE WHEN THEN ELSE END
 
-%token <text> STRING COLUMN_REF FUNCTION SPECIAL_COL
+%token <text> STRING COLUMN_REF FUNCTION SPECIAL_COL VARIABLE NAMED_NODE
 
 %token COMMA
 
@@ -120,6 +123,7 @@ struct expression_parser_context
 %type <nodelist> exp_list
 %type <whenthen> when_then_clause
 %type <whenthenlist> when_then_clauses
+%type <namednode> named_node
 
 // debugging
 %error-verbose
@@ -146,7 +150,10 @@ struct expression_parser_context
 
 %destructor { delete $$; } <node>
 %destructor { delete $$; } <nodelist>
+%destructor { delete $$; } <namednode>
 %destructor { delete $$; } <text>
+%destructor { delete $$; } <whenthen>
+%destructor { delete $$; } <whenthenlist>
 
 %%
 
@@ -175,10 +182,40 @@ expression:
     | expression CONCAT expression    { $$ = BINOP($2, $1, $3); }
     | NOT expression                  { $$ = new QgsExpression::NodeUnaryOperator($1, $2); }
     | '(' expression ')'              { $$ = $2; }
-
     | FUNCTION '(' exp_list ')'
         {
           int fnIndex = QgsExpression::functionIndex(*$1);
+          delete $1;
+          if (fnIndex == -1)
+          {
+            // this should not actually happen because already in lexer we check whether an identifier is a known function
+            // (if the name is not known the token is parsed as a column)
+            exp_error(parser_ctx, "Function is not known");
+            delete $3;
+            YYERROR;
+          }
+          QString paramError;
+          if ( !QgsExpression::NodeFunction::validateParams( fnIndex, $3, paramError ) )
+          {
+            exp_error( parser_ctx, paramError.toLocal8Bit().constData() );
+            delete $3;
+            YYERROR;
+          }
+          if ( QgsExpression::Functions()[fnIndex]->params() != -1
+               && !( QgsExpression::Functions()[fnIndex]->params() >= $3->count()
+               && QgsExpression::Functions()[fnIndex]->minParams() <= $3->count() ) )
+          {
+            exp_error(parser_ctx, QString( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
+            delete $3;
+            YYERROR;
+          }
+          $$ = new QgsExpression::NodeFunction(fnIndex, $3);
+        }
+
+    | FUNCTION '(' ')'
+        {
+          int fnIndex = QgsExpression::functionIndex(*$1);
+          delete $1;
           if (fnIndex == -1)
           {
             // this should not actually happen because already in lexer we check whether an identifier is a known function
@@ -186,14 +223,12 @@ expression:
             exp_error(parser_ctx, "Function is not known");
             YYERROR;
           }
-          if ( QgsExpression::Functions()[fnIndex]->params() != -1
-               && QgsExpression::Functions()[fnIndex]->params() != $3->count() )
+          if ( QgsExpression::Functions()[fnIndex]->params() != 0 )
           {
-            exp_error(parser_ctx, "Function is called with wrong number of arguments");
+            exp_error(parser_ctx, QString( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
             YYERROR;
           }
-          $$ = new QgsExpression::NodeFunction(fnIndex, $3);
-          delete $1;
+          $$ = new QgsExpression::NodeFunction(fnIndex, new QgsExpression::NodeList());
         }
 
     | expression IN '(' exp_list ')'     { $$ = new QgsExpression::NodeInOperator($1, $4, false);  }
@@ -215,33 +250,64 @@ expression:
           if (fnIndex == -1)
           {
             if ( !QgsExpression::hasSpecialColumn( *$1 ) )
-	    {
+            {
               exp_error(parser_ctx, "Special column is not known");
-	      YYERROR;
-	    }
-	    // $var is equivalent to _specialcol_( "$var" )
-	    QgsExpression::NodeList* args = new QgsExpression::NodeList();
-	    QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( *$1 );
-	    args->append( literal );
-	    $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "_specialcol_" ), args );
+              delete $1;
+              YYERROR;
+            }
+            // $var is equivalent to _specialcol_( "$var" )
+            QgsExpression::NodeList* args = new QgsExpression::NodeList();
+            QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( *$1 );
+            args->append( literal );
+            $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "_specialcol_" ), args );
           }
-	  else
-	  {
-	    $$ = new QgsExpression::NodeFunction( fnIndex, NULL );
-	    delete $1;
-	  }
+          else
+          {
+            $$ = new QgsExpression::NodeFunction( fnIndex, nullptr );
+          }
+          delete $1;
+        }
+
+    // variables
+    | VARIABLE
+        {
+          // @var is equivalent to var( "var" )
+          QgsExpression::NodeList* args = new QgsExpression::NodeList();
+          QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( QString(*$1).mid(1) );
+          args->append( literal );
+          $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "var" ), args );
+          delete $1;
         }
 
     //  literals
     | NUMBER_FLOAT                { $$ = new QgsExpression::NodeLiteral( QVariant($1) ); }
     | NUMBER_INT                  { $$ = new QgsExpression::NodeLiteral( QVariant($1) ); }
+    | BOOLEAN                     { $$ = new QgsExpression::NodeLiteral( QVariant($1) ); }
     | STRING                      { $$ = new QgsExpression::NodeLiteral( QVariant(*$1) ); delete $1; }
     | NULLVALUE                   { $$ = new QgsExpression::NodeLiteral( QVariant() ); }
 ;
 
+named_node:
+    NAMED_NODE expression { $$ = new QgsExpression::NamedNode( *$1, $2 ); delete $1; }
+    ;
+
 exp_list:
-      exp_list COMMA expression { $$ = $1; $1->append($3); }
+      exp_list COMMA expression
+       {
+         if ( $1->hasNamedNodes() )
+         {
+           exp_error(parser_ctx, "All parameters following a named parameter must also be named.");
+           delete $1;
+           YYERROR;
+         }
+         else
+         {
+           $$ = $1; $1->append($3);
+         }
+       }
+    | exp_list COMMA named_node { $$ = $1; $1->append($3); }
     | expression              { $$ = new QgsExpression::NodeList(); $$->append($1); }
+    | named_node              { $$ = new QgsExpression::NodeList(); $$->append($1); }
     ;
 
 when_then_clauses:
@@ -256,7 +322,7 @@ when_then_clause:
 %%
 
 
-// returns parsed tree, otherwise returns NULL and sets parserErrorMsg
+// returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
 QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg)
 {
   expression_parser_context ctx;
@@ -275,7 +341,8 @@ QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg
   else // error?
   {
     parserErrorMsg = ctx.errorMsg;
-    return NULL;
+    delete ctx.rootNode;
+    return nullptr;
   }
 }
 

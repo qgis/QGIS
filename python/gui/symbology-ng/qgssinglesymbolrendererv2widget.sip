@@ -11,11 +11,14 @@ class QgsSingleSymbolRendererV2Widget : QgsRendererV2Widget
 
     virtual QgsFeatureRendererV2* renderer();
 
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    virtual void setDockMode( bool dockMode );
+
   public slots:
     void changeSingleSymbol();
 
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
     void showSymbolLevels();

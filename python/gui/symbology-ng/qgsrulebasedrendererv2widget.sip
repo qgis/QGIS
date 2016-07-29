@@ -79,6 +79,7 @@ class QgsRuleBasedRendererV2Widget : QgsRendererV2Widget
     void setRenderingOrder();
 
     void currentRuleChanged( const QModelIndex& current = QModelIndex(), const QModelIndex& previous = QModelIndex() );
+    void selectedRulesChanged();
 
     void saveSectionWidth( int section, int oldSize, int newSize );
     void restoreSectionWidths();
@@ -99,6 +100,26 @@ class QgsRuleBasedRendererV2Widget : QgsRendererV2Widget
 
 ///////
 
+class QgsRendererRulePropsWidget: QgsPanelWidget
+{
+%TypeHeaderCode
+#include <qgsrulebasedrendererv2widget.h>
+%End
+
+  public:
+    QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
+    ~QgsRendererRulePropsWidget();
+
+    QgsRuleBasedRendererV2::Rule* rule();
+
+  public slots:
+    void testFilter();
+    void buildExpression();
+    void apply();
+    virtual void setDockMode( bool dockMode);
+};
+
+
 class QgsRendererRulePropsDialog : QDialog
 {
 %TypeHeaderCode
@@ -106,7 +127,7 @@ class QgsRendererRulePropsDialog : QDialog
 %End
 
   public:
-    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = 0 );
+    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
     ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRendererV2::Rule* rule();

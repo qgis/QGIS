@@ -428,11 +428,57 @@
       <attribute name="title">
        <string>Settings</string>
       </attribute>
-      <widget class="QGroupBox" name="groupBox_3">
+      <widget class="QGroupBox" name="saveStrategyGroup">
        <property name="geometry">
         <rect>
          <x>10</x>
          <y>10</y>
+         <width>571</width>
+         <height>131</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Connection naming</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QLabel" name="lblSaveStrategy">
+          <property name="text">
+           <string>When saving the connection of an OWS service</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioTitleAsk">
+          <property name="text">
+           <string>Use the OWS Service Title and ask before overwriting</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioTitleNoAsk">
+          <property name="text">
+           <string>Use the OWS Service Title and always overwrite if already available</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioTempName">
+          <property name="text">
+           <string>Use a temporary name, which you can change later</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_3">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>230</y>
          <width>571</width>
          <height>71</height>
         </rect>
@@ -484,7 +530,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>90</y>
+         <y>150</y>
          <width>571</width>
          <height>71</height>
         </rect>

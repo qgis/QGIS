@@ -11,14 +11,17 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis  # NOQA
+
 import os
 import sys
+import glob
 import platform
 import tempfile
-import qgis
-from PyQt4 import QtGui, QtCore
+
+from qgis.PyQt.QtCore import QDir
+
 from qgis.core import (
-    QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsVectorFileWriter,
     QgsMapLayerRegistry,
@@ -27,33 +30,17 @@ from qgis.core import (
     QgsMapRendererSequentialJob,
     QgsFontUtils
 )
-from qgis.gui import QgsMapCanvas
-from qgis_interface import QgisInterface
+from qgis.testing import start_app
 import hashlib
 import re
-from itertools import izip
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
 
 import webbrowser
 import subprocess
 
-# Support python < 2.7 via unittest2 needed for expected failure decorator.
-# Note that you should ignore unused import warnings here as these are imported
-# from this module by other tests.
-if sys.version_info[0:2] < (2, 7):
-    try:
-        from unittest2 import TestCase, expectedFailure
-        import unittest2 as unittest
-    except ImportError:
-        print "You should install unittest2 to run the salt tests"
-        sys.exit(0)
-else:
-    from unittest import TestCase, expectedFailure
-    import unittest
-
-QGISAPP = None  # Static variable used to hold hand to running QGis app
-CANVAS = None
-PARENT = None
-IFACE = None
 GEOCRS = 4326  # constant for EPSG:GEOCRS Geographic CRS id
 
 FONTSLOADED = False
@@ -84,66 +71,18 @@ def assertHashForFile(theHash, theFilename):
 def hashForFile(theFilename):
     """Return an md5 checksum for a file"""
     myPath = theFilename
-    myData = file(myPath).read()
+    myData = open(myPath).read()
     myHash = hashlib.md5()
     myHash.update(myData)
     myHash = myHash.hexdigest()
     return myHash
 
 
-def getQgisTestApp():
-    """ Start one QGis application to test agaist
-
-    Input
-        NIL
-
-    Output
-        handle to qgis app
-
-
-    If QGis is already running the handle to that app will be returned
-    """
-
-    global QGISAPP  # pylint: disable=W0603
-
-    if QGISAPP is None:
-        myGuiFlag = True  # All test will run qgis in gui mode
-
-        # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication -
-        # no need to mess with it here.
-        QGISAPP = QgsApplication(sys.argv, myGuiFlag)
-
-        QGISAPP.initQgis()
-        s = QGISAPP.showSettings()
-        print s
-
-    global PARENT  # pylint: disable=W0603
-    if PARENT is None:
-        PARENT = QtGui.QWidget()
-
-    global CANVAS  # pylint: disable=W0603
-    if CANVAS is None:
-        CANVAS = QgsMapCanvas(PARENT)
-        CANVAS.resize(QtCore.QSize(400, 400))
-
-    global IFACE  # pylint: disable=W0603
-    if IFACE is None:
-        # QgisInterface is a stub implementation of the QGIS plugin interface
-        IFACE = QgisInterface(CANVAS)
-
-    return QGISAPP, CANVAS, IFACE, PARENT
-
-
 def unitTestDataPath(theSubdir=None):
-    """Return the absolute path to the InaSAFE unit test data dir.
-
-    .. note:: This is not the same thing as the SVN inasafe_data dir. Rather
-       this is a new dataset where the test datasets are all tiny for fast
-       testing and the datasets live in the same repo as the code.
+    """Return the absolute path to the QGIS unit test data dir.
 
     Args:
-       * theSubdir: (Optional) Additional subdir to add to the path - typically
-         'hazard' or 'exposure'.
+       * theSubdir: (Optional) Additional subdir to add to the path
     """
     myPath = __file__
     tmpPath = os.path.split(os.path.dirname(myPath))
@@ -172,19 +111,19 @@ def setCanvasCrs(theEpsgId, theOtfpFlag=False):
                         on the CANVAS. Default to False.
     """
     # Enable on-the-fly reprojection
-    CANVAS.mapRenderer().setProjectionsEnabled(theOtfpFlag)
+    CANVAS.mapRenderer().setProjectionsEnabled(theOtfpFlag)  # FIXME
 
     # Create CRS Instance
     myCrs = QgsCoordinateReferenceSystem()
-    myCrs.createFromId(theEpsgId, QgsCoordinateReferenceSystem.EpsgCrsId)
+    myCrs.createFromId(theEpsgId, QgsCoordinateReferenceSystem.E)
 
     # Reproject all layers to WGS84 geographic CRS
-    CANVAS.mapRenderer().setDestinationCrs(myCrs)
+    CANVAS.mapRenderer().setDestinationCrs(myCrs)  # FIXME
 
 
 def writeShape(theMemoryLayer, theFileName):
-    myFileName = os.path.join(str(QtCore.QDir.tempPath()), theFileName)
-    print myFileName
+    myFileName = os.path.join(str(QDir.tempPath()), theFileName)
+    print(myFileName)
     # Explicitly giving all options, not really needed but nice for clarity
     myErrorMessage = ''
     myOptions = []
@@ -207,24 +146,52 @@ def writeShape(theMemoryLayer, theFileName):
     assert myResult == QgsVectorFileWriter.NoError
 
 
+def doubleNear(a, b, tol=0.0000000001):
+    """
+    Tests whether two floats are near, within a specified tolerance
+    """
+    return abs(float(a) - float(b)) < tol
+
+
 def compareWkt(a, b, tol=0.000001):
-    r0 = re.compile( "-?\d+(?:\.\d+)?(?:[eE]\d+)?" )
-    r1 = re.compile( "\s*,\s*" )
+    """
+    Compares two WKT strings, ignoring allowed differences between strings
+    and allowing a tolerance for coordinates
+    """
+    # ignore case
+    a0 = a.lower()
+    b0 = b.lower()
+
+    # remove optional spaces before z/m
+    r = re.compile("\s+([zm])")
+    a0 = r.sub(r'\1', a0)
+    b0 = r.sub(r'\1', b0)
+
+    # spaces before brackets are optional
+    r = re.compile("\s*\(\s*")
+    a0 = r.sub('(', a0)
+    b0 = r.sub('(', b0)
+    # spaces after brackets are optional
+    r = re.compile("\s*\)\s*")
+    a0 = r.sub(')', a0)
+    b0 = r.sub(')', b0)
 
     # compare the structure
-    a0 = r1.sub( ",", r0.sub( "#", a ) )
-    b0 = r1.sub( ",", r0.sub( "#", b ) )
+    r0 = re.compile("-?\d+(?:\.\d+)?(?:[eE]\d+)?")
+    r1 = re.compile("\s*,\s*")
+    a0 = r1.sub(",", r0.sub("#", a0))
+    b0 = r1.sub(",", r0.sub("#", b0))
     if a0 != b0:
         return False
 
     # compare the numbers with given tolerance
-    a0 = r0.findall( a )
-    b0 = r0.findall( b )
+    a0 = r0.findall(a)
+    b0 = r0.findall(b)
     if len(a0) != len(b0):
         return False
 
-    for (a1,b1) in izip(a0,b0):
-        if abs(float(a1)-float(b1))>tol:
+    for (a1, b1) in zip(a0, b0):
+        if not doubleNear(a1, b1, tol):
             return False
 
     return True
@@ -269,7 +236,7 @@ def mapSettingsString(ms):
 
     s = 'MapSettings...\n'
     s += '  layers(): {0}\n'.format(
-        [unicode(QgsMapLayerRegistry.instance().mapLayer(i).name())
+        [QgsMapLayerRegistry.instance().mapLayer(i).name()
          for i in ms.layers()])
     s += '  backgroundColor(): rgba {0},{1},{2},{3}\n'.format(
         ms.backgroundColor().red(), ms.backgroundColor().green(),
@@ -340,8 +307,7 @@ def getTestFont(style='Roman', size=12):
 
 
 def loadTestFonts():
-    if QGISAPP is None:
-        getQgisTestApp()
+    start_app()
 
     global FONTSLOADED  # pylint: disable=W0603
     if FONTSLOADED is False:
@@ -363,3 +329,501 @@ def openInBrowserTab(url):
         subprocess.Popen([sys.executable, "-c", cmd],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
+
+
+def printImportant(info):
+    """
+    Prints important information to stdout and to a file which in the end
+    should be printed on test result pages.
+    :param info: A string to print
+    """
+
+    print(info)
+    with open(os.path.join(tempfile.gettempdir(), 'ctest-important.log'), 'a+') as f:
+        f.write(u'{}\n'.format(info))
+
+
+class DoxygenParser():
+
+    """
+    Parses the XML files generated by Doxygen which describe the API docs
+    """
+
+    def __init__(self, path, acceptable_missing={}, acceptable_missing_added_note=[], acceptable_missing_brief=[]):
+        """
+        Initializes the parser.
+        :param path: Path to Doxygen XML output
+        """
+        self.acceptable_missing = acceptable_missing
+        self.acceptable_missing_added_note = acceptable_missing_added_note
+        self.acceptable_missing_brief = acceptable_missing_brief
+        self.documentable_members = 0
+        self.documented_members = 0
+        self.undocumented_string = ''
+        self.bindable_members = []
+        self.groups = {}
+        self.classes_missing_group = []
+        self.classes_missing_brief = []
+        self.classes_missing_version_added = []
+        # for some reason the Doxygen generation on Travis refuses to assign these classes to groups
+        self.acceptable_missing_group = ['QgsOgcUtils::LayerProperties',
+                                         'QgsSQLStatement::Node',
+                                         'QgsSQLStatement::NodeBinaryOperator',
+                                         'QgsSQLStatement::NodeColumnRef',
+                                         'QgsSQLStatement::NodeFunction',
+                                         'QgsSQLStatement::NodeInOperator',
+                                         'QgsSQLStatement::NodeList',
+                                         'QgsSQLStatement::NodeLiteral',
+                                         'QgsSQLStatement::NodeUnaryOperator',
+                                         'QgsRuleBasedLabeling::Rule',
+                                         'QgsSQLStatement::Visitor']
+        self.parseFiles(path)
+
+    def parseFiles(self, path):
+        """ Parses all the Doxygen XML files in a folder
+            :param path: Path to Doxygen XML output
+        """
+
+        # find groups
+        for f in glob.glob(os.path.join(path, 'group__*.xml')):
+            group, members = self.parseGroup(f)
+            self.groups[group] = members
+
+        # parse docs
+        for f in glob.glob(os.path.join(path, '*.xml')):
+            self.parseFile(f)
+
+    def parseGroup(self, f):
+        """ Parses a single Doxygen Group XML file
+            :param f: XML file path
+        """
+        name = None
+        members = []
+
+        # Wrap everything in a try, as sometimes Doxygen XML is malformed
+        try:
+            for event, elem in ET.iterparse(f):
+                if event == 'end' and elem.tag == 'compoundname':
+                    name = elem.text
+                if event == 'end' and elem.tag == 'innerclass':
+                    members.append(elem.text)
+        except:
+            pass
+
+        return name, members
+
+    def hasGroup(self, class_name):
+        """ Returns true if a class has been assigned to a group
+            :param class_name class name to test
+        """
+        for g in self.groups:
+            if class_name in self.groups[g]:
+                return True
+        return False
+
+    def parseFile(self, f):
+        """ Parses a single Doxygen XML file
+            :param f: XML file path
+        """
+        documentable_members = 0
+        documented_members = 0
+
+        # Wrap everything in a try, as sometimes Doxygen XML is malformed
+        try:
+            for event, elem in ET.iterparse(f):
+                if event == 'end' and elem.tag == 'compounddef':
+                    if self.elemIsPublicClass(elem):
+                        # store documentation status
+                        members, documented, undocumented, bindable, has_brief_description, found_version_added = self.parseClassElem(elem)
+                        documentable_members += members
+                        documented_members += documented
+                        class_name = elem.find('compoundname').text
+                        acceptable_missing = self.acceptable_missing.get(class_name, [])
+
+                        if not self.hasGroup(class_name) and not class_name in self.acceptable_missing_group:
+                            self.classes_missing_group.append(class_name)
+                        if not class_name in self.acceptable_missing_brief and not has_brief_description:
+                            self.classes_missing_brief.append(class_name)
+                        if not class_name in self.acceptable_missing_added_note and not found_version_added:
+                            self.classes_missing_version_added.append(class_name)
+
+                        # GEN LIST
+                        # if len(undocumented) > 0:
+                        #     print('"%s": [%s],' % (class_name, ", ".join(['"%s"' % e.replace('"', '\\"') for e in undocumented])))
+
+                        unacceptable_undocumented = undocumented - set(acceptable_missing)
+
+                        # do a case insensitive check too
+                        unacceptable_undocumented_insensitive = set([u.lower() for u in undocumented]) - set([u.lower() for u in acceptable_missing])
+
+                        if len(unacceptable_undocumented_insensitive) > 0:
+                            self.undocumented_string += "Class {}, {}/{} members documented\n".format(class_name, documented, members)
+                            for u in unacceptable_undocumented:
+                                self.undocumented_string += ' Missing: {}\n'.format(u)
+                            self.undocumented_string += "\n"
+
+                        # store bindable members
+                        if self.classElemIsBindable(elem):
+                            for m in bindable:
+                                self.bindable_members.append(m)
+
+                    elem.clear()
+        except ET.ParseError as e:
+            # sometimes Doxygen generates malformed xml (eg for < and > operators)
+            line_num, col = e.position
+            with open(f, 'r') as xml_file:
+                for i, l in enumerate(xml_file):
+                    if i == line_num - 1:
+                        line = l
+                        break
+            caret = '{:=>{}}'.format('^', col)
+            print('ParseError in {}\n{}\n{}\n{}'.format(f, e, line, caret))
+
+        self.documentable_members += documentable_members
+        self.documented_members += documented_members
+
+    def elemIsPublicClass(self, elem):
+        """ Tests whether an XML element corresponds to a public (or protected) class
+            :param elem: XML element
+        """
+
+        # only looking for classes
+        if not elem.get('kind') == 'class':
+            return False
+
+        # only looking for public or protected classes
+        return elem.get('prot') in ('public', 'protected')
+
+    def classElemIsBindable(self, elem):
+        """ Tests whether a class should have SIP bindings
+            :param elem: XML element corresponding to a class
+        """
+        try:
+            # check for classes with special python doc notes (probably 'not available' or renamed classes, either way
+            # they should be safe to ignore as obviously some consideration has been given to Python bindings)
+            detailed_sec = elem.find('detaileddescription')
+            for p in detailed_sec.getiterator('para'):
+                for s in p.getiterator('simplesect'):
+                    for ps in s.getiterator('para'):
+                        if ps.text and 'python' in ps.text.lower():
+                            return False
+            return True
+        except:
+            return True
+
+    def parseClassElem(self, e):
+        """ Parses an XML element corresponding to a Doxygen class
+            :param e: XML element
+        """
+        documentable_members = 0
+        documented_members = 0
+        undocumented_members = set()
+        bindable_members = []
+        # loop through all members
+        for m in e.getiterator('memberdef'):
+            signature = self.memberSignature(m)
+            if signature is None:
+                continue
+            if self.elemIsBindableMember(m):
+                bindable_member = [e.find('compoundname').text, m.find('name').text]
+                if bindable_member not in bindable_members:
+                    bindable_members.append(bindable_member)
+            if self.elemIsDocumentableMember(m):
+                documentable_members += 1
+                if self.memberIsDocumented(m):
+                    documented_members += 1
+                else:
+                    undocumented_members.add(signature)
+        # test for brief description
+        d = e.find('briefdescription')
+        has_brief_description = False
+        if d:
+            p = d.find('para')
+            if p.text and len(p.text) > 0:
+                has_brief_description = True
+
+        # test for "added in QGIS xxx" string
+        d = e.find('detaileddescription')
+        found_version_added = False
+        if d.find('para'):
+            for s in d.find('para').getiterator('simplesect'):
+                if s.get('kind') == 'note':
+                    for p in s.getiterator('para'):
+                        if p.text and p.text.lower().startswith('added in'):
+                            found_version_added = True
+
+        return documentable_members, documented_members, undocumented_members, bindable_members, has_brief_description, found_version_added
+
+    def memberSignature(self, elem):
+        """ Returns the signature for a member
+            :param elem: XML element for a class member
+        """
+        a = elem.find('argsstring')
+        try:
+            if a is not None:
+                return elem.find('name').text + a.text
+            else:
+                return elem.find('name').text
+        except:
+            return None
+
+    def elemIsBindableMember(self, elem):
+        """ Tests whether an member should be included in SIP bindings
+            :param elem: XML element for a class member
+        """
+
+        # only public or protected members are bindable
+        if not self.visibility(elem) in ('public', 'protected'):
+            return False
+
+        # property themselves are not bound, only getters and setters
+        if self.isProperty(elem):
+            return False
+
+        # ignore friend classes
+        if self.isFriendClass(elem):
+            return False
+
+        # ignore typedefs (can't test for them)
+        if self.isTypeDef(elem):
+            return False
+
+        if self.isVariable(elem) and self.visibility(elem) == 'protected':
+            # protected variables can't be bound in SIP
+            return False
+
+        # check for members with special python doc notes (probably 'not available' or renamed methods, either way
+        # they should be safe to ignore as obviously some consideration has been given to Python bindings)
+        try:
+            detailed_sec = elem.find('detaileddescription')
+            for p in detailed_sec.getiterator('para'):
+                for s in p.getiterator('simplesect'):
+                    for ps in s.getiterator('para'):
+                        if ps.text and 'python' in ps.text.lower():
+                            return False
+        except:
+            pass
+
+        # ignore constructors and destructor, can't test for these
+        if self.isDestructor(elem) or self.isConstructor(elem):
+            return False
+
+        # ignore operators, also can't test
+        if self.isOperator(elem):
+            return False
+
+        # ignore deprecated members
+        if self.isDeprecated(elem):
+            return False
+
+        return True
+
+    def elemIsDocumentableMember(self, elem):
+        """ Tests whether an member should be included in Doxygen docs
+            :param elem: XML element for a class member
+        """
+
+        # ignore variables (for now, eventually public/protected variables should be documented)
+        if self.isVariable(elem):
+            return False
+
+        # only public or protected members should be documented
+        if not self.visibility(elem) in ('public', 'protected'):
+            return False
+
+        # ignore reimplemented methods
+        if self.isReimplementation(elem):
+            return False
+
+        # ignore friend classes
+        if self.isFriendClass(elem):
+            return False
+
+        # ignore destructor
+        if self.isDestructor(elem):
+            return False
+
+        # ignore constructors with no arguments
+        if self.isConstructor(elem):
+            try:
+                if elem.find('argsstring').text == '()':
+                    return False
+            except:
+                pass
+
+        name = elem.find('name')
+
+        # ignore certain obvious operators
+        try:
+            if name.text in ('operator=', 'operator==', 'operator!='):
+                return False
+        except:
+            pass
+
+        # ignore on_* slots
+        try:
+            if name.text.startswith('on_'):
+                return False
+        except:
+            pass
+
+        # ignore deprecated members
+        if self.isDeprecated(elem):
+            return False
+
+        return True
+
+    def visibility(self, elem):
+        """ Returns the visibility of a class or member
+            :param elem: XML element for a class or member
+        """
+        try:
+            return elem.get('prot')
+        except:
+            return ''
+
+    def isVariable(self, member_elem):
+        """ Tests whether an member is a variable
+            :param member_elem: XML element for a class member
+        """
+        try:
+            if member_elem.get('kind') == 'variable':
+                return True
+        except:
+            pass
+
+        return False
+
+    def isProperty(self, member_elem):
+        """ Tests whether an member is a property
+            :param member_elem: XML element for a class member
+        """
+        try:
+            if member_elem.get('kind') == 'property':
+                return True
+        except:
+            pass
+
+        return False
+
+    def isDestructor(self, member_elem):
+        """ Tests whether an member is a destructor
+            :param member_elem: XML element for a class member
+        """
+        try:
+            name = member_elem.find('name').text
+            if name.startswith('~'):
+                # destructor
+                return True
+        except:
+            pass
+        return False
+
+    def isConstructor(self, member_elem):
+        """ Tests whether an member is a constructor
+            :param member_elem: XML element for a class member
+        """
+        try:
+            definition = member_elem.find('definition').text
+            name = member_elem.find('name').text
+            if '{}::{}'.format(name, name) in definition:
+                return True
+        except:
+            pass
+
+        return False
+
+    def isOperator(self, member_elem):
+        """ Tests whether an member is an operator
+            :param member_elem: XML element for a class member
+        """
+        try:
+            name = member_elem.find('name').text
+            if re.match('^operator\W.*', name):
+                return True
+        except:
+            pass
+
+        return False
+
+    def isFriendClass(self, member_elem):
+        """ Tests whether an member is a friend class
+            :param member_elem: XML element for a class member
+        """
+        try:
+            if member_elem.get('kind') == 'friend':
+                return True
+        except:
+            pass
+        return False
+
+    def isTypeDef(self, member_elem):
+        """ Tests whether an member is a type def
+            :param member_elem: XML element for a class member
+        """
+        try:
+            if member_elem.get('kind') == 'typedef':
+                return True
+        except:
+            pass
+        return False
+
+    def isReimplementation(self, member_elem):
+        """ Tests whether an member is a reimplementation
+            :param member_elem: XML element for a class member
+        """
+
+        # use two different tests, as Doxygen will not detect reimplemented Qt methods
+        try:
+            if member_elem.find('reimplements') is not None:
+                return True
+            if ' override' in member_elem.find('argsstring').text:
+                return True
+        except:
+            pass
+
+        return False
+
+    def isDeprecated(self, member_elem):
+        """ Tests whether an member is deprecated
+            :param member_elem: XML element for a class member
+        """
+
+        # look for both Q_DECL_DEPRECATED and Doxygen deprecated tag
+        decl_deprecated = False
+        type_elem = member_elem.find('type')
+        try:
+            if 'Q_DECL_DEPRECATED' in type_elem.text:
+                decl_deprecated = True
+        except:
+            pass
+
+        doxy_deprecated = False
+        try:
+            for p in member_elem.find('detaileddescription').getiterator('para'):
+                for s in p.getiterator('xrefsect'):
+                    if s.find('xreftitle') is not None and 'Deprecated' in s.find('xreftitle').text:
+                        doxy_deprecated = True
+                        break
+        except:
+            assert 0, member_elem.find('definition').text
+
+        if not decl_deprecated and not doxy_deprecated:
+            return False
+
+        # only functions for now, but in future this should also apply for enums and variables
+        if member_elem.get('kind') in ('function', 'variable'):
+            assert decl_deprecated, 'Error: Missing Q_DECL_DEPRECATED for {}'.format(member_elem.find('definition').text)
+            assert doxy_deprecated, 'Error: Missing Doxygen deprecated tag for {}'.format(member_elem.find('definition').text)
+
+        return True
+
+    def memberIsDocumented(self, member_elem):
+        """ Tests whether an member has documentation
+            :param member_elem: XML element for a class member
+        """
+        for doc_type in ('inbodydescription', 'briefdescription', 'detaileddescription'):
+            doc = member_elem.find(doc_type)
+            if doc is not None and list(doc):
+                return True
+        return False

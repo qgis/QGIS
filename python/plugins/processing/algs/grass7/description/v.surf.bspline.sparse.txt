@@ -9,4 +9,4 @@ ParameterSelection|method|Spline interpolation algorithm|bilinear;bicubic
 ParameterNumber|lambda_i|Tykhonov regularization parameter (affects smoothing)|None|None|0.01
 ParameterTableField|column|Attribute table column with values to interpolate|input|-1|False
 ParameterSelection|layer|layer|1;0
-OutputRaster|raster_output|Output raster layer
+OutputRaster|raster_output|Interpolated spline

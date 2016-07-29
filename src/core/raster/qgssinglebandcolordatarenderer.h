@@ -30,7 +30,7 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
   public:
     QgsSingleBandColorDataRenderer( QgsRasterInterface* input, int band );
     ~QgsSingleBandColorDataRenderer();
-    QgsRasterInterface * clone() const override;
+    QgsSingleBandColorDataRenderer * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
@@ -38,12 +38,15 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 
     QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     QList<int> usesBands() const override;
 
   private:
     int mBand;
+
+    QgsSingleBandColorDataRenderer( const QgsSingleBandColorDataRenderer& );
+    const QgsSingleBandColorDataRenderer& operator=( const QgsSingleBandColorDataRenderer& );
 };
 
 #endif // QGSSINGLEBANDCOLORDATARENDERER_H

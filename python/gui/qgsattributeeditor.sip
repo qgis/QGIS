@@ -7,7 +7,7 @@ class QgsAttributeEditor : QObject
 %End
 
   public:
-    QgsAttributeEditor( QObject *parent );
+    QgsAttributeEditor( QObject *parent /TransferThis/ );
 
     /**
      * Creates or prepares a attribute editor widget

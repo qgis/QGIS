@@ -21,12 +21,15 @@
 #include <ui_qgsvectorlayersaveasdialogbase.h>
 #include <QDialog>
 #include "qgscontexthelp.h"
+#include "qgsfield.h"
 #include "qgsvectorfilewriter.h"
 
+class QgsVectorLayer;
+
 /**
- *  Class to select destination file, type and CRS for ogr layrs
+ *  Class to select destination file, type and CRS for ogr layers
  */
-class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSaveAsDialogBase
+class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSaveAsDialogBase
 {
     Q_OBJECT
 
@@ -38,8 +41,8 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
       AllOptions = ~0
     };
 
-    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
-    QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options = AllOptions, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
@@ -48,9 +51,13 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     QStringList datasourceOptions() const;
     QStringList layerOptions() const;
     long crs() const;
-    bool skipAttributeCreation() const;
+    /** @deprecated since 2.16. Now always return true since there is no longer any checkbox */
+    bool attributeSelection() const;
+    QgsAttributeList selectedAttributes() const;
+    /** Return selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16 */
+    QgsAttributeList attributesAsDisplayedValues() const;
     bool addToCanvas() const;
-    /**Returns type of symbology export.
+    /** Returns type of symbology export.
         0: No symbology
         1: Feature symbology
         2: Symbol level symbology*/
@@ -65,14 +72,50 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
 
     bool onlySelected() const;
 
+    /** Returns the selected flat geometry type for the export.
+     * @see automaticGeometryType()
+     * @see forceMulti()
+     * @see includeZ()
+     */
+    QgsWKBTypes::Type geometryType() const;
+
+    /** Returns true if geometry type is set to automatic.
+     * @see geometryType()
+     */
+    bool automaticGeometryType() const;
+
+    /** Returns true if force multi geometry type is checked.
+     * @see includeZ()
+     */
+    bool forceMulti() const;
+
+    /** Sets whether the force multi geometry checkbox should be checked.
+     */
+    void setForceMulti( bool checked );
+
+    /** Returns true if include z dimension is checked.
+     * @see forceMulti()
+     */
+    bool includeZ() const;
+
+    /** Sets whether the include z dimension checkbox should be checked.
+     */
+    void setIncludeZ( bool checked );
+
   private slots:
+
     void on_mFormatComboBox_currentIndexChanged( int idx );
     void on_leFilename_textChanged( const QString& text );
     void on_browseFilename_clicked();
-    void on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs );
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_mSymbologyExportComboBox_currentIndexChanged( const QString& text );
+    void on_mGeometryTypeComboBox_currentIndexChanged( int index );
     void accept() override;
+    void on_mSelectAllAttributes_clicked();
+    void on_mDeselectAllAttributes_clicked();
+    void on_mReplaceRawFieldValues_stateChanged( int state );
+    void on_mAttributeTable_itemChanged( QTableWidgetItem * item );
 
   private:
     void setup();
@@ -82,6 +125,9 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
 
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;
+    QgsVectorLayer *mLayer;
+    bool mAttributeTableItemChangedSlotEnabled;
+    bool mReplaceRawFieldValuesStateChangedSlotEnabled;
 };
 
 #endif // QGSVECTORLAYERSAVEASDIALOG_H

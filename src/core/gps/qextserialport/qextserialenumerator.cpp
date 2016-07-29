@@ -166,7 +166,7 @@ QextSerialEnumerator::~QextSerialEnumerator( )
             {
                 PDEV_BROADCAST_DEVICEINTERFACE pDevInf = (PDEV_BROADCAST_DEVICEINTERFACE)pHdr;
                  // delimiters are different across APIs...change to backslash.  ugh.
-                QString deviceID = TCHARToQString(pDevInf->dbcc_name).toUpper().replace("#", "\\");
+                QString deviceID = TCHARToQString(pDevInf->dbcc_name).toUpper().replace('#', "\\");
 
                 matchAndDispatchChangedDevice(deviceID, GUID_DEVCLASS_PORTS, wParam);
             }

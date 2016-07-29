@@ -1,5 +1,5 @@
 
-/**  Raster pipe */
+/** Raster pipe */
 
 class QgsRasterPipe
 {
@@ -24,7 +24,8 @@ class QgsRasterPipe
     };
 
     QgsRasterPipe();
-    QgsRasterPipe( const QgsRasterPipe& thePipe );
+    //made private for python bindings
+    //QgsRasterPipe( const QgsRasterPipe& thePipe );
 
     ~QgsRasterPipe();
 
@@ -79,5 +80,9 @@ class QgsRasterPipe
     QgsHueSaturationFilter * hueSaturationFilter() const;
     QgsRasterProjector * projector() const;
     QgsRasterNuller * nuller() const;
+
+  private:
+
+    QgsRasterPipe( const QgsRasterPipe& thePipe );
 
 };

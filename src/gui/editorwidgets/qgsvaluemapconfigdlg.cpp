@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -29,6 +29,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
 
   tableWidget->insertRow( 0 );
 
+  connect( addNullButton, SIGNAL( clicked() ), this, SLOT( addNullButtonPushed() ) );
   connect( removeSelectedButton, SIGNAL( clicked() ), this, SLOT( removeSelectedButtonPushed() ) );
   connect( loadFromLayerButton, SIGNAL( clicked() ), this, SLOT( loadFromLayerButtonPushed() ) );
   connect( loadFromCSVButton, SIGNAL( clicked() ), this, SLOT( loadFromCSVButtonPushed() ) );
@@ -38,6 +39,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
 QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
+  QSettings settings;
 
   //store data to map
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
@@ -48,13 +50,17 @@ QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
     if ( !ki )
       continue;
 
+    QString ks = ki->text();
+    if (( ks == settings.value( "qgis/nullValue", "NULL" ).toString() ) && !( ki->flags() & Qt::ItemIsEditable ) )
+      ks = VALUEMAP_NULL_TEXT;
+
     if ( !vi || vi->text().isNull() )
     {
-      cfg.insert( ki->text(), ki->text() );
+      cfg.insert( ks, ks );
     }
     else
     {
-      cfg.insert( vi->text(), ki->text() );
+      cfg.insert( vi->text(), ks );
     }
   }
 
@@ -72,16 +78,10 @@ void QgsValueMapConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
   int row = 0;
   for ( QgsEditorWidgetConfig::ConstIterator mit = config.begin(); mit != config.end(); mit++, row++ )
   {
-    tableWidget->insertRow( row );
     if ( mit.value().isNull() )
-    {
-      tableWidget->setItem( row, 0, new QTableWidgetItem( mit.key() ) );
-    }
+      setRow( row, mit.key(), QString() );
     else
-    {
-      tableWidget->setItem( row, 0, new QTableWidgetItem( mit.value().toString() ) );
-      tableWidget->setItem( row, 1, new QTableWidgetItem( mit.key() ) );
-    }
+      setRow( row, mit.value().toString(), mit.key() );
   }
 }
 
@@ -111,9 +111,9 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
       }
     }
   }
-  for ( i = 0; i < rowsToRemove.values().size(); i++ )
+  for ( i = 0; i < rowsToRemove.size(); i++ )
   {
-    tableWidget->removeRow( rowsToRemove.values()[i] - removed );
+    tableWidget->removeRow( rowsToRemove.values().at( i ) - removed );
     removed++;
   }
 }
@@ -129,25 +129,45 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
 
   if ( insertNull )
   {
-    QSettings settings;
-    tableWidget->setItem( row, 0, new QTableWidgetItem( settings.value( "qgis/nullValue", "NULL" ).toString() ) );
-    tableWidget->setItem( row, 1, new QTableWidgetItem( "<NULL>" ) );
+    setRow( row, VALUEMAP_NULL_TEXT, "<NULL>" );
     ++row;
   }
 
   for ( QMap<QString, QVariant>::const_iterator mit = map.begin(); mit != map.end(); ++mit, ++row )
   {
-    tableWidget->insertRow( row );
     if ( mit.value().isNull() )
-    {
-      tableWidget->setItem( row, 0, new QTableWidgetItem( mit.key() ) );
-    }
+      setRow( row, mit.key(), QString() );
     else
-    {
-      tableWidget->setItem( row, 0, new QTableWidgetItem( mit.key() ) );
-      tableWidget->setItem( row, 1, new QTableWidgetItem( mit.value().toString() ) );
-    }
+      setRow( row, mit.key(), mit.value().toString() );
   }
+}
+
+void QgsValueMapConfigDlg::setRow( int row, const QString value, const QString description )
+{
+  QSettings settings;
+  QTableWidgetItem* valueCell;
+  QTableWidgetItem* descriptionCell = new QTableWidgetItem( description );
+  tableWidget->insertRow( row );
+  if ( value == QString( VALUEMAP_NULL_TEXT ) )
+  {
+    QFont cellFont;
+    cellFont.setItalic( true );
+    valueCell = new QTableWidgetItem( settings.value( "qgis/nullValue", "NULL" ).toString() );
+    valueCell->setFont( cellFont );
+    valueCell->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+    descriptionCell->setFont( cellFont );
+  }
+  else
+  {
+    valueCell = new QTableWidgetItem( value );
+  }
+  tableWidget->setItem( row, 0, valueCell );
+  tableWidget->setItem( row, 1, descriptionCell );
+}
+
+void QgsValueMapConfigDlg::addNullButtonPushed()
+{
+  setRow( tableWidget->rowCount() - 1, VALUEMAP_NULL_TEXT, "<NULL>" );
 }
 
 void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
@@ -161,7 +181,9 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
-  QString fileName = QFileDialog::getOpenFileName( 0, tr( "Select a file" ) );
+  QSettings settings;
+
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a file" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
 
@@ -169,9 +191,9 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 
   if ( !f.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::information( NULL,
+    QMessageBox::information( nullptr,
                               tr( "Error" ),
-                              tr( "Could not open file %1\nError was:%2" ).arg( fileName ).arg( f.errorString() ),
+                              tr( "Could not open file %1\nError was:%2" ).arg( fileName, f.errorString() ),
                               QMessageBox::Cancel );
     return;
   }
@@ -205,17 +227,20 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     else
       continue;
 
-    if (( key.startsWith( "\"" ) && key.endsWith( "\"" ) ) ||
-        ( key.startsWith( "'" ) && key.endsWith( "'" ) ) )
+    if (( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
+        ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
     {
       key = key.mid( 1, key.length() - 2 );
     }
 
-    if (( val.startsWith( "\"" ) && val.endsWith( "\"" ) ) ||
-        ( val.startsWith( "'" ) && val.endsWith( "'" ) ) )
+    if (( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
+        ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
     {
       val = val.mid( 1, val.length() - 2 );
     }
+
+    if ( key == settings.value( "qgis/nullValue", "NULL" ).toString() )
+      key = QString( VALUEMAP_NULL_TEXT );
 
     map[ key ] = val;
   }

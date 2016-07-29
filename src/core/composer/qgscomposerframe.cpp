@@ -37,8 +37,8 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
 }
 
 QgsComposerFrame::QgsComposerFrame()
-    : QgsComposerItem( 0, 0, 0, 0, 0 )
-    , mMultiFrame( 0 )
+    : QgsComposerItem( 0, 0, 0, 0, nullptr )
+    , mMultiFrame( nullptr )
     , mHidePageIfEmpty( false )
     , mHideBackgroundIfEmpty( false )
 {
@@ -50,7 +50,7 @@ QgsComposerFrame::~QgsComposerFrame()
 {
 }
 
-bool QgsComposerFrame::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement frameElem = doc.createElement( "ComposerFrame" );
   frameElem.setAttribute( "sectionX", QString::number( mSection.x() ) );
@@ -61,10 +61,10 @@ bool QgsComposerFrame::writeXML( QDomElement& elem, QDomDocument & doc ) const
   frameElem.setAttribute( "hideBackgroundIfEmpty", mHideBackgroundIfEmpty );
   elem.appendChild( frameElem );
 
-  return _writeXML( frameElem, doc );
+  return _writeXml( frameElem, doc );
 }
 
-bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerFrame::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   double x = itemElem.attribute( "sectionX" ).toDouble();
   double y = itemElem.attribute( "sectionY" ).toDouble();
@@ -78,7 +78,7 @@ bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument&
   {
     return false;
   }
-  return _readXML( composerItem, doc );
+  return _readXml( composerItem, doc );
 }
 
 void QgsComposerFrame::setHidePageIfEmpty( const bool hidePageIfEmpty )
@@ -113,6 +113,19 @@ bool QgsComposerFrame::isEmpty() const
 
   return false;
 
+}
+
+QgsExpressionContext *QgsComposerFrame::createExpressionContext() const
+{
+  if ( !mMultiFrame )
+    return QgsComposerItem::createExpressionContext();
+
+  //start with multiframe's context
+  QgsExpressionContext* context = mMultiFrame->createExpressionContext();
+  //add frame's individual context
+  context->appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
+
+  return context;
 }
 
 QString QgsComposerFrame::displayName() const

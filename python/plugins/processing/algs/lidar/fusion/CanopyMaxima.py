@@ -26,14 +26,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputTable
-from FusionUtils import FusionUtils
-from FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
 
 
 class CanopyMaxima(FusionAlgorithm):
@@ -47,41 +45,41 @@ class CanopyMaxima(FusionAlgorithm):
     PARAM_C = 'PARAM_C'
 
     def defineCharacteristics(self):
-        self.name = 'Canopy Maxima'
-        self.group = 'Points'
-        self.addParameter(ParameterFile(self.INPUT,
-            self.tr('Input FUSION canopy height model')))
-        self.addParameter(ParameterFile(self.GROUND,
-            self.tr('Input ground .dtm layer [optional]')))
-        self.addParameter(ParameterNumber(self.THRESHOLD,
-            self.tr('Height threshold'), 0, None, 10.0))
-        ### begin
-        self.addParameter(ParameterNumber(self.PARAM_A,
-            self.tr('Variable window size: parameter A'), 0, None, 2.51503))
-        self.addParameter(ParameterNumber(self.PARAM_C,
-            self.tr('Parameter C'), 0, None, 0.00901))
-        self.addParameter(ParameterBoolean(self.SUMMARY,
-            self.tr('Summary (tree height summary statistics)'), False))
-        ### end
-        self.addOutput(OutputTable(self.OUTPUT,
-            self.tr('Output file with maxima')))
+        self.name, self.i18n_name = self.trAlgorithm('Canopy Maxima')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
+        self.addParameter(ParameterFile(
+            self.INPUT, self.tr('Input FUSION canopy height model')))
+        self.addParameter(ParameterFile(
+            self.GROUND, self.tr('Input ground .dtm layer [optional]')))
+        self.addParameter(ParameterNumber(
+            self.THRESHOLD, self.tr('Height threshold'), 0, None, 10.0))
+        # begin
+        self.addParameter(ParameterNumber(
+            self.PARAM_A, self.tr('Variable window size: parameter A'), 0, None, 2.51503))
+        self.addParameter(ParameterNumber(
+            self.PARAM_C, self.tr('Parameter C'), 0, None, 0.00901))
+        self.addParameter(ParameterBoolean(
+            self.SUMMARY, self.tr('Summary (tree height summary statistics)'), False))
+        # end
+        self.addOutput(OutputTable(
+            self.OUTPUT, self.tr('Output file with maxima')))
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyMaxima.exe')]
         commands.append('/verbose')
         ### begin
-        commands.append('/wse:' + str(self.getParameterValue(self.PARAM_A)) + ',0,' + str(self.getParameterValue(self.PARAM_C)) + ',0')
-        if self.getParameterValue(self.SUMMARY) == True:
+        commands.append('/wse:' + unicode(self.getParameterValue(self.PARAM_A)) + ',0,' + unicode(self.getParameterValue(self.PARAM_C)) + ',0')
+        if self.getParameterValue(self.SUMMARY):
             commands.append('/summary')
         ### end
         self.addAdvancedModifiersToCommand(commands)
         ground = self.getParameterValue(self.GROUND)
         ## here it's necessary to have the support for multiple files like for INPUT.
-        if str(ground).strip():
-            commands.append('/ground:' + str(ground))
+        if unicode(ground).strip():
+            commands.append('/ground:' + unicode(ground))
         commands.append('/threshold:'
-                        + str(self.getParameterValue(self.THRESHOLD)))
+                        + unicode(self.getParameterValue(self.THRESHOLD)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))

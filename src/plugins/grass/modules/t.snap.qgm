@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Snaps temporally the maps of a space time dataset" module="t.snap">
+	<option key="input"/>
+	<option key="type"/>
+</qgisgrassmodule>

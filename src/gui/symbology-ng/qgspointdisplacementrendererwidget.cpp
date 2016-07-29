@@ -23,8 +23,7 @@
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
-#include <QColorDialog>
-#include <QFontDialog>
+#include "qgisgui.h"
 
 QgsRendererV2Widget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
@@ -32,7 +31,9 @@ QgsRendererV2Widget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer*
 }
 
 QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style ), mEmbeddedRendererWidget( 0 )
+    : QgsRendererV2Widget( layer, style )
+    , mRenderer( nullptr )
+    , mEmbeddedRendererWidget( nullptr )
 {
   if ( !layer )
   {
@@ -40,15 +41,16 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   //the renderer only applies to point vector layers
-  if ( layer->wkbType() != QGis::WKBPoint && layer->wkbType()  != QGis::WKBPoint25D )
+  if ( layer->wkbType() != Qgis::WKBPoint && layer->wkbType()  != Qgis::WKBPoint25D )
   {
     //setup blank dialog
-    mRenderer = 0;
+    mRenderer = nullptr;
     setupBlankUi( layer->name() );
     return;
   }
   setupUi( this );
 
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
   if ( renderer )
   {
@@ -61,13 +63,15 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
 
   blockAllSignals( true );
 
+  mPlacementComboBox->addItem( tr( "Ring" ), QgsPointDisplacementRenderer::Ring );
+  mPlacementComboBox->addItem( tr( "Concentric rings" ), QgsPointDisplacementRenderer::ConcentricRings );
+
   //insert attributes into combo box
   if ( layer )
   {
-    const QgsFields& layerAttributes = layer->pendingFields();
-    for ( int idx = 0; idx < layerAttributes.count(); ++idx )
+    Q_FOREACH ( const QgsField& f, layer->fields() )
     {
-      mLabelFieldComboBox->addItem( layerAttributes[idx].name() );
+      mLabelFieldComboBox->addItem( f.name() );
     }
     mLabelFieldComboBox->addItem( tr( "None" ) );
 
@@ -83,7 +87,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   //insert possible renderer types
-  QStringList rendererList = QgsRendererV2Registry::instance()->renderersList();
+  QStringList rendererList = QgsRendererV2Registry::instance()->renderersList( QgsRendererV2AbstractMetadata::PointLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
@@ -96,14 +100,23 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
 
   mCircleColorButton->setColorDialogTitle( tr( "Select color" ) );
   mCircleColorButton->setContext( "symbology" );
+  mCircleColorButton->setAllowAlpha( true );
+  mCircleColorButton->setShowNoColor( true );
+  mCircleColorButton->setNoColorString( tr( "No outline" ) );
   mLabelColorButton->setContext( "symbology" );
   mLabelColorButton->setColorDialogTitle( tr( "Select color" ) );
+  mLabelColorButton->setAllowAlpha( true );
 
   mCircleWidthSpinBox->setValue( mRenderer->circleWidth() );
   mCircleColorButton->setColor( mRenderer->circleColor() );
   mLabelColorButton->setColor( mRenderer->labelColor() );
+  mCircleModificationSpinBox->setClearValue( 0.0 );
   mCircleModificationSpinBox->setValue( mRenderer->circleRadiusAddition() );
   mDistanceSpinBox->setValue( mRenderer->tolerance() );
+  mDistanceUnitWidget->setUnit( mRenderer->toleranceUnit() );
+  mDistanceUnitWidget->setMapUnitScale( mRenderer->toleranceMapUnitScale() );
+
+  mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( mRenderer->placement() ) );
 
   //scale dependent labelling
   mMaxScaleDenominatorEdit->setText( QString::number( mRenderer->maxLabelScaleDenominator() ) );
@@ -122,7 +135,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   blockAllSignals( false );
 
   //set the appropriate renderer dialog
-  if ( mRenderer && mRenderer->embeddedRenderer() )
+  if ( mRenderer->embeddedRenderer() )
   {
     QString rendererName = mRenderer->embeddedRenderer()->type();
     int rendererIndex = mRendererComboBox->findData( rendererName );
@@ -155,6 +168,15 @@ QgsFeatureRendererV2* QgsPointDisplacementRendererWidget::renderer()
   return mRenderer;
 }
 
+void QgsPointDisplacementRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRendererV2Widget::setMapCanvas( canvas );
+  if ( mDistanceUnitWidget )
+    mDistanceUnitWidget->setMapCanvas( canvas );
+  if ( mEmbeddedRendererWidget )
+    mEmbeddedRendererWidget->setMapCanvas( canvas );
+}
+
 void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString& text )
 {
   if ( mRenderer )
@@ -167,6 +189,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChan
     {
       mRenderer->setLabelAttributeName( text );
     }
+    emit widgetChanged();
   }
 }
 
@@ -178,7 +201,18 @@ void QgsPointDisplacementRendererWidget::on_mRendererComboBox_currentIndexChange
   {
     delete mEmbeddedRendererWidget;
     mEmbeddedRendererWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
+    mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
+    emit widgetChanged();
   }
+}
+
+void QgsPointDisplacementRendererWidget::on_mPlacementComboBox_currentIndexChanged( int index )
+{
+  if ( !mRenderer )
+    return;
+
+  mRenderer->setPlacement(( QgsPointDisplacementRenderer::Placement )mPlacementComboBox->itemData( index ).toInt() );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
@@ -200,8 +234,9 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
     layout->addWidget( mEmbeddedRendererWidget, 0, 0 );
     layout->addWidget( buttonBox, 1, 0 );
     d->exec();
-    mEmbeddedRendererWidget->setParent( 0 );
+    mEmbeddedRendererWidget->setParent( nullptr );
     delete d;
+    emit widgetChanged();
   }
 }
 
@@ -213,15 +248,11 @@ void QgsPointDisplacementRendererWidget::on_mLabelFontButton_clicked()
   }
 
   bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for QT Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mRenderer->labelFont(), 0, tr( "Label Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mRenderer->labelFont(), 0, tr( "Label Font" ) );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mRenderer->labelFont(), tr( "Label Font" ) );
   if ( ok )
   {
     mRenderer->setLabelFont( newFont );
+    emit widgetChanged();
   }
 }
 
@@ -230,6 +261,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleWidthSpinBox_valueChanged( do
   if ( mRenderer )
   {
     mRenderer->setCircleWidth( d );
+    emit widgetChanged();
   }
 }
 
@@ -241,6 +273,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleColorButton_colorChanged( con
   }
 
   mRenderer->setCircleColor( newColor );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::on_mLabelColorButton_colorChanged( const QColor& newColor )
@@ -251,6 +284,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelColorButton_colorChanged( cons
   }
 
   mRenderer->setLabelColor( newColor );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::on_mCircleModificationSpinBox_valueChanged( double d )
@@ -261,6 +295,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleModificationSpinBox_valueChan
   }
 
   mRenderer->setCircleRadiusAddition( d );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::on_mDistanceSpinBox_valueChanged( double d )
@@ -268,6 +303,17 @@ void QgsPointDisplacementRendererWidget::on_mDistanceSpinBox_valueChanged( doubl
   if ( mRenderer )
   {
     mRenderer->setTolerance( d );
+    emit widgetChanged();
+  }
+}
+
+void QgsPointDisplacementRendererWidget::on_mDistanceUnitWidget_changed()
+{
+  if ( mRenderer )
+  {
+    mRenderer->setToleranceUnit( mDistanceUnitWidget->unit() );
+    mRenderer->setToleranceMapUnitScale( mDistanceUnitWidget->getMapUnitScale() );
+    emit widgetChanged();
   }
 }
 
@@ -296,6 +342,7 @@ void QgsPointDisplacementRendererWidget::on_mMaxScaleDenominatorEdit_textChanged
   if ( ok )
   {
     mRenderer->setMaxLabelScaleDenominator( scaleDenominator );
+    emit widgetChanged();
   }
 }
 
@@ -312,6 +359,8 @@ void QgsPointDisplacementRendererWidget::blockAllSignals( bool block )
   mMaxScaleDenominatorEdit->blockSignals( block );
   mCenterSymbolPushButton->blockSignals( block );
   mDistanceSpinBox->blockSignals( block );
+  mDistanceUnitWidget->blockSignals( block );
+  mPlacementComboBox->blockSignals( block );
 }
 
 void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
@@ -320,8 +369,9 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   {
     return;
   }
-  QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mRenderer->centerSymbol()->clone() );
+  QgsMarkerSymbolV2* markerSymbol = mRenderer->centerSymbol()->clone();
   QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;
@@ -329,6 +379,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   }
   mRenderer->setCenterSymbol( markerSymbol );
   updateCenterIcon();
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::updateCenterIcon()
@@ -344,7 +395,8 @@ void QgsPointDisplacementRendererWidget::updateCenterIcon()
 
 void QgsPointDisplacementRendererWidget::setupBlankUi( const QString& layerName )
 {
-  QGridLayout* layout = new QGridLayout( this );
   QLabel* label = new QLabel( tr( "The point displacement renderer only applies to (single) point layers. \n'%1' is not a point layer and cannot be displayed by the point displacement renderer" ).arg( layerName ), this );
+  QVBoxLayout* layout = new QVBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( label );
 }

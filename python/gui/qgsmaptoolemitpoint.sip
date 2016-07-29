@@ -9,17 +9,18 @@ class QgsMapToolEmitPoint : QgsMapTool
     //! constructor
     QgsMapToolEmitPoint( QgsMapCanvas* canvas );
 
+    virtual Flags flags() const;
+
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent * e );
 
     //! Overridden mouse press event - emits the signal
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent * e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent * e );
 
   signals:
     //! signal emitted on canvas click
-    // \note changed in 1.3
     void canvasClicked( const QgsPoint& point, Qt::MouseButton button );
 };

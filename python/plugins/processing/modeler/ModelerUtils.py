@@ -26,31 +26,25 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from processing.tools.system import *
+from processing.tools.system import userFolder, mkdir
 from processing.core.ProcessingConfig import ProcessingConfig
 
 
 class ModelerUtils:
 
-    allAlgs = {}
-    providers = {}
-
     MODELS_FOLDER = 'MODELS_FOLDER'
     ACTIVATE_MODELS = 'ACTIVATE_MODELS'
 
     @staticmethod
-    def modelsFolder():
-        folder = ProcessingConfig.getSetting(ModelerUtils.MODELS_FOLDER)
-        if folder is None:
-            folder = unicode(os.path.join(userFolder(), 'models'))
+    def defaultModelsFolder():
+        folder = unicode(os.path.join(userFolder(), 'models'))
         mkdir(folder)
-
         return os.path.abspath(folder)
 
     @staticmethod
-    def getAlgorithm(name):
-        for provider in ModelerUtils.allAlgs.values():
-            if name in provider:
-                return provider[name]
-        return None
-
+    def modelsFolders():
+        folder = ProcessingConfig.getSetting(ModelerUtils.MODELS_FOLDER)
+        if folder is not None:
+            return folder.split(';')
+        else:
+            return [ModelerUtils.defaultModelsFolder()]

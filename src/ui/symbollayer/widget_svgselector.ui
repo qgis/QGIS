@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>499</width>
+    <width>315</width>
     <height>490</height>
    </rect>
   </property>
@@ -126,7 +126,11 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>mGroupsTreeView</tabstop>
   <tabstop>mImagesListView</tabstop>
+  <tabstop>mFileLineEdit</tabstop>
+  <tabstop>mFilePushButton</tabstop>
+  <tabstop>mRelativePathChkBx</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 14.5.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,15 @@
 
 #include "qgsrelationeditorwidget.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
 
 #include <QWidget>
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor, QWidget* parent )
     : QgsWidgetWrapper( vl, editor, parent )
     , mRelation( relation )
-    , mWidget( NULL )
+    , mWidget( nullptr )
 {
 }
 
@@ -35,7 +37,13 @@ QWidget* QgsRelationWidgetWrapper::createWidget( QWidget* parent )
 void QgsRelationWidgetWrapper::setFeature( const QgsFeature& feature )
 {
   if ( mWidget && mRelation.isValid() )
-    mWidget->setRelationFeature( mRelation, feature );
+    mWidget->setFeature( feature );
+}
+
+void QgsRelationWidgetWrapper::setVisible( bool visible )
+{
+  if ( mWidget )
+    mWidget->setVisible( visible );
 }
 
 void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
@@ -58,11 +66,14 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
 
   w->setEditorContext( myContext );
 
+  QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( "nm-rel" ).toString() );
+
   // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext* ctx = &context();
   do
   {
-    if ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+    if (( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+        || ( nmrel.isValid() && ctx->relation().name() == nmrel.name() ) )
     {
       w->setVisible( false );
       break;
@@ -71,5 +82,13 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
   }
   while ( ctx );
 
+
+  w->setRelations( mRelation, nmrel );
+
   mWidget = w;
+}
+
+bool QgsRelationWidgetWrapper::valid() const
+{
+  return mWidget;
 }

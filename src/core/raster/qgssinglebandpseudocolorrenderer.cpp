@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
@@ -38,9 +39,18 @@ QgsSingleBandPseudoColorRenderer::~QgsSingleBandPseudoColorRenderer()
   delete mShader;
 }
 
-QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
+void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
 {
-  QgsRasterShader *shader = 0;
+  if ( bandNo > mInput->bandCount() || bandNo <= 0 )
+  {
+    return;
+  }
+  mBand = bandNo;
+}
+
+QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() const
+{
+  QgsRasterShader *shader = nullptr;
 
   if ( mShader )
   {
@@ -54,16 +64,13 @@ QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
       QgsColorRampShader * colorRampShader = new QgsColorRampShader( mShader->minimumValue(), mShader->maximumValue() );
 
       colorRampShader->setColorRampType( origColorRampShader->colorRampType() );
-
+      colorRampShader->setClip( origColorRampShader->clip() );
       colorRampShader->setColorRampItemList( origColorRampShader->colorRampItemList() );
       shader->setRasterShaderFunction( colorRampShader );
     }
   }
-  QgsSingleBandPseudoColorRenderer * renderer = new QgsSingleBandPseudoColorRenderer( 0, mBand, shader );
-
-  renderer->setOpacity( mOpacity );
-  renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : 0 );
+  QgsSingleBandPseudoColorRenderer * renderer = new QgsSingleBandPseudoColorRenderer( nullptr, mBand, shader );
+  renderer->copyCommonProperties( this );
 
   return renderer;
 }
@@ -78,20 +85,20 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
 {
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   int band = elem.attribute( "band", "-1" ).toInt();
-  QgsRasterShader* shader = 0;
+  QgsRasterShader* shader = nullptr;
   QDomElement rasterShaderElem = elem.firstChildElement( "rastershader" );
   if ( !rasterShaderElem.isNull() )
   {
     shader = new QgsRasterShader();
-    shader->readXML( rasterShaderElem );
+    shader->readXml( rasterShaderElem );
   }
 
   QgsSingleBandPseudoColorRenderer* r = new QgsSingleBandPseudoColorRenderer( input, band, shader );
-  r->readXML( elem );
+  r->readXml( elem );
 
   // TODO: add _readXML in superclass?
   r->setClassificationMin( elem.attribute( "classificationMin", "NaN" ).toDouble() );
@@ -123,7 +130,7 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   //rendering is faster without considering user-defined transparency
   bool hasTransparency = usesTransparency();
 
-  QgsRasterBlock *alphaBlock = 0;
+  QgsRasterBlock *alphaBlock = nullptr;
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {
     alphaBlock = mInput->block( mAlphaBand, extent, width, height );
@@ -139,7 +146,7 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
     delete alphaBlock;
@@ -201,7 +208,7 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   return outputBlock;
 }
 
-void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsSingleBandPseudoColorRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -209,14 +216,14 @@ void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement&
   }
 
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
-  _writeXML( doc, rasterRendererElem );
+  _writeXml( doc, rasterRendererElem );
   rasterRendererElem.setAttribute( "band", mBand );
   if ( mShader )
   {
-    mShader->writeXML( doc, rasterRendererElem ); //todo: include color ramp items directly in this renderer
+    mShader->writeXml( doc, rasterRendererElem ); //todo: include color ramp items directly in this renderer
   }
-  rasterRendererElem.setAttribute( "classificationMin", QString::number( mClassificationMin ) );
-  rasterRendererElem.setAttribute( "classificationMax", QString::number( mClassificationMax ) );
+  rasterRendererElem.setAttribute( "classificationMin", QgsRasterBlock::printValue( mClassificationMin ) );
+  rasterRendererElem.setAttribute( "classificationMax", QgsRasterBlock::printValue( mClassificationMax ) );
   rasterRendererElem.setAttribute( "classificationMinMaxOrigin", QgsRasterRenderer::minMaxOriginName( mClassificationMinMaxOrigin ) );
 
   parentElem.appendChild( rasterRendererElem );

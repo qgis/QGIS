@@ -19,7 +19,7 @@
 #include <QDoubleSpinBox>
 #include <QToolButton>
 
-/**
+/** \ingroup gui
  * @brief The QgsSpinBox is a spin box with a clear button that will set the value to the defined clear value.
  * The clear value can be either the minimum or the maiximum value of the spin box or a custom value.
  * This value can then be handled by a special value text.
@@ -38,19 +38,20 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
       CustomValue
     };
 
-    explicit QgsDoubleSpinBox( QWidget *parent = 0 );
+    explicit QgsDoubleSpinBox( QWidget *parent = nullptr );
 
     //! determines if the widget will show a clear button
+    //! @note the clear button will set the widget to its minimum value
     void setShowClearButton( const bool showClearButton );
     bool showClearButton() const {return mShowClearButton;}
 
-    /**Sets if the widget will allow entry of simple expressions, which are
+    /** Sets if the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * @param enabled set to true to allow expression entry
      * @note added in QGIS 2.7
      */
     void setExpressionsEnabled( const bool enabled );
-    /**Returns whether the widget will allow entry of simple expressions, which are
+    /** Returns whether the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * @returns true if spin box allows expression entry
      * @note added in QGIS 2.7
@@ -65,13 +66,13 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * @param customValue defines the numerical value used as the clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
-    void setClearValue( double customValue, QString clearValueText = QString() );
+    void setClearValue( double customValue, const QString& clearValueText = QString() );
     /**
      * @brief setClearValueMode defines if the clear value should be the minimum or maximum values of the widget or a custom value
      * @param mode mode to user for clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
-    void setClearValueMode( ClearValueMode mode, QString clearValueText = QString() );
+    void setClearValueMode( ClearValueMode mode, const QString& clearValueText = QString() );
 
     //! returns the value used when clear() is called.
     double clearValue() const;
@@ -79,17 +80,20 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     virtual double valueFromText( const QString & text ) const override;
     virtual QValidator::State validate( QString & input, int & pos ) const override;
 
+    void paintEvent( QPaintEvent* e ) override;
+
   protected:
     virtual void resizeEvent( QResizeEvent* event ) override;
     virtual void changeEvent( QEvent* event ) override;
-    virtual void paintEvent( QPaintEvent* event ) override;
 
   private slots:
-    void changed( const double &value );
+    void changed( double value );
 
   private:
     int frameWidth() const;
     bool shouldShowClearForValue( const double value ) const;
+
+    void updateStyleSheet( const QColor& backgroundColor = QColor() );
 
     bool mShowClearButton;
     ClearValueMode mClearValueMode;

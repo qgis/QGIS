@@ -356,6 +356,7 @@ Section "QGIS" SecQGIS
 	GetFullPathName /SHORT $0 $INSTALL_DIR
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP", "$DESKTOP\${QGIS_BASE}").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_MENU_LINKS", "1").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP_LINKS", "1").r0'
 
@@ -485,11 +486,12 @@ Section "Uninstall"
 	GetFullPathName /SHORT $0 $INSTDIR
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP", "$DESKTOP\${QGIS_BASE}").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_MENU_LINKS", "1").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP_LINKS", "1").r0'
 
 	ReadEnvStr $0 COMSPEC
-	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\preremove.bat"'
+	nsExec::ExecToLog '"$0" /c "$INSTDIR\preremove.bat"'
 
 	Delete "$INSTDIR\Uninstall-QGIS.exe"
 	Delete "$INSTDIR\*.bat.done"
@@ -506,6 +508,9 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\share"
 	RMDir /r "$INSTDIR\icons"
 	RMDir /r "$INSTDIR\src"
+	RMDir /r "$INSTDIR\contrib"
+	RMDir /r "$INSTDIR\manifest"
+	RMDir /r "$INSTDIR\man"
 
 	;if empty, remove the install folder
 	RMDir "$INSTDIR"

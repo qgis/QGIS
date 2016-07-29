@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,21 +14,36 @@
  ***************************************************************************/
 
 #include "qgsvaluemapwidgetwrapper.h"
+#include "qgsvaluemapconfigdlg.h"
+
+#include <QSettings>
 
 QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mComboBox( nullptr )
 {
 }
 
 
-QVariant QgsValueMapWidgetWrapper::value()
+QVariant QgsValueMapWidgetWrapper::value() const
 {
   QVariant v;
 
   if ( mComboBox )
     v = mComboBox->itemData( mComboBox->currentIndex() );
 
+  if ( v == QString( VALUEMAP_NULL_TEXT ) )
+    v = QVariant( field().type() );
+
   return v;
+}
+
+void QgsValueMapWidgetWrapper::showIndeterminateState()
+{
+  if ( mComboBox )
+  {
+    whileBlocking( mComboBox )->setCurrentIndex( -1 );
+  }
 }
 
 QWidget* QgsValueMapWidgetWrapper::createWidget( QWidget* parent )
@@ -54,8 +69,19 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsValueMapWidgetWrapper::valid() const
+{
+  return mComboBox;
+}
+
 void QgsValueMapWidgetWrapper::setValue( const QVariant& value )
 {
+  QString v;
+  if ( value.isNull() )
+    v = QString( VALUEMAP_NULL_TEXT );
+  else
+    v = value.toString();
+
   if ( mComboBox )
-    mComboBox->setCurrentIndex( mComboBox->findData( value ) );
+    mComboBox->setCurrentIndex( mComboBox->findData( v ) );
 }

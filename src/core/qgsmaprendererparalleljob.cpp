@@ -15,6 +15,7 @@
 
 #include "qgsmaprendererparalleljob.h"
 
+#include "qgslabelingenginev2.h"
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
@@ -25,7 +26,7 @@
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
     , mStatus( Idle )
-    , mLabelingEngine( 0 )
+    , mLabelingEngineV2( nullptr )
 {
 }
 
@@ -36,8 +37,8 @@ QgsMapRendererParallelJob::~QgsMapRendererParallelJob()
     cancel();
   }
 
-  delete mLabelingEngine;
-  mLabelingEngine = 0;
+  delete mLabelingEngineV2;
+  mLabelingEngineV2 = nullptr;
 }
 
 void QgsMapRendererParallelJob::start()
@@ -49,18 +50,25 @@ void QgsMapRendererParallelJob::start()
 
   mStatus = RenderingLayers;
 
-  delete mLabelingEngine;
-  mLabelingEngine = 0;
+  delete mLabelingEngineV2;
+  mLabelingEngineV2 = nullptr;
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-    mLabelingEngine = new QgsPalLabeling;
-    mLabelingEngine->loadEngineSettings();
-    mLabelingEngine->init( mSettings );
+    mLabelingEngineV2 = new QgsLabelingEngineV2();
+    mLabelingEngineV2->readSettingsFromProject();
+    mLabelingEngineV2->setMapSettings( mSettings );
   }
 
-
-  mLayerJobs = prepareJobs( 0, mLabelingEngine );
+  mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2 );
+  // prepareJobs calls mapLayer->createMapRenderer may involve cloning a RasterDataProvider,
+  // whose constructor may need to download some data (i.e. WMS, AMS) and doing so runs a
+  // QEventLoop waiting for the network request to complete. If unluckily someone calls
+  // mapCanvas->refresh() while this is happening, QgsMapRendererCustomPainterJob::cancel is
+  // called, deleting the QgsMapRendererCustomPainterJob while this function is running.
+  // Hence we need to check whether the job is still active before proceeding
+  if ( !isActive() )
+    return;
 
   QgsDebugMsg( QString( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 
@@ -149,7 +157,10 @@ bool QgsMapRendererParallelJob::isActive() const
 
 QgsLabelingResults* QgsMapRendererParallelJob::takeLabelingResults()
 {
-  return mLabelingEngine ? mLabelingEngine->takeResults() : 0;
+  if ( mLabelingEngineV2 )
+    return mLabelingEngineV2->takeResults();
+  else
+    return nullptr;
 }
 
 QImage QgsMapRendererParallelJob::renderedImage()
@@ -166,6 +177,8 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 
   // compose final image
   mFinalImage = composeImage( mSettings, mLayerJobs );
+
+  logRenderingTime( mLayerJobs );
 
   cleanupJobs( mLayerJobs );
 
@@ -208,7 +221,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
 
   QTime t;
   t.start();
-  QgsDebugMsg( QString( "job %1 start" ).arg(( ulong ) &job, 0, 16 ) );
+  QgsDebugMsgLevel( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.layerId ), 2 );
 
   try
   {
@@ -216,10 +229,12 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   }
   catch ( QgsException & e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
   }
   catch ( std::exception & e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
   }
   catch ( ... )
@@ -227,9 +242,8 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
     QgsDebugMsg( "Caught unhandled unknown exception" );
   }
 
-  int tt = t.elapsed();
-  QgsDebugMsg( QString( "job %1 end [%2 ms]" ).arg(( ulong ) &job, 0, 16 ).arg( tt ) );
-  Q_UNUSED( tt );
+  job.renderingTime = t.elapsed();
+  QgsDebugMsgLevel( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
 }
 
 
@@ -239,14 +253,16 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* s
 
   try
   {
-    drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngine, &painter );
+    drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngineV2, &painter );
   }
   catch ( QgsException & e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
   }
   catch ( std::exception & e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
   }
   catch ( ... )

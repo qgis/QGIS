@@ -64,6 +64,12 @@
    <header>qgslayertreeview.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mProjectFileLineEdit</tabstop>
+  <tabstop>mBrowseFileToolButton</tabstop>
+  <tabstop>mTreeView</tabstop>
+  <tabstop>mButtonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

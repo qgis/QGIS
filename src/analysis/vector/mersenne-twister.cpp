@@ -13,11 +13,11 @@
  * http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/ARTICLES/mt.pdf
  *
  * Written by Christian Stigen Larsen
- * http://csl.sublevel3.org
+ * http://csl.name
  *
  * Distributed under the modified BSD license.
  *
- * 2012-01-11
+ * 2015-02-17
  */
 
 #include <stdio.h>
@@ -38,6 +38,11 @@ static unsigned index = 0;
 #define M32(x) (0x80000000 & x) // 32nd Most Significant Bit
 #define L31(x) (0x7FFFFFFF & x) // 31 Least Significant Bits
 #define ODD(x) (x & 1) // Check if number is odd
+
+#define UNROLL(expr) \
+  y = M32(MT[i]) | L31(MT[i+1]); \
+  MT[i] = MT[expr] ^ (y>>1) ^ MATRIX[ODD(y)]; \
+  ++i;
 
 #define MD_UINT32_MAX std::numeric_limits<uint32_t>::max()
 
@@ -62,46 +67,44 @@ static inline void generate_numbers()
    */
 
   static const uint32_t MATRIX[2] = {0, 0x9908b0df};
-  register uint32_t y, i;
+  uint32_t y, i = 0;
 
   // i = [0 ... 226]
-  for ( i = 0; i < DIFF; ++i )
+  while ( i < ( DIFF - 1 ) )
   {
     /*
      * We're doing 226 = 113*2, an even number of steps, so we can
      * safely unroll one more step here for speed:
      */
-    y = M32( MT[i] ) | L31( MT[i+1] );
-    MT[i] = MT[i+PERIOD] ^( y >> 1 ) ^ MATRIX[ODD( y )];
-
-    ++i;
-    y = M32( MT[i] ) | L31( MT[i+1] );
-    MT[i] = MT[i+PERIOD] ^( y >> 1 ) ^ MATRIX[ODD( y )];
+    UNROLL( i + PERIOD );
+    UNROLL( i + PERIOD );
   }
 
-#define UNROLL \
-  y = M32(MT[i]) | L31(MT[i+1]); \
-  MT[i] = MT[i-DIFF] ^ (y>>1) ^ MATRIX[ODD(y)]; \
-  ++i;
+  // i = 226
+  UNROLL(( i + PERIOD ) % SIZE );
 
   // i = [227 ... 622]
-  for ( i = DIFF; i < ( SIZE - 1 ); )
+  while ( i < ( SIZE - 1 ) )
   {
     /*
-     * 623-227 = 396 = 2*2*3*3*11, so we can unroll this loop in any
-     * number that evenly divides 396 (2, 4, 6, etc).
+     * 623-227 = 396 = 2*2*3*3*11, so we can unroll this loop in any number
+     * that evenly divides 396 (2, 4, 6, etc). Here we'll unroll 11 times.
      */
-
-    // 11 times
-    UNROLL; UNROLL; UNROLL;
-    UNROLL; UNROLL; UNROLL;
-
-    UNROLL; UNROLL; UNROLL;
-    UNROLL; UNROLL;
+    UNROLL( i - DIFF );
+    UNROLL( i - DIFF );
+    UNROLL( i - DIFF );
+    UNROLL( i - DIFF );
+    UNROLL( i - DIFF );
+    UNROLL( i - DIFF );
+    UNROLL( i - DIFF );
+    UNROLL( i - DIFF );
+    UNROLL( i - DIFF );
+    UNROLL( i - DIFF );
+    UNROLL( i - DIFF );
   }
 
-  // i = [623]
-  y = M32( MT[SIZE-1] ) | L31( MT[SIZE-1] );
+  // i = 623
+  y = M32( MT[SIZE-1] ) | L31( MT[0] );
   MT[SIZE-1] = MT[PERIOD-1] ^( y >> 1 ) ^ MATRIX[ODD( y )];
 }
 
@@ -135,14 +138,14 @@ extern "C" void seed( uint32_t value )
    * "A common Mersenne twister implementation, interestingly
    * enough, uses an LCG to generate seed data.",
    *
-   * Since our we're using 32-bits data types for our MT array,
-   * we can skip the masking with 0xFFFFFFFF below.
+   * Since we're using 32-bits data types for our MT array, we can skip the
+   * masking with 0xFFFFFFFF below.
    */
 
   MT[0] = value;
   index = 0;
 
-  for ( register unsigned i = 1; i < SIZE; ++i )
+  for ( unsigned i = 1; i < SIZE; ++i )
     MT[i] = 0x6c078965 * ( MT[i-1] ^ MT[i-1] >> 30 ) + i;
 }
 
@@ -151,7 +154,7 @@ extern "C" uint32_t rand_u32()
   if ( !index )
     generate_numbers();
 
-  register uint32_t y = MT[index];
+  uint32_t y = MT[index];
 
   // Tempering
   y ^= y >> 11;

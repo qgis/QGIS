@@ -28,17 +28,19 @@ __revision__ = '$Format:%H$'
 import os
 import stat
 import subprocess
-from PyQt4.QtCore import *
-from qgis.core import *
+import time
+
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
-
+from processing.tools.system import isWindows, isMac, userFolder
 
 SAGA_LOG_COMMANDS = 'SAGA_LOG_COMMANDS'
 SAGA_LOG_CONSOLE = 'SAGA_LOG_CONSOLE'
 SAGA_FOLDER = 'SAGA_FOLDER'
 SAGA_IMPORT_EXPORT_OPTIMIZATION = 'SAGA_IMPORT_EXPORT_OPTIMIZATION'
+
 
 def sagaBatchJobFilename():
     if isWindows():
@@ -67,6 +69,7 @@ def findSagaFolder():
             folder = testfolder
     return folder
 
+
 def sagaPath():
     folder = ProcessingConfig.getSetting(SAGA_FOLDER)
     if folder is None or folder == '':
@@ -74,6 +77,7 @@ def sagaPath():
         if folder is not None:
             ProcessingConfig.setSettingValue(SAGA_FOLDER, folder)
     return folder or ''
+
 
 def sagaDescriptionPath():
     return os.path.join(os.path.dirname(__file__), 'description')
@@ -86,7 +90,7 @@ def createSagaBatchJobFileFromSagaCommands(commands):
         fout.write('set SAGA=' + sagaPath() + '\n')
         fout.write('set SAGA_MLB=' + sagaPath() + os.sep
                    + 'modules' + '\n')
-        fout.write('PATH=PATH;%SAGA%;%SAGA_MLB%\n')
+        fout.write('PATH=%PATH%;%SAGA%;%SAGA_MLB%\n')
     elif isMac():
         fout.write('export SAGA_MLB=' + sagaPath()
                    + '/../lib/saga\n')
@@ -94,7 +98,12 @@ def createSagaBatchJobFileFromSagaCommands(commands):
     else:
         pass
     for command in commands:
-        fout.write('saga_cmd ' + command.encode('utf8') + '\n')
+        try:
+            # Python 2
+            fout.write('saga_cmd ' + command.encode('utf8') + '\n')
+        except TypeError:
+            # Python 3
+            fout.write('saga_cmd ' + command + '\n')
 
     fout.write('exit')
     fout.close()
@@ -102,17 +111,26 @@ def createSagaBatchJobFileFromSagaCommands(commands):
 _installedVersion = None
 _installedVersionFound = False
 
-def getSagaInstalledVersion(runSaga = False):
+
+def getSagaInstalledVersion(runSaga=False):
     global _installedVersion
     global _installedVersionFound
 
-    if not _installedVersionFound or runSaga:
-        if isWindows():
-            commands = [os.path.join(sagaPath(), "saga_cmd.exe"), "-v"]
-        elif isMac():
-            commands = [os.path.join(sagaPath(), "saga_cmd"), "-v"]
-        else:
-            commands = ["saga_cmd", "-v"]
+    maxRetries = 5
+    retries = 0
+    if _installedVersionFound and not runSaga:
+        return _installedVersion
+
+    if isWindows():
+        commands = [os.path.join(sagaPath(), "saga_cmd.exe"), "-v"]
+    elif isMac():
+        commands = [os.path.join(sagaPath(), "saga_cmd -v")]
+    else:
+        # for Linux use just one string instead of separated parameters as the list
+        # does not work well together with shell=True option
+        # (python docs advices to use subprocess32 instead of python2.7's subprocess)
+        commands = ["saga_cmd -v"]
+    while retries < maxRetries:
         proc = subprocess.Popen(
             commands,
             shell=True,
@@ -120,13 +138,24 @@ def getSagaInstalledVersion(runSaga = False):
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
-        lines = proc.readlines()
-        for line in lines:
-            if line.startswith("SAGA Version:"):
-                _installedVersion = line[len("SAGA Version:"):].strip().split(" ")[0]
-        _installedVersionFound = True
+        ).stdout
+        if isMac():  # This trick avoids having an uninterrupted system call exception if SAGA is not installed
+            time.sleep(1)
+        try:
+            lines = proc.readlines()
+            for line in lines:
+                if line.startswith("SAGA Version:"):
+                    _installedVersion = line[len("SAGA Version:"):].strip().split(" ")[0]
+                    _installedVersionFound = True
+                    return _installedVersion
+            return None
+        except IOError:
+            retries += 1
+        except:
+            return None
+
     return _installedVersion
+
 
 def executeSaga(progress):
     if isWindows():
@@ -144,19 +173,21 @@ def executeSaga(progress):
         stdin=open(os.devnull),
         stderr=subprocess.STDOUT,
         universal_newlines=True,
-        ).stdout
-    for line in iter(proc.readline, ''):
-        if '%' in line:
-            s = ''.join([x for x in line if x.isdigit()])
-            try:
-                progress.setPercentage(int(s))
-            except:
-                pass
-        else:
-            line = line.strip()
-            if line != '/' and line != '-' and line != '\\' and line \
-                != '|':
-                loglines.append(line)
-                progress.setConsoleInfo(line)
+    ).stdout
+    try:
+        for line in iter(proc.readline, ''):
+            if '%' in line:
+                s = ''.join([x for x in line if x.isdigit()])
+                try:
+                    progress.setPercentage(int(s))
+                except:
+                    pass
+            else:
+                line = line.strip()
+                if line != '/' and line != '-' and line != '\\' and line != '|':
+                    loglines.append(line)
+                    progress.setConsoleInfo(line)
+    except:
+        pass
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)

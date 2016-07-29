@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os.path
-from processing.tools.system import *
+import os
+from processing.tools.system import userFolder
 
 
 class RenderingStyles:

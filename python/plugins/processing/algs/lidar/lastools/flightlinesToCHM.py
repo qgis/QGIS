@@ -24,12 +24,13 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterString
+
 
 class flightlinesToCHM(LAStoolsAlgorithm):
 
@@ -41,44 +42,42 @@ class flightlinesToCHM(LAStoolsAlgorithm):
     BASE_NAME = "BASE_NAME"
 
     def defineCharacteristics(self):
-        self.name = "flightlinesToCHM"
-        self.group = "LAStools Pipelines"
+        self.name, self.i18n_name = self.trAlgorithm('flightlinesToCHM')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Pipelines')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterNumber(flightlinesToCHM.TILE_SIZE,
-            self.tr("tile size (side length of square tile)"),
-            0, None, 1000.0))
+                                          self.tr("tile size (side length of square tile)"),
+                                          0, None, 1000.0))
         self.addParameter(ParameterNumber(flightlinesToCHM.BUFFER,
-            self.tr("buffer around each tile (avoids edge artifacts)"),
-            0, None, 25.0))
+                                          self.tr("buffer around each tile (avoids edge artifacts)"),
+                                          0, None, 25.0))
         self.addParameter(ParameterSelection(flightlinesToCHM.TERRAIN,
-            self.tr("terrain type"), flightlinesToCHM.TERRAINS, 1))
+                                             self.tr("terrain type"), flightlinesToCHM.TERRAINS, 1))
         self.addParameter(ParameterNumber(flightlinesToCHM.BEAM_WIDTH,
-            self.tr("laser beam width (diameter of laser footprint)"),
-            0, None, 0.2))
+                                          self.tr("laser beam width (diameter of laser footprint)"),
+                                          0, None, 0.2))
         self.addParametersStepGUI()
         self.addParametersTemporaryDirectoryGUI()
         self.addParametersOutputDirectoryGUI()
         self.addParameter(ParameterString(flightlinesToCHM.BASE_NAME,
-            self.tr("tile base name (using 'sydney' creates sydney_274000_4714000...)"), "tile"))
+                                          self.tr("tile base name (using 'sydney' creates sydney_274000_4714000...)"), "tile"))
         self.addParametersRasterOutputFormatGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-
-#   first we tile the data
-
+        # first we tile the data
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         commands.append("-files_are_flightlines")
         tile_size = self.getParameterValue(flightlinesToCHM.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(str(tile_size))
+        commands.append(unicode(tile_size))
         buffer = self.getParameterValue(flightlinesToCHM.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(str(buffer))
+            commands.append(unicode(buffer))
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         base_name = self.getParameterValue(flightlinesToCHM.BASE_NAME)
         if base_name == "":
@@ -89,11 +88,10 @@ class flightlinesToCHM(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we ground classify the tiles
-
+        # then we ground classify the tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name+"*.laz")
+        self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name + "*.laz")
         method = self.getParameterValue(flightlinesToCHM.TERRAIN)
         if method != 1:
             commands.append("-" + flightlinesToCHM.TERRAINS[method])
@@ -111,11 +109,10 @@ class flightlinesToCHM(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we height-normalize the tiles
-
+        # then we height-normalize the tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name+"*_g.laz")
+        self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name + "*_g.laz")
         commands.append("-replace_z")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-odix")
@@ -125,18 +122,17 @@ class flightlinesToCHM(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we thin and splat the tiles
-
+        # then we thin and splat the tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name+"*_gh.laz")
+        self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name + "*_gh.laz")
         beam_width = self.getParameterValue(flightlinesToCHM.BEAM_WIDTH)
         if beam_width != 0.0:
             commands.append("-subcircle")
-            commands.append(str(beam_width/2))
+            commands.append(unicode(beam_width / 2))
         step = self.getParametersStepValue()
         commands.append("-step")
-        commands.append(str(step/4))
+        commands.append(unicode(step / 4))
         commands.append("-highest")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-odix")
@@ -146,11 +142,10 @@ class flightlinesToCHM(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we rasterize the classified tiles into CHMs
-
+        # then we rasterize the classified tiles into CHMs
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name+"*_ght.laz")
+        self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name + "*_ght.laz")
         self.addParametersStepCommands(commands)
         commands.append("-use_tile_bb")
         self.addParametersOutputDirectoryCommands(commands)

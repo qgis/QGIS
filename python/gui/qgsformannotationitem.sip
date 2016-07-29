@@ -14,17 +14,17 @@ class QgsFormAnnotationItem: QObject, QgsAnnotationItem
     void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
 
     QSizeF minimumFrameSize() const;
-    /**Returns the optimal frame size*/
+    /** Returns the optimal frame size*/
     QSizeF preferredFrameSize() const;
 
-    /**Reimplemented from QgsAnnotationItem*/
+    /** Reimplemented from QgsAnnotationItem*/
     void setMapPosition( const QgsPoint& pos );
 
     void setDesignerForm( const QString& uiFile );
     QString designerForm() const;
 
-    void writeXML( QDomDocument& doc ) const;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem );
+    void writeXml( QDomDocument& doc ) const;
+    void readXml( const QDomDocument& doc, const QDomElement& itemElem );
 
     QgsVectorLayer* vectorLayer() const;
 };

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsfeaturelistviewdelegate.cpp
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Matthias Kuhn
+    email                : matthias at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsfeaturelistviewdelegate.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributetablemodel.h"
@@ -15,13 +29,14 @@
 
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
     : QItemDelegate( parent )
-    , mFeatureSelectionModel( NULL )
+    , mFeatureSelectionModel( nullptr )
+    , mEditSelectionModel( nullptr )
     , mListModel( listModel )
     , mCurrentFeatureEdited( false )
 {
 }
 
-QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( const QPoint &pos )
+QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( QPoint pos )
 {
   if ( pos.x() > sIconSize )
   {
@@ -51,31 +66,35 @@ void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* edi
 QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( index )
-  return QSize( option.rect.width(), sIconSize );
+  int height = sIconSize;
+  return QSize( option.rect.width(), qMax( height, option.fontMetrics.height() ) );
 }
 
 void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
+  static QPixmap selectedIcon;
+  if ( selectedIcon.isNull() )
+    selectedIcon = QgsApplication::getThemePixmap( "/mIconSelected.svg" );
+  static QPixmap deselectedIcon;
+  if ( deselectedIcon.isNull() )
+    deselectedIcon = QgsApplication::getThemePixmap( "/mIconDeselected.svg" );
+
   QString text = index.model()->data( index, Qt::EditRole ).toString();
   QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();
 
-  bool isEditSelection = mEditSelectionModel->isSelected( mListModel->mapToMaster( index ) );
+  bool isEditSelection = mEditSelectionModel && mEditSelectionModel->isSelected( mListModel->mapToMaster( index ) );
 
   // Icon layout options
   QStyleOptionViewItem iconOption;
 
   QRect iconLayoutBounds( option.rect.x(), option.rect.y(), option.rect.height(), option.rect.height() );
 
-  QPixmap icon;
+  QPixmap icon = mFeatureSelectionModel->isSelected( index ) ? selectedIcon : deselectedIcon;
 
-  if ( mFeatureSelectionModel->isSelected( index ) )
+  // Scale up the icon if needed
+  if ( option.rect.height() > sIconSize )
   {
-    // Item is selected
-    icon = QgsApplication::getThemePixmap( "/mIconSelected.svg" );
-  }
-  else
-  {
-    icon = QgsApplication::getThemePixmap( "/mIconDeselected.svg" );
+    icon = icon.scaledToHeight( option.rect.height(), Qt::SmoothTransformation );
   }
 
   // Text layout options

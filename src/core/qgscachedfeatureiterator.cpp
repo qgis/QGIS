@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 12.2.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,7 +16,7 @@
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
 
-QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, QgsFeatureRequest featureRequest, QgsFeatureIds featureIds )
+QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest& featureRequest, const QgsFeatureIds& featureIds )
     : QgsAbstractFeatureIterator( featureRequest )
     , mFeatureIds( featureIds )
     , mVectorLayerCache( vlCache )
@@ -27,7 +27,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
     close();
 }
 
-QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, QgsFeatureRequest featureRequest )
+QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest& featureRequest )
     : QgsAbstractFeatureIterator( featureRequest )
     , mVectorLayerCache( vlCache )
 {
@@ -81,7 +81,7 @@ bool QgsCachedFeatureIterator::close()
   return true;
 }
 
-QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, QgsFeatureRequest featureRequest )
+QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest& featureRequest )
     : QgsAbstractFeatureIterator( featureRequest )
     , mVectorLayerCache( vlCache )
 {

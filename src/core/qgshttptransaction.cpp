@@ -35,18 +35,21 @@ static int HTTP_PORT_DEFAULT = 80;
 //XXX in qgswmsprovider. When creating a QgsHttpTransaction, pass
 //XXX the user/pass combination to the constructor. Then set the
 //XXX username and password using QHttp::setUser.
-QgsHttpTransaction::QgsHttpTransaction( QString uri,
-                                        QString proxyHost,
+QgsHttpTransaction::QgsHttpTransaction( const QString& uri,
+                                        const QString& proxyHost,
                                         int     proxyPort,
-                                        QString proxyUser,
-                                        QString proxyPass,
+                                        const QString& proxyUser,
+                                        const QString& proxyPass,
                                         QNetworkProxy::ProxyType proxyType,
-                                        QString userName,
-                                        QString password )
-    : httpresponsecontenttype( "" )
+                                        const QString& userName,
+                                        const QString& password )
+    : http( nullptr )
+    , httpid( 0 )
+    , httpactive( false )
     , httpurl( uri )
     , httphost( proxyHost )
-    , mError( "" )
+    , httpredirections( 0 )
+    , mWatchdogTimer( nullptr )
 {
   Q_UNUSED( proxyPort );
   Q_UNUSED( proxyUser );
@@ -55,12 +58,18 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
   Q_UNUSED( userName );
   Q_UNUSED( password );
   QSettings s;
-  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt();
+  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt();
 }
 
 QgsHttpTransaction::QgsHttpTransaction()
+    : http( nullptr )
+    , httpid( 0 )
+    , httpactive( false )
+    , httpredirections( 0 )
+    , mWatchdogTimer( nullptr )
 {
-
+  QSettings s;
+  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt();
 }
 
 QgsHttpTransaction::~QgsHttpTransaction()
@@ -88,7 +97,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 
   QgsDebugMsg( "Entered." );
   QgsDebugMsg( "Using '" + httpurl + "'." );
-  QgsDebugMsg( "Creds: " + mUserName + "/" + mPassword );
+  QgsDebugMsg( "Creds: " + mUserName + '/' + mPassword );
 
   int httpport;
 
@@ -187,7 +196,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   mWatchdogTimer->setSingleShot( true );
   mWatchdogTimer->start( mNetworkTimeoutMsec );
 
-  QgsDebugMsg( "Starting get with id " + QString::number( httpid ) + "." );
+  QgsDebugMsg( "Starting get with id " + QString::number( httpid ) + '.' );
   QgsDebugMsg( "Setting httpactive = true" );
 
   httpactive = true;
@@ -207,7 +216,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 #endif
 
   delete http;
-  http = 0;
+  http = nullptr;
 
   // Did we get an error? If so, bail early
   if ( !mError.isEmpty() )
@@ -252,7 +261,7 @@ QString QgsHttpTransaction::responseContentType()
 void QgsHttpTransaction::dataStarted( int id )
 {
   Q_UNUSED( id );
-  QgsDebugMsg( "ID=" + QString::number( id ) + "." );
+  QgsDebugMsg( "ID=" + QString::number( id ) + '.' );
 }
 
 
@@ -334,7 +343,7 @@ void QgsHttpTransaction::dataProgress( int done, int total )
 void QgsHttpTransaction::dataFinished( int id, bool error )
 {
 #ifdef QGISDEBUG
-  QgsDebugMsg( "ID=" + QString::number( id ) + "." );
+  QgsDebugMsg( "ID=" + QString::number( id ) + '.' );
 
   // The signal that this slot is connected to, QHttp::requestFinished,
   // appears to get called at the destruction of the QHttp if it is
@@ -383,7 +392,6 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
 void QgsHttpTransaction::transactionFinished( bool error )
 {
 #ifdef QGISDEBUG
-  QgsDebugMsg( "entered." );
 
 #if 0
   // The signal that this slot is connected to, QHttp::requestFinished,
@@ -427,7 +435,7 @@ void QgsHttpTransaction::transactionFinished( bool error )
 
 void QgsHttpTransaction::dataStateChanged( int state )
 {
-  QgsDebugMsg( "state " + QString::number( state ) + "." );
+  QgsDebugMsg( "state " + QString::number( state ) + '.' );
 
   // We saw something come back, therefore restart the watchdog timer
   mWatchdogTimer->start( mNetworkTimeoutMsec );
@@ -480,7 +488,6 @@ void QgsHttpTransaction::dataStateChanged( int state )
 
 void QgsHttpTransaction::networkTimedOut()
 {
-  QgsDebugMsg( "entering." );
 
   mError = tr( "Network timed out after %n second(s) of inactivity.\n"
                "This may be a problem in your network connection or at the WMS server.", "inactivity timeout", mNetworkTimeoutMsec / 1000 );
@@ -510,7 +517,7 @@ bool QgsHttpTransaction::applyProxySettings( QHttp& http, const QString& url )
   QString  proxyExcludedURLs = settings.value( "proxy/proxyExcludedUrls", "" ).toString();
   if ( !proxyExcludedURLs.isEmpty() )
   {
-    QStringList excludedURLs = proxyExcludedURLs.split( "|" );
+    QStringList excludedURLs = proxyExcludedURLs.split( '|' );
     QStringList::const_iterator exclIt = excludedURLs.constBegin();
     for ( ; exclIt != excludedURLs.constEnd(); ++exclIt )
     {

@@ -16,7 +16,7 @@
 #include "qgsvectorcolorbrewercolorrampv2dialog.h"
 
 #include "qgsvectorcolorrampv2.h"
-
+#include "qgssymbollayerv2utils.h"
 #include <QAbstractButton>
 
 #if 0 // unused
@@ -32,7 +32,8 @@ static void updateColorButton( QAbstractButton* button, QColor color )
 
 
 QgsVectorColorBrewerColorRampV2Dialog::QgsVectorColorBrewerColorRampV2Dialog( QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( ramp )
+    : QDialog( parent )
+    , mRamp( ramp )
 {
 
   setupUi( this );
@@ -41,7 +42,7 @@ QgsVectorColorBrewerColorRampV2Dialog::QgsVectorColorBrewerColorRampV2Dialog( Qg
   cboSchemeName->setIconSize( iconSize );
 
   QStringList schemes = QgsVectorColorBrewerColorRampV2::listSchemeNames();
-  foreach ( QString schemeName, schemes )
+  Q_FOREACH ( const QString& schemeName, schemes )
   {
     // create a preview icon using five color variant
     QgsVectorColorBrewerColorRampV2* r = new QgsVectorColorBrewerColorRampV2( schemeName, 5 );
@@ -67,7 +68,7 @@ void QgsVectorColorBrewerColorRampV2Dialog::populateVariants()
   cboColors->clear();
   QString schemeName = cboSchemeName->currentText();
   QList<int> variants = QgsVectorColorBrewerColorRampV2::listSchemeVariants( schemeName );
-  foreach ( int variant, variants )
+  Q_FOREACH ( int variant, variants )
   {
     cboColors->addItem( QString::number( variant ) );
   }

@@ -64,8 +64,8 @@ class QgsMssqlGeometryParser
   public:
     QgsMssqlGeometryParser();
     unsigned char* ParseSqlGeometry( unsigned char* pszInput, int nLen );
-    int GetSRSId() { return nSRSId; };
-    int GetWkbLen() { return nWkbLen; };
+    int GetSRSId() { return nSRSId; }
+    int GetWkbLen() { return nWkbLen; }
     void DumpMemoryToLog( const char* pszMsg, unsigned char* pszInput, int nLen );
     /* sql geo type */
     bool IsGeography;

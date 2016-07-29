@@ -19,7 +19,7 @@
 
 #include "qgsscalebarstyle.h"
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A scale bar style that draws text in the form of '1:XXXXX'
  */
 class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle
@@ -37,10 +37,10 @@ class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle
 
   private:
     QgsNumericScaleBarStyle(); //forbidden
-    /**Returns the text for the scale bar or an empty string in case of error*/
+    /** Returns the text for the scale bar or an empty string in case of error*/
     QString scaleText() const;
 
-    /**Store last width (in mm) to keep alignment to left/middle/right side*/
+    /** Store last width (in mm) to keep alignment to left/middle/right side*/
     mutable double mLastScaleBarWidth;
 };
 

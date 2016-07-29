@@ -33,7 +33,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " you make must be made available in source form to whoever you give"
                         " modified versions to, and that you can not create a new version of"
                         " QGIS under a 'closed source' license. Visit"
-                        " <a href=\"http://qgis.org\"> the QGIS home page (http://qgis.org)</a>"
+                        " <a href=\"https://qgis.org\"> the QGIS home page (https://qgis.org)</a>"
                         " for more information."
                       ) );
   addGenericTip( myTip );
@@ -41,26 +41,26 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "QGIS Publications" ) );
   myTip.setContent( tr( "If you write a scientific paper or any other article"
                         " that refers to QGIS we would love to include your work"
-                        " in the <a href=\"http://qgis.org/en/site/about/case_studies/index.html\">case studies section</a> of"
+                        " in the <a href=\"https://qgis.org/en/site/about/case_studies/index.html\">case studies section</a> of"
                         " the QGIS home page."
                       ) );
   addGenericTip( myTip );
-  myTip.setTitle( tr( "Become an QGIS translator" ) );
+  myTip.setTitle( tr( "Become a QGIS translator" ) );
   myTip.setContent( tr( "Would you like to see QGIS"
                         " in your native language? We are looking for more translators"
                         " and would appreciate your help! The translation process is"
                         " fairly straight forward - instructions are available in the"
                         " QGIS wiki"
-                        " <a href=\"http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui\">translator's page.</a>"
+                        " <a href=\"https://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui\">translator's page.</a>"
                       ) );
   addGuiTip( myTip );
-  myTip.setTitle( tr( "QGIS Mailing lists" ) );
+  myTip.setTitle( tr( "Getting Help With QGIS" ) );
   myTip.setContent( tr( "If you need help using QGIS"
-                        " we have a 'users' mailing list where users help each other with issues"
-                        " related to using our sofware. We also have a 'developers' mailing list."
-                        " for those wanting help and to discuss things relating to the QGIS code base."
-                        " Details on how to subscribe are in the <a href=\"http://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of"
-                        " the QGIS home page."
+                        " there is a 'users' mailing list where users help each other with issues"
+                        " related to using QGIS. We also have a 'developers' mailing list"
+                        " for those wanting help and discuss things relating to the QGIS code base."
+                        " Details on different means to get help are described in the"
+                        " <a href=\"https://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of the QGIS home page."
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Is it 'QGIS' or 'Quantum GIS'?" ) );
@@ -75,9 +75,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         "<ul>"
                         "<li>QGIS Library - this is the C++ library that contains"
                         " the core logic that is used to build the QGIS user interface and other applications.</li>"
-                        "<li>QGIS Application - this is the desktop application that you know and love so much :-).</li>"
-                        "<li>QGIS Mapserver - this is a server-side application based on the QGIS Library"
-                        " that will serve up your .qgs projects using the WMS protocol.</li>"
+                        "<li>QGIS Desktop - this is the desktop application that you know and love so much :-).</li>"
+                        "<li>QGIS Server - this is a server-side application based on the QGIS Library"
+                        " that will serve up your .qgs projects using OGC standard protocols.</li>"
                         "</ul>"
                       ) );
   addGenericTip( myTip );
@@ -86,12 +86,12 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "You can add a current date variable to your map"
                         " layout. Create a regular text label and add the string"
                         " $CURRENT_DATE(yyyy-MM-dd) to the text box. See the"
-                        " <a href=\"http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString\">"
+                        " <a href=\"https://doc.qt.io/qt-4.8/qdate.html#toString\">"
                         "QDate::toString format documentation</a> for the possible date formats."
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Moving Elements and Maps in the Print Composer" ) );
-  myTip.setContent( tr( "In the print composer tool bar you can find two buttons for moving"
+  myTip.setContent( tr( "In the print composer toolbar you can find two buttons for moving"
                         " elements. The left one (right arrow icon) selects and moves elements"
                         " in the layout. After selecting the element with this tool you can also"
                         " move them around with the arrow keys. For accurate positioning use the"
@@ -142,11 +142,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGuiTip( myTip );
   // by Tim
-  myTip.setTitle( tr( "Stopping rendering" ) );
+  myTip.setTitle( tr( "Disabling rendering" ) );
   myTip.setContent( tr( "Sometimes you have a very large dataset which takes ages"
-                        " to draw. You can press 'Esc' (the escape key), or click the 'Stop"
-                        " map rendering' icon in the status bar to the bottom of the window at any"
-                        " time to halt rendering. If you are going to be performing several"
+                        " to draw. If you are going to be performing several"
                         " actions (e.g. modifying symbology options) and wish to temporarily"
                         " disable map rendering while you do so, you can uncheck the 'Render'"
                         " checkbox in the bottom right of the status bar. Don't forget to check"
@@ -176,8 +174,8 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " have the financial ability to help, please consider sponsoring the"
                         " development of QGIS. We use money from sponsors to pay for"
                         " travel and costs related to our regular hackfest meetings, and to generally"
-                        " support the goals of our project. Please see the <a"
-                        " href=\"http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html\">QGIS Sponsorship Web"
+                        " support the goals of our project. Please see the<a"
+                        " href=\"https://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html\">QGIS Sponsorship Web"
                         " Page</a> for more details."
                       ) );
   addGenericTip( myTip );
@@ -186,7 +184,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "QGIS has plugins that extend its functionality."
                         " QGIS ships with some core plugins you can explore from the"
                         " Plugins->Manage and Install Plugins menu. In addition there are a lot"
-                        " of <a href=\"http://plugins.qgis.org/\">Python plugins </a>"
+                        " of <a href=\"https://plugins.qgis.org/\">Python plugins </a>"
                         " contributed by the user community that can be"
                         " installed via this same menu. Don't miss out on all QGIS has to offer!"
                         " Check out the plugins and see what they can do for you."
@@ -194,10 +192,10 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGenericTip( myTip );
   // by yjacolin
   myTip.setTitle( tr( "Add an action to layer" ) );
-  myTip.setContent( tr( "Action in a layer allow user to trigger action when clicking on a geometry"
+  myTip.setContent( tr( "Action in a layer allows user to trigger action when clicking on a geometry"
                         " with 'Run Feature Action' tools."
-                        "For example, you can open an html page using the field value of the geometry "
-                        "as a parameter. Look at the <a href=\"http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
+                        "For example, you can open a HTML page using the field value of the geometry "
+                        "as a parameter. Look at the <a href=\"https://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
                       ) );
   addGuiTip( myTip );
   // by yjacolin
@@ -210,12 +208,20 @@ QgsTipFactory::QgsTipFactory() : QObject()
   // by yjacolin
   myTip.setTitle( tr( "Right click with identify tools" ) );
   myTip.setContent( tr( "Right click with the identify tool to show a context menu from which you can "
-                        "choose the layer in which to identify a feature. A sub menu will list features "
-                        "identified and a third sub-menu will show the action link setup for the layer."
-                        "If one of this sub-menu doesn't contain any information, the next sub-menu"
+                        "choose the layer in which to identify a feature. A sub-menu will list features "
+                        "identified and a third sub-menu will show the action link setup for the layer. "
+                        "If one of this sub-menu doesn't contain any information, the next sub-menu "
                         "will appear instead. For example, if you have just one layer, and click "
-                        "somewhere with several features, the first menu will list the feature list "
+                        "somewhere with several features, the first menu will list the features "
                         "instead of layer list."
+                      ) );
+  addGuiTip( myTip );
+  // by Alister Hood
+  myTip.setTitle( tr( "Use VRT files" ) );
+  myTip.setContent( tr( "If you have a number of aerial photos spread across a wide area, instead of "
+                        "loading each file as a separate layer you can treat them all as a single layer "
+                        "by using a .vrt file. "
+                        "To create a .vrt, go to Raster -> Miscellaneous -> Build Virtual Raster (Catalog)."
                       ) );
   addGuiTip( myTip );
 
@@ -232,21 +238,20 @@ QgsTipFactory::~QgsTipFactory()
 
 }
 //private helper method
-void QgsTipFactory::addGuiTip( QgsTip theTip )
+void QgsTipFactory::addGuiTip( const QgsTip& theTip )
 {
   mGuiTips << theTip;
   mAllTips << theTip;
 }
 //private helper method
-void QgsTipFactory::addGenericTip( QgsTip theTip )
+void QgsTipFactory::addGenericTip( const QgsTip& theTip )
 {
   mGenericTips << theTip;
   mAllTips << theTip;
 }
 QgsTip QgsTipFactory::getTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mAllTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mAllTips.at( myValue );
   return myTip;
@@ -258,16 +263,14 @@ QgsTip QgsTipFactory::getTip( int thePosition )
 }
 QgsTip QgsTipFactory::getGenericTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mGenericTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mGenericTips.at( myValue );
   return myTip;
 }
 QgsTip QgsTipFactory::getGuiTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mGuiTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mGuiTips.at( myValue );
   return myTip;

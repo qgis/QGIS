@@ -1,4 +1,0 @@
-r.sum
-r.sum - Sums up the raster cell values.
-Raster (r.*)
-ParameterRaster|rast|Name of incidence or density file|False

@@ -26,14 +26,13 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from osgeo import gdal
-from qgis.core import *
-from PyQt4.QtCore import *
+from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsPoint, QgsGeometry
+from qgis.PyQt.QtCore import QVariant
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector, raster
-from processing.tools.general import *
 
 
 class PointsFromPolygons(GeoAlgorithm):
@@ -44,18 +43,17 @@ class PointsFromPolygons(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def defineCharacteristics(self):
-        self.name = 'Generate points (pixel centroids) inside polygons'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Generate points (pixel centroids) inside polygons')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
-            self.tr('Raster layer')))
+                                          self.tr('Raster layer')))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
-            self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+                                          self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points from polygons')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
 
@@ -68,10 +66,8 @@ class PointsFromPolygons(GeoAlgorithm):
         fields.append(QgsField('poly_id', QVariant.Int, '', 10, 0))
         fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(
-                self.OUTPUT_LAYER).getVectorWriter(fields.toList(),
-                                                   QGis.WKBPoint,
-                                                   layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
+            fields.toList(), Qgis.WKBPoint, layer.crs())
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)
@@ -81,10 +77,9 @@ class PointsFromPolygons(GeoAlgorithm):
         polyId = 0
         pointId = 0
 
-        current = 0
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for f in features:
+        for current, f in enumerate(features):
             geom = f.geometry()
             bbox = geom.boundingBox()
 
@@ -116,7 +111,6 @@ class PointsFromPolygons(GeoAlgorithm):
             pointId = 0
             polyId += 1
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

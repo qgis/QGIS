@@ -39,7 +39,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   {
     // reply is not multipart, copy body and headers
     QMap<QByteArray, QByteArray> headers;
-    foreach ( QByteArray h, mReply->rawHeaderList() )
+    Q_FOREACH ( QByteArray h, mReply->rawHeaderList() )
     {
       headers.insert( h, mReply->rawHeader( h ) );
     }
@@ -96,7 +96,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QgsDebugMsg( QString( "part %1 - %2" ).arg( from ).arg( to ) );
       QByteArray part = data.mid( from, to - from );
       // Remove possible new line from beginning
-      while ( part.size() > 0 && ( part.at( 0 ) == '\r' || part.at( 0 ) == '\n' ) )
+      while ( !part.isEmpty() && ( part.at( 0 ) == '\r' || part.at( 0 ) == '\n' ) )
       {
         part.remove( 0, 1 );
       }
@@ -119,7 +119,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QgsDebugMsg( "headers:\n" + headers );
 
       QStringList headerRows = QString( headers ).split( QRegExp( "[\n\r]+" ) );
-      foreach ( QString row, headerRows )
+      Q_FOREACH ( const QString& row, headerRows )
       {
         QgsDebugMsg( "row = " + row );
         QStringList kv = row.split( ": " );

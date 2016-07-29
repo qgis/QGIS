@@ -42,7 +42,7 @@ QString QgsDoubleSpinBoxPlugin::includeFile() const
 
 QIcon QgsDoubleSpinBoxPlugin::icon() const
 {
-  return QIcon();
+  return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
 bool QgsDoubleSpinBoxPlugin::isContainer() const

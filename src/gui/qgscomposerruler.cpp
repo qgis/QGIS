@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgscomposerruler.cpp
+    ---------------------
+    begin                : January 2013
+    copyright            : (C) 2013 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgscomposerruler.h"
 #include "qgscomposition.h"
 #include "qgis.h"
@@ -12,11 +26,12 @@ const unsigned int COUNT_VALID_MAGNITUDES = 5;
 const int QgsComposerRuler::validScaleMultiples[] = {1, 2, 5};
 const int QgsComposerRuler::validScaleMagnitudes[] = {1, 10, 100, 1000, 10000};
 
-QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ) : QWidget( 0 ),
-    mDirection( d ),
-    mComposition( 0 ),
-    mLineSnapItem( 0 ),
-    mScaleMinPixelsWidth( 0 )
+QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
+    : QWidget( nullptr )
+    , mDirection( d )
+    , mComposition( nullptr )
+    , mLineSnapItem( nullptr )
+    , mScaleMinPixelsWidth( 0 )
 {
   setMouseTracking( true );
 
@@ -25,7 +40,7 @@ QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ) : QWidget( 0
   mRulerFont->setPointSize( RULER_FONT_SIZE );
   mRulerFontMetrics = new QFontMetrics( *mRulerFont );
 
-  //calculate ruler sizes and marker seperations
+  //calculate ruler sizes and marker separations
 
   //minimum gap required between major ticks is 3 digits * 250%, based on appearance
   mScaleMinPixelsWidth = mRulerFontMetrics->width( "000" ) * 2.5;
@@ -234,6 +249,9 @@ void QgsComposerRuler::drawRotatedText( QPainter *painter, QPointF pos, const QS
 
 void QgsComposerRuler::drawSmallDivisions( QPainter *painter, double startPos, int numDivisions, double rulerScale, double maxPos )
 {
+  if ( numDivisions == 0 )
+    return;
+
   //draw small divisions starting at startPos (in mm)
   double smallMarkerPos = startPos;
   double smallDivisionSpacing = rulerScale / numDivisions;
@@ -342,7 +360,7 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
   {
     //find pixel size for this small division
     double candidateSize = largeDivisionSize / ( *divisions_it );
-    //check if this seperation is more then allowed min seperation
+    //check if this separation is more then allowed min separation
     if ( candidateSize >= mMinPixelsPerDivision )
     {
       //found a good candidate, return it
@@ -357,8 +375,10 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
 
 void QgsComposerRuler::setSceneTransform( const QTransform& transform )
 {
-  QString debug = QString::number( transform.dx() ) + "," + QString::number( transform.dy() ) + ","
-                  + QString::number( transform.m11() ) + "," + QString::number( transform.m22() );
+#if 0
+  QString debug = QString::number( transform.dx() ) + ',' + QString::number( transform.dy() ) + ','
+                  + QString::number( transform.m11() ) + ',' + QString::number( transform.m22() );
+#endif
   mTransform = transform;
   update();
 }
@@ -405,7 +425,7 @@ void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
     mComposition->removeSnapLine( mLineSnapItem );
     mSnappedItems.clear();
   }
-  mLineSnapItem = 0;
+  mLineSnapItem = nullptr;
 }
 
 void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
@@ -434,7 +454,7 @@ void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
   }
 }
 
-void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
+void QgsComposerRuler::setSnapLinePosition( QPointF pos )
 {
   if ( !mLineSnapItem || !mComposition )
   {
@@ -458,8 +478,8 @@ void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
   }
 
   //move snapped items together with the snap line
-  QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >::iterator itemIt = mSnappedItems.begin();
-  for ( ; itemIt != mSnappedItems.end(); ++itemIt )
+  QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >::const_iterator itemIt = mSnappedItems.constBegin();
+  for ( ; itemIt != mSnappedItems.constEnd(); ++itemIt )
   {
     if ( mDirection == Horizontal )
     {

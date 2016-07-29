@@ -33,8 +33,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputFile
-from FusionUtils import FusionUtils
-from FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
 
 
 class GridMetrics(FusionAlgorithm):
@@ -53,10 +53,10 @@ class GridMetrics(FusionAlgorithm):
     CLASS = 'CLASS'
 
     def defineCharacteristics(self):
-        self.name = 'Grid Metrics'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Grid Metrics')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterFile(
             self.GROUND, self.tr('Input ground DTM layer')))
         self.addParameter(ParameterNumber(
@@ -64,26 +64,26 @@ class GridMetrics(FusionAlgorithm):
         self.addParameter(ParameterNumber(
             self.CELLSIZE, self.tr('Cellsize')))
 
-        self.addOutput(OutputFile(self.OUTPUT_CSV_ELEVATION,
-            self.tr('Output table with grid metrics')))
+        self.addOutput(OutputFile(
+            self.OUTPUT_CSV_ELEVATION, self.tr('Output table with grid metrics')))
 
-        output_csv_intensity = OutputFile(self.OUTPUT_CSV_INTENSITY,
-            self.tr('OUTPUT CSV INTENSITY'))
+        output_csv_intensity = OutputFile(
+            self.OUTPUT_CSV_INTENSITY, self.tr('OUTPUT CSV INTENSITY'))
         output_csv_intensity.hidden = True
         self.addOutput(output_csv_intensity)
 
-        output_txt_elevation = OutputFile(self.OUTPUT_TXT_ELEVATION,
-            self.tr('OUTPUT CSV INTENSITY'))
+        output_txt_elevation = OutputFile(
+            self.OUTPUT_TXT_ELEVATION, self.tr('OUTPUT CSV INTENSITY'))
         output_txt_elevation.hidden = True
         self.addOutput(output_txt_elevation)
 
-        output_txt_intensity = OutputFile(self.OUTPUT_TXT_INTENSITY,
-            self.tr('OUTPUT CSV INTENSITY'))
+        output_txt_intensity = OutputFile(
+            self.OUTPUT_TXT_INTENSITY, self.tr('OUTPUT CSV INTENSITY'))
         output_txt_intensity.hidden = True
         self.addOutput(output_txt_intensity)
 
-        outlier = ParameterString(self.OUTLIER,
-            self.tr('Outlier:low,high'), '', False, True)
+        outlier = ParameterString(
+            self.OUTLIER, self.tr('Outlier:low,high'), '', False, True)
         outlier.isAdvanced = True
         self.addParameter(outlier)
         first = ParameterBoolean(self.FIRST, self.tr('First'), False)
@@ -92,8 +92,8 @@ class GridMetrics(FusionAlgorithm):
         minht = ParameterString(self.MINHT, self.tr('Htmin'), '', False, True)
         minht.isAdvanced = True
         self.addParameter(minht)
-        class_var = ParameterString(self.CLASS,
-            self.tr('Class (set blank if not used)'), '', False, True)
+        class_var = ParameterString(
+            self.CLASS, self.tr('Class (set blank if not used)'), '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
 
@@ -101,20 +101,20 @@ class GridMetrics(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'GridMetrics.exe')]
         commands.append('/verbose')
         outlier = self.getParameterValue(self.OUTLIER)
-        if str(outlier).strip() != '':
-            commands.append('/outlier:' + str(outlier))
+        if unicode(outlier).strip() != '':
+            commands.append('/outlier:' + unicode(outlier))
         first = self.getParameterValue(self.FIRST)
         if first:
-            commands.append('/first:' + str(first))
+            commands.append('/first')
         minht = self.getParameterValue(self.MINHT)
-        if str(minht).strip() != '':
-            commands.append('/minht:' + str(minht))
+        if unicode(minht).strip() != '':
+            commands.append('/minht:' + unicode(minht))
         class_var = self.getParameterValue(self.CLASS)
-        if str(class_var).strip() != '':
-            commands.append('/class:' + str(class_var))
+        if unicode(class_var).strip() != '':
+            commands.append('/class:' + unicode(class_var))
         commands.append(self.getParameterValue(self.GROUND))
-        commands.append(str(self.getParameterValue(self.HEIGHT)))
-        commands.append(str(self.getParameterValue(self.CELLSIZE)))
+        commands.append(unicode(self.getParameterValue(self.HEIGHT)))
+        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.getOutputValue(self.OUTPUT_CSV_ELEVATION))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:

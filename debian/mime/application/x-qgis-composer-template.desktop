@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=MimeType
+MimeType=application/x-qgis-composer-template
+Hidden=false
+Comment=QGIS composer template
+Icon=qgis-qpt-mime
+Patterns=*.qpt;
+Name[en_US]=x-qgis-composer-template.desktop

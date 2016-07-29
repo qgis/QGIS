@@ -18,15 +18,16 @@
 
 #include "ui_qgsfieldcalculatorbase.h"
 #include "qgscontexthelp.h"
+#include "qgsfield.h"
 
 class QgsVectorLayer;
 
-/**A dialog class that provides calculation of new fields using existing fields, values and a set of operators*/
+/** A dialog class that provides calculation of new fields using existing fields, values and a set of operators*/
 class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
 {
     Q_OBJECT
   public:
-    QgsFieldCalculator( QgsVectorLayer* vl );
+    QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent = nullptr );
     ~QgsFieldCalculator();
 
     int changedAttributeId() const { return mAttributeId; }
@@ -45,6 +46,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
   private slots:
     /** Sets the ok button enabled / disabled*/
     void setOkButtonState();
+    void setPrecisionMinMax();
 
   private:
     //! default constructor forbidden
@@ -62,16 +64,16 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     inline QgsField fieldDefinition()
     {
       return QgsField( mOutputFieldNameLineEdit->text(),
-                       ( QVariant::Type ) mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole ).toInt(),
+                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole ).toInt() ),
                        mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole + 1 ).toString(),
                        mOutputFieldWidthSpinBox->value(),
                        mOutputFieldPrecisionSpinBox->value() );
     }
 
-    /**idx of changed attribute*/
+    /** Idx of changed attribute*/
     int mAttributeId;
 
-    bool mExpressionValid;
+    friend class TestQgsFieldCalculator;
 };
 
 #endif // QGSFIELDCALCULATOR_H

@@ -23,57 +23,59 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtWidgets import QWidget, QTableWidgetItem
 
-from ui_optionsTable import Ui_GdalToolsOptionsTable as Ui_OptionsTable
+from .ui_optionsTable import Ui_GdalToolsOptionsTable as Ui_OptionsTable
+
 
 class GdalToolsOptionsTable(QWidget, Ui_OptionsTable):
+    rowAdded = pyqtSignal(int)
+    rowRemoved = pyqtSignal()
 
-  def __init__(self, parent = None):
-      QWidget.__init__(self, parent)
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent)
 
-      self.setupUi(self)
+        self.setupUi(self)
 
-      self.connect(self.table, SIGNAL("cellChanged(int, int)"), SIGNAL("cellValueChanged(int, int)"))
+        self.table.cellChanged.connect(self.cellValueChanged)
 
-      self.connect(self.table, SIGNAL("itemSelectionChanged()"), self.enableDeleteButton)
-      self.connect(self.btnAdd, SIGNAL("clicked()"), self.addNewRow)
-      self.connect(self.btnDel, SIGNAL("clicked()"), self.deleteRow)
+        self.table.itemSelectionChanged.connect(self.enableDeleteButton)
+        self.btnAdd.clicked.connect(self.addNewRow)
+        self.btnDel.clicked.connect(self.deleteRow)
 
-      self.btnDel.setEnabled(False)
+        self.btnDel.setEnabled(False)
 
-  def enableDeleteButton(self):
-      self.btnDel.setEnabled(self.table.currentRow() >= 0)
+    def enableDeleteButton(self):
+        self.btnDel.setEnabled(self.table.currentRow() >= 0)
 
-  def addNewRow(self):
-      self.table.insertRow(self.table.rowCount())
-      # select the added row
-      newRow = self.table.rowCount()-1;
-      item = QTableWidgetItem()
-      self.table.setItem(newRow, 0, item)
-      self.table.setCurrentItem(item)
-      self.emit(SIGNAL("rowAdded(int)"), newRow)
-
-  def deleteRow(self):
-      if self.table.currentRow() >= 0:
-        self.table.removeRow(self.table.currentRow())
-        # select the previous row or the next one if there is no previous row
-        item = self.table.item(self.table.currentRow(), 0)
+    def addNewRow(self):
+        self.table.insertRow(self.table.rowCount())
+        # select the added row
+        newRow = self.table.rowCount() - 1
+        item = QTableWidgetItem()
+        self.table.setItem(newRow, 0, item)
         self.table.setCurrentItem(item)
-        self.emit(SIGNAL("rowRemoved()"))
+        self.rowAdded.emit(newRow)
 
-  def options(self):
-      options = []
-      for row in range(0, self.table.rowCount()):
-        name = self.table.item(row, 0)
-        if not name:
-          continue
+    def deleteRow(self):
+        if self.table.currentRow() >= 0:
+            self.table.removeRow(self.table.currentRow())
+            # select the previous row or the next one if there is no previous row
+            item = self.table.item(self.table.currentRow(), 0)
+            self.table.setCurrentItem(item)
+            self.rowRemoved.emit()
 
-        value = self.table.item(row, 1)
-        if not value:
-          continue
+    def options(self):
+        options = []
+        for row in range(0, self.table.rowCount()):
+            name = self.table.item(row, 0)
+            if not name:
+                continue
 
-        options.append( name.text() + "=" + value.text())
-      return options
+            value = self.table.item(row, 1)
+            if not value:
+                continue
 
+            options.append(name.text() + "=" + value.text())
+        return options

@@ -1,4 +1,19 @@
 #!/bin/bash
+###########################################################################
+#    create-transifex-resources.sh
+#    ---------------------
+#    Date                 : March 2013
+#    Copyright            : (C) 2013 by Tim Sutton
+#    Email                : tim at linfiniti dot com
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
+
 
 # This script is used to register QGIS translatable resources with Transifex
 # http://transifex.com
@@ -7,6 +22,7 @@
 #
 # Tim Sutton, March 2013
 
+# TODO: update script to consider qgis_sr@latin and qgis_zh-Han*
 
 LOCALES=`ls i18n/qgis_*.ts| grep -o "qgis_[a-z\_A-Z]*" | sed 's/qgis_//g' | sort | uniq`
 
@@ -16,7 +32,7 @@ RESOURCE='i18n/qgis_<lang>.ts'
 
 #qgis-application because no _ allowed in resource name
 set -x
-tx set -t QT --auto-local -r QGIS.qgis-application \
+tx set -t QT --minimum-perc=35 --auto-local -r QGIS.qgis-application \
   $RESOURCE \
   --source-lang en \
   --source $TSFILE \

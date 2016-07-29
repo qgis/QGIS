@@ -1,0 +1,2 @@
+libqgis-server{QGIS_ABI}: shlib-calls-exit usr/lib/libqgis_server.so.{QGIS_ABI}
+libqgis-server{QGIS_ABI}: no-symbols-control-file usr/lib/libqgis_server.so.{QGIS_ABI}

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsfeaturelistmodel.h
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Matthias Kuhn
+    email                : matthias at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSATTRIBUTEEDITORMODEL_H
 #define QGSATTRIBUTEEDITORMODEL_H
 
@@ -14,6 +28,9 @@ class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
+/** \ingroup gui
+ * \class QgsFeatureListModel
+ */
 class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel
 {
     Q_OBJECT
@@ -38,13 +55,27 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     };
 
   public:
-    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject* parent = NULL );
+    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject* parent = nullptr );
     virtual ~QgsFeatureListModel();
 
     virtual void setSourceModel( QgsAttributeTableFilterModel* sourceModel );
     QgsVectorLayerCache* layerCache();
     virtual QVariant data( const QModelIndex& index, int role ) const override;
     virtual Qt::ItemFlags flags( const QModelIndex& index ) const override;
+
+    /**
+     * @brief If true is specified, a NULL value will be injected
+     * @param injectNull state of null value injection
+     * @note added in 2.9
+     */
+    void setInjectNull( bool injectNull );
+
+    /**
+     * @brief Returns the current state of null value injection
+     * @return If a NULL value is added
+     * @note added in 2.9
+     */
+    bool injectNull();
 
     QgsAttributeTableModel* masterModel();
 
@@ -54,7 +85,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
      *          If it fails, the old expression will still be applied. Call {@link parserErrorString()}
      *          for a meaningful error message.
      */
-    bool setDisplayExpression( const QString expression );
+    bool setDisplayExpression( const QString& expression );
 
     /**
      * @brief Returns a detailed message about errors while parsing a QgsExpression.
@@ -94,6 +125,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     QgsExpression* mExpression;
     QgsAttributeTableFilterModel* mFilterModel;
     QString mParserErrorString;
+    bool mInjectNull;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )

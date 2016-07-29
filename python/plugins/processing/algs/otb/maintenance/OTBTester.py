@@ -22,29 +22,26 @@ __copyright__ = '(C) 2013, CS Systemes d\'information  (CS SI)'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import unittest
-import ConfigParser
-import io
-
-from parsing import (
-    File, Command, Comment, BlankLine, Arg, parse, prettify)
+from parsing import parse
 
 from string import Template
 import os
 import traceback
-import logging
-import copy
 
 from ConfigParser import SafeConfigParser
 
 from processing.otb.OTBHelper import get_OTB_log
 
+
 class LowerTemplate(Template):
+
     def safe_substitute(self, param):
         ret = super(LowerTemplate, self).safe_substitute(param).lower()
         return ret
 
+
 class MakefileParser(object):
+
     def __init__(self):
         self.maxDiff = None
         self.parser = SafeConfigParser()
@@ -52,7 +49,7 @@ class MakefileParser(object):
         if not os.path.exists('otbcfg.ini'):
             raise Exception("OTB_SOURCE_DIR and OTB_BINARY_DIR must be specified in the file otbcfg.ini")
 
-        self.root_dir = self.parser.get('otb','checkout_dir')
+        self.root_dir = self.parser.get('otb', 'checkout_dir')
         if not os.path.exists(self.root_dir):
             raise Exception("Check otbcfg.ini : OTB_SOURCE_DIR and OTB_BINARY_DIR must be specified there")
         self.build_dir = self.parser.get('otb', 'build_dir')
@@ -71,21 +68,21 @@ class MakefileParser(object):
                 content = file_input.read()
                 output = parse(content)
 
-                defined_paths = [each for each in output if 'Command' in str(type(each)) and "FIND_PATH" in each.name]
+                defined_paths = [each for each in output if 'Command' in unicode(type(each)) and "FIND_PATH" in each.name]
                 the_paths = {key.body[0].contents: [thing.contents for thing in key.body[1:]] for key in defined_paths}
 
-                the_sets = [each for each in output if 'Command' in str(type(each)) and "SET" in each.name.upper()]
+                the_sets = [each for each in output if 'Command' in unicode(type(each)) and "SET" in each.name.upper()]
                 the_sets = {key.body[0].contents: [thing.contents for thing in key.body[1:]] for key in the_sets}
-                the_sets = {key : " ".join(the_sets[key]) for key in the_sets}
+                the_sets = {key: " ".join(the_sets[key]) for key in the_sets}
 
-                the_strings = set([each.body[-1].contents for each in output if 'Command' in str(type(each)) and "STRING" in each.name.upper()] )
+                the_strings = set([each.body[-1].contents for each in output if 'Command' in unicode(type(each)) and "STRING" in each.name.upper()])
 
                 def mini_clean(item):
                     if item.startswith('"') and item.endswith('"') and " " not in item:
                         return item[1:-1]
                     return item
 
-                the_sets = {key : mini_clean(the_sets[key]) for key in the_sets}
+                the_sets = {key: mini_clean(the_sets[key]) for key in the_sets}
 
                 def templatize(item):
                     if "$" in item:
@@ -96,7 +93,7 @@ class MakefileParser(object):
                     if key in the_strings:
                         the_sets[key] = the_sets[key].lower()
 
-                the_sets = {key : templatize(the_sets[key]) for key in the_sets}
+                the_sets = {key: templatize(the_sets[key]) for key in the_sets}
 
                 for path in the_paths:
                     target_file = the_paths[path][1]
@@ -106,7 +103,7 @@ class MakefileParser(object):
 
                     try:
                         provided[path] = find_file(target_file)
-                    except Exception, e:
+                    except Exception as e:
                         for each in suggested_paths:
                             st = Template(each)
                             pac = os.path.abspath(st.safe_substitute(provided))
@@ -118,14 +115,14 @@ class MakefileParser(object):
                 provided.update(the_sets)
 
                 return provided
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
-            self.fail(e.message)
+            self.fail(unicode(e))
 
     def add_make(self, previous_context, new_file):
         input = open(new_file).read()
         output = parse(input)
-        apps = [each for each in output if 'Command' in str(type(each))]
+        apps = [each for each in output if 'Command' in unicode(type(each))]
         setcommands = [each for each in apps if 'SET' in each.name.upper()]
         stringcommands = [each for each in apps if 'STRING' in each.name.upper()]
 
@@ -168,14 +165,14 @@ class MakefileParser(object):
     def get_apps(self, the_makefile, the_dict):
         input = open(the_makefile).read()
         output = parse(input)
-        apps = [each for each in output if 'Command' in str(type(each))]
+        apps = [each for each in output if 'Command' in unicode(type(each))]
         otb_apps = [each for each in apps if 'OTB_TEST_APPLICATION' in each.name.upper()]
         return otb_apps
 
     def get_tests(self, the_makefile, the_dict):
         input = open(the_makefile).read()
         output = parse(input)
-        apps = [each for each in output if 'Command' in str(type(each))]
+        apps = [each for each in output if 'Command' in unicode(type(each))]
         otb_tests = [each for each in apps if 'ADD_TEST' in each.name.upper()]
         return otb_tests
 
@@ -184,7 +181,7 @@ class MakefileParser(object):
         output = parse(input)
 
         def is_a_command(item):
-            return 'Command' in str(type(item))
+            return 'Command' in unicode(type(item))
 
         appz = []
         context = []
@@ -217,9 +214,9 @@ class MakefileParser(object):
             while '$' in the_string:
                 try:
                     the_string = Template(the_string).substitute(neo_dict)
-                except KeyError, e:
-                    self.logger.warning("Key %s is not found in makefiles" % e.message)
-                    neo_dict[e.message] = ""
+                except KeyError as e:
+                    self.logger.warning("Key %s is not found in makefiles" % unicode(e))
+                    neo_dict[unicode(e)] = ""
 
         if 'string.Template' in the_string:
             raise Exception("Unexpected toString call in %s" % the_string)
@@ -239,7 +236,7 @@ class MakefileParser(object):
         result.extend(["otbcli_%s" % each for each in itemz[1]])
 
         if len(result[0]) == 7:
-            raise Exception("App name is empty !")
+            raise Exception("App name is empty!")
 
         result.extend(itemz[2])
         result.append("-testenv")
@@ -252,9 +249,9 @@ class MakefileParser(object):
             while '$' in the_string:
                 try:
                     the_string = Template(the_string).substitute(neo_dict)
-                except KeyError, e:
-                    self.logger.warning("Key %s is not found in makefiles" % e.message)
-                    neo_dict[e.message] = ""
+                except KeyError as e:
+                    self.logger.warning("Key %s is not found in makefiles" % unicode(e))
+                    neo_dict[unicode(e)] = ""
 
         if 'string.Template' in the_string:
             raise Exception("Unexpected toString call in %s" % the_string)
@@ -284,9 +281,9 @@ class MakefileParser(object):
             while '$' in the_string:
                 try:
                     the_string = Template(the_string).substitute(neo_dict)
-                except KeyError, e:
-                    self.logger.warning("Key %s is not found in makefiles" % e.message)
-                    neo_dict[e.message] = ""
+                except KeyError as e:
+                    self.logger.warning("Key %s is not found in makefiles" % unicode(e))
+                    neo_dict[unicode(e)] = ""
 
         if 'string.Template' in the_string:
             raise Exception("Unexpected toString call in %s" % the_string)
@@ -307,7 +304,7 @@ class MakefileParser(object):
             intermediate_makefiles = []
             path = makefile.split(os.sep)[len(self.root_dir.split(os.sep)):-1]
             for ind in range(len(path)):
-                tmp_path = path[:ind+1]
+                tmp_path = path[:ind + 1]
                 tmp_path.append("CMakeLists.txt")
                 tmp_path = os.sep.join(tmp_path)
                 candidate_makefile = os.path.join(self.root_dir, tmp_path)
@@ -382,17 +379,18 @@ class MakefileParser(object):
 
         return tests
 
+
 def autoresolve(a_dict):
     def as_template(item, b_dict):
         if hasattr(item, 'safe_substitute'):
             return item.safe_substitute(b_dict)
         ate = Template(item)
         return ate.safe_substitute(b_dict)
-    templatized = {key: as_template(a_dict[key], a_dict) for key in a_dict.keys() }
+    templatized = {key: as_template(a_dict[key], a_dict) for key in a_dict.keys()}
     return templatized
 
 
-def find_file(file_name, base_dir = os.curdir):
+def find_file(file_name, base_dir=os.curdir):
     import os
     for root, dirs, files in os.walk(base_dir, topdown=False):
         for name in files:
@@ -400,7 +398,8 @@ def find_file(file_name, base_dir = os.curdir):
                 return os.path.join(root, name)
     raise Exception("File not found %s" % file_name)
 
-def find_files(file_name, base_dir = os.curdir):
+
+def find_files(file_name, base_dir=os.curdir):
     import os
     result = []
     for root, dirs, files in os.walk(base_dir, topdown=False):
@@ -409,15 +408,17 @@ def find_files(file_name, base_dir = os.curdir):
                 result.append(os.path.join(root, name))
     return result
 
+
 def resolve_dict(adia, adib):
     init = len(adia)
     fin = len(adia) + 1
+
     def _resolve_dict(dia, dib):
         for key in dib:
             cand_value = dib[key]
             if hasattr(cand_value, 'safe_substitute'):
                 value = cand_value.safe_substitute(dia)
-                if type(value) == type(".") and "$" not in value:
+                if isinstance(value, str) and "$" not in value:
                     dia[key] = value
             else:
                 dia[key] = cand_value
@@ -429,4 +430,3 @@ def resolve_dict(adia, adib):
         init = len(adia)
         _resolve_dict(adia, adib)
         fin = len(adia)
-

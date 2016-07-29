@@ -58,13 +58,13 @@ class QMouseEvent;
 class QPaintEvent;
 QT_END_NAMESPACE
 
-//! [0]
+//! \ingroup gui
 class GUI_EXPORT CharacterWidget : public QWidget
 {
     Q_OBJECT
 
   public:
-    CharacterWidget( QWidget *parent = 0 );
+    CharacterWidget( QWidget *parent = nullptr );
     QSize sizeHint() const override;
 
     int getColumns() const { return columns; }
@@ -76,9 +76,10 @@ class GUI_EXPORT CharacterWidget : public QWidget
     void updateStyle( const QString &fontStyle );
     void updateFontMerging( bool enable );
     void updateColumns( int cols );
+    void setCharacter( QChar character );
 
   signals:
-    void characterSelected( const QChar &character );
+    void characterSelected( QChar character );
 
   protected:
     void mouseMoveEvent( QMouseEvent *event ) override;

@@ -13,7 +13,7 @@ class QgsTINInterpolator: QgsInterpolator
     QgsTINInterpolator( const QList<QgsInterpolator::LayerData>& inputData, TIN_INTERPOLATION interpolation = Linear, bool showProgressDialog = false );
     ~QgsTINInterpolator();
 
-    /**Calculates interpolation value for map coordinates x, y
+    /** Calculates interpolation value for map coordinates x, y
        @param x x-coordinate (in map units)
        @param y y-coordinate (in map units)
        @param result out: interpolation result

@@ -33,7 +33,7 @@ QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeView
 
 QAction* QgsLayerTreeViewDefaultActions::actionAddGroup( QObject* parent )
 {
-  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionFolder.png" ), tr( "&Add Group" ), parent );
+  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionAddGroup.svg" ), tr( "&Add Group" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( addGroup() ) );
   return a;
 }
@@ -49,9 +49,9 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject* parent )
 {
   QgsLayerTreeNode* node = mView->currentNode();
   if ( !node )
-    return 0;
+    return nullptr;
 
-  QAction* a = new QAction( tr( "&Show in overview" ), parent );
+  QAction* a = new QAction( tr( "&Show in Overview" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( showInOverview() ) );
   a->setCheckable( true );
   a->setChecked( node->customProperty( "overview", 0 ).toInt() );
@@ -69,7 +69,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowFeatureCount( QObject* parent
 {
   QgsLayerTreeNode* node = mView->currentNode();
   if ( !node )
-    return 0;
+    return nullptr;
 
   QAction* a = new QAction( tr( "Show Feature Count" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( showFeatureCount() ) );
@@ -110,6 +110,19 @@ QAction* QgsLayerTreeViewDefaultActions::actionGroupSelected( QObject* parent )
   return a;
 }
 
+QAction* QgsLayerTreeViewDefaultActions::actionMutuallyExclusiveGroup( QObject* parent )
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isGroup( node ) )
+    return nullptr;
+
+  QAction* a = new QAction( tr( "Mutually Exclusive Group" ), parent );
+  a->setCheckable( true );
+  a->setChecked( QgsLayerTree::toGroup( node )->isMutuallyExclusive() );
+  connect( a, SIGNAL( triggered() ), this, SLOT( mutuallyExclusiveGroup() ) );
+  return a;
+}
+
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
   QgsLayerTreeGroup* group = mView->currentGroupNode();
@@ -122,7 +135,7 @@ void QgsLayerTreeViewDefaultActions::addGroup()
 
 void QgsLayerTreeViewDefaultActions::removeGroupOrLayer()
 {
-  foreach ( QgsLayerTreeNode* node, mView->selectedNodes( true ) )
+  Q_FOREACH ( QgsLayerTreeNode* node, mView->selectedNodes( true ) )
   {
     // could be more efficient if working directly with ranges instead of individual nodes
     qobject_cast<QgsLayerTreeGroup*>( node->parent() )->removeChildNode( node );
@@ -139,8 +152,9 @@ void QgsLayerTreeViewDefaultActions::showInOverview()
   QgsLayerTreeNode* node = mView->currentNode();
   if ( !node )
     return;
-
-  node->setCustomProperty( "overview", node->customProperty( "overview", 0 ).toInt() ? 0 : 1 );
+  int newValue = node->customProperty( "overview", 0 ).toInt();
+  Q_FOREACH ( QgsLayerTreeLayer* l, mView->selectedLayerNodes() )
+    l->setCustomProperty( "overview", newValue ? 0 : 1 );
 }
 
 void QgsLayerTreeViewDefaultActions::showFeatureCount()
@@ -149,8 +163,9 @@ void QgsLayerTreeViewDefaultActions::showFeatureCount()
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-
-  node->setCustomProperty( "showFeatureCount", node->customProperty( "showFeatureCount", 0 ).toInt() ? 0 : 1 );
+  int newValue = node->customProperty( "showFeatureCount", 0 ).toInt();
+  Q_FOREACH ( QgsLayerTreeLayer* l, mView->selectedLayerNodes() )
+    l->setCustomProperty( "showFeatureCount", newValue ? 0 : 1 );
 }
 
 
@@ -172,7 +187,7 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas* canvas )
     return;
 
   QList<QgsMapLayer*> layers;
-  foreach ( QString layerId, groupNode->findLayerIds() )
+  Q_FOREACH ( const QString& layerId, groupNode->findLayerIds() )
     layers << QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );
@@ -182,14 +197,18 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer()
 {
   QAction* s = qobject_cast<QAction*>( sender() );
   QgsMapCanvas* canvas = reinterpret_cast<QgsMapCanvas*>( s->data().value<void*>() );
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToLayer( canvas );
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup()
 {
   QAction* s = qobject_cast<QAction*>( sender() );
   QgsMapCanvas* canvas = reinterpret_cast<QgsMapCanvas*>( s->data().value<void*>() );
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToGroup( canvas );
+  QApplication::restoreOverrideCursor();
 }
 
 
@@ -204,13 +223,16 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
     QgsRectangle layerExtent = layer->extent();
 
     QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( layer );
-    if ( vLayer && vLayer->geometryType() == QGis::NoGeometry )
-      continue;
-
-    if ( layerExtent.isEmpty() && layer->type() == QgsMapLayer::VectorLayer )
+    if ( vLayer )
     {
-      qobject_cast<QgsVectorLayer*>( layer )->updateExtents();
-      layerExtent = vLayer->extent();
+      if ( vLayer->geometryType() == Qgis::NoGeometry )
+        continue;
+
+      if ( layerExtent.isEmpty() )
+      {
+        vLayer->updateExtents();
+        layerExtent = vLayer->extent();
+      }
     }
 
     if ( layerExtent.isNull() )
@@ -220,7 +242,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
     if ( canvas->hasCrsTransformEnabled() )
       layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
 
-    extent.combineExtentWith( &layerExtent );
+    extent.combineExtentWith( layerExtent );
   }
 
   if ( extent.isNull() )
@@ -238,7 +260,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
 QString QgsLayerTreeViewDefaultActions::uniqueGroupName( QgsLayerTreeGroup* parentGroup )
 {
   QString prefix = parentGroup == mView->layerTreeModel()->rootGroup() ? "group" : "sub-group";
-  QString newName = prefix + "1";
+  QString newName = prefix + '1';
   for ( int i = 2; parentGroup->findGroup( newName ); ++i )
     newName = prefix + QString::number( i );
   return newName;
@@ -247,18 +269,16 @@ QString QgsLayerTreeViewDefaultActions::uniqueGroupName( QgsLayerTreeGroup* pare
 
 void QgsLayerTreeViewDefaultActions::makeTopLevel()
 {
-  QgsLayerTreeNode* node = mView->currentNode();
-  if ( !node )
-    return;
-
-  QgsLayerTreeGroup* rootGroup = mView->layerTreeModel()->rootGroup();
-  QgsLayerTreeGroup* parentGroup = qobject_cast<QgsLayerTreeGroup*>( node->parent() );
-  if ( !parentGroup || parentGroup == rootGroup )
-    return;
-
-  QgsLayerTreeNode* clonedNode = node->clone();
-  rootGroup->addChildNode( clonedNode );
-  parentGroup->removeChildNode( node );
+  Q_FOREACH ( QgsLayerTreeLayer* l, mView->selectedLayerNodes() )
+  {
+    QgsLayerTreeGroup* rootGroup = mView->layerTreeModel()->rootGroup();
+    QgsLayerTreeGroup* parentGroup = qobject_cast<QgsLayerTreeGroup*>( l->parent() );
+    if ( !parentGroup || parentGroup == rootGroup )
+      continue;
+    QgsLayerTreeLayer* clonedLayer = l->clone();
+    rootGroup->addChildNode( clonedLayer );
+    parentGroup->removeChildNode( l );
+  }
 }
 
 
@@ -272,12 +292,12 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
   int insertIdx = parentGroup->children().indexOf( nodes[0] );
 
   QgsLayerTreeGroup* newGroup = new QgsLayerTreeGroup( uniqueGroupName( parentGroup ) );
-  foreach ( QgsLayerTreeNode* node, nodes )
+  Q_FOREACH ( QgsLayerTreeNode* node, nodes )
     newGroup->addChildNode( node->clone() );
 
   parentGroup->insertChildNode( insertIdx, newGroup );
 
-  foreach ( QgsLayerTreeNode* node, nodes )
+  Q_FOREACH ( QgsLayerTreeNode* node, nodes )
   {
     QgsLayerTreeGroup* group = qobject_cast<QgsLayerTreeGroup*>( node->parent() );
     if ( group )
@@ -285,4 +305,13 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
   }
 
   mView->setCurrentIndex( mView->layerTreeModel()->node2index( newGroup ) );
+}
+
+void QgsLayerTreeViewDefaultActions::mutuallyExclusiveGroup()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isGroup( node ) )
+    return;
+
+  QgsLayerTree::toGroup( node )->setIsMutuallyExclusive( !QgsLayerTree::toGroup( node )->isMutuallyExclusive() );
 }

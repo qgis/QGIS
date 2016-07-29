@@ -18,10 +18,9 @@
 
 #include <QDir>
 #include <QString>
-#include <qgsmaprenderer.h>
 class QImage;
 
-/** \ingroup UnitTests
+/** \ingroup core
  * This is a helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
@@ -43,8 +42,8 @@ class CORE_EXPORT QgsRasterChecker
      * @param theExpectedKey expected provider key
      * @param theExpectedUri URI of the expected (control) raster
      */
-    bool runTest( QString theVerifiedKey, QString theVerifiedUri,
-                  QString theExpectedKey, QString theExpectedUri );
+    bool runTest( const QString& theVerifiedKey, QString theVerifiedUri,
+                  const QString& theExpectedKey, QString theExpectedUri );
   private:
     QString mReport;
     QString mExpectedUri;
@@ -56,13 +55,13 @@ class CORE_EXPORT QgsRasterChecker
     QString mErrMsgStyle;
 
     // Log error in html
-    void error( QString theMessage, QString &theReport );
+    void error( const QString& theMessage, QString &theReport );
     // compare values and add table row in html report, set ok to false if not equal
     QString compareHead();
     bool compare( double verifiedVal, double expectedVal, double theTolerance );
-    void compare( QString theParamName, int verifiedVal, int expectedVal, QString &theReport, bool &theOk );
-    void compare( QString theParamName, double verifiedVal, double expectedVal, QString &theReport, bool &theOk, double theTolerance = 0 );
-    void compareRow( QString theParamName, QString verifiedVal, QString expectedVal, QString &theReport, bool theOk, QString theDifference = "", QString theTolerance = "" );
+    void compare( const QString& theParamName, int verifiedVal, int expectedVal, QString &theReport, bool &theOk );
+    void compare( const QString& theParamName, double verifiedVal, double expectedVal, QString &theReport, bool &theOk, double theTolerance = 0 );
+    void compareRow( const QString& theParamName, const QString& verifiedVal, const QString& expectedVal, QString &theReport, bool theOk, const QString& theDifference = "", const QString& theTolerance = "" );
     double tolerance( double val, int places = 6 );
 }; // class QgsRasterChecker
 

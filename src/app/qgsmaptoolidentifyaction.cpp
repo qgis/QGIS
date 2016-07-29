@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgsattributetabledialog.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
+#include "qgsfeaturestore.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -33,8 +35,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
-#include "qgisapp.h"
 #include "qgsrendererv2.h"
+#include "qgsunittypes.h"
 
 #include <QSettings>
 #include <QMouseEvent>
@@ -81,7 +83,7 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
   return mResultsDialog;
 }
 
-void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QList<QgsFeature> featureList )
+void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QList<QgsFeature>& featureList )
 {
   resultsDialog()->clear();
 
@@ -101,17 +103,17 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QLi
   tableDialog->show();
 }
 
-void QgsMapToolIdentifyAction::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentifyAction::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   resultsDialog()->clear();
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
@@ -183,11 +185,14 @@ void QgsMapToolIdentifyAction::deactivate()
   QgsMapTool::deactivate();
 }
 
-QGis::UnitType QgsMapToolIdentifyAction::displayUnits()
+QgsUnitTypes::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
-  // Get the units for display
-  QSettings settings;
-  return QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+  return QgsProject::instance()->distanceUnits();
+}
+
+QgsUnitTypes::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
+{
+  return QgsProject::instance()->areaUnits();
 }
 
 void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore & featureStore )

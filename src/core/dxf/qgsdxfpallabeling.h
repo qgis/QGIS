@@ -18,29 +18,83 @@
 #ifndef QGSDXFPALLABELING_H
 #define QGSDXFPALLABELING_H
 
-#include "qgspallabeling.h"
-#include "qgsmaprenderer.h"
-#include "qgsrendercontext.h"
+#include "qgsvectorlayerlabelprovider.h"
+#include "qgsrulebasedlabeling.h"
 
 class QgsDxfExport;
+class QgsPalLayerSettings;
+class QgsRuleBasedLabeling;
 
-class CORE_EXPORT QgsDxfPalLabeling : public QgsPalLabeling
+
+/** \ingroup core
+ * Implements a derived label provider internally used for DXF export
+ *
+ * Internal class, not in public API. Added in QGIS 2.12
+ * @note not available in Python bindings
+ */
+class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:
-    QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale, QGis::UnitType mapUnits );
-    ~QgsDxfPalLabeling();
+    //! construct the provider
+    explicit QgsDxfLabelProvider( QgsVectorLayer* layer, const QString& providerId, QgsDxfExport* dxf, const QgsPalLayerSettings *settings );
 
-    QgsRenderContext& renderContext() { return mRenderContext; }
-    void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio = 1.0 ) override;
+    /** Re-implementation that writes to DXF file instead of drawing with QPainter
+     * @param context render context
+     * @param label label
+     */
+    void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
-  private:
+    /** Registration method that keeps track of DXF layer names of individual features
+     * @param feature feature
+     * @param context render context
+     * @param dxfLayerName name of dxf layer
+     */
+    void registerDxfFeature( QgsFeature& feature, QgsRenderContext &context, const QString& dxfLayerName );
+
+  protected:
+    //! pointer to parent DXF export where this instance is used
     QgsDxfExport* mDxfExport;
-    QgsRenderContext mRenderContext;
-
-    //only used for render context
-    QImage* mImage;
-    QPainter* mPainter;
-    QgsMapSettings* mSettings;
 };
+
+/** \ingroup core
+ * Implements a derived label provider for rule based labels internally used
+ * for DXF export
+ *
+ * Internal class, not in public API. Added in QGIS 2.15
+ * @note not available in Python bindings
+ */
+class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
+{
+  public:
+    //! construct the provider
+    explicit QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer* layer, QgsDxfExport* dxf );
+
+    /** Reinitialize the subproviders with QgsDxfLabelProviders
+     * @param layer layer
+     */
+    void reinit( QgsVectorLayer* layer );
+
+    /** Re-implementation that writes to DXF file instead of drawing with QPainter
+     * @param context render context
+     * @param label label
+     */
+    void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+
+    /** Registration method that keeps track of DXF layer names of individual features
+     * @param feature feature
+     * @param context render context
+     * @param dxfLayerName name of dxf layer
+     */
+    void registerDxfFeature( QgsFeature& feature, QgsRenderContext &context, const QString& dxfLayerName );
+
+    //! create QgsDxfLabelProvider
+    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;
+
+  protected:
+    //! pointer to parent DXF export where this instance is used
+    QgsDxfExport* mDxfExport;
+};
+
+
 
 #endif // QGSDXFPALLABELING_H

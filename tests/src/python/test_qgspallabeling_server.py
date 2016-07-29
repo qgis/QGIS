@@ -17,33 +17,25 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis  # NOQA
+
 import sys
 import os
 import glob
 import shutil
-import tempfile
-import time
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 
-from qgis.core import *
+from qgis.PyQt.QtCore import QSettings, qDebug
 
-from utilities import (
-    unittest,
-    expectedFailure,
-    mapSettingsString
-)
+from qgis.core import QgsProject, QgsApplication, QgsPalLabeling
 
-from qgis_local_server import (
-    QgisLocalServer,
-    FcgiServerProcess,
-    WebServerProcess,
-    getLocalServer
-)
+from utilities import mapSettingsString
+
+from qgis_local_server import getLocalServer
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import (
     TestPointBase,
+    TestLineBase,
     suiteTests
 )
 
@@ -65,10 +57,11 @@ class TestServerBase(TestQgsPalLabeling):
             TestQgsPalLabeling.setUpClass()
         MAPSERV.startup()
         MAPSERV.web_dir_install(glob.glob(cls._PalDataDir + os.sep + '*.qml'))
+        MAPSERV.web_dir_install(glob.glob(cls._PalDataDir + os.sep + '*.qgs'))
 
         # noinspection PyArgumentList
         cls._TestProj = QgsProject.instance()
-        cls._TestProjName = 'pal_test.qgs'
+        cls._TestProjName = 'test-labeling.qgs'
         cls._TestProj.setFileName(
             os.path.join(MAPSERV.web_dir(), cls._TestProjName))
 
@@ -122,7 +115,7 @@ class TestServerBase(TestQgsPalLabeling):
         # TODO: support other types of servers, besides WMS
         ms = self._TestMapSettings
         osize = ms.outputSize()
-        dpi = str(ms.outputDpi())
+        dpi = str(int(ms.outputDpi()))
         lyrs = [str(self._MapRegistry.mapLayer(i).name()) for i in ms.layers()]
         lyrs.reverse()
         params = {
@@ -221,6 +214,28 @@ class TestServerVsCanvasPoint(TestServerBasePoint, TestPointBase):
         super(TestServerVsCanvasPoint, self).setUp()
         self.configTest('pal_canvas', 'sp')
 
+
+class TestServerBaseLine(TestServerBase):
+
+    @classmethod
+    def setUpClass(cls):
+        TestServerBase.setUpClass()
+        cls.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+
+
+class TestServerLine(TestServerBaseLine, TestLineBase):
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestServerLine, self).setUp()
+        self.configTest('pal_server_line', 'sp')
+
+
+class TestServerVsCanvasLine(TestServerBaseLine, TestLineBase):
+
+    def setUp(self):
+        super(TestServerVsCanvasLine, self).setUp()
+        self.configTest('pal_canvas_line', 'sp')
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run

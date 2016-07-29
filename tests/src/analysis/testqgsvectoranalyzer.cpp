@@ -18,10 +18,19 @@ Email                : sherman at mrcc dot com
 #include <qgsgeometryanalyzer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
+#include "qgsvectorlayer.h"
 
 class TestQgsVectorAnalyzer : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsVectorAnalyzer()
+        : mpLineLayer( 0 )
+        , mpPolyLayer( 0 )
+        , mpPointLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -58,26 +67,29 @@ void  TestQgsVectorAnalyzer::initTestCase()
   //create a map layer that will be used in all tests...
   QString myBaseFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myEndName = "lines.shp";
-  QString myFileName = myBaseFileName + QDir::separator() + myEndName;
+  QString myFileName = myBaseFileName + '/' + myEndName;
   qDebug() << myFileName;
   QFileInfo myLineInfo( myFileName );
   mpLineLayer = new QgsVectorLayer( myLineInfo.filePath(),
                                     myLineInfo.completeBaseName(), "ogr" );
 
   myEndName = "polys.shp";
-  myFileName = myBaseFileName + QDir::separator() + myEndName;
+  myFileName = myBaseFileName + '/' + myEndName;
   QFileInfo myPolyInfo( myFileName );
   mpPolyLayer = new QgsVectorLayer( myPolyInfo.filePath(),
                                     myPolyInfo.completeBaseName(), "ogr" );
 
   myEndName = "points.shp";
-  myFileName = myBaseFileName + QDir::separator() + myEndName;
+  myFileName = myBaseFileName + '/' + myEndName;
   QFileInfo myPointInfo( myFileName );
   mpPointLayer = new QgsVectorLayer( myPointInfo.filePath(),
                                      myPointInfo.completeBaseName(), "ogr" );
 }
 void  TestQgsVectorAnalyzer::cleanupTestCase()
 {
+  delete mpLineLayer;
+  delete mpPolyLayer;
+  delete mpPointLayer;
   QgsApplication::exitQgis();
 }
 void  TestQgsVectorAnalyzer::init()
@@ -110,21 +122,21 @@ void TestQgsVectorAnalyzer::exportGeometryInfo()
 
 void TestQgsVectorAnalyzer::simplifyGeometry()
 {
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir +  "simplify_layer.shp";
   QVERIFY( mAnalyzer.simplify( mpLineLayer, myFileName, 1.0 ) );
 }
 
 void TestQgsVectorAnalyzer::polygonCentroids()
 {
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir +  "centroid_layer.shp";
   QVERIFY( mAnalyzer.centroids( mpPolyLayer, myFileName ) );
 }
 
 void TestQgsVectorAnalyzer::layerExtent()
 {
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir +  "extent_layer.shp";
   QVERIFY( mAnalyzer.extent( mpPointLayer, myFileName ) );
 }

@@ -77,8 +77,8 @@ void QgsOracleConnect::saveConnection()
   settings.setValue( baseKey + "/password", txtPassword->text() );
   settings.setValue( baseKey + "/savepass", chkStorePassword->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/subdtset", "GEOR:" +
-                     txtUsername->text() + "/" +
-                     txtPassword->text() + "@" +
+                     txtUsername->text() + '/' +
+                     txtPassword->text() + '@' +
                      txtDatabase->text() );
 
   accept();

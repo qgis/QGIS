@@ -29,16 +29,20 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
+from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
-from processing.ui.ui_DlgMultipleSelection import Ui_DlgMultipleSelection
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
 
 
-class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
+class MultipleFileInputDialog(BASE, WIDGET):
 
     def __init__(self, options):
-        QDialog.__init__(self)
+        super(MultipleFileInputDialog, self).__init__(None)
         self.setupUi(self)
 
         self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -89,7 +93,10 @@ class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
             path = ''
 
         files = QFileDialog.getOpenFileNames(self,
-            self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
+                                             self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
+
+        if len(files) == 0:
+            return
 
         model = self.lstLayers.model()
         for filePath in files:
@@ -104,8 +111,7 @@ class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
             self.lstLayers.model().clear()
         else:
             self.lstLayers.setUpdatesEnabled(False)
-            indexes = self.lstLayers.selectionModel().selectedIndexes()
-            indexes.sort()
+            indexes = sorted(self.lstLayers.selectionModel().selectedIndexes())
             for i in reversed(indexes):
                 self.lstLayers.model().removeRow(i.row())
             self.lstLayers.setUpdatesEnabled(True)

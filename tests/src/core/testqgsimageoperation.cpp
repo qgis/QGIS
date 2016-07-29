@@ -20,6 +20,8 @@
 #include <QObject>
 #include <QtTest/QtTest>
 #include "qgsrenderchecker.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgsapplication.h"
 
 class TestQgsImageOperation : public QObject
 {
@@ -63,14 +65,17 @@ class TestQgsImageOperation : public QObject
     void distanceTransformMaxDist();
     void distanceTransformSetSpread();
     void distanceTransformInterior();
+    void distanceTransformMisc();
 
     //stack blur
     void stackBlur();
+    void stackBlurPremultiplied();
     void alphaOnlyBlur();
 
     //gaussian blur
     void gaussianBlur();
     void gaussianBlurSmall();
+    void gaussianBlurNoChange();
 
     //flip
     void flipHorizontal();
@@ -80,19 +85,24 @@ class TestQgsImageOperation : public QObject
 
     QString mReport;
     QString mSampleImage;
+    QString mTransparentSampleImage;
 
-    bool imageCheck( QString testName , QImage &image, int mismatchCount );
+    bool imageCheck( const QString& testName, QImage &image, int mismatchCount );
 };
 
 void TestQgsImageOperation::initTestCase()
 {
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
   mReport += "<h1>Image Operation Tests</h1>\n";
-  mSampleImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_image.png";
+  mSampleImage = QString( TEST_DATA_DIR ) + "/sample_image.png";
+  mTransparentSampleImage = QString( TEST_DATA_DIR ) + "/sample_alpha_image.png";
 }
 
 void TestQgsImageOperation::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -104,7 +114,6 @@ void TestQgsImageOperation::cleanupTestCase()
 
 void TestQgsImageOperation::init()
 {
-
 }
 
 void TestQgsImageOperation::cleanup()
@@ -114,7 +123,7 @@ void TestQgsImageOperation::cleanup()
 
 void TestQgsImageOperation::smallImageOp()
 {
-  QImage image( QString( TEST_DATA_DIR ) + QDir::separator() +  "small_sample_image.png" );
+  QImage image( QString( TEST_DATA_DIR ) + "/small_sample_image.png" );
   QgsImageOperation::convertToGrayscale( image, QgsImageOperation::GrayscaleLightness );
 
   bool result = imageCheck( QString( "imageop_smallimage" ), image, 0 );
@@ -276,7 +285,7 @@ void TestQgsImageOperation::overlayColor()
 
 void TestQgsImageOperation::distanceTransformMaxDist()
 {
-  QImage image( mSampleImage );
+  QImage image( mTransparentSampleImage );
   QgsVectorGradientColorRampV2 ramp;
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = true;
@@ -291,7 +300,7 @@ void TestQgsImageOperation::distanceTransformMaxDist()
 
 void TestQgsImageOperation::distanceTransformSetSpread()
 {
-  QImage image( mSampleImage );
+  QImage image( mTransparentSampleImage );
   QgsVectorGradientColorRampV2 ramp;
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = false;
@@ -307,7 +316,7 @@ void TestQgsImageOperation::distanceTransformSetSpread()
 
 void TestQgsImageOperation::distanceTransformInterior()
 {
-  QImage image( mSampleImage );
+  QImage image( mTransparentSampleImage );
   QgsVectorGradientColorRampV2 ramp;
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = true;
@@ -320,6 +329,31 @@ void TestQgsImageOperation::distanceTransformInterior()
   QVERIFY( result );
 }
 
+void TestQgsImageOperation::distanceTransformMisc()
+{
+  //no ramp
+  QImage image( mSampleImage );
+  QgsImageOperation::DistanceTransformProperties props;
+  props.useMaxDistance = true;
+  props.ramp = nullptr;
+  props.shadeExterior = false;
+  QgsImageOperation::distanceTransform( image, props );
+  bool result = imageCheck( QString( "imageop_nochange" ), image, 0 );
+  QVERIFY( result );
+
+  //zero spread
+  QImage image2( mSampleImage );
+  QgsImageOperation::DistanceTransformProperties props2;
+  QgsVectorGradientColorRampV2 ramp;
+  props2.useMaxDistance = false;
+  props2.spread = 0;
+  props2.ramp = &ramp;
+  props2.shadeExterior = false;
+  QgsImageOperation::distanceTransform( image2, props2 );
+  result = imageCheck( QString( "imageop_zerospread" ), image2, 0 );
+  QVERIFY( result );
+}
+
 void TestQgsImageOperation::stackBlur()
 {
   QImage image( mSampleImage );
@@ -327,15 +361,36 @@ void TestQgsImageOperation::stackBlur()
 
   bool result = imageCheck( QString( "imageop_stackblur" ), image, 0 );
   QVERIFY( result );
+  QCOMPARE( image.format(), QImage::Format_ARGB32 );
+}
+
+void TestQgsImageOperation::stackBlurPremultiplied()
+{
+  QImage image( mSampleImage );
+  image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied );
+  QgsImageOperation::stackBlur( image, 10 );
+
+  bool result = imageCheck( QString( "imageop_stackblur" ), image, 0 );
+  QVERIFY( result );
+  QCOMPARE( image.format(), QImage::Format_ARGB32_Premultiplied );
 }
 
 void TestQgsImageOperation::alphaOnlyBlur()
 {
-  QImage image( QString( TEST_DATA_DIR ) + QDir::separator() +  "small_sample_image.png" );
+  QImage image( QString( TEST_DATA_DIR ) + "/small_sample_image.png" );
   QgsImageOperation::stackBlur( image, 10, true );
 
   bool result = imageCheck( QString( "imageop_stackblur_alphaonly" ), image, 0 );
   QVERIFY( result );
+  QCOMPARE( image.format(), QImage::Format_ARGB32 );
+
+  QImage premultImage( QString( TEST_DATA_DIR ) + "/small_sample_image.png" );
+  premultImage = premultImage.convertToFormat( QImage::Format_ARGB32_Premultiplied );
+  QgsImageOperation::stackBlur( premultImage, 10, true );
+
+  result = imageCheck( QString( "imageop_stackblur_alphaonly" ), premultImage, 0 );
+  QVERIFY( result );
+  QCOMPARE( premultImage.format(), QImage::Format_ARGB32_Premultiplied );
 }
 
 void TestQgsImageOperation::gaussianBlur()
@@ -344,6 +399,7 @@ void TestQgsImageOperation::gaussianBlur()
   QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 30 );
 
   bool result = imageCheck( QString( "imageop_gaussianblur" ), *blurredImage, 0 );
+  QCOMPARE( blurredImage->format(), QImage::Format_ARGB32 );
   delete blurredImage;
   QVERIFY( result );
 }
@@ -351,10 +407,23 @@ void TestQgsImageOperation::gaussianBlur()
 //todo small, zero radius
 void TestQgsImageOperation::gaussianBlurSmall()
 {
-  QImage image( QString( TEST_DATA_DIR ) + QDir::separator() +  "small_sample_image.png" );
+  QImage image( QString( TEST_DATA_DIR ) + "/small_sample_image.png" );
+  image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied );
+
   QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 10 );
 
+  QCOMPARE( blurredImage->format(), QImage::Format_ARGB32_Premultiplied );
   bool result = imageCheck( QString( "imageop_gaussianblur_small" ), *blurredImage, 0 );
+  delete blurredImage;
+  QVERIFY( result );
+}
+
+void TestQgsImageOperation::gaussianBlurNoChange()
+{
+  QImage image( mSampleImage );
+  QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 0 );
+
+  bool result = imageCheck( QString( "imageop_nochange" ), *blurredImage, 0 );
   delete blurredImage;
   QVERIFY( result );
 }
@@ -381,7 +450,7 @@ void TestQgsImageOperation::flipVertical()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsImageOperation::imageCheck( QString testName, QImage &image, int mismatchCount )
+bool TestQgsImageOperation::imageCheck( const QString& testName, QImage &image, int mismatchCount )
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
@@ -391,13 +460,14 @@ bool TestQgsImageOperation::imageCheck( QString testName, QImage &image, int mis
   painter.end();
 
   mReport += "<h2>" + testName + "</h2>\n";
-  QString tempDir = QDir::tempPath() + QDir::separator();
+  QString tempDir = QDir::tempPath() + '/';
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;
+  checker.setControlPathPrefix( "image_operations" );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
-  checker.setColorTolerance( 1 );
+  checker.setColorTolerance( 2 );
   bool resultFlag = checker.compareImages( testName, mismatchCount );
   mReport += checker.report();
   return resultFlag;

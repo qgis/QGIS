@@ -18,6 +18,7 @@
 #include "qgsmessagelogviewer.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
+#include "qgsdockwidget.h"
 
 #include <QFile>
 #include <QDateTime>
@@ -25,14 +26,12 @@
 #include <QToolButton>
 #include <QStatusBar>
 #include <QToolTip>
-#include <QDockWidget>
 #include <QPlainTextEdit>
 #include <QScrollBar>
 
 
 QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
-    , mShowToolTips( true )
 {
   Q_UNUSED( statusBar )
   setupUi( this );
@@ -49,10 +48,6 @@ QgsMessageLogViewer::~QgsMessageLogViewer()
 
 void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
 {
-#ifdef ANDROID
-  mButton->setToolTip( tr( "Message(s) logged." ) );
-#endif
-
   if ( tag.isNull() )
     tag = tr( "General" );
 
@@ -77,11 +72,12 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
   QString prefix = QString( "%1\t%2\t" )
                    .arg( QDateTime::currentDateTime().toString( Qt::ISODate ) )
                    .arg( level );
-  w->appendPlainText( message.prepend( prefix ).replace( "\n", "\n\t\t\t" ) );
+  w->appendPlainText( message.prepend( prefix ).replace( '\n', "\n\t\t\t" ) );
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
 }
 
 void QgsMessageLogViewer::closeTab( int index )
 {
-  tabWidget->removeTab( index );
+  if ( tabWidget->count() > 1 )
+    tabWidget->removeTab( index );
 }

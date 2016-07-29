@@ -16,90 +16,122 @@
 #define QGSWFSCAPABILITIES_H
 
 #include <QObject>
-#include <QNetworkRequest>
+#include <QDomElement>
 
 #include "qgsrectangle.h"
-#include "qgsdatasourceuri.h"
+#include "qgswfsrequest.h"
 
-class QNetworkReply;
-
-class QgsWFSCapabilities : public QObject
+/** Manages the GetCapabilities request */
+class QgsWfsCapabilities : public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    //explicit QgsWFSCapabilities( QString connName, QObject *parent = 0 );
-    QgsWFSCapabilities( QString theUri );
-
-    //! Append ? or & if necessary
-    QString prepareUri( QString uri );
-
-    //! base service URI
-    QString uri() const { return mBaseUrl; }
-    //! URI to get capabilities
-    QString uriGetCapabilities() const;
-    //! URI to get schema of wfs layer
-    QString uriDescribeFeatureType( const QString& typeName ) const;
-    //! URI to get features
-    //! @param filter can be an OGC filter xml or a QGIS expression (containing =,!=, <,>,<=, >=, AND, OR, NOT )
-    QString uriGetFeature( QString typeName,
-                           QString crs = QString(),
-                           QString filter = QString(),
-                           QgsRectangle bBox = QgsRectangle() ) const;
+    explicit QgsWfsCapabilities( const QString& theUri );
+    virtual ~QgsWfsCapabilities();
 
     //! start network connection to get capabilities
-    void requestCapabilities();
+    bool requestCapabilities( bool synchronous );
 
     //! description of a vector layer
     struct FeatureType
     {
+      //! Default constructor
+      FeatureType() : bboxSRSIsWGS84( false ), insertCap( false ), updateCap( false ), deleteCap( false ) {}
+
       QString name;
       QString title;
       QString abstract;
       QList<QString> crslist; // first is default
+      QgsRectangle bbox;
+      bool bboxSRSIsWGS84; // if false, the bbox is expressed in crslist[0] CRS
+      bool insertCap;
+      bool updateCap;
+      bool deleteCap;
+    };
+
+    //! argument of a function
+    struct Argument
+    {
+      //! name
+      QString name;
+      //! type, or empty if unknown
+      QString type;
+
+      //! constructor
+      Argument( const QString& nameIn = QString(), const QString& typeIn = QString() ) : name( nameIn ), type( typeIn ) {}
+    };
+
+    //! description of server functions
+    struct Function
+    {
+      //! name
+      QString name;
+      //! return type, or empty if unknown
+      QString returnType;
+      //! minimum number of argument (or -1 if unknown)
+      int minArgs;
+      //! maximum number of argument (or -1 if unknown)
+      int maxArgs;
+      //! list of arguments. May be empty despite minArgs > 0
+      QList<Argument> argumentList;
+
+      //! constructor with name and fixed number of arguments
+      Function( const QString& nameIn, int args ) : name( nameIn ), minArgs( args ), maxArgs( args ) {}
+      //! constructor with name and min,max number of arguments
+      Function( const QString& nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
+      //! default constructor
+      Function() : minArgs( -1 ), maxArgs( -1 ) {}
     };
 
     //! parsed get capabilities document
-    struct GetCapabilities
+    struct Capabilities
     {
-      void clear() { featureTypes.clear(); }
+      Capabilities();
 
+      QString version;
+      bool supportsHits;
+      bool supportsPaging;
+      bool supportsJoins;
+      int maxFeatures;
       QList<FeatureType> featureTypes;
+      QList<Function> spatialPredicatesList;
+      QList<Function> functionList;
+      bool useEPSGColumnFormat; // whether to use EPSG:XXXX srsname
+
+      QSet< QString > setAllTypenames;
+      QMap< QString, QString> mapUnprefixedTypenameToPrefixedTypename;
+      QSet< QString > setAmbiguousUnprefixedTypename;
+
+      void clear();
+      QString addPrefixIfNeeded( const QString& name ) const;
     };
 
-    enum ErrorCode { NoError, NetworkError, XmlError, ServerExceptionError, WFSVersionNotSupported };
-    ErrorCode errorCode() { return mErrorCode; }
-    QString errorMessage() { return mErrorMessage; }
-
     //! return parsed capabilities - requestCapabilities() must be called before
-    GetCapabilities capabilities() { return mCaps; }
-
-    //! set authorization header
-    void setAuthorization( QNetworkRequest &request ) const;
+    const Capabilities& capabilities() const { return mCaps; }
 
   signals:
+    //! emitted when the capabilities have been fully parsed, or an error occurred */
     void gotCapabilities();
 
-  public slots:
+  private slots:
     void capabilitiesReplyFinished();
 
   protected:
-    //QString mConnName;
-    //QString mUri;
+    virtual QString errorMessageWithReason( const QString& reason ) override;
+    virtual int defaultExpirationInSec() override;
 
-    QgsDataSourceURI mUri;
+  private:
+    Capabilities mCaps;
 
-    QString mBaseUrl;
+    /** Takes <Operations> element and updates the capabilities*/
+    void parseSupportedOperations( const QDomElement& operationsElem,
+                                   bool& insertCap,
+                                   bool& updateCap,
+                                   bool& deleteCap );
 
-    QNetworkReply *mCapabilitiesReply;
-    GetCapabilities mCaps;
-    ErrorCode mErrorCode;
-    QString mErrorMessage;
+    void parseFilterCapabilities( const QDomElement& filterCapabilitiesElem );
 
-    //! Username for basic http authentication
-    QString mUserName;
-
-    //! Password for basic http authentication
-    QString mPassword;
+    static QString NormalizeSRSName( QString crsName );
 };
 
 #endif // QGSWFSCAPABILITIES_H

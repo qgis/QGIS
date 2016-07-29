@@ -1,8 +1,0 @@
-r.stream.del
-r.stream.del - Calculate basins according user input
-Raster (r.*)
-ParameterRaster|stream_raster|Input map: stream mask|False
-ParameterRaster|direction|Input map: flow direction|False
-ParameterNumber|threshold|Minimum number of cell in stream_rast|1|None|1
-ParameterBoolean|-z|Create zero-value background|False
-OutputRaster|reduced|Output reduced stream map

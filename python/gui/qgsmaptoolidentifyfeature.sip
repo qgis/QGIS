@@ -17,7 +17,7 @@ class QgsMapToolIdentifyFeature : QgsMapToolIdentify
     //! change the layer used by the map tool to identify
     void setLayer( QgsVectorLayer* vl );
 
-    void canvasReleaseEvent( QMouseEvent* e );
+    void canvasReleaseEvent( QgsMapMouseEvent* e );
 
   signals:
     void featureIdentified( QgsFeature );

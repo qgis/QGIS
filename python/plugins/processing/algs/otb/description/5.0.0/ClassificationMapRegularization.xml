@@ -1,0 +1,64 @@
+<root>
+  <key>ClassificationMapRegularization</key>
+  <exec>otbcli_ClassificationMapRegularization</exec>
+  <longname>Classification Map Regularization</longname>
+  <group>Learning</group>
+  <description>Filters the input labeled image using Majority Voting in a ball shaped neighborhood.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>io.in</key>
+    <name>Input classification image</name>
+    <description>The input labeled image to regularize.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>io.out</key>
+    <name>Output regularized image</name>
+    <description>The output regularized labeled image.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>ip.radius</key>
+    <name>Structuring element radius (in pixels)</name>
+    <description>The radius of the ball shaped structuring element (expressed in pixels). By default, 'ip.radius = 1 pixel'.</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
+    <key>ip.suvbool</key>
+    <name>Multiple majority: Undecided(X)/Original</name>
+    <description>Pixels with more than 1 majority class are marked as Undecided if this parameter is checked (true), or keep their Original labels otherwise (false). Please note that the Undecided value must be different from existing labels in the input labeled image. By default, 'ip.suvbool = false'.</description>
+    <default>True</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>ip.nodatalabel</key>
+    <name>Label for the NoData class</name>
+    <description>Label for the NoData class. Such input pixels keep their NoData label in the output image. By default, 'ip.nodatalabel = 0'.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>ip.undecidedlabel</key>
+    <name>Label for the Undecided class</name>
+    <description>Label for the Undecided class. By default, 'ip.undecidedlabel = 0'.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+</root>

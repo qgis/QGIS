@@ -22,6 +22,8 @@
 #include "qgscomposition.h"
 #include "qgspoint.h"
 #include "qgsdatadefinedbutton.h"
+#include "qgsexpressioncontext.h"
+#include "qgsproject.h"
 #include <QColorDialog>
 #include <QPen>
 
@@ -80,14 +82,14 @@ QgsAtlasComposition* QgsComposerItemBaseWidget::atlasComposition() const
 {
   if ( !mComposerObject )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsComposition* composition = mComposerObject->composition();
 
   if ( !composition )
   {
-    return 0;
+    return nullptr;
   }
 
   return &composition->atlasComposition();
@@ -102,11 +104,21 @@ QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const
     return atlasMap->coverageLayer();
   }
 
-  return 0;
+  return nullptr;
 }
 
 
 //QgsComposerItemWidget
+
+void QgsComposerItemWidget::updateVariables()
+{
+  QgsExpressionContext* context = mItem->createExpressionContext();
+  mVariableEditor->setContext( context );
+  int editableIndex = context->indexOfScope( tr( "Composer Item" ) );
+  if ( editableIndex >= 0 )
+    mVariableEditor->setEditableScopeIndex( editableIndex );
+  delete context;
+}
 
 QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item )
     : QgsComposerItemBaseWidget( parent, item )
@@ -139,6 +151,18 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   connect( mItem, SIGNAL( itemChanged() ), this, SLOT( setValuesForGuiNonPositionElements() ) );
 
   connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpnBx, SLOT( setValue( int ) ) );
+
+  updateVariables();
+  connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
+  // listen out for variable edits
+  QgsApplication* app = qobject_cast<QgsApplication*>( QgsApplication::instance() );
+  if ( app )
+  {
+    connect( app, SIGNAL( settingsChanged() ), this, SLOT( updateVariables() ) );
+  }
+  connect( QgsProject::instance(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
+  if ( mItem->composition() )
+    connect( mItem->composition(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
 
   //connect atlas signals to data defined buttons
   QgsAtlasComposition* atlas = atlasComposition();
@@ -176,7 +200,14 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   connect( mExcludePrintsDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 }
 
-QgsComposerItemWidget::QgsComposerItemWidget(): QgsComposerItemBaseWidget( 0, 0 )
+QgsComposerItemWidget::QgsComposerItemWidget()
+    : QgsComposerItemBaseWidget( nullptr, nullptr )
+    , mItem( nullptr )
+    , mFreezeXPosSpin( false )
+    , mFreezeYPosSpin( false )
+    , mFreezeWidthSpin( false )
+    , mFreezeHeightSpin( false )
+    , mFreezePageSpin( false )
 {
 
 }
@@ -251,6 +282,11 @@ void QgsComposerItemWidget::changeItemPosition()
 
   mItem->update();
   mItem->endCommand();
+}
+
+void QgsComposerItemWidget::variablesChanged()
+{
+  QgsExpressionContextUtils::setComposerItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
 }
 
 QgsComposerItem::ItemPositionMode QgsComposerItemWidget::positionMode() const
@@ -530,19 +566,27 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mExcludeFromPrintsCheckBox->blockSignals( false );
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsComposerObject* composerObject = ( const QgsComposerObject* ) context;
+  if ( !composerObject )
+  {
+    return QgsExpressionContext();
+  }
+
+  QScopedPointer< QgsExpressionContext > expContext( composerObject->createExpressionContext() );
+  return QgsExpressionContext( *expContext );
+}
+
 void QgsComposerItemWidget::populateDataDefinedButtons()
 {
   QgsVectorLayer* vl = atlasCoverageLayer();
 
-  //block signals from data defined buttons
-  mXPositionDDBtn->blockSignals( true );
-  mYPositionDDBtn->blockSignals( true );
-  mWidthDDBtn->blockSignals( true );
-  mHeightDDBtn->blockSignals( true );
-  mItemRotationDDBtn->blockSignals( true );
-  mTransparencyDDBtn->blockSignals( true );
-  mBlendModeDDBtn->blockSignals( true );
-  mExcludePrintsDDBtn->blockSignals( true );
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->blockSignals( true );
+    button->registerGetExpressionContextCallback( &_getExpressionContext, mItem );
+  }
 
   //initialise buttons to use atlas coverage layer
   mXPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::PositionX ),
@@ -563,14 +607,10 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
                              QgsDataDefinedButton::String, QgsDataDefinedButton::boolDesc() );
 
   //unblock signals from data defined buttons
-  mXPositionDDBtn->blockSignals( false );
-  mYPositionDDBtn->blockSignals( false );
-  mWidthDDBtn->blockSignals( false );
-  mHeightDDBtn->blockSignals( false );
-  mItemRotationDDBtn->blockSignals( false );
-  mTransparencyDDBtn->blockSignals( false );
-  mBlendModeDDBtn->blockSignals( false );
-  mExcludePrintsDDBtn->blockSignals( false );
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->blockSignals( false );
+  }
 }
 
 QgsComposerObject::DataDefinedProperty QgsComposerItemWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )

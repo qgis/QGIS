@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 20.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-class QgsEditorWidgetWrapper : QObject
+class QgsEditorWidgetWrapper : QgsWidgetWrapper
 {
 %TypeHeaderCode
 #include <qgseditorwidgetwrapper.h>
@@ -30,11 +30,6 @@ class QgsEditorWidgetWrapper : QObject
      */
     explicit QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent /TransferThis/ = 0 );
 
-    QWidget* widget();
-    virtual void setConfig( QMap<QString, QVariant> config );
-    QVariant config( QString key );
-    QgsVectorLayer* layer();
-
     /**
      * Will be used to access the widget's value. Read the value from the widget and
      * return it properly formatted to be saved in the attribute.
@@ -44,7 +39,7 @@ class QgsEditorWidgetWrapper : QObject
      *
      * @return The current value the widget represents
      */
-    virtual QVariant value() = 0;
+    virtual QVariant value() const = 0;
 
     /**
      * Access the field index.
@@ -53,7 +48,7 @@ class QgsEditorWidgetWrapper : QObject
      *
      * @see layer()
      */
-    int fieldIdx();
+    int fieldIdx() const;
 
     /**
      * Access the field.
@@ -62,7 +57,16 @@ class QgsEditorWidgetWrapper : QObject
      *
      * @see layer()
      */
-    QgsField field();
+    QgsField field() const;
+
+    /**
+     * Access the default value of the field.
+     *
+     * @return the default value of the field
+     *
+     * @see layer()
+     */
+    QVariant defaultValue() const;
 
     /**
      * Will return a wrapper for a given widget
@@ -71,10 +75,33 @@ class QgsEditorWidgetWrapper : QObject
      */
     static QgsEditorWidgetWrapper* fromWidget( QWidget* widget );
 
-  protected:
-    virtual QWidget* createWidget( QWidget* parent ) = 0;
+    /**
+     * Is used to enable or disable the edit functionality of the managed widget.
+     * By default this will enable or disable the whole widget
+     *
+     * @param enabled  Enable or Disable?
+     */
+    void setEnabled( bool enabled );
 
-    virtual void initWidget( QWidget* editor );
+    /** Sets the widget to display in an indeterminate "mixed value" state.
+     * @note added in QGIS 2.16
+     */
+    virtual void showIndeterminateState();
+
+    /**
+     * Update constraint.
+     * @param featureContext the feature to use to evaluate the constraint
+     * @note added in QGIS 2.16
+     */
+    void updateConstraint( const QgsFeature &featureContext );
+
+    /**
+     * Get the current constraint status.
+     * @return true if the constraint is valid or if there's not constraint,
+     * false otherwise
+     * @note added in QGIS 2.16
+     */
+    bool isValidConstraint() const;
 
   signals:
     /**
@@ -83,6 +110,16 @@ class QgsEditorWidgetWrapper : QObject
      * @param value The new value
      */
     void valueChanged( const QVariant& value );
+
+    /**
+     * Emit this signal when the constraint status changed.
+     * @brief constraintStatusChanged
+     * @param constraint represented as a string
+     * @param desc is the constraint description
+     * @param err the error represented as a string. Empty if none.
+     * @param status
+     */
+    void constraintStatusChanged( const QString& constraint, const QString& err, bool status );
 
   public slots:
     /**
@@ -101,8 +138,6 @@ class QgsEditorWidgetWrapper : QObject
      * @param value The new value of the attribute
      */
     virtual void setValue( const QVariant& value ) = 0;
-
-    virtual void setEnabled( bool enabled );
 
   protected slots:
     /**
@@ -152,4 +187,17 @@ class QgsEditorWidgetWrapper : QObject
      * Will call the value() method to determine the emitted value
      */
     void valueChanged();
+
+  protected:
+    /**
+     * This should update the widget with a visual cue if a constraint status
+     * changed.
+     *
+     * By default a stylesheet will be applied on the widget that changes the
+     * background color to red.
+     *
+     * This can be overwritten in subclasses to allow individual widgets to
+     * change the visual cue.
+     */
+    virtual void updateConstraintWidgetStatus( bool contraintValid );
 };

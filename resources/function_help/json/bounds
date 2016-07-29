@@ -1,0 +1,8 @@
+{
+  "name": "bounds",
+  "type": "function",
+  "description":"Returns a geometry which represents the bounding box of an input geometry. Calculations are in the Spatial Reference System of this geometry.",
+  "arguments": [ {"arg":"geom","description":"a geometry"} ],
+  "examples": [ { "expression":"bounds($geometry)", "returns":"bounding box of $geometry"}]
+}
+

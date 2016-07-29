@@ -35,13 +35,18 @@ class QListView;
 class QPushButton;
 class QTreeView;
 
+/** \ingroup gui
+ * \class QgsSvgSelectorListModel
+ */
 class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 {
+    Q_OBJECT
+
   public:
     QgsSvgSelectorListModel( QObject* parent );
 
     // Constructor to create model for icons in a specific path
-    QgsSvgSelectorListModel( QObject* parent, QString path );
+    QgsSvgSelectorListModel( QObject* parent, const QString& path );
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const override;
 
@@ -51,8 +56,13 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
     QStringList mSvgFiles;
 };
 
+/** \ingroup gui
+ * \class QgsSvgSelectorGroupsModel
+ */
 class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
 {
+    Q_OBJECT
+
   public:
     QgsSvgSelectorGroupsModel( QObject* parent );
 
@@ -60,16 +70,18 @@ class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
     void createTree( QStandardItem* &parentGroup );
 };
 
-
+/** \ingroup gui
+ * \class QgsSvgSelectorWidget
+ */
 class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSelector
 {
     Q_OBJECT
 
   public:
-    QgsSvgSelectorWidget( QWidget* parent = 0 );
+    QgsSvgSelectorWidget( QWidget* parent = nullptr );
     ~QgsSvgSelectorWidget();
 
-    static QgsSvgSelectorWidget* create( QWidget* parent = 0 ) { return new QgsSvgSelectorWidget( parent ); }
+    static QgsSvgSelectorWidget* create( QWidget* parent = nullptr ) { return new QgsSvgSelectorWidget( parent ); }
 
     QString currentSvgPath() const;
     QString currentSvgPathToName() const;
@@ -97,19 +109,22 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     void updateCurrentSvgPath( const QString& svgPath );
 
     void on_mFilePushButton_clicked();
-    void updateLineEditFeedback( bool ok, QString tip = QString( "" ) );
+    void updateLineEditFeedback( bool ok, const QString& tip = QString() );
     void on_mFileLineEdit_textChanged( const QString& text );
 
   private:
     QString mCurrentSvgPath; // always stored as absolute path
 };
 
+/** \ingroup gui
+ * \class QgsSvgSelectorDialog
+ */
 class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
 {
     Q_OBJECT
   public:
-    QgsSvgSelectorDialog( QWidget* parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
-                          QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
+    QgsSvgSelectorDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+                          const QDialogButtonBox::StandardButtons& buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();
 

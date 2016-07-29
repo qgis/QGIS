@@ -1,0 +1,4 @@
+Polygon Shape Indices
+shapes_polygons
+ParameterVector|SHAPES|Shapes|2|False
+OutputVector|INDEX|Shape Index

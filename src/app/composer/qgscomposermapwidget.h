@@ -19,13 +19,13 @@
 #define QGSCOMPOSERMAPWIDGET_H
 
 #include "ui_qgscomposermapwidgetbase.h"
-#include "qgscomposermap.h"
-#include "qgscomposermapgrid.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposermapgrid.h"
 
 class QgsMapLayer;
+class QgsComposerMapOverview;
 
-/** \ingroup MapComposer
+/** \ingroup app
  * Input widget for the configuration of QgsComposerMap
  * */
 class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerMapWidgetBase
@@ -33,8 +33,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     Q_OBJECT
 
   public:
-
-    QgsComposerMapWidget( QgsComposerMap* composerMap );
+    explicit QgsComposerMapWidget( QgsComposerMap* composerMap );
     virtual ~QgsComposerMapWidget();
 
   public slots:
@@ -44,10 +43,11 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void on_mSetToMapCanvasExtentButton_clicked();
     void on_mViewExtentInCanvasButton_clicked();
     void on_mUpdatePreviewButton_clicked();
+    void on_mFollowVisibilityPresetCheckBox_stateChanged( int state );
     void on_mKeepLayerListCheckBox_stateChanged( int state );
     void on_mKeepLayerStylesCheckBox_stateChanged( int state );
     void on_mDrawCanvasItemsCheckBox_stateChanged( int state );
-    void on_mOverviewFrameMapComboBox_currentIndexChanged( const QString& text );
+    void overviewMapChanged( QgsComposerItem* item );
     void on_mOverviewFrameStyleButton_clicked();
     void on_mOverviewBlendModeComboBox_currentIndexChanged( int index );
     void on_mOverviewInvertCheckbox_toggled( bool state );
@@ -106,6 +106,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void on_mFrameDivisionsBottomComboBox_currentIndexChanged( int index );
 
     void on_mDrawAnnotationGroupBox_toggled( bool state );
+    void on_mAnnotationFormatButton_clicked();
 
     //annotation display
     void on_mAnnotationDisplayLeftComboBox_currentIndexChanged( const QString& text );
@@ -145,47 +146,49 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void blockOverviewItemsSignals( bool block );
 
   protected:
-    void showEvent( QShowEvent * event ) override;
 
     void addPageToToolbox( QWidget * widget, const QString& name );
 
-    /**Sets the current composer map values to the GUI elements*/
+    /** Sets the current composer map values to the GUI elements*/
     virtual void updateGuiElements();
 
     QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) override;
 
   protected slots:
-    /**Initializes data defined buttons to current atlas coverage layer*/
+    /** Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();
 
   private slots:
 
-    /**Sets the GUI elements to the values of mPicture*/
+    /** Sets the GUI elements to the values of mPicture*/
     void setGuiElementValues();
 
-    /**Enables or disables the atlas margin around feature option depending on coverage layer type*/
+    /** Enables or disables the atlas margin around feature option depending on coverage layer type*/
     void atlasLayerChanged( QgsVectorLayer* layer );
 
-    /**Enables or disables the atlas controls when composer atlas is toggled on/off*/
+    /** Enables or disables the atlas controls when composer atlas is toggled on/off*/
     void compositionAtlasToggled( bool atlasEnabled );
 
-    void aboutToShowVisibilityPresetsMenu();
+    void aboutToShowKeepLayersVisibilityPresetsMenu();
 
-    void visibilityPresetSelected();
+    void followVisibilityPresetSelected( int currentIndex );
+    void keepLayersVisibilityPresetSelected();
+
+    void onPresetsChanged();
 
   private:
     QgsComposerMap* mComposerMap;
 
-    /**Sets extent of composer map from line edits*/
+    /** Sets extent of composer map from line edits*/
     void updateComposerExtentFromGui();
 
-    /**Blocks / unblocks the signals of all GUI elements*/
+    /** Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
 
     void handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode );
     void handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString& text );
     void handleChangedAnnotationPosition( QgsComposerMapGrid::BorderSide border, const QString& text );
-    void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::AnnotationDirection &direction );
+    void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, QgsComposerMapGrid::AnnotationDirection direction );
 
     void insertFrameDisplayEntries( QComboBox* c );
     void insertAnnotationDisplayEntries( QComboBox* c );
@@ -200,19 +203,16 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void updateGridLineSymbolMarker( const QgsComposerMapGrid* grid );
     void updateGridMarkerSymbolMarker( const QgsComposerMapGrid* grid );
 
-    /**Updates the map combo box with the current composer map ids*/
-    void refreshMapComboBox();
-
-    /**Enables/disables grid frame related controls*/
+    /** Enables/disables grid frame related controls*/
     void toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled );
 
-    /**Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type*/
+    /** Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type*/
     void toggleAtlasScalingOptionsByLayerType();
 
-    /**Recalculates the bounds for an atlas map when atlas properties change*/
+    /** Recalculates the bounds for an atlas map when atlas properties change*/
     void updateMapForAtlas();
 
-    /**Is there some predefined scales, globally or as project's options ?*/
+    /** Is there some predefined scales, globally or as project's options ?*/
     bool hasPredefinedScales() const;
 
     QListWidgetItem* addGridListItem( const QString& id, const QString& name );

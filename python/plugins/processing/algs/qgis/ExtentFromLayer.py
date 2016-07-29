@@ -25,13 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+import os
+
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+
+from qgis.core import Qgis, QgsField, QgsPoint, QgsGeometry, QgsFeature
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ExtentFromLayer(GeoAlgorithm):
@@ -41,20 +48,23 @@ class ExtentFromLayer(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'layer_extent.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Polygon from layer extent'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Polygon from layer extent')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
-            self.tr('Calculate extent for each feature separately'), False))
+                                           self.tr('Calculate extent for each feature separately'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+            self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
         fields = [
@@ -68,10 +78,10 @@ class ExtentFromLayer(GeoAlgorithm):
             QgsField('PERIM', QVariant.Double),
             QgsField('HEIGHT', QVariant.Double),
             QgsField('WIDTH', QVariant.Double),
-            ]
+        ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                QGis.WKBPolygon, layer.crs())
+                                                                     Qgis.WKBPolygon, layer.crs())
 
         if byFeature:
             self.featureExtent(layer, writer, progress)
@@ -94,7 +104,7 @@ class ExtentFromLayer(GeoAlgorithm):
         perim = 2 * width + 2 * height
 
         rect = [QgsPoint(minx, miny), QgsPoint(minx, maxy), QgsPoint(maxx,
-                maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
+                                                                     maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
         geometry = QgsGeometry().fromPolygon([rect])
         feat = QgsFeature()
         feat.setGeometry(geometry)
@@ -109,16 +119,15 @@ class ExtentFromLayer(GeoAlgorithm):
             perim,
             height,
             width,
-            ]
+        ]
         feat.setAttributes(attrs)
         writer.addFeature(feat)
 
     def featureExtent(self, layer, writer, progress):
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
+        total = 100.0 / len(features)
         feat = QgsFeature()
-        for f in features:
+        for current, f in enumerate(features):
             rect = f.geometry().boundingBox()
             minx = rect.xMinimum()
             miny = rect.yMinimum()
@@ -131,7 +140,7 @@ class ExtentFromLayer(GeoAlgorithm):
             area = width * height
             perim = 2 * width + 2 * height
             rect = [QgsPoint(minx, miny), QgsPoint(minx, maxy), QgsPoint(maxx,
-                    maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
+                                                                         maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
 
             geometry = QgsGeometry().fromPolygon([rect])
             feat.setGeometry(geometry)
@@ -146,9 +155,8 @@ class ExtentFromLayer(GeoAlgorithm):
                 perim,
                 height,
                 width,
-                ]
+            ]
             feat.setAttributes(attrs)
 
             writer.addFeature(feat)
-            current += 1
             progress.setPercentage(int(current * total))

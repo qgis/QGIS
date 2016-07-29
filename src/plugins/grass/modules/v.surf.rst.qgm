@@ -6,23 +6,32 @@
 	<field key="zcolumn" layer="input" type="integer,double" label="Attribute field (interpolated values)" />
 	<option key="tension" />
 	<!--option key="smooth" /-->
-	<option key="elev" />
-	<option key="dmin" advanced="yes" />
-	<option key="dmax" advanced="yes" />
+	<option key="elev" version_max="6"/>
+	<option key="elevation" version_min="7"/>
+		<option key="segmax" advanced="yes" />
+		<option key="npmin" advanced="yes" />
+		<option key="dmin" advanced="yes" />
+		<option key="dmax" advanced="yes" />
         <option key="where" advanced="yes" />
-	<option key="slope" advanced="yes" />
+		<option key="slope" advanced="yes" />
         <option key="aspect" advanced="yes" />
-        <option key="pcurv" advanced="yes" />
-        <option key="tcurv" advanced="yes" />
-        <option key="mcurv" advanced="yes" />
-        <option key="devi" advanced="yes" />
+        <option key="pcurv" advanced="yes" version_max="6"/>
+        <option key="pcurvature" advanced="yes" version_min="7"/>
+        <option key="tcurv" advanced="yes" version_max="6"/>
+        <option key="tcurvature" advanced="yes" version_min="7"/>
+        <option key="mcurv" advanced="yes" version_max="6"/>
+        <option key="mcurvature" advanced="yes" version_min="7"/>
+        <option key="devi" advanced="yes" version_max="6"/>
+        <option key="deviations" advanced="yes" version_min="7"/>
         <option key="cvdev" advanced="yes" />
-        <option key="treefile" advanced="yes" />
-        <option key="overfile" advanced="yes" />
-        <option key="scolumn" advanced="yes" />
-	<option key="segmax" hidden="yes" />
-	<option key="npmin" hidden="yes" />
-        <option key="zmult" hidden="yes" />
-        <option key="theta" hidden="yes" />
-        <option key="scalex" hidden="yes" />
+        <option key="treefile" advanced="yes" version_max="6"/>
+        <option key="treeseg" advanced="yes" version_min="7"/>
+        <option key="overfile" advanced="yes" version_max="6"/>
+        <option key="overwin" advanced="yes" version_min="7"/>
+        <option key="scolumn" advanced="yes" version_max="6"/>
+        <option key="smooth_column" advanced="yes" version_min="7"/>
+    <option key="zmult" hidden="yes" version_max="6"/>
+    <option key="zscale" hidden="yes" version_min="7"/>
+		<option key="theta" advanced="yes"/>
+		<option key="scalex" advanced="yes"/>
 </qgisgrassmodule>

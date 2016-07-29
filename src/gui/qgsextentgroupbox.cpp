@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsextentgroupbox.cpp
+    ---------------------
+    begin                : March 2014
+    copyright            : (C) 2014 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsextentgroupbox.h"
 
 #include "qgscoordinatetransform.h"
@@ -5,6 +19,8 @@
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget* parent )
     : QgsCollapsibleGroupBox( parent )
+    , mTitleBase( tr( "Extent" ) )
+    , mExtentState( OriginalExtent )
 {
   setupUi( this );
 
@@ -15,6 +31,7 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget* parent )
 
   connect( mCurrentExtentButton, SIGNAL( clicked() ), this, SLOT( setOutputExtentFromCurrent() ) );
   connect( mOriginalExtentButton, SIGNAL( clicked() ), this, SLOT( setOutputExtentFromOriginal() ) );
+  connect( this, SIGNAL( clicked( bool ) ), this, SLOT( groupBoxClicked() ) );
 }
 
 
@@ -57,6 +74,9 @@ void QgsExtentGroupBox::setOutputExtent( const QgsRectangle& r, const QgsCoordin
 
   mExtentState = state;
 
+  if ( isCheckable() && !isChecked() )
+    setChecked( true );
+
   updateTitle();
 
   emit extentChanged( extent );
@@ -90,7 +110,9 @@ void QgsExtentGroupBox::updateTitle()
     default:
       break;
   }
-  msg = tr( "Extent (current: %1)" ).arg( msg );
+  if ( isCheckable() && !isChecked() )
+    msg = tr( "none" );
+  msg = tr( "%1 (current: %2)" ).arg( mTitleBase, msg );
 
   setTitle( msg );
 }
@@ -113,9 +135,34 @@ void QgsExtentGroupBox::setOutputExtentFromUser( const QgsRectangle& extent, con
   setOutputExtent( extent, crs, UserExtent );
 }
 
+void QgsExtentGroupBox::groupBoxClicked()
+{
+  if ( !isCheckable() )
+    return;
+
+  updateTitle();
+
+  // output extent just went from null to something (or vice versa)
+  emit extentChanged( outputExtent() );
+}
+
 
 QgsRectangle QgsExtentGroupBox::outputExtent() const
 {
+  if ( isCheckable() && !isChecked() )
+    return QgsRectangle();
+
   return QgsRectangle( mXMinLineEdit->text().toDouble(), mYMinLineEdit->text().toDouble(),
                        mXMaxLineEdit->text().toDouble(), mYMaxLineEdit->text().toDouble() );
+}
+
+void QgsExtentGroupBox::setTitleBase( const QString& title )
+{
+  mTitleBase = title;
+  updateTitle();
+}
+
+QString QgsExtentGroupBox::titleBase() const
+{
+  return mTitleBase;
 }

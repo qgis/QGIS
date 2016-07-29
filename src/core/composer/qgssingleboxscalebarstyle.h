@@ -19,7 +19,7 @@
 
 #include "qgsscalebarstyle.h"
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Scalebar style that draws a single box with alternating
  * color for the segments.
  */
@@ -31,7 +31,7 @@ class CORE_EXPORT QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
 
     QString name() const override;
 
-    /*! draw method
+    /** Draw method
      @param p painter object
      @param xOffset x offset
      */

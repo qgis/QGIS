@@ -6,7 +6,6 @@ SET (dxf2shpconverter_SRCS
      dxf2shpconverter.cpp
      dxf2shpconvertergui.cpp
      builder.cpp
-     getInsertions.cpp
      dxflib/src/dl_dxf.cpp
      dxflib/src/dl_writer_ascii.cpp
      )
@@ -34,9 +33,13 @@ ADD_LIBRARY (dxf2shpconverterplugin MODULE ${dxf2shpconverter_SRCS} ${dxf2shpcon
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core
+     ../../core/geometry
      ../../core/raster
      ../../gui
      ..
+)
+INCLUDE_DIRECTORIES(SYSTEM
+  ${PROJ_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(dxf2shpconverterplugin

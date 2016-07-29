@@ -16,10 +16,12 @@ class QgsMimeDataUtils
       QString providerKey;
       QString name;
       QString uri;
+      QStringList supportedCrs;
+      QStringList supportedFormats;
     };
     typedef QList<QgsMimeDataUtils::Uri> UriList;
 
-    static QMimeData* encodeUriList( UriList layers );
+    static QMimeData* encodeUriList( const UriList& layers );
 
     static bool isUriList( const QMimeData* data );
 

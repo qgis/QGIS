@@ -28,7 +28,7 @@ static const QString category_ = QObject::tr( "Raster" );
 static const QString version_ = QObject::tr( "Version 0.001" );
 static const QString icon_ = ":/raster-interpolate.png";
 
-QgsInterpolationPlugin::QgsInterpolationPlugin( QgisInterface* iface ): mIface( iface ), mInterpolationAction( 0 )
+QgsInterpolationPlugin::QgsInterpolationPlugin( QgisInterface* iface ): mIface( iface ), mInterpolationAction( nullptr )
 {
 
 }
@@ -42,7 +42,7 @@ void QgsInterpolationPlugin::initGui()
 {
   if ( mIface )
   {
-    mInterpolationAction = new QAction( QIcon( ":/raster-interpolate.png" ), tr( "&Interpolation" ), 0 );
+    mInterpolationAction = new QAction( QIcon( ":/raster-interpolate.png" ), tr( "&Interpolation" ), nullptr );
     mInterpolationAction->setObjectName( "mInterpolationAction" );
     QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
     mIface->addRasterToolBarIcon( mInterpolationAction );

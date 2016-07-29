@@ -16,18 +16,19 @@
 #ifndef QGSDISPLAYANGLE_H
 #define QGSDISPLAYANGLE_H
 
-#include "qgsmaptoolmeasureangle.h"
 #include "ui_qgsdisplayanglebase.h"
 
-/**A class that displays results of angle measurements with the proper unit*/
+class QgsMapToolMeasureAngle;
+
+/** A class that displays results of angle measurements with the proper unit*/
 class APP_EXPORT QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBase
 {
     Q_OBJECT
 
   public:
-    QgsDisplayAngle( QgsMapToolMeasureAngle * tool = 0, Qt::WindowFlags f = 0 );
+    QgsDisplayAngle( QgsMapToolMeasureAngle * tool = nullptr, Qt::WindowFlags f = 0 );
     ~QgsDisplayAngle();
-    /**Sets the measured angle value (in radians). The value is going to
+    /** Sets the measured angle value (in radians). The value is going to
       be converted to degrees / gon automatically if necessary*/
     void setValueInRadians( double value );
 

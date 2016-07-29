@@ -23,25 +23,28 @@
 class QgsAnnotationItem;
 class QgsMarkerSymbolV2;
 
-/**A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotationItem
+/** A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotationItem
 subclass configuration dialogs*/
 class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationWidgetBase
 {
     Q_OBJECT
   public:
-    QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsAnnotationWidget();
 
     void apply();
 
+  signals:
+
+    //! Emitted when the background color of the annotation is changed
+    void backgroundColorChanged( const QColor& color );
+
   private slots:
     void on_mMapMarkerButton_clicked();
-    void on_mFrameColorButton_colorChanged( const QColor &color );
-    void on_mBackgroundColorButton_colorChanged( const QColor &color );
 
   private:
     QgsAnnotationItem* mItem;
-    QgsMarkerSymbolV2* mMarkerSymbol;
+    QScopedPointer< QgsMarkerSymbolV2 > mMarkerSymbol;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();

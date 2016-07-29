@@ -25,6 +25,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgsproject.h>
 #include <qgsmessagebar.h>
+#include <qgsmapcanvas.h>
 
 #include <QAction>
 
@@ -38,10 +39,10 @@ static const QString sPluginIcon = ":/offline_editing/offline_editing_copy.png";
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mActionConvertProject( 0 )
-    , mActionSynchronize( 0 )
-    , mOfflineEditing( 0 )
-    , mProgressDialog( 0 )
+    , mActionConvertProject( nullptr )
+    , mActionSynchronize( nullptr )
+    , mOfflineEditing( nullptr )
+    , mProgressDialog( nullptr )
 {
 }
 
@@ -111,6 +112,8 @@ void QgsOfflineEditingPlugin::convertProject()
     if ( mOfflineEditing->convertToOfflineProject( myPluginGui->offlineDataPath(), myPluginGui->offlineDbFile(), selectedLayerIds ) )
     {
       updateActions();
+      // Redraw, to make the offline layer visible
+      mQGisIface->mapCanvas()->refreshAllLayers();
     }
   }
 

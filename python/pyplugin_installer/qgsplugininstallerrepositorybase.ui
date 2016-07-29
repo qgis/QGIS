@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
-    <height>185</height>
+    <width>496</width>
+    <height>289</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -27,7 +27,89 @@
    <string/>
   </property>
   <layout class="QGridLayout">
-   <item row="5" column="1" colspan="2">
+   <item row="5" column="2">
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>351</width>
+       <height>23</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>URL</string>
+     </property>
+     <property name="buddy">
+      <cstring>editURL</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Enabled</string>
+     </property>
+     <property name="buddy">
+      <cstring>checkBoxEnabled</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QLineEdit" name="editName">
+     <property name="toolTip">
+      <string>Enter a name for the repository</string>
+     </property>
+     <property name="whatsThis">
+      <string>Enter a name for the repository</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QLineEdit" name="editParams">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>?qgis=</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Name</string>
+     </property>
+     <property name="buddy">
+      <cstring>editName</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" colspan="2">
     <widget class="QLabel" name="labelInfo">
      <property name="enabled">
       <bool>true</bool>
@@ -89,59 +171,17 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Name</string>
+      <string>Parameters</string>
      </property>
      <property name="buddy">
-      <cstring>editName</cstring>
+      <cstring>editParams</cstring>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QLineEdit" name="editURL">
-     <property name="toolTip">
-      <string>Enter the repository URL, beginning with &quot;http://&quot;</string>
-     </property>
-     <property name="whatsThis">
-      <string>Enter the repository URL, beginning with &quot;http://&quot;</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
+   <item row="5" column="1">
     <widget class="QCheckBox" name="checkBoxEnabled">
      <property name="enabled">
       <bool>true</bool>
@@ -166,71 +206,78 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Parameters</string>
-     </property>
-     <property name="buddy">
-      <cstring>editParams</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QLineEdit" name="editParams">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>?qgis=</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QLineEdit" name="editName">
+   <item row="1" column="1" colspan="2">
+    <widget class="QLineEdit" name="editURL">
      <property name="toolTip">
-      <string>Enter a name for the repository</string>
+      <string>Enter the repository URL, beginning with &quot;http://&quot;</string>
      </property>
      <property name="whatsThis">
-      <string>Enter a name for the repository</string>
+      <string>Enter the repository URL, beginning with &quot;http://&quot;</string>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>URL</string>
-     </property>
-     <property name="buddy">
-      <cstring>editURL</cstring>
+      <string/>
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
-    <spacer>
+   <item row="6" column="1" colspan="2">
+    <spacer name="verticalSpacer">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
+      <enum>Qt::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>351</width>
-       <height>23</height>
+       <width>20</width>
+       <height>40</height>
       </size>
      </property>
     </spacer>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Enabled</string>
-     </property>
-     <property name="buddy">
-      <cstring>checkBoxEnabled</cstring>
+      <string>Authentication</string>
      </property>
     </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <layout class="QHBoxLayout" name="layoutAuthCfg">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLineEdit" name="editAuthCfg">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnClearAuthCfg">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Clear</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnEditAuthCfg">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

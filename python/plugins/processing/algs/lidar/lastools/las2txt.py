@@ -4,7 +4,7 @@
 ***************************************************************************
     las2txt.py
     ---------------------
-    Date                 : September 2013
+    Date                 : September 2013 and May 2016
     Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -24,11 +24,12 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputFile
+
 
 class las2txt(LAStoolsAlgorithm):
 
@@ -36,17 +37,20 @@ class las2txt(LAStoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "las2txt"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('las2txt')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterString(las2txt.PARSE,
-            self.tr("parse string"), "xyz"))
+                                          self.tr("parse string"), "xyz"))
         self.addOutput(OutputFile(las2txt.OUTPUT, self.tr("Output ASCII file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         parse = self.getParameterValue(las2txt.PARSE)

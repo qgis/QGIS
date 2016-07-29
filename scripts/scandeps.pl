@@ -83,6 +83,7 @@ for my $dist (@dists) {
 	}
 
 	push @dep, $dep;
+	push @dep, "cmake-curses-gui";
 
 	print O "| $dist | ``apt-get install" . join( " ", @dep ) . "`` |\n";
 }
@@ -102,3 +103,5 @@ close I;
 
 rename "doc/linux.t2t", "doc/linux.t2t.orig";
 rename "doc/linux.t2t.new", "doc/linux.t2t";
+my $time = time;
+utime $time, $time, "doc/INSTALL.t2t";

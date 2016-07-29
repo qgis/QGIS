@@ -28,7 +28,7 @@
 class QgisInterface;
 class QgsMapLayerRegistry;
 
-class rulesDialog : public QDialog, public Ui::rulesDialog
+class rulesDialog : public QDialog, private Ui::rulesDialog
 {
     Q_OBJECT
 
@@ -40,7 +40,7 @@ class rulesDialog : public QDialog, public Ui::rulesDialog
      * @param theQgisIface pointer to a QgisInterface instance
      * @param parent parent widget
      */
-    rulesDialog( QMap<QString, TopologyRule> testMap, QgisInterface* theQgisIface, QWidget *parent );
+    rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface* theQgisIface, QWidget *parent );
     ~rulesDialog();
     /*
      * Returns pointer to the test table

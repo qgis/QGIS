@@ -326,6 +326,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>lstValues</tabstop>
   <tabstop>btnSampleValues</tabstop>
   <tabstop>btnGetAllValues</tabstop>
+  <tabstop>mUseUnfilteredLayer</tabstop>
   <tabstop>btnEqual</tabstop>
   <tabstop>btnLessThan</tabstop>
   <tabstop>btnGreaterThan</tabstop>

@@ -29,9 +29,9 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::Messag
     , mText( text )
     , mLevel( level )
     , mDuration( duration )
-    , mWidget( 0 )
+    , mWidget( nullptr )
     , mUserIcon( QIcon() )
-    , mLayout( 0 )
+    , mLayout( nullptr )
 {
   writeContent();
 }
@@ -42,9 +42,9 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
     , mText( text )
     , mLevel( level )
     , mDuration( duration )
-    , mWidget( 0 )
+    , mWidget( nullptr )
     , mUserIcon( QIcon() )
-    , mLayout( 0 )
+    , mLayout( nullptr )
 {
   writeContent();
 }
@@ -57,7 +57,7 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
     , mDuration( duration )
     , mWidget( widget )
     , mUserIcon( QIcon() )
-    , mLayout( 0 )
+    , mLayout( nullptr )
 {
   writeContent();
 }
@@ -70,7 +70,7 @@ QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLev
     , mDuration( duration )
     , mWidget( widget )
     , mUserIcon( QIcon() )
-    , mLayout( 0 )
+    , mLayout( nullptr )
 {
   writeContent();
 }
@@ -81,16 +81,16 @@ QgsMessageBarItem::~QgsMessageBarItem()
 
 void QgsMessageBarItem::writeContent()
 {
-  if ( mLayout == 0 )
+  if ( !mLayout )
   {
     mLayout = new QHBoxLayout( this );
     mLayout->setContentsMargins( 0, 0, 0, 0 );
-    mTextEdit = 0;
-    mLblIcon = 0;
+    mTextEdit = nullptr;
+    mLblIcon = nullptr;
   }
 
   // ICON
-  if ( mLblIcon == 0 )
+  if ( !mLblIcon )
   {
     mLblIcon = new QLabel( this );
     mLayout->addWidget( mLblIcon );
@@ -124,15 +124,15 @@ void QgsMessageBarItem::writeContent()
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
   {
-    if ( mTextEdit != 0 )
+    if ( mTextEdit )
     {
       delete mTextEdit;
-      mTextEdit = 0;
+      mTextEdit = nullptr;
     }
   }
   else
   {
-    if ( mTextEdit == 0 )
+    if ( !mTextEdit )
     {
       mTextEdit = new QTextEdit( this );
       mTextEdit->setObjectName( "textEdit" );
@@ -152,15 +152,15 @@ void QgsMessageBarItem::writeContent()
     {
       // add ':' to end of title
       QString t = mTitle.trimmed();
-      if ( !content.isEmpty() && !t.endsWith( ":" ) && !t.endsWith( ": " ) )
+      if ( !content.isEmpty() && !t.endsWith( ':' ) && !t.endsWith( ": " ) )
         t += ": ";
-      content.prepend( QString( "<b>" ) + t + " </b>" );
+      content.prepend( QLatin1String( "<b>" ) + t + " </b>" );
     }
     mTextEdit->setText( content );
   }
 
   // WIDGET
-  if ( mWidget != 0 )
+  if ( mWidget )
   {
     QLayoutItem *item = mLayout->itemAt( 2 );
     if ( !item || item->widget() != mWidget )
@@ -193,14 +193,14 @@ void QgsMessageBarItem::writeContent()
   mStyleSheet += "QLabel#mItemCount { font-style: italic; }";
 }
 
-QgsMessageBarItem* QgsMessageBarItem::setText( QString text )
+QgsMessageBarItem* QgsMessageBarItem::setText( const QString& text )
 {
   mText = text;
   writeContent();
   return this;
 }
 
-QgsMessageBarItem *QgsMessageBarItem::setTitle( QString title )
+QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString& title )
 {
   mTitle = title;
   writeContent();
@@ -217,7 +217,7 @@ QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel leve
 
 QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
 {
-  if ( mWidget != 0 )
+  if ( mWidget )
   {
     QLayoutItem *item;
     item = mLayout->itemAt( 2 );

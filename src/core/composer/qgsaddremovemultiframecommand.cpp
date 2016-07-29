@@ -21,12 +21,20 @@
 #include "qgsproject.h"
 
 
-QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mComposition( c ), mState( s ), mFirstRun( true )
+QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent )
+    : QUndoCommand( text, parent )
+    , mMultiFrame( multiFrame )
+    , mComposition( c )
+    , mState( s )
+    , mFirstRun( true )
 {
 }
 
-QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand(): mMultiFrame( 0 ), mComposition( 0 )
+QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand()
+    : mMultiFrame( nullptr )
+    , mComposition( nullptr )
+    , mState( Added )
+    , mFirstRun( true )
 {
 }
 
@@ -70,7 +78,7 @@ void QgsAddRemoveMultiFrameCommand::switchState()
       mComposition->addMultiFrame( mMultiFrame );
       mState = Added;
     }
-    QgsProject::instance()->dirty( true );
+    QgsProject::instance()->setDirty( true );
   }
 }
 

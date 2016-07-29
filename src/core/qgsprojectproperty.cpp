@@ -32,17 +32,17 @@ void QgsPropertyValue::dump( int tabs ) const
 
     for ( QStringList::const_iterator i = sl.begin(); i != sl.end(); ++i )
     {
-      QgsDebugMsg( QString( "%1[%2] " ).arg( tabString ).arg( *i ) );
+      QgsDebugMsg( QString( "%1[%2] " ).arg( tabString, *i ) );
     }
   }
   else
   {
-    QgsDebugMsg( QString( "%1%2" ).arg( tabString ).arg( value_.toString() ) );
+    QgsDebugMsg( QString( "%1%2" ).arg( tabString, value_.toString() ) );
   }
 } // QgsPropertyValue::dump()
 
 
-bool QgsPropertyValue::readXML( QDomNode & keyNode )
+bool QgsPropertyValue::readXml( QDomNode & keyNode )
 {
   // this *should* be a Dom element node
   QDomElement subkeyElement = keyNode.toElement();
@@ -217,13 +217,13 @@ bool QgsPropertyValue::readXML( QDomNode & keyNode )
 
   return true;
 
-} // QgsPropertyValue::readXML
+} // QgsPropertyValue::readXml
 
 
 /**
    keyElement created by parent QgsPropertyKey
 */
-bool QgsPropertyValue::writeXML( QString const & nodeName,
+bool QgsPropertyValue::writeXml( QString const & nodeName,
                                  QDomElement   & keyElement,
                                  QDomDocument  & document )
 {
@@ -261,7 +261,7 @@ bool QgsPropertyValue::writeXML( QString const & nodeName,
   keyElement.appendChild( valueElement );
 
   return true;
-} // QgsPropertyValue::writeXML
+} // QgsPropertyValue::writeXml
 
 
 QgsPropertyKey::QgsPropertyKey( const QString &name )
@@ -293,7 +293,7 @@ void QgsPropertyKey::dump( int tabs ) const
 
   tabString.fill( '\t', tabs );
 
-  QgsDebugMsg( QString( "%1name: %2" ).arg( tabString ).arg( name() ) );
+  QgsDebugMsg( QString( "%1name: %2" ).arg( tabString, name() ) );
 
   tabs++;
   tabString.fill( '\t', tabs );
@@ -305,25 +305,24 @@ void QgsPropertyKey::dump( int tabs ) const
     {
       if ( i.next().value()->isValue() )
       {
-        QgsPropertyValue * propertyValue =
-          dynamic_cast<QgsPropertyValue*>( i.value() );
+        QgsPropertyValue * propertyValue = static_cast<QgsPropertyValue*>( i.value() );
 
         if ( QVariant::StringList == propertyValue->value().type() )
         {
-          QgsDebugMsg( QString( "%1key: <%2>  value:" ).arg( tabString ).arg( i.key() ) );
+          QgsDebugMsg( QString( "%1key: <%2>  value:" ).arg( tabString, i.key() ) );
           propertyValue->dump( tabs + 1 );
         }
         else
         {
-          QgsDebugMsg( QString( "%1key: <%2>  value: %3" ).arg( tabString ).arg( i.key() ).arg( propertyValue->value().toString() ) );
+          QgsDebugMsg( QString( "%1key: <%2>  value: %3" ).arg( tabString, i.key(), propertyValue->value().toString() ) );
         }
       }
       else
       {
         QgsDebugMsg( QString( "%1key: <%2>  subkey: <%3>" )
-                     .arg( tabString )
-                     .arg( i.key() )
-                     .arg( dynamic_cast<QgsPropertyKey*>( i.value() )->name() ) );
+                     .arg( tabString,
+                           i.key(),
+                           dynamic_cast<QgsPropertyKey*>( i.value() )->name() ) );
         i.value()->dump( tabs + 1 );
       }
 
@@ -347,7 +346,7 @@ void QgsPropertyKey::dump( int tabs ) const
 
 
 
-bool QgsPropertyKey::readXML( QDomNode & keyNode )
+bool QgsPropertyKey::readXml( QDomNode & keyNode )
 {
   int i = 0;
   QDomNodeList subkeys = keyNode.childNodes();
@@ -366,19 +365,18 @@ bool QgsPropertyKey::readXML( QDomNode & keyNode )
 
       QDomNode subkey = subkeys.item( i );
 
-      if ( !mProperties[subkeys.item( i ).nodeName()]->readXML( subkey ) )
+      if ( !mProperties[subkeys.item( i ).nodeName()]->readXml( subkey ) )
       {
         QgsDebugMsg( QString( "unable to parse key value %1" ).arg( subkeys.item( i ).nodeName() ) );
       }
     }
-    else             // otherwise it's a subkey, so just
-      // recurse on down the remaining keys
+    else // otherwise it's a subkey, so just recurse on down the remaining keys
     {
       addKey( subkeys.item( i ).nodeName() );
 
       QDomNode subkey = subkeys.item( i );
 
-      if ( !mProperties[subkeys.item( i ).nodeName()]->readXML( subkey ) )
+      if ( !mProperties[subkeys.item( i ).nodeName()]->readXml( subkey ) )
       {
         QgsDebugMsg( QString( "unable to parse subkey %1" ).arg( subkeys.item( i ).nodeName() ) );
       }
@@ -388,14 +386,14 @@ bool QgsPropertyKey::readXML( QDomNode & keyNode )
   }
 
   return true;
-} // QgsPropertyKey::readXML(QDomNode & keyNode)
+} // QgsPropertyKey::readXml(QDomNode & keyNode)
 
 
 /**
   Property keys will always create a Dom element for itself and then
-  recursively call writeXML for any constituent properties.
+  recursively call writeXml for any constituent properties.
 */
-bool QgsPropertyKey::writeXML( QString const &nodeName, QDomElement & element, QDomDocument & document )
+bool QgsPropertyKey::writeXml( QString const &nodeName, QDomElement & element, QDomDocument & document )
 {
   // If it's an _empty_ node (i.e., one with no properties) we need to emit
   // an empty place holder; else create new Dom elements as necessary.
@@ -408,7 +406,7 @@ bool QgsPropertyKey::writeXML( QString const &nodeName, QDomElement & element, Q
     while ( i.hasNext() )
     {
       i.next();
-      if ( !i.value()->writeXML( i.key(), keyElement, document ) )
+      if ( !i.value()->writeXml( i.key(), keyElement, document ) )
       {
         return false;
       }
@@ -418,11 +416,11 @@ bool QgsPropertyKey::writeXML( QString const &nodeName, QDomElement & element, Q
   element.appendChild( keyElement );
 
   return true;
-} // QgsPropertyKey::writeXML
+} // QgsPropertyKey::writeXml
 
 
 
-/** return keys that do not contain other keys
+/** Return keys that do not contain other keys
  */
 void QgsPropertyKey::entryList( QStringList & entries ) const
 {

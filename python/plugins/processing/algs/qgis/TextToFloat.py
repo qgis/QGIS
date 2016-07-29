@@ -25,8 +25,8 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import QgsField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -40,19 +40,18 @@ class TextToFloat(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Text to float'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Text to float')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Text attribute to convert to float'),
-            self.INPUT, ParameterTableField.DATA_TYPE_STRING))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+                                              self.tr('Text attribute to convert to float'),
+                                              self.INPUT, ParameterTableField.DATA_TYPE_STRING))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Float from text')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
         idx = layer.fieldNameIndex(fieldName)
 
@@ -60,13 +59,12 @@ class TextToFloat(GeoAlgorithm):
         fields[idx] = QgsField(fieldName, QVariant.Double, '', 24, 15)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-            layer.wkbType(), layer.crs())
+                                                                     layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
 
-        count = len(features)
-        total = 100.0 / float(count)
-        for count, f in enumerate(features):
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             value = f[idx]
             try:
                 if '%' in value:
@@ -77,6 +75,6 @@ class TextToFloat(GeoAlgorithm):
                 f[idx] = None
 
             writer.addFeature(f)
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

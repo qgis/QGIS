@@ -94,6 +94,8 @@ class QwtPolarLayout::PrivateData
 {
   public:
     PrivateData():
+        legendPos( QwtPolarPlot::LeftLegend ),
+        legendRatio( 0.5 ),
         margin( 0 ),
         spacing( 0 )
     {

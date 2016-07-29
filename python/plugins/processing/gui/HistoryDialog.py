@@ -25,34 +25,41 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
+
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
+from qgis.PyQt.QtGui import QIcon
 from processing.gui import TestTools
 from processing.core.ProcessingLog import ProcessingLog
-from processing.ui.ui_DlgHistory import Ui_DlgHistory
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgHistory.ui'))
 
 
-class HistoryDialog(QDialog, Ui_DlgHistory):
+class HistoryDialog(BASE, WIDGET):
 
     def __init__(self):
-        QDialog.__init__(self)
+        super(HistoryDialog, self).__init__(None)
         self.setupUi(self)
 
         self.groupIcon = QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(
-                QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
+            QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
         self.groupIcon.addPixmap(self.style().standardPixmap(
-                QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
+            QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
 
         self.keyIcon = QIcon()
         self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
 
         self.clearButton = QPushButton(self.tr('Clear'))
-        self.clearButton.setToolTip(self.tr('Clear history and log'))
+        self.clearButton.setToolTip(self.tr('Clear history'))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
 
         self.saveButton = QPushButton(self.tr('Save As...'))
-        self.saveButton.setToolTip(self.tr('Save history and log'))
+        self.saveButton.setToolTip(self.tr('Save history'))
         self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
 
         self.tree.doubleClicked.connect(self.executeAlgorithm)
@@ -67,17 +74,18 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
 
     def clearLog(self):
         reply = QMessageBox.question(self,
-                    self.tr('Confirmation'),
-                    self.tr('Are you sure you want to clear log?'),
-                    QMessageBox.Yes | QMessageBox.No,
-                    QMessageBox.No)
+                                     self.tr('Confirmation'),
+                                     self.tr('Are you sure you want to clear the history?'),
+                                     QMessageBox.Yes | QMessageBox.No,
+                                     QMessageBox.No
+                                     )
         if reply == QMessageBox.Yes:
             ProcessingLog.clearLog()
             self.fillTree()
 
     def saveLog(self):
         fileName = QFileDialog.getSaveFileName(self,
-            self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
+                                               self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
 
         if fileName == '':
             return
@@ -96,7 +104,7 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
             groupItem.setIcon(0, self.groupIcon)
             for entry in elements[category]:
                 item = TreeLogEntryItem(entry, category
-                        == ProcessingLog.LOG_ALGORITHM)
+                                        == ProcessingLog.LOG_ALGORITHM)
                 item.setIcon(0, self.keyIcon)
                 groupItem.insertChild(0, item)
             self.tree.addTopLevelItem(groupItem)
@@ -107,7 +115,7 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
             if item.isAlg:
                 script = 'import processing\n'
                 script += item.entry.text.replace('runalg(', 'runandload(')
-                exec script
+                exec(script)
 
     def changeText(self):
         item = self.tree.currentItem()

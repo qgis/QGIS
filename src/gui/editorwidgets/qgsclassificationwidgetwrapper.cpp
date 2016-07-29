@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -20,12 +20,18 @@
 
 QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mComboBox( nullptr )
 {
 }
 
-QVariant QgsClassificationWidgetWrapper::value()
+QVariant QgsClassificationWidgetWrapper::value() const
 {
   return mComboBox->itemData( mComboBox->currentIndex() );
+}
+
+void QgsClassificationWidgetWrapper::showIndeterminateState()
+{
+  whileBlocking( mComboBox )->setCurrentIndex( -1 );
 }
 
 QWidget*QgsClassificationWidgetWrapper::createWidget( QWidget* parent )
@@ -56,6 +62,11 @@ void QgsClassificationWidgetWrapper::initWidget( QWidget* editor )
 
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
   }
+}
+
+bool QgsClassificationWidgetWrapper::valid() const
+{
+  return mComboBox;
 }
 
 void QgsClassificationWidgetWrapper::setValue( const QVariant& value )

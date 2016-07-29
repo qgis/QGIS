@@ -22,10 +22,10 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgisgui.h"
-#include "qgsmaptool.h"
-#include "qgscolorrampshader.h"
 #include "qgscontexthelp.h"
+#include "qgsmaplayerstylemanager.h"
 
+class QgsPoint;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
@@ -34,7 +34,7 @@ class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
 
-/**Property sheet for a raster map layer
+/** Property sheet for a raster map layer
   *@author Tim Sutton
   */
 
@@ -46,17 +46,19 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** \brief Constructor
      * @param ml Map layer for which properties will be displayed
      */
-    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas* theCanvas, QWidget *parent = 0, Qt::WindowFlags = QgisGui::ModalDialogFlags );
+    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas* theCanvas, QWidget *parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
     /** \brief Destructor */
     ~QgsRasterLayerProperties();
 
-    /** synchronize state with associated raster layer */
+    /** Synchronize state with associated raster layer */
     void sync();
 
   public slots:
     //TODO: Verify that these all need to be public
     /** \brief Applies the settings made in the dialog without closing the box */
     void apply();
+    /** Called when cancel button is pressed */
+    void onCancel();
     /** \brief Slot to update layer display name as original is edited. */
     void on_mLayerOrigNameLineEd_textEdited( const QString& text );
     /** \brief this slot asks the rasterlayer to construct pyramids */
@@ -66,7 +68,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** \brief slot executed when user presses "Add Values Manually" button on the transparency page */
     void on_pbnAddValuesManually_clicked();
     /** \brief slot executed when user changes the layer's CRS */
-    void on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs );
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
     /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
     void on_pbnDefaultValues_clicked();
     /** \brief slot executed when user wishes to export transparency values */
@@ -88,26 +90,26 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
   private slots:
     void on_mRenderTypeComboBox_currentIndexChanged( int index );
     /** Load the default style when appropriate button is pressed. */
-    void on_pbnLoadDefaultStyle_clicked();
+    void loadDefaultStyle_clicked();
     /** Save the default style when appropriate button is pressed. */
-    void on_pbnSaveDefaultStyle_clicked();
+    void saveDefaultStyle_clicked();
     /** Load a saved style when appropriate button is pressed. */
-    void on_pbnLoadStyle_clicked();
+    void loadStyle_clicked();
     /** Save a style when appriate button is pressed. */
-    void on_pbnSaveStyleAs_clicked();
+    void saveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     /** Slot to reset all color rendering options to default */
     void on_mResetColorRenderingBtn_clicked();
 
-    /**Enable or disable Build pyramids button depending on selection in pyramids list*/
+    /** Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 
-    /**Enable or disable saturation controls depending on choice of grayscale mode */
+    /** Enable or disable saturation controls depending on choice of grayscale mode */
     void toggleSaturationControls( int grayscaleMode );
 
-    /**Enable or disable colorize controls depending on checkbox */
+    /** Enable or disable colorize controls depending on checkbox */
     void toggleColorizeControls( bool colorizeEnabled );
 
     /** Transparency cell changed */
@@ -115,12 +117,12 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void aboutToShowStyleMenu();
 
-    /** make GUI reflect the layer's state */
+    /** Make GUI reflect the layer's state */
     void syncToLayer();
 
   signals:
-    /** emitted when changes to layer were saved to update legend */
-    void refreshLegend( QString layerID, bool expandItem );
+    /** Emitted when changes to layer were saved to update legend */
+    void refreshLegend( const QString& layerID, bool expandItem );
 
   private:
     /** \brief  A constant that signals property not used */
@@ -186,5 +188,9 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsRasterHistogramWidget* mHistogramWidget;
 
     QVector<bool> mTransparencyToEdited;
+
+    /** Previous layer style. Used to reset style to previous state if new style
+     * was loaded but dialog is cancelled */
+    QgsMapLayerStyle mOldStyle;
 };
 #endif

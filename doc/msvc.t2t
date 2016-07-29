@@ -12,14 +12,7 @@ build QGIS.
 
 The free (as in free beer) Express Edition installer is available under:
 
-Currently we use Visual C++ 2008 Express for 32bit builds:
-
-	http://download.microsoft.com/download/d/c/3/dc3439e7-5533-4f4c-9ba0-8577685b6e7e/vcsetup.exe
-
-And Visual C++ 2010 Express for 64bit builds:
-
 	http://download.microsoft.com/download/c/d/7/cd7d4dfb-5290-4cc7-9f85-ab9e3c9af796/vc_web.exe
-
 
 You also need the Windows SDK for Windows 7 and .NET Framework 4:
 
@@ -62,6 +55,11 @@ and from OSGeo4W (select //Advanced Installation//):
 - python-qscintilla
 
 This will also select packages the above packages depend on.
+
+If you install other packages, this might cause issues. Particularly, make sure
+**not** to install the msinttypes package. It installs a stdint.h file in
+OSGeo4W[64]\include, that conflicts with Visual Studio own stdint.h, which for
+example breaks the build of the virtuallayer provider.
 
 Earlier versions of this document also covered how to build all above
 dependencies.  If you're interested in that, check the history of this page in the Wiki

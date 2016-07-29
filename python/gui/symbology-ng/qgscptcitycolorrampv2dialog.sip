@@ -5,7 +5,7 @@ class QgsCptCityColorRampV2Dialog : QDialog
 %End
 
   public:
-    QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent = NULL );
+    QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent /TransferThis/ = NULL );
     ~QgsCptCityColorRampV2Dialog();
 
     QString selectedName() const;

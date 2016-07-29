@@ -28,6 +28,7 @@ class QLineEdit;
 
 // forward declaration Qgis-classes
 class QgsVectorLayer;
+class QgsMapLayerComboBox;
 
 /**
 @author Sergey Yakushev
@@ -40,7 +41,7 @@ class RgLineVectorLayerSettingsWidget : public QWidget
 {
     Q_OBJECT
   public:
-    RgLineVectorLayerSettingsWidget( RgLineVectorLayerSettings *s, QWidget* parent = 0 );
+    RgLineVectorLayerSettingsWidget( RgLineVectorLayerSettings *s, QWidget* parent = nullptr );
 
   private slots:
     void on_mcbLayers_selectItem();
@@ -52,7 +53,7 @@ class RgLineVectorLayerSettingsWidget : public QWidget
     /**
      * list of passible layers
      */
-    QComboBox *mcbLayers;
+    QgsMapLayerComboBox *mcbLayers;
 
     /**
      * list of possible fields for use as direction

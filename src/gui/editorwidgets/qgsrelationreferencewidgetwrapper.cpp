@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 20.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,19 +17,20 @@
 #include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-
+#include "qgsrelationreferencewidget.h"
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsMapCanvas* canvas, QgsMessageBar* messageBar, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mWidget( nullptr )
     , mCanvas( canvas )
     , mMessageBar( messageBar )
+    , mIndeterminateState( false )
 {
 }
 
 QWidget* QgsRelationReferenceWidgetWrapper::createWidget( QWidget* parent )
 {
   QgsRelationReferenceWidget* w = new QgsRelationReferenceWidget( parent );
-  w->setSizePolicy( w->sizePolicy().horizontalPolicy(), QSizePolicy::Expanding );
   return w;
 }
 
@@ -48,10 +49,18 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
   bool showForm = config( "ShowForm", true ).toBool();
   bool mapIdent = config( "MapIdentification", false ).toBool();
   bool readOnlyWidget = config( "ReadOnly", false ).toBool();
+  bool orderByValue = config( "OrderByValue", false ).toBool();
 
   mWidget->setEmbedForm( showForm );
   mWidget->setReadOnlySelector( readOnlyWidget );
   mWidget->setAllowMapIdentification( mapIdent );
+  mWidget->setOrderByValue( orderByValue );
+  if ( config( "FilterFields", QVariant() ).isValid() )
+  {
+    mWidget->setFilterFields( config( "FilterFields" ).toStringList() );
+    mWidget->setChainFilters( config( "ChainFilters" ).toBool() );
+  }
+  mWidget->setAllowAddFeatures( config( "AllowAddFeatures", false ).toBool() );
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
 
@@ -74,7 +83,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
   connect( mWidget, SIGNAL( foreignKeyChanged( QVariant ) ), this,  SLOT( foreignKeyChanged( QVariant ) ) );
 }
 
-QVariant QgsRelationReferenceWidgetWrapper::value()
+QVariant QgsRelationReferenceWidgetWrapper::value() const
 {
   if ( !mWidget )
     return QVariant( field().type() );
@@ -91,12 +100,27 @@ QVariant QgsRelationReferenceWidgetWrapper::value()
   }
 }
 
-void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& value )
+bool QgsRelationReferenceWidgetWrapper::valid() const
 {
-  if ( !mWidget )
+  return mWidget;
+}
+
+void QgsRelationReferenceWidgetWrapper::showIndeterminateState()
+{
+  if ( mWidget )
+  {
+    mWidget->showIndeterminateState();
+  }
+  mIndeterminateState = true;
+}
+
+void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& val )
+{
+  if ( !mWidget || ( !mIndeterminateState && val == value() ) )
     return;
 
-  mWidget->setForeignKey( value );
+  mIndeterminateState = false;
+  mWidget->setForeignKey( val );
 }
 
 void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )
@@ -114,4 +138,15 @@ void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
     value = QVariant( field().type() );
   }
   emit valueChanged( value );
+}
+
+void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+{
+  if ( mWidget )
+  {
+    if ( constraintValid )
+      mWidget->setStyleSheet( QString() );
+    else
+      mWidget->setStyleSheet( ".QComboBox { background-color: #dd7777; }" );
+  }
 }

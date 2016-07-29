@@ -28,18 +28,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.outputs import OutputFile
+
 
 class lasprecision(LAStoolsAlgorithm):
 
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "lasprecision"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasprecision')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addOutput(OutputFile(lasprecision.OUTPUT, self.tr("Output ASCII file")))

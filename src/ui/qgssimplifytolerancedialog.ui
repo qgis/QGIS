@@ -30,6 +30,11 @@
      </item>
      <item>
       <property name="text">
+       <string>Pixels</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>Map units</string>
       </property>
      </item>

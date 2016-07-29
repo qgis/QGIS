@@ -12,36 +12,34 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
-import qgis
+import qgis  # NOQA
 
-from PyQt4.QtCore import QFileInfo, QDir
-from PyQt4.QtXml import QDomDocument
+import os
+
+from qgis.PyQt.QtCore import QFileInfo, QDir
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsComposition,
                        QgsPoint,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
                        QgsMapLayerRegistry,
-                       QgsMapRenderer
+                       QgsMapSettings
                        )
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       #expectedFailure
-                       )
+from qgis.testing import start_app, unittest
+from qgis.testing.mocked import get_iface
+from utilities import unitTestDataPath
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposition(TestCase):
+class TestQgsComposition(unittest.TestCase):
 
     def setUp(self):
         """Run before each test."""
-        pass
+        self.iface = get_iface()
 
     def tearDown(self):
         """Run after each test."""
@@ -59,12 +57,11 @@ class TestQgsComposition(TestCase):
         myText = 'Latitude: %s, Longitude: %s' % (myLatitude, myLongitude)
 
         # Load the composition with the substitutions
-        myComposition = QgsComposition(CANVAS.mapRenderer())
-        mySubstitutionMap = {'replace-me': myText }
+        myComposition = QgsComposition(self.iface.mapCanvas().mapSettings())
+        mySubstitutionMap = {'replace-me': myText}
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
-        myTemplateFile = file(myFile, 'rt')
-        myTemplateContent = myTemplateFile.read()
-        myTemplateFile.close()
+        with open(myFile) as f:
+            myTemplateContent = f.read()
         myDocument = QDomDocument()
         myDocument.setContent(myTemplateContent)
         myComposition.loadFromTemplate(myDocument, mySubstitutionMap)
@@ -76,11 +73,10 @@ class TestQgsComposition(TestCase):
 
     def testNoSubstitutionMap(self):
         """Test that we can get a map if we use no text substitutions."""
-        myComposition = QgsComposition(CANVAS.mapRenderer())
+        myComposition = QgsComposition(self.iface.mapCanvas().mapSettings())
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
-        myTemplateFile = file(myFile, 'rt')
-        myTemplateContent = myTemplateFile.read()
-        myTemplateFile.close()
+        with open(myFile) as f:
+            myTemplateContent = f.read()
         myDocument = QDomDocument()
         myDocument.setContent(myTemplateContent)
         myComposition.loadFromTemplate(myDocument)
@@ -97,24 +93,22 @@ class TestQgsComposition(TestCase):
         myRasterLayer = QgsRasterLayer(myFileInfo.filePath(),
                                        myFileInfo.completeBaseName())
         myRenderer = QgsMultiBandColorRenderer(
-                        myRasterLayer.dataProvider(), 2, 3, 4)
+            myRasterLayer.dataProvider(), 2, 3, 4
+        )
         #mRasterLayer.setRenderer( rasterRenderer )
         myPipe = myRasterLayer.pipe()
-        assert myPipe.set( myRenderer ), "Cannot set pipe renderer"
+        assert myPipe.set(myRenderer), "Cannot set pipe renderer"
 
         QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
 
-        myMapRenderer = QgsMapRenderer()
-        myLayerStringList = []
-        myLayerStringList.append(myRasterLayer.id())
-        myMapRenderer.setLayerSet(myLayerStringList)
-        myMapRenderer.setProjectionsEnabled(False)
+        myMapSettings = QgsMapSettings()
+        myMapSettings.setLayers([myRasterLayer.id()])
+        myMapSettings.setCrsTransformEnabled(False)
 
-        myComposition = QgsComposition(myMapRenderer)
+        myComposition = QgsComposition(myMapSettings)
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
-        myTemplateFile = file(myFile, 'rt')
-        myTemplateContent = myTemplateFile.read()
-        myTemplateFile.close()
+        with open(myFile) as f:
+            myTemplateContent = f.read()
         myDocument = QDomDocument()
         myDocument.setContent(myTemplateContent)
         myComposition.loadFromTemplate(myDocument)

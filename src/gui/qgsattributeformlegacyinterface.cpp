@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 13.5.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,7 +27,8 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString&
     , mPyFunctionName( function )
     , mPyFormVarName( pyFormName )
 {
-  mPyLayerVarName = QString( "_qgis_layer_%1" ).arg( form->layer()->id() );
+  static int sLayerCounter = 0;
+  mPyLayerVarName = QString( "_qgis_layer_%1_%2" ).arg( form->layer()->id() ).arg( sLayerCounter++ );
   mPyLayerVarName.replace( QRegExp( "[^a-zA-Z0-9_]" ), "_" ); // clean identifier
 
   QString initLayer = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
@@ -65,10 +66,10 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   QgsPythonRunner::run( initFeature );
 
   QString expr = QString( "%1( %2, %3, %4)" )
-                 .arg( mPyFunctionName )
-                 .arg( mPyFormVarName )
-                 .arg( mPyLayerVarName )
-                 .arg( pyFeatureVarName );
+                 .arg( mPyFunctionName,
+                       mPyFormVarName,
+                       mPyLayerVarName,
+                       pyFeatureVarName );
 
   QgsPythonRunner::run( expr );
 

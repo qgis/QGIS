@@ -19,13 +19,16 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from console_compile_apis import PrepareAPIDialog
+from qgis.PyQt.QtCore import QCoreApplication, QSize, QSettings, QFileInfo, Qt
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem
+from qgis.PyQt.QtGui import QIcon, QFont, QColor
+from .console_compile_apis import PrepareAPIDialog
 
-from ui_console_settings import Ui_SettingsDialogPythonConsole
+from .ui_console_settings import Ui_SettingsDialogPythonConsole
+
 
 class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
+
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setWindowTitle(QCoreApplication.translate("SettingsDialogPythonConsole", "Settings Python Console"))
@@ -38,17 +41,14 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.restoreSettings()
         self.initialCheck()
 
-        self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.png"))
+        self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.svg"))
         self.addAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Add API path"))
-        self.removeAPIpath.setIcon(QIcon(":/images/themes/default/symbologyRemove.png"))
+        self.removeAPIpath.setIcon(QIcon(":/images/themes/default/symbologyRemove.svg"))
         self.removeAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Remove API path"))
 
-        self.connect( self.preloadAPI,
-                      SIGNAL("stateChanged(int)"), self.initialCheck)
-        self.connect(self.addAPIpath,
-                     SIGNAL("clicked()"), self.loadAPIFile)
-        self.connect(self.removeAPIpath,
-                     SIGNAL("clicked()"), self.removeAPI)
+        self.preloadAPI.stateChanged.connect(self.initialCheck)
+        self.addAPIpath.clicked.connect(self.loadAPIFile)
+        self.removeAPIpath.clicked.connect(self.removeAPI)
         self.compileAPIs.clicked.connect(self._prepareAPI)
 
         self.resetFontColor.setIcon(QIcon(":/images/themes/default/console/iconResetColorConsole.png"))
@@ -74,7 +74,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings = QSettings()
         lastDirPath = settings.value("pythonConsole/lastDirAPIPath", "", type=str)
         fileAPI = QFileDialog.getOpenFileName(
-                        self, "Open API File", lastDirPath, "API file (*.api)")
+            self, "Open API File", lastDirPath, "API file (*.api)")
         if fileAPI:
             self.addAPI(fileAPI)
 
@@ -84,9 +84,9 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
     def _prepareAPI(self):
         if self.tableWidget.rowCount() != 0:
             pap_file = QFileDialog().getSaveFileName(self,
-                                                    "",
-                                                    '*.pap',
-                                                    "Prepared APIs file (*.pap)")
+                                                     "",
+                                                     '*.pap',
+                                                     "Prepared APIs file (*.pap)")
         else:
             QMessageBox.information(self, self.tr("Warning!"),
                                     self.tr('You need to add some APIs file in order to compile'))
@@ -106,19 +106,19 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def accept(self):
         if not self.preloadAPI.isChecked() and \
-        not self.groupBoxPreparedAPI.isChecked():
+           not self.groupBoxPreparedAPI.isChecked():
             if self.tableWidget.rowCount() == 0:
                 QMessageBox.information(self, self.tr("Warning!"),
                                         self.tr('Please specify API file or check "Use preloaded API files"'))
                 return
         if self.groupBoxPreparedAPI.isChecked() and \
-        not self.lineEdit.text():
+           not self.lineEdit.text():
             QMessageBox.information(self, self.tr("Warning!"),
                                     self.tr('The APIs file was not compiled, click on "Compile APIs..."'))
             return
         self.saveSettings()
         self.listPath = []
-        QDialog.accept( self )
+        QDialog.accept(self)
 
     def addAPI(self, pathAPI):
         count = self.tableWidget.rowCount()
@@ -311,7 +311,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.doubleQuoteFontColor.setColor(QColor(Qt.blue))
         self.tripleSingleQuoteFontColor.setColor(QColor(Qt.blue))
         self.tripleDoubleQuoteFontColor.setColor(QColor(Qt.blue))
-
 
     def _resetFontColorEditor(self):
         self.defaultFontColorEditor.setColor(QColor(Qt.black))

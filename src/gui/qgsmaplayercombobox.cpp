@@ -17,22 +17,25 @@
 #include "qgsmaplayermodel.h"
 
 
-QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent ) :
-    QComboBox( parent )
+QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
+    : QComboBox( parent )
 {
   mProxyModel = new QgsMapLayerProxyModel( this );
   setModel( mProxyModel );
 
   connect( this, SIGNAL( activated( int ) ), this, SLOT( indexChanged( int ) ) );
-}
-
-void QgsMapLayerComboBox::setFilters( QgsMapLayerProxyModel::Filters filters )
-{
-  mProxyModel->setFilters( filters );
+  connect( mProxyModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
+  connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
 }
 
 void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
+  if ( !layer )
+  {
+    setCurrentIndex( -1 );
+    return;
+  }
+
   QModelIndex idx = mProxyModel->sourceLayerModel()->indexFromLayer( layer );
   if ( idx.isValid() )
   {
@@ -50,18 +53,21 @@ void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 
 QgsMapLayer* QgsMapLayerComboBox::currentLayer() const
 {
-  int i = currentIndex();
+  return layer( currentIndex() );
+}
 
-  const QModelIndex proxyIndex = mProxyModel->index( i, 0 );
+QgsMapLayer *QgsMapLayerComboBox::layer( int layerIndex ) const
+{
+  const QModelIndex proxyIndex = mProxyModel->index( layerIndex, 0 );
   if ( !proxyIndex.isValid() )
   {
-    return 0;
+    return nullptr;
   }
 
   const QModelIndex index = mProxyModel->mapToSource( proxyIndex );
   if ( !index.isValid() )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
@@ -69,7 +75,7 @@ QgsMapLayer* QgsMapLayerComboBox::currentLayer() const
   {
     return layer;
   }
-  return 0;
+  return nullptr;
 }
 
 void QgsMapLayerComboBox::indexChanged( int i )
@@ -78,3 +84,17 @@ void QgsMapLayerComboBox::indexChanged( int i )
   QgsMapLayer* layer = currentLayer();
   emit layerChanged( layer );
 }
+
+void QgsMapLayerComboBox::rowsChanged()
+{
+  if ( count() == 1 )
+  {
+    //currently selected layer item has changed
+    emit layerChanged( currentLayer() );
+  }
+  else if ( count() == 0 )
+  {
+    emit layerChanged( nullptr );
+  }
+}
+

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>398</width>
-    <height>312</height>
+    <height>344</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -178,6 +178,7 @@
   <tabstop>editYMin</tabstop>
   <tabstop>editFileName</tabstop>
   <tabstop>btnBrowse</tabstop>
+  <tabstop>editSize</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

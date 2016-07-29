@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>695</width>
+    <width>743</width>
     <height>615</height>
    </rect>
   </property>
@@ -15,7 +15,8 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff></normaloff></iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -453,9 +454,6 @@ Always network: always load from network and do not check if the cache has a val
          <attribute name="verticalHeaderVisible">
           <bool>false</bool>
          </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
          <column>
           <property name="text">
            <string>Layers</string>
@@ -517,9 +515,6 @@ Always network: always load from network and do not check if the cache has a val
          <attribute name="verticalHeaderVisible">
           <bool>false</bool>
          </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
          <column>
           <property name="text">
            <string>Title</string>
@@ -554,8 +549,22 @@ Always network: always load from network and do not check if the cache has a val
  <tabstops>
   <tabstop>mTabWidget</tabstop>
   <tabstop>mConnectionsComboBox</tabstop>
+  <tabstop>mConnectButton</tabstop>
+  <tabstop>mNewButton</tabstop>
+  <tabstop>mEditButton</tabstop>
+  <tabstop>mDeleteButton</tabstop>
+  <tabstop>mLoadButton</tabstop>
+  <tabstop>mSaveButton</tabstop>
+  <tabstop>mAddDefaultButton</tabstop>
   <tabstop>mLayersTreeWidget</tabstop>
+  <tabstop>mTimeComboBox</tabstop>
+  <tabstop>mChangeCRSButton</tabstop>
+  <tabstop>mFormatComboBox</tabstop>
   <tabstop>mLayerNameLineEdit</tabstop>
+  <tabstop>mTileWidthLineEdit</tabstop>
+  <tabstop>mTileHeightLineEdit</tabstop>
+  <tabstop>mFeatureCountLineEdit</tabstop>
+  <tabstop>mCacheComboBox</tabstop>
   <tabstop>mLayerUpButton</tabstop>
   <tabstop>mLayerDownButton</tabstop>
   <tabstop>mLayerOrderTreeWidget</tabstop>

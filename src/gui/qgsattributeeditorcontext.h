@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 30.7.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,7 +24,7 @@
 #include <qgsvectorlayertools.h>
 
 
-/**
+/** \ingroup gui
  * This class contains context information for attribute editor widgets.
  * It will be passed to embedded widgets whenever this occurs (e.g. when
  * showing an embedded form due to relations)
@@ -51,31 +51,35 @@ class GUI_EXPORT QgsAttributeEditorContext
     };
 
     QgsAttributeEditorContext()
-        : mParentContext( 0 )
-        , mLayer( 0 )
-        , mVectorLayerTools( 0 )
+        : mParentContext( nullptr )
+        , mLayer( nullptr )
+        , mVectorLayerTools( nullptr )
         , mRelationMode( Undefined )
+        , mFormMode( Embed )
+        , mAllowCustomUi( true )
     {}
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, FormMode formMode )
         : mParentContext( &parentContext )
-        , mLayer( 0 )
+        , mLayer( nullptr )
         , mVectorLayerTools( parentContext.mVectorLayerTools )
         , mDistanceArea( parentContext.mDistanceArea )
         , mRelationMode( Undefined )
         , mFormMode( formMode )
+        , mAllowCustomUi( true )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode relationMode, FormMode widgetMode )
         : mParentContext( &parentContext )
-        , mLayer( 0 )
+        , mLayer( nullptr )
         , mVectorLayerTools( parentContext.mVectorLayerTools )
         , mDistanceArea( parentContext.mDistanceArea )
         , mRelation( relation )
         , mRelationMode( relationMode )
         , mFormMode( widgetMode )
+        , mAllowCustomUi( true )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
@@ -98,7 +102,31 @@ class GUI_EXPORT QgsAttributeEditorContext
     inline const QgsRelation& relation() const { return mRelation; }
     inline RelationMode relationMode() const { return mRelationMode; }
 
+    /** Returns the form mode.
+     * @see setFormMode()
+     */
     inline FormMode formMode() const { return mFormMode; }
+
+    /** Sets the form mode.
+     * @param mode form mode
+     * @see formMode()
+     * @note added in QGIS 2.16
+     */
+    inline void setFormMode( FormMode mode ) { mFormMode = mode; }
+
+    /** Returns true if the attribute editor should permit use of custom UI forms.
+     * @see setAllowCustomUi()
+     * @note added in QGIS 2.16
+     */
+    bool allowCustomUi() const { return mAllowCustomUi; }
+
+    /** Sets whether the attribute editor should permit use of custom UI forms.
+     * @param allow set to true to allow custom UI forms, or false to disable them and use default generated
+     * QGIS forms
+     * @see allowCustomUi()
+     * @note added in QGIS 2.16
+     */
+    void setAllowCustomUi( bool allow ) { mAllowCustomUi = allow; }
 
     inline const QgsAttributeEditorContext* parentContext() const { return mParentContext; }
 
@@ -110,6 +138,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsRelation mRelation;
     RelationMode mRelationMode;
     FormMode mFormMode;
+    bool mAllowCustomUi;
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H

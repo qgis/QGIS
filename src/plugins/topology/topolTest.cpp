@@ -18,6 +18,7 @@
 #include "topolTest.h"
 
 #include <qgsvectorlayer.h>
+#include "qgsfeatureiterator.h"
 #include <qgsmaplayer.h>
 #include <qgsmapcanvas.h>
 #include <qgsgeometry.h>
@@ -39,7 +40,7 @@ topolTest::topolTest( QgisInterface* qgsIface )
   mTopologyRuleMap.insert( tr( "must not have invalid geometries" ),
                            TopologyRule( &topolTest::checkValid,
                                          false, false, false,
-                                         QList<QGis::GeometryType>() << QGis::Point << QGis::Polygon << QGis::Line ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Point << Qgis::Polygon << Qgis::Line ) );
 
 #if 0
   mTopologyRuleMap.insert( tr( "segments must have minimum length" ),
@@ -49,45 +50,45 @@ topolTest::topolTest( QgisInterface* qgsIface )
   mTopologyRuleMap.insert( tr( "must not have dangles" ),
                            TopologyRule( &topolTest::checkDanglingLines,
                                          false, false, false,
-                                         QList<QGis::GeometryType>() << QGis::Line ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Line ) );
 
   mTopologyRuleMap.insert( tr( "must not have duplicates" ),
                            TopologyRule( &topolTest::checkDuplicates,
                                          false, false, true,
-                                         QList<QGis::GeometryType>() << QGis::Point << QGis::Polygon << QGis::Line ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Point << Qgis::Polygon << Qgis::Line ) );
 
   mTopologyRuleMap.insert( tr( "must not have pseudos" ),
                            TopologyRule( &topolTest::checkPseudos,
                                          false, false, false,
-                                         QList<QGis::GeometryType>() << QGis::Line ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Line ) );
 
   mTopologyRuleMap.insert( tr( "must not overlap" ),
                            TopologyRule( &topolTest::checkOverlaps,
                                          false, false, true,
-                                         QList<QGis::GeometryType>() << QGis::Polygon ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Polygon ) );
 
   mTopologyRuleMap.insert( tr( "must not have gaps" ),
                            TopologyRule( &topolTest::checkGaps,
                                          false, false, false,
-                                         QList<QGis::GeometryType>() << QGis::Polygon ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Polygon ) );
 
   mTopologyRuleMap.insert( tr( "must not have multi-part geometries" ),
                            TopologyRule( &topolTest::checkMultipart,
                                          false, false, false,
-                                         QList<QGis::GeometryType>() << QGis::Point << QGis::Polygon << QGis::Line ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Point << Qgis::Polygon << Qgis::Line ) );
 
   // two layer tests
   mTopologyRuleMap.insert( tr( "must not overlap with" ),
                            TopologyRule( &topolTest::checkOverlapWithLayer,
                                          true, false, true,
-                                         QList<QGis::GeometryType>() << QGis::Polygon,
-                                         QList<QGis::GeometryType>() << QGis::Polygon ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Polygon,
+                                         QList<Qgis::GeometryType>() << Qgis::Polygon ) );
 
   mTopologyRuleMap.insert( tr( "must be covered by" ),
                            TopologyRule( &topolTest::checkPointCoveredBySegment,
                                          true, false, true,
-                                         QList<QGis::GeometryType>() << QGis::Point,
-                                         QList<QGis::GeometryType>() << QGis::Line << QGis::Polygon ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Point,
+                                         QList<Qgis::GeometryType>() << Qgis::Line << Qgis::Polygon ) );
 
 #if 0
   mTopologyRuleMap.insert( tr( "features must not be closer than tolerance" ),
@@ -98,32 +99,32 @@ topolTest::topolTest( QgisInterface* qgsIface )
   mTopologyRuleMap.insert( tr( "must be covered by endpoints of" ),
                            TopologyRule( &topolTest::checkPointCoveredByLineEnds,
                                          true, false, true,
-                                         QList<QGis::GeometryType>() << QGis::Point,
-                                         QList<QGis::GeometryType>() << QGis::Line ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Point,
+                                         QList<Qgis::GeometryType>() << Qgis::Line ) );
 
   mTopologyRuleMap.insert( tr( "end points must be covered by" ),
                            TopologyRule( &topolTest::checkyLineEndsCoveredByPoints,
                                          true, false, true,
-                                         QList<QGis::GeometryType>() << QGis::Line,
-                                         QList<QGis::GeometryType>() << QGis::Point ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Line,
+                                         QList<Qgis::GeometryType>() << Qgis::Point ) );
 
   mTopologyRuleMap.insert( tr( "must be inside" ),
                            TopologyRule( &topolTest::checkPointInPolygon,
                                          true, false, true,
-                                         QList<QGis::GeometryType>() << QGis::Point,
-                                         QList<QGis::GeometryType>() << QGis::Polygon ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Point,
+                                         QList<Qgis::GeometryType>() << Qgis::Polygon ) );
 
   mTopologyRuleMap.insert( tr( "must contain" ),
                            TopologyRule( &topolTest::checkPolygonContainsPoint,
                                          true, false, true,
-                                         QList<QGis::GeometryType>() << QGis::Polygon,
-                                         QList<QGis::GeometryType>() << QGis::Point ) );
+                                         QList<Qgis::GeometryType>() << Qgis::Polygon,
+                                         QList<Qgis::GeometryType>() << Qgis::Point ) );
 }
 
 topolTest::~topolTest()
 {
-  QMap<QString, QgsSpatialIndex*>::Iterator lit = mLayerIndexes.begin();
-  for ( ; lit != mLayerIndexes.end(); ++lit )
+  QMap<QString, QgsSpatialIndex*>::const_iterator lit = mLayerIndexes.constBegin();
+  for ( ; lit != mLayerIndexes.constEnd(); ++lit )
     delete *lit;
 }
 
@@ -143,6 +144,7 @@ bool topolTest::testCancelled()
   return false;
 }
 
+#if 0 //unused and totally broken - index is set to null and then immediately dereferenced
 ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( isExtent );
@@ -164,6 +166,12 @@ ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1
       break;
 
     QgsGeometry* g1 = it->feature.geometry();
+    if ( !g1 || !g1->asGeos() )
+    {
+      badG1 = true;
+      continue;
+    }
+
     QgsRectangle bb = g1->boundingBox();
 
     // increase bounding box by tolerance
@@ -188,13 +196,6 @@ ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1
       {
         badG2 = true;
         continue;
-      }
-
-      if ( !g1 || !g1->asGeos() )
-      {
-        badG1 = true;
-        continue;
-
       }
 
       if ( g1->distance( *g2 ) < tolerance )
@@ -224,6 +225,7 @@ ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1
 
   return errorList;
 }
+#endif
 
 ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
@@ -234,13 +236,12 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
   ErrorList errorList;
   QgsFeature f;
 
-  if ( layer1->geometryType() != QGis::Line )
+  if ( layer1->geometryType() != Qgis::Line )
   {
     return errorList;
   }
 
-  QList<FeatureLayer>::Iterator it;
-  QList<FeatureLayer>::ConstIterator FeatureListEnd = mFeatureList1.end();
+  QList<FeatureLayer>::iterator it;
 
   qDebug() << mFeatureList1.count();
 
@@ -249,7 +250,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
 
   std::multimap<QgsPoint, QgsFeatureId, PointComparer> endVerticesMap;
 
-  for ( it = mFeatureList1.begin(); it != FeatureListEnd; ++it )
+  for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
@@ -314,6 +315,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
       {
         if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
+          delete conflictGeom;
           continue;
         }
       }
@@ -335,7 +337,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
 
     }
   }
-
+  delete canvasExtentPoly;
   return errorList;
 }
 
@@ -347,23 +349,21 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
   int i = 0;
   ErrorList errorList;
 
-  QList<QgsFeatureId>* duplicateIds = new QList<QgsFeatureId>();
+  QList<QgsFeatureId> duplicateIds;
 
   QgsSpatialIndex* index = mLayerIndexes[layer1->id()];
 
   QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
-
-  QMap<QgsFeatureId, FeatureLayer>::Iterator it;
-  QMap<QgsFeatureId, FeatureLayer>::ConstIterator FeatureListEnd = mFeatureMap2.end();
-  for ( it = mFeatureMap2.begin(); it != FeatureListEnd; ++it )
+  QMap<QgsFeatureId, FeatureLayer>::const_iterator it;
+  for ( it = mFeatureMap2.constBegin(); it != mFeatureMap2.constEnd(); ++it )
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
 
     QgsFeatureId currentId = it->feature.id();
 
-    if ( duplicateIds->contains( currentId ) )
+    if ( duplicateIds.contains( currentId ) )
     {
       //is already a duplicate geometry..skip..
       continue;
@@ -372,7 +372,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
     if ( testCancelled() )
       break;
 
-    QgsGeometry* g1 = it->feature.geometry();
+    const QgsGeometry* g1 = it->feature.constGeometry();
     QgsRectangle bb = g1->boundingBox();
 
     QList<QgsFeatureId> crossingIds;
@@ -390,7 +390,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
       if ( mFeatureMap2[*cit].feature.id() == it->feature.id() )
         continue;
 
-      QgsGeometry* g2 = mFeatureMap2[*cit].feature.geometry();
+      const QgsGeometry* g2 = mFeatureMap2[*cit].feature.constGeometry();
       if ( !g2 )
       {
         QgsMessageLog::logMessage( tr( "Invalid second geometry in duplicate geometry test." ), tr( "Topology plugin" ) );
@@ -406,7 +406,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
       if ( g1->equals( g2 ) )
       {
         duplicate = true;
-        duplicateIds->append( mFeatureMap2[*cit].feature.id() );
+        duplicateIds.append( mFeatureMap2[*cit].feature.id() );
       }
 
       if ( duplicate )
@@ -415,21 +415,21 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
 
         QList<FeatureLayer> fls;
         fls << *it << *it;
-        QgsGeometry* conflict = new QgsGeometry( *g1 );
+        QScopedPointer<QgsGeometry> conflict( new QgsGeometry( *g1 ) );
 
         if ( isExtent )
         {
-          if ( canvasExtentPoly->disjoint( conflict ) )
+          if ( canvasExtentPoly->disjoint( conflict.data() ) )
           {
             continue;
           }
-          if ( canvasExtentPoly->crosses( conflict ) )
+          if ( canvasExtentPoly->crosses( conflict.data() ) )
           {
-            conflict = conflict->intersection( canvasExtentPoly );
+            conflict.reset( conflict->intersection( canvasExtentPoly ) );
           }
         }
 
-        TopolErrorDuplicates* err = new TopolErrorDuplicates( bb, conflict, fls );
+        TopolErrorDuplicates* err = new TopolErrorDuplicates( bb, conflict.take(), fls );
 
         errorList << err;
       }
@@ -437,9 +437,8 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
     }
 
   }
-
+  delete canvasExtentPoly;
   return errorList;
-
 }
 
 ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
@@ -452,25 +451,23 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
   // could be enabled for lines and points too
   // so duplicate rule may be removed?
 
-  if ( layer1->geometryType() != QGis::Polygon )
+  if ( layer1->geometryType() != Qgis::Polygon )
   {
     return errorList;
   }
 
-  QList<QgsFeatureId>* duplicateIds = new QList<QgsFeatureId>();
+  QList<QgsFeatureId> *duplicateIds = new QList<QgsFeatureId>();
 
-  QgsSpatialIndex* index;
-  index = mLayerIndexes[layer1->id()];
-
+  QgsSpatialIndex* index = mLayerIndexes[layer1->id()];
   if ( !index )
   {
     qDebug() << "no index present";
+    delete duplicateIds;
     return errorList;
   }
 
-  QMap<QgsFeatureId, FeatureLayer>::Iterator it;
-  QMap<QgsFeatureId, FeatureLayer>::ConstIterator FeatureListEnd = mFeatureMap2.end();
-  for ( it = mFeatureMap2.begin(); it != FeatureListEnd; ++it )
+  QMap<QgsFeatureId, FeatureLayer>::const_iterator it;
+  for ( it = mFeatureMap2.constBegin(); it != mFeatureMap2.constEnd(); ++it )
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
@@ -486,7 +483,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
     if ( testCancelled() )
       break;
 
-    QgsGeometry* g1 = it->feature.geometry();
+    const QgsGeometry* g1 = it->feature.constGeometry();
 
     if ( !g1->isGeosValid() )
     {
@@ -513,7 +510,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
       if ( mFeatureMap2[*cit].feature.id() == it->feature.id() )
         continue;
 
-      QgsGeometry* g2 = mFeatureMap2[*cit].feature.geometry();
+      const QgsGeometry* g2 = mFeatureMap2[*cit].feature.constGeometry();
       if ( !g2 )
       {
         QgsMessageLog::logMessage( tr( "Invalid second geometry in overlaps test." ), tr( "Topology plugin" ) );
@@ -544,28 +541,30 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
       {
         QList<FeatureLayer> fls;
         fls << *it << *it;
-        QgsGeometry* conflictGeom = g1->intersection( g2 );
+        QScopedPointer< QgsGeometry > conflictGeom( g1->intersection( g2 ) );
 
         if ( isExtent )
         {
-          if ( canvasExtentPoly->disjoint( conflictGeom ) )
+          if ( canvasExtentPoly->disjoint( conflictGeom.data() ) )
           {
             continue;
           }
-          if ( canvasExtentPoly->crosses( conflictGeom ) )
+          if ( canvasExtentPoly->crosses( conflictGeom.data() ) )
           {
-            conflictGeom = conflictGeom->intersection( canvasExtentPoly );
+            conflictGeom.reset( conflictGeom->intersection( canvasExtentPoly ) );
           }
         }
 
-        TopolErrorOverlaps* err = new TopolErrorOverlaps( bb, conflictGeom, fls );
+        TopolErrorOverlaps* err = new TopolErrorOverlaps( bb, conflictGeom.take(), fls );
 
         errorList << err;
       }
 
     }
-
+    delete canvasExtentPoly;
   }
+
+  delete duplicateIds;
 
   return errorList;
 }
@@ -582,19 +581,18 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   // could be enabled for lines and points too
   // so duplicate rule may be removed?
 
-  if ( layer1->geometryType() != QGis::Polygon )
+  if ( layer1->geometryType() != Qgis::Polygon )
   {
     return errorList;
   }
 
-  QList<FeatureLayer>::Iterator it;
+  QList<FeatureLayer>::iterator it;
   QgsGeometry* g1;
 
   QList<GEOSGeometry*> geomList;
 
   qDebug() << mFeatureList1.count() << " features in list!";
-  QList<FeatureLayer>::ConstIterator FeatureListEnd = mFeatureList1.end();
-  for ( it = mFeatureList1.begin(); it != FeatureListEnd; ++it )
+  for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
   {
     qDebug() << "reading features-" << i;
 
@@ -636,6 +634,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
         QgsGeometry* polyGeom = QgsGeometry::fromPolygon( polygon );
 
         geomList.push_back( GEOSGeom_clone_r( geosctxt, polyGeom->asGeos() ) );
+        delete polyGeom;
       }
 
     }
@@ -654,14 +653,14 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
 
   qDebug() << "creating geometry collection-";
 
-  if ( geomList.size() == 0 )
+  if ( geomList.isEmpty() )
   {
     //qDebug() << "geometry list is empty!";
     delete [] geomArray;
     return errorList;
   }
 
-  GEOSGeometry* collection = 0;
+  GEOSGeometry* collection = nullptr;
   collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomArray, geomList.size() );
 
 
@@ -678,10 +677,12 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   QString extentWkt =  test.boundingBox().asWktPolygon();
   QgsGeometry* extentGeom = QgsGeometry::fromWkt( extentWkt );
   QgsGeometry* bufferExtent = extentGeom->buffer( 2, 3 );
+  delete extentGeom;
 
   //qDebug() << "extent wkt - " << bufferExtent->exportToWkt();
 
   QgsGeometry* diffGeoms = bufferExtent->difference( &test );
+  delete bufferExtent;
   if ( !diffGeoms )
   {
     qDebug() << "difference result 0-";
@@ -691,6 +692,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   //qDebug() << "difference gometry - " << diffGeoms->exportToWkt();
 
   QList<QgsGeometry*> geomColl = diffGeoms->asGeometryCollection();
+  delete diffGeoms;
 
   QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
@@ -709,7 +711,6 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
       }
     }
     QgsRectangle bBox = conflictGeom->boundingBox();
-    QgsFeature feat;
     FeatureLayer ftrLayer1;
     ftrLayer1.layer = layer1;
     QList<FeatureLayer> errorFtrLayers;
@@ -718,6 +719,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
     errorList << err;
   }
 
+  delete canvasExtentPoly;
   return errorList;
 }
 
@@ -730,13 +732,12 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
   ErrorList errorList;
   QgsFeature f;
 
-  if ( layer1->geometryType() != QGis::Line )
+  if ( layer1->geometryType() != Qgis::Line )
   {
     return errorList;
   }
 
-  QList<FeatureLayer>::Iterator it;
-  QList<FeatureLayer>::ConstIterator FeatureListEnd = mFeatureList1.end();
+  QList<FeatureLayer>::iterator it;
 
   qDebug() << mFeatureList1.count();
 
@@ -745,7 +746,7 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
 
   std::multimap<QgsPoint, QgsFeatureId, PointComparer> endVerticesMap;
 
-  for ( it = mFeatureList1.begin(); it != FeatureListEnd; ++it )
+  for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
@@ -810,6 +811,7 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
       {
         if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
+          delete conflictGeom;
           continue;
         }
       }
@@ -831,7 +833,7 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
 
     }
   }
-
+  delete canvasExtentPoly;
   return errorList;
 }
 
@@ -889,11 +891,11 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
 
   ErrorList errorList;
 
-  if ( layer1->geometryType() != QGis::Point )
+  if ( layer1->geometryType() != Qgis::Point )
   {
     return errorList;
   }
-  if ( layer2->geometryType() == QGis::Point )
+  if ( layer2->geometryType() == Qgis::Point )
   {
     return errorList;
   }
@@ -925,7 +927,7 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
 
       if ( !g2 )
       {
@@ -949,6 +951,7 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
       {
         if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
+          delete conflictGeom;
           continue;
         }
       }
@@ -962,7 +965,7 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
       errorList << err;
     }
   }
-
+  delete canvasExtentPoly;
   return errorList;
 }
 
@@ -977,8 +980,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer* layer
   QgsFeature f;
 
 
-  QList<FeatureLayer>::Iterator it;
-  QList<FeatureLayer>::ConstIterator FeatureListEnd = mFeatureList1.end();
+  QList<FeatureLayer>::iterator it;
 
   QgsPolygon pol;
 
@@ -990,7 +992,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer* layer
   TopolErrorShort* err;
   double distance;
 
-  for ( it = mFeatureList1.begin(); it != FeatureListEnd; ++it )
+  for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
   {
     if ( !( ++i % 100 ) )
     {
@@ -1008,8 +1010,8 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer* layer
     // switching by type here, because layer can contain both single and multi version geometries
     switch ( g1->wkbType() )
     {
-      case QGis::WKBLineString:
-      case QGis::WKBLineString25D:
+      case Qgis::WKBLineString:
+      case Qgis::WKBLineString25D:
         ls = g1->asPolyline();
 
 
@@ -1032,8 +1034,8 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer* layer
         }
         break;
 
-      case QGis::WKBPolygon:
-      case QGis::WKBPolygon25D:
+      case Qgis::WKBPolygon:
+      case Qgis::WKBPolygon25D:
         pol = g1->asPolygon();
 
         for ( int i = 0; i < pol.size(); ++i )
@@ -1058,8 +1060,8 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer* layer
 
         break;
 
-      case QGis::WKBMultiLineString:
-      case QGis::WKBMultiLineString25D:
+      case Qgis::WKBMultiLineString:
+      case Qgis::WKBMultiLineString25D:
         mls = g1->asMultiPolyline();
 
         for ( int k = 0; k < mls.size(); ++k )
@@ -1084,8 +1086,8 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer* layer
         }
         break;
 
-      case QGis::WKBMultiPolygon:
-      case QGis::WKBMultiPolygon25D:
+      case Qgis::WKBMultiPolygon:
+      case Qgis::WKBMultiPolygon25D:
         mpol = g1->asMultiPolygon();
 
         for ( int k = 0; k < mpol.size(); ++k )
@@ -1134,9 +1136,8 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
   QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
-  QList<FeatureLayer>::Iterator it;
-  QList<FeatureLayer>::ConstIterator FeatureListEnd = mFeatureList1.end();
-  for ( it = mFeatureList1.begin(); it != FeatureListEnd; ++it )
+  QList<FeatureLayer>::iterator it;
+  for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
@@ -1155,7 +1156,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
 
       // skip itself, when invoked with the same layer
       if ( skipItself && f.id() == it->feature.id() )
@@ -1171,9 +1172,9 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
       {
         QgsRectangle r = bb;
         QgsRectangle r2 = g2->boundingBox();
-        r.combineExtentWith( &r2 );
+        r.combineExtentWith( r2 );
 
-        QgsGeometry* conflictGeom = g1->intersection( g2 );
+        QScopedPointer<QgsGeometry> conflictGeom( g1->intersection( g2 ) );
         // could this for some reason return NULL?
         if ( !conflictGeom )
         {
@@ -1182,13 +1183,13 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
 
         if ( isExtent )
         {
-          if ( canvasExtentPoly->disjoint( conflictGeom ) )
+          if ( canvasExtentPoly->disjoint( conflictGeom.data() ) )
           {
             continue;
           }
-          if ( canvasExtentPoly->crosses( conflictGeom ) )
+          if ( canvasExtentPoly->crosses( conflictGeom.data() ) )
           {
-            conflictGeom = conflictGeom->intersection( canvasExtentPoly );
+            conflictGeom.reset( conflictGeom->intersection( canvasExtentPoly ) );
           }
         }
 
@@ -1199,12 +1200,13 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
         fl.feature = f;
         fl.layer = layer2;
         fls << *it << fl;
-        TopolErrorIntersection* err = new TopolErrorIntersection( r, conflictGeom, fls );
+        TopolErrorIntersection* err = new TopolErrorIntersection( r, conflictGeom.take(), fls );
 
         errorList << err;
       }
     }
   }
+  delete canvasExtentPoly;
   return errorList;
 }
 
@@ -1218,12 +1220,12 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
   ErrorList errorList;
 
 
-  if ( layer1->geometryType() != QGis::Point )
+  if ( layer1->geometryType() != Qgis::Point )
   {
     return errorList;
   }
 
-  if ( layer2->geometryType() != QGis::Line )
+  if ( layer2->geometryType() != Qgis::Line )
   {
     return errorList;
   }
@@ -1249,18 +1251,21 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
       if ( !g2 || !g2->asGeos() )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
-      QgsGeometry* startPoint = QgsGeometry::fromPoint( g2->asPolyline().first() );
-      QgsGeometry* endPoint = QgsGeometry::fromPoint( g2->asPolyline().last() );
+      QgsPolyline g2Line = g2->asPolyline();
+      QgsGeometry* startPoint = QgsGeometry::fromPoint( g2Line.at( 0 ) );
+      QgsGeometry* endPoint = QgsGeometry::fromPoint( g2Line.last() );
+      touched = g1->intersects( startPoint ) || g1->intersects( endPoint );
+      delete startPoint;
+      delete endPoint;
 
-      if ( g1->intersects( startPoint ) || g1->intersects( endPoint ) )
+      if ( touched )
       {
-        touched = true;
         break;
       }
     }
@@ -1271,6 +1276,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
       {
         if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
+          delete conflictGeom;
           continue;
         }
       }
@@ -1283,8 +1289,8 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
       errorList << err;
     }
   }
+  delete canvasExtentPoly;
   return errorList;
-
 }
 
 ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
@@ -1295,12 +1301,12 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
   ErrorList errorList;
 
 
-  if ( layer1->geometryType() != QGis::Line )
+  if ( layer1->geometryType() != Qgis::Line )
   {
     return errorList;
   }
 
-  if ( layer2->geometryType() != QGis::Point )
+  if ( layer2->geometryType() != Qgis::Point )
   {
     return errorList;
   }
@@ -1318,8 +1324,9 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
       break;
     QgsGeometry* g1 = it->feature.geometry();
 
-    QgsGeometry* startPoint = QgsGeometry::fromPoint( g1->asPolyline().first() );
-    QgsGeometry* endPoint = QgsGeometry::fromPoint( g1->asPolyline().last() );
+    QgsPolyline g1Polyline = g1->asPolyline();
+    QgsGeometry* startPoint = QgsGeometry::fromPoint( g1Polyline.at( 0 ) );
+    QgsGeometry* endPoint = QgsGeometry::fromPoint( g1Polyline.last() );
 
     QgsRectangle bb = g1->boundingBox();
     QList<QgsFeatureId> crossingIds;
@@ -1334,7 +1341,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
       if ( !g2 || !g2->asGeos() )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
@@ -1359,32 +1366,34 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
       }
 
     }
+    delete startPoint;
+    delete endPoint;
+
     if ( !touched )
     {
-      QgsGeometry* conflictGeom = new QgsGeometry( *g1 );
+      QScopedPointer<QgsGeometry> conflictGeom( new QgsGeometry( *g1 ) );
 
       if ( isExtent )
       {
-        if ( canvasExtentPoly->disjoint( conflictGeom ) )
+        if ( canvasExtentPoly->disjoint( conflictGeom.data() ) )
         {
           continue;
         }
-        if ( canvasExtentPoly->crosses( conflictGeom ) )
+        if ( canvasExtentPoly->crosses( conflictGeom.data() ) )
         {
-          conflictGeom = conflictGeom->intersection( canvasExtentPoly );
+          conflictGeom.reset( conflictGeom->intersection( canvasExtentPoly ) );
         }
       }
       QList<FeatureLayer> fls;
       fls << *it << *it;
       //bb.scale(10);
 
-
-      TopolErrorLineEndsNotCoveredByPoints* err = new TopolErrorLineEndsNotCoveredByPoints( bb, conflictGeom, fls );
+      TopolErrorLineEndsNotCoveredByPoints* err = new TopolErrorLineEndsNotCoveredByPoints( bb, conflictGeom.take(), fls );
       errorList << err;
     }
   }
+  delete canvasExtentPoly;
   return errorList;
-
 }
 
 ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
@@ -1394,12 +1403,12 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
   int i = 0;
   ErrorList errorList;
 
-  if ( layer1->geometryType() != QGis::Point )
+  if ( layer1->geometryType() != Qgis::Point )
   {
     return errorList;
   }
 
-  if ( layer2->geometryType() != QGis::Polygon )
+  if ( layer2->geometryType() != Qgis::Polygon )
   {
     return errorList;
   }
@@ -1425,7 +1434,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
       if ( !g2 || !g2->asGeos() )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
@@ -1445,6 +1454,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
       {
         if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
+          delete conflictGeom;
           continue;
         }
       }
@@ -1457,8 +1467,9 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
       errorList << err;
     }
   }
-  return errorList;
 
+  delete canvasExtentPoly;
+  return errorList;
 }
 
 
@@ -1470,12 +1481,12 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
   int i = 0;
   ErrorList errorList;
 
-  if ( layer1->geometryType() != QGis::Polygon )
+  if ( layer1->geometryType() != Qgis::Polygon )
   {
     return errorList;
   }
 
-  if ( layer2->geometryType() != QGis::Point )
+  if ( layer2->geometryType() != Qgis::Point )
   {
     return errorList;
   }
@@ -1499,7 +1510,7 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
       if ( !g2 || !g2->asGeos() )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
@@ -1561,7 +1572,7 @@ ErrorList topolTest::checkMultipart( double tolerance, QgsVectorLayer *layer1, Q
   return errorList;
 }
 
-void topolTest::fillFeatureMap( QgsVectorLayer* layer, QgsRectangle extent )
+void topolTest::fillFeatureMap( QgsVectorLayer* layer, const QgsRectangle& extent )
 {
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
@@ -1580,14 +1591,14 @@ void topolTest::fillFeatureMap( QgsVectorLayer* layer, QgsRectangle extent )
 
   while ( fit.nextFeature( f ) )
   {
-    if ( f.geometry() )
+    if ( f.constGeometry() )
     {
       mFeatureMap2[f.id()] = FeatureLayer( layer, f );
     }
   }
 }
 
-void topolTest::fillFeatureList( QgsVectorLayer* layer, QgsRectangle extent )
+void topolTest::fillFeatureList( QgsVectorLayer* layer, const QgsRectangle& extent )
 {
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
@@ -1606,7 +1617,7 @@ void topolTest::fillFeatureList( QgsVectorLayer* layer, QgsRectangle extent )
 
   while ( fit.nextFeature( f ) )
   {
-    if ( f.geometry() )
+    if ( f.constGeometry() )
     {
       mFeatureList1 << FeatureLayer( layer, f );
     }
@@ -1614,7 +1625,7 @@ void topolTest::fillFeatureList( QgsVectorLayer* layer, QgsRectangle extent )
 
 }
 
-QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, QgsRectangle extent )
+QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, const QgsRectangle& extent )
 {
   QgsSpatialIndex* index = new QgsSpatialIndex();
 
@@ -1642,10 +1653,10 @@ QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, QgsRectangle ext
     if ( testCancelled() )
     {
       delete index;
-      return 0;
+      return nullptr;
     }
 
-    if ( f.geometry() )
+    if ( f.constGeometry() )
     {
       index->insertFeature( f );
       mFeatureMap2[f.id()] = FeatureLayer( layer, f );
@@ -1655,7 +1666,7 @@ QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, QgsRectangle ext
   return index;
 }
 
-ErrorList topolTest::runTest( QString testName, QgsVectorLayer* layer1, QgsVectorLayer* layer2, ValidateType type, double tolerance )
+ErrorList topolTest::runTest( const QString& testName, QgsVectorLayer* layer1, QgsVectorLayer* layer2, ValidateType type, double tolerance )
 {
   QgsDebugMsg( QString( "Running test %1" ).arg( testName ) );
   ErrorList errors;
@@ -1672,7 +1683,6 @@ ErrorList topolTest::runTest( QString testName, QgsVectorLayer* layer1, QgsVecto
     return errors;
   }
 
-  QString secondLayerId;
   mFeatureList1.clear();
   mFeatureMap2.clear();
 
@@ -1696,8 +1706,6 @@ ErrorList topolTest::runTest( QString testName, QgsVectorLayer* layer1, QgsVecto
 
     fillFeatureList( layer1, extent );
     //fillFeatureMap( layer1, extent );
-
-    QString secondLayerId = layer2->id();
 
     if ( !mLayerIndexes.contains( layer2->id() ) )
     {

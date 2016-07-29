@@ -14,17 +14,19 @@
  ***************************************************************************/
 #include "qgsformannotationdialog.h"
 #include "qgsannotationwidget.h"
+#include "qgsformannotationitem.h"
 #include "qgsvectorlayer.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 
 QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsFormAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )
+    : QDialog( parent, f )
+    , mItem( item )
+    , mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
@@ -73,7 +75,7 @@ void QgsFormAnnotationDialog::on_mBrowseToolButton_clicked()
   {
     directory = fi.absolutePath();
   }
-  QString filename = QFileDialog::getOpenFileName( 0, tr( "Qt designer file" ), directory, "*.ui" );
+  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, "*.ui" );
   mFileLineEdit->setText( filename );
 }
 
@@ -85,6 +87,14 @@ void QgsFormAnnotationDialog::deleteItem()
     scene->removeItem( mItem );
   }
   delete mItem;
-  mItem = 0;
+  mItem = nullptr;
+}
+
+void QgsFormAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applySettingsToItem();
+  }
 }
 

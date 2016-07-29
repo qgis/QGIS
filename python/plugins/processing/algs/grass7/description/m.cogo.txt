@@ -1,5 +1,5 @@
 m.cogo
-m.cogo - A simple utility for converting bearing and distance measurements to coordinates and vice versa. It assumes a cartesian coordinate system 
+A simple utility for converting bearing and distance measurements to coordinates and vice versa. It assumes a cartesian coordinate system 
 Miscellaneous (m.*)
 ParameterFile|input|Name of input file|False
 OutputFile|output|Output text file

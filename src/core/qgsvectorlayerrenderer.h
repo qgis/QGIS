@@ -41,11 +41,28 @@ typedef QList<int> QgsAttributeList;
 
 #include "qgsmaplayerrenderer.h"
 
+class QgsVectorLayerLabelProvider;
+class QgsVectorLayerDiagramProvider;
 
-/**
+/** \ingroup core
+ * Interruption checker used by QgsVectorLayerRenderer::render()
+ * @note not available in Python bindings
+ */
+class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
+{
+  public:
+    /** Constructor */
+    explicit QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext& context );
+    bool mustStop() const override;
+  private:
+    const QgsRenderContext& mContext;
+};
+
+/** \ingroup core
  * Implementation of threaded rendering for vector layers.
  *
  * @note added in 2.4
+ * @note not available in Python bindings
  */
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
@@ -61,7 +78,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
   private:
 
-    /**Registers label and diagram layer
+    /** Registers label and diagram layer
       @param layer diagram layer
       @param attributeNames attributes needed for labeling and diagrams will be added to the list
      */
@@ -84,6 +101,11 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsRenderContext& mContext;
 
+    QgsVectorLayerRendererInterruptionChecker mInterruptionChecker;
+
+    /** The rendered layer */
+    QgsVectorLayer* mLayer;
+
     QgsFields mFields; // TODO: use fields from mSource
 
     QgsFeatureIds mSelectedFeatureIds;
@@ -92,19 +114,27 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsFeatureRendererV2 *mRendererV2;
 
-    bool mCacheFeatures;
     QgsGeometryCache* mCache;
 
     bool mDrawVertexMarkers;
     bool mVertexMarkerOnlyForSelection;
     int mVertexMarkerStyle, mVertexMarkerSize;
 
-    QGis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType;
 
     QStringList mAttrNames;
 
+    //! used with old labeling engine (QgsPalLabeling): whether labeling is enabled
     bool mLabeling;
+    //! used with new labeling engine (QgsPalLabeling): whether diagrams are enabled
     bool mDiagrams;
+
+    //! used with new labeling engine (QgsLabelingEngineV2): provider for labels.
+    //! may be null. no need to delete: if exists it is owned by labeling engine
+    QgsVectorLayerLabelProvider* mLabelProvider;
+    //! used with new labeling engine (QgsLabelingEngineV2): provider for diagrams.
+    //! may be null. no need to delete: if exists it is owned by labeling engine
+    QgsVectorLayerDiagramProvider* mDiagramProvider;
 
     int mLayerTransparency;
     QPainter::CompositionMode mFeatureBlendMode;

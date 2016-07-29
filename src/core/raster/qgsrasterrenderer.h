@@ -20,7 +20,6 @@
 
 #include <QPair>
 
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;
@@ -33,6 +32,9 @@ class QgsRasterTransparency;
   */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
+
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer );
+
   public:
     // Origin of min / max values
     enum MinMaxOrigin
@@ -53,14 +55,14 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     static const QRgb NODATA_COLOR;
 
-    QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
+    QgsRasterRenderer( QgsRasterInterface* input = nullptr, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
-    QgsRasterInterface * clone() const override = 0;
+    QgsRasterRenderer * clone() const override = 0;
 
     virtual int bandCount() const override;
 
-    virtual QGis::DataType dataType( int bandNo ) const override;
+    virtual Qgis::DataType dataType( int bandNo ) const override;
 
     virtual QString type() const { return mType; }
 
@@ -79,33 +81,43 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
-    /**Get symbology items if provided by renderer*/
+    /** Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& rendererElem ) override;
+    /** Sets base class members from xml. Usually called from create() methods of subclasses*/
+    void readXml( const QDomElement& rendererElem ) override;
 
-    /**Returns a list of band numbers used by the renderer*/
+    /** Copies common properties like opacity / transparency data from other renderer.
+     *  Useful when cloning renderers.
+     *  @note added in 2.16  */
+    void copyCommonProperties( const QgsRasterRenderer* other );
+
+    /** Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const { return QList<int>(); }
 
     static QString minMaxOriginName( int theOrigin );
     static QString minMaxOriginLabel( int theOrigin );
-    static int minMaxOriginFromName( QString theName );
+    static int minMaxOriginFromName( const QString& theName );
 
   protected:
 
-    /**Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
-    void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
+    /** Write upper class info into rasterrenderer element (called by writeXml method of subclasses)*/
+    void _writeXml( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
     QString mType;
 
-    /**Global alpha value (0-1)*/
+    /** Global alpha value (0-1)*/
     double mOpacity;
-    /**Raster transparency per color or value. Overwrites global alpha value*/
+    /** Raster transparency per color or value. Overwrites global alpha value*/
     QgsRasterTransparency* mRasterTransparency;
-    /**Read alpha value from band. Is combined with value from raster transparency / global alpha value.
+    /** Read alpha value from band. Is combined with value from raster transparency / global alpha value.
         Default: -1 (not set)*/
     int mAlphaBand;
+
+  private:
+
+    QgsRasterRenderer( const QgsRasterRenderer& );
+    const QgsRasterRenderer& operator=( const QgsRasterRenderer& );
 };
 
 #endif // QGSRASTERRENDERER_H

@@ -2,7 +2,9 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Calculate univariate statistics for numeric attributes in a data table" module="v.db.univar">
-	<option key="table" />
-	<field key="column" layer="table" type="integer,double" label="Attribute field" />
+	<option key="table" version_max="6"/>
+	<option key="map" version_min="7"/>
+	<field key="column" layer="table" type="integer,double" label="Attribute field" version_max="6"/>
+	<field key="column" layer="map" type="integer,double" label="Attribute field" version_min="7"/>
 	<flag key="e" answer="no"/>
 </qgisgrassmodule>

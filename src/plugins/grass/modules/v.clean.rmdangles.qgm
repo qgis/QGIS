@@ -4,6 +4,7 @@
 <qgisgrassmodule label="Remove dangles" module="v.clean">
 	<option key="input" typeoption="type"/>
 	<option key="tool" answer="rmdangle" hidden="yes"/>
-	<option key="thresh"/>
+	<option key="thresh" version_max="6"/>
+	<option key="threshold" version_min="7"/>
 	<option key="output"/>
 </qgisgrassmodule>

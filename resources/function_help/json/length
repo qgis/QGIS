@@ -1,0 +1,16 @@
+{
+  "name": "length",
+  "type": "function",
+  "description": "Returns the number of characters in a string or the length of a geometry linestring.",
+  "variants": [
+  { "variant": "String variant",
+      "variant_description": "Returns the number of characters in a string.",
+      "arguments": [ {"arg":"string","description":"string to count length of"} ],
+      "examples": [ { "expression":"length('hello')", "returns":"5"} ] },
+      {
+      "variant": "Geometry variant",
+      "variant_description": "Calculate the length of a geometry line object. Calculations are always planimetric in the Spatial Reference System (SRS) of this geometry, and the units of the returned length will match the units for the SRS. This differs from the calculations performed by the $length function, which will perform ellipsoidal calculations based on the project's ellipsoid and distance unit settings.",
+      "arguments": [ {"arg":"geometry","description":"line geometry object"}],
+      "examples": [ { "expression":"length(geom_from_wkt('LINESTRING(0 0, 4 0)'))", "returns":"4.0"}]
+  }]
+}

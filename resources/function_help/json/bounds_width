@@ -1,0 +1,8 @@
+{
+  "name": "bounds_width",
+  "type": "function",
+  "description": "Returns the width of the bounding box of a geometry. Calculations are in the Spatial Reference System of this geometry.",
+  "arguments": [ {"arg":"geom","description":"a geometry"}],
+  "examples": [ { "expression":"bounds_width($geometry)", "returns":"width of bounding box of $geometry"}]
+}
+

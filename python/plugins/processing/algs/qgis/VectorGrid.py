@@ -25,10 +25,13 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 import math
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+
+from qgis.core import Qgis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,7 +39,8 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class VectorGrid(GeoAlgorithm):
@@ -47,21 +51,24 @@ class VectorGrid(GeoAlgorithm):
     TYPE = 'TYPE'
     OUTPUT = 'OUTPUT'
 
-    TYPES = ['Output grid as polygons',
-             'Output grid as lines'
-            ]
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
     def defineCharacteristics(self):
-        self.name = 'Vector grid'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Vector grid')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+
+        self.types = [self.tr('Output grid as polygons'),
+                      self.tr('Output grid as lines')]
+
         self.addParameter(ParameterExtent(self.EXTENT,
-            self.tr('Grid extent')))
+                                          self.tr('Grid extent')))
         self.addParameter(ParameterNumber(self.STEP_X,
-            self.tr('X spacing'), 0.0, 1000000000.0, 0.0001))
+                                          self.tr('X spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterNumber(self.STEP_Y,
-            self.tr('Y spacing'), 0.0, 1000000000.0, 0.0001))
+                                          self.tr('Y spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterSelection(self.TYPE,
-            self.tr('Grid type'), self.TYPES))
+                                             self.tr('Grid type'), self.types))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid')))
 
@@ -86,12 +93,12 @@ class VectorGrid(GeoAlgorithm):
             fields.append(QgsField('ymax', QVariant.Double, '', 24, 15))
             fieldCount = 5
             writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-                fields, QGis.WKBPolygon, mapCRS)
+                fields, Qgis.WKBPolygon, mapCRS)
         else:
             fields.append(QgsField('coord', QVariant.Double, '', 24, 15))
             fieldCount = 2
             writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-                fields, QGis.WKBPolygon, mapCRS)
+                fields, Qgis.WKBLineString, mapCRS)
 
         feat = QgsFeature()
         feat.initAttributes(fieldCount)
@@ -118,7 +125,7 @@ class VectorGrid(GeoAlgorithm):
                 if int(math.fmod(count, count_update)) == 0:
                     progress.setPercentage(int(count / count_max * 50))
 
-            progress.setPercentage( 50 )
+            progress.setPercentage(50)
             # counters for progressbar - update every 5%
             count = 0
             count_max = (bbox.xMaximum() - bbox.xMinimum()) / xSpace
@@ -132,7 +139,7 @@ class VectorGrid(GeoAlgorithm):
                 feat.setAttribute(0, idVar)
                 feat.setAttribute(1, x)
                 writer.addFeature(feat)
-                x = x + xOffset
+                x = x + xSpace
                 idVar += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:

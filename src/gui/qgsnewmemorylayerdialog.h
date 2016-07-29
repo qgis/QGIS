@@ -20,31 +20,34 @@
 #include "ui_qgsnewmemorylayerdialogbase.h"
 #include "qgisgui.h"
 #include "qgis.h"
-#include "qgsvectorlayer.h"
-#include "qgscoordinatereferencesystem.h"
 
+class QgsVectorLayer;
+
+/** \ingroup gui
+ * \class QgsNewMemoryLayerDialog
+ */
 class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemoryLayerDialogBase
 {
     Q_OBJECT
 
   public:
 
-    /**Runs the dialoag and creates a new memory layer
+    /** Runs the dialoag and creates a new memory layer
      * @param parent parent widget
      * @returns new memory layer
      */
-    static QgsVectorLayer* runAndCreateLayer( QWidget* parent = 0 );
+    static QgsVectorLayer* runAndCreateLayer( QWidget* parent = nullptr );
 
-    QgsNewMemoryLayerDialog( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewMemoryLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewMemoryLayerDialog();
 
-    /**Returns the selected geometry type*/
-    QGis::WkbType selectedType() const;
+    /** Returns the selected geometry type*/
+    Qgis::WkbType selectedType() const;
 
-    /**Returns the selected crs*/
+    /** Returns the selected crs*/
     QgsCoordinateReferenceSystem crs() const;
 
-    /**Returns the layer name*/
+    /** Returns the layer name*/
     QString layerName() const;
 
   private:

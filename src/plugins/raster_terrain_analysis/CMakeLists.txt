@@ -33,13 +33,17 @@ ADD_LIBRARY (rasterterrainplugin MODULE
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ${GDAL_INCLUDE_DIR}
      ../../core
+     ../../core/geometry
      ../../core/raster
      ../../gui
      ../../analysis/raster
      ..
      .
+)
+
+INCLUDE_DIRECTORIES(SYSTEM
+     ${GDAL_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(rasterterrainplugin

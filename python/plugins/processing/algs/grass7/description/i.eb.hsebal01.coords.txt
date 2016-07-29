@@ -1,0 +1,15 @@
+i.eb.hsebal01
+i.eb.hsebal01.coords - Computes sensible heat flux iteration SEBAL 01. Inline coordinates
+Imagery (i.*)
+ParameterRaster|netradiation|Name of instantaneous net radiation raster map [W/m2]|False
+ParameterRaster|soilheatflux|Name of instantaneous soil heat flux raster map [W/m2]|False
+ParameterRaster|aerodynresistance|Name of aerodynamic resistance to heat momentum raster map [s/m]|False
+ParameterRaster|temperaturemeansealevel|Name of altitude corrected surface temperature raster map [K]|False
+ParameterNumber|frictionvelocitystar|Value of the height independent friction velocity (u*) [m/s]|0.0|None|0.32407|False
+ParameterNumber|vapourpressureactual|Value of the actual vapour pressure (e_act) [KPa]|0.0|None|1.511|False
+ParameterString|row_wet_pixel|Row value of the wet pixel|None|False|False
+ParameterString|column_wet_pixel|Column value of the wet pixel|None|False|False
+ParameterString|row_dry_pixel|Row value of the dry pixel|None|False|False
+ParameterString|column_dry_pixel|Column value of the dry pixel|None|False|False
+*ParameterBoolean|-c|Dry/Wet pixels coordinates are in image projection, not row/col|False
+OutputRaster|output|Sensible Heat Flux

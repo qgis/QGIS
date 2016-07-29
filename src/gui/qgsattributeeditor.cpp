@@ -20,45 +20,10 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetwrapper.h"
 
-#include "qgsattributedialog.h"
 #include "qgsattributeeditor.h"
 #include "qgsattributeeditorcontext.h"
-#include "qgscategorizedsymbolrendererv2.h"
-#include "qgscolorbutton.h"
-#include "qgsexpression.h"
-#include "qgsfieldvalidator.h"
-#include "qgsfilterlineedit.h"
-#include "qgslogger.h"
-#include "qgslonglongvalidator.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsrelationeditorwidget.h"
-#include "qgsrelationmanager.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-#include <QScrollArea>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QFileDialog>
-#include <QComboBox>
-#include <QListWidget>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QCompleter>
-#include <QHBoxLayout>
-#include <QPlainTextEdit>
-#include <QDial>
-#include <QCalendarWidget>
-#include <QDialogButtonBox>
-#include <QSettings>
-#include <QDir>
-#include <QUuid>
-#include <QGroupBox>
-#include <QLabel>
-#include <QWebView>
-#include <QDesktopServices>
 
 QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value )
 {
@@ -78,8 +43,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
 QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* editor, QgsVectorLayer* vl, int idx, const QVariant& value, QgsAttributeEditorContext& context )
 {
-  QString widgetType = vl->editorWidgetV2( idx );
-  QgsEditorWidgetConfig cfg = vl->editorWidgetV2Config( idx );
+  QString widgetType = vl->editFormConfig()->widgetType( idx );
+  QgsEditorWidgetConfig cfg = vl->editFormConfig()->widgetConfig( idx );
 
   QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, vl, idx, cfg, editor, parent, context );
 
@@ -90,7 +55,7 @@ QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* ed
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 

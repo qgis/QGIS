@@ -16,7 +16,6 @@
 #ifndef QGSEXPRESSIONHIGHLIGHTER_H
 #define QGSEXPRESSIONHIGHLIGHTER_H
 
-#include "qgsfield.h"
 #include <QSyntaxHighlighter>
 
 #include <QHash>
@@ -25,13 +24,16 @@
 
 class QTextDocument;
 
+/** \ingroup gui
+ * \class QgsExpressionHighlighter
+ */
 class GUI_EXPORT QgsExpressionHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 
   public:
-    QgsExpressionHighlighter( QTextDocument *parent = 0 );
-    void addFields( QStringList fieldList );
+    QgsExpressionHighlighter( QTextDocument *parent = nullptr );
+    void addFields( const QStringList& fieldList );
 
   protected:
     void highlightBlock( const QString &text ) override;

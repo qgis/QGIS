@@ -25,39 +25,37 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import Qgis, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 from processing.tools import dataobjects, vector
 
+
 class GeometryConvert(GeoAlgorithm):
     INPUT = 'INPUT'
     TYPE = 'TYPE'
     OUTPUT = 'OUTPUT'
 
-    TYPES = ['Centroids',
-             'Nodes',
-             'Linestrings',
-             'Multilinestrings',
-             'Polygons'
-            ]
-
     def defineCharacteristics(self):
-        self.name = 'Convert geometry type'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Convert geometry type')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+
+        self.types = [self.tr('Centroids'),
+                      self.tr('Nodes'),
+                      self.tr('Linestrings'),
+                      self.tr('Multilinestrings'),
+                      self.tr('Polygons')]
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterSelection(self.TYPE,
-            self.tr('New geometry type'), self.TYPES))
+                                             self.tr('New geometry type'), self.types))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -66,45 +64,44 @@ class GeometryConvert(GeoAlgorithm):
 
         splitNodes = False
         if index == 0:
-            newType = QGis.WKBPoint
+            newType = Qgis.WKBPoint
         elif index == 1:
-            newType = QGis.WKBPoint
+            newType = Qgis.WKBPoint
             splitNodes = True
         elif index == 2:
-            newType = QGis.WKBLineString
+            newType = Qgis.WKBLineString
         elif index == 3:
-            newType = QGis.WKBMultiLineString
+            newType = Qgis.WKBMultiLineString
         elif index == 4:
-            newType = QGis.WKBPolygon
+            newType = Qgis.WKBPolygon
         else:
-            newType = QGis.WKBPoint
+            newType = Qgis.WKBPoint
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.pendingFields(), newType, layer.crs())
 
         features = vector.features(layer)
-        count = len(features)
-        total = 100.0 / float(count)
+        total = 100.0 / len(features)
 
-        for count, f in enumerate(features):
+        for current, f in enumerate(features):
             geom = f.geometry()
             geomType = geom.wkbType()
 
-            if geomType in [QGis.WKBPoint, QGis.WKBPoint25D]:
-                if newType == QGis.WKBPoint:
+            if geomType in [Qgis.WKBPoint, Qgis.WKBPoint25D]:
+                if newType == Qgis.WKBPoint:
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Cannot convert from %s to %s', geomType, newType))
-            elif geomType in [QGis.WKBMultiPoint, QGis.WKBMultiPoint25D]:
-                if newType == QGis.WKBPoint and splitNodes:
+            elif geomType in [Qgis.WKBMultiPoint, Qgis.WKBMultiPoint25D]:
+                if newType == Qgis.WKBPoint and splitNodes:
                     points = geom.asMultiPoint()
                     for p in points:
                         feat = QgsFeature()
                         feat.setAttributes(f.attributes())
                         feat.setGeometry(QgsGeometry.fromPoint(p))
                         writer.addFeature(feat)
-                elif newType == QGis.WKBPoint:
+                elif newType == Qgis.WKBPoint:
                     feat = QgsFeature()
                     feat.setAttributes(f.attributes())
                     feat.setGeometry(geom.centroid())
@@ -112,26 +109,26 @@ class GeometryConvert(GeoAlgorithm):
                 else:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Cannot convert from %s to %s', geomType, newType))
-            elif geomType in [QGis.WKBLineString, QGis.WKBLineString25D]:
-                if newType == QGis.WKBPoint and splitNodes:
+            elif geomType in [Qgis.WKBLineString, Qgis.WKBLineString25D]:
+                if newType == Qgis.WKBPoint and splitNodes:
                     points = geom.asPolyline()
                     for p in points:
                         feat = QgsFeature()
                         feat.setAttributes(f.attributes())
                         feat.setGeometry(QgsGeometry.fromPoint(p))
                         writer.addFeature(feat)
-                elif newType == QGis.WKBPoint:
+                elif newType == Qgis.WKBPoint:
                     feat = QgsFeature()
                     feat.setAttributes(f.attributes())
                     feat.setGeometry(geom.centroid())
                     writer.addFeature(feat)
-                elif newType == QGis.WKBLineString:
+                elif newType == Qgis.WKBLineString:
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Cannot convert from %s to %s', geomType, newType))
-            elif geomType in [QGis.WKBMultiLineString, QGis.WKBMultiLineString25D]:
-                if newType == QGis.WKBPoint and splitNodes:
+            elif geomType in [Qgis.WKBMultiLineString, Qgis.WKBMultiLineString25D]:
+                if newType == Qgis.WKBPoint and splitNodes:
                     lines = geom.asMultiPolyline()
                     for line in lines:
                         for p in line:
@@ -139,25 +136,25 @@ class GeometryConvert(GeoAlgorithm):
                             feat.setAttributes(f.attributes())
                             feat.setGeometry(QgsGeometry.fromPoint(p))
                             writer.addFeature(feat)
-                elif newType == QGis.WKBPoint:
+                elif newType == Qgis.WKBPoint:
                     feat = QgsFeature()
                     feat.setAttributes(f.attributes())
                     feat.setGeometry(geom.centroid())
                     writer.addFeature(feat)
-                elif newType == QGis.WKBLineString:
+                elif newType == Qgis.WKBLineString:
                     lines = geom.asMultiPolyline()
                     for line in lines:
                         feat = QgsFeature()
                         feat.setAttributes(f.attributes())
                         feat.setGeometry(QgsGeometry.fromPolyline(line))
                         writer.addFeature(feat)
-                elif newType == QGis.WKBMultiLineString:
+                elif newType == Qgis.WKBMultiLineString:
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Cannot convert from %s to %s', geomType, newType))
-            elif geomType in [QGis.WKBPolygon, QGis.WKBPolygon25D]:
-                if newType == QGis.WKBPoint and splitNodes:
+            elif geomType in [Qgis.WKBPolygon, Qgis.WKBPolygon25D]:
+                if newType == Qgis.WKBPoint and splitNodes:
                     rings = geom.asPolygon()
                     for ring in rings:
                         for p in ring:
@@ -165,24 +162,24 @@ class GeometryConvert(GeoAlgorithm):
                             feat.setAttributes(f.attributes())
                             feat.setGeometry(QgsGeometry.fromPoint(p))
                             writer.addFeature(feat)
-                elif newType == QGis.WKBPoint:
+                elif newType == Qgis.WKBPoint:
                     feat = QgsFeature()
                     feat.setAttributes(f.attributes())
                     feat.setGeometry(geom.centroid())
                     writer.addFeature(feat)
-                elif newType == QGis.WKBMultiLineString:
+                elif newType == Qgis.WKBMultiLineString:
                     rings = geom.asPolygon()
                     feat = QgsFeature()
                     feat.setAttributes(f.attributes())
                     feat.setGeometry(QgsGeometry.fromMultiPolyline(rings))
                     writer.addFeature(feat)
-                elif newtype == QGis.WKBPolygon:
+                elif newType == Qgis.WKBPolygon:
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Cannot convert from %s to %s', geomType, newType))
-            elif geomType in [QGis.WKBMultiPolygon, QGis.WKBMultiPolygon25D]:
-                if newType == QGis.WKBPoint and splitNodes:
+            elif geomType in [Qgis.WKBMultiPolygon, Qgis.WKBMultiPolygon25D]:
+                if newType == Qgis.WKBPoint and splitNodes:
                     polygons = geom.asMultiPolygon()
                     for polygon in polygons:
                         for line in polygon:
@@ -191,31 +188,31 @@ class GeometryConvert(GeoAlgorithm):
                                 feat.setAttributes(f.attributes())
                                 feat.setGeometry(QgsGeometry.fromPoint(p))
                                 writer.addFeature(feat)
-                elif newType == QGis.WKBPoint:
+                elif newType == Qgis.WKBPoint:
                     feat = QgsFeature()
                     feat.setAttributes(f.attributes())
                     feat.setGeometry(geom.centroid())
                     writer.addFeature(feat)
-                elif newType == QGis.WKBLineString:
+                elif newType == Qgis.WKBLineString:
                     polygons = geom.asMultiPolygon()
                     for polygons in polygons:
                         feat = QgsFeature()
                         feat.setAttributes(f.attributes())
                         feat.setGeometry(QgsGeometry.fromPolyline(polygon))
                         writer.addFeature(feat)
-                elif newType == QGis.WKBPolygon:
+                elif newType == Qgis.WKBPolygon:
                     polygons = geom.asMultiPolygon()
                     for polygon in polygons:
                         feat = QgsFeature()
                         feat.setAttributes(f.attributes())
                         feat.setGeometry(QgsGeometry.fromPolygon(polygon))
                         writer.addFeature(feat)
-                elif newType in [QGis.WKBMultiLineString, QGis.WKBMultiPolygon]:
+                elif newType in [Qgis.WKBMultiLineString, Qgis.WKBMultiPolygon]:
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Cannot convert from %s to %s', geomType, newType))
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

@@ -29,9 +29,6 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as lab
 import numpy as np
 
-from PyQt4.QtCore import *
-from qgis.core import *
-
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -48,16 +45,20 @@ class BarPlot(GeoAlgorithm):
     VALUE_FIELD = 'VALUE_FIELD'
 
     def defineCharacteristics(self):
-        self.name = 'Bar plot'
-        self.group = 'Graphics'
+        self.name, self.i18n_name = self.trAlgorithm('Bar plot')
+        self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
-            self.tr('Category name field'), self.INPUT))
+                                              self.tr('Category name field'),
+                                              self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterTableField(self.VALUE_FIELD,
-            self.tr('Value field'), self.INPUT))
+                                              self.tr('Value field'),
+                                              self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -77,5 +78,5 @@ class BarPlot(GeoAlgorithm):
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
         f = open(output, 'w')
-        f.write('<img src="' + plotFilename + '"/>')
+        f.write('<html><img src="' + plotFilename + '"/></html>')
         f.close()

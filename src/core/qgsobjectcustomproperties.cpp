@@ -132,7 +132,7 @@ void QgsObjectCustomProperties::writeXml( QDomNode& parentNode, QDomDocument& do
     }
     else if ( it.value().canConvert<QStringList>() )
     {
-      foreach ( QString value, it.value().toStringList() )
+      Q_FOREACH ( const QString& value, it.value().toStringList() )
       {
         QDomElement itemElement = doc.createElement( "value" );
         itemElement.appendChild( doc.createTextNode( value ) );

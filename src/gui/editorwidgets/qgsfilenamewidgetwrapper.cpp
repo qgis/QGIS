@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,17 +16,21 @@
 #include "qgsfilenamewidgetwrapper.h"
 
 #include "qgsfilterlineedit.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QSettings>
 #include <QGridLayout>
 
 QgsFileNameWidgetWrapper::QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mLineEdit( nullptr )
+    , mPushButton( nullptr )
+    , mLabel( nullptr )
 {
 }
 
-QVariant QgsFileNameWidgetWrapper::value()
+QVariant QgsFileNameWidgetWrapper::value() const
 {
   QVariant value;
 
@@ -44,14 +48,30 @@ QVariant QgsFileNameWidgetWrapper::value()
   return value;
 }
 
+bool QgsFileNameWidgetWrapper::valid() const
+{
+  return mLineEdit || mLabel;
+}
+
+void QgsFileNameWidgetWrapper::showIndeterminateState()
+{
+  if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->clear();
+  }
+
+  if ( mLabel )
+    mLabel->clear();
+}
+
 QWidget* QgsFileNameWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );
   container->setBackgroundRole( QPalette::Window );
   container->setAutoFillBackground( true );
 
-  QLineEdit* le = new QgsFilterLineEdit( container );
-  QPushButton* pbn = new QPushButton( tr( "..." ), container );
+  QLineEdit* le = new QgsFilterLineEdit();
+  QPushButton* pbn = new QPushButton( tr( "..." ) );
   QGridLayout* layout = new QGridLayout();
 
   layout->setMargin( 0 );
@@ -119,9 +139,28 @@ void QgsFileNameWidgetWrapper::selectFileName()
   if ( fileName.isNull() )
     return;
 
+  QString projPath = QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) );
+  QString filePath = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
+
+  if ( filePath.startsWith( projPath ) )
+    filePath = QDir( projPath ).relativeFilePath( filePath );
+
   if ( mLineEdit )
-    mLineEdit->setText( QDir::toNativeSeparators( fileName ) );
+    mLineEdit->setText( fileName );
 
   if ( mLabel )
-    mLineEdit->setText( QDir::toNativeSeparators( fileName ) );
+    mLineEdit->setText( fileName );
+}
+
+void QgsFileNameWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+{
+  if ( mLineEdit )
+  {
+    if ( constraintValid )
+      mLineEdit->setStyleSheet( QString() );
+    else
+    {
+      mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );
+    }
+  }
 }

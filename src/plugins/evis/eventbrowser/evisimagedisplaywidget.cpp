@@ -37,7 +37,12 @@
 * @param parent - Pointer the to parent QWidget for modality
 * @param fl - Windown flags
 */
-eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags fl ) : QWidget( parent, fl )
+eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags fl )
+    : QWidget( parent, fl )
+    , mCurrentHttpImageRequestId( 0 )
+    , mImageSizeRatio( 0.0 )
+    , mScaleFactor( 1.0 )
+    , mScaleToFit( 0.0 )
 {
   //Setup zoom buttons
   pbtnZoomIn = new QPushButton();
@@ -133,9 +138,9 @@ void eVisImageDisplayWidget::resizeEvent( QResizeEvent *event )
 * Public method called to display an image loaded locally from disk
 * @param path - The path and filename of the image to load from disk
 */
-void eVisImageDisplayWidget::displayImage( QString path )
+void eVisImageDisplayWidget::displayImage( const QString& path )
 {
-  mImageLoaded = mImage->load( path, 0, Qt::AutoColor );
+  mImageLoaded = mImage->load( path, nullptr, Qt::AutoColor );
   setToolTip( path );
 
   mCurrentZoomStep = 0;
@@ -190,12 +195,13 @@ void eVisImageDisplayWidget::displayImage()
 * Public method called to display an image loaded from a url
 * @param url - The url from which to load an image
 */
-void eVisImageDisplayWidget::displayUrlImage( QString url )
+void eVisImageDisplayWidget::displayUrlImage( const QString& url )
 {
-  QUrl myUrl( url );
+  Q_UNUSED( url );
 #if QT_VERSION < 0x050000
+  QUrl myUrl( url );
   mHttpConnection->setHost( myUrl.host() );
-  mCurrentHttpImageRequestId = mHttpConnection->get( myUrl.path().replace( "\\", "/" ), mHttpBuffer );
+  mCurrentHttpImageRequestId = mHttpConnection->get( myUrl.path().replace( '\\', '/' ), mHttpBuffer );
 #endif
 }
 

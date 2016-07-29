@@ -27,8 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QWidget, QHBoxLayout, QMenu, QPushButton, QLineEdit, QSizePolicy, QAction, QFileDialog
+from qgis.PyQt.QtGui import QCursor
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 
@@ -53,6 +54,7 @@ class BatchInputSelectionPanel(QWidget):
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)
         self.text = QLineEdit()
+        self.text.setMinimumWidth(300)
         self.text.setText('')
         self.text.setSizePolicy(QSizePolicy.Expanding,
                                 QSizePolicy.Expanding)
@@ -109,7 +111,7 @@ class BatchInputSelectionPanel(QWidget):
                         self.panel.addRow()
                     for i, layeridx in enumerate(selected):
                         self.table.cellWidget(i + self.row,
-                                self.col).setText(layers[layeridx].name())
+                                              self.col).setText(layers[layeridx].name())
 
     def showFileSelectionDialog(self):
         settings = QSettings()
@@ -124,11 +126,11 @@ class BatchInputSelectionPanel(QWidget):
             path = ''
 
         ret = QFileDialog.getOpenFileNames(self, self.tr('Open file'), path,
-                self.tr('All files(*.*);;') + self.param.getFileFilter())
+                                           self.tr('All files(*.*);;') + self.param.getFileFilter())
         if ret:
             files = list(ret)
             settings.setValue('/Processing/LastInputPath',
-                                  os.path.dirname(unicode(files[0])))
+                              os.path.dirname(unicode(files[0])))
             for i, filename in enumerate(files):
                 files[i] = dataobjects.getRasterSublayer(filename, self.param)
             if len(files) == 1:
@@ -142,7 +144,7 @@ class BatchInputSelectionPanel(QWidget):
                         self.panel.addRow()
                     for i, f in enumerate(files):
                         self.table.cellWidget(i + self.row,
-                                self.col).setText(f)
+                                              self.col).setText(f)
 
     def setText(self, text):
         return self.text.setText(text)

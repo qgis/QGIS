@@ -16,11 +16,13 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
     : QSortFilterProxyModel( parent )
     , mFilters( All )
+    , mExceptList( QList<QgsMapLayer*>() )
     , mModel( new QgsMapLayerModel( parent ) )
 {
   setSourceModel( mModel );
@@ -30,21 +32,61 @@ QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
   sort( 0 );
 }
 
-QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
+QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( const Filters& filters )
 {
   mFilters = filters;
   invalidateFilter();
   return this;
 }
 
+void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer*>& exceptList )
+{
+  if ( mExceptList == exceptList )
+    return;
+
+  mExceptList = exceptList;
+  invalidateFilter();
+}
+
+void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList& ids )
+{
+  mExceptList.clear();
+
+  Q_FOREACH ( const QString& id, ids )
+  {
+    QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( id );
+    if ( l )
+      mExceptList << l;
+  }
+  invalidateFilter();
+}
+
+QStringList QgsMapLayerProxyModel::exceptedLayerIds() const
+{
+  QStringList lst;
+
+  Q_FOREACH ( QgsMapLayer* l, mExceptList )
+    lst << l->id();
+
+  return lst;
+}
+
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilters.testFlag( All ) )
+  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() )
     return true;
 
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
   QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
   if ( !layer )
+    return false;
+
+  if ( mExceptList.contains( layer ) )
+    return false;
+
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+
+  if ( mFilters.testFlag( WritableLayer ) && layer->readOnly() )
     return false;
 
   // layer type
@@ -61,18 +103,17 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
                         mFilters.testFlag( HasGeometry );
   if ( detectGeometry && layer->type() == QgsMapLayer::VectorLayer )
   {
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
     if ( vl )
     {
       if ( mFilters.testFlag( HasGeometry ) && vl->hasGeometryType() )
         return true;
-      if ( mFilters.testFlag( NoGeometry ) && vl->geometryType() == QGis::NoGeometry )
+      if ( mFilters.testFlag( NoGeometry ) && vl->geometryType() == Qgis::NoGeometry )
         return true;
-      if ( mFilters.testFlag( PointLayer ) && vl->geometryType() == QGis::Point )
+      if ( mFilters.testFlag( PointLayer ) && vl->geometryType() == Qgis::Point )
         return true;
-      if ( mFilters.testFlag( LineLayer ) && vl->geometryType() == QGis::Line )
+      if ( mFilters.testFlag( LineLayer ) && vl->geometryType() == Qgis::Line )
         return true;
-      if ( mFilters.testFlag( PolygonLayer ) && vl->geometryType() == QGis::Polygon )
+      if ( mFilters.testFlag( PolygonLayer ) && vl->geometryType() == Qgis::Polygon )
         return true;
     }
   }

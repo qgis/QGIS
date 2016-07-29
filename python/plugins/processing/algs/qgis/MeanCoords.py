@@ -25,13 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+import os
+
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+
+from qgis.core import Qgis, QgsField, QgsFeature, QgsGeometry, QgsPoint
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class MeanCoords(GeoAlgorithm):
@@ -42,24 +49,26 @@ class MeanCoords(GeoAlgorithm):
     UID = 'UID'
     WEIGHT = 'WEIGHT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'mean.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Mean coordinate(s)'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Mean coordinate(s)')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.WEIGHT,
-            self.tr('Weight field'), MeanCoords.POINTS,
-            ParameterTableField.DATA_TYPE_NUMBER, optional=True))
+                                              self.tr('Weight field'), MeanCoords.POINTS,
+                                              ParameterTableField.DATA_TYPE_NUMBER, optional=True))
         self.addParameter(ParameterTableField(self.UID,
-            self.tr('Unique ID field'), MeanCoords.POINTS,
-            ParameterTableField.DATA_TYPE_NUMBER, optional=True))
+                                              self.tr('Unique ID field'), MeanCoords.POINTS,
+                                              ParameterTableField.DATA_TYPE_NUMBER, optional=True))
 
-        self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Result')))
+        self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POINTS))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
 
@@ -77,22 +86,19 @@ class MeanCoords(GeoAlgorithm):
                      QgsField('MEAN_Y', QVariant.Double, '', 24, 15),
                      QgsField('UID', QVariant.String, '', 255)]
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(fieldList,
-                                             QGis.WKBPoint, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            fieldList, Qgis.WKBPoint, layer.crs()
+        )
 
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-
+        total = 100.0 / len(features)
         means = {}
-        for feat in features:
-            current += 1
-            progress.setPercentage(current * total)
+        for current, feat in enumerate(features):
+            progress.setPercentage(int(current * total))
             if uniqueIndex == -1:
                 clazz = "Single class"
             else:
-                clazz = str(feat.attributes()[uniqueIndex]).strip()
+                clazz = unicode(feat.attributes()[uniqueIndex]).strip()
             if weightIndex == -1:
                 weight = 1.00
             else:
@@ -112,6 +118,8 @@ class MeanCoords(GeoAlgorithm):
                 totalweight += weight
             means[clazz] = (cx, cy, totalweight)
 
+        current = 0
+        total = 100.0 / len(means)
         for (clazz, values) in means.iteritems():
             outFeat = QgsFeature()
             cx = values[0] / values[2]
@@ -121,5 +129,7 @@ class MeanCoords(GeoAlgorithm):
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
             outFeat.setAttributes([cx, cy, clazz])
             writer.addFeature(outFeat)
+            current += 1
+            progress.setPercentage(int(current * total))
 
         del writer

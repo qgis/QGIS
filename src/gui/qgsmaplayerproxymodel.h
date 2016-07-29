@@ -17,10 +17,12 @@
 #define QGSMAPLAYERPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
+#include <QStringList>
 
 class QgsMapLayerModel;
+class QgsMapLayer;
 
-/**
+/** \ingroup gui
  * @brief The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
  * @note added in 2.3
  */
@@ -28,6 +30,11 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
     Q_FLAGS( Filters )
+
+    Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( QList<QgsMapLayer*> exceptedLayerList READ exceptedLayerList WRITE setExceptedLayerList )
+    Q_PROPERTY( QStringList exceptedLayerIds READ exceptedLayerIds WRITE setExceptedLayerIds )
+
   public:
     enum Filter
     {
@@ -39,7 +46,8 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
       HasGeometry = PointLayer | LineLayer | PolygonLayer,
       VectorLayer = NoGeometry | HasGeometry,
       PluginLayer = 32,
-      All = RasterLayer | PolygonLayer | PluginLayer
+      WritableLayer = 64,
+      All = RasterLayer | VectorLayer | PluginLayer
     };
     Q_DECLARE_FLAGS( Filters, Filter )
 
@@ -47,7 +55,7 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * @brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
      * It can be used to filter the layers list in a widget.
      */
-    explicit QgsMapLayerProxyModel( QObject *parent = 0 );
+    explicit QgsMapLayerProxyModel( QObject *parent = nullptr );
 
     /**
      * @brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
@@ -59,11 +67,22 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * @param filters are Filter flags
      * @note added in 2.3
      */
-    QgsMapLayerProxyModel* setFilters( Filters filters );
+    QgsMapLayerProxyModel* setFilters( const QgsMapLayerProxyModel::Filters& filters );
     const Filters& filters() const { return mFilters; }
+
+    //! offer the possibility to except some layers to be listed
+    void setExceptedLayerList( const QList<QgsMapLayer*>& exceptList );
+    //! Get the list of maplayers which are excluded from the list
+    QList<QgsMapLayer*> exceptedLayerList() {return mExceptList;}
+
+    //! Set the list of maplayer ids which are excluded from the list
+    void setExceptedLayerIds( const QStringList& ids );
+    //! Get the list of maplayer ids which are excluded from the list
+    QStringList exceptedLayerIds() const;
 
   private:
     Filters mFilters;
+    QList<QgsMapLayer*> mExceptList;
     QgsMapLayerModel* mModel;
 
     // QSortFilterProxyModel interface

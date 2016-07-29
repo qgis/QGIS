@@ -1,0 +1,7 @@
+{
+  "name": "$atlasgeometry",
+  "type": "function",
+  "description": "Returns the geometry of the current feature iterated in atlas. Can be used for rule based display of geometry when using atlas. For example to only show geometries of other layers when their geometry intersects the iterated geometry of features using atlas.",
+  "examples": [ { "expression":"intersects( $atlasgeometry, $geometry )", "returns":"true"}]
+}
+

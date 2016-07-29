@@ -24,10 +24,11 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
+
 
 class laszip(LAStoolsAlgorithm):
 
@@ -36,21 +37,24 @@ class laszip(LAStoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def defineCharacteristics(self):
-        self.name = "laszip"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('laszip')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(laszip.REPORT_SIZE,
-            self.tr("only report size"), False))
+                                           self.tr("only report size"), False))
         self.addParameter(ParameterBoolean(laszip.CREATE_LAX,
-            self.tr("create spatial indexing file (*.lax)"), False))
+                                           self.tr("create spatial indexing file (*.lax)"), False))
         self.addParameter(ParameterBoolean(laszip.APPEND_LAX,
-            self.tr("append *.lax into *.laz file"), False))
+                                           self.tr("append *.lax into *.laz file"), False))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         if self.getParameterValue(laszip.REPORT_SIZE):

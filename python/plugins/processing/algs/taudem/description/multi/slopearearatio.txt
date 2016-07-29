@@ -1,0 +1,6 @@
+Slope Over Area Ratio (multifile)
+slopearearatio
+Specialized Grid Analysis tools
+ParameterFile|-slp|Slope Grid|True|False
+ParameterFile|-sca|Specific Catchment Area Grid|True|False
+OutputDirectory|-sar|Slope Divided By Area Ratio Grid

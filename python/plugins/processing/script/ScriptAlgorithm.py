@@ -26,7 +26,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+import re
+import json
+from qgis.core import QgsExpressionContextUtils, QgsExpressionContext
+from qgis.PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
 from processing.core.parameters import ParameterRaster
@@ -39,8 +42,10 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterPoint
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import OutputTable
 from processing.core.outputs import OutputVector
@@ -51,11 +56,14 @@ from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputFile
 from processing.core.outputs import OutputDirectory
 from processing.core.outputs import getOutputFromString
+from processing.core.ProcessingLog import ProcessingLog
 from processing.script.WrongScriptException import WrongScriptException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class ScriptAlgorithm(GeoAlgorithm):
-
-    _icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/script.png')
 
     def __init__(self, descriptionFile, script=None):
         """The script parameter can be used to directly pass the code
@@ -66,8 +74,11 @@ class ScriptAlgorithm(GeoAlgorithm):
         """
 
         GeoAlgorithm.__init__(self)
+        self._icon = QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+
         self.script = script
         self.allowEdit = True
+        self.noCRSWarning = False
         self.descriptionFile = descriptionFile
         if script is not None:
             self.defineCharacteristicsFromScript()
@@ -83,8 +94,8 @@ class ScriptAlgorithm(GeoAlgorithm):
         return self._icon
 
     def defineCharacteristicsFromFile(self):
+        self.error = None
         self.script = ''
-        self.silentOutputs = []
         filename = os.path.basename(self.descriptionFile)
         self.name = filename[:filename.rfind('.')].replace('_', ' ')
         self.group = self.tr('User scripts', 'ScriptAlgorithm')
@@ -95,9 +106,8 @@ class ScriptAlgorithm(GeoAlgorithm):
                 try:
                     self.processParameterLine(line.strip('\n'))
                 except:
-                    raise WrongScriptException(
-                        self.tr('Could not load script: %s\n'
-                                'Problem with line: %d', 'ScriptAlgorithm') % (self.descriptionFile, line))
+                    self.error = self.tr('This script has a syntax errors.\n'
+                                         'Problem with line: %s', 'ScriptAlgorithm') % line
             self.script += line
             line = lines.readline()
         lines.close()
@@ -107,15 +117,23 @@ class ScriptAlgorithm(GeoAlgorithm):
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
-        self.silentOutputs = []
-        self.name = self.tr('[Unnamed algorithm]', 'ScriptAlgorithm')
-        self.group = self.tr('User scripts', 'ScriptAlgorithm')
+        self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]', 'ScriptAlgorithm')
+        self.group, self.i18n_group = self.trAlgorithm('User scripts', 'ScriptAlgorithm')
         for line in lines:
             if line.startswith('##'):
                 try:
                     self.processParameterLine(line.strip('\n'))
                 except:
                     pass
+
+    def checkBeforeOpeningParametersDialog(self):
+        return self.error
+
+    def checkInputCRS(self):
+        if self.noCRSWarning:
+            return True
+        else:
+            return GeoAlgorithm.checkInputCRS(self)
 
     def createDescriptiveName(self, s):
         return s.replace('_', ' ')
@@ -134,92 +152,30 @@ class ScriptAlgorithm(GeoAlgorithm):
         if line == "nomodeler":
             self.showInModeler = False
             return
+        if line == "nocrswarning":
+            self.noCRSWarning = True
+            return
         tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
-            self.group = tokens[0]
+            self.group = self.i18n_group = tokens[0]
             return
         if tokens[1].lower().strip() == 'name':
-            self.name = tokens[0]
+            self.name = self.i18n_name = tokens[0]
             return
-        if tokens[1].lower().strip() == 'raster':
-            param = ParameterRaster(tokens[0], desc, False)
-        elif tokens[1].lower().strip() == 'vector':
-            param = ParameterVector(tokens[0], desc,
-                                    [ParameterVector.VECTOR_TYPE_ANY])
-        elif tokens[1].lower().strip() == 'vector point':
-            param = ParameterVector(tokens[0], desc,
-                                    [ParameterVector.VECTOR_TYPE_POINT])
-        elif tokens[1].lower().strip() == 'vector line':
-            param = ParameterVector(tokens[0], desc,
-                                    [ParameterVector.VECTOR_TYPE_LINE])
-        elif tokens[1].lower().strip() == 'vector polygon':
-            param = ParameterVector(tokens[0], desc,
-                                    [ParameterVector.VECTOR_TYPE_POLYGON])
-        elif tokens[1].lower().strip() == 'table':
-            param = ParameterTable(tokens[0], desc, False)
-        elif tokens[1].lower().strip() == 'multiple raster':
-            param = ParameterMultipleInput(tokens[0], desc,
-                    ParameterMultipleInput.TYPE_RASTER)
-            param.optional = False
-        elif tokens[1].lower().strip() == 'multiple vector':
-            param = ParameterMultipleInput(tokens[0], desc,
-                    ParameterMultipleInput.TYPE_VECTOR_ANY)
-            param.optional = False
-        elif tokens[1].lower().strip().startswith('selection'):
-            options = tokens[1].strip()[len('selection '):].split(';')
-            param = ParameterSelection(tokens[0], desc, options)
-        elif tokens[1].lower().strip().startswith('boolean'):
-            default = tokens[1].strip()[len('boolean') + 1:]
-            param = ParameterBoolean(tokens[0], desc, default)
-        elif tokens[1].lower().strip() == 'extent':
-            param = ParameterExtent(tokens[0], desc)
-        elif tokens[1].lower().strip() == 'file':
-            param = ParameterFile(tokens[0], desc, False)
-        elif tokens[1].lower().strip() == 'folder':
-            param = ParameterFile(tokens[0], desc, True)
-        elif tokens[1].lower().strip().startswith('number'):
-            default = tokens[1].strip()[len('number') + 1:]
-            param = ParameterNumber(tokens[0], desc, default=default)
-        elif tokens[1].lower().strip().startswith('field'):
-            field = tokens[1].strip()[len('field') + 1:]
-            found = False
-            for p in self.parameters:
-                if p.name == field:
-                    found = True
-                    break
-            if found:
-                param = ParameterTableField(tokens[0], desc, field)
-        elif tokens[1].lower().strip().startswith('string'):
-            default = tokens[1].strip()[len('string') + 1:]
-            param = ParameterString(tokens[0], desc, default)
-        elif tokens[1].lower().strip().startswith('longstring'):
-            default = tokens[1].strip()[len('longstring') + 1:]
-            param = ParameterString(tokens[0], desc, default, multiline = True)
-        elif tokens[1].lower().strip().startswith('crs'):
-            default = tokens[1].strip()[len('crs') + 1:]
-            if not default:
-                default = 'EPSG:4326'
-            param = ParameterCrs(tokens[0], desc, default)
-        elif tokens[1].lower().strip().startswith('output raster'):
-            out = OutputRaster()
-        elif tokens[1].lower().strip().startswith('output vector'):
-            out = OutputVector()
-        elif tokens[1].lower().strip().startswith('output table'):
-            out = OutputTable()
-        elif tokens[1].lower().strip().startswith('output html'):
-            out = OutputHTML()
-        elif tokens[1].lower().strip().startswith('output file'):
-            out = OutputFile()
-            subtokens = tokens[1].split(' ')
-            if len(subtokens) > 2:
-                out.ext = subtokens[2]
-        elif tokens[1].lower().strip().startswith('output directory'):
-            out = OutputDirectory()
-        elif tokens[1].lower().strip().startswith('output number'):
-            out = OutputNumber()
-        elif tokens[1].lower().strip().startswith('output string'):
-            out = OutputString()
+
+        if tokens[1].lower().strip().startswith('output'):
+            outToken = tokens[1].strip()[len('output') + 1:]
+            out = self.processOutputParameterToken(outToken)
+
+        elif tokens[1].lower().strip().startswith('optional'):
+            optToken = tokens[1].strip()[len('optional') + 1:]
+            param = self.processInputParameterToken(optToken, tokens[0])
+            if param:
+                param.optional = True
+
+        else:
+            param = self.processInputParameterToken(tokens[1], tokens[0])
 
         if param is not None:
             self.addParameter(param)
@@ -230,7 +186,154 @@ class ScriptAlgorithm(GeoAlgorithm):
         else:
             raise WrongScriptException(
                 self.tr('Could not load script: %s.\n'
-                        'Problem with line %d', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
+                        'Problem with line "%s"', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
+
+    def processInputParameterToken(self, token, name):
+        param = None
+
+        descName = self.createDescriptiveName(name)
+
+        if token.lower().strip() == 'raster':
+            param = ParameterRaster(name, descName, False)
+        elif token.lower().strip() == 'vector':
+            param = ParameterVector(name, descName,
+                                    [ParameterVector.VECTOR_TYPE_ANY])
+        elif token.lower().strip() == 'vector point':
+            param = ParameterVector(name, descName,
+                                    [ParameterVector.VECTOR_TYPE_POINT])
+        elif token.lower().strip() == 'vector line':
+            param = ParameterVector(name, descName,
+                                    [ParameterVector.VECTOR_TYPE_LINE])
+        elif token.lower().strip() == 'vector polygon':
+            param = ParameterVector(name, descName,
+                                    [ParameterVector.VECTOR_TYPE_POLYGON])
+        elif token.lower().strip() == 'table':
+            param = ParameterTable(name, descName, False)
+        elif token.lower().strip() == 'multiple raster':
+            param = ParameterMultipleInput(name, descName,
+                                           ParameterMultipleInput.TYPE_RASTER)
+            param.optional = False
+        elif token.lower().strip() == 'multiple vector':
+            param = ParameterMultipleInput(name, descName,
+                                           ParameterMultipleInput.TYPE_VECTOR_ANY)
+            param.optional = False
+        elif token.lower().strip().startswith('selectionfromfile'):
+            options = token.strip()[len('selectionfromfile '):].split(';')
+            param = ParameterSelection(name, descName, options, isSource=True)
+        elif token.lower().strip().startswith('selection'):
+            options = token.strip()[len('selection '):].split(';')
+            param = ParameterSelection(name, descName, options)
+        elif token.lower().strip().startswith('boolean'):
+            default = token.strip()[len('boolean') + 1:]
+            if default:
+                param = ParameterBoolean(name, descName, default)
+            else:
+                param = ParameterBoolean(name, descName)
+        elif token.lower().strip() == 'extent':
+            param = ParameterExtent(name, descName)
+        elif token.lower().strip() == 'point':
+            param = ParameterPoint(name, descName)
+        elif token.lower().strip() == 'file':
+            param = ParameterFile(name, descName, False)
+        elif token.lower().strip() == 'folder':
+            param = ParameterFile(name, descName, True)
+        elif token.lower().strip().startswith('number'):
+            default = token.strip()[len('number') + 1:]
+            if default:
+                param = ParameterNumber(name, descName, default=default)
+            else:
+                param = ParameterNumber(name, descName)
+        elif token.lower().strip().startswith('field'):
+            if token.lower().strip().startswith('field number'):
+                field = token.strip()[len('field number') + 1:]
+                datatype = ParameterTableField.DATA_TYPE_NUMBER
+            elif token.lower().strip().startswith('field string'):
+                field = token.strip()[len('field string') + 1:]
+                datatype = ParameterTableField.DATA_TYPE_STRING
+            else:
+                field = token.strip()[len('field') + 1:]
+                datatype = ParameterTableField.DATA_TYPE_ANY
+            found = False
+            for p in self.parameters:
+                if p.name == field:
+                    found = True
+                    break
+            if found:
+                param = ParameterTableField(
+                    name=name,
+                    description=descName,
+                    parent=field,
+                    datatype=datatype
+                )
+        elif token.lower().strip().startswith('multiple field'):
+            if token.lower().strip().startswith('multiple field number'):
+                field = token.strip()[len('multiple field number') + 1:]
+                datatype = ParameterTableMultipleField.DATA_TYPE_NUMBER
+            elif token.lower().strip().startswith('multiple field string'):
+                field = token.strip()[len('multiple field string') + 1:]
+                datatype = ParameterTableMultipleField.DATA_TYPE_STRING
+            else:
+                field = token.strip()[len('multiple field') + 1:]
+                datatype = ParameterTableMultipleField.DATA_TYPE_ANY
+            found = False
+            for p in self.parameters:
+                if p.name == field:
+                    found = True
+                    break
+            if found:
+                param = ParameterTableMultipleField(
+                    name=name,
+                    description=descName,
+                    parent=field,
+                    datatype=datatype
+                )
+        elif token.lower().strip().startswith('string'):
+            default = token.strip()[len('string') + 1:]
+            if default:
+                param = ParameterString(name, descName, default)
+            else:
+                param = ParameterString(name, descName)
+        elif token.lower().strip().startswith('longstring'):
+            default = token.strip()[len('longstring') + 1:]
+            if default:
+                param = ParameterString(name, descName, default, multiline=True)
+            else:
+                param = ParameterString(name, descName, multiline=True)
+        elif token.lower().strip().startswith('crs'):
+            default = token.strip()[len('crs') + 1:]
+            if default:
+                param = ParameterCrs(name, descName, default)
+            else:
+                param = ParameterCrs(name, descName)
+
+        return param
+
+    def processOutputParameterToken(self, token):
+        out = None
+
+        if token.lower().strip().startswith('raster'):
+            out = OutputRaster()
+        elif token.lower().strip().startswith('vector'):
+            out = OutputVector()
+        elif token.lower().strip().startswith('table'):
+            out = OutputTable()
+        elif token.lower().strip().startswith('html'):
+            out = OutputHTML()
+        elif token.lower().strip().startswith('file'):
+            out = OutputFile()
+            subtokens = token.split(' ')
+            if len(subtokens) > 2:
+                out.ext = subtokens[2]
+        elif token.lower().strip().startswith('directory'):
+            out = OutputDirectory()
+        elif token.lower().strip().startswith('number'):
+            out = OutputNumber()
+        elif token.lower().strip().startswith('string'):
+            out = OutputString()
+        elif token.lower().strip().startswith('extent'):
+            out = OutputExtent()
+
+        return out
 
     def processDescriptionParameterLine(self, line):
         try:
@@ -248,11 +351,9 @@ class ScriptAlgorithm(GeoAlgorithm):
                         'Problem with line %d', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
 
     def processAlgorithm(self, progress):
-
-        script = 'import processing\n'
-
         ns = {}
         ns['progress'] = progress
+        ns['scriptDescriptionFile'] = self.descriptionFile
 
         for param in self.parameters:
             ns[param.name] = param.value
@@ -260,8 +361,21 @@ class ScriptAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             ns[out.name] = out.value
 
+        variables = re.findall('@[a-zA-Z0-9_]*', self.script)
+        script = 'import processing\n'
         script += self.script
-        exec(script) in ns
+
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.globalScope())
+        context.appendScope(QgsExpressionContextUtils.projectScope())
+        for var in variables:
+            varname = var[1:]
+            if context.hasVariable(varname):
+                script = script.replace(var, context.variable(varname))
+            else:
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Cannot find variable: %s' % varname)
+
+        exec((script), ns)
         for out in self.outputs:
             out.setValue(ns[out.name])
 
@@ -273,3 +387,33 @@ class ScriptAlgorithm(GeoAlgorithm):
             return True, getHtmlFromHelpFile(self, helpfile)
         else:
             return False, None
+
+    def shortHelp(self):
+        if self.descriptionFile is None:
+            return None
+        helpFile = unicode(self.descriptionFile) + '.help'
+        if os.path.exists(helpFile):
+            with open(helpFile) as f:
+                try:
+                    descriptions = json.load(f)
+                    if 'ALG_DESC' in descriptions:
+                        return self._formatHelp(unicode(descriptions['ALG_DESC']))
+                except:
+                    return None
+        return None
+
+    def getParameterDescriptions(self):
+        descs = {}
+        if self.descriptionFile is None:
+            return descs
+        helpFile = unicode(self.descriptionFile) + '.help'
+        if os.path.exists(helpFile):
+            with open(helpFile) as f:
+                try:
+                    descriptions = json.load(f)
+                    for param in self.parameters:
+                        if param.name in descriptions:
+                            descs[param.name] = unicode(descriptions[param.name])
+                except:
+                    return descs
+        return descs

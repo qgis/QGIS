@@ -1,0 +1,8 @@
+{
+  "name": "cos",
+  "type": "function",
+  "description": "Returns cosine of an angle.",
+  "arguments": [ {"arg":"angle","description":"angle in radians"}],
+  "examples": [ { "expression":"cos(1.571)", "returns":"0.000796326710733263"}]
+}
+

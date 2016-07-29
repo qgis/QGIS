@@ -17,11 +17,11 @@ class QgsHueSaturationFilter : QgsRasterInterface
     QgsHueSaturationFilter( QgsRasterInterface *input = 0 );
     ~QgsHueSaturationFilter();
 
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsHueSaturationFilter * clone() const /Factory/;
 
     int bandCount() const;
 
-    QGis::DataType dataType( int bandNo ) const;
+    Qgis::DataType dataType( int bandNo ) const;
 
     bool setInput( QgsRasterInterface* input );
 
@@ -35,13 +35,13 @@ class QgsHueSaturationFilter : QgsRasterInterface
 
     void setColorizeOn( bool colorizeOn );
     bool colorizeOn() const;
-    void setColorizeColor( QColor colorizeColor );
+    void setColorizeColor( const QColor& colorizeColor );
     QColor colorizeColor() const;
     void setColorizeStrength( int colorizeStrength );
     int colorizeStrength() const;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem );
+    /** Sets base class members from xml. Usually called from create() methods of subclasses*/
+    void readXml( const QDomElement& filterElem );
 };

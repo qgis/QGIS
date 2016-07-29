@@ -27,7 +27,7 @@
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
-  FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
+  explicit FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
 
   bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mPoint; }
 
@@ -36,7 +36,10 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 
 struct FilterExcludeEdge : public QgsPointLocator::MatchFilter
 {
-  FilterExcludeEdge( const QgsPoint& p1, const QgsPoint& p2 ) : mP1( p1 ), mP2( p2 ) {}
+  FilterExcludeEdge( const QgsPoint& p1, const QgsPoint& p2 )
+      : mP1( p1 )
+      , mP2( p2 )
+  {}
 
   bool acceptMatch( const QgsPointLocator::Match& match )
   {
@@ -52,8 +55,14 @@ struct FilterExcludeEdge : public QgsPointLocator::MatchFilter
 class TestQgsPointLocator : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsPointLocator()
+        : mVL( 0 )
+    {}
+
   private:
     QgsVectorLayer* mVL;
+
   private slots:
 
     void initTestCase()
@@ -210,7 +219,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( mAddA.count() == 1 );
 
       // change geometry
-      QgsGeometry* newGeom = new QgsGeometry( *ff.geometry() );
+      QgsGeometry* newGeom = new QgsGeometry( *ff.constGeometry() );
       newGeom->moveVertex( 10, 10, 2 ); // change 11,11 to 10,10
       mVL->changeGeometry( ff.id(), newGeom );
       delete newGeom;
@@ -238,13 +247,13 @@ class TestQgsPointLocator : public QObject
     void testExtent()
     {
       QgsRectangle bbox1( 10, 10, 11, 11 ); // out of layer's bounds
-      QgsPointLocator loc1( mVL, 0 , &bbox1 );
+      QgsPointLocator loc1( mVL, 0, &bbox1 );
 
       QgsPointLocator::Match m1 = loc1.nearestVertex( QgsPoint( 2, 2 ), 999 );
       QVERIFY( !m1.isValid() );
 
       QgsRectangle bbox2( 0, 0, 1, 1 ); // in layer's bounds
-      QgsPointLocator loc2( mVL, 0 , &bbox2 );
+      QgsPointLocator loc2( mVL, 0, &bbox2 );
 
       QgsPointLocator::Match m2 = loc2.nearestVertex( QgsPoint( 2, 2 ), 999 );
       QVERIFY( m2.isValid() );
@@ -255,4 +264,3 @@ class TestQgsPointLocator : public QObject
 QTEST_MAIN( TestQgsPointLocator )
 
 #include "testqgspointlocator.moc"
-

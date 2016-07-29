@@ -17,12 +17,12 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M105.703,147.312v282.37h371.825v-282.37H105.703z M431.855,173.874
+<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M105.703,147.312v282.37h371.825v-282.37H105.703z M431.855,173.874
 	L313.052,292.223c-5.906,5.906-13.362,8.858-22.368,8.858c-9.318,0-17.086-3.109-23.305-9.328L149.499,173.874H431.855z
 	 M131.796,192.046l96.451,96.92l-96.451,96.451V192.046z M149.03,403.59l96.92-96.451l4.195,4.195
 	c11.186,10.873,24.699,16.309,40.539,16.309c15.841,0,29.197-5.436,40.071-16.309l4.194-4.195l96.905,96.451H149.03z
 	 M450.497,385.417l-96.451-96.451l96.451-96.92V385.417z"/>
-<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M493.427,90.354C439.44,36.368,367.662,6.636,291.314,6.636
+<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M493.427,90.354C439.44,36.368,367.662,6.636,291.314,6.636
 	S143.189,36.368,89.203,90.354C35.217,144.34,5.486,216.118,5.486,292.466s29.731,148.126,83.717,202.112
 	c53.986,53.985,125.764,83.717,202.111,83.717s148.126-29.73,202.112-83.717s83.717-125.765,83.717-202.112
 	S547.413,144.34,493.427,90.354z M291.314,553.158c-143.746,0-260.691-116.946-260.691-260.692S147.569,31.774,291.314,31.774

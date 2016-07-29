@@ -1,0 +1,10 @@
+Hypsometry
+ta_morphometry
+ParameterRaster|ELEVATION|Elevation|False
+ParameterNumber|COUNT|Number of Classes|None|None|100.0
+ParameterSelection|SORTING|Sort|[0] up;[1] down
+ParameterSelection|METHOD|Classification Constant|[0] height;[1] area
+ParameterBoolean|BZRANGE         |Use Z-Range|True
+ParameterNumber|ZRANGE_MIN|Z-Range Min|None|None|0.0
+ParameterNumber|ZRANGE_MAX|Z-Range Max|None|None|1000.0
+OutputTable|TABLE|Hypsometry

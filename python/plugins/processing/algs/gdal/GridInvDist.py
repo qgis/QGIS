@@ -26,7 +26,9 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 
-from PyQt4.QtGui import *
+import os
+
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterVector
@@ -35,7 +37,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import *
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class GridInvDist(GdalAlgorithm):
@@ -53,46 +56,48 @@ class GridInvDist(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     RTYPE = 'RTYPE'
 
-    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64',
-            'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
     def commandLineName(self):
         return "gdalogr:gridinvdist"
 
     def defineCharacteristics(self):
-        self.name = 'Grid (Inverse distance to a power)'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Grid (Inverse distance to a power)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterVector(self.INPUT,
-           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,
-            self.tr('Z field'), self.INPUT,
-            ParameterTableField.DATA_TYPE_NUMBER, True))
+                                              self.tr('Z field'), self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER, True))
         self.addParameter(ParameterNumber(self.POWER,
-            self.tr('Power'), 0, 100.0, 2.0))
+                                          self.tr('Power'), 0, 100.0, 2.0))
         self.addParameter(ParameterNumber(self.SMOTHING,
-            self.tr('Smoothing'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Smoothing'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.RADIUS_1,
-            self.tr('Radius 1'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Radius 1'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.RADIUS_2,
-            self.tr('Radius 2'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Radius 2'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.MAX_POINTS,
-            self.tr('Max points'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Max points'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.MIN_POINTS,
-            self.tr('Min points'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Min points'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.ANGLE,
-            self.tr('Angle'), 0.0, 359.0, 0.0))
+                                          self.tr('Angle'), 0.0, 359.0, 0.0))
         self.addParameter(ParameterNumber(self.NODATA,
-            self.tr('Nodata'), -99999999.999999, 99999999.999999, 0.0))
+                                          self.tr('Nodata'), -99999999.999999, 99999999.999999, 0.0))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'), self.TYPE, 5))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Interpolated IDW')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['-l']
         arguments.append(
-                os.path.basename(os.path.splitext(
-                        unicode(self.getParameterValue(self.INPUT)))[0]))
+            os.path.basename(os.path.splitext(
+                unicode(self.getParameterValue(self.INPUT)))[0]))
 
         fieldName = self.getParameterValue(self.Z_FIELD)
         if fieldName is not None and fieldName != '':
@@ -116,5 +121,4 @@ class GridInvDist(GdalAlgorithm):
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
-        GdalUtils.runGdal(['gdal_grid',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]

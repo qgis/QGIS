@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Creates / modifies the color table for each raster map of the space time raster dataset according to user defined rules" module="t.rast.colors">
+	<option key="input"/>
+	<file key="rules" type="old" advanced="yes"/>
+	<flag key="r" hidden="no" advanced="yes"/>
+	<flag key="w" hidden="no" advanced="yes"/>
+	<flag key="l" hidden="no" advanced="yes"/>
+	<flag key="n" hidden="no"/>
+	<flag key="g" hidden="no"/>
+	<flag key="a" hidden="no"/>
+	<flag key="e" hidden="no"/>
+</qgisgrassmodule>

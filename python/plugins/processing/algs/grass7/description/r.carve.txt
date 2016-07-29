@@ -1,5 +1,5 @@
 r.carve
-r.carve - Takes vector stream data, transforms it to raster and subtracts depth from the output DEM.
+Takes vector stream data, transforms it to raster and subtracts depth from the output DEM.
 Raster (r.*)
 ParameterRaster|raster|Elevation|False
 ParameterVector|vector|Vector layer containing stream(s)|1|False

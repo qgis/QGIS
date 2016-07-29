@@ -2,8 +2,11 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Create points along input lines" module="v.to.points">
-	<option key="input" layeroption="llayer" typeoption="type" />
-	<file key="output" type="new" />
+	<option key="input" layeroption="llayer" typeoption="type" version_max="6"/>
+	<option key="input" layeroption="layer" typeoption="type" version_min="7"/>
+	<option key="output"/>
 	<option key="dmax" answer="100" hidden="no"/>
-	<flag key="v" answer="on" hidden="no" />
+	<flag key="v" answer="on" hidden="no" version_max="6"/>
+	<option key="use" answer="vertex" hidden="no" version_min="7"/>
+	<flag key="i"/>
 </qgisgrassmodule>

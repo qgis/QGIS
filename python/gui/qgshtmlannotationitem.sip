@@ -14,14 +14,14 @@ class QgsHtmlAnnotationItem: QObject, QgsAnnotationItem
 
     QSizeF minimumFrameSize() const;
 
-    /**Reimplemented from QgsAnnotationItem*/
+    /** Reimplemented from QgsAnnotationItem*/
     void setMapPosition( const QgsPoint& pos );
 
     void setHTMLPage( const QString& htmlFile );
     QString htmlPage() const;
 
-    void writeXML( QDomDocument& doc ) const;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem );
+    void writeXml( QDomDocument& doc ) const;
+    void readXml( const QDomDocument& doc, const QDomElement& itemElem );
 
     QgsVectorLayer* vectorLayer() const;
 };

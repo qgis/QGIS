@@ -18,6 +18,7 @@
 #include "qgshtmlannotationitem.h"
 #include "qgsattributeeditor.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
@@ -25,6 +26,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgswebview.h"
+#include "qgswebframe.h"
 
 #include <QDomElement>
 #include <QDir>
@@ -37,10 +40,14 @@
 
 
 QgsHtmlAnnotationItem::QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
-    : QgsAnnotationItem( canvas ), mWidgetContainer( 0 ), mWebView( 0 ), mVectorLayer( vlayer ),
-    mHasAssociatedFeature( hasFeature ), mFeatureId( feature )
+    : QgsAnnotationItem( canvas )
+    , mWidgetContainer( nullptr )
+    , mWebView( nullptr )
+    , mVectorLayer( vlayer )
+    , mHasAssociatedFeature( hasFeature )
+    , mFeatureId( feature )
 {
-  mWebView = new QWebView();
+  mWebView = new QgsWebView();
   mWebView->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
   mWidgetContainer = new QGraphicsProxyWidget( this );
@@ -135,7 +142,7 @@ QSizeF QgsHtmlAnnotationItem::minimumFrameSize() const
   }
 }
 
-void QgsHtmlAnnotationItem::writeXML( QDomDocument& doc ) const
+void QgsHtmlAnnotationItem::writeXml( QDomDocument& doc ) const
 {
   QDomElement documentElem = doc.documentElement();
   if ( documentElem.isNull() )
@@ -152,13 +159,13 @@ void QgsHtmlAnnotationItem::writeXML( QDomDocument& doc ) const
   formAnnotationElem.setAttribute( "feature", mFeatureId );
   formAnnotationElem.setAttribute( "htmlfile", htmlPage() );
 
-  _writeXML( doc, formAnnotationElem );
+  _writeXml( doc, formAnnotationElem );
   documentElem.appendChild( formAnnotationElem );
 }
 
-void QgsHtmlAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsHtmlAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
 {
-  mVectorLayer = 0;
+  mVectorLayer = nullptr;
   if ( itemElem.hasAttribute( "vectorLayer" ) )
   {
     mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( itemElem.attribute( "vectorLayer", "" ) ) );
@@ -175,7 +182,7 @@ void QgsHtmlAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
   QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
   if ( !annotationElem.isNull() )
   {
-    _readXML( doc, annotationElem );
+    _readXml( doc, annotationElem );
   }
 
   if ( mWebView )
@@ -214,7 +221,14 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
   mFeatureId = currentFeatureId;
   mFeature = currentFeature;
 
-  QString newtext = QgsExpression::replaceExpressionText( mHtmlSource, &mFeature, vectorLayer() );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mVectorLayer );
+  if ( mMapCanvas )
+    context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) );
+  context.setFeature( mFeature );
+  QString newtext = QgsExpression::replaceExpressionText( mHtmlSource, &context );
   mWebView->setHtml( newtext );
 }
 

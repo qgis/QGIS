@@ -19,7 +19,8 @@
 
 
 QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mChar( QChar::Null )
+    : QDialog( parent, fl )
+    , mChar( QChar::Null )
 {
   setupUi( this );
   mCharWidget = new CharacterWidget( this );
@@ -33,7 +34,7 @@ QgsCharacterSelectorDialog::~QgsCharacterSelectorDialog()
 
 const QChar& QgsCharacterSelectorDialog::selectCharacter( bool* gotChar, const QFont& font, const QString& style )
 {
-  mCharSelectLabelFont->setText( QString( "%1 %2" ).arg( font.family() ).arg( style ) );
+  mCharSelectLabelFont->setText( QString( "%1 %2" ).arg( font.family(), style ) );
   mCharWidget->updateFont( font );
   mCharWidget->updateStyle( style );
   mCharWidget->updateSize( 22.0 );
@@ -53,7 +54,7 @@ const QChar& QgsCharacterSelectorDialog::selectCharacter( bool* gotChar, const Q
   return mChar;
 }
 
-void QgsCharacterSelectorDialog::setCharacter( const QChar & chr )
+void QgsCharacterSelectorDialog::setCharacter( QChar chr )
 {
   mChar = chr;
 }

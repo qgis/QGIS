@@ -19,7 +19,7 @@
 #include <QDomDocument>
 #include <QPainter>
 
-QgsTextAnnotationItem::QgsTextAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas ), mDocument( new QTextDocument( QObject::tr( "QGIS rocks!" ) ) )
+QgsTextAnnotationItem::QgsTextAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas ), mDocument( new QTextDocument( QObject::tr( "" ) ) )
 {
   mDocument->setUseDesignMetrics( true );
 }
@@ -33,7 +33,7 @@ QTextDocument* QgsTextAnnotationItem::document() const
 {
   if ( !mDocument )
   {
-    return 0;
+    return nullptr;
   }
 
   return mDocument->clone();
@@ -81,7 +81,7 @@ void QgsTextAnnotationItem::paint( QPainter * painter )
   }
 }
 
-void QgsTextAnnotationItem::writeXML( QDomDocument& doc ) const
+void QgsTextAnnotationItem::writeXml( QDomDocument& doc ) const
 {
   QDomElement documentElem = doc.documentElement();
   if ( documentElem.isNull() )
@@ -93,18 +93,18 @@ void QgsTextAnnotationItem::writeXML( QDomDocument& doc ) const
   {
     annotationElem.setAttribute( "document", mDocument->toHtml() );
   }
-  _writeXML( doc, annotationElem );
+  _writeXml( doc, annotationElem );
   documentElem.appendChild( annotationElem );
 }
 
-void QgsTextAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsTextAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
 {
   delete mDocument;
   mDocument = new QTextDocument;
-  mDocument->setHtml( itemElem.attribute( "document", QObject::tr( "<html>QGIS rocks!</html>" ) ) );
+  mDocument->setHtml( itemElem.attribute( "document", QObject::tr( "" ) ) );
   QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
   if ( !annotationElem.isNull() )
   {
-    _readXML( doc, annotationElem );
+    _readXml( doc, annotationElem );
   }
 }

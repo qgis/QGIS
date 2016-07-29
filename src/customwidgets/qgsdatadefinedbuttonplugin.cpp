@@ -42,7 +42,7 @@ QString QgsDataDefinedButtonPlugin::includeFile() const
 
 QIcon QgsDataDefinedButtonPlugin::icon() const
 {
-  return QIcon();
+  return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
 bool QgsDataDefinedButtonPlugin::isContainer() const

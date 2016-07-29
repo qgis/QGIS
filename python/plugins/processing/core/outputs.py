@@ -15,6 +15,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -24,17 +25,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
-from qgis.core import *
-from PyQt4.QtCore import *
-from processing.tools.system import *
+from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from processing.tools.system import isWindows, getTempFilenameInTempFolder
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
+from processing.core.ProcessingConfig import ProcessingConfig
+
 
 def getOutputFromString(s):
     tokens = s.split("|")
     params = [t if unicode(t) != "None" else None for t in tokens[1:]]
     clazz = getattr(sys.modules[__name__], tokens[0])
     return clazz(*params)
+
 
 class Output(object):
 
@@ -114,7 +117,7 @@ class OutputExtent(Output):
 
 class OutputFile(Output):
 
-    def __init__(self, name='', description='', ext = None):
+    def __init__(self, name='', description='', ext=None):
         Output.__init__(self, name, description)
         self.ext = ext
 
@@ -151,19 +154,16 @@ class OutputRaster(Output):
     compatible = None
 
     def getFileFilter(self, alg):
-        providerExts = alg.provider.getSupportedOutputRasterLayerExtensions()
-        if providerExts == ['tif']:
-            # use default extensions
-            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        else:
-            # use extensions given by the algorithm provider
-            exts = providerExts
+        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s)', 'OutputRaster') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
-        return alg.provider.getSupportedOutputRasterLayerExtensions()[0]
+        supported = alg.provider.getSupportedOutputRasterLayerExtensions()
+        default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT)
+        ext = default if default in supported else supported[0]
+        return ext
 
     def getCompatibleFileName(self, alg):
         """
@@ -180,8 +180,8 @@ class OutputRaster(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(self.name + '.'
-                        + self.getDefaultFileExtension(alg))
+                self.compatible = getTempFilenameInTempFolder(
+                    self.name + '.' + self.getDefaultFileExtension(alg))
             return self.compatible
 
 
@@ -223,8 +223,8 @@ class OutputTable(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(self.name + '.'
-                        + self.getDefaultFileExtension(alg))
+                self.compatible = getTempFilenameInTempFolder(
+                    self.name + '.' + self.getDefaultFileExtension(alg))
             return self.compatible
 
     def getTableWriter(self, fields):
@@ -250,14 +250,36 @@ class OutputVector(Output):
     encoding = None
     compatible = None
 
-    def getFileFilter(self, alg):
+    def __init__(self, name='', description='', hidden=False, base_input=None):
+        Output.__init__(self, name, description, hidden)
+        self.base_input = base_input
+        self.base_layer = None
+
+    def hasGeometry(self):
+        if self.base_layer is None:
+            return True
+        return dataobjects.canUseVectorLayer(self.base_layer, [-1])
+
+    def getSupportedOutputVectorLayerExtensions(self):
         exts = dataobjects.getSupportedOutputVectorLayerExtensions()
+        if not self.hasGeometry():
+            exts = ['dbf'] + [ext for ext in exts if ext in VectorWriter.nogeometry_extensions]
+        return exts
+
+    def getFileFilter(self, alg):
+        exts = self.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
             exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
-        return alg.provider.getSupportedOutputVectorLayerExtensions()[0]
+        supported = alg.provider.getSupportedOutputVectorLayerExtensions()
+        if self.hasGeometry():
+            default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
+        else:
+            default = 'dbf'
+        ext = default if default in supported else supported[0]
+        return ext
 
     def getCompatibleFileName(self, alg):
         """Returns a filename that is compatible with the algorithm
@@ -268,14 +290,13 @@ class OutputVector(Output):
         temporary file with a supported file format, to be used to
         generate the output result.
         """
-
         ext = self.value[self.value.rfind('.') + 1:]
         if ext in alg.provider.getSupportedOutputVectorLayerExtensions():
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(self.name + '.'
-                        + self.getDefaultFileExtension(alg))
+                self.compatible = getTempFilenameInTempFolder(
+                    self.name + '.' + self.getDefaultFileExtension(alg))
             return self.compatible
 
     def getVectorWriter(self, fields, geomType, crs, options=None):
@@ -303,5 +324,6 @@ class OutputVector(Output):
 
         w = VectorWriter(self.value, self.encoding, fields, geomType,
                          crs, options)
-        self.memoryLayer = w.memLayer
+        self.layer = w.layer
+        self.value = w.destination
         return w

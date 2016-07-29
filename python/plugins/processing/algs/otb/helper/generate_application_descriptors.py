@@ -26,7 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import sys
 import otbApplication
 from qgis.core import QgsApplication
 
@@ -109,7 +108,7 @@ def get_group(appInstance):
         'Stereo',
         'Learning',
         'Segmentation',
-        ]
+    ]
     for sectionTag in sectionTags:
         for tag in tags:
             if tag == sectionTag:
@@ -140,9 +139,9 @@ def generate_param_descriptor(appInstance, paramKey):
         otbApplication.ParameterType_ComplexInputImage: generate_parameter_ComplexInputImage,
         otbApplication.ParameterType_ComplexOutputImage: generate_parameter_ComplexOutputImage,
         otbApplication.ParameterType_RAM: generate_parameter_RAM,
-        }
-    return paramcreationfunction[appInstance.GetParameterType(paramKey)](appInstance,
-            paramKey)
+    }
+    return paramcreationfunction[appInstance.GetParameterType(paramKey)](
+        appInstance, paramKey)
 
 
 def generate_parameter_Empty(appInstance, paramKey):
@@ -174,7 +173,7 @@ def generate_parameter_Int(appInstance, paramKey):
 
     defaultVal = '0'
     try:
-        defaultVal = str(appInstance.GetParameterInt(paramKey))
+        defaultVal = unicode(appInstance.GetParameterInt(paramKey))
     except:
         pass
     out += defaultVal
@@ -198,7 +197,7 @@ def generate_parameter_Float(appInstance, paramKey):
 
     defaultVal = '0.0'
     try:
-        defaultVal = str(appInstance.GetParameterFloat(paramKey))
+        defaultVal = unicode(appInstance.GetParameterFloat(paramKey))
     except:
         pass
     out += defaultVal
@@ -217,7 +216,7 @@ def generate_parameter_String(appInstance, paramKey):
 
     defaultVal = ''
     try:
-        defaultVal = str(appInstance.GetParameterString(paramKey))
+        defaultVal = unicode(appInstance.GetParameterString(paramKey))
     except:
         pass
     out += defaultVal
@@ -235,7 +234,7 @@ def generate_parameter_InputFilename(appInstance, paramKey):
     out += '|'
 
     try:
-        defaultVal = str(appInstance.GetParameterString(paramKey))
+        defaultVal = unicode(appInstance.GetParameterString(paramKey))
         out += '|' + defaultVal
     except:
         pass
@@ -265,7 +264,7 @@ def generate_parameter_Directory(appInstance, paramKey):
     out += convertendl(appInstance.GetParameterName(paramKey))
 
     try:
-        defaultVal = str(appInstance.GetParameterString(paramKey))
+        defaultVal = unicode(appInstance.GetParameterString(paramKey))
         out += '|' + defaultVal
     except:
         pass
@@ -290,7 +289,7 @@ def generate_parameter_Choice(appInstance, paramKey):
     out += choices[:-1]
 
     out += '|'
-    out += str(appInstance.GetParameterInt(paramKey))
+    out += unicode(appInstance.GetParameterInt(paramKey))
 
     return out
 
@@ -305,7 +304,7 @@ def generate_parameter_InputImage(appInstance, paramKey):
     out += convertendl(appInstance.GetParameterName(paramKey))
     out += '|'
 
-    out += str(not appInstance.IsMandatory(paramKey))
+    out += unicode(not appInstance.IsMandatory(paramKey))
 
     return out
 
@@ -323,7 +322,7 @@ def generate_parameter_InputImageList(appInstance, paramKey):
     out += '3'
     out += '|'
 
-    out += str(not appInstance.IsMandatory(paramKey))
+    out += unicode(not appInstance.IsMandatory(paramKey))
 
     return out
 
@@ -341,7 +340,7 @@ def generate_parameter_InputVectorData(appInstance, paramKey):
     out += '-1'
     out += '|'
 
-    out += str(not appInstance.IsMandatory(paramKey))
+    out += unicode(not appInstance.IsMandatory(paramKey))
 
     return out
 
@@ -359,7 +358,7 @@ def generate_parameter_InputVectorDataList(appInstance, paramKey):
     out += '-1'
     out += '|'
 
-    out += str(not appInstance.IsMandatory(paramKey))
+    out += unicode(not appInstance.IsMandatory(paramKey))
 
     return out
 

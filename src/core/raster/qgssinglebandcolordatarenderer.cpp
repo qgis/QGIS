@@ -32,12 +32,10 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 {
 }
 
-QgsRasterInterface * QgsSingleBandColorDataRenderer::clone() const
+QgsSingleBandColorDataRenderer* QgsSingleBandColorDataRenderer::clone() const
 {
-  QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( 0, mBand );
-  renderer->setOpacity( mOpacity );
-  renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : 0 );
+  QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( nullptr, mBand );
+  renderer->copyCommonProperties( this );
   return renderer;
 }
 
@@ -45,12 +43,12 @@ QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& el
 {
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   int band = elem.attribute( "band", "-1" ).toInt();
   QgsRasterRenderer* r = new QgsSingleBandColorDataRenderer( input, band );
-  r->readXML( elem );
+  r->readXml( elem );
   return r;
 }
 
@@ -76,37 +74,39 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   if ( !hasTransparency )
   {
     // Nothing to do, just retype if necessary
-    inputBlock->convert( QGis::ARGB32_Premultiplied );
+    inputBlock->convert( Qgis::ARGB32_Premultiplied );
     delete outputBlock;
     return inputBlock;
   }
 
-  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
     return outputBlock;
   }
 
+  // make sure input is also premultiplied!
+  inputBlock->convert( Qgis::ARGB32_Premultiplied );
+
+  QRgb* inputBits = ( QRgb* )inputBlock->bits();
+  QRgb* outputBits = ( QRgb* )outputBlock->bits();
   for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
   {
-    QRgb pixelColor;
-    QRgb c = inputBlock->color( i );
-    double alpha = qAlpha( c );
-    pixelColor = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * alpha );
-    outputBlock->setColor( i,  pixelColor );
+    QRgb c = inputBits[i];
+    outputBits[i] = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * qAlpha( c ) );
   }
 
   delete inputBlock;
   return outputBlock;
 }
 
-void QgsSingleBandColorDataRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsSingleBandColorDataRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
     return;
 
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
-  _writeXML( doc, rasterRendererElem );
+  _writeXml( doc, rasterRendererElem );
   rasterRendererElem.setAttribute( "band", mBand );
   parentElem.appendChild( rasterRendererElem );
 }
@@ -133,8 +133,8 @@ bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface* input )
     return true;
   }
 
-  if ( input->dataType( 1 ) == QGis::ARGB32 ||
-       input->dataType( 1 ) == QGis::ARGB32_Premultiplied )
+  if ( input->dataType( 1 ) == Qgis::ARGB32 ||
+       input->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
   {
     mInput = input;
     return true;

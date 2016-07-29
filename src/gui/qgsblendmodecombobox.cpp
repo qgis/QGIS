@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsblendmodecombobox.h"
+#include "qgspainting.h"
 
 #include <QAbstractItemView>
 #include <QLocale>
@@ -101,12 +102,12 @@ void QgsBlendModeComboBox::updateModes()
 //! Function to read the selected blend mode
 QPainter::CompositionMode QgsBlendModeComboBox::blendMode()
 {
-  return QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) mListIndexToBlendMode[ currentIndex()] );
+  return QgsPainting::getCompositionMode(( QgsPainting::BlendMode ) mListIndexToBlendMode[ currentIndex()] );
 }
 
 //! Function to set the selected blend mode
 void QgsBlendModeComboBox::setBlendMode( QPainter::CompositionMode blendMode )
 {
-  setCurrentIndex( mBlendModeToListIndex[( int ) QgsMapRenderer::getBlendModeEnum( blendMode )] );
+  setCurrentIndex( mBlendModeToListIndex[( int ) QgsPainting::getBlendModeEnum( blendMode )] );
 }
 

@@ -25,8 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from exampleprovider.ProcessingExampleProviderPlugin import \
-            ProcessingExampleProviderPlugin
+from exampleprovider.ProcessingExampleProviderPlugin import ProcessingExampleProviderPlugin
 
 
 def classFactory(iface):

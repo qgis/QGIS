@@ -37,7 +37,7 @@ class RgSettingsDlg : public QDialog
 {
     Q_OBJECT
   public:
-    RgSettingsDlg( RgSettings *settings, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
+    RgSettingsDlg( RgSettings *settings, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~RgSettingsDlg();
 
     QString timeUnitName();
@@ -60,8 +60,6 @@ class RgSettingsDlg : public QDialog
     void on_buttonBox_helpRequested();
 
   private:
-    // futurame by used
-    QComboBox *mcbGraphDirector;
 
     /**
      * current graph settings object

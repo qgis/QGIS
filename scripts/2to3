@@ -1,0 +1,7 @@
+#!/usr/bin/python
+import sys, os
+
+from lib2to3.main import main
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
+sys.exit(main('qgis_fixes'))

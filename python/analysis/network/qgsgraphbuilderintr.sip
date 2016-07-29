@@ -15,9 +15,9 @@ class QgsGraphBuilderInterface
 
 %ConvertToSubClassCode
   if ( dynamic_cast< QgsGraphBuilder* > ( sipCpp ) != NULL )
-    sipClass = sipClass_QgsGraphBuilder;
+    sipType = sipType_QgsGraphBuilder;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:
@@ -30,7 +30,7 @@ class QgsGraphBuilderInterface
      */
     QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" );
 
-    QgsCoordinateReferenceSystem& destinationCrs();
+    QgsCoordinateReferenceSystem destinationCrs() const;
 
     //! get coordinate transformation enabled
     bool coordinateTransformationEnabled();

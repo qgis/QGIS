@@ -25,8 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from osgeo import gdal
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -43,23 +42,27 @@ class CreateConstantRaster(GeoAlgorithm):
     NUMBER = 'NUMBER'
 
     def defineCharacteristics(self):
-        self.name = 'Create constant raster layer'
-        self.group = 'Raster tools'
+        self.name, self.i18n_name = self.trAlgorithm('Create constant raster layer')
+        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
 
         self.addParameter(ParameterRaster(self.INPUT,
-            self.tr('Reference layer')))
+                                          self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.NUMBER,
-            self.tr('Constant value'), default=1.0))
+                                          self.tr('Constant value'),
+                                          default=1.0))
 
         self.addOutput(OutputRaster(self.OUTPUT,
-            self.tr('Output layer')))
+                                    self.tr('Constant')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
-        value = self.getOutputValue(self.NUMBER)
+        value = self.getParameterValue(self.NUMBER)
 
         output = self.getOutputFromName(self.OUTPUT)
+
+        raster = gdal.Open(layer.source(), gdal.GA_ReadOnly)
+        geoTransform = raster.GetGeoTransform()
 
         cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum()) \
             / layer.width()
@@ -71,7 +74,8 @@ class CreateConstantRaster(GeoAlgorithm):
                          layer.extent().yMaximum(),
                          cellsize,
                          1,
-                         self.crs,
-                        )
-        w.matrix[:] = value
+                         layer.crs(),
+                         geoTransform
+                         )
+        w.matrix.fill(value)
         w.close()

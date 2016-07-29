@@ -100,6 +100,7 @@
   <tabstop>valueComboBox</tabstop>
   <tabstop>keyComboBox</tabstop>
   <tabstop>previewButton</tabstop>
+  <tabstop>nullCheckBox</tabstop>
   <tabstop>previewTableWidget</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

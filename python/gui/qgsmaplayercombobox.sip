@@ -17,13 +17,28 @@ class QgsMapLayerComboBox : QComboBox
     explicit QgsMapLayerComboBox( QWidget *parent /TransferThis/ = 0 );
 
     //! setFilters allows fitering according to layer type and/or geometry type.
-    void setFilters( QgsMapLayerProxyModel::Filters filters );
+    void setFilters( const QgsMapLayerProxyModel::Filters& filters );
 
     //! currently used filter on list layers
     QgsMapLayerProxyModel::Filters filters() const;
 
-    //! currentLayer returns the current layer selected in the combo box
+    //! except a list of layers not to be listed
+    void setExceptedLayerList( const QList<QgsMapLayer*>& layerList );
+
+    //! returns the list of excepted layers
+    QList<QgsMapLayer*> exceptedLayerList() const;
+
+    /** Returns the current layer selected in the combo box.
+     * @see layer
+     */
     QgsMapLayer* currentLayer() const;
+
+    /** Return the layer currently shown at the specified index within the combo box.
+     * @param layerIndex position of layer to return
+     * @note added in QGIS 2.10
+     * @see currentLayer
+     */
+    QgsMapLayer* layer( int layerIndex ) const;
 
   public slots:
     //! setLayer set the current layer selected in the combo
@@ -32,4 +47,8 @@ class QgsMapLayerComboBox : QComboBox
   signals:
     //! layerChanged this signal is emitted whenever the currently selected layer changes
     void layerChanged( QgsMapLayer* layer );
+
+  protected slots:
+    void indexChanged( int i );
+    void rowsChanged();
 };

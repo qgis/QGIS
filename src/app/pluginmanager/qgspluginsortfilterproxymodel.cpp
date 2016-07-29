@@ -40,7 +40,7 @@ bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QMode
 
 
 
-void QgsPluginSortFilterProxyModel::setAcceptedStatuses( QStringList statuses )
+void QgsPluginSortFilterProxyModel::setAcceptedStatuses( const QStringList& statuses )
 {
   mAcceptedStatuses = statuses;
   invalidateFilter();
@@ -48,7 +48,7 @@ void QgsPluginSortFilterProxyModel::setAcceptedStatuses( QStringList statuses )
 
 
 
-void QgsPluginSortFilterProxyModel::setAcceptedSpacers( QString spacers )
+void QgsPluginSortFilterProxyModel::setAcceptedSpacers( const QString& spacers )
 {
   mAcceptedSpacers = spacers;
   invalidateFilter();
@@ -66,7 +66,7 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
   }
 
   QString status = sourceModel()->data( index, PLUGIN_STATUS_ROLE ).toString();
-  if ( status.endsWith( "Z" ) ) status.chop( 1 );
+  if ( status.endsWith( 'Z' ) ) status.chop( 1 );
   if ( ! mAcceptedStatuses.isEmpty()
        && ! mAcceptedStatuses.contains( "invalid" )
        && ! mAcceptedStatuses.contains( status ) )
@@ -88,14 +88,12 @@ bool QgsPluginSortFilterProxyModel::filterByPhrase( QModelIndex &index ) const
     case PLUGIN_TAGS_ROLE:
       // search in tags only
       return sourceModel()->data( index, PLUGIN_TAGS_ROLE ).toString().contains( filterRegExp() );
-      break;
     case 0:
       // full search: name + description + tags + author
       return sourceModel()->data( index, PLUGIN_DESCRIPTION_ROLE ).toString().contains( filterRegExp() )
              || sourceModel()->data( index, PLUGIN_AUTHOR_ROLE ).toString().contains( filterRegExp() )
              || sourceModel()->data( index, Qt::DisplayRole ).toString().contains( filterRegExp() )
              || sourceModel()->data( index, PLUGIN_TAGS_ROLE ).toString().contains( filterRegExp() );
-      break;
     default:
       // unknown filter mode, return nothing
       return false;

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsosmdownload.cpp
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsosmdownload.h"
 
 #include <QNetworkAccessManager>
@@ -22,7 +36,8 @@ QString QgsOSMDownload::queryFromRect( const QgsRectangle& rect )
 
 
 QgsOSMDownload::QgsOSMDownload()
-    : mServiceUrl( defaultServiceUrl() ), mReply( 0 )
+    : mServiceUrl( defaultServiceUrl() )
+    , mReply( nullptr )
 {
 }
 
@@ -32,7 +47,7 @@ QgsOSMDownload::~QgsOSMDownload()
   {
     mReply->abort();
     mReply->deleteLater();
-    mReply = 0;
+    mReply = nullptr;
   }
 }
 
@@ -103,7 +118,7 @@ void QgsOSMDownload::onFinished()
   Q_ASSERT( mReply );
 
   mReply->deleteLater();
-  mReply = 0;
+  mReply = nullptr;
 
   mFile.close();
 

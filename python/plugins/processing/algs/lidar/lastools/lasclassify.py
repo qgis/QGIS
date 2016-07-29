@@ -4,7 +4,7 @@
 ***************************************************************************
     lasclassify.py
     ---------------------
-    Date                 : August 2012
+    Date                 : August 2012 and May 2016
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
     ---------------------
@@ -28,16 +28,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
+
 
 class lasclassify(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
-        self.name = "lasclassify"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasclassify')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
+        self.addParametersIgnoreClass1GUI()
+        self.addParametersIgnoreClass2GUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
@@ -46,6 +49,8 @@ class lasclassify(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclassify")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
+        self.addParametersIgnoreClass1Commands(commands)
+        self.addParametersIgnoreClass2Commands(commands)
         self.addParametersHorizontalAndVerticalFeetCommands(commands)
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)

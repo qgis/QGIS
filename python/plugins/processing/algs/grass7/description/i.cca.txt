@@ -1,0 +1,6 @@
+i.cca
+Canonical components analysis (CCA) program for image processing.
+Imagery (i.*)
+ParameterMultipleInput|input|Input rasters (2 to 8)|3|False
+ParameterFile|signature|File containing spectral signatures|False|False
+OutputDirectory|output|Output Directory

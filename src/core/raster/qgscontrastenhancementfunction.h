@@ -20,7 +20,6 @@ email                : ersts@amnh.org
 #define QGSCONTRASTENHANCEMENTFUNCTION_H
 
 #include "qgis.h"
-#include "qgscontrastenhancement.h"
 
 /** \ingroup core
  * A contrast enhancement funcion is the base class for all raster contrast enhancements.
@@ -32,7 +31,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
 {
 
   public:
-    QgsContrastEnhancementFunction( QGis::DataType, double, double );
+    QgsContrastEnhancementFunction( Qgis::DataType, double, double );
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction& f );
     virtual ~QgsContrastEnhancementFunction() {}
 
@@ -59,7 +58,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     double mMinimumMaximumRange;
 
     /** \brief Data type of the band */
-    QGis::DataType mQgsRasterDataType;
+    Qgis::DataType mQgsRasterDataType;
 };
 
 #endif

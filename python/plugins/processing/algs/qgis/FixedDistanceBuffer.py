@@ -25,15 +25,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
+from qgis.core import Qgis
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-import Buffer as buff
+from . import Buffer as buff
 from processing.tools import dataobjects
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class FixedDistanceBuffer(GeoAlgorithm):
@@ -45,30 +51,32 @@ class FixedDistanceBuffer(GeoAlgorithm):
     SEGMENTS = 'SEGMENTS'
     DISSOLVE = 'DISSOLVE'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Fixed distance buffer'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Fixed distance buffer')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterNumber(self.DISTANCE,
-            self.tr('Distance'), default=10.0))
+                                          self.tr('Distance'), default=10.0))
         self.addParameter(ParameterNumber(self.SEGMENTS,
-            self.tr('Segments'), 1, default=5))
+                                          self.tr('Segments'), 1, default=5))
         self.addParameter(ParameterBoolean(self.DISSOLVE,
-            self.tr('Dissolve result'), False))
+                                           self.tr('Dissolve result'), False))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         distance = self.getParameterValue(self.DISTANCE)
         dissolve = self.getParameterValue(self.DISSOLVE)
         segments = int(self.getParameterValue(self.SEGMENTS))
 
         writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                                             QGis.WKBPolygon, layer.crs())
+            self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+                                         Qgis.WKBPolygon, layer.crs())
 
         buff.buffering(progress, writer, distance, None, False, layer,
                        dissolve, segments)

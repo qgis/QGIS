@@ -31,7 +31,7 @@ PROJECT_NAME           = "QGIS API Documentation"
 # This could be handy for archiving the generated documentation or
 # if some version control system is used.
 
-PROJECT_NUMBER         = "@COMPLETE_VERSION@-@RELEASE_NAME@"
+@INCLUDE               = "@CMAKE_BINARY_DIR@/qgsversion.inc"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute)
 # base path where the generated documentation will be put.
@@ -572,18 +572,23 @@ WARN_LOGFILE           =
 
 INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/core \
+                         @CMAKE_SOURCE_DIR@/src/core/auth \
                          @CMAKE_SOURCE_DIR@/src/core/composer \
                          @CMAKE_SOURCE_DIR@/src/core/diagram \
                          @CMAKE_SOURCE_DIR@/src/core/dxf \
+                         @CMAKE_SOURCE_DIR@/src/core/effects \
+                         @CMAKE_SOURCE_DIR@/src/core/geometry \
                          @CMAKE_SOURCE_DIR@/src/core/gps \
                          @CMAKE_SOURCE_DIR@/src/core/layertree \
                          @CMAKE_SOURCE_DIR@/src/core/pal \
                          @CMAKE_SOURCE_DIR@/src/core/raster \
                          @CMAKE_SOURCE_DIR@/src/core/symbology-ng \
                          @CMAKE_SOURCE_DIR@/src/gui \
+                         @CMAKE_SOURCE_DIR@/src/gui/auth \
                          @CMAKE_SOURCE_DIR@/src/gui/attributetable \
                          @CMAKE_SOURCE_DIR@/src/gui/editorwidgets \
                          @CMAKE_SOURCE_DIR@/src/gui/editorwidgets/core \
+                         @CMAKE_SOURCE_DIR@/src/gui/effects \
                          @CMAKE_SOURCE_DIR@/src/gui/layertree \
                          @CMAKE_SOURCE_DIR@/src/gui/raster \
                          @CMAKE_SOURCE_DIR@/src/gui/symbology-ng \
@@ -593,7 +598,14 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/analysis/openstreetmap \
                          @CMAKE_SOURCE_DIR@/src/analysis/raster \
                          @CMAKE_SOURCE_DIR@/src/analysis/vector \
-                         @CMAKE_SOURCE_DIR@/src/plugins
+                         @CMAKE_SOURCE_DIR@/src/plugins \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsserver.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgscapabilitiescache.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsmapserviceexception.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsrequesthandler.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsserverfilter.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsaccesscontrolfilter.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsserverinterface.h
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -826,6 +838,13 @@ HTML_FOOTER            =
 
 HTML_STYLESHEET        =
 
+# @tomchadwin addition - HTML_EXTRA_STYLESHEET needs Doxygen version bump to
+# work.
+# Assumes Doxygen is run from this directory (/cmake_templates) - if not,
+# correct the path
+
+HTML_EXTRA_STYLESHEET  = @CMAKE_SOURCE_DIR@/doc/api_custom.css
+
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output.
 # Doxygen will adjust the colors in the stylesheet and background images
 # according to this color. Hue is specified as an angle on a colorwheel,
@@ -834,7 +853,7 @@ HTML_STYLESHEET        =
 # 180 is cyan, 240 is blue, 300 purple, and 360 is red again.
 # The allowed range is 0 to 359.
 
-HTML_COLORSTYLE_HUE    = 220
+HTML_COLORSTYLE_HUE    = 113
 
 # The HTML_COLORSTYLE_SAT tag controls the purity (or saturation) of
 # the colors in the HTML output. For a value of 0 the output will use
@@ -951,25 +970,25 @@ TOC_EXPAND             = NO
 # that can be used as input for Qt's qhelpgenerator to generate a
 # Qt Compressed Help (.qch) of the generated HTML documentation.
 
-GENERATE_QHP           = NO
+GENERATE_QHP           = @WITH_QHP@
 
 # If the QHG_LOCATION tag is specified, the QCH_FILE tag can
 # be used to specify the file name of the resulting .qch file.
 # The path specified is relative to the HTML output folder.
 
-QCH_FILE               =
+QCH_FILE               =../qch/qgis.qch
 
 # The QHP_NAMESPACE tag specifies the namespace to use when generating
 # Qt Help Project output. For more information please see
 # http://doc.trolltech.com/qthelpproject.html#namespace
 
-QHP_NAMESPACE          = org.doxygen.Project
+QHP_NAMESPACE          = org.qgis.qgis2
 
 # The QHP_VIRTUAL_FOLDER tag specifies the namespace to use when generating
 # Qt Help Project output. For more information please see
 # http://doc.trolltech.com/qthelpproject.html#virtual-folders
 
-QHP_VIRTUAL_FOLDER     = doc
+QHP_VIRTUAL_FOLDER     = qgis
 
 # If QHP_CUST_FILTER_NAME is set, it specifies the name of a custom filter to
 # add. For more information please see
@@ -997,7 +1016,7 @@ QHP_SECT_FILTER_ATTRS  =
 # If non-empty doxygen will try to run qhelpgenerator on the generated
 # .qhp file.
 
-QHG_LOCATION           =
+QHG_LOCATION           = qhelpgenerator
 
 # If the GENERATE_ECLIPSEHELP tag is set to YES, additional index files
 #  will be generated, which together with the HTML files, form an Eclipse help
@@ -1248,25 +1267,13 @@ MAN_LINKS              = NO
 # generate an XML file that captures the structure of
 # the code including all documentation.
 
-GENERATE_XML           = NO
+GENERATE_XML           = YES
 
 # The XML_OUTPUT tag is used to specify where the XML pages will be put.
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `xml' will be used as the default path.
 
 XML_OUTPUT             = xml
-
-# The XML_SCHEMA tag can be used to specify an XML schema,
-# which can be used by a validating XML parser to check the
-# syntax of the XML files.
-
-XML_SCHEMA             =
-
-# The XML_DTD tag can be used to specify an XML DTD,
-# which can be used by a validating XML parser to check the
-# syntax of the XML files.
-
-XML_DTD                =
 
 # If the XML_PROGRAMLISTING tag is set to YES Doxygen will
 # dump the program listings (including syntax highlighting
@@ -1371,7 +1378,7 @@ INCLUDE_FILE_PATTERNS  =
 # undefined via #undef or recursively expanded use the := operator
 # instead of the = operator.
 
-PREDEFINED             =
+PREDEFINED             = "QT_VERSION=0x040800"
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.
@@ -1409,7 +1416,7 @@ SKIP_FUNCTION_MACROS   = YES
 # If a tag file is not located in the directory in which doxygen
 # is run, you must also specify the path to the tagfile here.
 
-TAGFILES               =
+TAGFILES               = @DOXYGEN_TAGS@
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
@@ -1621,7 +1628,7 @@ DOT_TRANSPARENT        = NO
 # makes dot run faster, but since only newer versions of dot (>1.8.10)
 # support this, this feature is disabled by default.
 
-DOT_MULTI_TARGETS      = NO
+DOT_MULTI_TARGETS      = YES
 
 # If the GENERATE_LEGEND tag is set to YES (the default) Doxygen will
 # generate a legend page explaining the meaning of the various boxes and

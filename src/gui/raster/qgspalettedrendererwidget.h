@@ -23,6 +23,9 @@
 
 class QgsRasterLayer;
 
+/** \ingroup gui
+ * \class QgsPalettedRendererWidget
+ */
 class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase
 {
     Q_OBJECT

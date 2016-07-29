@@ -25,25 +25,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
-
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterExtent
 from processing.core.outputs import OutputVector
 
-from processing.tools.system import *
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-class Ogr2OgrClipExtent(OgrAlgorithm):
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
+
+
+class Ogr2OgrClipExtent(GdalAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
@@ -51,45 +45,44 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
-        self.name = 'Clip vectors by extent'
-        self.group = '[OGR] Geoprocessing'
+        self.name, self.i18n_name = self.trAlgorithm('Clip vectors by extent')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterExtent(self.CLIP_EXTENT,
-            self.tr('Clip extent')))
+                                          self.tr('Clip extent')))
         self.addParameter(ParameterString(self.OPTIONS,
-            self.tr('Additional creation options'), '', optional=True))
+                                          self.tr('Additional creation options'), '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Clipped (extent)')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
         clipExtent = self.getParameterValue(self.CLIP_EXTENT)
-        ogrclipExtent = self.ogrConnectionString(clipExtent)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
-        output = self.ogrConnectionString(outFile)
+        output = ogrConnectionString(outFile)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         arguments = []
-        regionCoords = ogrclipExtent.split(',')
+        regionCoords = clipExtent.split(',')
         arguments.append('-spat')
         arguments.append(regionCoords[0])
         arguments.append(regionCoords[2])
         arguments.append(regionCoords[1])
         arguments.append(regionCoords[3])
-        #arguments.append('-spat')
-        #arguments.append(ogrclipExtent)
+        arguments.append('-clipsrc spat_extent')
 
         if len(options) > 0:
             arguments.append(options)
 
         arguments.append(output)
         arguments.append(ogrLayer)
+        arguments.append(ogrLayerName(inLayer))
 
         commands = []
         if isWindows():
@@ -98,4 +91,7 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands
+
+    def commandName(self):
+        return "ogr2ogr"

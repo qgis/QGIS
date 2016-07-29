@@ -29,20 +29,20 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
     QgsMapToolRotateLabel( QgsMapCanvas* canvas );
     ~QgsMapToolRotateLabel();
 
-    virtual void canvasPressEvent( QMouseEvent * e ) override;
-    virtual void canvasMoveEvent( QMouseEvent * e ) override;
-    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
   protected:
 
     static int roundTo15Degrees( double n );
-    /**Converts azimuth value to counterclockwise 0 - 360*/
+    /** Converts azimuth value to counterclockwise 0 - 360*/
     static double azimuthToCCW( double a );
 
     QgsRubberBand* createRotationPreviewBox();
     void setRotationPreviewBox( double rotation );
 
-    /**Rotates input point counterclockwise around centerPoint*/
+    /** Rotates input point counterclockwise around centerPoint*/
     QgsPoint rotatePointCounterClockwise( const QgsPoint& input, const QgsPoint& centerPoint, double degrees );
 
     double mStartRotation; //rotation value prior to start rotating
@@ -52,7 +52,7 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
     QgsPointRotationItem* mRotationItem;
     QgsRubberBand* mRotationPreviewBox;
 
-    /**True if ctrl was pressed during the last mouse move event*/
+    /** True if ctrl was pressed during the last mouse move event*/
     bool mCtrlPressed;
 };
 

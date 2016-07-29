@@ -18,21 +18,30 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsmultibandcolorrenderer.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include <QObject>
 #include <QtTest/QtTest>
+#include "qgstestutils.h"
 
 class TestProjectionIssues : public QObject
 {
     Q_OBJECT
+  public:
+    TestProjectionIssues()
+        : mRasterLayer( 0 )
+        , mMapCanvas( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void issue5895();// test for #5895
+    void issue15183();// test for #15183
+
   private:
     QgsRasterLayer* mRasterLayer;
     QgsMapCanvas*   mMapCanvas;
@@ -44,7 +53,7 @@ void TestProjectionIssues::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayer from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "checker360by180.asc" );
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + '/' +  "checker360by180.asc" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   // Set to WGS84
@@ -61,7 +70,7 @@ void TestProjectionIssues::initTestCase()
 
   // Add all layers in registry to the canvas
   QList<QgsMapCanvasLayer> canvasLayers;
-  foreach ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     canvasLayers.append( QgsMapCanvasLayer( layer ) );
   }
@@ -76,31 +85,54 @@ void TestProjectionIssues::initTestCase()
   mMapCanvas->setDestinationCrs( destCRS );
   mMapCanvas->setCrsTransformEnabled( true );
 
-};
+}
 
 void TestProjectionIssues::cleanupTestCase()
 {
   delete mMapCanvas;
 
   QgsApplication::exitQgis();
-};
+}
 
 void TestProjectionIssues::init()
 {
 
-};
+}
 
 void TestProjectionIssues::cleanup()
 {
 
-};
+}
 
 void TestProjectionIssues::issue5895()
 {
   QgsRectangle largeExtent( -610861, 5101721, 2523921, 6795055 );
   mMapCanvas->setExtent( largeExtent );
   mMapCanvas->zoomByFactor( 2.0 ); // Zoom out. This should exceed the transform limits.
-};
+}
+
+void TestProjectionIssues::issue15183()
+{
+  QgsRectangle largeExtent( -610861, 5101721, 2523921, 6795055 );
+  mMapCanvas->setExtent( largeExtent );
+
+  // Set to CRS's
+  QgsCoordinateReferenceSystem sourceCRS;
+  sourceCRS = mMapCanvas->mapSettings().destinationCrs();
+  QgsCoordinateReferenceSystem targetCRS;
+  targetCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+
+  QgsCoordinateTransform ct( sourceCRS, targetCRS );
+  QgsRectangle initialExtent = ct.transformBoundingBox( mMapCanvas->extent() );
+
+  mMapCanvas->setCrsTransformEnabled( false );
+  mMapCanvas->setDestinationCrs( targetCRS );
+
+  QgsRectangle currentExtent = mMapCanvas->extent();
+
+  // Compare center
+  QGSCOMPARENEARPOINT( initialExtent.center(), currentExtent.center(), 0.00001 );
+}
 
 QTEST_MAIN( TestProjectionIssues )
 #include "testprojectionissues.moc"

@@ -26,10 +26,11 @@ class QgsRasterPipe;
 struct QgsRasterViewPort;
 class QgsRenderContext;
 
-/**
+/** \ingroup core
  * Implementation of threaded rendering for raster layers.
  *
  * @note added in 2.4
+ * @note not available in Python bindings
  */
 class QgsRasterLayerRenderer : public QgsMapLayerRenderer
 {
@@ -46,6 +47,7 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterViewPort* mRasterViewPort;
 
     QgsRasterPipe* mPipe;
+    QgsRenderContext& mContext;
 };
 
 #endif // QGSRASTERLAYERRENDERER_H

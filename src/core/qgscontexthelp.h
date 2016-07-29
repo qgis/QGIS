@@ -36,7 +36,7 @@ class CORE_EXPORT QgsContextHelp : public QObject
 {
     Q_OBJECT
   public:
-    static void run( QString context );
+    static void run( const QString& context );
 
   private slots:
     void processExited();
@@ -49,7 +49,7 @@ class CORE_EXPORT QgsContextHelp : public QObject
     ~QgsContextHelp();
 
     QProcess *start();
-    void showContext( QString context );
+    void showContext( const QString& context );
 
     static QgsContextHelp *gContextHelp; // Singleton instance
     QProcess *mProcess;

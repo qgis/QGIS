@@ -1,3 +1,17 @@
+/***************************************************************************
+    testmaprendererjob.cpp
+    ---------------------
+    begin                : November 2013
+    copyright            : (C) 2013 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include <QtTest/QtTest>
 #include <QObject>
@@ -93,9 +107,9 @@ void TestQgsMapRendererJob::testNormal()
 
   // TODO: custom painter
 
-  imgS.save( "/tmp/imgS.png" );
-  imgP.save( "/tmp/imgP.png" );
-  //img.save("/tmp/img5.png");
+  imgS.save( QDir::tempPath() + "/imgS.png" );
+  imgP.save( QDir::tempPath() + "/imgP.png" );
+  //img.save( QDir::tempPath() + "/img5.png");
 
   QCOMPARE( imgS, imgP );
 }

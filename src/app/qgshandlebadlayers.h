@@ -29,8 +29,8 @@ class APP_EXPORT QgsHandleBadLayersHandler
   public:
     QgsHandleBadLayersHandler();
 
-    /** implementation of the handler */
-    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) override;
+    /** Implementation of the handler */
+    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) override;
 };
 
 
@@ -51,6 +51,7 @@ class APP_EXPORT QgsHandleBadLayers
   private slots:
     void selectionChanged();
     void browseClicked();
+    void editAuthCfg();
     void apply();
     void accept() override;
     void rejected();
@@ -63,7 +64,7 @@ class APP_EXPORT QgsHandleBadLayers
     QString mRasterFileFilter;
 
     QString filename( int row );
-    void setFilename( int row, QString filename );
+    void setFilename( int row, const QString& filename );
 };
 
 #endif

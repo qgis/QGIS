@@ -31,9 +31,10 @@ email                : jpalmer at linz dot govt dot nz
 const int RADIUS_SEGMENTS = 40;
 
 QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas ), mDragging( false )
+    : QgsMapTool( canvas )
+    , mDragging( false )
 {
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
@@ -44,27 +45,25 @@ QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectRadius::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSelectRadius::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
-  {
     return;
-  }
+
   mRadiusCenter = toMapCoordinates( e->pos() );
 }
 
 
-void QgsMapToolSelectRadius::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( e->buttons() != Qt::LeftButton )
-  {
     return;
-  }
+
   if ( !mDragging )
   {
-    if ( mRubberBand == NULL )
+    if ( !mRubberBand )
     {
-      mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+      mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
       mRubberBand->setFillColor( mFillColor );
       mRubberBand->setBorderColor( mBorderColour );
     }
@@ -75,17 +74,16 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSelectRadius::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
-  {
     return;
-  }
+
   if ( !mDragging )
   {
-    if ( mRubberBand == NULL )
+    if ( !mRubberBand )
     {
-      mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+      mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
       mRubberBand->setFillColor( mFillColor );
       mRubberBand->setBorderColor( mBorderColour );
     }
@@ -94,11 +92,11 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QMouseEvent * e )
     setRadiusRubberBand( radiusEdge );
   }
   QgsGeometry* radiusGeometry = mRubberBand->asGeometry();
-  QgsMapToolSelectUtils::setSelectFeatures( mCanvas, radiusGeometry, e );
+  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, radiusGeometry, e );
   delete radiusGeometry;
-  mRubberBand->reset( QGis::Polygon );
+  mRubberBand->reset( Qgis::Polygon );
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mDragging = false;
 }
 
@@ -106,12 +104,13 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QMouseEvent * e )
 void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPoint & radiusEdge )
 {
   double r = sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
-  mRubberBand->reset( QGis::Polygon );
+  mRubberBand->reset( Qgis::Polygon );
   for ( int i = 0; i <= RADIUS_SEGMENTS; ++i )
   {
     double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );
     QgsPoint radiusPoint( mRadiusCenter.x() + r * cos( theta ),
                           mRadiusCenter.y() + r * sin( theta ) );
-    mRubberBand->addPoint( radiusPoint );
+    mRubberBand->addPoint( radiusPoint, false );
   }
+  mRubberBand->closePoints( true );
 }

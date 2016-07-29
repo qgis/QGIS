@@ -52,7 +52,7 @@
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QStack>
 
-class ModelTest : public QObject
+class CORE_EXPORT ModelTest : public QObject
 {
     Q_OBJECT
 

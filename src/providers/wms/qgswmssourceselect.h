@@ -30,7 +30,7 @@
 class QgisApp;
 class QgsWmsProvider;
 class QButtonGroup;
-class QgsNumericSortTreeWidgetItem;
+class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 class QgsWmsCapabilities;
@@ -50,7 +50,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
   public:
     //! Constructor
-    QgsWMSSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsWMSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsWMSSourceSelect();
 
@@ -67,9 +67,9 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Loads connections from the file
     void on_btnLoad_clicked();
 
-    /*! Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+    /** Connects to the database using the stored connection parameters.
+     * Once connected, available layers are displayed.
+     */
     void on_btnConnect_clicked();
 
     //! Determines the layers the user selected
@@ -148,15 +148,15 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     bool populateLayerList( const QgsWmsCapabilities& capabilities );
 
     //! create an item including possible parents
-    QgsNumericSortTreeWidgetItem *createItem( int id,
-        const QStringList &names,
-        QMap<int, QgsNumericSortTreeWidgetItem *> &items,
-        int &layerAndStyleCount,
-        const QMap<int, int> &layerParents,
-        const QMap<int, QStringList> &layerParentNames );
+    QgsTreeWidgetItem *createItem( int id,
+                                   const QStringList &names,
+                                   QMap<int, QgsTreeWidgetItem *> &items,
+                                   int &layerAndStyleCount,
+                                   const QMap<int, int> &layerParents,
+                                   const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
-    QString descriptionForAuthId( QString authId );
+    QString descriptionForAuthId( const QString& authId );
 
     //! Keeps the layer order list up-to-date with changed layers and styles
     void updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList, const QStringList &newTitleList );

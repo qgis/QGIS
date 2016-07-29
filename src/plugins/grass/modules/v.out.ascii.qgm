@@ -5,5 +5,6 @@
 	<option key="input" />
 	<option key="format"/>
 	<file key="output" type="new" />
-	<option key="fs" advanced="yes" />
+	<option key="fs" advanced="yes" version_max="6.4"/>
+	<option key="separator" advanced="yes" version_min="7.0"/>
 </qgisgrassmodule>

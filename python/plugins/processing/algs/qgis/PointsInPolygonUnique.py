@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -44,23 +44,21 @@ class PointsInPolygonUnique(GeoAlgorithm):
     CLASSFIELD = 'CLASSFIELD'
 
     def defineCharacteristics(self):
-        self.name = 'Count unique points in polygon'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Count unique points in polygon')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
         self.addParameter(ParameterVector(self.POLYGONS,
-            self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,
-            self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.CLASSFIELD,
-            self.tr('Class field'), self.POINTS))
+                                              self.tr('Class field'), self.POINTS))
         self.addParameter(ParameterString(self.FIELD,
-            self.tr('Count field name'), 'NUMPOINTS'))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Result')))
+                                          self.tr('Count field name'), 'NUMPOINTS'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Unique count')))
 
     def processAlgorithm(self, progress):
-        polyLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POINTS))
+        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
+        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 
@@ -70,12 +68,10 @@ class PointsInPolygonUnique(GeoAlgorithm):
 
         classFieldIndex = pointLayer.fieldNameIndex(classFieldName)
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
-                polyLayer.pendingFields(), fieldName)
+                                                         polyLayer.pendingFields(), fieldName)
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(fields.toList(),
-                                             polyProvider.geometryType(),
-                                             polyProvider.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            fields.toList(), polyProvider.geometryType(), polyProvider.crs())
 
         spatialIndex = vector.spatialindex(pointLayer)
 
@@ -83,30 +79,27 @@ class PointsInPolygonUnique(GeoAlgorithm):
         outFeat = QgsFeature()
         geom = QgsGeometry()
 
-        current = 0
-        hasIntersections = False
-
         features = vector.features(polyLayer)
-        total = 100.0 / float(len(features))
-        for ftPoly in features:
+        total = 100.0 / len(features)
+        for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
+            engine = QgsGeometry.createGeometryEngine(geom.geometry())
+            engine.prepareGeometry()
+
             attrs = ftPoly.attributes()
 
-            classes = []
-            hasIntersections = False
+            classes = set()
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
-                hasIntersections = True
-
-            if hasIntersections:
-                for i in points:
-                    request = QgsFeatureRequest().setFilterFid(i)
-                    ftPoint = pointLayer.getFeatures(request).next()
+                request = QgsFeatureRequest().setFilterFids(points)
+                fit = pointLayer.getFeatures(request)
+                ftPoint = QgsFeature()
+                while fit.nextFeature(ftPoint):
                     tmpGeom = QgsGeometry(ftPoint.geometry())
-                    if geom.contains(tmpGeom):
+                    if engine.contains(tmpGeom.geometry()):
                         clazz = ftPoint.attributes()[classFieldIndex]
-                        if not clazz in classes:
-                            classes.append(clazz)
+                        if clazz not in classes:
+                            classes.add(clazz)
 
             outFeat.setGeometry(geom)
             if idxCount == len(attrs):
@@ -116,7 +109,6 @@ class PointsInPolygonUnique(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            current += 1
-            progress.setPercentage(current / total)
+            progress.setPercentage(int(current * total))
 
         del writer

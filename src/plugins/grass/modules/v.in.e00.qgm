@@ -2,7 +2,9 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import ESRI E00 vector" module="v.in.e00">
-	<file key="file" type="old" label="E00 vector layer" />
+	<file key="file" type="old" label="E00 vector layer" version_max="6.4"/>
+	<file key="input" type="old" label="E00 vector layer" version_min="7.0"/>
 	<option key="type" />
-	<option key="vect" />
+	<option key="vect" version_max="6.4"/>
+	<option key="output" version_min="7.0"/>
 </qgisgrassmodule>

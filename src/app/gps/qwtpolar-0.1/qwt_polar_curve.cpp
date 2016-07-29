@@ -419,7 +419,7 @@ void QwtPolarCurve::drawSymbols( QPainter *painter, const QwtSymbol &symbol,
 */
 int QwtPolarCurve::dataSize() const
 {
-  return d_points->size();
+  return (int) d_points->size();
 }
 
 //!  Update the widget that represents the curve on the legend

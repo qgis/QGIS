@@ -80,6 +80,9 @@ protected:
     int numRowsAffected();
     QVariant lastInsertId() const;
     QSqlRecord record() const;
+#if QT_VERSION >= 0x050000
+    void detachFromResultSet();
+#endif
     void virtual_hook(int id, void *data);
 
 private:

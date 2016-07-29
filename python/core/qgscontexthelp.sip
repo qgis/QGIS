@@ -13,7 +13,7 @@ class QgsContextHelp : QObject
 #include <qgscontexthelp.h>
 %End
   public:
-    static void run( QString context );
+    static void run( const QString& context );
 
   private:
     //! Constructor

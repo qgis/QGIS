@@ -4,7 +4,7 @@
 ***************************************************************************
     las2lasPro_transform.py
     ---------------------
-    Date                 : October 2014
+    Date                 : October 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -24,11 +24,12 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
+
 
 class las2lasPro_transform(LAStoolsAlgorithm):
 
@@ -37,18 +38,18 @@ class las2lasPro_transform(LAStoolsAlgorithm):
     OPERATIONARG = "OPERATIONARG"
 
     def defineCharacteristics(self):
-        self.name = "las2lasPro_transform"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('las2lasPro_transform')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersTransform1CoordinateGUI()
         self.addParametersTransform2CoordinateGUI()
         self.addParametersTransform1OtherGUI()
         self.addParametersTransform2OtherGUI()
         self.addParameter(ParameterSelection(las2lasPro_transform.OPERATION,
-            self.tr("operations (first 8 need an argument)"),
-            las2lasPro_transform.OPERATIONS, 0))
+                                             self.tr("operations (first 8 need an argument)"),
+                                             las2lasPro_transform.OPERATIONS, 0))
         self.addParameter(ParameterString(las2lasPro_transform.OPERATIONARG,
-            self.tr("argument for operation")))
+                                          self.tr("argument for operation")))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -57,7 +58,10 @@ class las2lasPro_transform(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         self.addParametersTransform1CoordinateCommands(commands)

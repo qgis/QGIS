@@ -6,101 +6,100 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>597</width>
-    <height>296</height>
+    <width>378</width>
+    <height>368</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Column</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
-       <property name="maximumSize">
-        <size>
-         <width>500</width>
-         <height>16777215</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Column</string>
+     </property>
+    </widget>
    </item>
-   <item>
+   <item row="0" column="1">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_9">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Symbol</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="btnChangeCategorizedSymbol">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Change...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_10">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Color ramp</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>Symbol</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnChangeCategorizedSymbol">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Change...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_10">
-       <property name="text">
-        <string>Color ramp</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QgsColorRampComboBox" name="cboCategorizedColorRamp">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>1</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mButtonEditRamp">
+       <property name="text">
+        <string>Edit</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="cbxInvertedColorRamp">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Invert</string>
        </property>
@@ -108,7 +107,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="3" column="0" colspan="2">
     <widget class="QTreeView" name="viewCategories">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
@@ -142,7 +141,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="4" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="btnAddCategories">
@@ -153,15 +152,23 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnAddCategory">
-       <property name="text">
+       <property name="toolTip">
         <string>Add</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnDeleteCategories">
-       <property name="text">
+       <property name="toolTip">
         <string>Delete</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
        </property>
       </widget>
      </item>
@@ -186,16 +193,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btnJoinCategories">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Join</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="btnAdvanced">
        <property name="text">
         <string>Advanced</string>
@@ -205,30 +202,41 @@
     </layout>
    </item>
   </layout>
+  <zorder>viewCategories</zorder>
+  <zorder>btnChangeCategorizedSymbol</zorder>
+  <zorder>label_9</zorder>
+  <zorder>label_10</zorder>
+  <zorder>mExpressionWidget</zorder>
+  <zorder>label_3</zorder>
+  <zorder>viewCategories</zorder>
+  <zorder>btnChangeCategorizedSymbol</zorder>
+  <zorder>label_9</zorder>
+  <zorder>label_10</zorder>
+  <zorder>mExpressionWidget</zorder>
+  <zorder>label_3</zorder>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QgsColorRampComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscolorrampcombobox.h</header>
-  </customwidget>
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsColorRampComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscolorrampcombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>btnChangeCategorizedSymbol</tabstop>
-  <tabstop>cboCategorizedColorRamp</tabstop>
-  <tabstop>cbxInvertedColorRamp</tabstop>
-  <tabstop>viewCategories</tabstop>
   <tabstop>btnAddCategories</tabstop>
+  <tabstop>btnAddCategory</tabstop>
   <tabstop>btnDeleteCategories</tabstop>
   <tabstop>btnDeleteAllCategories</tabstop>
-  <tabstop>btnJoinCategories</tabstop>
+  <tabstop>btnAdvanced</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

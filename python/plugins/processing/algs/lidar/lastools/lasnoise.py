@@ -4,7 +4,7 @@
 ***************************************************************************
     lasnoise.py
     ---------------------
-    Date                 : September 2013
+    Date                 : September 2013 and May 2016
     Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -24,11 +24,12 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
+
 
 class lasnoise(LAStoolsAlgorithm):
 
@@ -40,20 +41,22 @@ class lasnoise(LAStoolsAlgorithm):
     CLASSIFY_AS = "CLASSIFY_AS"
 
     def defineCharacteristics(self):
-        self.name = "lasnoise"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasnoise')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
+        self.addParametersIgnoreClass1GUI()
+        self.addParametersIgnoreClass2GUI()
         self.addParameter(ParameterNumber(lasnoise.ISOLATED,
-            self.tr("isolated if surrounding cells have only"), 0, None, 5))
+                                          self.tr("isolated if surrounding cells have only"), 0, None, 5))
         self.addParameter(ParameterNumber(lasnoise.STEP_XY,
-            self.tr("resolution of isolation grid in xy"), 0, None, 4.0))
+                                          self.tr("resolution of isolation grid in xy"), 0, None, 4.0))
         self.addParameter(ParameterNumber(lasnoise.STEP_Z,
-            self.tr("resolution of isolation grid in z"), 0, None, 4.0))
+                                          self.tr("resolution of isolation grid in z"), 0, None, 4.0))
         self.addParameter(ParameterSelection(lasnoise.OPERATION,
-            self.tr("what to do with isolated points"), lasnoise.OPERATIONS, 0))
+                                             self.tr("what to do with isolated points"), lasnoise.OPERATIONS, 0))
         self.addParameter(ParameterNumber(lasnoise.CLASSIFY_AS,
-            self.tr("classify as"), 0, None, 7))
+                                          self.tr("classify as"), 0, None, 7))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -61,22 +64,24 @@ class lasnoise(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasnoise")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
+        self.addParametersIgnoreClass1Commands(commands)
+        self.addParametersIgnoreClass2Commands(commands)
         isolated = self.getParameterValue(lasnoise.ISOLATED)
         commands.append("-isolated")
-        commands.append(str(isolated))
+        commands.append(unicode(isolated))
         step_xy = self.getParameterValue(lasnoise.STEP_XY)
         commands.append("-step_xy")
-        commands.append(str(step_xy))
+        commands.append(unicode(step_xy))
         step_z = self.getParameterValue(lasnoise.STEP_Z)
         commands.append("-step_z")
-        commands.append(str(step_z))
+        commands.append(unicode(step_z))
         operation = self.getParameterValue(lasnoise.OPERATION)
         if operation != 0:
             commands.append("-remove_noise")
         else:
             commands.append("-classify_as")
             classify_as = self.getParameterValue(lasnoise.CLASSIFY_AS)
-            commands.append(str(classify_as))
+            commands.append(unicode(classify_as))
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

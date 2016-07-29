@@ -24,7 +24,7 @@
  *
  */
 
-/*! \file nmeatime.h */
+/** \file nmeatime.h */
 
 #include "nmeatime.h"
 

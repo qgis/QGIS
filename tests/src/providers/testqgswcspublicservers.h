@@ -30,7 +30,7 @@
  */
 class TestQgsWcsPublicServers: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
     // Known problem
     struct Issue
@@ -56,7 +56,7 @@ class TestQgsWcsPublicServers: public QObject
     {
       NoOffender      = 0,
       ServerOffender  = 1,
-      QGisOffender    = 1 << 1
+      QgisOffender    = 1 << 1
     };
 
     TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server = QString(), const QString & coverage = QString(), const QString &version = QString(), bool force = false );
@@ -67,12 +67,12 @@ class TestQgsWcsPublicServers: public QObject
     void test();
     void report();
   private:
-    QString cells( QStringList theValues, QString theClass = QString(), int colspan = 1, int rowspan = 1 );
-    QString row( QStringList theValues, QString theClass = QString() );
-    QString error( QString theMessage );
-    void writeReport( QString theReport );
+    QString cells( const QStringList& theValues, const QString& theClass = QString(), int colspan = 1, int rowspan = 1 );
+    QString row( const QStringList& theValues, const QString& theClass = QString() );
+    QString error( const QString& theMessage );
+    void writeReport( const QString& theReport );
 
-    QMap<QString, QString> readLog( QString theFileName );
+    QMap<QString, QString> readLog( const QString& theFileName );
 
     Server getServer( const QString & url );
 

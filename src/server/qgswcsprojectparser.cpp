@@ -18,16 +18,32 @@
 #include "qgswcsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
-#include "qgsconfigcache.h"
+#include "qgscsexception.h"
 #include "qgsrasterlayer.h"
+#include "qgsmapserviceexception.h"
+#include "qgsmessagelog.h"
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+#include "qgsaccesscontrol.h"
+#endif
 
-QgsWCSProjectParser::QgsWCSProjectParser( const QString& filePath )
+
+QgsWCSProjectParser::QgsWCSProjectParser(
+  const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* as
+#endif
+)
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    :
+    mAccessControl( as )
+#endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
 }
 
 QgsWCSProjectParser::~QgsWCSProjectParser()
 {
+  delete mProjectParser;
 }
 
 void QgsWCSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
@@ -73,7 +89,7 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  foreach ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "raster" )
@@ -81,6 +97,12 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
       QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
       if ( layer && wcsLayersId.contains( layer->id() ) )
       {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        if ( !mAccessControl->layerReadPermission( layer ) )
+        {
+          continue;
+        }
+#endif
         QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
         layerMap.insert( layer->id(), layer );
 
@@ -89,6 +111,8 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
         //We use the layer name even though it might not be unique.
         //Because the id sometimes contains user/pw information and the name is more descriptive
         QString typeName = layer->name();
+        if ( !layer->shortName().isEmpty() )
+          typeName = layer->shortName();
         typeName = typeName.replace( " ", "_" );
         QDomText nameText = doc.createTextNode( typeName );
         nameElem.appendChild( nameText );
@@ -115,10 +139,19 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
         layerElem.appendChild( descriptionElem );
 
         //lonLatEnvelope
-        const QgsCoordinateReferenceSystem& layerCrs = layer->crs();
+        QgsCoordinateReferenceSystem layerCrs = layer->crs();
         QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ) );
         //transform
-        QgsRectangle BBox = t.transformBoundingBox( layer->extent() );
+        QgsRectangle BBox;
+        try
+        {
+          BBox = t.transformBoundingBox( layer->extent() );
+        }
+        catch ( QgsCsException &e )
+        {
+          QgsDebugMsg( QString( "Transform error caught: %1. Using original layer extent." ).arg( e.what() ) );
+          BBox = layer->extent();
+        }
         QDomElement lonLatElem = doc.createElement( "lonLatEnvelope" );
         lonLatElem.setAttribute( "srsName", "urn:ogc:def:crs:OGC:1.3:CRS84" );
         QDomElement lowerPosElem = doc.createElement( "gml:pos" );
@@ -176,7 +209,7 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
   if ( aCoveName != "" )
   {
     QStringList coveNameSplit = aCoveName.split( "," );
-    foreach ( const QString &str, coveNameSplit )
+    Q_FOREACH ( const QString &str, coveNameSplit )
     {
       coveNameList << str;
     }
@@ -184,43 +217,55 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  foreach ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "raster" )
     {
-      QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
-      if ( !layer )
+      QgsRasterLayer *rLayer = dynamic_cast<QgsRasterLayer *>( mProjectParser->createLayerFromElement( elem ) );
+      if ( !rLayer )
         continue;
-      QString coveName = layer->name();
-      coveName = coveName.replace( " ", "_" );
-      if ( wcsLayersId.contains( layer->id() ) && ( aCoveName == "" || coveNameList.contains( coveName ) ) )
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( rLayer ) )
       {
-        QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
-        layerMap.insert( layer->id(), layer );
+        continue;
+      }
+#endif
+
+      QString coveName = rLayer->name();
+      if ( !rLayer->shortName().isEmpty() )
+        coveName = rLayer->shortName();
+      coveName = coveName.replace( " ", "_" );
+      if ( wcsLayersId.contains( rLayer->id() ) && ( aCoveName == "" || coveNameList.contains( coveName ) ) )
+      {
+        QgsDebugMsg( QString( "add layer %1 to map" ).arg( rLayer->id() ) );
+        layerMap.insert( rLayer->id(), rLayer );
 
         QDomElement layerElem = doc.createElement( "CoverageOffering" );
         QDomElement nameElem = doc.createElement( "name" );
         //We use the layer name even though it might not be unique.
         //Because the id sometimes contains user/pw information and the name is more descriptive
-        QString typeName = layer->name();
+        QString typeName = rLayer->name();
+        if ( !rLayer->shortName().isEmpty() )
+          typeName = rLayer->shortName();
         typeName = typeName.replace( " ", "_" );
         QDomText nameText = doc.createTextNode( typeName );
         nameElem.appendChild( nameText );
         layerElem.appendChild( nameElem );
 
         QDomElement labelElem = doc.createElement( "label" );
-        QString titleName = layer->title();
+        QString titleName = rLayer->title();
         if ( titleName.isEmpty() )
         {
-          titleName = layer->name();
+          titleName = rLayer->name();
         }
         QDomText labelText = doc.createTextNode( titleName );
         labelElem.appendChild( labelText );
         layerElem.appendChild( labelElem );
 
         QDomElement descriptionElem = doc.createElement( "description" );
-        QString abstractName = layer->abstract();
+        QString abstractName = rLayer->abstract();
         if ( abstractName.isEmpty() )
         {
           abstractName = "";
@@ -230,10 +275,20 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
         layerElem.appendChild( descriptionElem );
 
         //lonLatEnvelope
-        const QgsCoordinateReferenceSystem& layerCrs = layer->crs();
+        QgsCoordinateReferenceSystem layerCrs = rLayer->crs();
         QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ) );
         //transform
-        QgsRectangle BBox = t.transformBoundingBox( layer->extent() );
+        QgsRectangle BBox = rLayer->extent();
+        try
+        {
+          QgsRectangle transformedBox = t.transformBoundingBox( BBox );
+          BBox = transformedBox;
+        }
+        catch ( QgsCsException &e )
+        {
+          QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
+        }
+
         QDomElement lonLatElem = doc.createElement( "lonLatEnvelope" );
         lonLatElem.setAttribute( "srsName", "urn:ogc:def:crs:OGC:1.3:CRS84" );
         QDomElement lowerPosElem = doc.createElement( "gml:pos" );
@@ -246,14 +301,13 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
         lonLatElem.appendChild( upperPosElem );
         layerElem.appendChild( lonLatElem );
 
-        QgsRasterLayer* rLayer = dynamic_cast<QgsRasterLayer*>( layer );
         QDomElement domainSetElem = doc.createElement( "domainSet" );
         layerElem.appendChild( domainSetElem );
 
         QDomElement spatialDomainElem = doc.createElement( "spatialDomain" );
         domainSetElem.appendChild( spatialDomainElem );
 
-        QgsRectangle layerBBox = layer->extent();
+        QgsRectangle layerBBox = rLayer->extent();
         QDomElement envelopeElem = doc.createElement( "gml:Envelope" );
         envelopeElem.setAttribute( "srsName", layerCrs.authid() );
         QDomElement lowerCornerElem = doc.createElement( "gml:pos" );
@@ -377,7 +431,7 @@ QList<QgsMapLayer*> QgsWCSProjectParser::mapLayerFromCoverage( const QString& cN
 
   QStringList wcsLayersId = wcsLayers();
 
-  foreach ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "raster" )
@@ -388,6 +442,8 @@ QList<QgsMapLayer*> QgsWCSProjectParser::mapLayerFromCoverage( const QString& cN
         return layerList;
 
       QString coveName = layer->name();
+      if ( !layer->shortName().isEmpty() )
+        coveName = layer->shortName();
       coveName = coveName.replace( " ", "_" );
       if ( cName == coveName )
       {

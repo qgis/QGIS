@@ -15,4 +15,4 @@
 ###########################################################################
 
 # Update the english translation and push it to transifex
-scripts/update_ts.sh push
+scripts/update_ts.sh push $1

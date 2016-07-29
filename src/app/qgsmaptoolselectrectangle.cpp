@@ -36,23 +36,24 @@ QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas* canvas )
   mToolName = tr( "Select features" );
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) select_cursor );
   mCursor = QCursor( mySelectQPixmap, 1, 1 );
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
 }
 
 
-void QgsMapToolSelectFeatures::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
-  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+  delete mRubberBand;
+  mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
   mRubberBand->setFillColor( mFillColor );
   mRubberBand->setBorderColor( mBorderColour );
 }
 
 
-void QgsMapToolSelectFeatures::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( e->buttons() != Qt::LeftButton )
     return;
@@ -67,18 +68,14 @@ void QgsMapToolSelectFeatures::canvasMoveEvent( QMouseEvent *e )
 }
 
 
-void QgsMapToolSelectFeatures::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( vlayer == NULL )
+  if ( !vlayer )
   {
-    if ( mRubberBand )
-    {
-      mRubberBand->reset( QGis::Polygon );
-      delete mRubberBand;
-      mRubberBand = 0;
-      mDragging = false;
-    }
+    delete mRubberBand;
+    mRubberBand = nullptr;
+    mDragging = false;
     return;
   }
 
@@ -109,17 +106,15 @@ void QgsMapToolSelectFeatures::canvasReleaseEvent( QMouseEvent *e )
     QgsGeometry* selectGeom = mRubberBand->asGeometry();
     if ( !mDragging )
     {
-      bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
-      QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, doDifference, true );
+      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e );
     }
     else
-      QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, e );
+      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, selectGeom, e );
 
     delete selectGeom;
 
-    mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 
   mDragging = false;

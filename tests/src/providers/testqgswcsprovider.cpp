@@ -18,7 +18,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 
 #include <qgsdatasourceuri.h>
@@ -39,12 +38,12 @@ class TestQgsWcsProvider: public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void read();
   private:
-    bool read( QString theIdentifier, QString theWcsUri, QString theFilePath, QString & theReport );
+    bool read( const QString& theIdentifier, const QString& theWcsUri, const QString& theFilePath, QString & theReport );
     QString mTestDataDir;
     QString mReport;
     QString mUrl;
@@ -57,7 +56,7 @@ void TestQgsWcsProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( "\n", "<br />" );
+  mySettings = mySettings.replace( '\n', "<br />" );
   mReport += "<h1>WCS provider tests</h1>\n";
   mReport += "<p>" + mySettings + "</p>";
   // Style is now inlined by QgsRasterChecker
@@ -119,16 +118,16 @@ void TestQgsWcsProvider::read()
   tmpFile->open();
   QString tmpFilePath = tmpFile->fileName();
   delete tmpFile; // removes the file
-  foreach ( QString version, versions )
+  Q_FOREACH ( const QString& version, versions )
   {
-    foreach ( QString identifier, identifiers )
+    Q_FOREACH ( const QString& identifier, identifiers )
     {
       // copy to temporary to avoid creation/changes/use of GDAL .aux.xml files
-      QString testFilePath = mTestDataDir + "/" + identifier + ".tif";
+      QString testFilePath = mTestDataDir + '/' + identifier + ".tif";
       qDebug() << "copy " <<  testFilePath << " to " << tmpFilePath;
       if ( !QFile::copy( testFilePath, tmpFilePath ) )
       {
-        mReport += QString( "Cannot copy %1 to %2" ).arg( testFilePath ).arg( tmpFilePath );
+        mReport += QString( "Cannot copy %1 to %2" ).arg( testFilePath, tmpFilePath );
         ok = false;
         continue;
       }
@@ -150,7 +149,7 @@ void TestQgsWcsProvider::read()
   QVERIFY2( ok, "Reading data failed. See report for details." );
 }
 
-bool TestQgsWcsProvider::read( QString theIdentifier, QString theWcsUri, QString theFilePath, QString & theReport )
+bool TestQgsWcsProvider::read( const QString& theIdentifier, const QString& theWcsUri, const QString& theFilePath, QString & theReport )
 {
   theReport += QString( "<h2>Identifier (coverage): %1</h2>" ).arg( theIdentifier );
 

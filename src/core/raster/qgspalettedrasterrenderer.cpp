@@ -25,7 +25,7 @@
 #include <QVector>
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber,
-    QColor* colorArray, int nColors, const QVector<QString> labels ):
+    QColor* colorArray, int nColors, const QVector<QString>& labels ):
     QgsRasterRenderer( input, "paletted" ), mBand( bandNumber ), mNColors( nColors ), mLabels( labels )
 {
   mColors = new QRgb[nColors];
@@ -36,7 +36,7 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input,
   delete[] colorArray;
 }
 
-QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString> labels ):
+QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString>& labels ):
     QgsRasterRenderer( input, "paletted" ), mBand( bandNumber ), mColors( colorArray ), mNColors( nColors ), mLabels( labels )
 {
 }
@@ -46,12 +46,11 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
   delete[] mColors;
 }
 
-QgsRasterInterface * QgsPalettedRasterRenderer::clone() const
+QgsPalettedRasterRenderer* QgsPalettedRasterRenderer::clone() const
 {
-  QgsPalettedRasterRenderer * renderer = new QgsPalettedRasterRenderer( 0, mBand, rgbArray(), mNColors );
-  renderer->setOpacity( mOpacity );
-  renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : 0 );
+  QgsPalettedRasterRenderer * renderer = new QgsPalettedRasterRenderer( nullptr, mBand, rgbArray(), mNColors );
+  renderer->copyCommonProperties( this );
+
   renderer->mLabels = mLabels;
   return renderer;
 }
@@ -60,12 +59,12 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
 {
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   int bandNumber = elem.attribute( "band", "-1" ).toInt();
   int nColors = 0;
-  QRgb* colors = 0;
+  QRgb* colors = nullptr;
   QVector<QString> labels;
 
   QDomElement paletteElem = elem.firstChildElement( "colorPalette" );
@@ -85,7 +84,7 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
       value = ( int )entryElem.attribute( "value", "0" ).toDouble();
       if ( value >= nColors && value <= 10000 ) nColors = value + 1;
     }
-    QgsDebugMsg( QString( "nColors = %1" ).arg( nColors ) );
+    QgsDebugMsgLevel( QString( "nColors = %1" ).arg( nColors ), 4 );
 
     colors = new QRgb[ nColors ];
 
@@ -93,7 +92,7 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
     {
       entryElem = paletteEntries.at( i ).toElement();
       value = ( int )entryElem.attribute( "value", "0" ).toDouble();
-      QgsDebugMsg( entryElem.attribute( "color", "#000000" ) );
+      QgsDebugMsgLevel( entryElem.attribute( "color", "#000000" ), 4 );
       if ( value >= 0 && value < nColors )
       {
         colors[value] = QColor( entryElem.attribute( "color", "#000000" ) ).rgba();
@@ -111,7 +110,7 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
     }
   }
   QgsPalettedRasterRenderer* r = new QgsPalettedRasterRenderer( input, bandNumber, colors, nColors, labels );
-  r->readXML( elem );
+  r->readXml( elem );
   return r;
 }
 
@@ -119,7 +118,7 @@ QColor* QgsPalettedRasterRenderer::colors() const
 {
   if ( mNColors < 1 )
   {
-    return 0;
+    return nullptr;
   }
   QColor* colorArray = new QColor[ mNColors ];
   for ( int i = 0; i < mNColors; ++i )
@@ -133,7 +132,7 @@ QRgb* QgsPalettedRasterRenderer::rgbArray() const
 {
   if ( mNColors < 1 )
   {
-    return 0;
+    return nullptr;
   }
   QRgb* rgbValues = new QRgb[mNColors];
   for ( int i = 0; i < mNColors; ++i )
@@ -143,7 +142,7 @@ QRgb* QgsPalettedRasterRenderer::rgbArray() const
   return rgbValues;
 }
 
-void QgsPalettedRasterRenderer::setLabel( int idx, QString label )
+void QgsPalettedRasterRenderer::setLabel( int idx, const QString& label )
 {
   if ( idx >= mLabels.size() )
   {
@@ -173,7 +172,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
 
   //rendering is faster without considering user-defined transparency
   bool hasTransparency = usesTransparency();
-  QgsRasterBlock *alphaBlock = 0;
+  QgsRasterBlock *alphaBlock = nullptr;
 
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {
@@ -190,7 +189,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
     delete alphaBlock;
@@ -241,7 +240,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
   return outputBlock;
 }
 
-void QgsPalettedRasterRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsPalettedRasterRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -249,7 +248,7 @@ void QgsPalettedRasterRenderer::writeXML( QDomDocument& doc, QDomElement& parent
   }
 
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
-  _writeXML( doc, rasterRendererElem );
+  _writeXml( doc, rasterRendererElem );
 
   rasterRendererElem.setAttribute( "band", mBand );
   QDomElement colorPaletteElem = doc.createElement( "colorPalette" );

@@ -18,7 +18,8 @@
 
 #include "qgsmaprendererjob.h"
 
-/** Job implementation that renders all layers in parallel.
+/** \ingroup core
+ * Job implementation that renders all layers in parallel.
  *
  * The resulting map image can be retrieved with renderedImage() function.
  * It is safe to call that function while rendering is active to see preview of the map.
@@ -57,6 +58,7 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 
     QImage mFinalImage;
 
+    //! @note not available in Python bindings
     enum { Idle, RenderingLayers, RenderingLabels } mStatus;
 
     QFuture<void> mFuture;
@@ -64,7 +66,8 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 
     LayerRenderJobs mLayerJobs;
 
-    QgsPalLabeling* mLabelingEngine;
+    //! New labeling engine
+    QgsLabelingEngineV2* mLabelingEngineV2;
     QgsRenderContext mLabelingRenderContext;
     QFuture<void> mLabelingFuture;
     QFutureWatcher<void> mLabelingFutureWatcher;

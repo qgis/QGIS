@@ -22,7 +22,7 @@ class QgsOpenRasterDialog : public QDialog, private Ui::QgsOpenRasterDialog
 {
     Q_OBJECT
   public:
-    QgsOpenRasterDialog( QWidget *parent = 0 );
+    explicit QgsOpenRasterDialog( QWidget *parent = 0 );
     void getRasterOptions( QString &rasterFileName, QString &modifiedFileName, QString &worldFileName );
 
   protected:

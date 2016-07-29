@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>250</width>
-    <height>23</height>
+    <width>608</width>
+    <height>20</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,10 +21,23 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QComboBox" name="cmbText"/>
+    <widget class="QComboBox" name="cmbText">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QToolButton" name="btnSelect">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>...</string>
      </property>
@@ -32,6 +45,12 @@
    </item>
    <item>
     <widget class="QToolButton" name="btnIterate">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="toolTip">
       <string>Iterate over this layer</string>
      </property>

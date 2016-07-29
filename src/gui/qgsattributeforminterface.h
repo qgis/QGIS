@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 12.5.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,10 +19,15 @@
 class QgsAttributeForm;
 class QgsFeature;
 
+/** \ingroup gui
+ * \class QgsAttributeFormInterface
+ */
 class GUI_EXPORT QgsAttributeFormInterface
 {
   public:
     explicit QgsAttributeFormInterface( QgsAttributeForm* form );
+
+    virtual ~QgsAttributeFormInterface();
 
     virtual bool acceptChanges( const QgsFeature& feature );
 

@@ -9,7 +9,7 @@ class QgsSingleBoxScaleBarStyle : QgsScaleBarStyle
 
     QString name() const;
 
-    /*! draw method
+    /** Draw method
      @param p painter object
      @param xOffset x offset
      */

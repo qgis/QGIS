@@ -26,23 +26,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
-from PyQt4 import QtCore
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class ContextAction:
 
-    def setData(self, alg, toolbox):
-        self.alg = alg
+    def setData(self, itemData, toolbox):
+        self.itemData = itemData
         self.toolbox = toolbox
-
-    def updateToolbox(self):
-        '''
-        Updates the list of algorithms and then the toolbox.
-        It only update the item corresponding to the provider of the algorithm.
-        To be called after the action is executed, if needed
-        '''
-        self.toolbox.updateProvider(self.alg.provider.getName())
 
     def tr(self, string, context=''):
         if context == '':
             context = 'ContextAction'
-        return QtCore.QCoreApplication.translate(context, string)
+        return QCoreApplication.translate(context, string)

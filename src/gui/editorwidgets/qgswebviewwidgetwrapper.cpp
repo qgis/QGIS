@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,23 +17,32 @@
 
 #include "qgsfilterlineedit.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsproject.h"
 
 #include <QGridLayout>
 #include <QFileDialog>
 #include <QSettings>
 
 QgsWebViewWidgetWrapper::QgsWebViewWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mWebView( nullptr )
+    , mLineEdit( nullptr )
+    , mButton( nullptr )
 {
 }
 
 void QgsWebViewWidgetWrapper::loadUrl( const QString &url )
 {
+  QString path = url;
+
+  if ( QUrl( url ).isRelative() )
+    path = QDir( QgsProject::instance()->fileInfo().absolutePath() ).filePath( url );
+
   if ( mWebView )
-    mWebView->load( url );
+    mWebView->load( path );
 }
 
-QVariant QgsWebViewWidgetWrapper::value()
+QVariant QgsWebViewWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -48,19 +57,32 @@ QVariant QgsWebViewWidgetWrapper::value()
   return v;
 }
 
+void QgsWebViewWidgetWrapper::showIndeterminateState()
+{
+  if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->clear();
+  }
+
+  if ( mWebView )
+    mWebView->load( QString() );
+}
+
 QWidget* QgsWebViewWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );
-  QGridLayout* layout = new QGridLayout( container );
-  QgsFilterLineEdit* le = new QgsFilterLineEdit( container );
-  QWebView* webView = new QWebView( parent );
+  QGridLayout* layout = new QGridLayout();
+  QgsFilterLineEdit* le = new QgsFilterLineEdit();
+  QWebView* webView = new QWebView();
   webView->setObjectName( "EditorWebView" );
-  QPushButton* pb = new QPushButton( tr( "..." ), container );
+  QPushButton* pb = new QPushButton( tr( "..." ) );
   pb->setObjectName( "FileChooserButton" );
 
   layout->addWidget( webView, 0, 0, 1, 2 );
   layout->addWidget( le, 1, 0 );
   layout->addWidget( pb, 1, 1 );
+  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
   container->setLayout( layout );
 
@@ -118,6 +140,11 @@ void QgsWebViewWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsWebViewWidgetWrapper::valid() const
+{
+  return mWebView || mButton || mLineEdit;
+}
+
 void QgsWebViewWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mLineEdit )
@@ -152,6 +179,25 @@ void QgsWebViewWidgetWrapper::selectFileName()
   if ( fileName.isNull() )
     return;
 
+  QString projPath = QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) );
+  QString filePath = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
+
+  if ( filePath.startsWith( projPath ) )
+    filePath = QDir( projPath ).relativeFilePath( filePath );
+
   if ( mLineEdit )
-    mLineEdit->setText( QDir::toNativeSeparators( fileName ) );
+    mLineEdit->setText( filePath );
+}
+
+void QgsWebViewWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+{
+  if ( mLineEdit )
+  {
+    if ( constraintValid )
+      mLineEdit->setStyleSheet( QString() );
+    else
+    {
+      mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );
+    }
+  }
 }

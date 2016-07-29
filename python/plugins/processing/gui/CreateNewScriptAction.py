@@ -25,10 +25,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
-import processing.resources_rc
+from processing.core.alglist import algList
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class CreateNewScriptAction(ToolboxAction):
 
@@ -36,15 +42,16 @@ class CreateNewScriptAction(ToolboxAction):
     SCRIPT_R = 1
 
     def __init__(self, actionName, scriptType):
-        self.name = actionName
-        self.group = self.tr('Tools', 'CreateNewScriptAction')
+        self.name, self.i18n_name = self.trAction(actionName)
+        self.group, self.i18n_group = self.trAction('Tools')
+
         self.scriptType = scriptType
 
     def getIcon(self):
         if self.scriptType == self.SCRIPT_PYTHON:
-            return QIcon(':/processing/images/script.png')
+            return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
         elif self.scriptType == self.SCRIPT_R:
-            return QIcon(':/processing/images/r.png')
+            return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
     def execute(self):
         dlg = None
@@ -56,6 +63,6 @@ class CreateNewScriptAction(ToolboxAction):
         dlg.exec_()
         if dlg.update:
             if self.scriptType == self.SCRIPT_PYTHON:
-                self.toolbox.updateProvider('script')
+                algList.reloadProvider('script')
             elif self.scriptType == self.SCRIPT_R:
-                self.toolbox.updateProvider('r')
+                algList.reloadProvider('r')

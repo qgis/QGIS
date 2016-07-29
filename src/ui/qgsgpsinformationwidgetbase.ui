@@ -263,7 +263,7 @@ gray = no data
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-15</y>
             <width>193</width>
             <height>504</height>
            </rect>
@@ -655,7 +655,7 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>287</width>
+            <width>285</width>
             <height>638</height>
            </rect>
           </property>
@@ -1181,15 +1181,16 @@ gray = no data
   </layout>
  </widget>
  <tabstops>
+  <tabstop>mBtnCloseFeature</tabstop>
+  <tabstop>mBtnAddVertex</tabstop>
+  <tabstop>mBtnResetFeature</tabstop>
   <tabstop>mBtnPosition</tabstop>
   <tabstop>mBtnSignal</tabstop>
   <tabstop>mBtnSatellites</tabstop>
   <tabstop>mBtnOptions</tabstop>
   <tabstop>mBtnDebug</tabstop>
   <tabstop>mConnectButton</tabstop>
-  <tabstop>mBtnCloseFeature</tabstop>
-  <tabstop>mBtnAddVertex</tabstop>
-  <tabstop>mBtnResetFeature</tabstop>
+  <tabstop>scrollArea_2</tabstop>
   <tabstop>mTxtLatitude</tabstop>
   <tabstop>mTxtLongitude</tabstop>
   <tabstop>mTxtAltitude</tabstop>
@@ -1199,14 +1200,13 @@ gray = no data
   <tabstop>mTxtHdop</tabstop>
   <tabstop>mTxtVdop</tabstop>
   <tabstop>mTxtPdop</tabstop>
+  <tabstop>mTxtHacc</tabstop>
+  <tabstop>mTxtVacc</tabstop>
   <tabstop>mTxtFixMode</tabstop>
   <tabstop>mTxtFixType</tabstop>
   <tabstop>mTxtQuality</tabstop>
   <tabstop>mTxtStatus</tabstop>
   <tabstop>mTxtSatellitesUsed</tabstop>
-  <tabstop>mRadAutodetect</tabstop>
-  <tabstop>mRadUserPath</tabstop>
-  <tabstop>mCboDevices</tabstop>
   <tabstop>mBtnRefreshDevices</tabstop>
   <tabstop>mRadGpsd</tabstop>
   <tabstop>mGpsdHost</tabstop>
@@ -1226,6 +1226,11 @@ gray = no data
   <tabstop>mTxtLogFile</tabstop>
   <tabstop>mBtnLogFile</tabstop>
   <tabstop>mGPSPlainTextEdit</tabstop>
+  <tabstop>mRadUserPath</tabstop>
+  <tabstop>mCboDevices</tabstop>
+  <tabstop>mRadAutodetect</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mRadInternal</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

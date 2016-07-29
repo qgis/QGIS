@@ -25,17 +25,23 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
-from qgis.core import *
+import os
+import time
+
+from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsRasterLayer
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
-from GrassUtils import GrassUtils
-from processing.tools.system import *
+from .GrassUtils import GrassUtils
+from processing.tools.system import getNumExportedLayers
 from processing.tools import dataobjects
+
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class nviz(GeoAlgorithm):
@@ -46,26 +52,30 @@ class nviz(GeoAlgorithm):
     GRASS_REGION_EXTENT_PARAMETER = 'GRASS_REGION_PARAMETER'
     GRASS_REGION_CELLSIZE_PARAMETER = 'GRASS_REGION_CELLSIZE_PARAMETER'
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        self.showInModeler = False
+
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/grass.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def defineCharacteristics(self):
-        self.name = 'nviz'
-        self.group = 'Visualization(NVIZ)'
+        self.name, self.i18n_name = self.trAlgorithm('nviz')
+        self.group, self.i18n_group = self.trAlgorithm('Visualization(NVIZ)')
         self.addParameter(ParameterMultipleInput(nviz.ELEVATION,
-            self.tr('Raster file(s) for elevation'),
-            ParameterMultipleInput.TYPE_RASTER, True))
+                                                 self.tr('Raster file(s) for elevation'),
+                                                 ParameterMultipleInput.TYPE_RASTER, True))
         self.addParameter(ParameterMultipleInput(nviz.VECTOR,
-            self.tr('Vector lines/areas overlay file(s)'),
-            ParameterMultipleInput.TYPE_VECTOR_ANY, True))
+                                                 self.tr('Vector lines/areas overlay file(s)'),
+                                                 ParameterMultipleInput.TYPE_VECTOR_ANY, True))
         self.addParameter(ParameterMultipleInput(nviz.COLOR,
-            self.tr('Raster file(s) for color'),
-            ParameterMultipleInput.TYPE_RASTER, True))
+                                                 self.tr('Raster file(s) for color'),
+                                                 ParameterMultipleInput.TYPE_RASTER, True))
         self.addParameter(ParameterExtent(nviz.GRASS_REGION_EXTENT_PARAMETER,
-            self.tr('GRASS region extent')))
+                                          self.tr('GRASS region extent')))
         self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER,
-            self.tr('GRASS region cellsize (leave 0 for default)'),
-            0, None, 0.0))
+                                          self.tr('GRASS region cellsize (leave 0 for default)'),
+                                          0, None, 0.0))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -74,18 +84,18 @@ class nviz(GeoAlgorithm):
         color = self.getParameterValue(self.COLOR)
 
         region = \
-            str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+            unicode(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(',')
         command = 'g.region '
-        command += 'n=' + str(regionCoords[3])
-        command += ' s=' + str(regionCoords[2])
-        command += ' e=' + str(regionCoords[1])
-        command += ' w=' + str(regionCoords[0])
+        command += 'n=' + unicode(regionCoords[3])
+        command += ' s=' + unicode(regionCoords[2])
+        command += ' e=' + unicode(regionCoords[1])
+        command += ' w=' + unicode(regionCoords[0])
         cellsize = self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER)
         if cellsize:
-            command += ' res=' + str(cellsize)
+            command += ' res=' + unicode(cellsize)
         else:
-            command += ' res=' + str(self.getDefaultCellsize())
+            command += ' res=' + unicode(self.getDefaultCellsize())
         commands.append(command)
 
         command = 'nviz'
@@ -117,8 +127,8 @@ class nviz(GeoAlgorithm):
         GrassUtils.executeGrass(commands, progress)
 
     def getTempFilename(self):
-        filename = 'tmp' + str(time.time()).replace('.', '') \
-            + str(getNumExportedLayers())
+        filename = 'tmp' + unicode(time.time()).replace('.', '') \
+            + unicode(getNumExportedLayers())
         return filename
 
     def exportVectorLayer(self, layer):
@@ -150,7 +160,7 @@ class nviz(GeoAlgorithm):
                     else:
                         layer = dataobjects.getObjectFromUri(param.value)
                     cellsize = max(cellsize, (layer.extent().xMaximum()
-                                   - layer.extent().xMinimum())
+                                              - layer.extent().xMinimum())
                                    / layer.width())
                 elif isinstance(param, ParameterMultipleInput):
 
@@ -158,10 +168,10 @@ class nviz(GeoAlgorithm):
                     for layername in layers:
                         layer = dataobjects.getObjectFromUri(layername)
                         if isinstance(layer, QgsRasterLayer):
-                            cellsize = max(cellsize,
-                                    (layer.extent().xMaximum()
-                                    - layer.extent().xMinimum())
-                                    / layer.width())
+                            cellsize = max(cellsize, (
+                                layer.extent().xMaximum()
+                                - layer.extent().xMinimum())
+                                / layer.width())
 
         if cellsize == 0:
             cellsize = 1

@@ -28,7 +28,7 @@ class QgsOSMDownloadDialog : public QDialog, private Ui::QgsOSMDownloadDialog
 {
     Q_OBJECT
   public:
-    explicit QgsOSMDownloadDialog( QWidget* parent = 0 );
+    explicit QgsOSMDownloadDialog( QWidget* parent = nullptr );
     ~QgsOSMDownloadDialog();
 
     void setRect( const QgsRectangle& rect );

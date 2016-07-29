@@ -16,15 +16,19 @@
 #define QGSRASTERFILEWRITER_H
 
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterpipe.h"
-#include "qgsrectangle.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QString>
+#include <QStringList>
+
+#include "qgsraster.h"
 
 class QProgressDialog;
 class QgsRasterIterator;
+class QgsRasterPipe;
+class QgsRectangle;
+class QgsRasterDataProvider;
+class QgsRasterInterface;
 
 /** \ingroup core
  * The raster file writer which allows you to save a raster to a new file.
@@ -49,9 +53,8 @@ class CORE_EXPORT QgsRasterFileWriter
     };
 
     QgsRasterFileWriter( const QString& outputUrl );
-    ~QgsRasterFileWriter();
 
-    /**Write raster file
+    /** Write raster file
         @param pipe raster pipe
         @param nCols number of output columns
         @param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
@@ -59,7 +62,7 @@ class CORE_EXPORT QgsRasterFileWriter
         @param crs crs to reproject to
         @param p dialog to show progress in */
     WriterError writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
-                             const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
+                             const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = nullptr );
 
     void setOutputFormat( const QString& format ) { mOutputFormat = format; }
     QString outputFormat() const { return mOutputFormat; }
@@ -97,7 +100,7 @@ class CORE_EXPORT QgsRasterFileWriter
   private:
     QgsRasterFileWriter(); //forbidden
     WriterError writeDataRaster( const QgsRasterPipe* pipe, QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-                                 const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = 0 );
+                                 const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = nullptr );
 
     // Helper method used by previous one
     WriterError writeDataRaster( const QgsRasterPipe* pipe,
@@ -105,14 +108,14 @@ class CORE_EXPORT QgsRasterFileWriter
                                  int nCols, int nRows,
                                  const QgsRectangle& outputExtent,
                                  const QgsCoordinateReferenceSystem& crs,
-                                 QGis::DataType destDataType,
-                                 QList<bool> destHasNoDataValueList,
-                                 QList<double> destNoDataValueList,
+                                 Qgis::DataType destDataType,
+                                 const QList<bool>& destHasNoDataValueList,
+                                 const QList<double>& destNoDataValueList,
                                  QgsRasterDataProvider* destProvider,
                                  QProgressDialog* progressDialog );
 
     WriterError writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-                                  const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = 0 );
+                                  const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = nullptr );
 
     /** \brief Initialize vrt member variables
      *  @param xSize width of vrt
@@ -123,17 +126,17 @@ class CORE_EXPORT QgsRasterFileWriter
      *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
      *  @param destNoDataValueList no data value, indexed from 0
      */
-    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, QGis::DataType type, QList<bool> destHasNoDataValueList, QList<double> destNoDataValueList );
+    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, Qgis::DataType type, const QList<bool>& destHasNoDataValueList, const QList<double>& destNoDataValueList );
     //write vrt document to disk
     bool writeVRT( const QString& file );
     //add file entry to vrt
     void addToVRT( const QString& filename, int band, int xSize, int ySize, int xOffset, int yOffset );
     void buildPyramids( const QString& filename );
 
-    /**Create provider and datasource for a part image (vrt mode)*/
+    /** Create provider and datasource for a part image (vrt mode)*/
     QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
         int iterLeft, int iterTop,
-        const QString& outputUrl, int fileIndex, int nBands, QGis::DataType type,
+        const QString& outputUrl, int fileIndex, int nBands, Qgis::DataType type,
         const QgsCoordinateReferenceSystem& crs );
 
     /** \brief Init VRT (for tiled mode) or create global output provider (single-file mode)
@@ -148,10 +151,10 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     QgsRasterDataProvider* initOutput( int nCols, int nRows,
                                        const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
-                                       QGis::DataType type,
-                                       QList<bool> destHasNoDataValueList = QList<bool>(), QList<double> destNoDataValueList = QList<double>() );
+                                       Qgis::DataType type,
+                                       const QList<bool>& destHasNoDataValueList = QList<bool>(), const QList<double>& destNoDataValueList = QList<double>() );
 
-    /**Calculate nRows, geotransform and pixel size for output*/
+    /** Calculate nRows, geotransform and pixel size for output*/
     void globalOutputParameters( const QgsRectangle& extent, int nCols, int& nRows, double* geoTransform, double& pixelSize );
 
     QString partFileName( int fileIndex );
@@ -164,7 +167,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QStringList mCreateOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
-    /**False: Write one file, true: create a directory and add the files numbered*/
+    /** False: Write one file, true: create a directory and add the files numbered*/
     bool mTiledMode;
     double mMaxTileWidth;
     double mMaxTileHeight;

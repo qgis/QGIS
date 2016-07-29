@@ -19,6 +19,8 @@
 #include "qgsdatasourceuri.h"
 #include "qgswmsprovider.h"
 
+class QgsWmsCapabilitiesDownload;
+
 class QgsWMSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -34,9 +36,11 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
   public slots:
     void editConnection();
     void deleteConnection();
+    virtual void deleteLater() override;
 
   private:
     QString mUri;
+    QgsWmsCapabilitiesDownload *mCapabilitiesDownload;
 };
 
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
@@ -46,8 +50,8 @@ class QgsWMSLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path,
-                     const QgsWmsCapabilitiesProperty &capabilitiesProperty,
-                     QgsDataSourceURI dataSourceUri,
+                     const QgsWmsCapabilitiesProperty& capabilitiesProperty,
+                     const QgsDataSourceURI& dataSourceUri,
                      const QgsWmsLayerProperty &layerProperty );
     ~QgsWMSLayerItem();
 

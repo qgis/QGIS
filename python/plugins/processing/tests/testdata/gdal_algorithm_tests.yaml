@@ -1,0 +1,45 @@
+# See ../README.md for a description of the file format
+
+tests:
+# MK: 23.2.2016 / Fails on travis:OSX
+#  - algorithm: gdalogr:rasterize
+#    name: Test (gdalogr:rasterize)
+#    params:
+#      BIGTIFF: 0
+#      COMPRESS: 4
+#      DIMENSIONS: 0
+#      EXTRA: ""
+#      FIELD: "Bfloatval"
+#      HEIGHT: 100
+#      INPUT:
+#        name: multipolys.gml
+#        type: vector
+#      JPEGCOMPRESSION: 75
+#      NO_DATA: -9999
+#      PREDICTOR: 1
+#      RTYPE: 5
+#      TFW: False
+#      TILED: False
+#      WIDTH: 100
+#      ZLEVEL: 6
+#    results:
+#      OUTPUT:
+#        hash: f1fedeb6782f9389cf43590d4c85ada9155ab61fef6dc285aaeb54d6
+#        type: rasterhash
+
+
+  - name: GDAL ogrinfo
+    algorithm: gdalogr:information
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      SUMMARY_ONLY: 'True'
+    results:
+      OUTPUT:
+        name: expected/gdal/layer_info.html
+        type: regex
+        rules:
+          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
+          - 'Geometry: Line String'
+          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...

@@ -2,8 +2,12 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Upload vector values at positions of vector points" module="v.what.vect">
-	<option key="vector" layeroption="layer" typemask="point"/>
-	<field key="column" layer="vector" type="integer,double,string"/>
-	<option key="qvector" layeroption="qlayer" typemask="area"/>
-	<field key="qcolumn" layer="qvector" type="integer,double,string"/>
+	<option key="vector" layeroption="layer" typemask="point" version_max="6"/>
+	<option key="map" layeroption="layer" typemask="point" version_min="7"/>
+	<field key="column" layer="vector" type="integer,double,string" version_max="6"/>
+	<field key="column" layer="map" type="integer,double,string" version_min="7"/>
+	<option key="qvector" layeroption="qlayer" typemask="area" version_max="6"/>
+	<option key="query_map" layeroption="query_layer" typemask="area" version_min="7"/>
+	<field key="qcolumn" layer="qvector" type="integer,double,string" version_max="6"/>
+	<field key="query_column" layer="query_map" type="integer,double,string" version_min="7"/>
 </qgisgrassmodule>

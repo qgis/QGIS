@@ -27,10 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
@@ -40,9 +39,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputRaster
 
-from processing.tools.system import *
-
-from TauDEMUtils import TauDEMUtils
+from .TauDEMUtils import TauDEMUtils
 
 
 class DinfTransLimAccum2(GeoAlgorithm):
@@ -59,33 +56,33 @@ class DinfTransLimAccum2(GeoAlgorithm):
     OUT_CONCENTR_GRID = 'OUT_CONCENTR_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def defineCharacteristics(self):
-        self.name = 'D-Infinity Transport Limited Accumulation - 2'
+        self.name, self.i18n_name = self.trAlgorithm('D-Infinity Transport Limited Accumulation - 2')
         self.cmdName = 'dinftranslimaccum'
-        self.group = 'Specialized Grid Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Specialized Grid Analysis tools')
 
         self.addParameter(ParameterRaster(self.DINF_FLOW_DIR_GRID,
-            self.tr('D-Infinity Flow Direction Grid'), False))
+                                          self.tr('D-Infinity Flow Direction Grid'), False))
         self.addParameter(ParameterRaster(self.SUPPLY_GRID,
-            self.tr('Supply Grid'), False))
+                                          self.tr('Supply Grid'), False))
         self.addParameter(ParameterRaster(self.CAPACITY_GRID,
-            self.tr('Transport Capacity Grid'), False))
+                                          self.tr('Transport Capacity Grid'), False))
         self.addParameter(ParameterRaster(self.IN_CONCENTR_GRID,
-            self.tr('Input Concentration Grid'), False))
+                                          self.tr('Input Concentration Grid'), False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
-            self.tr('Outlets Shapefile'),
-            [ParameterVector.VECTOR_TYPE_POINT], True))
+                                          self.tr('Outlets Shapefile'),
+                                          [ParameterVector.VECTOR_TYPE_POINT], True))
         self.addParameter(ParameterBoolean(self.EDGE_CONTAM,
-            self.tr('Check for edge contamination'), True))
+                                           self.tr('Check for edge contamination'), True))
 
         self.addOutput(OutputRaster(self.TRANSP_LIM_ACCUM_GRID,
-            self.tr('Transport Limited Accumulation Grid')))
+                                    self.tr('Transport Limited Accumulation Grid')))
         self.addOutput(OutputRaster(self.DEPOSITION_GRID,
-            self.tr('Deposition Grid')))
+                                    self.tr('Deposition Grid')))
         self.addOutput(OutputRaster(self.OUT_CONCENTR_GRID,
-            self.tr('Output Concentration Grid')))
+                                    self.tr('Output Concentration Grid')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -98,7 +95,7 @@ class DinfTransLimAccum2(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
         commands.append('-ang')
         commands.append(self.getParameterValue(self.DINF_FLOW_DIR_GRID))
@@ -112,7 +109,7 @@ class DinfTransLimAccum2(GeoAlgorithm):
         if param is not None:
             commands.append('-o')
             commands.append(param)
-        if str(self.getParameterValue(self.EDGE_CONTAM)).lower() == 'false':
+        if not self.getParameterValue(self.EDGE_CONTAM):
             commands.append('-nc')
 
         commands.append('-tla')

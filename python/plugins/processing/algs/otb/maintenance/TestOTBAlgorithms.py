@@ -22,47 +22,51 @@ __revision__ = '$Format:%H$'
 
 import unittest
 import signal
-import sys
 import os
-import traceback
-import xml.etree.ElementTree as ET
-import shlex, subprocess
+import shlex
+import subprocess
 import shelve
 
 try:
-    import processing
-except ImportError, e:
+    import processing  # NOQA
+except ImportError as e:
     raise Exception("Processing must be installed and available in PYTHONPATH")
 
 try:
     import otbApplication
-except ImportError, e:
+except ImportError as e:
     raise Exception("OTB python plugins must be installed and available in PYTHONPATH")
 
-from processing.algs.otb.OTBAlgorithm import OTBAlgorithm
-from processing.algs.otb.OTBHelper import *
+from processing.algs.otb.OTBHelper import get_OTB_log, create_xml_descriptors
 from processing.algs.otb.OTBTester import MakefileParser
+
 
 class Alarm(Exception):
     pass
 
+
 def alarm_handler(signum, frame):
     raise Alarm
 
+
 class AlgoTestCase(unittest.TestCase):
+
     def setUp(self):
         self.logger = get_OTB_log()
-        self.the_files = [os.path.join(os.path.join(os.path.abspath(os.curdir), 'description'),each) for each in os.listdir(os.path.join(os.path.abspath(os.curdir), 'description')) if '.xml' in each]
+        self.the_files = [os.path.join(os.path.join(os.path.abspath(os.curdir), 'description'), each) for each in os.listdir(os.path.join(os.path.abspath(os.curdir), 'description')) if '.xml' in each]
 
     def tearDown(self):
         self.logger = None
 
+
 class TestSequence(unittest.TestCase):
+
     def setUp(self):
-        self.data = shelve.open("tests.shelve",writeback=True)
+        self.data = shelve.open("tests.shelve", writeback=True)
 
     def tearDown(self):
         self.data.close()
+
 
 def ut_generator(test_name, a_tuple):
     def test(self):
@@ -77,20 +81,20 @@ def ut_generator(test_name, a_tuple):
 
         if needs_update:
             signal.signal(signal.SIGALRM, alarm_handler)
-            signal.alarm(6*60)  # 6 minutes
+            signal.alarm(6 * 60)  # 6 minutes
 
             black_list = []
 
             ut_command = a_tuple[0]
-            self.assertTrue(ut_command != None)
+            self.assertTrue(ut_command is not None)
             self.assertTrue(ut_command != "")
 
             ut_command_validation = a_tuple[1]
-            self.assertTrue(ut_command_validation != None)
+            self.assertTrue(ut_command_validation is not None)
             self.assertTrue(ut_command_validation != "")
 
             if ut_command.split(" ")[0] in black_list:
-                raise Exception("Blacklisted test !")
+                raise Exception("Blacklisted test!")
 
             args = shlex.split(ut_command)
             failed = False
@@ -109,7 +113,7 @@ def ut_generator(test_name, a_tuple):
                 logger.info(pout)
 
             if (len(ut_command_validation) > 0) and not failed:
-                new_ut_command_validation = ut_command_validation + " Execute " +  ut_command
+                new_ut_command_validation = ut_command_validation + " Execute " + ut_command
 
                 logger.info("Running Unit test [%s]" % new_ut_command_validation)
                 argz = shlex.split(new_ut_command_validation)
@@ -127,12 +131,12 @@ def ut_generator(test_name, a_tuple):
                     logger.info(qout)
 
             signal.alarm(0)
-            self.data[test_name] = [ a_tuple[0], a_tuple[1], failed ]
+            self.data[test_name] = [a_tuple[0], a_tuple[1], failed]
         else:
             logger.info("Passed test: %s" % test_name)
 
-
     return test
+
 
 def get_client_apps():
     app_clients = []
@@ -142,6 +146,7 @@ def get_client_apps():
         ct = "otbcli_" + available_app
         app_clients.append(ct)
     return app_clients
+
 
 def unfiltered_processing_mapping():
     mkf = MakefileParser()
@@ -160,6 +165,7 @@ def unfiltered_processing_mapping():
 
     suite = unittest.TestLoader().loadTestsFromTestCase(TestSequence)
     unittest.TextTestRunner(verbosity=2).run(suite)
+
 
 def test_processing_mapping():
     mkf = MakefileParser()
@@ -188,11 +194,11 @@ def test_processing_mapping():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestSequence)
     unittest.TextTestRunner(verbosity=2).run(suite)
 
+
 def test_xml_generation():
     create_xml_descriptors()
 
 if __name__ == '__main__':
-    import processing
     mkf = MakefileParser()
     the_tests = mkf.test_algos()
     for t in the_tests:

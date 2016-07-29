@@ -6,7 +6,7 @@ class QgsRasterHistogram
   public:
     QgsRasterHistogram();
 
-    /*! Compares region, size etc. not histogram itself */
+    /** Compares region, size etc. not histogram itself */
     bool operator==( const QgsRasterHistogram &h ) const;
 
     /** \brief The gdal band number (starts at 1)*/

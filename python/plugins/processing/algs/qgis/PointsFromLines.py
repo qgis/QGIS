@@ -25,9 +25,9 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
 from osgeo import gdal
-from qgis.core import *
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import Qgis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsPoint
 from processing.tools import vector, raster, dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -43,18 +43,17 @@ class PointsFromLines(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def defineCharacteristics(self):
-        self.name = 'Generate points (pixel centroids) along line'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Generate points (pixel centroids) along line')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
-            self.tr('Raster layer')))
+                                          self.tr('Raster layer')))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
-            self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+                                          self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points along line')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
 
@@ -67,10 +66,8 @@ class PointsFromLines(GeoAlgorithm):
         fields.append(QgsField('line_id', QVariant.Int, '', 10, 0))
         fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(
-                self.OUTPUT_LAYER).getVectorWriter(fields.toList(),
-                                                   QGis.WKBPoint,
-                                                   layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
+            fields.toList(), Qgis.WKBPoint, layer.crs())
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)
@@ -79,10 +76,9 @@ class PointsFromLines(GeoAlgorithm):
         self.lineId = 0
         self.pointId = 0
 
-        current = 0
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for f in features:
+        for current, f in enumerate(features):
             geom = f.geometry()
             if geom.isMultipart():
                 lines = geom.asMultiPolyline()
@@ -92,9 +88,9 @@ class PointsFromLines(GeoAlgorithm):
                         p2 = line[i + 1]
 
                         (x1, y1) = raster.mapToPixel(p1.x(), p1.y(),
-                                geoTransform)
+                                                     geoTransform)
                         (x2, y2) = raster.mapToPixel(p2.x(), p2.y(),
-                                geoTransform)
+                                                     geoTransform)
 
                         self.buildLine(x1, y1, x2, y2, geoTransform,
                                        writer, outFeature)
@@ -113,14 +109,11 @@ class PointsFromLines(GeoAlgorithm):
             self.pointId = 0
             self.lineId += 1
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer
 
-    def buildLine(self, startX, startY, endX, endY, geoTransform, writer,
-                  feature):
-        point = QgsPoint()
+    def buildLine(self, startX, startY, endX, endY, geoTransform, writer, feature):
         if startX == endX:
             if startY > endY:
                 (startY, endY) = (endY, startY)

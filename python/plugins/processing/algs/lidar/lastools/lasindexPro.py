@@ -4,7 +4,7 @@
 ***************************************************************************
     lasindexPro.py
     ---------------------
-    Date                 : October 2014
+    Date                 : October 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -24,10 +24,11 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
+
 
 class lasindexPro(LAStoolsAlgorithm):
 
@@ -35,19 +36,22 @@ class lasindexPro(LAStoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def defineCharacteristics(self):
-        self.name = "lasindexPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasindexPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lasindexPro.APPEND_LAX,
-            self.tr("append *.lax file to *.laz file"), False))
+                                           self.tr("append *.lax file to *.laz file"), False))
         self.addParameter(ParameterBoolean(lasindexPro.MOBILE_OR_TERRESTRIAL,
-            self.tr("is mobile or terrestrial LiDAR (not airborne)"), False))
+                                           self.tr("is mobile or terrestrial LiDAR (not airborne)"), False))
         self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         if self.getParameterValue(lasindexPro.APPEND_LAX):

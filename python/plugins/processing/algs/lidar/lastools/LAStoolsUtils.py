@@ -21,6 +21,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -30,10 +31,12 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools.system import isWindows
+
 
 class LAStoolsUtils:
 
@@ -43,15 +46,18 @@ class LAStoolsUtils:
     @staticmethod
     def hasWine():
         wine_folder = ProcessingConfig.getSetting(LAStoolsUtils.WINE_FOLDER)
-        return ((wine_folder != None) and (wine_folder != ""))
+        return wine_folder is not None and wine_folder != ""
 
     @staticmethod
     def LAStoolsPath():
         lastools_folder = ProcessingConfig.getSetting(LAStoolsUtils.LASTOOLS_FOLDER)
-        if lastools_folder == None:
+        if lastools_folder is None:
             lastools_folder = ""
-        wine_folder = ProcessingConfig.getSetting(LAStoolsUtils.WINE_FOLDER)
-        if (wine_folder == None) or (wine_folder == ""):
+        if isWindows():
+            wine_folder = ""
+        else:
+            wine_folder = ProcessingConfig.getSetting(LAStoolsUtils.WINE_FOLDER)
+        if wine_folder is None or wine_folder == "":
             folder = lastools_folder
         else:
             folder = wine_folder + "/wine " + lastools_folder
@@ -68,4 +74,5 @@ class LAStoolsUtils:
                                 stderr=subprocess.STDOUT, universal_newlines=False).stdout
         for line in iter(proc.readline, ""):
             loglines.append(line)
+            progress.setConsoleInfo(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)

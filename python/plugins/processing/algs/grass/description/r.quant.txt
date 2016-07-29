@@ -1,5 +1,5 @@
 r.quant
-r.quant - Produces the quantization file for a floating-point map.
+Produces the quantization file for a floating-point map.
 Raster (r.*)
 ParameterMultipleInput|input|Raster layer(s) to be quantized|1.0|False
 ParameterRaster|basemap|Base layer to take quant rules from|False

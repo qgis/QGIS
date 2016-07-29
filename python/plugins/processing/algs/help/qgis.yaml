@@ -1,0 +1,439 @@
+qgis:addautoincrementalfield: >
+  This algorithm adds a new integer field to a vector layer, with a sequential value for each feature.
+
+  This field can be used as a unique ID for features in the layer.
+
+  The new attribute is not added to the input layer but a new layer is generated instead.
+
+qgis:addfieldtoattributestable: >
+  This algorithm adds a new attribute to a vector layer.
+
+  The name and characteristics of the attribute are defined as parameters.
+
+  The new attribute is not added to the input layer but a new layer is generated instead.
+
+qgis:adduniquevalueindexfield: >
+  This algorithm takes a vector layer and an attribute and adds a new numeric field. Values in this field correspond to values in the specified attribute, so features with the same value for the attribute will have the same value in the new numeric field. This creates a numeric equivalent of the specified attribute, which defines the same classes.
+
+  The new attribute is not added to the input layer but a new layer is generated instead.
+
+qgis:advancedpythonfieldcalculator: >
+  This algorithm adds a new attribute to a vector layer, with values resulting from applying an expression to each feature. The expression is defined as a Python function.
+
+qgis:barplot:
+
+
+qgis:basicstatisticsfornumericfields: >
+  This algorithm generates basic statistics from the analysis of a numeric field in the attribute table of a vector layer.
+
+  Statistics are generated as an HTML file.
+
+qgis:basicstatisticsfortextfields: >
+  This algorithm generates basic statistics from the analysis of a text field in the attribute table of a vector layer.
+
+  Statistics are generated as an HTML file.
+
+qgis:buildvirtualvector: >
+  This algorithm creates a virtual layer that contains a set of vector layer.
+
+  The output virtual layer will not be open in the current project.
+
+qgis:checkvalidity:
+  This algorithm performs a validity check on the geometries of a vector layer.
+
+  The geometries are classified in three groups (valid, invalid and error), and a vector layer is generated with the features in each on of this categories.
+
+qgis:clip: >
+  This algorithm clips a vector layer using the polygons of an additional polygons layer. Only the parts of the features in the input layer that falls within the polygons of the clipping layer will be added to the resulting layer.
+
+  The attributes of the features are not modified, although properties such as area or length of the features will be modified by the clipoing operation. If such properties are stored as attributes, those attributes will have to be manually updated.
+
+qgis:concavehull: >
+  This algorithm computes the concave hull of the features in an input layer.
+
+qgis:convertgeometrytype: >
+  This algorithm generates a new layer based on an existing one, with a different type of geometry.
+
+  Not all conversions are possible. For instance, a line layer can be converted to a point layer, but a point layer cannot be converted to a line layer.
+
+  See the "Polygonize" or "Lines to polygons" algorithm for alternative options.
+
+qgis:convexhull: >
+  This algorithm computes the convex hull of features in a layer.
+
+  If a field is specified, it will divide the features into classes based on that field, and compute a separate convex hull for the features in each class.
+
+qgis:countpointsinpolygon: >
+  This algorithms takes a points layer and a polygon layer and counts the number of points from the first one in each polygons of the second one.
+
+  A new polygons layer is generated, with the exact same content as the input polygons layer, but containing an additional field with the points count corresponding to each polygon.
+
+qgis:countpointsinpolygonweighted: >
+  This algorithms takes a points layer and a polygon layer and counts the number of points from the first one in each polygons of the second one.
+
+  An attribute is used in the points layer to assign weights to each point.
+
+  A new polygons layer is generated, with the exact same content as the input polygons layer, but containing an additional field with the points count corresponding to each polygon.
+
+qgis:countuniquepointsinpolygon: >
+  This algorithms takes a points layer and a polygon layer and counts the number of points from the first one in each polygons of the second one.
+
+  Points are classified based on an attribute, and if several points with the same attribute value are within the extent of the polygon, only one of them is counted. The final count of point in a polygon is, therefore, the count of different classes that are found in it.
+
+  A new polygons layer is generated, with the exact same content as the input polygons layer, but containing an additional field with the points count corresponding to each polygon.
+
+qgis:createconstantrasterlayer: >
+  Given an input raster layer an a value, this algorithm generates a new layer with the same extent and cellsize as the input one, and all cells with the specified value.
+
+qgis:creategrid:
+  This algorithm creates a vector layer with a grid convering a given extent. Features can be lines or polygons, and the shape used in the grid can be rectangles, diamond or hexagons.
+
+  The size of each element in the grid is defined using a horizontal and vertical spaciong.
+
+  The CRS of the output layer must be defined. The grid extent and the spacing values are supposed to be expressed in the coordinates and units of this CRS.
+
+qgis:createpointsalonglines: >
+  This algorithms creates a points layer, with points distributed along the lines of an input vector layer. the distance between points (measured along the line) is defined as a parameter.
+
+  Start and end points can be defined, so the first and last point do not fall on the line first and last node. Start and end points are defined as distances, mesaureed from the first and last nodes of the lines, in the units of the projection used by the lines layer.
+
+qgis:delaunaytriangulation: >
+  This algorithm creates a polygon layer with the delaunay triangulation corresponding to a  points layer.
+
+qgis:deletecolumn: >
+  This algorithm takes a vector layer and generates a new one that has the exact same content but without one of its columns.
+
+qgis:deleteduplicategeometries: >
+  This algorithm finds duplicated geometries and removes them.  Attributes are not checked, so in case two feature have identical geometries but different attributes, only one of them will be added to the result layer.
+
+qgis:deleteholes: >
+  This algorithm takes a polygon layer and removes holes in polygons. It creates a new vector layer in which polygons with holes have been replaced by polygons with only their external ring. Attributes are not modified.
+
+qgis:densifygeometries:
+  This algorithm takes a polygon or line layer and generaates a new one in which the geometries have a larger number of vertices than the original one.
+
+  The number of new vertices to add to each feature geometry is specified as an input parameter.
+
+qgis:densifygeometriesgivenaninterval:
+  This algorithm takes a polygon or line layer and generaates a new one in which the geometries have a larger number of vertices than the original one.
+
+  The number of new vertices depends on the length of the geometry, and is specified as a distance between them. The distance is expressed in the same units used by the layer CRS.
+
+qgis:difference: >
+  This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Difference layer. Input layer features that partially overlap the difference layer feature(s) are split along the boundary of the difference layer feature(s) and only the portions outside the difference layer features are retained.
+
+  Attributes are not modified
+
+qgis:dissolve: >
+  This algorithm takes a polygon vector layer and dissolve adjacent polygons into  single geometries. An attribute can be specified to dissolve only polygons belonging to the same class (having the same value for the specified attribute), or all polygons can be dissolved, considering only their geometries.
+
+qgis:distancematrix: >
+  This algorithms creates a table containing a distance matrix, with distances between all the points in a points layer.
+
+
+qgis:distancetonearesthub: >
+  Given a layer with source point and another one representing destination points, this algorithm computes the distance between each source point and the closest detination one.
+
+  The resulting layer can contain only source points with an additional field indicating the distance to the nearest point and the name of the destination point, or lines linking each source point with its nearest destination point.
+
+qgis:eliminatesliverpolygons:
+
+qgis:explodelines: >
+  This algorithm takes a lines layer and creates a new one in which each line is replaced is replaced by a set of lines representing the segments in the original line. Each line in the resulting layer contains only a start and an end point, with no intermediate nodes between them.
+
+qgis:exportaddgeometrycolumns: >
+  This algorithm computes geometric properties of the features in a vector layer. It generates a new vector layer with the same content as the input one, but with additional attributes in its attributes table, containing geometric measurements.
+
+  Depending on the geometry type of the vector layer, the attributes added to the table will be different.
+
+qgis:extractbyattribute: >
+  This algorithms creates new vector layer that only contain certain features from an input layer. The criteria for adding features to the resulting layer is defined based on the values of an attribute from the input layer.
+
+qgis:extractbylocation: >
+  This algorithms creates new vector layer that only contain certain features from an input layer. The criteria for adding features to the resulting layer is defined based on the spatial relationship between each feature and the features in an additional layer.
+
+qgis:extractnodes: >
+  This algorithm takes a line or polygon layer and generates a point layer with points representing the nodes in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
+
+qgis:fieldcalculator: >
+  This algorithm computes a new vector layer with the same features of the input layer, but with an additional attribute. The values of this new attribute are computed from each feature using a mathematical formula, based on te properties and attributes of the feature.
+
+qgis:fixeddistancebuffer: >
+  This algorithm computes a buffer area for all the features in an input layer, using a fixed distance.
+
+qgis:frequencyanalysis: >
+  This algorithms generates a table with frequency analysis of the values of a selected attribute from an input vector layer
+
+qgis:generatepointspixelcentroidsalongline:
+
+
+qgis:generatepointspixelcentroidsinsidepolygons:
+
+
+qgis:hublines:
+
+
+qgis:hypsometriccurves: >
+  This algorithm computes hypsometric curves  for an input Digital Elevation Model. Curves are produced as table files in an output folder specified by the user.
+
+qgis:importintopostgis: >
+  This algorithms imports a vector layer into a PostGIS database, creating a new table.
+
+  Prior to this a connection between QGIS and the PostGIS database has to be created (for example with the DB Manager).
+
+qgis:intersection: >
+  This algorithm extracts the overlapping portions of features in the Input and Intersect layers. Features in the Intersection layer are assigned the attributes of the overlapping features from both the Input and Intersect layers.
+
+  Attributes are not modified
+
+qgis:joinattributesbylocation: >
+  This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
+
+  The additional attributes and their values are taken from a second vector layer.  A spatial critera is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
+
+
+qgis:joinattributestable: >
+  This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
+
+  The additional attributes and their values are taken from a second vector layer.  An attribute is selected in each of them to define the join criteria.
+
+qgis:keepnbiggestparts: >
+  This algorithms takes a polygon layer and creates a new polygon layer in which multipart goemetries have been removed, leaving only the n largest (in terms of area) parts
+
+qgis:lineintersections:
+  This algorithm creates point features where the lines in the Intersect layer intersect the lines in the Input layer.
+
+  An ID field is specified for each of the input layers. Each point in the resulting layer will have the ID's of both input layer, allowing to identify them.
+
+  If no Input Unique and Intersect Unique ID fields are specified then the point features are given the values of the last field (i.e. the last field/column in the attribute table) of the intersecting lines.
+
+qgis:linestopolygons:
+  This algorithm generates a polygon layer using as polygon rings the lines from an input line layer.
+
+  The attribute table of the output layer is the same as the one from of the input line layer.
+
+qgis:listuniquevalues: >
+  This algorithm generates a report with information about the categories found in a given attribute of a vector layer.
+
+qgis:meanandstandarddeviationplot:
+
+
+qgis:meancoordinates: >
+  This algorithm computes a point layer with the center of mass of geometries in an input layer.
+
+  An attribute can be specified as containing weights to be applied to each feature when computing the center of mass.
+
+  If an attribute is selected in the  <Unique ID  field> parameters, features will be grouped according to values in this field. Instead of a single point with the center of mass of the whole layer, the  output layer will contain a center of mass for the features in each category.
+
+qgis:mergevectorlayers: >
+  This algorithm combines two vector layer of the same geometry type into a single one.
+
+  If attributes tables are different, the attribute table of the resulting layer will contain the attributes from both input layers
+
+qgis:multiparttosingleparts: >
+  This algorithm takes a vector layer with multipart geometries and generates a new one in which all geometries contain a single part. Features with multipart geometries are divided in as many different features as parts the geometry contain, and the same attributes are used for each of them.
+
+qgis:nearestneighbouranalysis: >
+  This algorithm performs nearest neighbout analysis for a point layer.
+
+  Output is generated as an html file with the computed statistical values.
+
+
+qgis:numberofuniquevaluesinclasses: >
+  This algorithm  counts the different values that appear in a specified attributes for features of the same class.
+
+  Classes are defined according to a given attribute. For all layers that share the same value of this attributes, the values of a second attributes are analyzed.
+
+  The resulting layer contains the same features as the input layer, but with an additional attribute containing the count of unique values for that class.
+
+qgis:orientedminimumboundingbox: >
+  This algorithm takes a vector layer and generate a new one with the minimum rectangle that covers all the input features.
+
+  As an alternative, the output layer can contain not just a single  rectangle, but one for each input feature, representing the minimum rectangle that covers each of them.
+
+qgis:pointsdisplacement:
+
+
+qgis:pointslayerfromtable: >
+  This algorithm generates a points layer based on the values from an input table.
+
+  The table must contain a field with the X coordinate of each point and another one with the Y coordinate. A CRS for the output layer has to be specified, and the coordinates in the table are assumed to be expressed in the units used by that CRS.
+
+  The attributes table of the resulting layer will be the input table.
+
+qgis:pointstopath:
+
+
+qgis:polarplot: >
+  This algorithm generates a polar plot based on the value of an input vector layer.
+
+  Two fields must be entered as parameters: one that define the category each feature two (to group features) and another one with the variable to plot (this has to be a numeric one)
+
+qgis:polygoncentroids: >
+  This algorithm creates a new point layer, with points representing the centroid of polygons of an input layer.
+
+  The attributes associated to each point in the output layer are the same ones associated to the original polygon.
+
+
+qgis:polygonfromlayerextent: >
+  This algorithm takes a vector layer and generate a new one with the minimum bounding box (rectangle with N-S orientation) that covers all the input features.
+
+  As an alternative, the output layer can contain not just a single bounding box, but one for each input feature, representing the bounding box of each of them.
+
+qgis:polygonize:  >
+  This algorithm takes a lines layer and creates a polygon layer, with polygons generated from the lines in the input layer.
+
+qgis:polygonstolines: >
+  This algorithm takes a polygon layer and creates a line layer, with lines representing the rings of the polygons in the input layer.
+
+qgis:postgisexecutesql: >
+  This algorithm performs a SQL database query on a PostGIS database connected to QGIS.
+
+qgis:randomextract: >
+  This algorithm takes a vector layer and generates a new one that contains only a subset of the features in the input layer.
+
+  The subset is defined randomly,  using a percentage or count value to define the total number of features in the subset.
+
+qgis:randomextractwithinsubsets: >
+  This algorithm takes a vector layer and generates a new one that contains only a subset of the features in the input layer.
+
+  The subset is defined randomly,  using a percentage or count value to define the total number of features in the subset.
+
+  The percentage/count value is not applied to the whole layer, but instead to each category. Categories are defined according to a given attribute, which is also specified as an input parameter for the algorithm.
+
+qgis:randompointsalongline: >
+  This algorithm creates a new point layer, with points placed in the lines of another layer.
+
+  For each line in the input layer, a given number of points is added to the resulting layer. A minimum distance can be specified to avoid point being too close to each other.
+
+qgis:randompointsinextent: >
+  This algorithm creates a new point layer with a given number of random points, all of them within a given extent. A distance factor can be specified, to avoid points being too close to each other.
+
+qgis:randompointsinlayerbounds: >
+  This algorithm creates a new point layer with a given number of random points, all of them within the extent of a given layer. A distance factor can be specified, to avoid points being too close to each other.
+
+qgis:randompointsinsidepolygonsfixed: >
+  This algorithms creates a new point layer with random points insides the ppolygons of a given layer. The number of points in each polygon can be defined as a fixed count or as a density value, and it will be the same for all polygons.
+
+qgis:randompointsinsidepolygonsvariable: >
+  This algorithm creates a new point layer with random points insides the ppolygons of a given layer. The number of points in each polygon can be defined as a fixed count or as a density value. The count/density valu is taken from an attribute, so it can be different for each polygons in the input layer.
+
+qgis:randomselection: >
+  This algorithm takes a vector layer and selects a subset of its features. No new layer is generated by this algorithm.
+
+  The subset is defined randomly,  using a percentage or count value to define the total number of features in the subset.
+
+qgis:randomselectionwithinsubsets: >
+  This algorithm takes a vector layer and selects a subset of its features. No new layer is generated by this algorithm.
+
+  The subset is defined randomly,  using a percentage or count value to define the total number of features in the subset.
+
+  The percentage/count value is not applied to the whole layer, but instead to each category. Categories are defined according to a given attribute, which is also specified as an input parameter for the algorithm.
+
+qgis:rasterlayerhistogram: >
+  This algorithm generates a histogram with the values of a raster layer.
+
+  The raster layer must have a single band.
+
+qgis:rasterlayerstatistics: >
+  This algorithm computes basic statistics from the values in a raster layer.
+
+  The raster layer must have a single band.
+
+qgis:refactorfields: >
+  This algorithms allows editing the structure of the attributes table of a vector layer. Fields can be modified in their type and name, using a fields mapping
+
+  The original layer is not modified. A new layer is generated, which contains a modified attributes table, accordint to the provided fields mapping
+
+qgis:regularpoints:
+
+
+qgis:reprojectlayer: >
+  This algorithm reprojects a vector layer. It creates a new layer with the same features as the input one, but with geometries reprojected to a new CRS.
+
+  Attributes are not modified by this algorithm.
+
+qgis:saveselectedfeatures: >
+  This algorithm creates a new layer with all the selected features in a given vector layer.
+
+  If the selected layer has no selected features, all features will be added to the resulting feature.
+
+qgis:selectbyattribute: >
+  This algorithms creates a selection in a vector layer. The criteria for selected features is defined based on the values of an attribute from the input layer.
+
+qgis:selectbyattributesum:
+
+
+qgis:selectbyexpression: >
+  This algorithms creates a selection in a vector layer. The criteria for selecting features is based on a QGIS expression.
+
+  For more information about expressions see the<a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
+
+
+qgis:selectbylocation: >
+  This algorithms creates creates a selection in a vector layer. The criteria for selecting features is based on the spatial relationship between each feature and the features in an additional layer.
+
+
+qgis:setstyleforrasterlayer: >
+  This algorithms sets the style of a raster layer. The style must be defined in a QML file.
+
+qgis:setstyleforvectorlayer: >
+  This algorithms sets the style of a vector layer. The style must be defined in a QML file.
+
+qgis:simplifygeometries: >
+  This algorithm simplifies the geometries in a line or polygon layer. It creates a new layer with the same features as the ones in the input layer, but with geometries containing a lower number of vertices.
+
+qgis:singlepartstomultipart:
+
+
+qgis:snappointstogrid: >
+  This algorithm modifies the position of points in a vector layer, so they fall in the coordinates of a grid.
+
+
+qgis:splitlineswithlines: >
+  This algorithm split the lines in a line layer using the lines in another line layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
+
+qgis:splitvectorlayer: >
+  This algorithm takes a vector layer and an attribute and generates a set of vector layers in an outut folder. Each of the layers created in that folder contains all features from the input layer with the same value for the specified attribute.
+
+  The number of files generated is equal to the nuber of different values found for the specified attribute.
+
+qgis:statisticsbycategories:
+
+
+qgis:sumlinelengths: >
+  This algorithm takes a polygon layer and a lines layer and measure the total length of lines and the total numer of them that cross each polygon.
+
+  The resulting layer has the same features as the input polygon layer, but with two additional attributes containing the length and lines count of layers across each polygon. The names of these two fields can be configured in the algorithm parameters.
+
+qgis:symmetricaldifference: >
+  This algorithm creates a layer containing features from both the Input and Difference layers but with the overlapping areas between the two layers removed. The attribute table of the Symmetrical Difference layer contains atrributes from both the Input and Difference layers.
+
+
+qgis:texttofloat: >
+  This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
+
+qgis:union: >
+  This algorithm creates a layer containing all the features from both input layers. In the case of polygon layers, separate features are created for overlapping and non-overlapping features. The attribute table of the union layer contains attribute values from the respective input layer for non-overlapping features, and attribute values from both input layers for overlapping features.
+
+
+qgis:variabledistancebuffer: >
+  This algorithm computes a buffer area for all the features in an input layer. The size of the buffer for a given feature is defined by an attribute, so it allows different features to have different buffer sizes.
+
+
+qgis:vectorgrid:
+
+
+qgis:vectorlayerhistogram: >
+  This algorithm generates a histogram with the values of the attribute of a vector layer.
+
+  The ttribute to use for computing the histogram must be a numeric attribute.
+
+qgis:vectorlayerscatterplot:
+
+
+qgis:voronoipolygons: >
+  This algorithm takes a points layer and generates a polygon layer containing the voronoi polygons corresponding to those input points.
+
+qgis:zonalstatistics:
+

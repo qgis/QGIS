@@ -24,11 +24,7 @@ QgsGPSConnectionRegistry::QgsGPSConnectionRegistry()
 
 QgsGPSConnectionRegistry::~QgsGPSConnectionRegistry()
 {
-  QSet<QgsGPSConnection*>::iterator it = mConnections.begin();
-  for ( ; it != mConnections.end(); ++it )
-  {
-    delete *it;
-  }
+  qDeleteAll( mConnections );
 }
 
 QgsGPSConnectionRegistry* QgsGPSConnectionRegistry::instance()

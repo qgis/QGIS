@@ -1,0 +1,10 @@
+{
+  "name": "left",
+  "type": "function",
+  "description": "Returns a substring that contains the <i>n</i> leftmost characters of the string.",
+  "arguments": [
+	{"arg":"string","description":"a string"},
+	{"arg":"length","description":"integer. The number of characters from the left of the string to return."}],
+  "examples": [ { "expression":"left('Hello World',5)", "returns":"'Hello'"}
+  ]
+}

@@ -25,14 +25,15 @@
 #include <QMap>
 
 #include "qgsvectorlayer.h" // QgsAttributeList
-#include "qgsvectorlayercache.h"
+#include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgsvectorlayercache.h"
 
 class QgsMapCanvas;
 class QgsMapLayerAction;
 class QgsEditorWidgetFactory;
 
-/**
+/** \ingroup gui
  * A model backed by a {@link QgsVectorLayerCache} which is able to provide
  * feature/attribute information to a QAbstractItemView.
  *
@@ -49,9 +50,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
   public:
     enum Role
     {
-      SortRole = Qt::UserRole + 1,
-      FeatureIdRole = Qt::UserRole + 2,
-      FieldIndexRole = Qt::UserRole + 3
+      SortRole = Qt::UserRole + 1, //!< Role used for sorting
+      FeatureIdRole,               //!< Get the feature id of the feature in this row
+      FieldIndexRole,              //!< Get the field index of this column
+      UserRole                     //!< Start further roles starting from this role
     };
 
   public:
@@ -60,13 +62,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param layerCache  A layer cache to use as backend
      * @param parent      The parent QObject (owner)
      */
-    QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
-
-    /**
-     * Loads the layer into the model
-     * Preferably to be called, before basing any other models on this model
-     */
-    virtual void loadLayer();
+    QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = nullptr );
 
     /**
      * Returns the number of rows
@@ -123,8 +119,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /**
      * Resets the model
+     *
+     * Alias to loadLayer()
      */
-    void resetModel();
+    inline void resetModel() { loadLayer(); }
 
     /**
      * Maps feature id to table row
@@ -162,7 +160,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Returns the layer this model uses as backend. Retrieved from the layer cache.
      */
-    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : NULL; }
+    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : nullptr; }
 
     /**
      * Returns the layer cache this model uses as backend.
@@ -195,6 +193,19 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void prefetchColumnData( int column );
 
     /**
+     * Prefetches the entire data for one expression. Based on this cached information
+     * the sorting can later be done in a performant way.
+     *
+     * @param expression The expression to cache
+     */
+    void prefetchSortData( const QString& expression );
+
+    /**
+     * The expression which was used to fill the sorting cache
+     */
+    QString sortCacheExpression() const;
+
+    /**
      * Set a request that will be used to fill this attribute table model.
      * In contrast to a filter, the request will constrain the data shown without the possibility
      * to dynamically adjust it.
@@ -202,6 +213,12 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param request The request to use to fill this table model.
      */
     void setRequest( const QgsFeatureRequest& request );
+
+    /**
+     * Get the the feature request
+     */
+    // TODO QGIS 3: return copy instead of reference
+    const QgsFeatureRequest& request() const;
 
     /**
      * Sets the context in which this table is shown.
@@ -218,6 +235,31 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @return The context
      */
     const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
+
+    /**
+     * Empty extra columns to announce from this model.
+     * Any extra columns need to be implemented by proxy models in front of this model.
+     */
+    int extraColumns() const;
+
+    /**
+     * Empty extra columns to announce from this model.
+     * Any extra columns need to be implemented by proxy models in front of this model.
+     */
+    void setExtraColumns( int extraColumns );
+
+  public slots:
+    /**
+     * Loads the layer into the model
+     * Preferably to be called, before using this model as source for any other proxy model
+     */
+    virtual void loadLayer();
+
+    /** Handles updating the model when the conditional style for a field changes.
+     * @param fieldName name of field whose conditional style has changed
+     * @note added in QGIS 2.12
+     */
+    void fieldConditionalStyleChanged( const QString& fieldName );
 
   signals:
     /**
@@ -256,10 +298,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     /**
-     * Launched when a feature has been deleted
-     * @param fid feature id
+     * Launched when eatures have been deleted
+     * @param fids feature ids
      */
-    virtual void featureDeleted( QgsFeatureId fid );
+    virtual void featuresDeleted( const QgsFeatureIds& fids );
     /**
      * Launched when a feature has been added
      * @param fid feature id
@@ -284,6 +326,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
+    mutable QHash<int, QList<QgsConditionalStyle> > mRowStylesMap;
+
+    mutable QgsExpressionContext mExpressionContext;
 
     /**
       * Gets mFieldCount, mAttributes and mValueMaps
@@ -303,9 +348,12 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QgsFeatureRequest mFeatureRequest;
 
     /** The currently cached column */
-    int mCachedField;
-    /** Allows caching of one specific column (used for sorting) */
-    QHash<QgsFeatureId, QVariant> mFieldCache;
+    QgsExpression mSortCacheExpression;
+    QgsAttributeList mSortCacheAttributes;
+    /** If it is set, a simple field is used for sorting, if it's -1 it's the mSortCacheExpression*/
+    int mSortFieldIndex;
+    /** Allows caching of one value per column (used for sorting) */
+    QHash<QgsFeatureId, QVariant> mSortCache;
 
     /**
      * Holds the bounds of changed cells while an update operation is running
@@ -317,6 +365,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QRect mChangedCellBounds;
 
     QgsAttributeEditorContext mEditorContext;
+
+    int mExtraColumns;
 };
 
 

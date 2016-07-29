@@ -20,7 +20,7 @@
 
 #include <QTcpSocket>
 
-QgsGpsdConnection::QgsGpsdConnection( QString host, qint16 port, QString device )
+QgsGpsdConnection::QgsGpsdConnection( const QString& host, qint16 port, const QString& device )
     : QgsNMEAConnection( new QTcpSocket() )
     , mDevice( device )
 {
@@ -34,7 +34,6 @@ QgsGpsdConnection::QgsGpsdConnection( QString host, qint16 port, QString device 
 QgsGpsdConnection::~QgsGpsdConnection()
 {
   //connection will be closed by base class
-  QgsDebugMsg( "entered." );
 }
 
 void QgsGpsdConnection::connected()
@@ -46,7 +45,7 @@ void QgsGpsdConnection::connected()
 
 void QgsGpsdConnection::error( QAbstractSocket::SocketError socketError )
 {
-#if QGISDEBUG
+#ifdef QGISDEBUG
   QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource );
   QgsDebugMsg( QString( "error: %1 %2" ).arg( socketError ).arg( socket->errorString() ) );
 #else

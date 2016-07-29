@@ -23,12 +23,6 @@ class QgsAttributeTableModel : QAbstractTableModel
     virtual ~QgsAttributeTableModel();
 
     /**
-     * Loads the layer into the model
-     * Preferably to be called, before basing any other models on this model
-     */
-    virtual void loadLayer();
-
-    /**
      * Returns the number of rows
      * @param parent parent index
      */
@@ -154,7 +148,74 @@ class QgsAttributeTableModel : QAbstractTableModel
      */
     void prefetchColumnData( int column );
 
+    /**
+     * Prefetches the entire data for one expression. Based on this cached information
+     * the sorting can later be done in a performant way.
+     *
+     * @param expression The expression to cache
+     */
+    void prefetchSortData( const QString& expression );
+
+    /**
+     * The expression which was used to fill the sorting cache
+     */
+    QString sortCacheExpression() const;
+
+    /**
+     * Set a request that will be used to fill this attribute table model.
+     * In contrast to a filter, the request will constrain the data shown without the possibility
+     * to dynamically adjust it.
+     *
+     * @param request The request to use to fill this table model.
+     */
     void setRequest( const QgsFeatureRequest& request );
+
+    /**
+     * Get the the feature request
+     */
+    const QgsFeatureRequest& request() const;
+
+    /**
+     * Sets the context in which this table is shown.
+     * Will be forwarded to any editor widget created when editing data on this model.
+     *
+     * @param context The context
+     */
+    void setEditorContext( const QgsAttributeEditorContext& context );
+
+    /**
+     * Returns the context in which this table is shown.
+     * Will be forwarded to any editor widget created when editing data on this model.
+     *
+     * @return The context
+     */
+    const QgsAttributeEditorContext& editorContext() const;
+
+    /**
+     * Empty extra columns to announce from this model.
+     * Any extra columns need to be implemented by proxy models in front of this model.
+     */
+    int extraColumns() const;
+
+    /**
+     * Empty extra columns to announce from this model.
+     * Any extra columns need to be implemented by proxy models in front of this model.
+     */
+    void setExtraColumns( int extraColumns );
+
+  public slots:
+
+    /**
+     * Loads the layer into the model
+     * Preferably to be called, before using this model as source for any other proxy model
+     */
+    virtual void loadLayer();
+
+    /** Handles updating the model when the conditional style for a field changes.
+     * @param fieldName name of field whose conditional style has changed
+     * @note added in QGIS 2.12
+     */
+    void fieldConditionalStyleChanged( const QString& fieldName );
 
   signals:
     /**
@@ -175,10 +236,10 @@ class QgsAttributeTableModel : QAbstractTableModel
      */
     virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     /**
-     * Launched when a feature has been deleted
-     * @param fid feature id
+     * Launched when eatures have been deleted
+     * @param fids feature ids
      */
-    virtual void featureDeleted( QgsFeatureId fid );
+    virtual void featuresDeleted( const QgsFeatureIds& fids );
     /**
      * Launched when a feature has been added
      * @param fid feature id

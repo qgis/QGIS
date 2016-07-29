@@ -36,7 +36,7 @@ bool QgsScaleUtils::saveScaleList( const QString &fileName, const QStringList &s
   QFile file( fileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
-    errorMessage = QString( "Cannot write file %1:\n%2." ).arg( fileName ).arg( file.errorString() );
+    errorMessage = QString( "Cannot write file %1:\n%2." ).arg( fileName, file.errorString() );
     return false;
   }
 
@@ -50,7 +50,7 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    errorMessage = QString( "Cannot read file %1:\n%2." ).arg( fileName ).arg( file.errorString() );
+    errorMessage = QString( "Cannot read file %1:\n%2." ).arg( fileName, file.errorString() );
     return false;
   }
 

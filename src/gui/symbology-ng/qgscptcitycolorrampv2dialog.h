@@ -23,19 +23,23 @@
 #include "qgscptcityarchive.h"
 
 #include <QAbstractProxyModel>
+#include <QSortFilterProxyModel>
+#include <QFileInfo>
 
 class QgsCptCityColorRampV2;
 class TreeFilterProxyModel;
 class ListFilterProxyModel;
 class UngroupProxyModel;
 
-
+/** \ingroup gui
+ * \class QgsCptCityColorRampV2Dialog
+ */
 class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCptCityColorRampV2DialogBase
 {
     Q_OBJECT
 
   public:
-    QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent = NULL );
+    QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent = nullptr );
     ~QgsCptCityColorRampV2Dialog();
 
     QString selectedName() const
@@ -81,6 +85,28 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     QVector<QgsCptCityColorRampItem*> mListRamps;
 
 };
+
+/// @cond PRIVATE
+
+/** \ingroup gui
+ * \class TreeFilterProxyModel
+ */
+class TreeFilterProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+    TreeFilterProxyModel( QObject *parent, QgsCptCityBrowserModel* model );
+
+  protected:
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    // bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+
+  private:
+    QgsCptCityBrowserModel* mModel;
+};
+
+///@endcond
 
 
 #endif

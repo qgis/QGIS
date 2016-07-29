@@ -67,7 +67,7 @@ QgsHelpViewer::~QgsHelpViewer()
   mThread->terminate();
 }
 
-void QgsHelpViewer::showHelp( QString help )
+void QgsHelpViewer::showHelp( const QString& help )
 {
   // Set the browser text to the help contents
   QString myStyle = QgsApplication::reportStyleSheet();
@@ -75,7 +75,7 @@ void QgsHelpViewer::showHelp( QString help )
   webView->setHtml( helpContents );
   setWindowTitle( tr( "QGIS Help" ) );
 
-#ifndef WIN32
+#ifndef Q_OS_WIN
   setWindowState( windowState() & ~Qt::WindowMinimized );
 #endif
   raise();

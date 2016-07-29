@@ -20,14 +20,16 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscomposermodel.h"
+#include "qgsmapsettings.h"
 #include <QPainter>
 
-QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ),
-    mShape( Ellipse ),
-    mCornerRadius( 0 ),
-    mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( 0 ),
-    mMaxSymbolBleed( 0 )
+QgsComposerShape::QgsComposerShape( QgsComposition* composition )
+    : QgsComposerItem( composition )
+    , mShape( Ellipse )
+    , mCornerRadius( 0 )
+    , mUseSymbolV2( false ) //default to not using SymbolV2 for shapes, to preserve 2.0 api
+    , mShapeStyleSymbol( nullptr )
+    , mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
@@ -40,13 +42,13 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
   }
 }
 
-QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ):
-    QgsComposerItem( x, y, width, height, composition ),
-    mShape( Ellipse ),
-    mCornerRadius( 0 ),
-    mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( 0 ),
-    mMaxSymbolBleed( 0 )
+QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition )
+    : QgsComposerItem( x, y, width, height, composition )
+    , mShape( Ellipse )
+    , mCornerRadius( 0 )
+    , mUseSymbolV2( false ) //default to not using SymbolV2 for shapes, to preserve 2.0 api
+    , mShapeStyleSymbol( nullptr )
+    , mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
@@ -74,7 +76,7 @@ void QgsComposerShape::setUseSymbolV2( bool useSymbolV2 )
 void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbolV2* symbol )
 {
   delete mShapeStyleSymbol;
-  mShapeStyleSymbol = symbol;
+  mShapeStyleSymbol = static_cast<QgsFillSymbolV2*>( symbol->clone() );
   refreshSymbol();
 }
 
@@ -182,6 +184,10 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( p );
   context.setForceVectorOutput( true );
+  QgsExpressionContext* expressionContext = createExpressionContext();
+  context.setExpressionContext( *expressionContext );
+  delete expressionContext;
+
   p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
   //generate polygon to draw
@@ -232,20 +238,9 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   }
 
   mShapeStyleSymbol->startRender( context );
-
-  //need to render using atlas feature properties?
-  if ( mComposition->atlasComposition().enabled() && mComposition->atlasMode() != QgsComposition::AtlasOff )
-  {
-    //using an atlas, so render using current atlas feature
-    //since there may be data defined symbols using atlas feature properties
-    mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, mComposition->atlasComposition().currentFeature(), context );
-  }
-  else
-  {
-    mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, 0, context );
-  }
-
+  mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, nullptr, context );
   mShapeStyleSymbol->stopRender( context );
+
   p->restore();
 }
 
@@ -277,7 +272,7 @@ double QgsComposerShape::estimatedFrameBleed() const
   return mMaxSymbolBleed;
 }
 
-bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerShape::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerShapeElem = doc.createElement( "ComposerShape" );
   composerShapeElem.setAttribute( "shapeType", mShape );
@@ -287,35 +282,35 @@ bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerShapeElem.appendChild( shapeStyleElem );
 
   elem.appendChild( composerShapeElem );
-  return _writeXML( composerShapeElem, doc );
+  return _writeXml( composerShapeElem, doc );
 }
 
-bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   mShape = QgsComposerShape::Shape( itemElem.attribute( "shapeType", "0" ).toInt() );
   mCornerRadius = itemElem.attribute( "cornerRadius", "0" ).toDouble();
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
     //rotation
-    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
     {
       //check for old (pre 2.1) rotation attribute
       setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
     }
 
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   QDomElement shapeStyleSymbolElem = itemElem.firstChildElement( "symbol" );
   if ( !shapeStyleSymbolElem.isNull() )
   {
     delete mShapeStyleSymbol;
-    mShapeStyleSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( shapeStyleSymbolElem ) );
+    mShapeStyleSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( shapeStyleSymbolElem );
   }
   else
   {
@@ -344,7 +339,7 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
 
     //for pre 2.0 projects, shape color and outline were specified in a different element...
     QDomNodeList outlineColorList = itemElem.elementsByTagName( "OutlineColor" );
-    if ( outlineColorList.size() > 0 )
+    if ( !outlineColorList.isEmpty() )
     {
       QDomElement frameColorElem = outlineColorList.at( 0 ).toElement();
       bool redOk, greenOk, blueOk, alphaOk, widthOk;
@@ -364,7 +359,7 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
       }
     }
     QDomNodeList fillColorList = itemElem.elementsByTagName( "FillColor" );
-    if ( fillColorList.size() > 0 )
+    if ( !fillColorList.isEmpty() )
     {
       QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
       bool redOk, greenOk, blueOk, alphaOk;
@@ -457,13 +452,10 @@ QString QgsComposerShape::displayName() const
   {
     case Ellipse:
       return tr( "<ellipse>" );
-      break;
     case Rectangle:
       return tr( "<rectangle>" );
-      break;
     case Triangle:
       return tr( "<triangle>" );
-      break;
   }
 
   return tr( "<shape>" );

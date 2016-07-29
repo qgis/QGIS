@@ -25,31 +25,32 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
+import os
+import webbrowser
+
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QByteArray, QUrl
+from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QDesktopWidget
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.utils import iface
+from qgis.core import QgsNetworkAccessManager
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
-from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.AlgorithmExecutor import runalg, runalgIterating
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgAlgorithmBase.ui'))
 
-from processing.ui.ui_DlgAlgorithmBase import Ui_Dialog
 
-
-class AlgorithmDialogBase(QDialog, Ui_Dialog):
-
-    class InvalidParameterValue(Exception):
-
-        def __init__(self, param, widget):
-            (self.parameter, self.widget) = (param, widget)
-
+class AlgorithmDialogBase(BASE, WIDGET):
 
     def __init__(self, alg):
-        QDialog.__init__(self, iface.mainWindow())
+        super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
+
+        self.settings = QSettings()
+        self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
 
         self.executed = False
         self.mainWidget = None
@@ -61,26 +62,64 @@ class AlgorithmDialogBase(QDialog, Ui_Dialog):
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
-        self.setWindowTitle(self.alg.name)
+        self.setWindowTitle(self.alg.displayName())
 
-        # load algorithm help if available
+        #~ desktop = QDesktopWidget()
+        #~ if desktop.physicalDpiX() > 96:
+        #~ self.txtHelp.setZoomFactor(desktop.physicalDpiX() / 96)
+
+        algHelp = self.alg.shortHelp()
+        if algHelp is None:
+            self.textShortHelp.setVisible(False)
+        else:
+            self.textShortHelp.document().setDefaultStyleSheet('''.summary { margin-left: 10px; margin-right: 10px; }
+                                                    h2 { color: #555555; padding-bottom: 15px; }
+                                                    a { text-decoration: none; color: #3498db; font-weight: bold; }
+                                                    p { color: #666666; }
+                                                    b { color: #333333; }
+                                                    dl dd { margin-bottom: 5px; }''')
+            self.textShortHelp.setHtml(algHelp)
+
+        self.textShortHelp.setOpenLinks(False)
+
+        def linkClicked(url):
+            webbrowser.open(url.toString())
+
+        self.textShortHelp.anchorClicked.connect(linkClicked)
+
         isText, algHelp = self.alg.help()
         if algHelp is not None:
             algHelp = algHelp if isText else QUrl(algHelp)
+            try:
+                if isText:
+                    self.txtHelp.setHtml(algHelp)
+                else:
+                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
+                    self.txtHelp.setHtml(html)
+                    rq = QNetworkRequest(algHelp)
+                    self.reply = QgsNetworkAccessManager.instance().get(rq)
+                    self.reply.finished.connect(self.requestFinished)
+            except Exception, e:
+                self.tabWidget.removeTab(2)
         else:
-            algHelp = self.tr('<h2>Sorry, no help is available for this '
-                              'algorithm.</h2>')
-        try:
-            if isText:
-                self.txtHelp.setHtml(algHelp)
-            else:
-                self.txtHelp.load(algHelp)
-        except:
-            self.txtHelp.setHtml(
-                self.tr('<h2>Could not open help file :-( </h2>'))
+            self.tabWidget.removeTab(2)
 
         self.showDebug = ProcessingConfig.getSetting(
-                ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+            ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+
+    def requestFinished(self):
+        """Change the webview HTML content"""
+        reply = self.sender()
+        if reply.error() != QNetworkReply.NoError:
+            html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
+        else:
+            html = unicode(reply.readAll())
+        reply.deleteLater()
+        self.txtHelp.setHtml(html)
+
+    def closeEvent(self, evt):
+        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
+        super(AlgorithmDialogBase, self).closeEvent(evt)
 
     def setMainWidget(self):
         self.tabWidget.widget(0).layout().addWidget(self.mainWidget)
@@ -101,7 +140,7 @@ class AlgorithmDialogBase(QDialog, Ui_Dialog):
 
     def setInfo(self, msg, error=False):
         if error:
-            self.txtLog.append('<span style="color:red">%s</span>' % msg)
+            self.txtLog.append('<span style="color:red"><br>%s<br></span>' % msg)
         else:
             self.txtLog.append(msg)
         QCoreApplication.processEvents()
@@ -143,3 +182,8 @@ class AlgorithmDialogBase(QDialog, Ui_Dialog):
 
     def finish(self):
         pass
+
+    class InvalidParameterValue(Exception):
+
+        def __init__(self, param, widget):
+            (self.parameter, self.widget) = (param, widget)

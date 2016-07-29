@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef PAL_EXCEPTION_H
 #define PAL_EXCEPTION_H
 
@@ -41,62 +37,69 @@ namespace pal
 {
 
   /** \brief Various Exceptions
+   * \ingroup core
    */
   class PalException
   {
     public:
 
       /** \brief Thrown when a feature is not yet implemented
+       * \ingroup core
       */
       class NotImplemented : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "Not yet implemented... sorry";
           }
       };
 
       /** \brief Try to access an unknown feature
+       * \ingroup core
       */
       class UnknownFeature : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "Feature not found";
           }
       };
 
       /** \brief Try to access an unknown layer
+       * \ingroup core
       */
       class UnknownLayer : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "Layer not found";
           }
       };
 
       /** \brief layer already exists
+       * \ingroup core
       */
       class LayerExists : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "Layers names must be unique";
           }
       };
 
       /** \brief features already exists
+       * \ingroup core
       */
       class FeatureExists : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "Features IDs must be unique within a layer";
           }
       };
 
-      /** \brief thrown when a value is not in the valid scale range
+      /** \brief thrown when a value is not in the valid scale range\
+       * \ingroup core
        *
        *  It can be thrown by :
        *
@@ -106,7 +109,7 @@ namespace pal
        */
       class ValueNotInRange : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "value not allowed";
           }

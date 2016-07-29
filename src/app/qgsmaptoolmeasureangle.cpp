@@ -28,8 +28,8 @@
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
-    , mRubberBand( 0 )
-    , mResultDisplay( 0 )
+    , mRubberBand( nullptr )
+    , mResultDisplay( nullptr )
 {
   mToolName = tr( "Measure angle" );
 
@@ -42,7 +42,7 @@ QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
   stopMeasuring();
 }
 
-void QgsMapToolMeasureAngle::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !mRubberBand || mAnglePoints.size() < 1 || mAnglePoints.size() > 2 || !mRubberBand )
   {
@@ -81,7 +81,7 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolMeasureAngle::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   //add points until we have three
   if ( mAnglePoints.size() == 3 )
@@ -91,9 +91,10 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QMouseEvent * e )
 
   if ( mAnglePoints.size() < 1 )
   {
-    if ( mResultDisplay == NULL )
+    if ( !mResultDisplay )
     {
-      mResultDisplay = new QgsDisplayAngle( this, Qt::WindowStaysOnTopHint );
+      mResultDisplay = new QgsDisplayAngle( this );
+      mResultDisplay->setWindowFlags( mResultDisplay->windowFlags() | Qt::Tool );
       QObject::connect( mResultDisplay, SIGNAL( rejected() ), this, SLOT( stopMeasuring() ) );
     }
     configureDistanceArea();
@@ -111,9 +112,9 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QMouseEvent * e )
 void QgsMapToolMeasureAngle::stopMeasuring()
 {
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   delete mResultDisplay;
-  mResultDisplay = 0;
+  mResultDisplay = nullptr;
   mAnglePoints.clear();
 }
 
@@ -131,7 +132,7 @@ void QgsMapToolMeasureAngle::deactivate()
 void QgsMapToolMeasureAngle::createRubberBand()
 {
   delete mRubberBand;
-  mRubberBand = new QgsRubberBand( mCanvas, QGis::Line );
+  mRubberBand = new QgsRubberBand( mCanvas, Qgis::Line );
 
   QSettings settings;
   int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
@@ -141,7 +142,7 @@ void QgsMapToolMeasureAngle::createRubberBand()
   mRubberBand->setWidth( 3 );
 }
 
-QgsPoint QgsMapToolMeasureAngle::snapPoint( const QPoint& p )
+QgsPoint QgsMapToolMeasureAngle::snapPoint( QPoint p )
 {
   QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( p );
   return m.isValid() ? m.point() : mCanvas->getCoordinateTransform()->toMapCoordinates( p );

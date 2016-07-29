@@ -32,7 +32,7 @@ class QgsOfflineEditingPlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
-    QgsOfflineEditingPlugin( QgisInterface* theQgisInterface );
+    explicit QgsOfflineEditingPlugin( QgisInterface* theQgisInterface );
     virtual ~QgsOfflineEditingPlugin();
 
   public slots:
@@ -47,7 +47,6 @@ class QgsOfflineEditingPlugin : public QObject, public QgisPlugin
     void help();
 
   private:
-    int mPluginType;
     //! Pointer to the QGIS interface object
     QgisInterface* mQGisIface;
     //!pointer to the qaction for this plugin

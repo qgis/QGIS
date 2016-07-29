@@ -12,12 +12,15 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
-from utilities import unittest, TestCase
-from qgis.utils import qgsfunction
-from qgis.core import QgsExpression
+import qgis  # NOQA
 
-class TestQgsExpressionCustomFunctions(TestCase):
+from qgis.testing import unittest
+from qgis.utils import qgsfunction
+from qgis.core import QgsExpression, QgsFeatureRequest
+
+
+class TestQgsExpressionCustomFunctions(unittest.TestCase):
+
     @qgsfunction(1, 'testing', register=False)
     def testfun(values, feature, parent):
         """ Function help """
@@ -25,13 +28,13 @@ class TestQgsExpressionCustomFunctions(TestCase):
 
     @qgsfunction(args="auto", group='testing', register=False)
     def autocount(value1, value2, value3, feature, parent):
-                pass
+        pass
 
     @qgsfunction(args="auto", group='testing', register=False)
     def expandargs(value1, value2, value3, feature, parent):
-                return value1, value2, value3
+        return value1, value2, value3
 
-    @qgsfunction(0, 'testing', register=False)
+    @qgsfunction(args=0, group='testing', register=False)
     def special(values, feature, parent):
         return "test"
 
@@ -42,6 +45,14 @@ class TestQgsExpressionCustomFunctions(TestCase):
     @qgsfunction(1, 'testing', register=False, usesgeometry=True)
     def geomtest(values, feature, parent):
         pass
+
+    @qgsfunction(args=0, group='testing', register=False)
+    def no_referenced_columns_set(values, feature, parent):
+        return 1
+
+    @qgsfunction(args=0, group='testing', register=False, referenced_columns=['a', 'b'])
+    def referenced_columns_set(values, feature, parent):
+        return 2
 
     def tearDown(self):
         QgsExpression.unregisterFunction('testfun')
@@ -60,12 +71,12 @@ class TestQgsExpressionCustomFunctions(TestCase):
         function = self.expandargs
         args = function.params()
         self.assertEqual(args, 3)
-        values = [1,2,3]
+        values = [1, 2, 3]
         exp = QgsExpression("")
         result = function.func(values, None, exp)
         # Make sure there is no eval error
         self.assertEqual(exp.evalErrorString(), "")
-        self.assertEqual(result, (1,2,3))
+        self.assertEqual(result, (1, 2, 3))
 
     def testCanUnregisterFunction(self):
         QgsExpression.registerFunction(self.testfun)
@@ -82,9 +93,13 @@ class TestQgsExpressionCustomFunctions(TestCase):
         result = exp.evaluate()
         self.assertEqual('Testing_1', result)
 
-    def testZeroArgFunctionsAreSpecialColumns(self):
+    def testZeroArgFunctionsTakeNoArgs(self):
+        QgsExpression.registerFunction(self.special)
         special = self.special
-        self.assertEqual(special.name(), '$special')
+        self.assertEqual(special.name(), 'special')
+        exp = QgsExpression('special()')
+        result = exp.evaluate()
+        self.assertEqual('test', result)
 
     def testDecoratorPreservesAttributes(self):
         func = self.testfun
@@ -111,6 +126,16 @@ class TestQgsExpressionCustomFunctions(TestCase):
         success = QgsExpression.registerFunction(self.geomtest)
         self.assertTrue(success)
 
+    def testReferencedColumnsNoSet(self):
+        success = QgsExpression.registerFunction(self.no_referenced_columns_set)
+        exp = QgsExpression('no_referenced_columns_set()')
+        self.assertEqual(exp.referencedColumns(), [QgsFeatureRequest.AllAttributes])
+
+    def testReferencedColumnsSet(self):
+        success = QgsExpression.registerFunction(self.referenced_columns_set)
+        exp = QgsExpression('referenced_columns_set()')
+        self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
+
     def testCantOverrideBuiltinsWithUnregister(self):
         success = QgsExpression.unregisterFunction("sqrt")
         self.assertFalse(success)
@@ -124,7 +149,7 @@ class TestQgsExpressionCustomFunctions(TestCase):
             "  abc   ",
             " /* co */ da ",
         ]:
-            self.assertEqual( txt, QgsExpression(txt).expression() )
+            self.assertEqual(txt, QgsExpression(txt).expression())
 
     def testBlockComment(self):
         expressions = {
@@ -143,11 +168,10 @@ class TestQgsExpressionCustomFunctions(TestCase):
             comment
             **/""": 'test*/'
         }
-        for e, exp_res in expressions.iteritems():
+        for e, exp_res in expressions.items():
             exp = QgsExpression(e)
             result = exp.evaluate()
             self.assertEqual(exp_res, result)
-
 
     def testComment(self):
         expressions = {
@@ -158,7 +182,7 @@ class TestQgsExpressionCustomFunctions(TestCase):
             "'test--'": 'test--',
             "'--test'": '--test',
         }
-        for e, exp_res in expressions.iteritems():
+        for e, exp_res in expressions.items():
             exp = QgsExpression(e)
             result = exp.evaluate()
             self.assertEqual(exp_res, result)

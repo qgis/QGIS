@@ -16,19 +16,23 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
-QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl ), mLayer( 0 )
+QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
+
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
+
   if ( mVectorLayer )
   {
-    const QgsFields& fm = mVectorLayer->pendingFields();
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
-    for ( int idx = 0; idx < fm.count(); ++idx )
+    int i = 0;
+    Q_FOREACH ( const QgsField& f, mVectorLayer->fields() )
     {
-      QString fieldName = fm[idx].name();
-      mXAttributeComboBox->addItem( fieldName );
-      mYAttributeComboBox->addItem( fieldName );
+      QString fieldName = f.name();
+      mXAttributeComboBox->addItem( mVectorLayer->fields().iconForField( i ), fieldName );
+      mYAttributeComboBox->addItem( mVectorLayer->fields().iconForField( i ), fieldName );
+      i++;
     }
   }
 }
@@ -201,13 +205,17 @@ void QgsVectorFieldSymbolLayerWidget::on_mCounterclockwiseFromEastRadioButton_to
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mDistanceUnitComboBox_currentIndexChanged( int index )
+void QgsVectorFieldSymbolLayerWidget::on_mDistanceUnitWidget_changed()
 {
-  if ( mLayer )
+  if ( !mLayer )
   {
-    mLayer->setDistanceUnit(( QgsSymbolV2::OutputUnit ) index );
-    emit changed();
+    return;
   }
+
+  mLayer->setDistanceUnit( mDistanceUnitWidget->unit() );
+  mLayer->setDistanceMapUnitScale( mDistanceUnitWidget->getMapUnitScale() );
+  emit changed();
 }
+
 
 

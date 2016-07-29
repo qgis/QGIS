@@ -4,5 +4,6 @@
 <qgisgrassmodule label="Export vector to Mapinfo" module="v.out.ogr">
 	<option key="input" layeroption="layer" typeoption="type" />
 	<option key="format" answer="MapInfo_File" hidden="yes" />
-	<file key="dsn" type="new" fileoption="olayer" label="Output Shapefile" filters="MapInfo (*.tab)" />
+	<file key="dsn" type="new" fileoption="olayer" label="Output Shapefile" filters="MapInfo (*.tab)" version_max="6.4"/>
+	<file key="output" type="new" fileoption="olayer" label="Output Shapefile" filters="MapInfo (*.tab)" version_min="7.0"/>
 </qgisgrassmodule>

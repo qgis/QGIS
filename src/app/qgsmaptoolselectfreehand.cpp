@@ -25,8 +25,9 @@ email                : jpalmer at linz dot govt dot nz
 
 QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
+    , mDragging( false )
 {
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
@@ -37,15 +38,14 @@ QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectFreehand::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
-  {
     return;
-  }
-  if ( mRubberBand == NULL )
+
+  if ( !mRubberBand )
   {
-    mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+    mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
     mRubberBand->setFillColor( mFillColor );
     mRubberBand->setBorderColor( mBorderColour );
   }
@@ -54,30 +54,46 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSelectFreehand::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent* e )
 {
-  if ( !mDragging || mRubberBand == NULL )
-  {
+  if ( !mDragging || !mRubberBand )
     return;
-  }
+
   mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
 }
 
 
-void QgsMapToolSelectFreehand::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
-  if ( mRubberBand == NULL )
-  {
+  if ( !mRubberBand )
     return;
+
+  bool singleSelect = false;
+  if ( mRubberBand->numberOfVertices() > 0 && mRubberBand->numberOfVertices() <= 2 )
+  {
+    // single click, not drag - create a rectangle around clicked point
+    QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+    if ( vlayer )
+    {
+      QRect selectRect;
+      QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
+      QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, mRubberBand );
+      singleSelect = true;
+    }
   }
+
   if ( mRubberBand->numberOfVertices() > 2 )
   {
     QgsGeometry* shapeGeom = mRubberBand->asGeometry();
-    QgsMapToolSelectUtils::setSelectFeatures( mCanvas, shapeGeom, e );
+    if ( singleSelect )
+      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, shapeGeom, e );
+    else
+      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e );
     delete shapeGeom;
   }
-  mRubberBand->reset( QGis::Polygon );
+
+  mRubberBand->reset( Qgis::Polygon );
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mDragging = false;
 }

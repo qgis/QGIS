@@ -1,0 +1,7 @@
+{
+  "name": "$perimeter",
+  "type": "function",
+  "description": "Returns the perimeter length of the current feature. The perimeter calculated by this function respects both the current project's ellipsoid setting and distance unit settings. Eg, if an ellipsoid has been set for the project then the calculated perimeter will be ellipsoidal, and if no ellipsoid is set then the calculated perimeter will be planimetric.",
+  "examples": [ { "expression":"$perimeter", "returns":"42"}
+  ]
+}

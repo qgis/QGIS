@@ -2,7 +2,9 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import SPOT VGT NDVI" module="i.in.spotvgt">
-	<file key="file" type="new" />
+	<file key="file" type="new" version_max="6.4"/>
+	<file key="input" version_min="7.0"/>
 	<flag key="a" />
-	<option key="rast" />
+	<option key="rast" version_max="6.4"/>
+	<option key="output" version_min="7.0"/>
 </qgisgrassmodule>

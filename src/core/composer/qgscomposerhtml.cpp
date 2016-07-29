@@ -24,33 +24,37 @@
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsdistancearea.h"
+#include "qgsjsonutils.h"
+#include "qgsmapsettings.h"
+
+#include "qgswebpage.h"
+#include "qgswebframe.h"
 
 #include <QCoreApplication>
 #include <QPainter>
-#include <QWebFrame>
-#include <QWebPage>
 #include <QImage>
 #include <QNetworkReply>
 
 QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
     : QgsComposerMultiFrame( c, createUndoCommands )
     , mContentMode( QgsComposerHtml::Url )
-    , mWebPage( 0 )
+    , mWebPage( nullptr )
     , mLoaded( false )
     , mHtmlUnitsToMM( 1.0 )
-    , mRenderedPage( 0 )
+    , mRenderedPage( nullptr )
     , mEvaluateExpressions( true )
     , mUseSmartBreaks( true )
     , mMaxBreakDistance( 10 )
-    , mExpressionFeature( 0 )
-    , mExpressionLayer( 0 )
-    , mDistanceArea( 0 )
+    , mExpressionLayer( nullptr )
+    , mDistanceArea( nullptr )
     , mEnableUserStylesheet( false )
-    , mFetcher( 0 )
+    , mFetcher( nullptr )
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
-  mWebPage = new QWebPage();
+  mWebPage = new QgsWebPage();
+  mWebPage->setIdentifier( tr( "Composer HTML item" ) );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
@@ -73,7 +77,7 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
   {
     //a html item added while atlas preview is enabled needs to have the expression context set,
     //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
-    setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
+    setExpressionContext( mComposition->atlasComposition().feature(), mComposition->atlasComposition().coverageLayer() );
   }
 
   //connect to atlas feature changes
@@ -83,25 +87,6 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
   mFetcher = new QgsNetworkContentFetcher();
   connect( mFetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
 
-}
-
-QgsComposerHtml::QgsComposerHtml()
-    : QgsComposerMultiFrame( 0, false )
-    , mContentMode( QgsComposerHtml::Url )
-    , mWebPage( 0 )
-    , mLoaded( false )
-    , mHtmlUnitsToMM( 1.0 )
-    , mRenderedPage( 0 )
-    , mUseSmartBreaks( true )
-    , mMaxBreakDistance( 10 )
-    , mExpressionFeature( 0 )
-    , mExpressionLayer( 0 )
-    , mDistanceArea( 0 )
-    , mFetcher( 0 )
-{
-  mDistanceArea = new QgsDistanceArea();
-  mFetcher = new QgsNetworkContentFetcher();
-  connect( mFetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
 }
 
 QgsComposerHtml::~QgsComposerHtml()
@@ -124,7 +109,7 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   emit changed();
 }
 
-void QgsComposerHtml::setHtml( const QString html )
+void QgsComposerHtml::setHtml( const QString& html )
 {
   mHtml = html;
   //TODO - this signal should be emitted, but without changing the signal which sets the html
@@ -140,11 +125,19 @@ void QgsComposerHtml::setEvaluateExpressions( bool evaluateExpressions )
   emit changed();
 }
 
-void QgsComposerHtml::loadHtml( const bool useCache )
+void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext *context )
 {
   if ( !mWebPage )
   {
     return;
+  }
+
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
   }
 
   QString loadedHtml;
@@ -157,9 +150,9 @@ void QgsComposerHtml::loadHtml( const bool useCache )
 
       //data defined url set?
       QVariant exprVal;
-      if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal ) )
+      if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal, *evalContext ) )
       {
-        currentUrl = exprVal.toString().trimmed();;
+        currentUrl = exprVal.toString().trimmed();
         QgsDebugMsg( QString( "exprVal Source Url:%1" ).arg( currentUrl ) );
       }
       if ( currentUrl.isEmpty() )
@@ -186,7 +179,7 @@ void QgsComposerHtml::loadHtml( const bool useCache )
   //evaluate expressions
   if ( mEvaluateExpressions )
   {
-    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, mExpressionFeature, mExpressionLayer, 0, mDistanceArea );
+    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, nullptr, mDistanceArea );
   }
 
   mLoaded = false;
@@ -194,8 +187,11 @@ void QgsComposerHtml::loadHtml( const bool useCache )
   //reset page size. otherwise viewport size increases but never decreases again
   mWebPage->setViewportSize( QSize( maxFrameWidth() * mHtmlUnitsToMM, 0 ) );
 
-  //set html, using the specified url as base if in Url mode
-  mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mActualFetchedUrl ) : QUrl() );
+  //set html, using the specified url as base if in Url mode or the project file if in manual mode
+  const QUrl baseUrl = mContentMode == QgsComposerHtml::Url ?
+                       QUrl( mActualFetchedUrl ) :
+                       QUrl::fromLocalFile( QgsProject::instance()->fileInfo().absoluteFilePath() );
+  mWebPage->mainFrame()->setHtml( loadedHtml, baseUrl );
 
   //set user stylesheet
   QWebSettings* settings = mWebPage->settings();
@@ -216,6 +212,14 @@ void QgsComposerHtml::loadHtml( const bool useCache )
     qApp->processEvents();
   }
 
+  //inject JSON feature
+  if ( !mAtlasFeatureJSON.isEmpty() )
+  {
+    mWebPage->mainFrame()->evaluateJavaScript( QString( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }" ).arg( mAtlasFeatureJSON ) );
+    //needs an extra process events here to give javascript a chance to execute
+    qApp->processEvents();
+  }
+
   recalculateFrameSizes();
   //trigger a repaint
   emit contentsChanged();
@@ -233,7 +237,7 @@ double QgsComposerHtml::maxFrameWidth() const
   QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
   for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
   {
-    maxWidth = qMax( maxWidth, ( double )(( *frameIt )->boundingRect().width() ) );
+    maxWidth = qMax( maxWidth, static_cast< double >(( *frameIt )->boundingRect().width() ) );
   }
 
   return maxWidth;
@@ -280,7 +284,7 @@ void QgsComposerHtml::renderCachedImage()
   painter.end();
 }
 
-QString QgsComposerHtml::fetchHtml( QUrl url )
+QString QgsComposerHtml::fetchHtml( const QUrl& url )
 {
   //pause until HTML fetch
   mLoaded = false;
@@ -343,7 +347,7 @@ void QgsComposerHtml::addFrame( QgsComposerFrame* frame, bool recalcFrameSizes )
   }
 }
 
-bool candidateSort( const QPair<int, int> &c1, const QPair<int, int> &c2 )
+bool candidateSort( QPair<int, int> c1, QPair<int, int> c2 )
 {
   if ( c1.second < c2.second )
     return true;
@@ -450,7 +454,7 @@ void QgsComposerHtml::setMaxBreakDistance( double maxBreakDistance )
   emit changed();
 }
 
-void QgsComposerHtml::setUserStylesheet( const QString stylesheet )
+void QgsComposerHtml::setUserStylesheet( const QString& stylesheet )
 {
   mUserStylesheet = stylesheet;
   //TODO - this signal should be emitted, but without changing the signal which sets the css
@@ -471,13 +475,13 @@ void QgsComposerHtml::setUserStylesheetEnabled( const bool stylesheetEnabled )
 
 QString QgsComposerHtml::displayName() const
 {
-  return tr( "<html frame>" );
+  return tr( "<HTML frame>" );
 }
 
-bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
+bool QgsComposerHtml::writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement htmlElem = doc.createElement( "ComposerHtml" );
-  htmlElem.setAttribute( "contentMode", QString::number(( int ) mContentMode ) );
+  htmlElem.setAttribute( "contentMode", QString::number( static_cast< int >( mContentMode ) ) );
   htmlElem.setAttribute( "url", mUrl.toString() );
   htmlElem.setAttribute( "html", mHtml );
   htmlElem.setAttribute( "evaluateExpressions", mEvaluateExpressions ? "true" : "false" );
@@ -486,12 +490,12 @@ bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool igno
   htmlElem.setAttribute( "stylesheet", mUserStylesheet );
   htmlElem.setAttribute( "stylesheetEnabled", mEnableUserStylesheet ? "true" : "false" );
 
-  bool state = _writeXML( htmlElem, doc, ignoreFrames );
+  bool state = _writeXml( htmlElem, doc, ignoreFrames );
   elem.appendChild( htmlElem );
   return state;
 }
 
-bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
+bool QgsComposerHtml::readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
   if ( !ignoreFrames )
   {
@@ -499,13 +503,13 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
   }
 
   //first create the frames
-  if ( !_readXML( itemElem, doc, ignoreFrames ) )
+  if ( !_readXml( itemElem, doc, ignoreFrames ) )
   {
     return false;
   }
 
   bool contentModeOK;
-  mContentMode = ( QgsComposerHtml::ContentMode )itemElem.attribute( "contentMode" ).toInt( &contentModeOK );
+  mContentMode = static_cast< QgsComposerHtml::ContentMode >( itemElem.attribute( "contentMode" ).toInt( &contentModeOK ) );
   if ( !contentModeOK )
   {
     mContentMode = QgsComposerHtml::Url;
@@ -530,7 +534,7 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
   return true;
 }
 
-void QgsComposerHtml::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer )
+void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVectorLayer* layer )
 {
   mExpressionFeature = feature;
   mExpressionLayer = layer;
@@ -550,12 +554,17 @@ void QgsComposerHtml::setExpressionContext( QgsFeature* feature, QgsVectorLayer*
     mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
   }
   mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
+  // create JSON representation of feature
+  QgsJSONExporter exporter( layer );
+  exporter.setIncludeRelated( true );
+  mAtlasFeatureJSON = exporter.exportFeature( feature );
 }
 
 void QgsComposerHtml::refreshExpressionContext()
 {
-  QgsVectorLayer * vl = 0;
-  QgsFeature* feature = 0;
+  QgsVectorLayer * vl = nullptr;
+  QgsFeature feature;
 
   if ( mComposition->atlasComposition().enabled() )
   {
@@ -563,19 +572,27 @@ void QgsComposerHtml::refreshExpressionContext()
   }
   if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
-    feature = mComposition->atlasComposition().currentFeature();
+    feature = mComposition->atlasComposition().feature();
   }
 
   setExpressionContext( feature, vl );
   loadHtml( true );
 }
 
-void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
+void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::SourceUrl || property == QgsComposerObject::AllProperties )
   {
-    loadHtml( true );
+    loadHtml( true, evalContext );
   }
-  QgsComposerObject::refreshDataDefinedProperty( property );
+  QgsComposerObject::refreshDataDefinedProperty( property, context );
 }

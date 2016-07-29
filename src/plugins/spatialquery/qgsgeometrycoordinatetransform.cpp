@@ -20,10 +20,14 @@
 
 #include "qgscoordinatereferencesystem.h"
 
+QgsGeometryCoordinateTransform::QgsGeometryCoordinateTransform()
+    : mFuncTransform( nullptr )
+{
+
+}
+
 QgsGeometryCoordinateTransform::~QgsGeometryCoordinateTransform()
 {
-  delete mCoordTransform;
-
 } // QgsGeometryCoordinateTransform::~QgsGeometryCoordinateTransform()
 
 void QgsGeometryCoordinateTransform::setCoordinateTransform( QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference )
@@ -32,7 +36,7 @@ void QgsGeometryCoordinateTransform::setCoordinateTransform( QgsVectorLayer* lyr
   QgsCoordinateReferenceSystem srsTarget = lyrTarget->crs();
   QgsCoordinateReferenceSystem srsReference = lyrReference->crs();
 
-  mCoordTransform = new QgsCoordinateTransform( srsTarget, srsReference );
+  mCoordTransform = QgsCoordinateTransform( srsTarget, srsReference );
 
   mFuncTransform = ( srsTarget != srsReference )
                    ? &QgsGeometryCoordinateTransform::setGeomTransform
@@ -48,6 +52,6 @@ void QgsGeometryCoordinateTransform::transform( QgsGeometry *geom )
 
 void QgsGeometryCoordinateTransform::setGeomTransform( QgsGeometry *geom )
 {
-  geom->transform( *mCoordTransform );
+  geom->transform( mCoordTransform );
 
 } // void QgsGeometryCoordinateTransform::setGeomTransform(QgsGeometry *geom)

@@ -15,8 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -65,7 +64,7 @@
        <item>
         <widget class="QPushButton" name="mSelectAllButton">
          <property name="text">
-          <string>select all</string>
+          <string>Select all</string>
          </property>
         </widget>
        </item>
@@ -85,7 +84,7 @@
        <item>
         <widget class="QPushButton" name="mUnselectAllButton">
          <property name="text">
-          <string>unselect all</string>
+          <string>Deselect all</string>
          </property>
         </widget>
        </item>

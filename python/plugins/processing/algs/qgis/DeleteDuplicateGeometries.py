@@ -25,8 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QgsGeometry, QgsFeatureRequest
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -34,34 +33,34 @@ from processing.tools import dataobjects, vector
 
 
 class DeleteDuplicateGeometries(GeoAlgorithm):
+
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Delete duplicate geometries'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Delete duplicate geometries')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+            self.getParameterValue(self.INPUT))
 
         fields = layer.pendingFields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-            layer.wkbType(), layer.crs())
+                                                                     layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
 
-        count = len(features)
-        total = 100.0 / float(count)
+        total = 100.0 / len(features)
         geoms = dict()
-        for count, f in enumerate(features):
+        for current, f in enumerate(features):
             geoms[f.id()] = QgsGeometry(f.geometry())
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         cleaned = dict(geoms)
 
@@ -72,11 +71,10 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
                 if g.isGeosEqual(cleaned[j]):
                     del cleaned[j]
 
-        count = len(cleaned)
-        total = 100.0 / float(count)
+        total = 100.0 / len(cleaned)
         request = QgsFeatureRequest().setFilterFids(cleaned.keys())
-        for count, f in enumerate(layer.getFeatures(request)):
+        for current, f in enumerate(layer.getFeatures(request)):
             writer.addFeature(f)
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

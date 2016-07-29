@@ -18,11 +18,16 @@
 #ifndef QGSSINGLEBANDCOLORRENDERERWIDGET_H
 #define QGSSINGLEBANDCOLORRENDERERWIDGET_H
 
-#include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgscolorrampshader.h"
+#include "qgsrasterrenderer.h"
 #include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
 
+class QgsRasterMinMaxWidget;
+
+/** \ingroup gui
+ * \class QgsSingleBandPseudoColorRendererWidget
+ */
 class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
       private Ui::QgsSingleBandPseudoColorRendererWidgetBase
 {
@@ -31,7 +36,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     enum Mode
     {
       Continuous = 1, // Using breaks from color palette
-      EqualInterval = 2
+      EqualInterval = 2,
+      Quantile = 3
     };
 
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
@@ -39,6 +45,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandPseudoColorRendererWidget( layer, theExtent ); }
     QgsRasterRenderer* renderer() override;
+    void setMapCanvas( QgsMapCanvas* canvas ) override;
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
@@ -46,18 +53,30 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
 
   private:
+    enum Column
+    {
+      ValueColumn = 0,
+      ColorColumn = 1,
+      LabelColumn = 2,
+    };
+
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems );
+    void autoLabel();
+    void setUnitFromLabels();
 
   private slots:
     void on_mAddEntryButton_clicked();
     void on_mDeleteEntryButton_clicked();
-    void on_mSortButton_clicked();
+    void on_mNumberOfEntriesSpinBox_valueChanged();
     void on_mClassifyButton_clicked();
     void on_mLoadFromBandButton_clicked();
     void on_mLoadFromFileButton_clicked();
     void on_mExportToFileButton_clicked();
+    void on_mUnitLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); autoLabel(); }
     void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
+    void mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column );
     void on_mBandComboBox_currentIndexChanged( int index );
+    void on_mColorInterpolationComboBox_currentIndexChanged( int index );
     void on_mMinLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
     void on_mMaxLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
     void on_mMinLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
@@ -73,5 +92,6 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     QgsRasterMinMaxWidget * mMinMaxWidget;
     int mMinMaxOrigin;
 };
+
 
 #endif // QGSSINGLEBANDCOLORRENDERERWIDGET_H

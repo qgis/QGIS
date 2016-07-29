@@ -91,7 +91,7 @@ int getrusage( int who, struct rusage * rusage )
     return -1;
   }
 
-  if ( rusage == ( struct rusage * ) NULL )
+  if ( !rusage )
   {
     errno = EFAULT;
     return -1;
@@ -125,9 +125,10 @@ QgsBench::QgsBench( int theWidth, int theHeight, int theIterations )
     , mHeight( theHeight )
     , mIterations( theIterations )
     , mSetExtent( false )
+    , mUserStart( 0.0 )
+    , mSysStart( 0.0 )
     , mParallel( false )
 {
-  QgsDebugMsg( "entered" );
 
   QgsDebugMsg( QString( "mIterations = %1" ).arg( mIterations ) );
 
@@ -141,7 +142,6 @@ QgsBench::~QgsBench()
 
 bool QgsBench::openProject( const QString & theFileName )
 {
-  QgsDebugMsg( "entered" );
   // QgsProject loads layers to QgsMapLayerRegistry singleton
   QFileInfo file( theFileName );
   if ( ! QgsProject::instance()->read( file ) )
@@ -154,12 +154,11 @@ bool QgsBench::openProject( const QString & theFileName )
 
 void QgsBench::readProject( const QDomDocument &doc )
 {
-  QgsDebugMsg( "entered" );
   QDomNodeList nodes = doc.elementsByTagName( "mapcanvas" );
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
-    mMapSettings.readXML( node );
+    mMapSettings.readXml( node );
   }
   else
   {
@@ -175,7 +174,6 @@ void QgsBench::setExtent( const QgsRectangle & extent )
 
 void QgsBench::render()
 {
-  QgsDebugMsg( "entered" );
 
   QgsDebugMsg( "extent: " +  mMapSettings.extent().toString() );
 
@@ -191,7 +189,7 @@ void QgsBench::render()
   }
 
   // Maybe in future
-  //outputCRS = QgsCRSCache::instance()->crsByAuthId( crsId );
+  //outputCRS = QgsCrsCache::instance()->crsByAuthId( crsId );
   //mMapRenderer->setMapUnits( outputCRS.mapUnits() );
   //mMapRenderer->setDestinationCrs( outputCRS );
 
@@ -237,10 +235,10 @@ void QgsBench::render()
   {
     for ( int i = 0; i < mTimes.size(); i++ )
     {
-      avg[t] += mTimes[i][t];
+      avg[t] += mTimes.at( i )[t];
 
-      if ( i == 0 || mTimes[i][t] < min[t] ) min[t] = mTimes[i][t];
-      if ( i == 0 || mTimes[i][t] > max[t] ) max[t] = mTimes[i][t];
+      if ( i == 0 || mTimes.at( i )[t] < min[t] ) min[t] = mTimes.at( i )[t];
+      if ( i == 0 || mTimes.at( i )[t] > max[t] ) max[t] = mTimes.at( i )[t];
     }
     avg[t] /= mTimes.size();
   }
@@ -252,7 +250,7 @@ void QgsBench::render()
     {
       for ( int i = 0; i < mTimes.size(); i++ )
       {
-        double d = fabs( avg[t] - mTimes[i][t] );
+        double d = fabs( avg[t] - mTimes.at( i )[t] );
         stdev[t] += pow( d, 2 );
         if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
       }
@@ -299,13 +297,13 @@ void QgsBench::printLog( const QString& printTime )
   QMap<QString, QVariant>::iterator i = totalMap.begin();
   while ( i != totalMap.end() )
   {
-    QString s = printTime + "_" + i.key() + ": " + i.value().toString();
+    QString s = printTime + '_' + i.key() + ": " + i.value().toString();
     std::cout << s.toAscii().constData() << std::endl;
     ++i;
   }
 }
 
-QString QgsBench::serialize( QMap<QString, QVariant> theMap, int level )
+QString QgsBench::serialize( const QMap<QString, QVariant>& theMap, int level )
 {
   QStringList list;
   QString space = QString( " " ).repeated( level * 2 );
@@ -313,33 +311,35 @@ QString QgsBench::serialize( QMap<QString, QVariant> theMap, int level )
   QMap<QString, QVariant>::const_iterator i = theMap.constBegin();
   while ( i != theMap.constEnd() )
   {
-    switch ( i.value().type() )
+    switch ( static_cast< QMetaType::Type >( i.value().type() ) )
     {
       case QMetaType::Int:
-        list.append( space2 + "\"" + i.key() + "\": " + QString( "%1" ).arg( i.value().toInt() ) );
+        list.append( space2 + '\"' + i.key() + "\": " + QString( "%1" ).arg( i.value().toInt() ) );
         break;
       case QMetaType::Double:
-        list.append( space2 + "\"" + i.key() + "\": " + QString( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
+        list.append( space2 + '\"' + i.key() + "\": " + QString( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
         break;
       case QMetaType::QString:
-        list.append( space2 + "\"" + i.key() + "\": \"" + i.value().toString().replace( "\\", "\\\\" ).replace( "\"", "\\\"" ) + "\"" );
+        list.append( space2 + '\"' + i.key() + "\": \"" + i.value().toString().replace( '\\', "\\\\" ).replace( '\"', "\\\"" ) + '\"' );
         break;
         //case QMetaType::QMap: QMap is not in QMetaType
       default:
-        list.append( space2 + "\"" + i.key() + "\": " + serialize( i.value().toMap(), level + 1 ) );
+        list.append( space2 + '\"' + i.key() + "\": " + serialize( i.value().toMap(), level + 1 ) );
         break;
     }
     ++i;
   }
-  return space + "{\n" +  list.join( ",\n" ) + "\n" + space + "}";
+  return space + "{\n" +  list.join( ",\n" ) + '\n' + space + '}';
 }
 
 void QgsBench::saveLog( const QString & fileName )
 {
   QFile file( fileName );
-  file.open( QIODevice::WriteOnly | QIODevice::Text );
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    return;
+
   QTextStream out( &file );
-  out << serialize( mLogMap ).toAscii().constData() << "\n";
+  out << serialize( mLogMap ).toAscii().constData() << '\n';
   file.close();
 }
 

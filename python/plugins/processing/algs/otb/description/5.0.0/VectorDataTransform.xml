@@ -1,0 +1,83 @@
+<root>
+  <key>VectorDataTransform</key>
+  <exec>otbcli_VectorDataTransform</exec>
+  <longname>Vector Data Transformation</longname>
+  <group>Vector Data Manipulation</group>
+  <description>Apply a transform to each vertex of the input VectorData</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputVectorData">ParameterVector</parameter_type>
+    <key>vd</key>
+    <name>Input Vector data</name>
+    <description>Input vector data to transform</description>
+    <shapetype />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputVectorData">OutputVector</parameter_type>
+    <key>out</key>
+    <name>Output Vector data</name>
+    <description>Output transformed vector data</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Support image</name>
+    <description>Image needed as a support to the vector data</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>transform.tx</key>
+    <name>Translation X</name>
+    <description>Translation in the X direction (in pixels)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>transform.ty</key>
+    <name>Translation Y</name>
+    <description>Translation in the Y direction (in pixels)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>transform.ro</key>
+    <name>Rotation Angle</name>
+    <description>Angle of the rotation to apply in degrees</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>transform.centerx</key>
+    <name>Center X</name>
+    <description>X coordinate of the rotation center (in physical units)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>transform.centery</key>
+    <name>Center Y</name>
+    <description>Y coordinate of the rotation center (in physical units)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>transform.scale</key>
+    <name>Scale</name>
+    <description>The scale to apply</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+</root>

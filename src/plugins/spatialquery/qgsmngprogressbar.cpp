@@ -31,7 +31,7 @@ void MngProgressBar::init( int minimum, int maximum )
 
 } // void MngProgressBar::init(int minimum, int maximum)
 
-void MngProgressBar::setFormat( QString format )
+void MngProgressBar::setFormat( const QString& format )
 {
 // special caracters:
 // %p - is replaced by the percentage completed.

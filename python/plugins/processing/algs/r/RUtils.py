@@ -30,11 +30,10 @@ import os
 import stat
 import subprocess
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import QSettings, QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
+from processing.tools.system import userFolder, isWindows, mkdir
 
 
 class RUtils:
@@ -42,23 +41,61 @@ class RUtils:
     RSCRIPTS_FOLDER = 'R_SCRIPTS_FOLDER'
     R_FOLDER = 'R_FOLDER'
     R_USE64 = 'R_USE64'
+    R_LIBS_USER = 'R_LIBS_USER'
 
     @staticmethod
     def RFolder():
         folder = ProcessingConfig.getSetting(RUtils.R_FOLDER)
         if folder is None:
-            folder = ''
+            if isWindows():
+                if 'ProgramW6432' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['ProgramW6432'], 'R')):
+                    testfolder = os.path.join(os.environ['ProgramW6432'], 'R')
+                elif 'PROGRAMFILES(x86)' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['PROGRAMFILES(x86)'], 'R')):
+                    testfolder = os.path.join(os.environ['PROGRAMFILES(x86)'], 'R')
+                elif 'PROGRAMFILES' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['PROGRAMFILES'], 'R')):
+                    testfolder = os.path.join(os.environ['PROGRAMFILES'], 'R')
+                else:
+                    testfolder = 'C:\\R'
+
+                if os.path.isdir(testfolder):
+                    subfolders = os.listdir(testfolder)
+                    subfolders.sort(reverse=True)
+                    for subfolder in subfolders:
+                        if subfolder.startswith('R-'):
+                            folder = os.path.join(testfolder, subfolder)
+                            break
+                else:
+                    folder = ''
+            else:
+                folder = ''
 
         return os.path.abspath(unicode(folder))
 
     @staticmethod
-    def RScriptsFolder():
-        folder = ProcessingConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
+    def RLibs():
+        folder = ProcessingConfig.getSetting(RUtils.R_LIBS_USER)
         if folder is None:
-            folder = unicode(os.path.join(userFolder(), 'rscripts'))
-        mkdir(folder)
+            folder = unicode(os.path.join(userFolder(), 'rlibs'))
+        try:
+            mkdir(folder)
+        except:
+            folder = unicode(os.path.join(userFolder(), 'rlibs'))
+            mkdir(folder)
+        return os.path.abspath(unicode(folder))
 
+    @staticmethod
+    def defaultRScriptsFolder():
+        folder = unicode(os.path.join(userFolder(), 'rscripts'))
+        mkdir(folder)
         return os.path.abspath(folder)
+
+    @staticmethod
+    def RScriptsFolders():
+        folder = ProcessingConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
+        if folder is not None:
+            return folder.split(';')
+        else:
+            return [RUtils.defaultRScriptsFolder()]
 
     @staticmethod
     def createRScriptFromRCommands(commands):
@@ -86,13 +123,14 @@ class RUtils:
                 execDir = 'i386'
             command = [
                 RUtils.RFolder() + os.sep + 'bin' + os.sep + execDir + os.sep
-                    + 'R.exe',
+                + 'R.exe',
                 'CMD',
                 'BATCH',
                 '--vanilla',
                 RUtils.getRScriptFilename(),
-                RUtils.getConsoleOutputFilename(),
-                ]
+                RUtils.getConsoleOutputFilename()
+            ]
+
         else:
             os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC | stat.S_IREAD
                      | stat.S_IWRITE)
@@ -106,7 +144,7 @@ class RUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            )
+        )
         proc.wait()
         RUtils.createConsoleOutput()
         loglines = []
@@ -174,7 +212,7 @@ class RUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
+        ).stdout
 
         for line in iter(proc.readline, ''):
             if 'R version' in line:
@@ -191,7 +229,7 @@ class RUtils:
 
     @staticmethod
     def getRequiredPackages(code):
-        regex = re.compile('library\("?(.*?)"?\)')
+        regex = re.compile('[^#]library\("?(.*?)"?\)')
         return regex.findall(code)
 
     @staticmethod

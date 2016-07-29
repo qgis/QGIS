@@ -1,5 +1,5 @@
 v.univar
-v.univar - Calculates univariate statistics for attribute. Variance and standard deviation is calculated only for points if specified.
+Calculates univariate statistics for attribute. Variance and standard deviation is calculated only for points if specified.
 Vector (v.*)
 ParameterVector|map|Name of input vector map|-1|False
 ParameterString|type|Feature type|point,line,area

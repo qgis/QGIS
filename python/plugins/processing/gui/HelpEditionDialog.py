@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,14 +27,19 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from processing.ui.ui_DlgHelpEdition import Ui_DlgHelpEdition
+
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
+
 from processing.core.ProcessingLog import ProcessingLog
+from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgHelpEdition.ui'))
 
 
-class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
+class HelpEditionDialog(BASE, WIDGET):
 
     ALG_DESC = 'ALG_DESC'
     ALG_CREATOR = 'ALG_CREATOR'
@@ -44,8 +47,9 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
     ALG_VERSION = 'ALG_VERSION'
 
     def __init__(self, alg):
-        QDialog.__init__(self)
+        super(HelpEditionDialog, self).__init__(None)
         self.setupUi(self)
+
         self.alg = alg
         self.descriptions = {}
         if isinstance(self.alg, ModelerAlgorithm):
@@ -57,9 +61,9 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
                     try:
                         with open(helpfile) as f:
                             self.descriptions = json.load(f)
-                    except Exception, e:
+                    except Exception:
                         ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                            self.tr('Cannot open help file: %s') % helpfile)
+                                               self.tr('Cannot open help file: %s') % helpfile)
 
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:
@@ -75,21 +79,6 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
 
     def accept(self):
         self.descriptions[self.currentName] = unicode(self.text.toPlainText())
-        if isinstance(self.alg, ModelerAlgorithm):
-            self.alg.helpContent = self.descriptions
-        else:
-            if self.alg.descriptionFile is not None:
-                try:
-                    with open(self.alg.descriptionFile + '.help', 'w') as f:
-                        json.dump(self.descriptions, f)
-                except Exception, e:
-                    QMessageBox.warning(self, self.tr('Error saving help file'),
-                        self.tr('Help file could not be saved.\n'
-                                'Check that you have permission to modify the help\n'
-                                'file. You might not have permission if you are \n'
-                                'editing an example model or script, since they \n'
-                                'are stored on the installation folder'))
-
         QDialog.accept(self)
 
     def getHtml(self):
@@ -148,7 +137,7 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
                 self.updateHtmlView()
 
     def updateHtmlView(self):
-        self.webView.setHtml(self.getHtml())
+        self.txtPreview.setHtml(self.getHtml())
 
     def getDescription(self, name):
         if name in self.descriptions:

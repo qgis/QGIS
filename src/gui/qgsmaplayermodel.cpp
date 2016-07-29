@@ -22,9 +22,7 @@
 #include "qgsvectorlayer.h"
 
 
-const int QgsMapLayerModel::LayerIdRole = Qt::UserRole + 1;
-
-QgsMapLayerModel::QgsMapLayerModel( QList<QgsMapLayer *> layers, QObject *parent )
+QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *>& layers, QObject *parent )
     : QAbstractItemModel( parent )
     , mLayersChecked( QMap<QString, Qt::CheckState>() )
     , mItemCheckable( false )
@@ -50,7 +48,7 @@ void QgsMapLayerModel::setItemsCheckable( bool checkable )
 
 void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 {
-  foreach ( const QString key, mLayersChecked.keys() )
+  Q_FOREACH ( const QString& key, mLayersChecked.keys() )
   {
     mLayersChecked[key] = checkState;
   }
@@ -60,7 +58,7 @@ void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 QList<QgsMapLayer *> QgsMapLayerModel::layersChecked( Qt::CheckState checkState )
 {
   QList<QgsMapLayer *> layers;
-  foreach ( QgsMapLayer* layer, mLayers )
+  Q_FOREACH ( QgsMapLayer* layer, mLayers )
   {
     if ( mLayersChecked[layer->id()] == checkState )
     {
@@ -76,13 +74,13 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   return index( r, 0 );
 }
 
-void QgsMapLayerModel::removeLayers( const QStringList layerIds )
+void QgsMapLayerModel::removeLayers( const QStringList& layerIds )
 {
-  foreach ( const QString layerId, layerIds )
+  Q_FOREACH ( const QString& layerId, layerIds )
   {
     QModelIndex startIndex = index( 0, 0 );
     QModelIndexList list = match( startIndex, LayerIdRole, layerId, 1 );
-    if ( list.count() )
+    if ( !list.isEmpty() )
     {
       QModelIndex index = list[0];
       beginRemoveRows( QModelIndex(), index.row(), index.row() );
@@ -93,10 +91,10 @@ void QgsMapLayerModel::removeLayers( const QStringList layerIds )
   }
 }
 
-void QgsMapLayerModel::addLayers( QList<QgsMapLayer *> layers )
+void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *>& layers )
 {
   beginInsertRows( QModelIndex(), mLayers.count(), mLayers.count() + layers.count() - 1 );
-  foreach ( QgsMapLayer* layer, layers )
+  Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     mLayers.append( layer );
     mLayersChecked.insert( layer->id(), Qt::Unchecked );
@@ -151,6 +149,11 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
     return layer->id();
   }
 
+  if ( role == LayerRole )
+  {
+    return QVariant::fromValue<QgsMapLayer*>( static_cast<QgsMapLayer*>( index.internalPointer() ) );
+  }
+
   if ( role == Qt::CheckStateRole && mItemCheckable )
   {
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
@@ -177,22 +180,22 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
           {
             return QIcon();
           }
-          QGis::GeometryType geomType = vl->geometryType();
+          Qgis::GeometryType geomType = vl->geometryType();
           switch ( geomType )
           {
-            case QGis::Point:
+            case Qgis::Point:
             {
               return QgsLayerItem::iconPoint();
             }
-            case QGis::Polygon :
+            case Qgis::Polygon :
             {
               return QgsLayerItem::iconPolygon();
             }
-            case QGis::Line :
+            case Qgis::Line :
             {
               return QgsLayerItem::iconLine();
             }
-            case QGis::NoGeometry :
+            case Qgis::NoGeometry :
             {
               return QgsLayerItem::iconTable();
             }
@@ -213,6 +216,16 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
   return QVariant();
 }
 
+#if QT_VERSION >= 0x050000
+QHash<int, QByteArray> QgsMapLayerModel::roleNames() const
+{
+  QHash<int, QByteArray> roles  = QAbstractItemModel::roleNames();
+  roles[LayerIdRole]  = "layerId";
+  roles[LayerRole] = "layer";
+
+  return roles;
+}
+#endif
 
 Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
 {

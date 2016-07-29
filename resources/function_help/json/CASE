@@ -1,0 +1,5 @@
+{
+  "name": "CASE",
+  "type": "expression",
+  "description": "<pre><br>CASE<br>WHEN <i>condition</i> THEN <i>result</i><br>[ ...n ]<br>[ ELSE <i>result</i> ]<br>END<br></pre>[ ] marks optional components<br><h4>Arguments</h4><br><i>  WHEN condition</i> - The condition expression to evaluate. <br><br><i>  THEN result</i> - If <i>condition</i> evaluates to True then <i>result</i> is evaluated and returned. <br><br><i>  ELSE result</i> - If none of the above conditions evaluated to True then <i>result</i> is evaluated and returned.<br><br><h4>Example</h4><pre>CASE<br>WHEN <i>\"column\" IS NULL</i> THEN <i>'None'</i><br>END</pre>"
+}

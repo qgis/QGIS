@@ -27,8 +27,8 @@ QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocal
   //needed to fix https://sourceforge.net/p/necessitas/tickets/146/
   qRegisterMetaType< QList<QGeoSatelliteInfo> >( "QList<QGeoSatelliteInfo>" );
 
-  startGPS();
   startSatelliteMonitor();
+  startGPS();
 
   //HACK to signal the gpsinformationwidget that we have a QtLocationConnection
   QTimer::singleShot( 500, this, SLOT( broadcastConnectionAvailable() ) );
@@ -37,7 +37,6 @@ QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocal
 QgsQtLocationConnection::~QgsQtLocationConnection()
 {
   //connection will be closed by base class
-  QgsDebugMsg( "entered." );
 }
 
 //Needed to make connection detectable (half HACK)
@@ -65,7 +64,6 @@ void QgsQtLocationConnection::parseData()
   {
     mStatus = GPSDataReceived;
     //const QGeoPositionInfo &info = locationDataSource->lastKnownPosition();
-    qDebug() << mInfo;
     if ( mInfo.isValid() )
     {
       // mInfo.HorizontalAccuracy;
@@ -85,13 +83,13 @@ void QgsQtLocationConnection::parseData()
       //http://developer.android.com/reference/android/location/GpsStatus.NmeaListener.html
       //http://doc.qt.nokia.com/qtmobility-1.1/qnmeapositioninfosource.html
       //into QtLocation and subclass QgsNMEAConnection directly?
-      mLastGPSInformation.pdop;     //< Dilution of precision
-      mLastGPSInformation.hdop;     //< Horizontal dilution of precision
-      mLastGPSInformation.vdop;     //< Vertical dilution of precision
+      //mLastGPSInformation.pdop;     //< Dilution of precision
+      //mLastGPSInformation.hdop;     //< Horizontal dilution of precision
+      //mLastGPSInformation.vdop;     //< Vertical dilution of precision
 
-      mLastGPSInformation.fixMode;  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
-      mLastGPSInformation.quality;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
-      mLastGPSInformation.status;   //< Status (A = active or V = void)
+      //mLastGPSInformation.fixMode;  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
+      //mLastGPSInformation.quality;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
+      //mLastGPSInformation.status;   //< Status (A = active or V = void)
 
       emit stateChanged( mLastGPSInformation );
       QgsDebugMsg( "Valid QGeoPositionInfo, positionUpdated" );
@@ -110,7 +108,11 @@ void QgsQtLocationConnection::satellitesInViewUpdated(
     QgsSatelliteInfo satelliteInfo;
     satelliteInfo.azimuth = currentSatellite.attribute( QGeoSatelliteInfo::Azimuth );
     satelliteInfo.elevation = currentSatellite.attribute( QGeoSatelliteInfo::Elevation );
+#if defined(HAVE_QT_MOBILITY_LOCATION )
     satelliteInfo.id = currentSatellite.prnNumber();
+#else // QtPositioning
+    satelliteInfo.id = currentSatellite.satelliteIdentifier();
+#endif
     satelliteInfo.signal = currentSatellite.signalStrength();
     mLastGPSInformation.satellitesInView.append( satelliteInfo );
   }
@@ -130,13 +132,21 @@ void QgsQtLocationConnection::satellitesInUseUpdated(
   {
     QGeoSatelliteInfo currentSatellite = satellites.at( i );
     //add pnr to mLastGPSInformation.satPrn
+#if defined(HAVE_QT_MOBILITY_LOCATION )
     mLastGPSInformation.satPrn.append( currentSatellite.prnNumber() );
+#else // QtPositioning
+    mLastGPSInformation.satPrn.append( currentSatellite.satelliteIdentifier() );
+#endif
 
     //set QgsSatelliteInfo.inuse to true for the satellites in use
     for ( int i = 0; i < mLastGPSInformation.satellitesInView.size(); ++i )
     {
       QgsSatelliteInfo satInView = mLastGPSInformation.satellitesInView.at( i );
+#if defined(HAVE_QT_MOBILITY_LOCATION )
       if ( satInView.id == currentSatellite.prnNumber() )
+#else // QtPositioning
+      if ( satInView.id == currentSatellite.satelliteIdentifier() )
+#endif
       {
         satInView.inUse = true;
         break;
@@ -184,6 +194,7 @@ void QgsQtLocationConnection::startGPS()
 void QgsQtLocationConnection::startSatelliteMonitor()
 {
   QgsDebugMsg( "Starting GPS QtLocation satellite monitor" );
+
   if ( !satelliteInfoSource )
   {
     satelliteInfoSource = QGeoSatelliteInfoSource::createDefaultSource( this );

@@ -19,6 +19,8 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgssvgcache.h"
+#include "qgsmapsettings.h"
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QVector2D>
@@ -36,12 +38,12 @@ QgsComposerArrow::QgsComposerArrow( QgsComposition* c )
     , mArrowHeadOutlineColor( Qt::black )
     , mArrowHeadFillColor( Qt::black )
     , mBoundsBehaviour( 24 )
-    , mLineSymbol( 0 )
+    , mLineSymbol( nullptr )
 {
   init();
 }
 
-QgsComposerArrow::QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c )
+QgsComposerArrow::QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition* c )
     : QgsComposerItem( c )
     , mStartPoint( startPoint )
     , mStopPoint( stopPoint )
@@ -50,7 +52,7 @@ QgsComposerArrow::QgsComposerArrow( const QPointF& startPoint, const QPointF& st
     , mArrowHeadOutlineColor( Qt::black )
     , mArrowHeadFillColor( Qt::black )
     , mBoundsBehaviour( 24 )
-    , mLineSymbol( 0 )
+    , mLineSymbol( nullptr )
 {
   mStartXIdx = mStopPoint.x() < mStartPoint.x();
   mStartYIdx = mStopPoint.y() < mStartPoint.y();
@@ -186,6 +188,9 @@ void QgsComposerArrow::drawLine( QPainter *painter )
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setForceVectorOutput( true );
   context.setPainter( painter );
+  QgsExpressionContext* expressionContext = createExpressionContext();
+  context.setExpressionContext( *expressionContext );
+  delete expressionContext;
 
   //line scaled to dots
   QPolygonF line;
@@ -193,7 +198,7 @@ void QgsComposerArrow::drawLine( QPainter *painter )
   << QPointF( mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y() ) * dotsPerMM;
 
   mLineSymbol->startRender( context );
-  mLineSymbol->renderPolyline( line, 0, context );
+  mLineSymbol->renderPolyline( line, nullptr, context );
   mLineSymbol->stopRender( context );
   painter->restore();
 
@@ -249,22 +254,14 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     imageFixPoint.setY( 0 );
   }
 
-  //rasterize svg
+  QString svgFileName = ( type == StartMarker ? mStartMarkerFile : mEndMarkerFile );
+  if ( svgFileName.isEmpty() )
+    return;
+
   QSvgRenderer r;
-  if ( type == StartMarker )
-  {
-    if ( mStartMarkerFile.isEmpty() || !r.load( mStartMarkerFile ) )
-    {
-      return;
-    }
-  }
-  else //end marker
-  {
-    if ( mEndMarkerFile.isEmpty() || !r.load( mEndMarkerFile ) )
-    {
-      return;
-    }
-  }
+  const QByteArray &svgContent = QgsSvgCache::instance()->svgContent( svgFileName, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadOutlineColor, mArrowHeadOutlineWidth,
+                                 1.0, 1.0 );
+  r.load( svgContent );
 
   p->save();
   p->setRenderHint( QPainter::Antialiasing );
@@ -275,11 +272,13 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     QPointF fixPoint;
     if ( type == StartMarker )
     {
-      fixPoint.setX( 0 ); fixPoint.setY( arrowHeadHeight / 2.0 );
+      fixPoint.setX( 0 );
+      fixPoint.setY( arrowHeadHeight / 2.0 );
     }
     else
     {
-      fixPoint.setX( 0 ); fixPoint.setY( -arrowHeadHeight / 2.0 );
+      fixPoint.setX( 0 );
+      fixPoint.setY( -arrowHeadHeight / 2.0 );
     }
     QPointF rotatedFixPoint;
     double angleRad = ang / 180 * M_PI;
@@ -470,7 +469,7 @@ void QgsComposerArrow::setMarkerMode( MarkerMode mode )
   adaptItemSceneRect();
 }
 
-bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerArrow::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerArrowElem = doc.createElement( "ComposerArrow" );
   composerArrowElem.setAttribute( "arrowHeadWidth", QString::number( mArrowHeadWidth ) );
@@ -500,10 +499,10 @@ bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerArrowElem.appendChild( stopPointElem );
 
   elem.appendChild( composerArrowElem );
-  return _writeXML( composerArrowElem, doc );
+  return _writeXml( composerArrowElem, doc );
 }
 
-bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   mArrowHeadWidth = itemElem.attribute( "arrowHeadWidth", "2.0" ).toDouble();
   mArrowHeadFillColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "arrowHeadFillColor", "0,0,0,255" ) );
@@ -523,7 +522,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
     if ( !lineStyleElem.isNull() )
     {
       delete mLineSymbol;
-      mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( lineStyleElem ) );
+      mLineSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsLineSymbolV2>( lineStyleElem );
     }
   }
   else
@@ -549,7 +548,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
     int alpha = 255;
 
     QDomNodeList arrowColorList = itemElem.elementsByTagName( "ArrowColor" );
-    if ( arrowColorList.size() > 0 )
+    if ( !arrowColorList.isEmpty() )
     {
       QDomElement arrowColorElem = arrowColorList.at( 0 ).toElement();
       red = arrowColorElem.attribute( "red", "0" ).toInt();
@@ -570,15 +569,15 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
   //restore general composer item properties
   //needs to be before start point / stop point because setSceneRect()
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   //start point
   QDomNodeList startPointList = itemElem.elementsByTagName( "StartPoint" );
-  if ( startPointList.size() > 0 )
+  if ( !startPointList.isEmpty() )
   {
     QDomElement startPointElem = startPointList.at( 0 ).toElement();
     mStartPoint.setX( startPointElem.attribute( "x", "0.0" ).toDouble() );
@@ -587,7 +586,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
 
   //stop point
   QDomNodeList stopPointList = itemElem.elementsByTagName( "StopPoint" );
-  if ( stopPointList.size() > 0 )
+  if ( !stopPointList.isEmpty() )
   {
     QDomElement stopPointElem = stopPointList.at( 0 ).toElement();
     mStopPoint.setX( stopPointElem.attribute( "x", "0.0" ).toDouble() );

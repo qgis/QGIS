@@ -1,5 +1,6 @@
 
-/** \brief The RasterBandStats struct is a container for statistics about a single
+/** \ingroup core
+ * The RasterBandStats struct is a container for statistics about a single
  * raster band.
  */
 class QgsRasterBandStats
@@ -24,7 +25,7 @@ class QgsRasterBandStats
 
     QgsRasterBandStats();
 
-    /*! Compares region, size etc. not collected statistics */
+    /** Compares region, size etc. not collected statistics */
     bool contains( const QgsRasterBandStats &s ) const;
 
     /** \brief The gdal band number (starts at 1)*/

@@ -19,7 +19,6 @@ import shutil
 import platform
 import subprocess
 import time
-import inspect
 import urllib
 import urllib2
 import tempfile
@@ -34,7 +33,7 @@ from utilities import (
 try:
     # noinspection PyUnresolvedReferences
     from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem
-except ImportError, e:
+except ImportError as e:
     raise ImportError(str(e) + '\n\nPlace path to pyqgis modules on sys.path,'
                                ' or assign to PYTHONPATH')
 
@@ -358,7 +357,7 @@ class QgisLocalServer(object):
                     shutil.copy2(path, self._web_dir)
                 elif os.path.isdir(path):
                     shutil.copytree(path, self._web_dir)
-            except Exception, err:
+            except Exception as err:
                 raise ServerProcessError('Failed to copy to web directory:',
                                          item,
                                          str(err))
@@ -371,7 +370,7 @@ class QgisLocalServer(object):
                     os.unlink(path)
                 else:
                     shutil.rmtree(path)
-            except Exception, err:
+            except Exception as err:
                 raise ServerProcessError('Failed to clear web directory', err)
 
     def temp_dir(self):
@@ -444,7 +443,7 @@ class QgisLocalServer(object):
         params = self._params_to_upper(params)
         try:
             proj = params['MAP']
-        except KeyError, err:
+        except KeyError as err:
             raise KeyError(str(err) + '\nMAP not found in parameters dict')
 
         if not os.path.exists(proj):
@@ -496,12 +495,12 @@ class QgisLocalServer(object):
             except urllib2.URLError as resp:
                 raise ServerProcessError(
                     'Web/FCGI Process Request URLError',
-                    'Cound not connect to process: ' + str(resp.code),
+                    'Cound not connect to process',
                     resp.reason
                 )
             else:
                 delta = time.time() - start_time
-                print 'Seconds elapsed for server GetMap: ' + str(delta)
+                print('Seconds elapsed for server GetMap: ' + str(delta))
                 break
 
         if resp is not None:
@@ -565,10 +564,10 @@ class QgisLocalServer(object):
         self._web_dir = os.path.join(self._temp_dir, 'www', 'htdocs')
         cgi_bin = os.path.join(self._temp_dir, 'cgi-bin')
 
-        os.makedirs(cgi_bin, mode=0755)
-        os.makedirs(os.path.join(self._temp_dir, 'log'), mode=0755)
-        os.makedirs(os.path.join(self._temp_dir, 'var', 'run'), mode=0755)
-        os.makedirs(self._web_dir, mode=0755)
+        os.makedirs(cgi_bin, mode=0o755)
+        os.makedirs(os.path.join(self._temp_dir, 'log'), mode=0o755)
+        os.makedirs(os.path.join(self._temp_dir, 'var', 'run'), mode=0o755)
+        os.makedirs(self._web_dir, mode=0o755)
 
         # symlink or copy in components
         shutil.copy2(os.path.join(self._conf_dir, 'index.html'), self._web_dir)
@@ -757,7 +756,7 @@ def getLocalServer():
             assert not os.path.exists(srv.temp_dir()), msg
 
             MAPSERV = srv
-        except AssertionError, err:
+        except AssertionError as err:
             srv.shutdown()
             raise AssertionError(err)
 
@@ -777,7 +776,7 @@ if __name__ == '__main__':
 
     fcgi = os.path.realpath(args.fcgi)
     if not os.path.isabs(fcgi) or not os.path.exists(fcgi):
-        print 'qgis_mapserv.fcgi not resolved to existing absolute path.'
+        print('qgis_mapserv.fcgi not resolved to existing absolute path.')
         sys.exit(1)
 
     local_srv = QgisLocalServer(fcgi)

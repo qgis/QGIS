@@ -15,6 +15,8 @@ OWS Common: http://www.opengeospatial.org/standards/common
 Currently supports version 1.1.0 (06-121r3).
 """
 
+from __future__ import (absolute_import, division, print_function)
+
 from owslib.etree import etree
 from owslib import crs, util
 from owslib.namespaces import Namespaces
@@ -162,6 +164,8 @@ class Constraint(object):
 class OperationsMetadata(object):
     """Initialize an OWS OperationMetadata construct"""
     def __init__(self, elem, namespace=DEFAULT_OWS_NAMESPACE):
+        if 'name' not in elem.attrib: # This is not a valid element
+            return
         self.name = elem.attrib['name']
         self.formatOptions = ['text/xml']
         parameters = []

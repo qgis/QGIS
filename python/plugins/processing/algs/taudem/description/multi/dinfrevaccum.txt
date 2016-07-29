@@ -1,0 +1,7 @@
+D-Infinity Reverse Accumulation (multifile)
+dinfrevaccum
+Specialized Grid Analysis tools
+ParameterFile|-ang|D-Infinity Flow Direction Grid|True|False
+ParameterFile|-wg|Weight Grid|True|False
+OutputDirectory|-racc|Reverse Accumulation Grid
+OutputDirectory|-dmax|Maximum Downslope Grid

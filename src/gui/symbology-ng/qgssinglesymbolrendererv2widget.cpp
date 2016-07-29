@@ -31,6 +31,7 @@ QgsRendererV2Widget* QgsSingleSymbolRendererV2Widget::create( QgsVectorLayer* la
 
 QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
+    , mRenderer( nullptr )
 {
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
@@ -50,24 +51,18 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   mSingleSymbol = mRenderer->symbol()->clone();
 
   // setup ui
-  mSelector = new QgsSymbolV2SelectorDialog( mSingleSymbol, mStyle, mLayer, NULL, true );
+  mSelector = new QgsSymbolV2SelectorWidget( mSingleSymbol, mStyle, mLayer, nullptr );
   connect( mSelector, SIGNAL( symbolModified() ), this, SLOT( changeSingleSymbol() ) );
+  connect( mSelector, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
 
-  QVBoxLayout* layout = new QVBoxLayout;
+  QVBoxLayout* layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mSelector );
-  setLayout( layout );
 
   // advanced actions - data defined rendering
   QMenu* advMenu = mSelector->advancedMenu();
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
-
-  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer,
-      mRenderer->rotationField(), mRenderer->sizeScaleField(), mRenderer->scaleMethod() );
-  connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ), this, SLOT( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ) );
 }
 
 QgsSingleSymbolRendererV2Widget::~QgsSingleSymbolRendererV2Widget()
@@ -77,8 +72,6 @@ QgsSingleSymbolRendererV2Widget::~QgsSingleSymbolRendererV2Widget()
   delete mRenderer;
 
   delete mSelector;
-
-  delete mDataDefinedMenus;
 }
 
 
@@ -87,18 +80,28 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2Widget::renderer()
   return mRenderer;
 }
 
+void QgsSingleSymbolRendererV2Widget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRendererV2Widget::setMapCanvas( canvas );
+  if ( mSelector )
+    mSelector->setMapCanvas( canvas );
+}
+
+void QgsSingleSymbolRendererV2Widget::setDockMode( bool dockMode )
+{
+  QgsRendererV2Widget::setDockMode( dockMode );
+  if ( mSelector )
+    mSelector->setDockMode( dockMode );
+}
+
 void QgsSingleSymbolRendererV2Widget::changeSingleSymbol()
 {
   // update symbol from the GUI
   mRenderer->setSymbol( mSingleSymbol->clone() );
+  emit widgetChanged();
 }
 
-void QgsSingleSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
-{
-  mRenderer->setRotationField( fldName );
-}
-
-void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
+void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
 }

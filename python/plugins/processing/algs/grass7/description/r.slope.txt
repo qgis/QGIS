@@ -1,0 +1,9 @@
+r.slope.aspect
+r.slope - Generates raster maps of slope from an elevation raster map.
+Raster (r.*)
+ParameterRaster|elevation|Elevation|False
+ParameterSelection|precision|Data type|FCELL;CELL;DCELL|0
+*ParameterBoolean|-a|Do not align the current region to the elevation layer|False
+ParameterNumber|zscale|Multiplicative factor to convert elevation units to meters|None|None|1.0
+ParameterNumber|min_slope|Minimum slope val. (in percent) for which aspect is computed|None|None|0.0
+OutputRaster|slope|Slope

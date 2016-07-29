@@ -30,7 +30,7 @@ QgsPieDiagram::~QgsPieDiagram()
 {
 }
 
-QgsDiagram* QgsPieDiagram::clone() const
+QgsPieDiagram* QgsPieDiagram::clone() const
 {
   return new QgsPieDiagram( *this );
 }
@@ -42,60 +42,33 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   QVariant attrVal;
   if ( is.classificationAttributeIsExpression )
   {
-    QgsExpression* expression = getExpression( is.classificationAttributeExpression, feature.fields() );
-    attrVal = expression->evaluate( feature );
+    QgsExpressionContext expressionContext = c.expressionContext();
+    if ( feature.fields() )
+      expressionContext.setFields( *feature.fields() );
+    expressionContext.setFeature( feature );
+
+    QgsExpression* expression = getExpression( is.classificationAttributeExpression, expressionContext );
+    attrVal = expression->evaluate( &expressionContext );
   }
   else
   {
-    attrVal = feature.attributes()[is.classificationAttribute];
+    attrVal = feature.attributes().at( is.classificationAttribute );
   }
 
-  if ( !attrVal.isValid() )
+  bool ok = false;
+  double value = attrVal.toDouble( &ok );
+  if ( !ok )
   {
     return QSizeF(); //zero size if attribute is missing
   }
 
-  double scaledValue = attrVal.toDouble();
-  double scaledLowerValue = is.lowerValue;
-  double scaledUpperValue = is.upperValue;
-  double scaledLowerSizeWidth = is.lowerSize.width();
-  double scaledLowerSizeHeight = is.lowerSize.height();
-  double scaledUpperSizeWidth = is.upperSize.width();
-  double scaledUpperSizeHeight = is.upperSize.height();
+  return sizeForValue( value, s, is );
+}
 
-  // interpolate the squared value if scale by area
-  if ( s.scaleByArea )
-  {
-    scaledValue = sqrt( scaledValue );
-    scaledLowerValue = sqrt( scaledLowerValue );
-    scaledUpperValue = sqrt( scaledUpperValue );
-    scaledLowerSizeWidth = sqrt( scaledLowerSizeWidth );
-    scaledLowerSizeHeight = sqrt( scaledLowerSizeHeight );
-    scaledUpperSizeWidth = sqrt( scaledUpperSizeWidth );
-    scaledUpperSizeHeight = sqrt( scaledUpperSizeHeight );
-  }
-
-  //interpolate size
-  double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
-
-  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
-                        is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
-
-  // Scale, if extension is smaller than the specified minimum
-  if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
-  {
-    bool p = false; // preserve height == width
-    if ( size.width() == size.height() )
-      p = true;
-
-    size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
-
-    // If height == width, recover here (overwrite floating point errors)
-    if ( p )
-      size.setWidth( size.height() );
-  }
-
-  return size;
+double QgsPieDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+{
+  QSizeF size = sizeForValue( value, s, is );
+  return qMax( size.width(), size.height() );
 }
 
 QSizeF QgsPieDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
@@ -105,9 +78,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsAttributes& attributes, const QgsRen
   return s.size;
 }
 
-int  QgsPieDiagram::sCount = 0;
-
-void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
 {
   QPainter* p = c.painter();
   if ( !p )
@@ -121,11 +92,16 @@ void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& 
   double valSum = 0;
   int valCount = 0;
 
+  QgsExpressionContext expressionContext = c.expressionContext();
+  expressionContext.setFeature( feature );
+  if ( feature.fields() )
+    expressionContext.setFields( *feature.fields() );
+
   QList<QString>::const_iterator catIt = s.categoryAttributes.constBegin();
   for ( ; catIt != s.categoryAttributes.constEnd(); ++catIt )
   {
-    QgsExpression* expression = getExpression( *catIt, feature.fields() );
-    currentVal = expression->evaluate( feature ).toDouble();
+    QgsExpression* expression = getExpression( *catIt, expressionContext );
+    currentVal = expression->evaluate( &expressionContext ).toDouble();
     values.push_back( currentVal );
     valSum += currentVal;
     if ( currentVal ) valCount++;

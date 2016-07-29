@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsVirtualLayerSourceSelectBase</class>
+ <widget class="QDialog" name="QgsVirtualLayerSourceSelectBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>906</width>
+    <height>661</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Create a virtual layer</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Layer name</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mLayerNameCombo">
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mEmbeddedlLayersGroup">
+     <property name="title">
+      <string>Embedded layers</string>
+     </property>
+     <property name="collapsed" stdset="0">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QTableWidget" name="mLayersTable">
+        <property name="toolTip">
+         <string>Embedded layers can be added to have SQL queries with layers that are independent from layers loaded by the current QGIS project.
+In particular, saving a virtual layer with embedded layers to a QLR file can be done to reuse its definition in another project.</string>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Local name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Provider</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Encoding</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Source</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="mAddLayerBtn">
+          <property name="toolTip">
+           <string>Add a new embedded layer</string>
+          </property>
+          <property name="text">
+           <string>Add</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mImportLayerBtn">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="toolTip">
+           <string>Import layer definition from loaded layers of the current project</string>
+          </property>
+          <property name="text">
+           <string>Import</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mRemoveLayerBtn">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Remove the selected embedded layer</string>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="mQueryBox">
+     <property name="title">
+      <string>Query</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QgsCodeEditorSQL" name="mQueryEdit" native="true">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the SQL query editor. You can edit here an SQL query refering to any existing vector layers or embedded layers.&lt;/p&gt;&lt;p&gt;Virtual layers rely on SQLite and Spatialite. Any functions from SQLite or Spatialite can then be used in the query. To add or access geometries of a table, you can use &quot;tablename.geometry&quot;, regardless of original geometry column's name.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Special comments:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Because it is not always possible to autodetect the data type of each column in a query, special comments can be used in the query to force a specific type.&lt;/p&gt;&lt;p&gt;Special comments must be placed on the right of a column name and have the form &lt;tt&gt;/*:type*/&lt;/tt&gt; where type can be any of &lt;span style=&quot; font-style:italic;&quot;&gt;int&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;real&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;text&lt;/span&gt;. They can also be used to specify the type and SRID of the geometry column with the following syntax: &lt;tt&gt;/*:gtype:srid*/&lt;/tt&gt; where &lt;span style=&quot; font-style:italic;&quot;&gt;gtype&lt;/span&gt; can be &lt;span style=&quot; font-style:italic;&quot;&gt;point&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;linestring&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;polygon&lt;/span&gt; (with an optional &lt;span style=&quot; font-style:italic;&quot;&gt;multi&lt;/span&gt; prefix) and &lt;span style=&quot; font-style:italic;&quot;&gt;srid&lt;/span&gt; is an integer identifier.&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;&lt;tt&gt;SELECT id + 1 as id /*:int*/, ST_Centroid(geometry) as geom /*:point:4326*/ FROM tab&lt;/tt&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QCheckBox" name="mUIDColumnNameChck">
+       <property name="text">
+        <string>Unique identifier column</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mUIDField">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mGeometryGroup">
+     <property name="title">
+      <string>Geometry</string>
+     </property>
+     <property name="collapsed" stdset="0">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QRadioButton" name="mAutodetectGeometryRadio">
+        <property name="text">
+         <string>Autodetect</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="mNoGeometryRadio">
+        <property name="text">
+         <string>No geometry</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QRadioButton" name="mGeometryRadio">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="mGeometryFrame">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QFormLayout" name="formLayout_2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Geometry column</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="mGeometryField">
+             <property name="text">
+              <string>geometry</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="mGeometryType">
+             <item>
+              <property name="text">
+               <string>Point</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>LineString</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Polygon</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>MultiPoint</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>MultiLineString</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>MultiPolygon</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>CRS</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLineEdit" name="mCRS">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="mBrowseCRSBtn">
+               <property name="text">
+                <string>...</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <widget class="QPushButton" name="mTestButton">
+       <property name="text">
+        <string>Test</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorSQL</class>
+   <extends>QWidget</extends>
+   <header location="global">qgscodeeditorsql.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mGeometryGroup</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mGeometryRadio</tabstop>
+  <tabstop>mGeometryField</tabstop>
+  <tabstop>mGeometryType</tabstop>
+  <tabstop>mCRS</tabstop>
+  <tabstop>mBrowseCRSBtn</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsVirtualLayerSourceSelectBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsVirtualLayerSourceSelectBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>291</x>
+     <y>405</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>291</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mGeometryRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGeometryFrame</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>36</x>
+     <y>729</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>460</x>
+     <y>729</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mUIDColumnNameChck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mUIDField</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>107</x>
+     <y>431</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>543</x>
+     <y>432</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
