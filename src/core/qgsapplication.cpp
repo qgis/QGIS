@@ -116,7 +116,10 @@ void QgsApplication::init( QString customConfigPath )
     }
     else
     {
-      customConfigPath = QString( "%1/.qgis%2/" ).arg( QDir::homePath() ).arg( Qgis::QGIS_VERSION_INT / 10000 );
+      // TODO Switch to this for release.
+      //customConfigPath = QString( "%1/.qgis%2/" ).arg( QDir::homePath() ).arg( Qgis::QGIS_VERSION_INT / 10000 );
+      // Use qgis-dev for dev versions of QGIS to avoid mixing 2 and 3 API plugins.
+      customConfigPath = QString( "%1/.qgis%2/" ).arg( QDir::homePath() ).arg( "-dev" );
     }
   }
 
