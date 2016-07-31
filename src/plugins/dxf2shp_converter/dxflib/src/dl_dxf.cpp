@@ -236,7 +236,7 @@ bool DL_Dxf::getStrippedLine(std::string& s, unsigned int size, FILE *fp) {
         // Only the useful part of the line
         char* line;
 
-        line = fgets(wholeLine, size, fp);
+        line = fgets(wholeLine, size-1, fp);
 
         if (line!=nullptr && line[0] != '\0') { // Evaluates to fgets() retval
             // line == wholeLine at this point.

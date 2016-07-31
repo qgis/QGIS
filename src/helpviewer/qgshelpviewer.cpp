@@ -36,7 +36,7 @@ void QgsReaderThread::run()
   QString help;
 
   char buffer[1024];
-  while ( fgets( buffer, sizeof buffer, stdin ) )
+  while ( fgets( buffer, sizeof buffer - 1, stdin ) )
   {
     if ( strcmp( buffer, "EOH\n" ) == 0 )
     {

@@ -1,1 +1,2 @@
 python-qgis: hardening-no-fortify-functions
+python-qgis: spelling-error-in-binary usr/lib/python*/*-packages/qgis/*.so onself oneself

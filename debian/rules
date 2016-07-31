@@ -34,7 +34,7 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie stretch precise trusty wily xenial"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"jessie stretch precise trusty xenial"))
 	DISTRIBUTION := sid
 endif
 
@@ -68,6 +68,7 @@ CMAKE_OPTS := \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
 	-DGENERATE_QHP=TRUE \
+	-DSUPPRESS_SIP_WARNINGS=TRUE \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
 	-DWITH_INTERNAL_HTTPLIB2=FALSE \
 	-DWITH_INTERNAL_JINJA2=FALSE \
@@ -106,7 +107,7 @@ else
 	CMAKE_OPTS += -DWITH_INTERNAL_NOSE2=FALSE -DWITH_INTERNAL_SIX=FALSE
 endif
 
-ifeq (,$(findstring $(DISTRIBUTION),"stretch sid wily xenial"))
+ifeq (,$(findstring $(DISTRIBUTION),"stretch sid xenial"))
 	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=TRUE
 else
 	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=FALSE
@@ -116,7 +117,7 @@ ifneq (,$(WITH_GLOBE))
 	CMAKE_OPTS += -DWITH_GLOBE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy precise"))
+ifneq (,$(findstring $(DISTRIBUTION),"precise"))
 	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
 endif
 
@@ -132,7 +133,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid"))
 	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty wily xenial sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty xenial sid"))
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
@@ -170,7 +171,7 @@ else
 	CMAKE_OPTS += -DENABLE_TESTS=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie stretch trusty sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty sid"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
