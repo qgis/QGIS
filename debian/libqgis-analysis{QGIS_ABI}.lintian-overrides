@@ -1,2 +1,3 @@
 libqgis-analysis{QGIS_ABI}: no-symbols-control-file
 libqgis-analysis{QGIS_ABI}: shlib-calls-exit
+libqgis-analysis{QGIS_ABI}: spelling-error-in-binary usr/lib/libqgis_analysis.so.{QGIS_ABI} normalY normally

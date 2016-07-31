@@ -1,8 +1,11 @@
 qgis (2.16.1) UNRELEASED; urgency=medium
 
   * Release of 2.16.1
+  * drop support for debian wheezy and ubuntu wily
+  * add python-requests dependency for metasearch plugin
+  * lintian fixes
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 29 Jul 2016 14:04:56 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 03 Aug 2016 20:25:26 +0200
 
 qgis (2.16.0) unstable; urgency=medium
 

@@ -7,5 +7,5 @@ usr/lib/python*/*-packages/qgis/networkanalysis/*
 usr/lib/python*/*-packages/qgis/PyQt/*
 usr/lib/python*/*-packages/qgis/server/*
 usr/lib/python*/*-packages/qgis/testing/*
-#wheezy precise#usr/lib/python*/*-packages/pyspatialite/*.py
-#wheezy precise#usr/lib/python*/*-packages/pyspatialite/*.so
+#precise#usr/lib/python*/*-packages/pyspatialite/*.py
+#precise#usr/lib/python*/*-packages/pyspatialite/*.so

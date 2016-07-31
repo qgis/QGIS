@@ -12,8 +12,13 @@ usr/share/qgis/doc/images
 usr/share/qgis/doc/index.html
 usr/share/qgis/doc/news
 usr/share/qgis/doc/news.html
+usr/share/qgis/doc/release-sponsors.html
 usr/share/qgis/doc/style.css
 usr/share/qgis/i18n/*
 usr/share/qgis/images/*
 usr/share/qgis/resources/spatialite.db
 usr/share/qgis/resources/themes/*
+usr/share/pixmaps/
+usr/share/mime/packages/
+usr/share/mimelnk/
+usr/share/icons/hicolor/

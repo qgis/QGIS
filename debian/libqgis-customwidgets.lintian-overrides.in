@@ -1,0 +1,2 @@
+libqgis-customwidgets: no-symbols-control-file
+libqgis-customwidgets: spelling-error-in-binary {QT_PLUGIN_DIR}/designer/libqgis_customwidgets.so.{QGIS_ABI} YUr Your
