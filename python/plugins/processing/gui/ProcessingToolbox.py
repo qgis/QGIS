@@ -180,9 +180,9 @@ class ProcessingToolbox(BASE, WIDGET):
 
     def showPopupMenu(self, point):
         item = self.algorithmTree.itemAt(point)
+        popupmenu = QMenu()
         if isinstance(item, TreeAlgorithmItem):
             alg = item.alg
-            popupmenu = QMenu()
             executeAction = QAction(self.tr('Execute'), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
