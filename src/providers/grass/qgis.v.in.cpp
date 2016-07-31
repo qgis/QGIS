@@ -402,7 +402,9 @@ int main( int argc, char **argv )
       }
       QgsPoint point( x, y );
       QgsFeature feature( area );
-      feature.setGeometry( QgsGeometry::fromPoint( point ) );
+      QgsGeometry* g = QgsGeometry::fromPoint( point );
+      feature.setGeometry( *g );
+      delete g;
       feature.setValid( true );
       centroids.insert( area, feature );
       spatialIndex.insertFeature( feature );

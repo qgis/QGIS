@@ -70,7 +70,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
     return;
   }
 
-  if ( !mOriginalGeometry )
+  if ( mOriginalGeometry.isEmpty() )
   {
     deleteRubberBandAndGeometry();
     mGeometryModified = false;
@@ -121,7 +121,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
       }
     }
 
-    if ( !mOriginalGeometry )
+    if ( mOriginalGeometry.isEmpty() )
     {
       emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
     }
@@ -160,7 +160,7 @@ void QgsMapToolOffsetCurve::applyOffset()
   bool editOk;
   if ( mSourceLayerId == layer->id() && !mForceCopy )
   {
-    editOk = layer->changeGeometry( mModifiedFeature, &mModifiedGeometry );
+    editOk = layer->changeGeometry( mModifiedFeature, mModifiedGeometry );
   }
   else
   {
@@ -205,7 +205,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
   delete mSnapVertexMarker;
   mSnapVertexMarker = nullptr;
 
-  if ( !mOriginalGeometry || !mRubberBand )
+  if ( mOriginalGeometry.isEmpty() || !mRubberBand )
   {
     return;
   }
@@ -240,7 +240,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
   QgsPoint minDistPoint;
   int beforeVertex;
   double leftOf;
-  double offset = sqrt( mOriginalGeometry->closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
+  double offset = sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
   if ( offset == 0.0 )
   {
     return;
@@ -261,11 +261,11 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
   }
 }
 
-QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, const QgsPointLocator::Match& match, QgsFeature& snappedFeature )
+QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, const QgsPointLocator::Match& match, QgsFeature& snappedFeature )
 {
   if ( !vl )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   mMultiPartGeometry = false;
@@ -274,10 +274,8 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
 
   if ( vl == currentVectorLayer() && !mForceCopy )
   {
-    Q_NOWARN_DEPRECATED_PUSH
     //don't consider selected geometries, only the snap result
-    return convertToSingleLine( snappedFeature.geometryAndOwnership(), partVertexNr, mMultiPartGeometry );
-    Q_NOWARN_DEPRECATED_POP
+    return convertToSingleLine( snappedFeature.constGeometry() ? *snappedFeature.constGeometry() : QgsGeometry(), partVertexNr, mMultiPartGeometry );
   }
   else //snapped to a background layer
   {
@@ -292,33 +290,27 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
     const QgsFeatureIds& selection = vl->selectedFeaturesIds();
     if ( selection.size() < 1 || !selection.contains( match.featureId() ) )
     {
-      Q_NOWARN_DEPRECATED_PUSH
-      return convertToSingleLine( snappedFeature.geometryAndOwnership(), partVertexNr, mMultiPartGeometry );
-      Q_NOWARN_DEPRECATED_POP
+      return convertToSingleLine( snappedFeature.constGeometry() ? *snappedFeature.constGeometry() : QgsGeometry(), partVertexNr, mMultiPartGeometry );
     }
     else
     {
       //merge together if several features
       QgsFeatureList selectedFeatures = vl->selectedFeatures();
       QgsFeatureList::iterator selIt = selectedFeatures.begin();
-      Q_NOWARN_DEPRECATED_PUSH
-      QgsGeometry* geom = selIt->geometryAndOwnership();
-      Q_NOWARN_DEPRECATED_POP
+      QgsGeometry geom = selIt->constGeometry() ? *selIt->constGeometry() : QgsGeometry();
       ++selIt;
       for ( ; selIt != selectedFeatures.end(); ++selIt )
       {
-        QgsGeometry* combined = geom->combine( selIt->constGeometry() );
-        delete geom;
-        geom = combined;
+        QgsGeometry* combined = geom.combine( selIt->constGeometry() );
+        geom = *combined;
+        delete combined;
       }
 
       //if multitype, return only the snapped to geometry
-      if ( geom->isMultipart() )
+      if ( geom.isMultipart() )
       {
-        delete geom;
-        Q_NOWARN_DEPRECATED_PUSH
-        return convertToSingleLine( snappedFeature.geometryAndOwnership(), match.vertexIndex(), mMultiPartGeometry );
-        Q_NOWARN_DEPRECATED_POP
+        return convertToSingleLine( snappedFeature.constGeometry() ? *snappedFeature.constGeometry() : QgsGeometry(),
+                                    match.vertexIndex(), mMultiPartGeometry );
       }
 
       return geom;
@@ -365,8 +357,6 @@ void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
 {
   delete mRubberBand;
   mRubberBand = nullptr;
-  delete mOriginalGeometry;
-  mOriginalGeometry = nullptr;
 }
 
 void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
@@ -374,7 +364,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
   // need at least geos 3.3 for OffsetCurve tool
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
   ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-  if ( !mRubberBand || !mOriginalGeometry )
+  if ( !mRubberBand || mOriginalGeometry.isEmpty() )
   {
     return;
   }
@@ -385,7 +375,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     return;
   }
 
-  QgsGeometry geomCopy( *mOriginalGeometry );
+  QgsGeometry geomCopy( mOriginalGeometry );
   const GEOSGeometry* geosGeom = geomCopy.asGeos();
   if ( geosGeom )
   {
@@ -411,7 +401,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     if ( offsetGeom )
     {
       mModifiedGeometry.fromGeos( offsetGeom );
-      mRubberBand->setToGeometry( &mModifiedGeometry, sourceLayer );
+      mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
     }
   }
 #else //GEOS_VERSION>=3.3
@@ -419,11 +409,11 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
 #endif //GEOS_VERSION>=3.3
 }
 
-QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry* featureGeom, int vertex )
+QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry* featureGeom, int vertex )
 {
   if ( !featureGeom )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   Qgis::WkbType geomType = featureGeom->wkbType();
@@ -442,7 +432,7 @@ QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry* fe
   }
   else
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsMultiPolygon::const_iterator multiPolyIt = multiPoly.constBegin();
@@ -455,24 +445,27 @@ QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry* fe
       if ( vertex < currentVertex )
       {
         //found, return ring
-        return QgsGeometry::fromPolyline( *polyIt );
+        QgsGeometry* g = QgsGeometry::fromPolyline( *polyIt );
+        QgsGeometry result = *g;
+        delete g;
+        return result;
       }
     }
   }
 
-  return nullptr;
+  return QgsGeometry();
 }
 
 
-QgsGeometry* QgsMapToolOffsetCurve::convertToSingleLine( QgsGeometry* geom, int vertex, bool& isMulti )
+QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry& geom, int vertex, bool& isMulti )
 {
-  if ( !geom )
+  if ( geom.isEmpty() )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   isMulti = false;
-  Qgis::WkbType geomType = geom->wkbType();
+  Qgis::WkbType geomType = geom.wkbType();
   if ( geomType == Qgis::WKBLineString || geomType == Qgis::WKBLineString25D )
   {
     return geom;
@@ -482,7 +475,7 @@ QgsGeometry* QgsMapToolOffsetCurve::convertToSingleLine( QgsGeometry* geom, int 
     //search vertex
     isMulti = true;
     int currentVertex = 0;
-    QgsMultiPolyline multiLine = geom->asMultiPolyline();
+    QgsMultiPolyline multiLine = geom.asMultiPolyline();
     QgsMultiPolyline::const_iterator it = multiLine.constBegin();
     for ( ; it != multiLine.constEnd(); ++it )
     {
@@ -490,13 +483,11 @@ QgsGeometry* QgsMapToolOffsetCurve::convertToSingleLine( QgsGeometry* geom, int 
       if ( vertex < currentVertex )
       {
         QgsGeometry* g = QgsGeometry::fromPolyline( *it );
-        delete geom;
-        return g;
+        return *g;
       }
     }
   }
-  delete geom;
-  return nullptr;
+  return QgsGeometry();
 }
 
 QgsGeometry* QgsMapToolOffsetCurve::convertToMultiLine( QgsGeometry* geom )

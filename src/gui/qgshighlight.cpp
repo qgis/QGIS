@@ -94,7 +94,9 @@ void QgsHighlight::init()
       }
       else if ( mFeature.constGeometry() )
       {
-        mFeature.geometry()->transform( ct );
+        QgsGeometry g = *mFeature.constGeometry();
+        g.transform( ct );
+        mFeature.setGeometry( g );
       }
     }
   }

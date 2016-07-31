@@ -78,7 +78,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
   {
     mRubberBand = createRubberBand( vlayer->geometryType() );
 
-    mRubberBand->setToGeometry( geomPart, vlayer );
+    mRubberBand->setToGeometry( *geomPart, vlayer );
     mRubberBand->show();
   }
 
@@ -102,9 +102,9 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
 
   QgsFeature f;
   vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
-  QgsGeometry* g = f.geometry();
+  QgsGeometry g = *f.constGeometry();
 
-  if ( g->deletePart( mPressedPartNum ) )
+  if ( g.deletePart( mPressedPartNum ) )
   {
     vlayer->beginEditCommand( tr( "Part of multipart feature deleted" ) );
     vlayer->changeGeometry( f.id(), g );

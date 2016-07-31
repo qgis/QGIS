@@ -281,7 +281,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
       feature.setGeometry( QgsOgrUtils::ogrGeometryToQgsGeometry( geom ) );
     }
     else
-      feature.setGeometry( nullptr );
+      feature.setGeometry( QgsGeometry() );
 
     if (( useIntersect && ( !feature.constGeometry() || !feature.constGeometry()->intersects( mRequest.filterRect() ) ) )
         || ( geometryTypeFilter && ( !feature.constGeometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.constGeometry()->wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
@@ -293,7 +293,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
   if ( !mFetchGeometry )
   {
-    feature.setGeometry( nullptr );
+    feature.setGeometry( QgsGeometry() );
   }
 
   // fetch attributes

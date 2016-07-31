@@ -93,7 +93,7 @@ void TestQgsOgrUtils::cleanup()
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
 {
   // test with null geometry
-  QVERIFY( !QgsOgrUtils::ogrGeometryToQgsGeometry( nullptr ) );
+  QVERIFY( QgsOgrUtils::ogrGeometryToQgsGeometry( nullptr ).isEmpty() );
 
   // get a geometry from line file, test
   OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
@@ -106,10 +106,10 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   OGRGeometryH ogrGeom = OGR_F_GetGeometryRef( oFeat );
   QVERIFY( ogrGeom );
 
-  QScopedPointer< QgsGeometry > geom( QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom ) );
-  QVERIFY( geom.data() );
-  QCOMPARE( geom->geometry()->wkbType(), QgsWKBTypes::LineString );
-  QCOMPARE( geom->geometry()->nCoordinates(), 71 );
+  QgsGeometry geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QVERIFY( !geom.isEmpty() );
+  QCOMPARE( geom.geometry()->wkbType(), QgsWKBTypes::LineString );
+  QCOMPARE( geom.geometry()->nCoordinates(), 71 );
 
   OGR_F_Destroy( oFeat );
   OGR_DS_Destroy( hDS );

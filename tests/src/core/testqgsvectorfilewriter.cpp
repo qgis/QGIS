@@ -149,7 +149,8 @@ void TestQgsVectorFileWriter::createPoint()
   // delete it in its dtor!
   QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
   QgsFeature myFeature;
-  myFeature.setGeometry( mypPointGeometry );
+  myFeature.setGeometry( *mypPointGeometry );
+  delete mypPointGeometry;
   myFeature.initAttributes( 1 );
   myFeature.setAttribute( 0, "HelloWorld" );
   //
@@ -197,7 +198,8 @@ void TestQgsVectorFileWriter::createLine()
   // delete it in its dtor!
   QgsGeometry * mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
   QgsFeature myFeature;
-  myFeature.setGeometry( mypLineGeometry );
+  myFeature.setGeometry( *mypLineGeometry );
+  delete mypLineGeometry;
   myFeature.initAttributes( 1 );
   myFeature.setAttribute( 0, "HelloWorld" );
   //
@@ -250,7 +252,8 @@ void TestQgsVectorFileWriter::createPolygon()
   // delete it in its dtor!
   QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
   QgsFeature myFeature;
-  myFeature.setGeometry( mypPolygonGeometry );
+  myFeature.setGeometry( *mypPolygonGeometry );
+  delete mypPolygonGeometry;
   myFeature.initAttributes( 1 );
   myFeature.setAttribute( 0, "HelloWorld" );
   //
@@ -310,7 +313,8 @@ void TestQgsVectorFileWriter::polygonGridTest()
       // delete it in its dtor!
       QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
-      myFeature.setGeometry( mypPolygonGeometry );
+      myFeature.setGeometry( *mypPolygonGeometry );
+      delete mypPolygonGeometry;
       myFeature.initAttributes( 1 );
       myFeature.setAttribute( 0, "HelloWorld" );
       //
@@ -383,7 +387,8 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       // delete it in its dtor!
       QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
-      myFeature.setGeometry( mypPolygonGeometry );
+      myFeature.setGeometry( *mypPolygonGeometry );
+      delete mypPolygonGeometry;
       myFeature.initAttributes( 1 );
       myFeature.setAttribute( 0, "HelloWorld" );
       //
@@ -448,7 +453,8 @@ void TestQgsVectorFileWriter::regression1141()
     // delete it in its dtor!
     QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( myPoint );
     QgsFeature myFeature;
-    myFeature.setGeometry( mypPointGeometry );
+    myFeature.setGeometry( *mypPointGeometry );
+    delete mypPointGeometry;
     myFeature.initAttributes( 1 );
     myFeature.setAttribute( 0, 10 );
     //

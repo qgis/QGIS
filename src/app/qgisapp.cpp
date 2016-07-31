@@ -6358,20 +6358,18 @@ void QgisApp::deletePart()
   mMapCanvas->setMapTool( mMapTools.mDeletePart );
 }
 
-QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool& canceled )
+QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool& canceled )
 {
   canceled = false;
   if ( !vl || featureList.size() < 2 )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
-  QgsGeometry* unionGeom = featureList[0].geometry();
-  QgsGeometry* backupPtr = nullptr; //pointer to delete intermediate results
-  if ( !unionGeom )
-  {
-    return nullptr;
-  }
+  if ( !featureList.at( 0 ).constGeometry() )
+    return QgsGeometry();
+
+  QgsGeometry unionGeom = *featureList[0].constGeometry();
 
   QProgressDialog progress( tr( "Merging features..." ), tr( "Abort" ), 0, featureList.size(), this );
   progress.setWindowModality( Qt::WindowModal );
@@ -6382,34 +6380,29 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
   {
     if ( progress.wasCanceled() )
     {
-      delete unionGeom;
       QApplication::restoreOverrideCursor();
       canceled = true;
-      return nullptr;
+      return QgsGeometry();
     }
     progress.setValue( i );
-    QgsGeometry* currentGeom = featureList[i].geometry();
-    if ( currentGeom )
+    QgsGeometry currentGeom = *featureList[i].constGeometry();
+    if ( !currentGeom.isEmpty() )
     {
-      backupPtr = unionGeom;
-      unionGeom = unionGeom->combine( currentGeom );
-      if ( i > 1 ) //delete previous intermediate results
-      {
-        delete backupPtr;
-        backupPtr = nullptr;
-      }
-      if ( !unionGeom )
+      QgsGeometry* result = unionGeom.combine( &currentGeom );
+      unionGeom = *result;
+      delete result;
+      if ( unionGeom.isEmpty() )
       {
         QApplication::restoreOverrideCursor();
-        return nullptr;
+        return QgsGeometry();
       }
     }
   }
 
   //convert unionGeom to a multipart geometry in case it is necessary to match the layer type
-  if ( Qgis::isMultiType( vl->wkbType() ) && !unionGeom->isMultipart() )
+  if ( Qgis::isMultiType( vl->wkbType() ) && !unionGeom.isMultipart() )
   {
-    unionGeom->convertToMultiType();
+    unionGeom.convertToMultiType();
   }
 
   QApplication::restoreOverrideCursor();
@@ -6975,8 +6968,8 @@ void QgisApp::mergeSelectedFeatures()
   QgsFeatureIds featureIds = vl->selectedFeaturesIds();
   QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
   bool canceled;
-  QgsGeometry* unionGeom = unionGeometries( vl, featureList, canceled );
-  if ( !unionGeom )
+  QgsGeometry unionGeom = unionGeometries( vl, featureList, canceled );
+  if ( unionGeom.isEmpty() )
   {
     if ( !canceled )
     {
@@ -6992,7 +6985,6 @@ void QgisApp::mergeSelectedFeatures()
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
   if ( d.exec() == QDialog::Rejected )
   {
-    delete unionGeom;
     return;
   }
 
@@ -7004,18 +6996,16 @@ void QgisApp::mergeSelectedFeatures()
       tr( "Not enough features selected" ),
       tr( "The merge tool requires at least two selected features" ),
       QgsMessageBar::WARNING );
-    delete unionGeom;
     return;
   }
 
   //if the user changed the feature selection in the merge dialog, we need to repeat the union and check the type
   if ( featureIds.size() != featureIdsAfter.size() )
   {
-    delete unionGeom;
     bool canceled;
     QgsFeatureList featureListAfter = vl->selectedFeatures();
     unionGeom = unionGeometries( vl, featureListAfter, canceled );
-    if ( !unionGeom )
+    if ( unionGeom.isEmpty() )
     {
       if ( !canceled )
       {
@@ -7393,10 +7383,13 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
           featureIt = features.erase( featureIt );
           continue;
         }
-        featureIt->setGeometry( newGeometry );
+        featureIt->setGeometry( *newGeometry );
+        delete newGeometry;
       }
       // avoid intersection if enabled in digitize settings
-      featureIt->geometry()->avoidIntersections();
+      QgsGeometry g = *featureIt->constGeometry();
+      g.avoidIntersections();
+      featureIt->setGeometry( g );
     }
 
     ++featureIt;
@@ -7582,12 +7575,14 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
     if ( Qgis::singleType( wkbType ) != Qgis::singleType( type ) )
     {
-      feature.setGeometry( nullptr );
+      feature.setGeometry( QgsGeometry() );
     }
 
     if ( Qgis::isMultiType( wkbType ) &&  Qgis::isSingleType( type ) )
     {
-      feature.geometry()->convertToMultiType();
+      QgsGeometry g = *feature.constGeometry();
+      g.convertToMultiType();
+      feature.setGeometry( g );
     }
   }
   if ( ! layer->addFeatures( features, false ) || !layer->commitChanges() )

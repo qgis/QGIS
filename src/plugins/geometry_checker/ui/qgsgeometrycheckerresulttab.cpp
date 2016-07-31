@@ -271,7 +271,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
     QgsFeature f( layer->fields() );
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
-    f.setGeometry( new QgsGeometry( error->location().clone() ) );
+    f.setGeometry( QgsGeometry( error->location().clone() ) );
     layer->dataProvider()->addFeatures( QgsFeatureList() << f );
   }
 
@@ -331,7 +331,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     {
       QgsRubberBand* featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );
       QgsGeometry geom( geometry->clone() );
-      featureRubberBand->addGeometry( &geom, mFeaturePool->getLayer() );
+      featureRubberBand->addGeometry( geom, mFeaturePool->getLayer() );
       featureRubberBand->setWidth( 5 );
       featureRubberBand->setColor( Qt::yellow );
       mCurrentRubberBands.append( featureRubberBand );

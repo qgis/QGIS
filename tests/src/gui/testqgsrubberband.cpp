@@ -104,8 +104,8 @@ void TestQgsRubberband::testAddSingleMultiGeometries()
 
   mCanvas->setExtent( QgsRectangle( -1e-3, -1e-3, 1e-3, 1e-3 ) ); // otherwise point cannot be converted to canvas coord
 
-  mRubberband->addGeometry( geomSinglePart.data(), mPolygonLayer );
-  mRubberband->addGeometry( geomMultiPart.data(), mPolygonLayer );
+  mRubberband->addGeometry( *geomSinglePart.data(), mPolygonLayer );
+  mRubberband->addGeometry( *geomMultiPart.data(), mPolygonLayer );
   QVERIFY( mRubberband->numberOfVertices() == 15 );
 }
 
@@ -128,7 +128,7 @@ void TestQgsRubberband::testBoundingRect()
   mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
   mRubberband->setIconSize( 5 ); // default, but better be explicit
   mRubberband->setWidth( 1 );    // default, but better be explicit
-  mRubberband->addGeometry( geom.data(), mPolygonLayer );
+  mRubberband->addGeometry( *geom.data(), mPolygonLayer );
 
   // 20 pixels for the extent + 3 for pen & icon per side + 2 of padding
   QCOMPARE( mRubberband->boundingRect(), QRectF( QPointF( -1, -1 ), QSizeF( 28, 28 ) ) );
@@ -163,19 +163,19 @@ void TestQgsRubberband::testVisibility()
 
   // Check visibility after setting to empty geometry
   QSharedPointer<QgsGeometry> emptyGeom( new QgsGeometry );
-  mRubberband->setToGeometry( emptyGeom.data(), mPolygonLayer );
+  mRubberband->setToGeometry( *emptyGeom.data(), mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Check that visibility changes
   mRubberband->setVisible( true );
-  mRubberband->setToGeometry( emptyGeom.data(), mPolygonLayer );
+  mRubberband->setToGeometry( *emptyGeom.data(), mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Check visibility after setting to valid geometry
   QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt(
                                       "POLYGON((10 10,10 30,30 30,30 10,10 10))"
                                     ) );
-  mRubberband->setToGeometry( geom.data(), mPolygonLayer );
+  mRubberband->setToGeometry( *geom.data(), mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), true );
 
   // Add point without update

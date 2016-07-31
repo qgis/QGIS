@@ -691,13 +691,13 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
         }
       }
 
-      QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( featureGeom, returnedLength + 1 );
+      QgsGeometry g;
+      g.fromWkb( featureGeom, returnedLength + 1 );
       feature.setGeometry( g );
     }
     else
     {
-      feature.setGeometry( nullptr );
+      feature.setGeometry( QgsGeometry() );
     }
 
     col++;

@@ -465,7 +465,8 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
     layer->setCustomProperty( "labeling/placement", placement );
   }
 
-  fet.setGeometry( geom );
+  fet.setGeometry( *geom );
+  delete geom;
   layer->dataProvider()->addFeatures( QgsFeatureList() << fet );
   return layer;
 }

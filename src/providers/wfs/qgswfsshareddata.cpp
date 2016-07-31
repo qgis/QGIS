@@ -516,7 +516,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRecta
       // If the requested bbox is inside an already cached rect that didn't
       // hit the download limit, then we can reuse the cached features without
       // issuing a new request.
-      if ( mRegions[id].geometry()->boundingBox().contains( rect ) &&
+      if ( mRegions[id].constGeometry()->boundingBox().contains( rect ) &&
            !mRegions[id].attributes().value( 0 ).toBool() )
       {
         QgsDebugMsg( "Cached features already cover this area of interest" );
@@ -527,7 +527,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRecta
       // On the other hand, if the requested bbox is inside an already cached rect,
       // that hit the download limit, our larger bbox will hit it too, so no need
       // to re-issue a new request either.
-      if ( rect.contains( mRegions[id].geometry()->boundingBox() ) &&
+      if ( rect.contains( mRegions[id].constGeometry()->boundingBox() ) &&
            mRegions[id].attributes().value( 0 ).toBool() )
       {
         QgsDebugMsg( "Current request is larger than a smaller request that hit the download limit, so no server download needed." );
@@ -884,7 +884,8 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
       else
         localComputedExtent.combineExtentWith( bBox );
       QgsGeometry* polyBoundingBox = QgsGeometry::fromRect( bBox );
-      cachedFeature.setGeometry( polyBoundingBox );
+      cachedFeature.setGeometry( *polyBoundingBox );
+      delete polyBoundingBox;
     }
     else
     {
@@ -1037,7 +1038,9 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
     // In case the download was successful, we will remember this bbox
     // and if the download reached the download limit or not
     QgsFeature f;
-    f.setGeometry( QgsGeometry::fromRect( mRect ) );
+    QgsGeometry* g = QgsGeometry::fromRect( mRect );
+    f.setGeometry( *g );
+    delete g;
     QgsFeatureId id = mRegions.size();
     f.setFeatureId( id );
     f.initAttributes( 1 );

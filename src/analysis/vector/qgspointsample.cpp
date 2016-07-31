@@ -127,7 +127,8 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
       f.setAttribute( "id", mNCreatedPoints + 1 );
       f.setAttribute( "station_id", points + 1 );
       f.setAttribute( "stratum_id", inputFeature.id() );
-      f.setGeometry( ptGeom );
+      f.setGeometry( *ptGeom );
+      delete ptGeom;
       writer.addFeature( f );
       sIndex.insertFeature( f );
       pointMapForFeature.insert( mNCreatedPoints, randPoint );

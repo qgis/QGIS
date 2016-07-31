@@ -48,11 +48,10 @@ class ANALYSIS_EXPORT QgsTransectSample
   private:
     QgsTransectSample(); //default constructor forbidden
 
-    QgsGeometry* findBaselineGeometry( const QVariant& strataId );
+    QgsGeometry findBaselineGeometry( const QVariant& strataId );
 
     /** Returns true if another transect is within the specified minimum distance*/
-    static bool otherTransectWithinDistance( QgsGeometry* geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex& sIndex, const QMap< QgsFeatureId, QgsGeometry* >&
-        lineFeatureMap, QgsDistanceArea& da );
+    static bool otherTransectWithinDistance( QgsGeometry* geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex& sIndex, const QMap<QgsFeatureId, QgsGeometry>& lineFeatureMap, QgsDistanceArea& da );
 
     QgsVectorLayer* mStrataLayer;
     QString mStrataIdAttribute;
@@ -83,7 +82,7 @@ class ANALYSIS_EXPORT QgsTransectSample
         @param pt1 out: closest point on first geometry
         @param pt2 out: closest point on secont geometry
         @return true in case of success*/
-    static bool closestSegmentPoints( QgsGeometry& g1, QgsGeometry& g2, double& dist, QgsPoint& pt1, QgsPoint& pt2 );
+    static bool closestSegmentPoints( const QgsGeometry& g1, const QgsGeometry& g2, double& dist, QgsPoint& pt1, QgsPoint& pt2 );
     /** Returns a copy of the multiline element closest to a point (caller takes ownership)*/
     static QgsGeometry* closestMultilineElement( const QgsPoint& pt, QgsGeometry* multiLine );
     /** Returns clipped buffer line. Iteratively applies reduced tolerances if the result is not a single line

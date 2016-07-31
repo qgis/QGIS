@@ -39,8 +39,11 @@ bool TopolError::fixMove( FeatureLayer fl1, FeatureLayer fl2 )
 
 
   // 0 means success
-  if ( !f1.geometry()->makeDifference( f2.constGeometry() ) )
-    return fl1.layer->changeGeometry( f1.id(), f1.geometry() );
+  QgsGeometry g = *f1.constGeometry();
+  if ( g.makeDifference( f2.constGeometry() ) == 0 )
+  {
+    return fl1.layer->changeGeometry( f1.id(), g );
+  }
 
   return false;
 }
@@ -71,7 +74,7 @@ bool TopolError::fixUnion( FeatureLayer fl1, FeatureLayer fl2 )
     return false;
 
   if ( fl2.layer->deleteFeature( f2.id() ) )
-    return fl1.layer->changeGeometry( f1.id(), g.data() );
+    return fl1.layer->changeGeometry( f1.id(), *g.data() );
 
   return false;
 }
@@ -95,7 +98,7 @@ bool TopolError::fixSnap()
   line.last() = conflictLine.last();
 
   QgsGeometry* newG = QgsGeometry::fromPolyline( line );
-  bool ret = fl.layer->changeGeometry( f1.id(), newG );
+  bool ret = fl.layer->changeGeometry( f1.id(), *newG );
   delete newG;
 
   return ret;

@@ -501,7 +501,9 @@ bool QgsTracer::initGraph()
       {
         try
         {
-          f.geometry()->transform( ct );
+          QgsGeometry transformedGeom = *f.constGeometry();
+          transformedGeom.transform( ct );
+          f.setGeometry( transformedGeom );
         }
         catch ( QgsCsException& )
         {
@@ -586,7 +588,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
   {
     disconnect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
     disconnect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-    disconnect( layer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+    disconnect( layer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
     disconnect( layer, SIGNAL( destroyed( QObject* ) ), this, SLOT( onLayerDestroyed( QObject* ) ) );
   }
 
@@ -596,7 +598,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
   {
     connect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
     connect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-    connect( layer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+    connect( layer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
     connect( layer, SIGNAL( destroyed( QObject* ) ), this, SLOT( onLayerDestroyed( QObject* ) ) );
   }
 
@@ -660,7 +662,7 @@ void QgsTracer::onFeatureDeleted( QgsFeatureId fid )
   invalidateGraph();
 }
 
-void QgsTracer::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
+void QgsTracer::onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom )
 {
   Q_UNUSED( fid );
   Q_UNUSED( geom );

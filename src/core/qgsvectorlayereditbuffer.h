@@ -58,7 +58,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     virtual bool deleteFeatures( const QgsFeatureIds& fid );
 
     /** Change feature's geometry */
-    virtual bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
+    virtual bool changeGeometry( QgsFeatureId fid, QgsGeometry geom );
 
     /** Changed an attribute value (but does not commit it) */
     virtual bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     void featureAdded( QgsFeatureId fid );
     void featureDeleted( QgsFeatureId fid );
-    void geometryChanged( QgsFeatureId fid, QgsGeometry &geom );
+    void geometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
     void attributeAdded( int idx );
     void attributeDeleted( int idx );

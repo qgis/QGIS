@@ -27,7 +27,8 @@ void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckErr
     {
       continue;
     }
-    QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsAbstractGeometryV2* geom = featureGeom.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
@@ -49,7 +50,8 @@ void QgsGeometryDegeneratePolygonCheck::fixError( QgsGeometryCheckError* error, 
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry featureGeometry = *feature.constGeometry();
+  QgsAbstractGeometryV2* geom = featureGeometry.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists

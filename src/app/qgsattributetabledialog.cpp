@@ -142,7 +142,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
     QgsGeometry *g = QgsGeometry::fromRect( extent );
     mRubberBand = new QgsRubberBand( mc, Qgis::Polygon );
-    mRubberBand->setToGeometry( g, theLayer );
+    mRubberBand->setToGeometry( *g, theLayer );
     delete g;
 
     mActionShowAllFilter->setText( tr( "Show All Features In Initial Canvas Extent" ) );

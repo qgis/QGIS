@@ -81,10 +81,11 @@ class CORE_EXPORT QgsOgrUtils
 
     /** Converts an OGR geometry representation to a QgsGeometry object
      * @param geom OGR geometry handle
-     * @returns new QgsGeometry object, if conversion was successful
+     * @returns QgsGeometry object. If conversion was not successful the geometry
+     * will be empty.
      * @see readOgrFeatureGeometry()
      */
-    static QgsGeometry* ogrGeometryToQgsGeometry( OGRGeometryH geom );
+    static QgsGeometry ogrGeometryToQgsGeometry( OGRGeometryH geom );
 
     /** Attempts to parse a string representing a collection of features using OGR. For example, this method can be
      * used to convert a GeoJSON encoded collection to a list of QgsFeatures.

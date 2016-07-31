@@ -480,11 +480,8 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
               {
                 QgsFeature f;
                 f.setFeatureId( mFile->recordId() );
-                f.setGeometry( geom );
+                f.setGeometry( *geom );
                 mSpatialIndex->insertFeature( f );
-                // Feature now has ownership of geometry, so set to null
-                // here to avoid deleting twice.
-                geom = nullptr;
               }
             }
             else
@@ -539,7 +536,9 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
           {
             QgsFeature f;
             f.setFeatureId( mFile->recordId() );
-            f.setGeometry( QgsGeometry::fromPoint( pt ) );
+            QgsGeometry* g = QgsGeometry::fromPoint( pt );
+            f.setGeometry( *g );
+            delete g;
             mSpatialIndex->insertFeature( f );
           }
         }

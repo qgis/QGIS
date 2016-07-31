@@ -1616,8 +1616,13 @@ QDomDocument QgsWfsServer::transaction( const QString& requestBody )
 
             if ( !geometryElem.isNull() )
             {
-              if ( !layer->changeGeometry( *fidIt, QgsOgcUtils::geometryFromGML( geometryElem ) ) )
+              QgsGeometry* g = QgsOgcUtils::geometryFromGML( geometryElem );
+              if ( !layer->changeGeometry( *fidIt, *g ) )
+              {
+                delete g;
                 throw QgsMapServiceException( "RequestNotWellFormed", "Error in change geometry" );
+              }
+              delete g;
             }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -1752,7 +1757,9 @@ QDomDocument QgsWfsServer::transaction( const QString& requestBody )
                 }
                 else //a geometry attribute
                 {
-                  inFeatList.last().setGeometry( QgsOgcUtils::geometryFromGML( currentAttributeElement ) );
+                  QgsGeometry* g = QgsOgcUtils::geometryFromGML( currentAttributeElement );
+                  inFeatList.last().setGeometry( *g );
+                  delete g;
                 }
               }
               currentAttributeChild = currentAttributeChild.nextSibling();
@@ -1887,12 +1894,14 @@ QString QgsWfsServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
     {
       QgsRectangle box = geom->boundingBox();
       QgsGeometry* bbox = QgsGeometry::fromRect( box );
-      f.setGeometry( bbox );
+      f.setGeometry( *bbox );
+      delete bbox;
     }
     else if ( mGeometryName == "CENTROID" )
     {
       QgsGeometry* centroid = geom->centroid();
-      f.setGeometry( centroid );
+      f.setGeometry( *centroid );
+      delete centroid;
     }
   }
 

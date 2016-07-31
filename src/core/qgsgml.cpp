@@ -863,11 +863,11 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
 #else
         OGR_G_ExportToWkb( hGeom, wkbNDR, pabyBuffer );
 #endif
-        QgsGeometry *g = new QgsGeometry();
-        g->fromWkb( pabyBuffer, wkbSize );
+        QgsGeometry g;
+        g.fromWkb( pabyBuffer, wkbSize );
         if ( mInvertAxisOrientation )
         {
-          g->transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
+          g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
         }
         mCurrentFeature->setGeometry( g );
         OGR_G_DestroyGeometry( hGeom );
@@ -933,18 +933,20 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
              memcmp( pszLocalName, mTypeNamePtr, mTypeName.size() ) == 0 ) )
   {
     Q_ASSERT( mCurrentFeature );
-    if ( !mCurrentFeature->geometry() )
+    if ( !mCurrentFeature->constGeometry() )
     {
       if ( mCurrentWKB.size() > 0 )
       {
-        QgsGeometry *g = new QgsGeometry();
-        g->fromWkb( mCurrentWKB, mCurrentWKB.size() );
+        QgsGeometry g;
+        g.fromWkb( mCurrentWKB, mCurrentWKB.size() );
         mCurrentFeature->setGeometry( g );
         mCurrentWKB = QgsWkbPtr( nullptr, 0 );
       }
       else if ( !mCurrentExtent.isEmpty() )
       {
-        mCurrentFeature->setGeometry( QgsGeometry::fromRect( mCurrentExtent ) );
+        QgsGeometry* featGeom = QgsGeometry::fromRect( mCurrentExtent );
+        mCurrentFeature->setGeometry( *featGeom );
+        delete featGeom;
       }
     }
     mCurrentFeature->setValid( true );

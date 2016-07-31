@@ -1078,7 +1078,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
 
   if ( f.constGeometry() && current.constGeometry() && f.constGeometry() != current.constGeometry() && !f.constGeometry()->isGeosEqual( *current.constGeometry() ) )
   {
-    if ( !changeGeometry( f.id(), f.geometry() ) )
+    if ( !changeGeometry( f.id(), *f.constGeometry() ) )
     {
       QgsDebugMsg( QString( "geometry of feature %1 could not be changed." ).arg( f.id() ) );
       return false;
@@ -1482,7 +1482,7 @@ bool QgsVectorLayer::startEditing()
   //connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( triggerRepaint() ) ); // TODO[MD]: works well?
   connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( featureAdded( QgsFeatureId ) ) );
   connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
   connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
   connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), this, SIGNAL( attributeAdded( int ) ) );
   connect( mEditBuffer, SIGNAL( attributeDeleted( int ) ), this, SIGNAL( attributeDeleted( int ) ) );
@@ -2153,7 +2153,7 @@ bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& error
 }
 
 
-bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
+bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, const QgsGeometry& geom )
 {
   if ( !mEditBuffer || !mDataProvider )
   {

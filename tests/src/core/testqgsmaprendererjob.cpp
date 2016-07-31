@@ -150,7 +150,8 @@ void TestQgsMapRendererJob::initTestCase()
         // delete it in its dtor!
         QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
         QgsFeature myFeature;
-        myFeature.setGeometry( mypPolygonGeometry );
+        myFeature.setGeometry( *mypPolygonGeometry );
+        delete mypPolygonGeometry;
         myFeature.initAttributes( 1 );
         myFeature.setAttribute( 0, i );
         //

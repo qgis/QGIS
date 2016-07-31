@@ -187,7 +187,9 @@ bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint& wpt, QgsFeature& fe
   // some wkb voodoo
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    feature.setGeometry( readWaypointGeometry( wpt ) );
+    QgsGeometry* g = readWaypointGeometry( wpt );
+    feature.setGeometry( *g );
+    delete g;
   }
   feature.setFeatureId( wpt.id );
   feature.setValid( true );
@@ -226,7 +228,8 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute& rte, QgsFeature& feature 
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    feature.setGeometry( theGeometry );
+    feature.setGeometry( *theGeometry );
+    delete theGeometry;
   }
   else
   {
@@ -268,7 +271,8 @@ bool QgsGPXFeatureIterator::readTrack( const QgsTrack& trk, QgsFeature& feature 
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    feature.setGeometry( theGeometry );
+    feature.setGeometry( *theGeometry );
+    delete theGeometry;
   }
   else
   {

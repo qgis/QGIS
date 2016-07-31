@@ -118,7 +118,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
     mMovedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
     mRubberBand = createRubberBand( vlayer->geometryType() );
-    mRubberBand->setToGeometry( cf.constGeometry(), vlayer );
+    mRubberBand->setToGeometry( *cf.constGeometry(), vlayer );
   }
   else
   {
@@ -130,7 +130,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
 
     while ( it.nextFeature( feat ) )
     {
-      mRubberBand->addGeometry( feat.constGeometry(), vlayer );
+      mRubberBand->addGeometry( *feat.constGeometry(), vlayer );
     }
   }
 

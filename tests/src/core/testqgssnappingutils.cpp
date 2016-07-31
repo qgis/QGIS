@@ -67,7 +67,9 @@ class TestQgsSnappingUtils : public QObject
       QgsPolyline polyline;
       polyline << QgsPoint( 0, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 );
       polygon << polyline;
-      ff.setGeometry( QgsGeometry::fromPolygon( polygon ) );
+      QgsGeometry* polygonGeom = QgsGeometry::fromPolygon( polygon );
+      ff.setGeometry( *polygonGeom );
+      delete polygonGeom;
       QgsFeatureList flist;
       flist << ff;
       mVL->dataProvider()->addFeatures( flist );
@@ -182,9 +184,13 @@ class TestQgsSnappingUtils : public QObject
       polyline1 << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 );
       polyline2 << QgsPoint( 1, 0 ) << QgsPoint( 0, 1 );
       QgsFeature f1;
-      f1.setGeometry( QgsGeometry::fromPolyline( polyline1 ) );
+      QgsGeometry* f1g = QgsGeometry::fromPolyline( polyline1 ) ;
+      f1.setGeometry( *f1g );
+      delete f1g;
       QgsFeature f2;
-      f2.setGeometry( QgsGeometry::fromPolyline( polyline2 ) );
+      QgsGeometry* f2g = QgsGeometry::fromPolyline( polyline2 );
+      f2.setGeometry( *f2g );
+      delete f2g;
       QgsFeatureList flist;
       flist << f1 << f2;
       vl->dataProvider()->addFeatures( flist );

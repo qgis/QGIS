@@ -383,9 +383,9 @@ int QgsMapToolCapture::fetchLayerPoint( QgsPointLocator::Match match , QgsPointV
     if ( fetched )
     {
       QgsVertexId vId;
-      if ( !f.geometry()->vertexIdFromVertexNr( match.vertexIndex(), vId ) )
+      if ( !f.constGeometry()->vertexIdFromVertexNr( match.vertexIndex(), vId ) )
         return 2;
-      layerPoint = f.geometry()->geometry()->vertexAt( vId );
+      layerPoint = f.constGeometry()->geometry()->vertexAt( vId );
       return 0;
     }
     else

@@ -142,14 +142,14 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     void dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
 
     //helper functions for event layer
-    void addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, QgsGeometry* lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, int offsetField = -1, double offsetScale = 1.0,
+    void addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, const QgsGeometry& lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, int offsetField = -1, double offsetScale = 1.0,
                                bool forceSingleType = false );
     /** Create geometry offset relative to line geometry.
         @param geom the geometry to modify
         @param lineGeom the line geometry to which the feature is referenced
         @param offset the offset value in layer unit. Negative values mean offset towards left, positive values offset to the right side*/
-    bool createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset );
-    QgsPoint createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const;
+    bool createOffsetGeometry( QgsGeometry* geom, const QgsGeometry& lineGeom, double offset );
+    QgsPoint createPointOffset( double x, double y, double dist, const QgsGeometry& lineGeom ) const;
     QgsConstWkbPtr locateBetweenWkbString( QgsConstWkbPtr ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
     QgsConstWkbPtr locateAlongWkbString( QgsConstWkbPtr ptr, QgsMultiPoint& result, double measure );
     static bool clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint& pt1, QgsPoint& pt2, bool& secondPointClipped );

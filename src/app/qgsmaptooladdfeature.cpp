@@ -165,7 +165,8 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
         g = QgsGeometry::fromPoint( savePoint );
       }
 
-      f.setGeometry( g );
+      f.setGeometry( *g );
+      delete g;
       f.setValid( true );
 
       addFeature( vlayer, &f, false );
@@ -253,7 +254,9 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
       if ( mode() == CaptureLine )
       {
-        f->setGeometry( new QgsGeometry( curveToAdd ) );
+        QgsGeometry* g = new QgsGeometry( curveToAdd );
+        f->setGeometry( *g );
+        delete g;
       }
       else
       {
@@ -267,9 +270,13 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
           poly = new QgsPolygonV2();
         }
         poly->setExteriorRing( curveToAdd );
-        f->setGeometry( new QgsGeometry( poly ) );
+        QgsGeometry* g = new QgsGeometry( poly );
+        f->setGeometry( *g );
+        delete g;
 
-        int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
+        QgsGeometry featGeom = *f->constGeometry();
+        int avoidIntersectionsReturn = featGeom.avoidIntersections();
+        f->setGeometry( featGeom );
         if ( avoidIntersectionsReturn == 1 )
         {
           //not a polygon type. Impossible to get there

@@ -1561,7 +1561,8 @@ class TestQgsExpression: public QObject
       QgsGeometry* geom = ( QgsGeometry* ) geomptr;
 
       QgsFeature f;
-      f.setGeometry( geom );
+      f.setGeometry( *geom );
+      delete geom;
 
       QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), false );
@@ -1586,8 +1587,12 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
       QgsFeature fPolygon, fPolyline;
-      fPolyline.setGeometry( QgsGeometry::fromPolyline( polyline ) );
-      fPolygon.setGeometry( QgsGeometry::fromPolygon( polygon ) );
+      QgsGeometry* polylineGeom = QgsGeometry::fromPolyline( polyline );
+      fPolyline.setGeometry( *polylineGeom );
+      delete polylineGeom;
+      QgsGeometry* polygonGeom = QgsGeometry::fromPolygon( polygon );
+      fPolygon.setGeometry( *polygonGeom );
+      delete polygonGeom;
 
       QgsExpressionContext context;
 
@@ -1746,7 +1751,9 @@ class TestQgsExpression: public QObject
       polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
       QgsPolygon polygon3111;
       polygon3111 << polygonRing3111;
-      feat.setGeometry( QgsGeometry::fromPolygon( polygon3111 ) );
+      QgsGeometry* polygon3111G = QgsGeometry::fromPolygon( polygon3111 );
+      feat.setGeometry( *polygon3111G );
+      delete polygon3111G;
       QgsExpressionContext context;
       context.setFeature( feat );
 
@@ -1815,7 +1822,9 @@ class TestQgsExpression: public QObject
       // test length without geomCalculator
       QgsPolyline line3111;
       line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
-      feat.setGeometry( QgsGeometry::fromPolyline( line3111 ) );
+      QgsGeometry* line3111G =  QgsGeometry::fromPolyline( line3111 ) ;
+      feat.setGeometry( *line3111G );
+      delete line3111G;
       context.setFeature( feat );
 
       QgsExpression expLength( "$length" );
@@ -1859,9 +1868,15 @@ class TestQgsExpression: public QObject
       polygon << polygon_ring;
 
       QgsFeature fPoint, fPolygon, fPolyline;
-      fPoint.setGeometry( QgsGeometry::fromPoint( QgsPoint( -1.23456789, 9.87654321 ) ) );
-      fPolyline.setGeometry( QgsGeometry::fromPolyline( polyline ) );
-      fPolygon.setGeometry( QgsGeometry::fromPolygon( polygon ) );
+      QgsGeometry* fPointG = QgsGeometry::fromPoint( QgsPoint( -1.23456789, 9.87654321 ) );
+      fPoint.setGeometry( *fPointG );
+      delete fPointG;
+      QgsGeometry* fPolylineG = QgsGeometry::fromPolyline( polyline );
+      fPolyline.setGeometry( *fPolylineG );
+      delete fPolylineG;
+      QgsGeometry* fPolygonG = QgsGeometry::fromPolygon( polygon );
+      fPolygon.setGeometry( *fPolygonG );
+      delete fPolygonG;
 
       QgsExpressionContext context;
 
@@ -1950,7 +1965,7 @@ class TestQgsExpression: public QObject
       QgsGeometry* geom = ( QgsGeometry* ) geomptr;
 
       QgsFeature f;
-      f.setGeometry( geom );
+      f.setGeometry( *geom );
 
       QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), false );
@@ -1974,6 +1989,8 @@ class TestQgsExpression: public QObject
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       outGeom = out.value<QgsGeometry>();
       QCOMPARE( geom->equals( &outGeom ), true );
+
+      delete geom;
     }
 
     void eval_geometry_access_transform_data()
@@ -2027,7 +2044,7 @@ class TestQgsExpression: public QObject
       QgsGeometry* geom = ( QgsGeometry* ) geomptr;
 
       QgsFeature f;
-      f.setGeometry( geom );
+      f.setGeometry( *geom );
 
       QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), false );
@@ -2050,6 +2067,8 @@ class TestQgsExpression: public QObject
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       outGeom = out.value<QgsGeometry>();
       QCOMPARE( geom->equals( &outGeom ), true );
+
+      delete geom;
     }
 
     void eval_spatial_operator_data()
@@ -2098,7 +2117,7 @@ class TestQgsExpression: public QObject
       QgsGeometry* geom = ( QgsGeometry* ) geomptr;
 
       QgsFeature f;
-      f.setGeometry( geom );
+      f.setGeometry( *geom );
 
       QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), false );
@@ -2115,6 +2134,8 @@ class TestQgsExpression: public QObject
       out = exp.evaluate( &context );
       QCOMPARE( exp.hasEvalError(), evalError );
       QCOMPARE( out.toInt(), result.toInt() );
+
+      delete geom;
     }
 
     void eval_geometry_method_data()
@@ -2180,7 +2201,7 @@ class TestQgsExpression: public QObject
       QgsGeometry *result = ( QgsGeometry * ) resultptr;
 
       QgsFeature f;
-      f.setGeometry( geom );
+      f.setGeometry( *geom );
 
       QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), false );
@@ -2206,6 +2227,7 @@ class TestQgsExpression: public QObject
       QVERIFY( compareWkt( outGeom.exportToWkt(), result->exportToWkt() ) );
 
       delete result;
+      delete geom;
     }
 
     void eval_special_columns()

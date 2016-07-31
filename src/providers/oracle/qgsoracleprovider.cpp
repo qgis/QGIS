@@ -1329,7 +1329,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
       if ( !mGeometryColumn.isNull() )
       {
-        appendGeomParam( features->geometry(), ins );
+        appendGeomParam( features->constGeometry(), ins );
       }
 
       for ( int i = 0; i < fieldId.size(); i++ )

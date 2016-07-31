@@ -278,7 +278,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
       mRotatedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
-      mRubberBand->setToGeometry( cf.constGeometry(), vlayer );
+      mRubberBand->setToGeometry( *cf.constGeometry(), vlayer );
     }
     else
     {
@@ -290,7 +290,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
       QgsFeatureIterator it = vlayer->selectedFeaturesIterator();
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.constGeometry(), vlayer );
+        mRubberBand->addGeometry( *feat.constGeometry(), vlayer );
       }
     }
 

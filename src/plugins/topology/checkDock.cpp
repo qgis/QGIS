@@ -243,7 +243,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
     mVMFeature1->setCenter( g->asPoint() );
   }
   else
-    mRBFeature1->setToGeometry( g, fl.layer );
+    mRBFeature1->setToGeometry( *g, fl.layer );
 
   fl = mErrorList[row]->featurePairs()[1];
   if ( !fl.layer )
@@ -272,7 +272,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
     mVMFeature2->setCenter( g->asPoint() );
   }
   else
-    mRBFeature2->setToGeometry( g, fl.layer );
+    mRBFeature2->setToGeometry( *g, fl.layer );
 
   if ( !mErrorList[row]->conflict() )
   {
@@ -290,7 +290,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
     mVMConflict->setCenter( mErrorList.at( row )->conflict()->asPoint() );
   }
   else
-    mRBConflict->setToGeometry( mErrorList.at( row )->conflict(), fl.layer );
+    mRBConflict->setToGeometry( *mErrorList.at( row )->conflict(), fl.layer );
 }
 
 void checkDock::fix()
@@ -369,7 +369,7 @@ void checkDock::runTests( ValidateType type )
       }
       rb->setColor( "red" );
       rb->setWidth( 4 );
-      rb->setToGeometry( te->conflict(), layer1 );
+      rb->setToGeometry( *te->conflict(), layer1 );
       rb->show();
       mRbErrorMarkers << rb;
     }

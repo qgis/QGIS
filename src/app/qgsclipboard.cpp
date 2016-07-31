@@ -196,7 +196,8 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const Q
     if ( !fields.isEmpty() )
       feature.setFields( fields, true );
 
-    feature.setGeometry( geometry );
+    feature.setGeometry( *geometry );
+    delete geometry;
     features.append( feature );
   }
 
@@ -269,7 +270,9 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
   QgsDebugMsg( "transforming clipboard." );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )
   {
-    iter->geometry()->transform( ct );
+    QgsGeometry g = *iter->constGeometry();
+    g.transform( ct );
+    iter->setGeometry( g );
   }
 
   return featureList;

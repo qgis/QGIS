@@ -55,7 +55,9 @@ namespace QTest
 static QgsFeature make_feature( const QString& wkt )
 {
   QgsFeature f;
-  f.setGeometry( QgsGeometry::fromWkt( wkt ) );
+  QgsGeometry* g = QgsGeometry::fromWkt( wkt ) ;
+  f.setGeometry( *g );
+  delete g;
   return f;
 }
 
@@ -252,7 +254,7 @@ void TestQgsTracer::testLayerUpdates()
 
   // make the shortcut again from a different feature
   QgsGeometry* g = QgsGeometry::fromWkt( "LINESTRING(10 0, 10 10)" );
-  vl->changeGeometry( 2, g );  // change bottom line (second item in wkts)
+  vl->changeGeometry( 2, *g );  // change bottom line (second item in wkts)
   delete g;
 
   QgsPolyline points4 = tracer.findShortestPath( QgsPoint( 10, 0 ), QgsPoint( 10, 10 ) );

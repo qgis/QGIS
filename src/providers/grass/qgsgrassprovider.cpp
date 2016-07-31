@@ -1112,7 +1112,7 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
   mEditBuffer = vectorLayer->editBuffer();
   connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), SLOT( onFeatureAdded( QgsFeatureId ) ) );
   connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry & ) ) );
+  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), SLOT( onGeometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
   connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ), SLOT( onAttributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
   connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), SLOT( onAttributeAdded( int ) ) );
   connect( mEditBuffer, SIGNAL( attributeDeleted( int ) ), SLOT( onAttributeDeleted( int ) ) );
@@ -1254,11 +1254,11 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     QgsWKBTypes::Type wkbType = QgsWKBTypes::flatType( geometry->wkbType() );
     if ( wkbType == QgsWKBTypes::Polygon )
     {
-      const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( addedFeatures[fid].geometry()->geometry() );
+      const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( addedFeatures[fid].constGeometry()->geometry() );
       if ( polygon )
       {
         QgsLineStringV2* lineString = polygon->exteriorRing()->curveToLine();
-        addedFeatures[fid].setGeometry( new QgsGeometry( lineString ) );
+        addedFeatures[fid].setGeometry( QgsGeometry( lineString ) );
       }
       // TODO: create also centroid and add it to undo
     }
@@ -1660,7 +1660,7 @@ void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
   }
 }
 
-void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom )
+void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
   int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
   int realLine = oldLid;

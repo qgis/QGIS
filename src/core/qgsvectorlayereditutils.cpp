@@ -51,7 +51,7 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
 
   geometry.insertVertex( x, y, beforeVertex );
 
-  L->editBuffer()->changeGeometry( atFeatureId, &geometry );
+  L->editBuffer()->changeGeometry( atFeatureId, geometry );
   return true;
 }
 
@@ -80,7 +80,7 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPointV2& p, QgsFeatureId atFe
 
   geometry.moveVertex( p, atVertex );
 
-  L->editBuffer()->changeGeometry( atFeatureId, &geometry );
+  L->editBuffer()->changeGeometry( atFeatureId, geometry );
   return true;
 }
 
@@ -116,7 +116,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertexV2( QgsFeatureId
     geometry.setGeometry( nullptr );
   }
 
-  L->editBuffer()->changeGeometry( featureId, &geometry );
+  L->editBuffer()->changeGeometry( featureId, geometry );
   return !geometry.isEmpty() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
@@ -164,10 +164,12 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& tar
       continue;
 
     //add ring takes ownership of ring, and deletes it if there's an error
-    addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
+    QgsGeometry g = *f.constGeometry();
+
+    addRingReturnCode = g.addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
     if ( addRingReturnCode == 0 )
     {
-      L->editBuffer()->changeGeometry( f.id(), f.geometry() );
+      L->editBuffer()->changeGeometry( f.id(), g );
       if ( modifiedFeatureId )
         *modifiedFeatureId = f.id();
 
@@ -211,7 +213,7 @@ int QgsVectorLayerEditUtils::addPart( const QgsPointSequenceV2 &points, QgsFeatu
     }
     else
     {
-      geometry = *f.geometry();
+      geometry = *f.constGeometry();
     }
   }
 
@@ -224,7 +226,7 @@ int QgsVectorLayerEditUtils::addPart( const QgsPointSequenceV2 &points, QgsFeatu
       //convert back to single part if required by layer
       geometry.convertToSingleType();
     }
-    L->editBuffer()->changeGeometry( featureId, &geometry );
+    L->editBuffer()->changeGeometry( featureId, geometry );
   }
   return errorCode;
 }
@@ -250,7 +252,7 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
     }
     else
     {
-      geometry = *f.geometry();
+      geometry = *f.constGeometry();
     }
   }
 
@@ -263,7 +265,7 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
       //convert back to single part if required by layer
       geometry.convertToSingleType();
     }
-    L->editBuffer()->changeGeometry( featureId, &geometry );
+    L->editBuffer()->changeGeometry( featureId, geometry );
   }
   return errorCode;
 }
@@ -288,7 +290,7 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
   int errorCode = geometry.translate( dx, dy );
   if ( errorCode == 0 )
   {
-    L->editBuffer()->changeGeometry( featureId, &geometry );
+    L->editBuffer()->changeGeometry( featureId, geometry );
   }
   return errorCode;
 }
@@ -366,18 +368,19 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
     QList<QgsGeometry*> newGeometries;
     QList<QgsPoint> topologyTestPoints;
     QgsGeometry* newGeometry = nullptr;
-    splitFunctionReturn = feat.geometry()->splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
+    QgsGeometry featureGeom = *feat.constGeometry();
+    splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
     if ( splitFunctionReturn == 0 )
     {
       //change this geometry
-      L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
+      L->editBuffer()->changeGeometry( feat.id(), featureGeom );
 
       //insert new features
       for ( int i = 0; i < newGeometries.size(); ++i )
       {
         newGeometry = newGeometries.at( i );
         QgsFeature newFeature;
-        newFeature.setGeometry( newGeometry );
+        newFeature.setGeometry( *newGeometry );
 
         //use default value where possible for primary key (e.g. autoincrement),
         //and use the value from the original (split) feature if not primary key
@@ -497,16 +500,17 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
   {
     QList<QgsGeometry*> newGeometries;
     QList<QgsPoint> topologyTestPoints;
-    splitFunctionReturn = feat.geometry()->splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
+    QgsGeometry featureGeom = *feat.constGeometry();
+    splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
     if ( splitFunctionReturn == 0 )
     {
       //add new parts
       if ( !newGeometries.isEmpty() )
-        feat.geometry()->convertToMultiType();
+        featureGeom.convertToMultiType();
 
       for ( int i = 0; i < newGeometries.size(); ++i )
       {
-        addPartRet = feat.geometry()->addPart( newGeometries.at( i ) );
+        addPartRet = featureGeom.addPart( newGeometries.at( i ) );
         if ( addPartRet )
           break;
       }
@@ -516,7 +520,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
 
       if ( !addPartRet )
       {
-        L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
+        L->editBuffer()->changeGeometry( feat.id(), featureGeom );
       }
       else
       {
@@ -536,7 +540,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
             break;
         }
       }
-      L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
+      L->editBuffer()->changeGeometry( feat.id(), featureGeom );
 
       if ( topologicalEditing )
       {

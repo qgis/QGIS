@@ -138,7 +138,8 @@ void QgsGeometryAnalyzer::simplifyFeature( QgsFeature& f, QgsVectorFileWriter* v
   tmpGeometry = featureGeometry->simplify( tolerance );
 
   QgsFeature newFeature;
-  newFeature.setGeometry( tmpGeometry );
+  newFeature.setGeometry( *tmpGeometry );
+  delete tmpGeometry;
   newFeature.setAttributes( f.attributes() );
 
   //add it to vector file writer
@@ -254,7 +255,8 @@ void QgsGeometryAnalyzer::centroidFeature( QgsFeature& f, QgsVectorFileWriter* v
   tmpGeometry = featureGeometry->centroid();
 
   QgsFeature newFeature;
-  newFeature.setGeometry( tmpGeometry );
+  newFeature.setGeometry( *tmpGeometry );
+  delete tmpGeometry;
   newFeature.setAttributes( f.attributes() );
 
   //add it to vector file writer
@@ -331,7 +333,9 @@ bool QgsGeometryAnalyzer::extent( QgsVectorLayer* layer,
   attrs[8] = QVariant( height );
   attrs[9] = QVariant( width );
   feat.setAttributes( attrs );
-  feat.setGeometry( QgsGeometry::fromRect( rect ) );
+  QgsGeometry* g = QgsGeometry::fromRect( rect );
+  feat.setGeometry( *g );
+  delete g;
   vWriter.addFeature( feat );
   return true;
 }
@@ -493,7 +497,8 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
       attributes[2] = values.at( 1 );
       QgsFeature dissolveFeature;
       dissolveFeature.setAttributes( attributes );
-      dissolveFeature.setGeometry( dissolveGeometry );
+      dissolveFeature.setGeometry( *dissolveGeometry );
+      delete dissolveGeometry;
       vWriter.addFeature( dissolveFeature );
     }
     //take all features
@@ -540,7 +545,8 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
       attributes[2] = QVariant( values[ 1 ] );
       QgsFeature dissolveFeature;
       dissolveFeature.setAttributes( attributes );
-      dissolveFeature.setGeometry( dissolveGeometry );
+      dissolveFeature.setGeometry( *dissolveGeometry );
+      delete dissolveGeometry;
       vWriter.addFeature( dissolveFeature );
     }
   }
@@ -702,7 +708,8 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
         ++jt;
       }
     }
-    outputFeature.setGeometry( dissolveGeometry );
+    outputFeature.setGeometry( *dissolveGeometry );
+    delete dissolveGeometry;
     vWriter.addFeature( outputFeature );
   }
   return true;
@@ -831,7 +838,8 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
       QgsDebugMsg( "no dissolved geometry - should not happen" );
       return false;
     }
-    dissolveFeature.setGeometry( dissolveGeometry );
+    dissolveFeature.setGeometry( *dissolveGeometry );
+    delete dissolveGeometry;
     vWriter.addFeature( dissolveFeature );
   }
   return true;
@@ -878,7 +886,8 @@ void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, 
   else //dissolve
   {
     QgsFeature newFeature;
-    newFeature.setGeometry( bufferGeometry );
+    newFeature.setGeometry( *bufferGeometry );
+    delete bufferGeometry;
     newFeature.setAttributes( f.attributes() );
 
     //add it to vector file writer
@@ -990,7 +999,8 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
       if ( lrsGeom )
       {
         ++nOutputFeatures;
-        addEventLayerFeature( fet, lrsGeom, featureIdIt->geometry(), fileWriter, memoryProviderFeatures, offsetField, offsetScale, forceSingleGeometry );
+        addEventLayerFeature( fet, lrsGeom, featureIdIt->constGeometry() ? *featureIdIt->constGeometry() :
+                              QgsGeometry(), fileWriter, memoryProviderFeatures, offsetField, offsetScale, forceSingleGeometry );
       }
     }
     if ( nOutputFeatures < 1 )
@@ -1012,7 +1022,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   return true;
 }
 
-void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, QgsGeometry* lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures,
+void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, const QgsGeometry& lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures,
     int offsetField, double offsetScale, bool forceSingleType )
 {
   if ( !geom )
@@ -1045,7 +1055,7 @@ void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry
       }
     }
 
-    feature.setGeometry( *geomIt );
+    feature.setGeometry( **geomIt );
     if ( fileWriter )
     {
       fileWriter->addFeature( feature );
@@ -1062,9 +1072,9 @@ void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry
   }
 }
 
-bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset )
+bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, const QgsGeometry& lineGeom, double offset )
 {
-  if ( !geom || !lineGeom )
+  if ( !geom || lineGeom.isEmpty() )
   {
     return false;
   }
@@ -1147,16 +1157,16 @@ bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, QgsGeometry* 
   return true;
 }
 
-QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const
+QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist, const QgsGeometry& lineGeom ) const
 {
   QgsPoint p( x, y );
   QgsPoint minDistPoint;
   int afterVertexNr;
-  lineGeom->closestSegmentWithContext( p, minDistPoint, afterVertexNr );
+  lineGeom.closestSegmentWithContext( p, minDistPoint, afterVertexNr );
 
   int beforeVertexNr = afterVertexNr - 1;
-  QgsPoint beforeVertex = lineGeom->vertexAt( beforeVertexNr );
-  QgsPoint afterVertex = lineGeom->vertexAt( afterVertexNr );
+  QgsPoint beforeVertex = lineGeom.vertexAt( beforeVertexNr );
+  QgsPoint afterVertex = lineGeom.vertexAt( afterVertexNr );
 
   //get normal vector
   double dx = afterVertex.x() - beforeVertex.x();

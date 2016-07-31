@@ -29,7 +29,8 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError*
       continue;
     }
 
-    QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsAbstractGeometryV2* geom = featureGeom.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
@@ -59,7 +60,8 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsAbstractGeometryV2* geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists
@@ -96,6 +98,7 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int
     }
     else
     {
+      feature.setGeometry( featureGeom );
       mFeaturePool->updateFeature( feature );
       error->setFixed( method );
       changes[error->featureId()].append( Change( ChangeNode, ChangeRemoved, error->vidx() ) );

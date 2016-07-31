@@ -34,7 +34,8 @@ void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
     {
       continue;
     }
-    QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
     QgsWKBTypes::Type type = QgsWKBTypes::flatType( geom->wkbType() );
     if (( mAllowedTypes & ( 1 << type ) ) == 0 )
@@ -52,7 +53,8 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
   // Check if error still applies
   QgsWKBTypes::Type type = QgsWKBTypes::flatType( geom->wkbType() );
@@ -77,12 +79,12 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
       {
         QgsFeature newFeature;
         newFeature.setAttributes( feature.attributes() );
-        newFeature.setGeometry( new QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->clone() ) );
+        newFeature.setGeometry( QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->clone() ) );
         mFeaturePool->addFeature( newFeature );
         changes[newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
       }
       // Recycle feature for part 0
-      feature.setGeometry( new QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
+      feature.setGeometry( QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
       mFeaturePool->updateFeature( feature );
       changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
     }
@@ -128,7 +130,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
       {
         geomCollection->addGeometry( geom->clone() );
 
-        feature.setGeometry( new QgsGeometry( geomCollection ) );
+        feature.setGeometry( QgsGeometry( geomCollection ) );
         mFeaturePool->updateFeature( feature );
         changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
       }

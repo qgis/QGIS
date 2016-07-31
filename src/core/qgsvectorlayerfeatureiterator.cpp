@@ -361,7 +361,7 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
 
   if ( src.constGeometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    f.setGeometry( new QgsGeometry( *src.constGeometry() ) );
+    f.setGeometry( *src.constGeometry() );
   }
 
   // TODO[MD]: if subset set just some attributes

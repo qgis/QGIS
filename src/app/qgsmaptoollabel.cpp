@@ -94,7 +94,7 @@ void QgsMapToolLabel::createRubberBands()
         int a = settings.value( "/qgis/digitizing/line_color_alpha", 200 ).toInt();
         mFeatureRubberBand = new QgsRubberBand( mCanvas, geom->type() );
         mFeatureRubberBand->setColor( QColor( r, g, b, a ) );
-        mFeatureRubberBand->setToGeometry( geom, vlayer );
+        mFeatureRubberBand->setToGeometry( *geom, vlayer );
         mFeatureRubberBand->show();
       }
     }
@@ -115,7 +115,7 @@ void QgsMapToolLabel::createRubberBands()
       QgsGeometry* pointGeom = QgsGeometry::fromPoint( fixPoint );
       mFixPointRubberBand = new QgsRubberBand( mCanvas, Qgis::Line );
       mFixPointRubberBand->setColor( QColor( 0, 0, 255, 65 ) );
-      mFixPointRubberBand->setToGeometry( pointGeom, vlayer );
+      mFixPointRubberBand->setToGeometry( *pointGeom, vlayer );
       mFixPointRubberBand->show();
       delete pointGeom;
     }

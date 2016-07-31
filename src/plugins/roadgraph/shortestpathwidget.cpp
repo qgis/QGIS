@@ -435,7 +435,9 @@ void RgShortestPathWidget::exportPath()
 
   QgsFeature f;
   f.initAttributes( vl->fields().count() );
-  f.setGeometry( QgsGeometry::fromPolyline( p ) );
+  QgsGeometry* g = QgsGeometry::fromPolyline( p );
+  f.setGeometry( *g );
+  delete g;
   f.setAttribute( 0, cost / distanceUnit.multipler() );
   f.setAttribute( 1, time / timeUnit.multipler() );
   QgsFeatureList features;

@@ -590,9 +590,11 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
             QgsDebugMsg( "Server does not seem to properly support paging since it returned the same first feature for 2 different page requests. Disabling paging" );
           }
 
-          if ( mShared->mGetFeatureEPSGDotHonoursEPSGOrder && f.geometry() )
+          if ( mShared->mGetFeatureEPSGDotHonoursEPSGOrder && f.constGeometry() )
           {
-            f.geometry()->transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
+            QgsGeometry g = *f.constGeometry();
+            g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
+            f.setGeometry( g );
           }
 
           featureList.push_back( QgsWFSFeatureGmlIdPair( f, gmlId ) );
@@ -960,29 +962,29 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
       if ( !v.isNull() && v.type() == QVariant::String )
       {
         QByteArray wkbGeom( QByteArray::fromHex( v.toString().toAscii() ) );
-        QgsGeometry *g = new QgsGeometry();
+        QgsGeometry g;
         unsigned char* wkbClone = new unsigned char[wkbGeom.size()];
         memcpy( wkbClone, wkbGeom.data(), wkbGeom.size() );
         try
         {
-          g->fromWkb( wkbClone, wkbGeom.size() );
+          g.fromWkb( wkbClone, wkbGeom.size() );
           cachedFeature.setGeometry( g );
         }
         catch ( const QgsWkbException& )
         {
           QgsDebugMsg( QString( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
           delete[] wkbClone;
-          cachedFeature.setGeometry( nullptr );
+          cachedFeature.setGeometry( QgsGeometry() );
         }
       }
       else
       {
-        cachedFeature.setGeometry( nullptr );
+        cachedFeature.setGeometry( QgsGeometry() );
       }
     }
     else
     {
-      cachedFeature.setGeometry( nullptr );
+      cachedFeature.setGeometry( QgsGeometry() );
     }
 
     const QgsGeometry* constGeom = cachedFeature.constGeometry();
@@ -1164,13 +1166,13 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
     unsigned char* copiedGeom = new unsigned char[geomSize];
     memcpy( copiedGeom, geom, geomSize );
 
-    QgsGeometry *g = new QgsGeometry();
-    g->fromWkb( copiedGeom, geomSize );
+    QgsGeometry g;
+    g.fromWkb( copiedGeom, geomSize );
     dstFeature.setGeometry( g );
   }
   else
   {
-    dstFeature.setGeometry( nullptr );
+    dstFeature.setGeometry( QgsGeometry() );
   }
 
   //and the attributes

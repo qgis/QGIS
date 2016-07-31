@@ -370,7 +370,9 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
       {
         if ( fet.constGeometry() )
         {
-          fet.geometry()->transform( ct );
+          QgsGeometry g = *fet.constGeometry();
+          g.transform( ct );
+          fet.setGeometry( g );
         }
       }
       catch ( QgsCsException &e )

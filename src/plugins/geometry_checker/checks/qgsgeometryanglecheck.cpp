@@ -28,7 +28,8 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors
     {
       continue;
     }
-    const QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+    QgsGeometry g = *feature.constGeometry();
+    const QgsAbstractGeometryV2* geom = g.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
@@ -75,7 +76,8 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, 
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometryV2* geometry = feature.geometry()->geometry();
+  QgsGeometry g = *feature.constGeometry();
+  QgsAbstractGeometryV2* geometry = g.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists
@@ -132,6 +134,7 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, 
       {
         changes[error->featureId()].append( Change( ChangeNode, ChangeRemoved, QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) ) );
       }
+      feature.setGeometry( g );
       mFeaturePool->updateFeature( feature );
       error->setFixed( method );
     }

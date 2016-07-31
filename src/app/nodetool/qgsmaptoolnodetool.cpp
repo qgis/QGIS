@@ -250,7 +250,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
     }
     connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
     connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
-    connect( vlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
+    connect( vlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
     mIsPoint = vlayer->geometryType() == Qgis::Point;
     mNodeEditor = new QgsNodeEditor( vlayer, mSelectedFeature, mCanvas );
@@ -383,7 +383,7 @@ void QgsMapToolNodeTool::updateSelectFeature()
   updateSelectFeature( *mSelectedFeature->geometry() );
 }
 
-void QgsMapToolNodeTool::updateSelectFeature( QgsGeometry &geom )
+void QgsMapToolNodeTool::updateSelectFeature( const QgsGeometry &geom )
 {
   delete mSelectRubberBand;
 
@@ -419,7 +419,7 @@ void QgsMapToolNodeTool::selectedFeatureDestroyed()
   cleanTool( false );
 }
 
-void QgsMapToolNodeTool::geometryChanged( QgsFeatureId fid, QgsGeometry &geom )
+void QgsMapToolNodeTool::geometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
   QSettings settings;
   bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", false ).toBool();

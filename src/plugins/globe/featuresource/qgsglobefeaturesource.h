@@ -56,7 +56,7 @@ class QgsGlobeFeatureSource : public QObject, public osgEarth::Features::Feature
 
   private slots:
     void attributeValueChanged( const QgsFeatureId&featureId, int idx, const QVariant &value );
-    void geometryChanged( const QgsFeatureId&featureId, QgsGeometry&geometry );
+    void geometryChanged( const QgsFeatureId&featureId, const QgsGeometry& geometry );
 };
 
 #endif // QGSGLOBEFEATURESOURCE_H

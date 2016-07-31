@@ -335,7 +335,8 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
     feature.setFeatureId( fid );
     feature.initAttributes( mSource->mFields.count() );
-    feature.setGeometry( geom );
+    feature.setGeometry( geom ? *geom : QgsGeometry() );
+    delete geom;
 
     // If we are testing subset expression, then need all attributes just in case.
     // Could be more sophisticated, but probably not worth it!

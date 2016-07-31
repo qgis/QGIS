@@ -171,8 +171,8 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
 
     //find baseline for strata
     QVariant strataId = fet.attribute( mStrataIdAttribute );
-    QgsGeometry* baselineGeom = findBaselineGeometry( strataId.isValid() ? strataId : -1 );
-    if ( !baselineGeom )
+    QgsGeometry baselineGeom = findBaselineGeometry( strataId.isValid() ? strataId : -1 );
+    if ( baselineGeom.isEmpty() )
     {
       continue;
     }
@@ -186,7 +186,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       minDistanceLayerUnits = minDistance / 111319.9;
     }
 
-    QgsGeometry* clippedBaseline = strataGeom->intersection( baselineGeom );
+    QgsGeometry* clippedBaseline = strataGeom->intersection( &baselineGeom );
     if ( !clippedBaseline || clippedBaseline->wkbType() == Qgis::WKBUnknown )
     {
       delete clippedBaseline;
@@ -213,7 +213,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
     int nMaxIterations = nTransects * 50;
 
     QgsSpatialIndex sIndex; //to check minimum distance
-    QMap< QgsFeatureId, QgsGeometry* > lineFeatureMap;
+    QMap< QgsFeatureId, QgsGeometry > lineFeatureMap;
 
     while ( nCreatedTransects < nTransects && nIterations < nMaxIterations )
     {
@@ -228,7 +228,8 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       QgsPoint latLongSamplePoint = toLatLongTransform.transform( sampleQgsPoint );
 
       QgsFeature samplePointFeature( outputPointFields );
-      samplePointFeature.setGeometry( samplePoint );
+      samplePointFeature.setGeometry( *samplePoint );
+      delete samplePoint;
       samplePointFeature.setAttribute( "id", nTotalTransects + 1 );
       samplePointFeature.setAttribute( "station_id", nCreatedTransects + 1 );
       samplePointFeature.setAttribute( "stratum_id", strataId );
@@ -301,7 +302,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
 
       QgsFeatureId fid( nCreatedTransects );
       QgsFeature sampleLineFeature( outputPointFields, fid );
-      sampleLineFeature.setGeometry( lineClipStratum );
+      sampleLineFeature.setGeometry( *lineClipStratum );
       sampleLineFeature.setAttribute( "id", nTotalTransects + 1 );
       sampleLineFeature.setAttribute( "station_id", nCreatedTransects + 1 );
       sampleLineFeature.setAttribute( "stratum_id", strataId );
@@ -316,10 +317,9 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       outputPointWriter.addFeature( samplePointFeature );
 
       sIndex.insertFeature( sampleLineFeature );
-      Q_NOWARN_DEPRECATED_PUSH
-      lineFeatureMap.insert( fid, sampleLineFeature.geometryAndOwnership() );
-      Q_NOWARN_DEPRECATED_POP
+      lineFeatureMap.insert( fid, *lineClipStratum );
 
+      delete lineClipStratum;
       delete lineFarAwayGeom;
       ++nTotalTransects;
       ++nCreatedTransects;
@@ -327,19 +327,11 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
     delete clippedBaseline;
 
     QgsFeature bufferClipFeature;
-    bufferClipFeature.setGeometry( bufferLineClipped );
+    bufferClipFeature.setGeometry( *bufferLineClipped );
+    delete bufferLineClipped;
     bufferClipFeature.setAttribute( "id", strataId );
     bufferClipLineWriter.addFeature( bufferClipFeature );
     //delete bufferLineClipped;
-
-    //delete all line geometries in spatial index
-    QMap< QgsFeatureId, QgsGeometry* >::iterator featureMapIt = lineFeatureMap.begin();
-    for ( ; featureMapIt != lineFeatureMap.end(); ++featureMapIt )
-    {
-      delete( featureMapIt.value() );
-    }
-    lineFeatureMap.clear();
-    delete baselineGeom;
 
     ++nFeatures;
   }
@@ -352,11 +344,11 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   return 0;
 }
 
-QgsGeometry* QgsTransectSample::findBaselineGeometry( const QVariant& strataId )
+QgsGeometry QgsTransectSample::findBaselineGeometry( const QVariant& strataId )
 {
   if ( !mBaselineLayer )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsFeatureIterator baseLineIt = mBaselineLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QStringList( mBaselineStrataId ), mBaselineLayer->fields() ) );
@@ -366,16 +358,14 @@ QgsGeometry* QgsTransectSample::findBaselineGeometry( const QVariant& strataId )
   {
     if ( strataId == fet.attribute( mBaselineStrataId ) || mShareBaseline )
     {
-      Q_NOWARN_DEPRECATED_PUSH
-      return fet.geometryAndOwnership();
-      Q_NOWARN_DEPRECATED_POP
+      return fet.constGeometry() ? *fet.constGeometry() : QgsGeometry();
     }
   }
-  return nullptr;
+  return QgsGeometry();
 }
 
 bool QgsTransectSample::otherTransectWithinDistance( QgsGeometry* geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex& sIndex,
-    const QMap< QgsFeatureId, QgsGeometry* >& lineFeatureMap, QgsDistanceArea& da )
+    const QMap< QgsFeatureId, QgsGeometry >& lineFeatureMap, QgsDistanceArea& da )
 {
   if ( !geom )
   {
@@ -393,12 +383,12 @@ bool QgsTransectSample::otherTransectWithinDistance( QgsGeometry* geom, double m
   QList<QgsFeatureId>::const_iterator lineIdIt = lineIdList.constBegin();
   for ( ; lineIdIt != lineIdList.constEnd(); ++lineIdIt )
   {
-    const QMap< QgsFeatureId, QgsGeometry* >::const_iterator idMapIt = lineFeatureMap.find( *lineIdIt );
+    const QMap< QgsFeatureId, QgsGeometry >::const_iterator idMapIt = lineFeatureMap.find( *lineIdIt );
     if ( idMapIt != lineFeatureMap.constEnd() )
     {
       double dist = 0;
       QgsPoint pt1, pt2;
-      closestSegmentPoints( *geom, *( idMapIt.value() ), dist, pt1, pt2 );
+      closestSegmentPoints( *geom, idMapIt.value(), dist, pt1, pt2 );
       dist = da.measureLine( pt1, pt2 ); //convert degrees to meters if necessary
 
       if ( dist < minDistance )
@@ -413,7 +403,7 @@ bool QgsTransectSample::otherTransectWithinDistance( QgsGeometry* geom, double m
   return false;
 }
 
-bool QgsTransectSample::closestSegmentPoints( QgsGeometry& g1, QgsGeometry& g2, double& dist, QgsPoint& pt1, QgsPoint& pt2 )
+bool QgsTransectSample::closestSegmentPoints( const QgsGeometry& g1, const QgsGeometry& g2, double& dist, QgsPoint& pt1, QgsPoint& pt2 )
 {
   Qgis::WkbType t1 = g1.wkbType();
   if ( t1 != Qgis::WKBLineString && t1 != Qgis::WKBLineString25D )

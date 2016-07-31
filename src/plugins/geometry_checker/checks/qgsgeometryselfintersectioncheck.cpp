@@ -73,7 +73,8 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
     {
       continue;
     }
-    QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
@@ -96,7 +97,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsAbstractGeometryV2* geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists
@@ -194,6 +196,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
         changes[feature.id()].append( Change( ChangeRing, ChangeRemoved, vidx ) );
         changes[feature.id()].append( Change( ChangeRing, ChangeAdded, QgsVertexId( vidx.part, poly->ringCount() - 2 ) ) );
         changes[feature.id()].append( Change( ChangeRing, ChangeAdded, QgsVertexId( vidx.part, poly->ringCount() - 1 ) ) );
+        feature.setGeometry( featureGeom );
         mFeaturePool->updateFeature( feature );
       }
       else
@@ -232,6 +235,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
             static_cast<QgsGeometryCollectionV2*>( geom )->addGeometry( poly2 );
             changes[feature.id()].append( Change( ChangeRing, ChangeChanged, QgsVertexId( vidx.part, vidx.ring ) ) );
             changes[feature.id()].append( Change( ChangePart, ChangeAdded, QgsVertexId( geom->partCount() - 1 ) ) );
+            feature.setGeometry( featureGeom );
             mFeaturePool->updateFeature( feature );
           }
           // Otherwise, create multipolygon
@@ -240,7 +244,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
             QgsMultiPolygonV2* multiPoly = new QgsMultiPolygonV2();
             multiPoly->addGeometry( poly->clone() );
             multiPoly->addGeometry( poly2 );
-            feature.setGeometry( new QgsGeometry( multiPoly ) );
+            feature.setGeometry( QgsGeometry( multiPoly ) );
             mFeaturePool->updateFeature( feature );
             changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
           }
@@ -249,7 +253,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
         {
           QgsFeature newFeature;
           newFeature.setAttributes( feature.attributes() );
-          newFeature.setGeometry( new QgsGeometry( poly2 ) );
+          newFeature.setGeometry( QgsGeometry( poly2 ) );
           mFeaturePool->updateFeature( feature );
           mFeaturePool->addFeature( newFeature );
           changes[feature.id()].append( Change( ChangeRing, ChangeChanged, QgsVertexId( vidx.part, vidx.ring ) ) );
@@ -277,7 +281,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
           QgsMultiCurveV2* geomCollection = new QgsMultiLineStringV2();
           geomCollection->addGeometry( ringGeom1 );
           geomCollection->addGeometry( ringGeom2 );
-          feature.setGeometry( new QgsGeometry( geomCollection ) );
+          feature.setGeometry( QgsGeometry( geomCollection ) );
           mFeaturePool->updateFeature( feature );
           changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
         }
@@ -289,19 +293,20 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
           QgsGeometryCollectionV2* geomCollection = static_cast<QgsGeometryCollectionV2*>( geom );
           geomCollection->removeGeometry( vidx.part );
           geomCollection->addGeometry( ringGeom1 );
+          feature.setGeometry( featureGeom );
           mFeaturePool->updateFeature( feature );
           changes[feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( vidx.part ) ) );
           changes[feature.id()].append( Change( ChangePart, ChangeAdded, QgsVertexId( geomCollection->partCount() - 1 ) ) );
         }
         else
         {
-          feature.setGeometry( new QgsGeometry( ringGeom1 ) );
+          feature.setGeometry( QgsGeometry( ringGeom1 ) );
           mFeaturePool->updateFeature( feature );
           changes[feature.id()].append( Change( ChangeFeature, ChangeChanged, QgsVertexId( vidx.part ) ) );
         }
         QgsFeature newFeature;
         newFeature.setAttributes( feature.attributes() );
-        newFeature.setGeometry( new QgsGeometry( ringGeom2 ) );
+        newFeature.setGeometry( QgsGeometry( ringGeom2 ) );
         mFeaturePool->addFeature( newFeature );
         changes[newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
       }

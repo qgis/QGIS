@@ -2631,7 +2631,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
             if ( coordinateTransform.isValid() && feature->constGeometry() )
             {
-              feature->geometry()->transform( coordinateTransform );
+              QgsGeometry g = *feature->constGeometry();
+              g.transform( coordinateTransform );
+              feature->setGeometry( g );
             }
             featureStore.features().append( QgsFeature( *feature ) );
           }
@@ -2737,13 +2739,15 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
                   OGR_G_ExportToWkb( ogrGeom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
                   OGR_G_DestroyGeometry( ogrGeom );
 
-                  QgsGeometry *g = new QgsGeometry();
-                  g->fromWkb( wkb, wkbSize );
+                  QgsGeometry g;
+                  g.fromWkb( wkb, wkbSize );
                   feature.setGeometry( g );
 
                   if ( coordinateTransform.isValid() && feature.constGeometry() )
                   {
-                    feature.geometry()->transform( coordinateTransform );
+                    QgsGeometry transformed = *feature.constGeometry();
+                    transformed.transform( coordinateTransform );
+                    feature.setGeometry( transformed );
                   }
                 }
               }

@@ -120,7 +120,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
       // connect to modification signals to invalidate statistics
       connect( vl, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( invalidateStatistics() ) );
       connect( vl, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( invalidateStatistics() ) );
-      connect( vl, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( invalidateStatistics() ) );
+      connect( vl, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( invalidateStatistics() ) );
     }
     else
     {

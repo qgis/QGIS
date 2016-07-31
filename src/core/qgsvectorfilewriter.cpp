@@ -1843,7 +1843,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
   return true;
 }
 
-OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
+OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
 {
   QgsLocaleNumC l; // Make sure the decimal delimiter is a dot
   Q_UNUSED( l );
@@ -1966,16 +1966,16 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
     if ( feature.constGeometry() && !feature.constGeometry()->isEmpty() )
     {
       // build geometry from WKB
-      QgsGeometry* geom = feature.geometry();
+      QgsGeometry geom = *feature.constGeometry();
 
       // turn single geometry to multi geometry if needed
-      if ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) != QgsWKBTypes::flatType( mWkbType ) &&
-           QgsWKBTypes::flatType( geom->geometry()->wkbType() ) == QgsWKBTypes::flatType( QgsWKBTypes::singleType( mWkbType ) ) )
+      if ( QgsWKBTypes::flatType( geom.geometry()->wkbType() ) != QgsWKBTypes::flatType( mWkbType ) &&
+           QgsWKBTypes::flatType( geom.geometry()->wkbType() ) == QgsWKBTypes::flatType( QgsWKBTypes::singleType( mWkbType ) ) )
       {
-        geom->convertToMultiType();
+        geom.convertToMultiType();
       }
 
-      if ( geom->geometry()->wkbType() != mWkbType )
+      if ( geom.geometry()->wkbType() != mWkbType )
       {
         OGRGeometryH mGeom2 = nullptr;
 
@@ -1987,10 +1987,10 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
           //so the exported WKB has a different type to what the OGRGeometry is expecting.
           //possibly this is handled already in OGR, but it should be fixed regardless by actually converting
           //geom to the correct WKB type
-          QgsWKBTypes::Type wkbType = geom->geometry()->wkbType();
+          QgsWKBTypes::Type wkbType = geom.geometry()->wkbType();
           if ( wkbType >= QgsWKBTypes::PointZ && wkbType <= QgsWKBTypes::MultiPolygonZ )
           {
-            QgsWKBTypes::Type wkbType25d = static_cast<QgsWKBTypes::Type>( geom->geometry()->wkbType() - QgsWKBTypes::PointZ + QgsWKBTypes::Point25D );
+            QgsWKBTypes::Type wkbType25d = static_cast<QgsWKBTypes::Type>( geom.geometry()->wkbType() - QgsWKBTypes::PointZ + QgsWKBTypes::Point25D );
             mGeom2 = createEmptyGeometry( wkbType25d );
           }
         }
@@ -2005,7 +2005,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
           //
           // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
           // i.e. Polygons can't be imported to OGRMultiPolygon
-          mGeom2 = createEmptyGeometry( geom->geometry()->wkbType() );
+          mGeom2 = createEmptyGeometry( geom.geometry()->wkbType() );
         }
 
         if ( !mGeom2 )
@@ -2018,7 +2018,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
           return nullptr;
         }
 
-        OGRErr err = OGR_G_ImportFromWkb( mGeom2, const_cast<unsigned char *>( geom->asWkb() ), static_cast< int >( geom->wkbSize() ) );
+        OGRErr err = OGR_G_ImportFromWkb( mGeom2, const_cast<unsigned char *>( geom.asWkb() ), static_cast< int >( geom.wkbSize() ) );
         if ( err != OGRERR_NONE )
         {
           mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
@@ -2034,7 +2034,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       }
       else // wkb type matches
       {
-        OGRErr err = OGR_G_ImportFromWkb( mGeom, const_cast<unsigned char *>( geom->asWkb() ), static_cast< int >( geom->wkbSize() ) );
+        OGRErr err = OGR_G_ImportFromWkb( mGeom, const_cast<unsigned char *>( geom.asWkb() ), static_cast< int >( geom.wkbSize() ) );
         if ( err != OGRERR_NONE )
         {
           mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
@@ -2346,9 +2346,11 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     {
       try
       {
-        if ( fet.geometry() )
+        if ( fet.constGeometry() )
         {
-          fet.geometry()->transform( ct );
+          QgsGeometry g = *fet.constGeometry();
+          g.transform( ct );
+          fet.setGeometry( g );
         }
       }
       catch ( QgsCsException &e )
@@ -2668,9 +2670,11 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
     {
       try
       {
-        if ( fet.geometry() )
+        if ( fet.constGeometry() )
         {
-          fet.geometry()->transform( ct );
+          QgsGeometry g = *fet.constGeometry();
+          g.transform( ct );
+          fet.setGeometry( g );
         }
       }
       catch ( QgsCsException &e )

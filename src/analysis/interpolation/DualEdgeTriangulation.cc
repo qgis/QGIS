@@ -3139,7 +3139,8 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
       lineGeom.push_back( QgsPoint( p1->getX(), p1->getY() ) );
       lineGeom.push_back( QgsPoint( p2->getX(), p2->getY() ) );
       QgsGeometry* geom = QgsGeometry::fromPolyline( lineGeom );
-      edgeLineFeature.setGeometry( geom );
+      edgeLineFeature.setGeometry( *geom );
+      delete geom;
       edgeLineFeature.initAttributes( 1 );
 
       //attributes

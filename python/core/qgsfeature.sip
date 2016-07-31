@@ -333,7 +333,6 @@ class QgsFeature
      *
      * @returns pointer to feature's geometry
      * @see constGeometry
-     * @see geometryAndOwnership
      * @see setGeometry
      */
     QgsGeometry* geometry();
@@ -351,57 +350,13 @@ class QgsFeature
      */
     const QgsGeometry* constGeometry() const;
 
-    /** Get the geometry object associated with this feature, and transfer ownership of the
-     * geometry to the caller. The caller assumes responsibility for the QgsGeometry*'s destruction.
-     * @returns pointer to feature's geometry
-     * @see geometry
-     * @see setGeometry
-     * @deprecated use constGeometry() instead
-     */
-    QgsGeometry *geometryAndOwnership() /Factory,Deprecated/;
-
     /** Set this feature's geometry from another QgsGeometry object. This method performs a deep copy
      * of the geometry.
      * @param geom new feature geometry
      * @see geometry
      * @see constGeometry
-     * @see geometryAndOwnership
-     * @see setGeometryAndOwnership
      */
     void setGeometry( const QgsGeometry& geom );
-
-    /** Set this feature's geometry from a QgsGeometry pointer. Ownership of the geometry is transferred
-     * to the feature.
-     * @param geom new feature geometry
-     * @note not available in python bindings
-     * @see geometry
-     * @see constGeometry
-     * @see geometryAndOwnership
-     * @see setGeometryAndOwnership
-     */
-    // void setGeometry( QgsGeometry* geom /Transfer/ );
-
-    /** Set this feature's geometry from WKB. This feature assumes responsibility for destroying the
-     * created geometry.
-     * @param geom geometry as WKB
-     * @param length size of WKB
-     * @see setGeometry
-     * @see geometry
-     * @see constGeometry
-     * @see geometryAndOwnership
-     * @deprecated will be removed in QGIS 3.0
-     */
-    void setGeometryAndOwnership( unsigned char * geom /Transfer/, int length ) /Deprecated/;
-
-    /** Assign a field map with the feature to allow attribute access by attribute name.
-     *  @param fields The attribute fields which this feature holds
-     *  @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
-     *                        C++: Defaults to false
-     *                        Python: Defaults to true
-     * @deprecated use setFields( const QgsFields& fields, bool initAttributes = false ) instead
-     * @note not available in Python bindings
-     */
-    //void setFields( const QgsFields* fields, bool initAttributes = true );
 
     /** Assign a field map with the feature to allow attribute access by attribute name.
      *  @param fields The attribute fields which this feature holds

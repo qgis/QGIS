@@ -421,7 +421,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
       QgsCoordinateReferenceSystem crs;
       QgsAbstractGeometryV2* geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap["geometry"].toMap(), resultMap["geometryType"].toString(), false, false, &crs );
       QgsFeature feature( fields );
-      feature.setGeometry( new QgsGeometry( geometry ) );
+      feature.setGeometry( QgsGeometry( geometry ) );
       feature.setAttributes( featureAttributes );
       feature.setValid( true );
       QgsFeatureStore store( fields, crs );

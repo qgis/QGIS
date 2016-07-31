@@ -911,7 +911,7 @@ class QgsVectorLayer : QgsMapLayer
     bool setReadOnly( bool readonly = true );
 
     /** Change feature's geometry */
-    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry& geom );
 
     /**
      * Changes an attribute value (but does not commit it)
@@ -1615,7 +1615,7 @@ class QgsVectorLayer : QgsMapLayer
      * @param fid The id of the changed feature
      * @param geometry The new geometry
      */
-    void geometryChanged( QgsFeatureId fid, QgsGeometry& geometry );
+    void geometryChanged( QgsFeatureId fid, const QgsGeometry& geometry );
 
     /** This signal is emitted, when attributes are deleted from the provider */
     void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributes );

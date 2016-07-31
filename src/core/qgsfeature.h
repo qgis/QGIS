@@ -100,7 +100,6 @@ typedef int QgsFeatureId;
 #define STRING_TO_FID(str)  (str).toLong()
 #endif
 
-
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
 
@@ -281,10 +280,9 @@ class CORE_EXPORT QgsFeature
      *
      * @returns pointer to feature's geometry
      * @see constGeometry
-     * @see geometryAndOwnership
      * @see setGeometry
      */
-    QgsGeometry* geometry();
+    Q_DECL_DEPRECATED QgsGeometry* geometry();
 
     /** Gets a const pointer to the geometry object associated with this feature. If the geometry
      * is not going to be modified than this method is preferable to the non-const
@@ -292,29 +290,17 @@ class CORE_EXPORT QgsFeature
      * @note this is a temporary method for 2.x release cycle. Will be removed in QGIS 3.0.
      * @returns const pointer to feature's geometry
      * @see geometry
-     * @see geometryAndOwnership
      * @see setGeometry
      * @note added in QGIS 2.9
      * @note will be removed in QGIS 3.0
      */
     const QgsGeometry* constGeometry() const;
 
-    /** Get the geometry object associated with this feature, and transfer ownership of the
-     * geometry to the caller. The caller assumes responsibility for the QgsGeometry*'s destruction.
-     * @returns pointer to feature's geometry
-     * @see geometry
-     * @see setGeometry
-     * @deprecated use constGeometry() instead
-     */
-    Q_DECL_DEPRECATED QgsGeometry *geometryAndOwnership();
-
     /** Set this feature's geometry from another QgsGeometry object. This method performs a deep copy
      * of the geometry.
      * @param geom new feature geometry
      * @see geometry
      * @see constGeometry
-     * @see geometryAndOwnership
-     * @see setGeometryAndOwnership
      */
     void setGeometry( const QgsGeometry& geom );
 
@@ -324,32 +310,8 @@ class CORE_EXPORT QgsFeature
      * @note not available in python bindings
      * @see geometry
      * @see constGeometry
-     * @see geometryAndOwnership
-     * @see setGeometryAndOwnership
      */
-    void setGeometry( QgsGeometry* geom );
-
-    /** Set this feature's geometry from WKB. This feature assumes responsibility for destroying the
-     * created geometry.
-     * @param geom geometry as WKB
-     * @param length size of WKB
-     * @see setGeometry
-     * @see geometry
-     * @see constGeometry
-     * @see geometryAndOwnership
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED void setGeometryAndOwnership( unsigned char * geom, int length );
-
-    /** Assign a field map with the feature to allow attribute access by attribute name.
-     *  @param fields The attribute fields which this feature holds
-     *  @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
-     *                        C++: Defaults to false
-     *                        Python: Defaults to true
-     * @deprecated use setFields( const QgsFields& fields, bool initAttributes = false ) instead
-     * @note not available in Python bindings
-     */
-    Q_DECL_DEPRECATED void setFields( const QgsFields* fields, bool initAttributes = false );
+    Q_DECL_DEPRECATED void setGeometry( QgsGeometry* geom );
 
     /** Assign a field map with the feature to allow attribute access by attribute name.
      *  @param fields The attribute fields which this feature holds

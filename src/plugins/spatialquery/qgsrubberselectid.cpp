@@ -72,7 +72,7 @@ void QgsRubberSelectId::addFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   {
     return;
   }
-  mRubberBand->setToGeometry( feat.constGeometry(), lyr );
+  mRubberBand->setToGeometry( *feat.constGeometry(), lyr );
 } // void QgsRubberSelectId::addFeature( QgsVectorLayer* mLayer, int Id )
 
 void QgsRubberSelectId::show()

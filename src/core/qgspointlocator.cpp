@@ -627,7 +627,7 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateRefe
 
   connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
   connect( mLayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
 }
 
 
@@ -707,7 +707,9 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     {
       try
       {
-        f.geometry()->transform( mTransform );
+        QgsGeometry transformedGeometry = *f.constGeometry();
+        transformedGeometry.transform( mTransform );
+        f.setGeometry( transformedGeometry );
       }
       catch ( const QgsException& e )
       {
@@ -786,7 +788,9 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     {
       try
       {
-        f.geometry()->transform( mTransform );
+        QgsGeometry transformedGeom = *f.constGeometry();
+        transformedGeom.transform( mTransform );
+        f.setGeometry( transformedGeom );
       }
       catch ( const QgsException& e )
       {
@@ -822,7 +826,7 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
   }
 }
 
-void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
+void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom )
 {
   Q_UNUSED( geom );
   onFeatureDeleted( fid );

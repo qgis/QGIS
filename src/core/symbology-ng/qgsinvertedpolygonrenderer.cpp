@@ -269,7 +269,8 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       // compute the difference with the extent
       QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
       QgsGeometry *final = rect->difference( const_cast<QgsGeometry*>( unioned.data() ) );
-      feat.setGeometry( final );
+      feat.setGeometry( *final );
+      delete final;
     }
     else
     {
@@ -318,7 +319,9 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
           }
         }
       }
-      feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
+      QgsGeometry* featGeom = QgsGeometry::fromMultiPolygon( finalMulti );
+      feat.setGeometry( *featGeom );
+      delete featGeom;
     }
     if ( feat.constGeometry() )
     {
@@ -342,7 +345,9 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
   {
     // empty feature with default attributes
     QgsFeature feat( mFields );
-    feat.setGeometry( QgsGeometry::fromPolygon( mExtentPolygon ) );
+    QgsGeometry* featGeom = QgsGeometry::fromPolygon( mExtentPolygon );
+    feat.setGeometry( *featGeom );
+    delete featGeom;
     mSubRenderer->renderFeature( feat, mContext );
   }
 

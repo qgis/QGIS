@@ -129,11 +129,11 @@ void TestQgisAppClipboard::copyToText()
   QgsFeature feat( fields, 5 );
   feat.setAttribute( "int_field", 9 );
   feat.setAttribute( "string_field", "val" );
-  feat.setGeometry( new QgsGeometry( new QgsPointV2( 5, 6 ) ) );
+  feat.setGeometry( QgsGeometry( new QgsPointV2( 5, 6 ) ) );
   QgsFeature feat2( fields, 6 );
   feat2.setAttribute( "int_field", 19 );
   feat2.setAttribute( "string_field", "val2" );
-  feat2.setGeometry( new QgsGeometry( new QgsPointV2( 7, 8 ) ) );
+  feat2.setGeometry( QgsGeometry( new QgsPointV2( 7, 8 ) ) );
   QgsFeatureStore feats;
   feats.addFeature( feat );
   feats.addFeature( feat2 );
@@ -179,7 +179,7 @@ void TestQgisAppClipboard::copyToText()
   QgsCoordinateReferenceSystem crs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   feats = QgsFeatureStore();
   feats.setCrs( crs );
-  feat.setGeometry( new QgsGeometry( new QgsPointV2( 2502577, 2403869 ) ) );
+  feat.setGeometry( QgsGeometry( new QgsPointV2( 2502577, 2403869 ) ) );
   feats.addFeature( feat );
   feats.setFields( fields );
   mQgisApp->clipboard()->replaceWithCopyOf( feats );

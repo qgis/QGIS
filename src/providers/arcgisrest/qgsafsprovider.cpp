@@ -161,7 +161,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
   if ( it != mCache.end() )
   {
     f = it.value();
-    return filterRect.isNull() || f.geometry()->intersects( filterRect );
+    return filterRect.isNull() || f.constGeometry()->intersects( filterRect );
   }
 
   // Determine attributes to fetch
@@ -237,14 +237,14 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
       QgsAbstractGeometryV2* geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData["geometryType"].toString(),
                                         QgsWKBTypes::hasM( mGeometryType ), QgsWKBTypes::hasZ( mGeometryType ) );
       // Above might return 0, which is ok since in theory empty geometries are allowed
-      feature.setGeometry( new QgsGeometry( geometry ) );
+      feature.setGeometry( QgsGeometry( geometry ) );
     }
     feature.setValid( true );
     mCache.insert( feature.id(), feature );
   }
   f = mCache[id];
   Q_ASSERT( f.isValid() );
-  return filterRect.isNull() || ( f.geometry() && f.geometry()->intersects( filterRect ) );
+  return filterRect.isNull() || ( f.constGeometry() && f.constGeometry()->intersects( filterRect ) );
 }
 
 void QgsAfsProvider::setDataSourceUri( const QString &uri )

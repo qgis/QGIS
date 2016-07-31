@@ -169,7 +169,8 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
     {
       intersectGeometry = featureGeometry->intersection( overlayFeature.constGeometry() );
 
-      outFeature.setGeometry( intersectGeometry );
+      outFeature.setGeometry( *intersectGeometry );
+      delete intersectGeometry;
       QgsAttributes attributesA = f.attributes();
       QgsAttributes attributesB = overlayFeature.attributes();
       combineAttributeMaps( attributesA, attributesB );
