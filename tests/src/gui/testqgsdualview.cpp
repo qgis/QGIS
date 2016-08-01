@@ -171,6 +171,33 @@ void TestQgsDualView::testSort()
     QModelIndex index = mDualView->tableView()->model()->index( i, 0 );
     QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), classes.at( i ) );
   }
+
+  QStringList headings;
+  headings << "0"
+  <<  "0"
+  <<  "12"
+  <<  "34"
+  <<  "80"
+  <<  "85"
+  <<  "90"
+  <<  "90"
+  <<  "95"
+  <<  "100"
+  <<  "140"
+  <<  "160"
+  <<  "180"
+  <<  "240"
+  <<  "270"
+  <<  "300"
+  <<  "340";
+
+  mDualView->setSortExpression( "Heading" );
+
+  for ( int i = 0; i < headings.length(); ++i )
+  {
+    QModelIndex index = mDualView->tableView()->model()->index( i, 1 );
+    QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), headings.at( i ) );
+  }
 }
 
 void TestQgsDualView::testAttributeFormSharedValueScanning()
