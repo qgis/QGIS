@@ -3150,6 +3150,8 @@ void QgisApp::createMapTips()
   connect( mpMapTipsTimer, SIGNAL( timeout() ), this, SLOT( showMapTip() ) );
   // set the interval to 0.850 seconds - timer will be started next time the mouse moves
   mpMapTipsTimer->setInterval( 850 );
+  mpMapTipsTimer->setSingleShot( true );
+
   // Create the maptips object
   mpMaptip = new QgsMapTip();
 }
@@ -10158,32 +10160,21 @@ void QgisApp::removeMapToolMessage()
 // Show the maptip using tooltip
 void QgisApp::showMapTip()
 {
-  // Stop the timer while we look for a maptip
-  mpMapTipsTimer->stop();
+  QPoint myPointerPos = mMapCanvas->mouseLastXY();
 
-  // Only show tooltip if the mouse is over the canvas
-  if ( mMapCanvas->underMouse() )
+  //  Make sure there is an active layer before proceeding
+  QgsMapLayer* mypLayer = mMapCanvas->currentLayer();
+  if ( mypLayer )
   {
-    QPoint myPointerPos = mMapCanvas->mouseLastXY();
-
-    //  Make sure there is an active layer before proceeding
-    QgsMapLayer* mypLayer = mMapCanvas->currentLayer();
-    if ( mypLayer )
+    //QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
+    // only process vector layers
+    if ( mypLayer->type() == QgsMapLayer::VectorLayer )
     {
-      //QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
-      // only process vector layers
-      if ( mypLayer->type() == QgsMapLayer::VectorLayer )
+      // Show the maptip if the maptips button is depressed
+      if ( mMapTipsVisible )
       {
-        // Show the maptip if the maptips button is depressed
-        if ( mMapTipsVisible )
-        {
-          mpMaptip->showMapTip( mypLayer, mLastMapPosition, myPointerPos, mMapCanvas );
-        }
+        mpMaptip->showMapTip( mypLayer, mLastMapPosition, myPointerPos, mMapCanvas );
       }
-    }
-    else
-    {
-      showStatusMessage( tr( "Maptips require an active layer" ) );
     }
   }
 }

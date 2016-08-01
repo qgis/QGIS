@@ -479,6 +479,8 @@ plugins calling this method will need to be updated.</li>
 setExcludeAttributesWms()</li>
 <li>excludeAttributesWFS() and setExcludeAttributesWFS() have been renamed to excludeAttributesWfs() and 
 setExcludeAttributesWfs()</li>
+<li>The displayField property has been separated from the mapTip. For a plain text short title use the
+displayExpression instead. For the map tip use mapTipTemplate() instead.</li>
 <li>changeGeometry() now accepts a geometry reference, not a pointer.</li>
 <li>The geometryChanged() signal now uses a const QgsGeometry reference.</li>
 <li>The deprecated removePolygonIntersections has been removed.</li>

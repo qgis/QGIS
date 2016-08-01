@@ -2332,16 +2332,13 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       }
 
       //add maptip attribute based on html/expression (in case there is no maptip attribute)
-      if ( layer->fieldNameIndex( layer->displayField() ) < 0 )
+      QString mapTip = layer->mapTipTemplate();
+      if ( !mapTip.isEmpty() )
       {
-        QString displayField = layer->displayField();
-        if ( !displayField.isEmpty() )
-        {
-          QDomElement maptipElem = infoDocument.createElement( "Attribute" );
-          maptipElem.setAttribute( "name", "maptip" );
-          maptipElem.setAttribute( "value",  QgsExpression::replaceExpressionText( displayField, &renderContext.expressionContext() ) );
-          featureElement.appendChild( maptipElem );
-        }
+        QDomElement maptipElem = infoDocument.createElement( "Attribute" );
+        maptipElem.setAttribute( "name", "maptip" );
+        maptipElem.setAttribute( "value",  QgsExpression::replaceExpressionText( mapTip, &renderContext.expressionContext() ) );
+        featureElement.appendChild( maptipElem );
       }
 
       //append feature bounding box to feature info xml
@@ -3303,12 +3300,13 @@ QDomElement QgsWmsServer::createFeatureGML(
   }
 
   //add maptip attribute based on html/expression (in case there is no maptip attribute)
-  if ( layer && layer->fieldNameIndex( layer->displayField() ) < 0 )
+  if ( layer )
   {
-    QString displayField = layer->displayField();
-    if ( !displayField.isEmpty() )
+    QString mapTip = layer->mapTipTemplate();
+
+    if ( !mapTip.isEmpty() )
     {
-      QString fieldTextString = QgsExpression::replaceExpressionText( displayField, &expressionContext );
+      QString fieldTextString = QgsExpression::replaceExpressionText( mapTip, &expressionContext );
       QDomElement fieldElem = doc.createElement( "qgs:maptip" );
       QDomText maptipText = doc.createTextNode( fieldTextString );
       fieldElem.appendChild( maptipText );

@@ -32,7 +32,7 @@ class QgsWebView;
  * when a mouse is hovered over a feature.
  *
  * Since QGIS 2.16 a maptip can show full html.
- * QgsMapTip is a QgsWebview, so you can load full HTML/JS/CSS in it.
+ * QgsMapTip is a QgsWebView, so you can load full HTML/JS/CSS in it.
  *
  * The code found in the map tips tab is inserted in a inline-block div
  * so the frame can be resized based on the content size.
@@ -46,7 +46,7 @@ class QgsWebView;
  * discourages link rel="stylesheet" in the body, but all browsers allow it.
  * see https://jakearchibald.com/2016/link-in-body/
  */
-class GUI_EXPORT QgsMapTip: public QWidget
+class GUI_EXPORT QgsMapTip : public QWidget
 {
     Q_OBJECT
   public:
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsMapTip: public QWidget
     // Only the first feature in the search radius is used
     QString fetchFeature( QgsMapLayer * thepLayer,
                           QgsPoint & theMapPosition,
-                          QgsMapCanvas *thepMapCanvas );
+                          QgsMapCanvas *mapCanvas );
 
     QString replaceText(
       QString displayText, QgsVectorLayer *layer, QgsFeature &feat );

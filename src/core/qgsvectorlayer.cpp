@@ -227,86 +227,6 @@ QString QgsVectorLayer::providerType() const
   return mProviderKey;
 }
 
-/**
- * sets the preferred display field based on some fuzzy logic
- */
-void QgsVectorLayer::setDisplayField( const QString& fldName )
-{
-  if ( !hasGeometryType() )
-    return;
-
-  // If fldName is provided, use it as the display field, otherwise
-  // determine the field index for the feature column of the identify
-  // dialog. We look for fields containing "name" first and second for
-  // fields containing "id". If neither are found, the first field
-  // is used as the node.
-  QString idxName = "";
-  QString idxId = "";
-
-  if ( !fldName.isEmpty() )
-  {
-    mDisplayField = fldName;
-  }
-  else
-  {
-    int fieldsSize = mUpdatedFields.size();
-
-    Q_FOREACH ( const QgsField& field, mUpdatedFields )
-    {
-      QString fldName = field.name();
-      QgsDebugMsg( "Checking field " + fldName + " of " + QString::number( fieldsSize ) + " total" );
-
-      // Check the fields and keep the first one that matches.
-      // We assume that the user has organized the data with the
-      // more "interesting" field names first. As such, name should
-      // be selected before oldname, othername, etc.
-      if ( fldName.indexOf( "name", 0, Qt::CaseInsensitive ) > -1 )
-      {
-        if ( idxName.isEmpty() )
-        {
-          idxName = fldName;
-        }
-      }
-      if ( fldName.indexOf( "descrip", 0, Qt::CaseInsensitive ) > -1 )
-      {
-        if ( idxName.isEmpty() )
-        {
-          idxName = fldName;
-        }
-      }
-      if ( fldName.indexOf( "id", 0, Qt::CaseInsensitive ) > -1 )
-      {
-        if ( idxId.isEmpty() )
-        {
-          idxId = fldName;
-        }
-      }
-    }
-
-    //if there were no fields in the dbf just return - otherwise qgis segfaults!
-    if ( fieldsSize == 0 )
-      return;
-
-    if ( idxName.length() > 0 )
-    {
-      mDisplayField = idxName;
-    }
-    else
-    {
-      if ( idxId.length() > 0 )
-      {
-        mDisplayField = idxId;
-      }
-      else
-      {
-        mDisplayField = mUpdatedFields.at( 0 ).name();
-      }
-    }
-
-  }
-}
-
-
 void QgsVectorLayer::reload()
 {
   if ( mDataProvider )
@@ -1531,16 +1451,22 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   updateFields();
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
-  QDomNode prevExpNode = layer_node.namedItem( "previewExpression" );
+  mDisplayExpression = layer_node.namedItem( "previewExpression" ).toElement().text();
+  mMapTipTemplate = layer_node.namedItem( "mapTip" ).toElement().text();
 
-  if ( prevExpNode.isNull() )
+  QString displayField = layer_node.namedItem( "displayfield" ).toElement().text();
+
+  // Try to migrate pre QGIS 3.0 display field property
+  if ( mUpdatedFields.fieldNameIndex( displayField ) < 0 )
   {
-    mDisplayExpression = "";
+    // if it's not a field, it's a maptip
+    if ( mMapTipTemplate.isEmpty() )
+      mMapTipTemplate = displayField;
   }
   else
   {
-    QDomElement prevExpElem = prevExpNode.toElement();
-    mDisplayExpression = prevExpElem.text();
+    if ( mDisplayExpression.isEmpty() )
+      mDisplayExpression = QgsExpression::quotedColumnRef( displayField );
   }
 
   QString errorMsg;
@@ -1637,10 +1563,6 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   updateFields();
 
-  // look at the fields in the layer and set the primary
-  // display field using some real fuzzy logic
-  setDisplayField();
-
   if ( mProviderKey == "postgres" )
   {
     QgsDebugMsg( "Beautifying layer name " + name() );
@@ -1731,6 +1653,12 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   QDomText prevExpText = document.createTextNode( mDisplayExpression );
   prevExpElem.appendChild( prevExpText );
   layer_node.appendChild( prevExpElem );
+
+  // save map tip
+  QDomElement mapTipElem = document.createElement( "mapTip" );
+  QDomText mapTipText = document.createTextNode( mMapTipTemplate );
+  mapTipElem.appendChild( mapTipText );
+  layer_node.appendChild( mapTipElem );
 
   //save joins
   mJoinBuffer->writeXml( layer_node, document );
@@ -1862,14 +1790,6 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     {
       QgsAbstractVectorLayerLabeling* l = QgsAbstractVectorLayerLabeling::create( labelingElement );
       setLabeling( l ? l : new QgsVectorLayerSimpleLabeling );
-    }
-
-    // get and set the display field if it exists.
-    QDomNode displayFieldNode = node.namedItem( "displayfield" );
-    if ( !displayFieldNode.isNull() )
-    {
-      QDomElement e = displayFieldNode.toElement();
-      setDisplayField( e.text() );
     }
 
     // get and set the blend mode if it exists
@@ -2051,12 +1971,6 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     QDomText layerTransparencyText = doc.createTextNode( QString::number( layerTransparency() ) );
     layerTransparencyElem.appendChild( layerTransparencyText );
     node.appendChild( layerTransparencyElem );
-
-    // add the display field
-    QDomElement dField  = doc.createElement( "displayfield" );
-    QDomText dFieldText = doc.createTextNode( displayField() );
-    dField.appendChild( dFieldText );
-    node.appendChild( dField );
 
     if ( mDiagramRenderer )
     {
@@ -2639,19 +2553,70 @@ void QgsVectorLayer::setCoordinateSystem()
 }
 
 
-const QString QgsVectorLayer::displayField() const
+QString QgsVectorLayer::displayField() const
 {
-  return mDisplayField;
+  QgsExpression exp( mDisplayExpression );
+  if ( exp.isField() )
+  {
+    return static_cast<const QgsExpression::NodeColumnRef*>( exp.rootNode() )->name();
+  }
+
+  return QString();
 }
 
-void QgsVectorLayer::setDisplayExpression( const QString &displayExpression )
+void QgsVectorLayer::setDisplayExpression( const QString& displayExpression )
 {
+  if ( mDisplayExpression == displayExpression )
+    return;
+
   mDisplayExpression = displayExpression;
+  emit displayExpressionChanged();
 }
 
 QString QgsVectorLayer::displayExpression() const
 {
-  return mDisplayExpression;
+  if ( !mDisplayExpression.isEmpty() || mUpdatedFields.isEmpty() )
+  {
+    return mDisplayExpression;
+  }
+  else
+  {
+    QString idxName;
+
+    Q_FOREACH ( const QgsField& field, mUpdatedFields )
+    {
+      QString fldName = field.name();
+
+      // Check the fields and keep the first one that matches.
+      // We assume that the user has organized the data with the
+      // more "interesting" field names first. As such, name should
+      // be selected before oldname, othername, etc.
+      if ( fldName.indexOf( "name", 0, Qt::CaseInsensitive ) > -1 )
+      {
+        idxName = fldName;
+        break;
+      }
+      if ( fldName.indexOf( "descrip", 0, Qt::CaseInsensitive ) > -1 )
+      {
+        idxName = fldName;
+        break;
+      }
+      if ( fldName.indexOf( "id", 0, Qt::CaseInsensitive ) > -1 )
+      {
+        idxName = fldName;
+        break;
+      }
+    }
+
+    if ( !idxName.isNull() )
+    {
+      return QgsExpression::quotedColumnRef( idxName );
+    }
+    else
+    {
+      return QgsExpression::quotedColumnRef( mUpdatedFields.at( 0 ).name() );
+    }
+  }
 }
 
 bool QgsVectorLayer::isEditable() const
@@ -3526,6 +3491,20 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
       }
     }
   }
+}
+
+QString QgsVectorLayer::mapTipTemplate() const
+{
+  return mMapTipTemplate;
+}
+
+void QgsVectorLayer::setMapTipTemplate( const QString& mapTip )
+{
+  if ( mMapTipTemplate == mapTip )
+    return;
+
+  mMapTipTemplate = mapTip;
+  emit mapTipTemplateChanged();
 }
 
 QgsAttributeTableConfig QgsVectorLayer::attributeTableConfig() const

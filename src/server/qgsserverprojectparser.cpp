@@ -774,8 +774,15 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
   {
     QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
     const QSet<QString>& excludedAttributes = vLayer->excludeAttributesWms();
-    int displayFieldIdx = vLayer->fieldNameIndex( vLayer->displayField() );
-    QString displayField = displayFieldIdx < 0 ? "maptip" : vLayer->displayField();
+
+    int displayFieldIdx = -1;
+    QString displayField = "maptip";
+    QgsExpression exp( vLayer->displayExpression() );
+    if ( exp.isField() )
+    {
+      displayField = static_cast<const QgsExpression::NodeColumnRef*>( exp.rootNode() )->name();
+      displayFieldIdx = vLayer->fieldNameIndex( displayField );
+    }
 
     //attributes
     QDomElement attributesElem = doc.createElement( "Attributes" );

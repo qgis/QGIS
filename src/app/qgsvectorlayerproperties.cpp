@@ -111,17 +111,18 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
 
-  fieldComboBox->setLayer( lyr );
-  displayFieldComboBox->setLayer( lyr );
-  connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
-  connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
+  mContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( nullptr )
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
+  << QgsExpressionContextUtils::layerScope( mLayer );
 
-  // connections for Map Tip display
-  connect( htmlRadio, SIGNAL( toggled( bool ) ), htmlMapTip, SLOT( setEnabled( bool ) ) );
-  connect( htmlRadio, SIGNAL( toggled( bool ) ), insertFieldButton, SLOT( setEnabled( bool ) ) );
-  connect( htmlRadio, SIGNAL( toggled( bool ) ), fieldComboBox, SLOT( setEnabled( bool ) ) );
-  connect( htmlRadio, SIGNAL( toggled( bool ) ), insertExpressionButton, SLOT( setEnabled( bool ) ) );
-  connect( fieldComboRadio, SIGNAL( toggled( bool ) ), displayFieldComboBox, SLOT( setEnabled( bool ) ) );
+  mMapTipExpressionFieldWidget->setLayer( lyr );
+  mMapTipExpressionFieldWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  mDisplayExpressionWidget->setLayer( lyr );
+  mDisplayExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+
+  connect( mInsertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertFieldOrExpression() ) );
 
   if ( !mLayer )
     return;
@@ -326,57 +327,15 @@ void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidget
   mOptionsStackedWidget->addWidget( page );
 }
 
-void QgsVectorLayerProperties::insertField()
+void QgsVectorLayerProperties::insertFieldOrExpression()
 {
   // Convert the selected field to an expression and
   // insert it into the action at the cursor position
-  QString field = "[% \"";
-  field += fieldComboBox->currentField();
-  field += "\" %]";
-  htmlMapTip->insertPlainText( field );
-}
+  QString expression = "[% \"";
+  expression += mMapTipExpressionFieldWidget->asExpression();
+  expression += "\" %]";
 
-void QgsVectorLayerProperties::insertExpression()
-{
-  QString selText = htmlMapTip->textCursor().selectedText();
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
-    selText = selText.mid( 2, selText.size() - 4 );
-
-  // display the expression builder
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
-
-  QgsExpressionBuilderDialog dlg( mLayer, selText.replace( QChar::ParagraphSeparator, '\n' ), this, "generic", context );
-  dlg.setWindowTitle( tr( "Insert expression" ) );
-  if ( dlg.exec() == QDialog::Accepted )
-  {
-    QString expression = dlg.expressionBuilder()->expressionText();
-    //Only add the expression if the user has entered some text.
-    if ( !expression.isEmpty() )
-    {
-      htmlMapTip->insertPlainText( "[%" + expression + "%]" );
-    }
-  }
-}
-
-void QgsVectorLayerProperties::setDisplayField( const QString& name )
-{
-  if ( mLayer->fields().fieldNameIndex( name ) == -1 )
-  {
-    htmlRadio->setChecked( true );
-    htmlMapTip->setPlainText( name );
-  }
-  else
-  {
-    fieldComboRadio->setChecked( true );
-    displayFieldComboBox->setField( name );
-  }
+  mMapTipWidget->insertText( expression );
 }
 
 //! @note in raster props, this method is called sync()
@@ -403,7 +362,8 @@ void QgsVectorLayerProperties::syncToLayer()
   txtSubsetSQL->setEnabled( false );
   setPbnQueryBuilderEnabled();
 
-  setDisplayField( mLayer->displayField() );
+  mMapTipWidget->setText( mLayer->mapTipTemplate() );
+  mDisplayExpressionWidget->setField( mLayer->displayExpression() );
 
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setScaleRange( 1.0 / mLayer->maximumScale(), 1.0 / mLayer->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales
@@ -513,16 +473,8 @@ void QgsVectorLayerProperties::apply()
     }
   }
 
-  // update the display field
-  if ( htmlRadio->isChecked() )
-  {
-    mLayer->setDisplayField( htmlMapTip->toPlainText() );
-  }
-
-  if ( fieldComboRadio->isChecked() )
-  {
-    mLayer->setDisplayField( displayFieldComboBox->currentField() );
-  }
+  mLayer->setDisplayExpression( mDisplayExpressionWidget->currentField() );
+  mLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   mLayer->actions()->clearActions();
   Q_FOREACH ( const QgsAction& action, mActionDialog->actions() )
@@ -1212,6 +1164,11 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
     mJoinTreeWidget->resizeColumnToContents( c );
   }
   mJoinTreeWidget->setCurrentItem( joinItem );
+}
+
+QgsExpressionContext QgsVectorLayerProperties::_getExpressionContext( const void* context )
+{
+  return static_cast<const QgsVectorLayerProperties*>( context )->mContext;
 }
 
 void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )

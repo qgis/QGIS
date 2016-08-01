@@ -473,10 +473,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   const QgsFields &fields = vlayer->fields();
   QgsAttributes attrs = f.attributes();
   bool featureLabeled = false;
+
   for ( int i = 0; i < attrs.count(); ++i )
   {
     if ( i >= fields.count() )
-      continue;
+      break;
 
     if ( vlayer->editFormConfig()->widgetType( i ) == "Hidden" )
     {
@@ -524,8 +525,14 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
   if ( !featureLabeled )
   {
-    featItem->setText( 0, tr( "feature id" ) );
-    featItem->setText( 1, QString::number( f.id() ) );
+    featItem->setText( 0, tr( "Title" ) );
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( vlayer );
+    context.setFeature( f );
+
+    featItem->setText( 1, QgsExpression( vlayer->displayExpression() ).evaluate( &context ).toString() );
   }
 
   // table
