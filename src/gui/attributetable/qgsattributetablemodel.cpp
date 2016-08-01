@@ -827,7 +827,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
     }
     else
     {
-      QVariant sortValue = widgetFactory->representValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, f.attribute( mSortFieldIndex ) );
+      QVariant sortValue = widgetFactory->sortValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, f.attribute( mSortFieldIndex ) );
       mSortCache.insert( f.id(), sortValue );
     }
   }
