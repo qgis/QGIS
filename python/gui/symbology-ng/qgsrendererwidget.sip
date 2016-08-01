@@ -122,12 +122,13 @@ class QgsDataDefinedValueDialog : QDialog
     void dataDefinedChanged();
 
   protected:
-    QgsDataDefined symbolDataDefined() const;
     void init( const QString& description ); // needed in children ctor to call virtual
 
-    virtual QgsDataDefined symbolDataDefined( const QgsSymbol* ) const = 0;
-    virtual double value( const QgsSymbol* ) const = 0;
-    virtual void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) = 0;
+  private:
+    QgsDataDefined symbolDataDefined() const;
+    virtual QgsDataDefined symbolDataDefined( const QgsSymbolV2* ) const = 0;
+    virtual double value( const QgsSymbolV2* ) const = 0;
+    virtual void setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd ) = 0;
 };
 
 class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog

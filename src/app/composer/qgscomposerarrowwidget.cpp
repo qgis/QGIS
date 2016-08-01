@@ -311,7 +311,8 @@ void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
 
   QgsLineSymbol* newSymbol = mArrow->lineSymbol()->clone();
   QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
-  d.setExpressionContext( mArrow->createExpressionContext() );
+  QgsExpressionContext context = mArrow->createExpressionContext();
+  d.setExpressionContext( &context );
 
   if ( d.exec() == QDialog::Accepted )
   {

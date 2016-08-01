@@ -384,32 +384,7 @@ QgsRendererWidget* QgsCategorizedSymbolRendererWidget::create( QgsVectorLayer* l
   return new QgsCategorizedSymbolRendererWidget( layer, style, renderer );
 }
 
-static QgsExpressionContext _getExpressionContext( const void* context )
-{
-  const QgsCategorizedSymbolRendererWidget* widget = ( const QgsCategorizedSymbolRendererWidget* ) context;
-
-  QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
-
-  if ( widget->mapCanvas() )
-  {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
-  }
-  else
-  {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
-  }
-
-  if ( widget->vectorLayer() )
-    expContext << QgsExpressionContextUtils::layerScope( widget->vectorLayer() );
-
-  return expContext;
-}
-
-QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererWidget( layer, style )
     , mRenderer( nullptr )
     , mModel( nullptr )
@@ -493,7 +468,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
   btnAdvanced->setMenu( advMenu );
 
-  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  mExpressionWidget->registerExpressionContextGenerator( this );
 }
 
 QgsCategorizedSymbolRendererWidget::~QgsCategorizedSymbolRendererWidget()
@@ -1072,4 +1047,27 @@ void QgsCategorizedSymbolRendererWidget::keyPressEvent( QKeyEvent* event )
       mModel->addCategory( *rIt );
     }
   }
+}
+
+QgsExpressionContext QgsCategorizedSymbolRendererV2Widget::createExpressionContext() const
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( nullptr );
+
+  if ( mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  if ( vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
+
+  return expContext;
 }

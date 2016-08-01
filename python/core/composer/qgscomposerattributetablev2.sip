@@ -281,5 +281,5 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      */
     bool getTableContents( QgsComposerTableContents &contents );
 
-    virtual QgsExpressionContext* createExpressionContext() const /Factory/;
+    virtual QgsExpressionContext createExpressionContext() const;
 };

@@ -669,9 +669,8 @@ void QgsComposerMapGrid::draw( QPainter* p )
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setForceVectorOutput( true );
   context.setPainter( p );
-  QgsExpressionContext* expressionContext = createExpressionContext();
-  context.setExpressionContext( *expressionContext );
-  delete expressionContext;
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
 
   QList< QPair< double, QLineF > > verticalLines;
   QList< QPair< double, QLineF > > horizontalLines;
@@ -2090,9 +2089,8 @@ void QgsComposerMapGrid::calculateMaxExtension( double& top, double& right, doub
   //setup render context
   QgsMapSettings ms = mComposerMap->composition()->mapSettings();
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  QgsExpressionContext* expressionContext = createExpressionContext();
-  context.setExpressionContext( *expressionContext );
-  delete expressionContext;
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
 
   GridExtension extension;
 
@@ -2229,13 +2227,13 @@ QgsComposerMapGrid::FrameSideFlags QgsComposerMapGrid::frameSideFlags() const
   return mGridFrameSides;
 }
 
-QgsExpressionContext* QgsComposerMapGrid::createExpressionContext() const
+QgsExpressionContext QgsComposerMapGrid::createExpressionContext() const
 {
-  QgsExpressionContext* context = QgsComposerObject::createExpressionContext();
-  context->appendScope( new QgsExpressionContextScope( tr( "Grid" ) ) );
-  context->lastScope()->setVariable( "grid_number", 0 );
-  context->lastScope()->setVariable( "grid_axis", "x" );
-  context->setHighlightedVariables( QStringList() << "grid_number" << "grid_axis" );
+  QgsExpressionContext context = QgsComposerObject::createExpressionContext();
+  context.appendScope( new QgsExpressionContextScope( tr( "Grid" ) ) );
+  context.lastScope()->setVariable( "grid_number", 0 );
+  context.lastScope()->setVariable( "grid_axis", "x" );
+  context.setHighlightedVariables( QStringList() << "grid_number" << "grid_axis" );
   return context;
 }
 

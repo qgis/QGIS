@@ -845,7 +845,7 @@ class QgsComposition : QGraphicsScene
      * scopes for global, project, composition and atlas properties.
      * @note added in QGIS 2.12
      */
-    QgsExpressionContext* createExpressionContext() const;
+    QgsExpressionContext createExpressionContext() const;
 
   protected:
     void init();

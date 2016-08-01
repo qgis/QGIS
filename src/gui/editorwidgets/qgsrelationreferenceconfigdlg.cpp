@@ -22,26 +22,13 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 
-static QgsExpressionContext _getExpressionContext( const void* context )
-{
-  QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
-
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
-
-  return expContext;
-}
-
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
     , mReferencedLayer( nullptr )
 {
   setupUi( this );
 
-  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, vl );
+  mExpressionWidget->registerExpressionContextGenerator( vl );
 
   connect( mComboRelation, SIGNAL( currentIndexChanged( int ) ), this, SLOT( relationChanged( int ) ) );
 

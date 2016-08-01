@@ -23,13 +23,13 @@
 #include "qgsdistancearea.h"
 #include "qgsfieldmodel.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
     : QWidget( parent )
     , mExpressionDialogTitle( tr( "Expression dialog" ) )
     , mDa( nullptr )
-    , mExpressionContextCallback( nullptr )
-    , mExpressionContextCallbackContext( nullptr )
+    , mExpressionContextGenerator( nullptr )
 {
   QHBoxLayout* layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -65,9 +65,9 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   // NW TODO - Fix in 2.6
 //  connect( mCombo->lineEdit(), SIGNAL( returnPressed() ), this, SIGNAL( returnPressed() ) );
 
-  mExpressionContext.reset( new QgsExpressionContext() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope() );
+  mExpressionContext = QgsExpressionContext();
+  mExpressionContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
 }
 
 void QgsFieldExpressionWidget::setExpressionDialogTitle( const QString& title )
@@ -113,7 +113,7 @@ QString QgsFieldExpressionWidget::asExpression() const
 bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError ) const
 {
   QString temp;
-  return QgsExpression::isValid( currentText(), mExpressionContext.data(), expressionError ? *expressionError : temp );
+  return QgsExpression::isValid( currentText(), &mExpressionContext, expressionError ? *expressionError : temp );
 }
 
 bool QgsFieldExpressionWidget::isExpression() const
@@ -142,10 +142,9 @@ QgsVectorLayer *QgsFieldExpressionWidget::layer() const
   return mFieldProxyModel->sourceFieldModel()->layer();
 }
 
-void QgsFieldExpressionWidget::registerGetExpressionContextCallback( QgsFieldExpressionWidget::ExpressionContextCallback fnGetExpressionContext, const void *context )
+void QgsFieldExpressionWidget::registerExpressionContextGenerator( const QgsExpressionContextGenerator* generator )
 {
-  mExpressionContextCallback = fnGetExpressionContext;
-  mExpressionContextCallbackContext = context;
+  mExpressionContextGenerator = generator;
 }
 
 void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
@@ -162,11 +161,10 @@ void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
   if ( mFieldProxyModel->sourceFieldModel()->layer() )
     disconnect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), this, SLOT( reloadLayer() ) );
 
-  mExpressionContext.reset( new QgsExpressionContext() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope() );
   if ( layer )
-    mExpressionContext->appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+    mExpressionContext = layer->createExpressionContext();
+  else
+    mExpressionContext = QgsProject::instance()->createExpressionContext();
 
   mFieldProxyModel->sourceFieldModel()->setLayer( layer );
 
@@ -207,7 +205,7 @@ void QgsFieldExpressionWidget::editExpression()
   QString currentExpression = currentText();
   QgsVectorLayer* vl = layer();
 
-  QgsExpressionContext context = mExpressionContextCallback ? mExpressionContextCallback( mExpressionContextCallbackContext ) : *mExpressionContext;
+  QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
   QgsExpressionBuilderDialog dlg( vl, currentExpression, this, "generic", context );
   if ( !mDa.isNull() )
@@ -325,6 +323,6 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString& expression )
 bool QgsFieldExpressionWidget::isExpressionValid( const QString& expressionStr )
 {
   QgsExpression expression( expressionStr );
-  expression.prepare( mExpressionContext.data() );
+  expression.prepare( &mExpressionContext );
   return !expression.hasParserError();
 }

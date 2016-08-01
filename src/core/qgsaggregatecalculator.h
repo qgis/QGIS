@@ -161,8 +161,6 @@ class CORE_EXPORT QgsAggregateCalculator
     static QVariant calculateDateTimeAggregate( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
         QgsExpressionContext* context, QgsDateTimeStatisticalSummary::Statistic stat );
 
-    QgsExpressionContext* createContext() const;
-
     static QVariant calculate( Aggregate aggregate, QgsFeatureIterator& fit, QVariant::Type resultType,
                                int attr, QgsExpression* expression,
                                const QString& delimiter,

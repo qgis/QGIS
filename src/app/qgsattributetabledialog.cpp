@@ -50,15 +50,14 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsfieldproxymodel.h"
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope();
 
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  if ( mLayer )
+    expContext << QgsExpressionContextUtils::layerScope( mLayer );
 
   expContext.lastScope()->setVariable( "row_number", 1 );
 
@@ -275,7 +274,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
       break;
   }
 
-  mUpdateExpressionText->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+  mUpdateExpressionText->registerExpressionContextGenerator( this );
   mFieldCombo->setFilters( QgsFieldProxyModel::All | QgsFieldProxyModel::HideReadOnly );
   mFieldCombo->setLayer( mLayer );
 

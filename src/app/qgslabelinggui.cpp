@@ -38,7 +38,7 @@
 #include <QCheckBox>
 #include <QSettings>
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
@@ -46,9 +46,8 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  if ( mLayer )
+    expContext << QgsExpressionContextUtils::layerScope( mLayer );
 
   expContext << QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
 
@@ -78,7 +77,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
 {
   setupUi( this );
 
-  mFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+  mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
   Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
   {
@@ -1225,7 +1224,7 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
 {
   Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
   {
-    button->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+    button->registerExpressionContextGenerator( this );
   }
 
   // don't register enable/disable siblings, since visual feedback from data defined buttons should be enough,

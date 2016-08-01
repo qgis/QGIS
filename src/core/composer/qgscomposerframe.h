@@ -101,7 +101,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
      */
     bool isEmpty() const;
 
-    virtual QgsExpressionContext* createExpressionContext() const override;
+    virtual QgsExpressionContext createExpressionContext() const override;
 
   private:
     QgsComposerFrame(); //forbidden

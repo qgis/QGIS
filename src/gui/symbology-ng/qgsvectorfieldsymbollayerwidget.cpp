@@ -22,16 +22,16 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
 
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
-  if ( mVectorLayer )
+  if ( vectorLayer() )
   {
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
     int i = 0;
-    Q_FOREACH ( const QgsField& f, mVectorLayer->fields() )
+    Q_FOREACH ( const QgsField& f, vectorLayer()->fields() )
     {
       QString fieldName = f.name();
-      mXAttributeComboBox->addItem( mVectorLayer->fields().iconForField( i ), fieldName );
-      mYAttributeComboBox->addItem( mVectorLayer->fields().iconForField( i ), fieldName );
+      mXAttributeComboBox->addItem( vectorLayer()->fields().iconForField( i ), fieldName );
+      mYAttributeComboBox->addItem( vectorLayer()->fields().iconForField( i ), fieldName );
       i++;
     }
   }

@@ -99,18 +99,17 @@ QgsComposerColumnSourceDelegate::QgsComposerColumnSourceDelegate( QgsVectorLayer
 
 }
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsComposerColumnSourceDelegate::createExpressionContext() const
 {
-  const QgsComposerObject* object = ( const QgsComposerObject* ) context;
-  if ( !object )
+  if ( !mComposerObject )
   {
     return QgsExpressionContext();
   }
 
-  QScopedPointer< QgsExpressionContext > expContext( object->createExpressionContext() );
-  expContext->lastScope()->setVariable( "row_number", 1 );
-  expContext->setHighlightedVariables( QStringList() << "row_number" );
-  return QgsExpressionContext( *expContext );
+  QgsExpressionContext expContext = mComposerObject->createExpressionContext();
+  expContext.lastScope()->setVariable( "row_number", 1 );
+  expContext.setHighlightedVariables( QStringList() << "row_number" );
+  return expContext;
 }
 
 QWidget* QgsComposerColumnSourceDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
@@ -120,7 +119,7 @@ QWidget* QgsComposerColumnSourceDelegate::createEditor( QWidget* parent, const Q
 
   QgsFieldExpressionWidget *fieldExpression = new QgsFieldExpressionWidget( parent );
   fieldExpression->setLayer( mVectorLayer );
-  fieldExpression->registerGetExpressionContextCallback( &_getExpressionContext, mComposerObject );
+  fieldExpression->registerExpressionContextGenerator( this );
 
   //listen out for field changes
   connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( commitAndCloseEditor() ) );

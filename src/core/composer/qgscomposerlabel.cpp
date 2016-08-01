@@ -276,15 +276,15 @@ QString QgsComposerLabel::displayText() const
   QString displayText = mText;
   replaceDateText( displayText );
 
-  QScopedPointer<QgsExpressionContext> context( createExpressionContext() );
+  QgsExpressionContext context = createExpressionContext();
   //overwrite layer/feature if they have been set via setExpressionContext
   //TODO remove when setExpressionContext is removed
   if ( mExpressionFeature.data() )
-    context->setFeature( *mExpressionFeature.data() );
+    context.setFeature( *mExpressionFeature.data() );
   if ( mExpressionLayer )
-    context->setFields( mExpressionLayer->fields() );
+    context.setFields( mExpressionLayer->fields() );
 
-  return QgsExpression::replaceExpressionText( displayText, context.data(), mDistanceArea );
+  return QgsExpression::replaceExpressionText( displayText, &context, mDistanceArea );
 }
 
 void QgsComposerLabel::replaceDateText( QString& text ) const

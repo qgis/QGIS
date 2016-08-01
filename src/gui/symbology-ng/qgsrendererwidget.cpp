@@ -306,26 +306,24 @@ const QgsMapCanvas *QgsDataDefinedValueDialog::mapCanvas() const
   return mMapCanvas;
 }
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
 {
-  const QgsDataDefinedValueDialog* widget = ( const QgsDataDefinedValueDialog* ) context;
-
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
-  if ( widget->mapCanvas() )
+  if ( mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
   }
   else
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
-  if ( widget->vectorLayer() )
-    expContext << QgsExpressionContextUtils::layerScope( widget->vectorLayer() );
+  if ( vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   return expContext;
 }
@@ -334,7 +332,7 @@ void QgsDataDefinedValueDialog::init( const QString& description )
 {
   QgsDataDefined dd = symbolDataDefined();
   mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );
-  mDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  mDDBtn->registerExpressionContextGenerator( this );
 
   QgsSymbol* initialSymbol = nullptr;
   Q_FOREACH ( QgsSymbol* symbol, mSymbolList )

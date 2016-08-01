@@ -796,6 +796,6 @@ class QgsComposerMapGrid : QgsComposerMapItem
      */
     QColor frameFillColor2() const;
 
-    virtual QgsExpressionContext* createExpressionContext() const;
+    virtual QgsExpressionContext createExpressionContext() const;
 
 };

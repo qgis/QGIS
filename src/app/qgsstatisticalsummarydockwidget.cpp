@@ -58,18 +58,13 @@ QList< QgsDateTimeStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidge
 
 #define MISSING_VALUES -1
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsStatisticalSummaryDockWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
-
-  const QgsStatisticalSummaryDockWidget* widget = ( const QgsStatisticalSummaryDockWidget* ) context;
-  if ( widget )
-  {
-    expContext << QgsExpressionContextUtils::layerScope( widget->layer() );
-  }
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
+  << QgsExpressionContextUtils::layerScope( mLayer );
 
   return expContext;
 }
@@ -80,7 +75,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
 {
   setupUi( this );
 
-  mFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
   mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mFieldExpressionWidget->setFilters( QgsFieldProxyModel::Numeric |

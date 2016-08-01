@@ -639,33 +639,33 @@ void TestQgsComposerMapGrid::annotationFormats()
   gridProjected.setAnnotationFormat( QgsComposerMapGrid::DecimalWithSuffix );
   gridProjected.setAnnotationPrecision( 1 );
 
-  QScopedPointer< QgsExpressionContext> expressionContext( gridGeographic.createExpressionContext() );
+  QgsExpressionContext expressionContext = gridGeographic.createExpressionContext();
 
   //normal e/w
-  QCOMPARE( gridGeographic.gridAnnotationString( 90, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "90.0" ) + QChar( 176 ) + QString( "E" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 90, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "90.0E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 90, QgsComposerMapGrid::Longitude, expressionContext ), QString( "90.0" ) + QChar( 176 ) + QString( "E" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 90, QgsComposerMapGrid::Longitude, expressionContext ), QString( "90.0E" ) );
 
   //0 degrees
-  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "0.0" ) + QChar( 176 ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "0.0E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Longitude, expressionContext ), QString( "0.0" ) + QChar( 176 ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsComposerMapGrid::Longitude, expressionContext ), QString( "0.0E" ) );
 
   //180 degrees
-  QCOMPARE( gridGeographic.gridAnnotationString( 180, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "180.0" ) + QChar( 176 ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 180, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "180.0E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 180, QgsComposerMapGrid::Longitude, expressionContext ), QString( "180.0" ) + QChar( 176 ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 180, QgsComposerMapGrid::Longitude, expressionContext ), QString( "180.0E" ) );
 
   //normal n/s
-  QCOMPARE( gridGeographic.gridAnnotationString( 45, QgsComposerMapGrid::Latitude, *expressionContext ), QString( "45.0" ) + QChar( 176 ) + QString( "N" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsComposerMapGrid::Latitude, *expressionContext ), QString( "45.0N" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 45, QgsComposerMapGrid::Latitude, expressionContext ), QString( "45.0" ) + QChar( 176 ) + QString( "N" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsComposerMapGrid::Latitude, expressionContext ), QString( "45.0N" ) );
 
   //0 north/south
-  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Latitude, *expressionContext ), QString( "0.0" ) + QChar( 176 ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsComposerMapGrid::Latitude, *expressionContext ), QString( "0.0N" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Latitude, expressionContext ), QString( "0.0" ) + QChar( 176 ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsComposerMapGrid::Latitude, expressionContext ), QString( "0.0N" ) );
 
   //Custom format annotations
   gridProjected.setAnnotationFormat( QgsComposerMapGrid::CustomFormat );
   gridProjected.setAnnotationExpression( "(@grid_number/10) || case when @grid_axis ='x' then 'a' else 'b' end" );
-  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsComposerMapGrid::Latitude, *expressionContext ), QString( "4.5b" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 33, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "3.3a" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsComposerMapGrid::Latitude, expressionContext ), QString( "4.5b" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 33, QgsComposerMapGrid::Longitude, expressionContext ), QString( "3.3a" ) );
 }
 
 void TestQgsComposerMapGrid::descendingAnnotations()

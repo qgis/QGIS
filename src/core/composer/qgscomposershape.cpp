@@ -184,9 +184,8 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( p );
   context.setForceVectorOutput( true );
-  QgsExpressionContext* expressionContext = createExpressionContext();
-  context.setExpressionContext( *expressionContext );
-  delete expressionContext;
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
 
   p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 

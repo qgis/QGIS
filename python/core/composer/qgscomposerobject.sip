@@ -142,7 +142,7 @@ class QgsComposerObject : QObject
      * scopes for global, project and composition properties.
      * @note added in QGIS 2.12
      */
-    virtual QgsExpressionContext* createExpressionContext() const /Factory/;
+    virtual QgsExpressionContext createExpressionContext() const;
 
   public slots:
 

@@ -50,13 +50,10 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   if ( !mLayer )
     return QVariant();
 
+  QgsExpressionContext defaultContext = mLayer->createExpressionContext();
+  context = context ? context : &defaultContext;
+
   QScopedPointer<QgsExpression> expression;
-  QScopedPointer<QgsExpressionContext> defaultContext;
-  if ( !context )
-  {
-    defaultContext.reset( createContext() );
-    context = defaultContext.data();
-  }
 
   int attrNum = mLayer->fieldNameIndex( fieldOrExpression );
 
@@ -484,13 +481,4 @@ QVariant QgsAggregateCalculator::calculateDateTimeAggregate( QgsFeatureIterator&
   }
   s.finalize();
   return s.statistic( stat );
-}
-
-QgsExpressionContext* QgsAggregateCalculator::createContext() const
-{
-  QgsExpressionContext* context = new QgsExpressionContext();
-  context->appendScope( QgsExpressionContextUtils::globalScope() );
-  context->appendScope( QgsExpressionContextUtils::projectScope() );
-  context->appendScope( QgsExpressionContextUtils::layerScope( mLayer ) );
-  return context;
 }

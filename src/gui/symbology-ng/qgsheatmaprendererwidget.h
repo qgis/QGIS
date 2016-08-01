@@ -24,7 +24,7 @@ class QgsHeatmapRenderer;
 /** \ingroup gui
  * \class QgsHeatmapRendererWidget
  */
-class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui::QgsHeatmapRendererWidgetBase
+class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui::QgsHeatmapRendererWidgetBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -48,8 +48,10 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
 
     void setMapCanvas( QgsMapCanvas* canvas ) override;
 
-  protected:
+  private:
     QgsHeatmapRenderer* mRenderer;
+
+    QgsExpressionContext createExpressionContext() const override;
 
   private slots:
 

@@ -808,7 +808,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @note added in 2.6 */
     void requestedExtent( QgsRectangle& extent ) const;
 
-    virtual QgsExpressionContext* createExpressionContext() const override;
+    virtual QgsExpressionContext createExpressionContext() const override;
 
   signals:
     void extentChanged();

@@ -72,7 +72,7 @@ class QgsPaperItem;
  * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
  * or to bring them to front/back.
  * */
-class CORE_EXPORT QgsComposition : public QGraphicsScene
+class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -909,7 +909,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * scopes for global, project, composition and atlas properties.
      * @note added in QGIS 2.12
      */
-    QgsExpressionContext* createExpressionContext() const;
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
     void init();

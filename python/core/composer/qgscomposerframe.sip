@@ -78,5 +78,5 @@ class QgsComposerFrame: QgsComposerItem
      */
     bool isEmpty() const;
 
-    virtual QgsExpressionContext* createExpressionContext() const;
+    virtual QgsExpressionContext createExpressionContext() const;
 };

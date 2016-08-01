@@ -3428,6 +3428,16 @@ void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig& att
   }
 }
 
+QgsExpressionContext QgsVectorLayer::createExpressionContext() const
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( this );
+
+  return expContext;
+}
+
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )
 {
   if ( !mDiagramLayerSettings )

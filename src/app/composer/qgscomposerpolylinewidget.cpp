@@ -53,9 +53,10 @@ void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
   QScopedPointer<QgsLineSymbol> newSymbol;
   newSymbol.reset( mComposerPolyline->polylineStyleSymbol()->clone() );
 
+  QgsExpressionContext context = mComposerPolyline->createExpressionContext();
   QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyle::defaultStyle(),
                              nullptr, this );
-  d.setExpressionContext( mComposerPolyline->createExpressionContext() );
+  d.setExpressionContext( &context );
 
   if ( d.exec() == QDialog::Accepted )
   {

@@ -26,7 +26,7 @@ class QgsVectorLayer;
 class QgsMapCanvas;
 class QgsCharacterSelectorDialog;
 
-class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
+class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -134,6 +134,8 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     bool mLoadSvgParams;
 
     void enableDataDefinedAlignment( bool enable );
+
+    QgsExpressionContext createExpressionContext() const override;
 
   private slots:
     void optionsStackedWidget_CurrentChanged( int indx );

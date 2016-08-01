@@ -78,7 +78,7 @@ class QgsGraduatedSymbolRendererViewStyle: public QProxyStyle
 /** \ingroup gui
  * \class QgsGraduatedSymbolRendererWidget
  */
-class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsGraduatedSymbolRendererWidget
+class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererV2Widget, private Ui::QgsGraduatedSymbolRendererV2Widget, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     void keyPressEvent( QKeyEvent* event ) override;
 
-  protected:
+  private:
     QgsGraduatedSymbolRenderer* mRenderer;
 
     QgsSymbol* mGraduatedSymbol;
@@ -158,6 +158,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     QgsGraduatedSymbolRendererModel* mModel;
 
     QgsRangeList mCopyBuffer;
+
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 

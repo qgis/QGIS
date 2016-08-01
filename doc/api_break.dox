@@ -393,6 +393,18 @@ be returned in place of a null pointer.</li>
 QgsExpressionContext variables should be used in their place.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsDataDefinedButton QgsDataDefinedButton
+
+<ul>
+<li>registerGetExpressionContextCallback has been removed in favor of registerExpressionContextGenerator</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsFieldExpressionWidget QgsFieldExpressionWidget
+
+<ul>
+<li>registerGetExpressionContextCallback has been removed in favor of registerExpressionContextGenerator</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsDataDefinedSymbolDialog QgsDataDefinedSymbolDialog
 
 <ul>

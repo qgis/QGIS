@@ -204,18 +204,6 @@ QgsComposerMapWidget::~QgsComposerMapWidget()
 {
 }
 
-static QgsExpressionContext _getExpressionContext( const void* context )
-{
-  const QgsComposerObject* composerObject = ( const QgsComposerObject* ) context;
-  if ( !composerObject )
-  {
-    return QgsExpressionContext();
-  }
-
-  QScopedPointer< QgsExpressionContext > expContext( composerObject->createExpressionContext() );
-  return QgsExpressionContext( *expContext );
-}
-
 void QgsComposerMapWidget::populateDataDefinedButtons()
 {
   QgsVectorLayer* vl = atlasCoverageLayer();
@@ -223,7 +211,7 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
   Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
   {
     button->blockSignals( true );
-    button->registerGetExpressionContextCallback( &_getExpressionContext, mComposerMap );
+    button->registerExpressionContextGenerator( mComposerMap );
   }
 
   //initialise buttons to use atlas coverage layer
@@ -2060,9 +2048,9 @@ void QgsComposerMapWidget::on_mAnnotationFormatButton_clicked()
     return;
   }
 
-  QScopedPointer< QgsExpressionContext> expressionContext( grid->createExpressionContext() );
+  QgsExpressionContext expressionContext = grid->createExpressionContext();
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, grid->annotationExpression(), this, "generic", *expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, grid->annotationExpression(), this, "generic", expressionContext );
   exprDlg.setWindowTitle( tr( "Expression based annotation" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )

@@ -32,27 +32,25 @@ QgsRendererWidget* QgsHeatmapRendererWidget::create( QgsVectorLayer* layer, QgsS
   return new QgsHeatmapRendererWidget( layer, style, renderer );
 }
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
 {
-  const QgsHeatmapRendererWidget* widget = reinterpret_cast< const QgsHeatmapRendererWidget* >( context );
-
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( widget->mapCanvas() )
+  if ( mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
   }
   else
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
-  if ( widget->vectorLayer() )
-    expContext << QgsExpressionContextUtils::layerScope( widget->vectorLayer() );
+  if ( vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   return expContext;
 }
@@ -80,7 +78,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   setupUi( this );
 
   mRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits );
-  mWeightExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  mWeightExpressionWidget->registerExpressionContextGenerator( this );
 
   if ( renderer )
   {

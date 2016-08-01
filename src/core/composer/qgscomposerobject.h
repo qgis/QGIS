@@ -18,7 +18,7 @@
 #define QGSCOMPOSEROBJECT_H
 
 #include "qgsobjectcustomproperties.h"
-#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextgenerator.h"
 #include <QObject>
 #include <QDomNode>
 #include <QMap>
@@ -30,7 +30,7 @@ class QgsDataDefined;
 /** \ingroup core
  * A base class for objects which belong to a map composition.
  */
-class CORE_EXPORT QgsComposerObject: public QObject
+class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * scopes for global, project and composition properties.
      * @note added in QGIS 2.12
      */
-    virtual QgsExpressionContext* createExpressionContext() const;
+    virtual QgsExpressionContext createExpressionContext() const;
 
   public slots:
 

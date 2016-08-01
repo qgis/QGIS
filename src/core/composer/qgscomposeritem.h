@@ -588,7 +588,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * scopes for global, project, composition, atlas and item properties.
      * @note added in QGIS 2.12
      */
-    virtual QgsExpressionContext* createExpressionContext() const override;
+    virtual QgsExpressionContext createExpressionContext() const override;
 
   public slots:
     /** Sets the item rotation

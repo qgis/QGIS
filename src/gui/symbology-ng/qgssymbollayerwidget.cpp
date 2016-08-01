@@ -49,34 +49,30 @@
 #include <QSvgRenderer>
 #include <QMessageBox>
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsSymbolLayerV2Widget::createExpressionContext() const
 {
-  const QgsSymbolLayerWidget* widget = ( const QgsSymbolLayerWidget* ) context;
-
-  if ( widget->expressionContext() )
-    return QgsExpressionContext( *widget->expressionContext() );
+  if ( expressionContext() )
+    return *expressionContext();
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( widget->mapCanvas() )
+  if ( mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
   }
   else
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
-  const QgsVectorLayer* layer = widget->vectorLayer();
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  if ( const QgsSymbolLayer* symbolLayer = const_cast< QgsSymbolLayerWidget* >( widget )->symbolLayer() )
+  if ( const QgsSymbolLayer* symbolLayer = const_cast< QgsSymbolLayerWidget* >( this )->symbolLayer() )
   {
     //cheat a bit - set the symbol color variable to match the symbol layer's color (when we should really be using the *symbols*
     //color, but that's not accessible here). 99% of the time these will be the same anyway
@@ -124,7 +120,7 @@ void QgsSymbolLayerWidget::registerDataDefinedButton( QgsDataDefinedButton * but
   connect( button, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( button, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 
-  button->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  button->registerExpressionContextGenerator( this );
 }
 
 void QgsSymbolLayerWidget::updateDataDefinedProperty()
@@ -191,8 +187,8 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorL
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsLineSymbol();
 
-  if ( mVectorLayer )
-    mPenWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
+  if ( vectorLayer() )
+    mPenWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 
 
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
@@ -438,8 +434,8 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
 
-  if ( mVectorLayer )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
+  if ( vectorLayer() )
+    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 
   QSize size = lstNames->iconSize();
   double markerSize = DEFAULT_POINT_SIZE * 2;
@@ -856,8 +852,8 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVec
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
 
-  if ( mVectorLayer )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
+  if ( vectorLayer() )
+    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 
   QSize size = lstNames->iconSize();
   double markerSize = DEFAULT_POINT_SIZE * 2;
@@ -1804,8 +1800,8 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
 
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
-  if ( mVectorLayer )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
+  if ( vectorLayer() )
+    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 }
 
 QgsSvgMarkerSymbolLayerWidget::~QgsSvgMarkerSymbolLayerWidget()
@@ -2698,8 +2694,8 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorL
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
 
-  if ( mVectorLayer )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
+  if ( vectorLayer() )
+    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 
   connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
@@ -3352,7 +3348,7 @@ QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( co
   setupUi( this );
   modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );
   modificationExpressionSelector->loadFieldNames();
-  modificationExpressionSelector->setExpressionContext( _getExpressionContext( this ) );
+  modificationExpressionSelector->setExpressionContext( createExpressionContext() );
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ), tr( "Polygon / MultiPolygon" ), QgsSymbol::Fill );
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ), tr( "LineString / MultiLineString" ), QgsSymbol::Line );
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPointLayer.svg" ), tr( "Point / MultiPoint" ), QgsSymbol::Marker );
