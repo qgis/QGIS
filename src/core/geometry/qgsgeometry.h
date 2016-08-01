@@ -845,6 +845,10 @@ class CORE_EXPORT QgsGeometry
       return QVariant::fromValue( *this );
     }
 
+    /** Returns true if the geometry is non empty (ie, isEmpty() returns false),
+     * or false if it is an empty, uninitialised geometry (ie, ieEmpty() returns true).
+     * @note added in QGIS 3.0
+     */
     operator bool() const;
 
   private:

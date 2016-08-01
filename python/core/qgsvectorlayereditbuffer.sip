@@ -145,7 +145,13 @@ class QgsVectorLayerEditBuffer : QObject
 
     void featureAdded( QgsFeatureId fid );
     void featureDeleted( QgsFeatureId fid );
+
+    /** Emitted when a feature's geometry is changed.
+     * @param fid feature ID
+     * @param geom new feature geometry
+     */
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
+
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
