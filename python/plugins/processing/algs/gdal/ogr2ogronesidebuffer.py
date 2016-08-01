@@ -86,7 +86,7 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         layername = "'" + ogrLayerName(inLayer) + "'"
-        operation = self.OPERATIONLIST[self.getParameterValue(self.OPERATION)]
+        operation = self.getParameterValue(self.OPERATION)
         geometry = unicode(self.getParameterValue(self.GEOMETRY))
         distance = unicode(self.getParameterValue(self.RADIUS))
         leftright = self.LEFTRIGHTLIST[self.getParameterValue(self.LEFTRIGHT)]
@@ -105,12 +105,12 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
         arguments.append(ogrLayer)
         arguments.append(ogrLayerName(inLayer))
         if dissolveall or field != 'None':
-            if operation == 'Single Side Buffer':
+            if operation == 0:
                 arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(')
             else:
                 arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_OffsetCurve(')
         else:
-            if operation == 'Single Side Buffer':
+            if operation == 0:
                 arguments.append('-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(')
             else:
                 arguments.append('-dialect sqlite -sql "SELECT ST_OffsetCurve(')
@@ -119,14 +119,26 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
         arguments.append(distance)
         if dissolveall or field != 'None':
             if leftright == 'Left':
-                arguments.append(',0)),*')
+                if operation == 0:
+                    arguments.append(',0)),*')
+                else:
+                    arguments.append(')),*')
             else:
-                arguments.append(',1)),*')
+                if operation == 0:
+                    arguments.append(',1)),*')
+                else:
+                    arguments.append(')),*')
         else:
             if leftright == 'Left':
-                arguments.append(',0),*')
+                if operation == 0:
+                    arguments.append(',0),*')
+                else:
+                    arguments.append('),*')
             else:
-                arguments.append(',1),*')
+                if operation == 0:
+                    arguments.append(',1),*')
+                else:
+                    arguments.append('),*')
         arguments.append('FROM')
         arguments.append(layername)
         if field != 'None':
