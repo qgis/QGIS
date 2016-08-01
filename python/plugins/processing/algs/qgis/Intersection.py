@@ -85,13 +85,13 @@ class Intersection(GeoAlgorithm):
         total = 100.0 / len(selectionA)
         for current, inFeatA in enumerate(selectionA):
             progress.setPercentage(int(current * total))
-            geom = QgsGeometry(inFeatA.geometry())
+            geom = inFeatA.geometry()
             atMapA = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
             for i in intersects:
                 request = QgsFeatureRequest().setFilterFid(i)
                 inFeatB = vlayerB.getFeatures(request).next()
-                tmpGeom = QgsGeometry(inFeatB.geometry())
+                tmpGeom = inFeatB.geometry()
                 if geom.intersects(tmpGeom):
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))

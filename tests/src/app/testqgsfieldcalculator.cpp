@@ -80,7 +80,8 @@ void TestQgsFieldCalculator::testLengthCalculations()
   f1.setAttribute( "col1", 0.0 );
   QgsPolyline line3111;
   line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
-  f1.setGeometry( QgsGeometry::fromPolyline( line3111 ) );
+  QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
+  f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
@@ -143,7 +144,8 @@ void TestQgsFieldCalculator::testAreaCalculations()
   polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
   QgsPolygon polygon3111;
   polygon3111 << polygonRing3111;
-  f1.setGeometry( QgsGeometry::fromPolygon( polygon3111 ) );
+  QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 ) ;
+  f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid

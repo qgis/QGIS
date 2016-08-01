@@ -94,11 +94,11 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
 
 void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, int nPoints, double minDistance )
 {
-  if ( !inputFeature.constGeometry() )
+  if ( !inputFeature.hasGeometry() )
     return;
 
-  const QgsGeometry* geom = inputFeature.constGeometry();
-  QgsRectangle geomRect = geom->boundingBox();
+  QgsGeometry geom = inputFeature.geometry();
+  QgsRectangle geomRect = geom.boundingBox();
   if ( geomRect.isEmpty() )
   {
     return;
@@ -119,8 +119,8 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
     randX = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.width() + geomRect.xMinimum();
     randY = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.height() + geomRect.yMinimum();
     QgsPoint randPoint( randX, randY );
-    QgsGeometry* ptGeom = QgsGeometry::fromPoint( randPoint );
-    if ( ptGeom->within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )
+    QgsGeometry ptGeom = QgsGeometry::fromPoint( randPoint );
+    if ( ptGeom.within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )
     {
       //add feature to writer
       QgsFeature f( mNCreatedPoints );
@@ -133,10 +133,6 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
       pointMapForFeature.insert( mNCreatedPoints, randPoint );
       ++points;
       ++mNCreatedPoints;
-    }
-    else
-    {
-      delete ptGeom;
     }
     ++nIterations;
   }

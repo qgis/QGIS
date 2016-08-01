@@ -50,7 +50,7 @@ void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
   QRect selectRect( 0, 0, 0, 0 );
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
-  QScopedPointer< QgsGeometry > selectGeom( rubberBand.asGeometry() );
-  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom.data(), e );
+  QgsGeometry selectGeom( rubberBand.asGeometry() );
+  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e );
   rubberBand.reset( Qgis::Polygon );
 }

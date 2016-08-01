@@ -63,6 +63,7 @@ class TestQgsGeometry : public QObject
     void assignment();
     void asVariant(); //test conversion to and from a QVariant
     void isEmpty();
+    void operatorBool();
 
     // geometry types
     void pointV2(); //test QgsPointV2
@@ -154,13 +155,13 @@ class TestQgsGeometry : public QObject
     QgsPolyline mPolylineA;
     QgsPolyline mPolylineB;
     QgsPolyline mPolylineC;
-    QgsGeometry * mpPolylineGeometryD;
+    QgsGeometry mpPolylineGeometryD;
     QgsPolygon mPolygonA;
     QgsPolygon mPolygonB;
     QgsPolygon mPolygonC;
-    QgsGeometry * mpPolygonGeometryA;
-    QgsGeometry * mpPolygonGeometryB;
-    QgsGeometry * mpPolygonGeometryC;
+    QgsGeometry mpPolygonGeometryA;
+    QgsGeometry mpPolygonGeometryB;
+    QgsGeometry mpPolygonGeometryC;
     QString mWktLine;
     QString mTestDataDir;
     QImage mImage;
@@ -285,10 +286,6 @@ void TestQgsGeometry::init()
 void TestQgsGeometry::cleanup()
 {
   // will be called after every testfunction.
-  delete mpPolygonGeometryA;
-  delete mpPolygonGeometryB;
-  delete mpPolygonGeometryC;
-  delete mpPolylineGeometryD;
   delete mpPainter;
 }
 
@@ -379,6 +376,18 @@ void TestQgsGeometry::isEmpty()
 
   QgsGeometryCollectionV2 collection;
   QVERIFY( collection.isEmpty() );
+}
+
+void TestQgsGeometry::operatorBool()
+{
+  QgsGeometry geom;
+  QVERIFY( !geom );
+
+  geom.setGeometry( new QgsPointV2( 1.0, 2.0 ) );
+  QVERIFY( geom );
+
+  geom.setGeometry( 0 );
+  QVERIFY( !geom );
 }
 
 void TestQgsGeometry::pointV2()
@@ -3200,18 +3209,18 @@ void TestQgsGeometry::geometryCollection()
 void TestQgsGeometry::fromQgsPoint()
 {
   QgsPoint point( 1.0, 2.0 );
-  QSharedPointer<QgsGeometry> result( QgsGeometry::fromPoint( point ) );
-  QCOMPARE( result->wkbType(), Qgis::WKBPoint );
-  QgsPoint resultPoint = result->asPoint();
+  QgsGeometry result( QgsGeometry::fromPoint( point ) );
+  QCOMPARE( result.wkbType(), Qgis::WKBPoint );
+  QgsPoint resultPoint = result.asPoint();
   QCOMPARE( resultPoint, point );
 }
 
 void TestQgsGeometry::fromQPoint()
 {
   QPointF point( 1.0, 2.0 );
-  QSharedPointer<QgsGeometry> result( QgsGeometry::fromQPointF( point ) );
-  QCOMPARE( result->wkbType(), Qgis::WKBPoint );
-  QgsPoint resultPoint = result->asPoint();
+  QgsGeometry result( QgsGeometry::fromQPointF( point ) );
+  QCOMPARE( result.wkbType(), Qgis::WKBPoint );
+  QgsPoint resultPoint = result.asPoint();
   QCOMPARE( resultPoint.x(), 1.0 );
   QCOMPARE( resultPoint.y(), 2.0 );
 }
@@ -3221,9 +3230,9 @@ void TestQgsGeometry::fromQPolygonF()
   //test with a polyline
   QPolygonF polyline;
   polyline << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 );
-  QSharedPointer<QgsGeometry> result( QgsGeometry::fromQPolygonF( polyline ) );
-  QCOMPARE( result->wkbType(), Qgis::WKBLineString );
-  QgsPolyline resultLine = result->asPolyline();
+  QgsGeometry result( QgsGeometry::fromQPolygonF( polyline ) );
+  QCOMPARE( result.wkbType(), Qgis::WKBLineString );
+  QgsPolyline resultLine = result.asPolyline();
   QCOMPARE( resultLine.size(), 4 );
   QCOMPARE( resultLine.at( 0 ), QgsPoint( 1.0, 2.0 ) );
   QCOMPARE( resultLine.at( 1 ), QgsPoint( 4.0, 6.0 ) );
@@ -3233,9 +3242,9 @@ void TestQgsGeometry::fromQPolygonF()
   //test with a closed polygon
   QPolygonF polygon;
   polygon << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 ) << QPointF( 1.0, 2.0 );
-  QSharedPointer<QgsGeometry> result2( QgsGeometry::fromQPolygonF( polygon ) );
-  QCOMPARE( result2->wkbType(), Qgis::WKBPolygon );
-  QgsPolygon resultPolygon = result2->asPolygon();
+  QgsGeometry result2( QgsGeometry::fromQPolygonF( polygon ) );
+  QCOMPARE( result2.wkbType(), Qgis::WKBPolygon );
+  QgsPolygon resultPolygon = result2.asPolygon();
   QCOMPARE( resultPolygon.size(), 1 );
   QCOMPARE( resultPolygon.at( 0 ).at( 0 ), QgsPoint( 1.0, 2.0 ) );
   QCOMPARE( resultPolygon.at( 0 ).at( 1 ), QgsPoint( 4.0, 6.0 ) );
@@ -3247,19 +3256,19 @@ void TestQgsGeometry::fromQPolygonF()
 void TestQgsGeometry::asQPointF()
 {
   QPointF point( 1.0, 2.0 );
-  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromQPointF( point ) );
-  QPointF resultPoint = geom->asQPointF();
+  QgsGeometry geom( QgsGeometry::fromQPointF( point ) );
+  QPointF resultPoint = geom.asQPointF();
   QCOMPARE( resultPoint, point );
 
   //non point geom
-  QPointF badPoint = mpPolygonGeometryA->asQPointF();
+  QPointF badPoint = mpPolygonGeometryA.asQPointF();
   QVERIFY( badPoint.isNull() );
 }
 
 void TestQgsGeometry::asQPolygonF()
 {
   //test polygon
-  QPolygonF fromPoly = mpPolygonGeometryA->asQPolygonF();
+  QPolygonF fromPoly = mpPolygonGeometryA.asQPolygonF();
   QVERIFY( fromPoly.isClosed() );
   QCOMPARE( fromPoly.size(), 5 );
   QCOMPARE( fromPoly.at( 0 ).x(), mPoint1.x() );
@@ -3276,8 +3285,8 @@ void TestQgsGeometry::asQPolygonF()
   //test polyline
   QgsPolyline testline;
   testline << mPoint1 << mPoint2 << mPoint3;
-  QSharedPointer<QgsGeometry> lineGeom( QgsGeometry::fromPolyline( testline ) );
-  QPolygonF fromLine = lineGeom->asQPolygonF();
+  QgsGeometry lineGeom( QgsGeometry::fromPolyline( testline ) );
+  QPolygonF fromLine = lineGeom.asQPolygonF();
   QVERIFY( !fromLine.isClosed() );
   QCOMPARE( fromLine.size(), 3 );
   QCOMPARE( fromLine.at( 0 ).x(), mPoint1.x() );
@@ -3288,8 +3297,8 @@ void TestQgsGeometry::asQPolygonF()
   QCOMPARE( fromLine.at( 2 ).y(), mPoint3.y() );
 
   //test a bad geometry
-  QSharedPointer<QgsGeometry> badGeom( QgsGeometry::fromPoint( mPoint1 ) );
-  QPolygonF fromBad = badGeom->asQPolygonF();
+  QgsGeometry badGeom( QgsGeometry::fromPoint( mPoint1 ) );
+  QPolygonF fromBad = badGeom.asQPolygonF();
   QVERIFY( fromBad.isEmpty() );
 }
 
@@ -3357,52 +3366,51 @@ void TestQgsGeometry::simplifyCheck1()
 
 void TestQgsGeometry::intersectionCheck1()
 {
-  QVERIFY( mpPolygonGeometryA->intersects( mpPolygonGeometryB ) );
+  QVERIFY( mpPolygonGeometryA.intersects( mpPolygonGeometryB ) );
   // should be a single polygon as A intersect B
-  QgsGeometry * mypIntersectionGeometry  =  mpPolygonGeometryA->intersection( mpPolygonGeometryB );
-  qDebug( "Geometry Type: %s", Qgis::featureType( mypIntersectionGeometry->wkbType() ) );
-  QVERIFY( mypIntersectionGeometry->wkbType() == Qgis::WKBPolygon );
-  QgsPolygon myPolygon = mypIntersectionGeometry->asPolygon();
+  QgsGeometry mypIntersectionGeometry  =  mpPolygonGeometryA.intersection( mpPolygonGeometryB );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypIntersectionGeometry.wkbType() ) );
+  QVERIFY( mypIntersectionGeometry.wkbType() == Qgis::WKBPolygon );
+  QgsPolygon myPolygon = mypIntersectionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
-  delete mypIntersectionGeometry;
   QVERIFY( renderCheck( "geometry_intersectionCheck1", "Checking if A intersects B" ) );
 }
 void TestQgsGeometry::intersectionCheck2()
 {
-  QVERIFY( !mpPolygonGeometryA->intersects( mpPolygonGeometryC ) );
+  QVERIFY( !mpPolygonGeometryA.intersects( mpPolygonGeometryC ) );
 }
 
 void TestQgsGeometry::translateCheck1()
 {
   QString wkt = "LineString (0 0, 10 0, 10 10)";
-  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
-  geom->translate( 10, -5 );
-  QString obtained = geom->exportToWkt();
+  QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
+  geom.translate( 10, -5 );
+  QString obtained = geom.exportToWkt();
   QString expected = "LineString (10 -5, 20 -5, 20 5)";
   QCOMPARE( obtained, expected );
-  geom->translate( -10, 5 );
-  obtained = geom->exportToWkt();
+  geom.translate( -10, 5 );
+  obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
 
   wkt = "Polygon ((-2 4, -2 -10, 2 3, -2 4),(1 1, -1 1, -1 -1, 1 1))";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  geom->translate( -2, 10 );
-  obtained = geom->exportToWkt();
+  geom = QgsGeometry::fromWkt( wkt );
+  geom.translate( -2, 10 );
+  obtained = geom.exportToWkt();
   expected = "Polygon ((-4 14, -4 0, 0 13, -4 14),(-1 11, -3 11, -3 9, -1 11))";
   QCOMPARE( obtained, expected );
-  geom->translate( 2, -10 );
-  obtained = geom->exportToWkt();
+  geom.translate( 2, -10 );
+  obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
 
   wkt = "Point (40 50)";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  geom->translate( -2, 10 );
-  obtained = geom->exportToWkt();
+  geom = QgsGeometry::fromWkt( wkt );
+  geom.translate( -2, 10 );
+  obtained = geom.exportToWkt();
   expected = "Point (38 60)";
   QCOMPARE( obtained, expected );
-  geom->translate( 2, -10 );
-  obtained = geom->exportToWkt();
+  geom.translate( 2, -10 );
+  obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
 
 }
@@ -3410,40 +3418,40 @@ void TestQgsGeometry::translateCheck1()
 void TestQgsGeometry::rotateCheck1()
 {
   QString wkt = "LineString (0 0, 10 0, 10 10)";
-  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
-  geom->rotate( 90, QgsPoint( 0, 0 ) );
-  QString obtained = geom->exportToWkt();
+  QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
+  geom.rotate( 90, QgsPoint( 0, 0 ) );
+  QString obtained = geom.exportToWkt();
   QString expected = "LineString (0 0, 0 -10, 10 -10)";
   QCOMPARE( obtained, expected );
-  geom->rotate( -90, QgsPoint( 0, 0 ) );
-  obtained = geom->exportToWkt();
+  geom.rotate( -90, QgsPoint( 0, 0 ) );
+  obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
 
   wkt = "Polygon ((-2 4, -2 -10, 2 3, -2 4),(1 1, -1 1, -1 -1, 1 1))";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  geom->rotate( 90, QgsPoint( 0, 0 ) );
-  obtained = geom->exportToWkt();
+  geom = QgsGeometry::fromWkt( wkt );
+  geom.rotate( 90, QgsPoint( 0, 0 ) );
+  obtained = geom.exportToWkt();
   expected = "Polygon ((4 2, -10 2, 3 -2, 4 2),(1 -1, 1 1, -1 1, 1 -1))";
   QCOMPARE( obtained, expected );
-  geom->rotate( -90, QgsPoint( 0, 0 ) );
-  obtained = geom->exportToWkt();
+  geom.rotate( -90, QgsPoint( 0, 0 ) );
+  obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
 
   wkt = "Point (40 50)";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  geom->rotate( 90, QgsPoint( 0, 0 ) );
-  obtained = geom->exportToWkt();
+  geom = QgsGeometry::fromWkt( wkt );
+  geom.rotate( 90, QgsPoint( 0, 0 ) );
+  obtained = geom.exportToWkt();
   expected = "Point (50 -40)";
   QCOMPARE( obtained, expected );
-  geom->rotate( -90, QgsPoint( 0, 0 ) );
-  obtained = geom->exportToWkt();
+  geom.rotate( -90, QgsPoint( 0, 0 ) );
+  obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
-  geom->rotate( 180, QgsPoint( 40, 0 ) );
+  geom.rotate( 180, QgsPoint( 40, 0 ) );
   expected = "Point (40 -50)";
-  obtained = geom->exportToWkt();
+  obtained = geom.exportToWkt();
   QCOMPARE( obtained, expected );
-  geom->rotate( 180, QgsPoint( 40, 0 ) ); // round-trip
-  obtained = geom->exportToWkt();
+  geom.rotate( 180, QgsPoint( 40, 0 ) ); // round-trip
+  obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
 
 }
@@ -3451,36 +3459,34 @@ void TestQgsGeometry::rotateCheck1()
 void TestQgsGeometry::unionCheck1()
 {
   // should be a multipolygon with 2 parts as A does not intersect C
-  QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->combine( mpPolygonGeometryC );
-  qDebug( "Geometry Type: %s", Qgis::featureType( mypUnionGeometry->wkbType() ) );
-  QVERIFY( mypUnionGeometry->wkbType() == Qgis::WKBMultiPolygon );
-  QgsMultiPolygon myMultiPolygon = mypUnionGeometry->asMultiPolygon();
+  QgsGeometry mypUnionGeometry  =  mpPolygonGeometryA.combine( mpPolygonGeometryC );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypUnionGeometry.wkbType() ) );
+  QVERIFY( mypUnionGeometry.wkbType() == Qgis::WKBMultiPolygon );
+  QgsMultiPolygon myMultiPolygon = mypUnionGeometry.asMultiPolygon();
   QVERIFY( myMultiPolygon.size() > 0 ); //check that the union did not fail
   dumpMultiPolygon( myMultiPolygon );
-  delete mypUnionGeometry;
   QVERIFY( renderCheck( "geometry_unionCheck1", "Checking A union C produces 2 polys" ) );
 }
 
 void TestQgsGeometry::unionCheck2()
 {
   // should be a single polygon as A intersect B
-  QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->combine( mpPolygonGeometryB );
-  qDebug( "Geometry Type: %s", Qgis::featureType( mypUnionGeometry->wkbType() ) );
-  QVERIFY( mypUnionGeometry->wkbType() == Qgis::WKBPolygon );
-  QgsPolygon myPolygon = mypUnionGeometry->asPolygon();
+  QgsGeometry mypUnionGeometry  =  mpPolygonGeometryA.combine( mpPolygonGeometryB );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypUnionGeometry.wkbType() ) );
+  QVERIFY( mypUnionGeometry.wkbType() == Qgis::WKBPolygon );
+  QgsPolygon myPolygon = mypUnionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
-  delete mypUnionGeometry;
   QVERIFY( renderCheck( "geometry_unionCheck2", "Checking A union B produces single union poly" ) );
 }
 
 void TestQgsGeometry::differenceCheck1()
 {
   // should be same as A since A does not intersect C so diff is 100% of A
-  QSharedPointer<QgsGeometry> mypDifferenceGeometry( mpPolygonGeometryA->difference( mpPolygonGeometryC ) );
-  qDebug( "Geometry Type: %s", Qgis::featureType( mypDifferenceGeometry->wkbType() ) );
-  QVERIFY( mypDifferenceGeometry->wkbType() == Qgis::WKBPolygon );
-  QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
+  QgsGeometry mypDifferenceGeometry( mpPolygonGeometryA.difference( mpPolygonGeometryC ) );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypDifferenceGeometry.wkbType() ) );
+  QVERIFY( mypDifferenceGeometry.wkbType() == Qgis::WKBPolygon );
+  QgsPolygon myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union did not fail
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_differenceCheck1", "Checking (A - C) = A" ) );
@@ -3489,10 +3495,10 @@ void TestQgsGeometry::differenceCheck1()
 void TestQgsGeometry::differenceCheck2()
 {
   // should be a single polygon as (A - B) = subset of A
-  QSharedPointer<QgsGeometry> mypDifferenceGeometry( mpPolygonGeometryA->difference( mpPolygonGeometryB ) );
-  qDebug( "Geometry Type: %s", Qgis::featureType( mypDifferenceGeometry->wkbType() ) );
-  QVERIFY( mypDifferenceGeometry->wkbType() == Qgis::WKBPolygon );
-  QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
+  QgsGeometry mypDifferenceGeometry( mpPolygonGeometryA.difference( mpPolygonGeometryB ) );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypDifferenceGeometry.wkbType() ) );
+  QVERIFY( mypDifferenceGeometry.wkbType() == Qgis::WKBPolygon );
+  QgsPolygon myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_differenceCheck2", "Checking (A - B) = subset of A" ) );
@@ -3500,10 +3506,10 @@ void TestQgsGeometry::differenceCheck2()
 void TestQgsGeometry::bufferCheck()
 {
   // should be a single polygon
-  QSharedPointer<QgsGeometry> mypBufferGeometry( mpPolygonGeometryB->buffer( 10, 10 ) );
-  qDebug( "Geometry Type: %s", Qgis::featureType( mypBufferGeometry->wkbType() ) );
-  QVERIFY( mypBufferGeometry->wkbType() == Qgis::WKBPolygon );
-  QgsPolygon myPolygon = mypBufferGeometry->asPolygon();
+  QgsGeometry mypBufferGeometry( mpPolygonGeometryB.buffer( 10, 10 ) );
+  qDebug( "Geometry Type: %s", Qgis::featureType( mypBufferGeometry.wkbType() ) );
+  QVERIFY( mypBufferGeometry.wkbType() == Qgis::WKBPolygon );
+  QgsPolygon myPolygon = mypBufferGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_bufferCheck", "Checking buffer(10,10) of B", 10 ) );
@@ -3513,28 +3519,25 @@ void TestQgsGeometry::smoothCheck()
 {
   //can't smooth a point
   QString wkt = "Point (40 50)";
-  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
-  QgsGeometry* result = geom->smooth( 1, 0.25 );
-  QString obtained = result->exportToWkt();
-  delete result;
+  QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
+  QgsGeometry result = geom.smooth( 1, 0.25 );
+  QString obtained = result.exportToWkt();
   QCOMPARE( obtained, wkt );
 
   //linestring
   wkt = "LineString(0 0, 10 0, 10 10, 20 10)";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  result = geom->smooth( 1, 0.25 );
-  QgsPolyline line = result->asPolyline();
-  delete result;
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25 );
+  QgsPolyline line = result.asPolyline();
   QgsPolyline expectedLine;
   expectedLine << QgsPoint( 0, 0 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 10.0, 2.5 )
   << QgsPoint( 10.0, 7.5 ) << QgsPoint( 12.5, 10.0 ) << QgsPoint( 20.0, 10.0 );
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
   wkt = "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  result = geom->smooth( 1, 0.25 );
-  QgsMultiPolyline multiLine = result->asMultiPolyline();
-  delete result;
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25 );
+  QgsMultiPolyline multiLine = result.asMultiPolyline();
   QgsMultiPolyline expectedMultiline;
   expectedMultiline << ( QgsPolyline() << QgsPoint( 0, 0 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 10.0, 2.5 )
                          <<  QgsPoint( 10.0, 7.5 ) << QgsPoint( 12.5, 10.0 ) << QgsPoint( 20.0, 10.0 ) )
@@ -3544,10 +3547,9 @@ void TestQgsGeometry::smoothCheck()
 
   //polygon
   wkt = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  result = geom->smooth( 1, 0.25 );
-  QgsPolygon poly = result->asPolygon();
-  delete result;
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25 );
+  QgsPolygon poly = result.asPolygon();
   QgsPolygon expectedPolygon;
   expectedPolygon << ( QgsPolyline() << QgsPoint( 2.5, 0 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 10.0, 2.5 )
                        <<  QgsPoint( 10.0, 7.5 ) << QgsPoint( 7.5, 10.0 ) << QgsPoint( 2.5, 10.0 ) << QgsPoint( 0, 7.5 )
@@ -3559,10 +3561,9 @@ void TestQgsGeometry::smoothCheck()
 
   //multipolygon
   wkt = "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  result = geom->smooth( 1, 0.1 );
-  QgsMultiPolygon multipoly = result->asMultiPolygon();
-  delete result;
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.1 );
+  QgsMultiPolygon multipoly = result.asMultiPolygon();
   QgsMultiPolygon expectedMultiPoly;
   expectedMultiPoly
   << ( QgsPolygon() << ( QgsPolyline() << QgsPoint( 1.0, 0 ) << QgsPoint( 9, 0 ) << QgsPoint( 10.0, 1 )
@@ -3579,29 +3580,30 @@ void TestQgsGeometry::unaryUnion()
   //test QgsGeometry::unaryUnion with null geometry
   QString wkt1 = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ))";
   QString wkt2 = "Polygon ((2 2, 4 2, 4 4, 2 4, 2 2))";
-  QScopedPointer< QgsGeometry > geom1( QgsGeometry::fromWkt( wkt1 ) );
-  QScopedPointer< QgsGeometry > geom2( QgsGeometry::fromWkt( wkt2 ) );
-  QScopedPointer< QgsGeometry > empty( new QgsGeometry() );
-  QList< QgsGeometry* > list;
-  list << geom1.data() << empty.data() << geom2.data();
+  QgsGeometry geom1( QgsGeometry::fromWkt( wkt1 ) );
+  QgsGeometry geom2( QgsGeometry::fromWkt( wkt2 ) );
+  QgsGeometry empty;
+  QList< QgsGeometry > list;
+  list << geom1 << empty << geom2;
 
-  QScopedPointer< QgsGeometry > result( QgsGeometry::unaryUnion( list ) );
+  QgsGeometry result( QgsGeometry::unaryUnion( list ) );
+  Q_UNUSED( result );
 }
 
 void TestQgsGeometry::dataStream()
 {
   QString wkt = "Point (40 50)";
-  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
+  QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );
-  ds << *geom;
+  ds << geom;
 
   QgsGeometry resultGeometry;
   ds.device()->seek( 0 );
   ds >> resultGeometry;
 
-  QCOMPARE( geom->geometry()->asWkt(), resultGeometry.geometry()->asWkt() );
+  QCOMPARE( geom.geometry()->asWkt(), resultGeometry.geometry()->asWkt() );
 
   //also test with geometry without data
   QScopedPointer<QgsGeometry> emptyGeom( new QgsGeometry() );
@@ -3620,43 +3622,43 @@ void TestQgsGeometry::exportToGeoJSON()
 {
   //Point
   QString wkt = "Point (40 50)";
-  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
-  QString obtained = geom->exportToGeoJSON();
+  QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
+  QString obtained = geom.exportToGeoJSON();
   QString geojson = "{\"type\": \"Point\", \"coordinates\": [40, 50]}";
   QCOMPARE( obtained, geojson );
 
   //MultiPoint
   wkt = "MultiPoint (0 0, 10 0, 10 10, 20 10)";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  obtained = geom->exportToGeoJSON();
+  geom = QgsGeometry::fromWkt( wkt );
+  obtained = geom.exportToGeoJSON();
   geojson = "{\"type\": \"MultiPoint\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]] }";
   QCOMPARE( obtained, geojson );
 
   //Linestring
   wkt = "LineString(0 0, 10 0, 10 10, 20 10)";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  obtained = geom->exportToGeoJSON();
+  geom = QgsGeometry::fromWkt( wkt );
+  obtained = geom.exportToGeoJSON();
   geojson = "{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]]}";
   QCOMPARE( obtained, geojson );
 
   //MultiLineString
   wkt = "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  obtained = geom->exportToGeoJSON();
+  geom = QgsGeometry::fromWkt( wkt );
+  obtained = geom.exportToGeoJSON();
   geojson = "{\"type\": \"MultiLineString\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [20, 10]], [ [30, 30], [40, 30], [40, 40], [50, 40]]] }";
   QCOMPARE( obtained, geojson );
 
   //Polygon
   wkt = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  obtained = geom->exportToGeoJSON();
+  geom = QgsGeometry::fromWkt( wkt );
+  obtained = geom.exportToGeoJSON();
   geojson = "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]], [ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]] }";
   QCOMPARE( obtained, geojson );
 
   //MultiPolygon
   wkt = "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))";
-  geom.reset( QgsGeometry::fromWkt( wkt ) );
-  obtained = geom->exportToGeoJSON();
+  geom = QgsGeometry::fromWkt( wkt );
+  obtained = geom.exportToGeoJSON();
   geojson = "{\"type\": \"MultiPolygon\", \"coordinates\": [[[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]], [[ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]]] }";
   QCOMPARE( obtained, geojson );
 

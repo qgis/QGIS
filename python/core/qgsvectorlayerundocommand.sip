@@ -87,7 +87,7 @@ class QgsVectorLayerUndoCommandChangeGeometry : QgsVectorLayerUndoCommand
      * @param fid feature ID of feature to modify geometry of
      * @param newGeom new geometry for feature
      */
-    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer /Transfer/, QgsFeatureId fid, QgsGeometry* newGeom /Transfer/ );
+    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer /Transfer/, QgsFeatureId fid, QgsGeometry newGeom );
     ~QgsVectorLayerUndoCommandChangeGeometry();
 
     virtual void undo();

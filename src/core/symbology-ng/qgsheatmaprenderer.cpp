@@ -110,7 +110,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
     return false;
   }
 
-  if ( !feature.constGeometry() || feature.constGeometry()->type() != Qgis::Point )
+  if ( !feature.hasGeometry() || feature.geometry().type() != Qgis::Point )
   {
     //can only render point type
     return false;
@@ -142,19 +142,15 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
   int height = context.painter()->device()->height() / mRenderQuality;
 
   //transform geometry if required
-  QgsGeometry* transformedGeom = nullptr;
+  QgsGeometry geom = feature.geometry();
   QgsCoordinateTransform xform = context.coordinateTransform();
   if ( xform.isValid() )
   {
-    transformedGeom = new QgsGeometry( *feature.constGeometry() );
-    transformedGeom->transform( xform );
+    geom.transform( xform );
   }
 
   //convert point to multipoint
-  QgsMultiPoint multiPoint = convertToMultipoint( transformedGeom ? transformedGeom : feature.constGeometry() );
-
-  delete transformedGeom;
-  transformedGeom = nullptr;
+  QgsMultiPoint multiPoint = convertToMultipoint( &geom );
 
   //loop through all points in multipoint
   for ( QgsMultiPoint::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )

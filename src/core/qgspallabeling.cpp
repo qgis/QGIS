@@ -520,7 +520,6 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
   // pal layer is deleted internally in PAL
 
   delete expression;
-  delete extentGeom;
 
   // delete all QgsDataDefined objects (which also deletes their QgsExpression object)
   removeAllDataDefinedProperties();
@@ -1908,9 +1907,9 @@ bool QgsPalLayerSettings::dataDefinedUseExpression( DataDefinedProperties p ) co
   return useExpression;
 }
 
-bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, const QgsGeometry* geom, double minSize ) const
+bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, const QgsGeometry& geom, double minSize ) const
 {
-  return QgsPalLabeling::checkMinimumSizeMM( ct, geom, minSize );
+  return QgsPalLabeling::checkMinimumSizeMM( ct, &geom, minSize );
 }
 
 void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f, QgsRenderContext *context )
@@ -2413,8 +2412,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
 
-  const QgsGeometry* geom = f.constGeometry();
-  if ( !geom )
+  QgsGeometry geom = f.geometry();
+  if ( geom.isEmpty() )
   {
     return;
   }
@@ -2426,33 +2425,26 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   {
     int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
     QgsMapToPixelSimplifier::SimplifyAlgorithm simplifyAlgorithm = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( simplifyMethod.simplifyAlgorithm() );
-    QgsGeometry* g = new QgsGeometry( *geom );
+    QgsGeometry g = geom;
 
-    if ( QgsMapToPixelSimplifier::simplifyGeometry( g, simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm ) )
+    if ( QgsMapToPixelSimplifier::simplifyGeometry( &g, simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm ) )
     {
       geom = g;
-      scopedClonedGeom.reset( g );
-    }
-    else
-    {
-      delete g;
     }
   }
 
   // if using perimeter based labeling for polygons, get the polygon's
   // linear boundary and use that for the label geometry
-  if (( geom->type() == Qgis::Polygon )
+  if (( geom.type() == Qgis::Polygon )
       && ( placement == Line || placement == PerimeterCurved ) )
   {
-    QgsGeometry* boundaryGeom = new QgsGeometry( geom->geometry()->boundary() );
-    geom = boundaryGeom;
-    scopedClonedGeom.reset( boundaryGeom );
+    geom = QgsGeometry( geom.geometry()->boundary() );
   }
 
   // whether we're going to create a centroid for polygon
   bool centroidPoly = (( placement == QgsPalLayerSettings::AroundPoint
                          || placement == QgsPalLayerSettings::OverPoint )
-                       && geom->type() == Qgis::Polygon );
+                       && geom.type() == Qgis::Polygon );
 
   // CLIP the geometry if it is bigger than the extent
   // don't clip if centroid is requested for whole feature
@@ -2463,28 +2455,22 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
 
   const GEOSGeometry* geos_geom = nullptr;
-  const QgsGeometry* preparedGeom = geom;
-  QScopedPointer<QgsGeometry> scopedPreparedGeom;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : nullptr ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? &extentGeom : nullptr ) )
   {
-    scopedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : nullptr ) );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? &extentGeom : nullptr );
 
-    if ( !scopedPreparedGeom.data() )
+    if ( geom.isEmpty() )
       return;
-    preparedGeom = scopedPreparedGeom.data();
-    geos_geom = scopedPreparedGeom.data()->asGeos();
   }
-  else
-  {
-    geos_geom = geom->asGeos();
-  }
+  geos_geom = geom.asGeos();
+
   const GEOSGeometry* geosObstacleGeom = nullptr;
   QScopedPointer<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle )
   {
-    if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : nullptr ) )
+    if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, ct, doClip ? &extentGeom : nullptr ) )
     {
-      scopedObstacleGeom.reset( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : nullptr ) );
+      scopedObstacleGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, ct, doClip ? &extentGeom : nullptr ) ) );
       obstacleGeometry = scopedObstacleGeom.data();
     }
     if ( obstacleGeometry )
@@ -2493,7 +2479,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
 
-  if ( minFeatureSize > 0 && !checkMinimumSizeMM( context, preparedGeom, minFeatureSize ) )
+  if ( minFeatureSize > 0 && !checkMinimumSizeMM( context, geom, minFeatureSize ) )
     return;
 
   if ( !geos_geom )
@@ -2856,7 +2842,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   {
     ( *labelFeature )->setObstacleGeometry( geosObstacleGeomClone );
 
-    if ( geom->type() == Qgis::Point )
+    if ( geom.type() == Qgis::Point )
     {
       //register symbol size
       ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry->boundingBox().width(),
@@ -2988,17 +2974,17 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
 {
   mCurFeat = &f;
 
-  const QgsGeometry* geom = nullptr;
+  QgsGeometry geom;
   if ( obstacleGeometry )
   {
-    geom = obstacleGeometry;
+    geom = *obstacleGeometry;
   }
   else
   {
-    geom = f.constGeometry();
+    geom = f.geometry();
   }
 
-  if ( !geom )
+  if ( geom.isEmpty() )
   {
     return;
   }
@@ -3010,33 +2996,22 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
   {
     int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
     QgsMapToPixelSimplifier::SimplifyAlgorithm simplifyAlgorithm = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( simplifyMethod.simplifyAlgorithm() );
-    QgsGeometry* g = new QgsGeometry( *geom );
+    QgsGeometry g = geom;
 
-    if ( QgsMapToPixelSimplifier::simplifyGeometry( g, simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm ) )
+    if ( QgsMapToPixelSimplifier::simplifyGeometry( &g, simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm ) )
     {
       geom = g;
-      scopedClonedGeom.reset( g );
-    }
-    else
-    {
-      delete g;
     }
   }
 
   const GEOSGeometry* geos_geom = nullptr;
   QScopedPointer<QgsGeometry> scopedPreparedGeom;
 
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, &extentGeom ) )
   {
-    scopedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom ) );
-    if ( !scopedPreparedGeom.data() )
-      return;
-    geos_geom = scopedPreparedGeom.data()->asGeos();
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, &extentGeom );
   }
-  else
-  {
-    geos_geom = geom->asGeos();
-  }
+  geos_geom = geom.asGeos();
 
   if ( !geos_geom )
     return; // invalid geometry
@@ -4007,9 +3982,9 @@ void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, Qgs
     provider->registerFeature( f, context );
 }
 
-bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry* geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
+bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
 {
-  if ( !geometry )
+  if ( geometry.isEmpty() )
   {
     return false;
   }
@@ -4024,11 +3999,11 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry* geometry, Q
     return true;
 
   //requires clip
-  if ( clipGeometry && !clipGeometry->boundingBox().contains( geometry->boundingBox() ) )
+  if ( clipGeometry && !clipGeometry->boundingBox().contains( geometry.boundingBox() ) )
     return true;
 
   //requires fixing
-  if ( geometry->type() == Qgis::Polygon && !geometry->isGeosValid() )
+  if ( geometry.type() == Qgis::Polygon && !geometry.isGeosValid() )
     return true;
 
   return false;
@@ -4067,29 +4042,28 @@ QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
   return graphemes;
 }
 
-QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
+QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
 {
-  if ( !geometry )
+  if ( geometry.isEmpty() )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   //don't modify the feature's geometry so that geometry based expressions keep working
-  QgsGeometry* geom = new QgsGeometry( *geometry );
-  QScopedPointer<QgsGeometry> clonedGeometry( geom );
+  QgsGeometry geom = geometry;
 
   //reproject the geometry if necessary
   if ( ct.isValid() && !ct.isShortCircuited() )
   {
     try
     {
-      geom->transform( ct );
+      geom.transform( ct );
     }
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse );
       QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
-      return nullptr;
+      return QgsGeometry();
     }
   }
 
@@ -4109,46 +4083,44 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRe
       {
         Q_UNUSED( cse );
         QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
-        return nullptr;
+        return QgsGeometry();
       }
     }
 
-    if ( geom->rotate( m2p.mapRotation(), center ) )
+    if ( geom.rotate( m2p.mapRotation(), center ) )
     {
-      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom->exportToWkt() ) );
-      return nullptr;
+      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom.exportToWkt() ) );
+      return QgsGeometry();
     }
   }
 
-  if ( !geom->asGeos() )
-    return nullptr;  // there is something really wrong with the geometry
+  if ( !geom.asGeos() )
+    return QgsGeometry();  // there is something really wrong with the geometry
 
   // fix invalid polygons
-  if ( geom->type() == Qgis::Polygon && !geom->isGeosValid() )
+  if ( geom.type() == Qgis::Polygon && !geom.isGeosValid() )
   {
-    QgsGeometry* bufferGeom = geom->buffer( 0, 0 );
-    if ( !bufferGeom )
+    QgsGeometry bufferGeom = geom.buffer( 0, 0 );
+    if ( bufferGeom.isEmpty() )
     {
-      return nullptr;
+      return QgsGeometry();
     }
     geom = bufferGeom;
-    clonedGeometry.reset( geom );
   }
 
   if ( clipGeometry &&
-       (( qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry->boundingBox().contains( geom->boundingBox() ) )
+       (( qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry->boundingBox().contains( geom.boundingBox() ) )
         || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry->contains( geom ) ) ) )
   {
-    QgsGeometry* clipGeom = geom->intersection( clipGeometry ); // creates new geometry
-    if ( !clipGeom )
+    QgsGeometry clipGeom = geom.intersection( *clipGeometry ); // creates new geometry
+    if ( clipGeom.isEmpty() )
     {
-      return nullptr;
+      return QgsGeometry();
     }
     geom = clipGeom;
-    clonedGeometry.reset( geom );
   }
 
-  return clonedGeometry.take();
+  return geom;
 }
 
 bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext& context, const QgsGeometry* geom, double minSize )

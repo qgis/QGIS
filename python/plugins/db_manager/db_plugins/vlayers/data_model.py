@@ -48,7 +48,7 @@ class LTableDataModel(TableDataModel):
         for f in self.layer.getFeatures():
             a = f.attributes()
             # add the geometry type
-            if f.geometry():
+            if f.hasGeometry():
                 a.append(QgsWKBTypes.displayString(Qgis.fromOldWkbType(f.geometry().wkbType())))
             else:
                 a.append('None')
@@ -97,7 +97,7 @@ class LSqlResultModel(BaseTableModel):
             for f in p.getFeatures():
                 a = f.attributes()
                 if has_geometry:
-                    if f.geometry():
+                    if f.hasGeometry():
                         a += [f.geometry().exportToWkt()]
                     else:
                         a += [None]

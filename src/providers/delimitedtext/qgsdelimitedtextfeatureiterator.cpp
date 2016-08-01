@@ -254,14 +254,14 @@ bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsPoint &pt ) const
 /**
  * Check to see if the geometry is within the selection rectangle
  */
-bool QgsDelimitedTextFeatureIterator::wantGeometry( QgsGeometry *geom ) const
+bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsGeometry& geom ) const
 {
   if ( ! mTestGeometry ) return true;
 
   if ( mTestGeometryExact )
-    return geom->intersects( mRequest.filterRect() );
+    return geom.intersects( mRequest.filterRect() );
   else
-    return geom->boundingBox().intersects( mRequest.filterRect() );
+    return geom.boundingBox().intersects( mRequest.filterRect() );
 }
 
 
@@ -304,7 +304,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
     while ( tokens.size() < mSource->mFieldCount )
       tokens.append( QString::null );
 
-    QgsGeometry *geom = nullptr;
+    QgsGeometry geom;
 
     // Load the geometry if required
 
@@ -320,7 +320,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
         geom = loadGeometryXY( tokens, nullGeom );
       }
 
-      if (( !geom && !nullGeom ) || ( nullGeom && mTestGeometry ) )
+      if (( geom.isEmpty() && !nullGeom ) || ( nullGeom && mTestGeometry ) )
       {
         // if we didn't get a geom and not because it's null, or we got a null
         // geom and we are testing for intersecting geometries then ignore this
@@ -380,40 +380,38 @@ bool QgsDelimitedTextFeatureIterator::setNextFeatureId( qint64 fid )
 
 
 
-QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens, bool &isNull )
+QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens, bool &isNull )
 {
-  QgsGeometry* geom = nullptr;
+  QgsGeometry geom;
   QString sWkt = tokens[mSource->mWktFieldIndex];
   if ( sWkt.isEmpty() )
   {
     isNull = true;
-    return nullptr;
+    return QgsGeometry();
   }
 
   isNull = false;
   geom = QgsDelimitedTextProvider::geomFromWkt( sWkt, mSource->mWktHasPrefix );
 
-  if ( geom && geom->type() != mSource->mGeometryType )
+  if ( !geom.isEmpty() && geom.type() != mSource->mGeometryType )
   {
-    delete geom;
-    geom = nullptr;
+    geom = QgsGeometry();
   }
-  if ( geom && ! wantGeometry( geom ) )
+  if ( !geom.isEmpty() && ! wantGeometry( geom ) )
   {
-    delete geom;
-    geom = nullptr;
+    geom = QgsGeometry();
   }
   return geom;
 }
 
-QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens, bool &isNull )
+QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens, bool &isNull )
 {
   QString sX = tokens[mSource->mXFieldIndex];
   QString sY = tokens[mSource->mYFieldIndex];
   if ( sX.isEmpty() && sY.isEmpty() )
   {
     isNull = true;
-    return nullptr;
+    return QgsGeometry();
   }
   isNull = false;
   QgsPoint pt;
@@ -423,7 +421,7 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList&
   {
     return QgsGeometry::fromPoint( pt );
   }
-  return nullptr;
+  return QgsGeometry();
 }
 
 

@@ -73,11 +73,10 @@ void TestQgsGeometryImport::pointWkt()
   QFETCH( double, x );
   QFETCH( double, y );
 
-  QgsGeometry* geom = QgsGeometry::fromWkt( wktString );
+  QgsGeometry geom = QgsGeometry::fromWkt( wktString );
 
-  QCOMPARE( geom->wkbType(), Qgis::WKBPoint );
-  QgsPoint point = geom->asPoint();
-  delete geom;
+  QCOMPARE( geom.wkbType(), Qgis::WKBPoint );
+  QgsPoint point = geom.asPoint();
 
   QVERIFY( qgsDoubleNear( point.x(), x ) );
   QVERIFY( qgsDoubleNear( point.y(), y ) );
@@ -155,12 +154,11 @@ void TestQgsGeometryImport::linestringWkt()
   QFETCH( QString, wktString );
   QFETCH( QVariantList, line );
 
-  QgsGeometry* geom = QgsGeometry::fromWkt( wktString );
-  QCOMPARE( geom->wkbType(), Qgis::WKBLineString );
+  QgsGeometry geom = QgsGeometry::fromWkt( wktString );
+  QCOMPARE( geom.wkbType(), Qgis::WKBLineString );
 
-  QgsPolyline polyLine = geom->asPolyline();
+  QgsPolyline polyLine = geom.asPolyline();
   QVERIFY( compareLineStrings( polyLine, line ) );
-  delete geom;
 }
 
 void TestQgsGeometryImport::linestringWkb_data()

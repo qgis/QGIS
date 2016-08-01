@@ -44,7 +44,7 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const;
+    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const;
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry ) const;
 

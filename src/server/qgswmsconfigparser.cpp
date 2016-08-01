@@ -307,8 +307,8 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
   for ( int i = 0; i < nHighlights; ++i )
   {
     //create geometry
-    QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( geomSplit.at( i ) ) );
-    if ( !geom.data() )
+    QgsGeometry geom( QgsGeometry::fromWkt( geomSplit.at( i ) ) );
+    if ( !geom )
     {
       continue;
     }
@@ -321,7 +321,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
     }
 
     QString errorMsg;
-    QScopedPointer<QgsFeatureRendererV2> renderer( QgsFeatureRendererV2::loadSld( sldDoc.documentElement(), geom.data()->type(), errorMsg ) );
+    QScopedPointer<QgsFeatureRendererV2> renderer( QgsFeatureRendererV2::loadSld( sldDoc.documentElement(), geom.type(), errorMsg ) );
     if ( !renderer.data() )
     {
       continue;
@@ -334,7 +334,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
       labelString = labelSplit.at( i );
     }
 
-    QScopedPointer<QgsVectorLayer> layer( createHighlightLayer( i, crsString, geom.take(), labelString, labelSizeSplit, labelColorSplit, labelWeightSplit, labelFontSplit,
+    QScopedPointer<QgsVectorLayer> layer( createHighlightLayer( i, crsString, &geom, labelString, labelSizeSplit, labelColorSplit, labelWeightSplit, labelFontSplit,
                                           labelBufferSizeSplit, labelBufferColorSplit ) );
     if ( !layer.data() )
     {
@@ -383,16 +383,15 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
     fet.setAttribute( 0, labelString );
     if ( geomType == Qgis::Polygon )
     {
-      QgsGeometry* point = geom->pointOnSurface();
+      QgsGeometry point = geom->pointOnSurface();
       if ( point )
       {
-        QgsPoint pt = point->asPoint();
+        QgsPoint pt = point.asPoint();
         fet.setAttribute( 1, pt.x() );
         fet.setAttribute( 2, pt.y() );
         fet.setAttribute( 3, "Center" );
         fet.setAttribute( 4, "Half" );
       }
-      delete point;
     }
 
     layer->setCustomProperty( "labeling/fieldName", "label" );
@@ -465,7 +464,8 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
     layer->setCustomProperty( "labeling/placement", placement );
   }
 
-  fet.setGeometry( geom );
+  fet.setGeometry( *geom );
+  delete geom;
   layer->dataProvider()->addFeatures( QgsFeatureList() << fet );
   return layer;
 }

@@ -136,9 +136,8 @@ class QgsSpatialQuery
      * \param geomTarget         Geometry the feature Target
      * \param operation          Pointer to function of GEOS operation
      */
-    void populateIndexResult(
-      QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry *geomTarget,
-      bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometryV2&, QString* ) const );
+    void populateIndexResult( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
+                              bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometryV2&, QString* ) const );
     /**
      * \brief Populate index Result Disjoint
      * \param qsetIndexResult    Reference to QSet contains the result query
@@ -146,7 +145,7 @@ class QgsSpatialQuery
      * \param geomTarget         Geometry the feature Target
      * \param operation          Pointer to function of GEOS operation
      */
-    void populateIndexResultDisjoint( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry *geomTarget,
+    void populateIndexResultDisjoint( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
                                       bool ( QgsGeometryEngine::*operation )( const QgsAbstractGeometryV2&, QString* ) const );
 
     MngProgressBar *mPb;

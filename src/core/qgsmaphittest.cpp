@@ -155,7 +155,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
     // filter out elements outside of the polygon
     if ( !mOnlyExpressions && !mPolygon.isEmpty() )
     {
-      if ( !transformedPolygon.intersects( f.constGeometry() ) )
+      if ( !transformedPolygon.intersects( f.geometry() ) )
       {
         continue;
       }

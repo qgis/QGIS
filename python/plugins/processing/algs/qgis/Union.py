@@ -92,7 +92,7 @@ class Union(GeoAlgorithm):
             progress.setPercentage(nElement / float(nFeat) * 50)
             nElement += 1
             lstIntersectingB = []
-            geom = QgsGeometry(inFeatA.geometry())
+            geom = inFeatA.geometry()
             atMapA = inFeatA.attributes()
             intersects = indexA.intersects(geom.boundingBox())
             if len(intersects) < 1:
@@ -111,13 +111,13 @@ class Union(GeoAlgorithm):
                     request = QgsFeatureRequest().setFilterFid(id)
                     inFeatB = vlayerB.getFeatures(request).next()
                     atMapB = inFeatB.attributes()
-                    tmpGeom = QgsGeometry(inFeatB.geometry())
+                    tmpGeom = inFeatB.geometry()
 
                     if geom.intersects(tmpGeom):
                         int_geom = geom.intersection(tmpGeom)
                         lstIntersectingB.append(tmpGeom)
 
-                        if int_geom is None:
+                        if not int_geom:
                             # There was a problem creating the intersection
                             ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
                                                    self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
@@ -183,7 +183,7 @@ class Union(GeoAlgorithm):
         for inFeatA in featuresA:
             progress.setPercentage(nElement / float(nFeat) * 100)
             add = False
-            geom = QgsGeometry(inFeatA.geometry())
+            geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)
             atMap = [None] * length
             atMap.extend(inFeatA.attributes())
@@ -202,7 +202,7 @@ class Union(GeoAlgorithm):
                     request = QgsFeatureRequest().setFilterFid(id)
                     inFeatB = vlayerA.getFeatures(request).next()
                     atMapB = inFeatB.attributes()
-                    tmpGeom = QgsGeometry(inFeatB.geometry())
+                    tmpGeom = inFeatB.geometry()
 
                     if diff_geom.intersects(tmpGeom):
                         add = True

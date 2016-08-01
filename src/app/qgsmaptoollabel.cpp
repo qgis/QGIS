@@ -84,15 +84,15 @@ void QgsMapToolLabel::createRubberBands()
     QgsFeature f;
     if ( currentFeature( f, true ) )
     {
-      const QgsGeometry* geom = f.constGeometry();
-      if ( geom )
+      QgsGeometry geom = f.geometry();
+      if ( !geom.isEmpty() )
       {
         QSettings settings;
         int r = settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt();
         int g = settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt();
         int b = settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt();
         int a = settings.value( "/qgis/digitizing/line_color_alpha", 200 ).toInt();
-        mFeatureRubberBand = new QgsRubberBand( mCanvas, geom->type() );
+        mFeatureRubberBand = new QgsRubberBand( mCanvas, geom.type() );
         mFeatureRubberBand->setColor( QColor( r, g, b, a ) );
         mFeatureRubberBand->setToGeometry( geom, vlayer );
         mFeatureRubberBand->show();
@@ -112,12 +112,11 @@ void QgsMapToolLabel::createRubberBands()
         }
       }
 
-      QgsGeometry* pointGeom = QgsGeometry::fromPoint( fixPoint );
+      QgsGeometry pointGeom = QgsGeometry::fromPoint( fixPoint );
       mFixPointRubberBand = new QgsRubberBand( mCanvas, Qgis::Line );
       mFixPointRubberBand->setColor( QColor( 0, 0, 255, 65 ) );
       mFixPointRubberBand->setToGeometry( pointGeom, vlayer );
       mFixPointRubberBand->show();
-      delete pointGeom;
     }
   }
 }

@@ -533,13 +533,13 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     //check against atlas feature intersection
     if ( mFilterToAtlasIntersection )
     {
-      if ( !f.constGeometry() || ! mComposition->atlasComposition().enabled() )
+      if ( !f.hasGeometry() || ! mComposition->atlasComposition().enabled() )
       {
         continue;
       }
       QgsFeature atlasFeature = mComposition->atlasComposition().feature();
-      if ( !atlasFeature.constGeometry() ||
-           !f.constGeometry()->intersects( atlasFeature.constGeometry() ) )
+      if ( !atlasFeature.hasGeometry() ||
+           !f.geometry().intersects( atlasFeature.geometry() ) )
       {
         //feature falls outside current atlas feature
         continue;

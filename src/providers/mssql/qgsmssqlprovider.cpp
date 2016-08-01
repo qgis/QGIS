@@ -936,17 +936,17 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
 
     if ( !mGeometryColName.isEmpty() )
     {
-      const QgsGeometry *geom = it->constGeometry();
+      QgsGeometry geom = it->geometry();
       if ( mUseWkb )
       {
-        QByteArray bytea = QByteArray(( char* )geom->asWkb(), ( int ) geom->wkbSize() );
+        QByteArray bytea = QByteArray(( char* )geom.asWkb(), ( int ) geom.wkbSize() );
         query.addBindValue( bytea, QSql::In | QSql::Binary );
       }
       else
       {
         QString wkt;
-        if ( geom && !geom->isEmpty() )
-          wkt = geom->exportToWkt();
+        if ( !geom.isEmpty() )
+          wkt = geom.exportToWkt();
         query.addBindValue( wkt );
       }
     }

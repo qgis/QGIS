@@ -74,11 +74,11 @@ class TestCase(_TestCase):
             precision = 14
 
         for feats in zip(layer_expected.getFeatures(request), layer_result.getFeatures(request)):
-            if feats[0].geometry() is not None:
+            if feats[0].hasGeometry():
                 geom0 = feats[0].geometry().geometry().asWkt(precision)
             else:
                 geom0 = None
-            if feats[1].geometry() is not None:
+            if feats[1].hasGeometry():
                 geom1 = feats[1].geometry().geometry().asWkt(precision)
             else:
                 geom1 = None

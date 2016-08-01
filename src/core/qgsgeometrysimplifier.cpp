@@ -54,24 +54,19 @@ QgsTopologyPreservingSimplifier::~QgsTopologyPreservingSimplifier()
 }
 
 //! Returns a simplified version the specified geometry
-QgsGeometry* QgsTopologyPreservingSimplifier::simplify( QgsGeometry* geometry ) const
+QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry& geometry ) const
 {
-  return geometry->simplify( mTolerance );
+  return geometry.simplify( mTolerance );
 }
 
 //! Simplifies the specified geometry
 bool QgsTopologyPreservingSimplifier::simplifyGeometry( QgsGeometry* geometry ) const
 {
-  QgsGeometry* g = geometry->simplify( mTolerance );
+  QgsGeometry g = geometry->simplify( mTolerance );
 
-  if ( g )
+  if ( !g.isEmpty() )
   {
-    int wkbSize = g->wkbSize();
-    unsigned char *wkb = new unsigned char[ wkbSize ];
-    memcpy( wkb, g->asWkb(), wkbSize );
-    geometry->fromWkb( wkb, wkbSize );
-    delete g;
-
+    *geometry = g;
     return true;
   }
   return false;

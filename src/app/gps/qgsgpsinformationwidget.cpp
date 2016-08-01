@@ -827,8 +827,8 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     QgsWkbPtr wkbPtr( buf, size );
     wkbPtr << ( char ) QgsApplication::endian() << Qgis::WKBPoint << x << y;
 
-    QgsGeometry *g = new QgsGeometry();
-    g->fromWkb( buf, size );
+    QgsGeometry g;
+    g.fromWkb( buf, size );
     f->setGeometry( g );
 
     QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
@@ -877,8 +877,8 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
         wkbPtr << myPoint.x() << myPoint.y();
       }
 
-      QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( buf, size );
+      QgsGeometry g;
+      g.fromWkb( buf, size );
       f->setGeometry( g );
     }
     else if ( layerWKBType == Qgis::WKBPolygon )
@@ -904,11 +904,13 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
 
       wkbPtr << savePoint.x() << savePoint.y();
 
-      QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( buf, size );
+      QgsGeometry g;
+      g.fromWkb( buf, size );
       f->setGeometry( g );
 
-      int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
+      QgsGeometry featGeom = f->geometry();
+      int avoidIntersectionsReturn = featGeom.avoidIntersections();
+      f->setGeometry( featGeom );
       if ( avoidIntersectionsReturn == 1 )
       {
         //not a polygon type. Impossible to get there

@@ -81,7 +81,7 @@ class Clip(GeoAlgorithm):
         total = 100.0 / len(selectionA)
 
         for current, inFeatA in enumerate(selectionA):
-            geom = QgsGeometry(inFeatA.geometry())
+            geom = inFeatA.geometry()
             attrs = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
             first = True
@@ -91,16 +91,16 @@ class Clip(GeoAlgorithm):
                     layerB.getFeatures(
                         QgsFeatureRequest().setFilterFid(i)).nextFeature(
                             inFeatB)
-                    tmpGeom = QgsGeometry(inFeatB.geometry())
+                    tmpGeom = inFeatB.geometry()
                     if tmpGeom.intersects(geom):
                         found = True
                         if first:
                             outFeat.setGeometry(QgsGeometry(tmpGeom))
                             first = False
                         else:
-                            cur_geom = QgsGeometry(outFeat.geometry())
+                            cur_geom = outFeat.geometry()
                             new_geom = QgsGeometry(cur_geom.combine(tmpGeom))
-                            if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
+                            if new_geom.isEmpty() or new_geom.isGeosEmpty() or not new_geom.isGeosValid():
                                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                        self.tr('GEOS geoprocessing error: One or '
                                                                'more input features have invalid '
@@ -109,7 +109,7 @@ class Clip(GeoAlgorithm):
 
                             outFeat.setGeometry(QgsGeometry(new_geom))
                 if found:
-                    cur_geom = QgsGeometry(outFeat.geometry())
+                    cur_geom = outFeat.geometry()
                     new_geom = QgsGeometry(geom.intersection(cur_geom))
                     if new_geom.wkbType() == Qgis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                         int_com = QgsGeometry(geom.combine(cur_geom))

@@ -449,31 +449,31 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         // if compatible with the rest of file, add to the extents
 
         QString sWkt = parts[mWktFieldIndex];
-        QgsGeometry *geom = nullptr;
+        QgsGeometry geom;
         if ( !mWktHasPrefix && sWkt.indexOf( WktPrefixRegexp ) >= 0 )
           mWktHasPrefix = true;
         geom = geomFromWkt( sWkt, mWktHasPrefix );
 
-        if ( geom )
+        if ( !geom.isEmpty() )
         {
-          Qgis::WkbType type = geom->wkbType();
+          Qgis::WkbType type = geom.wkbType();
           if ( type != Qgis::WKBNoGeometry )
           {
-            if ( mGeometryType == Qgis::UnknownGeometry || geom->type() == mGeometryType )
+            if ( mGeometryType == Qgis::UnknownGeometry || geom.type() == mGeometryType )
             {
-              mGeometryType = geom->type();
+              mGeometryType = geom.type();
               if ( !foundFirstGeometry )
               {
                 mNumberFeatures++;
                 mWkbType = type;
-                mExtent = geom->boundingBox();
+                mExtent = geom.boundingBox();
                 foundFirstGeometry = true;
               }
               else
               {
                 mNumberFeatures++;
-                if ( geom->isMultipart() ) mWkbType = type;
-                QgsRectangle bbox( geom->boundingBox() );
+                if ( geom.isMultipart() ) mWkbType = type;
+                QgsRectangle bbox( geom.boundingBox() );
                 mExtent.combineExtentWith( bbox );
               }
               if ( buildSpatialIndex )
@@ -482,9 +482,6 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
                 f.setFeatureId( mFile->recordId() );
                 f.setGeometry( geom );
                 mSpatialIndex->insertFeature( f );
-                // Feature now has ownership of geometry, so set to null
-                // here to avoid deleting twice.
-                geom = nullptr;
               }
             }
             else
@@ -493,7 +490,6 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
               geomValid = false;
             }
           }
-          if ( geom ) delete geom;
         }
         else
         {
@@ -787,16 +783,16 @@ void QgsDelimitedTextProvider::rescanFile() const
   bool foundFirstGeometry = false;
   while ( fi.nextFeature( f ) )
   {
-    if ( mGeometryType != Qgis::NoGeometry && f.constGeometry() )
+    if ( mGeometryType != Qgis::NoGeometry && f.hasGeometry() )
     {
       if ( !foundFirstGeometry )
       {
-        mExtent = f.constGeometry()->boundingBox();
+        mExtent = f.geometry().boundingBox();
         foundFirstGeometry = true;
       }
       else
       {
-        QgsRectangle bbox( f.constGeometry()->boundingBox() );
+        QgsRectangle bbox( f.geometry().boundingBox() );
         mExtent.combineExtentWith( bbox );
       }
       if ( buildSpatialIndex ) mSpatialIndex->insertFeature( f );
@@ -815,9 +811,9 @@ void QgsDelimitedTextProvider::rescanFile() const
   mUseSpatialIndex = buildSpatialIndex;
 }
 
-QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp )
+QgsGeometry QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp )
 {
-  QgsGeometry *geom = nullptr;
+  QgsGeometry geom;
   try
   {
     if ( wktHasPrefixRegexp )
@@ -829,7 +825,7 @@ QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPr
   }
   catch ( ... )
   {
-    geom = nullptr;
+    geom = QgsGeometry();
   }
   return geom;
 }

@@ -488,7 +488,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         # by request flag
         r = QgsFeatureRequest()
         r.setFlags(QgsFeatureRequest.NoGeometry)
-        self.assertEqual(all([f.geometry() is None for f in l5.getFeatures(r)]), True)
+        self.assertEqual(all([not f.hasGeometry() for f in l5.getFeatures(r)]), True)
 
         # test subset
         self.assertEqual(l5.dataProvider().featureCount(), 4)

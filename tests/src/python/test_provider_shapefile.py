@@ -349,7 +349,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
         fet = next(vl.getFeatures())
-        self.assertIsNone(fet.geometry())
+        self.assertFalse(fet.hasGeometry())
 
     def testDeleteShapes(self):
         ''' Test fix for #11007 '''

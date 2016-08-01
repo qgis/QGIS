@@ -1154,22 +1154,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
-    /** Changes the specified geometry such that it has no intersections with other
-     *  polygon (or multipolygon) geometries in this vector layer
-     *  @param geom geometry to modify
-     *  @param ignoreFeatures list of feature ids where intersections should be ignored
-     *  @return 0 in case of success
-     *
-     *  @deprecated since 2.2 - not being used for "avoid intersections" functionality anymore
-     */
-    Q_DECL_DEPRECATED int removePolygonIntersections( QgsGeometry* geom, const QgsFeatureIds& ignoreFeatures = QgsFeatureIds() );
-
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
      * @note geom is not going to be modified by the function
      * @return 0 in case of success
      */
-    int addTopologicalPoints( const QgsGeometry* geom );
+    int addTopologicalPoints( const QgsGeometry& geom );
 
     /** Adds a vertex to segments which intersect point p but don't
      * already have a vertex there. If a feature already has a vertex at position p,
@@ -1307,7 +1297,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool setReadOnly( bool readonly = true );
 
     /** Change feature's geometry */
-    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry& geom );
 
     /**
      * Changes an attribute value (but does not commit it)
@@ -2022,7 +2012,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fid The id of the changed feature
      * @param geometry The new geometry
      */
-    void geometryChanged( QgsFeatureId fid, QgsGeometry& geometry );
+    void geometryChanged( QgsFeatureId fid, const QgsGeometry& geometry );
 
     /** This signal is emitted, when attributes are deleted from the provider */
     void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributes );
@@ -2133,7 +2123,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void snapToGeometry( const QgsPoint& startPoint,
                          QgsFeatureId featureId,
-                         const QgsGeometry *geom,
+                         const QgsGeometry& geom,
                          double sqrSnappingTolerance,
                          QMultiMap<double, QgsSnappingResult>& snappingResults,
                          QgsSnapper::SnappingType snap_to ) const;

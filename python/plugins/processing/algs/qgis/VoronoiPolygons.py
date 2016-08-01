@@ -85,7 +85,7 @@ class VoronoiPolygons(GeoAlgorithm):
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
-            geom = QgsGeometry(inFeat.geometry())
+            geom = inFeat.geometry()
             point = geom.asPoint()
             x = point.x() - extent.xMinimum()
             y = point.y() - extent.yMinimum()

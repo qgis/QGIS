@@ -278,21 +278,21 @@ void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
   update();
 }
 
-void QgsRubberBand::setToGeometry( const QgsGeometry* geom, QgsVectorLayer* layer )
+void QgsRubberBand::setToGeometry( const QgsGeometry& geom, QgsVectorLayer* layer )
 {
-  if ( !geom )
+  if ( geom.isEmpty() )
   {
     reset( mGeometryType );
     return;
   }
 
-  reset( geom->type() );
+  reset( geom.type() );
   addGeometry( geom, layer );
 }
 
-void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer )
+void QgsRubberBand::addGeometry( const QgsGeometry& geom, QgsVectorLayer* layer )
 {
-  if ( !geom )
+  if ( geom.isEmpty() )
   {
     return;
   }
@@ -302,7 +302,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
 
   int idx = mPoints.size();
 
-  switch ( geom->wkbType() )
+  switch ( geom.wkbType() )
   {
 
     case Qgis::WKBPoint:
@@ -311,11 +311,11 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
       QgsPoint pt;
       if ( layer )
       {
-        pt = ms.layerToMapCoordinates( layer, geom->asPoint() );
+        pt = ms.layerToMapCoordinates( layer, geom.asPoint() );
       }
       else
       {
-        pt = geom->asPoint();
+        pt = geom.asPoint();
       }
       addPoint( pt, false, idx );
       removeLastPoint( idx, false );
@@ -325,7 +325,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     case Qgis::WKBMultiPoint:
     case Qgis::WKBMultiPoint25D:
     {
-      QgsMultiPoint mpt = geom->asMultiPoint();
+      QgsMultiPoint mpt = geom.asMultiPoint();
       for ( int i = 0; i < mpt.size(); ++i, ++idx )
       {
         QgsPoint pt = mpt[i];
@@ -346,7 +346,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     case Qgis::WKBLineString:
     case Qgis::WKBLineString25D:
     {
-      QgsPolyline line = geom->asPolyline();
+      QgsPolyline line = geom.asPolyline();
       for ( int i = 0; i < line.count(); i++ )
       {
         if ( layer )
@@ -365,7 +365,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     case Qgis::WKBMultiLineString25D:
     {
 
-      QgsMultiPolyline mline = geom->asMultiPolyline();
+      QgsMultiPolyline mline = geom.asMultiPolyline();
       for ( int i = 0; i < mline.size(); ++i, ++idx )
       {
         QgsPolyline line = mline[i];
@@ -393,7 +393,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     case Qgis::WKBPolygon:
     case Qgis::WKBPolygon25D:
     {
-      QgsPolygon poly = geom->asPolygon();
+      QgsPolygon poly = geom.asPolygon();
       QgsPolyline line = poly[0];
       for ( int i = 0; i < line.count(); i++ )
       {
@@ -413,7 +413,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     case Qgis::WKBMultiPolygon25D:
     {
 
-      QgsMultiPolygon multipoly = geom->asMultiPolygon();
+      QgsMultiPolygon multipoly = geom.asMultiPolygon();
       for ( int i = 0; i < multipoly.size(); ++i, ++idx )
       {
         QgsPolygon poly = multipoly[i];
@@ -641,9 +641,9 @@ const QgsPoint *QgsRubberBand::getPoint( int i, int j ) const
     return nullptr;
 }
 
-QgsGeometry *QgsRubberBand::asGeometry()
+QgsGeometry QgsRubberBand::asGeometry() const
 {
-  QgsGeometry *geom = nullptr;
+  QgsGeometry geom;
 
   switch ( mGeometryType )
   {

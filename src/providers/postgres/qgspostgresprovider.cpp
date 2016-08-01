@@ -2012,7 +2012,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       QStringList params;
       if ( !mGeometryColumn.isNull() )
       {
-        appendGeomParam( features->constGeometry(), params );
+        appendGeomParam( features->geometry(), params );
       }
 
       params.reserve( fieldId.size() );
@@ -2467,9 +2467,9 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
   return returnvalue;
 }
 
-void QgsPostgresProvider::appendGeomParam( const QgsGeometry *geom, QStringList &params ) const
+void QgsPostgresProvider::appendGeomParam( const QgsGeometry& geom, QStringList &params ) const
 {
-  if ( !geom )
+  if ( geom.isEmpty() )
   {
     params << QString::null;
     return;
@@ -2478,8 +2478,8 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry *geom, QStringList 
   QString param;
 
   QScopedPointer<QgsGeometry> convertedGeom( convertToProviderType( geom ) );
-  const unsigned char *buf = convertedGeom ? convertedGeom->asWkb() : geom->asWkb();
-  size_t wkbSize = convertedGeom ? convertedGeom->wkbSize() : geom->wkbSize();
+  const unsigned char *buf = convertedGeom ? convertedGeom->asWkb() : geom.asWkb();
+  size_t wkbSize = convertedGeom ? convertedGeom->wkbSize() : geom.wkbSize();
 
   for ( size_t i = 0; i < wkbSize; ++i )
   {
@@ -2602,7 +2602,7 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
       }
 
       QStringList params;
-      appendGeomParam( &*iter, params );
+      appendGeomParam( *iter, params );
       appendPkParams( iter.key(), params );
 
       result = conn->PQexecPrepared( "updatefeatures", params );
@@ -2775,7 +2775,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
         QStringList params;
         const QgsGeometry &geom = geometry_map[ fid ];
-        appendGeomParam( &geom, params );
+        appendGeomParam( geom, params );
 
         result = conn->PQexecPrepared( "updatefeature", params );
         if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )

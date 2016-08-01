@@ -72,7 +72,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
     return;
   }
 
-  QgsGeometry* geomPart = partUnderPoint( e->pos(), mPressedFid, mPressedPartNum );
+  QgsGeometry geomPart = partUnderPoint( e->pos(), mPressedFid, mPressedPartNum );
 
   if ( mPressedFid != -1 )
   {
@@ -82,7 +82,6 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
     mRubberBand->show();
   }
 
-  delete geomPart;
 }
 
 void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
@@ -102,9 +101,9 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
 
   QgsFeature f;
   vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
-  QgsGeometry* g = f.geometry();
+  QgsGeometry g = f.geometry();
 
-  if ( g->deletePart( mPressedPartNum ) )
+  if ( g.deletePart( mPressedPartNum ) )
   {
     vlayer->beginEditCommand( tr( "Part of multipart feature deleted" ) );
     vlayer->changeGeometry( f.id(), g );
@@ -118,10 +117,10 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
   return;
 }
 
-QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fid, int& partNum )
+QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fid, int& partNum )
 {
   QgsFeature f;
-  QgsGeometry* geomPart = new QgsGeometry();
+  QgsGeometry geomPart;
 
   switch ( vlayer->geometryType() )
   {
@@ -134,30 +133,27 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
 
       int snapVertex = match.vertexIndex();
       vlayer->getFeatures( QgsFeatureRequest().setFilterFid( match.featureId() ) ).nextFeature( f );
-      const QgsGeometry* g = f.constGeometry();
-      if ( !g->isMultipart() )
+      QgsGeometry g = f.geometry();
+      if ( !g.isMultipart() )
       {
         fid = match.featureId();
-        delete geomPart;
         return QgsGeometry::fromPoint( match.point() );
       }
-      if ( g->wkbType() == Qgis::WKBMultiPoint || g->wkbType() == Qgis::WKBMultiPoint25D )
+      if ( g.wkbType() == Qgis::WKBMultiPoint || g.wkbType() == Qgis::WKBMultiPoint25D )
       {
         fid = match.featureId();
         partNum = snapVertex;
-        delete geomPart;
         return QgsGeometry::fromPoint( match.point() );
       }
-      if ( g->wkbType() == Qgis::WKBMultiLineString || g->wkbType() == Qgis::WKBMultiLineString25D )
+      if ( g.wkbType() == Qgis::WKBMultiLineString || g.wkbType() == Qgis::WKBMultiLineString25D )
       {
-        QgsMultiPolyline mline = g->asMultiPolyline();
+        QgsMultiPolyline mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )
         {
           if ( snapVertex < mline[part].count() )
           {
             fid = match.featureId();
             partNum = part;
-            delete geomPart;
             return QgsGeometry::fromPolyline( mline[part] );
           }
           snapVertex -= mline[part].count();
@@ -173,27 +169,25 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
                                layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ) );
       fit.nextFeature( f );
-      const QgsGeometry* g = f.constGeometry();
-      if ( !g )
+      QgsGeometry g = f.geometry();
+      if ( g.isEmpty() )
         return geomPart;
-      if ( !g->isMultipart() )
+      if ( !g.isMultipart() )
       {
         fid = f.id();
         return geomPart;
       }
-      QgsMultiPolygon mpolygon = g->asMultiPolygon();
+      QgsMultiPolygon mpolygon = g.asMultiPolygon();
       for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
       {
         const QgsPolygon& polygon = mpolygon[part];
-        QgsGeometry* partGeo = QgsGeometry::fromPolygon( polygon );
-        if ( partGeo->contains( &layerCoords ) )
+        QgsGeometry partGeo = QgsGeometry::fromPolygon( polygon );
+        if ( partGeo.contains( &layerCoords ) )
         {
           fid = f.id();
           partNum = part;
-          delete geomPart;
           return partGeo;
         }
-        delete partGeo;
       }
       break;
     }

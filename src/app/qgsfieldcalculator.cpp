@@ -296,7 +296,7 @@ void QgsFieldCalculator::accept()
         if ( value.canConvert< QgsGeometry >() )
         {
           QgsGeometry geom = value.value< QgsGeometry >();
-          mVectorLayer->changeGeometry( feature.id(), &geom );
+          mVectorLayer->changeGeometry( feature.id(), geom );
         }
       }
       else

@@ -246,7 +246,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
-    lyr.extentGeom->rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
+    lyr.extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
   lyr.mFeatsSendingToPal = 0;
@@ -290,7 +290,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
     if ( mRenderer )
     {
       QgsSymbolV2List symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
-      if ( !symbols.isEmpty() && fet.constGeometry()->type() == Qgis::Point )
+      if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::Point )
       {
         //point feature, use symbol bounds as obstacle
         obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols ) );
@@ -323,19 +323,19 @@ void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRende
 
 QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolV2List& symbols )
 {
-  if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() || fet.constGeometry()->type() != Qgis::Point )
+  if ( !fet.hasGeometry() || fet.geometry().type() != Qgis::Point )
     return nullptr;
 
-  bool isMultiPoint = fet.constGeometry()->geometry()->nCoordinates() > 1;
+  bool isMultiPoint = fet.geometry().geometry()->nCoordinates() > 1;
   QgsAbstractGeometryV2* obstacleGeom = nullptr;
   if ( isMultiPoint )
     obstacleGeom = new QgsMultiPolygonV2();
 
   // for each point
-  for ( int i = 0; i < fet.constGeometry()->geometry()->nCoordinates(); ++i )
+  for ( int i = 0; i < fet.geometry().geometry()->nCoordinates(); ++i )
   {
     QRectF bounds;
-    QgsPointV2 p =  fet.constGeometry()->geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
+    QgsPointV2 p =  fet.geometry().geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
     double x = p.x();
     double y = p.y();
     double z = 0; // dummy variable for coordinate transforms

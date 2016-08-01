@@ -209,7 +209,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void setUriParameter( const QString& parameter, const QString& value );
 
 
-    static QgsGeometry *geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp );
+    static QgsGeometry geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp );
     static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString& decimalPoint, bool xyDms );
     static double dmsStringToDouble( const QString &sX, bool *xOk );
 

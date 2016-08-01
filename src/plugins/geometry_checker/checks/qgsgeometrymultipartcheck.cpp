@@ -27,7 +27,8 @@ void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError*>& er
     {
       continue;
     }
-    QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+    QgsGeometry featureGeom = feature.geometry();
+    QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
     QgsWKBTypes::Type type = geom->wkbType();
     if ( geom->partCount() == 1 && QgsWKBTypes::isMultiType( type ) )
@@ -45,7 +46,8 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError* error, int meth
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry featureGeom = feature.geometry();
+  QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
   // Check if error still applies
   if ( geom->partCount() > 1 || !QgsWKBTypes::isMultiType( geom->wkbType() ) )
@@ -61,7 +63,7 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError* error, int meth
   }
   else if ( method == ConvertToSingle )
   {
-    feature.setGeometry( new QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
+    feature.setGeometry( QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
     mFeaturePool->updateFeature( feature );
     error->setFixed( method );
     changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );

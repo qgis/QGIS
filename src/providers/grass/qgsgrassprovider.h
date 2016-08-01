@@ -374,7 +374,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
   public slots:
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
-    void onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom );
+    void onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
     void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );

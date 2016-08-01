@@ -91,7 +91,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         first = True
         while fit.nextFeature(inFeat):
             if first:
-                newgeometry = QgsGeometry(inFeat.geometry())
+                newgeometry = inFeat.geometry()
                 first = False
             else:
                 newgeometry = newgeometry.combine(inFeat.geometry())

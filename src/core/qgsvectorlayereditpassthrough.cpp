@@ -81,13 +81,13 @@ bool QgsVectorLayerEditPassthrough::deleteFeatures( const QgsFeatureIds& fids )
   return false;
 }
 
-bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
+bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, QgsGeometry geom )
 {
   QgsGeometryMap geomMap;
-  geomMap.insert( fid, *geom );
+  geomMap.insert( fid, geom );
   if ( L->dataProvider()->changeGeometryValues( geomMap ) )
   {
-    emit geometryChanged( fid, *geom );
+    emit geometryChanged( fid, geom );
     mModified = true;
     return true;
   }

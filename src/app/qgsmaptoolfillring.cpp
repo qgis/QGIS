@@ -147,7 +147,8 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
         //create QgsFeature with wkb representation
         QgsFeature* ft = new QgsFeature( vlayer->fields(), 0 );
 
-        ft->setGeometry( QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() ) );
+        QgsGeometry g = QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() );
+        ft->setGeometry( g );
         ft->setAttributes( f.attributes() );
 
         bool res = false;

@@ -69,7 +69,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         total = 100.0 / float(len(features))
 
         for current, inFeatA in enumerate(features):
-            inGeom = QgsGeometry(inFeatA.geometry())
+            inGeom = inFeatA.geometry()
             attrsA = inFeatA.attributes()
             outFeat.setAttributes(attrsA)
             inLines = [inGeom]
@@ -86,7 +86,7 @@ class SplitLinesWithLines(GeoAlgorithm):
                         if inFeatA.id() == inFeatB.id():
                             continue
 
-                    splitGeom = QgsGeometry(inFeatB.geometry())
+                    splitGeom = inFeatB.geometry()
 
                     if inGeom.intersects(splitGeom):
                         splittingLines.append(splitGeom)

@@ -75,7 +75,7 @@ class Centroids(GeoAlgorithm):
             inGeom = feat.geometry()
             attrs = feat.attributes()
 
-            if not inGeom:
+            if inGeom.isEmpty():
                 outGeom = QgsGeometry(None)
             else:
                 outGeom = QgsGeometry(inGeom.centroid())

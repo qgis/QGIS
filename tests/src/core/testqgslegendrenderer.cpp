@@ -186,13 +186,16 @@ void TestQgsLegendRenderer::init()
     QList<QgsFeature> features;
     QgsFeature f1( fields, 1 );
     f1.setAttribute( 0, 1 );
-    f1.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) ) );
+    QgsGeometry f1G = QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) );
+    f1.setGeometry( f1G );
     QgsFeature f2( fields, 2 );
     f2.setAttribute( 0, 2 );
-    f2.setGeometry( QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) ) );
+    QgsGeometry f2G = QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) );
+    f2.setGeometry( f2G );
     QgsFeature f3( fields, 3 );
     f3.setAttribute( 0, 3 );
-    f3.setGeometry( QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) ) );
+    QgsGeometry f3G = QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) ) ;
+    f3.setGeometry( f3G );
     features << f1 << f2 << f3;
     pr->addFeatures( features );
     mVL3->updateFields();
@@ -404,13 +407,16 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
     QList<QgsFeature> features;
     QgsFeature f1( fields, 1 );
     f1.setAttribute( 0, 1 );
-    f1.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) ) );
+    QgsGeometry f1G = QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) );
+    f1.setGeometry( f1G );
     QgsFeature f2( fields, 2 );
     f2.setAttribute( 0, 2 );
-    f2.setGeometry( QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) ) );
+    QgsGeometry f2G =  QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) );
+    f2.setGeometry( f2G );
     QgsFeature f3( fields, 3 );
     f3.setAttribute( 0, 3 );
-    f3.setGeometry( QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) ) );
+    QgsGeometry f3G = QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) );
+    f3.setGeometry( f3G );
     features << f1 << f2 << f3;
     pr->addFeatures( features );
     vl4->updateFields();
@@ -490,8 +496,8 @@ void TestQgsLegendRenderer::testFilterByPolygon()
   mapSettings.setLayers( ll );
 
   // select only within a polygon
-  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( "POLYGON((0 0,2 0,2 2,0 2,0 0))" ) );
-  legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false, *geom.data() );
+  QgsGeometry geom( QgsGeometry::fromWkt( "POLYGON((0 0,2 0,2 2,0 2,0 0))" ) );
+  legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false, geom );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
@@ -499,7 +505,7 @@ void TestQgsLegendRenderer::testFilterByPolygon()
   QVERIFY( _verifyImage( testName, mReport ) );
 
   // again with useExtent to true
-  legendModel.setLegendFilter( &mapSettings, /*useExtent*/ true, *geom.data() );
+  legendModel.setLegendFilter( &mapSettings, /*useExtent*/ true, geom );
 
   QString testName2 = testName + "2";
   QString report2 = mReport + "2";

@@ -93,7 +93,7 @@ int QgsInterpolator::cacheBaseData()
         }
       }
 
-      if ( addVerticesToCache( theFeature.constGeometry(), layer.zCoordInterpolation, attributeValue ) != 0 )
+      if ( addVerticesToCache( theFeature.geometry(), layer.zCoordInterpolation, attributeValue ) != 0 )
       {
         return 3;
       }
@@ -103,17 +103,17 @@ int QgsInterpolator::cacheBaseData()
   return 0;
 }
 
-int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, double attributeValue )
+int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, double attributeValue )
 {
-  if ( !geom )
+  if ( geom.isEmpty() )
     return 1;
 
   bool hasZValue = false;
-  QgsConstWkbPtr currentWkbPtr( geom->asWkb(), geom->wkbSize() );
+  QgsConstWkbPtr currentWkbPtr( geom.asWkb(), geom.wkbSize() );
   currentWkbPtr.readHeader();
   vertexData theVertex; //the current vertex
 
-  Qgis::WkbType wkbType = geom->wkbType();
+  Qgis::WkbType wkbType = geom.wkbType();
   switch ( wkbType )
   {
     case Qgis::WKBPoint25D:

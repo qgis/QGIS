@@ -444,7 +444,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     static QMap<QString, MetaData> initMetaData();
     void createSymbolLayerTable( QgsVectorLayer* vl, const QgsCoordinateTransform& ct, OGRDataSourceH ds );
-    OGRFeatureH createFeature( QgsFeature& feature );
+    OGRFeatureH createFeature( const QgsFeature& feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
     /** Writes features considering symbol level order*/

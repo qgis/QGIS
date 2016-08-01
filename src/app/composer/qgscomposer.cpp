@@ -1093,7 +1093,7 @@ void QgsComposer::atlasFeatureChanged( QgsFeature *feature )
   QgsFeature atlasFeature = mComposition->atlasComposition().feature();
   mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_feature", QVariant::fromValue( atlasFeature ), true ) );
   mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featureid", atlasFeature.id(), true ) );
-  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( *atlasFeature.constGeometry() ), true ) );
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( atlasFeature.geometry() ), true ) );
 }
 
 void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )

@@ -44,7 +44,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     /** Rubberband that shows the position of the offset curve*/
     QgsRubberBand* mRubberBand;
     /** Geometry to manipulate*/
-    QgsGeometry* mOriginalGeometry;
+    QgsGeometry mOriginalGeometry;
     /** Geometry after manipulation*/
     QgsGeometry mModifiedGeometry;
     /** ID of manipulated feature*/
@@ -63,14 +63,14 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
 
 
     void deleteRubberBandAndGeometry();
-    QgsGeometry* createOriginGeometry( QgsVectorLayer* vl, const QgsPointLocator::Match& match, QgsFeature& snappedFeature );
+    QgsGeometry createOriginGeometry( QgsVectorLayer* vl, const QgsPointLocator::Match& match, QgsFeature& snappedFeature );
     void createDistanceWidget();
     void deleteDistanceWidget();
     void setOffsetForRubberBand( double offset );
     /** Creates a linestring from the polygon ring containing the snapped vertex. Caller takes ownership of the created object*/
-    QgsGeometry* linestringFromPolygon( const QgsGeometry *featureGeom, int vertex );
+    QgsGeometry linestringFromPolygon( const QgsGeometry& featureGeom, int vertex );
     /** Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry*/
-    QgsGeometry* convertToSingleLine( QgsGeometry* geom, int vertex, bool& isMulti );
+    QgsGeometry convertToSingleLine( const QgsGeometry& geom, int vertex, bool& isMulti );
     /** Converts offset line back to a multiline if necessary*/
     QgsGeometry* convertToMultiLine( QgsGeometry* geom );
 };

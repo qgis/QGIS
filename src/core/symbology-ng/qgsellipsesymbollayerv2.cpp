@@ -323,8 +323,8 @@ void QgsEllipseSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2RenderConte
     const QgsFeature* f = context.feature();
     if ( f )
     {
-      const QgsGeometry *g = f->constGeometry();
-      if ( g && g->type() == Qgis::Point )
+      QgsGeometry g = f->geometry();
+      if ( !g.isEmpty() && g.type() == Qgis::Point )
       {
         const QgsMapToPixel& m2p = context.renderContext().mapToPixel();
         angle += m2p.mapRotation();

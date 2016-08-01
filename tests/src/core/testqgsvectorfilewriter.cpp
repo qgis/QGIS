@@ -144,10 +144,7 @@ void TestQgsVectorFileWriter::createPoint()
   // Create a feature
   //
   //
-  // NOTE: don't delete this pointer again -
-  // ownership is passed to the feature which will
-  // delete it in its dtor!
-  QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
+  QgsGeometry mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPointGeometry );
   myFeature.initAttributes( 1 );
@@ -191,11 +188,7 @@ void TestQgsVectorFileWriter::createLine()
   //
   QgsPolyline myPolyline;
   myPolyline << mPoint1 << mPoint2 << mPoint3;
-  //
-  // NOTE: don't delete this pointer again -
-  // ownership is passed to the feature which will
-  // delete it in its dtor!
-  QgsGeometry * mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
+  QgsGeometry mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
   QgsFeature myFeature;
   myFeature.setGeometry( mypLineGeometry );
   myFeature.initAttributes( 1 );
@@ -245,10 +238,7 @@ void TestQgsVectorFileWriter::createPolygon()
   //polygon: first item of the list is outer ring,
   // inner rings (if any) start from second item
   //
-  // NOTE: don't delete this pointer again -
-  // ownership is passed to the feature which will
-  // delete it in its dtor!
-  QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+  QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPolygonGeometry );
   myFeature.initAttributes( 1 );
@@ -305,10 +295,7 @@ void TestQgsVectorFileWriter::polygonGridTest()
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      // NOTE: don't delete this pointer again -
-      // ownership is passed to the feature which will
-      // delete it in its dtor!
-      QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.initAttributes( 1 );
@@ -378,10 +365,7 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      // NOTE: don't delete this pointer again -
-      // ownership is passed to the feature which will
-      // delete it in its dtor!
-      QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.initAttributes( 1 );
@@ -443,10 +427,7 @@ void TestQgsVectorFileWriter::regression1141()
                                   crs );
 
     QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
-    // NOTE: don't delete this pointer again -
-    // ownership is passed to the feature which will
-    // delete it in its dtor!
-    QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( myPoint );
+    QgsGeometry mypPointGeometry = QgsGeometry::fromPoint( myPoint );
     QgsFeature myFeature;
     myFeature.setGeometry( mypPointGeometry );
     myFeature.initAttributes( 1 );

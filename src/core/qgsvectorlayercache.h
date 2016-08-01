@@ -302,7 +302,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void onFeatureAdded( QgsFeatureId fid );
     void attributeAdded( int field );
     void attributeDeleted( int field );
-    void geometryChanged( QgsFeatureId fid, QgsGeometry& geom );
+    void geometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
     void layerDeleted();
     void invalidate();
 

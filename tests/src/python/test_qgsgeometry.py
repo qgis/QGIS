@@ -58,6 +58,16 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsGeometry(unittest.TestCase):
 
+    def testBool(self):
+        """ Test boolean evaluation of QgsGeometry """
+        g = QgsGeometry()
+        self.assertFalse(g)
+        myWKT = 'Point (10 10)'
+        g = QgsGeometry.fromWkt(myWKT)
+        self.assertTrue(g)
+        g.setGeometry(None)
+        self.assertFalse(g)
+
     def testWktPointLoading(self):
         myWKT = 'Point (10 10)'
         myGeometry = QgsGeometry.fromWkt(myWKT)
@@ -1516,7 +1526,7 @@ class TestQgsGeometry(unittest.TestCase):
         ######## TO LINE ########
         # POINT TO LINE
         point = QgsGeometry.fromPoint(QgsPoint(1, 1))
-        assert point.convertToType(Qgis.Line, False) is None, "convertToType with a point should return a null geometry"
+        self.assertFalse(point.convertToType(Qgis.Line, False)), "convertToType with a point should return a null geometry"
         # MultiPoint TO LINE
         multipoint = QgsGeometry.fromMultiPoint(points[0][0])
         wkt = multipoint.convertToType(Qgis.Line, False).exportToWkt()
@@ -1581,10 +1591,10 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # LINE ( 3 vertices, with first = last ) TO Polygon
         line = QgsGeometry.fromPolyline([QgsPoint(1, 1), QgsPoint(0, 0), QgsPoint(1, 1)])
-        assert line.convertToType(Qgis.Polygon, False) is None, "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry"
+        self.assertFalse(line.convertToType(Qgis.Polygon, False), "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry")
         # MULTILINE ( with a part of 3 vertices, with first = last ) TO MultiPolygon
         multiline = QgsGeometry.fromMultiPolyline([points[0][0], [QgsPoint(1, 1), QgsPoint(0, 0), QgsPoint(1, 1)]])
-        assert multiline.convertToType(Qgis.Polygon, True) is None, "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry"
+        self.assertFalse(multiline.convertToType(Qgis.Polygon, True), "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry")
         # LINE TO MultiPolygon
         line = QgsGeometry.fromPolyline(points[0][0])
         wkt = line.convertToType(Qgis.Polygon, True).exportToWkt()

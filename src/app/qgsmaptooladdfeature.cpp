@@ -140,14 +140,14 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
     {
       QgsFeature f( vlayer->fields(), 0 );
 
-      QgsGeometry *g = nullptr;
+      QgsGeometry g;
       if ( layerWKBType == Qgis::WKBPoint )
       {
         g = QgsGeometry::fromPoint( savePoint );
       }
       else if ( layerWKBType == Qgis::WKBPoint25D )
       {
-        g = new QgsGeometry( new QgsPointV2( QgsWKBTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
+        g = QgsGeometry( new QgsPointV2( QgsWKBTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
       }
       else if ( layerWKBType == Qgis::WKBMultiPoint )
       {
@@ -157,7 +157,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       {
         QgsMultiPointV2* mp = new QgsMultiPointV2();
         mp->addGeometry( new QgsPointV2( QgsWKBTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
-        g = new QgsGeometry( mp );
+        g = QgsGeometry( mp );
       }
       else
       {
@@ -253,7 +253,9 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
       if ( mode() == CaptureLine )
       {
-        f->setGeometry( new QgsGeometry( curveToAdd ) );
+        QgsGeometry* g = new QgsGeometry( curveToAdd );
+        f->setGeometry( *g );
+        delete g;
       }
       else
       {
@@ -267,14 +269,18 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
           poly = new QgsPolygonV2();
         }
         poly->setExteriorRing( curveToAdd );
-        f->setGeometry( new QgsGeometry( poly ) );
+        QgsGeometry* g = new QgsGeometry( poly );
+        f->setGeometry( *g );
+        delete g;
 
-        int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
+        QgsGeometry featGeom = f->geometry();
+        int avoidIntersectionsReturn = featGeom.avoidIntersections();
+        f->setGeometry( featGeom );
         if ( avoidIntersectionsReturn == 1 )
         {
           //not a polygon type. Impossible to get there
         }
-        if ( f->constGeometry()->isGeosEmpty() ) //avoid intersection might have removed the whole geometry
+        if ( f->geometry().isGeosEmpty() ) //avoid intersection might have removed the whole geometry
         {
           emit messageEmitted( tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" ), QgsMessageBar::CRITICAL );
           stopCapturing();
@@ -302,13 +308,13 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
             //can only add topological points if background layer is editable...
             if ( vl && vl->geometryType() == Qgis::Polygon && vl->isEditable() )
             {
-              vl->addTopologicalPoints( f->constGeometry() );
+              vl->addTopologicalPoints( f->geometry() );
             }
           }
         }
         else if ( topologicalEditing )
         {
-          vlayer->addTopologicalPoints( f->constGeometry() );
+          vlayer->addTopologicalPoints( f->geometry() );
         }
       }
 

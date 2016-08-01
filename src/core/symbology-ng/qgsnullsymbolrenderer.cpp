@@ -47,15 +47,15 @@ bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext
     return true;
   }
 
-  if ( !feature.constGeometry() ||
-       feature.constGeometry()->type() == Qgis::NoGeometry ||
-       feature.constGeometry()->type() == Qgis::UnknownGeometry )
+  if ( !feature.hasGeometry() ||
+       feature.geometry().type() == Qgis::NoGeometry ||
+       feature.geometry().type() == Qgis::UnknownGeometry )
     return true;
 
   if ( mSymbol.isNull() )
   {
     //create default symbol
-    mSymbol.reset( QgsSymbolV2::defaultSymbol( feature.constGeometry()->type() ) );
+    mSymbol.reset( QgsSymbolV2::defaultSymbol( feature.geometry().type() ) );
     mSymbol->startRender( context );
   }
 

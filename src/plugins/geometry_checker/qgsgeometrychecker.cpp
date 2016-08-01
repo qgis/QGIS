@@ -117,7 +117,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
       if ( mFeaturePool->get( id, f ) )
       {
         recheckFeatures.insert( id );
-        recheckArea.unionRect( f.geometry()->boundingBox() );
+        recheckArea.unionRect( f.geometry().boundingBox() );
       }
     }
   }

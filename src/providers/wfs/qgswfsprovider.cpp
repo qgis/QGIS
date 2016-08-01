@@ -640,10 +640,10 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlI
   if ( list.size() != 0 )
   {
     QgsFeature feat = list[0].first;
-    const QgsGeometry* geometry = feat.constGeometry();
-    if ( geometry )
+    QgsGeometry geometry = feat.geometry();
+    if ( !geometry.isEmpty() )
     {
-      mWKBType = geometry->wkbType();
+      mWKBType = geometry.wkbType();
     }
   }
 }
@@ -815,11 +815,11 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
     }
 
     //add geometry column (as gml)
-    const QgsGeometry* geometry = featureIt->constGeometry();
-    if ( geometry != nullptr )
+    QgsGeometry geometry = featureIt->geometry();
+    if ( !geometry.isEmpty() )
     {
       QDomElement geomElem = transactionDoc.createElementNS( mApplicationNamespace, mShared->mGeometryAttribute );
-      QgsGeometry the_geom( *geometry );
+      QgsGeometry the_geom( geometry );
       // convert to multi if the layer geom type is multi and the geom is not
       if ( Qgis::isMultiType( this->geometryType( ) ) && ! the_geom.isMultipart( ) )
       {

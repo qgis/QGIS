@@ -460,7 +460,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /** Converts the geometry to the provider type if possible / necessary
     @return the converted geometry or nullptr if no conversion was necessary or possible*/
-    QgsGeometry* convertToProviderType( const QgsGeometry* geom ) const;
+    QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const;
 
   private:
     /** Old notation **/

@@ -232,7 +232,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
     }
     else
     {
-      feature.setGeometry( nullptr );
+      feature.clearGeometry();
     }
   }
 

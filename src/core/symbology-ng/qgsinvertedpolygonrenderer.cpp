@@ -218,32 +218,32 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 
   // update the geometry
   CombinedFeature& cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
-  if ( !feature.constGeometry() )
+  if ( !feature.hasGeometry() )
   {
     return false;
   }
-  QScopedPointer<QgsGeometry> geom( new QgsGeometry( *feature.constGeometry() ) );
+  QgsGeometry geom = feature.geometry();
 
   QgsCoordinateTransform xform = context.coordinateTransform();
   if ( xform.isValid() )
   {
-    geom->transform( xform );
+    geom.transform( xform );
   }
 
   if ( mPreprocessingEnabled )
   {
     // fix the polygon if it is not valid
-    if ( ! geom->isGeosValid() )
+    if ( ! geom.isGeosValid() )
     {
-      geom.reset( geom->buffer( 0, 0 ) );
+      geom = geom.buffer( 0, 0 );
     }
   }
 
-  if ( !geom )
+  if ( geom.isEmpty() )
     return false; // do not let invalid geometries sneak in!
 
   // add the geometry to the list of geometries for this feature
-  cFeat.geometries.append( geom.take() );
+  cFeat.geometries.append( geom );
 
   return true;
 }
@@ -265,10 +265,10 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
     if ( mPreprocessingEnabled )
     {
       // compute the unary union on the polygons
-      QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit.geometries ) );
+      QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries ) );
       // compute the difference with the extent
-      QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
-      QgsGeometry *final = rect->difference( const_cast<QgsGeometry*>( unioned.data() ) );
+      QgsGeometry rect = QgsGeometry::fromPolygon( mExtentPolygon );
+      QgsGeometry final = rect.difference( unioned );
       feat.setGeometry( final );
     }
     else
@@ -285,18 +285,18 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       // operations do not need geometries to be valid
       QgsMultiPolygon finalMulti;
       finalMulti.append( mExtentPolygon );
-      Q_FOREACH ( QgsGeometry* geom, cit.geometries )
+      Q_FOREACH ( const QgsGeometry& geom, cit.geometries )
       {
         QgsMultiPolygon multi;
-        QgsWKBTypes::Type type = QgsWKBTypes::flatType( geom->geometry()->wkbType() );
+        QgsWKBTypes::Type type = QgsWKBTypes::flatType( geom.geometry()->wkbType() );
 
         if (( type == QgsWKBTypes::Polygon ) || ( type == QgsWKBTypes::CurvePolygon ) )
         {
-          multi.append( geom->asPolygon() );
+          multi.append( geom.asPolygon() );
         }
         else if (( type == QgsWKBTypes::MultiPolygon ) || ( type == QgsWKBTypes::MultiSurface ) )
         {
-          multi = geom->asMultiPolygon();
+          multi = geom.asMultiPolygon();
         }
 
         for ( int i = 0; i < multi.size(); i++ )
@@ -320,17 +320,10 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       }
       feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
     }
-    if ( feat.constGeometry() )
+    if ( feat.hasGeometry() )
     {
       mContext.expressionContext().setFeature( feat );
       mSubRenderer->renderFeature( feat, mContext );
-    }
-  }
-  Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
-  {
-    Q_FOREACH ( QgsGeometry* g, cit.geometries )
-    {
-      delete g;
     }
   }
 

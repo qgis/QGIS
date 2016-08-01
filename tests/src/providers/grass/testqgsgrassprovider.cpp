@@ -132,15 +132,15 @@ QString TestQgsGrassCommand::toString() const
     string += "AddFeature ";
     Q_FOREACH ( const TestQgsGrassFeature & grassFeature, grassFeatures )
     {
-      if ( grassFeature.constGeometry() )
+      if ( grassFeature.hasGeometry() )
       {
-        string += "<br>grass: " + grassFeature.constGeometry()->exportToWkt( 1 );
+        string += "<br>grass: " + grassFeature.geometry().exportToWkt( 1 );
       }
     }
 
-    if ( expectedFeature.constGeometry() )
+    if ( expectedFeature.hasGeometry() )
     {
-      string += "<br>expected: " + expectedFeature.constGeometry()->exportToWkt( 1 );
+      string += "<br>expected: " + expectedFeature.geometry().exportToWkt( 1 );
     }
   }
   else if ( command == DeleteFeature )
@@ -930,7 +930,8 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   grassFeature = TestQgsGrassFeature( GV_POINT );
   grassFeature.setFeatureId( 1 );
   geometry = new QgsGeometry( new QgsPointV2( QgsWKBTypes::Point, 10, 10, 0 ) );
-  grassFeature.setGeometry( geometry );
+  grassFeature.setGeometry( *geometry );
+  delete geometry;
   command.grassFeatures << grassFeature;
   command.expectedFeature = grassFeature;
   commandGroup.commands << command;
@@ -1025,7 +1026,8 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   line->setPoints( pointList );
   pointList.clear();
   geometry = new QgsGeometry( line );
-  grassFeature.setGeometry( geometry );
+  grassFeature.setGeometry( *geometry );
+  delete geometry;
   command.grassFeatures << grassFeature;
   command.expectedFeature = grassFeature;
   command.attributes["field_int"] = 456;
@@ -1307,7 +1309,7 @@ void TestQgsGrassProvider::edit()
         {
           fid = commandGroup.fids.value( fid );
         }
-        if ( !grassLayer->changeGeometry( fid, command.geometry ) )
+        if ( !grassLayer->changeGeometry( fid, *command.geometry ) )
         {
           reportRow( "cannot change feature geometry" );
           commandOk = false;
@@ -1317,7 +1319,7 @@ void TestQgsGrassProvider::edit()
         {
           expectedFid = commandGroup.expectedFids.value( expectedFid );
         }
-        if ( !expectedLayer->changeGeometry( expectedFid, command.geometry ) )
+        if ( !expectedLayer->changeGeometry( expectedFid, *command.geometry ) )
         {
           reportRow( "cannot change expected feature geometry" );
           commandOk = false;
@@ -1492,7 +1494,8 @@ QList<QgsFeature> TestQgsGrassProvider::getFeatures( QgsVectorLayer *layer )
 
 bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature )
 {
-  if ( !feature.constGeometry()->equals( expectedFeature.constGeometry() ) )
+  QgsGeometry expectedGeom = expectedFeature.geometry();
+  if ( !feature.geometry().equals( expectedGeom ) )
   {
     return false;
   }

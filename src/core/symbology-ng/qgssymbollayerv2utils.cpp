@@ -785,62 +785,56 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, Qgis::GeometryType
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
 
-  QgsGeometry* tempGeometry = geometryType == Qgis::Polygon ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
-  if ( tempGeometry )
+  QgsGeometry tempGeometry = geometryType == Qgis::Polygon ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
+  if ( !tempGeometry.isEmpty() )
   {
     int quadSegments = 0; // we want mitre joins, not round joins
     double mitreLimit = 2.0; // the default value in GEOS (5.0) allows for fairly sharp endings
-    QgsGeometry* offsetGeom = nullptr;
+    QgsGeometry offsetGeom;
     if ( geometryType == Qgis::Polygon )
-      offsetGeom = tempGeometry->buffer( -dist, quadSegments, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, mitreLimit );
+      offsetGeom = tempGeometry.buffer( -dist, quadSegments, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, mitreLimit );
     else
-      offsetGeom = tempGeometry->offsetCurve( dist, quadSegments, GEOSBUF_JOIN_MITRE, mitreLimit );
+      offsetGeom = tempGeometry.offsetCurve( dist, quadSegments, GEOSBUF_JOIN_MITRE, mitreLimit );
 
-    if ( offsetGeom )
+    if ( !offsetGeom.isEmpty() )
     {
-      delete tempGeometry;
       tempGeometry = offsetGeom;
 
-      if ( Qgis::flatType( tempGeometry->wkbType() ) == Qgis::WKBLineString )
+      if ( Qgis::flatType( tempGeometry.wkbType() ) == Qgis::WKBLineString )
       {
-        QgsPolyline line = tempGeometry->asPolyline();
+        QgsPolyline line = tempGeometry.asPolyline();
         // Reverse the line if offset was negative, see
         // http://hub.qgis.org/issues/13811
         if ( dist < 0 ) std::reverse( line.begin(), line.end() );
         resultLine.append( makeOffsetGeometry( line ) );
-        delete tempGeometry;
         return resultLine;
       }
-      else if ( Qgis::flatType( tempGeometry->wkbType() ) == Qgis::WKBPolygon )
+      else if ( Qgis::flatType( tempGeometry.wkbType() ) == Qgis::WKBPolygon )
       {
-        resultLine.append( makeOffsetGeometry( tempGeometry->asPolygon() ) );
-        delete tempGeometry;
+        resultLine.append( makeOffsetGeometry( tempGeometry.asPolygon() ) );
         return resultLine;
       }
-      else if ( Qgis::flatType( tempGeometry->wkbType() ) == Qgis::WKBMultiLineString )
+      else if ( Qgis::flatType( tempGeometry.wkbType() ) == Qgis::WKBMultiLineString )
       {
-        QgsMultiPolyline tempMPolyline = tempGeometry->asMultiPolyline();
+        QgsMultiPolyline tempMPolyline = tempGeometry.asMultiPolyline();
         resultLine.reserve( tempMPolyline.count() );
         for ( int part = 0; part < tempMPolyline.count(); ++part )
         {
           resultLine.append( makeOffsetGeometry( tempMPolyline[ part ] ) );
         }
-        delete tempGeometry;
         return resultLine;
       }
-      else if ( Qgis::flatType( tempGeometry->wkbType() ) == Qgis::WKBMultiPolygon )
+      else if ( Qgis::flatType( tempGeometry.wkbType() ) == Qgis::WKBMultiPolygon )
       {
-        QgsMultiPolygon tempMPolygon = tempGeometry->asMultiPolygon();
+        QgsMultiPolygon tempMPolygon = tempGeometry.asMultiPolygon();
         resultLine.reserve( tempMPolygon.count() );
         for ( int part = 0; part < tempMPolygon.count(); ++part )
         {
           resultLine.append( makeOffsetGeometry( tempMPolygon[ part ] ) );
         }
-        delete tempGeometry;
         return resultLine;
       }
     }
-    delete tempGeometry;
   }
 
   // returns original polyline when 'GEOSOffsetCurve' fails!
@@ -3832,20 +3826,17 @@ QPointF QgsSymbolLayerV2Utils::polygonPointOnSurface( const QPolygonF& points )
     QgsPolyline polyline( pointCount );
     for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPoint( points[i].x(), points[i].y() );
 
-    QgsGeometry* geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );
-    if ( geom )
+    QgsGeometry geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );
+    if ( !geom.isEmpty() )
     {
-      QgsGeometry* pointOnSurfaceGeom = geom->pointOnSurface();
+      QgsGeometry pointOnSurfaceGeom = geom.pointOnSurface();
 
-      if ( pointOnSurfaceGeom )
+      if ( !pointOnSurfaceGeom.isEmpty() )
       {
-        QgsPoint point = pointOnSurfaceGeom->asPoint();
-        delete pointOnSurfaceGeom;
-        delete geom;
+        QgsPoint point = pointOnSurfaceGeom.asPoint();
 
         return QPointF( point.x(), point.y() );
       }
-      delete geom;
     }
   }
   return centroid;

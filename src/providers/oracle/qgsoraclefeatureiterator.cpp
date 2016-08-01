@@ -244,7 +244,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
   for ( ;; )
   {
     feature.initAttributes( mSource->mFields.count() );
-    feature.setGeometry( 0 );
+    feature.clearGeometry();
 
     if ( mRewind )
     {
@@ -273,18 +273,18 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
         unsigned char *copy = new unsigned char[ba->size()];
         memcpy( copy, ba->constData(), ba->size() );
 
-        QgsGeometry *g = new QgsGeometry();
-        g->fromWkb( copy, ba->size() );
+        QgsGeometry g;
+        g.fromWkb( copy, ba->size() );
         feature.setGeometry( g );
       }
       else
       {
-        feature.setGeometry( 0 );
+        feature.clearGeometry();
       }
 
       if ( !mRequest.filterRect().isNull() )
       {
-        if ( !feature.geometry() )
+        if ( !feature.hasGeometry() )
         {
           QgsDebugMsg( "no geometry to intersect" );
           continue;
@@ -296,7 +296,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
           if ( !mSource->mHasSpatialIndex )
           {
             // only intersect with bbox
-            if ( !feature.geometry()->boundingBox().intersects( mRequest.filterRect() ) )
+            if ( !feature.geometry().boundingBox().intersects( mRequest.filterRect() ) )
             {
               // skip feature that don't intersect with our rectangle
               QgsDebugMsg( "no bbox intersect" );
@@ -307,7 +307,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
         else if ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex )
         {
           // couldn't use sdo_relate earlier
-          if ( !feature.geometry()->intersects( mRequest.filterRect() ) )
+          if ( !feature.geometry().intersects( mRequest.filterRect() ) )
           {
             // skip feature that don't intersect with our rectangle
             QgsDebugMsg( "no exact intersect" );
