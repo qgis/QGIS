@@ -75,7 +75,7 @@ class Smooth(GeoAlgorithm):
             attrs = inFeat.attributes()
 
             outGeom = inGeom.smooth(iterations, offset)
-            if outGeom is None:
+            if not outGeom:
                 raise GeoAlgorithmExecutionException(
                     self.tr('Error smoothing geometry'))
 

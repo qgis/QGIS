@@ -117,7 +117,7 @@ class Union(GeoAlgorithm):
                         int_geom = geom.intersection(tmpGeom)
                         lstIntersectingB.append(tmpGeom)
 
-                        if int_geom is None:
+                        if not int_geom:
                             # There was a problem creating the intersection
                             ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
                                                    self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))

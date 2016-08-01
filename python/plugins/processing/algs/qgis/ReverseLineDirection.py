@@ -68,7 +68,7 @@ class ReverseLineDirection(GeoAlgorithm):
             outGeom = None
             if not inGeom.isEmpty():
                 reversedLine = inGeom.geometry().reversed()
-                if reversedLine is None:
+                if not reversedLine:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Error reversing line'))
                 outGeom = QgsGeometry(reversedLine)

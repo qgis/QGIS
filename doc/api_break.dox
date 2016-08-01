@@ -220,8 +220,8 @@ attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDBSupported()</li>
 <li>The setGeometry( QgsGeometry* ) method has been removed, use setGeometry( const QgsGeometry& ) instead.</li>
 <li>The geometry() method now returns a copy of the geometry, not a pointer. Since QgsGeometry objects are
 implicitly shared this is a low-cost copy, and avoids ownership and dangling pointer issues. <b>Very important: Testing that
-a feature has a geometry is now done using the new hasGeometry() method. QgsFeature::geometry() will ALWAYS return
-true, as the method will return an empty geometry if the feature has no geometry.</b></li>
+a feature has a geometry is now done using the new hasGeometry() method. Any code which compares QgsFeature::geometry() to 
+None will need to be modified, as the method will return an empty geometry if the feature has no geometry.</b></li>
 <li>The temporary constGeometry() method has been removed. Use geometry() instead.</li>
 <li>setFields( const QgsFields*, bool ) has been removed, use setFields( const QgsFields&, bool ) instead.</li>
 </ul>
@@ -230,7 +230,9 @@ true, as the method will return an empty geometry if the feature has no geometry
 
 <ul>
 <li>All QgsGeometry methods now accept geometry references instead of pointers, and return a QgsGeometry
-value instead of a pointer.</li>
+value instead of a pointer. The biggest impact with this change is that PyQGIS code should not compare a geometry
+result to None, but instead either use a boolean test (`if g.buffer(10):`) or explicitly use the isEmpty()
+method to determine if a geometry is valid.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsGeometryAnalyzer QgsGeometryAnalyzer

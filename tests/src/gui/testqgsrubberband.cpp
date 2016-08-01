@@ -123,8 +123,8 @@ void TestQgsRubberband::testBoundingRect()
 
   // Polygon extent is 10,10 to 30,30
   QgsGeometry geom( QgsGeometry::fromWkt(
-                                      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
-                                    ) );
+                      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
+                    ) );
   mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
   mRubberband->setIconSize( 5 ); // default, but better be explicit
   mRubberband->setWidth( 1 );    // default, but better be explicit
@@ -173,8 +173,8 @@ void TestQgsRubberband::testVisibility()
 
   // Check visibility after setting to valid geometry
   QgsGeometry geom( QgsGeometry::fromWkt(
-                                      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
-                                    ) );
+                      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
+                    ) );
   mRubberband->setToGeometry( geom, mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), true );
 
