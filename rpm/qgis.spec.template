@@ -150,6 +150,7 @@ Requires:       python-matplotlib
 Requires:       python-OWSLib
 Requires:       python-psycopg2
 Requires:       python-pygments
+Requires:       python-requests
 Requires:       python-six
 Requires:       qscintilla-python
 %{?_sip_api:Requires: sip-api(%{_sip_api_major}) >= %{_sip_api}}
@@ -219,6 +220,7 @@ gzip ChangeLog
       -D WITH_INTERNAL_MARKUPSAFE:BOOL=FALSE \
       -D WITH_INTERNAL_OWSLIB:BOOL=FALSE \
       -D WITH_INTERNAL_PYGMENTS:BOOL=FALSE \
+      -D WITH_INTERNAL_REQUESTS:BOOL=FALSE \
       -D WITH_INTERNAL_PYTZ:BOOL=FALSE \
       -D WITH_INTERNAL_QEXTSERIALPORT:BOOL=FALSE \
       -D WITH_INTERNAL_QWTPOLAR:BOOL=FALSE \
