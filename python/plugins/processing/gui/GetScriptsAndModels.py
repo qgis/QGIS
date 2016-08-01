@@ -229,6 +229,9 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         self.tree.addTopLevelItem(self.notinstalledItem)
         self.tree.addTopLevelItem(self.uptodateItem)
 
+        if text != '':
+            self.tree.expandAll()
+
         self.txtHelp.setHtml(self.HELP_TEXT)
 
     def setHelp(self, reply, item):
