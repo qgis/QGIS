@@ -95,7 +95,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       //query geometry
       //call geometry->reshape(mCaptureList)
       //register changed geometry in vector layer
-      QgsGeometry geom = f.constGeometry() ? *f.constGeometry() : QgsGeometry();
+      QgsGeometry geom = f.geometry();
       if ( !geom.isEmpty() )
       {
         reshapeReturn = geom.reshapeGeometry( points() );

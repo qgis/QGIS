@@ -218,7 +218,18 @@ attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDBSupported()</li>
 <li>geometryAndOwnership() has been removed. Use geometry() instead.</li>
 <li>setGeometryAndOwnership() has been removed. Use setGeometry() instead.</li>
 <li>The setGeometry( QgsGeometry* ) method has been removed, use setGeometry( const QgsGeometry& ) instead.</li>
+<li>The geometry() method now returns a copy of the geometry, not a pointer. Since QgsGeometry objects are
+implicitly shared this is a low-cost copy, and avoids ownership and dangling pointer issues. <b>Very important: Testing that
+a feature has a geometry is now done using the new hasGeometry() method. QgsFeature::geometry() will ALWAYS return
+true, as the method will return an empty geometry if the feature has no geometry.</b></li>
+<li>The temporary constGeometry() method has been removed. Use geometry() instead.</li>
 <li>setFields( const QgsFields*, bool ) has been removed, use setFields( const QgsFields&, bool ) instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsGeometryAnalyzer QgsGeometryAnalyzer
+
+<ul>
+<li>locateBetweenMeasures() and locateAlongMeasure() now take geometry references, not pointers</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsGroupWMSDataDialog QgsGroupWMSDataDialog
@@ -226,6 +237,14 @@ attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDBSupported()</li>
 <ul>
 <li>QgsGroupWMSDataDialo has been renamed to QgsGroupWmsDataDialog</li>
 </ul>
+
+\subsection qgis_api_break_3_0_QgsHighlight QgsHighlight
+
+<ul>
+<li>The QgsHighlight constructor now takes a geometry reference, not a pointer.</li>
+</ul>
+
+
 
 \subsection qgis_api_break_3_0_QgsVectorDataProvider QgsVectorDataProvider
 
@@ -236,6 +255,7 @@ only affects third party c++ providers, and does not affect PyQGIS scripts.</li>
 <li>The SaveAsShapefile, SelectGeometryAtId, RandomSelectGeometryAtId and SequentialSelectGeometryAtId
 capabilities have been removed, as they were unused and had no effect.</li>
 <li>capabilities() now returns a typesafe QgsVectorDataProvider::Capabilities object, not an integer.</li>
+<li>convertToProviderType() now takes a geometry reference, not a pointer.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsLabelingEngineInterface QgsLabelingEngineInterface
@@ -331,6 +351,7 @@ be returned instead of a null pointer if no transformation is required.</li>
 
 <ul>
 <li>init(QgsMapRenderer*) has been removed. Use init(const QgsMapSettings&) instead.</li>
+<li>prepareGeometry and geometryRequiresPreparation now take geometry references, not pointers.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsOSMElement QgsOSMElement
@@ -435,6 +456,8 @@ setExcludeAttributesWms()</li>
 setExcludeAttributesWfs()</li>
 <li>changeGeometry() now accepts a geometry reference, not a pointer.</li>
 <li>The geometryChanged() signal now uses a const QgsGeometry reference.</li>
+<li>The deprecated removePolygonIntersections has been removed.</li>
+<li>addTopologicalPoints() now takes a geometry reference, not a pointer.</li> 
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayerEditBuffer QgsVectorLayerEditBuffer
@@ -442,6 +465,12 @@ setExcludeAttributesWfs()</li>
 <ul>
 <li>changeGeometry() now accepts a geometry reference, not a pointer.</li>
 <li>The geometryChanged() signal now uses a const QgsGeometry reference.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsVectorLayerEditUtils QgsVectorLayerEditUtils
+
+<ul>
+<li>addTopologicalPoints() now accepts a geometry reference, not a pointer.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayerImport QgsVectorLayerImport

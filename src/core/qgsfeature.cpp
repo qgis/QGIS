@@ -73,13 +73,7 @@ void QgsFeature::deleteAttribute( int field )
   d->attributes.remove( field );
 }
 
-QgsGeometry *QgsFeature::geometry()
-{
-  d.detach();
-  return d->geometry;
-}
-
-const QgsGeometry* QgsFeature::constGeometry() const
+QgsGeometry QgsFeature::geometry() const
 {
   return d->geometry;
 }
@@ -113,27 +107,16 @@ void QgsFeature::setAttributes( const QgsAttributes &attrs )
   d->attributes = attrs;
 }
 
-void QgsFeature::setGeometry( const QgsGeometry& geom )
+void QgsFeature::setGeometry( const QgsGeometry& geometry )
 {
   d.detach();
-
-  if ( geom.isEmpty() )
-  {
-    delete d->geometry;
-    d->geometry = nullptr;
-  }
-  else
-  {
-    QgsGeometry* newGeom = new QgsGeometry( geom );
-    delete d->geometry;
-    d->geometry = newGeom;
-  }
+  d->geometry = geometry;
 }
 
-void QgsFeature::setGeometry( QgsGeometry* geom )
+void QgsFeature::clearGeometry()
 {
+  setGeometry( QgsGeometry() );
 }
-
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -174,6 +157,11 @@ void QgsFeature::setValid( bool validity )
 
   d.detach();
   d->valid = validity;
+}
+
+bool QgsFeature::hasGeometry() const
+{
+  return !d->geometry.isEmpty();
 }
 
 void QgsFeature::initAttributes( int fieldCount )
@@ -264,9 +252,9 @@ QDataStream& operator<<( QDataStream& out, const QgsFeature& feature )
 {
   out << feature.id();
   out << feature.attributes();
-  if ( feature.constGeometry() )
+  if ( feature.hasGeometry() )
   {
-    out << *( feature.constGeometry() );
+    out << ( feature.geometry() );
   }
   else
   {

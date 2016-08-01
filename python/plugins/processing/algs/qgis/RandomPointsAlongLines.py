@@ -88,7 +88,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
             # pick random feature
             fid = random.randint(0, featureCount - 1)
             f = layer.getFeatures(request.setFilterFid(fid)).next()
-            fGeom = QgsGeometry(f.geometry())
+            fGeom = f.geometry()
 
             if fGeom.isMultipart():
                 lines = fGeom.asMultiPolyline()

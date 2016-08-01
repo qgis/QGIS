@@ -697,7 +697,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     }
     else
     {
-      feature.setGeometry( QgsGeometry() );
+      feature.clearGeometry();
     }
 
     col++;

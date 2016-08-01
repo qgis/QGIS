@@ -336,7 +336,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   else
   {
     double scaledOffset = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), offset, mOffsetUnit, mOffsetMapUnitScale );
-    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.feature() ? context.feature()->constGeometry()->type() : Qgis::Line );
+    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.feature() ? context.feature()->geometry().type() : Qgis::Line );
     for ( int part = 0; part < mline.count(); ++part )
     {
 #if 0
@@ -898,7 +898,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   else
   {
     context.renderContext().setGeometry( nullptr ); //always use segmented geometry with offset
-    QList<QPolygonF> mline = ::offsetLine( points, QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), offset, mOffsetUnit, mOffsetMapUnitScale ), context.feature() ? context.feature()->constGeometry()->type() : Qgis::Line );
+    QList<QPolygonF> mline = ::offsetLine( points, QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), offset, mOffsetUnit, mOffsetMapUnitScale ), context.feature() ? context.feature()->geometry().type() : Qgis::Line );
 
     for ( int part = 0; part < mline.count(); ++part )
     {

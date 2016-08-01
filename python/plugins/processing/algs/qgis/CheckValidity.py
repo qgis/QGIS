@@ -135,11 +135,11 @@ class CheckValidity(GeoAlgorithm):
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
-            geom = QgsGeometry(inFeat.geometry())
+            geom = inFeat.geometry()
             attrs = inFeat.attributes()
 
             valid = True
-            if not geom.isGeosEmpty():
+            if not geom.isEmpty() and not geom.isGeosEmpty():
                 errors = list(geom.validateGeometry())
                 if errors:
                     # QGIS method return a summary at the end

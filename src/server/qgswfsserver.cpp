@@ -1885,21 +1885,21 @@ QString QgsWfsServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
 
   //copy feature so we can modify its geometry as required
   QgsFeature f( *feat );
-  const QgsGeometry* geom = feat->constGeometry();
+  QgsGeometry geom = feat->geometry();
   exporter.setIncludeGeometry( false );
-  if ( geom && mWithGeom && mGeometryName != "NONE" )
+  if ( !geom.isEmpty() && mWithGeom && mGeometryName != "NONE" )
   {
     exporter.setIncludeGeometry( true );
     if ( mGeometryName == "EXTENT" )
     {
-      QgsRectangle box = geom->boundingBox();
+      QgsRectangle box = geom.boundingBox();
       QgsGeometry* bbox = QgsGeometry::fromRect( box );
       f.setGeometry( *bbox );
       delete bbox;
     }
     else if ( mGeometryName == "CENTROID" )
     {
-      QgsGeometry* centroid = geom->centroid();
+      QgsGeometry* centroid = geom.centroid();
       f.setGeometry( *centroid );
       delete centroid;
     }
@@ -1943,27 +1943,27 @@ QDomElement QgsWfsServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   if ( mWithGeom && mGeometryName != "NONE" )
   {
     //add geometry column (as gml)
-    const QgsGeometry* geom = feat->constGeometry();
+    QgsGeometry geom = feat->geometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
     QDomElement gmlElem;
     if ( mGeometryName == "EXTENT" )
     {
-      QgsGeometry* bbox = QgsGeometry::fromRect( geom->boundingBox() );
+      QgsGeometry* bbox = QgsGeometry::fromRect( geom.boundingBox() );
       gmlElem = QgsOgcUtils::geometryToGML( bbox , doc, prec );
       delete bbox;
     }
     else if ( mGeometryName == "CENTROID" )
     {
-      QgsGeometry* centroid = geom->centroid();
+      QgsGeometry* centroid = geom.centroid();
       gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, prec );
       delete centroid;
     }
     else
-      gmlElem = QgsOgcUtils::geometryToGML( geom, doc, prec );
+      gmlElem = QgsOgcUtils::geometryToGML( &geom, doc, prec );
     if ( !gmlElem.isNull() )
     {
-      QgsRectangle box = geom->boundingBox();
+      QgsRectangle box = geom.boundingBox();
       QDomElement bbElem = doc.createElement( "gml:boundedBy" );
       QDomElement boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, prec );
 
@@ -2020,27 +2020,27 @@ QDomElement QgsWfsServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   if ( mWithGeom && mGeometryName != "NONE" )
   {
     //add geometry column (as gml)
-    const QgsGeometry* geom = feat->constGeometry();
+    QgsGeometry geom = feat->geometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
     QDomElement gmlElem;
     if ( mGeometryName == "EXTENT" )
     {
-      QgsGeometry* bbox = QgsGeometry::fromRect( geom->boundingBox() );
+      QgsGeometry* bbox = QgsGeometry::fromRect( geom.boundingBox() );
       gmlElem = QgsOgcUtils::geometryToGML( bbox, doc, "GML3", prec );
       delete bbox;
     }
     else if ( mGeometryName == "CENTROID" )
     {
-      QgsGeometry* centroid = geom->centroid();
+      QgsGeometry* centroid = geom.centroid();
       gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, "GML3", prec );
       delete centroid;
     }
     else
-      gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3", prec );
+      gmlElem = QgsOgcUtils::geometryToGML( &geom, doc, "GML3", prec );
     if ( !gmlElem.isNull() )
     {
-      QgsRectangle box = geom->boundingBox();
+      QgsRectangle box = geom.boundingBox();
       QDomElement bbElem = doc.createElement( "gml:boundedBy" );
       QDomElement boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, prec );
 

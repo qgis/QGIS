@@ -27,7 +27,7 @@ void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError*>& er
     {
       continue;
     }
-    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsGeometry featureGeom = feature.geometry();
     QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
     QgsWKBTypes::Type type = geom->wkbType();
@@ -46,7 +46,7 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError* error, int meth
     error->setObsolete();
     return;
   }
-  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
   // Check if error still applies

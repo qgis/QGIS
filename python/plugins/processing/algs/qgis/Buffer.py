@@ -56,8 +56,8 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
             else:
                 value = distance
 
-            inGeom = QgsGeometry(inFeat.geometry())
-            if inGeom.isGeosEmpty():
+            inGeom = inFeat.geometry()
+            if inGeom.isEmpty() or inGeom.isGeosEmpty():
                 ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has empty geometry. Skipping...'.format(inFeat.id()))
                 continue
             if not inGeom.isGeosValid():
@@ -84,8 +84,8 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
                 value = attrs[field]
             else:
                 value = distance
-            inGeom = QgsGeometry(inFeat.geometry())
-            if inGeom.isGeosEmpty():
+            inGeom = inFeat.geometry()
+            if inGeom.isEmpty() or inGeom.isGeosEmpty():
                 ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has empty geometry. Skipping...'.format(inFeat.id()))
                 continue
             if not inGeom.isGeosValid():

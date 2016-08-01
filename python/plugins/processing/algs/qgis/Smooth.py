@@ -71,7 +71,7 @@ class Smooth(GeoAlgorithm):
         total = 100.0 / len(features)
 
         for current, inFeat in enumerate(features):
-            inGeom = inFeat.constGeometry()
+            inGeom = inFeat.geometry()
             attrs = inFeat.attributes()
 
             outGeom = inGeom.smooth(iterations, offset)

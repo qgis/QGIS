@@ -2629,9 +2629,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
             QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( id ).arg( feature->attributes().size() ) );
 
-            if ( coordinateTransform.isValid() && feature->constGeometry() )
+            if ( coordinateTransform.isValid() && feature->hasGeometry() )
             {
-              QgsGeometry g = *feature->constGeometry();
+              QgsGeometry g = feature->geometry();
               g.transform( coordinateTransform );
               feature->setGeometry( g );
             }
@@ -2743,9 +2743,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
                   g.fromWkb( wkb, wkbSize );
                   feature.setGeometry( g );
 
-                  if ( coordinateTransform.isValid() && feature.constGeometry() )
+                  if ( coordinateTransform.isValid() && feature.hasGeometry() )
                   {
-                    QgsGeometry transformed = *feature.constGeometry();
+                    QgsGeometry transformed = feature.geometry();
                     transformed.transform( coordinateTransform );
                     feature.setGeometry( transformed );
                   }

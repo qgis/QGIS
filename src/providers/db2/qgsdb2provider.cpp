@@ -1113,9 +1113,9 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
 
     if ( !mGeometryColName.isEmpty() )
     {
-      const QgsGeometry *geom = it->constGeometry();
+      QgsGeometry geom = it->geometry();
 
-      QByteArray bytea = QByteArray(( char* )geom->asWkb(), ( int ) geom->wkbSize() );
+      QByteArray bytea = QByteArray(( char* )geom.asWkb(), ( int ) geom.wkbSize() );
       query.bindValue( bindIdx,  bytea, QSql::In | QSql::Binary );
     }
 

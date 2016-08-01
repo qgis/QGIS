@@ -1232,14 +1232,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       return;
     }
     QgsFeature feature = mEditBuffer->addedFeatures().value( fid );
-    if ( feature.constGeometry() )
-    {
-      geometry = feature.constGeometry()->geometry();
-    }
-    else
-    {
-      QgsDebugMsg( "feature does not have geometry" );
-    }
+    QgsGeometry featureGeometry = feature.geometry();
+    geometry = featureGeometry.geometry();
     if ( !geometry )
     {
       QgsDebugMsg( "geometry is null" );
@@ -1254,7 +1248,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     QgsWKBTypes::Type wkbType = QgsWKBTypes::flatType( geometry->wkbType() );
     if ( wkbType == QgsWKBTypes::Polygon )
     {
-      const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( addedFeatures[fid].constGeometry()->geometry() );
+      QgsGeometry addedFeatureGeom = addedFeatures[fid].geometry();
+      const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( addedFeatureGeom.geometry() );
       if ( polygon )
       {
         QgsLineStringV2* lineString = polygon->exteriorRing()->curveToLine();
@@ -1927,7 +1922,7 @@ void QgsGrassProvider::setAddedFeaturesSymbol()
   Q_FOREACH ( QgsFeatureId fid, features.keys() )
   {
     QgsFeature feature = features[fid];
-    if ( !feature.constGeometry() || !feature.constGeometry()->geometry() )
+    if ( !feature.hasGeometry() )
     {
       continue;
     }

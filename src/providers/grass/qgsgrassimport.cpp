@@ -638,9 +638,9 @@ bool QgsGrassVectorImport::import()
       {
         continue;
       }
-      if ( doTransform && feature.constGeometry() )
+      if ( doTransform && feature.hasGeometry() )
       {
-        QgsGeometry g = *feature.constGeometry();
+        QgsGeometry g = feature.geometry();
         g.transform( coordinateTransform );
         feature.setGeometry( g );
       }

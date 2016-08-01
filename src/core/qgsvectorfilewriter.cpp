@@ -1963,10 +1963,10 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
 
   if ( mWkbType != QgsWKBTypes::NoGeometry )
   {
-    if ( feature.constGeometry() && !feature.constGeometry()->isEmpty() )
+    if ( feature.hasGeometry() )
     {
       // build geometry from WKB
-      QgsGeometry geom = *feature.constGeometry();
+      QgsGeometry geom = feature.geometry();
 
       // turn single geometry to multi geometry if needed
       if ( QgsWKBTypes::flatType( geom.geometry()->wkbType() ) != QgsWKBTypes::flatType( mWkbType ) &&
@@ -2231,7 +2231,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 
       while ( fit.nextFeature( fet ) )
       {
-        if ( fet.constGeometry() && !fet.constGeometry()->isEmpty() && QgsWKBTypes::isMultiType( fet.constGeometry()->geometry()->wkbType() ) )
+        if ( fet.hasGeometry() && QgsWKBTypes::isMultiType( fet.geometry().geometry()->wkbType() ) )
         {
           destWkbType = QgsWKBTypes::multiType( destWkbType );
           break;
@@ -2346,9 +2346,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     {
       try
       {
-        if ( fet.constGeometry() )
+        if ( fet.hasGeometry() )
         {
-          QgsGeometry g = *fet.constGeometry();
+          QgsGeometry g = fet.geometry();
           g.transform( ct );
           fet.setGeometry( g );
         }
@@ -2367,7 +2367,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
       }
     }
 
-    if ( fet.constGeometry() && filterExtent && !fet.constGeometry()->intersects( *filterExtent ) )
+    if ( fet.hasGeometry() && filterExtent && !fet.geometry().intersects( *filterExtent ) )
       continue;
 
     if ( attributes.size() < 1 && skipAttributeCreation )
@@ -2670,9 +2670,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
     {
       try
       {
-        if ( fet.constGeometry() )
+        if ( fet.hasGeometry() )
         {
-          QgsGeometry g = *fet.constGeometry();
+          QgsGeometry g = fet.geometry();
           g.transform( ct );
           fet.setGeometry( g );
         }

@@ -78,7 +78,7 @@ class VectorTest(unittest.TestCase):
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
         test_layer.selectByIds([2, 4, 6])
         features = vector.features(test_layer, QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))
-        self.assertTrue(all([f.geometry() == None for f in features]))
+        self.assertTrue(all([not f.hasGeometry() for f in features]))
         features = vector.features(test_layer, QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))
         self.assertEqual(set([f.id() for f in features]), set([2, 4, 6]))
 

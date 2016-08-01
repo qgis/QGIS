@@ -30,7 +30,7 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
       continue;
     }
 
-    QgsGeometry g = *feature.constGeometry();
+    QgsGeometry g = feature.geometry();
     QgsAbstractGeometryV2* geom = g.geometry();
     if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
     {
@@ -63,7 +63,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, i
     error->setObsolete();
     return;
   }
-  QgsGeometry g = *feature.constGeometry();
+  QgsGeometry g = feature.geometry();
   QgsAbstractGeometryV2* geom = g.geometry();
   QgsVertexId vidx = error->vidx();
 
@@ -128,7 +128,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
   QgsFeature mergeFeature;
   int mergePartIdx = -1;
   bool matchFound = false;
-  QgsGeometry g = *feature.constGeometry();;
+  QgsGeometry g = feature.geometry();;
   QgsAbstractGeometryV2* geom = g.geometry();
 
   // Search for touching neighboring geometries
@@ -139,7 +139,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
     {
       continue;
     }
-    QgsGeometry testFeatureGeom = *testFeature.constGeometry();
+    QgsGeometry testFeatureGeom = testFeature.geometry();
     QgsAbstractGeometryV2* testGeom = testFeatureGeom.geometry();
     for ( int testPartIdx = 0, nTestParts = testGeom->partCount(); testPartIdx < nTestParts; ++testPartIdx )
     {
@@ -195,7 +195,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
   }
 
   // Merge geometries
-  QgsGeometry mergeFeatureGeom = *mergeFeature.constGeometry();
+  QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   QgsAbstractGeometryV2* mergeGeom = mergeFeatureGeom.geometry();
   QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
   QgsAbstractGeometryV2* combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );

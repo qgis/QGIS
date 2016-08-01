@@ -35,8 +35,8 @@ class QgsSymbolV2;
 class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {
   public:
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsMapLayer *layer );
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsMapLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsVectorLayer *layer );
     /** Constructor for highlighting true feature shape using feature attributes
      * and renderer.
      * @param mapCanvas map canvas

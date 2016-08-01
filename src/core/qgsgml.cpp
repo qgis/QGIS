@@ -219,7 +219,7 @@ void QgsGml::calculateExtentFromFeatures()
   }
 
   QgsFeature* currentFeature = nullptr;
-  const QgsGeometry* currentGeometry = nullptr;
+  QgsGeometry currentGeometry;
   bool bboxInitialised = false; //gets true once bbox has been set to the first geometry
 
   for ( int i = 0; i < mFeatures.size(); ++i )
@@ -229,17 +229,17 @@ void QgsGml::calculateExtentFromFeatures()
     {
       continue;
     }
-    currentGeometry = currentFeature->constGeometry();
-    if ( currentGeometry )
+    currentGeometry = currentFeature->geometry();
+    if ( !currentGeometry.isEmpty() )
     {
       if ( !bboxInitialised )
       {
-        mExtent = currentGeometry->boundingBox();
+        mExtent = currentGeometry.boundingBox();
         bboxInitialised = true;
       }
       else
       {
-        mExtent.unionRect( currentGeometry->boundingBox() );
+        mExtent.unionRect( currentGeometry.boundingBox() );
       }
     }
   }
@@ -933,7 +933,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
              memcmp( pszLocalName, mTypeNamePtr, mTypeName.size() ) == 0 ) )
   {
     Q_ASSERT( mCurrentFeature );
-    if ( !mCurrentFeature->constGeometry() )
+    if ( !mCurrentFeature->hasGeometry() )
     {
       if ( mCurrentWKB.size() > 0 )
       {

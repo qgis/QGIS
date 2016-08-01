@@ -1061,12 +1061,12 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds& ids, QgsVectorL
 
   while ( it.nextFeature( fet ) )
   {
-    const QgsGeometry* geom = fet.constGeometry();
-    if ( !geom || geom->isEmpty() )
+    QgsGeometry geom = fet.geometry();
+    if ( geom.isEmpty() )
     {
       errorMsg = tr( "Feature does not have a geometry" );
     }
-    else if ( geom->geometry()->isEmpty() )
+    else if ( geom.geometry()->isEmpty() )
     {
       errorMsg = tr( "Feature geometry is empty" );
     }
@@ -1074,7 +1074,7 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds& ids, QgsVectorL
     {
       return false;
     }
-    QgsRectangle r = mapSettings().layerExtentToOutputExtent( layer, geom->boundingBox() );
+    QgsRectangle r = mapSettings().layerExtentToOutputExtent( layer, geom.boundingBox() );
     bbox.combineExtentWith( r );
     featureCount++;
   }

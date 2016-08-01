@@ -320,12 +320,12 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
       }
       else
       {
-        feature.setGeometry( QgsGeometry() );
+        feature.clearGeometry();
       }
     }
     else
     {
-      feature.setGeometry( QgsGeometry() );
+      feature.clearGeometry();
     }
 
     feature.setValid( true );

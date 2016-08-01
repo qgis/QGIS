@@ -513,7 +513,7 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( QgsFeatureId featureI
   mSelectionRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
   QgsFeature featureToSelect;
   mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( featureToSelect );
-  mSelectionRubberBand->setToGeometry( featureToSelect.constGeometry() ? *featureToSelect.constGeometry() : QgsGeometry(), mVectorLayer );
+  mSelectionRubberBand->setToGeometry( featureToSelect.geometry(), mVectorLayer );
 }
 
 QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const

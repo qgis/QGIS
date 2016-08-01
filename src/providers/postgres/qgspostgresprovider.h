@@ -432,7 +432,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QgsVectorDataProvider::Capabilities mEnabledCapabilities;
 
-    void appendGeomParam( const QgsGeometry *geom, QStringList &param ) const;
+    void appendGeomParam( const QgsGeometry& geom, QStringList &param ) const;
     void appendPkParams( QgsFeatureId fid, QStringList &param ) const;
 
     QString paramValue( const QString& fieldvalue, const QString &defaultValue ) const;

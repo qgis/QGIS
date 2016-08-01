@@ -86,8 +86,8 @@ class Dissolve(GeoAlgorithm):
                 progress.setPercentage(int(current * total))
                 if first:
                     attrs = inFeat.attributes()
-                    tmpInGeom = QgsGeometry(inFeat.geometry())
-                    if tmpInGeom.isGeosEmpty():
+                    tmpInGeom = inFeat.geometry()
+                    if tmpInGeom.isEmpty() or tmpInGeom.isGeosEmpty():
                         continue
                     errors = tmpInGeom.validateGeometry()
                     if len(errors) != 0:
@@ -102,10 +102,10 @@ class Dissolve(GeoAlgorithm):
                     outFeat.setGeometry(tmpInGeom)
                     first = False
                 else:
-                    tmpInGeom = QgsGeometry(inFeat.geometry())
-                    if tmpInGeom.isGeosEmpty():
+                    tmpInGeom = inFeat.geometry()
+                    if tmpInGeom.isEmpty() or tmpInGeom.isGeosEmpty():
                         continue
-                    tmpOutGeom = QgsGeometry(outFeat.geometry())
+                    tmpOutGeom = outFeat.geometry()
                     errors = tmpInGeom.validateGeometry()
                     if len(errors) != 0:
                         for error in errors:

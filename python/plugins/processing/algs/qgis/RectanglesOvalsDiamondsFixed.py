@@ -116,7 +116,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
         if rotation is not None:
             phi = rotation * math.pi / 180
             for current, feat in enumerate(features):
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
@@ -128,7 +128,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                 writer.addFeature(ft)
         else:
             for current, feat in enumerate(features):
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
@@ -147,7 +147,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
         if rotation is not None:
             phi = rotation * math.pi / 180
             for current, feat in enumerate(features):
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
@@ -159,7 +159,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                 writer.addFeature(ft)
         else:
             for current, feat in enumerate(features):
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
@@ -178,7 +178,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
         if rotation is not None:
             phi = rotation * math.pi / 180
             for current, feat in enumerate(features):
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = []
@@ -192,7 +192,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                 writer.addFeature(ft)
         else:
             for current, feat in enumerate(features):
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = []

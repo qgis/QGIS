@@ -34,7 +34,7 @@ void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
     {
       continue;
     }
-    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsGeometry featureGeom = feature.geometry();
     QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
     QgsWKBTypes::Type type = QgsWKBTypes::flatType( geom->wkbType() );
@@ -53,7 +53,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
     error->setObsolete();
     return;
   }
-  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
   // Check if error still applies

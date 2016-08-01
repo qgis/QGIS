@@ -130,7 +130,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   canvas->setCrsTransformEnabled( true );
   canvas->setDestinationCrs( srs );
-  canvas->setExtent( f1.constGeometry()->boundingBox() );
+  canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
@@ -187,7 +187,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   canvas->setCrsTransformEnabled( true );
   canvas->setDestinationCrs( srs );
-  canvas->setExtent( f1.constGeometry()->boundingBox() );
+  canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
@@ -245,7 +245,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   canvas->setCrsTransformEnabled( true );
   canvas->setDestinationCrs( srs );
-  canvas->setExtent( f1.constGeometry()->boundingBox() );
+  canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );

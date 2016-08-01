@@ -385,7 +385,7 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /** Converts the geometry to the provider type if possible / necessary
     @return the converted geometry or nullptr if no conversion was necessary or possible*/
-    QgsGeometry* convertToProviderType( const QgsGeometry* geom ) const /Factory/;
+    QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const /Factory/;
 };
 
 QFlags<QgsVectorDataProvider::Capability> operator|(QgsVectorDataProvider::Capability f1, QFlags<QgsVectorDataProvider::Capability> f2);

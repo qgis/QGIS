@@ -700,14 +700,14 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   int indexedCount = 0;
   while ( fi.nextFeature( f ) )
   {
-    if ( !f.constGeometry() )
+    if ( !f.hasGeometry() )
       continue;
 
     if ( mTransform.isValid() )
     {
       try
       {
-        QgsGeometry transformedGeometry = *f.constGeometry();
+        QgsGeometry transformedGeometry = f.geometry();
         transformedGeometry.transform( mTransform );
         f.setGeometry( transformedGeometry );
       }
@@ -720,12 +720,12 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
     }
 
-    SpatialIndex::Region r( rect2region( f.constGeometry()->boundingBox() ) );
+    SpatialIndex::Region r( rect2region( f.geometry().boundingBox() ) );
     dataList << new RTree::Data( 0, nullptr, r, f.id() );
 
     if ( mGeoms.contains( f.id() ) )
       delete mGeoms.take( f.id() );
-    mGeoms[f.id()] = new QgsGeometry( *f.constGeometry() );
+    mGeoms[f.id()] = new QgsGeometry( f.geometry() );
     ++indexedCount;
 
     if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
@@ -781,14 +781,14 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
   QgsFeature f;
   if ( mLayer->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f ) )
   {
-    if ( !f.constGeometry() )
+    if ( !f.hasGeometry() )
       return;
 
     if ( mTransform.isValid() )
     {
       try
       {
-        QgsGeometry transformedGeom = *f.constGeometry();
+        QgsGeometry transformedGeom = f.geometry();
         transformedGeom.transform( mTransform );
         f.setGeometry( transformedGeom );
       }
@@ -801,7 +801,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       }
     }
 
-    QgsRectangle bbox = f.constGeometry()->boundingBox();
+    QgsRectangle bbox = f.geometry().boundingBox();
     if ( !bbox.isNull() )
     {
       SpatialIndex::Region r( rect2region( bbox ) );
@@ -809,7 +809,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 
       if ( mGeoms.contains( f.id() ) )
         delete mGeoms.take( f.id() );
-      mGeoms[fid] = new QgsGeometry( *f.constGeometry() );
+      mGeoms[fid] = new QgsGeometry( f.geometry() );
     }
   }
 }

@@ -59,7 +59,7 @@ class DeleteHoles(GeoAlgorithm):
         feat = QgsFeature()
         for current, f in enumerate(features):
             geometry = f.geometry()
-            if geometry:
+            if not geometry.isEmpty():
                 if geometry.isMultipart():
                     multi_polygon = geometry.asMultiPolygon()
                     for polygon in multi_polygon:

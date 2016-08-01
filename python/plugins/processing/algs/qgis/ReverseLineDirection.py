@@ -62,11 +62,11 @@ class ReverseLineDirection(GeoAlgorithm):
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
-            inGeom = inFeat.constGeometry()
+            inGeom = inFeat.geometry()
             attrs = inFeat.attributes()
 
             outGeom = None
-            if inGeom and not inGeom.isEmpty():
+            if not inGeom.isEmpty():
                 reversedLine = inGeom.geometry().reversed()
                 if reversedLine is None:
                     raise GeoAlgorithmExecutionException(

@@ -1541,7 +1541,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( mHighlights.contains( featItem ) )
     return;
 
-  if ( !featItem->feature().constGeometry() || featItem->feature().constGeometry()->wkbType() == Qgis::WKBUnknown )
+  if ( !featItem->feature().hasGeometry() || featItem->feature().geometry().wkbType() == Qgis::WKBUnknown )
     return;
 
   QgsHighlight *highlight = nullptr;
@@ -1551,7 +1551,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   }
   else
   {
-    highlight = new QgsHighlight( mCanvas, featItem->feature().constGeometry(), layer );
+    highlight = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
     highlight->setWidth( 2 );
   }
 
@@ -1590,11 +1590,11 @@ void QgsIdentifyResultsDialog::zoomToFeature()
     return;
 
   QgsFeature feat = featItem->feature();
-  if ( !feat.constGeometry() )
+  if ( !feat.hasGeometry() )
     return;
 
   // TODO: verify CRS for raster WMS features
-  QgsRectangle rect = mCanvas->mapSettings().layerExtentToOutputExtent( layer, feat.constGeometry()->boundingBox() );
+  QgsRectangle rect = mCanvas->mapSettings().layerExtentToOutputExtent( layer, feat.geometry().boundingBox() );
 
   if ( rect.isEmpty() )
   {

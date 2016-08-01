@@ -220,7 +220,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   }
 
   //convert geom to geos
-  const QgsGeometry* geom = feat.constGeometry();
+  QgsGeometry geom = feat.geometry();
   QScopedPointer<QgsGeometry> extentGeom( QgsGeometry::fromRect( mapSettings.visibleExtent() ) );
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
@@ -232,14 +232,14 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   QScopedPointer<QgsGeometry> preparedGeom;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), extentGeom.data() ) )
   {
-    preparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), extentGeom.data() ) );
-    if ( !preparedGeom.data() )
+    QgsGeometry preparedGeom = QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), extentGeom.data() );
+    if ( preparedGeom.isEmpty() )
       return nullptr;
-    geos_geom = preparedGeom.data()->asGeos();
+    geos_geom = preparedGeom.asGeos();
   }
   else
   {
-    geos_geom = geom->asGeos();
+    geos_geom = geom.asGeos();
   }
 
   if ( !geos_geom )
@@ -249,10 +249,10 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 
   const GEOSGeometry* geosObstacleGeom = nullptr;
   QScopedPointer<QgsGeometry> scopedObstacleGeom;
-  if ( mSettings.isObstacle() && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom.data() ) )
+  if ( mSettings.isObstacle() && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom.data() ) )
   {
-    scopedObstacleGeom.reset( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom.data() ) );
-    geosObstacleGeom = scopedObstacleGeom.data()->asGeos();
+    QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom.data() );
+    geosObstacleGeom = preparedObstacleGeom.asGeos();
   }
   else if ( mSettings.isObstacle() && obstacleGeometry )
   {

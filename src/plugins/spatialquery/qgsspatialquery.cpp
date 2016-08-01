@@ -176,9 +176,9 @@ bool QgsSpatialQuery::hasValidGeometry( QgsFeature &feature )
   if ( !feature.isValid() )
     return false;
 
-  const QgsGeometry *geom = feature.constGeometry();
+  QgsGeometry geom = feature.geometry();
 
-  if ( !geom || geom->isGeosEmpty() )
+  if ( geom.isEmpty() || geom.isGeosEmpty() )
     return false;
 
   return true;
@@ -262,7 +262,7 @@ void QgsSpatialQuery::execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &
       continue;
     }
 
-    QgsGeometry geomTarget = *featureTarget.constGeometry();
+    QgsGeometry geomTarget = featureTarget.geometry();
     coordinateTransform->transform( &geomTarget );
 
     ( this->*funcPopulateIndexResult )( qsetIndexResult, featureTarget.id(), geomTarget, operation );
@@ -286,14 +286,14 @@ void QgsSpatialQuery::populateIndexResult(
   geomEngine->prepareGeometry();
 
   QgsFeature featureReference;
-  const QgsGeometry * geomReference;
+  QgsGeometry geomReference;
   QgsFeatureIterator listIt = mLayerReference->getFeatures( QgsFeatureRequest().setFilterFids( listIdReference ) );
 
   while ( listIt.nextFeature( featureReference ) )
   {
-    geomReference = featureReference.constGeometry();
+    geomReference = featureReference.geometry();
 
-    if (( geomEngine->*op )( *( geomReference->geometry() ), 0 ) )
+    if (( geomEngine->*op )( *geomReference.geometry(), 0 ) )
     {
       qsetIndexResult.insert( idTarget );
       break;
@@ -319,14 +319,14 @@ void QgsSpatialQuery::populateIndexResultDisjoint(
   geomEngine->prepareGeometry();
 
   QgsFeature featureReference;
-  const QgsGeometry * geomReference;
+  QgsGeometry geomReference;
   QgsFeatureIterator listIt = mLayerReference->getFeatures( QgsFeatureRequest().setFilterFids( listIdReference ) );
 
   bool addIndex = true;
   while ( listIt.nextFeature( featureReference ) )
   {
-    geomReference = featureReference.constGeometry();
-    if (( geomEngine->*op )( *( geomReference->geometry() ), 0 ) )
+    geomReference = featureReference.geometry();
+    if (( geomEngine->*op )( *geomReference.geometry(), 0 ) )
     {
       addIndex = false;
       break;

@@ -6366,10 +6366,10 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& 
     return QgsGeometry();
   }
 
-  if ( !featureList.at( 0 ).constGeometry() )
+  if ( !featureList.at( 0 ).hasGeometry() )
     return QgsGeometry();
 
-  QgsGeometry unionGeom = *featureList[0].constGeometry();
+  QgsGeometry unionGeom = featureList.at( 0 ).geometry();
 
   QProgressDialog progress( tr( "Merging features..." ), tr( "Abort" ), 0, featureList.size(), this );
   progress.setWindowModality( Qt::WindowModal );
@@ -6385,7 +6385,7 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& 
       return QgsGeometry();
     }
     progress.setValue( i );
-    QgsGeometry currentGeom = *featureList[i].constGeometry();
+    QgsGeometry currentGeom = featureList.at( i ).geometry();
     if ( !currentGeom.isEmpty() )
     {
       QgsGeometry* result = unionGeom.combine( &currentGeom );
@@ -7363,7 +7363,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
     featureIt->setAttributes( dstAttr );
 
-    if ( featureIt->constGeometry() )
+    if ( featureIt->hasGeometry() )
     {
       // convert geometry to match destination layer
       Qgis::GeometryType destType = pasteVectorLayer->geometryType();
@@ -7377,7 +7377,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
       if ( destType != Qgis::UnknownGeometry )
       {
-        QgsGeometry* newGeometry = featureIt->constGeometry()->convertToType( destType, destIsMulti );
+        QgsGeometry* newGeometry = featureIt->geometry().convertToType( destType, destIsMulti );
         if ( !newGeometry )
         {
           featureIt = features.erase( featureIt );
@@ -7387,7 +7387,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
         delete newGeometry;
       }
       // avoid intersection if enabled in digitize settings
-      QgsGeometry g = *featureIt->constGeometry();
+      QgsGeometry g = featureIt->geometry();
       g.avoidIntersections();
       featureIt->setGeometry( g );
     }
@@ -7481,10 +7481,10 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &feature = features[i];
-    if ( !feature.constGeometry() )
+    if ( !feature.hasGeometry() )
       continue;
 
-    Qgis::WkbType type = Qgis::flatType( feature.constGeometry()->wkbType() );
+    Qgis::WkbType type = Qgis::flatType( feature.geometry().wkbType() );
 
     if ( type == Qgis::WKBUnknown || type == Qgis::WKBNoGeometry )
       continue;
@@ -7566,21 +7566,21 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &feature = features[i];
-    if ( !feature.constGeometry() )
+    if ( !feature.hasGeometry() )
       continue;
 
-    Qgis::WkbType type = Qgis::flatType( feature.constGeometry()->wkbType() );
+    Qgis::WkbType type = Qgis::flatType( feature.geometry().wkbType() );
     if ( type == Qgis::WKBUnknown || type == Qgis::WKBNoGeometry )
       continue;
 
     if ( Qgis::singleType( wkbType ) != Qgis::singleType( type ) )
     {
-      feature.setGeometry( QgsGeometry() );
+      feature.clearGeometry();
     }
 
     if ( Qgis::isMultiType( wkbType ) &&  Qgis::isSingleType( type ) )
     {
-      QgsGeometry g = *feature.constGeometry();
+      QgsGeometry g = feature.geometry();
       g.convertToMultiType();
       feature.setGeometry( g );
     }

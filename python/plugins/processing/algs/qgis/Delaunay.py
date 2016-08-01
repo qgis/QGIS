@@ -78,7 +78,7 @@ class Delaunay(GeoAlgorithm):
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
-            geom = QgsGeometry(inFeat.geometry())
+            geom = inFeat.geometry()
             point = geom.asPoint()
             x = point.x()
             y = point.y()
@@ -110,7 +110,7 @@ class Delaunay(GeoAlgorithm):
             for index in indicies:
                 request = QgsFeatureRequest().setFilterFid(ptDict[ids[index]])
                 inFeat = layer.getFeatures(request).next()
-                geom = QgsGeometry(inFeat.geometry())
+                geom = inFeat.geometry()
                 point = QgsPoint(geom.asPoint())
                 polygon.append(point)
                 if step <= 3:

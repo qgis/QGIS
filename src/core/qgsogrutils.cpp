@@ -213,7 +213,7 @@ bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature& featur
 
   OGRGeometryH geom = OGR_F_GetGeometryRef( ogrFet );
   if ( !geom )
-    feature.setGeometry( QgsGeometry() );
+    feature.clearGeometry();
   else
     feature.setGeometry( ogrGeometryToQgsGeometry( geom ) );
 

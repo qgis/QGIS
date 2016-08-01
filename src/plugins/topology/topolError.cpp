@@ -39,10 +39,11 @@ bool TopolError::fixMove( FeatureLayer fl1, FeatureLayer fl2 )
 
 
   // 0 means success
-  QgsGeometry g = *f1.constGeometry();
-  if ( g.makeDifference( f2.constGeometry() ) == 0 )
+  QgsGeometry g = f1.geometry();
+  QgsGeometry difference = g.makeDifference( f2.geometry() );
+  if ( !difference.isEmpty() )
   {
-    return fl1.layer->changeGeometry( f1.id(), g );
+    return fl1.layer->changeGeometry( f1.id(), difference );
   }
 
   return false;
@@ -69,12 +70,12 @@ bool TopolError::fixUnion( FeatureLayer fl1, FeatureLayer fl2 )
   if ( !ok )
     return false;
 
-  QScopedPointer< QgsGeometry > g( f1.constGeometry()->combine( f2.constGeometry() ) );
-  if ( !g.data() )
+  QgsGeometry g = f1.geometry().combine( f2.geometry() );
+  if ( g.isEmpty() )
     return false;
 
   if ( fl2.layer->deleteFeature( f2.id() ) )
-    return fl1.layer->changeGeometry( f1.id(), *g.data() );
+    return fl1.layer->changeGeometry( f1.id(), g );
 
   return false;
 }
@@ -91,9 +92,9 @@ bool TopolError::fixSnap()
   if ( !ok )
     return false;
 
-  const QgsGeometry* ge = f1.constGeometry();
+  QgsGeometry ge = f1.geometry();
 
-  QgsPolyline line = ge->asPolyline();
+  QgsPolyline line = ge.asPolyline();
   QgsPolyline conflictLine = mConflict->asPolyline();
   line.last() = conflictLine.last();
 
@@ -144,7 +145,7 @@ TopolErrorIntersection::TopolErrorIntersection( const QgsRectangle& theBoundingB
   mFixMap[QObject::tr( "Delete red feature" )] = &TopolErrorIntersection::fixDeleteSecond;
 
   // allow union only when both features have the same geometry type
-  if ( theFeaturePairs.first().feature.constGeometry()->type() == theFeaturePairs[1].feature.constGeometry()->type() )
+  if ( theFeaturePairs.first().feature.geometry().type() == theFeaturePairs[1].feature.geometry().type() )
   {
     mFixMap[QObject::tr( "Union to blue feature" )] = &TopolErrorIntersection::fixUnionFirst;
     mFixMap[QObject::tr( "Union to red feature" )] = &TopolErrorIntersection::fixUnionSecond;

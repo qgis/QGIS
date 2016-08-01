@@ -804,6 +804,24 @@ int QgsGeometry::makeDifference( const QgsGeometry* other )
   return 0;
 }
 
+QgsGeometry QgsGeometry::makeDifference( const QgsGeometry& other ) const
+{
+  if ( !d->geometry || other.isEmpty() )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry );
+
+  QgsAbstractGeometryV2* diffGeom = geos.intersection( *other.geometry() );
+  if ( !diffGeom )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( diffGeom );
+}
+
 QgsRectangle QgsGeometry::boundingBox() const
 {
   if ( d->geometry )
@@ -832,6 +850,17 @@ bool QgsGeometry::intersects( const QgsGeometry* geometry ) const
   return geos.intersects( *( geometry->d->geometry ) );
 }
 
+bool QgsGeometry::intersects( const QgsGeometry& geometry ) const
+{
+  if ( !d->geometry || geometry.isEmpty() )
+  {
+    return false;
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.intersects( *geometry.d->geometry );
+}
+
 bool QgsGeometry::contains( const QgsPoint* p ) const
 {
   if ( !d->geometry || !p )
@@ -853,6 +882,17 @@ bool QgsGeometry::contains( const QgsGeometry* geometry ) const
 
   QgsGeos geos( d->geometry );
   return geos.contains( *( geometry->d->geometry ) );
+}
+
+bool QgsGeometry::contains( const QgsGeometry& geometry ) const
+{
+  if ( !d->geometry || geometry.isEmpty() )
+  {
+    return false;
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.contains( *( geometry.d->geometry ) );
 }
 
 bool QgsGeometry::disjoint( const QgsGeometry* geometry ) const
@@ -908,6 +948,17 @@ bool QgsGeometry::within( const QgsGeometry* geometry ) const
 
   QgsGeos geos( d->geometry );
   return geos.within( *( geometry->d->geometry ) );
+}
+
+bool QgsGeometry::within( const QgsGeometry& geometry ) const
+{
+  if ( !d->geometry || geometry.isEmpty() )
+  {
+    return false;
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.within( *( geometry.d->geometry ) );
 }
 
 bool QgsGeometry::crosses( const QgsGeometry* geometry ) const
@@ -1405,6 +1456,19 @@ QgsGeometry* QgsGeometry::intersection( const QgsGeometry* geometry ) const
   return new QgsGeometry( resultGeom );
 }
 
+QgsGeometry QgsGeometry::intersection( const QgsGeometry& geometry ) const
+{
+  if ( !d->geometry || geometry.isEmpty() )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry );
+
+  QgsAbstractGeometryV2* resultGeom = geos.intersection( *( geometry.d->geometry ) );
+  return QgsGeometry( resultGeom );
+}
+
 QgsGeometry* QgsGeometry::combine( const QgsGeometry* geometry ) const
 {
   if ( !d->geometry || !geometry->d->geometry )
@@ -1420,6 +1484,23 @@ QgsGeometry* QgsGeometry::combine( const QgsGeometry* geometry ) const
     return nullptr;
   }
   return new QgsGeometry( resultGeom );
+}
+
+QgsGeometry QgsGeometry::combine( const QgsGeometry& geometry ) const
+{
+  if ( !d->geometry || geometry.isEmpty() )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry );
+
+  QgsAbstractGeometryV2* resultGeom = geos.combine( *( geometry.d->geometry ) );
+  if ( !resultGeom )
+  {
+    return QgsGeometry();
+  }
+  return QgsGeometry( resultGeom );
 }
 
 QgsGeometry QgsGeometry::mergeLines() const
@@ -1644,6 +1725,24 @@ QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
 
   QgsAbstractGeometryV2* geom = geos.combine( geomV2List );
   return new QgsGeometry( geom );
+}
+
+QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry>& geometryList )
+{
+  QgsGeos geos( nullptr );
+
+  QList<QgsAbstractGeometryV2*> geomV2List;
+  QList<QgsGeometry>::const_iterator it = geometryList.constBegin();
+  for ( ; it != geometryList.constEnd(); ++it )
+  {
+    if ( !(( *it ).isEmpty() ) )
+    {
+      geomV2List.append(( *it ).geometry() );
+    }
+  }
+
+  QgsAbstractGeometryV2* geom = geos.combine( geomV2List );
+  return QgsGeometry( geom );
 }
 
 void QgsGeometry::convertToStraightSegment()

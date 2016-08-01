@@ -210,7 +210,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
   mFixBox->setCurrentIndex( mFixBox->findText( tr( "Select automatic fix" ) ) );
 
   QgsFeature f;
-  const QgsGeometry* g;
+  QgsGeometry g;
   FeatureLayer fl = mErrorList.at( row )->featurePairs().first();
   if ( !fl.layer )
   {
@@ -221,8 +221,8 @@ void checkDock::errorListClicked( const QModelIndex& index )
   //fl1.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl1.feature.id() ) ).nextFeature( f1 );
 
   fl.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl.feature.id() ) ).nextFeature( f );
-  g = f.constGeometry();
-  if ( !g )
+  g = f.geometry();
+  if ( g.isEmpty() )
   {
     QgsMessageLog::logMessage( tr( "Invalid first geometry" ), tr( "Topology plugin" ) );
     QMessageBox::information( this, tr( "Topology test" ), tr( "Feature not found in the layer.\nThe layer has probably changed.\nRun topology check again." ) );
@@ -233,17 +233,17 @@ void checkDock::errorListClicked( const QModelIndex& index )
 
   // use vertex marker when highlighting a point
   // and rubber band otherwise
-  if ( g->type() == Qgis::Point )
+  if ( g.type() == Qgis::Point )
   {
     mVMFeature1 = new QgsVertexMarker( canvas );
     mVMFeature1->setIconType( QgsVertexMarker::ICON_X );
     mVMFeature1->setPenWidth( 5 );
     mVMFeature1->setIconSize( 5 );
     mVMFeature1->setColor( "blue" );
-    mVMFeature1->setCenter( g->asPoint() );
+    mVMFeature1->setCenter( g.asPoint() );
   }
   else
-    mRBFeature1->setToGeometry( *g, fl.layer );
+    mRBFeature1->setToGeometry( g, fl.layer );
 
   fl = mErrorList[row]->featurePairs()[1];
   if ( !fl.layer )
@@ -254,25 +254,25 @@ void checkDock::errorListClicked( const QModelIndex& index )
 
 
   fl.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl.feature.id() ) ).nextFeature( f );
-  g = f.constGeometry();
-  if ( !g )
+  g = f.geometry();
+  if ( g.isEmpty() )
   {
     QgsMessageLog::logMessage( tr( "Invalid second geometry" ), tr( "Topology plugin" ) );
     QMessageBox::information( this, tr( "Topology test" ), tr( "Feature not found in the layer.\nThe layer has probably changed.\nRun topology check again." ) );
     return;
   }
 
-  if ( g->type() == Qgis::Point )
+  if ( g.type() == Qgis::Point )
   {
     mVMFeature2 = new QgsVertexMarker( canvas );
     mVMFeature2->setIconType( QgsVertexMarker::ICON_BOX );
     mVMFeature2->setPenWidth( 5 );
     mVMFeature2->setIconSize( 5 );
     mVMFeature2->setColor( "green" );
-    mVMFeature2->setCenter( g->asPoint() );
+    mVMFeature2->setCenter( g.asPoint() );
   }
   else
-    mRBFeature2->setToGeometry( *g, fl.layer );
+    mRBFeature2->setToGeometry( g, fl.layer );
 
   if ( !mErrorList[row]->conflict() )
   {

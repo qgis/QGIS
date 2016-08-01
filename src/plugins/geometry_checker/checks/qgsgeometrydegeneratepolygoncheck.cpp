@@ -27,7 +27,7 @@ void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckErr
     {
       continue;
     }
-    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsGeometry featureGeom = feature.geometry();
     QgsAbstractGeometryV2* geom = featureGeom.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
@@ -50,7 +50,7 @@ void QgsGeometryDegeneratePolygonCheck::fixError( QgsGeometryCheckError* error, 
     error->setObsolete();
     return;
   }
-  QgsGeometry featureGeometry = *feature.constGeometry();
+  QgsGeometry featureGeometry = feature.geometry();
   QgsAbstractGeometryV2* geom = featureGeometry.geometry();
   QgsVertexId vidx = error->vidx();
 

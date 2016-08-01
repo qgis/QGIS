@@ -516,7 +516,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRecta
       // If the requested bbox is inside an already cached rect that didn't
       // hit the download limit, then we can reuse the cached features without
       // issuing a new request.
-      if ( mRegions[id].constGeometry()->boundingBox().contains( rect ) &&
+      if ( mRegions[id].geometry().boundingBox().contains( rect ) &&
            !mRegions[id].attributes().value( 0 ).toBool() )
       {
         QgsDebugMsg( "Cached features already cover this area of interest" );
@@ -527,7 +527,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRecta
       // On the other hand, if the requested bbox is inside an already cached rect,
       // that hit the download limit, our larger bbox will hit it too, so no need
       // to re-issue a new request either.
-      if ( rect.contains( mRegions[id].constGeometry()->boundingBox() ) &&
+      if ( rect.contains( mRegions[id].geometry().boundingBox() ) &&
            mRegions[id].attributes().value( 0 ).toBool() )
       {
         QgsDebugMsg( "Current request is larger than a smaller request that hit the download limit, so no server download needed." );
@@ -869,16 +869,16 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
     cachedFeature.initAttributes( dataProviderFields.size() );
 
     //copy the geometry
-    const QgsGeometry* geometry = gmlFeature.constGeometry();
-    if ( !mGeometryAttribute.isEmpty() && geometry )
+    QgsGeometry geometry = gmlFeature.geometry();
+    if ( !mGeometryAttribute.isEmpty() && !geometry.isEmpty() )
     {
-      const unsigned char *geom = geometry->asWkb();
-      int geomSize = geometry->wkbSize();
+      const unsigned char *geom = geometry.asWkb();
+      int geomSize = geometry.wkbSize();
       QByteArray array(( const char* )geom, geomSize );
 
       cachedFeature.setAttribute( hexwkbGeomIdx, QVariant( QString( array.toHex().data() ) ) );
 
-      QgsRectangle bBox( geometry->boundingBox() );
+      QgsRectangle bBox( geometry.boundingBox() );
       if ( localComputedExtent.isNull() )
         localComputedExtent = bBox;
       else
@@ -1305,10 +1305,10 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
     {
       QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair = featurePtrList[i];
       QgsFeature f( *( featPair.first ) );
-      const QgsGeometry* geometry = f.constGeometry();
-      if ( geometry )
+      QgsGeometry geometry = f.geometry();
+      if ( !geometry.isEmpty() )
       {
-        extent = geometry->boundingBox();
+        extent = geometry.boundingBox();
       }
       delete featPair.first;
     }

@@ -117,9 +117,9 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   int i = 0;
   Q_FOREACH ( const QgsFeature& fSel, mSelectedFeatures )
   {
-    if ( QgsGeometry* g = fSel.constGeometry()->simplify( layerTolerance ) )
+    if ( QgsGeometry* g = fSel.geometry().simplify( layerTolerance ) )
     {
-      mReducedVertexCount += vertexCount( g );
+      mReducedVertexCount += vertexCount( *g );
       mRubberBands.at( i )->setToGeometry( *g, vl );
       delete g;
     }
@@ -133,34 +133,34 @@ void QgsMapToolSimplify::updateSimplificationPreview()
 }
 
 
-int QgsMapToolSimplify::vertexCount( const QgsGeometry* g ) const
+int QgsMapToolSimplify::vertexCount( const QgsGeometry& g ) const
 {
-  switch ( g->type() )
+  switch ( g.type() )
   {
     case Qgis::Line:
     {
       int count = 0;
-      if ( g->isMultipart() )
+      if ( g.isMultipart() )
       {
-        Q_FOREACH ( const QgsPolyline& polyline, g->asMultiPolyline() )
+        Q_FOREACH ( const QgsPolyline& polyline, g.asMultiPolyline() )
           count += polyline.count();
       }
       else
-        count = g->asPolyline().count();
+        count = g.asPolyline().count();
       return count;
     }
     case Qgis::Polygon:
     {
       int count = 0;
-      if ( g->isMultipart() )
+      if ( g.isMultipart() )
       {
-        Q_FOREACH ( const QgsPolygon& polygon, g->asMultiPolygon() )
+        Q_FOREACH ( const QgsPolygon& polygon, g.asMultiPolygon() )
           Q_FOREACH ( const QgsPolyline& ring, polygon )
             count += ring.count();
       }
       else
       {
-        Q_FOREACH ( const QgsPolyline& ring, g->asPolygon() )
+        Q_FOREACH ( const QgsPolyline& ring, g.asPolygon() )
           count += ring.count();
       }
       return count;
@@ -179,7 +179,7 @@ void QgsMapToolSimplify::storeSimplified()
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
   Q_FOREACH ( const QgsFeature& feat, mSelectedFeatures )
   {
-    if ( QgsGeometry* g = feat.constGeometry()->simplify( layerTolerance ) )
+    if ( QgsGeometry* g = feat.geometry().simplify( layerTolerance ) )
     {
       vlayer->changeGeometry( feat.id(), *g );
       delete g;
@@ -274,7 +274,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent* e )
   mOriginalVertexCount = 0;
   Q_FOREACH ( const QgsFeature& f, mSelectedFeatures )
   {
-    mOriginalVertexCount += vertexCount( f.constGeometry() );
+    mOriginalVertexCount += vertexCount( f.geometry() );
 
     QgsRubberBand* rb = new QgsRubberBand( mCanvas );
     rb->setColor( QColor( 255, 0, 0, 65 ) );
@@ -305,7 +305,7 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    currentDistance = geometry->distance( *( f.constGeometry() ) );
+    currentDistance = geometry->distance( f.geometry() );
     if ( currentDistance < minDistance )
     {
       minDistance = currentDistance;

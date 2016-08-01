@@ -68,7 +68,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
-            featGeometry = QgsGeometry(f.geometry())
+            featGeometry = f.geometry()
             attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, interval,
                                                isPolygon)

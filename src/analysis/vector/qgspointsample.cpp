@@ -94,11 +94,11 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
 
 void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, int nPoints, double minDistance )
 {
-  if ( !inputFeature.constGeometry() )
+  if ( !inputFeature.hasGeometry() )
     return;
 
-  const QgsGeometry* geom = inputFeature.constGeometry();
-  QgsRectangle geomRect = geom->boundingBox();
+  QgsGeometry geom = inputFeature.geometry();
+  QgsRectangle geomRect = geom.boundingBox();
   if ( geomRect.isEmpty() )
   {
     return;

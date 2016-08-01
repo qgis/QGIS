@@ -763,22 +763,12 @@ class QgsVectorLayer : QgsMapLayer
      */
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
-    /** Changes the specified geometry such that it has no intersections with other
-     *  polygon (or multipolygon) geometries in this vector layer
-     *  @param geom geometry to modify
-     *  @param ignoreFeatures list of feature ids where intersections should be ignored
-     *  @return 0 in case of success
-     *
-     *  @deprecated since 2.2 - not being used for "avoid intersections" functionality anymore
-     */
-    int removePolygonIntersections( QgsGeometry* geom, const QgsFeatureIds& ignoreFeatures = QgsFeatureIds() ) /Deprecated/;
-
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
      * @note geom is not going to be modified by the function
      * @return 0 in case of success
      */
-    int addTopologicalPoints( const QgsGeometry* geom );
+    int addTopologicalPoints( const QgsGeometry& geom );
 
     /** Adds a vertex to segments which intersect point p but don't
      * already have a vertex there. If a feature already has a vertex at position p,

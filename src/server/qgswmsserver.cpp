@@ -2253,7 +2253,7 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     QgsRectangle box;
     if ( hasGeometry )
     {
-      box = mapRender->layerExtentToOutputExtent( layer, feature.constGeometry()->boundingBox() );
+      box = mapRender->layerExtentToOutputExtent( layer, feature.geometry().boundingBox() );
       if ( featureBBox ) //extend feature info bounding box if requested
       {
         if ( !featureBBoxInitialized && featureBBox->isEmpty() )
@@ -2359,7 +2359,7 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       //also append the wkt geometry as an attribute
       if ( addWktGeometry && hasGeometry )
       {
-        QgsGeometry geom = feature.constGeometry() ? *feature.constGeometry() : QgsGeometry();
+        QgsGeometry geom = feature.geometry();
         if ( !geom.isEmpty() )
         {
           if ( layer->crs() != outputCrs )
@@ -3198,7 +3198,7 @@ QDomElement QgsWmsServer::createFeatureGML(
     transform = mMapRenderer->transformation( layer );
   }
 
-  QgsGeometry geom = feat->constGeometry() ? *feat->constGeometry() : QgsGeometry();
+  QgsGeometry geom = feat->geometry();
 
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
@@ -3210,7 +3210,7 @@ QDomElement QgsWmsServer::createFeatureGML(
   // always add bounding box info if feature contains geometry
   if ( !geom.isEmpty() && geom.type() != Qgis::UnknownGeometry && geom.type() != Qgis::NoGeometry )
   {
-    QgsRectangle box = feat->constGeometry()->boundingBox();
+    QgsRectangle box = feat->geometry().boundingBox();
     if ( transform.isValid() )
     {
       try

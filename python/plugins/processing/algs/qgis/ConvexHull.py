@@ -121,7 +121,7 @@ class ConvexHull(GeoAlgorithm):
                             val = idVar
                             first = False
 
-                        inGeom = QgsGeometry(f.geometry())
+                        inGeom = f.geometry()
                         points = vector.extractPoints(inGeom)
                         hull.extend(points)
                     current += 1
@@ -144,7 +144,7 @@ class ConvexHull(GeoAlgorithm):
             total = 100.0 / layer.featureCount()
             features = vector.features(layer)
             for current, f in enumerate(features):
-                inGeom = QgsGeometry(f.geometry())
+                inGeom = f.geometry()
                 points = vector.extractPoints(inGeom)
                 hull.extend(points)
                 progress.setPercentage(int(current * total))

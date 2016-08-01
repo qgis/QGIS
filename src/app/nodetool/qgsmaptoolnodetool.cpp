@@ -79,14 +79,14 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
       }
       // Get VertexId of snapped vertex
       QgsVertexId vid;
-      if ( !feature.constGeometry()->vertexIdFromVertexNr( snapResult.snappedVertexNr, vid ) )
+      if ( !feature.geometry().vertexIdFromVertexNr( snapResult.snappedVertexNr, vid ) )
       {
         continue;
       }
       // Add rubberband if not already added
       if ( !mMoveRubberBands.contains( snapFeatureId ) )
       {
-        QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, feature.constGeometry()->type() );
+        QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, feature.geometry().type() );
         QSettings settings;
         QColor color(
           settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
@@ -97,14 +97,14 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
         rb->setOutlineColor( color );
         rb->setBrushStyle( Qt::NoBrush );
         rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
-        QgsAbstractGeometryV2* rbGeom = feature.constGeometry()->geometry()->clone();
+        QgsAbstractGeometryV2* rbGeom = feature.geometry().geometry()->clone();
         if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
           rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
         rb->setGeometry( rbGeom );
         mMoveRubberBands.insert( snapFeatureId, rb );
       }
       // Add to list of vertices to be moved
-      mMoveVertices[snapFeatureId].append( qMakePair( vid, toMapCoordinates( vlayer, feature.constGeometry()->geometry()->vertexAt( vid ) ) ) );
+      mMoveVertices[snapFeatureId].append( qMakePair( vid, toMapCoordinates( vlayer, feature.geometry().geometry()->vertexAt( vid ) ) ) );
     }
   }
 }
@@ -227,7 +227,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
     if ( snapResults.size() < 1 )
     {
       QgsFeature feature = getFeatureAtPoint( e );
-      if ( !feature.constGeometry() )
+      if ( !feature.hasGeometry() )
       {
         emit messageEmitted( tr( "Could not snap to a feature in the current layer." ) );
         return;
@@ -368,7 +368,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
         mSelectedFeature->deselectAllVertexes();
 
         QgsFeature feature = getFeatureAtPoint( e );
-        if ( !feature.constGeometry() )
+        if ( !feature.hasGeometry() )
           return;
 
         mAnother = feature.id();

@@ -77,9 +77,9 @@ QgsGeometryCheckError::~QgsGeometryCheckError()
 QgsAbstractGeometryV2 *QgsGeometryCheckError::geometry()
 {
   QgsFeature f;
-  if ( mCheck->getFeaturePool()->get( featureId(), f ) && f.constGeometry() )
+  if ( mCheck->getFeaturePool()->get( featureId(), f ) && f.hasGeometry() )
   {
-    QgsGeometry featureGeom = *f.constGeometry();
+    QgsGeometry featureGeom = f.geometry();
     QgsAbstractGeometryV2* geom = featureGeom.geometry();
     return mVidx.part >= 0 ? QgsGeometryCheckerUtils::getGeomPart( geom, mVidx.part )->clone() : geom->clone();
   }
@@ -154,7 +154,7 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes& chan
 
 void QgsGeometryCheck::replaceFeatureGeometryPart( QgsFeature& feature, int partIdx, QgsAbstractGeometryV2* newPartGeom, Changes& changes ) const
 {
-  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometryV2* geom = featureGeom.geometry();
   if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
   {
@@ -175,7 +175,7 @@ void QgsGeometryCheck::replaceFeatureGeometryPart( QgsFeature& feature, int part
 
 void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature &feature, int partIdx, Changes &changes ) const
 {
-  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometryV2* geom = featureGeom.geometry();
   if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
   {
@@ -201,7 +201,7 @@ void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature &feature, int partI
 
 void QgsGeometryCheck::deleteFeatureGeometryRing( QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const
 {
-  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometryV2* partGeom = QgsGeometryCheckerUtils::getGeomPart( featureGeom.geometry(), partIdx );
   if ( dynamic_cast<QgsCurvePolygonV2*>( partGeom ) )
   {

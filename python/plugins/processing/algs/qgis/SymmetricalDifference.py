@@ -87,13 +87,13 @@ class SymmetricalDifference(GeoAlgorithm):
 
         for featA in featuresA:
             add = True
-            geom = QgsGeometry(featA.geometry())
+            geom = featA.geometry()
             diffGeom = QgsGeometry(geom)
             attrs = featA.attributes()
             intersects = indexA.intersects(geom.boundingBox())
             for i in intersects:
                 providerB.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
-                tmpGeom = QgsGeometry(featB.geometry())
+                tmpGeom = featB.geometry()
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
                     if not diffGeom.isGeosValid():
@@ -121,14 +121,14 @@ class SymmetricalDifference(GeoAlgorithm):
 
         for featA in featuresB:
             add = True
-            geom = QgsGeometry(featA.geometry())
+            geom = featA.geometry()
             diffGeom = QgsGeometry(geom)
             attrs = featA.attributes()
             attrs = [NULL] * length + attrs
             intersects = indexB.intersects(geom.boundingBox())
             for i in intersects:
                 providerA.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
-                tmpGeom = QgsGeometry(featB.geometry())
+                tmpGeom = featB.geometry()
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
                     if not diffGeom.isGeosValid():

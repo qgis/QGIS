@@ -32,7 +32,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, 
     QgsFeature feature;
     if ( mFeaturePool->get( id, feature ) )
     {
-      geomList.append( feature.constGeometry()->geometry()->clone() );
+      geomList.append( feature.geometry().geometry()->clone() );
     }
   }
 
@@ -112,7 +112,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, 
       {
         continue;
       }
-      QgsGeometry featureGeom = *feature.constGeometry();
+      QgsGeometry featureGeom = feature.geometry();
       QgsAbstractGeometryV2* geom2 = featureGeom.geometry();
       if ( QgsGeometryCheckerUtils::sharedEdgeLength( geom, geom2, QgsGeometryCheckPrecision::reducedTolerance() ) > 0 )
       {
@@ -175,7 +175,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError* err, Chan
     {
       continue;
     }
-    QgsGeometry featureGeom = *testFeature.constGeometry();
+    QgsGeometry featureGeom = testFeature.geometry();
     QgsAbstractGeometryV2* testGeom = featureGeom.geometry();
     for ( int iPart = 0, nParts = testGeom->partCount(); iPart < nParts; ++iPart )
     {
@@ -195,7 +195,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError* err, Chan
   }
 
   // Merge geometries
-  QgsGeometry mergeFeatureGeom = *mergeFeature.constGeometry();
+  QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   QgsAbstractGeometryV2* mergeGeom = mergeFeatureGeom.geometry();
   QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errGeometry, QgsGeometryCheckPrecision::tolerance() );
   QgsAbstractGeometryV2* combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), &errMsg );

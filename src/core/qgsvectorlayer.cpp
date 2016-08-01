@@ -649,9 +649,9 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
 
     while ( fit.nextFeature( fet ) )
     {
-      if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() )
+      if ( !fet.hasGeometry() )
         continue;
-      r = fet.constGeometry()->boundingBox();
+      r = fet.geometry().boundingBox();
       retval.combineExtentWith( r );
     }
   }
@@ -664,9 +664,9 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
     {
       if ( mSelectedFeatureIds.contains( fet.id() ) )
       {
-        if ( fet.constGeometry() )
+        if ( fet.hasGeometry() )
         {
-          r = fet.constGeometry()->boundingBox();
+          r = fet.geometry().boundingBox();
           retval.combineExtentWith( r );
         }
       }
@@ -948,9 +948,9 @@ QgsRectangle QgsVectorLayer::extent() const
     {
       for ( QgsFeatureMap::const_iterator it = mEditBuffer->mAddedFeatures.constBegin(); it != mEditBuffer->mAddedFeatures.constEnd(); ++it )
       {
-        if ( it->constGeometry() )
+        if ( it->hasGeometry() )
         {
-          QgsRectangle r = it->constGeometry()->boundingBox();
+          QgsRectangle r = it->geometry().boundingBox();
           rect.combineExtentWith( r );
         }
       }
@@ -964,9 +964,9 @@ QgsRectangle QgsVectorLayer::extent() const
     QgsFeature fet;
     while ( fit.nextFeature( fet ) )
     {
-      if ( fet.constGeometry() && fet.constGeometry()->type() != Qgis::UnknownGeometry )
+      if ( fet.hasGeometry() && fet.geometry().type() != Qgis::UnknownGeometry )
       {
-        QgsRectangle bb = fet.constGeometry()->boundingBox();
+        QgsRectangle bb = fet.geometry().boundingBox();
         rect.combineExtentWith( bb );
       }
     }
@@ -1064,7 +1064,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
 {
   QgsFeatureRequest req;
   req.setFilterFid( f.id() );
-  if ( !f.constGeometry() )
+  if ( !f.hasGeometry() )
     req.setFlags( QgsFeatureRequest::NoGeometry );
   if ( f.attributes().isEmpty() )
     req.setSubsetOfAttributes( QgsAttributeList() );
@@ -1076,9 +1076,9 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
     return false;
   }
 
-  if ( f.constGeometry() && current.constGeometry() && f.constGeometry() != current.constGeometry() && !f.constGeometry()->isGeosEqual( *current.constGeometry() ) )
+  if ( f.hasGeometry() && current.hasGeometry() && !f.geometry().isGeosEqual( current.geometry() ) )
   {
-    if ( !changeGeometry( f.id(), *f.constGeometry() ) )
+    if ( !changeGeometry( f.id(), f.geometry() ) )
     {
       QgsDebugMsg( QString( "geometry of feature %1 could not be changed." ).arg( f.id() ) );
       return false;
@@ -1369,51 +1369,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
   return utils.splitFeatures( splitLine, topologicalEditing );
 }
 
-int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, const QgsFeatureIds& ignoreFeatures )
-{
-  if ( !hasGeometryType() )
-    return 1;
-
-  int returnValue = 0;
-
-  //first test if geom really has type polygon or multipolygon
-  if ( geom->type() != Qgis::Polygon )
-  {
-    return 1;
-  }
-
-  //get bounding box of geom
-  QgsRectangle geomBBox = geom->boundingBox();
-
-  //get list of features that intersect this bounding box
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFilterRect( geomBBox )
-                                        .setFlags( QgsFeatureRequest::ExactIntersect )
-                                        .setSubsetOfAttributes( QgsAttributeList() ) );
-
-  QgsFeature f;
-  while ( fit.nextFeature( f ) )
-  {
-    if ( ignoreFeatures.contains( f.id() ) )
-    {
-      continue;
-    }
-
-    //call geometry->makeDifference for each feature
-    const QgsGeometry *currentGeom = f.constGeometry();
-    if ( currentGeom )
-    {
-      if ( geom->makeDifference( currentGeom ) != 0 )
-      {
-        returnValue = 2;
-      }
-    }
-  }
-
-  return returnValue;
-}
-
-int QgsVectorLayer::addTopologicalPoints( const QgsGeometry *geom )
+int QgsVectorLayer::addTopologicalPoints( const QgsGeometry& geom )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return -1;
@@ -2565,8 +2521,8 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
     QgsGeometryMap& cachedGeometries = mCache->cachedGeometries();
     for ( QgsGeometryMap::iterator it = cachedGeometries.begin(); it != cachedGeometries.end() ; ++it )
     {
-      QgsGeometry* g = &( it.value() );
-      if ( g->boundingBox().intersects( searchRect ) )
+      QgsGeometry g = it.value();
+      if ( g.boundingBox().intersects( searchRect ) )
       {
         snapToGeometry( startPoint, it.key(), g, sqrSnappingTolerance, snappingResults, snap_to );
         ++n;
@@ -2584,7 +2540,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
     while ( fit.nextFeature( f ) )
     {
-      snapToGeometry( startPoint, f.id(), f.constGeometry(), sqrSnappingTolerance, snappingResults, snap_to );
+      snapToGeometry( startPoint, f.id(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );
       ++n;
     }
   }
@@ -2594,12 +2550,12 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
 void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
                                      QgsFeatureId featureId,
-                                     const QgsGeometry* geom,
+                                     const QgsGeometry& geom,
                                      double sqrSnappingTolerance,
                                      QMultiMap<double, QgsSnappingResult>& snappingResults,
                                      QgsSnapper::SnappingType snap_to ) const
 {
-  if ( !geom )
+  if ( geom.isEmpty() )
   {
     return;
   }
@@ -2612,7 +2568,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
 
   if ( snap_to == QgsSnapper::SnapToVertex || snap_to == QgsSnapper::SnapToVertexAndSegment )
   {
-    snappedPoint = geom->closestVertex( startPoint, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
+    snappedPoint = geom.closestVertex( startPoint, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
     if ( sqrDistVertexSnap < sqrSnappingTolerance )
     {
       snappingResultVertex.snappedVertex = snappedPoint;
@@ -2620,12 +2576,12 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
       snappingResultVertex.beforeVertexNr = beforeVertex;
       if ( beforeVertex != -1 ) // make sure the vertex is valid
       {
-        snappingResultVertex.beforeVertex = geom->vertexAt( beforeVertex );
+        snappingResultVertex.beforeVertex = geom.vertexAt( beforeVertex );
       }
       snappingResultVertex.afterVertexNr = afterVertex;
       if ( afterVertex != -1 ) // make sure the vertex is valid
       {
-        snappingResultVertex.afterVertex = geom->vertexAt( afterVertex );
+        snappingResultVertex.afterVertex = geom.vertexAt( afterVertex );
       }
       snappingResultVertex.snappedAtGeometry = featureId;
       snappingResultVertex.layer = this;
@@ -2637,7 +2593,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
   {
     if ( geometryType() != Qgis::Point ) // cannot snap to segment for points/multipoints
     {
-      sqrDistSegmentSnap = geom->closestSegmentWithContext( startPoint, snappedPoint, afterVertex, nullptr, crs().isGeographic() ? 1e-12 : 1e-8 );
+      sqrDistSegmentSnap = geom.closestSegmentWithContext( startPoint, snappedPoint, afterVertex, nullptr, crs().isGeographic() ? 1e-12 : 1e-8 );
 
       if ( sqrDistSegmentSnap < sqrSnappingTolerance )
       {
@@ -2646,8 +2602,8 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
         snappingResultSegment.beforeVertexNr = afterVertex - 1;
         snappingResultSegment.afterVertexNr = afterVertex;
         snappingResultSegment.snappedAtGeometry = featureId;
-        snappingResultSegment.beforeVertex = geom->vertexAt( afterVertex - 1 );
-        snappingResultSegment.afterVertex = geom->vertexAt( afterVertex );
+        snappingResultSegment.beforeVertex = geom.vertexAt( afterVertex - 1 );
+        snappingResultSegment.afterVertex = geom.vertexAt( afterVertex );
         snappingResultSegment.layer = this;
         snappingResults.insert( sqrt( sqrDistSegmentSnap ), snappingResultSegment );
       }

@@ -28,7 +28,7 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
       continue;
     }
 
-    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsGeometry featureGeom = feature.geometry();
     QgsAbstractGeometryV2* geom = featureGeom.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
@@ -49,7 +49,7 @@ void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError* error, int method, i
     error->setObsolete();
     return;
   }
-  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometryV2* geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 

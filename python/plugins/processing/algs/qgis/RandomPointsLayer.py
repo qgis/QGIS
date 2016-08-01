@@ -102,7 +102,7 @@ class RandomPointsLayer(GeoAlgorithm):
                     vector.checkMinDistance(pnt, index, minDistance, points):
                 for i in ids:
                     f = layer.getFeatures(request.setFilterFid(i)).next()
-                    tmpGeom = QgsGeometry(f.geometry())
+                    tmpGeom = f.geometry()
                     if geom.within(tmpGeom):
                         f = QgsFeature(nPoints)
                         f.initAttributes(1)

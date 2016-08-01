@@ -28,7 +28,7 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors
     {
       continue;
     }
-    QgsGeometry g = *feature.constGeometry();
+    QgsGeometry g = feature.geometry();
     const QgsAbstractGeometryV2* geom = g.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
@@ -76,7 +76,7 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, 
     error->setObsolete();
     return;
   }
-  QgsGeometry g = *feature.constGeometry();
+  QgsGeometry g = feature.geometry();
   QgsAbstractGeometryV2* geometry = g.geometry();
   QgsVertexId vidx = error->vidx();
 

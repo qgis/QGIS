@@ -100,7 +100,7 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   Q_UNUSED( layer );
 
   //check, if there is already a point at that position
-  if ( !feature.constGeometry() )
+  if ( !feature.hasGeometry() )
     return false;
 
   QgsSymbolV2* symbol = firstSymbolForFeature( mRenderer, feature, context );
@@ -110,8 +110,8 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
     return false;
 
   //point position in screen coords
-  const QgsGeometry* geom = feature.constGeometry();
-  Qgis::WkbType geomType = geom->wkbType();
+  QgsGeometry geom = feature.geometry();
+  Qgis::WkbType geomType = geom.wkbType();
   if ( geomType != Qgis::WKBPoint && geomType != Qgis::WKBPoint25D )
   {
     //can only render point type
@@ -122,7 +122,7 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
     mSelectedFeatures.insert( feature.id() );
 
   double searchDistance = mTolerance * QgsSymbolLayerV2Utils::mapUnitScaleFactor( context, mToleranceUnit, mToleranceMapUnitScale );
-  QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( feature.constGeometry()->asPoint(), searchDistance ) );
+  QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( feature.geometry().asPoint(), searchDistance ) );
   if ( intersectList.empty() )
   {
     mSpatialIndex->insertFeature( feature );
@@ -166,7 +166,7 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
     labelAttributeList << ( mDrawLabels ? getLabel( attIt.value().first ) : QString() );
     symbolList << dynamic_cast<QgsMarkerSymbolV2*>( attIt.value().second );
     featureList << attIt.value().first;
-    groupMultiPoint->addGeometry( attIt.value().first.constGeometry()->geometry()->clone() );
+    groupMultiPoint->addGeometry( attIt.value().first.geometry().geometry()->clone() );
   }
 
   //calculate centroid of all points, this will be center of group

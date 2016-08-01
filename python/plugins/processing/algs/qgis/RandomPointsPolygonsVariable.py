@@ -90,7 +90,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
 
         features = vector.features(layer)
         for current, f in enumerate(features):
-            fGeom = QgsGeometry(f.geometry())
+            fGeom = f.geometry()
             bbox = fGeom.boundingBox()
             if strategy == 0:
                 pointCount = int(f[fieldName])

@@ -275,7 +275,7 @@ QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, con
   if ( vl == currentVectorLayer() && !mForceCopy )
   {
     //don't consider selected geometries, only the snap result
-    return convertToSingleLine( snappedFeature.constGeometry() ? *snappedFeature.constGeometry() : QgsGeometry(), partVertexNr, mMultiPartGeometry );
+    return convertToSingleLine( snappedFeature.geometry(), partVertexNr, mMultiPartGeometry );
   }
   else //snapped to a background layer
   {
@@ -283,33 +283,31 @@ QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, con
     if ( vl->geometryType() == Qgis::Polygon )
     {
       //make linestring from polygon ring and return this geometry
-      return linestringFromPolygon( snappedFeature.constGeometry(), partVertexNr );
+      return linestringFromPolygon( snappedFeature.geometry(), partVertexNr );
     }
 
     //for background layers, try to merge selected entries together if snapped feature is contained in selection
     const QgsFeatureIds& selection = vl->selectedFeaturesIds();
     if ( selection.size() < 1 || !selection.contains( match.featureId() ) )
     {
-      return convertToSingleLine( snappedFeature.constGeometry() ? *snappedFeature.constGeometry() : QgsGeometry(), partVertexNr, mMultiPartGeometry );
+      return convertToSingleLine( snappedFeature.geometry(), partVertexNr, mMultiPartGeometry );
     }
     else
     {
       //merge together if several features
       QgsFeatureList selectedFeatures = vl->selectedFeatures();
       QgsFeatureList::iterator selIt = selectedFeatures.begin();
-      QgsGeometry geom = selIt->constGeometry() ? *selIt->constGeometry() : QgsGeometry();
+      QgsGeometry geom = selIt->geometry();
       ++selIt;
       for ( ; selIt != selectedFeatures.end(); ++selIt )
       {
-        QgsGeometry* combined = geom.combine( selIt->constGeometry() );
-        geom = *combined;
-        delete combined;
+        geom = geom.combine( selIt->geometry() );
       }
 
       //if multitype, return only the snapped to geometry
       if ( geom.isMultipart() )
       {
-        return convertToSingleLine( snappedFeature.constGeometry() ? *snappedFeature.constGeometry() : QgsGeometry(),
+        return convertToSingleLine( snappedFeature.geometry(),
                                     match.vertexIndex(), mMultiPartGeometry );
       }
 
@@ -409,26 +407,26 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
 #endif //GEOS_VERSION>=3.3
 }
 
-QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry* featureGeom, int vertex )
+QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& featureGeom, int vertex )
 {
-  if ( !featureGeom )
+  if ( featureGeom.isEmpty() )
   {
     return QgsGeometry();
   }
 
-  Qgis::WkbType geomType = featureGeom->wkbType();
+  Qgis::WkbType geomType = featureGeom.wkbType();
   int currentVertex = 0;
   QgsMultiPolygon multiPoly;
 
   if ( geomType == Qgis::WKBPolygon || geomType == Qgis::WKBPolygon25D )
   {
-    QgsPolygon polygon = featureGeom->asPolygon();
+    QgsPolygon polygon = featureGeom.asPolygon();
     multiPoly.append( polygon );
   }
   else if ( geomType == Qgis::WKBMultiPolygon || geomType == Qgis::WKBMultiPolygon25D )
   {
     //iterate all polygons / rings
-    QgsMultiPolygon multiPoly = featureGeom->asMultiPolygon();
+    QgsMultiPolygon multiPoly = featureGeom.asMultiPolygon();
   }
   else
   {

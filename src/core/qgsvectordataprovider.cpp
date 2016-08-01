@@ -617,14 +617,14 @@ QSet<QString> QgsVectorDataProvider::layerDependencies() const
   return QSet<QString>();
 }
 
-QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry* geom ) const
+QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& geom ) const
 {
-  if ( !geom )
+  if ( geom.isEmpty() )
   {
     return nullptr;
   }
 
-  QgsAbstractGeometryV2* geometry = geom->geometry();
+  QgsAbstractGeometryV2* geometry = geom.geometry();
   if ( !geometry )
   {
     return nullptr;

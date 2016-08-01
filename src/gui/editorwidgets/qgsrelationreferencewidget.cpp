@@ -607,17 +607,17 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
       return;
   }
 
-  if ( !f.constGeometry() )
+  if ( !f.hasGeometry() )
   {
     return;
   }
 
-  const QgsGeometry* geom = f.constGeometry();
+  QgsGeometry geom = f.geometry();
 
   // scale or pan
   if ( canvasExtent == Scale )
   {
-    QgsRectangle featBBox = geom->boundingBox();
+    QgsRectangle featBBox = geom.boundingBox();
     featBBox = mCanvas->mapSettings().layerToMapCoordinates( mReferencedLayer, featBBox );
     QgsRectangle extent = mCanvas->extent();
     if ( !extent.contains( featBBox ) )
@@ -630,7 +630,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
   }
   else if ( canvasExtent == Pan )
   {
-    QgsGeometry* centroid = geom->centroid();
+    QgsGeometry* centroid = geom.centroid();
     QgsPoint center = centroid->asPoint();
     delete centroid;
     center = mCanvas->mapSettings().layerToMapCoordinates( mReferencedLayer, center );

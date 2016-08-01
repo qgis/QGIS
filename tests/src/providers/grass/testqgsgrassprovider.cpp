@@ -132,15 +132,15 @@ QString TestQgsGrassCommand::toString() const
     string += "AddFeature ";
     Q_FOREACH ( const TestQgsGrassFeature & grassFeature, grassFeatures )
     {
-      if ( grassFeature.constGeometry() )
+      if ( grassFeature.hasGeometry() )
       {
-        string += "<br>grass: " + grassFeature.constGeometry()->exportToWkt( 1 );
+        string += "<br>grass: " + grassFeature.geometry().exportToWkt( 1 );
       }
     }
 
-    if ( expectedFeature.constGeometry() )
+    if ( expectedFeature.hasGeometry() )
     {
-      string += "<br>expected: " + expectedFeature.constGeometry()->exportToWkt( 1 );
+      string += "<br>expected: " + expectedFeature.geometry().exportToWkt( 1 );
     }
   }
   else if ( command == DeleteFeature )
@@ -1494,7 +1494,8 @@ QList<QgsFeature> TestQgsGrassProvider::getFeatures( QgsVectorLayer *layer )
 
 bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature )
 {
-  if ( !feature.constGeometry()->equals( expectedFeature.constGeometry() ) )
+  QgsGeometry expectedGeom = expectedFeature.geometry();
+  if ( !feature.geometry().equals( &expectedGeom ) )
   {
     return false;
   }

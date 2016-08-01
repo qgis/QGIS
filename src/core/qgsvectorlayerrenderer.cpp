@@ -307,7 +307,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
         break;
       }
 
-      if ( !fet.constGeometry() )
+      if ( !fet.hasGeometry() )
         continue; // skip features without geometry
 
       mContext.expressionContext().setFeature( fet );
@@ -318,7 +318,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
       if ( mCache )
       {
         // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-        mCache->cacheGeometry( fet.id(), *fet.constGeometry() );
+        mCache->cacheGeometry( fet.id(), fet.geometry() );
       }
 
       // render feature
@@ -344,7 +344,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
           QScopedPointer<QgsGeometry> obstacleGeometry;
           QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
 
-          if ( !symbols.isEmpty() && fet.constGeometry()->type() == Qgis::Point )
+          if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::Point )
           {
             obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
           }
@@ -406,7 +406,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       return;
     }
 
-    if ( !fet.constGeometry() )
+    if ( !fet.hasGeometry() )
       continue; // skip features without geometry
 
     mContext.expressionContext().setFeature( fet );
@@ -425,7 +425,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     if ( mCache )
     {
       // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-      mCache->cacheGeometry( fet.id(), *fet.constGeometry() );
+      mCache->cacheGeometry( fet.id(), fet.geometry() );
     }
 
     if ( mContext.labelingEngine() )
@@ -446,7 +446,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       QScopedPointer<QgsGeometry> obstacleGeometry;
       QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
 
-      if ( !symbols.isEmpty() && fet.constGeometry()->type() == Qgis::Point )
+      if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::Point )
       {
         obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
       }

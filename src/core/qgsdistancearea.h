@@ -149,6 +149,17 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureArea( const QgsGeometry* geometry ) const;
 
+    /** Measures the area of a geometry.
+     * @param geometry geometry to measure
+     * @returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
+     * returned area can be retrieved by calling areaUnits().
+     * @note added in QGIS 2.12
+     * @see measureLength()
+     * @see measurePerimeter()
+     * @see areaUnits()
+     */
+    double measureArea( const QgsGeometry& geometry ) const;
+
     /** Measures the length of a geometry.
      * @param geometry geometry to measure
      * @returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
@@ -160,6 +171,17 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureLength( const QgsGeometry* geometry ) const;
 
+    /** Measures the length of a geometry.
+     * @param geometry geometry to measure
+     * @returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
+     * returned distance can be retrieved by calling lengthUnits().
+     * @note added in QGIS 2.12
+     * @see lengthUnits()
+     * @see measureArea()
+     * @see measurePerimeter()
+     */
+    double measureLength( const QgsGeometry& geometry ) const;
+
     /** Measures the perimeter of a polygon geometry.
      * @param geometry geometry to measure
      * @returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
@@ -170,6 +192,17 @@ class CORE_EXPORT QgsDistanceArea
      * @see measurePerimeter()
      */
     double measurePerimeter( const QgsGeometry *geometry ) const;
+
+    /** Measures the perimeter of a polygon geometry.
+     * @param geometry geometry to measure
+     * @returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
+     * returned perimeter can be retrieved by calling lengthUnits().
+     * @note added in QGIS 2.12
+     * @see lengthUnits()
+     * @see measureArea()
+     * @see measurePerimeter()
+     */
+    double measurePerimeter( const QgsGeometry& geometry ) const;
 
     /** Measures the length of a line with multiple segments.
      * @param points list of points in line

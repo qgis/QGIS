@@ -92,7 +92,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                         if first:
                             attrs = atMap
                             first = False
-                        inGeom = QgsGeometry(inFeat.geometry())
+                        inGeom = inFeat.geometry()
                         vType = inGeom.type()
                         feature_list = self.extractAsMulti(inGeom)
                         multi_feature.extend(feature_list)

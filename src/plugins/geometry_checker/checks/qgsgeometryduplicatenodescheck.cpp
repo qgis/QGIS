@@ -29,7 +29,7 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError*
       continue;
     }
 
-    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsGeometry featureGeom = feature.geometry();
     QgsAbstractGeometryV2* geom = featureGeom.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
@@ -60,7 +60,7 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int
     error->setObsolete();
     return;
   }
-  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometryV2* geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 

@@ -173,9 +173,9 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
     return 1;
   }
 
-  const QgsGeometry* g = f->constGeometry();
+  QgsGeometry g = f->geometry();
   {
-    if ( !g )
+    if ( g.isEmpty() )
     {
       return 2;
     }
@@ -201,12 +201,12 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   //parse WKB. It is ugly, but we cannot use the methods with QgsPoint because they don't contain z-values for 25D types
   bool hasZValue = false;
   double x, y, z;
-  QgsConstWkbPtr currentWkbPtr( g->asWkb(), g->wkbSize() );
+  QgsConstWkbPtr currentWkbPtr( g.asWkb(), g.wkbSize() );
   currentWkbPtr.readHeader();
   //maybe a structure or break line
   Line3D* line = nullptr;
 
-  Qgis::WkbType wkbType = g->wkbType();
+  Qgis::WkbType wkbType = g.wkbType();
   switch ( wkbType )
   {
     case Qgis::WKBPoint25D:

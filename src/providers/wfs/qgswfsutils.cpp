@@ -354,11 +354,11 @@ QString QgsWFSUtils::getMD5( const QgsFeature& f )
 
   const int attrCount = attrs.size();
   hash.addData( QByteArray(( const char * )&attrCount, sizeof( attrCount ) ) );
-  const QgsGeometry* geometry = f.constGeometry();
-  if ( geometry )
+  QgsGeometry geometry = f.geometry();
+  if ( !geometry.isEmpty() )
   {
-    const unsigned char *geom = geometry->asWkb();
-    int geomSize = geometry->wkbSize();
+    const unsigned char *geom = geometry.asWkb();
+    int geomSize = geometry.wkbSize();
     hash.addData( QByteArray(( const char* )geom, geomSize ) );
   }
 

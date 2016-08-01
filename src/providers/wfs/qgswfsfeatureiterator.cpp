@@ -590,9 +590,9 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
             QgsDebugMsg( "Server does not seem to properly support paging since it returned the same first feature for 2 different page requests. Disabling paging" );
           }
 
-          if ( mShared->mGetFeatureEPSGDotHonoursEPSGOrder && f.constGeometry() )
+          if ( mShared->mGetFeatureEPSGDotHonoursEPSGOrder && f.hasGeometry() )
           {
-            QgsGeometry g = *f.constGeometry();
+            QgsGeometry g = f.geometry();
             g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
             f.setGeometry( g );
           }
@@ -974,22 +974,22 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
         {
           QgsDebugMsg( QString( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
           delete[] wkbClone;
-          cachedFeature.setGeometry( QgsGeometry() );
+          cachedFeature.clearGeometry();
         }
       }
       else
       {
-        cachedFeature.setGeometry( QgsGeometry() );
+        cachedFeature.clearGeometry();
       }
     }
     else
     {
-      cachedFeature.setGeometry( QgsGeometry() );
+      cachedFeature.clearGeometry();
     }
 
-    const QgsGeometry* constGeom = cachedFeature.constGeometry();
+    QgsGeometry constGeom = cachedFeature.geometry();
     if ( !mRequest.filterRect().isNull() &&
-         ( !constGeom || !constGeom->intersects( mRequest.filterRect() ) ) )
+         ( constGeom.isEmpty() || !constGeom.intersects( mRequest.filterRect() ) ) )
     {
       continue;
     }
@@ -1067,9 +1067,9 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
           }
         }
 
-        const QgsGeometry* constGeom = feat.constGeometry();
+        QgsGeometry constGeom = feat.geometry();
         if ( !mRequest.filterRect().isNull() &&
-             ( !constGeom || !constGeom->intersects( mRequest.filterRect() ) ) )
+             ( constGeom.isEmpty() || !constGeom.intersects( mRequest.filterRect() ) ) )
         {
           continue;
         }
@@ -1158,11 +1158,11 @@ bool QgsWFSFeatureIterator::close()
 void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeature& dstFeature )
 {
   //copy the geometry
-  const QgsGeometry* geometry = srcFeature.constGeometry();
-  if ( !mShared->mGeometryAttribute.isEmpty() && geometry && !geometry->isEmpty() )
+  QgsGeometry geometry = srcFeature.geometry();
+  if ( !mShared->mGeometryAttribute.isEmpty() && !geometry.isEmpty() )
   {
-    const unsigned char *geom = geometry->asWkb();
-    int geomSize = geometry->wkbSize();
+    const unsigned char *geom = geometry.asWkb();
+    int geomSize = geometry.wkbSize();
     unsigned char* copiedGeom = new unsigned char[geomSize];
     memcpy( copiedGeom, geom, geomSize );
 
@@ -1172,7 +1172,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
   }
   else
   {
-    dstFeature.setGeometry( QgsGeometry() );
+    dstFeature.clearGeometry();
   }
 
   //and the attributes

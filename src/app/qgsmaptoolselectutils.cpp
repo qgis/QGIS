@@ -257,7 +257,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
     if ( r && !r->willRenderFeature( f, context ) )
       continue;
 
-    const QgsGeometry* g = f.constGeometry();
+    QgsGeometry g = f.geometry();
     if ( doContains )
     {
       if ( !selectGeomTrans->contains( g ) )
@@ -271,7 +271,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
     if ( singleSelect )
     {
       foundSingleFeature = true;
-      double distance = g->distance( *selectGeomTrans );
+      double distance = g.distance( *selectGeomTrans );
       if ( distance <= closestFeatureDist )
       {
         closestFeatureDist = distance;

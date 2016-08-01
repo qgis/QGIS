@@ -30,7 +30,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError*>& er
     {
       continue;
     }
-    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsGeometry featureGeom = feature.geometry();
     QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
 
     QList<QgsFeatureId> duplicates;
@@ -48,7 +48,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError*>& er
         continue;
       }
       QString errMsg;
-      QgsAbstractGeometryV2* diffGeom = geomEngine->symDifference( *testFeature.constGeometry()->geometry(), &errMsg );
+      QgsAbstractGeometryV2* diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry(), &errMsg );
       if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
       {
         duplicates.append( id );
@@ -62,7 +62,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError*>& er
     if ( !duplicates.isEmpty() )
     {
       qSort( duplicates );
-      errors.append( new QgsGeometryDuplicateCheckError( this, featureid, feature.constGeometry()->geometry()->centroid(), duplicates ) );
+      errors.append( new QgsGeometryDuplicateCheckError( this, featureid, feature.geometry().geometry()->centroid(), duplicates ) );
     }
     delete geomEngine;
   }
@@ -83,7 +83,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError* error, int meth
   }
   else if ( method == RemoveDuplicates )
   {
-    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsGeometry featureGeom = feature.geometry();
     QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
 
     QgsGeometryDuplicateCheckError* duplicateError = static_cast<QgsGeometryDuplicateCheckError*>( error );
@@ -94,7 +94,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError* error, int meth
       {
         continue;
       }
-      QgsAbstractGeometryV2* diffGeom = geomEngine->symDifference( *testFeature.constGeometry()->geometry() );
+      QgsAbstractGeometryV2* diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry() );
       if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
       {
         mFeaturePool->deleteFeature( testFeature );

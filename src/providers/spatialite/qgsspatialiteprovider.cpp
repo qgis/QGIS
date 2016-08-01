@@ -3695,7 +3695,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         if ( !mGeometryColumn.isEmpty() )
         {
           // binding GEOMETRY to Prepared Statement
-          if ( !feature->constGeometry() )
+          if ( !feature->hasGeometry() )
           {
             sqlite3_bind_null( stmt, ++ia );
           }
@@ -3703,8 +3703,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           {
             unsigned char *wkb = nullptr;
             int wkb_size;
-            convertFromGeosWKB( feature->constGeometry()->asWkb(),
-                                feature->constGeometry()->wkbSize(),
+            convertFromGeosWKB( feature->geometry().asWkb(),
+                                feature->geometry().wkbSize(),
                                 &wkb, &wkb_size, nDims );
             if ( !wkb )
               sqlite3_bind_null( stmt, ++ia );

@@ -301,10 +301,10 @@ struct VTableCursor
   {
     int blob_len = 0;
     char* blob = nullptr;
-    const QgsGeometry* g = mCurrentFeature.constGeometry();
-    if ( g && ! g->isEmpty() )
+    QgsGeometry g = mCurrentFeature.geometry();
+    if ( ! g.isEmpty() )
     {
-      qgsGeometryToSpatialiteBlob( *g, mVtab->crs(), blob, blob_len );
+      qgsGeometryToSpatialiteBlob( g, mVtab->crs(), blob, blob_len );
     }
     return qMakePair( blob, blob_len );
   }

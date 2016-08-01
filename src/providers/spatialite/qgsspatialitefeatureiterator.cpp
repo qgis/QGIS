@@ -463,7 +463,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   if ( !mFetchGeometry )
   {
     // no geometry was required
-    feature.setGeometry( QgsGeometry() );
+    feature.clearGeometry();
   }
 
   feature.initAttributes( mSource->mFields.count() );
@@ -563,12 +563,12 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int i
       feature.setGeometry( g );
     }
     else
-      feature.setGeometry( QgsGeometry() );
+      feature.clearGeometry();
   }
   else
   {
     // NULL geometry
-    feature.setGeometry( QgsGeometry() );
+    feature.clearGeometry();
   }
 }
 

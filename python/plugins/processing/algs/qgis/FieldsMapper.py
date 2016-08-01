@@ -123,8 +123,7 @@ class FieldsMapper(GeoAlgorithm):
             rownum = current + 1
 
             geometry = inFeat.geometry()
-            if geometry is not None:
-                outFeat.setGeometry(geometry)
+            outFeat.setGeometry(geometry)
 
             attrs = []
             for i in xrange(0, len(mapping)):

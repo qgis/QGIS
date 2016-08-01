@@ -906,7 +906,7 @@ void QgsAtlasComposition::setMargin( float margin )
 
 QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSystem& crs ) const
 {
-  if ( !mCoverageLayer || !mCurrentFeature.isValid() || !mCurrentFeature.constGeometry() )
+  if ( !mCoverageLayer || !mCurrentFeature.isValid() || !mCurrentFeature.hasGeometry() )
   {
     return QgsGeometry();
   }
@@ -914,7 +914,7 @@ QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSy
   if ( !crs.isValid() )
   {
     // no projection, return the native geometry
-    return *mCurrentFeature.constGeometry();
+    return mCurrentFeature.geometry();
   }
 
   QMap<long, QgsGeometry>::const_iterator it = mGeometryCache.constFind( crs.srsid() );
@@ -926,10 +926,10 @@ QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSy
 
   if ( mCoverageLayer->crs() == crs )
   {
-    return *mCurrentFeature.constGeometry();
+    return mCurrentFeature.geometry();
   }
 
-  QgsGeometry transformed = *mCurrentFeature.constGeometry();
+  QgsGeometry transformed = mCurrentFeature.geometry();
   transformed.transform( QgsCoordinateTransformCache::instance()->transform( mCoverageLayer->crs().authid(), crs.authid() ) );
   mGeometryCache[crs.srsid()] = transformed;
   return transformed;

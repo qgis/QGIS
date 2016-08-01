@@ -365,12 +365,12 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       else
       {
         QgsDebugMsg( "Geometry is empty" );
-        feature.setGeometry( QgsGeometry() );
+        feature.clearGeometry();
       }
     }
     else
     {
-      feature.setGeometry( QgsGeometry() );
+      feature.clearGeometry();
     }
     feature.setValid( true );
     mFetchCount++;

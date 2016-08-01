@@ -393,6 +393,14 @@ class QgsGeometry
      */
     int makeDifference( const QgsGeometry* other );
 
+    /** Returns the geometry formed by modifying this geometry such that it does not
+     * intersect the other geometry.
+     * @param other geometry that should not be intersect
+     * @return difference geometry, or empty geometry if difference could not be calculated
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry makeDifference( const QgsGeometry& other ) const;
+
     /** Returns the bounding box of this feature*/
     QgsRectangle boundingBox() const;
 

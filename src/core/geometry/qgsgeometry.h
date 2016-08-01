@@ -436,6 +436,14 @@ class CORE_EXPORT QgsGeometry
      */
     int makeDifference( const QgsGeometry* other );
 
+    /** Returns the geometry formed by modifying this geometry such that it does not
+     * intersect the other geometry.
+     * @param other geometry that should not be intersect
+     * @return difference geometry, or empty geometry if difference could not be calculated
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry makeDifference( const QgsGeometry& other ) const;
+
     /** Returns the bounding box of this feature*/
     QgsRectangle boundingBox() const;
 
@@ -445,12 +453,19 @@ class CORE_EXPORT QgsGeometry
     /** Test for intersection with a geometry (uses GEOS) */
     bool intersects( const QgsGeometry* geometry ) const;
 
+    /** Test for intersection with a geometry (uses GEOS) */
+    bool intersects( const QgsGeometry& geometry ) const;
+
     /** Test for containment of a point (uses GEOS) */
     bool contains( const QgsPoint* p ) const;
 
     /** Test for if geometry is contained in another (uses GEOS)
      *  @note added in 1.5 */
     bool contains( const QgsGeometry* geometry ) const;
+
+    /** Test for if geometry is contained in another (uses GEOS)
+     *  @note added in 1.5 */
+    bool contains( const QgsGeometry& geometry ) const;
 
     /** Test for if geometry is disjoint of another (uses GEOS)
      *  @note added in 1.5 */
@@ -471,6 +486,10 @@ class CORE_EXPORT QgsGeometry
     /** Test for if geometry is within another (uses GEOS)
      *  @note added in 1.5 */
     bool within( const QgsGeometry* geometry ) const;
+
+    /** Test for if geometry is within another (uses GEOS)
+     *  @note added in 1.5 */
+    bool within( const QgsGeometry& geometry ) const;
 
     /** Test for if geometry crosses another (uses GEOS)
      *  @note added in 1.5 */
@@ -522,11 +541,20 @@ class CORE_EXPORT QgsGeometry
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry* intersection( const QgsGeometry* geometry ) const;
 
+    /** Returns a geometry representing the points shared by this geometry and other. */
+    QgsGeometry intersection( const QgsGeometry& geometry ) const;
+
     /** Returns a geometry representing all the points in this geometry and other (a
      * union geometry operation).
      * @note this operation is not called union since its a reserved word in C++.
      */
     QgsGeometry* combine( const QgsGeometry* geometry ) const;
+
+    /** Returns a geometry representing all the points in this geometry and other (a
+     * union geometry operation).
+     * @note this operation is not called union since its a reserved word in C++.
+     */
+    QgsGeometry combine( const QgsGeometry& geometry ) const;
 
     /** Merges any connected lines in a LineString/MultiLineString geometry and
      * converts them to single line strings.
@@ -684,6 +712,12 @@ class CORE_EXPORT QgsGeometry
      * @returns the new computed QgsGeometry, or null
      */
     static QgsGeometry *unaryUnion( const QList<QgsGeometry*>& geometryList );
+
+    /** Compute the unary union on a list of geometries. May be faster than an iterative union on a set of geometries.
+     * @param geometryList a list of QgsGeometry as input
+     * @returns the new computed QgsGeometry, or an empty QgsGeometry
+     */
+    static QgsGeometry unaryUnion( const QList<QgsGeometry>& geometryList );
 
     /** Converts the geometry to straight line segments, if it is a curved geometry type.
      * @note added in QGIS 2.10

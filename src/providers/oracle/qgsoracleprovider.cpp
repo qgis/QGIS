@@ -1329,7 +1329,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
       if ( !mGeometryColumn.isNull() )
       {
-        appendGeomParam( features->constGeometry(), ins );
+        appendGeomParam( features->geometry(), ins );
       }
 
       for ( int i = 0; i < fieldId.size(); i++ )
@@ -1788,19 +1788,15 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
 
       Q_FOREACH ( int idx, geometryParams )
       {
-        QgsGeometry *g;
+        QgsGeometry g;
         if ( !attrs[idx].isNull() )
         {
-          g = QgsGeometry::fromWkt( attrs[ idx ].toString() );
-        }
-        else
-        {
-          g = new QgsGeometry();
+          QgsGeometry* created = QgsGeometry::fromWkt( attrs[ idx ].toString() );
+          g = *created;
+          delete created;
         }
 
         appendGeomParam( g, qry );
-
-        delete g;
       }
 
       if ( !qry.exec() )
@@ -1846,12 +1842,12 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
   return returnvalue;
 }
 
-void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry ) const
+void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry ) const
 {
   QOCISpatialGeometry g;
 
   wkbPtr ptr;
-  ptr.ucPtr = geom ? ( unsigned char * ) geom->asWkb() : 0;
+  ptr.ucPtr = !geom.isEmpty() ? ( unsigned char * ) geom.asWkb() : 0;
   g.isNull = !ptr.ucPtr;
   g.gtype = -1;
   g.srid  = mSrid < 1 ? -1 : mSrid;
@@ -2035,7 +2031,7 @@ bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
           iter != geometry_map.constEnd();
           ++iter )
     {
-      appendGeomParam( &iter.value(), qry );
+      appendGeomParam( iter.value(), qry );
       appendPkParams( iter.key(), qry );
 
       if ( !qry.exec() )

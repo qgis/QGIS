@@ -163,11 +163,11 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       break;
     }
 
-    if ( !fet.constGeometry() )
+    if ( !fet.hasGeometry() )
     {
       continue;
     }
-    const QgsGeometry* strataGeom = fet.constGeometry();
+    QgsGeometry strataGeom = fet.geometry();
 
     //find baseline for strata
     QVariant strataId = fet.attribute( mStrataIdAttribute );
@@ -186,7 +186,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       minDistanceLayerUnits = minDistance / 111319.9;
     }
 
-    QgsGeometry* clippedBaseline = strataGeom->intersection( &baselineGeom );
+    QgsGeometry* clippedBaseline = strataGeom.intersection( &baselineGeom );
     if ( !clippedBaseline || clippedBaseline->wkbType() == Qgis::WKBUnknown )
     {
       delete clippedBaseline;
@@ -255,30 +255,27 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       QgsPolyline lineFarAway;
       lineFarAway << sampleQgsPoint << ptFarAway;
       QgsGeometry* lineFarAwayGeom = QgsGeometry::fromPolyline( lineFarAway );
-      QgsGeometry* lineClipStratum = lineFarAwayGeom->intersection( strataGeom );
-      if ( !lineClipStratum )
+      QgsGeometry lineClipStratum = lineFarAwayGeom->intersection( strataGeom );
+      if ( lineClipStratum.isEmpty() )
       {
         delete lineFarAwayGeom;
-        delete lineClipStratum;
         continue;
       }
 
       //cancel if distance between sample point and line is too large (line does not start at point
-      if ( lineClipStratum->distance( *samplePoint ) > 0.000001 )
+      if ( lineClipStratum.distance( *samplePoint ) > 0.000001 )
       {
         delete lineFarAwayGeom;
-        delete lineClipStratum;
         continue;
       }
 
       //if lineClipStratum is a multiline, take the part line closest to sampleQgsPoint
-      if ( lineClipStratum->wkbType() == Qgis::WKBMultiLineString
-           || lineClipStratum->wkbType() == Qgis::WKBMultiLineString25D )
+      if ( lineClipStratum.wkbType() == Qgis::WKBMultiLineString
+           || lineClipStratum.wkbType() == Qgis::WKBMultiLineString25D )
       {
-        QgsGeometry* singleLine = closestMultilineElement( sampleQgsPoint, lineClipStratum );
-        if ( singleLine )
+        QgsGeometry singleLine = closestMultilineElement( sampleQgsPoint, lineClipStratum );
+        if ( !singleLine.isEmpty() )
         {
-          delete lineClipStratum;
           lineClipStratum = singleLine;
         }
       }
@@ -288,7 +285,6 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       if ( transectLength < mMinTransectLength )
       {
         delete lineFarAwayGeom;
-        delete lineClipStratum;
         continue;
       }
 
@@ -296,13 +292,12 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       if ( otherTransectWithinDistance( lineClipStratum, minDistanceLayerUnits, minDistance, sIndex, lineFeatureMap, distanceArea ) )
       {
         delete lineFarAwayGeom;
-        delete lineClipStratum;
         continue;
       }
 
       QgsFeatureId fid( nCreatedTransects );
       QgsFeature sampleLineFeature( outputPointFields, fid );
-      sampleLineFeature.setGeometry( *lineClipStratum );
+      sampleLineFeature.setGeometry( lineClipStratum );
       sampleLineFeature.setAttribute( "id", nTotalTransects + 1 );
       sampleLineFeature.setAttribute( "station_id", nCreatedTransects + 1 );
       sampleLineFeature.setAttribute( "stratum_id", strataId );
@@ -317,9 +312,8 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       outputPointWriter.addFeature( samplePointFeature );
 
       sIndex.insertFeature( sampleLineFeature );
-      lineFeatureMap.insert( fid, *lineClipStratum );
+      lineFeatureMap.insert( fid, lineClipStratum );
 
-      delete lineClipStratum;
       delete lineFarAwayGeom;
       ++nTotalTransects;
       ++nCreatedTransects;
@@ -358,21 +352,21 @@ QgsGeometry QgsTransectSample::findBaselineGeometry( const QVariant& strataId )
   {
     if ( strataId == fet.attribute( mBaselineStrataId ) || mShareBaseline )
     {
-      return fet.constGeometry() ? *fet.constGeometry() : QgsGeometry();
+      return fet.geometry();
     }
   }
   return QgsGeometry();
 }
 
-bool QgsTransectSample::otherTransectWithinDistance( QgsGeometry* geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex& sIndex,
+bool QgsTransectSample::otherTransectWithinDistance( const QgsGeometry& geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex& sIndex,
     const QMap< QgsFeatureId, QgsGeometry >& lineFeatureMap, QgsDistanceArea& da )
 {
-  if ( !geom )
+  if ( geom.isEmpty() )
   {
     return false;
   }
 
-  QgsGeometry* buffer = geom->buffer( minDistLayerUnit, 8 );
+  QgsGeometry* buffer = geom.buffer( minDistLayerUnit, 8 );
   if ( !buffer )
   {
     return false;
@@ -388,7 +382,7 @@ bool QgsTransectSample::otherTransectWithinDistance( QgsGeometry* geom, double m
     {
       double dist = 0;
       QgsPoint pt1, pt2;
-      closestSegmentPoints( *geom, idMapIt.value(), dist, pt1, pt2 );
+      closestSegmentPoints( geom, idMapIt.value(), dist, pt1, pt2 );
       dist = da.measureLine( pt1, pt2 ); //convert degrees to meters if necessary
 
       if ( dist < minDistance )
@@ -533,12 +527,12 @@ bool QgsTransectSample::closestSegmentPoints( const QgsGeometry& g1, const QgsGe
   return true;
 }
 
-QgsGeometry* QgsTransectSample::closestMultilineElement( const QgsPoint& pt, QgsGeometry* multiLine )
+QgsGeometry QgsTransectSample::closestMultilineElement( const QgsPoint& pt, const QgsGeometry& multiLine )
 {
-  if ( !multiLine || ( multiLine->wkbType() != Qgis::WKBMultiLineString
-                       && multiLine->wkbType() != Qgis::WKBMultiLineString25D ) )
+  if ( multiLine.isEmpty() || ( multiLine.wkbType() != Qgis::WKBMultiLineString
+                                && multiLine.wkbType() != Qgis::WKBMultiLineString25D ) )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   double minDist = DBL_MAX;
@@ -547,7 +541,7 @@ QgsGeometry* QgsTransectSample::closestMultilineElement( const QgsPoint& pt, Qgs
   QScopedPointer<QgsGeometry> closestLine;
   QgsGeometry* pointGeom = QgsGeometry::fromPoint( pt );
 
-  QgsMultiPolyline multiPolyline = multiLine->asMultiPolyline();
+  QgsMultiPolyline multiPolyline = multiLine.asMultiPolyline();
   QgsMultiPolyline::const_iterator it = multiPolyline.constBegin();
   for ( ; it != multiPolyline.constEnd(); ++it )
   {
@@ -565,12 +559,12 @@ QgsGeometry* QgsTransectSample::closestMultilineElement( const QgsPoint& pt, Qgs
   }
 
   delete pointGeom;
-  return closestLine.take();
+  return QgsGeometry( *closestLine.data() );
 }
 
-QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, QgsGeometry* clippedBaseline, double tolerance )
+QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, QgsGeometry* clippedBaseline, double tolerance )
 {
-  if ( !stratumGeom || !clippedBaseline || clippedBaseline->wkbType() == Qgis::WKBUnknown )
+  if ( stratumGeom.isEmpty() || !clippedBaseline || clippedBaseline->wkbType() == Qgis::WKBUnknown )
   {
     return nullptr;
   }
@@ -607,7 +601,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, 
 
     //it is also possible that clipBaselineBuffer is a multipolygon
     QgsGeometry* bufferLine = nullptr; //buffer line or multiline
-    QgsGeometry* bufferLineClipped = nullptr;
+    QgsGeometry bufferLineClipped;
     QgsMultiPolyline mpl;
     if ( clipBaselineBuffer->isMultipart() )
     {
@@ -648,13 +642,13 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, 
     bufferLineClipped = bufferLine->intersection( stratumGeom );
     delete bufferLine;
 
-    if ( bufferLineClipped && bufferLineClipped->type() == Qgis::Line )
+    if ( !bufferLineClipped.isEmpty() && bufferLineClipped.type() == Qgis::Line )
     {
       //if stratumGeom is a multipolygon, bufferLineClipped must intersect each part
       bool bufferLineClippedIntersectsStratum = true;
-      if ( stratumGeom->wkbType() == Qgis::WKBMultiPolygon || stratumGeom->wkbType() == Qgis::WKBMultiPolygon25D )
+      if ( stratumGeom.wkbType() == Qgis::WKBMultiPolygon || stratumGeom.wkbType() == Qgis::WKBMultiPolygon25D )
       {
-        QVector<QgsPolygon> multiPoly = stratumGeom->asMultiPolygon();
+        QVector<QgsPolygon> multiPoly = stratumGeom.asMultiPolygon();
         QVector<QgsPolygon>::const_iterator multiIt = multiPoly.constBegin();
         for ( ; multiIt != multiPoly.constEnd(); ++multiIt )
         {
@@ -676,11 +670,10 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, 
         {
           delete usedBaseline;
         }
-        return bufferLineClipped;
+        return new QgsGeometry( bufferLineClipped );
       }
     }
 
-    delete bufferLineClipped;
     delete clipBaselineBuffer;
     currentBufferDist /= 2;
   }

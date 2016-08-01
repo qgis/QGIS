@@ -140,8 +140,8 @@ bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
   QgsAttributes attrs = feat.attributes();
 
   QgsFeature newFeat;
-  if ( feat.constGeometry() )
-    newFeat.setGeometry( *feat.constGeometry() );
+  if ( feat.hasGeometry() )
+    newFeat.setGeometry( feat.geometry() );
 
   newFeat.initAttributes( mAttributeCount );
 
@@ -368,9 +368,9 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       try
       {
-        if ( fet.constGeometry() )
+        if ( fet.hasGeometry() )
         {
-          QgsGeometry g = *fet.constGeometry();
+          QgsGeometry g = fet.geometry();
           g.transform( ct );
           fet.setGeometry( g );
         }

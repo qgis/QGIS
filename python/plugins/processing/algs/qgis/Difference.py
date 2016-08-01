@@ -80,14 +80,14 @@ class Difference(GeoAlgorithm):
         total = 100.0 / len(selectionA)
         for current, inFeatA in enumerate(selectionA):
             add = True
-            geom = QgsGeometry(inFeatA.geometry())
+            geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)
             attrs = inFeatA.attributes()
             intersections = index.intersects(geom.boundingBox())
             for i in intersections:
                 request = QgsFeatureRequest().setFilterFid(i)
                 inFeatB = layerB.getFeatures(request).next()
-                tmpGeom = QgsGeometry(inFeatB.geometry())
+                tmpGeom = inFeatB.geometry()
                 if diff_geom.intersects(tmpGeom):
                     diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
                     if diff_geom.isGeosEmpty():

@@ -3716,10 +3716,11 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
   if ( !fet )
     return;
 
-  if ( !fet->constGeometry() )
+  if ( !fet->hasGeometry() )
     return;
 
-  const QgsAbstractGeometryV2 *geom = fet->constGeometry()->geometry();
+  QgsGeometry featGeom = fet->geometry();
+  const QgsAbstractGeometryV2 *geom = featGeom.geometry();
 
   QgsWKBTypes::Type geometryType = geom->wkbType();
 

@@ -1561,20 +1561,24 @@ static QVariant fcnSeconds( const QVariantList& values, const QgsExpressionConte
 }
 
 
-#define ENSURE_GEOM_TYPE(f, g, geomtype) const QgsGeometry* g = f.constGeometry(); \
-  if (!g || g->type() != geomtype) return QVariant();
+#define ENSURE_GEOM_TYPE(f, g, geomtype) \
+  if ( !f.hasGeometry() ) \
+    return QVariant(); \
+  QgsGeometry g = f.geometry(); \
+  if ( g.type() != geomtype ) \
+    return QVariant();
 
 static QVariant fcnX( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
 {
   FEAT_FROM_CONTEXT( context, f );
   ENSURE_GEOM_TYPE( f, g, Qgis::Point );
-  if ( g->isMultipart() )
+  if ( g.isMultipart() )
   {
-    return g->asMultiPoint().at( 0 ).x();
+    return g.asMultiPoint().at( 0 ).x();
   }
   else
   {
-    return g->asPoint().x();
+    return g.asPoint().x();
   }
 }
 
@@ -1582,13 +1586,13 @@ static QVariant fcnY( const QVariantList&, const QgsExpressionContext* context, 
 {
   FEAT_FROM_CONTEXT( context, f );
   ENSURE_GEOM_TYPE( f, g, Qgis::Point );
-  if ( g->isMultipart() )
+  if ( g.isMultipart() )
   {
-    return g->asMultiPoint().at( 0 ).y();
+    return g.asMultiPoint().at( 0 ).y();
   }
   else
   {
-    return g->asPoint().y();
+    return g.asPoint().y();
   }
 }
 
@@ -1948,21 +1952,21 @@ static QVariant pointAt( const QVariantList& values, const QgsExpressionContext*
 {
   FEAT_FROM_CONTEXT( context, f );
   int idx = getIntValue( values.at( 0 ), parent );
-  const QgsGeometry* g = f.constGeometry();
-  if ( !g || g->isEmpty() )
+  QgsGeometry g = f.geometry();
+  if ( g.isEmpty() )
     return QVariant();
 
   if ( idx < 0 )
   {
-    idx += g->geometry()->nCoordinates();
+    idx += g.geometry()->nCoordinates();
   }
-  if ( idx < 0 || idx >= g->geometry()->nCoordinates() )
+  if ( idx < 0 || idx >= g.geometry()->nCoordinates() )
   {
     parent->setEvalErrorString( QObject::tr( "Index is out of range" ) );
     return QVariant();
   }
 
-  QgsPoint p = g->vertexAt( idx );
+  QgsPoint p = g.vertexAt( idx );
   return QVariant( QPointF( p.x(), p.y() ) );
 }
 
@@ -1985,9 +1989,9 @@ static QVariant fcnYat( const QVariantList& values, const QgsExpressionContext* 
 static QVariant fcnGeometry( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
 {
   FEAT_FROM_CONTEXT( context, f );
-  const QgsGeometry* geom = f.constGeometry();
-  if ( geom )
-    return  QVariant::fromValue( *geom );
+  QgsGeometry geom = f.geometry();
+  if ( !geom.isEmpty() )
+    return  QVariant::fromValue( geom );
   else
     return QVariant();
 }
@@ -2015,13 +2019,13 @@ static QVariant fcnGeomArea( const QVariantList&, const QgsExpressionContext* co
   QgsDistanceArea* calc = parent->geomCalculator();
   if ( calc )
   {
-    double area = calc->measureArea( f.constGeometry() );
+    double area = calc->measureArea( f.geometry() );
     area = calc->convertAreaMeasurement( area, parent->areaUnits() );
     return QVariant( area );
   }
   else
   {
-    return QVariant( f.constGeometry()->area() );
+    return QVariant( f.geometry().area() );
   }
 }
 
@@ -2042,13 +2046,13 @@ static QVariant fcnGeomLength( const QVariantList&, const QgsExpressionContext* 
   QgsDistanceArea* calc = parent->geomCalculator();
   if ( calc )
   {
-    double len = calc->measureLength( f.constGeometry() );
+    double len = calc->measureLength( f.geometry() );
     len = calc->convertLengthMeasurement( len, parent->distanceUnits() );
     return QVariant( len );
   }
   else
   {
-    return QVariant( f.constGeometry()->length() );
+    return QVariant( f.geometry().length() );
   }
 }
 
@@ -2059,13 +2063,13 @@ static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContex
   QgsDistanceArea* calc = parent->geomCalculator();
   if ( calc )
   {
-    double len = calc->measurePerimeter( f.constGeometry() );
+    double len = calc->measurePerimeter( f.geometry() );
     len = calc->convertLengthMeasurement( len, parent->distanceUnits() );
     return QVariant( len );
   }
   else
   {
-    return f.constGeometry()->isEmpty() ? QVariant( 0 ) : QVariant( f.constGeometry()->geometry()->perimeter() );
+    return f.geometry().isEmpty() ? QVariant( 0 ) : QVariant( f.geometry().geometry()->perimeter() );
   }
 }
 
@@ -2581,7 +2585,7 @@ static QVariant fcnOrderParts( const QVariantList& values, const QgsExpressionCo
 
   Q_FOREACH ( const QgsFeature& feature, partFeatures )
   {
-    orderedGeom->addGeometry( feature.constGeometry()->geometry()->clone() );
+    orderedGeom->addGeometry( feature.geometry().geometry()->clone() );
   }
 
   QVariant result = QVariant::fromValue( QgsGeometry( orderedGeom ) );
@@ -2983,9 +2987,9 @@ static QVariant fcnSpecialColumn( const QVariantList& values, const QgsExpressio
 static QVariant fcnGetGeometry( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsFeature feat = getFeature( values.at( 0 ), parent );
-  const QgsGeometry* geom = feat.constGeometry();
-  if ( geom )
-    return QVariant::fromValue( *geom );
+  QgsGeometry geom = feat.geometry();
+  if ( !geom.isEmpty() )
+    return QVariant::fromValue( geom );
   return QVariant();
 }
 

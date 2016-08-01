@@ -73,7 +73,7 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
     {
       continue;
     }
-    QgsGeometry featureGeom = *feature.constGeometry();
+    QgsGeometry featureGeom = feature.geometry();
     QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
@@ -97,7 +97,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
     error->setObsolete();
     return;
   }
-  QgsGeometry featureGeom = *feature.constGeometry();
+  QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometryV2* geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 

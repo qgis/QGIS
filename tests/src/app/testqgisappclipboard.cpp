@@ -206,14 +206,15 @@ void TestQgisAppClipboard::pasteWkt()
 
   QgsFeatureList features = mQgisApp->clipboard()->copyOf();
   QCOMPARE( features.length(), 2 );
-  QVERIFY( features.at( 0 ).constGeometry() && !features.at( 0 ).constGeometry()->isEmpty() );
-  QCOMPARE( features.at( 0 ).constGeometry()->geometry()->wkbType(), QgsWKBTypes::Point );
-  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( features.at( 0 ).constGeometry()->geometry() );
+  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isEmpty() );
+  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWKBTypes::Point );
+  QgsGeometry featureGeom = features.at( 0 ).geometry();
+  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( featureGeom.geometry() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
-  QVERIFY( features.at( 1 ).constGeometry() && !features.at( 1 ).constGeometry()->isEmpty() );
-  QCOMPARE( features.at( 1 ).constGeometry()->geometry()->wkbType(), QgsWKBTypes::Point );
-  point = dynamic_cast< QgsPointV2* >( features.at( 1 ).constGeometry()->geometry() );
+  QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isEmpty() );
+  QCOMPARE( features.at( 1 ).geometry().geometry()->wkbType(), QgsWKBTypes::Point );
+  point = dynamic_cast< QgsPointV2* >( features.at( 1 ).geometry().geometry() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 }
@@ -226,9 +227,10 @@ void TestQgisAppClipboard::pasteGeoJson()
 
   QgsFeatureList features = mQgisApp->clipboard()->copyOf( fields );
   QCOMPARE( features.length(), 1 );
-  QVERIFY( features.at( 0 ).constGeometry() && !features.at( 0 ).constGeometry()->isEmpty() );
-  QCOMPARE( features.at( 0 ).constGeometry()->geometry()->wkbType(), QgsWKBTypes::Point );
-  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( features.at( 0 ).constGeometry()->geometry() );
+  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isEmpty() );
+  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWKBTypes::Point );
+  QgsGeometry featureGeom = features.at( 0 ).geometry();
+  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( featureGeom.geometry() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );

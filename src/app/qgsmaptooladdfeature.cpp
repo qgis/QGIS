@@ -274,14 +274,14 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
         f->setGeometry( *g );
         delete g;
 
-        QgsGeometry featGeom = *f->constGeometry();
+        QgsGeometry featGeom = f->geometry();
         int avoidIntersectionsReturn = featGeom.avoidIntersections();
         f->setGeometry( featGeom );
         if ( avoidIntersectionsReturn == 1 )
         {
           //not a polygon type. Impossible to get there
         }
-        if ( f->constGeometry()->isGeosEmpty() ) //avoid intersection might have removed the whole geometry
+        if ( f->geometry().isGeosEmpty() ) //avoid intersection might have removed the whole geometry
         {
           emit messageEmitted( tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" ), QgsMessageBar::CRITICAL );
           stopCapturing();
@@ -309,13 +309,13 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
             //can only add topological points if background layer is editable...
             if ( vl && vl->geometryType() == Qgis::Polygon && vl->isEditable() )
             {
-              vl->addTopologicalPoints( f->constGeometry() );
+              vl->addTopologicalPoints( f->geometry() );
             }
           }
         }
         else if ( topologicalEditing )
         {
-          vlayer->addTopologicalPoints( f->constGeometry() );
+          vlayer->addTopologicalPoints( f->geometry() );
         }
       }
 

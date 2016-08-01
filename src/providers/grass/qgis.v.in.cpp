@@ -245,11 +245,11 @@ int main( int argc, char **argv )
       break;
     }
 
-    const QgsGeometry* geometry = feature.constGeometry();
-    if ( geometry )
+    QgsGeometry geometry = feature.geometry();
+    if ( !geometry.isEmpty() )
     {
       // geometry type may be probably different from provider type (e.g. multi x single)
-      Qgis::WkbType geometryType = Qgis::flatType( geometry->wkbType() );
+      Qgis::WkbType geometryType = Qgis::flatType( geometry.wkbType() );
       if ( !isPolygon )
       {
         Vect_reset_cats( cats );
@@ -258,12 +258,12 @@ int main( int argc, char **argv )
 
       if ( geometryType == Qgis::WKBPoint )
       {
-        QgsPoint point = geometry->asPoint();
+        QgsPoint point = geometry.asPoint();
         writePoint( map, GV_POINT, point, cats );
       }
       else if ( geometryType == Qgis::WKBMultiPoint )
       {
-        QgsMultiPoint multiPoint = geometry->asMultiPoint();
+        QgsMultiPoint multiPoint = geometry.asMultiPoint();
         Q_FOREACH ( const QgsPoint& point, multiPoint )
         {
           writePoint( map, GV_POINT, point, cats );
@@ -271,12 +271,12 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == Qgis::WKBLineString )
       {
-        QgsPolyline polyline = geometry->asPolyline();
+        QgsPolyline polyline = geometry.asPolyline();
         writePolyline( map, GV_LINE, polyline, cats );
       }
       else if ( geometryType == Qgis::WKBMultiLineString )
       {
-        QgsMultiPolyline multiPolyline = geometry->asMultiPolyline();
+        QgsMultiPolyline multiPolyline = geometry.asMultiPolyline();
         Q_FOREACH ( const QgsPolyline& polyline, multiPolyline )
         {
           writePolyline( map, GV_LINE, polyline, cats );
@@ -284,7 +284,7 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == Qgis::WKBPolygon )
       {
-        QgsPolygon polygon = geometry->asPolygon();
+        QgsPolygon polygon = geometry.asPolygon();
         Q_FOREACH ( const QgsPolyline& polyline, polygon )
         {
           writePolyline( map, GV_BOUNDARY, polyline, cats );
@@ -292,7 +292,7 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == Qgis::WKBMultiPolygon )
       {
-        QgsMultiPolygon multiPolygon = geometry->asMultiPolygon();
+        QgsMultiPolygon multiPolygon = geometry.asMultiPolygon();
         Q_FOREACH ( const QgsPolygon& polygon, multiPolygon )
         {
           Q_FOREACH ( const QgsPolyline& polyline, polygon )
@@ -428,16 +428,16 @@ int main( int argc, char **argv )
       {
         break;
       }
-      if ( !feature.constGeometry() )
+      if ( !feature.hasGeometry() )
       {
         continue;
       }
 
-      QList<QgsFeatureId> idList = spatialIndex.intersects( feature.constGeometry()->boundingBox() );
+      QList<QgsFeatureId> idList = spatialIndex.intersects( feature.geometry().boundingBox() );
       Q_FOREACH ( QgsFeatureId id, idList )
       {
         QgsFeature& centroid = centroids[id];
-        if ( feature.constGeometry()->contains( centroid.constGeometry() ) )
+        if ( feature.geometry().contains( centroid.geometry() ) )
         {
           QgsAttributes attr = centroid.attributes();
           attr.append(( int )feature.id() + fidToCatPlus );
@@ -457,7 +457,7 @@ int main( int argc, char **argv )
     count = 0;
     Q_FOREACH ( const QgsFeature& centroid, centroids.values() )
     {
-      QgsPoint point = centroid.constGeometry()->asPoint();
+      QgsPoint point = centroid.geometry().asPoint();
 
       if ( centroid.attributes().size() > 0 )
       {

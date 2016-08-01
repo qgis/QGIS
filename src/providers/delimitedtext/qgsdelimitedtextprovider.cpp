@@ -786,16 +786,16 @@ void QgsDelimitedTextProvider::rescanFile() const
   bool foundFirstGeometry = false;
   while ( fi.nextFeature( f ) )
   {
-    if ( mGeometryType != Qgis::NoGeometry && f.constGeometry() )
+    if ( mGeometryType != Qgis::NoGeometry && f.hasGeometry() )
     {
       if ( !foundFirstGeometry )
       {
-        mExtent = f.constGeometry()->boundingBox();
+        mExtent = f.geometry().boundingBox();
         foundFirstGeometry = true;
       }
       else
       {
-        QgsRectangle bbox( f.constGeometry()->boundingBox() );
+        QgsRectangle bbox( f.geometry().boundingBox() );
         mExtent.combineExtentWith( bbox );
       }
       if ( buildSpatialIndex ) mSpatialIndex->insertFeature( f );
