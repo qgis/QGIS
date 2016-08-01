@@ -19,6 +19,7 @@
 #define QGSRASTERPIPE_H
 
 #include <QImage>
+#include <QMap>
 #include <QObject>
 
 #include "qgsbrightnesscontrastfilter.h"
