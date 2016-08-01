@@ -12,8 +12,17 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.gui import QgsAttributeTableModel, QgsEditorWidgetRegistry
-from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, QgsVectorLayerCache
+from qgis.gui import (
+    QgsAttributeTableModel,
+    QgsEditorWidgetRegistry
+)
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsPoint,
+    QgsVectorLayer,
+    QgsVectorLayerCache
+)
 
 from qgis.testing import (start_app,
                           unittest
@@ -51,20 +60,20 @@ class TestQgsAttributeTableModel(unittest.TestCase):
             f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100 * i, 2 ^ i)))
             features.append(f)
 
-        assert pr.addFeatures(features)
+        self.assertTrue(pr.addFeatures(features))
         return layer
 
     def testLoad(self):
-        assert self.am.rowCount() == 10, self.am.rowCount()
-        assert self.am.columnCount() == 2, self.am.columnCount()
+        self.assertEquals(self.am.rowCount(), 10)
+        self.assertEquals(self.am.columnCount(), 2)
 
     def testRemove(self):
         self.layer.startEditing()
         self.layer.deleteFeature(5)
-        assert self.am.rowCount() == 9, self.am.rowCount()
+        self.assertEquals(self.am.rowCount(), 9)
         self.layer.setSelectedFeatures([1, 3, 6, 7])
         self.layer.deleteSelectedFeatures()
-        assert self.am.rowCount() == 5, self.am.rowCount()
+        self.assertEquals(self.am.rowCount(), 5)
 
     def testAdd(self):
         self.layer.startEditing()
@@ -74,14 +83,14 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
         self.layer.addFeature(f)
 
-        assert self.am.rowCount() == 11, self.am.rowCount()
+        self.assertEquals(self.am.rowCount(), 11)
 
     def testRemoveColumns(self):
-        assert self.layer.startEditing()
+        self.assertTrue(self.layer.startEditing())
 
-        assert self.layer.deleteAttribute(1)
+        self.assertTrue(self.layer.deleteAttribute(1))
 
-        assert self.am.columnCount() == 1, self.am.columnCount()
+        self.assertEquals(self.am.columnCount(), 1)
 
 if __name__ == '__main__':
     unittest.main()
