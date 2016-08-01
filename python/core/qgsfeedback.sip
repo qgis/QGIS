@@ -1,8 +1,6 @@
 
 /** \ingroup core
- * @note added in QGIS 3.0
  * Base class for feedback objects to be used for cancellation of something running in a worker thread.
- *
  * The class may be used as is or it may be subclassed for extended functionality
  * for a particular operation (e.g. report progress or pass some data for preview).
  *
@@ -18,6 +16,7 @@
  * subclass and available with QgsMapLayerRenderer::feedback() method. When a map rendering job
  * gets cancelled, the cancel() method is called on the feedback object of all layers.
  *
+ * @note added in QGIS 3.0
  */
 class QgsFeedback : QObject
 {
