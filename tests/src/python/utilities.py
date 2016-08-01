@@ -530,12 +530,15 @@ class DoxygenParser():
         # test for "added in QGIS xxx" string
         d = e.find('detaileddescription')
         found_version_added = False
-        if d.find('para'):
-            for s in d.find('para').getiterator('simplesect'):
+        for para in d.getiterator('para'):
+            for s in para.getiterator('simplesect'):
                 if s.get('kind') == 'note':
                     for p in s.getiterator('para'):
                         if p.text and p.text.lower().startswith('added in'):
                             found_version_added = True
+                            break
+            if found_version_added:
+                break
 
         return documentable_members, documented_members, undocumented_members, bindable_members, found_version_added
 
