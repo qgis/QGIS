@@ -84,12 +84,11 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
 
   if ( mRubberBand->numberOfVertices() > 2 )
   {
-    QgsGeometry* shapeGeom = mRubberBand->asGeometry();
+    QgsGeometry shapeGeom = mRubberBand->asGeometry();
     if ( singleSelect )
       QgsMapToolSelectUtils::selectSingleFeature( mCanvas, shapeGeom, e );
     else
       QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e );
-    delete shapeGeom;
   }
 
   mRubberBand->reset( Qgis::Polygon );

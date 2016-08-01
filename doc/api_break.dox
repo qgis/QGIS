@@ -226,10 +226,18 @@ true, as the method will return an empty geometry if the feature has no geometry
 <li>setFields( const QgsFields*, bool ) has been removed, use setFields( const QgsFields&, bool ) instead.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsGeometry QgsGeometry
+
+<ul>
+<li>All QgsGeometry methods now accept geometry references instead of pointers, and return a QgsGeometry
+value instead of a pointer.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsGeometryAnalyzer QgsGeometryAnalyzer
 
 <ul>
-<li>locateBetweenMeasures() and locateAlongMeasure() now take geometry references, not pointers</li>
+<li>locateBetweenMeasures() and locateAlongMeasure() now take geometry references, not pointers, and return 
+a QgsGeometry value rather than a pointer.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsGroupWMSDataDialog QgsGroupWMSDataDialog

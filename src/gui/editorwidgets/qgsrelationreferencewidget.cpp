@@ -630,9 +630,8 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
   }
   else if ( canvasExtent == Pan )
   {
-    QgsGeometry* centroid = geom.centroid();
-    QgsPoint center = centroid->asPoint();
-    delete centroid;
+    QgsGeometry centroid = geom.centroid();
+    QgsPoint center = centroid.asPoint();
     center = mCanvas->mapSettings().layerToMapCoordinates( mReferencedLayer, center );
     mCanvas->zoomByFactor( 1.0, &center ); // refresh is done in this method
   }

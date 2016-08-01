@@ -471,7 +471,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
 
   double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   float* pixelData = ( float * ) CPLMalloc( sizeof( float ) );
-  QgsGeometry* pixelRectGeometry = nullptr;
+  QgsGeometry pixelRectGeometry;
 
   double hCellSizeX = cellSizeX / 2.0;
   double hCellSizeY = cellSizeY / 2.0;
@@ -492,10 +492,10 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
         continue;
 
       pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
-      if ( pixelRectGeometry )
+      if ( !pixelRectGeometry.isEmpty() )
       {
         //intersection
-        QgsGeometry intersectGeometry = pixelRectGeometry->intersection( poly );
+        QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
         if ( !intersectGeometry.isEmpty() )
         {
           double intersectionArea = intersectGeometry.area();
@@ -505,8 +505,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
             stats.addValue( *pixelData, weight );
           }
         }
-        delete pixelRectGeometry;
-        pixelRectGeometry = nullptr;
+        pixelRectGeometry = QgsGeometry();
       }
       currentX += cellSizeX;
     }

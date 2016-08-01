@@ -30,6 +30,7 @@
 #include <QPainter>
 #include <QRectF>
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include "qgsfield.h"
 #include "qgspoint.h"
 #include "qgsmapunitscale.h"
@@ -758,7 +759,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsPoint ptZero;
     QgsPoint ptOne;
-    QgsGeometry* extentGeom;
+    QgsGeometry extentGeom;
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels

@@ -443,10 +443,7 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& fea
       if ( vertex < currentVertex )
       {
         //found, return ring
-        QgsGeometry* g = QgsGeometry::fromPolyline( *polyIt );
-        QgsGeometry result = *g;
-        delete g;
-        return result;
+        return QgsGeometry::fromPolyline( *polyIt );
       }
     }
   }
@@ -480,8 +477,7 @@ QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry& geom,
       currentVertex += it->size();
       if ( vertex < currentVertex )
       {
-        QgsGeometry* g = QgsGeometry::fromPolyline( *it );
-        return *g;
+        return QgsGeometry::fromPolyline( *it );
       }
     }
   }

@@ -98,12 +98,10 @@ void QgsMapToolPinLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
   {
     QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
 
-    QgsGeometry* selectGeom = mRubberBand->asGeometry();
-    QgsRectangle ext = selectGeom->boundingBox();
+    QgsGeometry selectGeom = mRubberBand->asGeometry();
+    QgsRectangle ext = selectGeom.boundingBox();
 
     pinUnpinLabels( ext, e );
-
-    delete selectGeom;
 
     mRubberBand->reset( Qgis::Polygon );
     delete mRubberBand;

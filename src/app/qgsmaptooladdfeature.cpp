@@ -140,14 +140,14 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
     {
       QgsFeature f( vlayer->fields(), 0 );
 
-      QgsGeometry *g = nullptr;
+      QgsGeometry g;
       if ( layerWKBType == Qgis::WKBPoint )
       {
         g = QgsGeometry::fromPoint( savePoint );
       }
       else if ( layerWKBType == Qgis::WKBPoint25D )
       {
-        g = new QgsGeometry( new QgsPointV2( QgsWKBTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
+        g = QgsGeometry( new QgsPointV2( QgsWKBTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
       }
       else if ( layerWKBType == Qgis::WKBMultiPoint )
       {
@@ -157,7 +157,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       {
         QgsMultiPointV2* mp = new QgsMultiPointV2();
         mp->addGeometry( new QgsPointV2( QgsWKBTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
-        g = new QgsGeometry( mp );
+        g = QgsGeometry( mp );
       }
       else
       {
@@ -165,8 +165,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
         g = QgsGeometry::fromPoint( savePoint );
       }
 
-      f.setGeometry( *g );
-      delete g;
+      f.setGeometry( g );
       f.setValid( true );
 
       addFeature( vlayer, &f, false );

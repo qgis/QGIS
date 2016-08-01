@@ -246,7 +246,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
-    lyr.extentGeom->rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
+    lyr.extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
   lyr.mFeatsSendingToPal = 0;

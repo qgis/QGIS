@@ -188,16 +188,15 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const Q
   Q_FOREACH ( const QString& row, values )
   {
     // Assume that it's just WKT for now.
-    QgsGeometry* geometry = QgsGeometry::fromWkt( row );
-    if ( !geometry )
+    QgsGeometry geometry = QgsGeometry::fromWkt( row );
+    if ( geometry.isEmpty() )
       continue;
 
     QgsFeature feature;
     if ( !fields.isEmpty() )
       feature.setFields( fields, true );
 
-    feature.setGeometry( *geometry );
-    delete geometry;
+    feature.setGeometry( geometry );
     features.append( feature );
   }
 

@@ -528,18 +528,17 @@ bool QgsTracer::initGraph()
 #if 0
   // without noding - if data are known to be noded beforehand
 #else
-  QgsGeometry* allGeom = QgsGeometry::fromMultiPolyline( mpl );
+  QgsGeometry allGeom = QgsGeometry::fromMultiPolyline( mpl );
 
   try
   {
     t2a.start();
     // GEOSNode_r may throw an exception
-    GEOSGeometry* allNoded = GEOSNode_r( QgsGeometry::getGEOSHandler(), allGeom->asGeos() );
+    GEOSGeometry* allNoded = GEOSNode_r( QgsGeometry::getGEOSHandler(), allGeom.asGeos() );
     timeNodingCall = t2a.elapsed();
 
     QgsGeometry* noded = new QgsGeometry;
     noded->fromGeos( allNoded );
-    delete allGeom;
 
     mpl = noded->asMultiPolyline();
 

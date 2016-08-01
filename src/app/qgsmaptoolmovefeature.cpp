@@ -83,8 +83,8 @@ void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
     QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
     //find the closest feature
-    QgsGeometry* pointGeometry = QgsGeometry::fromPoint( layerCoords );
-    if ( !pointGeometry )
+    QgsGeometry pointGeometry = QgsGeometry::fromPoint( layerCoords );
+    if ( pointGeometry.isEmpty() )
     {
       return;
     }
@@ -97,17 +97,14 @@ void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
     {
       if ( f.hasGeometry() )
       {
-        double currentDistance = pointGeometry->distance( f.geometry() );
+        double currentDistance = pointGeometry.distance( f.geometry() );
         if ( currentDistance < minDistance )
         {
           minDistance = currentDistance;
           cf = f;
         }
       }
-
     }
-
-    delete pointGeometry;
 
     if ( minDistance == std::numeric_limits<double>::max() )
     {

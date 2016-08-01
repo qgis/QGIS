@@ -148,10 +148,9 @@ void TestQgsMapRendererJob::initTestCase()
         // NOTE: don't delete this pointer again -
         // ownership is passed to the feature which will
         // delete it in its dtor!
-        QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+        QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
         QgsFeature myFeature;
-        myFeature.setGeometry( *mypPolygonGeometry );
-        delete mypPolygonGeometry;
+        myFeature.setGeometry( mypPolygonGeometry );
         myFeature.initAttributes( 1 );
         myFeature.setAttribute( 0, i );
         //

@@ -520,7 +520,6 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
   // pal layer is deleted internally in PAL
 
   delete expression;
-  delete extentGeom;
 
   // delete all QgsDataDefined objects (which also deletes their QgsExpression object)
   removeAllDataDefinedProperties();
@@ -2456,9 +2455,9 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
 
   const GEOSGeometry* geos_geom = nullptr;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : nullptr ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? &extentGeom : nullptr ) )
   {
-    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : nullptr );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? &extentGeom : nullptr );
 
     if ( geom.isEmpty() )
       return;
@@ -2469,9 +2468,9 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   QScopedPointer<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle )
   {
-    if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, ct, doClip ? extentGeom : nullptr ) )
+    if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, ct, doClip ? &extentGeom : nullptr ) )
     {
-      scopedObstacleGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, ct, doClip ? extentGeom : nullptr ) ) );
+      scopedObstacleGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, ct, doClip ? &extentGeom : nullptr ) ) );
       obstacleGeometry = scopedObstacleGeom.data();
     }
     if ( obstacleGeometry )
@@ -3008,9 +3007,9 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
   const GEOSGeometry* geos_geom = nullptr;
   QScopedPointer<QgsGeometry> scopedPreparedGeom;
 
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, &extentGeom ) )
   {
-    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, &extentGeom );
   }
   geos_geom = geom.asGeos();
 
@@ -4101,26 +4100,24 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRen
   // fix invalid polygons
   if ( geom.type() == Qgis::Polygon && !geom.isGeosValid() )
   {
-    QgsGeometry* bufferGeom = geom.buffer( 0, 0 );
-    if ( !bufferGeom )
+    QgsGeometry bufferGeom = geom.buffer( 0, 0 );
+    if ( bufferGeom.isEmpty() )
     {
       return QgsGeometry();
     }
-    geom = *bufferGeom;
-    delete bufferGeom;
+    geom = bufferGeom;
   }
 
   if ( clipGeometry &&
        (( qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry->boundingBox().contains( geom.boundingBox() ) )
         || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry->contains( geom ) ) ) )
   {
-    QgsGeometry* clipGeom = geom.intersection( clipGeometry ); // creates new geometry
-    if ( !clipGeom )
+    QgsGeometry clipGeom = geom.intersection( *clipGeometry ); // creates new geometry
+    if ( clipGeom.isEmpty() )
     {
       return QgsGeometry();
     }
-    geom = *clipGeom;
-    delete clipGeom;
+    geom = clipGeom;
   }
 
   return geom;

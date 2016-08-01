@@ -248,7 +248,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Returns the rubberband as a Geometry.
      *  @return A geometry object which reflects the current state of the rubberband.
      */
-    QgsGeometry* asGeometry();
+    QgsGeometry asGeometry() const;
 
     virtual void updatePosition() override;
 

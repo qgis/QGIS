@@ -203,9 +203,6 @@ bool QgsMemoryFeatureIterator::close()
 
   iteratorClosed();
 
-  delete mSelectRectGeom;
-  mSelectRectGeom = nullptr;
-
   mClosed = true;
   return true;
 }

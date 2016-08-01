@@ -72,17 +72,16 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
     return;
   }
 
-  QgsGeometry* geomPart = partUnderPoint( e->pos(), mPressedFid, mPressedPartNum );
+  QgsGeometry geomPart = partUnderPoint( e->pos(), mPressedFid, mPressedPartNum );
 
   if ( mPressedFid != -1 )
   {
     mRubberBand = createRubberBand( vlayer->geometryType() );
 
-    mRubberBand->setToGeometry( *geomPart, vlayer );
+    mRubberBand->setToGeometry( geomPart, vlayer );
     mRubberBand->show();
   }
 
-  delete geomPart;
 }
 
 void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
@@ -118,10 +117,10 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
   return;
 }
 
-QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fid, int& partNum )
+QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fid, int& partNum )
 {
   QgsFeature f;
-  QgsGeometry* geomPart = new QgsGeometry();
+  QgsGeometry geomPart;
 
   switch ( vlayer->geometryType() )
   {
@@ -138,14 +137,12 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
       if ( !g.isMultipart() )
       {
         fid = match.featureId();
-        delete geomPart;
         return QgsGeometry::fromPoint( match.point() );
       }
       if ( g.wkbType() == Qgis::WKBMultiPoint || g.wkbType() == Qgis::WKBMultiPoint25D )
       {
         fid = match.featureId();
         partNum = snapVertex;
-        delete geomPart;
         return QgsGeometry::fromPoint( match.point() );
       }
       if ( g.wkbType() == Qgis::WKBMultiLineString || g.wkbType() == Qgis::WKBMultiLineString25D )
@@ -157,7 +154,6 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
           {
             fid = match.featureId();
             partNum = part;
-            delete geomPart;
             return QgsGeometry::fromPolyline( mline[part] );
           }
           snapVertex -= mline[part].count();
@@ -185,15 +181,13 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
       for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
       {
         const QgsPolygon& polygon = mpolygon[part];
-        QgsGeometry* partGeo = QgsGeometry::fromPolygon( polygon );
-        if ( partGeo->contains( &layerCoords ) )
+        QgsGeometry partGeo = QgsGeometry::fromPolygon( polygon );
+        if ( partGeo.contains( &layerCoords ) )
         {
           fid = f.id();
           partNum = part;
-          delete geomPart;
           return partGeo;
         }
-        delete partGeo;
       }
       break;
     }

@@ -117,11 +117,11 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   int i = 0;
   Q_FOREACH ( const QgsFeature& fSel, mSelectedFeatures )
   {
-    if ( QgsGeometry* g = fSel.geometry().simplify( layerTolerance ) )
+    QgsGeometry g = fSel.geometry().simplify( layerTolerance );
+    if ( !g.isEmpty() )
     {
-      mReducedVertexCount += vertexCount( *g );
-      mRubberBands.at( i )->setToGeometry( *g, vl );
-      delete g;
+      mReducedVertexCount += vertexCount( g );
+      mRubberBands.at( i )->setToGeometry( g, vl );
     }
     else
       mReducedHasErrors = true;
@@ -179,10 +179,10 @@ void QgsMapToolSimplify::storeSimplified()
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
   Q_FOREACH ( const QgsFeature& feat, mSelectedFeatures )
   {
-    if ( QgsGeometry* g = feat.geometry().simplify( layerTolerance ) )
+    QgsGeometry g = feat.geometry().simplify( layerTolerance );
+    if ( !g.isEmpty() )
     {
-      vlayer->changeGeometry( feat.id(), *g );
-      delete g;
+      vlayer->changeGeometry( feat.id(), g );
     }
   }
   vlayer->endEditCommand();
@@ -298,21 +298,20 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
                                           layerCoords.x() + r, layerCoords.y() + r );
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
-  QgsGeometry* geometry = QgsGeometry::fromPoint( layerCoords );
+  QgsGeometry geometry = QgsGeometry::fromPoint( layerCoords );
   double minDistance = DBL_MAX;
   double currentDistance;
   QgsFeature minDistanceFeature;
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    currentDistance = geometry->distance( f.geometry() );
+    currentDistance = geometry.distance( f.geometry() );
     if ( currentDistance < minDistance )
     {
       minDistance = currentDistance;
       minDistanceFeature = f;
     }
   }
-  delete geometry;
 
   if ( minDistanceFeature.isValid() )
   {

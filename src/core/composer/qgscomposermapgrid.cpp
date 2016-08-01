@@ -579,7 +579,7 @@ void QgsComposerMapGrid::calculateCrsTransformLines()
     //cross or markers style - we also need to calculate intersections of lines
 
     //first convert lines to QgsGeometry
-    QList< QgsGeometry* > yLines;
+    QList< QgsGeometry > yLines;
     QList< QPair< double, QPolygonF > >::const_iterator yGridIt = mTransformedYLines.constBegin();
     for ( ; yGridIt != mTransformedYLines.constEnd(); ++yGridIt )
     {
@@ -590,7 +590,7 @@ void QgsComposerMapGrid::calculateCrsTransformLines()
       }
       yLines << QgsGeometry::fromPolyline( yLine );
     }
-    QList< QgsGeometry* > xLines;
+    QList< QgsGeometry > xLines;
     QList< QPair< double, QPolygonF > >::const_iterator xGridIt = mTransformedXLines.constBegin();
     for ( ; xGridIt != mTransformedXLines.constEnd(); ++xGridIt )
     {
@@ -604,34 +604,28 @@ void QgsComposerMapGrid::calculateCrsTransformLines()
 
     //now, loop through geometries and calculate intersection points
     mTransformedIntersections.clear();
-    QList< QgsGeometry* >::const_iterator yLineIt = yLines.constBegin();
+    QList< QgsGeometry >::const_iterator yLineIt = yLines.constBegin();
     for ( ; yLineIt != yLines.constEnd(); ++yLineIt )
     {
-      QList< QgsGeometry* >::const_iterator xLineIt = xLines.constBegin();
+      QList< QgsGeometry >::const_iterator xLineIt = xLines.constBegin();
       for ( ; xLineIt != xLines.constEnd(); ++xLineIt )
       {
         //look for intersections between lines
-        QgsGeometry* intersects = ( *yLineIt )->intersection(( *xLineIt ) );
-        if ( !intersects )
+        QgsGeometry intersects = ( *yLineIt ).intersection(( *xLineIt ) );
+        if ( intersects.isEmpty() )
           continue;
 
         //go through all intersections and draw grid markers/crosses
         int i = 0;
-        QgsPoint vertex = intersects->vertexAt( i );
+        QgsPoint vertex = intersects.vertexAt( i );
         while ( vertex != QgsPoint( 0, 0 ) )
         {
           mTransformedIntersections << vertex;
           i = i + 1;
-          vertex = intersects->vertexAt( i );
+          vertex = intersects.vertexAt( i );
         }
-        delete intersects;
       }
     }
-    //clean up
-    qDeleteAll( yLines );
-    yLines.clear();
-    qDeleteAll( xLines );
-    xLines.clear();
   }
 
   mTransformDirty = false;
@@ -2418,23 +2412,17 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTrans
 
 QList<QPolygonF> QgsComposerMapGrid::trimLinesToMap( const QPolygonF& line, const QgsRectangle& rect )
 {
-  QgsGeometry* lineGeom = QgsGeometry::fromQPolygonF( line );
-  QgsGeometry* rectGeom = QgsGeometry::fromRect( rect );
+  QgsGeometry lineGeom = QgsGeometry::fromQPolygonF( line );
+  QgsGeometry rectGeom = QgsGeometry::fromRect( rect );
 
-  QgsGeometry* intersected = lineGeom->intersection( rectGeom );
-  QList<QgsGeometry*> intersectedParts = intersected->asGeometryCollection();
+  QgsGeometry intersected = lineGeom.intersection( rectGeom );
+  QList<QgsGeometry> intersectedParts = intersected.asGeometryCollection();
 
   QList<QPolygonF> trimmedLines;
-  QList<QgsGeometry*>::const_iterator geomIt = intersectedParts.constBegin();
+  QList<QgsGeometry>::const_iterator geomIt = intersectedParts.constBegin();
   for ( ; geomIt != intersectedParts.constEnd(); ++geomIt )
   {
-    trimmedLines << ( *geomIt )->asQPolygonF();
+    trimmedLines << ( *geomIt ).asQPolygonF();
   }
-
-  qDeleteAll( intersectedParts );
-  intersectedParts.clear();
-  delete intersected;
-  delete lineGeom;
-  delete rectGeom;
   return trimmedLines;
 }

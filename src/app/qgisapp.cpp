@@ -6388,9 +6388,7 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& 
     QgsGeometry currentGeom = featureList.at( i ).geometry();
     if ( !currentGeom.isEmpty() )
     {
-      QgsGeometry* result = unionGeom.combine( &currentGeom );
-      unionGeom = *result;
-      delete result;
+      unionGeom = unionGeom.combine( currentGeom );
       if ( unionGeom.isEmpty() )
       {
         QApplication::restoreOverrideCursor();
@@ -7377,14 +7375,13 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
       if ( destType != Qgis::UnknownGeometry )
       {
-        QgsGeometry* newGeometry = featureIt->geometry().convertToType( destType, destIsMulti );
-        if ( !newGeometry )
+        QgsGeometry newGeometry = featureIt->geometry().convertToType( destType, destIsMulti );
+        if ( newGeometry.isEmpty() )
         {
           featureIt = features.erase( featureIt );
           continue;
         }
-        featureIt->setGeometry( *newGeometry );
-        delete newGeometry;
+        featureIt->setGeometry( newGeometry );
       }
       // avoid intersection if enabled in digitize settings
       QgsGeometry g = featureIt->geometry();

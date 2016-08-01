@@ -18,6 +18,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfield.h"
+#include "qgsgeometry.h"
 
 class QgsMemoryProvider;
 
@@ -66,7 +67,7 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     bool nextFeatureUsingList( QgsFeature& feature );
     bool nextFeatureTraverseAll( QgsFeature& feature );
 
-    QgsGeometry* mSelectRectGeom;
+    QgsGeometry mSelectRectGeom;
     QgsFeatureMap::const_iterator mSelectIterator;
     bool mUsingFeatureIdList;
     QList<QgsFeatureId> mFeatureIdList;

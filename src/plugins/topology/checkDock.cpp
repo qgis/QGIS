@@ -274,23 +274,23 @@ void checkDock::errorListClicked( const QModelIndex& index )
   else
     mRBFeature2->setToGeometry( g, fl.layer );
 
-  if ( !mErrorList[row]->conflict() )
+  if ( mErrorList[row]->conflict().isEmpty() )
   {
     QgsMessageLog::logMessage( tr( "Invalid conflict" ), tr( "Topology plugin" ) );
     return;
   }
 
-  if ( mErrorList.at( row )->conflict()->type() == Qgis::Point )
+  if ( mErrorList.at( row )->conflict().type() == Qgis::Point )
   {
     mVMConflict = new QgsVertexMarker( canvas );
     mVMConflict->setIconType( QgsVertexMarker::ICON_BOX );
     mVMConflict->setPenWidth( 5 );
     mVMConflict->setIconSize( 5 );
     mVMConflict->setColor( "red" );
-    mVMConflict->setCenter( mErrorList.at( row )->conflict()->asPoint() );
+    mVMConflict->setCenter( mErrorList.at( row )->conflict().asPoint() );
   }
   else
-    mRBConflict->setToGeometry( *mErrorList.at( row )->conflict(), fl.layer );
+    mRBConflict->setToGeometry( mErrorList.at( row )->conflict(), fl.layer );
 }
 
 void checkDock::fix()
@@ -359,17 +359,17 @@ void checkDock::runTests( ValidateType type )
       te->conflict();
 
       QSettings settings;
-      if ( te->conflict()->type() == Qgis::Polygon )
+      if ( te->conflict().type() == Qgis::Polygon )
       {
         rb = new QgsRubberBand( qgsInterface->mapCanvas(), Qgis::Polygon );
       }
       else
       {
-        rb = new QgsRubberBand( qgsInterface->mapCanvas(), te->conflict()->type() );
+        rb = new QgsRubberBand( qgsInterface->mapCanvas(), te->conflict().type() );
       }
       rb->setColor( "red" );
       rb->setWidth( 4 );
-      rb->setToGeometry( *te->conflict(), layer1 );
+      rb->setToGeometry( te->conflict(), layer1 );
       rb->show();
       mRbErrorMarkers << rb;
     }

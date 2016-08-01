@@ -86,7 +86,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const override;
+    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const override;
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry ) const override;
 

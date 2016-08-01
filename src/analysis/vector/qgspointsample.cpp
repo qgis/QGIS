@@ -119,25 +119,20 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
     randX = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.width() + geomRect.xMinimum();
     randY = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.height() + geomRect.yMinimum();
     QgsPoint randPoint( randX, randY );
-    QgsGeometry* ptGeom = QgsGeometry::fromPoint( randPoint );
-    if ( ptGeom->within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )
+    QgsGeometry ptGeom = QgsGeometry::fromPoint( randPoint );
+    if ( ptGeom.within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )
     {
       //add feature to writer
       QgsFeature f( mNCreatedPoints );
       f.setAttribute( "id", mNCreatedPoints + 1 );
       f.setAttribute( "station_id", points + 1 );
       f.setAttribute( "stratum_id", inputFeature.id() );
-      f.setGeometry( *ptGeom );
-      delete ptGeom;
+      f.setGeometry( ptGeom );
       writer.addFeature( f );
       sIndex.insertFeature( f );
       pointMapForFeature.insert( mNCreatedPoints, randPoint );
       ++points;
       ++mNCreatedPoints;
-    }
-    else
-    {
-      delete ptGeom;
     }
     ++nIterations;
   }

@@ -373,9 +373,9 @@ void QgsNodeEditor::zoomToNode( int idx )
   QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
   //close polygon
   ext.append( ext.first() );
-  QScopedPointer< QgsGeometry > extGeom( QgsGeometry::fromQPolygonF( ext ) );
-  QScopedPointer< QgsGeometry > nodeGeom( QgsGeometry::fromPoint( tCenter ) );
-  if ( !nodeGeom->within( extGeom.data() ) )
+  QgsGeometry extGeom( QgsGeometry::fromQPolygonF( ext ) );
+  QgsGeometry nodeGeom( QgsGeometry::fromPoint( tCenter ) );
+  if ( !nodeGeom.within( extGeom ) )
   {
     mCanvas->setCenter( tCenter );
     mCanvas->refresh();

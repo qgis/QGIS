@@ -235,9 +235,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     // fix the polygon if it is not valid
     if ( ! geom.isGeosValid() )
     {
-      QgsGeometry* result = geom.buffer( 0, 0 );
-      geom = *result;
-      delete result;
+      geom = geom.buffer( 0, 0 );
     }
   }
 
@@ -269,10 +267,9 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       // compute the unary union on the polygons
       QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries ) );
       // compute the difference with the extent
-      QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
-      QgsGeometry *final = rect->difference( &unioned );
-      feat.setGeometry( *final );
-      delete final;
+      QgsGeometry rect = QgsGeometry::fromPolygon( mExtentPolygon );
+      QgsGeometry final = rect.difference( unioned );
+      feat.setGeometry( final );
     }
     else
     {
@@ -321,9 +318,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
           }
         }
       }
-      QgsGeometry* featGeom = QgsGeometry::fromMultiPolygon( finalMulti );
-      feat.setGeometry( *featGeom );
-      delete featGeom;
+      feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
     }
     if ( feat.hasGeometry() )
     {
@@ -340,9 +335,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
   {
     // empty feature with default attributes
     QgsFeature feat( mFields );
-    QgsGeometry* featGeom = QgsGeometry::fromPolygon( mExtentPolygon );
-    feat.setGeometry( *featGeom );
-    delete featGeom;
+    feat.setGeometry( QgsGeometry::fromPolygon( mExtentPolygon ) );
     mSubRenderer->renderFeature( feat, mContext );
   }
 

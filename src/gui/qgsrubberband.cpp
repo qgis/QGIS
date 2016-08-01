@@ -641,9 +641,9 @@ const QgsPoint *QgsRubberBand::getPoint( int i, int j ) const
     return nullptr;
 }
 
-QgsGeometry *QgsRubberBand::asGeometry()
+QgsGeometry QgsRubberBand::asGeometry() const
 {
-  QgsGeometry *geom = nullptr;
+  QgsGeometry geom;
 
   switch ( mGeometryType )
   {

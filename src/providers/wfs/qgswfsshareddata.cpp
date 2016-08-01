@@ -742,9 +742,8 @@ bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map 
       newAttrMap[idx] = QString( array.toHex().data() );
       newChangedAttrMap[ iter.key()] = newAttrMap;
 
-      QgsGeometry* polyBoudingBox = QgsGeometry::fromRect( iter.value().boundingBox() );
-      newGeometryMap[ iter.key()] = *polyBoudingBox;
-      delete polyBoudingBox;
+      QgsGeometry polyBoudingBox = QgsGeometry::fromRect( iter.value().boundingBox() );
+      newGeometryMap[ iter.key()] = polyBoudingBox;
     }
     else
     {
@@ -883,9 +882,8 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
         localComputedExtent = bBox;
       else
         localComputedExtent.combineExtentWith( bBox );
-      QgsGeometry* polyBoundingBox = QgsGeometry::fromRect( bBox );
-      cachedFeature.setGeometry( *polyBoundingBox );
-      delete polyBoundingBox;
+      QgsGeometry polyBoundingBox = QgsGeometry::fromRect( bBox );
+      cachedFeature.setGeometry( polyBoundingBox );
     }
     else
     {
@@ -1038,9 +1036,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
     // In case the download was successful, we will remember this bbox
     // and if the download reached the download limit or not
     QgsFeature f;
-    QgsGeometry* g = QgsGeometry::fromRect( mRect );
-    f.setGeometry( *g );
-    delete g;
+    f.setGeometry( QgsGeometry::fromRect( mRect ) );
     QgsFeatureId id = mRegions.size();
     f.setFeatureId( id );
     f.initAttributes( 1 );

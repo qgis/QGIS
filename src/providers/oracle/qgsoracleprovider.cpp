@@ -1791,9 +1791,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
         QgsGeometry g;
         if ( !attrs[idx].isNull() )
         {
-          QgsGeometry* created = QgsGeometry::fromWkt( attrs[ idx ].toString() );
-          g = *created;
-          delete created;
+          g = QgsGeometry::fromWkt( attrs[ idx ].toString() );
         }
 
         appendGeomParam( g, qry );

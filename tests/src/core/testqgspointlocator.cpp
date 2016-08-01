@@ -85,9 +85,8 @@ class TestQgsPointLocator : public QObject
       QgsPolyline polyline;
       polyline << QgsPoint( 0, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 );
       polygon << polyline;
-      QgsGeometry* ffGeom = QgsGeometry::fromPolygon( polygon );
-      ff.setGeometry( *ffGeom );
-      delete ffGeom;
+      QgsGeometry ffGeom = QgsGeometry::fromPolygon( polygon );
+      ff.setGeometry( ffGeom );
       QgsFeatureList flist;
       flist << ff;
       mVL->dataProvider()->addFeatures( flist );
@@ -204,9 +203,8 @@ class TestQgsPointLocator : public QObject
       QgsPolyline polyline;
       polyline << QgsPoint( 10, 11 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 ) << QgsPoint( 10, 11 );
       polygon << polyline;
-      QgsGeometry* ffGeom = QgsGeometry::fromPolygon( polygon ) ;
-      ff.setGeometry( *ffGeom );
-      delete ffGeom;
+      QgsGeometry ffGeom = QgsGeometry::fromPolygon( polygon ) ;
+      ff.setGeometry( ffGeom );
       QgsFeatureList flist;
       flist << ff;
       bool resA = mVL->addFeature( ff );

@@ -119,25 +119,25 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
                      bool forceSingleGeometry = false, QgsVectorDataProvider* memoryProvider = nullptr, QProgressDialog* p = nullptr );
 
     /** Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
-    QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry& lineGeom );
+    QgsGeometry locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry& lineGeom );
     /** Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
      * Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)
      */
-    QgsGeometry* locateAlongMeasure( double measure, const QgsGeometry& lineGeom );
+    QgsGeometry locateAlongMeasure( double measure, const QgsGeometry& lineGeom );
 
   private:
 
-    QList<double> simpleMeasure( QgsGeometry* geometry );
+    QList<double> simpleMeasure( QgsGeometry& geometry );
     double perimeterMeasure( QgsGeometry* geometry, QgsDistanceArea& measure );
     /** Helper function to simplify an individual feature*/
     void simplifyFeature( QgsFeature& f, QgsVectorFileWriter* vfw, double tolerance );
     /** Helper function to get the cetroid of an individual feature*/
     void centroidFeature( QgsFeature& f, QgsVectorFileWriter* vfw );
     /** Helper function to buffer an individual feature*/
-    void bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve, QgsGeometry** dissolveGeometry,
+    void bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve, QgsGeometry& dissolveGeometry,
                         double bufferDistance, int bufferDistanceField );
     /** Helper function to get the convex hull of feature(s)*/
-    void convexFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
+    void convexFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry& dissolveGeometry );
     /** Helper function to dissolve feature(s)*/
     void dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
 

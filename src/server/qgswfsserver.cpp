@@ -626,9 +626,8 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
               }
               else if ( childElem.tagName() != "PropertyName" )
               {
-                QgsGeometry *geom = QgsOgcUtils::geometryFromGML( childElem );
-                req.setFilterRect( geom->boundingBox() );
-                delete geom;
+                QgsGeometry geom = QgsOgcUtils::geometryFromGML( childElem );
+                req.setFilterRect( geom.boundingBox() );
               }
               childElem = childElem.nextSiblingElement();
             }
@@ -1063,9 +1062,8 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
             else if ( childElem.tagName() != "PropertyName" )
             {
-              QgsGeometry* geom = QgsOgcUtils::geometryFromGML( childElem );
-              req.setFilterRect( geom->boundingBox() );
-              delete geom;
+              QgsGeometry geom = QgsOgcUtils::geometryFromGML( childElem );
+              req.setFilterRect( geom.boundingBox() );
             }
             childElem = childElem.nextSiblingElement();
           }
@@ -1616,13 +1614,11 @@ QDomDocument QgsWfsServer::transaction( const QString& requestBody )
 
             if ( !geometryElem.isNull() )
             {
-              QgsGeometry* g = QgsOgcUtils::geometryFromGML( geometryElem );
-              if ( !layer->changeGeometry( *fidIt, *g ) )
+              QgsGeometry g = QgsOgcUtils::geometryFromGML( geometryElem );
+              if ( !layer->changeGeometry( *fidIt, g ) )
               {
-                delete g;
                 throw QgsMapServiceException( "RequestNotWellFormed", "Error in change geometry" );
               }
-              delete g;
             }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -1757,9 +1753,8 @@ QDomDocument QgsWfsServer::transaction( const QString& requestBody )
                 }
                 else //a geometry attribute
                 {
-                  QgsGeometry* g = QgsOgcUtils::geometryFromGML( currentAttributeElement );
-                  inFeatList.last().setGeometry( *g );
-                  delete g;
+                  QgsGeometry g = QgsOgcUtils::geometryFromGML( currentAttributeElement );
+                  inFeatList.last().setGeometry( g );
                 }
               }
               currentAttributeChild = currentAttributeChild.nextSibling();
@@ -1893,15 +1888,11 @@ QString QgsWfsServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
     if ( mGeometryName == "EXTENT" )
     {
       QgsRectangle box = geom.boundingBox();
-      QgsGeometry* bbox = QgsGeometry::fromRect( box );
-      f.setGeometry( *bbox );
-      delete bbox;
+      f.setGeometry( QgsGeometry::fromRect( box ) );
     }
     else if ( mGeometryName == "CENTROID" )
     {
-      QgsGeometry* centroid = geom.centroid();
-      f.setGeometry( *centroid );
-      delete centroid;
+      f.setGeometry( geom.centroid() );
     }
   }
 
@@ -1949,15 +1940,13 @@ QDomElement QgsWfsServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
     QDomElement gmlElem;
     if ( mGeometryName == "EXTENT" )
     {
-      QgsGeometry* bbox = QgsGeometry::fromRect( geom.boundingBox() );
-      gmlElem = QgsOgcUtils::geometryToGML( bbox , doc, prec );
-      delete bbox;
+      QgsGeometry bbox = QgsGeometry::fromRect( geom.boundingBox() );
+      gmlElem = QgsOgcUtils::geometryToGML( &bbox , doc, prec );
     }
     else if ( mGeometryName == "CENTROID" )
     {
-      QgsGeometry* centroid = geom.centroid();
-      gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, prec );
-      delete centroid;
+      QgsGeometry centroid = geom.centroid();
+      gmlElem = QgsOgcUtils::geometryToGML( &centroid, doc, prec );
     }
     else
       gmlElem = QgsOgcUtils::geometryToGML( &geom, doc, prec );
@@ -2026,15 +2015,13 @@ QDomElement QgsWfsServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
     QDomElement gmlElem;
     if ( mGeometryName == "EXTENT" )
     {
-      QgsGeometry* bbox = QgsGeometry::fromRect( geom.boundingBox() );
-      gmlElem = QgsOgcUtils::geometryToGML( bbox, doc, "GML3", prec );
-      delete bbox;
+      QgsGeometry bbox = QgsGeometry::fromRect( geom.boundingBox() );
+      gmlElem = QgsOgcUtils::geometryToGML( &bbox, doc, "GML3", prec );
     }
     else if ( mGeometryName == "CENTROID" )
     {
-      QgsGeometry* centroid = geom.centroid();
-      gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, "GML3", prec );
-      delete centroid;
+      QgsGeometry centroid = geom.centroid();
+      gmlElem = QgsOgcUtils::geometryToGML( &centroid, doc, "GML3", prec );
     }
     else
       gmlElem = QgsOgcUtils::geometryToGML( &geom, doc, "GML3", prec );

@@ -944,9 +944,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
       }
       else if ( !mCurrentExtent.isEmpty() )
       {
-        QgsGeometry* featGeom = QgsGeometry::fromRect( mCurrentExtent );
-        mCurrentFeature->setGeometry( *featGeom );
-        delete featGeom;
+        mCurrentFeature->setGeometry( QgsGeometry::fromRect( mCurrentExtent ) );
       }
     }
     mCurrentFeature->setValid( true );

@@ -186,22 +186,20 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       minDistanceLayerUnits = minDistance / 111319.9;
     }
 
-    QgsGeometry* clippedBaseline = strataGeom.intersection( &baselineGeom );
-    if ( !clippedBaseline || clippedBaseline->wkbType() == Qgis::WKBUnknown )
+    QgsGeometry clippedBaseline = strataGeom.intersection( baselineGeom );
+    if ( clippedBaseline.isEmpty() || clippedBaseline.wkbType() == Qgis::WKBUnknown )
     {
-      delete clippedBaseline;
       continue;
     }
-    QgsGeometry* bufferLineClipped = clipBufferLine( strataGeom, clippedBaseline, bufferDist );
+    QgsGeometry* bufferLineClipped = clipBufferLine( strataGeom, &clippedBaseline, bufferDist );
     if ( !bufferLineClipped )
     {
-      delete clippedBaseline;
       continue;
     }
 
     //save clipped baseline to file
     QgsFeature blFeature( usedBaselineFields );
-    blFeature.setGeometry( *clippedBaseline );
+    blFeature.setGeometry( clippedBaseline );
     blFeature.setAttribute( "stratum_id", strataId );
     blFeature.setAttribute( "ok", "f" );
     usedBaselineWriter.addFeature( blFeature );
@@ -217,19 +215,18 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
 
     while ( nCreatedTransects < nTransects && nIterations < nMaxIterations )
     {
-      double randomPosition = (( double )mt_rand() / MD_RAND_MAX ) * clippedBaseline->length();
-      QgsGeometry* samplePoint = clippedBaseline->interpolate( randomPosition );
+      double randomPosition = (( double )mt_rand() / MD_RAND_MAX ) * clippedBaseline.length();
+      QgsGeometry samplePoint = clippedBaseline.interpolate( randomPosition );
       ++nIterations;
-      if ( !samplePoint )
+      if ( samplePoint.isEmpty() )
       {
         continue;
       }
-      QgsPoint sampleQgsPoint = samplePoint->asPoint();
+      QgsPoint sampleQgsPoint = samplePoint.asPoint();
       QgsPoint latLongSamplePoint = toLatLongTransform.transform( sampleQgsPoint );
 
       QgsFeature samplePointFeature( outputPointFields );
-      samplePointFeature.setGeometry( *samplePoint );
-      delete samplePoint;
+      samplePointFeature.setGeometry( samplePoint );
       samplePointFeature.setAttribute( "id", nTotalTransects + 1 );
       samplePointFeature.setAttribute( "station_id", nCreatedTransects + 1 );
       samplePointFeature.setAttribute( "stratum_id", strataId );
@@ -249,23 +246,20 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       //bearing between sample point and min dist point (transect direction)
       double bearing = distanceArea.bearing( sampleQgsPoint, minDistPoint ) / M_PI * 180.0;
 
-      QgsPolyline sampleLinePolyline;
       QgsPoint ptFarAway( sampleQgsPoint.x() + ( minDistPoint.x() - sampleQgsPoint.x() ) * 1000000,
                           sampleQgsPoint.y() + ( minDistPoint.y() - sampleQgsPoint.y() ) * 1000000 );
       QgsPolyline lineFarAway;
       lineFarAway << sampleQgsPoint << ptFarAway;
-      QgsGeometry* lineFarAwayGeom = QgsGeometry::fromPolyline( lineFarAway );
-      QgsGeometry lineClipStratum = lineFarAwayGeom->intersection( strataGeom );
+      QgsGeometry lineFarAwayGeom = QgsGeometry::fromPolyline( lineFarAway );
+      QgsGeometry lineClipStratum = lineFarAwayGeom.intersection( strataGeom );
       if ( lineClipStratum.isEmpty() )
       {
-        delete lineFarAwayGeom;
         continue;
       }
 
       //cancel if distance between sample point and line is too large (line does not start at point
-      if ( lineClipStratum.distance( *samplePoint ) > 0.000001 )
+      if ( lineClipStratum.distance( samplePoint ) > 0.000001 )
       {
-        delete lineFarAwayGeom;
         continue;
       }
 
@@ -284,14 +278,12 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       double transectLength = distanceArea.measureLength( lineClipStratum );
       if ( transectLength < mMinTransectLength )
       {
-        delete lineFarAwayGeom;
         continue;
       }
 
       //search closest existing profile. Cancel if dist < minDist
       if ( otherTransectWithinDistance( lineClipStratum, minDistanceLayerUnits, minDistance, sIndex, lineFeatureMap, distanceArea ) )
       {
-        delete lineFarAwayGeom;
         continue;
       }
 
@@ -314,11 +306,9 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       sIndex.insertFeature( sampleLineFeature );
       lineFeatureMap.insert( fid, lineClipStratum );
 
-      delete lineFarAwayGeom;
       ++nTotalTransects;
       ++nCreatedTransects;
     }
-    delete clippedBaseline;
 
     QgsFeature bufferClipFeature;
     bufferClipFeature.setGeometry( *bufferLineClipped );
@@ -366,12 +356,12 @@ bool QgsTransectSample::otherTransectWithinDistance( const QgsGeometry& geom, do
     return false;
   }
 
-  QgsGeometry* buffer = geom.buffer( minDistLayerUnit, 8 );
-  if ( !buffer )
+  QgsGeometry buffer = geom.buffer( minDistLayerUnit, 8 );
+  if ( buffer.isEmpty() )
   {
     return false;
   }
-  QgsRectangle rect = buffer->boundingBox();
+  QgsRectangle rect = buffer.boundingBox();
   QList<QgsFeatureId> lineIdList = sIndex.intersects( rect );
 
   QList<QgsFeatureId>::const_iterator lineIdIt = lineIdList.constBegin();
@@ -387,13 +377,11 @@ bool QgsTransectSample::otherTransectWithinDistance( const QgsGeometry& geom, do
 
       if ( dist < minDistance )
       {
-        delete buffer;
         return true;
       }
     }
   }
 
-  delete buffer;
   return false;
 }
 
@@ -537,29 +525,24 @@ QgsGeometry QgsTransectSample::closestMultilineElement( const QgsPoint& pt, cons
 
   double minDist = DBL_MAX;
   double currentDist = 0;
-  QgsGeometry* currentLine = nullptr;
-  QScopedPointer<QgsGeometry> closestLine;
-  QgsGeometry* pointGeom = QgsGeometry::fromPoint( pt );
+  QgsGeometry currentLine;
+  QgsGeometry closestLine;
+  QgsGeometry pointGeom = QgsGeometry::fromPoint( pt );
 
   QgsMultiPolyline multiPolyline = multiLine.asMultiPolyline();
   QgsMultiPolyline::const_iterator it = multiPolyline.constBegin();
   for ( ; it != multiPolyline.constEnd(); ++it )
   {
     currentLine = QgsGeometry::fromPolyline( *it );
-    currentDist = pointGeom->distance( *currentLine );
+    currentDist = pointGeom.distance( currentLine );
     if ( currentDist < minDist )
     {
       minDist = currentDist;
-      closestLine.reset( currentLine );
-    }
-    else
-    {
-      delete currentLine;
+      closestLine = currentLine;
     }
   }
 
-  delete pointGeom;
-  return QgsGeometry( *closestLine.data() );
+  return closestLine;
 }
 
 QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, QgsGeometry* clippedBaseline, double tolerance )
@@ -569,12 +552,12 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, 
     return nullptr;
   }
 
-  QgsGeometry* usedBaseline = clippedBaseline;
+  QgsGeometry usedBaseline = *clippedBaseline;
   if ( mBaselineSimplificationTolerance >= 0 )
   {
     //int verticesBefore = usedBaseline->asMultiPolyline().count();
     usedBaseline = clippedBaseline->simplify( mBaselineSimplificationTolerance );
-    if ( !usedBaseline )
+    if ( usedBaseline.isEmpty() )
     {
       return nullptr;
     }
@@ -592,23 +575,21 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, 
   for ( int i = 0; i < maxLoops; ++i )
   {
     //loop with tolerance: create buffer, convert buffer to line, clip line by stratum, test if result is (single) line
-    QgsGeometry* clipBaselineBuffer = usedBaseline->buffer( currentBufferDist, 8 );
-    if ( !clipBaselineBuffer )
+    QgsGeometry clipBaselineBuffer = usedBaseline.buffer( currentBufferDist, 8 );
+    if ( clipBaselineBuffer.isEmpty() )
     {
-      delete clipBaselineBuffer;
       continue;
     }
 
     //it is also possible that clipBaselineBuffer is a multipolygon
-    QgsGeometry* bufferLine = nullptr; //buffer line or multiline
+    QgsGeometry bufferLine; //buffer line or multiline
     QgsGeometry bufferLineClipped;
     QgsMultiPolyline mpl;
-    if ( clipBaselineBuffer->isMultipart() )
+    if ( clipBaselineBuffer.isMultipart() )
     {
-      QgsMultiPolygon bufferMultiPolygon = clipBaselineBuffer->asMultiPolygon();
+      QgsMultiPolygon bufferMultiPolygon = clipBaselineBuffer.asMultiPolygon();
       if ( bufferMultiPolygon.size() < 1 )
       {
-        delete clipBaselineBuffer;
         continue;
       }
 
@@ -624,10 +605,9 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, 
     }
     else
     {
-      QgsPolygon bufferPolygon = clipBaselineBuffer->asPolygon();
+      QgsPolygon bufferPolygon = clipBaselineBuffer.asPolygon();
       if ( bufferPolygon.size() < 1 )
       {
-        delete clipBaselineBuffer;
         continue;
       }
 
@@ -639,8 +619,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, 
       }
       bufferLine = QgsGeometry::fromMultiPolyline( mpl );
     }
-    bufferLineClipped = bufferLine->intersection( stratumGeom );
-    delete bufferLine;
+    bufferLineClipped = bufferLine.intersection( stratumGeom );
 
     if ( !bufferLineClipped.isEmpty() && bufferLineClipped.type() == Qgis::Line )
     {
@@ -652,36 +631,24 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, 
         QVector<QgsPolygon>::const_iterator multiIt = multiPoly.constBegin();
         for ( ; multiIt != multiPoly.constEnd(); ++multiIt )
         {
-          QgsGeometry* poly = QgsGeometry::fromPolygon( *multiIt );
-          if ( !poly->intersects( bufferLineClipped ) )
+          QgsGeometry poly = QgsGeometry::fromPolygon( *multiIt );
+          if ( !poly.intersects( bufferLineClipped ) )
           {
             bufferLineClippedIntersectsStratum = false;
-            delete poly;
             break;
           }
-          delete poly;
         }
       }
 
       if ( bufferLineClippedIntersectsStratum )
       {
-        delete clipBaselineBuffer;
-        if ( mBaselineSimplificationTolerance >= 0 )
-        {
-          delete usedBaseline;
-        }
         return new QgsGeometry( bufferLineClipped );
       }
     }
 
-    delete clipBaselineBuffer;
     currentBufferDist /= 2;
   }
 
-  if ( mBaselineSimplificationTolerance >= 0 )
-  {
-    delete usedBaseline;
-  }
   return nullptr; //no solution found even with reduced tolerances
 }
 

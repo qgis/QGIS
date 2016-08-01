@@ -112,12 +112,11 @@ void QgsMapToolLabel::createRubberBands()
         }
       }
 
-      QgsGeometry* pointGeom = QgsGeometry::fromPoint( fixPoint );
+      QgsGeometry pointGeom = QgsGeometry::fromPoint( fixPoint );
       mFixPointRubberBand = new QgsRubberBand( mCanvas, Qgis::Line );
       mFixPointRubberBand->setColor( QColor( 0, 0, 255, 65 ) );
-      mFixPointRubberBand->setToGeometry( *pointGeom, vlayer );
+      mFixPointRubberBand->setToGeometry( pointGeom, vlayer );
       mFixPointRubberBand->show();
-      delete pointGeom;
     }
   }
 }

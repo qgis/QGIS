@@ -190,7 +190,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
         , mGeomPt( QgsGeometry::fromPoint( origPt ) )
     {}
 
-    ~QgsPointLocator_VisitorArea() { delete mGeomPt; }
+    ~QgsPointLocator_VisitorArea() {}
 
     void visitNode( const INode& n ) override { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }
@@ -205,7 +205,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
   private:
     QgsPointLocator* mLocator;
     QgsPointLocator::MatchList& mList;
-    QgsGeometry* mGeomPt;
+    QgsGeometry mGeomPt;
 };
 
 
