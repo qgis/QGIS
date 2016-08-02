@@ -418,8 +418,8 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
 
     for ( int i = 0; i < qMin( oldFields.count(), newFields.count() ); ++i )
     {
-      const QgsField& oldField = oldFields.at( i );
-      const QgsField& newField = newFields.at( i );
+      QgsField oldField = oldFields.at( i );
+      QgsField newField = newFields.at( i );
       if ( attributeChangesOk && oldField != newField )
       {
         commitErrors

@@ -3757,7 +3757,7 @@ QString QgsVectorLayer::metadata() const
   const QgsFields& myFields = pendingFields();
   for ( int i = 0, n = myFields.size(); i < n; ++i )
   {
-    const QgsField& myField = fields[i];
+    QgsField myField = fields.at( i );
 
     myMetadata += "<tr><td>";
     myMetadata += myField.name();

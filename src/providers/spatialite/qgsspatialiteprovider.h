@@ -370,7 +370,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     QgsVectorDataProvider::Capabilities mEnabledCapabilities;
 
-    const QgsField &field( int index ) const;
+    QgsField field( int index ) const;
 
     //! SpatiaLite version string
     QString mSpatialiteVersionInfo;

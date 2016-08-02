@@ -294,7 +294,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     bool hasSufficientPermsAndCapabilities();
 
-    const QgsField &field( int index ) const;
+    QgsField field( int index ) const;
 
     /** Load the field list
      */

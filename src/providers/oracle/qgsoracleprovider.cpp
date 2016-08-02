@@ -338,7 +338,7 @@ QString QgsOracleProvider::pkParamWhereClause() const
       for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
       {
         int idx = mPrimaryKeyAttrs[i];
-        const QgsField &fld = field( idx );
+        QgsField fld = field( idx );
 
         whereClause += delim + QString( "%1=?" ).arg( mConnection->fieldExpression( fld ) );
         delim = " AND ";
@@ -435,7 +435,7 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields& fi
           for ( int i = 0; i < primaryKeyAttrs.size(); i++ )
           {
             int idx = primaryKeyAttrs[i];
-            const QgsField &fld = fields[ idx ];
+            QgsField fld = fields.at( idx );
 
             whereClause += delim + QString( "%1=%2" ).arg( QgsOracleConn::fieldExpression( fld ) ).arg( QgsOracleConn::quotedValue( pkVals[i], fld.type() ) );
             delim = " AND ";
@@ -504,7 +504,7 @@ QgsWkbTypes::Type QgsOracleProvider::wkbType() const
   return mRequestedGeomType != QgsWkbTypes::Unknown ? mRequestedGeomType : mDetectedGeomType;
 }
 
-const QgsField &QgsOracleProvider::field( int index ) const
+QgsField QgsOracleProvider::field( int index ) const
 {
   if ( index < 0 || index >= mAttributeFields.size() )
   {
@@ -512,7 +512,7 @@ const QgsField &QgsOracleProvider::field( int index ) const
     throw OracleFieldNotFound();
   }
 
-  return mAttributeFields[ index ];
+  return mAttributeFields.at( index );
 }
 
 QgsFeatureIterator QgsOracleProvider::getFeatures( const QgsFeatureRequest& request ) const
@@ -900,7 +900,7 @@ bool QgsOracleProvider::determinePrimaryKey()
         return false;
       }
 
-      const QgsField &fld = mAttributeFields.at( idx );
+      QgsField fld = mAttributeFields.at( idx );
 
       if ( isInt &&
            fld.type() != QVariant::Int &&
@@ -937,7 +937,7 @@ bool QgsOracleProvider::determinePrimaryKey()
 
         if ( idx >= 0 )
         {
-          const QgsField &fld = mAttributeFields.at( idx );
+          QgsField fld = mAttributeFields.at( idx );
 
           if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
           {
@@ -1027,7 +1027,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
   try
   {
     // get the field name
-    const QgsField &fld = field( index );
+    QgsField fld = field( index );
     QString sql = QString( "SELECT min(%1) FROM %2" )
                   .arg( quotedIdentifier( fld.name() ) )
                   .arg( mQuery );
@@ -1070,7 +1070,7 @@ void QgsOracleProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, 
   try
   {
     // get the field name
-    const QgsField &fld = field( index );
+    QgsField fld = field( index );
     QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
                   .arg( quotedIdentifier( fld.name() ) )
                   .arg( mQuery );
@@ -1117,7 +1117,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
   try
   {
     // get the field name
-    const QgsField &fld = field( index );
+    QgsField fld = field( index );
     QString sql = QString( "SELECT max(%1) FROM %2" )
                   .arg( quotedIdentifier( fld.name() ) )
                   .arg( mQuery );
@@ -1227,7 +1227,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
       Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
-        const QgsField &fld = field( idx );
+        QgsField fld = field( idx );
         insert += delim + quotedIdentifier( fld.name() );
         keys += kdelim + quotedIdentifier( fld.name() );
         values += delim + "?";
@@ -1256,7 +1256,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       if ( fieldId.contains( idx ) )
         continue;
 
-      const QgsField &fld = mAttributeFields[idx];
+      QgsField fld = mAttributeFields.at( idx );
 
       QgsDebugMsgLevel( "Checking field against: " + fld.name(), 4 );
 
@@ -1339,7 +1339,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
         QString v;
         if ( !value.isValid() )
         {
-          const QgsField &fld = field( fieldId[i] );
+          QgsField fld = field( fieldId[i] );
           v = paramValue( defaultValues[i], defaultValues[i] );
           features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
         }
@@ -1349,7 +1349,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
           if ( v != value.toString() )
           {
-            const QgsField &fld = field( fieldId[i] );
+            QgsField fld = field( fieldId[i] );
             features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
           }
         }
@@ -1375,7 +1375,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
         int col = 0;
         Q_FOREACH ( int idx, mPrimaryKeyAttrs )
         {
-          const QgsField &fld = field( idx );
+          QgsField fld = field( idx );
 
           QVariant v = getfid.value( col++ );
           if ( v.type() != fld.type() )
@@ -1590,7 +1590,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
 
     Q_FOREACH ( int id, idsList )
     {
-      const QgsField &fld = mAttributeFields.at( id );
+      QgsField fld = mAttributeFields.at( id );
 
       QString sql = QString( "ALTER TABLE %1 DROP COLUMN %2" )
                     .arg( mQuery )
@@ -1751,7 +1751,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       {
         try
         {
-          const QgsField &fld = field( siter.key() );
+          QgsField fld = field( siter.key() );
 
           pkChanged = pkChanged || mPrimaryKeyAttrs.contains( siter.key() );
 

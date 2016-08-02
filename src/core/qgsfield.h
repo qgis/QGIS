@@ -255,15 +255,15 @@ class CORE_EXPORT QgsFields
     bool exists( int i ) const;
 
     //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& operator[]( int i ) const;
+    QgsField operator[]( int i ) const;
     //! Get field at particular index (must be in range 0..N-1)
     QgsField& operator[]( int i );
     //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& at( int i ) const;
+    QgsField at( int i ) const;
     //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& field( int fieldIdx ) const;
-    //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& field( const QString& name ) const;
+    QgsField field( int fieldIdx ) const;
+    //! Get field with matching name
+    QgsField field( const QString& name ) const;
 
     //! Get field's origin (value from an enumeration)
     FieldOrigin fieldOrigin( int fieldIdx ) const;

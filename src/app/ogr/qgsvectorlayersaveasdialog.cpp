@@ -271,7 +271,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
     for ( int i = 0; i < mLayer->fields().size(); ++i )
     {
-      const QgsField &fld = mLayer->fields().at( i );
+      QgsField fld = mLayer->fields().at( i );
       Qt::ItemFlags flags = mLayer->providerType() != "oracle" || !fld.typeName().contains( "SDO_GEOMETRY" ) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
       QTableWidgetItem *item;
       item = new QTableWidgetItem( fld.name() );

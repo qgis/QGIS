@@ -2174,7 +2174,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   {
     Q_FOREACH ( int idx, layer->attributeList() )
     {
-      const QgsField &fld = layer->fields()[idx];
+      QgsField fld = layer->fields().at( idx );
       if ( layer->providerType() == "oracle" && fld.typeName().contains( "SDO_GEOMETRY" ) )
         continue;
       attributes.append( idx );
@@ -2186,7 +2186,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   {
     Q_FOREACH ( int attrIdx, attributes )
     {
-      fields.append( layer->fields()[attrIdx] );
+      fields.append( layer->fields().at( attrIdx ) );
     }
   }
 

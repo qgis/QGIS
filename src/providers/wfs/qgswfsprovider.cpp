@@ -530,7 +530,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
         const QgsFields tableFields = mapTypenameToFields[columnTableTypename];
         for ( int i = 0; i < tableFields.size();i++ )
         {
-          const QgsField& srcField = tableFields[i];
+          QgsField srcField = tableFields.at( i );
           QString fieldName( srcField.name() );
           // If several tables selected, prefix by table name
           if ( typenameList.size() > 1 )
@@ -562,7 +562,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
           const QgsFields tableFields = mapTypenameToFields[typeName];
           for ( int i = 0; i < tableFields.size();i++ )
           {
-            const QgsField& srcField = tableFields[i];
+            QgsField srcField = tableFields.at( i );
             QString fieldName( srcField.name() );
             // If several tables selected, prefix by table name
             if ( typenameList.size() > 1 )

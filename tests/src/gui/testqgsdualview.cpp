@@ -111,7 +111,7 @@ void TestQgsDualView::testColumnHeaders()
 {
   for ( int i = 0; i < mPointsLayer->fields().count(); ++i )
   {
-    const QgsField& fld = mPointsLayer->fields().at( i );
+    QgsField fld = mPointsLayer->fields().at( i );
     QCOMPARE( mDualView->tableView()->model()->headerData( i, Qt::Horizontal ).toString(), fld.name() );
   }
 }
@@ -123,7 +123,7 @@ void TestQgsDualView::testData()
 
   for ( int i = 0; i < mPointsLayer->fields().count(); ++i )
   {
-    const QgsField& fld = mPointsLayer->fields().at( i );
+    QgsField fld = mPointsLayer->fields().at( i );
 
     QModelIndex index = mDualView->tableView()->model()->index( 0, i );
     QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), fld.displayString( feature.attribute( i ) ) );

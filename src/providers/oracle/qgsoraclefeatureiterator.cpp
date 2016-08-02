@@ -337,7 +337,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
         {
           Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
           {
-            const QgsField &fld = mSource->mFields[idx];
+            QgsField fld = mSource->mFields.at( idx );
 
             QVariant v = mQry.value( col );
             if ( v.type() != fld.type() )
@@ -373,7 +373,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
       if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
         continue;
 
-      const QgsField &fld = mSource->mFields[idx];
+      QgsField fld = mSource->mFields.at( idx );
 
       QVariant v = mQry.value( col );
       if ( fld.type() == QVariant::ByteArray && fld.typeName().endsWith( ".SDO_GEOMETRY" ) )

@@ -737,7 +737,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
       Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
-        const QgsField &fld = mSource->mFields.at( idx );
+        QgsField fld = mSource->mFields.at( idx );
 
         QVariant v = QgsPostgresProvider::convertValue( fld.type(), queryResult.PQgetvalue( row, col ) );
         primaryKeyVals << v;

@@ -1603,7 +1603,7 @@ QDomDocument QgsWfsServer::transaction( const QString& requestBody )
               {
                 continue;
               }
-              const QgsField& field = fields.at( fieldMapIt.value() );
+              QgsField field = fields.at( fieldMapIt.value() );
               if ( field.type() == 2 )
                 layer->changeAttributeValue( *fidIt, fieldMapIt.value(), it.value().toInt( &conversionSuccess ) );
               else if ( field.type() == 6 )
@@ -1740,7 +1740,7 @@ QDomDocument QgsWfsServer::transaction( const QString& requestBody )
                   {
                     continue;
                   }
-                  const QgsField& field = fields.at( fieldMapIt.value() );
+                  QgsField field = fields.at( fieldMapIt.value() );
                   QString attrValue = currentAttributeElement.text();
                   int attrType = field.type();
                   QgsMessageLog::logMessage( QString( "attr: name=%1 idx=%2 value=%3" ).arg( attrName ).arg( fieldMapIt.value() ).arg( attrValue ) );

@@ -382,17 +382,17 @@ QgsField &QgsFields::operator[]( int i )
   return d->fields[i].field;
 }
 
-const QgsField &QgsFields::at( int i ) const
+QgsField QgsFields::at( int i ) const
 {
   return d->fields[i].field;
 }
 
-const QgsField &QgsFields::field( int fieldIdx ) const
+QgsField QgsFields::field( int fieldIdx ) const
 {
   return d->fields[fieldIdx].field;
 }
 
-const QgsField &QgsFields::field( const QString &name ) const
+QgsField QgsFields::field( const QString &name ) const
 {
   return d->fields[ indexFromName( name )].field;
 }
@@ -403,7 +403,7 @@ const QgsField &QgsFields::field( const QString &name ) const
  * See details in QEP #17
  ****************************************************************************/
 
-const QgsField &QgsFields::operator[]( int i ) const
+QgsField QgsFields::operator[]( int i ) const
 {
   return d->fields[i].field;
 }

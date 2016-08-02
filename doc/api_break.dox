@@ -271,6 +271,12 @@ None will need to be modified, as the method will return an empty geometry if th
 <li>The method capabilities() returns QgsFeatureRendererV2::Capabilities flags instead of an integer. The two are binary compatible.
 </ul>
 
+\subsection qgis_api_break_3_0_QgsFields QgsFields
+
+<ul>
+<li>All const methods which return a field from QgsFields now return a QgsField value, not a reference.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsGeometry QgsGeometry
 
 <ul>
