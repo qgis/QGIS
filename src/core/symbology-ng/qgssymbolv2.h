@@ -149,7 +149,21 @@ class CORE_EXPORT QgsSymbolV2
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayerV2 *layer );
 
+    /** Begins the rendering process for the symbol. This must be called before renderFeature(),
+     * and should be followed by a call to stopRender().
+     * @param context render context which symbol will be drawn using
+     * @param fields fields for features to be rendered (usually the associated
+     * vector layer's fields). Required for correct calculation of data defined
+     * overrides.
+     * @see stopRender()
+     */
     void startRender( QgsRenderContext& context, const QgsFields& fields = QgsFields() );
+
+    /** Ends the rendering process. This should be called after rendering all desired features.
+     * @param context render context, must match the context specified when startRender()
+     * was called.
+     * @see startRender()
+     */
     void stopRender( QgsRenderContext& context );
 
     void setColor( const QColor& color );
@@ -244,7 +258,8 @@ class CORE_EXPORT QgsSymbolV2
     const QgsVectorLayer* layer() const { return mLayer; }
 
     /**
-     * Render a feature.
+     * Render a feature. Before calling this the startRender() method should be called to initialise
+     * the rendering process. After rendering all features stopRender() must be called.
      */
     void renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
 
