@@ -75,7 +75,7 @@ class MergeLines(GeoAlgorithm):
             attrs = inFeat.attributes()
             outFeat.setAttributes(attrs)
 
-            inGeom = inFeat.constGeometry()
+            inGeom = inFeat.geometry()
             if inGeom:
                 outGeom = inGeom.mergeLines()
                 if outGeom is None:

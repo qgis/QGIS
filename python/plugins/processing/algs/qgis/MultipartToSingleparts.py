@@ -70,7 +70,7 @@ class MultipartToSingleparts(GeoAlgorithm):
             attrs = f.attributes()
             outFeat.setAttributes(attrs)
 
-            inGeom = f.constGeometry()
+            inGeom = f.geometry()
             if inGeom:
                 geometries = self.extractAsSingle(inGeom)
 
