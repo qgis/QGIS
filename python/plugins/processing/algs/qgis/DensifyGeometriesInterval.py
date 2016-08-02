@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 from math import sqrt
 
-from qgis.core import Qgis, QgsPoint, QgsGeometry, QgsFeature
+from qgis.core import Qgis, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector

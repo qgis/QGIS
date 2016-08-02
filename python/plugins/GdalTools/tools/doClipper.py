@@ -24,7 +24,7 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtWidgets import QWidget
-from qgis.core import Qgis
+from qgis.core import Qgis, QgsWkbTypes
 
 from .ui_widgetClipper import Ui_GdalToolsWidget as Ui_Widget
 from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget

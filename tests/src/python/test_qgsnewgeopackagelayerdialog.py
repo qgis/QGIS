@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import QObject, QCoreApplication, QSettings, Qt, QEventLoo
 from qgis.PyQt.QtWidgets import QApplication, QWidget, QLineEdit, QDialogButtonBox, QTreeWidget, QComboBox, QPushButton, QToolButton
 from qgis.PyQt.QtTest import QTest
 
-from qgis.core import Qgis, QgsMapLayerRegistry
+from qgis.core import Qgis, QgsMapLayerRegistry, QgsWkbTypes
 from qgis.gui import QgsNewGeoPackageLayerDialog
 from qgis.testing import (start_app,
                           unittest

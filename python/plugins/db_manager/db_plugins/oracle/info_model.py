@@ -24,7 +24,7 @@ The content of this file is based on
 """
 
 from qgis.PyQt.QtWidgets import QApplication
-from qgis.core import Qgis
+from qgis.core import Qgis, QgsWkbTypes
 
 from ..info_model import TableInfo, VectorTableInfo, DatabaseInfo
 from ..html_elems import HtmlContent, HtmlSection, HtmlParagraph, \

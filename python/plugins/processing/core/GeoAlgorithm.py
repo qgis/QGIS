@@ -276,7 +276,7 @@ class GeoAlgorithm:
                     provider = layer.dataProvider()
                     writer = out.getVectorWriter(
                         provider.fields(),
-                        provider.geometryType(), layer.crs()
+                        provider.wkbType(), layer.crs()
                     )
                     features = vector.features(layer)
                     for feature in features:

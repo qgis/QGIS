@@ -24,7 +24,7 @@ from qgis.PyQt.QtCore import QUrl, QTemporaryFile
 from ..connector import DBConnector
 from ..plugin import Table
 
-from qgis.core import Qgis, QgsDataSourceUri, QgsVirtualLayerDefinition, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem
+from qgis.core import Qgis, QgsDataSourceUri, QgsVirtualLayerDefinition, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
 
 import sqlite3
 
@@ -129,7 +129,7 @@ class VLayerConnector(DBConnector):
         if not p.isValid():
             return []
         f = [f.name() for f in p.fields()]
-        if p.geometryType() != QgsWkbTypes.NoGeometry:
+        if p.geometryType() != QgsWkbTypes.NullGeometry:
             gn = getQueryGeometryName(tmp)
             if gn:
                 f += [gn]
@@ -199,7 +199,7 @@ class VLayerConnector(DBConnector):
 
                 geomType = None
                 dim = None
-                g = l.dataProvider().geometryType()
+                g = l.dataProvider().wkbType()
                 if g == QgsWkbTypes.Point:
                     geomType = 'POINT'
                     dim = 'XY'

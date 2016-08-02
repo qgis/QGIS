@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from math import degrees, atan2
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsField, QgsPoint, QgsGeometry, QgsFeature
+from qgis.core import Qgis, QgsField, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector

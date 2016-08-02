@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import random
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsSpatialIndex,
+from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsSpatialIndex, QgsWkbTypes,
                        QgsDistanceArea, QgsFeatureRequest, QgsFeature,
                        QgsPoint)
 

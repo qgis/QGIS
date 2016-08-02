@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QCheckBox
-from qgis.core import Qgis, QgsVectorLayer
+from qgis.core import Qgis, QgsVectorLayer, QgsWkbTypes, QgsWkbTypes
 
 from processing.core.parameters import ParameterGeometryPredicate
 

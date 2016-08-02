@@ -30,7 +30,7 @@ from shapely.ops import unary_union
 from shapely.geometry import MultiLineString
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector

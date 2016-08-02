@@ -76,7 +76,7 @@ class JoinAttributes(GeoAlgorithm):
         joinField2Index = layer2.fieldNameIndex(field2)
 
         outFields = vector.combineVectorFields(layer, layer2)
-        writer = output.getVectorWriter(outFields, provider.geometryType(),
+        writer = output.getVectorWriter(outFields, provider.wkbType(),
                                         layer.crs())
 
         # Cache attributes of Layer 2

@@ -52,6 +52,10 @@ class QgsRendererV2AbstractMetadata
      */
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* oldRenderer ) /Factory/;
 
+    /**
+     * Create a renderer from the SLD provided in ele and for the specified geometry type.
+     * This is done on a best effort basis.
+     */
     virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
 };
 

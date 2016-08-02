@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -68,7 +68,7 @@ class Difference(GeoAlgorithm):
             self.getParameterValue(Difference.OVERLAY))
         ignoreInvalid = self.getParameterValue(Difference.IGNORE_INVALID)
 
-        geomType = layerA.dataProvider().geometryType()
+        geomType = layerA.dataProvider().wkbType()
         writer = self.getOutputFromName(
             Difference.OUTPUT).getVectorWriter(layerA.pendingFields(),
                                                geomType,

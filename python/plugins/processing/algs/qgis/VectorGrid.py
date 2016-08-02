@@ -31,7 +31,7 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import Qgis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm

@@ -29,7 +29,7 @@ from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
 
 import os
-from qgis.core import Qgis, QgsApplication, NULL
+from qgis.core import Qgis, QgsApplication, NULL, QgsWkbTypes
 from . import QtSqlDB
 import sqlite3
 
@@ -652,8 +652,8 @@ class OracleDBConnector(DBConnector):
                 copybuf = list(buf)
                 copybuf[4] = u""
                 copybuf[-6] = u"UNKNOWN"
-                copybuf[-5] = QgsWkbTypes.NoGeometry
-                copybuf[-2] = QgsWkbTypes.NoGeometry
+                copybuf[-5] = QgsWkbTypes.NullGeometry
+                copybuf[-2] = QgsWkbTypes.NullGeometry
                 copybuf[-1] = u"0"
                 items.append(copybuf)
 

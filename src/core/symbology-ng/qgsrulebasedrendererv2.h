@@ -258,6 +258,10 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         Rule* clone() const;
 
         void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+
+        /**
+         * Create a rule from the SLD provided in element and for the specified geometry type.
+         */
         static Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
         QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap ) const;

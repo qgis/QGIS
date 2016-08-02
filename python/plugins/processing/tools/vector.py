@@ -35,10 +35,10 @@ import cStringIO
 import psycopg2
 
 from qgis.PyQt.QtCore import QVariant, QSettings
-from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsRectangle,
+from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTypes,
                        QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
                        QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceUri, QgsCredentials,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest, QgsWkbTypes)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -46,7 +46,7 @@ from processing.tools import dataobjects, spatialite, postgis
 
 
 GEOM_TYPE_MAP = {
-    QgsWkbTypes.NoGeometry: 'none',
+    QgsWkbTypes.NullGeometry: 'none',
     QgsWkbTypes.Point: 'Point',
     QgsWkbTypes.LineString: 'LineString',
     QgsWkbTypes.Polygon: 'Polygon',
@@ -596,7 +596,7 @@ class VectorWriter:
                                   for f in fields)
 
             _runSQL("CREATE TABLE %s.%s (%s)" % (uri.schema(), uri.table().lower(), fieldsdesc))
-            if geometryType != QgsWkbTypes.NoGeometry:
+            if geometryType != QgsWkbTypes.NullGeometry:
                 _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
                     table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
                     typmod=GEOM_TYPE_MAP[geometryType].upper()))
@@ -627,7 +627,7 @@ class VectorWriter:
 
             _runSQL("DROP TABLE IF EXISTS %s" % uri.table().lower())
             _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
-            if geometryType != QgsWkbTypes.NoGeometry:
+            if geometryType != QgsWkbTypes.NullGeometry:
                 _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
                     table=uri.table().lower(), srid=crs.authid().split(":")[-1],
                     typmod=GEOM_TYPE_MAP[geometryType].upper()))
@@ -650,7 +650,7 @@ class VectorWriter:
                 extension = 'shp'
                 self.destination = self.destination + '.shp'
 
-            if geometryType == QgsWkbTypes.NoGeometry:
+            if geometryType == QgsWkbTypes.NullGeometry:
                 if extension == 'shp':
                     extension = 'dbf'
                     self.destination = self.destination[:self.destination.rfind('.')] + '.dbf'

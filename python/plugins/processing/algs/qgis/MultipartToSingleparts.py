@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -58,7 +58,7 @@ class MultipartToSingleparts(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        geomType = self.multiToSingleGeom(layer.dataProvider().geometryType())
+        geomType = self.multiToSingleGeom(layer.dataProvider().wkbType())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.pendingFields().toList(), geomType, layer.crs())

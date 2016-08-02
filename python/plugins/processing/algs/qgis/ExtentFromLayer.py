@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsField, QgsPoint, QgsGeometry, QgsFeature
+from qgis.core import Qgis, QgsField, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector

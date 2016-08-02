@@ -172,7 +172,7 @@ class SpatiaLiteDBConnector(DBConnector):
         return self.has_raster
 
     def hasCustomQuerySupport(self):
-        from qgis.core import Qgis
+        from qgis.core import Qgis, QgsWkbTypes
 
         return Qgis.QGIS_VERSION[0:3] >= "1.6"
 

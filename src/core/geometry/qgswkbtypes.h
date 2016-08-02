@@ -670,6 +670,8 @@ class CORE_EXPORT QgsWkbTypes
      * - Unknown Geometry
      * - No Geometry
      * - Invalid Geometry
+     *
+     * @note added in QGIS 3.0
      */
     static QString geometryDisplayString( GeometryType type );
 

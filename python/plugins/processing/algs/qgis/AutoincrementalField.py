@@ -52,7 +52,7 @@ class AutoincrementalField(GeoAlgorithm):
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
         fields.append(QgsField('AUTO', QVariant.Int))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(),
+        writer = output.getVectorWriter(fields, vprovider.wkbType(),
                                         vlayer.crs())
         outFeat = QgsFeature()
         features = vector.features(vlayer)

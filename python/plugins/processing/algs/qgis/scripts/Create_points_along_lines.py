@@ -6,7 +6,7 @@
 ##output=output vector
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsFeature, QgsField
+from qgis.core import Qgis, QgsFeature, QgsField, QgsWkbTypes
 from processing.tools.vector import VectorWriter
 
 

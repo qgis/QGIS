@@ -28,8 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-from qgis.core import Qgis, QgsProject, QgsVectorFileWriter, QgsMapLayer, QgsRasterLayer, \
-    QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
+from qgis.core import Qgis, QgsProject, QgsVectorFileWriter, QgsMapLayer, QgsRasterLayer, QgsWkbTypes, QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
 from qgis.gui import QgsSublayersDialog
 from qgis.PyQt.QtCore import QSettings
 from qgis.utils import iface
@@ -296,7 +295,7 @@ def exportVectorLayer(layer, supported=None):
     if useSelection and layer.selectedFeatureCount() != 0:
         writer = QgsVectorFileWriter(output, systemEncoding,
                                      layer.pendingFields(),
-                                     provider.geometryType(), layer.crs())
+                                     provider.wkbType(), layer.crs())
         selection = layer.selectedFeatures()
         for feat in selection:
             writer.addFeature(feat)
@@ -311,7 +310,7 @@ def exportVectorLayer(layer, supported=None):
         if not os.path.splitext(layer.source())[1].lower() in supported or not isASCII:
             writer = QgsVectorFileWriter(
                 output, systemEncoding,
-                layer.pendingFields(), provider.geometryType(),
+                layer.pendingFields(), provider.wkbType(),
                 layer.crs()
             )
             for feat in layer.getFeatures():
@@ -365,7 +364,7 @@ def exportTable(table):
         or unicode(table.source()).endswith('shp')
     if not isDbf or not isASCII:
         writer = QgsVectorFileWriter(output, systemEncoding,
-                                     provider.fields(), QgsWkbTypes.NoGeometry,
+                                     provider.fields(), QgsWkbTypes.NullGeometry,
                                      QgsCoordinateReferenceSystem('4326'))
         for feat in table.getFeatures():
             writer.addFeature(feat)

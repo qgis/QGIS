@@ -30,6 +30,6 @@ TODO:
     * query builder
     * query manager
 - QSpatialite
-    * GUI to import Qgis layer
+    * GUI to import Qgis layer, QgsWkbTypes
 - SPIT
     * mass import of shapefiles

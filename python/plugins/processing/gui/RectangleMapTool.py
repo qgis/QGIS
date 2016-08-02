@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtGui import QColor
-from qgis.core import Qgis, QgsPoint, QgsRectangle
+from qgis.core import Qgis, QgsPoint, QgsRectangle, QgsWkbTypes
 from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 
 

@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector

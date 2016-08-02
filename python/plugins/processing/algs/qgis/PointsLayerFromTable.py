@@ -25,7 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import Qgis
+from qgis.core import Qgis, QgsWkbTypes
 from qgis.core import QgsCoordinateReferenceSystem
 from qgis.core import QgsFeature
 from qgis.core import QgsGeometry

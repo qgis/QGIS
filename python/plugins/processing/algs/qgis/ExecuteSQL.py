@@ -115,7 +115,7 @@ class ExecuteSQL(GeoAlgorithm):
             df.setUid(uid_field)
 
         if geometry_type == 1:  # no geometry
-            df.setGeometryWkbType(QgsWkbTypes.NoGeometry)
+            df.setGeometryWkbType(QgsWkbTypes.NullGeometry)
         else:
             if geometry_field:
                 df.setGeometryField(geometry_field)

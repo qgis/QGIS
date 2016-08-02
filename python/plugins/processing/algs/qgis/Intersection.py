@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -75,7 +75,7 @@ class Intersection(GeoAlgorithm):
             self.getParameterValue(self.INPUT2))
         vproviderA = vlayerA.dataProvider()
 
-        geomType = vproviderA.geometryType()
+        geomType = vproviderA.wkbType()
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      geomType, vproviderA.crs())

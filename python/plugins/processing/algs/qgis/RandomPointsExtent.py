@@ -30,7 +30,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (Qgis, QgsGeometry, QgsRectangle, QgsFeature, QgsFields,
+from qgis.core import (Qgis, QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbTypes,
                        QgsField, QgsSpatialIndex, QgsPoint)
 from qgis.utils import iface
 

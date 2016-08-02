@@ -505,7 +505,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-void QgsDataDefinedValueDialog::init( const QString & description )
+void QgsDataDefinedValueDialog::init( const QString& description )
 {
   QgsDataDefined dd = symbolDataDefined();
   mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );

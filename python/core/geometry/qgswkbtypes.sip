@@ -146,6 +146,22 @@ class QgsWkbTypes
      */
     static QString displayString( Type type );
 
+    /**
+     * Return a display string for a geometry type.
+     *
+     * This will return one of the following strings:
+     *
+     * - Point
+     * - Line
+     * - Polygon
+     * - Unknown Geometry
+     * - No Geometry
+     * - Invalid Geometry
+     *
+     * @note added in QGIS 3.0
+     */
+    static QString geometryDisplayString( GeometryType type );
+
     /** Tests whether a WKB type contains the z-dimension.
      * @returns true if type has z values
      * @see addZ()

@@ -29,7 +29,7 @@ import os
 from datetime import datetime
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsDistanceArea
+from qgis.core import Qgis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsDistanceArea, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector

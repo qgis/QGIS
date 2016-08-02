@@ -23,7 +23,7 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net>
 
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, Qgis
+from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, Qgis, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 
 import os

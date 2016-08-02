@@ -30,7 +30,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (Qgis, QgsGeometry, QgsFields, QgsField, QgsSpatialIndex,
+from qgis.core import (Qgis, QgsGeometry, QgsFields, QgsField, QgsSpatialIndex, QgsWkbTypes,
                        QgsPoint, QgsFeature, QgsFeatureRequest)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm

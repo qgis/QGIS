@@ -26,7 +26,7 @@ from .plugin import LVectorTable
 from ..plugin import DbError
 
 from qgis.PyQt.QtCore import QUrl, QTime, QTemporaryFile
-from qgis.core import Qgis, QgsVectorLayer, QgsWkbTypes
+from qgis.core import Qgis, QgsVectorLayer, QgsWkbTypes, QgsWkbTypes
 
 
 class LTableDataModel(TableDataModel):
@@ -87,7 +87,7 @@ class LSqlResultModel(BaseTableModel):
         else:
             header = [f.name() for f in p.fields()]
             has_geometry = False
-            if p.geometryType() != QgsWkbTypes.NoGeometry:
+            if p.geometryType() != QgsWkbTypes.NullGeometry:
                 gn = getQueryGeometryName(tmp)
                 if gn:
                     has_geometry = True

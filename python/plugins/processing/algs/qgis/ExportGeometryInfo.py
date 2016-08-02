@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry, QgsField
+from qgis.core import Qgis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry, QgsField, QgsWkbTypes
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -89,7 +89,7 @@ class ExportGeometryInfo(GeoAlgorithm):
             fields.append(QgsField(yName, QVariant.Double))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
+            fields.toList(), layer.dataProvider().wkbType(), layer.crs())
 
         ellips = None
         crs = None

@@ -109,7 +109,7 @@ class FieldsMapper(GeoAlgorithm):
             expressions.append(expression)
 
         writer = output.getVectorWriter(fields,
-                                        provider.geometryType(),
+                                        provider.wkbType(),
                                         layer.crs())
 
         # Create output vector layer with new attributes

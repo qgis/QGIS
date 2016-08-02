@@ -82,7 +82,7 @@ class AddTableField(GeoAlgorithm):
         fields = provider.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
                                fieldLength, fieldPrecision))
-        writer = output.getVectorWriter(fields, provider.geometryType(),
+        writer = output.getVectorWriter(fields, provider.wkbType(),
                                         layer.crs())
         outFeat = QgsFeature()
         features = vector.features(layer)

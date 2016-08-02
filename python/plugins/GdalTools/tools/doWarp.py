@@ -25,7 +25,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QWidget
-from qgis.core import Qgis
+from qgis.core import Qgis, QgsWkbTypes
 
 from .ui_widgetWarp import Ui_GdalToolsWidget as Ui_Widget
 from .widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
