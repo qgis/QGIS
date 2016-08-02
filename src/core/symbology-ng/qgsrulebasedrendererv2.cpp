@@ -447,7 +447,7 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
   if ( mFilter )
     mFilter->prepare( &context.expressionContext() );
   if ( mSymbol )
-    mSymbol->startRender( context, &fields );
+    mSymbol->startRender( context, fields );
 
   // init children
   // build temporary list of active rules (usable with this scale)

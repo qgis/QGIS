@@ -599,7 +599,7 @@ QPicture QgsSymbolLayerV2Utils::symbolLayerPreviewPicture( QgsSymbolLayerV2* lay
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = createRenderContext( &painter );
   renderContext.setForceVectorOutput( true );
-  QgsSymbolV2RenderContext symbolContext( renderContext, units, 1.0, false, 0, nullptr, nullptr, scale );
+  QgsSymbolV2RenderContext symbolContext( renderContext, units, 1.0, false, 0, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return picture;
@@ -613,7 +613,7 @@ QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, Qg
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = createRenderContext( &painter );
-  QgsSymbolV2RenderContext symbolContext( renderContext, u, 1.0, false, 0, nullptr, nullptr, scale );
+  QgsSymbolV2RenderContext symbolContext( renderContext, u, 1.0, false, 0, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return QIcon( pixmap );

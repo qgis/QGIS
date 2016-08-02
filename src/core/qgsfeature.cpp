@@ -134,9 +134,9 @@ void QgsFeature::setFields( const QgsFields &fields, bool init )
   }
 }
 
-const QgsFields *QgsFeature::fields() const
+QgsFields QgsFeature::fields() const
 {
-  return &( d->fields );
+  return d->fields;
 }
 
 /***************************************************************************

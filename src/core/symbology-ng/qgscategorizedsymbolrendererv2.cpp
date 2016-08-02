@@ -431,14 +431,14 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
 
   Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
   {
-    cat.symbol()->startRender( context, &fields );
+    cat.symbol()->startRender( context, fields );
 
     if ( mRotation.data() || mSizeScale.data() )
     {
       QgsSymbolV2* tempSymbol = cat.symbol()->clone();
       tempSymbol->setRenderHints(( mRotation.data() ? QgsSymbolV2::DataDefinedRotation : 0 ) |
                                  ( mSizeScale.data() ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
-      tempSymbol->startRender( context, &fields );
+      tempSymbol->startRender( context, fields );
       mTempSymbols[ cat.symbol()] = tempSymbol;
     }
   }

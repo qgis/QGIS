@@ -955,7 +955,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
     if ( !mShared->mGeometryAttribute.isEmpty() && mFetchGeometry )
     {
-      int idx = cachedFeature.fields()->indexFromName( QgsWFSConstants::FIELD_HEXWKB_GEOM );
+      int idx = cachedFeature.fields().indexFromName( QgsWFSConstants::FIELD_HEXWKB_GEOM );
       Q_ASSERT( idx >= 0 );
 
       const QVariant &v = cachedFeature.attributes().value( idx );
@@ -1183,7 +1183,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
   {
     Q_FOREACH ( int i, mSubSetAttributes )
     {
-      int idx = srcFeature.fields()->indexFromName( fields.at( i ).name() );
+      int idx = srcFeature.fields().indexFromName( fields.at( i ).name() );
       if ( idx >= 0 )
       {
         const QVariant &v = srcFeature.attributes().value( idx );
@@ -1200,7 +1200,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
   {
     for ( int i = 0; i < fields.size(); i++ )
     {
-      int idx = srcFeature.fields()->indexFromName( fields.at( i ).name() );
+      int idx = srcFeature.fields().indexFromName( fields.at( i ).name() );
       if ( idx >= 0 )
       {
         const QVariant &v = srcFeature.attributes().value( idx );

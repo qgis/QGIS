@@ -130,7 +130,7 @@ void TestQgsFeature::create()
 
   QgsFeature featureFromFieldsId( mFields, 1001LL );
   QCOMPARE( featureFromFieldsId.id(), 1001LL );
-  QCOMPARE( *featureFromFieldsId.fields(), mFields );
+  QCOMPARE( featureFromFieldsId.fields(), mFields );
   QCOMPARE( featureFromFieldsId.isValid(), false );
   //should be 3 invalid attributes
   QCOMPARE( featureFromFieldsId.attributes().count(), 3 );
@@ -303,24 +303,24 @@ void TestQgsFeature::asVariant()
   QgsFeature fromVar = qvariant_cast<QgsFeature>( var );
   //QCOMPARE( fromVar, original );
   QCOMPARE( fromVar.id(), original.id() );
-  QCOMPARE( *fromVar.fields(), *original.fields() );
+  QCOMPARE( fromVar.fields(), original.fields() );
 }
 
 void TestQgsFeature::fields()
 {
   QgsFeature original;
-  QVERIFY( original.fields()->isEmpty() );
+  QVERIFY( original.fields().isEmpty() );
   original.setFields( mFields );
-  QCOMPARE( *original.fields(), mFields );
+  QCOMPARE( original.fields(), mFields );
   QgsFeature copy( original );
-  QCOMPARE( *copy.fields(), *original.fields() );
+  QCOMPARE( copy.fields(), original.fields() );
 
   //test detach
   QgsFields newFields( mFields );
   newFields.remove( 2 );
   copy.setFields( newFields );
-  QCOMPARE( *copy.fields(), newFields );
-  QCOMPARE( *original.fields(), mFields );
+  QCOMPARE( copy.fields(), newFields );
+  QCOMPARE( original.fields(), mFields );
 
   //test that no init leaves attributes
   copy = original;
@@ -329,7 +329,7 @@ void TestQgsFeature::fields()
   copy.setAttribute( 1, 2 );
   copy.setAttribute( 2, 3 );
   copy.setFields( mFields, false );
-  QCOMPARE( *copy.fields(), mFields );
+  QCOMPARE( copy.fields(), mFields );
   //should be 3 invalid attributes
   QCOMPARE( copy.attributes().count(), 3 );
   QCOMPARE( copy.attributes().at( 0 ).toInt(), 1 );
@@ -343,7 +343,7 @@ void TestQgsFeature::fields()
   copy.setAttribute( 1, 2 );
   copy.setAttribute( 2, 3 );
   copy.setFields( mFields, true );
-  QCOMPARE( *copy.fields(), mFields );
+  QCOMPARE( copy.fields(), mFields );
   //should be 3 invalid attributes
   QCOMPARE( copy.attributes().count(), 3 );
   Q_FOREACH ( const QVariant& a, copy.attributes() )

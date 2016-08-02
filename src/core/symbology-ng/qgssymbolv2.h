@@ -22,6 +22,7 @@
 #include "qgsmapunitscale.h"
 #include "qgspointv2.h"
 #include "qgsfeature.h"
+#include "qgsfield.h"
 
 class QColor;
 class QImage;
@@ -148,7 +149,7 @@ class CORE_EXPORT QgsSymbolV2
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayerV2 *layer );
 
-    void startRender( QgsRenderContext& context, const QgsFields* fields = nullptr );
+    void startRender( QgsRenderContext& context, const QgsFields& fields = QgsFields() );
     void stopRender( QgsRenderContext& context );
 
     void setColor( const QColor& color );
@@ -359,7 +360,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
      * @param fields
      * @param mapUnitScale
      */
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = nullptr, const QgsFields* fields = nullptr, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = nullptr, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
@@ -400,7 +401,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     //! to allow symbols with data-defined properties prepare the expressions
     //! (other times fields() returns null)
     //! @note added in 2.4
-    const QgsFields* fields() const { return mFields; }
+    QgsFields fields() const { return mFields; }
 
     /** Part count of current geometry
      * @note added in QGIS 2.16
@@ -450,7 +451,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     bool mSelected;
     int mRenderHints;
     const QgsFeature* mFeature; //current feature
-    const QgsFields* mFields;
+    QgsFields mFields;
     int mGeometryPartCount;
     int mGeometryPartNum;
 

@@ -3273,10 +3273,10 @@ QDomElement QgsWmsServer::createFeatureGML(
 
   //read all allowed attribute values from the feature
   QgsAttributes featureAttributes = feat->attributes();
-  const QgsFields* fields = feat->fields();
-  for ( int i = 0; i < fields->count(); ++i )
+  QgsFields fields = feat->fields();
+  for ( int i = 0; i < fields.count(); ++i )
   {
-    QString attributeName = fields->at( i ).name();
+    QString attributeName = fields.at( i ).name();
     //skip attribute if it is explicitly excluded from WMS publication
     if ( layer && layer->excludeAttributesWms().contains( attributeName ) )
     {

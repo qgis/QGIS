@@ -308,9 +308,8 @@ class CORE_EXPORT QgsFeature
 
     /** Returns the field map associated with the feature.
      * @see setFields
-     * TODO: QGIS 3 - return value, not pointer
      */
-    const QgsFields* fields() const;
+    QgsFields fields() const;
 
     /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
      *  Field map must be associated using @link setFields @endlink before this method can be used.

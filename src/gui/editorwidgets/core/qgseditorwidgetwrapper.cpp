@@ -118,7 +118,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
     description = layer()->editFormConfig()->expressionDescription( mFieldIdx );
 
     QgsExpressionContext context =
-      QgsExpressionContextUtils::createFeatureBasedContext( ft, *ft.fields() );
+      QgsExpressionContextUtils::createFeatureBasedContext( ft, ft.fields() );
     context << QgsExpressionContextUtils::layerScope( layer() );
 
     context.setFeature( ft );
@@ -142,7 +142,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   {
     if ( !expression.isEmpty() )
     {
-      QString fieldName = ft.fields()->field( mFieldIdx ).name();
+      QString fieldName = ft.fields().field( mFieldIdx ).name();
       expression = "( " + expression + " ) AND ( " + fieldName + " IS NOT NULL)";
       description = "( " + description + " ) AND NotNull";
     }

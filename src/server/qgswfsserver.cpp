@@ -1896,16 +1896,16 @@ QString QgsWfsServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
     }
   }
 
-  const QgsFields* fields = feat->fields();
+  QgsFields fields = feat->fields();
   QgsAttributeList attrsToExport;
   for ( int i = 0; i < attrIndexes.count(); ++i )
   {
     int idx = attrIndexes[i];
-    if ( idx >= fields->count() )
+    if ( idx >= fields.count() )
     {
       continue;
     }
-    QString attributeName = fields->at( idx ).name();
+    QString attributeName = fields.at( idx ).name();
     //skip attribute if it is excluded from WFS publication
     if ( excludedAttributes.contains( attributeName ) )
     {
@@ -1972,15 +1972,15 @@ QDomElement QgsWfsServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
 
   //read all attribute values from the feature
   QgsAttributes featureAttributes = feat->attributes();
-  const QgsFields* fields = feat->fields();
+  QgsFields fields = feat->fields();
   for ( int i = 0; i < attrIndexes.count(); ++i )
   {
     int idx = attrIndexes[i];
-    if ( idx >= fields->count() )
+    if ( idx >= fields.count() )
     {
       continue;
     }
-    QString attributeName = fields->at( idx ).name();
+    QString attributeName = fields.at( idx ).name();
     //skip attribute if it is excluded from WFS publication
     if ( excludedAttributes.contains( attributeName ) )
     {
@@ -2047,15 +2047,15 @@ QDomElement QgsWfsServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
 
   //read all attribute values from the feature
   QgsAttributes featureAttributes = feat->attributes();
-  const QgsFields* fields = feat->fields();
+  QgsFields fields = feat->fields();
   for ( int i = 0; i < attrIndexes.count(); ++i )
   {
     int idx = attrIndexes[i];
-    if ( idx >= fields->count() )
+    if ( idx >= fields.count() )
     {
       continue;
     }
-    QString attributeName = fields->at( idx ).name();
+    QString attributeName = fields.at( idx ).name();
     //skip attribute if it is excluded from WFS publication
     if ( excludedAttributes.contains( attributeName ) )
     {

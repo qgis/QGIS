@@ -110,7 +110,7 @@ class QgsSymbolV2
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayerV2 *layer /Transfer/ );
 
-    void startRender( QgsRenderContext& context, const QgsFields* fields = 0 );
+    void startRender( QgsRenderContext& context, const QgsFields& fields = QgsFields() );
     void stopRender( QgsRenderContext& context );
 
     void setColor( const QColor& color );
@@ -292,7 +292,7 @@ class QgsSymbolV2RenderContext
      * @param fields
      * @param mapUnitScale
      */
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* fields = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext();
@@ -333,7 +333,7 @@ class QgsSymbolV2RenderContext
     //! to allow symbols with data-defined properties prepare the expressions
     //! (other times fields() returns null)
     //! @note added in 2.4
-    const QgsFields* fields() const;
+    QgsFields fields() const;
 
     /** Part count of current geometry
      * @note added in QGIS 2.16
