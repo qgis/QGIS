@@ -77,7 +77,7 @@ void QgsQueryBuilder::populateFields()
       // only consider native fields
       continue;
     }
-    QStandardItem *myItem = new QStandardItem( fields[idx].name() );
+    QStandardItem *myItem = new QStandardItem( fields.at( idx ).name() );
     myItem->setData( idx );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );

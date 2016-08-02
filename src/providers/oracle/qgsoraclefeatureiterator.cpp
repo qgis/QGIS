@@ -452,14 +452,14 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, bool showLog )
         break;
 
       case pktInt:
-        query += delim + QgsOracleProvider::quotedIdentifier( mSource->mFields[ mSource->mPrimaryKeyAttrs[0] ].name() );
+        query += delim + QgsOracleProvider::quotedIdentifier( mSource->mFields.at( mSource->mPrimaryKeyAttrs[0] ).name() );
         delim = ",";
         break;
 
       case pktFidMap:
         Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
         {
-          query += delim + mConnection->fieldExpression( mSource->mFields[idx] );
+          query += delim + mConnection->fieldExpression( mSource->mFields.at( idx ) );
           delim = ",";
         }
         break;
@@ -475,7 +475,7 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, bool showLog )
       if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
         continue;
 
-      query += delim + mConnection->fieldExpression( mSource->mFields[idx] );
+      query += delim + mConnection->fieldExpression( mSource->mFields.at( idx ) );
     }
 
     query += QString( " FROM %1 \"FEATUREREQUEST\"" ).arg( mSource->mQuery );

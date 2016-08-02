@@ -184,14 +184,14 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
-    QString name = QString( "\"%1\"" ).arg( layerFields[idx].name() );
+    QString name = QString( "\"%1\"" ).arg( layerFields.at( idx ).name() );
     newItem->setText( 0, name );
     newItem->setData( 0, Qt::UserRole, name );
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
 
-    mDataDefinedXComboBox->addItem( layerFields[idx].name(), idx );
-    mDataDefinedYComboBox->addItem( layerFields[idx].name(), idx );
-    mDataDefinedVisibilityComboBox->addItem( layerFields[idx].name(), idx );
+    mDataDefinedXComboBox->addItem( layerFields.at( idx ).name(), idx );
+    mDataDefinedYComboBox->addItem( layerFields.at( idx ).name(), idx );
+    mDataDefinedVisibilityComboBox->addItem( layerFields.at( idx ).name(), idx );
   }
 
   const QgsDiagramRendererV2* dr = layer->diagramRenderer();

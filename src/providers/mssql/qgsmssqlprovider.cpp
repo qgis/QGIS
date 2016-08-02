@@ -1669,7 +1669,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
     QString pk = primaryKey = "qgs_fid";
     for ( int i = 0, n = fields.size(); i < n; ++i )
     {
-      if ( fields[i].name() == primaryKey )
+      if ( fields.at( i ).name() == primaryKey )
       {
         // it already exists, try again with a new name
         primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
@@ -1682,10 +1682,10 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
     // search for the passed field
     for ( int i = 0, n = fields.size(); i < n; ++i )
     {
-      if ( fields[i].name() == primaryKey )
+      if ( fields.at( i ).name() == primaryKey )
       {
         // found, get the field type
-        QgsField fld = fields[i];
+        QgsField fld = fields.at( i );
         if ( convertField( fld ) )
         {
           primaryKeyType = fld.typeName();
@@ -1830,7 +1830,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
     QList<QgsField> flist;
     for ( int i = 0, n = fields.size(); i < n; ++i )
     {
-      QgsField fld = fields[i];
+      QgsField fld = fields.at( i );
       if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
       {
         oldToNewAttrIdxMap->insert( fields.fieldNameIndex( fld.name() ), 0 );

@@ -234,7 +234,7 @@ void QgsFieldCalculator::accept()
 
       for ( int idx = 0; idx < fields.count(); ++idx )
       {
-        if ( fields[idx].name() == mOutputFieldNameLineEdit->text() )
+        if ( fields.at( idx ).name() == mOutputFieldNameLineEdit->text() )
         {
           mAttributeId = idx;
           break;

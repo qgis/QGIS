@@ -2305,13 +2305,13 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       for ( int i = 0; i < featureAttributes.count(); ++i )
       {
         //skip attribute if it is explicitly excluded from WMS publication
-        if ( excludedAttributes.contains( fields[i].name() ) )
+        if ( excludedAttributes.contains( fields.at( i ).name() ) )
         {
           continue;
         }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         //skip attribute if it is excluded by access control
-        if ( !attributes.contains( fields[i].name() ) )
+        if ( !attributes.contains( fields.at( i ).name() ) )
         {
           continue;
         }

@@ -398,13 +398,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
   {
-    QgsField attrField = fields[fldIdx];
+    QgsField attrField = fields.at( fldIdx );
 
     OGRFieldType ogrType = OFTString; //default to string
 
     if ( fieldValueConverter )
     {
-      attrField = fieldValueConverter->fieldDefinition( fields[fldIdx] );
+      attrField = fieldValueConverter->fieldDefinition( fields.at( fldIdx ) );
     }
 
     int ogrWidth = attrField.length();
@@ -489,7 +489,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         name = QString( "ogc_fid%1" ).arg( i );
 
         int j;
-        for ( j = 0; j < fields.size() && name.compare( fields[j].name(), Qt::CaseInsensitive ) != 0; j++ )
+        for ( j = 0; j < fields.size() && name.compare( fields.at( j ).name(), Qt::CaseInsensitive ) != 0; j++ )
           ;
 
         if ( j == fields.size() )

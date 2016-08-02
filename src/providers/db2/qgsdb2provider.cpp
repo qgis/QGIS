@@ -1332,7 +1332,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
     QString pk = primaryKey = "QGS_FID";
     for ( int i = 0; i < fieldCount; ++i )
     {
-      if ( fields[i].name() == primaryKey )
+      if ( fields.at( i ).name() == primaryKey )
       {
         // it already exists, try again with a new name
         primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
@@ -1345,10 +1345,10 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
     // search for the passed field
     for ( int i = 0; i < fieldCount; ++i )
     {
-      if ( fields[i].name() == primaryKey )
+      if ( fields.at( i ).name() == primaryKey )
       {
         // found, get the field type
-        QgsField fld = fields[i];
+        QgsField fld = fields.at( i );
         if ( convertField( fld ) )
         {
           primaryKeyType = fld.typeName();

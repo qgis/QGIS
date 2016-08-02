@@ -34,7 +34,7 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer* vl )
     const QgsFields& layerAttributes = vl->fields();
     for ( int idx = 0; idx < layerAttributes.count(); ++idx )
     {
-      QListWidgetItem* item = new QListWidgetItem( layerAttributes[idx].name(), listBox2 );
+      QListWidgetItem* item = new QListWidgetItem( layerAttributes.at( idx ).name(), listBox2 );
       switch ( vl->fields().fieldOrigin( idx ) )
       {
         case QgsFields::OriginExpression:

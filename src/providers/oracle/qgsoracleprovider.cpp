@@ -181,7 +181,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
       Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
         Q_ASSERT( idx >= 0 && idx < mAttributeFields.size() );
-        key += delim + mAttributeFields[ idx ].name();
+        key += delim + mAttributeFields.at( idx ).name();
         delim = ",";
       }
     }
@@ -416,7 +416,7 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields& fi
   {
     case pktInt:
       Q_ASSERT( primaryKeyAttrs.size() == 1 );
-      whereClause = QString( "%1=%2" ).arg( QgsOracleConn::quotedIdentifier( fields[ primaryKeyAttrs[0] ].name() ) ).arg( featureId );
+      whereClause = QString( "%1=%2" ).arg( QgsOracleConn::quotedIdentifier( fields.at( primaryKeyAttrs[0] ).name() ) ).arg( featureId );
       break;
 
     case pktRowId:
@@ -966,9 +966,9 @@ bool QgsOracleProvider::determinePrimaryKey()
     int idx = fieldNameIndex( mUri.keyColumn() );
 
     if ( idx >= 0 && (
-           mAttributeFields[idx].type() == QVariant::Int ||
-           mAttributeFields[idx].type() == QVariant::LongLong ||
-           mAttributeFields[idx].type() == QVariant::Double
+           mAttributeFields.at( idx ).type() == QVariant::Int ||
+           mAttributeFields.at( idx ).type() == QVariant::LongLong ||
+           mAttributeFields.at( idx ).type() == QVariant::Double
          ) )
     {
       if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
@@ -1299,7 +1299,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
         }
         else
         {
-          values += delim + quotedValue( v, mAttributeFields[idx].type() );
+          values += delim + quotedValue( v, mAttributeFields.at( idx ).type() );
         }
       }
       else
@@ -2091,7 +2091,7 @@ bool QgsOracleProvider::setSubsetString( const QString& theSQL, bool updateFeatu
   }
   qry.finish();
 
-  if ( mPrimaryKeyType == pktInt && !uniqueData( mQuery, mAttributeFields[ mPrimaryKeyAttrs[0] ].name() ) )
+  if ( mPrimaryKeyType == pktInt && !uniqueData( mQuery, mAttributeFields.at( mPrimaryKeyAttrs[0] ).name() ) )
   {
     mSqlWhereClause = prevWhere;
     return false;
@@ -2649,7 +2649,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
     int idx = fields.indexFromName( primaryKey );
     if ( idx >= 0 )
     {
-      QgsField fld = fields[idx];
+      QgsField fld = fields.at( idx );
       if ( convertField( fld ) )
       {
         primaryKeyType = fld.typeName();
@@ -2856,7 +2856,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
     QList<QgsField> launderedFields;
     for ( int i = 0; i < fields.size(); i++ )
     {
-      QgsField fld = fields[i];
+      QgsField fld = fields.at( i );
 
       QString name = fld.name().left( 30 ).toUpper();
 

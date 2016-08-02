@@ -144,7 +144,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
       QString pk = primaryKey = "pk";
       for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
-        if ( fields[fldIdx].name() == primaryKey )
+        if ( fields.at( fldIdx ).name() == primaryKey )
         {
           // it already exists, try again with a new name
           primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
@@ -157,10 +157,10 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
       // search for the passed field
       for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
-        if ( fields[fldIdx].name() == primaryKey )
+        if ( fields.at( fldIdx ).name() == primaryKey )
         {
           // found, get the field type
-          QgsField fld = fields[fldIdx];
+          QgsField fld = fields.at( fldIdx );
           if ( convertField( fld ) )
           {
             primaryKeyType = fld.typeName();
@@ -357,7 +357,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
     QList<QgsField> flist;
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      QgsField fld = fields[fldIdx];
+      QgsField fld = fields.at( fldIdx );
       if ( fld.name() == primaryKey )
         continue;
 

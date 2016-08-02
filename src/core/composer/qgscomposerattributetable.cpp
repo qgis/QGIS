@@ -241,7 +241,7 @@ void QgsComposerAttributeTable::setDisplayAttributes( const QSet<int>& attr, boo
       }
       QString currentAlias = mVectorLayer->attributeDisplayName( attrIdx );
       QgsComposerTableColumn* col = new QgsComposerTableColumn;
-      col->setAttribute( fields[attrIdx].name() );
+      col->setAttribute( fields.at( attrIdx ).name() );
       col->setHeading( currentAlias );
       mColumns.append( col );
     }
@@ -652,7 +652,7 @@ bool QgsComposerAttributeTable::readXml( const QDomElement& itemElem, const QDom
       //find corresponding column
       Q_FOREACH ( QgsComposerTableColumn* column, mColumns )
       {
-        if ( column->attribute() == fields[attribute].name() )
+        if ( column->attribute() == fields.at( attribute ).name() )
         {
           column->setSortByRank( i + 1 );
           column->setSortOrder( order );

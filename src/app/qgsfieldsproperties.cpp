@@ -576,7 +576,7 @@ void QgsFieldsProperties::attributeAdded( int idx )
   const QgsFields &fields = mLayer->fields();
   int row = mFieldsList->rowCount();
   mFieldsList->insertRow( row );
-  setRow( row, idx, fields[idx] );
+  setRow( row, idx, fields.at( idx ) );
   mFieldsList->setCurrentCell( row, idx );
 
   for ( int i = idx + 1; i < mIndexedWidgets.count(); i++ )

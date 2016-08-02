@@ -618,9 +618,9 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
         return false;
       }
 
-      QgsField field( fieldName, tableFields[idx].type(), tableFields[idx].typeName() );
+      QgsField field( fieldName, tableFields.at( idx ).type(), tableFields.at( idx ).typeName() );
       mapFieldNameToSrcLayerNameFieldName[ field.name()] =
-        QPair<QString, QString>( columnTableTypename, tableFields[idx].name() );
+        QPair<QString, QString>( columnTableTypename, tableFields.at( idx ).name() );
       mShared->mFields.append( field );
     }
   }
