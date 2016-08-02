@@ -23,7 +23,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:multi_to_single fid="lines.2">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>5.024184261036468,2.414779270633399 5,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>5.02418426103647,2.4147792706334 5,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
     </ogr:multi_to_single>
   </gml:featureMember>
   <gml:featureMember>
@@ -37,12 +37,12 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:multi_to_single fid="lines.4">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>2.944337811900192,4.04721689059501 5.459500959692898,4.119769673704415</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>2.94433781190019,4.04721689059501 5.4595009596929,4.11976967370441</gml:coordinates></gml:LineString></ogr:geometryProperty>
     </ogr:multi_to_single>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:multi_to_single fid="lines.4">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>3,3 5.58042226487524,2.946833013435702</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>3,3 5.58042226487524,2.9468330134357</gml:coordinates></gml:LineString></ogr:geometryProperty>
     </ogr:multi_to_single>
   </gml:featureMember>
 </ogr:FeatureCollection>
