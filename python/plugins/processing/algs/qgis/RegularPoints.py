@@ -88,7 +88,7 @@ class RegularPoints(GeoAlgorithm):
         mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, Qgis.WKBPoint, mapCRS)
+            fields, QgsWkbTypes.Point, mapCRS)
 
         if randomize:
             seed()

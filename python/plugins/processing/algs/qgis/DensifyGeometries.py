@@ -62,7 +62,7 @@ class DensifyGeometries(GeoAlgorithm):
             self.getParameterValue(self.INPUT))
         vertices = self.getParameterValue(self.VERTICES)
 
-        isPolygon = layer.geometryType() == Qgis.Polygon
+        isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
 
         writer = self.getOutputFromName(
             self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),

@@ -98,7 +98,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
                 layer.pendingFields().toList(),
-                Qgis.WKBPolygon,
+                QgsWkbTypes.Polygon,
                 layer.crs())
 
         outFeat = QgsFeature()

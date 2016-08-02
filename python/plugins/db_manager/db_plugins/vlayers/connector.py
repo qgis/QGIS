@@ -129,7 +129,7 @@ class VLayerConnector(DBConnector):
         if not p.isValid():
             return []
         f = [f.name() for f in p.fields()]
-        if p.geometryType() != Qgis.WKBNoGeometry:
+        if p.geometryType() != QgsWkbTypes.NoGeometry:
             gn = getQueryGeometryName(tmp)
             if gn:
                 f += [gn]
@@ -200,40 +200,40 @@ class VLayerConnector(DBConnector):
                 geomType = None
                 dim = None
                 g = l.dataProvider().geometryType()
-                if g == Qgis.WKBPoint:
+                if g == QgsWkbTypes.Point:
                     geomType = 'POINT'
                     dim = 'XY'
-                elif g == Qgis.WKBLineString:
+                elif g == QgsWkbTypes.LineString:
                     geomType = 'LINESTRING'
                     dim = 'XY'
-                elif g == Qgis.WKBPolygon:
+                elif g == QgsWkbTypes.Polygon:
                     geomType = 'POLYGON'
                     dim = 'XY'
-                elif g == Qgis.WKBMultiPoint:
+                elif g == QgsWkbTypes.MultiPoint:
                     geomType = 'MULTIPOINT'
                     dim = 'XY'
-                elif g == Qgis.WKBMultiLineString:
+                elif g == QgsWkbTypes.MultiLineString:
                     geomType = 'MULTILINESTRING'
                     dim = 'XY'
-                elif g == Qgis.WKBMultiPolygon:
+                elif g == QgsWkbTypes.MultiPolygon:
                     geomType = 'MULTIPOLYGON'
                     dim = 'XY'
-                elif g == Qgis.WKBPoint25D:
+                elif g == QgsWkbTypes.Point25D:
                     geomType = 'POINT'
                     dim = 'XYZ'
-                elif g == Qgis.WKBLineString25D:
+                elif g == QgsWkbTypes.LineString25D:
                     geomType = 'LINESTRING'
                     dim = 'XYZ'
-                elif g == Qgis.WKBPolygon25D:
+                elif g == QgsWkbTypes.Polygon25D:
                     geomType = 'POLYGON'
                     dim = 'XYZ'
-                elif g == Qgis.WKBMultiPoint25D:
+                elif g == QgsWkbTypes.MultiPoint25D:
                     geomType = 'MULTIPOINT'
                     dim = 'XYZ'
-                elif g == Qgis.WKBMultiLineString25D:
+                elif g == QgsWkbTypes.MultiLineString25D:
                     geomType = 'MULTILINESTRING'
                     dim = 'XYZ'
-                elif g == Qgis.WKBMultiPolygon25D:
+                elif g == QgsWkbTypes.MultiPolygon25D:
                     geomType = 'MULTIPOLYGON'
                     dim = 'XYZ'
                 lst.append(

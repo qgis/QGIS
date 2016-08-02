@@ -108,7 +108,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
-        self.maskSelector.setLayers([x for x in Utils.LayerRegistry.instance().getVectorLayers() if x.geometryType() == Qgis.Polygon])
+        self.maskSelector.setLayers([x for x in Utils.LayerRegistry.instance().getVectorLayers() if x.geometryType() == QgsWkbTypes.PolygonGeometry])
 
     def fillInputFile(self):
         lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()

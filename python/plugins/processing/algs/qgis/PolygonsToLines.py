@@ -60,7 +60,7 @@ class PolygonsToLines(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), Qgis.WKBLineString, layer.crs())
+            layer.pendingFields().toList(), QgsWkbTypes.LineString, layer.crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -84,7 +84,7 @@ class PolygonsToLines(GeoAlgorithm):
     def extractAsLine(self, geom):
         multiGeom = QgsGeometry()
         lines = []
-        if geom and geom.type() == Qgis.Polygon:
+        if geom and geom.type() == QgsWkbTypes.PolygonGeometry:
             if geom.isMultipart():
                 multiGeom = geom.asMultiPolygon()
                 for i in multiGeom:

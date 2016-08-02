@@ -83,7 +83,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, Qgis.WKBPoint, layer.dataProvider().crs())
+            fields, QgsWkbTypes.Point, layer.dataProvider().crs())
 
         da = QgsDistanceArea()
 

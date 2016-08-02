@@ -59,7 +59,7 @@ class LinesToPolygons(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), Qgis.WKBPolygon, layer.crs()
+            layer.pendingFields().toList(), QgsWkbTypes.Polygon, layer.crs()
         )
 
         outFeat = QgsFeature()

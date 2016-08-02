@@ -82,7 +82,7 @@ class RandomPointsExtent(GeoAlgorithm):
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
         mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, Qgis.WKBPoint, mapCRS)
+            fields, QgsWkbTypes.Point, mapCRS)
 
         nPoints = 0
         nIterations = 0

@@ -50,7 +50,7 @@ class Explode(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
-        writer = output.getVectorWriter(fields, Qgis.WKBLineString,
+        writer = output.getVectorWriter(fields, QgsWkbTypes.LineString,
                                         vlayer.crs())
         outFeat = QgsFeature()
         features = vector.features(vlayer)

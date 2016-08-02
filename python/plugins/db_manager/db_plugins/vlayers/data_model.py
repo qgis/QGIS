@@ -87,7 +87,7 @@ class LSqlResultModel(BaseTableModel):
         else:
             header = [f.name() for f in p.fields()]
             has_geometry = False
-            if p.geometryType() != Qgis.WKBNoGeometry:
+            if p.geometryType() != QgsWkbTypes.NoGeometry:
                 gn = getQueryGeometryName(tmp)
                 if gn:
                     has_geometry = True

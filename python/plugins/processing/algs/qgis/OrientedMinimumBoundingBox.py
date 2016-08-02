@@ -59,7 +59,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
             self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
-        if byFeature and layer.geometryType() == Qgis.Point and layer.featureCount() <= 2:
+        if byFeature and layer.geometryType() == QgsWkbTypes.PointGeometry and layer.featureCount() <= 2:
             raise GeoAlgorithmExecutionException(self.tr("Can't calculate an OMBB for each point, it's a point. The number of points must be greater than 2"))
 
         fields = [
@@ -71,7 +71,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     Qgis.WKBPolygon, layer.crs())
+                                                                     QgsWkbTypes.Polygon, layer.crs())
 
         if byFeature:
             self.featureOmbb(layer, writer, progress)
@@ -141,7 +141,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
     def OMBBox(self, geom):
         g = geom.convexHull()
 
-        if g.type() != Qgis.Polygon:
+        if g.type() != QgsWkbTypes.PolygonGeometry:
             return None, None, None, None, None, None
         r = g.asPolygon()[0]
 

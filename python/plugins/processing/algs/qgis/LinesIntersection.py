@@ -86,7 +86,7 @@ class LinesIntersection(GeoAlgorithm):
                      layerB.pendingFields()[idxB]]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                                                                     Qgis.WKBPoint, layerA.dataProvider().crs())
+                                                                     QgsWkbTypes.Point, layerA.dataProvider().crs())
 
         spatialIndex = vector.spatialindex(layerB)
 
@@ -115,7 +115,7 @@ class LinesIntersection(GeoAlgorithm):
 
                     if inGeom.intersects(tmpGeom):
                         tempGeom = inGeom.intersection(tmpGeom)
-                        if tempGeom.type() == Qgis.Point:
+                        if tempGeom.type() == QgsWkbTypes.PointGeometry:
                             if tempGeom.isMultipart():
                                 points = tempGeom.asMultiPoint()
                             else:

@@ -153,17 +153,17 @@ class TestQgsSymbolV2(unittest.TestCase):
         painter.begin(image)
         image.fill(QColor(0, 0, 0))
 
-        if geom.type() == Qgis.Polygon:
+        if geom.type() == QgsWkbTypes.PolygonGeometry:
             self.fill_symbol.startRender(context)
             self.fill_symbol.renderFeature(f, context)
             self.fill_symbol.stopRender(context)
 
-        elif geom.type() == Qgis.Line:
+        elif geom.type() == QgsWkbTypes.LineGeometry:
             self.line_symbol.startRender(context)
             self.line_symbol.renderFeature(f, context)
             self.line_symbol.stopRender(context)
 
-        elif geom.type() == Qgis.Point:
+        elif geom.type() == QgsWkbTypes.PointGeometry:
             self.marker_symbol.startRender(context)
             self.marker_symbol.renderFeature(f, context)
             self.marker_symbol.stopRender(context)

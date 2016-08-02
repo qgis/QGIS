@@ -74,12 +74,12 @@ class ExportGeometryInfo(GeoAlgorithm):
         geometryType = layer.geometryType()
         fields = layer.pendingFields()
 
-        if geometryType == Qgis.Polygon:
+        if geometryType == QgsWkbTypes.PolygonGeometry:
             areaName = vector.createUniqueFieldName('area', fields)
             fields.append(QgsField(areaName, QVariant.Double))
             perimeterName = vector.createUniqueFieldName('perimeter', fields)
             fields.append(QgsField(perimeterName, QVariant.Double))
-        elif geometryType == Qgis.Line:
+        elif geometryType == QgsWkbTypes.LineGeometry:
             lengthName = vector.createUniqueFieldName('length', fields)
             fields.append(QgsField(lengthName, QVariant.Double))
         else:

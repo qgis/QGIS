@@ -81,7 +81,7 @@ class PointsToPaths(GeoAlgorithm):
         fields.append(QgsField('begin', QVariant.String, '', 254, 0))
         fields.append(QgsField('end', QVariant.String, '', 254, 0))
         writer = self.getOutputFromName(self.OUTPUT_LINES).getVectorWriter(
-            fields, Qgis.WKBLineString, layer.dataProvider().crs())
+            fields, QgsWkbTypes.LineString, layer.dataProvider().crs())
 
         points = dict()
         features = vector.features(layer)

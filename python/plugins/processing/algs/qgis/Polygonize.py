@@ -96,7 +96,7 @@ class Polygonize(GeoAlgorithm):
         progress.setPercentage(50)
 
         progress.setInfo('Saving polygons...')
-        writer = output.getVectorWriter(fields, Qgis.WKBPolygon, vlayer.crs())
+        writer = output.getVectorWriter(fields, QgsWkbTypes.Polygon, vlayer.crs())
         outFeat = QgsFeature()
         total = 50.0 / len(polygons)
         for current, polygon in enumerate(polygons):

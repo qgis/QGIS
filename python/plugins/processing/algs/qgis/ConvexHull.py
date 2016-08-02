@@ -97,7 +97,7 @@ class ConvexHull(GeoAlgorithm):
                   ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, Qgis.WKBPolygon, layer.dataProvider().crs())
+            fields, QgsWkbTypes.Polygon, layer.dataProvider().crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

@@ -65,7 +65,7 @@ class PointsLayerFromTable(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
-        writer = output.getVectorWriter(fields, Qgis.WKBPoint, self.crs)
+        writer = output.getVectorWriter(fields, QgsWkbTypes.Point, self.crs)
         xfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.XFIELD))
         yfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.YFIELD))
 

@@ -174,9 +174,9 @@ def load(fileName, name=None, crs=None, style=None):
         if crs is not None and qgslayer.crs() is None:
             qgslayer.setCrs(crs, False)
         if style is None:
-            if qgslayer.geometryType() == Qgis.Point:
+            if qgslayer.geometryType() == QgsWkbTypes.PointGeometry:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
-            elif qgslayer.geometryType() == Qgis.Line:
+            elif qgslayer.geometryType() == QgsWkbTypes.LineGeometry:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
             else:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
@@ -365,7 +365,7 @@ def exportTable(table):
         or unicode(table.source()).endswith('shp')
     if not isDbf or not isASCII:
         writer = QgsVectorFileWriter(output, systemEncoding,
-                                     provider.fields(), Qgis.WKBNoGeometry,
+                                     provider.fields(), QgsWkbTypes.NoGeometry,
                                      QgsCoordinateReferenceSystem('4326'))
         for feat in table.getFeatures():
             writer.addFeature(feat)

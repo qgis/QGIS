@@ -1499,7 +1499,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.rendererChanged = False
         layer.rendererChanged.connect(self.onRendererChanged)
 
-        r = QgsSingleSymbolRendererV2(QgsSymbolV2.defaultSymbol(Qgis.Point))
+        r = QgsSingleSymbolRendererV2(QgsSymbolV2.defaultSymbol(QgsWkbTypes.PointGeometry))
         layer.setRendererV2(r)
         self.assertTrue(self.rendererChanged)
         self.assertEqual(layer.rendererV2(), r)

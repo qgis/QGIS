@@ -62,7 +62,7 @@ class ExtractNodes(GeoAlgorithm):
             self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), Qgis.WKBPoint, layer.crs())
+            layer.pendingFields().toList(), QgsWkbTypes.Point, layer.crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

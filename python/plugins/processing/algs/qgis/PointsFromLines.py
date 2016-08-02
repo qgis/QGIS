@@ -67,7 +67,7 @@ class PointsFromLines(GeoAlgorithm):
         fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), Qgis.WKBPoint, layer.crs())
+            fields.toList(), QgsWkbTypes.Point, layer.crs())
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)

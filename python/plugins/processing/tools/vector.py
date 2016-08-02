@@ -46,13 +46,13 @@ from processing.tools import dataobjects, spatialite, postgis
 
 
 GEOM_TYPE_MAP = {
-    Qgis.WKBNoGeometry: 'none',
-    Qgis.WKBPoint: 'Point',
-    Qgis.WKBLineString: 'LineString',
-    Qgis.WKBPolygon: 'Polygon',
-    Qgis.WKBMultiPoint: 'MultiPoint',
-    Qgis.WKBMultiLineString: 'MultiLineString',
-    Qgis.WKBMultiPolygon: 'MultiPolygon',
+    QgsWkbTypes.NoGeometry: 'none',
+    QgsWkbTypes.Point: 'Point',
+    QgsWkbTypes.LineString: 'LineString',
+    QgsWkbTypes.Polygon: 'Polygon',
+    QgsWkbTypes.MultiPoint: 'MultiPoint',
+    QgsWkbTypes.MultiLineString: 'MultiLineString',
+    QgsWkbTypes.MultiPolygon: 'MultiPolygon',
 }
 
 
@@ -241,19 +241,19 @@ def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
 
 def extractPoints(geom):
     points = []
-    if geom.type() == Qgis.Point:
+    if geom.type() == QgsWkbTypes.PointGeometry:
         if geom.isMultipart():
             points = geom.asMultiPoint()
         else:
             points.append(geom.asPoint())
-    elif geom.type() == Qgis.Line:
+    elif geom.type() == QgsWkbTypes.LineGeometry:
         if geom.isMultipart():
             lines = geom.asMultiPolyline()
             for line in lines:
                 points.extend(line)
         else:
             points = geom.asPolyline()
-    elif geom.type() == Qgis.Polygon:
+    elif geom.type() == QgsWkbTypes.PolygonGeometry:
         if geom.isMultipart():
             polygons = geom.asMultiPolygon()
             for poly in polygons:
@@ -273,11 +273,11 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
     # 1 - project CRS
     # 2 - ellipsoidal
 
-    if geom.wkbType() in [Qgis.WKBPoint, Qgis.WKBPoint25D]:
+    if geom.wkbType() in [QgsWkbTypes.Point, QgsWkbTypes.Point25D]:
         pt = geom.asPoint()
         attr1 = pt.x()
         attr2 = pt.y()
-    elif geom.wkbType() in [Qgis.WKBMultiPoint, Qgis.WKBMultiPoint25D]:
+    elif geom.wkbType() in [QgsWkbTypes.MultiPoint, QgsWkbTypes.MultiPoint25D]:
         pt = geom.asMultiPoint()
         attr1 = pt[0].x()
         attr2 = pt[0].y()
@@ -290,7 +290,7 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
             measure.setEllipsoidalMode(True)
 
         attr1 = measure.measure(geom)
-        if geom.type() == Qgis.Polygon:
+        if geom.type() == QgsWkbTypes.PolygonGeometry:
             attr2 = measure.measurePerimeter(geom)
         else:
             attr2 = None
@@ -347,11 +347,11 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
 
     if layer.type() == QgsMapLayer.VectorLayer:
         geomType = layer.geometryType()
-        if geomType == Qgis.Point:
+        if geomType == QgsWkbTypes.PointGeometry:
             strType = 'Point'
-        elif geomType == Qgis.Line:
+        elif geomType == QgsWkbTypes.LineGeometry:
             strType = 'Line'
-        elif geomType == Qgis.Polygon:
+        elif geomType == QgsWkbTypes.PolygonGeometry:
             strType = 'Polygon'
         else:
             raise RuntimeError('Layer is whether Point nor Line nor Polygon')
@@ -596,7 +596,7 @@ class VectorWriter:
                                   for f in fields)
 
             _runSQL("CREATE TABLE %s.%s (%s)" % (uri.schema(), uri.table().lower(), fieldsdesc))
-            if geometryType != Qgis.WKBNoGeometry:
+            if geometryType != QgsWkbTypes.NoGeometry:
                 _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
                     table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
                     typmod=GEOM_TYPE_MAP[geometryType].upper()))
@@ -627,7 +627,7 @@ class VectorWriter:
 
             _runSQL("DROP TABLE IF EXISTS %s" % uri.table().lower())
             _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
-            if geometryType != Qgis.WKBNoGeometry:
+            if geometryType != QgsWkbTypes.NoGeometry:
                 _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
                     table=uri.table().lower(), srid=crs.authid().split(":")[-1],
                     typmod=GEOM_TYPE_MAP[geometryType].upper()))
@@ -650,7 +650,7 @@ class VectorWriter:
                 extension = 'shp'
                 self.destination = self.destination + '.shp'
 
-            if geometryType == Qgis.WKBNoGeometry:
+            if geometryType == QgsWkbTypes.NoGeometry:
                 if extension == 'shp':
                     extension = 'dbf'
                     self.destination = self.destination[:self.destination.rfind('.')] + '.dbf'

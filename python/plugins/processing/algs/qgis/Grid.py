@@ -102,9 +102,9 @@ class Grid(GeoAlgorithm):
 
         #if self.types[idx].find(self.tr('polygon')) >= 0:
         if idx != 0:
-            geometryType = Qgis.WKBPolygon
+            geometryType = QgsWkbTypes.Polygon
         else:
-            geometryType = Qgis.WKBLineString
+            geometryType = QgsWkbTypes.LineString
 
         fields = [QgsField('left', QVariant.Double, '', 24, 16),
                   QgsField('top', QVariant.Double, '', 24, 16),

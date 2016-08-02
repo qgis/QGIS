@@ -87,7 +87,7 @@ class MeanCoords(GeoAlgorithm):
                      QgsField('UID', QVariant.String, '', 255)]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fieldList, Qgis.WKBPoint, layer.crs()
+            fieldList, QgsWkbTypes.Point, layer.crs()
         )
 
         features = vector.features(layer)

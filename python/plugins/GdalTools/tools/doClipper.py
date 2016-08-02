@@ -109,7 +109,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
-        self.maskSelector.setLayers([x for x in Utils.LayerRegistry.instance().getVectorLayers() if x.geometryType() == Qgis.Polygon])
+        self.maskSelector.setLayers([x for x in Utils.LayerRegistry.instance().getVectorLayers() if x.geometryType() == QgsWkbTypes.PolygonGeometry])
         self.checkRun()
 
     def fillInputFileEdit(self):

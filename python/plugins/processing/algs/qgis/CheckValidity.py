@@ -128,7 +128,7 @@ class CheckValidity(GeoAlgorithm):
                      len=255)]
         error_writer = error_ouput.getVectorWriter(
             error_fields,
-            Qgis.WKBPoint,
+            QgsWkbTypes.Point,
             layer.crs())
         error_count = 0
 

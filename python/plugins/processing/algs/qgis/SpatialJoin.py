@@ -162,7 +162,7 @@ class SpatialJoin(GeoAlgorithm):
             inGeom = vector.snapToPrecision(f.geometry(), precision)
             none = True
             joinList = []
-            if inGeom.type() == Qgis.Point:
+            if inGeom.type() == QgsWkbTypes.PointGeometry:
                 bbox = inGeom.buffer(10, 2).boundingBox()
             else:
                 bbox = inGeom.boundingBox()

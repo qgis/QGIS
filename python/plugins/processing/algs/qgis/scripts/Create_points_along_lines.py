@@ -33,7 +33,7 @@ def create_points(feat):
 layer = processing.getObject(Lines)
 fields = layer.dataProvider().fields()
 fields.append(QgsField('Distance', QVariant.Double))
-writer = VectorWriter(output, None, fields, Qgis.WKBPoint,
+writer = VectorWriter(output, None, fields, QgsWkbTypes.Point,
                       layer.crs())
 
 feats = processing.features(layer)

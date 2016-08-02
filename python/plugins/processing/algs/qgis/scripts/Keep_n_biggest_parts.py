@@ -16,7 +16,7 @@ polyLayer = processing.getObject(Polygons)
 polyPrder = polyLayer.dataProvider()
 count = polyLayer.featureCount()
 writer = processing.VectorWriter(Results, None, polyPrder.fields(),
-                                 Qgis.WKBMultiPolygon, polyPrder.crs())
+                                 QgsWkbTypes.MultiPolygon, polyPrder.crs())
 
 
 for n, feat in enumerate(processing.features(polyLayer)):

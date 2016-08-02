@@ -71,7 +71,7 @@ class HubLines(GeoAlgorithm):
                 self.tr('Same layer given for both hubs and spokes'))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layerSpoke.pendingFields(), Qgis.WKBLineString, layerSpoke.crs())
+            layerSpoke.pendingFields(), QgsWkbTypes.LineString, layerSpoke.crs())
 
         spokes = vector.features(layerSpoke)
         hubs = vector.features(layerHub)
