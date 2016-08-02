@@ -1,4 +1,18 @@
 
+/** \ingroup core
+ * Feedback object tailored for raster block reading.
+ *
+ * @note added in QGIS 3.0
+ */
+class QgsRasterBlockFeedback : QgsFeedback
+{
+%TypeHeaderCode
+#include <qgsrasterinterface.h>
+%End
+    // TODO: extend with preview functionality??
+};
+
+
 /** Base class for processing modules.
  *
  */
@@ -129,8 +143,9 @@ class QgsRasterInterface
      * @param extent extent of block
      * @param width pixel width of block
      * @param height pixel height of block
+     * @param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 /Factory/;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0 /Factory/;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */

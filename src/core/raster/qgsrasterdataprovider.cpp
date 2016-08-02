@@ -42,7 +42,7 @@ void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
   mUseSrcNoDataValue[bandNo-1] = use;
 }
 
-QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  const & theExtent, int theWidth, int theHeight )
+QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  const & theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback )
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 theWidth = %2 theHeight = %3" ).arg( theBandNo ).arg( theWidth ).arg( theHeight ), 4 );
   QgsDebugMsgLevel( QString( "theExtent = %1" ).arg( theExtent.toString() ), 4 );
@@ -154,7 +154,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
       tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight );
     }
 
-    readBlock( theBandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits() );
+    readBlock( theBandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback );
 
     int pixelSize = dataTypeSize( theBandNo );
 
@@ -204,7 +204,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   }
   else
   {
-    readBlock( theBandNo, theExtent, theWidth, theHeight, block->bits() );
+    readBlock( theBandNo, theExtent, theWidth, theHeight, block->bits(), feedback );
   }
 
   // apply scale and offset

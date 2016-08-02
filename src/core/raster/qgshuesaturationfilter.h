@@ -49,7 +49,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     bool setInput( QgsRasterInterface* input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void setSaturation( int saturation );
     int saturation() const { return mSaturation; }

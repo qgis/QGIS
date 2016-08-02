@@ -163,7 +163,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
+    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
 
     virtual QgsRectangle extent() const override;
@@ -363,6 +363,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   private:
 
+    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback* feedback );
+
     /**
      * Try to get best extent for the layer in given CRS. Returns true on success, false otherwise (layer not found, invalid CRS, transform failed)
      */
@@ -561,7 +563,7 @@ class QgsWmsImageDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image );
+    QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image, QgsRasterBlockFeedback* feedback );
     ~QgsWmsImageDownloadHandler();
 
     void downloadBlocking();
@@ -569,6 +571,7 @@ class QgsWmsImageDownloadHandler : public QObject
   protected slots:
     void cacheReplyFinished();
     void cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal );
+    void cancelled();
 
   protected:
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
@@ -600,13 +603,14 @@ class QgsWmsTiledImageDownloadHandler : public QObject
       int index;
     };
 
-    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform );
+    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback* feedback );
     ~QgsWmsTiledImageDownloadHandler();
 
     void downloadBlocking();
 
   protected slots:
     void tileReplyFinished();
+    void cancelled();
 
   protected:
     /**

@@ -194,6 +194,14 @@ static void dumpBacktrace( unsigned int depth )
     depth = 20;
 
 #if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
+  // Below there is a bunch of operations that are not safe in multi-threaded
+  // environment (dup()+close() combo, wait(), juggling with file descriptors).
+  // Maybe some problems could be resolved with dup2() and waitpid(), but it seems
+  // that if the operations on descriptors are not serialized, things will get nasty.
+  // That's why there's this lovely mutex here...
+  static QMutex mutex;
+  QMutexLocker locker( &mutex );
+
   int stderr_fd = -1;
   if ( access( "/usr/bin/c++filt", X_OK ) < 0 )
   {

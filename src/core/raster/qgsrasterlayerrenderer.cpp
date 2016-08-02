@@ -29,8 +29,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
     , mRasterViewPort( nullptr )
     , mPipe( nullptr )
     , mContext( rendererContext )
+    , mFeedback( new QgsRasterBlockFeedback() )
 {
-
   mPainter = rendererContext.painter();
   const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
   mMapToPixel = &theQgsMapToPixel;
@@ -181,6 +181,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
 {
+  delete mFeedback;
+
   delete mRasterViewPort;
   delete mPipe;
 }
@@ -213,9 +215,14 @@ bool QgsRasterLayerRenderer::render()
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
-  drawer.draw( mPainter, mRasterViewPort, mMapToPixel, &mContext );
+  drawer.draw( mPainter, mRasterViewPort, mMapToPixel, mFeedback );
 
   QgsDebugMsgLevel( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 
   return true;
+}
+
+QgsFeedback* QgsRasterLayerRenderer::feedback() const
+{
+  return mFeedback;
 }

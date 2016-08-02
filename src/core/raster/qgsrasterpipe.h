@@ -19,9 +19,10 @@
 #define QGSRASTERPIPE_H
 
 #include <QImage>
+#include <QMap>
 #include <QObject>
-#include "qgsrasterinterface.h"
 
+class QgsRasterInterface;
 class QgsRasterRenderer;
 class QgsRasterResampleFilter;
 class QgsBrightnessContrastFilter;

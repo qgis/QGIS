@@ -481,6 +481,11 @@ void QgsWmsProvider::setFormatQueryItem( QUrl &url )
 
 QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, int pixelHeight )
 {
+  return draw( viewExtent, pixelWidth, pixelHeight, nullptr );
+}
+
+QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback* feedback )
+{
   QgsDebugMsg( "Entering." );
 
   // Can we reuse the previously cached image?
@@ -580,7 +585,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 
     emit statusChanged( tr( "Getting map via WMS." ) );
 
-    QgsWmsImageDownloadHandler handler( dataSourceUri(), url, mSettings.authorization(), mCachedImage );
+    QgsWmsImageDownloadHandler handler( dataSourceUri(), url, mSettings.authorization(), mCachedImage, feedback );
     handler.downloadBlocking();
   }
   else
@@ -846,7 +851,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 
     emit statusChanged( tr( "Getting tiles." ) );
 
-    QgsWmsTiledImageDownloadHandler handler( dataSourceUri(), mSettings.authorization(), mTileReqNo, requests, mCachedImage, mCachedViewExtent, mSettings.mSmoothPixmapTransform );
+    QgsWmsTiledImageDownloadHandler handler( dataSourceUri(), mSettings.authorization(), mTileReqNo, requests, mCachedImage, mCachedViewExtent, mSettings.mSmoothPixmapTransform, feedback );
     handler.downloadBlocking();
 
 
@@ -863,11 +868,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   return mCachedImage;
 }
 
-void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
+void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
   // TODO: optimize to avoid writing to QImage
-  QImage *image = draw( viewExtent, pixelWidth, pixelHeight );
+  QImage *image = draw( viewExtent, pixelWidth, pixelHeight, feedback );
   if ( !image )   // should not happen
   {
     QgsMessageLog::logMessage( tr( "image is NULL" ), tr( "WMS" ) );
@@ -3217,7 +3222,7 @@ QGISEXTERN bool isProvider()
 
 // -----------------
 
-QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image )
+QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image, QgsRasterBlockFeedback* feedback )
     : mProviderUri( providerUri )
     , mCachedImage( image )
     , mEventLoop( new QEventLoop )
@@ -3231,6 +3236,8 @@ QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString& providerU
 
   Q_ASSERT( mCacheReply->thread() == QThread::currentThread() );
 
+  if ( feedback )
+    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
 }
 
 QgsWmsImageDownloadHandler::~QgsWmsImageDownloadHandler()
@@ -3324,16 +3331,20 @@ void QgsWmsImageDownloadHandler::cacheReplyFinished()
   }
   else
   {
-    QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
+    // report any errors except for the one we have caused by cancelling the request
+    if ( mCacheReply->error() != QNetworkReply::OperationCanceledError )
+    {
+      QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
 
-    stat.errors++;
-    if ( stat.errors < 100 )
-    {
-      QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WMS" ) );
-    }
-    else if ( stat.errors == 100 )
-    {
-      QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
+      stat.errors++;
+      if ( stat.errors < 100 )
+      {
+        QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WMS" ) );
+      }
+      else if ( stat.errors == 100 )
+      {
+        QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
+      }
     }
 
     mCacheReply->deleteLater();
@@ -3350,11 +3361,22 @@ void QgsWmsImageDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint6
   QgsDebugMsg( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
 }
 
+void QgsWmsImageDownloadHandler::cancelled()
+{
+  QgsDebugMsg( "Caught cancelled() signal" );
+  if ( mCacheReply )
+  {
+    // abort the reply if it is still active
+    QgsDebugMsg( "Aborting WMS network request" );
+    mCacheReply->abort();
+  }
+}
+
 
 // ----------
 
 
-QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int tileReqNo, const QList<QgsWmsTiledImageDownloadHandler::TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform )
+QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int tileReqNo, const QList<QgsWmsTiledImageDownloadHandler::TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback* feedback )
     : mProviderUri( providerUri )
     , mAuth( auth )
     , mCachedImage( cachedImage )
@@ -3379,6 +3401,9 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString&
 
     mReplies << reply;
   }
+
+  if ( feedback )
+    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
 }
 
 QgsWmsTiledImageDownloadHandler::~QgsWmsTiledImageDownloadHandler()
@@ -3586,10 +3611,14 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
   }
   else
   {
-    QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
-    stat.errors++;
+    // report any errors except for the one we have caused by cancelling the request
+    if ( reply->error() != QNetworkReply::OperationCanceledError )
+    {
+      QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
+      stat.errors++;
 
-    repeatTileRequest( reply->request() );
+      repeatTileRequest( reply->request() );
+    }
 
     mReplies.removeOne( reply );
     reply->deleteLater();
@@ -3606,6 +3635,16 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
                       + tr( ", %n errors.", "errors", stat.errors )
                     );
 #endif
+}
+
+void QgsWmsTiledImageDownloadHandler::cancelled()
+{
+  QgsDebugMsg( "Caught cancelled() signal" );
+  Q_FOREACH ( QNetworkReply* reply, mReplies )
+  {
+    QgsDebugMsg( "Aborting tiled network request" );
+    reply->abort();
+  }
 }
 
 

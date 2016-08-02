@@ -414,6 +414,7 @@ be returned instead of a null pointer if no transformation is required.</li>
 <ul>
 <li>srcDataType() has been renamed to sourceDataType()</li>
 <li>srcInput() has been renamed to sourceInput()</li>
+<li>block() has new "feedback" argument.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsRelation QgsRelation

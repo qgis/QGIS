@@ -456,6 +456,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsdataprovider.h
   qgsdbfilterproxymodel.h
   qgseditformconfig.h
+  qgsfeedback.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h

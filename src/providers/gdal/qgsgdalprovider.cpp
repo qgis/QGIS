@@ -387,7 +387,7 @@ QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth,
   return image;
 }
 
-QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback )
 {
   //QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
   QgsRasterBlock *block;
@@ -410,7 +410,7 @@ QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theEx
     QRect subRect = QgsRasterBlock::subRect( theExtent, theWidth, theHeight, mExtent );
     block->setIsNoDataExcept( subRect );
   }
-  readBlock( theBandNo, theExtent, theWidth, theHeight, block->bits() );
+  readBlock( theBandNo, theExtent, theWidth, theHeight, block->bits(), feedback );
   // apply scale and offset
   block->applyScaleOffset( bandScale( theBandNo ), bandOffset( theBandNo ) );
   block->applyNoDataValues( userNoDataValues( theBandNo ) );
@@ -434,7 +434,7 @@ void QgsGdalProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *bl
   gdalRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, block, mXBlockSize, mYBlockSize, ( GDALDataType ) mGdalDataType.at( theBandNo - 1 ), 0, 0 );
 }
 
-void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent, int thePixelWidth, int thePixelHeight, void *theBlock )
+void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent, int thePixelWidth, int thePixelHeight, void *theBlock, QgsRasterBlockFeedback* feedback )
 {
   QgsDebugMsg( "thePixelWidth = "  + QString::number( thePixelWidth ) );
   QgsDebugMsg( "thePixelHeight = "  + QString::number( thePixelHeight ) );
@@ -606,11 +606,12 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALDataType type = ( GDALDataType )mGdalDataType.at( theBandNo - 1 );
   CPLErrorReset();
+
   CPLErr err = gdalRasterIO( gdalBand, GF_Read,
                              srcLeft, srcTop, srcWidth, srcHeight,
                              ( void * )tmpBlock,
                              tmpWidth, tmpHeight, type,
-                             0, 0 );
+                             0, 0, feedback );
 
   if ( err != CPLE_None )
   {
