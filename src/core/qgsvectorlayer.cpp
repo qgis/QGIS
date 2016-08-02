@@ -883,7 +883,7 @@ QgsRectangle QgsVectorLayer::extent() const
     QgsFeature fet;
     while ( fit.nextFeature( fet ) )
     {
-      if ( fet.geometry() && fet.geometry()->type() != QgsWkbTypes::UnknownGeometry )
+      if ( fet.hasGeometry() && fet.geometry().type() != QgsWkbTypes::UnknownGeometry )
       {
         QgsRectangle bb = fet.geometry().boundingBox();
         rect.combineExtentWith( bb );

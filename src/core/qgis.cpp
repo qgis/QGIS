@@ -88,35 +88,6 @@ double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 double Qgis::SCALE_PRECISION = 0.9999999999;
 
 
-Qgis::UnitType Qgis::fromLiteral( const QString& literal, Qgis::UnitType defaultType )
-{
-  bool ok = false;
-  Qgis::UnitType unit = QgsUnitTypes::decodeDistanceUnit( literal, &ok );
-  return ok ? unit : defaultType;
-}
-
-QString Qgis::toLiteral( Qgis::UnitType unit )
-{
-  return QgsUnitTypes::encodeUnit( unit );
-}
-
-QString Qgis::tr( Qgis::UnitType unit )
-{
-  return QgsUnitTypes::toString( unit );
-}
-
-Qgis::UnitType Qgis::fromTr( const QString& literal, Qgis::UnitType defaultType )
-{
-  bool ok = false;
-  Qgis::UnitType unit = QgsUnitTypes::stringToDistanceUnit( literal, &ok );
-  return ok ? unit : defaultType;
-}
-
-double Qgis::fromUnitToUnitFactor( Qgis::UnitType fromUnit, Qgis::UnitType toUnit )
-{
-  return QgsUnitTypes::fromUnitToUnitFactor( fromUnit, toUnit );
-}
-
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators

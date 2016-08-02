@@ -3369,7 +3369,7 @@ void TestQgsGeometry::intersectionCheck1()
   QVERIFY( mpPolygonGeometryA.intersects( mpPolygonGeometryB ) );
   // should be a single polygon as A intersect B
   QgsGeometry mypIntersectionGeometry  =  mpPolygonGeometryA.intersection( mpPolygonGeometryB );
-  qDebug( "Geometry Type: %s", QgsWkbTypes::displayString( mypIntersectionGeometry.wkbType() ) );
+  qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypIntersectionGeometry.wkbType() );
   QVERIFY( mypIntersectionGeometry.wkbType() == QgsWkbTypes::Polygon );
   QgsPolygon myPolygon = mypIntersectionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
@@ -3460,7 +3460,7 @@ void TestQgsGeometry::unionCheck1()
 {
   // should be a multipolygon with 2 parts as A does not intersect C
   QgsGeometry mypUnionGeometry  =  mpPolygonGeometryA.combine( mpPolygonGeometryC );
-  qDebug( "Geometry Type: %s", QgsWkbTypes::displayString( mypUnionGeometry.wkbType() ) );
+  qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypUnionGeometry.wkbType() );
   QVERIFY( mypUnionGeometry.wkbType() == QgsWkbTypes::MultiPolygon );
   QgsMultiPolygon myMultiPolygon = mypUnionGeometry.asMultiPolygon();
   QVERIFY( myMultiPolygon.size() > 0 ); //check that the union did not fail
@@ -3472,7 +3472,7 @@ void TestQgsGeometry::unionCheck2()
 {
   // should be a single polygon as A intersect B
   QgsGeometry mypUnionGeometry  =  mpPolygonGeometryA.combine( mpPolygonGeometryB );
-  qDebug( "Geometry Type: %s", QgsWkbTypes::displayString( mypUnionGeometry.wkbType() ) );
+  qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypUnionGeometry.wkbType() );
   QVERIFY( mypUnionGeometry.wkbType() == QgsWkbTypes::Polygon );
   QgsPolygon myPolygon = mypUnionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
@@ -3484,7 +3484,7 @@ void TestQgsGeometry::differenceCheck1()
 {
   // should be same as A since A does not intersect C so diff is 100% of A
   QgsGeometry mypDifferenceGeometry( mpPolygonGeometryA.difference( mpPolygonGeometryC ) );
-  qDebug( "Geometry Type: %s", QgsWkbTypes::displayString( mypDifferenceGeometry.wkbType() ) );
+  qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypDifferenceGeometry.wkbType() );
   QVERIFY( mypDifferenceGeometry.wkbType() == QgsWkbTypes::Polygon );
   QgsPolygon myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union did not fail
@@ -3496,7 +3496,7 @@ void TestQgsGeometry::differenceCheck2()
 {
   // should be a single polygon as (A - B) = subset of A
   QgsGeometry mypDifferenceGeometry( mpPolygonGeometryA.difference( mpPolygonGeometryB ) );
-  qDebug( "Geometry Type: %s", QgsWkbTypes::displayString( mypDifferenceGeometry.wkbType() ) );
+  qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypDifferenceGeometry.wkbType() );
   QVERIFY( mypDifferenceGeometry.wkbType() == QgsWkbTypes::Polygon );
   QgsPolygon myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
@@ -3507,7 +3507,7 @@ void TestQgsGeometry::bufferCheck()
 {
   // should be a single polygon
   QgsGeometry mypBufferGeometry( mpPolygonGeometryB.buffer( 10, 10 ) );
-  qDebug( "Geometry Type: %s", QgsWkbTypes::displayString( mypBufferGeometry.wkbType() ) );
+  qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypBufferGeometry.wkbType() );
   QVERIFY( mypBufferGeometry.wkbType() == QgsWkbTypes::Polygon );
   QgsPolygon myPolygon = mypBufferGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature

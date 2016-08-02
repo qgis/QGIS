@@ -2435,7 +2435,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 
   // if using perimeter based labeling for polygons, get the polygon's
   // linear boundary and use that for the label geometry
-  if (( geom.type() == Qgis::Polygon )
+  if (( geom.type() == QgsWkbTypes::PolygonGeometry )
       && ( placement == Line || placement == PerimeterCurved ) )
   {
     geom = QgsGeometry( geom.geometry()->boundary() );

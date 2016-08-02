@@ -1445,7 +1445,7 @@ QgsGeometry QgsGeometry::mergeLines() const
     return QgsGeometry();
   }
 
-  if ( QgsWKBTypes::flatType( d->geometry->wkbType() ) == QgsWKBTypes::LineString )
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::LineString )
   {
     // special case - a single linestring was passed
     return QgsGeometry( *this );

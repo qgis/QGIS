@@ -1974,7 +1974,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
           QgsWkbTypes::Type wkbType = geom.geometry()->wkbType();
           if ( wkbType >= QgsWkbTypes::PointZ && wkbType <= QgsWkbTypes::MultiPolygonZ )
           {
-            QgsWkbTypes::Type wkbType25d = static_cast<QgsWkbTypes::Type>( geom->geometry().wkbType() - QgsWkbTypes::PointZ + QgsWkbTypes::Point25D );
+            QgsWkbTypes::Type wkbType25d = static_cast<QgsWkbTypes::Type>( geom.geometry()->wkbType() - QgsWkbTypes::PointZ + QgsWkbTypes::Point25D );
             mGeom2 = createEmptyGeometry( wkbType25d );
           }
         }
@@ -2215,7 +2215,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 
       while ( fit.nextFeature( fet ) )
       {
-        if ( fet.geometry() && !fet.geometry()->isEmpty() && QgsWkbTypes::isMultiType( fet.geometry().geometry()->wkbType() ) )
+        if ( fet.hasGeometry() && QgsWkbTypes::isMultiType( fet.geometry().geometry()->wkbType() ) )
         {
           destWkbType = QgsWkbTypes::multiType( destWkbType );
           break;

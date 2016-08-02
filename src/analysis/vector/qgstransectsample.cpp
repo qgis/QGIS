@@ -186,7 +186,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       minDistanceLayerUnits = minDistance / 111319.9;
     }
 
-    QgsGeometry* clippedBaseline = strataGeom.intersection( baselineGeom );
+    QgsGeometry clippedBaseline = strataGeom.intersection( baselineGeom );
     if ( !clippedBaseline || clippedBaseline.wkbType() == QgsWkbTypes::Unknown )
     {
       continue;
@@ -547,7 +547,7 @@ QgsGeometry QgsTransectSample::closestMultilineElement( const QgsPoint& pt, cons
 
 QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, QgsGeometry* clippedBaseline, double tolerance )
 {
-  if ( !stratumGeom || !clippedBaseline || clippedBaseline.wkbType() == QgsWkbTypes::Unknown )
+  if ( !stratumGeom || !clippedBaseline || clippedBaseline->wkbType() == QgsWkbTypes::Unknown )
   {
     return nullptr;
   }
@@ -621,7 +621,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, 
     }
     bufferLineClipped = bufferLine.intersection( stratumGeom );
 
-    if ( bufferLineClipped && bufferLineClipped.type() == QgsWkbTypes::LineGeometry )
+    if ( bufferLineClipped.isEmpty() && bufferLineClipped.type() == QgsWkbTypes::LineGeometry )
     {
       //if stratumGeom is a multipolygon, bufferLineClipped must intersect each part
       bool bufferLineClippedIntersectsStratum = true;

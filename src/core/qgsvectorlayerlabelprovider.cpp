@@ -323,7 +323,7 @@ void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRende
 
 QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolV2List& symbols )
 {
-  if ( !fet.hasGeometry() || fet.constGeometry()->type() != QgsWkbTypes::PointGeometry )
+  if ( !fet.hasGeometry() || fet.geometry().type() != QgsWkbTypes::PointGeometry )
     return nullptr;
 
   bool isMultiPoint = fet.geometry().geometry()->nCoordinates() > 1;
