@@ -187,11 +187,14 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns a comment for the data in the layer */
     QString dataComment() const;
 
-    /** Set the primary display field to be used in the identify results dialog */
-    void setDisplayField( const QString& fldName = "" );
-
-    /** Returns the primary display field name used in the identify results dialog */
-    const QString displayField() const;
+    /**
+     * This is a shorthand for accessing the displayExpression if it is a simple field.
+     * If the displayExpression is more complex than a simple field, a null string will
+     * be returned.
+     *
+     * @see displayExpression
+     */
+    QString displayField() const;
 
     /** Set the preview expression, used to create a human readable preview string.
      *  Used e.g. in the attribute table feature list. Uses { @link QgsExpression }.
@@ -1414,6 +1417,24 @@ class QgsVectorLayer : QgsMapLayer
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig );
 
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * @note added in 3.0
+     */
+    QString mapTipTemplate() const;
+
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * @note added in 3.0
+     */
+    void setMapTipTemplate( const QString& mapTipTemplate );
+
   public slots:
     /**
      * Select feature by its ID
@@ -1674,6 +1695,20 @@ class QgsVectorLayer : QgsMapLayer
      * @param errorMessage Write error messages into this string.
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
+
+    /**
+     * Emitted when the map tip changes
+     *
+     * @note added in 3.0
+     */
+    void mapTipTemplateChanged();
+
+    /**
+     * Emitted when the display expression changes
+     *
+     * @note added in 3.0
+     */
+    void displayExpressionChanged();
 
     /**
      * Signals an error related to this vector layer.

@@ -409,6 +409,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString displayExpression READ displayExpression WRITE setDisplayExpression NOTIFY displayExpressionChanged )
+    Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
+
   public:
 
     typedef QgsEditFormConfig::GroupData GroupData;
@@ -552,11 +555,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns a comment for the data in the layer */
     QString dataComment() const;
 
-    /** Set the primary display field to be used in the identify results dialog */
-    void setDisplayField( const QString& fldName = "" );
-
-    /** Returns the primary display field name used in the identify results dialog */
-    const QString displayField() const;
+    /**
+     * This is a shorthand for accessing the displayExpression if it is a simple field.
+     * If the displayExpression is more complex than a simple field, a null string will
+     * be returned.
+     *
+     * @see displayExpression
+     */
+    QString displayField() const;
 
     /** Set the preview expression, used to create a human readable preview string.
      *  Used e.g. in the attribute table feature list. Uses { @link QgsExpression }.
@@ -564,7 +570,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  @param displayExpression The expression which will be used to preview features
      *                           for this layer
      */
-    void setDisplayExpression( const QString &displayExpression );
+    void setDisplayExpression( const QString& displayExpression );
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
@@ -626,7 +632,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void removeExpressionField( int index );
 
     /**
-     * Returns the expressoin used for a given expression field
+     * Returns the expression used for a given expression field
      *
      * @param index An index of an epxression based (virtual) field
      *
@@ -1821,6 +1827,24 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig );
 
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * @note added in 3.0
+     */
+    QString mapTipTemplate() const;
+
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * @note added in 3.0
+     */
+    void setMapTipTemplate( const QString& mapTipTemplate );
+
   public slots:
     /**
      * Select feature by its ID
@@ -2083,6 +2107,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
 
     /**
+     * Emitted when the map tip changes
+     *
+     * @note added in 3.0
+     */
+    void mapTipTemplateChanged();
+
+    /**
+     * Emitted when the display expression changes
+     *
+     * @note added in 3.0
+     */
+    void displayExpressionChanged();
+
+    /**
      * Signals an error related to this vector layer.
      */
     void raiseError( const QString& msg );
@@ -2141,11 +2179,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Pointer to data provider derived from the abastract base class QgsDataProvider */
     QgsVectorDataProvider *mDataProvider;
 
-    /** Index of the primary label field */
-    QString mDisplayField;
-
     /** The preview expression used to generate a human readable preview string for features */
     QString mDisplayExpression;
+
+    QString mMapTipTemplate;
 
     /** Data provider key */
     QString mProviderKey;

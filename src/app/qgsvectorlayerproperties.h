@@ -57,9 +57,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QString displayName();
     void setRendererDirty( bool ) {}
 
-    /** Sets the attribute that is used in the Identify Results dialog box*/
-    void setDisplayField( const QString& name );
-
     /** Adds an attribute to the table (but does not commit it yet)
     @param field the field to add
     @return false in case of a name conflict, true in case of success */
@@ -75,10 +72,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
   public slots:
 
-    /** Insert a field in the expression text for the map tip **/
-    void insertField();
-
-    void insertExpression();
+    void insertFieldOrExpression();
 
     /** Reset to original (vector layer) values */
     void syncToLayer();
@@ -146,7 +140,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
      */
     void updateFieldsPropertiesDialog();
 
-  protected:
+  private:
 
     void saveStyleAs( StyleType styleType );
 
@@ -194,6 +188,10 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     /** Adds a new join to mJoinTreeWidget*/
     void addJoinToTreeWidget( const QgsVectorJoinInfo& join , const int insertIndex = -1 );
+
+    QgsExpressionContext mContext;
+
+    static QgsExpressionContext _getExpressionContext( const void* context );
 
   private slots:
     void openPanel( QgsPanelWidget* panel );
