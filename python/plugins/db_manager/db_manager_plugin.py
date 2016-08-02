@@ -54,7 +54,7 @@ class DBManagerPlugin:
         self.layerAction = QAction(QIcon(":/db_manager/icon"), QApplication.translate("DBManagerPlugin", "Update Sql Layer"),
                                    self.iface.mainWindow())
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
-        QObject.connect(self.layerAction, SIGNAL("triggered()"), self.onUpdateSqlLayer)
+        self.layerAction.triggered.connect(self.onUpdateSqlLayer)
         self.iface.legendInterface().addLegendLayerAction(self.layerAction, "", "dbManagerUpdateSqlLayer", QgsMapLayer.VectorLayer, False)
         for l in QgsMapLayerRegistry.instance().mapLayers().values():
             self.onLayerWasAdded(l)
