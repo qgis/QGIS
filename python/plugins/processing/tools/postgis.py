@@ -30,7 +30,7 @@ import psycopg2.extensions  # For isolation levels
 import re
 
 from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsDataSourceURI, QgsCredentials
+from qgis.core import QgsDataSourceUri, QgsCredentials
 
 
 # Use unicode!
@@ -44,13 +44,13 @@ def uri_from_name(conn_name):
     if not settings.contains("database"):  # non-existent entry?
         raise DbError('There is no defined database connection "%s".' % conn_name)
 
-    uri = QgsDataSourceURI()
+    uri = QgsDataSourceUri()
 
     settingsList = ["service", "host", "port", "database", "username", "password", "authcfg"]
     service, host, port, database, username, password, authcfg = [settings.value(x, "", type=str) for x in settingsList]
 
     useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
-    sslmode = settings.value("sslmode", QgsDataSourceURI.SSLprefer, type=int)
+    sslmode = settings.value("sslmode", QgsDataSourceUri.SSLprefer, type=int)
 
     settings.endGroup()
 
@@ -185,7 +185,7 @@ class GeoDB:
         if uri:
             self.uri = uri
         else:
-            self.uri = QgsDataSourceURI()
+            self.uri = QgsDataSourceUri()
             if service:
                 self.uri.setConnection(service, dbname, user, passwd)
             else:
@@ -221,7 +221,7 @@ class GeoDB:
                     self.uri.setPassword(password)
             finally:
                 # remove certs (if any) of the expanded connectionInfo
-                expandedUri = QgsDataSourceURI(expandedConnInfo)
+                expandedUri = QgsDataSourceUri(expandedConnInfo)
 
                 sslCertFile = expandedUri.param("sslcert")
                 if sslCertFile:

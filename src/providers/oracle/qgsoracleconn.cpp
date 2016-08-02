@@ -31,7 +31,7 @@ QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
 const int QgsOracleConn::sGeomTypeSelectLimit = 100;
 
-QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceURI& uri )
+QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri& uri )
 {
   QString conninfo = toPoolName( uri );
   if ( sConnections.contains( conninfo ) )
@@ -54,7 +54,7 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceURI& uri )
   return conn;
 }
 
-QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
+QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
     : mRef( 1 )
     , mCurrentUser( QString::null )
     , mHasSpatial( -1 )
@@ -140,7 +140,7 @@ QgsOracleConn::~QgsOracleConn()
     mDatabase.close();
 }
 
-QString QgsOracleConn::toPoolName( const QgsDataSourceURI &uri )
+QString QgsOracleConn::toPoolName( const QgsDataSourceUri &uri )
 {
   QString conninfo = uri.connectionInfo();
   if ( uri.hasParam( "dbworkspace" ) )
@@ -697,7 +697,7 @@ void QgsOracleConn::setSelectedConnection( QString name )
   return settings.setValue( "/Oracle/connections/selected", name );
 }
 
-QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
+QgsDataSourceUri QgsOracleConn::connUri( QString theConnName )
 {
   QgsDebugMsgLevel( "theConnName = " + theConnName, 3 );
 
@@ -728,7 +728,7 @@ QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
     password = settings.value( key + "/password" ).toString();
   }
 
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   uri.setConnection( host, port, database, username, password );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
   if ( !settings.value( key + "/dboptions" ).toString().isEmpty() )

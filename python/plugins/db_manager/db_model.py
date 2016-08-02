@@ -29,7 +29,7 @@ from .db_plugins import supportedDbTypes, createDbPlugin
 from .db_plugins.plugin import BaseError, Table, Database
 from .dlg_db_error import DlgDbError
 
-from qgis.core import QgsDataSourceURI, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
+from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
 
 from . import resources_rc  # NOQA
 
@@ -284,7 +284,7 @@ class TableItem(TreeItem):
 
 
 class DBModel(QAbstractItemModel):
-    importVector = pyqtSignal(QgsVectorLayer, Database, QgsDataSourceURI, QModelIndex)
+    importVector = pyqtSignal(QgsVectorLayer, Database, QgsDataSourceUri, QModelIndex)
     notPopulated = pyqtSignal(QModelIndex)
 
     def __init__(self, parent=None):
@@ -556,7 +556,7 @@ class DBModel(QAbstractItemModel):
                         item = index.internalPointer()
 
                         conn_name = QFileInfo(filename).fileName()
-                        uri = QgsDataSourceURI()
+                        uri = QgsDataSourceUri()
                         uri.setDatabase(filename)
                         item.getItemData().addConnection(conn_name, uri)
                         item.changed.emit()
@@ -622,7 +622,7 @@ class DBModel(QAbstractItemModel):
 
             # default pk and geom field name value
             if providerKey in ['postgres', 'spatialite']:
-                inUri = QgsDataSourceURI(inLayer.source())
+                inUri = QgsDataSourceUri(inLayer.source())
                 pkCol = inUri.keyColumn()
                 geomCol = inUri.geometryColumn()
 

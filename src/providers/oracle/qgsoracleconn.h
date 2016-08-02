@@ -111,7 +111,7 @@ class QgsOracleConn : public QObject
 {
     Q_OBJECT
   public:
-    static QgsOracleConn *connectDb( const QgsDataSourceURI &uri );
+    static QgsOracleConn *connectDb( const QgsDataSourceUri &uri );
     void disconnect();
 
     /** Double quote a Oracle identifier for placement in a SQL string.
@@ -156,7 +156,7 @@ class QgsOracleConn : public QObject
     static QStringList connectionList();
     static QString selectedConnection();
     static void setSelectedConnection( QString theConnName );
-    static QgsDataSourceURI connUri( QString theConnName );
+    static QgsDataSourceUri connUri( QString theConnName );
     static bool userTablesOnly( QString theConnName );
     static bool geometryColumnsOnly( QString theConnName );
     static bool allowGeometrylessTables( QString theConnName );
@@ -164,12 +164,12 @@ class QgsOracleConn : public QObject
     static bool onlyExistingTypes( QString theConnName );
     static void deleteConnection( QString theConnName );
     static QString databaseName( QString database, QString host, QString port );
-    static QString toPoolName( const QgsDataSourceURI& uri );
+    static QString toPoolName( const QgsDataSourceUri& uri );
 
     operator QSqlDatabase() { return mDatabase; }
 
   private:
-    explicit QgsOracleConn( QgsDataSourceURI uri );
+    explicit QgsOracleConn( QgsDataSourceUri uri );
     ~QgsOracleConn();
 
     bool exec( QSqlQuery &qry, QString sql );

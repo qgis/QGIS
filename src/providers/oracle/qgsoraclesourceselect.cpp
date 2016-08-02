@@ -516,7 +516,7 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  QgsDataSourceURI uri = QgsOracleConn::connUri( cmbConnections->currentText() );
+  QgsDataSourceUri uri = QgsOracleConn::connUri( cmbConnections->currentText() );
 
   mIsConnected = true;
   mTablesTreeDelegate->setConnectionInfo( uri );
@@ -660,7 +660,7 @@ void QgsOracleSourceSelect::loadTableFromCache()
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   QString connName = cmbConnections->currentText();
-  QgsDataSourceURI uri = QgsOracleConn::connUri( connName );
+  QgsDataSourceUri uri = QgsOracleConn::connUri( connName );
   QVector<QgsOracleLayerProperty> layers;
   if ( !QgsOracleTableCache::loadFromCache( connName, _currentFlags( connName, uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() ), layers ) )
     return;

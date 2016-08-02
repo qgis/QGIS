@@ -60,7 +60,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
 
   QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );
 
-  mUri = QgsDataSourceURI( uri );
+  mUri = QgsDataSourceUri( uri );
 
   // populate members from the uri structure
   mOwnerName = mUri.schema();
@@ -2594,7 +2594,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
   Q_UNUSED( options );
 
   // populate members from the uri structure
-  QgsDataSourceURI dsUri( uri );
+  QgsDataSourceUri dsUri( uri );
   QString ownerName = dsUri.schema();
 
   QgsDebugMsg( QString( "Connection info is: %1" ).arg( dsUri.connectionInfo() ) );
@@ -3086,7 +3086,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
 {
   QgsDebugMsg( "deleting layer " + uri );
 
-  QgsDataSourceURI dsUri( uri );
+  QgsDataSourceUri dsUri( uri );
   QString ownerName = dsUri.schema();
   QString tableName = dsUri.table();
   QString geometryCol = dsUri.geometryColumn();
@@ -3238,7 +3238,7 @@ QGISEXTERN bool saveStyle( const QString &uri,
                            bool useAsDefault,
                            QString &errCause )
 {
-  QgsDataSourceURI dsUri( uri );
+  QgsDataSourceUri dsUri( uri );
 
   QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
   if ( !conn )
@@ -3413,7 +3413,7 @@ QGISEXTERN bool saveStyle( const QString &uri,
 
 QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 {
-  QgsDataSourceURI dsUri( uri );
+  QgsDataSourceUri dsUri( uri );
 
   QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
   if ( !conn )
@@ -3467,7 +3467,7 @@ QGISEXTERN int listStyles( const QString &uri,
                            QStringList &descriptions,
                            QString &errCause )
 {
-  QgsDataSourceURI dsUri( uri );
+  QgsDataSourceUri dsUri( uri );
 
   QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
   if ( !conn )
@@ -3534,7 +3534,7 @@ QGISEXTERN int listStyles( const QString &uri,
 QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
 {
   QString style;
-  QgsDataSourceURI dsUri( uri );
+  QgsDataSourceUri dsUri( uri );
 
   QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
   if ( !conn )

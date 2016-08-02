@@ -57,7 +57,7 @@ class QgsOracleTableModel : public QStandardItemModel
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
-    QString layerURI( const QModelIndex &index, const QgsDataSourceURI &connInfo );
+    QString layerURI( const QModelIndex &index, const QgsDataSourceUri &connInfo );
 
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 

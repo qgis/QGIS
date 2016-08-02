@@ -32,7 +32,7 @@ from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog
 
 from math import log10, floor
-from qgis.core import (QgsDataSourceURI,
+from qgis.core import (QgsDataSourceUri,
                        QgsCredentials,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,

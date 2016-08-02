@@ -53,7 +53,7 @@ class QgsWFSSharedData;
  * such as QgsWFSCapabilities, QgsWFSDescribeFeatureType, QgsWFSFeatureDownloader,
  * QgsWFSFeatureHitsAsyncRequest, QgsWFSFeatureHitsRequest, QgsWFSTransactionRequest
  *
- * QgsWFSDataSourceURI class purpose: wrapper above QgsDataSourceURI to get/set
+ * QgsWFSDataSourceURI class purpose: wrapper above QgsDataSourceUri to get/set
  * the specific attributes of a WFS URI.
  *
  */

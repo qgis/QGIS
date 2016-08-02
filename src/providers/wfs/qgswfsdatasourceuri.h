@@ -56,7 +56,7 @@ struct QgsWFSAuthorization
   QString mAuthCfg;
 };
 
-/** Utility class that wraps a QgsDataSourceURI with conveniency
+/** Utility class that wraps a QgsDataSourceUri with conveniency
  * methods with the parameters used for a WFS URI.
  */
 class QgsWFSDataSourceURI

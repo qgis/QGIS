@@ -36,7 +36,7 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
   protected:
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
     QgsFields mFields;
 
     QString mGeometryColumn;          //! name of the geometry column

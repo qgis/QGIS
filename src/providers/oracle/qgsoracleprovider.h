@@ -306,7 +306,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QString mDataComment;
 
     //! Data source URI struct for this layer
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
 
     /**
      * Flag indicating if the layer data source is a valid oracle layer

@@ -25,7 +25,7 @@ inline QString qgsConnectionPool_ConnectionToName( QgsOracleConn* c )
   return c->connInfo();
 }
 
-inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceURI& uri, QgsOracleConn*& c )
+inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceUri& uri, QgsOracleConn*& c )
 {
   c = QgsOracleConn::connectDb( uri );
 }

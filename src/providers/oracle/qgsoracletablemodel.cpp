@@ -304,7 +304,7 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
   return true;
 }
 
-QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSourceURI &connInfo )
+QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSourceUri &connInfo )
 {
   if ( !index.isValid() )
   {
@@ -354,7 +354,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   bool selectAtId = itemFromIndex( index.sibling( index.row(), dbtmSelectAtId ) )->checkState() == Qt::Checked;
   QString sql = index.sibling( index.row(), dbtmSql ).data( Qt::DisplayRole ).toString();
 
-  QgsDataSourceURI uri( connInfo );
+  QgsDataSourceUri uri( connInfo );
   uri.setDataSource( ownerName, tableName, geomColumnName, sql, pkColumnName );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );

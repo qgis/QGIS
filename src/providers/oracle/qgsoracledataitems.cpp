@@ -228,7 +228,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
     return false;
 
   // TODO: probably should show a GUI with settings etc
-  QgsDataSourceURI uri = QgsOracleConn::connUri( mName );
+  QgsDataSourceUri uri = QgsOracleConn::connUri( mName );
 
   qApp->setOverrideCursor( Qt::WaitCursor );
 
@@ -371,7 +371,7 @@ QString QgsOracleLayerItem::createUri()
     return QString::null;
   }
 
-  QgsDataSourceURI uri = QgsOracleConn::connUri( connItem->name() );
+  QgsDataSourceUri uri = QgsOracleConn::connUri( connItem->name() );
   uri.setDataSource( mLayerProperty.ownerName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, QString::null );
   uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
   uri.setWkbType( QGis::fromOldWkbType( mLayerProperty.types.at( 0 ) ) );

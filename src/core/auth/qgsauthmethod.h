@@ -111,7 +111,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     }
 
     /** Update data source connection items with authentication components
-     * @param connectionItems QStringlist of 'key=value' pairs, as utilized in QgsDataSourceURI::connectionInfo()
+     * @param connectionItems QStringlist of 'key=value' pairs, as utilized in QgsDataSourceUri::connectionInfo()
      * @param authcfg Authentication configuration ID
      * @param dataprovider Textual key for a data provider, e.g. 'postgres', that allows
      * for custom updater code specific to the provider

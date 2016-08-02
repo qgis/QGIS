@@ -31,7 +31,7 @@ from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QMessageBox
 from qgis.PyQt import uic
-from qgis.core import QgsDataSourceURI, QgsCredentials
+from qgis.core import QgsDataSourceUri, QgsCredentials
 from processing.tools.postgis import GeoDB
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]

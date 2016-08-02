@@ -189,26 +189,26 @@ protected:
  *
  * Access data in a spatialite database. The url defines the connection parameters, table,
  * geometry column, and other attributes.  The url can be constructed using the
- * QgsDataSourceURI class.
+ * QgsDataSourceUri class.
  *
  * \subsection postgres Postgresql data provider (postgres)
  *
  * Connects to a postgresql database.  The url defines the connection parameters, table,
  * geometry column, and other attributes.  The url can be constructed using the
- * QgsDataSourceURI class.
+ * QgsDataSourceUri class.
  *
  * \subsection mssql Microsoft SQL server data provider (mssql)
  *
  * Connects to a Microsoft SQL server database.  The url defines the connection parameters, table,
  * geometry column, and other attributes.  The url can be constructed using the
- * QgsDataSourceURI class.
+ * QgsDataSourceUri class.
  *
  * \subsection wfs WFS (web feature service) data provider (wfs)
  *
  * Used to access data provided by a web feature service.
  *
  * The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
- * starting with QGIS 2.16, a URI constructed using the QgsDataSourceURI class with the following parameters :
+ * starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with the following parameters :
  * - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
  * - typename=string (mandatory): WFS typename
  * - srsname=string (recommended): SRS like 'EPSG:XXXX'

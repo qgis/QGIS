@@ -24,7 +24,7 @@ from qgis.PyQt.QtCore import QUrl, QTemporaryFile
 from ..connector import DBConnector
 from ..plugin import Table
 
-from qgis.core import Qgis, QgsDataSourceURI, QgsVirtualLayerDefinition, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem
+from qgis.core import Qgis, QgsDataSourceUri, QgsVirtualLayerDefinition, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem
 
 import sqlite3
 
@@ -136,7 +136,7 @@ class VLayerConnector(DBConnector):
         return f
 
     def uri(self):
-        return QgsDataSourceURI("qgis")
+        return QgsDataSourceUri("qgis")
 
     def getInfo(self):
         return "info"

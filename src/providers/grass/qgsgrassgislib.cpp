@@ -477,7 +477,7 @@ QgsGrassGisLib::Raster QgsGrassGisLib::raster( QString name )
 
   if ( name.contains( "provider=" ) ) // encoded uri
   {
-    QgsDataSourceURI uri;
+    QgsDataSourceUri uri;
     uri.setEncodedUri( name.toLocal8Bit() );
     if ( uri.hasParam( "band" ) )
     {

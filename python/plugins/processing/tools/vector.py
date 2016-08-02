@@ -37,7 +37,7 @@ import psycopg2
 from qgis.PyQt.QtCore import QVariant, QSettings
 from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsRectangle,
                        QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
-                       QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceURI, QgsCredentials,
+                       QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceUri, QgsCredentials,
                        QgsFeatureRequest)
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -452,7 +452,7 @@ def ogrConnectionString(uri):
         # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
         # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
         # table="t4" (geom) sql=
-        dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+        dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
         conninfo = dsUri.connectionInfo()
         conn = None
         ok = False
@@ -476,7 +476,7 @@ def ogrConnectionString(uri):
         ogrstr = "PG:%s" % dsUri.connectionInfo()
     elif provider == "oracle":
         # OCI:user/password@host:port/service:table
-        dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+        dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
         ogrstr = "OCI:"
         if dsUri.username() != "":
             ogrstr += dsUri.username()
@@ -568,7 +568,7 @@ class VectorWriter:
             self.writer = self.layer.dataProvider()
         elif self.destination.startswith(self.POSTGIS_LAYER_PREFIX):
             self.isNotFileBased = True
-            uri = QgsDataSourceURI(self.destination[len(self.POSTGIS_LAYER_PREFIX):])
+            uri = QgsDataSourceUri(self.destination[len(self.POSTGIS_LAYER_PREFIX):])
             connInfo = uri.connectionInfo()
             (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
             if success:
@@ -605,7 +605,7 @@ class VectorWriter:
             self.writer = self.layer.dataProvider()
         elif self.destination.startswith(self.SPATIALITE_LAYER_PREFIX):
             self.isNotFileBased = True
-            uri = QgsDataSourceURI(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
+            uri = QgsDataSourceUri(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
             print uri.uri()
             try:
                 db = spatialite.GeoDB(uri=uri)

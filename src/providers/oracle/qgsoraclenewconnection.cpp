@@ -138,7 +138,7 @@ void QgsOracleNewConnection::accept()
 
 void QgsOracleNewConnection::on_btnConnect_clicked()
 {
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text() );
   if ( !txtOptions->text().isEmpty() )
     uri.setParam( "dboptions", txtOptions->text() );
