@@ -359,7 +359,7 @@ class DoxygenParser():
         self.acceptable_missing_brief = acceptable_missing_brief
         self.documentable_members = 0
         self.documented_members = 0
-        self.undocumented_string = ''
+        self.undocumented_members = {}
         self.bindable_members = []
         self.groups = {}
         self.classes_missing_group = []
@@ -457,10 +457,10 @@ class DoxygenParser():
                         unacceptable_undocumented_insensitive = set([u.lower() for u in undocumented]) - set([u.lower() for u in acceptable_missing])
 
                         if len(unacceptable_undocumented_insensitive) > 0:
-                            self.undocumented_string += "Class {}, {}/{} members documented\n".format(class_name, documented, members)
-                            for u in unacceptable_undocumented:
-                                self.undocumented_string += ' Missing: {}\n'.format(u)
-                            self.undocumented_string += "\n"
+                            self.undocumented_members[class_name] = {}
+                            self.undocumented_members[class_name]['documented'] = documented
+                            self.undocumented_members[class_name]['members'] = members
+                            self.undocumented_members[class_name]['missing_members'] = unacceptable_undocumented
 
                         # store bindable members
                         if self.classElemIsBindable(elem):
