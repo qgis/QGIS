@@ -43,22 +43,6 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, Qgis::GeometryType geomet
   setBrushStyle( Qt::SolidPattern );
 }
 
-QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
-    : QgsMapCanvasItem( mapCanvas )
-    , mIconSize( 5 )
-    , mIconType( ICON_CIRCLE )
-    , mTranslationOffsetX( 0.0 )
-    , mTranslationOffsetY( 0.0 )
-{
-  reset( isPolygon ? Qgis::Polygon : Qgis::Line );
-  QColor color( Qt::lightGray );
-  color.setAlpha( 63 );
-  setColor( color );
-  setWidth( 1 );
-  setLineStyle( Qt::SolidLine );
-  setBrushStyle( Qt::SolidPattern );
-}
-
 QgsRubberBand::QgsRubberBand()
     : QgsMapCanvasItem( nullptr )
     , mIconSize( 5 )
@@ -136,14 +120,6 @@ void QgsRubberBand::reset( Qgis::GeometryType geometryType )
 {
   mPoints.clear();
   mGeometryType = geometryType;
-  updateRect();
-  update();
-}
-
-void QgsRubberBand::reset( bool isPolygon )
-{
-  mPoints.clear();
-  mGeometryType = isPolygon ? Qgis::Polygon : Qgis::Line;
   updateRect();
   update();
 }
