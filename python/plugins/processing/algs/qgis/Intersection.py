@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWKBTypes
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -95,7 +95,7 @@ class Intersection(GeoAlgorithm):
                 if geom.intersects(tmpGeom):
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
-                    if int_geom.wkbType() == Qgis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                    if int_geom.wkbType() == Qgis.WKBUnknown or QgsWkbTypes.flatType(int_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                         int_com = geom.combine(tmpGeom)
                         int_sym = geom.symDifference(tmpGeom)
                         int_geom = QgsGeometry(int_com.difference(int_sym))

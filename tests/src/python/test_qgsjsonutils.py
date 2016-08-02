@@ -23,7 +23,7 @@ from qgis.core import (QgsJSONUtils,
                        QgsFeature,
                        QgsField,
                        QgsFields,
-                       QgsWKBTypes,
+                       QgsWkbTypes,
                        QgsGeometry,
                        QgsPointV2,
                        QgsLineStringV2,
@@ -57,7 +57,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         features = QgsJSONUtils.stringToFeatureList('{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands"}}', fields, codec)
         self.assertEqual(len(features), 1)
         self.assertFalse(features[0].geometry().isEmpty())
-        self.assertEqual(features[0].geometry().wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(features[0].geometry().wkbType(), QgsWkbTypes.Point)
         point = features[0].geometry().geometry()
         self.assertEqual(point.x(), 125.0)
         self.assertEqual(point.y(), 10.0)
@@ -67,13 +67,13 @@ class TestQgsJSONUtils(unittest.TestCase):
         features = QgsJSONUtils.stringToFeatureList('{ "type": "FeatureCollection","features":[{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands"}}, {\n"type": "Feature","geometry": {"type": "Point","coordinates": [110, 20]},"properties": {"name": "Henry Gale Island"}}]}', fields, codec)
         self.assertEqual(len(features), 2)
         self.assertFalse(features[0].geometry().isEmpty())
-        self.assertEqual(features[0].geometry().wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(features[0].geometry().wkbType(), QgsWkbTypes.Point)
         point = features[0].geometry().geometry()
         self.assertEqual(point.x(), 125.0)
         self.assertEqual(point.y(), 10.0)
         self.assertEqual(features[0]['name'], "Dinagat Islands")
         self.assertFalse(features[1].geometry().isEmpty())
-        self.assertEqual(features[1].geometry().wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(features[1].geometry().wkbType(), QgsWkbTypes.Point)
         point = features[1].geometry().geometry()
         self.assertEqual(point.x(), 110.0)
         self.assertEqual(point.y(), 20.0)

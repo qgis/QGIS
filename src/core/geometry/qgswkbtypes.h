@@ -28,7 +28,7 @@
  ****************************************************************************/
 
 /** \ingroup core
- * \class QgsWKBTypes
+ * \class QgsWkbTypes
  * \brief Handles storage of information regarding WKB types and their properties.
  * \note Added in version 2.10
  */

@@ -3354,10 +3354,10 @@ void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const
     writeGroup( 0, "SOLID" );
     writeGroup( 8, layer );
     writeGroup( 62, 1 );
-    writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ, pt.x() - halfSize, pt.y() - halfSize ) );
-    writeGroup( 1, QgsPointV2( QgsWKBTypes::PointZ, pt.x() + halfSize, pt.y() - halfSize ) );
-    writeGroup( 2, QgsPointV2( QgsWKBTypes::PointZ, pt.x() - halfSize, pt.y() + halfSize ) );
-    writeGroup( 3, QgsPointV2( QgsWKBTypes::PointZ, pt.x() + halfSize, pt.y() + halfSize ) );
+    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, pt.x() - halfSize, pt.y() - halfSize ) );
+    writeGroup( 1, QgsPointV2( QgsWkbTypes::PointZ, pt.x() + halfSize, pt.y() - halfSize ) );
+    writeGroup( 2, QgsPointV2( QgsWkbTypes::PointZ, pt.x() - halfSize, pt.y() + halfSize ) );
+    writeGroup( 3, QgsPointV2( QgsWkbTypes::PointZ, pt.x() + halfSize, pt.y() + halfSize ) );
   }
 #endif // 0
 

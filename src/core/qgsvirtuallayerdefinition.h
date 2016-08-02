@@ -131,8 +131,8 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     void setGeometryField( const QString& geometryField ) { mGeometryField = geometryField; }
 
     //! Get the type of the geometry
-    //! QgsWKBTypes::NoGeometry to hide any geometry
-    //! QgsWKBTypes::Unknown for unknown types
+    //! QgsWkbTypes::NoGeometry to hide any geometry
+    //! QgsWkbTypes::Unknown for unknown types
     QgsWkbTypes::Type geometryWkbType() const { return mGeometryWkbType; }
     //! Set the type of the geometry
     void setGeometryWkbType( QgsWkbTypes::Type t ) { mGeometryWkbType = t; }

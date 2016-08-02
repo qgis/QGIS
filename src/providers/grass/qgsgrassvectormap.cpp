@@ -640,7 +640,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::lineGeometry( int id )
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
-    pointList << QgsPointV2( is3d() ? QgsWKBTypes::PointZ : QgsWKBTypes::Point, points->x[i], points->y[i], points->z[i] );
+    pointList << QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
   }
 
   Vect_destroy_line_struct( points );
@@ -673,7 +673,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::nodeGeometry( int id )
   QgsDebugMsgLevel( QString( "id = %1" ).arg( id ), 3 );
   double x, y, z;
   Vect_get_node_coor( mMap, id, &x, &y, &z );
-  return new QgsPointV2( is3d() ? QgsWKBTypes::PointZ : QgsWKBTypes::Point, x, y, z );
+  return new QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, x, y, z );
 }
 
 QgsAbstractGeometryV2 * QgsGrassVectorMap::areaGeometry( int id )
@@ -692,7 +692,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::areaGeometry( int id )
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
-    pointList << QgsPointV2( is3d() ? QgsWKBTypes::PointZ : QgsWKBTypes::Point, points->x[i], points->y[i], points->z[i] );
+    pointList << QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
   }
 
   QgsLineStringV2 * ring = new QgsLineStringV2();
@@ -709,7 +709,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::areaGeometry( int id )
     pointList.reserve( points->n_points );
     for ( int i = 0; i < points->n_points; i++ )
     {
-      pointList <<  QgsPointV2( is3d() ? QgsWKBTypes::PointZ : QgsWKBTypes::Point, points->x[i], points->y[i], points->z[i] );
+      pointList <<  QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
     }
     ring = new QgsLineStringV2();
     ring->setPoints( pointList );

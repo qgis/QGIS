@@ -23,7 +23,7 @@ os.environ['QT_HASH_SEED'] = '1'
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QSettings
 
 from qgis.core import (
-    QgsWKBTypes,
+    QgsWkbTypes,
     QgsVectorLayer,
     QgsFeature,
     QgsGeometry,
@@ -401,7 +401,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         self.assertEqual(len(vl.fields()), 5)
         self.assertEqual(vl.featureCount(), 0)
         reference = QgsGeometry.fromRect(QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0))
@@ -784,7 +784,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Create test layer
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename'", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
@@ -894,7 +894,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Create test layer
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' retrictToRequestBBOX=1", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
         last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=2&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=60,-70,80,-60,urn:ogc:def:crs:EPSG::4326')
         with open(last_url, 'wb') as f:
@@ -1124,7 +1124,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.NoGeometry)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
         self.assertEqual(len(vl.fields()), 1)
 
         # Failed download: test that error is propagated to the data provider, so as to get application notification
@@ -1214,7 +1214,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.NoGeometry)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
         self.assertEqual(len(vl.fields()), 1)
 
         source = vl.dataProvider().featureSource()
@@ -1368,7 +1368,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # * syntax
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM \"my:typename\" JOIN \"my:othertypename\" o ON \"my:typename\".id = o.main_id WHERE \"my:typename\".id > 0 ORDER BY \"my:typename\".id DESC", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'typename.id')
@@ -1381,7 +1381,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # * syntax with unprefixed typenames
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM typename JOIN othertypename o ON typename.id = o.main_id WHERE typename.id > 0 ORDER BY typename.id DESC", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'typename.id')
@@ -1398,7 +1398,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM othertypename o, typename WHERE typename.id = o.main_id AND typename.id > 0 ORDER BY typename.id DESC", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'o.main_id')
@@ -1408,7 +1408,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # main table not appearing in first, not in FROM but in JOIN
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM othertypename o JOIN typename ON typename.id = o.main_id WHERE typename.id > 0 ORDER BY typename.id DESC", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'o.main_id')
@@ -2006,7 +2006,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0'", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.MultiPolygon)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiPolygon)
 
         # Extent before downloading features
         reference = QgsGeometry.fromRect(QgsRectangle(243900.3520259926444851, 4427769.1559739429503679, 1525592.3040170343592763, 5607994.6020106188952923))

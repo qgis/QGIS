@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWKBTypes
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -125,7 +125,7 @@ class Union(GeoAlgorithm):
                         else:
                             int_geom = QgsGeometry(int_geom)
 
-                        if int_geom.wkbType() == Qgis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                        if int_geom.wkbType() == Qgis.WKBUnknown or QgsWkbTypes.flatType(int_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                             # Intersection produced different geomety types
                             temp_list = int_geom.asGeometryCollection()
                             for i in temp_list:
@@ -162,7 +162,7 @@ class Union(GeoAlgorithm):
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
 
-                if diff_geom.wkbType() == 0 or QgsWKBTypes.flatType(diff_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                if diff_geom.wkbType() == 0 or QgsWkbTypes.flatType(diff_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                     temp_list = diff_geom.asGeometryCollection()
                     for i in temp_list:
                         if i.type() == geom.type():

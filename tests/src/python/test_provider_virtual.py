@@ -23,7 +23,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsRectangle,
                        QgsVirtualLayerDefinition,
                        QgsVirtualLayerDefinitionUtils,
-                       QgsWKBTypes,
+                       QgsWkbTypes,
                        QgsProject,
                        QgsVectorJoinInfo
                        )
@@ -331,7 +331,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     def test_no_geometry(self):
         df = QgsVirtualLayerDefinition()
         df.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr")
-        df.setGeometryWkbType(QgsWKBTypes.NoGeometry)
+        df.setGeometryWkbType(QgsWkbTypes.NoGeometry)
         l2 = QgsVectorLayer(df.toString(), "vtab2", "virtual", False)
         self.assertEqual(l2.isValid(), True)
         self.assertEqual(l2.dataProvider().geometryType(), 100)  # NoGeometry
