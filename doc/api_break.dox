@@ -190,6 +190,9 @@ instead.</li>
 
 <ul>
 <li>supportedCRS() has been renamed to supportedCrs()</li>
+<li>isPopulated() has been removed. Use state() instead.</li>
+<li>capabilities() has been removed. Use capabilities2() instead (TODO: rename back to capabilities()).</li>
+<li>emitBeginInsertItems(), emitEndInsertItems(), emitBeginRemoveItems(), emitEndRemoveItems(), emitDataChanged(), emitStateChanged() have been removed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsDiagramLayerSettings QgsDiagramLayerSettings

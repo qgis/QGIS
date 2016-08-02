@@ -93,9 +93,6 @@ class QgsDataItem : QObject
      */
     virtual void setState( State state );
 
-    //! @deprecated in 2.8, use state()
-    bool isPopulated() /Deprecated/;
-
     /** Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
      * @param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
      * @param refresh - set to true to refresh populated item, emitting relevant signals to the model
@@ -150,9 +147,7 @@ class QgsDataItem : QObject
     // This will _write_ selected crs in data source
     virtual bool setCrs( QgsCoordinateReferenceSystem crs );
 
-    //! @deprecated since 2.8, returned type this will changed to Capabilities
-    virtual Capability capabilities() /Deprecated/;
-
+    // ### QGIS 3 - rename to capabilities()
     virtual Capabilities capabilities2() const;
 
     virtual void setCapabilities( const Capabilities& capabilities );
@@ -226,13 +221,7 @@ class QgsDataItem : QObject
 
     virtual void refresh();
 
-    void emitBeginInsertItems( QgsDataItem* parent, int first, int last );
-    void emitEndInsertItems();
-    void emitBeginRemoveItems( QgsDataItem* parent, int first, int last );
-    void emitEndRemoveItems();
-    void emitDataChanged( QgsDataItem* item );
     void emitDataChanged();
-    void emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState );
     virtual void childrenCreated();
 
   signals:

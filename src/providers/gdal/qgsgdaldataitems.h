@@ -34,8 +34,6 @@ class QgsGdalLayerItem : public QgsLayerItem
 
     bool setCrs( QgsCoordinateReferenceSystem crs ) override;
 
-    Q_DECL_DEPRECATED Capability capabilities() override;
-
     QVector<QgsDataItem*> createChildren() override;
 
     QString layerName() const override;

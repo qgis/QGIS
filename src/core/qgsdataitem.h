@@ -119,9 +119,6 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual void setState( State state );
 
-    //! @deprecated in 2.8, use state()
-    Q_DECL_DEPRECATED bool isPopulated() { return state() == Populated; }
-
     /** Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
      * @param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
      * @param refresh - set to true to refresh populated item, emitting relevant signals to the model
@@ -177,9 +174,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual bool setCrs( QgsCoordinateReferenceSystem crs )
     { Q_UNUSED( crs ); return false; }
 
-    //! @deprecated since 2.8, returned type this will changed to Capabilities
-    Q_DECL_DEPRECATED virtual Capability capabilities() { return NoCapabilities; }
-
+    // ### QGIS 3 - rename to capabilities()
     virtual Capabilities capabilities2() const { return mCapabilities; }
 
     virtual void setCapabilities( const Capabilities& capabilities ) { mCapabilities = capabilities; }
@@ -239,8 +234,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     QgsDataItem* mParent;
     QVector<QgsDataItem*> mChildren; // easier to have it always
     State mState;
-    //! @deprecated since 2.8, use mState
-    bool mPopulated;
     QString mName;
     // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be differen if it is
     // necessary to distinguish paths of two providers to the same source (e.g GRASS location and standard directory have the same
@@ -271,13 +264,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual void refresh();
 
-    void emitBeginInsertItems( QgsDataItem* parent, int first, int last );
-    void emitEndInsertItems();
-    void emitBeginRemoveItems( QgsDataItem* parent, int first, int last );
-    void emitEndRemoveItems();
-    void emitDataChanged( QgsDataItem* item );
     void emitDataChanged();
-    void emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState );
     virtual void childrenCreated();
 
   signals:
@@ -431,11 +418,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     virtual bool equal( const QgsDataItem *other ) override;
     virtual QIcon icon() override;
     virtual QWidget *paramWidget() override;
-
-    /* static QVector<QgsDataProvider*> mProviders; */
-    //! @note not available via python bindings
-    //! @note deprecated since 2.10 - use QgsDataItemProviderRegistry
-    Q_DECL_DEPRECATED static QVector<QLibrary*> mLibraries;
 
     /** Check if the given path is hidden from the browser model */
     static bool hiddenPath( QString path );

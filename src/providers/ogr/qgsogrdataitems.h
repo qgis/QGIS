@@ -19,7 +19,6 @@
 #include "qgsdataitem.h"
 #include "qgsogrprovider.h"
 
-Q_NOWARN_DEPRECATED_PUSH
 class QgsOgrLayerItem : public QgsLayerItem
 {
     Q_OBJECT
@@ -29,10 +28,9 @@ class QgsOgrLayerItem : public QgsLayerItem
 
     bool setCrs( QgsCoordinateReferenceSystem crs ) override;
 
-    Q_DECL_DEPRECATED Capability capabilities() override;
     QString layerName() const override;
 };
-Q_NOWARN_DEPRECATED_POP
+
 
 class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 {
