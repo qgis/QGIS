@@ -68,13 +68,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
     QgsRubberBand( QgsMapCanvas* mapCanvas, Qgis::GeometryType geometryType = Qgis::Line );
-    /**
-     * Creates a new RubberBand.
-     *  @deprecated Use the constructor which takes Qgis::GeometryType as second argument instead
-     *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
-     *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
-     */
-    Q_DECL_DEPRECATED QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
+
     ~QgsRubberBand();
 
     /**
@@ -130,14 +124,6 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
     void reset( Qgis::GeometryType geometryType = Qgis::Line );
-
-    /**
-     * @deprecated Use the reset method which takes Qgis::GeometryType as second argument instead
-     * Clears all the geometries in this rubberband.
-     * Sets the representation type according to isPolygon.
-     *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
-     */
-    Q_DECL_DEPRECATED void reset( bool isPolygon );
 
     /**
      * Add a vertex to the rubberband and update canvas.
