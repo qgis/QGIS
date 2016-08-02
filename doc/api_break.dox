@@ -86,7 +86,7 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 <li>flatType() has been removed. Use the equivalent QgsWkbTypes::flatType() instead
 <li>isSingleType() has been removed. Use the equivalent QgsWkbTypes::issingleType() instead
 <li>isMultiType() has been removed. Use the equivalent QgsWkbTypes::isMultiType() instead
-<li>wkbDimensions() has been removed. Use the equivalent QgsWkbTypes::wkbDimensions() instead
+<li>wkbDimensions() has been removed. Use the equivalent QgsWkbTypes::coordDimensions() instead
 <li>fromOldWkbType() has been removed. This is no longer required.
 <li>fromNewWkbType() has been removed. This is no longer required.
 <li>vectorGeometryType() has been removed. Use the equivalent QgsWkbTypes::geometrydisplayString() instead.

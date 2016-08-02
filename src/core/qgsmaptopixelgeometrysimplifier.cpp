@@ -66,7 +66,7 @@ inline static QgsRectangle calculateBoundingBox( QgsWkbTypes::Type wkbType, QgsC
   QgsRectangle r;
   r.setMinimal();
 
-  int skipZM = ( QgsWkbTypes::wkbDimensions( wkbType ) - 2 ) * sizeof( double );
+  int skipZM = ( QgsWkbTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
   Q_ASSERT( skipZM >= 0 );
 
   for ( int i = 0; i < numPoints; ++i )
@@ -117,7 +117,7 @@ static bool generalizeWkbGeometryByBoundingBox(
   QgsWkbPtr savedTargetWkb( targetWkbPtr );
   unsigned int geometryType = QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) );
 
-  int skipZM = ( QgsWkbTypes::wkbDimensions( wkbType ) - 2 ) * sizeof( double );
+  int skipZM = ( QgsWkbTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
   Q_ASSERT( skipZM >= 0 );
 
   // If the geometry is already minimal skip the generalization
@@ -214,7 +214,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     QgsRectangle r;
     r.setMinimal();
 
-    int skipZM = ( QgsWkbTypes::wkbDimensions( wkbType ) - 2 ) * sizeof( double );
+    int skipZM = ( QgsWkbTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
     Q_ASSERT( skipZM >= 0 );
 
     int numPoints;
@@ -281,7 +281,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
 
       POINTARRAY inpts;
       inpts.pointlist = ( double* )( const unsigned char* )sourceWkbPtr;
-      inpts.dimension = QgsWkbTypes::wkbDimensions( wkbType );
+      inpts.dimension = QgsWkbTypes::coordDimensions( wkbType );
       inpts.npoints = numPoints;
       inpts.flags = 0;
 
@@ -402,7 +402,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
 
       sourceWkbPtr -= sizeof( int );
 
-      int sourceWkbSize_i = sizeof( int ) + numPoints_i * QgsWkbTypes::wkbDimensions( wkbType ) * sizeof( double );
+      int sourceWkbSize_i = sizeof( int ) + numPoints_i * QgsWkbTypes::coordDimensions( wkbType ) * sizeof( double );
       int targetWkbSize_i = 0;
 
       result |= simplifyWkbGeometry( simplifyFlags, simplifyAlgorithm, wkbType, sourceWkbPtr, targetWkbPtr, targetWkbSize_i, envelope_i, map2pixelTol, false, true );
@@ -434,7 +434,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
         int numPoints_i;
         sourceWkbPtr2 >> numPoints_i;
 
-        int wkbSize_i = numPoints_i * QgsWkbTypes::wkbDimensions( wkbType ) * sizeof( double );
+        int wkbSize_i = numPoints_i * QgsWkbTypes::coordDimensions( wkbType ) * sizeof( double );
 
         sourceWkbSize_i += 9 + wkbSize_i;
         sourceWkbPtr2 += wkbSize_i;
@@ -450,7 +450,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
           int numPoints_i;
           sourceWkbPtr2 >> numPoints_i;
 
-          int wkbSize_i = numPoints_i * QgsWkbTypes::wkbDimensions( wkbType ) * sizeof( double );
+          int wkbSize_i = numPoints_i * QgsWkbTypes::coordDimensions( wkbType ) * sizeof( double );
 
           sourceWkbSize_i += 4 + wkbSize_i;
           sourceWkbPtr2 += wkbSize_i;
@@ -566,7 +566,7 @@ bool QgsMapToPixelSimplifier::simplifyPoints( QgsWkbTypes::Type wkbType, QgsCons
       finalWkbPtr.readHeader();
       finalWkbPtr >> targetPoints;
 
-      int skipZM = ( QgsWkbTypes::wkbDimensions( wkbType ) - 2 ) * sizeof( double );
+      int skipZM = ( QgsWkbTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
       sourceWkbPtr += sizeof( int ) + numPoints * ( 2 * sizeof( double ) + skipZM );
 
       delete [] targetWkb;
