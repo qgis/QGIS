@@ -42,7 +42,8 @@ from qgis.core import (QgsGeometry,
                        QgsMapSettings,
                        QgsRenderChecker,
                        QgsSimpleMarkerSymbolLayerV2,
-                       QgsUnitTypes
+                       QgsUnitTypes,
+                       QgsWkbTypes
                        )
 
 from qgis.testing import unittest, start_app

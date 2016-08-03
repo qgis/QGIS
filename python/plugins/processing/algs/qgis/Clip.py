@@ -67,7 +67,7 @@ class Clip(GeoAlgorithm):
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             source_layer.fields(),
-            source_layer.dataProvider().geometryType(),
+            source_layer.wkbType(),
             source_layer.crs())
 
         # first build up a list of clip geometries
@@ -113,7 +113,7 @@ class Clip(GeoAlgorithm):
                 if not engine.contains(in_feat.geometry().geometry()):
                     cur_geom = in_feat.geometry()
                     new_geom = combined_clip_geom.intersection(cur_geom)
-                    if new_geom.wkbType() == QWkbTypes.Unknown or QgsWkbTypes.flatType(new_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
+                    if new_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(new_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                         int_com = in_feat.geometry().combine(new_geom)
                         int_sym = in_feat.geometry().symDifference(new_geom)
                         new_geom = int_com.difference(int_sym)

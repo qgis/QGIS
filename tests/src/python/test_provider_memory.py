@@ -22,6 +22,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFeature,
     QgsGeometry,
+    QgsWkbTypes,
     NULL
 )
 
@@ -126,7 +127,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                        ("MultiPoint", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPoint),
                        ("MultiLineString", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineString),
                        ("MultiPolygon", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygon),
-                       ("None", QgsWkbTypes.NullGeometry, QgsWkbTypes.NullGeometry)]
+                       ("None", QgsWkbTypes.NullGeometry, QgsWkbTypes.NoGeometry)]
         for v in testVectors:
             layer = QgsVectorLayer(v[0], "test", "memory")
 

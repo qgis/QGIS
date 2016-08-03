@@ -19,7 +19,8 @@ import os
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QPainter
 
-from qgis.core import (Qgis, QgsWkbTypes
+from qgis.core import (Qgis,
+                       QgsWkbTypes,
                        QgsVectorLayer,
                        QgsRectangle,
                        QgsFeature,
