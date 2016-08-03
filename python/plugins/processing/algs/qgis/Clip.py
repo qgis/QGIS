@@ -60,70 +60,88 @@ class Clip(GeoAlgorithm):
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
     def processAlgorithm(self, progress):
-        sourceLayer = dataobjects.getObjectFromUri(
+        source_layer = dataobjects.getObjectFromUri(
             self.getParameterValue(Clip.INPUT))
-        maskLayer = dataobjects.getObjectFromUri(
+        mask_layer = dataobjects.getObjectFromUri(
             self.getParameterValue(Clip.OVERLAY))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            sourceLayer.pendingFields(),
-            sourceLayer.dataProvider().geometryType(),
-            sourceLayer.dataProvider().crs())
-
-        inFeatA = QgsFeature()
-        inFeatB = QgsFeature()
-        outFeat = QgsFeature()
+            source_layer.fields(),
+            source_layer.dataProvider().geometryType(),
+            source_layer.crs())
 
         # first build up a list of clip geometries
         clip_geoms = []
-        for maskFeat in vector.features(maskLayer, QgsFeatureRequest().setSubsetOfAttributes([])):
+        for maskFeat in vector.features(mask_layer, QgsFeatureRequest().setSubsetOfAttributes([])):
             clip_geoms.append(maskFeat.geometry())
 
+        # are we clipping against a single feature? if so, we can show finer progress reports
         if len(clip_geoms) > 1:
             combined_clip_geom = QgsGeometry.unaryUnion(clip_geoms)
+            single_clip_feature = False
         else:
             combined_clip_geom = clip_geoms[0]
+            single_clip_feature = True
 
-        # use prepared geometries for faster insection tests
+        # use prepared geometries for faster intersection tests
         engine = QgsGeometry.createGeometryEngine(combined_clip_geom.geometry())
         engine.prepareGeometry()
 
-        input_features = [f for f in vector.features(sourceLayer, QgsFeatureRequest().setFilterRect(combined_clip_geom.boundingBox()))]
-        total = 100.0 / len(input_features)
-        for current, in_feat in enumerate(input_features):
-            if not in_feat.geometry():
-                continue
+        tested_feature_ids = set()
 
-            if not engine.intersects(in_feat.geometry().geometry()):
-                continue
+        for i, clip_geom in enumerate(clip_geoms):
+            input_features = [f for f in vector.features(source_layer, QgsFeatureRequest().setFilterRect(clip_geom.boundingBox()))]
 
-            if not engine.contains(in_feat.geometry().geometry()):
-                cur_geom = in_feat.geometry()
-                new_geom = combined_clip_geom.intersection(cur_geom)
-                if new_geom.wkbType() == Qgis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
-                    int_com = in_feat.geometry().combine(new_geom)
-                    int_sym = in_feat.geometry().symDifference(new_geom)
-                    new_geom = int_com.difference(int_sym)
-                    if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or more '
-                                                       'input features have invalid geometry.'))
+            if single_clip_feature:
+                total = 100.0 / len(input_features)
             else:
-                # clip geometry totally contains feature geometry, so no need to perform intersection
-                new_geom = in_feat.geometry()
+                total = 0
 
-            try:
-                outFeat = QgsFeature()
-                outFeat.setGeometry(new_geom)
-                outFeat.setAttributes(in_feat.attributes())
-                writer.addFeature(outFeat)
-            except:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       self.tr('Feature geometry error: One or more '
-                                               'output features ignored due to '
-                                               'invalid geometry.'))
-                continue
+            for current, in_feat in enumerate(input_features):
+                if not in_feat.geometry():
+                    continue
 
-            progress.setPercentage(int(current * total))
+                if in_feat.id() in tested_feature_ids:
+                    # don't retest a feature we have already checked
+                    continue
+
+                tested_feature_ids.add(in_feat.id())
+
+                if not engine.intersects(in_feat.geometry().geometry()):
+                    continue
+
+                if not engine.contains(in_feat.geometry().geometry()):
+                    cur_geom = in_feat.geometry()
+                    new_geom = combined_clip_geom.intersection(cur_geom)
+                    if new_geom.wkbType() == Qgis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                        int_com = in_feat.geometry().combine(new_geom)
+                        int_sym = in_feat.geometry().symDifference(new_geom)
+                        new_geom = int_com.difference(int_sym)
+                        if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
+                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                                   self.tr('GEOS geoprocessing error: One or more '
+                                                           'input features have invalid geometry.'))
+                else:
+                    # clip geometry totally contains feature geometry, so no need to perform intersection
+                    new_geom = in_feat.geometry()
+
+                try:
+                    out_feat = QgsFeature()
+                    out_feat.setGeometry(new_geom)
+                    out_feat.setAttributes(in_feat.attributes())
+                    writer.addFeature(out_feat)
+                except:
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                           self.tr('Feature geometry error: One or more '
+                                                   'output features ignored due to '
+                                                   'invalid geometry.'))
+                    continue
+
+                if single_clip_feature:
+                    progress.setPercentage(int(current * total))
+
+            if not single_clip_feature:
+                # coarse progress report for multiple clip geometries
+                progress.setPercentage(100.0 * i / len(clip_geoms))
 
         del writer
