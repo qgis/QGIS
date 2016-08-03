@@ -389,7 +389,7 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::restore
   ui.checkBoxSliverPolygons->setChecked( QSettings().value( sSettingsGroup + "checkSliverPolygons" ).toBool() );
   ui.checkBoxSliverArea->setChecked( QSettings().value( sSettingsGroup + "sliverPolygonsAreaThresholdEnabled" ).toBool() );
   ui.doubleSpinBoxSliverArea->setValue( QSettings().value( sSettingsGroup + "sliverPolygonsAreaThreshold" ).toDouble() );
-  ui.doubleSpinBoxSliverThinness->setValue( QSettings().value( sSettingsGroup + "sliverPolygonsThinnessThreshold" ).toDouble() );
+  ui.doubleSpinBoxSliverThinness->setValue( QSettings().value( sSettingsGroup + "sliverPolygonsThinnessThreshold", 20 ).toDouble() );
   ui.checkBoxSliverPolygons->setChecked( QSettings().value( sSettingsGroup + "checkSliverPolygons" ).toBool() );
 }
 
