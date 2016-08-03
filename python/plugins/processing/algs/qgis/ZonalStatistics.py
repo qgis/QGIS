@@ -132,7 +132,7 @@ class ZonalStatistics(GeoAlgorithm):
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
         (idxMin, fields) = vector.findOrCreateField(layer, fields,
                                                     columnPrefix + 'min', 21, 6)
         (idxMax, fields) = vector.findOrCreateField(layer, fields,

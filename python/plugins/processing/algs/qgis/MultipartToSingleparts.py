@@ -61,7 +61,7 @@ class MultipartToSingleparts(GeoAlgorithm):
         geomType = self.multiToSingleGeom(layer.wkbType())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), geomType, layer.crs())
+            layer.fields().toList(), geomType, layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / len(features)

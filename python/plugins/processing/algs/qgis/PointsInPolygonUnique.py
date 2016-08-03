@@ -67,7 +67,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
 
         classFieldIndex = pointLayer.fieldNameIndex(classFieldName)
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
-                                                         polyLayer.pendingFields(), fieldName)
+                                                         polyLayer.fields(), fieldName)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields.toList(), polyLayer.wkbType(), polyLayer.crs())

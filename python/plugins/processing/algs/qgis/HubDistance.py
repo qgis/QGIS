@@ -99,7 +99,7 @@ class HubDistance(GeoAlgorithm):
         if addLines:
             geomType = QgsWkbTypes.LineString
 
-        fields = layerPoints.pendingFields()
+        fields = layerPoints.fields()
         fields.append(QgsField('HubName', QVariant.String))
         fields.append(QgsField('HubDist', QVariant.Double))
 

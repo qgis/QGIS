@@ -131,7 +131,7 @@ class ExecuteSQL(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(vLayer.dataProvider().error().message())
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            vLayer.pendingFields().toList(),
+            vLayer.fields().toList(),
             # Create a point layer (without any points) if 'no geometry' is chosen
             vLayer.wkbType() if geometry_type != 1 else 1,
             vLayer.crs())

@@ -8,7 +8,7 @@ from collections import defaultdict
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 layer = processing.getObject(Input)
-inputFields = layer.pendingFields()
+inputFields = layer.fields()
 fieldIdxs = []
 fields = Fields.split(',')
 for f in fields:

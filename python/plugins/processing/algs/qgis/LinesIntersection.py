@@ -82,8 +82,8 @@ class LinesIntersection(GeoAlgorithm):
         idxA = layerA.fieldNameIndex(fieldA)
         idxB = layerB.fieldNameIndex(fieldB)
 
-        fieldList = [layerA.pendingFields()[idxA],
-                     layerB.pendingFields()[idxB]]
+        fieldList = [layerA.fields()[idxA],
+                     layerB.fields()[idxB]]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
                                                                      QgsWkbTypes.Point, layerA.crs())

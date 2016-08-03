@@ -72,7 +72,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         method = self.getParameterValue(self.METHOD)
 
         geometryType = layer.geometryType()
-        fields = layer.pendingFields()
+        fields = layer.fields()
 
         if geometryType == QgsWkbTypes.PolygonGeometry:
             areaName = vector.createUniqueFieldName('area', fields)

@@ -49,7 +49,7 @@ class DeleteHoles(GeoAlgorithm):
             self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields(),
+            layer.fields(),
             layer.wkbType(),
             layer.crs())
 

@@ -70,7 +70,7 @@ class Difference(GeoAlgorithm):
 
         geomType = layerA.wkbType()
         writer = self.getOutputFromName(
-            Difference.OUTPUT).getVectorWriter(layerA.pendingFields(),
+            Difference.OUTPUT).getVectorWriter(layerA.fields(),
                                                geomType,
                                                layerA.crs())
 

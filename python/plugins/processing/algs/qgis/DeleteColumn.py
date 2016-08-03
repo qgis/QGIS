@@ -54,7 +54,7 @@ class DeleteColumn(GeoAlgorithm):
             self.getParameterValue(self.INPUT))
         idx = layer.fieldNameIndex(self.getParameterValue(self.COLUMN))
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
         fields.remove(idx)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,

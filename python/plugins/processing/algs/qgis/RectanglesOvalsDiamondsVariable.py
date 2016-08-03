@@ -30,7 +30,7 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -97,8 +97,8 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
-                layer.pendingFields().toList(),
-                QgsWkbTypes.Polygon,
+                layer.fields().toList(),
+                Qgis.WKBPolygon,
                 layer.crs())
 
         outFeat = QgsFeature()

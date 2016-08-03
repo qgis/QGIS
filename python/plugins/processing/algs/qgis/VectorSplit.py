@@ -70,7 +70,7 @@ class VectorSplit(GeoAlgorithm):
         uniqueValues = vector.uniqueValues(layer, fieldIndex)
         baseName = os.path.join(directory, '{0}_{1}'.format(layer.name(), fieldName))
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
         crs = layer.crs()
         geomType = layer.wkbType()
 
