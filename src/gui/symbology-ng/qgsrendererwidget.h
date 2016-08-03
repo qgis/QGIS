@@ -174,6 +174,9 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     void dataDefinedChanged();
 
   protected:
+    /**
+     * Should be called in the constructor of child classes.
+     */
     void init( const QString& description ); // needed in children ctor to call virtual
 
   private:

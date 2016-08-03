@@ -83,7 +83,7 @@ class TestQgsSipCoverage(unittest.TestCase):
         if missing_objects:
             print("---------------------------------")
             print(colored('Missing classes:', 'yellow'))
-            print('\n '.join([colored(obj, 'yellow', attrs=['bold']) for obj in missing_objects]))
+            print('  ' + '\n  '.join([colored(obj, 'yellow', attrs=['bold']) for obj in missing_objects]))
         if missing_members:
             print("---------------------------------")
             print(colored('Missing members:', 'yellow'))
