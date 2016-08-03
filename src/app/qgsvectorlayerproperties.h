@@ -39,7 +39,7 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
 class QgsPanelWidget;
 
-class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase
+class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -191,7 +191,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsExpressionContext mContext;
 
-    static QgsExpressionContext _getExpressionContext( const void* context );
+    QgsExpressionContext createExpressionContext() const override;
 
   private slots:
     void openPanel( QgsPanelWidget* panel );
