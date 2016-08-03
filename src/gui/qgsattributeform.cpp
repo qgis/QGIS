@@ -1551,15 +1551,22 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       }
       else
       {
-        QScrollArea *scrollArea = new QScrollArea( parent );
+        myContainer = new QWidget();
 
-        myContainer = new QWidget( scrollArea );
+        if ( context.formMode() != QgsAttributeEditorContext::Embed )
+        {
+          QScrollArea *scrollArea = new QScrollArea( parent );
 
-        scrollArea->setWidget( myContainer );
-        scrollArea->setWidgetResizable( true );
-        scrollArea->setFrameShape( QFrame::NoFrame );
+          scrollArea->setWidget( myContainer );
+          scrollArea->setWidgetResizable( true );
+          scrollArea->setFrameShape( QFrame::NoFrame );
 
-        newWidgetInfo.widget = scrollArea;
+          newWidgetInfo.widget = scrollArea;
+        }
+        else
+        {
+          newWidgetInfo.widget = myContainer;
+        }
       }
 
       QGridLayout* gbLayout = new QGridLayout();
