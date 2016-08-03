@@ -58,7 +58,7 @@ class MultipartToSingleparts(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        geomType = self.multiToSingleGeom(layer.dataProvider().wkbType())
+        geomType = self.multiToSingleGeom(layer.wkbType())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.pendingFields().toList(), geomType, layer.crs())
@@ -87,41 +87,41 @@ class MultipartToSingleparts(GeoAlgorithm):
 
     def multiToSingleGeom(self, wkbType):
         try:
-            if wkbType in (QgsWkbTypes.Point, QgsWkbTypes.MultiPoint,
-                           QgsWkbTypes.Point25D, QgsWkbTypes.MultiPoint25D):
-                return QgsWkbTypes.Point
-            elif wkbType in (QgsWkbTypes.LineString, QgsWkbTypes.MultiLineString,
-                             QgsWkbTypes.MultiLineString25D,
-                             QgsWkbTypes.LineString25D):
+            if wkbType in (Qgis.WKBPoint, Qgis.WKBMultiPoint,
+                           Qgis.WKBPoint25D, Qgis.WKBMultiPoint25D):
+                return Qgis.WKBPoint
+            elif wkbType in (Qgis.WKBLineString, Qgis.WKBMultiLineString,
+                             Qgis.WKBMultiLineString25D,
+                             Qgis.WKBLineString25D):
 
-                return QgsWkbTypes.LineString
-            elif wkbType in (QgsWkbTypes.Polygon, QgsWkbTypes.MultiPolygon,
-                             QgsWkbTypes.MultiPolygon25D, QgsWkbTypes.Polygon25D):
+                return Qgis.WKBLineString
+            elif wkbType in (Qgis.WKBPolygon, Qgis.WKBMultiPolygon,
+                             Qgis.WKBMultiPolygon25D, Qgis.WKBPolygon25D):
 
-                return QgsWkbTypes.Polygon
+                return Qgis.WKBPolygon
             else:
-                return QgsWkbTypes.Unknown
+                return Qgis.WKBUnknown
         except Exception as err:
             raise GeoAlgorithmExecutionException(unicode(err))
 
     def extractAsSingle(self, geom):
         multiGeom = QgsGeometry()
         geometries = []
-        if geom.type() == QgsWkbTypes.PointGeometry:
+        if geom.type() == Qgis.Point:
             if geom.isMultipart():
                 multiGeom = geom.asMultiPoint()
                 for i in multiGeom:
                     geometries.append(QgsGeometry().fromPoint(i))
             else:
                 geometries.append(geom)
-        elif geom.type() == QgsWkbTypes.LineGeometry:
+        elif geom.type() == Qgis.Line:
             if geom.isMultipart():
                 multiGeom = geom.asMultiPolyline()
                 for i in multiGeom:
                     geometries.append(QgsGeometry().fromPolyline(i))
             else:
                 geometries.append(geom)
-        elif geom.type() == QgsWkbTypes.PolygonGeometry:
+        elif geom.type() == Qgis.Polygon:
             if geom.isMultipart():
                 multiGeom = geom.asMultiPolygon()
                 for i in multiGeom:

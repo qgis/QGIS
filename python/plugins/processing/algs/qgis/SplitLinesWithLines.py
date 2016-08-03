@@ -60,7 +60,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         fieldList = layerA.pendingFields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                                                                     QgsWkbTypes.LineString, layerA.dataProvider().crs())
+                                                                     QgsWkbTypes.LineString, layerA.crs())
 
         spatialIndex = vector.spatialindex(layerB)
 
