@@ -60,6 +60,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
     , quadrant( quadrant )
     , mCost( cost )
     , mHasObstacleConflict( false )
+    , mUpsideDownCharCount( 0 )
 {
   type = GEOS_POLYGON;
   nbPoints = 4;
@@ -76,8 +77,6 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   double beta = this->alpha + ( M_PI / 2 );
 
   double dx1, dx2, dy1, dy2;
-
-  double tx, ty;
 
   dx1 = cos( this->alpha ) * w;
   dy1 = sin( this->alpha ) * w;
@@ -98,32 +97,14 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   y[3] = y1 + dy2;
 
   // upside down ? (curved labels are always correct)
-  if ( feature->layer()->arrangement() != QgsPalLayerSettings::Curved &&
-       feature->layer()->arrangement() != QgsPalLayerSettings::PerimeterCurved &&
+  if ( !feature->layer()->isCurved() &&
        this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
   {
-    bool uprightLabel = false;
-
-    switch ( feature->layer()->upsidedownLabels() )
+    if ( feature->showUprightLabels() )
     {
-      case Layer::Upright:
-        uprightLabel = true;
-        break;
-      case Layer::ShowDefined:
-        // upright only dynamic labels
-        if ( !feature->getFixedRotation() || ( !feature->getFixedPosition() && feature->getLabelAngle() == 0.0 ) )
-        {
-          uprightLabel = true;
-        }
-        break;
-      case Layer::ShowAll:
-        break;
-      default:
-        uprightLabel = true;
-    }
+      // Turn label upsidedown by inverting boundary points
+      double tx, ty;
 
-    if ( uprightLabel )
-    {
       tx = x[0];
       ty = y[0];
 
@@ -184,6 +165,7 @@ LabelPosition::LabelPosition( const LabelPosition& other )
   reversed = other.reversed;
   quadrant = other.quadrant;
   mHasObstacleConflict = other.mHasObstacleConflict;
+  mUpsideDownCharCount = other.mUpsideDownCharCount;
 }
 
 bool LabelPosition::isIn( double *bbox )

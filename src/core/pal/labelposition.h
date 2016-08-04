@@ -228,6 +228,11 @@ namespace pal
       int getPartId() const { return partId; }
       void setPartId( int id ) { partId = id; }
 
+      //! Increases the count of upside down characters for this label position
+      int incrementUpsideDownCharCount() { return ++mUpsideDownCharCount; }
+
+      //! Returns the number of upside down characters for this label position
+      int upsideDownCharCount() const { return mUpsideDownCharCount; }
 
       void removeFromIndex( RTree<LabelPosition*, double, 2, double> *index );
       void insertIntoIndex( RTree<LabelPosition*, double, 2, double> *index );
@@ -296,6 +301,7 @@ namespace pal
     private:
       double mCost;
       bool mHasObstacleConflict;
+      int mUpsideDownCharCount;
 
       /** Calculates the total number of parts for this label position
        */

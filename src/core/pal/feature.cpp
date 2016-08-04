@@ -773,8 +773,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
       {
         // find out whether the line direction for this candidate is from right to left
         bool isRightToLeft = ( angle > M_PI / 2 || angle <= -M_PI / 2 );
-        // meaning of above/below may be reversed if using line position dependent orientation
-        // and the line has right-to-left direction
+        // meaning of above/below may be reversed if using map orientation and the line has right-to-left direction
         bool reversed = (( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
         bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
         bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
@@ -919,8 +918,7 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition*>& l
     {
       // find out whether the line direction for this candidate is from right to left
       bool isRightToLeft = ( angle > M_PI / 2 || angle <= -M_PI / 2 );
-      // meaning of above/below may be reversed if using line position dependent orientation
-      // and the line has right-to-left direction
+      // meaning of above/below may be reversed if using map orientation and the line has right-to-left direction
       bool reversed = (( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
       bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
       bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
@@ -968,7 +966,7 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition*>& l
 }
 
 
-LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, double* path_distances, int orientation, int index, double distance )
+LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, double* path_distances, int& orientation, int index, double distance, bool& reversed, bool& flip )
 {
   // Check that the given distance is on the given index and find the correct index and distance if not
   while ( distance < 0 && index > 1 )
@@ -995,11 +993,55 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
 
   LabelInfo* li = mLF->curvedLabelInfo();
 
-  // Keep track of the initial index,distance incase we need to re-call get_placement_offset
-  int initial_index = index;
-  double initial_distance = distance;
-
   double string_height = li->label_height;
+
+  double segment_length = path_distances[index];
+  if ( qgsDoubleNear( segment_length, 0.0 ) )
+  {
+    // Not allowed to place across on 0 length segments or discontinuities
+    return nullptr;
+  }
+
+  if ( orientation == 0 )       // Must be map orientation
+  {
+    // Calculate the orientation based on the angle of the path segment under consideration
+
+    double _distance = distance;
+    int endindex = index;
+
+    for ( int i = 0; i < li->char_num; i++ )
+    {
+      LabelInfo::CharacterInfo& ci = li->char_info[i];
+      double start_x, start_y, end_x, end_y;
+      if ( nextCharPosition( ci.width, path_distances[index], path_positions, endindex, _distance, start_x, start_y, end_x, end_y ) == false )
+      {
+        return nullptr;
+      }
+    }
+
+    // Determine the angle of the path segment under consideration
+    double dx = path_positions->x[endindex] - path_positions->x[index];
+    double dy = path_positions->y[endindex] - path_positions->y[index];
+    double line_angle = atan2( -dy, dx );
+
+    bool isRightToLeft = ( line_angle > 0.55 * M_PI || line_angle < -0.45 * M_PI );
+    reversed = isRightToLeft;
+    orientation = isRightToLeft ? -1 : 1;
+  }
+
+  if ( !showUprightLabels() )
+  {
+    if ( orientation < 0 )
+    {
+      flip = true;   // Report to the caller, that the orientation is flipped
+      reversed = !reversed;
+      orientation = 1;
+    }
+  }
+
+  LabelPosition* slp = nullptr;
+  LabelPosition* slp_tmp = nullptr;
+
   double old_x = path_positions->x[index-1];
   double old_y = path_positions->y[index-1];
 
@@ -1009,23 +1051,7 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
   double dx = new_x - old_x;
   double dy = new_y - old_y;
 
-  double segment_length = path_distances[index];
-  if ( qgsDoubleNear( segment_length, 0.0 ) )
-  {
-    // Not allowed to place across on 0 length segments or discontinuities
-    return nullptr;
-  }
-
-  LabelPosition* slp = nullptr;
-  LabelPosition* slp_tmp = nullptr;
-  // current_placement = placement_result()
   double angle = atan2( -dy, dx );
-
-  bool orientation_forced = ( orientation != 0 ); // Whether the orientation was set by the caller
-  if ( !orientation_forced )
-    orientation = ( angle > 0.55 * M_PI || angle < -0.45 * M_PI ? -1 : 1 );
-
-  int upside_down_char_count = 0; // Count of characters that are placed upside down.
 
   for ( int i = 0; i < li->char_num; i++ )
   {
@@ -1033,60 +1059,15 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
 
     // grab the next character according to the orientation
     LabelInfo::CharacterInfo& ci = ( orientation > 0 ? li->char_info[i] : li->char_info[li->char_num-i-1] );
-
-    // Coordinates this character will start at
-    if ( qgsDoubleNear( segment_length, 0.0 ) )
+    double start_x, start_y, end_x, end_y;
+    if ( nextCharPosition( ci.width, path_distances[index], path_positions, index, distance, start_x, start_y, end_x, end_y ) == false )
     {
-      // Not allowed to place across on 0 length segments or discontinuities
       delete slp;
       return nullptr;
     }
 
-    double start_x = old_x + dx * distance / segment_length;
-    double start_y = old_y + dy * distance / segment_length;
-    // Coordinates this character ends at, calculated below
-    double end_x = 0;
-    double end_y = 0;
-
-    if ( segment_length - distance  >= ci.width )
-    {
-      // if the distance remaining in this segment is enough, we just go further along the segment
-      distance += ci.width;
-      end_x = old_x + dx * distance / segment_length;
-      end_y = old_y + dy * distance / segment_length;
-    }
-    else
-    {
-      // If there isn't enough distance left on this segment
-      // then we need to search until we find the line segment that ends further than ci.width away
-      do
-      {
-        old_x = new_x;
-        old_y = new_y;
-        index++;
-        if ( index >= path_positions->nbPoints ) // Bail out if we run off the end of the shape
-        {
-          delete slp;
-          return nullptr;
-        }
-        new_x = path_positions->x[index];
-        new_y = path_positions->y[index];
-        dx = new_x - old_x;
-        dy = new_y - old_y;
-        segment_length = path_distances[index];
-      }
-      while ( sqrt( pow( start_x - new_x, 2 ) + pow( start_y - new_y, 2 ) ) < ci.width ); // Distance from start_ to new_
-
-      // Calculate the position to place the end of the character on
-      GeomFunction::findLineCircleIntersection( start_x, start_y, ci.width, old_x, old_y, new_x, new_y, end_x, end_y );
-
-      // Need to calculate distance on the new segment
-      distance = sqrt( pow( old_x - end_x, 2 ) + pow( old_y - end_y, 2 ) );
-    }
-
     // Calculate angle from the start of the character to the end based on start_/end_ position
     angle = atan2( start_y - end_y, end_x - start_x );
-    //angle = atan2(end_y-start_y, end_x-start_x);
 
     // Test last_character_angle vs angle
     // since our rendering angle has changed then check against our
@@ -1108,7 +1089,10 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
     // and we're calculating the mean line here
     double dist = 0.9 * li->label_height / 2;
     if ( orientation < 0 )
+    {
       dist = -dist;
+      flip = true;
+    }
     start_x += dist * cos( angle + M_PI_2 );
     start_y -= dist * sin( angle + M_PI_2 );
 
@@ -1137,35 +1121,14 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
       slp_tmp->setNextPart( tmp );
     slp_tmp = tmp;
 
-    //current_placement.add_node(ci.character,render_x, -render_y, render_angle);
-    //current_placement.add_node(ci.character,render_x - current_placement.starting_x, render_y - current_placement.starting_y, render_angle)
-
     // Normalise to 0 <= angle < 2PI
-    while ( render_angle >= 2*M_PI ) render_angle -= 2 * M_PI;
+    while ( render_angle >= 2 * M_PI ) render_angle -= 2 * M_PI;
     while ( render_angle < 0 ) render_angle += 2 * M_PI;
 
-    if ( render_angle > M_PI / 2 && render_angle < 1.5*M_PI )
-      upside_down_char_count++;
+    if ( render_angle > M_PI / 2 && render_angle < 1.5 * M_PI )
+      slp->incrementUpsideDownCharCount();
   }
   // END FOR
-
-  // If we placed too many characters upside down
-  if ( upside_down_char_count >= li->char_num / 2.0 )
-  {
-    // if we auto-detected the orientation then retry with the opposite orientation
-    if ( !orientation_forced )
-    {
-      orientation = -orientation;
-      delete slp;
-      slp = curvedPlacementAtOffset( path_positions, path_distances, orientation, initial_index, initial_distance );
-    }
-    else
-    {
-      // Otherwise we have failed to find a placement
-      delete slp;
-      return nullptr;
-    }
-  }
 
   return slp;
 }
@@ -1220,110 +1183,120 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
   else
     lineAngle = atan2( ey - by, ex - bx );
 
-  // find out whether the line direction for this candidate is from right to left
-  bool isRightToLeft = ( lineAngle > M_PI / 2 || lineAngle <= -M_PI / 2 );
-
   QLinkedList<LabelPosition*> positions;
   double delta = qMax( li->label_height, total_distance / mLF->layer()->pal->line_p );
 
   unsigned long flags = mLF->layer()->arrangementFlags();
   if ( flags == 0 )
     flags = FLAG_ON_LINE; // default flag
-  // placements may need to be reversed if using line position dependent orientation
-  // and the line has right-to-left direction
-  bool reversed = ( !( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
-
-  // an orientation of 0 means try both orientations and choose the best
-  int orientation = 0;
-  if ( !( flags & FLAG_MAP_ORIENTATION )
-       && mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
-  {
-    //... but if we are labeling the perimeter of a polygon and using line orientation flags,
-    // then we can only accept a single orientation, as we need to ensure that the labels fall
-    // inside or outside the polygon (and not mixed)
-    orientation = reversed ? -1 : 1;
-  }
 
   // generate curved labels
-  for ( int i = 0; i*delta < total_distance; i++ )
+  for ( double i = 0; i < total_distance; i += delta )
   {
-    LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i * delta );
+    bool flip = false;
+    // placements may need to be reversed if using map orientation and the line has right-to-left direction
+    bool reversed = false;
 
-    if ( slp )
+    // an orientation of 0 means try both orientations and choose the best
+    int orientation = 0;
+    if ( !( flags & FLAG_MAP_ORIENTATION ) )
     {
-      // evaluate cost
-      double angle_diff = 0.0, angle_last = 0.0, diff;
-      LabelPosition* tmp = slp;
-      double sin_avg = 0, cos_avg = 0;
-      while ( tmp )
-      {
-        if ( tmp != slp ) // not first?
-        {
-          diff = fabs( tmp->getAlpha() - angle_last );
-          if ( diff > 2*M_PI ) diff -= 2 * M_PI;
-          diff = qMin( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
-          angle_diff += diff;
-        }
-
-        sin_avg += sin( tmp->getAlpha() );
-        cos_avg += cos( tmp->getAlpha() );
-        angle_last = tmp->getAlpha();
-        tmp = tmp->getNextPart();
-      }
-
-      double angle_diff_avg = li->char_num > 1 ? ( angle_diff / ( li->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
-      double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
-      if ( cost < 0.0001 ) cost = 0.0001;
-
-      // penalize positions which are further from the line's midpoint
-      double labelCenter = ( i * delta ) + getLabelWidth() / 2;
-      double costCenter = qAbs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
-      cost += costCenter / 1000;  // < 0, 0.0005 >
-      slp->setCost( cost );
-
-      // average angle is calculated with respect to periodicity of angles
-      double angle_avg = atan2( sin_avg / li->char_num, cos_avg / li->char_num );
-      // displacement - we loop through 3 times, generating above, online then below line placements successively
-      for ( int i = 0; i <= 2; ++i )
-      {
-        LabelPosition* p = nullptr;
-        if ( i == 0 && (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) ) )
-          p = _createCurvedCandidate( slp, angle_avg, mLF->distLabel() + li->label_height / 2 );
-        if ( i == 1 && flags & FLAG_ON_LINE )
-        {
-          p = _createCurvedCandidate( slp, angle_avg, 0 );
-          p->setCost( p->cost() + 0.002 );
-        }
-        if ( i == 2 && (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) ) )
-        {
-          p = _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 - mLF->distLabel() );
-          p->setCost( p->cost() + 0.001 );
-        }
-
-        if ( p && mLF->permissibleZonePrepared() )
-        {
-          bool within = true;
-          LabelPosition* currentPos = p;
-          while ( within && currentPos )
-          {
-            within = GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), currentPos->getX(), currentPos->getY(), currentPos->getWidth(), currentPos->getHeight(), currentPos->getAlpha() );
-            currentPos = currentPos->getNextPart();
-          }
-          if ( !within )
-          {
-            delete p;
-            p = nullptr;
-          }
-        }
-
-        if ( p )
-          positions.append( p );
-      }
-      // delete original candidate
-      delete slp;
+      //... but if we are using line orientation flags, then we can only accept a single orientation,
+      // as we need to ensure that the labels fall inside or outside the polyline or polygon (and not mixed)
+      orientation = 1;
     }
-  }
 
+    LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i, reversed, flip );
+    if ( slp == nullptr )
+      continue;
+
+    // If we placed too many characters upside down
+    if ( slp->upsideDownCharCount() >= li->char_num / 2.0 )
+    {
+      // if labels should be shown upright then retry with the opposite orientation
+      if (( showUprightLabels() && !flip ) )
+      {
+        delete slp;
+        orientation = -orientation;
+        slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i, reversed, flip );
+      }
+    }
+    if ( slp == nullptr )
+      continue;
+
+    // evaluate cost
+    double angle_diff = 0.0, angle_last = 0.0, diff;
+    LabelPosition* tmp = slp;
+    double sin_avg = 0, cos_avg = 0;
+    while ( tmp )
+    {
+      if ( tmp != slp ) // not first?
+      {
+        diff = fabs( tmp->getAlpha() - angle_last );
+        if ( diff > 2*M_PI ) diff -= 2 * M_PI;
+        diff = qMin( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
+        angle_diff += diff;
+      }
+
+      sin_avg += sin( tmp->getAlpha() );
+      cos_avg += cos( tmp->getAlpha() );
+      angle_last = tmp->getAlpha();
+      tmp = tmp->getNextPart();
+    }
+
+    double angle_diff_avg = li->char_num > 1 ? ( angle_diff / ( li->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
+    double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
+    if ( cost < 0.0001 ) cost = 0.0001;
+
+    // penalize positions which are further from the line's midpoint
+    double labelCenter = i + getLabelWidth() / 2;
+    double costCenter = qAbs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
+    cost += costCenter / 1000;  // < 0, 0.0005 >
+    slp->setCost( cost );
+
+    // average angle is calculated with respect to periodicity of angles
+    double angle_avg = atan2( sin_avg / li->char_num, cos_avg / li->char_num );
+    bool localreversed = flip ? !reversed : reversed;
+    // displacement - we loop through 3 times, generating above, online then below line placements successively
+    for ( int i = 0; i <= 2; ++i )
+    {
+      LabelPosition* p = nullptr;
+      if ( i == 0 && (( !localreversed && ( flags & FLAG_ABOVE_LINE ) ) || ( localreversed && ( flags & FLAG_BELOW_LINE ) ) ) )
+        p = _createCurvedCandidate( slp, angle_avg, mLF->distLabel() + li->label_height / 2 );
+      if ( i == 1 && flags & FLAG_ON_LINE )
+      {
+        p = _createCurvedCandidate( slp, angle_avg, 0 );
+        p->setCost( p->cost() + 0.002 );
+      }
+      if ( i == 2 && (( !localreversed && ( flags & FLAG_BELOW_LINE ) ) || ( localreversed && ( flags & FLAG_ABOVE_LINE ) ) ) )
+      {
+        p = _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 - mLF->distLabel() );
+        p->setCost( p->cost() + 0.001 );
+      }
+
+      if ( p && mLF->permissibleZonePrepared() )
+      {
+        bool within = true;
+        LabelPosition* currentPos = p;
+        while ( within && currentPos )
+        {
+          within = GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), currentPos->getX(), currentPos->getY(), currentPos->getWidth(), currentPos->getHeight(), currentPos->getAlpha() );
+          currentPos = currentPos->getNextPart();
+        }
+        if ( !within )
+        {
+          delete p;
+          p = nullptr;
+        }
+      }
+
+      if ( p )
+        positions.append( p );
+    }
+
+    // delete original candidate
+    delete slp;
+  }
 
   int nbp = positions.size();
   for ( int i = 0; i < nbp; i++ )
@@ -1335,9 +1308,6 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
 
   return nbp;
 }
-
-
-
 
 /*
  *             seg 2
@@ -1402,7 +1372,6 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition*>& lPos, Point
     //dx = dy = min( yrm, xrm ) / 2;
     dx = labelWidth / 2.0;
     dy = labelHeight / 2.0;
-
 
     int numTry = 0;
 
@@ -1588,9 +1557,7 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
           createCandidatesAroundPoint( x[0], y[0], lPos, angle );
         break;
       case GEOS_LINESTRING:
-        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Curved )
-          createCurvedCandidatesAlongLine( lPos, mapShape );
-        else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
+        if ( mLF->layer()->isCurved() )
           createCurvedCandidatesAlongLine( lPos, mapShape );
         else
           createCandidatesAlongLine( lPos, mapShape );
@@ -1773,4 +1740,90 @@ double FeaturePart::calculatePriority() const
   }
 
   return mLF->priority() >= 0 ? mLF->priority() : mLF->layer()->priority();
+}
+
+bool FeaturePart::showUprightLabels() const
+{
+  bool uprightLabel = false;
+
+  switch ( mLF->layer()->upsidedownLabels() )
+  {
+    case Layer::Upright:
+      uprightLabel = true;
+      break;
+    case Layer::ShowDefined:
+      // upright only dynamic labels
+      if ( !hasFixedRotation() || ( !hasFixedPosition() && fixedAngle() == 0.0 ) )
+      {
+        uprightLabel = true;
+      }
+      break;
+    case Layer::ShowAll:
+      break;
+    default:
+      uprightLabel = true;
+  }
+  return uprightLabel;
+}
+
+bool FeaturePart::nextCharPosition( double charWidth, double segment_length, PointSet* path_positions, int& index, double& distance,
+                                    double& start_x, double& start_y, double& end_x, double& end_y ) const
+{
+  // Coordinates this character will start at
+  if ( qgsDoubleNear( segment_length, 0.0 ) )
+  {
+    // Not allowed to place across on 0 length segments or discontinuities
+    return false;
+  }
+
+  double old_x = path_positions->x[index-1];
+  double old_y = path_positions->y[index-1];
+
+  double new_x = path_positions->x[index];
+  double new_y = path_positions->y[index];
+
+  double dx = new_x - old_x;
+  double dy = new_y - old_y;
+
+  start_x = old_x + dx * distance / segment_length;
+  start_y = old_y + dy * distance / segment_length;
+
+  // Coordinates this character ends at, calculated below
+  end_x = 0;
+  end_y = 0;
+
+  if ( segment_length - distance >= charWidth )
+  {
+    // if the distance remaining in this segment is enough, we just go further along the segment
+    distance += charWidth;
+    end_x = old_x + dx * distance / segment_length;
+    end_y = old_y + dy * distance / segment_length;
+  }
+  else
+  {
+    // If there isn't enough distance left on this segment
+    // then we need to search until we find the line segment that ends further than ci.width away
+    do
+    {
+      old_x = new_x;
+      old_y = new_y;
+      index++;
+      if ( index >= path_positions->nbPoints ) // Bail out if we run off the end of the shape
+      {
+        return false;
+      }
+      new_x = path_positions->x[index];
+      new_y = path_positions->y[index];
+      dx = new_x - old_x;
+      dy = new_y - old_y;
+    }
+    while ( sqrt( pow( start_x - new_x, 2 ) + pow( start_y - new_y, 2 ) ) < charWidth ); // Distance from start_ to new_
+
+    // Calculate the position to place the end of the character on
+    GeomFunction::findLineCircleIntersection( start_x, start_y, charWidth, old_x, old_y, new_x, new_y, end_x, end_y );
+
+    // Need to calculate distance on the new segment
+    distance = sqrt( pow( old_x - end_x, 2 ) + pow( old_y - end_y, 2 ) );
+  }
+  return true;
 }

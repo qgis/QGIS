@@ -2268,7 +2268,7 @@ QList<LabelPosition*> * Problem::getSolution( bool returnInactive )
     }
     else if ( returnInactive
               || mLabelPositions.at( featStartId[i] )->getFeaturePart()->layer()->displayAll()
-              || mLabelPositions.at( featStartId[i] )->getFeaturePart()->getAlwaysShow() )
+              || mLabelPositions.at( featStartId[i] )->getFeaturePart()->alwaysShow() )
     {
       solList->push_back( mLabelPositions.at( featStartId[i] ) ); // unplaced label
     }
