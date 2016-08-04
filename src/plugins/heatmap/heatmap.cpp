@@ -138,7 +138,7 @@ void Heatmap::run()
   OutputValues valueType = d.outputValues();
 
   //is input layer multipoint?
-  bool isMultiPoint = inputLayer->wkbType() == Qgis::WKBMultiPoint || inputLayer->wkbType() == Qgis::WKBMultiPoint25D;
+  bool isMultiPoint = inputLayer->wkbType() == QgsWkbTypes::MultiPoint || inputLayer->wkbType() == QgsWkbTypes::MultiPoint25D;
 
   // Getting the rasterdataset in place
   GDALAllRegister();

@@ -64,7 +64,7 @@ class PointsDisplacement(GeoAlgorithm):
 
         provider = layer.dataProvider()
         writer = output.getVectorWriter(provider.fields(),
-                                        provider.geometryType(), provider.crs())
+                                        provider.wkbType(), provider.crs())
 
         features = vector.features(layer)
 

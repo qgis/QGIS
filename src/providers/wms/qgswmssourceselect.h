@@ -165,7 +165,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QString mConnName;
 
     //! URI for selected connection
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;

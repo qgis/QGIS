@@ -62,7 +62,7 @@ class Smooth(GeoAlgorithm):
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
                 layer.fields().toList(),
-                provider.geometryType(),
+                provider.wkbType(),
                 layer.crs())
 
         outFeat = QgsFeature()

@@ -197,7 +197,7 @@ void QgsOgrProvider::repack()
 
 QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QString& uri,
     const QgsFields &fields,
-    Qgis::WkbType wkbType,
+    QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem& srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
@@ -1019,9 +1019,9 @@ size_t QgsOgrProvider::layerCount() const
 /**
  * Return the feature type
  */
-Qgis::WkbType QgsOgrProvider::geometryType() const
+QgsWkbTypes::Type QgsOgrProvider::wkbType() const
 {
-  return static_cast<Qgis::WkbType>( mOGRGeomType );
+  return static_cast<QgsWkbTypes::Type>( mOGRGeomType );
 }
 
 /**
@@ -2434,7 +2434,7 @@ QGISEXTERN bool isProvider()
 QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QString &format,
                                        const QString &encoding,
-                                       Qgis::WkbType vectortype,
+                                       QgsWkbTypes::Type vectortype,
                                        const QList< QPair<QString, QString> > &attributes,
                                        const QgsCoordinateReferenceSystem& srs = QgsCoordinateReferenceSystem() )
 {
@@ -2511,22 +2511,22 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   OGRwkbGeometryType OGRvectortype = wkbUnknown;
   switch ( vectortype )
   {
-    case Qgis::WKBPoint:
+    case QgsWkbTypes::Point:
       OGRvectortype = wkbPoint;
       break;
-    case Qgis::WKBLineString:
+    case QgsWkbTypes::LineString:
       OGRvectortype = wkbLineString;
       break;
-    case Qgis::WKBPolygon:
+    case QgsWkbTypes::Polygon:
       OGRvectortype = wkbPolygon;
       break;
-    case Qgis::WKBMultiPoint:
+    case QgsWkbTypes::MultiPoint:
       OGRvectortype = wkbMultiPoint;
       break;
-    case Qgis::WKBMultiLineString:
+    case QgsWkbTypes::MultiLineString:
       OGRvectortype = wkbMultiLineString;
       break;
-    case Qgis::WKBMultiPolygon:
+    case QgsWkbTypes::MultiPolygon:
       OGRvectortype = wkbMultiPolygon;
       break;
     default:
@@ -3332,7 +3332,7 @@ bool QgsOgrProvider::leaveUpdateMode()
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
   const QgsFields &fields,
-  Qgis::WkbType wkbType,
+  QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,

@@ -63,7 +63,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
-      Qgis::WkbType wkbType,
+      QgsWkbTypes::Type wkbType,
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
@@ -105,7 +105,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * WKBMultiPolygon
      * as defined in qgis.h
      */
-    Qgis::WkbType geometryType() const override;
+    QgsWkbTypes::Type geometryType() const override;
 
     /** Return the number of layers for the current data source
      * @note Should this be subLayerCount() instead?
@@ -306,7 +306,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QString mDataComment;
 
     //! Data source URI struct for this layer
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
 
     /**
      * Flag indicating if the layer data source is a valid oracle layer
@@ -352,8 +352,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     int mSrid;                         //! srid of column
     QgsVectorDataProvider::Capabilities mEnabledCapabilities;          //! capabilities of layer
 
-    Qgis::WkbType mDetectedGeomType;   //! geometry type detected in the database
-    Qgis::WkbType mRequestedGeomType;  //! geometry type requested in the uri
+    QgsWkbTypes::Type mDetectedGeomType;   //! geometry type detected in the database
+    QgsWkbTypes::Type mRequestedGeomType;  //! geometry type requested in the uri
 
     bool getGeometryDetails();
 

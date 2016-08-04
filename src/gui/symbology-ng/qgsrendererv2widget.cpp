@@ -44,11 +44,11 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
   contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
   contextMenu->addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
 
-  if ( mLayer && mLayer->geometryType() == Qgis::Line )
+  if ( mLayer && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
   {
     contextMenu->addAction( tr( "Change width" ), this, SLOT( changeSymbolWidth() ) );
   }
-  else if ( mLayer && mLayer->geometryType() == Qgis::Point )
+  else if ( mLayer && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
   {
     contextMenu->addAction( tr( "Change size" ), this, SLOT( changeSymbolSize() ) );
     contextMenu->addAction( tr( "Change angle" ), this, SLOT( changeSymbolAngle() ) );
@@ -505,7 +505,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-void QgsDataDefinedValueDialog::init( const QString & description )
+void QgsDataDefinedValueDialog::init( const QString& description )
 {
   QgsDataDefined dd = symbolDataDefined();
   mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );

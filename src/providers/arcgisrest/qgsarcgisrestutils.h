@@ -30,7 +30,7 @@ class QgsArcGisRestUtils
 {
   public:
     static QVariant::Type mapEsriFieldType( const QString& esriFieldType );
-    static QgsWKBTypes::Type mapEsriGeometryType( const QString& esriGeometryType );
+    static QgsWkbTypes::Type mapEsriGeometryType( const QString& esriGeometryType );
     static QgsAbstractGeometryV2* parseEsriGeoJSON( const QVariantMap& geometryData, const QString& esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs = 0 );
     static QgsCoordinateReferenceSystem parseSpatialReference( const QVariantMap& spatialReferenceMap );
 

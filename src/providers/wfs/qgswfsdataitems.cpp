@@ -27,7 +27,7 @@
 #include <QEventLoop>
 
 
-QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceURI& uri, QString featureType, QString title, QString crsString )
+QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceUri& uri, QString featureType, QString title, QString crsString )
     : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, "WFS" )
 {
   QSettings settings;
@@ -57,7 +57,7 @@ QgsWfsConnectionItem::~QgsWfsConnectionItem()
 
 QVector<QgsDataItem*> QgsWfsConnectionItem::createChildren()
 {
-  QgsDataSourceURI uri( mUri );
+  QgsDataSourceUri uri( mUri );
   QgsDebugMsg( "mUri = " + mUri );
 
   QgsWfsCapabilities capabilities( mUri );

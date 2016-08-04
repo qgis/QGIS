@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -69,7 +69,7 @@ class VoronoiPolygons(GeoAlgorithm):
         buf = self.getParameterValue(self.BUFFER)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), Qgis.WKBPolygon, layer.crs())
+            layer.pendingFields().toList(), QgsWkbTypes.Polygon, layer.crs())
 
         outFeat = QgsFeature()
         extent = layer.extent()

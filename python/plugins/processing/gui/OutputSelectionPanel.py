@@ -33,7 +33,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog
 from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
-from qgis.core import (QgsDataSourceURI,
+from qgis.core import (QgsDataSourceUri,
                        QgsCredentials,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,
@@ -140,7 +140,7 @@ class OutputSelectionPanel(BASE, WIDGET):
             host = settings.value(mySettings + '/host')
             port = settings.value(mySettings + '/port')
             password = settings.value(mySettings + '/password')
-            uri = QgsDataSourceURI()
+            uri = QgsDataSourceUri()
             uri.setConnection(host, str(port), dbname, user, password)
             uri.setDataSource(dlg.schema, dlg.table,
                               "the_geom" if self.output.hasGeometry() else None)
@@ -182,7 +182,7 @@ class OutputSelectionPanel(BASE, WIDGET):
                               os.path.dirname(fileName))
             settings.setValue('/Processing/encoding', encoding)
 
-            uri = QgsDataSourceURI()
+            uri = QgsDataSourceUri()
             uri.setDatabase(fileName)
             uri.setDataSource('', self.output.name.lower(),
                               'the_geom' if self.output.hasGeometry() else None)

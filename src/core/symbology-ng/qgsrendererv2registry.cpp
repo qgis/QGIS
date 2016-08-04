@@ -138,20 +138,20 @@ QStringList QgsRendererV2Registry::renderersList( const QgsVectorLayer* layer ) 
 
   switch ( layer->geometryType() )
   {
-    case Qgis::Point:
+    case QgsWkbTypes::PointGeometry:
       layerType = QgsRendererV2AbstractMetadata::PointLayer;
       break;
 
-    case Qgis::Line:
+    case QgsWkbTypes::LineGeometry:
       layerType = QgsRendererV2AbstractMetadata::LineLayer;
       break;
 
-    case Qgis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
       layerType = QgsRendererV2AbstractMetadata::PolygonLayer;
       break;
 
-    case Qgis::UnknownGeometry:
-    case Qgis::NoGeometry:
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
       break;
   }
 

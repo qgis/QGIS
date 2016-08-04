@@ -42,77 +42,6 @@ class Qgis
     // Enumerations
     //
 
-    //! Used for symbology operations
-    // Feature types
-    enum WkbType
-    {
-      WKBUnknown,
-      WKBPoint,
-      WKBLineString,
-      WKBPolygon,
-      WKBMultiPoint,
-      WKBMultiLineString,
-      WKBMultiPolygon,
-      WKBNoGeometry, //attributes only
-      WKBPoint25D,
-      WKBLineString25D,
-      WKBPolygon25D,
-      WKBMultiPoint25D,
-      WKBMultiLineString25D,
-      WKBMultiPolygon25D,
-    };
-
-    //! Map multi to single type
-    // @deprecated use QgsWKBTypes::singleType
-    /* Q_DECL_DEPRECATED */
-    static WkbType singleType( WkbType type );
-
-    //! Map single to multitype type
-    // @deprecated use QgsWKBTypes::multiType
-    /* Q_DECL_DEPRECATED */
-    static WkbType multiType( WkbType type );
-
-    //! Map 2d+ to 2d type
-    // @deprecated use QgsWKBTypes::flatType
-    /* Q_DECL_DEPRECATED */
-    static WkbType flatType( WkbType type );
-
-    //! Return if type is a single type
-    // @deprecated use QgsWKBTypes::isSingleType
-    /* Q_DECL_DEPRECATED */
-    static bool isSingleType( WkbType type );
-
-    //! Return if type is a multi type
-    // @deprecated use QgsWKBTypes::isMultiType
-    /* Q_DECL_DEPRECATED */
-    static bool isMultiType( WkbType type );
-
-    // get dimension of points
-    // @deprecated use QgsWKBTypes::coordDimensions()
-    /* Q_DECL_DEPRECATED */
-    static int wkbDimensions( WkbType type );
-
-    //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
-    static QgsWKBTypes::Type fromOldWkbType( Qgis::WkbType type );
-
-    //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
-    static Qgis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
-
-    enum GeometryType
-    {
-      Point,
-      Line,
-      Polygon,
-      UnknownGeometry,
-      NoGeometry
-    };
-
-    //! description strings for geometry types
-    static const char *vectorGeometryType( GeometryType type );
-
-    //! description strings for feature types
-    static const char *featureType( WkbType type );
-
     /** Raster data types.
      *  This is modified and extended copy of GDALDataType.
      */
@@ -175,7 +104,6 @@ class Qgis
     static double SCALE_PRECISION;
 };
 
-
 /** Converts a string to a double in a permissive way, eg allowing for incorrect
  * numbers of digits between thousand separators
  * @param string string to convert
@@ -195,7 +123,6 @@ double qgsPermissiveToDouble( QString string, bool& ok );
  * @see permissiveToDouble
  */
 int qgsPermissiveToInt( QString string, bool& ok );
-
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)

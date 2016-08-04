@@ -43,7 +43,7 @@ except:
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis
+from qgis.core import Qgis, QgsWkbTypes
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils

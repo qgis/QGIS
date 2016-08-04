@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsGeometry, NULL
+from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -162,7 +162,7 @@ class SpatialJoin(GeoAlgorithm):
             inGeom = vector.snapToPrecision(f.geometry(), precision)
             none = True
             joinList = []
-            if inGeom.type() == Qgis.Point:
+            if inGeom.type() == QgsWkbTypes.PointGeometry:
                 bbox = inGeom.buffer(10, 2).boundingBox()
             else:
                 bbox = inGeom.boundingBox()

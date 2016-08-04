@@ -312,13 +312,13 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     // icons
     switch ( layer->geometryType() )
     {
-      case Qgis::Point:
+      case QgsWkbTypes::PointGeometry:
         layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.png" ) );
         break;
-      case Qgis::Line:
+      case QgsWkbTypes::LineGeometry:
         layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.png" ) );
         break;
-      case Qgis::Polygon:
+      case QgsWkbTypes::PolygonGeometry:
         layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
         break;
       default:

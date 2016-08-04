@@ -36,7 +36,7 @@ try:
 except ImportError:
     import ConfigParser as configparser
 import qgis.utils
-from qgis.core import Qgis, QgsNetworkAccessManager, QgsAuthManager
+from qgis.core import Qgis, QgsNetworkAccessManager, QgsAuthManager, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface, plugin_paths
 from .version_compare import compareVersions, normalizeVersion, isCompatible

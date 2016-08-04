@@ -87,8 +87,8 @@ class OracleDBPlugin(DBPlugin):
                 self.tr('There is no defined database connection "{}".'.format(
                     conn_name)))
 
-        from qgis.core import QgsDataSourceURI
-        uri = QgsDataSourceURI()
+        from qgis.core import QgsDataSourceUri
+        uri = QgsDataSourceUri()
 
         settingsList = ["host", "port", "database", "username", "password"]
         host, port, database, username, password = [settings.value(x, "", type=str) for x in settingsList]

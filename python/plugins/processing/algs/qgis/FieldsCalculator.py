@@ -99,7 +99,7 @@ class FieldsCalculator(GeoAlgorithm):
         if newField:
             fields.append(QgsField(fieldName, fieldType, '', width, precision))
 
-        writer = output.getVectorWriter(fields, provider.geometryType(),
+        writer = output.getVectorWriter(fields, provider.wkbType(),
                                         layer.crs())
 
         exp = QgsExpression(formula)

@@ -23,7 +23,7 @@
 
 QgsRubberSelectId::QgsRubberSelectId( QgsMapCanvas* mapCanvas )
 {
-  mGeometryType = Qgis::Line;
+  mGeometryType = QgsWkbTypes::LineGeometry;
   mMapCanvas = mapCanvas;
   mRubberBand = new QgsRubberBand( mMapCanvas, mGeometryType );
   mColorRGB[0] = 255;

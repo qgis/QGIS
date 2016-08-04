@@ -38,6 +38,7 @@ from processing.tools.system import getTempFilename
 from processing.tools import vector
 from processing.core.SilentProgress import SilentProgress
 
+
 def runalg(alg, progress=None):
     """Executes a given algorithm, showing its progress in the
     progress object passed along.
@@ -69,7 +70,7 @@ def runalgIterating(alg, paramToIter, progress):
         output = getTempFilename('shp')
         filelist.append(output)
         writer = QgsVectorFileWriter(output, systemEncoding,
-                                     provider.fields(), provider.geometryType(), layer.crs())
+                                     provider.fields(), provider.wkbType(), layer.crs())
         writer.addFeature(feat)
         del writer
 

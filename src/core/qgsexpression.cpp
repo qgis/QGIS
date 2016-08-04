@@ -1158,7 +1158,7 @@ static QVariant fcnLength( const QVariantList& values, const QgsExpressionContex
   {
     //geometry variant
     QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-    if ( geom.type() != Qgis::Line )
+    if ( geom.type() != QgsWkbTypes::LineGeometry )
       return QVariant();
 
     return QVariant( geom.length() );
@@ -1571,7 +1571,7 @@ static QVariant fcnSeconds( const QVariantList& values, const QgsExpressionConte
 static QVariant fcnX( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
 {
   FEAT_FROM_CONTEXT( context, f );
-  ENSURE_GEOM_TYPE( f, g, Qgis::Point );
+  ENSURE_GEOM_TYPE( f, g, QgsWkbTypes::PointGeometry );
   if ( g.isMultipart() )
   {
     return g.asMultiPoint().at( 0 ).x();
@@ -1585,7 +1585,7 @@ static QVariant fcnX( const QVariantList&, const QgsExpressionContext* context, 
 static QVariant fcnY( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
 {
   FEAT_FROM_CONTEXT( context, f );
-  ENSURE_GEOM_TYPE( f, g, Qgis::Point );
+  ENSURE_GEOM_TYPE( f, g, QgsWkbTypes::PointGeometry );
   if ( g.isMultipart() )
   {
     return g.asMultiPoint().at( 0 ).y();
@@ -1603,7 +1603,7 @@ static QVariant fcnGeomX( const QVariantList& values, const QgsExpressionContext
     return QVariant();
 
   //if single point, return the point's x coordinate
-  if ( geom.type() == Qgis::Point && !geom.isMultipart() )
+  if ( geom.type() == QgsWkbTypes::PointGeometry && !geom.isMultipart() )
   {
     return geom.asPoint().x();
   }
@@ -1621,7 +1621,7 @@ static QVariant fcnGeomY( const QVariantList& values, const QgsExpressionContext
     return QVariant();
 
   //if single point, return the point's y coordinate
-  if ( geom.type() == Qgis::Point && !geom.isMultipart() )
+  if ( geom.type() == QgsWkbTypes::PointGeometry && !geom.isMultipart() )
   {
     return geom.asPoint().y();
   }
@@ -1639,7 +1639,7 @@ static QVariant fcnGeomZ( const QVariantList& values, const QgsExpressionContext
     return QVariant(); //or 0?
 
   //if single point, return the point's z coordinate
-  if ( geom.type() == Qgis::Point && !geom.isMultipart() )
+  if ( geom.type() == QgsWkbTypes::PointGeometry && !geom.isMultipart() )
   {
     QgsPointV2* point = dynamic_cast< QgsPointV2* >( geom.geometry() );
     if ( point )
@@ -1656,7 +1656,7 @@ static QVariant fcnGeomM( const QVariantList& values, const QgsExpressionContext
     return QVariant(); //or 0?
 
   //if single point, return the point's m value
-  if ( geom.type() == Qgis::Point && !geom.isMultipart() )
+  if ( geom.type() == QgsWkbTypes::PointGeometry && !geom.isMultipart() )
   {
     QgsPointV2* point = dynamic_cast< QgsPointV2* >( geom.geometry() );
     if ( point )
@@ -1872,9 +1872,9 @@ static QVariant fcnMakePoint( const QVariantList& values, const QgsExpressionCon
     case 2:
       return QVariant::fromValue( QgsGeometry( new QgsPointV2( x, y ) ) );
     case 3:
-      return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWKBTypes::PointZ, x, y, z ) ) );
+      return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZ, x, y, z ) ) );
     case 4:
-      return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWKBTypes::PointZM, x, y, z, m ) ) );
+      return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZM, x, y, z, m ) ) );
   }
   return QVariant(); //avoid warning
 }
@@ -1884,7 +1884,7 @@ static QVariant fcnMakePointM( const QVariantList& values, const QgsExpressionCo
   double x = getDoubleValue( values.at( 0 ), parent );
   double y = getDoubleValue( values.at( 1 ), parent );
   double m = getDoubleValue( values.at( 2 ), parent );
-  return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWKBTypes::PointM, x, y, 0.0, m ) ) );
+  return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWkbTypes::PointM, x, y, 0.0, m ) ) );
 }
 
 static QVariant fcnMakeLine( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -1903,7 +1903,7 @@ static QVariant fcnMakeLine( const QVariantList& values, const QgsExpressionCont
     if ( geom.isEmpty() )
       continue;
 
-    if ( geom.type() != Qgis::Point || geom.isMultipart() )
+    if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
       continue;
 
     QgsPointV2* point = dynamic_cast< QgsPointV2* >( geom.geometry() );
@@ -1925,7 +1925,7 @@ static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionC
   }
 
   QgsGeometry outerRing = getGeometry( values.at( 0 ), parent );
-  if ( outerRing.type() != Qgis::Line || outerRing.isMultipart() || outerRing.isEmpty() )
+  if ( outerRing.type() != QgsWkbTypes::LineGeometry || outerRing.isMultipart() || outerRing.isEmpty() )
     return QVariant();
 
   QgsPolygonV2* polygon = new QgsPolygonV2();
@@ -1937,7 +1937,7 @@ static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionC
     if ( ringGeom.isEmpty() )
       continue;
 
-    if ( ringGeom.type() != Qgis::Line || ringGeom.isMultipart() || ringGeom.isEmpty() )
+    if ( ringGeom.type() != QgsWkbTypes::LineGeometry || ringGeom.isMultipart() || ringGeom.isEmpty() )
       continue;
 
     polygon->addInteriorRing( dynamic_cast< QgsCurveV2* >( ringGeom.geometry()->clone() ) );
@@ -2011,7 +2011,7 @@ static QVariant fcnGeomFromGML( const QVariantList& values, const QgsExpressionC
 static QVariant fcnGeomArea( const QVariantList&, const QgsExpressionContext* context, QgsExpression* parent )
 {
   FEAT_FROM_CONTEXT( context, f );
-  ENSURE_GEOM_TYPE( f, g, Qgis::Polygon );
+  ENSURE_GEOM_TYPE( f, g, QgsWkbTypes::PolygonGeometry );
   QgsDistanceArea* calc = parent->geomCalculator();
   if ( calc )
   {
@@ -2029,7 +2029,7 @@ static QVariant fcnArea( const QVariantList& values, const QgsExpressionContext*
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.type() != Qgis::Polygon )
+  if ( geom.type() != QgsWkbTypes::PolygonGeometry )
     return QVariant();
 
   return QVariant( geom.area() );
@@ -2038,7 +2038,7 @@ static QVariant fcnArea( const QVariantList& values, const QgsExpressionContext*
 static QVariant fcnGeomLength( const QVariantList&, const QgsExpressionContext* context, QgsExpression* parent )
 {
   FEAT_FROM_CONTEXT( context, f );
-  ENSURE_GEOM_TYPE( f, g, Qgis::Line );
+  ENSURE_GEOM_TYPE( f, g, QgsWkbTypes::LineGeometry );
   QgsDistanceArea* calc = parent->geomCalculator();
   if ( calc )
   {
@@ -2055,7 +2055,7 @@ static QVariant fcnGeomLength( const QVariantList&, const QgsExpressionContext* 
 static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContext* context, QgsExpression* parent )
 {
   FEAT_FROM_CONTEXT( context, f );
-  ENSURE_GEOM_TYPE( f, g, Qgis::Polygon );
+  ENSURE_GEOM_TYPE( f, g, QgsWkbTypes::PolygonGeometry );
   QgsDistanceArea* calc = parent->geomCalculator();
   if ( calc )
   {
@@ -2073,7 +2073,7 @@ static QVariant fcnPerimeter( const QVariantList& values, const QgsExpressionCon
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.type() != Qgis::Polygon )
+  if ( geom.type() != QgsWkbTypes::PolygonGeometry )
     return QVariant();
 
   //length for polygons = perimeter
@@ -2489,7 +2489,7 @@ static QVariant fcnProject( const QVariantList& values, const QgsExpressionConte
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.type() != Qgis::Point )
+  if ( geom.type() != QgsWkbTypes::PointGeometry )
   {
     parent->setEvalErrorString( "'project' requires a point geometry" );
     return QVariant();
@@ -3108,7 +3108,7 @@ static QVariant fcnGetLayerProperty( const QVariantList& values, const QgsExpres
       if ( QString::compare( layerProperty, QString( "storage_type" ), Qt::CaseInsensitive ) == 0 )
         return vLayer->storageType();
       else if ( QString::compare( layerProperty, QString( "geometry_type" ), Qt::CaseInsensitive ) == 0 )
-        return Qgis::vectorGeometryType( vLayer->geometryType() );
+        return QgsWkbTypes::geometryDisplayString( vLayer->geometryType() );
       else if ( QString::compare( layerProperty, QString( "feature_count" ), Qt::CaseInsensitive ) == 0 )
         return QVariant::fromValue( vLayer->featureCount() );
     }
@@ -5084,7 +5084,7 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
     if ( geom.isEmpty() )
       return tr( "<i>&lt;empty geometry&gt;</i>" );
     else
-      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWKBTypes::displayString( geom.geometry()->wkbType() ) );
+      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWkbTypes::displayString( geom.geometry()->wkbType() ) );
   }
   else if ( value.canConvert< QgsFeature >() )
   {

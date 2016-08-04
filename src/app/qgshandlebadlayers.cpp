@@ -186,7 +186,7 @@ QString QgsHandleBadLayers::filename( int row )
   {
     if ( provider == "spatialite" )
     {
-      QgsDataSourceURI uri( datasource );
+      QgsDataSourceUri uri( datasource );
       return uri.database();
     }
     else if ( provider == "ogr" )
@@ -222,7 +222,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString& filename )
   {
     if ( provider == "spatialite" )
     {
-      QgsDataSourceURI uri( datasource );
+      QgsDataSourceUri uri( datasource );
       uri.setDatabase( filename );
       datasource = uri.uri();
     }

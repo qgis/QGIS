@@ -78,8 +78,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     , mShowInvalidLines( true )
     , mRescanRequired( false )
     , mCrs()
-    , mWkbType( Qgis::WKBNoGeometry )
-    , mGeometryType( Qgis::UnknownGeometry )
+    , mWkbType( QgsWkbTypes::NoGeometry )
+    , mGeometryType( QgsWkbTypes::UnknownGeometry )
     , mBuildSpatialIndex( false )
     , mSpatialIndex( nullptr )
 {
@@ -103,13 +103,13 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
   if ( url.hasQueryItem( "geomType" ) )
   {
     QString gtype = url.queryItemValue( "geomType" ).toLower();
-    if ( gtype == "point" ) mGeometryType = Qgis::Point;
-    else if ( gtype == "line" ) mGeometryType = Qgis::Line;
-    else if ( gtype == "polygon" ) mGeometryType = Qgis::Polygon;
-    else if ( gtype == "none " ) mGeometryType = Qgis::NoGeometry;
+    if ( gtype == "point" ) mGeometryType = QgsWkbTypes::PointGeometry;
+    else if ( gtype == "line" ) mGeometryType = QgsWkbTypes::LineGeometry;
+    else if ( gtype == "polygon" ) mGeometryType = QgsWkbTypes::PolygonGeometry;
+    else if ( gtype == "none " ) mGeometryType = QgsWkbTypes::NullGeometry;
   }
 
-  if ( mGeometryType != Qgis::NoGeometry )
+  if ( mGeometryType != QgsWkbTypes::NullGeometry )
   {
     if ( url.hasQueryItem( "wktField" ) )
     {
@@ -120,7 +120,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     else if ( url.hasQueryItem( "xField" ) && url.hasQueryItem( "yField" ) )
     {
       mGeomRep = GeomAsXy;
-      mGeometryType = Qgis::Point;
+      mGeometryType = QgsWkbTypes::PointGeometry;
       mXFieldName = url.queryItemValue( "xField" );
       mYFieldName = url.queryItemValue( "yField" );
       QgsDebugMsg( "xField is: " + mXFieldName );
@@ -133,7 +133,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     }
     else
     {
-      mGeometryType = Qgis::NoGeometry;
+      mGeometryType = QgsWkbTypes::NullGeometry;
     }
   }
 
@@ -456,10 +456,10 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
         if ( !geom.isEmpty() )
         {
-          Qgis::WkbType type = geom.wkbType();
-          if ( type != Qgis::WKBNoGeometry )
+          QgsWkbTypes::Type type = geom.wkbType();
+          if ( type != QgsWkbTypes::NoGeometry )
           {
-            if ( mGeometryType == Qgis::UnknownGeometry || geom.type() == mGeometryType )
+            if ( mGeometryType == QgsWkbTypes::UnknownGeometry || geom.type() == mGeometryType )
             {
               mGeometryType = geom.type();
               if ( !foundFirstGeometry )
@@ -526,8 +526,8 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
           {
             // Extent for the first point is just the first point
             mExtent.set( pt.x(), pt.y(), pt.x(), pt.y() );
-            mWkbType = Qgis::WKBPoint;
-            mGeometryType = Qgis::Point;
+            mWkbType = QgsWkbTypes::Point;
+            mGeometryType = QgsWkbTypes::PointGeometry;
             foundFirstGeometry = true;
           }
           mNumberFeatures++;
@@ -549,7 +549,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     }
     else
     {
-      mWkbType = Qgis::WKBNoGeometry;
+      mWkbType = QgsWkbTypes::NoGeometry;
       mNumberFeatures++;
     }
 
@@ -705,7 +705,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   mUseSpatialIndex = buildSpatialIndex;
 
-  mValid = mGeometryType != Qgis::UnknownGeometry;
+  mValid = mGeometryType != QgsWkbTypes::UnknownGeometry;
   mLayerValid = mValid;
 
   // If it is valid, then watch for changes to the file
@@ -783,7 +783,7 @@ void QgsDelimitedTextProvider::rescanFile() const
   bool foundFirstGeometry = false;
   while ( fi.nextFeature( f ) )
   {
-    if ( mGeometryType != Qgis::NoGeometry && f.hasGeometry() )
+    if ( mGeometryType != QgsWkbTypes::NullGeometry && f.hasGeometry() )
     {
       if ( !foundFirstGeometry )
       {
@@ -1116,7 +1116,7 @@ QgsRectangle QgsDelimitedTextProvider::extent() const
 /**
  * Return the feature type
  */
-Qgis::WkbType QgsDelimitedTextProvider::geometryType() const
+QgsWkbTypes::Type QgsDelimitedTextProvider::wkbType() const
 {
   return mWkbType;
 }

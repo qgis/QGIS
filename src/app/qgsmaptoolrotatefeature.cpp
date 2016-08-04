@@ -282,7 +282,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
     {
       mRotatedFeatures = vlayer->selectedFeaturesIds();
 
-      mRubberBand = createRubberBand( vlayer->geometryType() );
+      mRubberBand = createRubberBand( vlayer->geometryType() ) ;
 
       QgsFeature feat;
       QgsFeatureIterator it = vlayer->selectedFeaturesIterator();

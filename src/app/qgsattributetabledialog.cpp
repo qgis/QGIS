@@ -133,14 +133,14 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
   QgsFeatureRequest r;
-  if ( mLayer->geometryType() != Qgis::NoGeometry &&
+  if ( mLayer->geometryType() != QgsWkbTypes::NullGeometry &&
        settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
     r.setFilterRect( extent );
 
-    mRubberBand = new QgsRubberBand( mc, Qgis::Polygon );
+    mRubberBand = new QgsRubberBand( mc, QgsWkbTypes::PolygonGeometry );
     mRubberBand->setToGeometry( QgsGeometry::fromRect( extent ), theLayer );
 
     mActionShowAllFilter->setText( tr( "Show All Features In Initial Canvas Extent" ) );

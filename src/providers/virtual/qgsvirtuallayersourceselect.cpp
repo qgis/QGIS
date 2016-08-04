@@ -150,7 +150,7 @@ void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
     mUIDField->setText( def.uid() );
   }
 
-  if ( def.geometryWkbType() == QgsWKBTypes::NoGeometry )
+  if ( def.geometryWkbType() == QgsWkbTypes::NoGeometry )
   {
     mNoGeometryRadio->setChecked( true );
   }
@@ -202,11 +202,11 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   }
   if ( mNoGeometryRadio->isChecked() )
   {
-    def.setGeometryWkbType( QgsWKBTypes::NoGeometry );
+    def.setGeometryWkbType( QgsWkbTypes::NoGeometry );
   }
   else if ( mGeometryRadio->isChecked() )
   {
-    QgsWKBTypes::Type t = mGeometryType->currentIndex() > -1 ? static_cast<QgsWKBTypes::Type>( mGeometryType->currentIndex() + 1 ) : QgsWKBTypes::NoGeometry;
+    QgsWkbTypes::Type t = mGeometryType->currentIndex() > -1 ? static_cast<QgsWkbTypes::Type>( mGeometryType->currentIndex() + 1 ) : QgsWkbTypes::NoGeometry;
     def.setGeometryWkbType( t );
     def.setGeometryField( mGeometryField->text() );
     def.setGeometrySrid( mSrid );

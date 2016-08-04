@@ -25,7 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
 QgsMultiPolygonV2::QgsMultiPolygonV2()
     : QgsMultiSurfaceV2()
 {
-  mWkbType = QgsWKBTypes::MultiPolygon;
+  mWkbType = QgsWkbTypes::MultiPolygon;
 }
 
 QgsMultiPolygonV2 *QgsMultiPolygonV2::clone() const
@@ -121,7 +121,7 @@ bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometryV2* g )
     return false;
   }
 
-  setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiPolygon );
+  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPolygon );
   return QgsGeometryCollectionV2::addGeometry( g );
 }
 

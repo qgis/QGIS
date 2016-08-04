@@ -23,7 +23,7 @@ The content of this file is based on
 """
 
 from qgis.PyQt.QtCore import QRegExp
-from qgis.core import QgsCredentials, QgsDataSourceURI
+from qgis.core import QgsCredentials, QgsDataSourceUri
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -88,7 +88,7 @@ class PostGisDBConnector(DBConnector):
                     err = unicode(e)
                 finally:
                     # remove certs (if any) of the expanded connectionInfo
-                    expandedUri = QgsDataSourceURI(newExpandedConnInfo)
+                    expandedUri = QgsDataSourceUri(newExpandedConnInfo)
 
                     sslCertFile = expandedUri.param("sslcert")
                     if sslCertFile:
@@ -106,7 +106,7 @@ class PostGisDBConnector(DBConnector):
                         os.remove(sslCAFile)
         finally:
             # remove certs (if any) of the expanded connectionInfo
-            expandedUri = QgsDataSourceURI(expandedConnInfo)
+            expandedUri = QgsDataSourceUri(expandedConnInfo)
 
             sslCertFile = expandedUri.param("sslcert")
             if sslCertFile:
@@ -215,7 +215,7 @@ class PostGisDBConnector(DBConnector):
         return self.has_raster
 
     def hasCustomQuerySupport(self):
-        from qgis.core import Qgis
+        from qgis.core import Qgis, QgsWkbTypes
 
         return Qgis.QGIS_VERSION[0:3] >= "1.5"
 

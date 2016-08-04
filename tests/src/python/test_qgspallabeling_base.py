@@ -34,7 +34,7 @@ from qgis.PyQt.QtGui import QFont, QColor
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
-    QgsDataSourceURI,
+    QgsDataSourceUri,
     QgsMapLayerRegistry,
     QgsMapSettings,
     QgsPalLabeling,
@@ -163,7 +163,7 @@ class TestQgsPalLabeling(unittest.TestCase):
     def loadFeatureLayer(cls, table, chk=False):
         if chk and cls._MapRegistry.mapLayersByName(table):
             return
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         uri.setDatabase(cls._PalFeaturesDb)
         uri.setDataSource('', table, 'geometry')
         vlayer = QgsVectorLayer(uri.uri(), table, 'spatialite')
@@ -186,7 +186,7 @@ class TestQgsPalLabeling(unittest.TestCase):
     @classmethod
     def aoiExtent(cls):
         """Area of interest extent, which matches output aspect ratio"""
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         uri.setDatabase(cls._PalFeaturesDb)
         uri.setDataSource('', 'aoi', 'geometry')
         aoilayer = QgsVectorLayer(uri.uri(), 'aoi', 'spatialite')

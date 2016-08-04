@@ -68,7 +68,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   lastVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayerV2::LastVertex );
   Q_FOREACH ( int value, colors.keys() )
   {
-    QgsSymbolV2 * symbol = QgsSymbolV2::defaultSymbol( Qgis::Line );
+    QgsSymbolV2 * symbol = QgsSymbolV2::defaultSymbol( QgsWkbTypes::LineGeometry );
     symbol->setColor( colors.value( value ) );
     symbol->appendSymbolLayer( firstVertexMarkerLine->clone() );
     symbol->appendSymbolLayer( lastVertexMarkerLine->clone() );
@@ -95,7 +95,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
 
   Q_FOREACH ( int value, colors.keys() )
   {
-    QgsSymbolV2 * symbol = QgsSymbolV2::defaultSymbol( Qgis::Point );
+    QgsSymbolV2 * symbol = QgsSymbolV2::defaultSymbol( QgsWkbTypes::PointGeometry );
     symbol->setColor( colors.value( value ) );
     categoryList << QgsRendererCategoryV2( QVariant( value ), symbol, labels.value( value ) );
   }

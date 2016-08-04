@@ -526,11 +526,11 @@ void QgsDxfExport::writeHeader( const QString& codepage )
   {
     // EXTMIN
     writeGroup( 9, "$EXTMIN" );
-    writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ, ext.xMinimum(), ext.yMinimum() ) );
+    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, ext.xMinimum(), ext.yMinimum() ) );
 
     // EXTMAX
     writeGroup( 9, "$EXTMAX" );
-    writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ, ext.xMaximum(), ext.yMaximum() ) );
+    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, ext.xMaximum(), ext.yMaximum() ) );
   }
 
   // Global linetype scale
@@ -689,7 +689,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 3, QgsPointV2( 0.0, 0.0 ) );                            // snap base point
   writeGroup( 4, QgsPointV2( 1.0, 1.0 ) );                            // snap spacing
   writeGroup( 5, QgsPointV2( 1.0, 1.0 ) );                            // grid spacing
-  writeGroup( 6, QgsPointV2( QgsWKBTypes::PointZ, 0.0, 0.0, 1.0 ) );  // view direction from target point
+  writeGroup( 6, QgsPointV2( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );  // view direction from target point
   writeGroup( 7, QgsPointV2( ext.center() ) );                        // view target point
   writeGroup( 40, ext.height() );                                     // view height
   writeGroup( 41, ext.width() / ext.height() );                       // view aspect ratio
@@ -708,9 +708,9 @@ void QgsDxfExport::writeTables()
   writeGroup( 78, 0 );                                                // snap isopair
   writeGroup( 281, 0 );                                               // render mode (0 = 2D optimized)
   writeGroup( 65, 1 );                                                // value of UCSVP for this viewport
-  writeGroup( 100, QgsPointV2( QgsWKBTypes::PointZ ) );               // UCS origin
-  writeGroup( 101, QgsPointV2( QgsWKBTypes::PointZ, 1.0 ) );          // UCS x axis
-  writeGroup( 102, QgsPointV2( QgsWKBTypes::PointZ, 0.0, 1.0 ) );     // UCS y axis
+  writeGroup( 100, QgsPointV2( QgsWkbTypes::PointZ ) );               // UCS origin
+  writeGroup( 101, QgsPointV2( QgsWkbTypes::PointZ, 1.0 ) );          // UCS x axis
+  writeGroup( 102, QgsPointV2( QgsWkbTypes::PointZ, 0.0, 1.0 ) );     // UCS y axis
   writeGroup( 79, 0 );                                                // Orthographic type of UCS (0 = UCS is not orthographic)
   writeGroup( 146, 0.0 );                                             // Elevation
 
@@ -825,7 +825,7 @@ void QgsDxfExport::writeBlocks()
     writeGroup( 100, "AcDbBlockBegin" );
     writeGroup( 2, block );
     writeGroup( 70, 0 );
-    writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ ) );
+    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
     writeGroup( 3, block );
     writeGroup( 1, "" );
     writeGroup( 0, "ENDBLK" );
@@ -878,7 +878,7 @@ void QgsDxfExport::writeBlocks()
     // todo: consider anchor point
     // double size = ml->size();
     // size *= mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits );
-    writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ ) );
+    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
     writeGroup( 3, block );
     writeGroup( 1, "" );
 
@@ -1089,7 +1089,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
 
   // get iterator
   QgsFeatureRequest req;
-  if ( layer->wkbType() == Qgis::WKBNoGeometry )
+  if ( layer->wkbType() == QgsWkbTypes::NoGeometry )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
   }
@@ -3354,10 +3354,10 @@ void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const
     writeGroup( 0, "SOLID" );
     writeGroup( 8, layer );
     writeGroup( 62, 1 );
-    writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ, pt.x() - halfSize, pt.y() - halfSize ) );
-    writeGroup( 1, QgsPointV2( QgsWKBTypes::PointZ, pt.x() + halfSize, pt.y() - halfSize ) );
-    writeGroup( 2, QgsPointV2( QgsWKBTypes::PointZ, pt.x() - halfSize, pt.y() + halfSize ) );
-    writeGroup( 3, QgsPointV2( QgsWKBTypes::PointZ, pt.x() + halfSize, pt.y() + halfSize ) );
+    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, pt.x() - halfSize, pt.y() - halfSize ) );
+    writeGroup( 1, QgsPointV2( QgsWkbTypes::PointZ, pt.x() + halfSize, pt.y() - halfSize ) );
+    writeGroup( 2, QgsPointV2( QgsWkbTypes::PointZ, pt.x() - halfSize, pt.y() + halfSize ) );
+    writeGroup( 3, QgsPointV2( QgsWkbTypes::PointZ, pt.x() + halfSize, pt.y() + halfSize ) );
   }
 #endif // 0
 
@@ -3441,7 +3441,7 @@ void QgsDxfExport::writePolyline( const QgsPointSequenceV2 &line, const QString&
     writeGroup( 100, "AcDbEntity" );
     writeGroup( 100, "AcDb3dPolyline" );
     writeGroup( 6, lineStyleName );
-    writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ ) );
+    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
     writeGroup( color );
     writeGroup( 70, 8 );
 
@@ -3490,8 +3490,8 @@ void QgsDxfExport::writePolygon( const QgsRingSequenceV2 &polygon, const QString
   writeGroup( color );              // Color
   writeGroup( 100, "AcDbHatch" );
 
-  writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ ) ); // Elevation point (in OCS)
-  writeGroup( 200, QgsPointV2( QgsWKBTypes::PointZ, 0.0, 0.0, 1.0 ) );
+  writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) ); // Elevation point (in OCS)
+  writeGroup( 200, QgsPointV2( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
 
   writeGroup( 2, hatchPattern );  // Hatch pattern name
   writeGroup( 70, hatchPattern == "SOLID" ); // Solid fill flag (solid fill = 1; pattern fill = 0)
@@ -3560,8 +3560,8 @@ void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor& color,
   writeGroup( color );       // Color (0 by block, 256 by layer)
   writeGroup( 100, "AcDbHatch" );
 
-  writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ ) ); // Elevation point (in OCS)
-  writeGroup( 200, QgsPointV2( QgsWKBTypes::PointZ, 0.0, 0.0, 1.0 ) );
+  writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) ); // Elevation point (in OCS)
+  writeGroup( 200, QgsPointV2( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
 
   writeGroup( 2, "SOLID" );  // Hatch pattern name
   writeGroup( 70, 1 );       // Solid fill flag (solid fill = 1; pattern fill = 0)
@@ -3574,10 +3574,10 @@ void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor& color,
   writeGroup( 73, 1 );       // Is closed flag
   writeGroup( 93, 2 );       // Number of polyline vertices
 
-  writeGroup( 0, QgsPointV2( QgsWKBTypes::Point, pt.x() - radius, pt.y() ) );
+  writeGroup( 0, QgsPointV2( QgsWkbTypes::Point, pt.x() - radius, pt.y() ) );
   writeGroup( 42, 1.0 );
 
-  writeGroup( 0, QgsPointV2( QgsWKBTypes::Point, pt.x() + radius, pt.y() ) );
+  writeGroup( 0, QgsPointV2( QgsWkbTypes::Point, pt.x() + radius, pt.y() ) );
   writeGroup( 42, 1.0 );
 
   writeGroup( 97, 0 );       // Number of source boundary objects
@@ -3722,7 +3722,7 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
   QgsGeometry featGeom = fet->geometry();
   const QgsAbstractGeometryV2 *geom = featGeom.geometry();
 
-  QgsWKBTypes::Type geometryType = geom->wkbType();
+  QgsWkbTypes::Type geometryType = geom->wkbType();
 
   QColor penColor;
   QColor brushColor;
@@ -3756,13 +3756,13 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
   }
 
   // single point
-  if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::Point )
+  if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::Point )
   {
     writePoint( geom->coordinateSequence().at( 0 ).at( 0 ).at( 0 ), layer, penColor, ctx, symbolLayer, symbol, angle );
     return;
   }
 
-  if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::MultiPoint )
+  if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::MultiPoint )
   {
     const QgsCoordinateSequenceV2 &cs = geom->coordinateSequence();
     for ( int i = 0; i < cs.size(); i++ )
@@ -3775,7 +3775,7 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
   if ( penStyle != Qt::NoPen )
   {
     // single line
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::LineString )
+    if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::LineString )
     {
       const QgsAbstractGeometryV2 *offsetGeom = geom;
       if ( !qgsDoubleNear( offset, 0.0 ) )
@@ -3793,7 +3793,7 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
     }
 
     // multiline
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::MultiLineString )
+    if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::MultiLineString )
     {
       const QgsAbstractGeometryV2 *offsetGeom = geom;
 
@@ -3816,7 +3816,7 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
     }
 
     // polygon
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::Polygon )
+    if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::Polygon )
     {
       const QgsAbstractGeometryV2 *bufferGeom = geom;
 
@@ -3839,7 +3839,7 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
     }
 
     // multipolygon or polygon
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::MultiPolygon )
+    if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::MultiPolygon )
     {
       const QgsAbstractGeometryV2 *bufferGeom = geom;
 
@@ -3864,13 +3864,13 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
   if ( brushStyle != Qt::NoBrush )
   {
     // polygon
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::Polygon )
+    if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::Polygon )
     {
       writePolygon( geom->coordinateSequence().at( 0 ), layer, "SOLID", brushColor );
     }
 
     // multipolygon or polygon
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::MultiPolygon )
+    if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::MultiPolygon )
     {
       const QgsCoordinateSequenceV2 &cs = geom->coordinateSequence();
       for ( int i = 0; i < cs.size(); i++ )

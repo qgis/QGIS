@@ -62,7 +62,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     virtual QgsSingleSymbolRendererV2* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, Qgis::GeometryType geomType );
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer
     virtual Capabilities capabilities() override { return SymbolLevels | RotationField; }

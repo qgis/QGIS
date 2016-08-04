@@ -66,7 +66,7 @@ class CORE_EXPORT QgsGeometryFactory
     /** Construct geometry from a rectangle */
     static QgsAbstractGeometryV2* fromRect( const QgsRectangle& rect );
     /** Return empty geometry from wkb type*/
-    static QgsAbstractGeometryV2* geomFromWkbType( QgsWKBTypes::Type t );
+    static QgsAbstractGeometryV2* geomFromWkbType( QgsWkbTypes::Type t );
 
   private:
     static QgsLineStringV2* linestringFromPolyline( const QgsPolyline& polyline );

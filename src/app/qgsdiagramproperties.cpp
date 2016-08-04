@@ -104,8 +104,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
   mDiagramUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
   mDiagramLineUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
-  Qgis::GeometryType layerType = layer->geometryType();
-  if ( layerType == Qgis::UnknownGeometry || layerType == Qgis::NoGeometry )
+  QgsWkbTypes::GeometryType layerType = layer->geometryType();
+  if ( layerType == QgsWkbTypes::UnknownGeometry || layerType == QgsWkbTypes::NullGeometry )
   {
     mDiagramTypeComboBox->setEnabled( false );
     mDiagramFrame->setEnabled( false );
@@ -115,17 +115,17 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
   mPlacementComboBox->blockSignals( true );
   switch ( layerType )
   {
-    case Qgis::Point:
+    case QgsWkbTypes::PointGeometry:
       mPlacementComboBox->addItem( tr( "Around Point" ), QgsDiagramLayerSettings::AroundPoint );
       mPlacementComboBox->addItem( tr( "Over Point" ), QgsDiagramLayerSettings::OverPoint );
       mLinePlacementFrame->setVisible( false );
       break;
-    case Qgis::Line:
+    case QgsWkbTypes::LineGeometry:
       mPlacementComboBox->addItem( tr( "Around Line" ), QgsDiagramLayerSettings::Line );
       mPlacementComboBox->addItem( tr( "Over Line" ), QgsDiagramLayerSettings::Horizontal );
       mLinePlacementFrame->setVisible( true );
       break;
-    case Qgis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
       mPlacementComboBox->addItem( tr( "Around Centroid" ), QgsDiagramLayerSettings::AroundPoint );
       mPlacementComboBox->addItem( tr( "Over Centroid" ), QgsDiagramLayerSettings::OverPoint );
       mPlacementComboBox->addItem( tr( "Perimeter" ), QgsDiagramLayerSettings::Line );
@@ -220,21 +220,21 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
 
     switch ( layerType )
     {
-      case Qgis::Point:
+      case QgsWkbTypes::PointGeometry:
         mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( QgsDiagramLayerSettings::AroundPoint ) );
         break;
-      case Qgis::Line:
+      case QgsWkbTypes::LineGeometry:
         mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( QgsDiagramLayerSettings::Line ) );
         chkLineAbove->setChecked( true );
         chkLineBelow->setChecked( false );
         chkLineOn->setChecked( false );
         chkLineOrientationDependent->setChecked( false );
         break;
-      case Qgis::Polygon:
+      case QgsWkbTypes::PolygonGeometry:
         mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( QgsDiagramLayerSettings::AroundPoint ) );
         break;
-      case Qgis::UnknownGeometry:
-      case Qgis::NoGeometry:
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
         break;
     }
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
@@ -895,7 +895,7 @@ void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index 
 {
   QgsDiagramLayerSettings::Placement currentPlacement = ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->itemData( index ).toInt();
   if ( currentPlacement == QgsDiagramLayerSettings::AroundPoint ||
-       ( currentPlacement == QgsDiagramLayerSettings::Line && mLayer->geometryType() == Qgis::Line ) )
+       ( currentPlacement == QgsDiagramLayerSettings::Line && mLayer->geometryType() == QgsWkbTypes::LineGeometry ) )
   {
     mDiagramDistanceLabel->setEnabled( true );
     mDiagramDistanceSpinBox->setEnabled( true );
@@ -906,7 +906,7 @@ void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index 
     mDiagramDistanceSpinBox->setEnabled( false );
   }
 
-  bool linePlacementEnabled = mLayer->geometryType() == Qgis::Line && currentPlacement == QgsDiagramLayerSettings::Line;
+  bool linePlacementEnabled = mLayer->geometryType() == QgsWkbTypes::LineGeometry && currentPlacement == QgsDiagramLayerSettings::Line;
   chkLineAbove->setEnabled( linePlacementEnabled );
   chkLineBelow->setEnabled( linePlacementEnabled );
   chkLineOn->setEnabled( linePlacementEnabled );

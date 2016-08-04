@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsField, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import Qgis, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTableField
@@ -87,7 +87,7 @@ class MeanCoords(GeoAlgorithm):
                      QgsField('UID', QVariant.String, '', 255)]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fieldList, Qgis.WKBPoint, layer.crs()
+            fieldList, QgsWkbTypes.Point, layer.crs()
         )
 
         features = vector.features(layer)

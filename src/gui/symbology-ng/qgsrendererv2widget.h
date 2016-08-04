@@ -218,10 +218,10 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
 
   protected:
     QgsDataDefined symbolDataDefined() const;
-    void init( const QString & description ); // needed in children ctor to call virtual
+    void init( const QString& description ); // needed in children ctor to call virtual
 
-    virtual QgsDataDefined symbolDataDefined( const QgsSymbolV2 * ) const = 0;
-    virtual double value( const QgsSymbolV2 * ) const = 0;
+    virtual QgsDataDefined symbolDataDefined( const QgsSymbolV2* ) const = 0;
+    virtual double value( const QgsSymbolV2* ) const = 0;
     virtual void setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd ) = 0;
 
     QList<QgsSymbolV2*> mSymbolList;

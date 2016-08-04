@@ -55,15 +55,15 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
   if ( index.column() == QgsOracleTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    Q_FOREACH ( Qgis::WkbType type,
-                QList<Qgis::WkbType>()
-                << Qgis::WKBPoint
-                << Qgis::WKBLineString
-                << Qgis::WKBPolygon
-                << Qgis::WKBMultiPoint
-                << Qgis::WKBMultiLineString
-                << Qgis::WKBMultiPolygon
-                << Qgis::WKBNoGeometry )
+    Q_FOREACH ( QgsWkbTypes::Type type,
+                QList<QgsWkbTypes::Type>()
+                << QgsWkbTypes::Point
+                << QgsWkbTypes::LineString
+                << QgsWkbTypes::Polygon
+                << QgsWkbTypes::MultiPoint
+                << QgsWkbTypes::MultiLineString
+                << QgsWkbTypes::MultiPolygon
+                << QgsWkbTypes::NoGeometry )
     {
       cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), type );
     }
@@ -138,10 +138,10 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   {
     if ( index.column() == QgsOracleTableModel::dbtmType )
     {
-      Qgis::WkbType type = ( Qgis::WkbType ) cb->itemData( cb->currentIndex() ).toInt();
+      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->itemData( cb->currentIndex() ).toInt();
 
       model->setData( index, QgsOracleTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != Qgis::WKBUnknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsOracleTableModel::dbtmPkCol )
@@ -516,7 +516,7 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  QgsDataSourceURI uri = QgsOracleConn::connUri( cmbConnections->currentText() );
+  QgsDataSourceUri uri = QgsOracleConn::connUri( cmbConnections->currentText() );
 
   mIsConnected = true;
   mTablesTreeDelegate->setConnectionInfo( uri );
@@ -660,7 +660,7 @@ void QgsOracleSourceSelect::loadTableFromCache()
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   QString connName = cmbConnections->currentText();
-  QgsDataSourceURI uri = QgsOracleConn::connUri( connName );
+  QgsDataSourceUri uri = QgsOracleConn::connUri( connName );
   QVector<QgsOracleLayerProperty> layers;
   if ( !QgsOracleTableCache::loadFromCache( connName, _currentFlags( connName, uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() ), layers ) )
     return;

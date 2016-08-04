@@ -101,7 +101,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Layer's labeling configuration
     QgsPalLayerSettings mSettings;
     //! Geometry type of layer
-    Qgis::GeometryType mLayerGeometryType;
+    QgsWkbTypes::GeometryType mLayerGeometryType;
 
     QgsFeatureRendererV2* mRenderer;
 

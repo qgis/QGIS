@@ -53,7 +53,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual Qgis::WkbType geometryType() const override;
+    virtual QgsWkbTypes::Type wkbType() const override;
 
     /**
      * Number of features in the layer
@@ -156,7 +156,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
 
     // fields
     QgsFields mFields;
-    Qgis::WkbType mWkbType;
+    QgsWkbTypes::Type mWkbType;
     QgsRectangle mExtent;
 
     // features

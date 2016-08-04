@@ -86,7 +86,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
      * @see geometryType
      * @see wktTypeStr
      */
-    QgsWKBTypes::Type wkbType() const { return mWkbType; }
+    QgsWkbTypes::Type wkbType() const { return mWkbType; }
 
     /** Returns the WKT type string of the geometry.
      * @see geometryType
@@ -375,14 +375,14 @@ class CORE_EXPORT QgsAbstractGeometryV2
      * @returns true if conversion was successful
      * @note added in QGIS 2.14
      */
-    virtual bool convertTo( QgsWKBTypes::Type type );
+    virtual bool convertTo( QgsWkbTypes::Type type );
 
   protected:
-    QgsWKBTypes::Type mWkbType;
+    QgsWkbTypes::Type mWkbType;
 
     /** Updates the geometry type based on whether sub geometries contain z or m values.
      */
-    void setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subggeom, QgsWKBTypes::Type baseGeomType );
+    void setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subggeom, QgsWkbTypes::Type baseGeomType );
 
     /** Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
      * if a more efficient bounding box calculation is available.

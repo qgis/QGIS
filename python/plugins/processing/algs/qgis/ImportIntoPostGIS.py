@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsDataSourceURI, QgsVectorLayerImport
+from qgis.core import QgsDataSourceUri, QgsVectorLayerImport
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException

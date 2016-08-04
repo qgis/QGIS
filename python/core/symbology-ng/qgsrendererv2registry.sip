@@ -52,7 +52,11 @@ class QgsRendererV2AbstractMetadata
      */
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* oldRenderer ) /Factory/;
 
-    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, Qgis::GeometryType geomType ) /Factory/;
+    /**
+     * Create a renderer from the SLD provided in ele and for the specified geometry type.
+     * This is done on a best effort basis.
+     */
+    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
 };
 
 QFlags<QgsRendererV2AbstractMetadata::LayerType> operator|(QgsRendererV2AbstractMetadata::LayerType f1, QFlags<QgsRendererV2AbstractMetadata::LayerType> f2);
@@ -68,11 +72,11 @@ class QgsRendererV2Metadata : QgsRendererV2AbstractMetadata
   public:
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) /Factory/;
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
-    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, Qgis::GeometryType geomType ) /Factory/;
+    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
     // QgsRendererV2CreateFunc createFunction() const;
     // QgsRendererV2WidgetFunc widgetFunction() const;
-    // QgsFeatureRendererV2* (*)( QDomElement&, Qgis::GeometryType geomType ) createFromSldFunction() const;
+    // QgsFeatureRendererV2* (*)( QDomElement&, QgsWkbTypes::GeometryType geomType ) createFromSldFunction() const;
     // void setWidgetFunction( QgsRendererV2WidgetFunc f );
 
     virtual QgsRendererV2AbstractMetadata::LayerTypes compatibleLayerTypes() const;

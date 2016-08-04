@@ -126,7 +126,7 @@ QString QgsMapLayer::publicSource() const
 {
   // Redo this every time we're asked for it, as we don't know if
   // dataSource has changed.
-  QString safeName = QgsDataSourceURI::removePassword( mDataSource );
+  QString safeName = QgsDataSourceUri::removePassword( mDataSource );
   return safeName;
 }
 
@@ -190,7 +190,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
   // see also QgsProject::createEmbeddedLayer
   if ( provider == "spatialite" )
   {
-    QgsDataSourceURI uri( mDataSource );
+    QgsDataSourceUri uri( mDataSource );
     uri.setDatabase( QgsProject::instance()->readPath( uri.database() ) );
     mDataSource = uri.uri();
   }
@@ -237,7 +237,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
     if ( !mDataSource.contains( "crs=" ) && !mDataSource.contains( "format=" ) )
     {
       QgsDebugMsg( "Old WMS URI format detected -> converting to new format" );
-      QgsDataSourceURI uri;
+      QgsDataSourceUri uri;
       if ( !mDataSource.startsWith( "http:" ) )
       {
         QStringList parts = mDataSource.split( ',' );
@@ -551,7 +551,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement& layerElement, QDomDocument& docume
   // TODO: what about postgres, mysql and others, they should not go through writePath()
   if ( vlayer && vlayer->providerType() == "spatialite" )
   {
-    QgsDataSourceURI uri( src );
+    QgsDataSourceUri uri( src );
     QString database = QgsProject::instance()->writePath( uri.database(), relativeBasePath );
     uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
     src = uri.uri();
@@ -1192,7 +1192,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMe
   if ( type() == QgsMapLayer::VectorLayer && !myRoot.firstChildElement( "layerGeometryType" ).isNull() )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( this );
-    int importLayerGeometryType = myRoot.firstChildElement( "layerGeometryType" ).text().toInt();
+    QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( "layerGeometryType" ).text().toInt() );
     if ( vl->geometryType() != importLayerGeometryType )
     {
       myErrorMessage = tr( "Cannot apply style to layer with a different geometry type" );

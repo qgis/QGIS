@@ -66,7 +66,7 @@ class Merge(GeoAlgorithm):
             layer = QgsVectorLayer(paths[x], unicode(x), 'ogr')
 
             if (len(layers) > 0):
-                if (layer.dataProvider().geometryType() != layers[0].dataProvider().geometryType()):
+                if (layer.dataProvider().wkbType() != layers[0].dataProvider().wkbType()):
                     raise GeoAlgorithmExecutionException(
                         self.tr('All layers must have same geometry type!'))
 
@@ -88,7 +88,7 @@ class Merge(GeoAlgorithm):
 
         total = 100.0 / totalFeatureCount
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), layers[0].dataProvider().geometryType(),
+            fields.toList(), layers[0].dataProvider().wkbType(),
             layers[0].crs())
 
         featureCount = 0

@@ -16,7 +16,7 @@ class QgsNewMemoryLayerDialog : QDialog
     ~QgsNewMemoryLayerDialog();
 
     /** Returns the selected geometry type*/
-    Qgis::WkbType selectedType() const;
+    QgsWkbTypes::Type selectedType() const;
 
     /** Returns the selected crs*/
     QgsCoordinateReferenceSystem crs() const;

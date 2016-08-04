@@ -1253,7 +1253,7 @@ void QgsMapCanvas::beginZoomRect( QPoint pos )
   mZoomRect.setRect( 0, 0, 0, 0 );
   QApplication::setOverrideCursor( mZoomCursor );
   mZoomDragging = true;
-  mZoomRubberBand.reset( new QgsRubberBand( this, Qgis::Polygon ) );
+  mZoomRubberBand.reset( new QgsRubberBand( this, QgsWkbTypes::PolygonGeometry ) );
   QColor color( Qt::blue );
   color.setAlpha( 63 );
   mZoomRubberBand->setColor( color );
@@ -1297,7 +1297,6 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
-    QApplication::setOverrideCursor( Qt::ClosedHandCursor );
     mCanvasProperties->panSelectorDown = true;
     mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
   }
@@ -1336,7 +1335,6 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
-    QApplication::restoreOverrideCursor();
     mCanvasProperties->panSelectorDown = false;
     panActionEnd( mCanvasProperties->mouseLastXY );
   }
@@ -1750,7 +1748,7 @@ void QgsMapCanvas::updateDatumTransformEntries()
       continue;
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vl && vl->geometryType() == Qgis::NoGeometry )
+    if ( vl && vl->geometryType() == QgsWkbTypes::NullGeometry )
       continue;
 
     // if there are more options, ask the user which datum transform to use

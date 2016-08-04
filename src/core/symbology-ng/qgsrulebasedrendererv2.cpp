@@ -717,7 +717,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement&
   return rule;
 }
 
-QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomElement& ruleElem, Qgis::GeometryType geomType )
+QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomElement& ruleElem, QgsWkbTypes::GeometryType geomType )
 {
   if ( ruleElem.localName() != "Rule" )
   {
@@ -810,15 +810,15 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
   {
     switch ( geomType )
     {
-      case Qgis::Line:
+      case QgsWkbTypes::LineGeometry:
         symbol = new QgsLineSymbolV2( layers );
         break;
 
-      case Qgis::Polygon:
+      case QgsWkbTypes::PolygonGeometry:
         symbol = new QgsFillSymbolV2( layers );
         break;
 
-      case Qgis::Point:
+      case QgsWkbTypes::PointGeometry:
         symbol = new QgsMarkerSymbolV2( layers );
         break;
 
@@ -1092,7 +1092,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
   return r;
 }
 
-QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& element, Qgis::GeometryType geomType )
+QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType )
 {
   // retrieve child rules
   Rule* root = nullptr;

@@ -54,7 +54,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
 
         provider = vectorLayer.dataProvider()
         writer = output.getVectorWriter(provider.fields(),
-                                        provider.geometryType(), vectorLayer.crs())
+                                        provider.wkbType(), vectorLayer.crs())
 
         features = vector.features(vectorLayer)
         total = 100.0 / len(features)

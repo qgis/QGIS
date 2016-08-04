@@ -49,7 +49,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
 
     /** Get the feature geometry type */
-    Qgis::WkbType geometryType() const override;
+    QgsWkbTypes::Type wkbType() const override;
 
     /** Get the number of features in the layer */
     long featureCount() const override;

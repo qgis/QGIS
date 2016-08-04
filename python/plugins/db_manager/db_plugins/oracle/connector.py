@@ -29,7 +29,7 @@ from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
 
 import os
-from qgis.core import Qgis, QgsApplication, NULL
+from qgis.core import Qgis, QgsApplication, NULL, QgsWkbTypes
 from . import QtSqlDB
 import sqlite3
 
@@ -44,18 +44,18 @@ def classFactory():
 class OracleDBConnector(DBConnector):
 
     ORGeomTypes = {
-        2001: Qgis.WKBPoint,
-        2002: Qgis.WKBLineString,
-        2003: Qgis.WKBPolygon,
-        2005: Qgis.WKBMultiPoint,
-        2006: Qgis.WKBMultiLineString,
-        2007: Qgis.WKBMultiPolygon,
-        3001: Qgis.WKBPoint25D,
-        3002: Qgis.WKBLineString25D,
-        3003: Qgis.WKBPolygon25D,
-        3005: Qgis.WKBMultiPoint25D,
-        3006: Qgis.WKBMultiLineString25D,
-        3007: Qgis.WKBMultiPolygon25D
+        2001: QgsWkbTypes.Point,
+        2002: QgsWkbTypes.LineString,
+        2003: QgsWkbTypes.Polygon,
+        2005: QgsWkbTypes.MultiPoint,
+        2006: QgsWkbTypes.MultiLineString,
+        2007: QgsWkbTypes.MultiPolygon,
+        3001: QgsWkbTypes.Point25D,
+        3002: QgsWkbTypes.LineString25D,
+        3003: QgsWkbTypes.Polygon25D,
+        3005: QgsWkbTypes.MultiPoint25D,
+        3006: QgsWkbTypes.MultiLineString25D,
+        3007: QgsWkbTypes.MultiPolygon25D
     }
 
     def __init__(self, uri, connName):
@@ -473,21 +473,21 @@ class OracleDBConnector(DBConnector):
 
     def singleGeomTypes(self, geomtypes, srids):
         """Intelligent wkbtype grouping (multi with non multi)"""
-        if (Qgis.WKBPolygon in geomtypes
-                and Qgis.WKBMultiPolygon in geomtypes):
-            srids.pop(geomtypes.index(Qgis.WKBPolygon))
-            geomtypes.pop(geomtypes.index(Qgis.WKBPolygon))
-        if (Qgis.WKBPoint in geomtypes
-                and Qgis.WKBMultiPoint in geomtypes):
-            srids.pop(geomtypes.index(Qgis.WKBPoint))
-            geomtypes.pop(geomtypes.index(Qgis.WKBPoint))
-        if (Qgis.WKBLineString in geomtypes
-                and Qgis.WKBMultiLineString in geomtypes):
-            srids.pop(geomtypes.index(Qgis.WKBLineString))
-            geomtypes.pop(geomtypes.index(Qgis.WKBLineString))
-        if Qgis.WKBUnknown in geomtypes and len(geomtypes) > 1:
-            srids.pop(geomtypes.index(Qgis.WKBUnknown))
-            geomtypes.pop(geomtypes.index(Qgis.WKBUnknown))
+        if (QgsWkbTypes.Polygon in geomtypes
+                and QgsWkbTypes.MultiPolygon in geomtypes):
+            srids.pop(geomtypes.index(QgsWkbTypes.Polygon))
+            geomtypes.pop(geomtypes.index(QgsWkbTypes.Polygon))
+        if (QgsWkbTypes.Point in geomtypes
+                and QgsWkbTypes.MultiPoint in geomtypes):
+            srids.pop(geomtypes.index(QgsWkbTypes.Point))
+            geomtypes.pop(geomtypes.index(QgsWkbTypes.Point))
+        if (QgsWkbTypes.LineString in geomtypes
+                and QgsWkbTypes.MultiLineString in geomtypes):
+            srids.pop(geomtypes.index(QgsWkbTypes.LineString))
+            geomtypes.pop(geomtypes.index(QgsWkbTypes.LineString))
+        if QgsWkbTypes.Unknown in geomtypes and len(geomtypes) > 1:
+            srids.pop(geomtypes.index(QgsWkbTypes.Unknown))
+            geomtypes.pop(geomtypes.index(QgsWkbTypes.Unknown))
 
         return geomtypes, srids
 
@@ -652,8 +652,8 @@ class OracleDBConnector(DBConnector):
                 copybuf = list(buf)
                 copybuf[4] = u""
                 copybuf[-6] = u"UNKNOWN"
-                copybuf[-5] = Qgis.WKBNoGeometry
-                copybuf[-2] = Qgis.WKBNoGeometry
+                copybuf[-5] = QgsWkbTypes.NullGeometry
+                copybuf[-2] = QgsWkbTypes.NullGeometry
                 copybuf[-1] = u"0"
                 items.append(copybuf)
 
@@ -767,14 +767,14 @@ class OracleDBConnector(DBConnector):
         try:
             c = self._execute(None, query)
         except DbError:  # handle error views or other problems
-            return [Qgis.WKBUnknown], [-1]
+            return [QgsWkbTypes.Unknown], [-1]
 
         rows = self._fetchall(c)
         c.close()
 
         # Handle results
         if len(rows) == 0:
-            return [Qgis.WKBUnknown], [-1]
+            return [QgsWkbTypes.Unknown], [-1]
 
         # A dict to store the geomtypes
         geomtypes = []
@@ -787,7 +787,7 @@ class OracleDBConnector(DBConnector):
             if int(row[0]) in list(OracleDBConnector.ORGeomTypes.keys()):
                 geomtypes.append(OracleDBConnector.ORGeomTypes[int(row[0])])
             else:
-                geomtypes.append(Qgis.WKBUnknown)
+                geomtypes.append(QgsWkbTypes.Unknown)
 
         return geomtypes, srids
 
@@ -799,14 +799,14 @@ class OracleDBConnector(DBConnector):
         geomTypes, srids = self.getTableGeomTypes(table, geomCol)
 
         # Make the decision:
-        wkbType = Qgis.WKBUnknown
+        wkbType = QgsWkbTypes.Unknown
         srid = -1
-        order = [Qgis.WKBMultiPolygon25D, Qgis.WKBPolygon25D,
-                 Qgis.WKBMultiPolygon, Qgis.WKBPolygon,
-                 Qgis.WKBMultiLineString25D, Qgis.WKBLineString25D,
-                 Qgis.WKBMultiLineString, Qgis.WKBLineString,
-                 Qgis.WKBMultiPoint25D, Qgis.WKBPoint25D,
-                 Qgis.WKBMultiPoint, Qgis.WKBPoint]
+        order = [QgsWkbTypes.MultiPolygon25D, QgsWkbTypes.Polygon25D,
+                 QgsWkbTypes.MultiPolygon, QgsWkbTypes.Polygon,
+                 QgsWkbTypes.MultiLineString25D, QgsWkbTypes.LineString25D,
+                 QgsWkbTypes.MultiLineString, QgsWkbTypes.LineString,
+                 QgsWkbTypes.MultiPoint25D, QgsWkbTypes.Point25D,
+                 QgsWkbTypes.MultiPoint, QgsWkbTypes.Point]
         for geomType in order:
             if geomType in geomTypes:
                 wkbType = geomType

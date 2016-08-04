@@ -44,7 +44,7 @@ void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( !vlayer )
     return;
 
-  QgsRubberBand rubberBand( mCanvas, Qgis::Polygon );
+  QgsRubberBand rubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
   rubberBand.setFillColor( mFillColor );
   rubberBand.setBorderColor( mBorderColour );
   QRect selectRect( 0, 0, 0, 0 );
@@ -52,5 +52,5 @@ void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
   QgsGeometry selectGeom( rubberBand.asGeometry() );
   QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e );
-  rubberBand.reset( Qgis::Polygon );
+  rubberBand.reset( QgsWkbTypes::PolygonGeometry );
 }

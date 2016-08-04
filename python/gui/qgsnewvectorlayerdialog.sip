@@ -13,7 +13,7 @@ class QgsNewVectorLayerDialog : QDialog
     QgsNewVectorLayerDialog( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
     ~QgsNewVectorLayerDialog();
     /** Returns the selected geometry type*/
-    Qgis::WkbType selectedType() const;
+    QgsWkbTypes::Type selectedType() const;
     /** Appends the chosen attribute names and types to at*/
     void attributes( QList< QPair<QString, QString> >& at ) const;
     /** Returns the file format for storage*/

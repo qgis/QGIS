@@ -69,13 +69,13 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
     invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), schemaItem );
   }
 
-  Qgis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
-  if ( wkbType == Qgis::WKBUnknown && layerProperty.geometryColName.isEmpty() )
+  QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
+  if ( wkbType == QgsWkbTypes::Unknown && layerProperty.geometryColName.isEmpty() )
   {
-    wkbType = Qgis::WKBNoGeometry;
+    wkbType = QgsWkbTypes::NoGeometry;
   }
 
-  bool needToDetect = wkbType == Qgis::WKBUnknown && layerProperty.type != "GEOMETRYCOLLECTION";
+  bool needToDetect = wkbType == QgsWkbTypes::Unknown && layerProperty.type != "GEOMETRYCOLLECTION";
 
   QList<QStandardItem*> childItemList;
 
@@ -85,7 +85,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
       needToDetect
       ? tr( "Detecting..." )
-      : QgsMssqlTableModel::displayStringForWkbType( wkbType ) );
+      : QgsWkbTypes::displayString( wkbType ) );
   typeItem->setData( needToDetect, Qt::UserRole + 1 );
   typeItem->setData( wkbType, Qt::UserRole + 2 );
 
@@ -133,7 +133,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   childItemList << sqlItem;
 
   bool detailsFromThread = needToDetect ||
-                           ( wkbType != Qgis::WKBNoGeometry && layerProperty.srid.isEmpty() );
+                           ( wkbType != QgsWkbTypes::NoGeometry && layerProperty.srid.isEmpty() );
 
   if ( detailsFromThread || pkText == tr( "Select..." ) )
   {
@@ -267,10 +267,10 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
       else
       {
         // update existing row
-        Qgis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList.at( 0 ) );
+        QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList.at( 0 ) );
 
         row[ dbtmType ]->setIcon( iconForWkbType( wkbType ) );
-        row[ dbtmType ]->setText( QgsMssqlTableModel::displayStringForWkbType( wkbType ) );
+        row[ dbtmType ]->setText( QgsWkbTypes::displayString( wkbType ) );
         row[ dbtmType ]->setData( false, Qt::UserRole + 1 );
         row[ dbtmType ]->setData( wkbType, Qt::UserRole + 2 );
 
@@ -296,28 +296,24 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
   }
 }
 
-QIcon QgsMssqlTableModel::iconForWkbType( Qgis::WkbType type )
+QIcon QgsMssqlTableModel::iconForWkbType( QgsWkbTypes::Type type )
 {
-  switch ( type )
+  switch ( QgsWkbTypes::geometryType( type ) )
+
   {
-    case Qgis::WKBPoint:
-    case Qgis::WKBPoint25D:
-    case Qgis::WKBMultiPoint:
-    case Qgis::WKBMultiPoint25D:
+    case QgsWkbTypes::PointGeometry:
       return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case Qgis::WKBLineString:
-    case Qgis::WKBLineString25D:
-    case Qgis::WKBMultiLineString:
-    case Qgis::WKBMultiLineString25D:
+      break;
+    case QgsWkbTypes::LineGeometry:
       return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case Qgis::WKBPolygon:
-    case Qgis::WKBPolygon25D:
-    case Qgis::WKBMultiPolygon:
-    case Qgis::WKBMultiPolygon25D:
+      break;
+    case QgsWkbTypes::PolygonGeometry:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-    case Qgis::WKBNoGeometry:
+      break;
+    case QgsWkbTypes::NullGeometry:
       return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
-    case Qgis::WKBUnknown:
+      break;
+    case QgsWkbTypes::UnknownGeometry:
       break;
   }
   return QgsApplication::getThemeIcon( "/mIconLayer.png" );
@@ -330,11 +326,11 @@ bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value,
 
   if ( idx.column() == dbtmType || idx.column() == dbtmSrid || idx.column() == dbtmPkCol )
   {
-    Qgis::GeometryType geomType = ( Qgis::GeometryType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
+    QgsWkbTypes::GeometryType geomType = ( QgsWkbTypes::GeometryType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
 
-    bool ok = geomType != Qgis::UnknownGeometry;
+    bool ok = geomType != QgsWkbTypes::UnknownGeometry;
 
-    if ( ok && geomType != Qgis::NoGeometry )
+    if ( ok && geomType != QgsWkbTypes::NullGeometry )
       idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
 
     QStringList pkCols = idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
@@ -359,8 +355,8 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
   if ( !index.isValid() )
     return QString::null;
 
-  Qgis::WkbType wkbType = ( Qgis::WkbType ) itemFromIndex( index.sibling( index.row(), dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
-  if ( wkbType == Qgis::WKBUnknown )
+  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  if ( wkbType == QgsWkbTypes::Unknown )
     // no geometry type selected
     return QString::null;
 
@@ -377,7 +373,7 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
 
   QString geomColumnName;
   QString srid;
-  if ( wkbType != Qgis::WKBNoGeometry )
+  if ( wkbType != QgsWkbTypes::NoGeometry )
   {
     geomColumnName = index.sibling( index.row(), dbtmGeomCol ).data( Qt::DisplayRole ).toString();
 
@@ -391,113 +387,74 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
   bool selectAtId = itemFromIndex( index.sibling( index.row(), dbtmSelectAtId ) )->checkState() == Qt::Checked;
   QString sql = index.sibling( index.row(), dbtmSql ).data( Qt::DisplayRole ).toString();
 
-  QgsDataSourceURI uri( connInfo );
+  QgsDataSourceUri uri( connInfo );
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, pkColumnName );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
-  uri.setWkbType( Qgis::fromOldWkbType( wkbType ) );
+  uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
   return uri.uri();
 }
 
-Qgis::WkbType QgsMssqlTableModel::wkbTypeFromMssql( QString type )
+QgsWkbTypes::Type QgsMssqlTableModel::wkbTypeFromMssql( QString type )
 {
   type = type.toUpper();
 
   if ( type == "POINT" )
   {
-    return Qgis::WKBPoint;
+    return QgsWkbTypes::Point;
   }
   else if ( type == "POINTM" )
   {
-    return Qgis::WKBPoint25D;
+    return QgsWkbTypes::Point25D;
   }
   else if ( type == "MULTIPOINT" )
   {
-    return Qgis::WKBMultiPoint;
+    return QgsWkbTypes::MultiPoint;
   }
   else if ( type == "MULTIPOINTM" )
   {
-    return Qgis::WKBMultiPoint25D;
+    return QgsWkbTypes::MultiPoint25D;
   }
   else if ( type == "LINESTRING" )
   {
-    return Qgis::WKBLineString;
+    return QgsWkbTypes::LineString;
   }
   else if ( type == "LINESTRINGM" )
   {
-    return Qgis::WKBLineString25D;
+    return QgsWkbTypes::LineString25D;
   }
   else if ( type == "MULTILINESTRING" )
   {
-    return Qgis::WKBMultiLineString;
+    return QgsWkbTypes::MultiLineString;
   }
   else if ( type == "MULTILINESTRINGM" )
   {
-    return Qgis::WKBMultiLineString25D;
+    return QgsWkbTypes::MultiLineString25D;
   }
   else if ( type == "POLYGON" )
   {
-    return Qgis::WKBPolygon;
+    return QgsWkbTypes::Polygon;
   }
   else if ( type == "POLYGONM" )
   {
-    return Qgis::WKBPolygon25D;
+    return QgsWkbTypes::Polygon25D;
   }
   else if ( type == "MULTIPOLYGON" )
   {
-    return Qgis::WKBMultiPolygon;
+    return QgsWkbTypes::MultiPolygon;
   }
   else if ( type == "MULTIPOLYGONM" )
   {
-    return Qgis::WKBMultiPolygon25D;
+    return QgsWkbTypes::MultiPolygon25D;
   }
   else if ( type == "NONE" )
   {
-    return Qgis::WKBNoGeometry;
+    return QgsWkbTypes::NoGeometry;
   }
   else
   {
-    return Qgis::WKBUnknown;
+    return QgsWkbTypes::Unknown;
   }
-}
-
-QString QgsMssqlTableModel::displayStringForWkbType( Qgis::WkbType type )
-{
-  switch ( type )
-  {
-    case Qgis::WKBPoint:
-    case Qgis::WKBPoint25D:
-      return tr( "Point" );
-
-    case Qgis::WKBMultiPoint:
-    case Qgis::WKBMultiPoint25D:
-      return tr( "Multipoint" );
-
-    case Qgis::WKBLineString:
-    case Qgis::WKBLineString25D:
-      return tr( "Line" );
-
-    case Qgis::WKBMultiLineString:
-    case Qgis::WKBMultiLineString25D:
-      return tr( "Multiline" );
-
-    case Qgis::WKBPolygon:
-    case Qgis::WKBPolygon25D:
-      return tr( "Polygon" );
-
-    case Qgis::WKBMultiPolygon:
-    case Qgis::WKBMultiPolygon25D:
-      return tr( "Multipolygon" );
-
-    case Qgis::WKBNoGeometry:
-      return tr( "No Geometry" );
-
-    case Qgis::WKBUnknown:
-      return tr( "Unknown Geometry" );
-  }
-
-  Q_ASSERT( !"unexpected wkbType" );
-  return QString::null;
 }

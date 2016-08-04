@@ -18,13 +18,14 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import print_function
 
 from qgis.PyQt.QtCore import QUrl, QTemporaryFile
 
 from ..connector import DBConnector
 from ..plugin import Table
 
-from qgis.core import Qgis, QgsDataSourceURI, QgsVirtualLayerDefinition, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem
+from qgis.core import Qgis, QgsDataSourceUri, QgsVirtualLayerDefinition, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
 
 import sqlite3
 
@@ -116,7 +117,8 @@ class VLayerConnector(DBConnector):
         return DummyCursor(sql)
 
     def _get_cursor(self, name=None):
-        print("_get_cursor_", name)
+        # fix_print_with_import
+        print(("_get_cursor_", name))
 
     def _get_cursor_columns(self, c):
         tf = QTemporaryFile()
@@ -129,14 +131,14 @@ class VLayerConnector(DBConnector):
         if not p.isValid():
             return []
         f = [f.name() for f in p.fields()]
-        if p.geometryType() != Qgis.WKBNoGeometry:
+        if p.geometryType() != QgsWkbTypes.NullGeometry:
             gn = getQueryGeometryName(tmp)
             if gn:
                 f += [gn]
         return f
 
     def uri(self):
-        return QgsDataSourceURI("qgis")
+        return QgsDataSourceUri("qgis")
 
     def getInfo(self):
         return "info"
@@ -199,41 +201,41 @@ class VLayerConnector(DBConnector):
 
                 geomType = None
                 dim = None
-                g = l.dataProvider().geometryType()
-                if g == Qgis.WKBPoint:
+                g = l.dataProvider().wkbType()
+                if g == QgsWkbTypes.Point:
                     geomType = 'POINT'
                     dim = 'XY'
-                elif g == Qgis.WKBLineString:
+                elif g == QgsWkbTypes.LineString:
                     geomType = 'LINESTRING'
                     dim = 'XY'
-                elif g == Qgis.WKBPolygon:
+                elif g == QgsWkbTypes.Polygon:
                     geomType = 'POLYGON'
                     dim = 'XY'
-                elif g == Qgis.WKBMultiPoint:
+                elif g == QgsWkbTypes.MultiPoint:
                     geomType = 'MULTIPOINT'
                     dim = 'XY'
-                elif g == Qgis.WKBMultiLineString:
+                elif g == QgsWkbTypes.MultiLineString:
                     geomType = 'MULTILINESTRING'
                     dim = 'XY'
-                elif g == Qgis.WKBMultiPolygon:
+                elif g == QgsWkbTypes.MultiPolygon:
                     geomType = 'MULTIPOLYGON'
                     dim = 'XY'
-                elif g == Qgis.WKBPoint25D:
+                elif g == QgsWkbTypes.Point25D:
                     geomType = 'POINT'
                     dim = 'XYZ'
-                elif g == Qgis.WKBLineString25D:
+                elif g == QgsWkbTypes.LineString25D:
                     geomType = 'LINESTRING'
                     dim = 'XYZ'
-                elif g == Qgis.WKBPolygon25D:
+                elif g == QgsWkbTypes.Polygon25D:
                     geomType = 'POLYGON'
                     dim = 'XYZ'
-                elif g == Qgis.WKBMultiPoint25D:
+                elif g == QgsWkbTypes.MultiPoint25D:
                     geomType = 'MULTIPOINT'
                     dim = 'XYZ'
-                elif g == Qgis.WKBMultiLineString25D:
+                elif g == QgsWkbTypes.MultiLineString25D:
                     geomType = 'MULTILINESTRING'
                     dim = 'XYZ'
-                elif g == Qgis.WKBMultiPolygon25D:
+                elif g == QgsWkbTypes.MultiPolygon25D:
                     geomType = 'MULTIPOLYGON'
                     dim = 'XYZ'
                 lst.append(

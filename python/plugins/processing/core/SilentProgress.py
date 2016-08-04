@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
@@ -29,7 +30,7 @@ __revision__ = '$Format:%H$'
 class SilentProgress(object):
 
     def error(self, msg):
-        print msg
+        print(msg)
 
     def setText(self, text):
         pass

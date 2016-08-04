@@ -446,7 +446,7 @@ void QgsFieldCalculator::populateFields()
     }
   }
 
-  if ( mVectorLayer->geometryType() != Qgis::NoGeometry )
+  if ( mVectorLayer->geometryType() != QgsWkbTypes::NullGeometry )
   {
     mExistingFieldComboBox->addItem( tr( "<geometry>" ), "geom" );
 

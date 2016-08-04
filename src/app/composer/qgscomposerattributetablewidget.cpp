@@ -410,7 +410,7 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   if ( mComposerTable->vectorLayer() )
   {
     mLayerComboBox->setLayer( mComposerTable->vectorLayer() );
-    if ( mComposerTable->vectorLayer()->geometryType() == Qgis::NoGeometry )
+    if ( mComposerTable->vectorLayer()->geometryType() == QgsWkbTypes::NullGeometry )
     {
       //layer has no geometry, so uncheck & disable controls which require geometry
       mShowOnlyVisibleFeaturesCheckBox->setChecked( false );
@@ -847,7 +847,7 @@ void QgsComposerAttributeTableWidget::changeLayer( QgsMapLayer *layer )
     composition->endMultiFrameCommand();
   }
 
-  if ( vl->geometryType() == Qgis::NoGeometry )
+  if ( vl->geometryType() == QgsWkbTypes::NullGeometry )
   {
     //layer has no geometry, so uncheck & disable controls which require geometry
     mShowOnlyVisibleFeaturesCheckBox->setChecked( false );

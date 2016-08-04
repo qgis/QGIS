@@ -504,7 +504,7 @@ void QgsAtlasComposition::computeExtent( QgsComposerMap* map )
 
 void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
 {
-  if ( !map->atlasDriven() || mCoverageLayer->wkbType() == Qgis::WKBNoGeometry )
+  if ( !map->atlasDriven() || mCoverageLayer->wkbType() == QgsWkbTypes::NoGeometry )
   {
     return;
   }
@@ -527,10 +527,10 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   bool isPointLayer = false;
   switch ( mCoverageLayer->wkbType() )
   {
-    case Qgis::WKBPoint:
-    case Qgis::WKBPoint25D:
-    case Qgis::WKBMultiPoint:
-    case Qgis::WKBMultiPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
       isPointLayer = true;
       break;
     default:

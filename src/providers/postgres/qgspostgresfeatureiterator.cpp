@@ -442,9 +442,9 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
                          mSource->mRequestedSrid );
   }
 
-  if ( mSource->mRequestedGeomType != Qgis::WKBUnknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
+  if ( mSource->mRequestedGeomType != QgsWkbTypes::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
   {
-    whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, ( QgsWKBTypes::Type )mSource->mRequestedGeomType, castToGeometry ) );
+    whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, ( QgsWkbTypes::Type )mSource->mRequestedGeomType, castToGeometry ) );
   }
 
   return whereClause;
@@ -486,13 +486,13 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
                    geom );
     }
 
-    Qgis::WkbType usedGeomType = mSource->mRequestedGeomType != Qgis::WKBUnknown
-                                 ? mSource->mRequestedGeomType : mSource->mDetectedGeomType;
+    QgsWkbTypes::Type usedGeomType = mSource->mRequestedGeomType != QgsWkbTypes::Unknown
+                                     ? mSource->mRequestedGeomType : mSource->mDetectedGeomType;
 
     if ( !mRequest.simplifyMethod().forceLocalOptimization() &&
          mRequest.simplifyMethod().methodType() != QgsSimplifyMethod::NoSimplification &&
-         Qgis::flatType( Qgis::singleType( usedGeomType ) ) != Qgis::WKBPoint &&
-         !QgsWKBTypes::isCurvedType( Qgis::fromOldWkbType( usedGeomType ) ) )
+         QgsWkbTypes::flatType( QgsWkbTypes::singleType( usedGeomType ) ) != QgsWkbTypes::Point &&
+         !QgsWkbTypes::isCurvedType( usedGeomType ) )
     {
       // PostGIS simplification method to use
       QString simplifyPostgisMethod;
@@ -653,7 +653,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
       unsigned int wkbType;
       memcpy( &wkbType, featureGeom + 1, sizeof( wkbType ) );
-      QgsWKBTypes::Type newType = QgsPostgresConn::wkbTypeFromOgcWkbType( wkbType );
+      QgsWkbTypes::Type newType = QgsPostgresConn::wkbTypeFromOgcWkbType( wkbType );
 
       if (( unsigned int )newType != wkbType )
       {
@@ -664,7 +664,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
       // PostGIS stores TIN as a collection of Triangles.
       // Since Triangles are not supported, they have to be converted to Polygons
-      const int nDims = 2 + ( QgsWKBTypes::hasZ( newType ) ? 1 : 0 ) + ( QgsWKBTypes::hasM( newType ) ? 1 : 0 );
+      const int nDims = 2 + ( QgsWkbTypes::hasZ( newType ) ? 1 : 0 ) + ( QgsWkbTypes::hasM( newType ) ? 1 : 0 );
       if ( wkbType % 1000 == 16 )
       {
         unsigned int numGeoms;
@@ -672,7 +672,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
         unsigned char *wkb = featureGeom + 9;
         for ( unsigned int i = 0; i < numGeoms; ++i )
         {
-          const unsigned int localType = QgsWKBTypes::singleType( newType ); // polygon(Z|M)
+          const unsigned int localType = QgsWkbTypes::singleType( newType ); // polygon(Z|M)
           memcpy( wkb + 1, &localType, sizeof( localType ) );
 
           // skip endian and type info

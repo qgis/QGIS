@@ -37,7 +37,7 @@
 typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
   const QString &uri,
   const QgsFields &fields,
-  Qgis::WkbType geometryType,
+  QgsWkbTypes::Type geometryType,
   const QgsCoordinateReferenceSystem &destCRS,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdx,
@@ -49,7 +49,7 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
 QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     const QString &providerKey,
     const QgsFields& fields,
-    Qgis::WkbType geometryType,
+    QgsWkbTypes::Type geometryType,
     const QgsCoordinateReferenceSystem& crs,
     bool overwrite,
     const QMap<QString, QVariant> *options,
@@ -246,7 +246,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   }
 
   QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
-  Qgis::WkbType wkbType = layer->wkbType();
+  QgsWkbTypes::Type wkbType = layer->wkbType();
 
   // Special handling for Shapefiles
   if ( layer->providerType() == "ogr" && layer->storageType() == "ESRI Shapefile" )
@@ -262,23 +262,23 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
       // convert wkbtype to multipart (see #5547)
       switch ( wkbType )
       {
-        case Qgis::WKBPoint:
-          wkbType = Qgis::WKBMultiPoint;
+        case QgsWkbTypes::Point:
+          wkbType = QgsWkbTypes::MultiPoint;
           break;
-        case Qgis::WKBLineString:
-          wkbType = Qgis::WKBMultiLineString;
+        case QgsWkbTypes::LineString:
+          wkbType = QgsWkbTypes::MultiLineString;
           break;
-        case Qgis::WKBPolygon:
-          wkbType = Qgis::WKBMultiPolygon;
+        case QgsWkbTypes::Polygon:
+          wkbType = QgsWkbTypes::MultiPolygon;
           break;
-        case Qgis::WKBPoint25D:
-          wkbType = Qgis::WKBMultiPoint25D;
+        case QgsWkbTypes::Point25D:
+          wkbType = QgsWkbTypes::MultiPoint25D;
           break;
-        case Qgis::WKBLineString25D:
-          wkbType = Qgis::WKBMultiLineString25D;
+        case QgsWkbTypes::LineString25D:
+          wkbType = QgsWkbTypes::MultiLineString25D;
           break;
-        case Qgis::WKBPolygon25D:
-          wkbType = Qgis::WKBMultiPolygon25D;
+        case QgsWkbTypes::Polygon25D:
+          wkbType = QgsWkbTypes::MultiPolygon25D;
           break;
         default:
           break;
@@ -308,7 +308,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   QgsFeature fet;
 
   QgsFeatureRequest req;
-  if ( wkbType == Qgis::WKBNoGeometry )
+  if ( wkbType == QgsWkbTypes::NoGeometry )
     req.setFlags( QgsFeatureRequest::NoGeometry );
   if ( skipAttributeCreation )
     req.setSubsetOfAttributes( QgsAttributeList() );

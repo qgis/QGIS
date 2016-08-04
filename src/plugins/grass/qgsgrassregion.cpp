@@ -38,8 +38,8 @@ QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
   mDraw = false;
-  mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
-  mSrcRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
+  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  mSrcRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
   QString error;
   mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), error );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
@@ -57,8 +57,8 @@ QgsGrassRegionEdit::~QgsGrassRegionEdit()
 void QgsGrassRegionEdit::canvasPressEvent( QgsMapMouseEvent * event )
 {
   mDraw = true;
-  mRubberBand->reset( Qgis::Polygon );
-  mSrcRubberBand->reset( Qgis::Polygon );
+  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mSrcRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   emit captureStarted();
 
   mStartPoint = toMapCoordinates( event->pos() );
@@ -91,8 +91,8 @@ void QgsGrassRegionEdit::canvasReleaseEvent( QgsMapMouseEvent * event )
 //! called when map tool is about to get inactive
 void QgsGrassRegionEdit::deactivate()
 {
-  mRubberBand->reset( Qgis::Polygon );
-  mSrcRubberBand->reset( Qgis::Polygon );
+  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mSrcRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   QgsMapTool::deactivate();
 }
 
@@ -165,7 +165,7 @@ void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubber
   {
     transform( canvas, points, coordinateTransform );
   }
-  rubberBand->reset( isPolygon ? Qgis::Polygon : Qgis::Line );
+  rubberBand->reset( isPolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
   for ( int i = 0; i < points.size(); i++ )
   {
     bool update = false; // true to update canvas

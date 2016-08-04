@@ -76,11 +76,9 @@ class QgsMssqlTableModel : public QStandardItemModel
 
     QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata );
 
-    static QIcon iconForWkbType( Qgis::WkbType type );
+    static QIcon iconForWkbType( QgsWkbTypes::Type type );
 
-    static Qgis::WkbType wkbTypeFromMssql( QString dbType );
-
-    static QString displayStringForWkbType( Qgis::WkbType type );
+    static QgsWkbTypes::Type wkbTypeFromMssql( QString dbType );
 
   private:
     /** Number of tables in the model*/

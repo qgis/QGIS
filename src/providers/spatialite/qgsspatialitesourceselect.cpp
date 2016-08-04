@@ -350,7 +350,7 @@ QString QgsSpatiaLiteSourceSelect::layerURI( const QModelIndex &index )
     }
   }
 
-  QgsDataSourceURI uri( connectionInfo() );
+  QgsDataSourceUri uri( connectionInfo() );
   uri.setDataSource( "", tableName, geomColumnName, sql, "" );
   return uri.uri();
 }

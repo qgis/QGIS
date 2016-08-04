@@ -143,21 +143,21 @@ void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )
   }
 }
 
-Qgis::WkbType QgsNewVectorLayerDialog::selectedType() const
+QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
 {
   if ( mPointRadioButton->isChecked() )
   {
-    return Qgis::WKBPoint;
+    return QgsWkbTypes::Point;
   }
   else if ( mLineRadioButton->isChecked() )
   {
-    return Qgis::WKBLineString;
+    return QgsWkbTypes::LineString;
   }
   else if ( mPolygonRadioButton->isChecked() )
   {
-    return Qgis::WKBPolygon;
+    return QgsWkbTypes::Polygon;
   }
-  return Qgis::WKBUnknown;
+  return QgsWkbTypes::Unknown;
 }
 
 int QgsNewVectorLayerDialog::selectedCrsId() const
@@ -234,7 +234,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
     return "";
   }
 
-  Qgis::WkbType geometrytype = geomDialog.selectedType();
+  QgsWkbTypes::Type geometrytype = geomDialog.selectedType();
   QString fileformat = geomDialog.selectedFileFormat();
   QString enc = geomDialog.selectedFileEncoding();
   int crsId = geomDialog.selectedCrsId();
@@ -268,12 +268,12 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   {
     QgsDebugMsg( "ogr provider loaded" );
 
-    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, Qgis::WkbType,
+    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QgsWkbTypes::Type,
         const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem & );
     createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
     if ( createEmptyDataSource )
     {
-      if ( geometrytype != Qgis::WKBUnknown )
+      if ( geometrytype != QgsWkbTypes::Unknown )
       {
         QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( crsId );
         if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs ) )

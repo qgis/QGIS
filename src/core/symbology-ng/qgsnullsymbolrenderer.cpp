@@ -48,8 +48,8 @@ bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext
   }
 
   if ( !feature.hasGeometry() ||
-       feature.geometry().type() == Qgis::NoGeometry ||
-       feature.geometry().type() == Qgis::UnknownGeometry )
+       feature.geometry().type() == QgsWkbTypes::NullGeometry ||
+       feature.geometry().type() == QgsWkbTypes::UnknownGeometry )
     return true;
 
   if ( mSymbol.isNull() )

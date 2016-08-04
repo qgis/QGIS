@@ -33,10 +33,10 @@
 QgsAfsProvider::QgsAfsProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mValid( false )
-    , mGeometryType( QgsWKBTypes::Unknown )
+    , mGeometryType( QgsWkbTypes::Unknown )
     , mObjectIdFieldIdx( -1 )
 {
-  mDataSource = QgsDataSourceURI( uri );
+  mDataSource = QgsDataSourceUri( uri );
 
   // Set CRS
   mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mDataSource.param( "crs" ) );
@@ -106,12 +106,12 @@ QgsAfsProvider::QgsAfsProvider( const QString& uri )
   bool hasM = layerData["hasM"].toBool();
   bool hasZ = layerData["hasZ"].toBool();
   mGeometryType = QgsArcGisRestUtils::mapEsriGeometryType( layerData["geometryType"].toString() );
-  if ( mGeometryType == QgsWKBTypes::Unknown )
+  if ( mGeometryType == QgsWkbTypes::Unknown )
   {
     appendError( QgsErrorMessage( tr( "Failed to determine geometry type" ), "AFSProvider" ) );
     return;
   }
-  mGeometryType = QgsWKBTypes::zmType( mGeometryType, hasZ, hasM );
+  mGeometryType = QgsWkbTypes::zmType( mGeometryType, hasZ, hasM );
 
   // Read OBJECTIDs of all features: these may not be a continuous sequence,
   // and we need to store these to iterate through the features. This query
@@ -194,7 +194,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
   QString errorTitle, errorMessage;
   QVariantMap queryData = QgsArcGisRestUtils::getObjects(
                             mDataSource.param( "url" ), objectIds, mDataSource.param( "crs" ), fetchGeometry,
-                            fetchAttribNames, QgsWKBTypes::hasM( mGeometryType ), QgsWKBTypes::hasZ( mGeometryType ),
+                            fetchAttribNames, QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
                             filterRect, errorTitle, errorMessage );
   if ( queryData.isEmpty() )
   {
@@ -235,7 +235,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
     {
       QVariantMap geometryData = featureData["geometry"].toMap();
       QgsAbstractGeometryV2* geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData["geometryType"].toString(),
-                                        QgsWKBTypes::hasM( mGeometryType ), QgsWKBTypes::hasZ( mGeometryType ) );
+                                        QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
       // Above might return 0, which is ok since in theory empty geometries are allowed
       feature.setGeometry( QgsGeometry( geometry ) );
     }
@@ -249,6 +249,6 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
 
 void QgsAfsProvider::setDataSourceUri( const QString &uri )
 {
-  mDataSource = QgsDataSourceURI( uri );
+  mDataSource = QgsDataSourceUri( uri );
   QgsDataProvider::setDataSourceUri( uri );
 }

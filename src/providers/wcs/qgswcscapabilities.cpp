@@ -48,7 +48,7 @@
 #include <QDir>
 #endif
 
-QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri )
+QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &theUri )
     : mUri( theUri )
     , mCapabilitiesReply( nullptr )
     , mCoverageCount( 0 )
@@ -89,7 +89,7 @@ void QgsWcsCapabilities::parseUri()
 }
 
 // TODO: return if successful
-void QgsWcsCapabilities::setUri( QgsDataSourceURI const &theUri )
+void QgsWcsCapabilities::setUri( QgsDataSourceUri const &theUri )
 {
   mUri = theUri;
 

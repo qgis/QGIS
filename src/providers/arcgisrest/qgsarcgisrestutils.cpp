@@ -66,21 +66,21 @@ QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldTyp
   return QVariant::Invalid;
 }
 
-QgsWKBTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString& esriGeometryType )
+QgsWkbTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString& esriGeometryType )
 {
   // http://resources.arcgis.com/en/help/arcobjects-cpp/componenthelp/index.html#//000w0000001p000000
   if ( esriGeometryType == "esriGeometryNull" )
-    return QgsWKBTypes::Unknown;
+    return QgsWkbTypes::Unknown;
   else if ( esriGeometryType == "esriGeometryPoint" )
-    return QgsWKBTypes::Point;
+    return QgsWkbTypes::Point;
   else if ( esriGeometryType == "esriGeometryMultipoint" )
-    return QgsWKBTypes::MultiPoint;
+    return QgsWkbTypes::MultiPoint;
   else if ( esriGeometryType == "esriGeometryPolyline" )
-    return QgsWKBTypes::MultiCurve;
+    return QgsWkbTypes::MultiCurve;
   else if ( esriGeometryType == "esriGeometryPolygon" )
-    return QgsWKBTypes::Polygon;
+    return QgsWkbTypes::Polygon;
   else if ( esriGeometryType == "esriGeometryEnvelope" )
-    return QgsWKBTypes::Polygon;
+    return QgsWkbTypes::Polygon;
   // Unsupported (either by qgis, or format unspecified by the specification)
   //  esriGeometryCircularArc
   //  esriGeometryEllipticArc
@@ -96,10 +96,10 @@ QgsWKBTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString& esriGe
   //  esriGeometrySphere
   //  esriGeometryTriangles
   //  esriGeometryBag
-  return QgsWKBTypes::Unknown;
+  return QgsWkbTypes::Unknown;
 }
 
-static QgsPointV2* parsePoint( const QVariantList& coordList, QgsWKBTypes::Type pointType )
+static QgsPointV2* parsePoint( const QVariantList& coordList, QgsWkbTypes::Type pointType )
 {
   int nCoords = coordList.size();
   if ( nCoords < 2 )
@@ -114,7 +114,7 @@ static QgsPointV2* parsePoint( const QVariantList& coordList, QgsWKBTypes::Type 
   return new QgsPointV2( pointType, x, y, z, m );
 }
 
-static QgsCircularStringV2* parseCircularString( const QVariantMap& curveData, QgsWKBTypes::Type pointType, const QgsPointV2& startPoint )
+static QgsCircularStringV2* parseCircularString( const QVariantMap& curveData, QgsWkbTypes::Type pointType, const QgsPointV2& startPoint )
 {
   QVariantList coordsList = curveData["c"].toList();
   if ( coordsList.isEmpty() )
@@ -136,7 +136,7 @@ static QgsCircularStringV2* parseCircularString( const QVariantMap& curveData, Q
   return curve;
 }
 
-static QgsCompoundCurveV2* parseCompoundCurve( const QVariantList& curvesList, QgsWKBTypes::Type pointType )
+static QgsCompoundCurveV2* parseCompoundCurve( const QVariantList& curvesList, QgsWkbTypes::Type pointType )
 {
   // [[6,3],[5,3],{"b":[[3,2],[6,1],[2,4]]},[1,2],{"c": [[3,3],[1,4]]}]
   QgsCompoundCurveV2* compoundCurve = new QgsCompoundCurveV2();
@@ -180,7 +180,7 @@ static QgsCompoundCurveV2* parseCompoundCurve( const QVariantList& curvesList, Q
   return compoundCurve;
 }
 
-static QgsAbstractGeometryV2* parseEsriGeometryPoint( const QVariantMap& geometryData, QgsWKBTypes::Type pointType )
+static QgsAbstractGeometryV2* parseEsriGeometryPoint( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
 {
   // {"x" : <x>, "y" : <y>, "z" : <z>, "m" : <m>}
   bool xok = false, yok = false;
@@ -193,7 +193,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryPoint( const QVariantMap& geometr
   return new QgsPointV2( pointType, x, y, z, m );
 }
 
-static QgsAbstractGeometryV2* parseEsriGeometryMultiPoint( const QVariantMap& geometryData, QgsWKBTypes::Type pointType )
+static QgsAbstractGeometryV2* parseEsriGeometryMultiPoint( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
 {
   // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], ... ]}
   QVariantList coordsList = geometryData["points"].toList();
@@ -215,7 +215,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryMultiPoint( const QVariantMap& ge
   return multiPoint;
 }
 
-static QgsAbstractGeometryV2* parseEsriGeometryPolyline( const QVariantMap& geometryData, QgsWKBTypes::Type pointType )
+static QgsAbstractGeometryV2* parseEsriGeometryPolyline( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
 {
   // {"curvePaths": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList pathsList;
@@ -239,7 +239,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryPolyline( const QVariantMap& geom
   return multiCurve;
 }
 
-static QgsAbstractGeometryV2* parseEsriGeometryPolygon( const QVariantMap& geometryData, QgsWKBTypes::Type pointType )
+static QgsAbstractGeometryV2* parseEsriGeometryPolygon( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
 {
   // {"curveRings": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList ringsList;
@@ -293,7 +293,7 @@ static QgsAbstractGeometryV2* parseEsriEnvelope( const QVariantMap& geometryData
 
 QgsAbstractGeometryV2* QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap& geometryData, const QString& esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs )
 {
-  QgsWKBTypes::Type pointType = QgsWKBTypes::zmType( QgsWKBTypes::Point, readZ, readM );
+  QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, readZ, readM );
   if ( crs )
   {
     *crs = parseSpatialReference( geometryData["spatialReference"].toMap() );

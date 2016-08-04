@@ -21,7 +21,7 @@ email                : lorenxo86@gmail.com
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QLocale, QFileInfo, QTranslator
 from qgis.PyQt.QtWidgets import QMessageBox, QMenu, QAction
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import Qgis
+from qgis.core import Qgis, QgsWkbTypes
 import qgis.utils
 
 # are all dependencies satisfied?

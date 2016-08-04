@@ -4028,7 +4028,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
   Q_FOREACH ( const QString& layerPath, layerPathList )
   {
     // create the layer
-    QgsDataSourceURI uri( layerPath );
+    QgsDataSourceUri uri( layerPath );
 
     QgsVectorLayer *layer = new QgsVectorLayer( uri.uri( false ), uri.table(), providerKey, false );
     Q_CHECK_PTR( layer );
@@ -6160,7 +6160,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
   QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer, options, this );
 
   dialog->setCanvasExtent( mMapCanvas->mapSettings().visibleExtent(), mMapCanvas->mapSettings().destinationCrs() );
-  dialog->setIncludeZ( QgsWKBTypes::hasZ( Qgis::fromOldWkbType( vlayer->wkbType() ) ) );
+  dialog->setIncludeZ( QgsWkbTypes::hasZ( vlayer->wkbType() ) );
 
   if ( dialog->exec() == QDialog::Accepted )
   {
@@ -6169,7 +6169,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     QString format = dialog->format();
     QStringList datasourceOptions = dialog->datasourceOptions();
     bool autoGeometryType = dialog->automaticGeometryType();
-    QgsWKBTypes::Type forcedGeometryType = dialog->geometryType();
+    QgsWkbTypes::Type forcedGeometryType = dialog->geometryType();
 
     QgsCoordinateTransform ct;
     destCRS = QgsCoordinateReferenceSystem::fromSrsId( dialog->crs() );
@@ -6222,7 +6222,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
               static_cast< QgsVectorFileWriter::SymbologyExport >( dialog->symbologyExport() ),
               dialog->scaleDenominator(),
               dialog->hasFilterExtent() ? &filterExtent : nullptr,
-              autoGeometryType ? QgsWKBTypes::Unknown : forcedGeometryType,
+              autoGeometryType ? QgsWkbTypes::Unknown : forcedGeometryType,
               dialog->forceMulti(),
               dialog->includeZ(),
               dialog->selectedAttributes(),
@@ -6400,7 +6400,7 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& 
   }
 
   //convert unionGeom to a multipart geometry in case it is necessary to match the layer type
-  if ( Qgis::isMultiType( vl->wkbType() ) && !unionGeom.isMultipart() )
+  if ( QgsWkbTypes::isMultiType( vl->wkbType() ) && !unionGeom.isMultipart() )
   {
     unionGeom.convertToMultiType();
   }
@@ -7366,8 +7366,8 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     if ( featureIt->hasGeometry() )
     {
       // convert geometry to match destination layer
-      Qgis::GeometryType destType = pasteVectorLayer->geometryType();
-      bool destIsMulti = Qgis::isMultiType( pasteVectorLayer->wkbType() );
+      QgsWkbTypes::GeometryType destType = pasteVectorLayer->geometryType();
+      bool destIsMulti = QgsWkbTypes::isMultiType( pasteVectorLayer->wkbType() );
       if ( pasteVectorLayer->dataProvider() &&
            !pasteVectorLayer->dataProvider()->doesStrictFeatureTypeCheck() )
       {
@@ -7375,7 +7375,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
         destIsMulti = true;
       }
 
-      if ( destType != Qgis::UnknownGeometry )
+      if ( destType != QgsWkbTypes::UnknownGeometry )
       {
         QgsGeometry newGeometry = featureIt->geometry().convertToType( destType, destIsMulti );
         if ( newGeometry.isEmpty() )
@@ -7475,7 +7475,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   QgsFields fields = clipboard()->fields();
 
   // Decide geometry type from features, switch to multi type if at least one multi is found
-  QMap<Qgis::WkbType, int> typeCounts;
+  QMap<QgsWkbTypes::Type, int> typeCounts;
   QgsFeatureList features = clipboard()->copyOf( fields );
   for ( int i = 0; i < features.size(); i++ )
   {
@@ -7483,37 +7483,37 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
     if ( !feature.hasGeometry() )
       continue;
 
-    Qgis::WkbType type = Qgis::flatType( feature.geometry().wkbType() );
+    QgsWkbTypes::Type type = QgsWkbTypes::flatType( feature.geometry().wkbType() );
 
-    if ( type == Qgis::WKBUnknown || type == Qgis::WKBNoGeometry )
+    if ( type == QgsWkbTypes::Unknown || type == QgsWkbTypes::NoGeometry )
       continue;
 
-    if ( Qgis::isSingleType( type ) )
+    if ( QgsWkbTypes::isSingleType( type ) )
     {
-      if ( typeCounts.contains( Qgis::multiType( type ) ) )
+      if ( typeCounts.contains( QgsWkbTypes::multiType( type ) ) )
       {
-        typeCounts[ Qgis::multiType( type )] = typeCounts[ Qgis::multiType( type )] + 1;
+        typeCounts[ QgsWkbTypes::multiType( type )] = typeCounts[ QgsWkbTypes::multiType( type )] + 1;
       }
       else
       {
         typeCounts[ type ] = typeCounts[ type ] + 1;
       }
     }
-    else if ( Qgis::isMultiType( type ) )
+    else if ( QgsWkbTypes::isMultiType( type ) )
     {
-      if ( typeCounts.contains( Qgis::singleType( type ) ) )
+      if ( typeCounts.contains( QgsWkbTypes::singleType( type ) ) )
       {
         // switch to multi type
-        typeCounts[type] = typeCounts[ Qgis::singleType( type )];
-        typeCounts.remove( Qgis::singleType( type ) );
+        typeCounts[type] = typeCounts[ QgsWkbTypes::singleType( type )];
+        typeCounts.remove( QgsWkbTypes::singleType( type ) );
       }
       typeCounts[type] = typeCounts[type] + 1;
     }
   }
 
-  Qgis::WkbType wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : Qgis::WKBNoGeometry;
+  QgsWkbTypes::Type wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QgsWkbTypes::NoGeometry;
 
-  QString typeName = wkbType != Qgis::WKBNoGeometry ? QString( Qgis::featureType( wkbType ) ).remove( "WKB" ) : "none";
+  QString typeName = wkbType != QgsWkbTypes::NoGeometry ? QString( QgsWkbTypes::displayString( wkbType ) ).remove( "WKB" ) : "none";
 
   if ( features.isEmpty() )
   {
@@ -7545,7 +7545,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   }
 
   layer->startEditing();
-  if ( wkbType != Qgis::WKBNoGeometry )
+  if ( wkbType != QgsWkbTypes::NoGeometry )
     layer->setCrs( clipboard()->crs(), false );
 
   Q_FOREACH ( QgsField f, clipboard()->fields().toList() )
@@ -7568,16 +7568,16 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
     if ( !feature.hasGeometry() )
       continue;
 
-    Qgis::WkbType type = Qgis::flatType( feature.geometry().wkbType() );
-    if ( type == Qgis::WKBUnknown || type == Qgis::WKBNoGeometry )
+    QgsWkbTypes::Type type = QgsWkbTypes::flatType( feature.geometry().wkbType() );
+    if ( type == QgsWkbTypes::Unknown || type == QgsWkbTypes::NoGeometry )
       continue;
 
-    if ( Qgis::singleType( wkbType ) != Qgis::singleType( type ) )
+    if ( QgsWkbTypes::singleType( wkbType ) != QgsWkbTypes::singleType( type ) )
     {
       feature.clearGeometry();
     }
 
-    if ( Qgis::isMultiType( wkbType ) &&  Qgis::isSingleType( type ) )
+    if ( QgsWkbTypes::isMultiType( wkbType ) &&  QgsWkbTypes::isSingleType( type ) )
     {
       QgsGeometry g = feature.geometry();
       g.convertToMultiType();
@@ -7728,7 +7728,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   bool res = true;
 
-  QString connString = QgsDataSourceURI( vlayer->source() ).connectionInfo();
+  QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
   QString key = vlayer->providerType();
 
   QMap< QPair< QString, QString>, QgsTransactionGroup*> transactionGroups = QgsProject::instance()->transactionGroups();
@@ -10502,7 +10502,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->isEmpty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
-      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != Qgis::Point );
+      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != QgsWkbTypes::PointGeometry );
       mActionCircularStringRadius->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) );
 
       //does provider allow deleting of features?
@@ -10523,7 +10523,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionMultiEditAttributes->setEnabled( false );
       }
 
-      bool isMultiPart = Qgis::isMultiType( vlayer->wkbType() ) || !dprovider->doesStrictFeatureTypeCheck();
+      bool isMultiPart = QgsWkbTypes::isMultiType( vlayer->wkbType() ) || !dprovider->doesStrictFeatureTypeCheck();
 
       // moving enabled if geometry changes are supported
       mActionAddPart->setEnabled( isEditable && canChangeGeometry );
@@ -10533,9 +10533,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
 
       mActionEnableTracing->setEnabled( isEditable && canAddFeatures &&
-                                        ( vlayer->geometryType() == Qgis::Line || vlayer->geometryType() == Qgis::Polygon ) );
+                                        ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
 
-      if ( vlayer->geometryType() == Qgis::Point )
+      if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePoint.svg" ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeaturePoint.svg" ) );
@@ -10563,7 +10563,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           }
         }
       }
-      else if ( vlayer->geometryType() == Qgis::Line )
+      else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCaptureLine.svg" ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeatureLine.svg" ) );
@@ -10578,7 +10578,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionFillRing->setEnabled( false );
         mActionDeleteRing->setEnabled( false );
       }
-      else if ( vlayer->geometryType() == Qgis::Polygon )
+      else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePolygon.svg" ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeature.svg" ) );
@@ -10592,7 +10592,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionDeleteRing->setEnabled( isEditable && canChangeGeometry );
         mActionOffsetCurve->setEnabled( false );
       }
-      else if ( vlayer->geometryType() == Qgis::NoGeometry )
+      else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.svg" ) );
       }

@@ -121,7 +121,7 @@ QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
 
 bool QgsVectorLayerRenderer::render()
 {
-  if ( mGeometryType == Qgis::NoGeometry || mGeometryType == Qgis::UnknownGeometry )
+  if ( mGeometryType == QgsWkbTypes::NullGeometry || mGeometryType == QgsWkbTypes::UnknownGeometry )
     return true;
 
   if ( !mRendererV2 )
@@ -344,7 +344,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
           QScopedPointer<QgsGeometry> obstacleGeometry;
           QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
 
-          if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::Point )
+          if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
           {
             obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
           }
@@ -385,7 +385,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
   QgsSingleSymbolRendererV2* selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( mGeometryType ) );
+    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( mGeometryType ) ) ;
     selRenderer->symbol()->setColor( mContext.selectionColor() );
     selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
     selRenderer->startRender( mContext, mFields );
@@ -446,7 +446,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       QScopedPointer<QgsGeometry> obstacleGeometry;
       QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
 
-      if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::Point )
+      if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
         obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
       }

@@ -72,7 +72,7 @@ class QgsRubberSelectId
     QgsRubberBand* mRubberBand;
     int mColorRGB[3];
     int mWidth;
-    Qgis::GeometryType mGeometryType;
+    QgsWkbTypes::GeometryType mGeometryType;
     QgsMapCanvas* mMapCanvas;
 
     Q_DISABLE_COPY( QgsRubberSelectId )

@@ -114,7 +114,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       if ( expandAuthConfig && mDataSourceURI.contains( "authcfg" ) )
       {
-        QgsDataSourceURI uri( mDataSourceURI );
+        QgsDataSourceUri uri( mDataSourceURI );
         return uri.uri( expandAuthConfig );
       }
       else

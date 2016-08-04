@@ -36,7 +36,7 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr wkbPtr )
     return nullptr;
 
   //find out type (bytes 2-5)
-  QgsWKBTypes::Type type = QgsWKBTypes::Unknown;
+  QgsWkbTypes::Type type = QgsWkbTypes::Unknown;
   try
   {
     type = wkbPtr.readHeader();
@@ -228,34 +228,34 @@ QgsLineStringV2* QgsGeometryFactory::linestringFromPolyline( const QgsPolyline& 
   return line;
 }
 
-QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkbType( QgsWKBTypes::Type t )
+QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::Type t )
 {
-  QgsWKBTypes::Type type = QgsWKBTypes::flatType( t );
+  QgsWkbTypes::Type type = QgsWkbTypes::flatType( t );
   switch ( type )
   {
-    case QgsWKBTypes::Point:
+    case QgsWkbTypes::Point:
       return new QgsPointV2();
-    case QgsWKBTypes::LineString:
+    case QgsWkbTypes::LineString:
       return new QgsLineStringV2();
-    case QgsWKBTypes::CircularString:
+    case QgsWkbTypes::CircularString:
       return new QgsCircularStringV2();
-    case QgsWKBTypes::CompoundCurve:
+    case QgsWkbTypes::CompoundCurve:
       return new QgsCompoundCurveV2();
-    case QgsWKBTypes::Polygon:
+    case QgsWkbTypes::Polygon:
       return new QgsPolygonV2();
-    case QgsWKBTypes::CurvePolygon:
+    case QgsWkbTypes::CurvePolygon:
       return new QgsCurvePolygonV2();
-    case QgsWKBTypes::MultiLineString:
+    case QgsWkbTypes::MultiLineString:
       return new QgsMultiLineStringV2();
-    case QgsWKBTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygon:
       return new QgsMultiPolygonV2();
-    case QgsWKBTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint:
       return new QgsMultiPointV2();
-    case QgsWKBTypes::MultiCurve:
+    case QgsWkbTypes::MultiCurve:
       return new QgsMultiCurveV2();
-    case QgsWKBTypes::MultiSurface:
+    case QgsWkbTypes::MultiSurface:
       return new QgsMultiSurfaceV2();
-    case QgsWKBTypes::GeometryCollection:
+    case QgsWkbTypes::GeometryCollection:
       return new QgsGeometryCollectionV2();
     default:
       return nullptr;

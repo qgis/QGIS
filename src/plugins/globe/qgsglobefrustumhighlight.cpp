@@ -25,7 +25,7 @@ QgsGlobeFrustumHighlightCallback::QgsGlobeFrustumHighlightCallback( osg::View* v
     : osg::NodeCallback()
     , mView( view )
     , mTerrain( terrain )
-    , mRubberBand( new QgsRubberBand( mapCanvas, Qgis::Polygon ) )
+    , mRubberBand( new QgsRubberBand( mapCanvas, QgsWkbTypes::PolygonGeometry ) )
     , mSrs( osgEarth::SpatialReference::create( mapCanvas->mapSettings().destinationCrs().toWkt().toStdString() ) )
 {
   mRubberBand->setColor( color );
@@ -48,7 +48,7 @@ void QgsGlobeFrustumHighlightCallback::operator()( osg::Node*, osg::NodeVisitor*
   mTerrain->getWorldCoordsUnderMouse( mView, width - 1, height - 1, corners[2] );
   mTerrain->getWorldCoordsUnderMouse( mView, width - 1, 0,          corners[3] );
 
-  mRubberBand->reset( Qgis::Polygon );
+  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   for ( int i = 0; i < 4; i++ )
   {
     osg::Vec3d localCoords;

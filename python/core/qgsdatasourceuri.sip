@@ -7,20 +7,20 @@
  * The 2 modes (the old - RDMS specific and the new generic) may not yet be mixed.
  * (Radim Blazek 4/2012)
  */
-class QgsDataSourceURI
+class QgsDataSourceUri
 {
 %TypeHeaderCode
 #include <qgsdatasourceuri.h>
 %End
 
   public:
-    enum SSLmode { SSLprefer, SSLdisable, SSLallow, SSLrequire, SSLverifyCA, SSLverifyFull };
+    enum SslMode { SslPrefer, SslDisable, SslAllow, SslRequire, SslVerifyCa, SslVerifyFull };
 
     //! default constructor
-    QgsDataSourceURI();
+    QgsDataSourceUri();
 
     //! constructor which parses input URI
-    QgsDataSourceURI( QString uri );
+    QgsDataSourceUri( QString uri );
 
     //! return connection part of URI
     QString connectionInfo( bool expandAuthConfig = true ) const;
@@ -66,7 +66,7 @@ class QgsDataSourceURI
                         const QString& aDatabase,
                         const QString& aUsername,
                         const QString& aPassword,
-                        SSLmode sslmode = SSLprefer,
+                        SslMode sslmode = SslPrefer,
                         const QString& authConfigId = QString() );
 
     //! Set all connection related members at once (for the service case)
@@ -74,7 +74,7 @@ class QgsDataSourceURI
                         const QString& aDatabase,
                         const QString& aUsername,
                         const QString& aPassword,
-                        SSLmode sslmode = SSLprefer,
+                        SslMode sslmode = SslPrefer,
                         const QString& authConfigId = QString() );
 
     //! Set database
@@ -153,7 +153,7 @@ class QgsDataSourceURI
     //! Returns the password
     QString password() const;
     //! Returns the SSL mode
-    SSLmode sslMode() const;
+    SslMode sslMode() const;
 
     //! Returns the service name
     QString service() const;
@@ -163,19 +163,12 @@ class QgsDataSourceURI
     //! Sets the name of the (primary) key column
     void setKeyColumn( const QString& column );
 
-    /** The (old) wkb type.
-        @deprecated Will return QgsWKBTypes::Type in 3.0. Prefer newWkbType() in the meantime */
-    Qgis::WkbType wkbType() const /Deprecated/;
-
     /** The wkb type.
-        @note Will be removed in 3.0 */
-    QgsWKBTypes::Type newWkbType() const;
-
-    //! @deprecated See setWkbType( QgsWKBTypes::Type )
-    void setWkbType( Qgis::WkbType type ) /Deprecated/;
+     */
+    QgsWkbTypes::Type wkbType() const;
 
     //! Sets the wkb type
-    void setWkbType( QgsWKBTypes::Type type );
+    void setWkbType( QgsWkbTypes::Type type );
 
     //! Returns the srid
     QString srid() const;

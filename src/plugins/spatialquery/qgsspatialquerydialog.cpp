@@ -403,14 +403,14 @@ QgsVectorLayer * QgsSpatialQueryDialog::getLayerFromCombobox( bool isTarget, int
   return lyr;
 } // QgsVectorLayer * QgsSpatialQueryDialog::getLayerFromCombobox(bool isTarget, int index)
 
-QIcon QgsSpatialQueryDialog::getIconTypeGeometry( Qgis::GeometryType geomType )
+QIcon QgsSpatialQueryDialog::getIconTypeGeometry( QgsWkbTypes::GeometryType geomType )
 {
   QString theName;
-  if ( geomType == Qgis::Point )
+  if ( geomType == QgsWkbTypes::PointGeometry )
   {
     theName = "/mIconPointLayer.svg";
   }
-  else if ( geomType == Qgis::Line )
+  else if ( geomType == QgsWkbTypes::LineGeometry )
   {
     theName = "/mIconLineLayer.svg";
   }

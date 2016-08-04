@@ -36,14 +36,14 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
   protected:
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
     QgsFields mFields;
 
     QString mGeometryColumn;          //! name of the geometry column
     int mSrid;                        //! srid of column
     bool mHasSpatialIndex;            //! has spatial index of geometry column
-    Qgis::WkbType mDetectedGeomType;  //! geometry type detected in the database
-    Qgis::WkbType mRequestedGeomType; //! geometry type requested in the uri
+    QgsWkbTypes::Type mDetectedGeomType;  //! geometry type detected in the database
+    QgsWkbTypes::Type mRequestedGeomType; //! geometry type requested in the uri
     QString mSqlWhereClause;
     QgsOraclePrimaryKeyType mPrimaryKeyType;
     QList<int> mPrimaryKeyAttrs;

@@ -28,12 +28,12 @@
  ****************************************************************************/
 
 /** \ingroup core
- * \class QgsWKBTypes
+ * \class QgsWkbTypes
  * \brief Handles storage of information regarding WKB types and their properties.
  * \note Added in version 2.10
  */
 
-class CORE_EXPORT QgsWKBTypes
+class CORE_EXPORT QgsWkbTypes
 {
   public:
 
@@ -460,9 +460,9 @@ class CORE_EXPORT QgsWKBTypes
     {
       type = flatType( type );
       if ( hasZ )
-        type = static_cast<QgsWKBTypes::Type>( static_cast<quint32>( type ) + 1000 );
+        type = static_cast<QgsWkbTypes::Type>( static_cast<quint32>( type ) + 1000 );
       if ( hasM )
-        type = static_cast<QgsWKBTypes::Type>( static_cast<quint32>( type ) + 2000 );
+        type = static_cast<QgsWkbTypes::Type>( static_cast<quint32>( type ) + 2000 );
       return type;
     }
 
@@ -659,6 +659,22 @@ class CORE_EXPORT QgsWKBTypes
      */
     static QString displayString( Type type );
 
+    /**
+     * Return a display string for a geometry type.
+     *
+     * This will return one of the following strings:
+     *
+     * - Point
+     * - Line
+     * - Polygon
+     * - Unknown Geometry
+     * - No Geometry
+     * - Invalid Geometry
+     *
+     * @note added in QGIS 3.0
+     */
+    static QString geometryDisplayString( GeometryType type );
+
     /** Tests whether a WKB type contains the z-dimension.
      * @returns true if type has z values
      * @see addZ()
@@ -766,9 +782,9 @@ class CORE_EXPORT QgsWKBTypes
       //upgrade with z dimension
       Type flat = flatType( type );
       if ( hasM( type ) )
-        return static_cast< QgsWKBTypes::Type >( flat + 3000 );
+        return static_cast< QgsWkbTypes::Type >( flat + 3000 );
       else
-        return static_cast< QgsWKBTypes::Type >( flat + 1000 );
+        return static_cast< QgsWkbTypes::Type >( flat + 1000 );
     }
 
     /** Adds the m dimension to a WKB type and returns the new type
@@ -797,9 +813,9 @@ class CORE_EXPORT QgsWKBTypes
       //upgrade with m dimension
       Type flat = flatType( type );
       if ( hasZ( type ) )
-        return static_cast< QgsWKBTypes::Type >( flat + 3000 );
+        return static_cast< QgsWkbTypes::Type >( flat + 3000 );
       else
-        return static_cast< QgsWKBTypes::Type >( flat + 2000 );
+        return static_cast< QgsWkbTypes::Type >( flat + 2000 );
     }
 
     /** Drops the z dimension (if present) for a WKB type and returns the new type.
@@ -813,7 +829,7 @@ class CORE_EXPORT QgsWKBTypes
       if ( !hasZ( type ) )
         return type;
 
-      QgsWKBTypes::Type returnType = flatType( type );
+      QgsWkbTypes::Type returnType = flatType( type );
       if ( hasM( type ) )
         returnType = addM( returnType );
       return returnType;
@@ -830,7 +846,7 @@ class CORE_EXPORT QgsWKBTypes
       if ( !hasM( type ) )
         return type;
 
-      QgsWKBTypes::Type returnType = flatType( type );
+      QgsWkbTypes::Type returnType = flatType( type );
       if ( hasZ( type ) )
         returnType = addZ( returnType );
       return returnType;
@@ -843,12 +859,12 @@ class CORE_EXPORT QgsWKBTypes
      */
     static Type to25D( Type type )
     {
-      QgsWKBTypes::Type flat = flatType( type );
+      QgsWkbTypes::Type flat = flatType( type );
 
       if ( flat >= Point && flat <= MultiPolygon )
-        return static_cast< QgsWKBTypes::Type >( flat + 0x80000000 );
-      else if ( type == QgsWKBTypes::NoGeometry )
-        return QgsWKBTypes::NoGeometry;
+        return static_cast< QgsWkbTypes::Type >( flat + 0x80000000 );
+      else if ( type == QgsWkbTypes::NoGeometry )
+        return QgsWkbTypes::NoGeometry;
       else
         return Unknown;
     }

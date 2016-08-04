@@ -923,7 +923,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       if ( vector->providerType() == "postgres" )
       {
         // Construct OGR DSN
-        QgsDataSourceURI dsUri( provider->dataSourceUri() );
+        QgsDataSourceUri dsUri( provider->dataSourceUri() );
         uri = "PG:" + dsUri.connectionInfo();
 
         // Starting with GDAL 1.7.0, it is possible to restrict the schemas

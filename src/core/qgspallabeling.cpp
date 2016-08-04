@@ -787,7 +787,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   {
     // for polygons the "over point" (over centroid) placement is better than the default
     // "around point" (around centroid) which is more suitable for points
-    if ( layer->geometryType() == Qgis::Polygon )
+    if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
       placement = OverPoint;
 
     return; // there's no information available
@@ -2435,7 +2435,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 
   // if using perimeter based labeling for polygons, get the polygon's
   // linear boundary and use that for the label geometry
-  if (( geom.type() == Qgis::Polygon )
+  if (( geom.type() == QgsWkbTypes::PolygonGeometry )
       && ( placement == Line || placement == PerimeterCurved ) )
   {
     geom = QgsGeometry( geom.geometry()->boundary() );
@@ -2444,7 +2444,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   // whether we're going to create a centroid for polygon
   bool centroidPoly = (( placement == QgsPalLayerSettings::AroundPoint
                          || placement == QgsPalLayerSettings::OverPoint )
-                       && geom.type() == Qgis::Polygon );
+                       && geom.type() == QgsWkbTypes::PolygonGeometry );
 
   // CLIP the geometry if it is bigger than the extent
   // don't clip if centroid is requested for whole feature
@@ -2842,7 +2842,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   {
     ( *labelFeature )->setObstacleGeometry( geosObstacleGeomClone );
 
-    if ( geom.type() == Qgis::Point )
+    if ( geom.type() == QgsWkbTypes::PointGeometry )
     {
       //register symbol size
       ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry->boundingBox().width(),
@@ -4003,7 +4003,7 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry& geometry, Q
     return true;
 
   //requires fixing
-  if ( geometry.type() == Qgis::Polygon && !geometry.isGeosValid() )
+  if ( geometry.type() == QgsWkbTypes::PolygonGeometry && !geometry.isGeosValid() )
     return true;
 
   return false;
@@ -4098,7 +4098,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRen
     return QgsGeometry();  // there is something really wrong with the geometry
 
   // fix invalid polygons
-  if ( geom.type() == Qgis::Polygon && !geom.isGeosValid() )
+  if ( geom.type() == QgsWkbTypes::PolygonGeometry && !geom.isGeosValid() )
   {
     QgsGeometry bufferGeom = geom.buffer( 0, 0 );
     if ( bufferGeom.isEmpty() )
@@ -4135,14 +4135,14 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext& context, const 
     return false;
   }
 
-  Qgis::GeometryType featureType = geom->type();
-  if ( featureType == Qgis::Point ) //minimum size does not apply to point features
+  QgsWkbTypes::GeometryType featureType = geom->type();
+  if ( featureType == QgsWkbTypes::PointGeometry ) //minimum size does not apply to point features
   {
     return true;
   }
 
   double mapUnitsPerMM = context.mapToPixel().mapUnitsPerPixel() * context.scaleFactor();
-  if ( featureType == Qgis::Line )
+  if ( featureType == QgsWkbTypes::LineGeometry )
   {
     double length = geom->length();
     if ( length >= 0.0 )
@@ -4150,7 +4150,7 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext& context, const 
       return ( length >= ( minSize * mapUnitsPerMM ) );
     }
   }
-  else if ( featureType == Qgis::Polygon )
+  else if ( featureType == QgsWkbTypes::PolygonGeometry )
   {
     double area = geom->area();
     if ( area >= 0.0 )

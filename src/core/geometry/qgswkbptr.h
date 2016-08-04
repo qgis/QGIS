@@ -66,16 +66,14 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( int &v ) const { read( v ); return *this; }
     inline const QgsWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; }
     inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( QgsWKBTypes::Type &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( Qgis::WkbType &v ) const { read( v ); return *this; }
+    inline const QgsWkbPtr &operator>>( QgsWkbTypes::Type &v ) const { read( v ); return *this; }
 
     inline QgsWkbPtr &operator<<( const double &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const float &r ) { double v = r; write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const int &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const unsigned int &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const char &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const QgsWKBTypes::Type &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const Qgis::WkbType &v ) { write( v ); return *this; }
+    inline QgsWkbPtr &operator<<( const QgsWkbTypes::Type &v ) { write( v ); return *this; }
 
     inline void operator+=( int n ) { verifyBound( n ); mP += n; }
 
@@ -96,7 +94,7 @@ class CORE_EXPORT QgsConstWkbPtr
     mutable unsigned char *mP;
     unsigned char *mEnd;
     mutable bool mEndianSwap;
-    mutable QgsWKBTypes::Type mWkbType;
+    mutable QgsWkbTypes::Type mWkbType;
 
     //! Verify bounds
     void verifyBound( int size ) const;
@@ -113,7 +111,7 @@ class CORE_EXPORT QgsConstWkbPtr
 
   public:
     QgsConstWkbPtr( const unsigned char *p, int size );
-    QgsWKBTypes::Type readHeader() const;
+    QgsWkbTypes::Type readHeader() const;
 
     inline const QgsConstWkbPtr &operator>>( double &v ) const { read( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; }

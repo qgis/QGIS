@@ -48,7 +48,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
     return;
   }
 
-  if ( mActiveLayer->geometryType() != Qgis::Point )
+  if ( mActiveLayer->geometryType() != QgsWkbTypes::PointGeometry )
   {
     return;
   }

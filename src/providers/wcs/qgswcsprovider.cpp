@@ -104,7 +104,7 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
   // We need to get at least server version, which is not set in of URI (if not part of url)
   // and probably also rangeSet
 
-  QgsDataSourceURI capabilitiesUri;
+  QgsDataSourceUri capabilitiesUri;
   capabilitiesUri.setEncodedUri( uri );
   // remove non relevant params
   capabilitiesUri.removeParam( "identifier" );
@@ -380,7 +380,7 @@ bool QgsWcsProvider::parseUri( const QString& uriString )
 {
 
   QgsDebugMsg( "uriString = " + uriString );
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   uri.setEncodedUri( uriString );
 
   mMaxWidth = 0;

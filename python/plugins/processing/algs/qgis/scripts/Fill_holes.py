@@ -3,7 +3,7 @@
 ##Max_area=number 100000
 ##Results=output vector
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
 from shapely.geometry import Polygon, MultiPolygon
 from shapely.wkb import loads
 from shapely.wkt import dumps
@@ -15,7 +15,7 @@ n = polyLayer.featureCount()
 l = 0
 
 writer = processing.VectorWriter(Results, None, polyPrder.fields(),
-                                 Qgis.WKBMultiPolygon, polyPrder.crs())
+                                 QgsWkbTypes.MultiPolygon, polyPrder.crs())
 
 
 resgeom = QgsGeometry()

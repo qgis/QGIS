@@ -30,8 +30,8 @@ void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError*>& er
     QgsGeometry featureGeom = feature.geometry();
     QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
-    QgsWKBTypes::Type type = geom->wkbType();
-    if ( geom->partCount() == 1 && QgsWKBTypes::isMultiType( type ) )
+    QgsWkbTypes::Type type = geom->wkbType();
+    if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
     {
       errors.append( new QgsGeometryCheckError( this, featureid, geom->centroid() ) );
     }
@@ -50,7 +50,7 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError* error, int meth
   QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
   // Check if error still applies
-  if ( geom->partCount() > 1 || !QgsWKBTypes::isMultiType( geom->wkbType() ) )
+  if ( geom->partCount() > 1 || !QgsWkbTypes::isMultiType( geom->wkbType() ) )
   {
     error->setObsolete();
     return;

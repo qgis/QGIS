@@ -91,7 +91,7 @@ QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection& connection,
     const QString& /*filter*/,
     const QgsRectangle& /*bBox*/ ) const
 {
-  QgsDataSourceURI ds = connection.uri();
+  QgsDataSourceUri ds = connection.uri();
   ds.setParam( "layer", layerTitle );
   ds.setParam( "crs", crs );
   ds.setParam( "format", getSelectedImageEncoding() );

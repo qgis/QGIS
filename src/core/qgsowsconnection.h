@@ -58,14 +58,14 @@ class CORE_EXPORT QgsOwsConnection : public QObject
 
     QString mConnName;
     /** Returns the connection uri */
-    QgsDataSourceURI uri() const;
+    QgsDataSourceUri uri() const;
     QString mConnectionInfo;
 
     //! @deprecated use mConnectionInfo instead
     Q_DECL_DEPRECATED QString connectionInfo();
 
   protected:
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
     QString mService;
 };
 
