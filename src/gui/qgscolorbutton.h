@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSCOLORBUTTON_H
-#define QGSCOLORBUTTON_H
+#ifndef QgsColorButton_H
+#define QgsColorButton_H
 
 #include <QColorDialog>
 #include <QToolButton>
