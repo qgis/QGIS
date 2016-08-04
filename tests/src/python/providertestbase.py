@@ -387,6 +387,26 @@ class ProviderTestCase(object):
         expected = set([])
         assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
 
+        # Rewind mid-way
+        request = QgsFeatureRequest().setFilterFids([fids[1], fids[3], fids[4]])
+        feature_it = self.provider.getFeatures(request)
+        feature = QgsFeature()
+        feature.setValid(True)
+        self.assertTrue(feature_it.nextFeature(feature))
+        self.assertEqual(feature.id(), fids[1])
+        self.assertTrue(feature.isValid())
+        # rewind
+        self.assertTrue(feature_it.rewind())
+        self.assertTrue(feature_it.nextFeature(feature))
+        self.assertEqual(feature.id(), fids[1])
+        self.assertTrue(feature.isValid())
+        # grab all features
+        self.assertTrue(feature_it.nextFeature(feature))
+        self.assertTrue(feature_it.nextFeature(feature))
+        # none left
+        self.assertFalse(feature_it.nextFeature(feature))
+        self.assertFalse(feature.isValid())
+
     def testGetFeaturesFilterRectTests(self):
         extent = QgsRectangle(-70, 67, -60, 80)
         request = QgsFeatureRequest().setFilterRect(extent)
