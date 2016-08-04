@@ -199,20 +199,16 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
   }
   else if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
   {
-    if ( mFilterFidsIt == mFilterFids.constEnd() )
-    {
-      close();
-      return false;
-    }
-    else
+    while ( mFilterFidsIt != mFilterFids.constEnd() )
     {
       QgsFeatureId nextId = *mFilterFidsIt;
       mFilterFidsIt++;
-      bool result = fetchFeatureWithId( nextId, feature );
-      if ( !result )
-        close();
-      return result;
+
+      if ( fetchFeatureWithId( nextId, feature ) )
+        return true;
     }
+    close();
+    return false;
   }
 
   OGRFeatureH fet;
