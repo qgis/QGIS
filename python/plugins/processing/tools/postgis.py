@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 __author__ = 'Martin Dobias'
 __date__ = 'November 2012'
@@ -867,22 +868,31 @@ class GeoDB:
 if __name__ == '__main__':
 
     db = GeoDB(host='localhost', dbname='gis', user='gisak', passwd='g')
-    print db.list_schemas()
-    print '=========='
+    # fix_print_with_import
+    print(db.list_schemas())
+    # fix_print_with_import
+    print('==========')
 
     for row in db.list_geotables():
-        print row
-    print '=========='
+        # fix_print_with_import
+        print(row)
+    # fix_print_with_import
+    print('==========')
 
     for row in db.get_table_indexes('trencin'):
-        print row
-    print '=========='
+        # fix_print_with_import
+        print(row)
+    # fix_print_with_import
+    print('==========')
 
     for row in db.get_table_constraints('trencin'):
-        print row
-    print '=========='
+        # fix_print_with_import
+        print(row)
+    # fix_print_with_import
+    print('==========')
 
-    print db.get_table_rows('trencin')
+    # fix_print_with_import
+    print(db.get_table_rows('trencin'))
 
     # for fld in db.get_table_metadata('trencin'):
     # ....print fld

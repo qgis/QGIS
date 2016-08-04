@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 
 __author__ = 'Victor Olaya'
@@ -156,7 +157,8 @@ class Processing:
         Processing.initialize()
         provider = Processing.getProviderFromName("qgis")
         scripts = ScriptUtils.loadFromFolder(folder)
-        print scripts
+        # fix_print_with_import
+        print(scripts)
         for script in scripts:
             script.allowEdit = False
             script._icon = provider._icon
@@ -212,7 +214,8 @@ class Processing:
         else:
             alg = Processing.getAlgorithm(algOrName)
         if alg is None:
-            print 'Error: Algorithm not found\n'
+            # fix_print_with_import
+            print('Error: Algorithm not found\n')
             QgsMessageLog.logMessage(Processing.tr('Error: Algorithm {0} not found\n').format(algOrName), Processing.tr("Processing"))
             return
         alg = alg.getCopy()
@@ -229,7 +232,8 @@ class Processing:
                 output = alg.getOutputFromName(name)
                 if output and output.setValue(value):
                     continue
-                print 'Error: Wrong parameter value %s for parameter %s.' % (value, name)
+                # fix_print_with_import
+                print('Error: Wrong parameter value %s for parameter %s.' % (value, name))
                 QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name), Processing.tr("Processing"))
                 ProcessingLog.addToLog(
                     ProcessingLog.LOG_ERROR,
@@ -241,7 +245,8 @@ class Processing:
             for param in alg.parameters:
                 if param.name not in setParams:
                     if not param.setDefaultValue():
-                        print 'Error: Missing parameter value for parameter %s.' % param.name
+                        # fix_print_with_import
+                        print('Error: Missing parameter value for parameter %s.' % param.name)
                         QgsMessageLog.logMessage(Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name), Processing.tr("Processing"))
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
@@ -251,7 +256,8 @@ class Processing:
                         return
         else:
             if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
-                print 'Error: Wrong number of parameters'
+                # fix_print_with_import
+                print('Error: Wrong number of parameters')
                 QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'), Processing.tr("Processing"))
                 processing.alghelp(algOrName)
                 return
@@ -259,7 +265,8 @@ class Processing:
             for param in alg.parameters:
                 if not param.hidden:
                     if not param.setValue(args[i]):
-                        print'Error: Wrong parameter value: ' + unicode(args[i])
+                        # fix_print_with_import
+                        print('Error: Wrong parameter value: ' + unicode(args[i]))
                         QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + unicode(args[i]), Processing.tr("Processing"))
                         return
                     i = i + 1
@@ -267,14 +274,16 @@ class Processing:
             for output in alg.outputs:
                 if not output.hidden:
                     if not output.setValue(args[i]):
-                        print 'Error: Wrong output value: ' + unicode(args[i])
+                        # fix_print_with_import
+                        print('Error: Wrong output value: ' + unicode(args[i]))
                         QgsMessageLog.logMessage(Processing.tr('Error: Wrong output value: ') + unicode(args[i]), Processing.tr("Processing"))
                         return
                     i = i + 1
 
         msg = alg._checkParameterValuesBeforeExecuting()
         if msg:
-            print 'Unable to execute algorithm\n' + unicode(msg)
+            # fix_print_with_import
+            print('Unable to execute algorithm\n' + unicode(msg))
             QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg), Processing.tr("Processing"))
             return
 

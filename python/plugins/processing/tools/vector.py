@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
@@ -575,7 +576,8 @@ class VectorWriter:
                 QgsCredentials.instance().put(connInfo, user, passwd)
             else:
                 raise GeoAlgorithmExecutionException("Couldn't connect to database")
-            print uri.uri()
+            # fix_print_with_import
+            print(uri.uri())
             try:
                 db = postgis.GeoDB(host=uri.host(), port=int(uri.port()),
                                    dbname=uri.database(), user=user, passwd=passwd)
@@ -606,7 +608,8 @@ class VectorWriter:
         elif self.destination.startswith(self.SPATIALITE_LAYER_PREFIX):
             self.isNotFileBased = True
             uri = QgsDataSourceUri(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
-            print uri.uri()
+            # fix_print_with_import
+            print(uri.uri())
             try:
                 db = spatialite.GeoDB(uri=uri)
             except spatialite.DbError as e:
