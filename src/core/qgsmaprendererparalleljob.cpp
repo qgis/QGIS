@@ -92,7 +92,7 @@ void QgsMapRendererParallelJob::cancel()
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
     it->context.setRenderingStopped( true );
-    if ( it->renderer->feedback() )
+    if ( it->renderer && it->renderer->feedback() )
       it->renderer->feedback()->cancel();
   }
 
