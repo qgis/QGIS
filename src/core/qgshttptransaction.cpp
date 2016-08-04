@@ -392,7 +392,6 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
 void QgsHttpTransaction::transactionFinished( bool error )
 {
 #ifdef QGISDEBUG
-  QgsDebugMsg( "entered." );
 
 #if 0
   // The signal that this slot is connected to, QHttp::requestFinished,
@@ -489,7 +488,6 @@ void QgsHttpTransaction::dataStateChanged( int state )
 
 void QgsHttpTransaction::networkTimedOut()
 {
-  QgsDebugMsg( "entering." );
 
   mError = tr( "Network timed out after %n second(s) of inactivity.\n"
                "This may be a problem in your network connection or at the WMS server.", "inactivity timeout", mNetworkTimeoutMsec / 1000 );

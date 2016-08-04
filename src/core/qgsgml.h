@@ -17,15 +17,10 @@
 
 #include <expat.h>
 #include "qgis.h"
-#include "qgsapplication.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsdataprovider.h"
-#include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgslogger.h"
-#include "qgspoint.h"
 #include "qgsrectangle.h"
 #include "qgswkbptr.h"
+#include "qgsfeature.h"
 
 #include <QPair>
 #include <QByteArray>
@@ -34,7 +29,12 @@
 #include <QStack>
 #include <QVector>
 
-/** This class builds features from GML data in a streaming way. The caller must call processData()
+#include <string>
+
+class QgsCoordinateReferenceSystem;
+
+/** \ingroup core
+ * This class builds features from GML data in a streaming way. The caller must call processData()
  * as soon it has new content from the source. At any point, it can call
  * getAndStealReadyFeatures() to collect the features that have been completely
  * parsed.
@@ -47,7 +47,9 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     typedef QPair<QgsFeature*, QString> QgsGmlFeaturePtrGmlIdPair;
 
-    /** Layer properties */
+    /** \ingroup core
+     * Layer properties
+    */
     class LayerProperties
     {
       public:
@@ -103,8 +105,14 @@ class CORE_EXPORT QgsGmlStreamingParser
     /** Return the EPSG code, or 0 if unknown */
     int getEPSGCode() const { return mEpsg; }
 
+    /** Return the value of the srsName attribute */
+    const QString& srsName() const { return mSrsName; }
+
+    /** Return layer bounding box */
+    const QgsRectangle& layerExtent() const { return mLayerExtent; }
+
     /** Return the geometry type */
-    QGis::WkbType wkbType() const { return mWkbType; }
+    QgsWkbTypes::Type wkbType() const { return mWkbType; }
 
     /** Return WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found */
     int numberMatched() const { return mNumberMatched; }
@@ -180,9 +188,8 @@ class CORE_EXPORT QgsGmlStreamingParser
        @return attribute value or an empty string if no such attribute
       */
     QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
-    /** Creates a rectangle from a coordinate string.
-     @return 0 in case of success*/
-    int createBBoxFromCoordinateString( QgsRectangle &bb, const QString& coordString ) const;
+    /** Creates a rectangle from a coordinate string. */
+    bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString& coordString ) const;
     /** Creates a set of points from a coordinate string.
        @param points list that will contain the created points
        @param coordString the text containing the coordinates
@@ -235,7 +242,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QByteArray mTypeNameBA;
     const char* mTypeNamePtr;
 
-    QGis::WkbType mWkbType;
+    QgsWkbTypes::Type mWkbType;
 
     //results are members such that handler routines are able to manipulate them
 
@@ -283,6 +290,10 @@ class CORE_EXPORT QgsGmlStreamingParser
     ParseMode mCoorMode;
     /** EPSG of parsed features geometries */
     int mEpsg;
+    /** Literal srsName attribute */
+    QString mSrsName;
+    /** Layer bounding box */
+    QgsRectangle mLayerExtent;
     /** GML namespace URI */
     QString mGMLNameSpaceURI;
     const char* mGMLNameSpaceURIPtr;
@@ -296,10 +307,15 @@ class CORE_EXPORT QgsGmlStreamingParser
     int mNumberReturned;
     /** WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found */
     int mNumberMatched;
+    /** XML blob containing geometry */
+    std::string mGeometryString;
+    /** Whether we found a unhandled geometry element */
+    bool mFoundUnhandledGeometryElement;
 };
 
 
-/** This class reads data from a WFS server or alternatively from a GML file. It
+/** \ingroup core
+ * This class reads data from a WFS server or alternatively from a GML file. It
  * uses the expat XML parser and an event based model to keep performance high.
  * The parsing starts when the first data arrives, it does not wait until the
  * request is finished */
@@ -326,7 +342,7 @@ class CORE_EXPORT QgsGml : public QObject
      *  @note available in python as getFeaturesUri
      */
     int getFeatures( const QString& uri,
-                     QGis::WkbType* wkbType,
+                     QgsWkbTypes::Type* wkbType,
                      QgsRectangle* extent = nullptr,
                      const QString& userName = QString(),
                      const QString& password = QString(),
@@ -335,7 +351,7 @@ class CORE_EXPORT QgsGml : public QObject
     /** Read from GML data. Constructor uri param is ignored
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
      */
-    int getFeatures( const QByteArray &data, QGis::WkbType* wkbType, QgsRectangle* extent = nullptr );
+    int getFeatures( const QByteArray &data, QgsWkbTypes::Type* wkbType, QgsRectangle* extent = nullptr );
 
     /** Get parsed features for given type name */
     QMap<QgsFeatureId, QgsFeature* > featuresMap() const { return mFeatures; }

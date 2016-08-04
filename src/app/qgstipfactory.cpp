@@ -208,11 +208,11 @@ QgsTipFactory::QgsTipFactory() : QObject()
   // by yjacolin
   myTip.setTitle( tr( "Right click with identify tools" ) );
   myTip.setContent( tr( "Right click with the identify tool to show a context menu from which you can "
-                        "choose the layer in which to identify a feature. A sub menu will list features "
-                        "identified and a third sub-menu will show the action link setup for the layer."
-                        "If one of this sub-menu doesn't contain any information, the next sub-menu"
+                        "choose the layer in which to identify a feature. A sub-menu will list features "
+                        "identified and a third sub-menu will show the action link setup for the layer. "
+                        "If one of this sub-menu doesn't contain any information, the next sub-menu "
                         "will appear instead. For example, if you have just one layer, and click "
-                        "somewhere with several features, the first menu will list the feature list "
+                        "somewhere with several features, the first menu will list the features "
                         "instead of layer list."
                       ) );
   addGuiTip( myTip );

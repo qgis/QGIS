@@ -19,11 +19,14 @@
 #include <QMenu>
 #include <QSignalMapper>
 
-#include "qgsactionmanager.h"
-#include "qgsmaplayeractionregistry.h"
+#include "qgsfeature.h"
 
+class QgsMapLayer;
+class QgsMapLayerAction;
+class QgsVectorLayer;
+class QgsActionManager;
 
-/**
+/** \ingroup gui
  * This class is a menu that is populated automatically with the actions defined for a given layer.
  */
 

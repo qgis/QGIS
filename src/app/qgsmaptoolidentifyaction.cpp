@@ -19,6 +19,7 @@
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
+#include "qgsfeaturestore.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -184,7 +185,7 @@ void QgsMapToolIdentifyAction::deactivate()
   QgsMapTool::deactivate();
 }
 
-QGis::UnitType QgsMapToolIdentifyAction::displayDistanceUnits() const
+QgsUnitTypes::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
   return QgsProject::instance()->distanceUnits();
 }

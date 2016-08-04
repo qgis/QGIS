@@ -33,7 +33,7 @@ class QgsRectangle;
 #include "qgsexpression.h"
 #include "qgssqlstatement.h"
 
-/**
+/** \ingroup core
  * @brief The QgsOgcUtils class provides various utility functions for conversion between
  *   OGC (Open Geospatial Consortium) standards and QGIS internal representations.
  *
@@ -59,11 +59,11 @@ class CORE_EXPORT QgsOgcUtils
        in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
        "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
      */
-    static QgsGeometry* geometryFromGML( const QString& xmlString );
+    static QgsGeometry geometryFromGML( const QString& xmlString );
 
     /** Static method that creates geometry from GML
       */
-    static QgsGeometry* geometryFromGML( const QDomNode& geometryNode );
+    static QgsGeometry geometryFromGML( const QDomNode& geometryNode );
 
     /** Read rectangle from GML2 Box */
     static QgsRectangle rectangleFromGMLBox( const QDomNode& boxNode );
@@ -161,7 +161,8 @@ class CORE_EXPORT QgsOgcUtils
         bool invertAxisOrientation,
         QString* errorMessage = nullptr );
 
-    /** Layer properties. Used by SQLStatementToOgcFilter().
+    /** \ingroup core
+     * Layer properties. Used by SQLStatementToOgcFilter().
      * @note Added in QGIS 2.16
      * @note not available in Python bindings
      */
@@ -209,17 +210,17 @@ class CORE_EXPORT QgsOgcUtils
   private:
 
     /** Static method that creates geometry from GML Point */
-    static QgsGeometry* geometryFromGMLPoint( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLPoint( const QDomElement& geometryElement );
     /** Static method that creates geometry from GML LineString */
-    static QgsGeometry* geometryFromGMLLineString( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLLineString( const QDomElement& geometryElement );
     /** Static method that creates geometry from GML Polygon */
-    static QgsGeometry* geometryFromGMLPolygon( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLPolygon( const QDomElement& geometryElement );
     /** Static method that creates geometry from GML MultiPoint */
-    static QgsGeometry* geometryFromGMLMultiPoint( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLMultiPoint( const QDomElement& geometryElement );
     /** Static method that creates geometry from GML MultiLineString */
-    static QgsGeometry* geometryFromGMLMultiLineString( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLMultiLineString( const QDomElement& geometryElement );
     /** Static method that creates geometry from GML MultiPolygon */
-    static QgsGeometry* geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
     /** Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        @param coords list where the found coordinates are appended
        @param elem the \verbatim <gml:coordinates> \endverbatim element
@@ -266,7 +267,8 @@ class CORE_EXPORT QgsOgcUtils
     static QgsExpression::NodeBinaryOperator* nodePropertyIsNullFromOgcFilter( QDomElement& element, QString& errorMessage );
 };
 
-/** Internal use by QgsOgcUtils
+/** \ingroup core
+ * Internal use by QgsOgcUtils
  * @note not available in Python bindings
  */
 class QgsOgcUtilsExprToFilter
@@ -311,7 +313,8 @@ class QgsOgcUtilsExprToFilter
     QDomElement expressionFunctionToOgcFilter( const QgsExpression::NodeFunction* node );
 };
 
-/** Internal use by QgsOgcUtils
+/** \ingroup core
+ * Internal use by QgsOgcUtils
  * @note not available in Python bindings
  */
 class QgsOgcUtilsSQLStatementToFilter

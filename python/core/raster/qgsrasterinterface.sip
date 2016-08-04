@@ -1,4 +1,18 @@
 
+/** \ingroup core
+ * Feedback object tailored for raster block reading.
+ *
+ * @note added in QGIS 3.0
+ */
+class QgsRasterBlockFeedback : QgsFeedback
+{
+%TypeHeaderCode
+#include <qgsrasterinterface.h>
+%End
+    // TODO: extend with preview functionality??
+};
+
+
 /** Base class for processing modules.
  *
  */
@@ -94,17 +108,17 @@ class QgsRasterInterface
     QString capabilitiesString() const;
 
     /** Returns data type for the band specified by number */
-    virtual QGis::DataType dataType( int bandNo ) const = 0;
+    virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
-    virtual QGis::DataType srcDataType( int bandNo ) const;
+    virtual Qgis::DataType sourceDataType( int bandNo ) const;
 
     /**
      * Get the extent of the interface.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() const;
 
     int dataTypeSize( int bandNo );
 
@@ -129,8 +143,9 @@ class QgsRasterInterface
      * @param extent extent of block
      * @param width pixel width of block
      * @param height pixel height of block
+     * @param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 /Factory/;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0 /Factory/;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
@@ -149,7 +164,7 @@ class QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual QgsRasterInterface *srcInput();
+    virtual QgsRasterInterface *sourceInput();
 
     /** \brief Get band statistics.
      * @param theBandNo The band (number).
@@ -219,9 +234,9 @@ class QgsRasterInterface
                                 int theSampleSize = 0 );
 
     /** Write base class members to xml. */
-    virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    virtual void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
     /** Sets base class members from xml. Usually called from create() methods of subclasses */
-    virtual void readXML( const QDomElement& filterElem );
+    virtual void readXml( const QDomElement& filterElem );
 
   protected:
 

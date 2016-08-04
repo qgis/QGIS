@@ -17,7 +17,6 @@
 #define QGSATTRIBUTETABLEDELEGATE_H
 
 #include <QItemDelegate>
-#include "qgsfeature.h"
 
 class QgsFeatureSelectionModel;
 class QPainter;
@@ -25,7 +24,7 @@ class QgsVectorLayer;
 class QgsAttributeTableModel;
 class QToolButton;
 
-/** \ingroup app
+/** \ingroup gui
  * A delegate item class for QgsAttributeTable (see Qt documentation for
  * QItemDelegate).
  */
@@ -77,15 +76,20 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
 
+  signals:
     /**
-     * Set an image that represents an action widget
+     * Is emitted when an action column item is painted.
+     * The consumer of this signal can initialize the index widget.
+     *
+     * @note This signal is emitted repeatedly whenever the item is being painted.
+     *       It is the consumers responsibility to check if initialization has already
+     *       happened before.
      */
-    void setActionWidgetImage( const QImage& image );
+    void actionColumnItemPainted( const QModelIndex& index ) const;
 
   private:
     QgsVectorLayer* mLayer;
     QgsFeatureSelectionModel* mFeatureSelectionModel;
-    QImage mActionWidgetImage;
 };
 
 #endif //QGSATTRIBUTETABLEDELEGATE_H

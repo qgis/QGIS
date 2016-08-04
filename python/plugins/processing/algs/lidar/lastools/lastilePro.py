@@ -4,7 +4,7 @@
 ***************************************************************************
     lastilePro.py
     ---------------------
-    Date                 : April 2014
+    Date                 : April 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -36,6 +36,7 @@ class lastilePro(LAStoolsAlgorithm):
 
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
+    FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
     EXTRA_PASS = "EXTRA_PASS"
     BASE_NAME = "BASE_NAME"
 
@@ -47,10 +48,12 @@ class lastilePro(LAStoolsAlgorithm):
         self.addParametersApplyFileSourceIdGUI()
         self.addParameter(ParameterNumber(lastilePro.TILE_SIZE,
                                           self.tr("tile size (side length of square tile)"),
-                                          None, None, 1000.0))
+                                          0.0, None, 1000.0))
         self.addParameter(ParameterNumber(lastilePro.BUFFER,
                                           self.tr("buffer around each tile (avoids edge artifacts)"),
-                                          None, None, 25.0))
+                                          0.0, None, 25.0))
+        self.addParameter(ParameterBoolean(lastilePro.FLAG_AS_WITHHELD,
+                                           self.tr("flag buffer points as 'withheld' for easier removal later"), True))
         self.addParameter(ParameterBoolean(lastilePro.EXTRA_PASS,
                                            self.tr("more than 2000 tiles"), False))
         self.addParametersOutputDirectoryGUI()
@@ -73,13 +76,15 @@ class lastilePro(LAStoolsAlgorithm):
         if buffer != 0.0:
             commands.append("-buffer")
             commands.append(unicode(buffer))
+        if self.getParameterValue(lastilePro.FLAG_AS_WITHHELD):
+            commands.append("-flag_as_withheld")
         if self.getParameterValue(lastilePro.EXTRA_PASS):
             commands.append("-extra_pass")
         self.addParametersOutputDirectoryCommands(commands)
         base_name = self.getParameterValue(lastilePro.BASE_NAME)
         if base_name is not None:
             commands.append("-o")
-            commands.append(base_name)
+            commands.append('"' + base_name + '"')
         self.addParametersPointOutputFormatCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

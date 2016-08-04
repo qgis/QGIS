@@ -17,9 +17,13 @@
 #ifndef QGSGEOMETRYSIMPLIFIER_H
 #define QGSGEOMETRYSIMPLIFIER_H
 
-#include "qgsgeometry.h"
+#include <QVector>
+#include <QPointF>
 
-/**
+class QgsGeometry;
+class QgsRectangle;
+
+/** \ingroup core
  * Abstract base class for simplify geometries using a specific algorithm
  */
 class CORE_EXPORT QgsAbstractGeometrySimplifier
@@ -28,7 +32,7 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
     virtual ~QgsAbstractGeometrySimplifier();
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const = 0;
+    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const = 0;
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry ) const = 0;
 
@@ -41,7 +45,7 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
 };
 
 /***************************************************************************/
-/**
+/** \ingroup core
  * Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
  *
  * Simplifies a geometry, ensuring that the result is a valid geometry having the same dimension and number of components as the input.
@@ -54,7 +58,7 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
     virtual ~QgsTopologyPreservingSimplifier();
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const override;
+    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const override;
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry ) const override;
 

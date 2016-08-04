@@ -31,9 +31,9 @@ class QgsVectorLayer;
 class QgsVectorLayerCache;
 class QMenu;
 class QProgressDialog;
+class QgsAttributeTableConfig;
 
-
-/**
+/** \ingroup gui
  * @brief
  * Provides a table view of features of a @link QgsVectorLayer @endlink.
  *
@@ -67,6 +67,13 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * @return Returns always false, so the event gets processed
      */
     virtual bool eventFilter( QObject* object, QEvent* event ) override;
+
+    /**
+     * Set the attribute table config which should be used to control
+     * the appearance of the attribute table.
+     * @note added in QGIS 2.16
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
   protected:
     /**
@@ -127,6 +134,13 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      */
     void willShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
+    /** Emitted when a column in the view has been resized.
+     * @param column column index (starts at 0)
+     * @param width new width in pixel
+     * @note added in QGIS 2.16
+     */
+    void columnResized( int column, int width );
+
     void finished();
 
   public slots:
@@ -141,22 +155,22 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void showHorizontalSortIndicator();
     void actionTriggered();
     void columnSizeChanged( int index, int oldWidth, int newWidth );
+    void onActionColumnItemPainted( const QModelIndex& index );
+    void recreateActionWidgets();
 
   private:
     void updateActionImage( QWidget* widget );
     QWidget* createActionWidget( QgsFeatureId fid );
 
     void selectRow( int row, bool anchor );
-    QgsAttributeTableModel* mMasterModel;
     QgsAttributeTableFilterModel* mFilterModel;
     QgsFeatureSelectionModel* mFeatureSelectionModel;
     QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsAttributeTableDelegate* mTableDelegate;
-    QAbstractItemModel* mModel; // Most likely the filter model
     QMenu *mActionPopup;
     int mRowSectionAnchor;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
-    QWidget* mActionWidget;
+    QMap< QModelIndex, QWidget* > mActionWidgets;
 };
 
 #endif

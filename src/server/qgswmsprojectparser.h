@@ -29,16 +29,16 @@ class QgsAccessControl;
 class QTextDocument;
 class QSvgRenderer;
 
-class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
+class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
 {
   public:
-    QgsWMSProjectParser(
+    QgsWmsProjectParser(
       const QString& filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
 #endif
     );
-    virtual ~QgsWMSProjectParser();
+    virtual ~QgsWmsProjectParser();
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
@@ -66,10 +66,10 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
     double maxWidth() const override;
     double maxHeight() const override;
     double imageQuality() const override;
-    int WMSPrecision() const override;
+    int wmsPrecision() const override;
 
     // WMS inspire capabilities
-    bool WMSInspireActivated() const override;
+    bool wmsInspireActivated() const override;
     void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
     //printing
@@ -122,7 +122,7 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
-    bool useLayerIDs() const override { return mProjectParser->useLayerIDs(); }
+    bool useLayerIds() const override { return mProjectParser->useLayerIds(); }
 
   private:
     QgsServerProjectParser* mProjectParser;

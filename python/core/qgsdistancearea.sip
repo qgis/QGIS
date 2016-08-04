@@ -155,7 +155,7 @@ class QgsDistanceArea
      * @note added in QGIS 2.14
      * @see areaUnits()
      */
-    QGis::UnitType lengthUnits() const;
+    QgsUnitTypes::DistanceUnit lengthUnits() const;
 
     /** Returns the units of area for areal calculations made by this object.
      * @note added in QGIS 2.14
@@ -179,7 +179,7 @@ class QgsDistanceArea
      * @return formatted measurement string
      * @deprecated use formatDistance() or formatArea() instead
      */
-    static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false ) /Deprecated/;
+    static QString textUnit( double value, int decimals, QgsUnitTypes::DistanceUnit u, bool isArea, bool keepBaseUnit = false ) /Deprecated/;
 
     /** Returns an distance formatted as a friendly string.
      * @param distance distance to format
@@ -191,7 +191,7 @@ class QgsDistanceArea
      * @note added in QGIS 2.16
      * @see formatArea()
      */
-    static QString formatDistance( double distance, int decimals, QGis::UnitType unit, bool keepBaseUnit = false );
+    static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
 
     /** Returns an area formatted as a friendly string.
      * @param area area to format
@@ -208,7 +208,7 @@ class QgsDistanceArea
 
     //! Helper for conversion between physical units
     // TODO QGIS 3.0 - remove this method, as its behaviour is non-intuitive.
-    void convertMeasurement( double &measure /In,Out/, QGis::UnitType &measureUnits /In,Out/, QGis::UnitType displayUnits, bool isArea ) const;
+    void convertMeasurement( double &measure /In,Out/, QgsUnitTypes::DistanceUnit &measureUnits /In,Out/, QgsUnitTypes::DistanceUnit displayUnits, bool isArea ) const;
 
     /** Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
      * different distance unit.
@@ -219,7 +219,7 @@ class QgsDistanceArea
      * @see convertAreaMeasurement()
      * @note added in QGIS 2.14
      */
-    double convertLengthMeasurement( double length, QGis::UnitType toUnits ) const;
+    double convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const;
 
     /** Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
      * different areal unit.

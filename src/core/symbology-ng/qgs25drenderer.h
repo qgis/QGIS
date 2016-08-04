@@ -17,10 +17,12 @@
 #define QGS25DRENDERER_H
 
 #include "qgsrendererv2.h"
-#include "qgsdatadefined.h"
 
 class QgsOuterGlowEffect;
 
+/** \ingroup core
+ * \class Qgs25DRenderer
+ */
 class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
 {
   public:

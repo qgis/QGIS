@@ -292,7 +292,7 @@ double QgsSymbolLayerV2::dxfAngle( QgsSymbolV2RenderContext &context ) const
   return 0.0;
 }
 
-QVector<qreal> QgsSymbolLayerV2::dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const
+QVector<qreal> QgsSymbolLayerV2::dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const
 {
   Q_UNUSED( unit );
   return QVector<qreal>();
@@ -491,8 +491,8 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     , mAngle( 0 )
     , mLineAngle( 0 )
     , mSize( 2.0 )
-    , mSizeUnit( QgsSymbolV2::MM )
-    , mOffsetUnit( QgsSymbolV2::MM )
+    , mSizeUnit( QgsUnitTypes::RenderMillimeters )
+    , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
     , mScaleMethod( QgsSymbolV2::ScaleDiameter )
     , mHorizontalAnchorPoint( HCenter )
     , mVerticalAnchorPoint( VCenter )
@@ -503,9 +503,9 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
 QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Line, locked )
     , mWidth( 0 )
-    , mWidthUnit( QgsSymbolV2::MM )
+    , mWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mOffset( 0 )
-    , mOffsetUnit( QgsSymbolV2::MM )
+    , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
 }
 
@@ -538,7 +538,7 @@ void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, do
 }
 
 void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
-    QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
+    QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
     double& offsetX, double& offsetY, const QgsMapUnitScale& widthMapUnitScale, const QgsMapUnitScale& heightMapUnitScale ) const
 {
   offsetX = mOffset.x();
@@ -633,17 +633,17 @@ QgsMarkerSymbolLayerV2::VerticalAnchorPoint QgsMarkerSymbolLayerV2::decodeVertic
   }
 }
 
-void QgsMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsMarkerSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mSizeUnit = unit;
   mOffsetUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsMarkerSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsMarkerSymbolLayerV2::outputUnit() const
 {
   if ( mOffsetUnit != mSizeUnit )
   {
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return mOffsetUnit;
 }
@@ -663,12 +663,12 @@ QgsMapUnitScale QgsMarkerSymbolLayerV2::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-void QgsLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsLineSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mWidthUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsLineSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsLineSymbolLayerV2::outputUnit() const
 {
   return mWidthUnit;
 }

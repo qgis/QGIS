@@ -61,7 +61,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
             return False
 
         projector = QgsRasterProjector()
-        projector.setCRS(provider.crs(), provider.crs())
+        projector.setCrs(provider.crs(), provider.crs())
         if not pipe.insert(2, projector):
             print("Cannot set pipe projector")
             return False

@@ -59,7 +59,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
 };
 
 
-/**
+/** \ingroup core
 \brief Default implementation of message logging interface
 
 This class outputs log messages to the standard output. Therefore it might

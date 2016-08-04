@@ -15,7 +15,6 @@
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include "qgscrscache.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
@@ -117,7 +116,10 @@ void QgsApplication::init( QString customConfigPath )
     }
     else
     {
-      customConfigPath = QString( "%1/.qgis%2/" ).arg( QDir::homePath() ).arg( QGis::QGIS_VERSION_INT / 10000 );
+      // TODO Switch to this for release.
+      //customConfigPath = QString( "%1/.qgis%2/" ).arg( QDir::homePath() ).arg( Qgis::QGIS_VERSION_INT / 10000 );
+      // Use qgis-dev for dev versions of QGIS to avoid mixing 2 and 3 API plugins.
+      customConfigPath = QString( "%1/.qgis%2/" ).arg( QDir::homePath() ).arg( "-dev" );
     }
   }
 
@@ -706,7 +708,7 @@ QStringList QgsApplication::svgPaths()
   //defined by user in options dialog
   QSettings settings;
   QStringList myPathList;
-  QString myPaths = settings.value( "svg/searchPathsForSVG", QDir::homePath() ).toString();
+  QString myPaths = settings.value( "svg/searchPathsForSVG", QString() ).toString();
   if ( !myPaths.isEmpty() )
   {
     myPathList = myPaths.split( '|' );
@@ -725,7 +727,7 @@ QStringList QgsApplication::composerTemplatePaths()
   //defined by user in options dialog
   QSettings settings;
   QStringList myPathList;
-  QString myPaths = settings.value( "composer/searchPathsForTemplates", QDir::homePath() ).toString();
+  QString myPaths = settings.value( "composer/searchPathsForTemplates", QString() ).toString();
   if ( !myPaths.isEmpty() )
   {
     myPathList = myPaths.split( '|' );
@@ -1369,5 +1371,10 @@ void QgsApplication::setMaxThreads( int maxThreads )
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
   QgsDebugMsg( QString( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
+}
+
+void QgsApplication::emitSettingsChanged()
+{
+  emit settingsChanged();
 }
 

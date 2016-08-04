@@ -17,6 +17,8 @@
 
 #include "qgsmslayercache.h"
 #include "qgsmessagelog.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include <QFile>
@@ -187,6 +189,10 @@ void QgsMSLayerCache::removeLeastUsedEntry()
 
 void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
 {
+  // remove layer from QgsMapLayerRegistry before delete it
+  if ( QgsMapLayerRegistry::instance()->mapLayer( entry.layerPointer->id() ) )
+    QgsMapLayerRegistry::instance()->removeMapLayer( entry.layerPointer->id() );
+
   delete entry.layerPointer;
 
   //remove the temporary files of a layer
@@ -225,4 +231,10 @@ void QgsMSLayerCache::logCacheContents() const
   {
     QgsMessageLog::logMessage( "Url: " + it.value().url + " Layer name: " + it.value().layerPointer->name() + " Project: " + it.value().configFile, "Server", QgsMessageLog::INFO );
   }
+}
+
+
+void QgsMSLayerCache::removeProjectLayers( const QString& path )
+{
+  removeProjectFileLayers( path );
 }

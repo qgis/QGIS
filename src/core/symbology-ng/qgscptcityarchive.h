@@ -30,6 +30,10 @@ class QgsCptCitySelectionItem;
 
 #define DEFAULT_CPTCITY_ARCHIVE "cpt-city-qgis-min"
 
+/**
+ * \class QgsCptCityArchive
+ * \ingroup core
+ */
 class CORE_EXPORT QgsCptCityArchive
 {
   public:
@@ -84,7 +88,9 @@ class CORE_EXPORT QgsCptCityArchive
     QgsCptCityArchive& operator=( const QgsCptCityArchive& rh );
 };
 
-/** Base class for all items in the model */
+/** Base class for all items in the model
+ * \ingroup core
+*/
 class CORE_EXPORT QgsCptCityDataItem : public QObject
 {
     Q_OBJECT
@@ -195,7 +201,9 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     void endRemoveItems();
 };
 
-/** Item that represents a layer that can be opened with one of the providers */
+/** Item that represents a layer that can be opened with one of the providers
+ * \ingroup core
+*/
 class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 {
     Q_OBJECT
@@ -229,7 +237,9 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 };
 
 
-/** A Collection: logical collection of subcollections and color ramps */
+/** A Collection: logical collection of subcollections and color ramps
+ * \ingroup core
+*/
 class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
 {
     Q_OBJECT
@@ -246,7 +256,9 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
     bool mPopulatedRamps;
 };
 
-/** A directory: contains subdirectories and color ramps */
+/** A directory: contains subdirectories and color ramps
+ * \ingroup core
+*/
 class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT
@@ -268,7 +280,10 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
     QMap< QString, QStringList > mRampsMap;
 };
 
-/** A selection: contains subdirectories and color ramps */
+/** \ingroup core
+ * \class QgsCptCitySelectionItem
+ * A selection: contains subdirectories and color ramps
+*/
 class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT
@@ -283,11 +298,12 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
     QStringList selectionsList() const { return mSelectionsList; }
 
   protected:
-    void parseXML();
+    void parseXml();
     QStringList mSelectionsList;
 };
 
-/** An "All ramps item", which contains all items in a flat hierarchy */
+/** \ingroup core
+ * An "All ramps item", which contains all items in a flat hierarchy */
 class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT
@@ -302,7 +318,9 @@ class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
     QVector<QgsCptCityDataItem*> mItems;
 };
 
-
+/** \ingroup core
+ * \class QgsCptCityBrowserModel
+ */
 class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
 {
     Q_OBJECT

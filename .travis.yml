@@ -1,7 +1,5 @@
 matrix:
   fast_finish: true
-  allow_failures:
-    - os: osx
   include:
     # QT4 based build with Python 2.7 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
@@ -9,27 +7,29 @@ matrix:
       env:
         - BUILD=qt4
         - QT_VERSION=4
-        - LLVM_VERSION=3.8
+#        - LLVM_VERSION=3.8
       sudo: false
       cache:
         apt: true
         directories:
           - $HOME/.ccache
-      compiler: clang
+      compiler: gcc
       addons:
         postgresql: "9.4"
         apt:
           sources:
-            - llvm-toolchain-precise-3.8
+#            - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports # doxygen 1.8.3
           packages:
             - bison
-            - clang-3.8
+            - gcc-6
+            - g++-6
             - doxygen
             - flex
             - flip
             - libfcgi-dev
+            - libfftw3-3
             - libpq-dev
             - libqscintilla2-dev
             - libqt4-dev
@@ -83,6 +83,7 @@ matrix:
             - graphviz
             - libpq-dev
             - libfcgi-dev
+            - libfftw3-3	    
             - pkg-config
             - poppler-utils
             - txt2tags

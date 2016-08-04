@@ -18,6 +18,9 @@
 
 #include "ui_qgssmartgroupconditionwidget.h"
 
+/** \ingroup gui
+ * \class QgsSmartGroupCondition
+ */
 class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGroupConditionWidget
 {
     Q_OBJECT
@@ -59,6 +62,9 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 
 #include "qgsstylev2.h" //for QgsSmartConditionMap
 
+/** \ingroup gui
+ * \class QgsSmartGroupEditorDialog
+ */
 class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmartGroupEditorDialogBase
 {
     Q_OBJECT

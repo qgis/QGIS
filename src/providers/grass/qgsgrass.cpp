@@ -659,7 +659,6 @@ bool QgsGrass::isMapsetInSearchPath( QString mapset )
 
 void QgsGrass::addMapsetToSearchPath( const QString & mapset, QString& error )
 {
-  QgsDebugMsg( "entered" );
   QString cmd = gisbase() + "/bin/g.mapsets";
   QStringList arguments;
 
@@ -682,7 +681,6 @@ void QgsGrass::addMapsetToSearchPath( const QString & mapset, QString& error )
 
 void QgsGrass::removeMapsetFromSearchPath( const QString & mapset, QString& error )
 {
-  QgsDebugMsg( "entered" );
   QString cmd = gisbase() + "/bin/g.mapsets";
   QStringList arguments;
 
@@ -705,7 +703,6 @@ void QgsGrass::removeMapsetFromSearchPath( const QString & mapset, QString& erro
 
 void QgsGrass::loadMapsetSearchPath()
 {
-  QgsDebugMsg( "entered" );
   // do not lock, it is called from locked function
   QStringList oldMapsetSearchPath = mMapsetSearchPath;
   mMapsetSearchPath.clear();
@@ -1084,7 +1081,6 @@ QString QgsGrass::openMapset( const QString& gisdbase,
 
 QString QgsGrass::closeMapset()
 {
-  QgsDebugMsg( "entered." );
 
   if ( mMapsetLock.length() > 0 )
   {
@@ -1147,7 +1143,6 @@ QString QgsGrass::closeMapset()
 
 bool QgsGrass::closeMapsetWarn()
 {
-  QgsDebugMsg( "entered" );
 
   QString err = QgsGrass::closeMapset();
 
@@ -1161,7 +1156,6 @@ bool QgsGrass::closeMapsetWarn()
 
 void QgsGrass::saveMapset()
 {
-  QgsDebugMsg( "entered." );
 
   // Save working mapset in project file
   QgsProject::instance()->writeEntry( "GRASS", "/WorkingGisdbase",
@@ -1177,7 +1171,6 @@ void QgsGrass::saveMapset()
 void QgsGrass::createMapset( const QString& gisdbase, const QString& location,
                              const QString& mapset, QString& error )
 {
-  QgsDebugMsg( "entered." );
   QString locationPath = gisdbase + "/" + location;
   QDir locationDir( locationPath );
 
@@ -1253,7 +1246,6 @@ QStringList QgsGrass::mapsets( const QString& locationPath )
 QStringList QgsGrass::vectors( const QString& gisdbase, const QString& locationName,
                                const QString& mapsetName )
 {
-  QgsDebugMsg( "entered." );
 
   if ( gisdbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
     return QStringList();
@@ -1427,7 +1419,6 @@ QStringList QgsGrass::vectorLayers( const QString& gisdbase, const QString& loca
 QStringList QgsGrass::rasters( const QString& gisdbase, const QString& locationName,
                                const QString& mapsetName )
 {
-  QgsDebugMsg( "entered." );
 
   if ( gisdbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
     return QStringList();
@@ -1695,7 +1686,6 @@ bool QgsGrass::writeRegion( const QString& gisbase,
                             const QString& location, const QString& mapset,
                             const struct Cell_head *window )
 {
-  QgsDebugMsg( "entered." );
   QgsDebugMsg( QString( "n = %1 s = %2" ).arg( window->north ).arg( window->south ) );
   QgsDebugMsg( QString( "e = %1 w = %2" ).arg( window->east ).arg( window->west ) );
 
@@ -1848,7 +1838,6 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
                           QString location, QString mapset, QString map,
                           struct Cell_head *window )
 {
-  QgsDebugMsg( "entered." );
   QgsDebugMsg( QString( "map = %1" ).arg( map ) );
   QgsDebugMsg( QString( "mapset = %1" ).arg( mapset ) );
 
@@ -2174,7 +2163,7 @@ QgsCoordinateReferenceSystem QgsGrass::crs( const QString& gisdbase, const QStri
   {
     QString wkt = getInfo( "proj", gisdbase, location );
     QgsDebugMsg( "wkt: " + wkt );
-    crs.createFromWkt( wkt );
+    crs = QgsCoordinateReferenceSystem::fromWkt( wkt );
     QgsDebugMsg( "crs.toWkt: " + crs.toWkt() );
   }
   catch ( QgsGrass::Exception &e )
@@ -2219,8 +2208,7 @@ QgsCoordinateReferenceSystem QgsGrass::crsDirect( const QString& gisdbase, const
     }
   }
 
-  QgsCoordinateReferenceSystem srs;
-  srs.createFromWkt( Wkt );
+  QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromWkt( Wkt );
 
   return srs;
 }
@@ -2366,7 +2354,6 @@ QMap<QString, QString> QgsGrass::query( QString gisdbase, QString location, QStr
 
 void QgsGrass::renameObject( const QgsGrassObject & object, const QString& newName )
 {
-  QgsDebugMsg( "entered" );
   QString cmd =  gisbase() + "/bin/g.rename";
   QStringList arguments;
 
@@ -2400,7 +2387,6 @@ void QgsGrass::copyObject( const QgsGrassObject & srcObject, const QgsGrassObjec
 
 bool QgsGrass::deleteObject( const QgsGrassObject & object )
 {
-  QgsDebugMsg( "entered" );
 
   // TODO: check if user has permissions
 
@@ -2436,7 +2422,6 @@ bool QgsGrass::deleteObject( const QgsGrassObject & object )
 
 bool QgsGrass::deleteObjectDialog( const QgsGrassObject & object )
 {
-  QgsDebugMsg( "entered" );
 
   return QMessageBox::question( 0, QObject::tr( "Delete confirmation" ),
                                 QObject::tr( "Are you sure you want to delete %1 %2?" ).arg( object.elementName(), object.name() ),
@@ -2445,7 +2430,6 @@ bool QgsGrass::deleteObjectDialog( const QgsGrassObject & object )
 
 void QgsGrass::createVectorMap( const QgsGrassObject & object, QString &error )
 {
-  QgsDebugMsg( "entered" );
 
   QgsGrass::setMapset( object );
 
@@ -2923,7 +2907,6 @@ void QgsGrass::setModulesDebug( bool debug )
 
 void QgsGrass::openOptions()
 {
-  QgsDebugMsg( "entered" );
   QgsGrassOptions dialog;
   dialog.exec();
 }

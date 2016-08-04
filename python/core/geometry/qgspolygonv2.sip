@@ -12,6 +12,7 @@ class QgsPolygonV2: public QgsCurvePolygonV2
 
     virtual QString geometryType() const;
     virtual QgsPolygonV2* clone() const;
+    void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
 
@@ -34,4 +35,5 @@ class QgsPolygonV2: public QgsCurvePolygonV2
     //overridden to handle LineString25D rings
     virtual void setExteriorRing( QgsCurveV2* ring /Transfer/ );
 
+    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
 };

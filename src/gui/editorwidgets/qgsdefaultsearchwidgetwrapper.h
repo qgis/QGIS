@@ -21,7 +21,7 @@
 
 #include <QCheckBox>
 
-/**
+/** \ingroup gui
  * Wraps a search widget. Default form is just a QgsLineFilterEdit
  */
 

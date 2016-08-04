@@ -20,7 +20,7 @@
 
 #include "qgsattributeforminterface.h"
 
-/**
+/** \ingroup gui
  * This class helps to support legacy open form scripts to be compatible with the new
  * QgsAttributeForm style interface.
  * @note not available in Python bindings

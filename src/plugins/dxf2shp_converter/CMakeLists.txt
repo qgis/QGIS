@@ -38,6 +38,9 @@ INCLUDE_DIRECTORIES(
      ../../gui
      ..
 )
+INCLUDE_DIRECTORIES(SYSTEM
+  ${PROJ_INCLUDE_DIR}
+)
 
 TARGET_LINK_LIBRARIES(dxf2shpconverterplugin
   qgis_core

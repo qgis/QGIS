@@ -53,8 +53,21 @@ void QgsAnnotationItem::setMarkerSymbol( QgsMarkerSymbolV2* symbol )
 void QgsAnnotationItem::setMapPosition( const QgsPoint& pos )
 {
   mMapPosition = pos;
+
   setPos( toCanvasCoordinates( mMapPosition ) );
-  mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
+  setMapPositionCrs( mMapCanvas->mapSettings().destinationCrs() );
+}
+
+QPointF QgsAnnotationItem::relativePosition() const
+{
+  double x = pos().x() / mMapCanvas->width();
+  double y = pos().y() / mMapCanvas->height();
+  return QPointF( x, y );
+}
+
+double QgsAnnotationItem::scaleFactor() const
+{
+  return 1.0 / mMapCanvas->logicalDpiX() * 25.4;
 }
 
 void QgsAnnotationItem::setMapPositionCrs( const QgsCoordinateReferenceSystem& crs )
@@ -185,7 +198,7 @@ void QgsAnnotationItem::updateBalloon()
   mBalloonSegmentPoint2 = pointOnLineWithDistance( mBalloonSegmentPoint1, minEdge.p2(), 10 );
 }
 
-void QgsAnnotationItem::drawFrame( QPainter* p )
+void QgsAnnotationItem::drawFrame( QPainter* p ) const
 {
   QPen framePen( mFrameColor );
   framePen.setWidthF( mFrameBorderWidth );
@@ -219,7 +232,7 @@ void QgsAnnotationItem::setFrameSize( QSizeF size )
   updateBalloon();
 }
 
-void QgsAnnotationItem::drawMarkerSymbol( QPainter* p )
+void QgsAnnotationItem::drawMarkerSymbol( QPainter* p ) const
 {
   if ( !p )
   {
@@ -240,7 +253,7 @@ void QgsAnnotationItem::drawMarkerSymbol( QPainter* p )
   }
 }
 
-void QgsAnnotationItem::drawSelectionBoxes( QPainter* p )
+void QgsAnnotationItem::drawSelectionBoxes( QPainter* p ) const
 {
   if ( !p )
   {
@@ -262,7 +275,7 @@ void QgsAnnotationItem::drawSelectionBoxes( QPainter* p )
   p->drawRect( QRectF( mBoundingRect.left(), mBoundingRect.bottom() - handlerSize, handlerSize, handlerSize ) );
 }
 
-QLineF QgsAnnotationItem::segment( int index )
+QLineF QgsAnnotationItem::segment( int index ) const
 {
   switch ( index )
   {
@@ -393,7 +406,7 @@ double QgsAnnotationItem::scaledSymbolSize() const
   return dpmm * mMarkerSymbol->size();
 }
 
-void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) const
+void QgsAnnotationItem::_writeXml( QDomDocument& doc, QDomElement& itemElem ) const
 {
   if ( itemElem.isNull() )
   {
@@ -404,15 +417,15 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   annotationElem.setAttribute( "mapPosX", qgsDoubleToString( mMapPosition.x() ) );
   annotationElem.setAttribute( "mapPosY", qgsDoubleToString( mMapPosition.y() ) );
   if ( mMapPositionCrs.isValid() )
-    mMapPositionCrs.writeXML( annotationElem, doc );
+    mMapPositionCrs.writeXml( annotationElem, doc );
   annotationElem.setAttribute( "offsetX", qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
   annotationElem.setAttribute( "offsetY", qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
-  annotationElem.setAttribute( "frameWidth", QString::number( mFrameSize.width() ) );
-  annotationElem.setAttribute( "frameHeight", QString::number( mFrameSize.height() ) );
+  annotationElem.setAttribute( "frameWidth", qgsDoubleToString( mFrameSize.width() ) );
+  annotationElem.setAttribute( "frameHeight", qgsDoubleToString( mFrameSize.height() ) );
   QPointF canvasPos = pos();
   annotationElem.setAttribute( "canvasPosX", qgsDoubleToString( canvasPos.x() ) );
   annotationElem.setAttribute( "canvasPosY", qgsDoubleToString( canvasPos.y() ) );
-  annotationElem.setAttribute( "frameBorderWidth", QString::number( mFrameBorderWidth ) );
+  annotationElem.setAttribute( "frameBorderWidth", qgsDoubleToString( mFrameBorderWidth ) );
   annotationElem.setAttribute( "frameColor", mFrameColor.name() );
   annotationElem.setAttribute( "frameColorAlpha", mFrameColor.alpha() );
   annotationElem.setAttribute( "frameBackgroundColor", mFrameBackgroundColor.name() );
@@ -429,7 +442,7 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   itemElem.appendChild( annotationElem );
 }
 
-void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& annotationElem )
+void QgsAnnotationItem::_readXml( const QDomDocument& doc, const QDomElement& annotationElem )
 {
   Q_UNUSED( doc );
   if ( annotationElem.isNull() )
@@ -444,8 +457,12 @@ void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& an
   mapPos.setX( annotationElem.attribute( "mapPosX", "0" ).toDouble() );
   mapPos.setY( annotationElem.attribute( "mapPosY", "0" ).toDouble() );
   mMapPosition = mapPos;
-  if ( !mMapPositionCrs.readXML( annotationElem ) )
+
+  if ( !mMapPositionCrs.readXml( annotationElem ) )
+  {
     mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
+  }
+
   mFrameBorderWidth = annotationElem.attribute( "frameBorderWidth", "0.5" ).toDouble();
   mFrameColor.setNamedColor( annotationElem.attribute( "frameColor", "#000000" ) );
   mFrameColor.setAlpha( annotationElem.attribute( "frameColorAlpha", "255" ).toInt() );
@@ -472,4 +489,20 @@ void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& an
 
   updateBoundingRect();
   updateBalloon();
+}
+
+void QgsAnnotationItem::setItemData( int role, const QVariant& value )
+{
+  setData( role, value );
+}
+
+void QgsAnnotationItem::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* )
+{
+  // maintain API compatibility, if annotation item subclasses only implement the paint( QPainter* ) override
+  paint( painter );
+}
+
+void QgsAnnotationItem::paint( QPainter* painter )
+{
+  Q_UNUSED( painter );
 }

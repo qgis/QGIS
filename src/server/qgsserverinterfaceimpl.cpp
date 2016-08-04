@@ -18,7 +18,8 @@
 
 
 #include "qgsserverinterfaceimpl.h"
-
+#include "qgsconfigcache.h"
+#include "qgsmslayercache.h"
 
 /** Constructor */
 QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache )
@@ -72,3 +73,21 @@ void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter* acce
 {
   mAccessControls->registerAccessControl( accessControl, priority );
 }
+
+
+void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString& path )
+{
+  if ( mCapabilitiesCache )
+  {
+    mCapabilitiesCache->removeCapabilitiesDocument( path );
+  }
+  QgsConfigCache::instance()->removeEntry( path );
+}
+
+void QgsServerInterfaceImpl::removeProjectLayers( const QString& path )
+{
+  QgsMSLayerCache::instance()->removeProjectLayers( path );
+}
+
+
+

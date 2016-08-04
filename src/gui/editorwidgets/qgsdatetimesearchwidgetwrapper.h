@@ -17,13 +17,13 @@
 #define QGSDATETIMESEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include "qgsdatetimeeditwrapper.h"
 
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
 
 class QgsDateTimeEditFactory;
+class QgsDateTimeEdit;
 
 /** \ingroup gui
  * \class QgsDateTimeSearchWidgetWrapper

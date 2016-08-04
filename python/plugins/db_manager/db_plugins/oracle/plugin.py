@@ -87,8 +87,8 @@ class OracleDBPlugin(DBPlugin):
                 self.tr('There is no defined database connection "{}".'.format(
                     conn_name)))
 
-        from qgis.core import QgsDataSourceURI
-        uri = QgsDataSourceURI()
+        from qgis.core import QgsDataSourceUri
+        uri = QgsDataSourceUri()
 
         settingsList = ["host", "port", "database", "username", "password"]
         host, port, database, username, password = [settings.value(x, "", type=str) for x in settingsList]
@@ -105,6 +105,8 @@ class OracleDBPlugin(DBPlugin):
             settings.value("allowGeometrylessTables", False, type=bool)))
         uri.setParam('onlyExistingTypes', unicode(
             settings.value("onlyExistingTypes", False, type=bool)))
+        uri.setParam('includeGeoAttributes', unicode(
+            settings.value("includeGeoAttributes", False, type=bool)))
 
         settings.endGroup()
 
@@ -377,9 +379,9 @@ class ORTable(Table):
         from .data_model import ORTableDataModel
         return ORTableDataModel(self, parent)
 
-    def getValidQGisUniqueFields(self, onlyOne=False):
-        """ list of fields valid to load the table as layer in QGis canvas.
-        QGis automatically search for a valid unique field, so it's
+    def getValidQgisUniqueFields(self, onlyOne=False):
+        """ list of fields valid to load the table as layer in Qgis canvas.
+        Qgis automatically search for a valid unique field, so it's
         needed only for queries and views.
         """
 
@@ -419,7 +421,7 @@ class ORTable(Table):
         schema = self.schemaName() if self.schemaName() else ''
         geomCol = self.geomColumn if self.type in [
             Table.VectorType, Table.RasterType] else ""
-        uniqueCol = self.getValidQGisUniqueFields(
+        uniqueCol = self.getValidQgisUniqueFields(
             True) if self.isView else None
         uri.setDataSource(schema, self.name, geomCol if geomCol else None,
                           None, uniqueCol.name if uniqueCol else "")
@@ -527,7 +529,7 @@ class ORTableField(TableField):
 
     def update(self, new_name, new_type_str=None, new_not_null=None,
                new_default_str=None):
-        self.table().aboutToChange()
+        self.table().aboutToChange.emit()
         if self.name == new_name:
             new_name = None
         if self.type2String() == new_type_str:

@@ -34,7 +34,6 @@ QgsGpsdConnection::QgsGpsdConnection( const QString& host, qint16 port, const QS
 QgsGpsdConnection::~QgsGpsdConnection()
 {
   //connection will be closed by base class
-  QgsDebugMsg( "entered." );
 }
 
 void QgsGpsdConnection::connected()

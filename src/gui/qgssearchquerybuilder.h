@@ -28,10 +28,9 @@
 class QgsField;
 class QgsVectorLayer;
 
-/*!
+/** \ingroup gui
  * \class QgsSearchQueryBuilder
  * \brief Query Builder for search strings
- *
  */
 class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
 {
@@ -40,7 +39,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
   public:
     //! Constructor - takes pointer to vector layer as a parameter
     QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent = nullptr,
-                           const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+                           Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     ~QgsSearchQueryBuilder();
 

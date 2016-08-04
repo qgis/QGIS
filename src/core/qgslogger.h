@@ -110,6 +110,8 @@ class CORE_EXPORT QgsLogger
     static QTime sTime;
 };
 
+/** \ingroup core
+ */
 class QgsScopeLogger
 {
   public:

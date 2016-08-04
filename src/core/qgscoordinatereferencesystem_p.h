@@ -45,10 +45,11 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     explicit QgsCoordinateReferenceSystemPrivate()
         : mSrsId( 0 )
         , mIsGeographic( false )
-        , mMapUnits( QGis::UnknownUnit )
+        , mMapUnits( QgsUnitTypes::DistanceUnknownUnit )
         , mSRID( 0 )
         , mIsValid( 0 )
         , mCRS( OSRNewSpatialReference( nullptr ) )
+        , mAxisInvertedDirty( false )
         , mAxisInverted( false )
     {
     }
@@ -68,6 +69,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
         , mValidationHint( other.mValidationHint )
         , mWkt( other.mWkt )
         , mProj4( other.mProj4 )
+        , mAxisInvertedDirty( other.mAxisInvertedDirty )
         , mAxisInverted( other.mAxisInverted )
     {
       if ( mIsValid )
@@ -97,7 +99,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     bool mIsGeographic;
 
     //! The map units for the CRS
-    QGis::UnitType mMapUnits;
+    QgsUnitTypes::DistanceUnit mMapUnits;
 
     //! If available, the Postgis spatial_ref_sys identifier for this CRS (defaults to 0)
     long mSRID;
@@ -114,8 +116,11 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     mutable QString mWkt;
     mutable QString mProj4;
 
+    //! True if presence of an inverted axis needs to be recaculated
+    mutable bool mAxisInvertedDirty;
+
     //! Whether this is a coordinate system has inverted axis
-    mutable int mAxisInverted;
+    mutable bool mAxisInverted;
 
 };
 

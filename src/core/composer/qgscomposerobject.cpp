@@ -52,7 +52,7 @@ QgsComposerObject::~QgsComposerObject()
   qDeleteAll( mDataDefinedProperties );
 }
 
-bool QgsComposerObject::writeXML( QDomElement &elem, QDomDocument &doc ) const
+bool QgsComposerObject::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   if ( elem.isNull() )
   {
@@ -68,7 +68,7 @@ bool QgsComposerObject::writeXML( QDomElement &elem, QDomDocument &doc ) const
   return true;
 }
 
-bool QgsComposerObject::readXML( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsComposerObject::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )

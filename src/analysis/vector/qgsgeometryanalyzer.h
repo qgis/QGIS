@@ -18,15 +18,13 @@
 #ifndef QGSGEOMETRYANALYZERH
 #define QGSGEOMETRYANALYZERH
 
-#include "qgsvectorlayer.h"
-#include "qgsfield.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsdistancearea.h"
 
 class QgsVectorFileWriter;
 class QProgressDialog;
-
+class QgsVectorDataProvider;
+class QgsDistanceArea;
 
 /** \ingroup analysis
  * The QGis class provides vector geometry analysis functions
@@ -121,37 +119,37 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
                      bool forceSingleGeometry = false, QgsVectorDataProvider* memoryProvider = nullptr, QProgressDialog* p = nullptr );
 
     /** Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
-    QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry *lineGeom );
+    QgsGeometry locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry& lineGeom );
     /** Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
      * Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)
      */
-    QgsGeometry* locateAlongMeasure( double measure, const QgsGeometry* lineGeom );
+    QgsGeometry locateAlongMeasure( double measure, const QgsGeometry& lineGeom );
 
   private:
 
-    QList<double> simpleMeasure( QgsGeometry* geometry );
+    QList<double> simpleMeasure( QgsGeometry& geometry );
     double perimeterMeasure( QgsGeometry* geometry, QgsDistanceArea& measure );
     /** Helper function to simplify an individual feature*/
     void simplifyFeature( QgsFeature& f, QgsVectorFileWriter* vfw, double tolerance );
     /** Helper function to get the cetroid of an individual feature*/
     void centroidFeature( QgsFeature& f, QgsVectorFileWriter* vfw );
     /** Helper function to buffer an individual feature*/
-    void bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve, QgsGeometry** dissolveGeometry,
+    void bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve, QgsGeometry& dissolveGeometry,
                         double bufferDistance, int bufferDistanceField );
     /** Helper function to get the convex hull of feature(s)*/
-    void convexFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
+    void convexFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry& dissolveGeometry );
     /** Helper function to dissolve feature(s)*/
     void dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
 
     //helper functions for event layer
-    void addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, QgsGeometry* lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, int offsetField = -1, double offsetScale = 1.0,
+    void addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, const QgsGeometry& lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, int offsetField = -1, double offsetScale = 1.0,
                                bool forceSingleType = false );
     /** Create geometry offset relative to line geometry.
         @param geom the geometry to modify
         @param lineGeom the line geometry to which the feature is referenced
         @param offset the offset value in layer unit. Negative values mean offset towards left, positive values offset to the right side*/
-    bool createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset );
-    QgsPoint createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const;
+    bool createOffsetGeometry( QgsGeometry* geom, const QgsGeometry& lineGeom, double offset );
+    QgsPoint createPointOffset( double x, double y, double dist, const QgsGeometry& lineGeom ) const;
     QgsConstWkbPtr locateBetweenWkbString( QgsConstWkbPtr ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
     QgsConstWkbPtr locateAlongWkbString( QgsConstWkbPtr ptr, QgsMultiPoint& result, double measure );
     static bool clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint& pt1, QgsPoint& pt2, bool& secondPointClipped );

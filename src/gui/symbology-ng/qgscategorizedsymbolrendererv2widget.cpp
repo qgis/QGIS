@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscategorizedsymbolrendererv2widget.h"
+#include "qgspanelwidget.h"
 
 #include "qgscategorizedsymbolrendererv2.h"
 
@@ -26,6 +27,7 @@
 #include "qgsexpressionbuilderdialog.h"
 
 #include "qgsvectorlayer.h"
+#include "qgsfeatureiterator.h"
 
 #include "qgsproject.h"
 #include "qgsexpression.h"
@@ -333,7 +335,6 @@ void QgsCategorizedSymbolRendererV2Model::removeAllRows()
 
 void QgsCategorizedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
 {
-  QgsDebugMsg( "Entered" );
   if ( column == 0 )
   {
     return;
@@ -438,6 +439,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   if ( randomIndex != -1 )
   {
     cboCategorizedColorRamp->setCurrentIndex( randomIndex );
+    mButtonEditRamp->setEnabled( false );
   }
 
   // set project default color ramp
@@ -530,6 +532,10 @@ void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
     cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
   }
 
+  if ( cboCategorizedColorRamp->currentText() == tr( "Random colors" ) )
+    mButtonEditRamp->setEnabled( false );
+  else
+    mButtonEditRamp->setEnabled( true );
 }
 
 QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2Widget::renderer()
@@ -565,33 +571,14 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
 
 void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 {
-  // When there is a slection, change the selected symbols alone
-  QItemSelectionModel* m = viewCategories->selectionModel();
-  QModelIndexList i = m->selectedRows();
-
-  if ( m && !i.isEmpty() )
-  {
-    changeSelectedSymbols();
-    return;
-  }
-
-  // When there is no selection, change the base mCategorizedSymbol
   QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
+  QgsSymbolV2SelectorWidget* dlg = new QgsSymbolV2SelectorWidget( newSymbol, mStyle, mLayer, nullptr );
+  dlg->setDockMode( this->dockMode() );
+  dlg->setMapCanvas( mMapCanvas );
 
-  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
-  dlg.setMapCanvas( mMapCanvas );
-  if ( !dlg.exec() || !newSymbol )
-  {
-    delete newSymbol;
-    return;
-  }
-
-  delete mCategorizedSymbol;
-  mCategorizedSymbol = newSymbol;
-  updateCategorizedSymbolIcon();
-
-  mRenderer->updateSymbols( mCategorizedSymbol );
-  emit widgetChanged();
+  connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
+  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
+  openPanel( dlg );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
@@ -618,7 +605,6 @@ void QgsCategorizedSymbolRendererV2Widget::categoriesDoubleClicked( const QModel
 
 void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
 {
-  int catIdx = currentCategoryRow();
   QgsRendererCategoryV2 category = mRenderer->categories().value( currentCategoryRow() );
 
   QgsSymbolV2 *symbol = category.symbol();
@@ -631,16 +617,12 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
     symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   }
 
-  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, mLayer, this );
-  dlg.setMapCanvas( mMapCanvas );
-  if ( !dlg.exec() )
-  {
-    delete symbol;
-    return;
-  }
-
-  mRenderer->updateCategorySymbol( catIdx, symbol );
-  emit widgetChanged();
+  QgsSymbolV2SelectorWidget* dlg = new QgsSymbolV2SelectorWidget( symbol, mStyle, mLayer, nullptr );
+  dlg->setDockMode( this->dockMode() );
+  dlg->setMapCanvas( mMapCanvas );
+  connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
+  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
+  openPanel( dlg );
 }
 
 static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV2* symbol )
@@ -822,6 +804,11 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
 
 void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
 {
+  if ( cboCategorizedColorRamp->currentText() == tr( "Random colors" ) )
+    mButtonEditRamp->setEnabled( false );
+  else
+    mButtonEditRamp->setEnabled( true );
+
   QgsVectorColorRampV2* ramp = getColorRamp();
   if ( ramp )
   {
@@ -929,6 +916,12 @@ QgsCategoryList QgsCategorizedSymbolRendererV2Widget::selectedCategoryList()
   return cl;
 }
 
+void QgsCategorizedSymbolRendererV2Widget::refreshSymbolView()
+{
+  populateCategories();
+  emit widgetChanged();
+}
+
 void QgsCategorizedSymbolRendererV2Widget::showSymbolLevels()
 {
   showSymbolLevelsDialog( mRenderer );
@@ -965,9 +958,9 @@ int QgsCategorizedSymbolRendererV2Widget::matchToSymbols( QgsStyleV2* style )
     QString val = mRenderer->categories().at( catIdx ).value().toString();
     QgsSymbolV2* symbol = style->symbol( val );
     if ( symbol &&
-         (( symbol->type() == QgsSymbolV2::Marker && mLayer->geometryType() == QGis::Point )
-          || ( symbol->type() == QgsSymbolV2::Line && mLayer->geometryType() == QGis::Line )
-          || ( symbol->type() == QgsSymbolV2::Fill && mLayer->geometryType() == QGis::Polygon ) ) )
+         (( symbol->type() == QgsSymbolV2::Marker && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
+          || ( symbol->type() == QgsSymbolV2::Line && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
+          || ( symbol->type() == QgsSymbolV2::Fill && mLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) ) )
     {
       matched++;
       mRenderer->updateCategorySymbol( catIdx, symbol->clone() );
@@ -993,7 +986,7 @@ void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
   settings.setValue( "UI/lastMatchToSymbolsDir", openFileInfo.absolutePath() );
 
   QgsStyleV2 importedStyle;
-  if ( !importedStyle.importXML( fileName ) )
+  if ( !importedStyle.importXml( fileName ) )
   {
     QMessageBox::warning( this, tr( "Matching error" ),
                           tr( "An error occurred reading file:\n%1" ).arg( importedStyle.errorString() ) );
@@ -1011,6 +1004,52 @@ void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
     QMessageBox::warning( this, tr( "Matched symbols" ),
                           tr( "No categories could be matched to symbols in file." ) );
   }
+}
+
+void QgsCategorizedSymbolRendererV2Widget::cleanUpSymbolSelector( QgsPanelWidget *container )
+{
+  if ( container )
+  {
+    QgsSymbolV2SelectorWidget* dlg = qobject_cast<QgsSymbolV2SelectorWidget*>( container );
+    delete dlg->symbol();
+  }
+}
+
+void QgsCategorizedSymbolRendererV2Widget::updateSymbolsFromWidget()
+{
+  QgsSymbolV2SelectorWidget* dlg = qobject_cast<QgsSymbolV2SelectorWidget*>( sender() );
+  delete mCategorizedSymbol;
+  mCategorizedSymbol = dlg->symbol()->clone();
+
+  updateCategorizedSymbolIcon();
+
+  // When there is a slection, change the selected symbols alone
+  QItemSelectionModel* m = viewCategories->selectionModel();
+  QModelIndexList i = m->selectedRows();
+
+  if ( m && !i.isEmpty() )
+  {
+    QList<int> selectedCats = selectedCategories();
+
+    if ( !selectedCats.isEmpty() )
+    {
+      Q_FOREACH ( int idx, selectedCats )
+      {
+        QgsSymbolV2* newCatSymbol = mCategorizedSymbol->clone();
+        if ( selectedCats.count() > 1 )
+        {
+          //if updating multiple categories, retain the existing category colors
+          newCatSymbol->setColor( mRenderer->categories().at( idx ).symbol()->color() );
+        }
+        mRenderer->updateCategorySymbol( idx, newCatSymbol );
+      }
+      emit widgetChanged();
+    }
+    return;
+  }
+
+  mRenderer->updateSymbols( mCategorizedSymbol );
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )

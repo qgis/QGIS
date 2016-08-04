@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgsnewhttpconnection.h"
 #include "qgscontexthelp.h"
+#include "qgsauthconfigselect.h"
 #include <QSettings>
 #include <QMessageBox>
 #include <QUrl>
@@ -23,7 +24,7 @@
 #include <QRegExpValidator>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
-  QWidget *parent, const QString& baseKey, const QString& connName, const Qt::WindowFlags& fl )
+  QWidget *parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mBaseKey( baseKey )
     , mOriginalConnName( connName )

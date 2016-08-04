@@ -23,6 +23,9 @@
 class QgsComposerMultiFrame;
 class QgsComposition;
 
+/** \ingroup core
+ * \class QgsAddRemoveMultiFrameCommand
+ */
 class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
 {
   public:

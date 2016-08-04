@@ -56,7 +56,8 @@ struct CORE_EXPORT QgsGPSInformation
   bool satInfoComplete; // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
 };
 
-/** Abstract base class for connection to a GPS device*/
+/** \ingroup core
+ * Abstract base class for connection to a GPS device*/
 class CORE_EXPORT QgsGPSConnection : public QObject
 {
     Q_OBJECT

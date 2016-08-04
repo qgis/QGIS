@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QCheckBox
-from qgis.core import QGis, QgsVectorLayer
+from qgis.core import Qgis, QgsVectorLayer, QgsWkbTypes, QgsWkbTypes
 
 from processing.core.parameters import ParameterGeometryPredicate
 
@@ -41,20 +41,20 @@ WIDGET, BASE = uic.loadUiType(
 class GeometryPredicateSelectionPanel(BASE, WIDGET):
 
     unusablePredicates = {
-        QGis.Point: {
-            QGis.Point: ('touches', 'crosses'),
-            QGis.Line: ('equals', 'contains', 'overlaps'),
-            QGis.Polygon: ('equals', 'contains', 'overlaps')
+        QgsWkbTypes.PointGeometry: {
+            QgsWkbTypes.PointGeometry: ('touches', 'crosses'),
+            QgsWkbTypes.LineGeometry: ('equals', 'contains', 'overlaps'),
+            QgsWkbTypes.PolygonGeometry: ('equals', 'contains', 'overlaps')
         },
-        QGis.Line: {
-            QGis.Point: ('equals', 'within', 'overlaps'),
-            QGis.Line: [],
-            QGis.Polygon: ('equals', 'contains', 'overlaps')
+        QgsWkbTypes.LineGeometry: {
+            QgsWkbTypes.PointGeometry: ('equals', 'within', 'overlaps'),
+            QgsWkbTypes.LineGeometry: [],
+            QgsWkbTypes.PolygonGeometry: ('equals', 'contains', 'overlaps')
         },
-        QGis.Polygon: {
-            QGis.Point: ('equals', 'within', 'overlaps'),
-            QGis.Line: ('equals', 'within', 'overlaps'),
-            QGis.Polygon: ('crosses')
+        QgsWkbTypes.PolygonGeometry: {
+            QgsWkbTypes.PointGeometry: ('equals', 'within', 'overlaps'),
+            QgsWkbTypes.LineGeometry: ('equals', 'within', 'overlaps'),
+            QgsWkbTypes.PolygonGeometry: ('crosses')
         }
     }
 

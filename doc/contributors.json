@@ -324,6 +324,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Mathieu Pellerin",
+        "Committer": "No",
+        "First Commit Message": "[labelling] set fill rule of qpainterpath for text/buffer rendering",
+        "First Commit Date": "04-09-2015",
+        "GIT Nickname": "nirvn"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.9110,
+          11.5582          
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Matthias Kuhn",
         "Committer": "Yes",
         "First Commit Message": "Add backbuffering option to resolve flickering on X11 systems",
@@ -751,6 +768,55 @@
         "coordinates": [
           13.409402,
           52.520804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alexandre Neto",
+        "Committer": "No",
+        "First Commit Message": "Some translations",
+        "First Commit Date": "26-02-2013",
+        "GIT Nickname": "SrNetoChan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.42036,
+          38.69744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Even Rouault",
+        "Committer": "Yes",
+        "First Commit Message": "OGR provider: don't segfault when the layer cannot be retrieved (e.g. datasource with 0 layer)",
+        "First Commit Date": "20-11-2011",
+        "GIT Nickname": "rouault"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.1539,
+          48.9472
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Matteo Ghetta",
+        "Committer": "No",
+        "GIT Nickname": "ghtmtt"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.9358,
+          46.7963
         ]
       }
     }

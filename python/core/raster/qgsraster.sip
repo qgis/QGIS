@@ -95,6 +95,6 @@ class QgsRaster
      * @param value
      * @param dataType
      * @note added in version 2.1 */
-    static double representableValue( double value, QGis::DataType dataType );
+    static double representableValue( double value, Qgis::DataType dataType );
 };
 

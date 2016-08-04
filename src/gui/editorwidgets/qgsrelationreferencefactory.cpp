@@ -16,9 +16,13 @@
 #include "qgsproject.h"
 #include "qgsrelationreferencefactory.h"
 
+#include "qgsfeatureiterator.h"
+#include "qgsrelation.h"
+#include "qgsrelationmanager.h"
 #include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsrelationreferenceconfigdlg.h"
 #include "qgsrelationreferencesearchwidgetwrapper.h"
+#include "qgsrelationreferencewidget.h"
 
 QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString& name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
     : QgsEditorWidgetFactory( name )
@@ -46,7 +50,7 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
 {
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
-  QMap<QString, QVariant> cfg;
+  QgsEditorWidgetConfig cfg;
 
   cfg.insert( "AllowNULL", configElement.attribute( "AllowNULL" ) == "1" );
   cfg.insert( "OrderByValue", configElement.attribute( "OrderByValue" ) == "1" );
@@ -130,13 +134,13 @@ QString QgsRelationReferenceFactory::representValue( QgsVectorLayer* vl, int fie
   QgsVectorLayer* referencingLayer = relation.referencingLayer();
   if ( vl != referencingLayer )
   {
-    QgsDebugMsg( "representValue() with inconsistant vl parameter w.r.t relation referencingLayer" );
+    QgsDebugMsg( "representValue() with inconsistent vl parameter w.r.t relation referencingLayer" );
     return value.toString();
   }
   int referencingFieldIdx = referencingLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).first );
   if ( referencingFieldIdx != fieldIdx )
   {
-    QgsDebugMsg( "representValue() with inconsistant fieldIdx parameter w.r.t relation referencingFieldIdx" );
+    QgsDebugMsg( "representValue() with inconsistent fieldIdx parameter w.r.t relation referencingFieldIdx" );
     return value.toString();
   }
   QgsVectorLayer* referencedLayer = relation.referencedLayer();
@@ -170,4 +174,9 @@ QString QgsRelationReferenceFactory::representValue( QgsVectorLayer* vl, int fie
     title = feature.attribute( referencedFieldIdx ).toString();
   }
   return title;
+}
+
+QVariant QgsRelationReferenceFactory::sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
+{
+  return representValue( vl, fieldIdx, config, cache, value );
 }

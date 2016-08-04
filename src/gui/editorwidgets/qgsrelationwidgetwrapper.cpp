@@ -18,6 +18,7 @@
 #include "qgsrelationeditorwidget.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsproject.h"
+#include "qgsrelationmanager.h"
 
 #include <QWidget>
 
@@ -37,6 +38,12 @@ void QgsRelationWidgetWrapper::setFeature( const QgsFeature& feature )
 {
   if ( mWidget && mRelation.isValid() )
     mWidget->setFeature( feature );
+}
+
+void QgsRelationWidgetWrapper::setVisible( bool visible )
+{
+  if ( mWidget )
+    mWidget->setVisible( visible );
 }
 
 void QgsRelationWidgetWrapper::initWidget( QWidget* editor )

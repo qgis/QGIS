@@ -22,7 +22,7 @@
 
 class QDomElement;
 
-/**
+/** \ingroup core
  * This class is a base class for nodes in a layer tree.
  * Layer tree is a hierarchical structure consisting of group and layer nodes:
  * - group nodes are containers and may contain children (layer and group nodes)
@@ -84,9 +84,9 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     QList<QgsLayerTreeNode*> children() { return mChildren; }
 
     //! Read layer tree from XML. Returns new instance
-    static QgsLayerTreeNode *readXML( QDomElement &element );
+    static QgsLayerTreeNode *readXml( QDomElement &element );
     //! Write layer tree to XML
-    virtual void writeXML( QDomElement &parentElement ) = 0;
+    virtual void writeXml( QDomElement &parentElement ) = 0;
 
     //! Return string with layer tree structure. For debug purposes only
     virtual QString dump() const = 0;
@@ -134,8 +134,8 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
     // low-level utility functions
 
-    void readCommonXML( QDomElement &element );
-    void writeCommonXML( QDomElement &element );
+    void readCommonXml( QDomElement &element );
+    void writeCommonXml( QDomElement &element );
 
     //! Low-level insertion of children to the node. The children must not have any parent yet!
     void insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes );

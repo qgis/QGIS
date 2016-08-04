@@ -40,7 +40,7 @@ class QDomElement;
 class QgsExpressionContext;
 class QgsExpressionPrivate;
 
-/**
+/** \ingroup core
 Class for parsing and evaluation of expressions (formerly called "search strings").
 The expressions try to follow both syntax and semantics of SQL expressions.
 
@@ -289,7 +289,7 @@ class CORE_EXPORT QgsExpression
      * @see setDistanceUnits()
      * @see areaUnits()
      */
-    QGis::UnitType distanceUnits() const;
+    QgsUnitTypes::DistanceUnit distanceUnits() const;
 
     /** Sets the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsExpression
      * @see distanceUnits()
      * @see setAreaUnits()
      */
-    void setDistanceUnits( QGis::UnitType unit );
+    void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
     /** Returns the desired areal units for calculations involving geomCalculator(), eg "$area".
      * @note areas are only converted when a geomCalculator() has been set
@@ -426,7 +426,7 @@ class CORE_EXPORT QgsExpression
     //! @note not available in Python bindings
     static const char* UnaryOperatorText[];
 
-    /**
+    /** \ingroup core
       * Represents a single parameter passed to a function.
       * \note added in QGIS 2.16
       */
@@ -477,7 +477,7 @@ class CORE_EXPORT QgsExpression
      */
     typedef QVariant( *FcnEvalContext )( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
 
-    /**
+    /** \ingroup core
       * A abstract base class for defining QgsExpression functions.
       */
     class CORE_EXPORT Function
@@ -623,7 +623,7 @@ class CORE_EXPORT QgsExpression
         bool mIsContextual; //if true function is only available through an expression context
     };
 
-    /**
+    /** \ingroup core
       * c++ helper class for defining QgsExpression functions.
       * \note not available in Python bindings
       */
@@ -800,6 +800,8 @@ class CORE_EXPORT QgsExpression
       ntCondition
     };
 
+    /** \ingroup core
+     */
     class CORE_EXPORT Node
     {
       public:
@@ -899,6 +901,7 @@ class CORE_EXPORT QgsExpression
 
     //! Named node
     //! @note added in QGIS 2.16
+    //! \ingroup core
     class CORE_EXPORT NamedNode
     {
       public:
@@ -919,6 +922,8 @@ class CORE_EXPORT QgsExpression
         Node* node;
     };
 
+    /** \ingroup core
+     */
     class CORE_EXPORT NodeList
     {
       public:
@@ -962,8 +967,11 @@ class CORE_EXPORT QgsExpression
 
     //TODO QGIS 3.0 - remove
     //! @deprecated use QgsInterval instead
+    //! \ingroup core
     typedef QgsInterval Interval;
 
+    /** \ingroup core
+     */
     class CORE_EXPORT NodeUnaryOperator : public Node
     {
       public:
@@ -991,6 +999,8 @@ class CORE_EXPORT QgsExpression
         Node* mOperand;
     };
 
+    /** \ingroup core
+     */
     class CORE_EXPORT NodeBinaryOperator : public Node
     {
       public:
@@ -1034,6 +1044,8 @@ class CORE_EXPORT QgsExpression
         Node* mOpRight;
     };
 
+    /** \ingroup core
+     */
     class CORE_EXPORT NodeInOperator : public Node
     {
       public:
@@ -1064,6 +1076,8 @@ class CORE_EXPORT QgsExpression
         bool mNotIn;
     };
 
+    /** \ingroup core
+     */
     class CORE_EXPORT NodeFunction : public Node
     {
       public:
@@ -1201,6 +1215,8 @@ class CORE_EXPORT QgsExpression
 
     };
 
+    /** \ingroup core
+     */
     class CORE_EXPORT NodeLiteral : public Node
     {
       public:
@@ -1225,6 +1241,8 @@ class CORE_EXPORT QgsExpression
         QVariant mValue;
     };
 
+    /** \ingroup core
+     */
     class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
@@ -1252,6 +1270,8 @@ class CORE_EXPORT QgsExpression
         int mIndex;
     };
 
+    /** \ingroup core
+     */
     class CORE_EXPORT WhenThen
     {
       public:
@@ -1271,6 +1291,8 @@ class CORE_EXPORT QgsExpression
     };
     typedef QList<WhenThen*> WhenThenList;
 
+    /** \ingroup core
+     */
     class CORE_EXPORT NodeCondition : public Node
     {
       public:
@@ -1301,7 +1323,8 @@ class CORE_EXPORT QgsExpression
 
     //////
 
-    /** Support for visitor pattern - algorithms dealing with the expressions
+    /** \ingroup core
+     * Support for visitor pattern - algorithms dealing with the expressions
         may be implemented without modifying the Node classes */
     class CORE_EXPORT Visitor
     {

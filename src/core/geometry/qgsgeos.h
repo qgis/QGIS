@@ -17,14 +17,14 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSGEOS_H
 
 #include "qgsgeometryengine.h"
-#include "qgspointv2.h"
-#include "qgsgeometry.h"
 #include <geos_c.h>
 
 class QgsLineStringV2;
 class QgsPolygonV2;
+class QgsGeometry;
 
-/** Does vector analysis using the geos library and handles import, export, exception handling*
+/** \ingroup core
+ * Does vector analysis using the geos library and handles import, export, exception handling*
  * \note this API is not considered stable and may change for 2.12
  * \note not available in Python bindings
  */
@@ -87,6 +87,16 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometryV2* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;
     QgsAbstractGeometryV2* reshapeGeometry( const QgsLineStringV2& reshapeWithLine, int* errorCode, QString* errorMsg = nullptr ) const;
 
+    /** Merges any connected lines in a LineString/MultiLineString geometry and
+     * converts them to single line strings.
+     * @param errorMsg if specified, will be set to any reported GEOS errors
+     * @returns a LineString or MultiLineString geometry, with any connected lines
+     * joined. An empty geometry will be returned if the input geometry was not a
+     * LineString/MultiLineString geometry.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry mergeLines( QString* errorMsg = nullptr ) const;
+
     /** Returns the closest point on the geometry to the other geometry.
      * @note added in QGIS 2.14
      * @see shortestLine()
@@ -137,7 +147,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     void cacheGeos() const;
     QgsAbstractGeometryV2* overlay( const QgsAbstractGeometryV2& geom, Overlay op, QString* errorMsg = nullptr ) const;
     bool relation( const QgsAbstractGeometryV2& geom, Relation r, QString* errorMsg = nullptr ) const;
-    static GEOSCoordSequence* createCoordinateSequence( const QgsCurveV2* curve , double precision );
+    static GEOSCoordSequence* createCoordinateSequence( const QgsCurveV2* curve , double precision, bool forceClose = false );
     static QgsLineStringV2* sequenceToLinestring( const GEOSGeometry* geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry* g );
     static GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );

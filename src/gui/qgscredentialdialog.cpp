@@ -29,7 +29,7 @@ static QString invalidStyle_( const QString& selector = "QLineEdit" )
   return QString( "%1{color: rgb(200, 0, 0);}" ).arg( selector );
 }
 
-QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, const Qt::WindowFlags& fl )
+QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mOkButton( nullptr )
 {
@@ -43,6 +43,7 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, const Qt::WindowFlags
            Qt::BlockingQueuedConnection );
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   leMasterPass->setPlaceholderText( tr( "Required" ) );
+  leUsername->setFocus();
 }
 
 QgsCredentialDialog::~QgsCredentialDialog()
@@ -119,6 +120,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
 {
   QgsDebugMsg( "Entering." );
   stackedWidget->setCurrentIndex( 1 );
+  leMasterPass->setFocus();
 
   QString titletxt( stored ? tr( "Enter CURRENT master authentication password" ) : tr( "Set NEW master authentication password" ) );
   lblPasswordTitle->setText( titletxt );

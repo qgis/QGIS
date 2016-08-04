@@ -68,20 +68,36 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
     void setOffset( QPointF offset );
     QPointF offset();
 
-    void setBorderWidthUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit borderWidthUnit() const;
+    /** Sets the units for the width of the fill's border.
+     * @param unit width units
+     * @see borderWidthUnit()
+    */
+    void setBorderWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the width of the fill's border.
+     * @see setBorderWidthUnit()
+    */
+    QgsUnitTypes::RenderUnit borderWidthUnit() const;
 
     void setBorderWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& borderWidthMapUnitScale() const;
 
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit offsetUnit() const;
+    /** Sets the units for the fill's offset.
+     * @param unit offset units
+     * @see offsetUnit()
+    */
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the fill's offset.
+     * @see setOffsetUnit()
+    */
+    QgsUnitTypes::RenderUnit offsetUnit() const;
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& offsetMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
@@ -203,14 +219,14 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
     QPointF offset() const;
 
     /** Units for gradient fill offset*/
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit offsetUnit() const;
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit offsetUnit() const;
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& offsetMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
@@ -308,14 +324,14 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
      * @see setMaxDistance
      * @see distanceUnit
      */
-    void setDistanceUnit( QgsSymbolV2::OutputUnit unit );
+    void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
     /** Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
      * @returns distance unit for the maximum distance
      * @note added in 2.3
      * @see maxDistance
      * @see setDistanceUnit
      */
-    QgsSymbolV2::OutputUnit distanceUnit() const;
+    QgsUnitTypes::RenderUnit distanceUnit() const;
 
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale );
     const QgsMapUnitScale& distanceMapUnitScale() const;
@@ -406,20 +422,20 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
      * @see setOffset
      * @see offsetUnit
      */
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
     /** Returns the units used for the offset of the shapeburst fill.
      * @returns units used for the fill offset
      * @note added in 2.3
      * @see offset
      * @see setOffsetUnit
      */
-    QgsSymbolV2::OutputUnit offsetUnit() const;
+    QgsUnitTypes::RenderUnit offsetUnit() const;
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& offsetMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
@@ -440,14 +456,22 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
     virtual QgsSymbolV2* subSymbol();
     virtual bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
 
-    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+    /** Sets the units for the symbol's outline width.
+     * @param unit symbol units
+     * @see outlineWidthUnit()
+    */
+    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the symbol's outline width.
+     * @see setOutlineWidthUnit()
+    */
+    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
 
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& outlineWidthMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
@@ -557,14 +581,14 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
      * @see setOffset
      * @see setOffsetMapUnitScale
      */
-    void setOffsetUnit( const QgsSymbolV2::OutputUnit unit );
+    void setOffsetUnit( const QgsUnitTypes::RenderUnit unit );
     /** Returns the units for the fill's offset.
      * @returns units for offset
      * @see setOffsetUnit
      * @see offset
      * @see offsetMapUnitScale
      */
-    QgsSymbolV2::OutputUnit offsetUnit() const;
+    QgsUnitTypes::RenderUnit offsetUnit() const;
 
     /** Sets the map unit scale for the fill's offset.
      * @param scale map unit scale for offset
@@ -604,14 +628,14 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
      * @see setWidth
      * @see setWidthMapUnitScale
      */
-    void setWidthUnit( const QgsSymbolV2::OutputUnit unit );
+    void setWidthUnit( const QgsUnitTypes::RenderUnit unit );
     /** Returns the units for the image's width.
      * @returns units for width
      * @see setWidthUnit
      * @see width
      * @see widthMapUnitScale
      */
-    QgsSymbolV2::OutputUnit widthUnit() const;
+    QgsUnitTypes::RenderUnit widthUnit() const;
 
     /** Sets the map unit scale for the image's width.
      * @param scale map unit scale for width
@@ -676,20 +700,36 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     void setSvgOutlineWidth( double w );
     double svgOutlineWidth() const;
 
-    void setPatternWidthUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit patternWidthUnit() const;
+    /** Sets the units for the width of the SVG images in the pattern.
+     * @param unit width units
+     * @see patternWidthUnit()
+    */
+    void setPatternWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the width of the SVG images in the pattern.
+     * @see setPatternWidthUnit()
+    */
+    QgsUnitTypes::RenderUnit patternWidthUnit() const;
 
     void setPatternWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& patternWidthMapUnitScale() const;
 
-    void setSvgOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit svgOutlineWidthUnit() const;
+    /** Sets the units for the outline width.
+     * @param unit width units
+     * @see svgOutlineWidthUnit()
+    */
+    void setSvgOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the outline width.
+     * @see setSvgOutlineWidthUnit()
+    */
+    QgsUnitTypes::RenderUnit svgOutlineWidthUnit() const;
 
     void setSvgOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& svgOutlineWidthMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
@@ -729,7 +769,18 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     //getters and setters
     void setLineAngle( double a );
     double lineAngle() const;
+
+    /** Sets the distance between lines in the fill pattern.
+     * @param d distance. Units are specified by setDistanceUnit()
+     * @see distance()
+     * @see setDistanceUnit()
+    */
     void setDistance( double d );
+
+    /** Returns the distance between lines in the fill pattern. Units are retrieved by distanceUnit().
+     * @see setDistance()
+     * @see distanceUnit()
+    */
     double distance() const;
     void setLineWidth( double w );
     double lineWidth() const;
@@ -738,26 +789,52 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     void setOffset( double offset );
     double offset() const;
 
-    void setDistanceUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit distanceUnit() const;
+    /** Sets the units for the distance between lines in the fill pattern.
+     * @param unit distance units
+     * @see distanceUnit()
+     * @see setDistance()
+    */
+    void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the distance between lines in the fill pattern.
+     * @see setDistanceUnit()
+     * @see distance()
+    */
+    QgsUnitTypes::RenderUnit distanceUnit() const;
 
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& distanceMapUnitScale() const;
 
-    void setLineWidthUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit lineWidthUnit() const;
+    /** Sets the units for the line's width.
+     * @param unit width units
+     * @see lineWidthUnit()
+    */
+    void setLineWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the line's width.
+     * @see setLineWidthUnit()
+    */
+    QgsUnitTypes::RenderUnit lineWidthUnit() const;
 
     void setLineWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& lineWidthMapUnitScale() const;
 
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit offsetUnit() const;
+    /** Sets the units for the line pattern's offset.
+     * @param unit offset units
+     * @see offsetUnit()
+    */
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the line pattern's offset.
+     * @see setOffsetUnit()
+    */
+    QgsUnitTypes::RenderUnit offsetUnit() const;
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& offsetMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
@@ -811,32 +888,52 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
     virtual QgsSymbolV2* subSymbol();
 
-    void setDistanceXUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit distanceXUnit() const;
+    /** Sets the units for the horizontal distance between points in the pattern.
+     * @param unit distance units
+     * @see distanceXUnit()
+     * @see setDistanceYUnit()
+    */
+    void setDistanceXUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the horizontal distance between points in the pattern.
+     * @see setDistanceXUnit()
+     * @see distanceYUnit()
+    */
+    QgsUnitTypes::RenderUnit distanceXUnit() const;
 
     void setDistanceXMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& distanceXMapUnitScale() const;
 
-    void setDistanceYUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit distanceYUnit() const;
+    /** Sets the units for the vertical distance between points in the pattern.
+     * @param unit distance units
+     * @see distanceYUnit()
+     * @see setDistanceXUnit()
+    */
+    void setDistanceYUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the vertical distance between points in the pattern.
+     * @see setDistanceYUnit()
+     * @see distanceXUnit()
+    */
+    QgsUnitTypes::RenderUnit distanceYUnit() const;
 
     void setDistanceYMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& distanceYMapUnitScale() const;
 
-    void setDisplacementXUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit displacementXUnit() const;
+    void setDisplacementXUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit displacementXUnit() const;
 
     void setDisplacementXMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& displacementXMapUnitScale() const;
 
-    void setDisplacementYUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit displacementYUnit() const;
+    void setDisplacementYUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit displacementYUnit() const;
 
     void setDisplacementYMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& displacementYMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
@@ -887,8 +984,8 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
     QgsSymbolV2* subSymbol();
     bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale(const QgsMapUnitScale &scale);
     QgsMapUnitScale mapUnitScale() const;

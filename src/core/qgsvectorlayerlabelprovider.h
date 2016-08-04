@@ -23,7 +23,7 @@ class QgsAbstractFeatureSource;
 class QgsFeatureRendererV2;
 class QgsSymbolV2;
 
-/**
+/** \ingroup core
  * @brief The QgsVectorLayerLabelProvider class implements a label provider
  * for vector layers. Parameters for the labeling are taken from the layer's
  * custom properties or from the given settings.
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Layer's labeling configuration
     QgsPalLayerSettings mSettings;
     //! Geometry type of layer
-    QGis::GeometryType mLayerGeometryType;
+    QgsWkbTypes::GeometryType mLayerGeometryType;
 
     QgsFeatureRendererV2* mRenderer;
 

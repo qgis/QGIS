@@ -18,11 +18,11 @@
 #ifndef QGSSNAPPINGDIALOG_H
 #define QGSSNAPPINGDIALOG_H
 
-#include "qgsmaplayer.h"
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 #include "ui_qgssnappingdialogbase.h"
 
 class QgsMapCanvas;
+class QgsMapLayer;
 
 /** A dialog to enter advanced editing properties, e.g. topological editing, snapping settings
 for the individual layers*/
@@ -90,7 +90,7 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
     /** Used to query the loaded layers*/
     QgsMapCanvas* mMapCanvas;
 
-    QDockWidget *mDock;
+    QgsDockWidget *mDock;
 
     /** Set checkbox value based on project setting*/
     void setTopologicalEditingState();
@@ -102,12 +102,12 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
 };
 
 
-class QgsSnappingDock : public QDockWidget
+class QgsSnappingDock : public QgsDockWidget
 {
     Q_OBJECT
 
   public:
-    QgsSnappingDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsSnappingDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = 0 );
 
     virtual void closeEvent( QCloseEvent *e ) override;
 

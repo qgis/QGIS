@@ -17,7 +17,6 @@
 #define QGSPHOTOWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
-#include "qgspixmaplabel.h"
 
 #include <QLabel>
 #include <QPushButton>
@@ -27,8 +26,9 @@
 #include <QWebView>
 #endif
 
+class QgsPixmapLabel;
 
-/**
+/** \ingroup gui
  * Wraps a photo widget. Will show a picture and a file chooser to change the picture.
  *
  * Options:
@@ -65,6 +65,8 @@ class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
     void loadPixmap( const QString& fileName );
 
   private:
+    void updateConstraintWidgetStatus( bool constraintValid ) override;
+
     //! This label is used as a container to display the picture
     QLabel* mPhotoLabel;
     //! This label is used as a container to display a picture that scales with the dialog layout.

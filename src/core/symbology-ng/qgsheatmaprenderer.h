@@ -19,7 +19,6 @@
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
 #include "qgsexpression.h"
-#include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include <QScopedPointer>
 
@@ -104,14 +103,14 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
      * @see setRadiusUnit
      * @see radiusMapUnitScale
      */
-    QgsSymbolV2::OutputUnit radiusUnit() const { return mRadiusUnit; }
+    QgsUnitTypes::RenderUnit radiusUnit() const { return mRadiusUnit; }
     /** Sets the units used for the heatmap's radius
      * @param unit units for heatmap radius
      * @see radiusUnit
      * @see setRadius
      * @see radiusMapUnitScale
      */
-    void setRadiusUnit( const QgsSymbolV2::OutputUnit unit ) { mRadiusUnit = unit; }
+    void setRadiusUnit( const QgsUnitTypes::RenderUnit unit ) { mRadiusUnit = unit; }
 
     /** Returns the map unit scale used for the heatmap's radius
      * @returns map unit scale for heatmap's radius
@@ -179,7 +178,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     double mRadius;
     int mRadiusPixels;
     double mRadiusSquared;
-    QgsSymbolV2::OutputUnit mRadiusUnit;
+    QgsUnitTypes::RenderUnit mRadiusUnit;
     QgsMapUnitScale mRadiusMapUnitScale;
 
     QString mWeightExpressionString;

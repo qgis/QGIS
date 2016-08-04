@@ -15,14 +15,13 @@
  ***************************************************************************/
 
 #include "ui_qgsatlascompositionwidgetbase.h"
-#include "qgsvectorlayer.h"
 
 class QgsComposition;
 class QgsMapLayer;
 class QgsComposerMap;
 class QgsComposerItem;
 
-/** \ingroup MapComposer
+/** \ingroup app
   * Input widget for QgsAtlasComposition
   */
 class QgsAtlasCompositionWidget:

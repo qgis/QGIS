@@ -26,6 +26,7 @@
 #include "qgsdistancearea.h"
 #include "qgsfontutils.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmapsettings.h"
 
 #include "qgswebview.h"
 #include "qgswebframe.h"
@@ -393,7 +394,7 @@ QFont QgsComposerLabel::font() const
   return mFont;
 }
 
-bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerLabel::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {
@@ -422,10 +423,10 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLabelElem.appendChild( fontColorElem );
 
   elem.appendChild( composerLabelElem );
-  return _writeXML( composerLabelElem, doc );
+  return _writeXml( composerLabelElem, doc );
 }
 
-bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerLabel::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
   {
@@ -490,7 +491,7 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
       setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
     }
 
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
   emit itemChanged();
   contentChanged();
@@ -644,7 +645,7 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
 QUrl QgsComposerLabel::createStylesheetUrl() const
 {
   QString stylesheet;
-  stylesheet += QString( "body { margin: %1 %2;" ).arg( qMax( mMarginX * mHtmlUnitsToMM, 0.0 ) ).arg( qMax( mMarginY * mHtmlUnitsToMM, 0.0 ) );
+  stylesheet += QString( "body { margin: %1 %2;" ).arg( qMax( mMarginY * mHtmlUnitsToMM, 0.0 ) ).arg( qMax( mMarginX * mHtmlUnitsToMM, 0.0 ) );
   stylesheet += QgsFontUtils::asCSS( mFont, 0.352778 * mHtmlUnitsToMM );
   stylesheet += QString( "color: %1;" ).arg( mFontColor.name() );
   stylesheet += QString( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? "left" : mHAlignment == Qt::AlignRight ? "right" : "center" );

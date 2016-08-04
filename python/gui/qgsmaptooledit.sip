@@ -25,11 +25,7 @@ class QgsMapToolEdit: QgsMapTool
     QgsMapToolEdit( QgsMapCanvas* canvas );
     virtual ~QgsMapToolEdit();
 
-    /**
-     * Is this an edit tool?
-     * @return  Of course it is or you would not be inheriting from it.
-     */
-    virtual bool isEditTool();
+    virtual Flags flags() const;
 
   protected:
 
@@ -39,9 +35,9 @@ class QgsMapToolEdit: QgsMapTool
      *   @param geometryType
      *   @param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
      */
-    QgsRubberBand* createRubberBand( QGis::GeometryType geometryType = QGis::Line, bool alternativeBand = false );
+    QgsRubberBand* createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false );
 
-    QgsGeometryRubberBand* createGeometryRubberBand( QGis::GeometryType geometryType = QGis::Line, bool alternativeBand = false ) const;
+    QgsGeometryRubberBand* createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const;
 
     /** Returns the current vector layer of the map canvas or 0*/
     QgsVectorLayer* currentVectorLayer();

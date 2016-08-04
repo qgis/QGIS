@@ -77,7 +77,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setOffsetDistance( const double distance ) { mOffsetDist = distance; }
 
     /** Returns the distance used for offsetting the shadow.
-     * @returns offset distance. Distance units are retreived via @link offsetUnit @endlink
+     * @returns offset distance. Distance units are retrieved via @link offsetUnit @endlink
      * @see setOffsetDistance
      * @see offsetUnit
      * @see offsetMapUnitScale
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * @see setOffsetDistance
      * @see setOffsetMapUnitScale
      */
-    void setOffsetUnit( const QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( const QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /** Returns the units used for the shadow offset distance.
      * @returns units for offset distance
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * @see offsetDistance
      * @see offsetMapUnitScale
      */
-    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /** Sets the map unit scale used for the shadow offset distance.
      * @param scale map unit scale for offset distance
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     int mBlurLevel;
     int mOffsetAngle;
     double mOffsetDist;
-    QgsSymbolV2::OutputUnit mOffsetUnit;
+    QgsUnitTypes::RenderUnit mOffsetUnit;
     QgsMapUnitScale mOffsetMapUnitScale;
     double mTransparency;
     QColor mColor;

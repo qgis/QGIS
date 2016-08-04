@@ -21,11 +21,12 @@
 #include "qgslabelengineconfigdialog.h"
 #include "qgslabelinggui.h"
 #include "qgsrulebasedlabelingwidget.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgisapp.h"
 
 QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
-    : QWidget( parent )
+    : QgsMapLayerConfigWidget( layer, canvas, parent )
     , mLayer( layer )
     , mCanvas( canvas )
     , mWidget( nullptr )
@@ -86,8 +87,8 @@ void QgsLabelingWidget::setLayer( QgsMapLayer* mapLayer )
 
 void QgsLabelingWidget::setDockMode( bool enabled )
 {
-  mDockMode = enabled;
-  mLabelGui->setDockMode( mDockMode );
+  QgsPanelWidget::setDockMode( enabled );
+  mLabelGui->setDockMode( enabled );
 }
 
 void QgsLabelingWidget::adaptToLayer()
@@ -139,10 +140,7 @@ void QgsLabelingWidget::apply()
   writeSettingsToLayer();
   QgisApp::instance()->markDirty();
   // trigger refresh
-  if ( mCanvas )
-  {
-    mCanvas->refresh();
-  }
+  mLayer->triggerRepaint();
 }
 
 void QgsLabelingWidget::labelModeChanged( int index )
@@ -158,7 +156,9 @@ void QgsLabelingWidget::labelModeChanged( int index )
     delete mWidget;
     mWidget = nullptr;
 
-    QgsRuleBasedLabelingWidget* ruleWidget = new QgsRuleBasedLabelingWidget( mLayer, mCanvas, this, mDockMode );
+    QgsRuleBasedLabelingWidget* ruleWidget = new QgsRuleBasedLabelingWidget( mLayer, mCanvas, this );
+    ruleWidget->setDockMode( dockMode() );
+    connect( ruleWidget, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
     connect( ruleWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
     mWidget = ruleWidget;
     mStackedWidget->addWidget( mWidget );

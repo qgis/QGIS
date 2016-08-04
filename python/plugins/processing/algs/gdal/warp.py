@@ -66,6 +66,7 @@ class warp(GdalAlgorithm):
     COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
     TFW = 'TFW'
     RAST_EXT = 'RAST_EXT'
+    EXT_CRS = 'EXT_CRS'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
@@ -87,6 +88,10 @@ class warp(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Resampling method'), self.METHOD_OPTIONS))
         self.addParameter(ParameterExtent(self.RAST_EXT, self.tr('Raster extent')))
+
+        if GdalUtils.version() >= 2000000:
+            self.addParameter(ParameterCrs(self.EXT_CRS,
+                                           self.tr('CRS of the raster extent'), ''))
 
         params = []
         params.append(ParameterSelection(self.RTYPE,
@@ -131,6 +136,7 @@ class warp(GdalAlgorithm):
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = unicode(self.getParameterValue(self.TFW))
         rastext = unicode(self.getParameterValue(self.RAST_EXT))
+        rastext_crs = self.getParameterValue(self.EXT_CRS)
 
         arguments = []
         arguments.append('-ot')
@@ -169,6 +175,12 @@ class warp(GdalAlgorithm):
             rastext = []
         if rastext:
             arguments.extend(rastext)
+
+        if GdalUtils.version() >= 2000000:
+            if rastext and rastext_crs is not None:
+                arguments.append('-te_srs')
+                arguments.append(rastext_crs)
+
         if extra and len(extra) > 0:
             arguments.append(extra)
         if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":

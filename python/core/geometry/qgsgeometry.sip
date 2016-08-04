@@ -65,21 +65,21 @@ class QgsGeometry
     bool isEmpty() const;
 
     /** Creates a new geometry from a WKT string */
-    static QgsGeometry* fromWkt( const QString& wkt ) /Factory/;
+    static QgsGeometry fromWkt( const QString& wkt );
     /** Creates a new geometry from a QgsPoint object*/
-    static QgsGeometry* fromPoint( const QgsPoint& point ) /Factory/;
+    static QgsGeometry fromPoint( const QgsPoint& point );
     /** Creates a new geometry from a QgsMultiPoint object */
-    static QgsGeometry* fromMultiPoint( const QgsMultiPoint& multipoint ) /Factory/;
+    static QgsGeometry fromMultiPoint( const QgsMultiPoint& multipoint );
     /** Creates a new geometry from a QgsPolyline object */
-    static QgsGeometry* fromPolyline( const QgsPolyline& polyline ) /Factory/;
+    static QgsGeometry fromPolyline( const QgsPolyline& polyline );
     /** Creates a new geometry from a QgsMultiPolyline object*/
-    static QgsGeometry* fromMultiPolyline( const QgsMultiPolyline& multiline ) /Factory/;
+    static QgsGeometry fromMultiPolyline( const QgsMultiPolyline& multiline );
     /** Creates a new geometry from a QgsPolygon */
-    static QgsGeometry* fromPolygon( const QgsPolygon& polygon ) /Factory/;
+    static QgsGeometry fromPolygon( const QgsPolygon& polygon );
     /** Creates a new geometry from a QgsMultiPolygon */
-    static QgsGeometry* fromMultiPolygon( const QgsMultiPolygon& multipoly ) /Factory/;
+    static QgsGeometry fromMultiPolygon( const QgsMultiPolygon& multipoly );
     /** Creates a new geometry from a QgsRectangle */
-    static QgsGeometry* fromRect( const QgsRectangle& rect ) /Factory/;
+    static QgsGeometry fromRect( const QgsRectangle& rect );
 
     /**
      * Set the geometry, feeding in a geometry in GEOS format.
@@ -126,12 +126,12 @@ class QgsGeometry
     /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      * @see type
      */
-    QGis::WkbType wkbType() const;
+    QgsWkbTypes::Type wkbType() const;
 
-    /** Returns type of the geometry as a QGis::GeometryType
+    /** Returns type of the geometry as a QgsWkbTypes::GeometryType
      * @see wkbType
      */
-    QGis::GeometryType type() const;
+    QgsWkbTypes::GeometryType type() const;
 
     /** Returns true if WKB of the geometry is of WKBMulti* type */
     bool isMultipart() const;
@@ -312,7 +312,7 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
+    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
@@ -321,7 +321,7 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
+    int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
@@ -330,7 +330,7 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsAbstractGeometryV2* part /Transfer/, QGis::GeometryType geomType = QGis::UnknownGeometry );
+    int addPart( QgsAbstractGeometryV2* part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
      * @param newPart part to add. Ownership is NOT transferred.
@@ -393,6 +393,14 @@ class QgsGeometry
      */
     int makeDifference( const QgsGeometry* other );
 
+    /** Returns the geometry formed by modifying this geometry such that it does not
+     * intersect the other geometry.
+     * @param other geometry that should not be intersect
+     * @return difference geometry, or empty geometry if difference could not be calculated
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry makeDifference( const QgsGeometry& other ) const;
+
     /** Returns the bounding box of this feature*/
     QgsRectangle boundingBox() const;
 
@@ -400,42 +408,42 @@ class QgsGeometry
     bool intersects( const QgsRectangle& r ) const;
 
     /** Test for intersection with a geometry (uses GEOS) */
-    bool intersects( const QgsGeometry* geometry ) const;
+    bool intersects( const QgsGeometry& geometry ) const;
 
     /** Test for containment of a point (uses GEOS) */
     bool contains( const QgsPoint* p ) const;
 
     /** Test for if geometry is contained in another (uses GEOS)
      *  @note added in 1.5 */
-    bool contains( const QgsGeometry* geometry ) const;
+    bool contains( const QgsGeometry& geometry ) const;
 
     /** Test for if geometry is disjoint of another (uses GEOS)
      *  @note added in 1.5 */
-    bool disjoint( const QgsGeometry* geometry ) const;
+    bool disjoint( const QgsGeometry& geometry ) const;
 
     /** Test for if geometry equals another (uses GEOS)
      *  @note added in 1.5 */
-    bool equals( const QgsGeometry* geometry ) const;
+    bool equals( const QgsGeometry& geometry ) const;
 
     /** Test for if geometry touch another (uses GEOS)
      *  @note added in 1.5 */
-    bool touches( const QgsGeometry* geometry ) const;
+    bool touches( const QgsGeometry& geometry ) const;
 
     /** Test for if geometry overlaps another (uses GEOS)
      *  @note added in 1.5 */
-    bool overlaps( const QgsGeometry* geometry ) const;
+    bool overlaps( const QgsGeometry& geometry ) const;
 
     /** Test for if geometry is within another (uses GEOS)
      *  @note added in 1.5 */
-    bool within( const QgsGeometry* geometry ) const;
+    bool within( const QgsGeometry& geometry ) const;
 
     /** Test for if geometry crosses another (uses GEOS)
      *  @note added in 1.5 */
-    bool crosses( const QgsGeometry* geometry ) const;
+    bool crosses( const QgsGeometry& geometry ) const;
 
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
-    QgsGeometry* buffer( double distance, int segments ) const /Factory/;
+    QgsGeometry buffer( double distance, int segments ) const;
 
     /** Returns a buffer region around the geometry, with additional style options.
      * @param distance    buffer distance
@@ -446,50 +454,59 @@ class QgsGeometry
      * @note added in 2.4
      * @note needs GEOS >= 3.3 - otherwise always returns 0
      */
-    QgsGeometry* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const /Factory/;
+    QgsGeometry buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const;
 
     /** Returns an offset line at a given distance and side from an input line.
      * See buffer() method for details on parameters.
      * @note added in 2.4
      * @note needs GEOS >= 3.3 - otherwise always returns 0
      */
-    QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const /Factory/;
+    QgsGeometry offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const;
 
     /** Returns a simplified version of this geometry using a specified tolerance value */
-    QgsGeometry* simplify( double tolerance )  const /Factory/;
+    QgsGeometry simplify( double tolerance )  const;
 
     /** Returns the center of mass of a geometry
      * @note for line based geometries, the center point of the line is returned,
      * and for point based geometries, the point itself is returned
      */
-    QgsGeometry* centroid() const /Factory/;
+    QgsGeometry centroid() const;
 
     /** Returns a point within a geometry */
-    QgsGeometry* pointOnSurface() const /Factory/;
+    QgsGeometry pointOnSurface() const;
 
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
-    QgsGeometry* convexHull()  const /Factory/;
+    QgsGeometry convexHull() const;
 
     /**
      * Return interpolated point on line at distance
      * @note added in 1.9
      */
-    QgsGeometry* interpolate( double distance ) /Factory/;
+    QgsGeometry interpolate( double distance );
 
     /** Returns a geometry representing the points shared by this geometry and other. */
-    QgsGeometry* intersection( const QgsGeometry* geometry ) const /Factory/;
+    QgsGeometry intersection( const QgsGeometry& geometry ) const;
 
     /** Returns a geometry representing all the points in this geometry and other (a
      * union geometry operation).
      * @note this operation is not called union since its a reserved word in C++.
      */
-    QgsGeometry* combine( const QgsGeometry* geometry ) const /Factory/;
+    QgsGeometry combine( const QgsGeometry& geometry ) const;
+
+    /** Merges any connected lines in a LineString/MultiLineString geometry and
+     * converts them to single line strings.
+     * @returns a LineString or MultiLineString geometry, with any connected lines
+     * joined. An empty geometry will be returned if the input geometry was not a
+     * MultiLineString geometry.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry mergeLines() const;
 
     /** Returns a geometry representing the points making up this geometry that do not make up other. */
-    QgsGeometry* difference( const QgsGeometry* geometry ) const /Factory/;
+    QgsGeometry difference( const QgsGeometry& geometry ) const;
 
     /** Returns a geometry representing the points making up this geometry that do not make up other. */
-    QgsGeometry* symDifference( const QgsGeometry* geometry ) const /Factory/;
+    QgsGeometry symDifference( const QgsGeometry& geometry ) const;
 
     /** Returns an extruded version of this geometry. */
     QgsGeometry extrude( double x, double y );
@@ -514,7 +531,7 @@ class QgsGeometry
      * @return the converted geometry or nullptr if the conversion fails.
      * @note added in 2.2
      */
-    QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false ) const /Factory/;
+    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const /Factory/;
 
     /* Accessor functions for getting geometry data */
 
@@ -547,7 +564,7 @@ class QgsGeometry
 
     /** Return contents of the geometry as a list of geometries
      @note added in version 1.1 */
-    QList<QgsGeometry*> asGeometryCollection() const /Factory/;
+    QList<QgsGeometry> asGeometryCollection() const;
 
     /** Return contents of the geometry as a QPointF if wkbType is WKBPoint,
      * otherwise returns a null QPointF.
@@ -626,7 +643,7 @@ class QgsGeometry
      * @param geometryList a list of QgsGeometry* as input
      * @returns the new computed QgsGeometry, or null
      */
-    static QgsGeometry *unaryUnion( const QList<QgsGeometry*>& geometryList ) /Factory/;
+    static QgsGeometry unaryUnion( const QList<QgsGeometry>& geometryList );
 
     /** Converts the geometry to straight line segments, if it is a curved geometry type.
      * @note added in QGIS 2.10
@@ -687,7 +704,7 @@ class QgsGeometry
      * @param point source QPointF
      * @note added in QGIS 2.7
      */
-    static QgsGeometry* fromQPointF( QPointF point ) /Factory/;
+    static QgsGeometry fromQPointF( QPointF point );
 
     /** Construct geometry from a QPolygonF. If the polygon is closed than
      * the resultant geometry will be a polygon, if it is open than the
@@ -695,7 +712,7 @@ class QgsGeometry
      * @param polygon source QPolygonF
      * @note added in QGIS 2.7
      */
-    static QgsGeometry* fromQPolygonF( const QPolygonF& polygon ) /Factory/;
+    static QgsGeometry fromQPolygonF( const QPolygonF& polygon );
 
     /** Creates a QgsPolyline from a QPolygonF.
      * @param polygon source polygon
@@ -751,7 +768,7 @@ class QgsGeometry
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
      * @note added in 2.9
      */
-    QgsGeometry* smooth( const unsigned int iterations, const double offset ) const;
+    QgsGeometry smooth( const unsigned int iterations, const double offset ) const;
 
     /** Smooths a polygon using the Chaikin algorithm*/
     QgsPolygon smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25 ) const;
@@ -776,6 +793,12 @@ class QgsGeometry
 
     //! Allows direct construction of QVariants from geometry.
     operator QVariant() const;
+
+    /** Returns true if the geometry is non empty (ie, isEmpty() returns false),
+     * or false if it is an empty, uninitialised geometry (ie, ieEmpty() returns true).
+     * @note added in QGIS 3.0
+     */
+    operator bool() const;
 
 }; // class QgsGeometry
 

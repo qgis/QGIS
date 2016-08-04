@@ -19,7 +19,7 @@
 #define QGSCURVEV2_H
 
 #include "qgsabstractgeometryv2.h"
-#include "qgspointv2.h"
+#include "qgsrectangle.h"
 
 class QgsLineStringV2;
 class QPainterPath;
@@ -101,6 +101,8 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
      * @note added in QGIS 2.14
      */
     virtual QgsCurveV2* reversed() const = 0;
+
+    virtual QgsAbstractGeometryV2* boundary() const override;
 
     /** Returns a geometry without curves. Caller takes ownership
      * @param tolerance segmentation tolerance

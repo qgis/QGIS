@@ -9,7 +9,7 @@ class QgsRasterProjector : QgsRasterInterface
 %End
 
   public:
-    /** Precison defines if each pixel is reprojected or approximate reprojection based
+    /** Precision defines if each pixel is reprojected or approximate reprojection based
      *  on an approximation matrix of reprojected points is used.
      */
     enum Precision
@@ -57,14 +57,14 @@ class QgsRasterProjector : QgsRasterInterface
     int dataType( int bandNo ) const;
 
     /** \brief set source and destination CRS */
-    void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,
+    void setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 
     /** \brief Get source CRS */
-    QgsCoordinateReferenceSystem srcCrs() const;
+    QgsCoordinateReferenceSystem sourceCrs() const;
 
     /** \brief Get destination CRS */
-    QgsCoordinateReferenceSystem destCrs() const;
+    QgsCoordinateReferenceSystem destinationCrs() const;
 
     /** \brief set maximum source resolution */
     void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes );
@@ -74,14 +74,14 @@ class QgsRasterProjector : QgsRasterInterface
     // Translated precision mode, for use in ComboBox etc.
     static QString precisionLabel( Precision precision );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
 
     /** Calculate destination extent and size from source extent and size */
     bool destExtentSize( const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
                          QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
 
     /** Calculate destination extent and size from source extent and size */
-    static bool extentSize( const QgsCoordinateTransform* ct,
+    static bool extentSize( const QgsCoordinateTransform& ct,
                             const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
                             QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
 };

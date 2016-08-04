@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * Attribute table item for map composer.
  */
 
@@ -48,14 +48,14 @@ class QgsComposerAttributeTable : QgsComposerTable
      * @param doc QDomDocument for the destination xml.
      * @see readXML
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
      * @param doc QDomDocument for the source xml.
      * @see writeXML
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table

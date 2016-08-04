@@ -14,7 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgs25drendererwidget.h"
-
+#include "qgs25drenderer.h"
+#include "qgsvectorlayer.h"
 #include "qgsmaplayerstylemanager.h"
 
 Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
@@ -25,7 +26,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* s
     return;
 
   // the renderer only applies to point vector layers
-  if ( layer->geometryType() != QGis::Polygon )
+  if ( layer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     //setup blank dialog
     QGridLayout* layout = new QGridLayout( this );
@@ -97,10 +98,13 @@ void Qgs25DRendererWidget::updateRenderer()
 
 void Qgs25DRendererWidget::apply()
 {
-  QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_height", mHeightWidget->currentText() );
-  QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_angle", mAngleWidget->value() );
+  if ( mHeightWidget )
+  {
+    QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_height", mHeightWidget->currentText() );
+    QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_angle", mAngleWidget->value() );
 
-  emit layerVariablesChanged();
+    emit layerVariablesChanged();
+  }
 }
 
 QgsRendererV2Widget* Qgs25DRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )

@@ -48,8 +48,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::Wind
   restoreGeometry( settings.value( "/Windows/SpatiaLiteSourceSelect/geometry" ).toByteArray() );
   mHoldDialogOpen->setChecked( settings.value( "/Windows/SpatiaLiteSourceSelect/HoldDialogOpen", false ).toBool() );
 
-  setWindowTitle( tr( "Add SpatiaLite Table(s)" ) );
-  connectionsGroupBox->setTitle( tr( "Databases" ) );
+  setWindowTitle( tr( "Add SpatiaLite Layer(s)" ) );
   btnEdit->hide();  // hide the edit button
   btnSave->hide();
   btnLoad->hide();
@@ -95,6 +94,8 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::Wind
   mProxyModel.setSourceModel( &mTableModel );
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
+
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
@@ -349,7 +350,7 @@ QString QgsSpatiaLiteSourceSelect::layerURI( const QModelIndex &index )
     }
   }
 
-  QgsDataSourceURI uri( connectionInfo() );
+  QgsDataSourceUri uri( connectionInfo() );
   uri.setDataSource( "", tableName, geomColumnName, sql, "" );
   return uri.uri();
 }
@@ -484,7 +485,6 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
 
   if ( cmbConnections->count() > 0 )
   {
-    mAddButton->setEnabled( true );
     mStatsButton->setEnabled( true );
   }
 
@@ -572,4 +572,10 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString & regexp )
 {
   Q_UNUSED( regexp );
+}
+
+void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+{
+  Q_UNUSED( deselected )
+  mAddButton->setEnabled( !selected.isEmpty() );
 }

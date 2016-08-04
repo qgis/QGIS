@@ -27,7 +27,7 @@ class QgsRectangle;
 typedef void* GDALDatasetH;
 
 
-/**
+/** \ingroup analysis
  * @brief QgsAlignRaster takes one or more raster layers and warps (resamples) them
  * so they have the same:
  * - coordinate reference system
@@ -171,9 +171,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
     QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
 
     //! Set the output CRS in WKT format
-    void setDestinationCRS( const QString& crsWkt ) { mCrsWkt = crsWkt; }
+    void setDestinationCrs( const QString& crsWkt ) { mCrsWkt = crsWkt; }
     //! Get the output CRS in WKT format
-    QString destinationCRS() const { return mCrsWkt; }
+    QString destinationCrs() const { return mCrsWkt; }
 
     //! Configure clipping extent (region of interest).
     //! No extra clipping is done if the rectangle is null

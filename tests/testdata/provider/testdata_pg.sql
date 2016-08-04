@@ -398,3 +398,17 @@ CREATE TABLE qgis_test.domains
   fld_text_domain qgis_test.text_domain,
   fld_numeric_domain qgis_test.numeric_domain
 );
+
+
+--------------------------------------
+-- Temporary table for testing renaming fields
+--
+
+CREATE TABLE qgis_test.rename_table
+(
+  gid serial NOT NULL,
+  field1 text,
+  field2 text
+);
+
+INSERT INTO qgis_test.rename_table (field1,field2) VALUES ('a','b');

@@ -5,7 +5,7 @@ SET (util_SRCS)
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../../../src/ui
   ${CMAKE_CURRENT_SOURCE_DIR}/../core #for render checker class
@@ -62,7 +62,7 @@ ENDIF (APPLE)
 #qtests in the executable file list as the moc is
 #directly included in the sources
 #and should not be compiled twice. Trying to include
-#them in will cause an error at build time 
+#them in will cause an error at build time
 #############################################################
 # Tests:
 
@@ -76,7 +76,7 @@ ENDIF (APPLE)
 #ADD_EXECUTABLE(qgis_quickprinttest ${qgis_quickprinttest_SRCS})
 #ADD_DEPENDENCIES(qgis_quickprinttest qgis_quickprinttestmoc)
 #TARGET_LINK_LIBRARIES(qgis_quickprinttest ${QT_LIBRARIES} qgis_core qgis_gui)
-#SET_TARGET_PROPERTIES(qgis_quickprinttest 
+#SET_TARGET_PROPERTIES(qgis_quickprinttest
 #  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
 #  INSTALL_RPATH_USE_LINK_PATH true)
 #IF (APPLE)
@@ -128,6 +128,8 @@ ADD_QGIS_TEST(zoomtest testqgsmaptoolzoom.cpp)
 #ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
 ADD_QGIS_TEST(doublespinbox testqgsdoublespinbox.cpp)
 ADD_QGIS_TEST(dualviewtest testqgsdualview.cpp)
+ADD_QGIS_TEST(attributeformtest testqgsattributeform.cpp)
+ADD_QGIS_TEST(dockwidget testqgsdockwidget.cpp)
 ADD_QGIS_TEST(fieldexpressionwidget testqgsfieldexpressionwidget.cpp)
 ADD_QGIS_TEST(filewidget testqgsfilewidget.cpp)
 ADD_QGIS_TEST(focuswatcher testqgsfocuswatcher.cpp)

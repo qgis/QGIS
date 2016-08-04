@@ -21,6 +21,9 @@
 #include <QScopedPointer>
 #include <QRegExp>
 
+/** \ingroup core
+ * \class QgsRendererRangeV2
+ */
 class CORE_EXPORT QgsRendererRangeV2
 {
   public:
@@ -53,7 +56,14 @@ class CORE_EXPORT QgsRendererRangeV2
     // debugging
     QString dump() const;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+    /** Creates a DOM element representing the range in SLD format.
+     * @param doc DOM document
+     * @param element destination DOM element
+     * @param props graduated renderer properties
+     * @param firstRange set to true if the range is the first range, where the lower value uses a <= test
+     * rather than a < test.
+     */
+    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
 
   protected:
     double mLowerValue, mUpperValue;
@@ -68,7 +78,10 @@ class CORE_EXPORT QgsRendererRangeV2
 typedef QList<QgsRendererRangeV2> QgsRangeList;
 
 
-// @note added in 2.6
+/** \ingroup core
+ * \class QgsRendererRangeV2LabelFormat
+ * \note added in QGIS 2.6
+ */
 class CORE_EXPORT QgsRendererRangeV2LabelFormat
 {
   public:
@@ -113,6 +126,9 @@ class QgsVectorLayer;
 class QgsVectorColorRampV2;
 
 Q_NOWARN_DEPRECATED_PUSH
+/** \ingroup core
+ * \class QgsGraduatedSymbolRendererV2
+ */
 class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:
@@ -139,7 +155,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() override { return SymbolLevels | RotationField | Filter; }
+    virtual Capabilities capabilities() override { return SymbolLevels | RotationField | Filter; }
 
     //! @note symbol2 in python bindings
     virtual QgsSymbolV2List symbols( QgsRenderContext &context ) override;

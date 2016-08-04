@@ -58,6 +58,7 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
   for ( int i = 0; i < mOrderByTableWidget->rowCount(); ++i )
   {
     QString expressionText = static_cast<QgsFieldExpressionWidget*>( mOrderByTableWidget->cellWidget( i, 0 ) )->currentText();
+    bool isExpression = static_cast<QgsFieldExpressionWidget*>( mOrderByTableWidget->cellWidget( i, 0 ) )->isExpression();
 
     if ( ! expressionText.isEmpty() )
     {
@@ -70,6 +71,9 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
       int nullsFirstIndex = static_cast<QComboBox*>( mOrderByTableWidget->cellWidget( i, 2 ) )->currentIndex();
       if ( nullsFirstIndex == 1 )
         nullsFirst = true;
+
+      if ( !isExpression )
+        expressionText = QgsExpression::quotedColumnRef( expressionText );
 
       QgsFeatureRequest::OrderByClause orderByClause( expressionText, asc, nullsFirst );
 

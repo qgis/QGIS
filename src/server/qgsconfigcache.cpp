@@ -23,6 +23,7 @@
 #include "qgswmsprojectparser.h"
 #include "qgssldconfigparser.h"
 #include "qgsaccesscontrol.h"
+#include "qgsproject.h"
 
 #include <QFile>
 
@@ -47,11 +48,37 @@ QgsConfigCache::~QgsConfigCache()
 
 QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& filePath )
 {
+  QgsMessageLog::logMessage(
+    QString( "Open the project file '%1'." )
+    .arg( filePath ),
+    "Server", QgsMessageLog::INFO
+  );
+
   QDomDocument* doc = xmlDocument( filePath );
   if ( !doc )
   {
     return nullptr;
   }
+
+  QgsProjectVersion fileVersion = getVersion( *doc );
+  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
+
+  if ( thisVersion != fileVersion )
+  {
+    QgsMessageLog::logMessage(
+      QString(
+        "\n========================================================================"
+        "\n= WARNING: This project file was saved by a different version of QGIS. ="
+        "\n========================================================================"
+      ), "Server", QgsMessageLog::WARNING
+    );
+  }
+  QgsMessageLog::logMessage(
+    QString( "QGIS server version %1, project version %2" )
+    .arg( thisVersion.text() )
+    .arg( fileVersion.text() ),
+    "Server", QgsMessageLog::INFO
+  );
   return new QgsServerProjectParser( doc, filePath );
 }
 
@@ -85,14 +112,14 @@ QgsWCSProjectParser *QgsConfigCache::wcsConfiguration(
   return p;
 }
 
-QgsWFSProjectParser *QgsConfigCache::wfsConfiguration(
+QgsWfsProjectParser *QgsConfigCache::wfsConfiguration(
   const QString& filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
 #endif
 )
 {
-  QgsWFSProjectParser *p = mWFSConfigCache.object( filePath );
+  QgsWfsProjectParser *p = mWFSConfigCache.object( filePath );
   if ( !p )
   {
     QDomDocument* doc = xmlDocument( filePath );
@@ -100,7 +127,7 @@ QgsWFSProjectParser *QgsConfigCache::wfsConfiguration(
     {
       return nullptr;
     }
-    p = new QgsWFSProjectParser(
+    p = new QgsWfsProjectParser(
       filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       , accessControl
@@ -115,7 +142,7 @@ QgsWFSProjectParser *QgsConfigCache::wfsConfiguration(
   return p;
 }
 
-QgsWMSConfigParser *QgsConfigCache::wmsConfiguration(
+QgsWmsConfigParser *QgsConfigCache::wmsConfiguration(
   const QString& filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
@@ -123,7 +150,7 @@ QgsWMSConfigParser *QgsConfigCache::wmsConfiguration(
   , const QMap<QString, QString>& parameterMap
 )
 {
-  QgsWMSConfigParser *p = mWMSConfigCache.object( filePath );
+  QgsWmsConfigParser *p = mWMSConfigCache.object( filePath );
   if ( !p )
   {
     QDomDocument* doc = xmlDocument( filePath );
@@ -141,7 +168,7 @@ QgsWMSConfigParser *QgsConfigCache::wmsConfiguration(
     }
     else
     {
-      p = new QgsWMSProjectParser(
+      p = new QgsWmsProjectParser(
         filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         , accessControl
@@ -207,3 +234,10 @@ void QgsConfigCache::removeChangedEntry( const QString& path )
 
   mFileSystemWatcher.removePath( path );
 }
+
+
+void QgsConfigCache::removeEntry( const QString& path )
+{
+  removeChangedEntry( path );
+}
+

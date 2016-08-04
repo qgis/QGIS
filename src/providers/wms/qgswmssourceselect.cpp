@@ -28,7 +28,7 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsmessageviewer.h"
 #include "qgsnewhttpconnection.h"
-#include "qgsnumericsortlistviewitem.h"
+#include "qgstreewidgetitem.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"
@@ -116,7 +116,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bo
     if ( currentCRS != -1 )
     {
       //convert CRS id to epsg
-      QgsCoordinateReferenceSystem currentRefSys( currentCRS, QgsCoordinateReferenceSystem::InternalCrsId );
+      QgsCoordinateReferenceSystem currentRefSys = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
       if ( currentRefSys.isValid() )
       {
         mDefaultCRS = mCRS = currentRefSys.authid();
@@ -226,10 +226,10 @@ void QgsWMSSourceSelect::on_btnLoad_clicked()
   emit connectionsChanged();
 }
 
-QgsNumericSortTreeWidgetItem *QgsWMSSourceSelect::createItem(
+QgsTreeWidgetItem *QgsWMSSourceSelect::createItem(
   int id,
   const QStringList &names,
-  QMap<int, QgsNumericSortTreeWidgetItem *> &items,
+  QMap<int, QgsTreeWidgetItem *> &items,
   int &layerAndStyleCount,
   const QMap<int, int> &layerParents,
   const QMap<int, QStringList> &layerParentNames )
@@ -237,14 +237,14 @@ QgsNumericSortTreeWidgetItem *QgsWMSSourceSelect::createItem(
   if ( items.contains( id ) )
     return items[id];
 
-  QgsNumericSortTreeWidgetItem *item;
+  QgsTreeWidgetItem *item;
   if ( layerParents.contains( id ) )
   {
     int parent = layerParents[ id ];
-    item = new QgsNumericSortTreeWidgetItem( createItem( parent, layerParentNames[ parent ], items, layerAndStyleCount, layerParents, layerParentNames ) );
+    item = new QgsTreeWidgetItem( createItem( parent, layerParentNames[ parent ], items, layerAndStyleCount, layerParents, layerParentNames ) );
   }
   else
-    item = new QgsNumericSortTreeWidgetItem( lstLayers );
+    item = new QgsTreeWidgetItem( lstLayers );
 
   item->setText( 0, QString::number( ++layerAndStyleCount ) );
   item->setText( 1, names[0].simplified() );
@@ -296,7 +296,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
 
   btnGrpImageEncoding->setEnabled( true );
 
-  QMap<int, QgsNumericSortTreeWidgetItem *> items;
+  QMap<int, QgsTreeWidgetItem *> items;
   QMap<int, int> layerParents;
   QMap<int, QStringList> layerParentNames;
   capabilities.layerParents( layerParents, layerParentNames );
@@ -309,7 +309,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
         layer != layers.end();
         ++layer )
   {
-    QgsNumericSortTreeWidgetItem *lItem = createItem( layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
+    QgsTreeWidgetItem *lItem = createItem( layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
 
     lItem->setData( 0, Qt::UserRole + 0, layer->name );
     lItem->setData( 0, Qt::UserRole + 1, "" );
@@ -322,7 +322,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
     {
       QgsDebugMsg( QString( "got style name %1 and title '%2'." ).arg( layer->style.at( j ).name, layer->style.at( j ).title ) );
 
-      QgsNumericSortTreeWidgetItem *lItem2 = new QgsNumericSortTreeWidgetItem( lItem );
+      QgsTreeWidgetItem *lItem2 = new QgsTreeWidgetItem( lItem );
       lItem2->setText( 0, QString::number( ++layerAndStyleCount ) );
       lItem2->setText( 1, layer->style.at( j ).name.simplified() );
       lItem2->setText( 2, layer->style.at( j ).title.simplified() );
@@ -487,7 +487,7 @@ void QgsWMSSourceSelect::addClicked()
   QString format;
   QString crs;
 
-  QgsDataSourceURI uri = mUri;
+  QgsDataSourceUri uri = mUri;
 
   if ( mTileWidth->text().toInt() > 0 && mTileHeight->text().toInt() > 0 )
   {
@@ -617,8 +617,8 @@ void QgsWMSSourceSelect::on_btnChangeSpatialRefSys_clicked()
   mySelector->setOgcWmsCrsFilter( mCRSs );
 
   QString myDefaultCrs = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
-  QgsCoordinateReferenceSystem defaultCRS;
-  if ( defaultCRS.createFromOgcWmsCrs( myDefaultCrs ) )
+  QgsCoordinateReferenceSystem defaultCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myDefaultCrs );
+  if ( defaultCRS.isValid() )
   {
     mySelector->setSelectedCrsId( defaultCRS.srsid() );
   }
@@ -1086,8 +1086,7 @@ QString QgsWMSSourceSelect::descriptionForAuthId( const QString& authId )
   if ( mCrsNames.contains( authId ) )
     return mCrsNames[ authId ];
 
-  QgsCoordinateReferenceSystem qgisSrs;
-  qgisSrs.createFromOgcWmsCrs( authId );
+  QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
   mCrsNames.insert( authId, qgisSrs.description() );
   return qgisSrs.description();
 }

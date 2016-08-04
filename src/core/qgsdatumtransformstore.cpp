@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdatumtransformstore.h"
-
+#include "qgscoordinatetransform.h"
 #include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
@@ -50,17 +50,17 @@ bool QgsDatumTransformStore::hasEntryForLayer( QgsMapLayer* layer ) const
   return mEntries.contains( layer->id() );
 }
 
-const QgsCoordinateTransform* QgsDatumTransformStore::transformation( QgsMapLayer* layer ) const
+QgsCoordinateTransform QgsDatumTransformStore::transformation( QgsMapLayer* layer ) const
 {
   if ( !layer )
-    return nullptr;
+    return QgsCoordinateTransform();
 
   QString srcAuthId = layer->crs().authid();
   QString dstAuthId = mDestCRS.authid();
 
   if ( srcAuthId == dstAuthId )
   {
-    return nullptr;
+    return QgsCoordinateTransform();
   }
 
   QHash< QString, Entry >::const_iterator ctIt = mEntries.find( layer->id() );
@@ -74,7 +74,7 @@ const QgsCoordinateTransform* QgsDatumTransformStore::transformation( QgsMapLaye
   }
 }
 
-void QgsDatumTransformStore::readXML( const QDomNode& parentNode )
+void QgsDatumTransformStore::readXml( const QDomNode& parentNode )
 {
   clear();
 
@@ -102,7 +102,7 @@ void QgsDatumTransformStore::readXML( const QDomNode& parentNode )
   }
 }
 
-void QgsDatumTransformStore::writeXML( QDomNode& parentNode, QDomDocument& theDoc ) const
+void QgsDatumTransformStore::writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const
 {
   // layer coordinate transform infos
   QDomElement layerCoordTransformInfo = theDoc.createElement( "layer_coordinate_transform_info" );

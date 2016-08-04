@@ -12,52 +12,78 @@ class QgsUnitTypes
 
   public:
 
+    //! Units of distance
+    enum DistanceUnit
+    {
+      DistanceMeters, /*!< meters */
+      DistanceKilometers, /*!< kilometers */
+      DistanceFeet, /*!< imperial feet */
+      DistanceNauticalMiles, /*!< nautical miles */
+      DistanceYards, /*!< imperial yards */
+      DistanceMiles, /*!< terrestial miles */
+      DistanceDegrees, /*!< degrees, for planar geographic CRS distance measurements */
+      DistanceUnknownUnit, /*!< unknown distance unit */
+    };
+
     /** Types of distance units
      */
     enum DistanceUnitType
     {
-      Standard,    /*!< unit is a standard measurement unit */
-      Geographic,  /*!< unit is a geographic (eg degree based) unit */
-      UnknownType, /*!< unknown unit type */
+      Standard, /*!< unit is a standard measurement unit */
+      Geographic,   /*!< unit is a geographic (eg degree based) unit */
+      UnknownType,  /*!< unknown unit type */
     };
 
     //! Units of area
     enum AreaUnit
     {
-      SquareMeters, /*!< square meters */
-      SquareKilometers, /*!< square kilometers */
-      SquareFeet, /*!< square feet */
-      SquareYards, /*!< square yards */
-      SquareMiles, /*!< square miles */
-      Hectares, /*!< hectares */
-      Acres, /*!< acres */
-      SquareNauticalMiles, /*!< square nautical miles */
-      SquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
-      UnknownAreaUnit, /*!< unknown areal unit */
+      AreaSquareMeters, /*!< square meters */
+      AreaSquareKilometers, /*!< square kilometers */
+      AreaSquareFeet, /*!< square feet */
+      AreaSquareYards, /*!< square yards */
+      AreaSquareMiles, /*!< square miles */
+      AreaHectares, /*!< hectares */
+      AreaAcres, /*!< acres */
+      AreaSquareNauticalMiles, /*!< square nautical miles */
+      AreaSquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
+      AreaUnknownUnit, /*!< unknown areal unit */
     };
 
     //! Units of angles
     enum AngleUnit
     {
-      AngleDegrees = 0, /*!< degrees */
-      Radians, /*!< square kilometers */
-      Gon, /*!< gon/gradian */
-      MinutesOfArc, /*!< minutes of arc */
-      SecondsOfArc, /*!< seconds of arc */
-      Turn, /*!< turn/revolutions */
-      UnknownAngleUnit, /*!< unknown angle unit */
+      AngleDegrees, /*!< degrees */
+      AngleRadians, /*!< square kilometers */
+      AngleGon, /*!< gon/gradian */
+      AngleMinutesOfArc, /*!< minutes of arc */
+      AngleSecondsOfArc, /*!< seconds of arc */
+      AngleTurn, /*!< turn/revolutions */
+      AngleUnknownUnit, /*!< unknown angle unit */
     };
+
+    //! Rendering size units
+    enum RenderUnit
+    {
+      RenderMillimeters, //!< millimeters
+      RenderMapUnits, //!< map units
+      RenderPixels, //!< pixels
+      RenderPercentage, //!< percentage of another measurement (eg canvas size, feature size)
+      RenderUnknownUnit, //!< mixed or unknown units
+    };
+
+    //! List of render units
+    typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;
 
     /** Returns the type for a distance unit.
      */
-    static DistanceUnitType unitType( QGis::UnitType unit );
+    static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
 
     /** Encodes a distance unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeDistanceUnit()
      */
-    static QString encodeUnit( QGis::UnitType unit );
+    static QString encodeUnit( QgsUnitTypes::DistanceUnit unit );
 
     /** Decodes a distance unit from a string.
      * @param string string to decode
@@ -65,27 +91,27 @@ class QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
      */
-    static QGis::UnitType decodeDistanceUnit( const QString& string, bool *ok = 0 );
+    static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns a translated string representing a distance unit.
      * @param unit unit to convert to string
      * @see stringToDistanceUnit()
      */
-    static QString toString( QGis::UnitType unit );
+    static QString toString( QgsUnitTypes::DistanceUnit unit );
 
     /** Converts a translated string to a distance unit.
      * @param string string representing a distance unit
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
-    static QGis::UnitType stringToDistanceUnit( const QString& string, bool *ok = 0 );
+    static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns the conversion factor between the specified distance units.
      * @param fromUnit distance unit to convert from
      * @param toUnit distance unit to convert to
      * @returns multiplication factor to convert between units
      */
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+    static double fromUnitToUnitFactor( QgsUnitTypes::DistanceUnit fromUnit, QgsUnitTypes::DistanceUnit toUnit );
 
     /** Returns the type for an areal unit.
     */
@@ -104,7 +130,7 @@ class QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
     */
-    static AreaUnit decodeAreaUnit( const QString& string, bool *ok = 0 );
+    static AreaUnit decodeAreaUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns a translated string representing an areal unit.
      * @param unit unit to convert to string
@@ -117,7 +143,7 @@ class QgsUnitTypes
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
-    static AreaUnit stringToAreaUnit( const QString& string, bool *ok = 0 );
+    static AreaUnit stringToAreaUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns the conversion factor between the specified areal units.
      * @param fromUnit area unit to convert from
@@ -130,7 +156,7 @@ class QgsUnitTypes
      * @param distanceUnit distance unit to convert
      * @return matching areal unit
      */
-    static AreaUnit distanceToAreaUnit( QGis::UnitType distanceUnit );
+    static AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
 
     // ANGULAR UNITS
 
@@ -147,7 +173,7 @@ class QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
     */
-    static AngleUnit decodeAngleUnit( const QString& string, bool *ok = 0 );
+    static AngleUnit decodeAngleUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns a translated string representing an angular unit.
      * @param unit unit to convert to string
@@ -168,5 +194,23 @@ class QgsUnitTypes
      * @returns formatted angle string
      */
     static QString formatAngle( double angle, int decimals, AngleUnit unit );
+
+    // RENDER UNITS
+
+    /** Encodes a render unit to a string.
+     * @param unit unit to encode
+     * @returns encoded string
+     * @see decodeRenderUnit()
+     */
+    static QString encodeUnit( RenderUnit unit );
+
+    /** Decodes a render unit from a string.
+     * @param string string to decode
+     * @param ok optional boolean, will be set to true if string was converted successfully
+     * @returns decoded units
+     * @see encodeUnit()
+     */
+    static RenderUnit decodeRenderUnit( const QString& string, bool *ok /Out/ = 0 );
+
 };
 

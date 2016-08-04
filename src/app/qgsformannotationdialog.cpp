@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsformannotationdialog.h"
 #include "qgsannotationwidget.h"
+#include "qgsformannotationitem.h"
 #include "qgsvectorlayer.h"
 #include <QFileDialog>
 #include <QFileInfo>
@@ -26,7 +27,6 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsFormAnnotationItem* item, Q
 {
   setupUi( this );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
@@ -88,5 +88,13 @@ void QgsFormAnnotationDialog::deleteItem()
   }
   delete mItem;
   mItem = nullptr;
+}
+
+void QgsFormAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applySettingsToItem();
+  }
 }
 

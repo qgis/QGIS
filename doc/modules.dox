@@ -1,27 +1,37 @@
-/** @defgroup core QGIS core library
+/** @defgroup core core library
 
-Contains all basic GIS functionality.
-
-*/
-
-/** @defgroup gui QGIS gui library.
-
-It's built on top of core library and adds reusable GUI widgets.
+The CORE library contains all basic GIS functionality.
 
 */
 
-/** @defgroup analysis QGIS analysis library.
+/** @defgroup gui gui library
 
-Built on top of core library, the analysis library provides 
+The GUI library is build on top of the CORE library and adds reusable GUI widgets.
+
+*/
+
+/** @defgroup analysis analysis library
+
+The ANALYSIS library is built on top of CORE library and provides 
 high level tools for carrying out spatial analysis on vector and raster data.
 */
 
-/** @defgroup MapComposer */
+/** @defgroup networkanalysis network analysis library
 
-/** @defgroup networkanalysis QGIS network analysis library.
-
-The network analysis library provides high level tool for build topology and analysis it.
+The NETWORK_ANALYSIS library provides high level tools for building network
+topologies and analysing them.
 */
 
+/** @defgroup server server library
 
-/** @defgroup server QGIS Server library.*/
+The SERVER library is built on top of the CORE library and adds map server
+components to QGIS.
+
+*/
+
+/** @defgroup plugins plugin classes
+
+Contains classes related to implementation of QGIS plugins.
+
+*/
+

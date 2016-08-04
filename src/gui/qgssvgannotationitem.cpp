@@ -31,7 +31,7 @@ QgsSvgAnnotationItem::~QgsSvgAnnotationItem()
 
 }
 
-void QgsSvgAnnotationItem::writeXML( QDomDocument& doc ) const
+void QgsSvgAnnotationItem::writeXml( QDomDocument& doc ) const
 {
   QDomElement documentElem = doc.documentElement();
   if ( documentElem.isNull() )
@@ -41,18 +41,18 @@ void QgsSvgAnnotationItem::writeXML( QDomDocument& doc ) const
 
   QDomElement svgAnnotationElem = doc.createElement( "SVGAnnotationItem" );
   svgAnnotationElem.setAttribute( "file", QgsProject::instance()->writePath( mFilePath ) );
-  _writeXML( doc, svgAnnotationElem );
+  _writeXml( doc, svgAnnotationElem );
   documentElem.appendChild( svgAnnotationElem );
 }
 
-void QgsSvgAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsSvgAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
 {
   QString filePath = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
   setFilePath( filePath );
   QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
   if ( !annotationElem.isNull() )
   {
-    _readXML( doc, annotationElem );
+    _readXml( doc, annotationElem );
   }
 }
 

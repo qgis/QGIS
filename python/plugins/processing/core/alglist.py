@@ -45,7 +45,8 @@ class AlgorithmList(QObject):
             if p.getName() == providerName:
                 self.providers.remove(p)
                 break
-        self.algs.remove(providerName)
+        if providerName in self.algs:
+            del self.algs[providerName]
         self.providerRemoved.emit(providerName)
 
     def reloadProvider(self, providerName):

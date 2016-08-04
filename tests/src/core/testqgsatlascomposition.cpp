@@ -23,7 +23,6 @@
 #include "qgsatlascomposition.h"
 #include "qgscomposerlabel.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgssymbolv2.h"
@@ -147,7 +146,7 @@ void TestQgsAtlasComposition::init()
   //create composition with composer map
   mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
   mMapSettings->setCrsTransformEnabled( true );
-  mMapSettings->setMapUnits( QGis::Meters );
+  mMapSettings->setMapUnits( QgsUnitTypes::DistanceMeters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;

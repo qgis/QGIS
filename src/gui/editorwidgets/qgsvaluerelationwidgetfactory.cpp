@@ -21,6 +21,7 @@
 #include "qgsvaluerelationconfigdlg.h"
 #include "qgsvaluerelationsearchwidgetwrapper.h"
 #include "qgsvectorlayer.h"
+#include "qgsvaluerelationwidgetwrapper.h"
 
 #include <QSettings>
 
@@ -128,6 +129,22 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
   }
 
   return QString( "(%1)" ).arg( value.toString() );
+}
+
+QVariant QgsValueRelationWidgetFactory::sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
+{
+  return representValue( vl, fieldIdx, config, cache, value );
+}
+
+Qt::AlignmentFlag QgsValueRelationWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
+{
+  Q_UNUSED( vl );
+  Q_UNUSED( fieldIdx );
+  Q_UNUSED( config );
+
+  QgsDebugMsg( "Entered" );
+
+  return Qt::AlignLeft;
 }
 
 QVariant QgsValueRelationWidgetFactory::createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config )

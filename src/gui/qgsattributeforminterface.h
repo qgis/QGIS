@@ -19,6 +19,9 @@
 class QgsAttributeForm;
 class QgsFeature;
 
+/** \ingroup gui
+ * \class QgsAttributeFormInterface
+ */
 class GUI_EXPORT QgsAttributeFormInterface
 {
   public:

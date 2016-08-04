@@ -29,7 +29,7 @@ class QGraphicsItem;
 
 /**
  * \class QgsComposerModel
- * \ingroup MapComposer
+ * \ingroup core
  *
  * A model for items attached to a composition. The model also maintains the z-order for the
  * composition, and must be notified whenever item stacking changes.
@@ -293,10 +293,10 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
 
 /**
- * /class QgsComposerProxyModel
- * /ingroup core
- * /brief Allows for filtering a QgsComposerModel by item type.
- * /note added in 2.16
+ * \class QgsComposerProxyModel
+ * \ingroup core
+ * \brief Allows for filtering a QgsComposerModel by item type.
+ * \note added in 2.16
  */
 class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
 {

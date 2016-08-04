@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsfeaturelistmodel.h
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Matthias Kuhn
+    email                : matthias at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSATTRIBUTEEDITORMODEL_H
 #define QGSATTRIBUTEEDITORMODEL_H
 
@@ -14,6 +28,9 @@ class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
+/** \ingroup gui
+ * \class QgsFeatureListModel
+ */
 class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel
 {
     Q_OBJECT

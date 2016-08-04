@@ -54,7 +54,10 @@ class laszipPro(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         if self.getParameterValue(laszipPro.REPORT_SIZE):

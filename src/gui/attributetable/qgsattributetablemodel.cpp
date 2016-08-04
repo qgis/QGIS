@@ -19,7 +19,9 @@
 
 #include "qgsactionmanager.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
+#include "qgsfeatureiterator.h"
 #include "qgsconditionalstyle.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
@@ -40,13 +42,14 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     , mLayerCache( layerCache )
     , mFieldCount( 0 )
     , mSortCacheExpression( "" )
+    , mSortFieldIndex( -1 )
     , mExtraColumns( 0 )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( layerCache->layer() );
 
-  if ( layerCache->layer()->geometryType() == QGis::NoGeometry )
+  if ( layerCache->layer()->geometryType() == QgsWkbTypes::NullGeometry )
   {
     mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
   }
@@ -206,8 +209,19 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 
   if ( featOk && mFeatureRequest.acceptFeature( mFeat ) )
   {
-    mExpressionContext.setFeature( mFeat );
-    mSortCache[fid] = mSortCacheExpression.evaluate();
+    if ( mSortFieldIndex == -1 )
+    {
+      mExpressionContext.setFeature( mFeat );
+      mSortCache[mFeat.id()] = mSortCacheExpression.evaluate( &mExpressionContext );
+    }
+    else
+    {
+      QgsEditorWidgetFactory* widgetFactory = mWidgetFactories.at( mSortFieldIndex );
+      const QVariant& widgetCache = mAttributeWidgetCaches.at( mSortFieldIndex );
+      const QgsEditorWidgetConfig& widgetConfig = mWidgetConfigs.at( mSortFieldIndex );
+      QVariant sortValue = widgetFactory->representValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, mFeat.attribute( mSortFieldIndex ) );
+      mSortCache.insert( mFeat.id(), sortValue );
+    }
 
     int n = mRowIdMap.size();
     beginInsertRows( QModelIndex(), n, n );
@@ -257,10 +271,20 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
 
   if ( mSortCacheAttributes.contains( idx ) )
   {
-    // if the expression used multiple fields, this will not work but this way we don't have
-    // to run the expensive query in the 80% cases where we just have a simple column for sorting
-    // or it's the first used column, this works just fine
-    mSortCache[fid] = value;
+    if ( mSortFieldIndex == -1 )
+    {
+      loadFeatureAtId( fid );
+      mExpressionContext.setFeature( mFeat );
+      mSortCache[fid] = mSortCacheExpression.evaluate( &mExpressionContext );
+    }
+    else
+    {
+      QgsEditorWidgetFactory* widgetFactory = mWidgetFactories.at( mSortFieldIndex );
+      const QVariant& widgetCache = mAttributeWidgetCaches.at( mSortFieldIndex );
+      const QgsEditorWidgetConfig& widgetConfig = mWidgetConfigs.at( mSortFieldIndex );
+      QVariant sortValue = widgetFactory->representValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, value );
+      mSortCache.insert( fid, sortValue );
+    }
   }
   // No filter request: skip all possibly heavy checks
   if ( mFeatureRequest.filterType() == QgsFeatureRequest::FilterNone )
@@ -341,6 +365,9 @@ void QgsAttributeTableModel::loadAttributes()
   mFieldCount = attributes.size();
   mAttributes = attributes;
 
+  if ( mSortFieldIndex >= mAttributes.count() )
+    mSortFieldIndex = -1;
+
   if ( ins )
   {
     endInsertColumns();
@@ -373,8 +400,7 @@ void QgsAttributeTableModel::loadLayer()
   QTime t;
   t.start();
 
-  QgsFeature feat;
-  while ( features.nextFeature( feat ) )
+  while ( features.nextFeature( mFeat ) )
   {
     ++i;
 
@@ -387,8 +413,7 @@ void QgsAttributeTableModel::loadLayer()
 
       t.restart();
     }
-    mFeat = feat;
-    featureAdded( feat.id() );
+    featureAdded( mFeat.id() );
   }
 
   emit finished();
@@ -517,10 +542,10 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     }
     else if ( section >= 0 && section < mFieldCount )
     {
-      QString attributeName = layer()->attributeAlias( mAttributes[section] );
+      QString attributeName = layer()->attributeAlias( mAttributes.at( section ) );
       if ( attributeName.isEmpty() )
       {
-        QgsField field = layer()->fields().at( mAttributes[section] );
+        QgsField field = layer()->fields().at( mAttributes.at( section ) );
         attributeName = field.name();
       }
       return QVariant( attributeName );
@@ -528,6 +553,19 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     else
     {
       return tr( "extra column" );
+    }
+  }
+  else if ( role == Qt::ToolTipRole )
+  {
+    if ( orientation == Qt::Vertical )
+    {
+      // TODO show DisplayExpression
+      return tr( "Feature ID: %1" ).arg( rowToId( section ) );
+    }
+    else
+    {
+      QgsField field = layer()->fields().at( mAttributes.at( section ) );
+      return field.name();
     }
   }
   else
@@ -566,23 +604,16 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( role == FieldIndexRole )
     return fieldId;
 
-  QgsField field = layer()->fields().at( fieldId );
-
-  QVariant::Type fldType = field.type();
-  bool fldRightAlign = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong
-                         || fldType == QVariant::DateTime || fldType == QVariant::Date || fldType == QVariant::Time );
-
-  if ( role == Qt::TextAlignmentRole )
-  {
-    if ( fldRightAlign )
-      return QVariant( Qt::AlignRight );
-    else
-      return QVariant( Qt::AlignLeft );
-  }
-
   if ( role == SortRole )
   {
     return mSortCache[rowId];
+  }
+
+  QgsField field = layer()->fields().at( fieldId );
+
+  if ( role == Qt::TextAlignmentRole )
+  {
+    return mWidgetFactories.at( index.column() )->alignmentFlag( layer(), fieldId, mWidgetConfigs.at( index.column() ) );
   }
 
   if ( mFeat.id() != rowId || !mFeat.isValid() )
@@ -744,7 +775,7 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
   }
   else
   {
-    prefetchSortData( mLayerCache->layer()->fields().at( mAttributes.at( column ) ).name() );
+    prefetchSortData( QgsExpression::quotedColumnRef( mLayerCache->layer()->fields().at( mAttributes.at( column ) ).name() ) );
   }
 }
 
@@ -752,14 +783,35 @@ void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
 {
   mSortCache.clear();
   mSortCacheAttributes.clear();
-
+  mSortFieldIndex = -1;
   mSortCacheExpression = QgsExpression( expressionString );
 
-  mSortCacheExpression.prepare( &mExpressionContext );
+  QgsEditorWidgetFactory* widgetFactory = nullptr;
+  QVariant widgetCache;
+  QgsEditorWidgetConfig widgetConfig;
 
-  Q_FOREACH ( const QString& col, mSortCacheExpression.referencedColumns() )
+  if ( mSortCacheExpression.isField() )
   {
-    mSortCacheAttributes.append( mLayerCache->layer()->fieldNameIndex( col ) );
+    QString fieldName = static_cast<const QgsExpression::NodeColumnRef*>( mSortCacheExpression.rootNode() )->name();
+    mSortFieldIndex = mLayerCache->layer()->fieldNameIndex( fieldName );
+  }
+
+  if ( mSortFieldIndex == -1 )
+  {
+    mSortCacheExpression.prepare( &mExpressionContext );
+
+    Q_FOREACH ( const QString& col, mSortCacheExpression.referencedColumns() )
+    {
+      mSortCacheAttributes.append( mLayerCache->layer()->fieldNameIndex( col ) );
+    }
+  }
+  else
+  {
+    mSortCacheAttributes.append( mSortFieldIndex );
+
+    widgetFactory = mWidgetFactories.at( mSortFieldIndex );
+    widgetCache = mAttributeWidgetCaches.at( mSortFieldIndex );
+    widgetConfig = mWidgetConfigs.at( mSortFieldIndex );
   }
 
   QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest )
@@ -770,8 +822,16 @@ void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {
-    mExpressionContext.setFeature( f );
-    mSortCache.insert( f.id(), mSortCacheExpression.evaluate( &mExpressionContext ) );
+    if ( mSortFieldIndex == -1 )
+    {
+      mExpressionContext.setFeature( f );
+      mSortCache.insert( f.id(), mSortCacheExpression.evaluate( &mExpressionContext ) );
+    }
+    else
+    {
+      QVariant sortValue = widgetFactory->sortValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, f.attribute( mSortFieldIndex ) );
+      mSortCache.insert( f.id(), sortValue );
+    }
   }
 }
 

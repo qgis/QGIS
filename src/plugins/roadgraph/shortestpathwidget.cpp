@@ -33,7 +33,6 @@
 #include <qgisinterface.h>
 #include <qgsrubberband.h>
 #include <qgsmaptopixel.h>
-#include <qgsmaprenderer.h>
 #include <qgsfeature.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
@@ -55,7 +54,7 @@
 //standard includes
 
 RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin *thePlugin )
-    : QDockWidget( theParent )
+    : QgsDockWidget( theParent )
     , mPlugin( thePlugin )
 {
   setWindowTitle( tr( "Shortest path" ) );
@@ -66,6 +65,8 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   setWidget( myWidget );
 
   QVBoxLayout *v = new QVBoxLayout( myWidget );
+  v->setMargin( 0 );
+  v->setContentsMargins( 0, 0, 0, 0 );
   QHBoxLayout *h = nullptr;
   QLabel *l = nullptr;
 
@@ -156,15 +157,15 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   connect( mCalculate, SIGNAL( clicked( bool ) ), this, SLOT( findingPath() ) );
   connect( mClear, SIGNAL( clicked( bool ) ), this, SLOT( clear() ) );
 
-  mrbFrontPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Polygon );
+  mrbFrontPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QgsWkbTypes::PolygonGeometry );
   mrbFrontPoint->setColor( QColor( 0, 255, 0, 65 ) );
   mrbFrontPoint->setWidth( 2 );
 
-  mrbBackPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Polygon );
+  mrbBackPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QgsWkbTypes::PolygonGeometry );
   mrbBackPoint->setColor( QColor( 255, 0, 0, 65 ) );
   mrbBackPoint->setWidth( 2 );
 
-  mrbPath = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Line );
+  mrbPath = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QgsWkbTypes::LineGeometry );
   mrbPath->setWidth( 2 );
 
   connect( mPlugin->iface()->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( mapCanvasExtentsChanged() ) );
@@ -197,13 +198,13 @@ void RgShortestPathWidget::onSelectFrontPoint()
 void RgShortestPathWidget::setFrontPoint( const QgsPoint& pt )
 {
   mPlugin->iface()->mapCanvas()->unsetMapTool( mFrontPointMapTool );
-  mFrontPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QLatin1String( "," ) +
-                                QString().setNum( pt.y() ) + QLatin1String( ")" ) );
+  mFrontPointLineEdit->setText( QString( "(%1, %2)" ).arg( QString::number( pt.x(), 'f' ),
+                                QString::number( pt.y(), 'f' ) ) );
   mFrontPoint = pt;
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
 
-  mrbFrontPoint->reset( QGis::Polygon );
+  mrbFrontPoint->reset( QgsWkbTypes::PolygonGeometry );
   mrbFrontPoint->addPoint( QgsPoint( pt.x() - mupp, pt.y() - mupp ), false );
   mrbFrontPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() - mupp ), false );
   mrbFrontPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() + mupp ), false );
@@ -221,12 +222,12 @@ void RgShortestPathWidget::setBackPoint( const QgsPoint& pt )
   mPlugin->iface()->mapCanvas()->unsetMapTool( mBackPointMapTool );
 
   mBackPoint = pt;
-  mBackPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QLatin1String( "," ) +
-                               QString().setNum( pt.y() ) + QLatin1String( ")" ) );
+  mBackPointLineEdit->setText( QString( "(%1, %2)" ).arg( QString::number( pt.x(), 'f' ),
+                               QString::number( pt.y(), 'f' ) ) );
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
 
-  mrbBackPoint->reset( QGis::Polygon );
+  mrbBackPoint->reset( QgsWkbTypes::PolygonGeometry );
   mrbBackPoint->addPoint( QgsPoint( pt.x() - mupp, pt.y() - mupp ), false );
   mrbBackPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() - mupp ), false );
   mrbBackPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() + mupp ), false );
@@ -250,7 +251,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     const QgsGraphDirector *director = mPlugin->director();
     if ( !director )
     {
-      QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured! Please go to the Vector → Road graph → Settings to configure it." ) );
+      QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured! Please go to the Vector menu, Road Graph, Settings option to configure it." ) );
       return nullptr;
     }
     connect( director, SIGNAL( buildProgress( int, int ) ), mPlugin->iface()->mainWindow(), SLOT( showProgress( int, int ) ) );
@@ -333,7 +334,7 @@ void RgShortestPathWidget::findingPath()
   if ( !path )
     return;
 
-  mrbPath->reset( QGis::Line );
+  mrbPath->reset( QgsWkbTypes::LineGeometry );
   double time = 0.0;
   double cost = 0.0;
 
@@ -378,10 +379,10 @@ void RgShortestPathWidget::findingPath()
 void RgShortestPathWidget::clear()
 {
   mFrontPointLineEdit->setText( QString() );
-  mrbFrontPoint->reset( QGis::Polygon );
+  mrbFrontPoint->reset( QgsWkbTypes::PolygonGeometry );
   mBackPointLineEdit->setText( QString() );
-  mrbBackPoint->reset( QGis::Polygon );
-  mrbPath->reset( QGis::Line );
+  mrbBackPoint->reset( QgsWkbTypes::PolygonGeometry );
+  mrbPath->reset( QgsWkbTypes::LineGeometry );
   mPathCostLineEdit->setText( QString() );
   mPathTimeLineEdit->setText( QString() );
 }

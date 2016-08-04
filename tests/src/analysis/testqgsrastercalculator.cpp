@@ -16,6 +16,7 @@ Email                : nyall dot dawson at gmail dot com
 
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
 #include "qgsapplication.h"
@@ -362,7 +363,7 @@ void TestQgsRasterCalculator::rasterRefOp()
   QVERIFY( !node.calculate( rasterData, result ) );
 
   //now create raster ref
-  QgsRasterBlock m( QGis::Float32, 2, 3, -1.0 );
+  QgsRasterBlock m( Qgis::Float32, 2, 3, -1.0 );
   m.setValue( 0, 0, 1.0 );
   m.setValue( 0, 1, 2.0 );
   m.setValue( 1, 0, 3.0 );
@@ -384,7 +385,7 @@ void TestQgsRasterCalculator::dualOpRasterRaster()
 {
   // test dual op run on matrix and matrix
 
-  QgsRasterBlock m1( QGis::Float32, 2, 3, -1.0 );
+  QgsRasterBlock m1( Qgis::Float32, 2, 3, -1.0 );
   m1.setValue( 0, 0, 1.0 );
   m1.setValue( 0, 1, 2.0 );
   m1.setValue( 1, 0, -2.0 );
@@ -394,7 +395,7 @@ void TestQgsRasterCalculator::dualOpRasterRaster()
   QMap<QString, QgsRasterBlock*> rasterData;
   rasterData.insert( "raster1", &m1 );
 
-  QgsRasterBlock m2( QGis::Float32, 2, 3, -2.0 ); //different no data value
+  QgsRasterBlock m2( Qgis::Float32, 2, 3, -2.0 ); //different no data value
   m2.setValue( 0, 0, -1.0 );
   m2.setValue( 0, 1, -2.0 ); //nodata
   m2.setValue( 1, 0, 13.0 );

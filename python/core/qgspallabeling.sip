@@ -77,6 +77,82 @@
 %End
 };
 
+
+class QgsLabelPosition
+{
+%TypeHeaderCode
+#include <qgspallabeling.h>
+%End
+  public:
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, const QFont& labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString& providerId = QString() );
+    QgsLabelPosition();
+    int featureId;
+    double rotation;
+    QVector< QgsPoint > cornerPoints;
+    QgsRectangle labelRect;
+    double width;
+    double height;
+    QString layerID;
+    QString labelText;
+    QFont labelFont;
+    bool upsideDown;
+    bool isDiagram;
+    bool isPinned;
+    //! @note added in 2.14
+    QString providerID;
+};
+
+/** Labeling engine interface. */
+class QgsLabelingEngineInterface
+{
+%TypeHeaderCode
+#include <qgspallabeling.h>
+%End
+
+  public:
+
+    virtual ~QgsLabelingEngineInterface();
+
+    //! called when we're going to start with rendering
+    virtual void init( const QgsMapSettings& mapSettings ) = 0;
+    //! called to find out whether the layer is used for labeling
+    virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
+    //! clears all PAL layer settings for registered layers
+    virtual void clearActiveLayers() = 0;
+    //! clears data defined objects from PAL layer settings for a registered layer
+    virtual void clearActiveLayer( const QString& layerID ) = 0;
+    //! called when starting rendering of a layer
+    virtual int prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) = 0;
+    //! returns PAL layer settings for a registered layer
+    //! @deprecated since 2.12 - if direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
+    virtual QgsPalLayerSettings &layer( const QString &layerName ) = 0 /Deprecated/;
+    //! adds a diagram layer to the labeling engine
+    //! @note added in QGIS 2.12
+    virtual int prepareDiagramLayer( QgsVectorLayer *layer, QStringList &attrNames, QgsRenderContext &ctx );
+    //! adds a diagram layer to the labeling engine
+    //! @deprecated since 2.12 - use prepareDiagramLayer()
+    virtual int addDiagramLayer( QgsVectorLayer *layer, const QgsDiagramLayerSettings *s ) /Deprecated/;
+    //! called for every feature
+    virtual void registerFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context ) = 0;
+    //! called for every diagram feature
+    virtual void registerDiagramFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context );
+    //! called when the map is drawn and labels should be placed
+    virtual void drawLabeling( QgsRenderContext& context ) = 0;
+    //! called when we're done with rendering
+    virtual void exit() = 0;
+    //! return infos about labels at a given (map) position
+    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
+    virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0 /Deprecated/;
+    //! return infos about labels within a given (map) rectangle
+    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
+    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0 /Deprecated/;
+
+    //! called when passing engine among map renderers
+    virtual QgsLabelingEngineInterface* clone() = 0 /Factory/;
+};
+
+
+
 class QgsPalLayerSettings
 {
 %TypeHeaderCode
@@ -662,11 +738,11 @@ class QgsPalLayerSettings
     QgsFields mCurFields;
     int fieldIndex;
     const QgsMapToPixel* xform;
-    const QgsCoordinateTransform* ct;
+    QgsCoordinateTransform ct;
 
     QgsPoint ptZero;
     QgsPoint ptOne;
-    QgsGeometry* extentGeom;
+    QgsGeometry extentGeom;
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
@@ -836,9 +912,6 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
-    //! @deprecated since 2.4 - use override with QgsMapSettings
-    virtual void init( QgsMapRenderer* mr ) /Deprecated/;
-    //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings );
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer );
@@ -916,22 +989,22 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
      * @param geometry geometry to prepare
      * @param context render context
-     * @param ct coordinate transform
+     * @param ct coordinate transform, or invalid transform if no transformation required
      * @param clipGeometry geometry to clip features to, if applicable
-     * @returns prepared geometry, the caller takes ownership
+     * @returns prepared geometry
      * @note added in QGIS 2.9
      */
-    static QgsGeometry* prepareGeometry( const QgsGeometry *geometry, QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 ) /Factory/;
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = 0 ) /Factory/;
 
     /** Checks whether a geometry requires preparation before registration with PAL
      * @param geometry geometry to prepare
      * @param context render context
-     * @param ct coordinate transform
+     * @param @param ct coordinate transform, or invalid transform if no transformation required
      * @param clipGeometry geometry to clip features to, if applicable
      * @returns true if geometry requires preparation
      * @note added in QGIS 2.9
      */
-    static bool geometryRequiresPreparation( const QgsGeometry *geometry, QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
+    static bool geometryRequiresPreparation( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = 0 );
 
     /** Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.
@@ -981,5 +1054,5 @@ class QgsPalLabeling : QgsLabelingEngineInterface
      * @returns true if geometry exceeds minimum size
      * @note added in QGIS 2.9
      */
-    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
+    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry* geom, double minSize );
 };

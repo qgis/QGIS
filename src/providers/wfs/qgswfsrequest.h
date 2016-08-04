@@ -23,13 +23,13 @@
 #include "qgswfsdatasourceuri.h"
 
 /** Abstract base class for a WFS request. */
-class QgsWFSRequest : public QObject
+class QgsWfsRequest : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsWFSRequest( const QString& theUri );
+    explicit QgsWfsRequest( const QString& theUri );
 
-    virtual ~QgsWFSRequest();
+    virtual ~QgsWfsRequest();
 
     /** \brief proceed to sending a GET request */
     bool sendGET( const QUrl& url, bool synchronous, bool forceRefresh = false, bool cache = true );

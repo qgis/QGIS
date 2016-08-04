@@ -19,10 +19,12 @@
 #ifndef QGSVECTORLAYERIMPORT_H
 #define QGSVECTORLAYERIMPORT_H
 
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
+#include "qgsfeature.h"
 
 class QProgressDialog;
+class QgsVectorDataProvider;
+class QgsVectorLayer;
+class QgsFields;
 
 /** \ingroup core
   * A convenience class for writing vector files to disk.
@@ -51,11 +53,24 @@ class CORE_EXPORT QgsVectorLayerImport
       ErrUserCancelled, /*!< User cancelled the import*/
     };
 
-    /** Write contents of vector layer to a different datasource */
+    /**
+     * Writes the contents of vector layer to a different datasource.
+     * @param layer source layer
+     * @param uri URI for destination data source
+     * @param providerKey string key for destination data provider
+     * @param destCRS destination CRS, or an invalid (default constructed) CRS if
+     * not available
+     * @param onlySelected set to true to export only selected features
+     * @param errorMessage if non-null, will be set to any error messages
+     * @param skipAttributeCreation set to true to skip exporting feature attributes
+     * @param options optional provider dataset options
+     * @param progress optional progress dialog to show progress of export
+     * @returns NoError for a successful export, or encountered error
+     */
     static ImportError importLayer( QgsVectorLayer* layer,
                                     const QString& uri,
                                     const QString& providerKey,
-                                    const QgsCoordinateReferenceSystem *destCRS,
+                                    const QgsCoordinateReferenceSystem& destCRS,
                                     bool onlySelected = false,
                                     QString *errorMessage = nullptr,
                                     bool skipAttributeCreation = false,
@@ -63,12 +78,22 @@ class CORE_EXPORT QgsVectorLayerImport
                                     QProgressDialog *progress = nullptr
                                   );
 
-    /** Create a empty layer and add fields to it */
+    /** Constructor for QgsVectorLayerImport.
+     * @param uri URI for destination data source
+     * @param provider string key for destination data provider
+     * @param fields fields to include in created layer
+     * @param geometryType destination geometry type
+     * @param crs desired CRS, or an invalid (default constructed) CRS if
+     * not available
+     * @param overwrite set to true to overwrite any existing data source
+     * @param options optional provider dataset options
+     * @param progress optional progress dialog to show progress of export
+     */
     QgsVectorLayerImport( const QString &uri,
                           const QString &provider,
                           const QgsFields &fields,
-                          QGis::WkbType geometryType,
-                          const QgsCoordinateReferenceSystem* crs,
+                          QgsWkbTypes::Type geometryType,
+                          const QgsCoordinateReferenceSystem& crs,
                           bool overwrite = false,
                           const QMap<QString, QVariant> *options = nullptr,
                           QProgressDialog *progress = nullptr

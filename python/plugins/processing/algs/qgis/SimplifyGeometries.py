@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -75,7 +75,7 @@ class SimplifyGeometries(GeoAlgorithm):
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
-            featGeometry = QgsGeometry(f.geometry())
+            featGeometry = f.geometry()
             attrs = f.attributes()
             pointsBefore += self.geomVertexCount(featGeometry)
             newGeometry = featGeometry.simplify(tolerance)
@@ -94,14 +94,14 @@ class SimplifyGeometries(GeoAlgorithm):
     def geomVertexCount(self, geometry):
         geomType = geometry.type()
 
-        if geomType == QGis.Line:
+        if geomType == QgsWkbTypes.LineGeometry:
             if geometry.isMultipart():
                 pointsList = geometry.asMultiPolyline()
                 points = sum(pointsList, [])
             else:
                 points = geometry.asPolyline()
             return len(points)
-        elif geomType == QGis.Polygon:
+        elif geomType == QgsWkbTypes.PolygonGeometry:
             if geometry.isMultipart():
                 polylinesList = geometry.asMultiPolygon()
                 polylines = sum(polylinesList, [])

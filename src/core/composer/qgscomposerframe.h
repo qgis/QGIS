@@ -21,7 +21,9 @@
 class QgsComposition;
 class QgsComposerMultiFrame;
 
-/** Frame item for a composer multiframe item*/
+/** \ingroup core
+ * Frame item for a composer multiframe item.
+*/
 class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 {
     Q_OBJECT
@@ -52,8 +54,8 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
     void beginItemCommand( const QString& text ) override;
     void endItemCommand() override;
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
     int type() const override { return ComposerFrame; }
 
     /** Returns the visible portion of the multi frame's content which

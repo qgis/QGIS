@@ -22,7 +22,6 @@
 #include <QDesktopServices>
 
 //qgis includes...
-#include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
@@ -66,6 +65,7 @@ class TestQgsSimpleMarkerSymbol : public QObject
     void boundsWithOffset();
     void boundsWithRotation();
     void boundsWithRotationAndOffset();
+    void colors();
 
   private:
     bool mTestHasError;
@@ -249,6 +249,27 @@ void TestQgsSimpleMarkerSymbol::boundsWithRotationAndOffset()
   mSimpleMarkerLayer->removeDataDefinedProperty( "offset" );
   mSimpleMarkerLayer->removeDataDefinedProperty( "angle" );
   QVERIFY( result );
+}
+
+void TestQgsSimpleMarkerSymbol::colors()
+{
+  //test logic for setting/retrieving symbol color
+
+  QgsSimpleMarkerSymbolLayerV2 marker;
+  marker.setOutlineColor( QColor( 200, 200, 200 ) );
+  marker.setFillColor( QColor( 100, 100, 100 ) );
+
+  //start with a filled shape - color should be fill color
+  marker.setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
+  QCOMPARE( marker.color(), QColor( 100, 100, 100 ) );
+  marker.setColor( QColor( 150, 150, 150 ) );
+  QCOMPARE( marker.fillColor(), QColor( 150, 150, 150 ) );
+
+  //now try with a non-filled (outline only) shape - color should be outline color
+  marker.setShape( QgsSimpleMarkerSymbolLayerBase::Cross );
+  QCOMPARE( marker.color(), QColor( 200, 200, 200 ) );
+  marker.setColor( QColor( 250, 250, 250 ) );
+  QCOMPARE( marker.outlineColor(), QColor( 250, 250, 250 ) );
 }
 
 //

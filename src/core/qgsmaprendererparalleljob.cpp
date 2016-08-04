@@ -15,6 +15,7 @@
 
 #include "qgsmaprendererparalleljob.h"
 
+#include "qgsfeedback.h"
 #include "qgslabelingenginev2.h"
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
@@ -22,12 +23,10 @@
 
 #include <QtConcurrentMap>
 
-#define LABELING_V2
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
     , mStatus( Idle )
-    , mLabelingEngine( nullptr )
     , mLabelingEngineV2( nullptr )
 {
 }
@@ -38,9 +37,6 @@ QgsMapRendererParallelJob::~QgsMapRendererParallelJob()
   {
     cancel();
   }
-
-  delete mLabelingEngine;
-  mLabelingEngine = nullptr;
 
   delete mLabelingEngineV2;
   mLabelingEngineV2 = nullptr;
@@ -55,26 +51,25 @@ void QgsMapRendererParallelJob::start()
 
   mStatus = RenderingLayers;
 
-  delete mLabelingEngine;
-  mLabelingEngine = nullptr;
-
   delete mLabelingEngineV2;
   mLabelingEngineV2 = nullptr;
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-#ifdef LABELING_V2
     mLabelingEngineV2 = new QgsLabelingEngineV2();
     mLabelingEngineV2->readSettingsFromProject();
     mLabelingEngineV2->setMapSettings( mSettings );
-#else
-    mLabelingEngine = new QgsPalLabeling;
-    mLabelingEngine->loadEngineSettings();
-    mLabelingEngine->init( mSettings );
-#endif
   }
 
-  mLayerJobs = prepareJobs( nullptr, mLabelingEngine, mLabelingEngineV2 );
+  mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2 );
+  // prepareJobs calls mapLayer->createMapRenderer may involve cloning a RasterDataProvider,
+  // whose constructor may need to download some data (i.e. WMS, AMS) and doing so runs a
+  // QEventLoop waiting for the network request to complete. If unluckily someone calls
+  // mapCanvas->refresh() while this is happening, QgsMapRendererCustomPainterJob::cancel is
+  // called, deleting the QgsMapRendererCustomPainterJob while this function is running.
+  // Hence we need to check whether the job is still active before proceeding
+  if ( !isActive() )
+    return;
 
   QgsDebugMsg( QString( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 
@@ -97,6 +92,8 @@ void QgsMapRendererParallelJob::cancel()
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
     it->context.setRenderingStopped( true );
+    if ( it->renderer && it->renderer->feedback() )
+      it->renderer->feedback()->cancel();
   }
 
   if ( mStatus == RenderingLayers )
@@ -163,9 +160,7 @@ bool QgsMapRendererParallelJob::isActive() const
 
 QgsLabelingResults* QgsMapRendererParallelJob::takeLabelingResults()
 {
-  if ( mLabelingEngine )
-    return mLabelingEngine->takeResults();
-  else if ( mLabelingEngineV2 )
+  if ( mLabelingEngineV2 )
     return mLabelingEngineV2->takeResults();
   else
     return nullptr;
@@ -229,7 +224,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
 
   QTime t;
   t.start();
-  QgsDebugMsg( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.layerId ) );
+  QgsDebugMsgLevel( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.layerId ), 2 );
 
   try
   {
@@ -251,7 +246,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   }
 
   job.renderingTime = t.elapsed();
-  QgsDebugMsg( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ) );
+  QgsDebugMsgLevel( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
 }
 
 
@@ -261,7 +256,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* s
 
   try
   {
-    drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngine, self->mLabelingEngineV2, &painter );
+    drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngineV2, &painter );
   }
   catch ( QgsException & e )
   {

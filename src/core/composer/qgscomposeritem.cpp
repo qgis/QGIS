@@ -33,13 +33,14 @@
 #include "qgsdatadefined.h"
 #include "qgscomposerutils.h"
 #include "qgscomposermodel.h"
+#include "qgscomposereffect.h"
 
 #include <limits>
 #include "qgsapplication.h"
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
-#include "qgsmaprenderer.h" //for getCompositionMode
+#include "qgspainting.h"
 #include "qgsexpressioncontext.h"
 
 #include <cmath>
@@ -154,7 +155,6 @@ QgsComposerItem::~QgsComposerItem()
 
 void QgsComposerItem::setSelected( bool s )
 {
-  QgsDebugMsg( "entered." );
   QGraphicsRectItem::setSelected( s );
   //inform model that id data has changed
   if ( mComposition )
@@ -164,7 +164,7 @@ void QgsComposerItem::setSelected( bool s )
   update(); //to draw selection boxes
 }
 
-bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) const
+bool QgsComposerItem::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
 {
   if ( itemElem.isNull() )
   {
@@ -241,20 +241,20 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.appendChild( bgColorElem );
 
   //blend mode
-  composerItemElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( mBlendMode ) );
+  composerItemElem.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( mBlendMode ) );
 
   //transparency
   composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
 
   composerItemElem.setAttribute( "excludeFromExports", mExcludeFromExports );
 
-  QgsComposerObject::writeXML( composerItemElem, doc );
+  QgsComposerObject::writeXml( composerItemElem, doc );
   itemElem.appendChild( composerItemElem );
 
   return true;
 }
 
-bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerItem::_readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )
@@ -262,7 +262,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     return false;
   }
 
-  QgsComposerObject::readXML( itemElem, doc );
+  QgsComposerObject::readXml( itemElem, doc );
 
   //rotation
   setItemRotation( itemElem.attribute( "itemRotation", "0" ).toDouble() );
@@ -391,7 +391,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //blend mode
-  setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) ) );
+  setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) ) );
 
   //transparency
   setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );

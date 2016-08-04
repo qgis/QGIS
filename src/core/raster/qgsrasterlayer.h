@@ -29,21 +29,11 @@
 #include <QVector>
 
 #include "qgis.h"
-#include "qgsbrightnesscontrastfilter.h"
-#include "qgscolorrampshader.h"
-#include "qgscontrastenhancement.h"
-#include "qgshuesaturationfilter.h"
 #include "qgsmaplayer.h"
-#include "qgspoint.h"
 #include "qgsraster.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterinterface.h"
 #include "qgsrasterpipe.h"
-#include "qgsrasterresamplefilter.h"
-#include "qgsrastershaderfunction.h"
-#include "qgsrastershader.h"
-#include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
+#include "qgscontrastenhancement.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
@@ -251,7 +241,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     int bandCount() const;
 
     /** \brief Get the name of a band given its number  */
-    const  QString bandName( int theBandNoInt );
+    QString bandName( int theBandNoInt ) const;
 
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
@@ -283,7 +273,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual bool isSpatial() const override { return true; }
 
     /** \brief Obtain GDAL Metadata for this layer */
-    QString metadata() override;
+    QString metadata() const override;
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
@@ -346,7 +336,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual void setSubLayerVisibility( const QString& name, bool vis ) override;
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
-    virtual QDateTime timestamp() const override { return mDataProvider->timestamp() ; }
+    virtual QDateTime timestamp() const override;
 
   public slots:
     void showStatusMessage( const QString & theMessage );
@@ -378,7 +368,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const override;
 
     /** \brief Write layer specific state to project file Dom node */
-    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) override;
+    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const override;
 
   private:
     /** \brief Initialize default values */

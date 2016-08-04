@@ -18,8 +18,6 @@
 #ifndef QGSDXFPALLABELING_H
 #define QGSDXFPALLABELING_H
 
-#include "qgsmaprenderer.h"
-#include "qgsrendercontext.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsrulebasedlabeling.h"
 
@@ -28,7 +26,8 @@ class QgsPalLayerSettings;
 class QgsRuleBasedLabeling;
 
 
-/** Implements a derived label provider internally used for DXF export
+/** \ingroup core
+ * Implements a derived label provider internally used for DXF export
  *
  * Internal class, not in public API. Added in QGIS 2.12
  * @note not available in Python bindings
@@ -57,7 +56,8 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
     QgsDxfExport* mDxfExport;
 };
 
-/** Implements a derived label provider for rule based labels internally used
+/** \ingroup core
+ * Implements a derived label provider for rule based labels internally used
  * for DXF export
  *
  * Internal class, not in public API. Added in QGIS 2.15

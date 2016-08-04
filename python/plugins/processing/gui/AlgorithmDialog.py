@@ -49,6 +49,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
 from processing.core.parameters import ParameterRange
 from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
@@ -149,10 +150,14 @@ class AlgorithmDialog(AlgorithmDialogBase):
             return param.setValue(widget.table)
         elif isinstance(param, ParameterRange):
             return param.setValue(widget.getValue())
-        if isinstance(param, ParameterTableField):
+        elif isinstance(param, ParameterTableField):
             if param.optional and widget.currentIndex() == 0:
                 return param.setValue(None)
             return param.setValue(widget.currentText())
+        elif isinstance(param, ParameterTableMultipleField):
+            if param.optional and len(list(widget.get_selected_items())) == 0:
+                return param.setValue(None)
+            return param.setValue(list(widget.get_selected_items()))
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_FILE:
                 return param.setValue(widget.selectedoptions)

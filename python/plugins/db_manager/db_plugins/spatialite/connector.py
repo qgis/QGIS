@@ -63,8 +63,19 @@ class SpatiaLiteDBConnector(DBConnector):
             conn = sqlite.connect(path)
         except self.connection_error_types():
             return False
+
+        isValid = False
+
+        try:
+            c = conn.cursor()
+            c.execute("SELECT count(*) FROM sqlite_master")
+            c.fetchone()
+            isValid = True
+        except sqlite.DatabaseError:
+            pass
+
         conn.close()
-        return True
+        return isValid
 
     def _checkSpatial(self):
         """ check if it's a valid spatialite db """
@@ -161,9 +172,9 @@ class SpatiaLiteDBConnector(DBConnector):
         return self.has_raster
 
     def hasCustomQuerySupport(self):
-        from qgis.core import QGis
+        from qgis.core import Qgis, QgsWkbTypes
 
-        return QGis.QGIS_VERSION[0:3] >= "1.6"
+        return Qgis.QGIS_VERSION[0:3] >= "1.6"
 
     def hasTableColumnEditingSupport(self):
         return False

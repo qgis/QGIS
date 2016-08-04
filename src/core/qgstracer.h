@@ -23,7 +23,6 @@ class QgsVectorLayer;
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
-#include "qgspoint.h"
 #include "qgsrectangle.h"
 
 struct QgsTracerGraph;
@@ -115,7 +114,7 @@ class CORE_EXPORT QgsTracer : public QObject
   private slots:
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
-    void onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom );
+    void onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
     void onLayerDestroyed( QObject* obj );
 
   private:

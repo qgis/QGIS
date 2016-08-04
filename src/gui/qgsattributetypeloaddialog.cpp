@@ -18,9 +18,11 @@
 #include "qgsattributetypeloaddialog.h"
 
 #include "qgsmaplayer.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
 
 #include <QTableWidgetItem>
 #include <QLineEdit>

@@ -21,7 +21,7 @@
 #include "qgstolerance.h"
 #include "qgspointlocator.h"
 
-/**
+/** \ingroup core
  * This class has all the configuration of snapping and can return answers to snapping queries.
  * Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
  *
@@ -65,6 +65,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     /** Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
     void setCurrentLayer( QgsVectorLayer* layer );
+    /** The current layer used if mode is SnapCurrentLayer */
     QgsVectorLayer* currentLayer() const { return mCurrentLayer; }
 
 
@@ -105,7 +106,25 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      */
     struct LayerConfig
     {
-      LayerConfig( QgsVectorLayer* l, const QgsPointLocator::Types& t, double tol, QgsTolerance::UnitType u )
+      /**
+       * Create a new configuration for a snapping layer.
+
+        ```py
+        snapper = QgsMapCanvasSnappingUtils(mapCanvas)
+
+        snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
+        snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
+
+        snapper.setLayers([snapping_layer1, snapping_layer2])
+        snapper.setSnapToMapMode(QgsSnappingUtils.SnapAdvanced)
+        ```
+
+       * @param l   The vector layer for which this configuration is
+       * @param t   Which parts of the geometry should be snappable
+       * @param tol The tolerance radius in which the snapping will trigger
+       * @param u   The unit in which the tolerance is specified
+       */
+      LayerConfig( QgsVectorLayer* l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u )
           : layer( l )
           , type( t )
           , tolerance( tol )
@@ -166,8 +185,8 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void onLayersWillBeRemoved( const QStringList& layerIds );
 
   private:
-    //! get from map settings pointer to destination CRS - or 0 if projections are disabled
-    const QgsCoordinateReferenceSystem* destCRS();
+    //! Get destination CRS from map settings, or an invalid CRS if projections are disabled
+    QgsCoordinateReferenceSystem destinationCrs() const;
 
     //! delete all existing locators (e.g. when destination CRS has changed and we need to reindex)
     void clearAllLocators();

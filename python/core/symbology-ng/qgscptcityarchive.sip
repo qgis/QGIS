@@ -231,7 +231,7 @@ class QgsCptCitySelectionItem : QgsCptCityCollectionItem
     QStringList selectionsList() const;
 
   protected:
-    void parseXML();
+    void parseXml();
 };
 
 /** An "All ramps item", which contains all items in a flat hierarchy */

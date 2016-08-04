@@ -18,8 +18,9 @@
 
 #include "qgslabelingenginev2.h"
 #include "qgslabelfeature.h"
+#include "qgsdiagramrendererv2.h"
 
-/**
+/** \ingroup core
  * Class that adds extra information to QgsLabelFeature for labeling of diagrams
  *
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
@@ -45,8 +46,7 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
 
 class QgsAbstractFeatureSource;
 
-
-/**
+/** \ingroup core
  * @brief The QgsVectorLayerDiagramProvider class implements support for diagrams within
  * the labeling engine. Parameters for the diagrams are taken from the layer settings.
  *

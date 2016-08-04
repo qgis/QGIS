@@ -16,7 +16,6 @@
 #ifndef QGSMAPTOOLEMITPOINT_H
 #define QGSMAPTOOLEMITPOINT_H
 
-#include "qgspoint.h"
 #include "qgsmaptool.h"
 class QgsMapCanvas;
 
@@ -33,6 +32,8 @@ class GUI_EXPORT QgsMapToolEmitPoint : public QgsMapTool
   public:
     //! constructor
     QgsMapToolEmitPoint( QgsMapCanvas* canvas );
+
+    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;

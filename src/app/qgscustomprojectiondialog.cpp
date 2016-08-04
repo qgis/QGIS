@@ -140,7 +140,7 @@ void QgsCustomProjectionDialog::populateList()
   }
 }
 
-bool  QgsCustomProjectionDialog::deleteCRS( const QString& id )
+bool  QgsCustomProjectionDialog::deleteCrs( const QString& id )
 {
   sqlite3      *myDatabase;
   const char   *myTail;
@@ -166,7 +166,8 @@ bool  QgsCustomProjectionDialog::deleteCRS( const QString& id )
   }
   sqlite3_close( myDatabase );
 
-  QgsCRSCache::instance()->updateCRSCache( QString( "USER:%1" ).arg( id ) );
+  QgsCoordinateReferenceSystem::invalidateCache();
+  QgsCoordinateTransformCache::instance()->invalidateCrs( QString( "USER:%1" ).arg( id ) );
 
   return myResult == SQLITE_OK;
 }
@@ -236,7 +237,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString& myProjectionAc
   sqlite3_close( myDatabase );
 }
 
-bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, const QString& myName, QString myId, bool newEntry )
+bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, const QString& myName, QString myId, bool newEntry )
 {
   QString mySql;
   int return_id;
@@ -245,7 +246,7 @@ bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, con
   QgsDebugMsg( QString( "Saving a CRS:%1, %2, %3" ).arg( myName, myCRS.toProj4() ).arg( newEntry ) );
   if ( newEntry )
   {
-    return_id = myCRS.saveAsUserCRS( myName );
+    return_id = myCRS.saveAsUserCrs( myName );
     if ( return_id == -1 )
       return false;
     else
@@ -291,7 +292,8 @@ bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, con
   existingCRSparameters[myId] = myCRS.toProj4();
   existingCRSnames[myId] = myName;
 
-  QgsCRSCache::instance()->updateCRSCache( QString( "USER:%1" ).arg( myId ) );
+  QgsCoordinateReferenceSystem::invalidateCache();
+  QgsCoordinateTransformCache::instance()->invalidateCrs( QString( "USER:%1" ).arg( myId ) );
 
   // If we have a projection acronym not in the user db previously, add it.
   // This is a must, or else we can't select it from the vw_srs table.
@@ -367,7 +369,6 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
 
 void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
 {
-  QgsDebugMsg( "Entered" );
   QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
   if ( mySelector->exec() )
   {
@@ -388,7 +389,6 @@ void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
 
 void QgsCustomProjectionDialog::on_buttonBox_accepted()
 {
-  QgsDebugMsg( "Entered" );
   //Update the current CRS:
   int i = leNameList->currentIndex().row();
   if ( i != -1 )
@@ -419,13 +419,13 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
     //Test if we just added this CRS (if it has no existing ID)
     if ( customCRSids[i] == "" )
     {
-      save_success &= saveCRS( CRS, customCRSnames[i], "", true );
+      save_success &= saveCrs( CRS, customCRSnames[i], "", true );
     }
     else
     {
       if ( existingCRSnames[customCRSids[i]] != customCRSnames[i] || existingCRSparameters[customCRSids[i]] != customCRSparameters[i] )
       {
-        save_success &= saveCRS( CRS, customCRSnames[i], customCRSids[i], false );
+        save_success &= saveCrs( CRS, customCRSnames[i], customCRSids[i], false );
       }
     }
     if ( ! save_success )
@@ -436,7 +436,7 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
   QgsDebugMsg( "We remove the deleted CRS." );
   for ( int i = 0; i < deletedCRSs.size(); ++i )
   {
-    save_success &= deleteCRS( deletedCRSs[i] );
+    save_success &= deleteCrs( deletedCRSs[i] );
     if ( ! save_success )
     {
       QgsDebugMsg( QString( "Problem for layer '%1'" ).arg( customCRSparameters[i] ) );
@@ -450,7 +450,6 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
 
 void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 {
-  QgsDebugMsg( "entered." );
 
 
   //

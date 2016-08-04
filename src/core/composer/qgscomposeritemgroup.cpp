@@ -36,7 +36,7 @@ QgsComposerItemGroup::~QgsComposerItemGroup()
   //loop through group members and remove them from the scene
   Q_FOREACH ( QgsComposerItem* item, mItems )
   {
-    if ( !item )
+    if ( !item || item->isRemoved() )
       continue;
 
     //inform model that we are about to remove an item from the scene
@@ -174,7 +174,7 @@ void QgsComposerItemGroup::drawFrame( QPainter* p )
   }
 }
 
-bool QgsComposerItemGroup::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerItemGroup::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement group = doc.createElement( "ComposerItemGroup" );
 
@@ -188,17 +188,17 @@ bool QgsComposerItemGroup::writeXML( QDomElement& elem, QDomDocument & doc ) con
 
   elem.appendChild( group );
 
-  return _writeXML( group, doc );
+  return _writeXml( group, doc );
 }
 
-bool QgsComposerItemGroup::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerItemGroup::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   QList<QGraphicsItem *> items = mComposition->items();

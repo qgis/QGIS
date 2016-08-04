@@ -22,6 +22,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgslogger.h"
+#include "qgsstylev2groupselectiondialog.h"
 
 #include <QInputDialog>
 #include <QCloseEvent>
@@ -142,7 +143,7 @@ void QgsStyleV2ExportImportDialog::doExportImport()
     mFileName = fileName;
 
     moveStyles( &selection, mQgisStyle, mTempStyle );
-    if ( !mTempStyle->exportXML( mFileName ) )
+    if ( !mTempStyle->exportXml( mFileName ) )
     {
       QMessageBox::warning( this, tr( "Export/import error" ),
                             tr( "Error when saving selected symbols to file:\n%1" )
@@ -170,7 +171,7 @@ bool QgsStyleV2ExportImportDialog::populateStyles( QgsStyleV2* style )
   if ( mDialogMode == Import )
   {
     // NOTE mTempStyle is style here
-    if ( !style->importXML( mFileName ) )
+    if ( !style->importXml( mFileName ) )
     {
       QMessageBox::warning( this, tr( "Import error" ),
                             tr( "An error occurred during import:\n%1" ).arg( style->errorString() ) );
@@ -493,11 +494,11 @@ void QgsStyleV2ExportImportDialog::browse()
   }
   else
   {
-    downloadStyleXML( QUrl( locationLineEdit->text() ) );
+    downloadStyleXml( QUrl( locationLineEdit->text() ) );
   }
 }
 
-void QgsStyleV2ExportImportDialog::downloadStyleXML( const QUrl& url )
+void QgsStyleV2ExportImportDialog::downloadStyleXml( const QUrl& url )
 {
   // XXX Try to move this code to some core Network interface,
   // HTTP downloading is a generic functionality that might be used elsewhere

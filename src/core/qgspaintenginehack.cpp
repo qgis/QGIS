@@ -20,7 +20,7 @@
 // Hack to workaround Qt #5114 by disabling PatternTransform
 void QgsPaintEngineHack::fixFlags()
 {
-  gccaps = nullptr;
+  gccaps = 0;
   gccaps |= ( QPaintEngine::PrimitiveTransform
               // | QPaintEngine::PatternTransform
               | QPaintEngine::PixmapTransform

@@ -26,9 +26,9 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsapplication.h"
-#include "qgsmaprenderer.h"
 #include "qgspallabeling.h"
 #include "qgsfontutils.h"
+#include "qgsrasterdataprovider.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>

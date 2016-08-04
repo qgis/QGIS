@@ -373,6 +373,21 @@ QgsUserColorScheme* QgsUserColorScheme::clone() const
   return new QgsUserColorScheme( mFilename );
 }
 
+QgsColorScheme::SchemeFlags QgsUserColorScheme::flags() const
+{
+  QgsColorScheme::SchemeFlags f = QgsGplColorScheme::flags();
+
+  QSettings s;
+  QStringList showInMenuSchemes = s.value( QString( "/colors/showInMenuList" ) ).toStringList();
+
+  if ( showInMenuSchemes.contains( mName ) )
+  {
+    f |= QgsColorScheme::ShowInColorButtonMenu;
+  }
+
+  return f;
+}
+
 bool QgsUserColorScheme::erase()
 {
   QString filePath = gplFilePath();
@@ -383,6 +398,23 @@ bool QgsUserColorScheme::erase()
 
   //try to erase gpl file
   return QFile::remove( filePath );
+}
+
+void QgsUserColorScheme::setShowSchemeInMenu( bool show )
+{
+  QSettings s;
+  QStringList showInMenuSchemes = s.value( QString( "/colors/showInMenuList" ) ).toStringList();
+
+  if ( show && !showInMenuSchemes.contains( mName ) )
+  {
+    showInMenuSchemes << mName;
+  }
+  else if ( !show && showInMenuSchemes.contains( mName ) )
+  {
+    showInMenuSchemes.removeAll( mName );
+  }
+
+  s.setValue( "/colors/showInMenuList", showInMenuSchemes );
 }
 
 QString QgsUserColorScheme::gplFilePath()

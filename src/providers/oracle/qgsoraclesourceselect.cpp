@@ -55,15 +55,15 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
   if ( index.column() == QgsOracleTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    Q_FOREACH ( QGis::WkbType type,
-                QList<QGis::WkbType>()
-                << QGis::WKBPoint
-                << QGis::WKBLineString
-                << QGis::WKBPolygon
-                << QGis::WKBMultiPoint
-                << QGis::WKBMultiLineString
-                << QGis::WKBMultiPolygon
-                << QGis::WKBNoGeometry )
+    Q_FOREACH ( QgsWkbTypes::Type type,
+                QList<QgsWkbTypes::Type>()
+                << QgsWkbTypes::Point
+                << QgsWkbTypes::LineString
+                << QgsWkbTypes::Polygon
+                << QgsWkbTypes::MultiPoint
+                << QgsWkbTypes::MultiLineString
+                << QgsWkbTypes::MultiPolygon
+                << QgsWkbTypes::NoGeometry )
     {
       cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), type );
     }
@@ -138,10 +138,10 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   {
     if ( index.column() == QgsOracleTableModel::dbtmType )
     {
-      QGis::WkbType type = ( QGis::WkbType ) cb->itemData( cb->currentIndex() ).toInt();
+      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->itemData( cb->currentIndex() ).toInt();
 
       model->setData( index, QgsOracleTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QGis::WKBUnknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsOracleTableModel::dbtmPkCol )
@@ -223,6 +223,8 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   mTablesTreeView->setSortingEnabled( true );
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( mTablesTreeDelegate );
+
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
   QSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "/qgis/addOracleDC", false ).toBool() ?
@@ -430,7 +432,6 @@ void QgsOracleSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QS
 
 void QgsOracleSourceSelect::setLayerType( QgsOracleLayerProperty layerProperty )
 {
-  QgsDebugMsg( "entering." );
   mTableModel.addTableEntry( layerProperty );
 }
 
@@ -515,7 +516,7 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  QgsDataSourceURI uri = QgsOracleConn::connUri( cmbConnections->currentText() );
+  QgsDataSourceUri uri = QgsOracleConn::connUri( cmbConnections->currentText() );
 
   mIsConnected = true;
   mTablesTreeDelegate->setConnectionInfo( uri );
@@ -540,9 +541,6 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
 void QgsOracleSourceSelect::finishList()
 {
   QApplication::restoreOverrideCursor();
-
-  if ( cmbConnections->count() > 0 )
-    mAddButton->setEnabled( true );
 
 #if 0
   for ( int i = 0; i < QgsOracleTableModel::dbtmColumns; i++ )
@@ -662,7 +660,7 @@ void QgsOracleSourceSelect::loadTableFromCache()
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   QString connName = cmbConnections->currentText();
-  QgsDataSourceURI uri = QgsOracleConn::connUri( connName );
+  QgsDataSourceUri uri = QgsOracleConn::connUri( connName );
   QVector<QgsOracleLayerProperty> layers;
   if ( !QgsOracleTableCache::loadFromCache( connName, _currentFlags( connName, uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() ), layers ) )
     return;
@@ -677,4 +675,10 @@ void QgsOracleSourceSelect::loadTableFromCache()
   mTablesTreeDelegate->setConnectionInfo( uri );
 
   finishList();
+}
+
+void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+{
+  Q_UNUSED( deselected )
+  mAddButton->setEnabled( !selected.isEmpty() );
 }

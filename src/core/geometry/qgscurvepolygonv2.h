@@ -55,6 +55,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     virtual double area() const override;
     virtual double perimeter() const override;
     QgsPolygonV2* surfaceToPolygon() const override;
+    virtual QgsAbstractGeometryV2* boundary() const override;
 
     //curve polygon interface
     int numInteriorRings() const;
@@ -83,11 +84,8 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     bool removeInteriorRing( int nr );
 
     virtual void draw( QPainter& p ) const override;
-    /** Transforms the geometry using a coordinate transform
-     * @param ct coordinate transform
-     * @param d transformation direction
-     */
-    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+                    bool transformZ = false ) override;
     void transform( const QTransform& t ) override;
 
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override;

@@ -126,22 +126,22 @@ int main( int argc, char **argv )
 
   G_set_window( &window );
 
-  QGis::DataType qgis_type;
+  Qgis::DataType qgis_type;
   qint32 type;
   stdinStream >> type;
   checkStream( stdinStream );
-  qgis_type = ( QGis::DataType )type;
+  qgis_type = ( Qgis::DataType )type;
 
   RASTER_MAP_TYPE grass_type;
   switch ( qgis_type )
   {
-    case QGis::Int32:
+    case Qgis::Int32:
       grass_type = CELL_TYPE;
       break;
-    case QGis::Float32:
+    case Qgis::Float32:
       grass_type = FCELL_TYPE;
       break;
-    case QGis::Float64:
+    case Qgis::Float64:
       grass_type = DCELL_TYPE;
       break;
     default:

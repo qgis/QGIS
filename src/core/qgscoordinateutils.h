@@ -18,8 +18,10 @@
 #ifndef QGSCOORDINATEUTILS_H
 #define QGSCOORDINATEUTILS_H
 
-#include "qgscoordinatereferencesystem.h"
-#include "qgspoint.h"
+#include <QString>
+
+class QgsPoint;
+class QgsCoordinateReferenceSystem;
 
 //not stable api - I plan on reworking this when QgsCoordinateFormatter lands in 2.16
 ///@cond NOT_STABLE_API

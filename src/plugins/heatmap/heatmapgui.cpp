@@ -24,9 +24,9 @@
 #include "qgsdistancearea.h"
 
 // GDAL includes
-#include "gdal_priv.h"
-#include "cpl_string.h"
-#include "cpl_conv.h"
+#include <gdal.h>
+#include <cpl_string.h>
+#include <cpl_conv.h>
 
 //qt includes
 #include <QComboBox>
@@ -83,18 +83,18 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WindowFlags fl, QMap<QString, QVari
   int nDrivers = GDALGetDriverCount();
   for ( int i = 0; i < nDrivers; i += 1 )
   {
-    GDALDriver* nthDriver = GetGDALDriverManager()->GetDriver( i );
-    char** driverMetadata = nthDriver->GetMetadata();
+    GDALDriverH nthDriver = GDALGetDriver( i );
+    char **driverMetadata = GDALGetMetadata( nthDriver, nullptr );
     // Only formats which allow creation of Float32 data types are valid
     if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) &&
-         QString( nthDriver->GetMetadataItem( GDAL_DMD_CREATIONDATATYPES, nullptr ) ).contains( "Float32" ) )
+         QString( GDALGetMetadataItem( nthDriver, GDAL_DMD_CREATIONDATATYPES, nullptr ) ).contains( "Float32" ) )
     {
       ++myIndex;
-      QString myLongName = nthDriver->GetMetadataItem( GDAL_DMD_LONGNAME );
+      QString myLongName = GDALGetMetadataItem( nthDriver, GDAL_DMD_LONGNAME, nullptr );
       // Add LongName text, shortname variant; GetDescription actually gets the shortname
-      mFormatCombo->addItem( myLongName, QVariant( nthDriver->GetDescription() ) );
+      mFormatCombo->addItem( myLongName, QVariant( GDALGetDescription( nthDriver ) ) );
       // Add the drivers and their extensions to a map for filename correction
-      mExtensionMap.insert( nthDriver->GetDescription(), nthDriver->GetMetadataItem( GDAL_DMD_EXTENSION ) );
+      mExtensionMap.insert( GDALGetDescription( nthDriver ), GDALGetMetadataItem( nthDriver, GDAL_DMD_EXTENSION, nullptr ) );
       if ( myLongName == "GeoTIFF" )
       {
         myTiffIndex = myIndex;

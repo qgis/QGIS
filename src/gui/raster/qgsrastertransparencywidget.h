@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsrastertransparencywidget.h
+    ---------------------
+    begin                : May 2016
+    copyright            : (C) 2016 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSRASTERTRANSPARENCYWIDGET_H
 #define QGSRASTERTRANSPARENCYWIDGET_H
 
@@ -5,6 +19,7 @@
 
 #include "ui_qgsrastertransparencywidget.h"
 
+#include "qgsmaplayerconfigwidget.h"
 
 class QgsRasterLayer;
 class QgsRasterRenderer;
@@ -13,10 +28,10 @@ class QgsMapToolEmitPoint;
 class QgsPoint;
 
 
-/**
+/** \ingroup gui
  * @brief Widget to control a layers transparency and related options
  */
-class GUI_EXPORT QgsRasterTransparencyWidget : public QWidget, private Ui::QgsRasterTransparencyWidget
+class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterTransparencyWidget
 {
     Q_OBJECT
   public:
@@ -25,14 +40,6 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QWidget, private Ui::QgsRa
      */
     QgsRasterTransparencyWidget( QgsRasterLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
     ~QgsRasterTransparencyWidget();
-
-  signals:
-
-    /**
-     * Emmited when something on the widget has changed.
-     * All widgets will fire this event to notify of an internal change.
-     */
-    void widgetChanged();
 
   public slots:
     /**

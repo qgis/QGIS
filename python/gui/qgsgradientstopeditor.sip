@@ -92,10 +92,10 @@ class QgsGradientStopEditor : QWidget
 
   signals:
 
-    //! Emmitted when the gradient ramp is changed by a user
+    //! Emitted when the gradient ramp is changed by a user
     void changed();
 
-    /** Emmitted when the current selected stop changes.
+    /** Emitted when the current selected stop changes.
      * @param stop details about newly selected stop
      */
     void selectedStopChanged( const QgsGradientStop& stop );

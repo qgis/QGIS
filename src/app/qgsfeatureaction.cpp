@@ -26,6 +26,8 @@
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsactionmanager.h"
+#include "qgsaction.h"
 
 #include <QPushButton>
 #include <QSettings>
@@ -59,8 +61,10 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   context.setDistanceArea( myDa );
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
+  context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, nullptr, true, context );
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
+  dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
 
   if ( mLayer->actions()->size() > 0 )
   {

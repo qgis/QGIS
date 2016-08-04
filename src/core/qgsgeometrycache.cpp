@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgeometrycache.h"
-
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsgeometry.h"
 
 QgsGeometryCache::QgsGeometryCache()
 {

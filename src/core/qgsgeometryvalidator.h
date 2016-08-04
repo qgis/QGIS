@@ -19,6 +19,9 @@ email                : jef at norbit dot de
 #include <QThread>
 #include "qgsgeometry.h"
 
+/** \ingroup core
+ * \class QgsGeometryValidator
+ */
 class CORE_EXPORT QgsGeometryValidator : public QThread
 {
     Q_OBJECT

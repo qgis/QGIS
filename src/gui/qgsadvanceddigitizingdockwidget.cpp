@@ -88,7 +88,7 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& ce
 
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent )
-    : QDockWidget( parent )
+    : QgsDockWidget( parent )
     , mMapCanvas( canvas )
     , mCurrentMapToolSupportsCad( false )
     , mCadEnabled( false )
@@ -118,7 +118,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   // this action is also used in the advanced digitizing tool bar
   mEnableAction = new QAction( this );
   mEnableAction->setText( tr( "Enable advanced digitizing tools" ) );
-  mEnableAction->setIcon( QgsApplication::getThemeIcon( "/cadtools/cad.png" ) );
+  mEnableAction->setIcon( QgsApplication::getThemeIcon( "/cadtools/cad.svg" ) );
   mEnableAction->setCheckable( true );
   mEnabledButton->addAction( mEnableAction );
   mEnabledButton->setDefaultAction( mEnableAction );
@@ -198,6 +198,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   connect( mSettingsButton, SIGNAL( triggered( QAction* ) ), this, SLOT( settingsButtonTriggered( QAction* ) ) );
 
   updateCapacity( true );
+  disable();
 }
 
 void QgsAdvancedDigitizingDockWidget::hideEvent( QHideEvent* )
@@ -484,7 +485,7 @@ void QgsAdvancedDigitizingDockWidget::lockAdditionalConstraint( AdditionalConstr
 
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
 {
-  CadCapacities newCapacities = nullptr;
+  CadCapacities newCapacities = 0;
   // first point is the mouse point (it doesn't count)
   if ( mCadPointList.count() > 1 )
   {
@@ -1168,7 +1169,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
 
 void QgsAdvancedDigitizingDockWidget::enable()
 {
-  if ( mMapCanvas->mapSettings().destinationCrs().geographicFlag() )
+  if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
   {
     mErrorLabel->setText( tr( "CAD tools can not be used on geographic coordinates. Change the coordinates system in the project properties." ) );
     mErrorLabel->show();

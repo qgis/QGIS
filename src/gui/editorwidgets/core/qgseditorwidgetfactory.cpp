@@ -16,6 +16,8 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgsdefaultsearchwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
+#include "qgsfield.h"
+#include "qgsvectordataprovider.h"
 
 #include <QSettings>
 
@@ -66,7 +68,34 @@ QString QgsEditorWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx
   Q_UNUSED( cache )
   Q_UNUSED( value )
 
-  return vl->fields().at( fieldIdx ).displayString( value );
+  QString defVal;
+  if ( vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginProvider && vl->dataProvider() )
+    defVal = vl->dataProvider()->defaultValue( vl->fields().fieldOriginIndex( fieldIdx ) ).toString();
+
+  return value == defVal ? defVal : vl->fields().at( fieldIdx ).displayString( value );
+}
+
+QVariant QgsEditorWidgetFactory::sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
+{
+  Q_UNUSED( vl )
+  Q_UNUSED( fieldIdx )
+  Q_UNUSED( config )
+  Q_UNUSED( cache )
+  return value;
+}
+
+Qt::AlignmentFlag QgsEditorWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
+{
+  Q_UNUSED( config );
+
+  QVariant::Type fldType = vl->fields().at( fieldIdx ).type();
+  bool alignRight = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong
+                      || fldType == QVariant::DateTime || fldType == QVariant::Date || fldType == QVariant::Time );
+
+  if ( alignRight )
+    return Qt::AlignRight;
+  else
+    return Qt::AlignLeft;
 }
 
 QVariant QgsEditorWidgetFactory::createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config )

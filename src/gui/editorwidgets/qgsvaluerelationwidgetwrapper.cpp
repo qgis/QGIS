@@ -21,6 +21,7 @@
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"
+#include "qgsfeatureiterator.h"
 
 #include <QStringListModel>
 #include <QCompleter>

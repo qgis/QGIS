@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import json
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -42,6 +43,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterFile
@@ -151,78 +153,24 @@ class RAlgorithm(GeoAlgorithm):
         tokens = line.split('=')
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
-            self.group = tokens[0]
+            self.group = self.i18n_group = tokens[0]
             return
-        if tokens[1].lower().strip().startswith('raster'):
-            param = ParameterRaster(tokens[0], desc, False)
-        elif tokens[1].lower().strip() == 'vector':
-            param = ParameterVector(tokens[0], desc,
-                                    [ParameterVector.VECTOR_TYPE_ANY])
-        elif tokens[1].lower().strip() == 'vector point':
-            param = ParameterVector(tokens[0], desc,
-                                    [ParameterVector.VECTOR_TYPE_POINT])
-        elif tokens[1].lower().strip() == 'vector line':
-            param = ParameterVector(tokens[0], desc,
-                                    [ParameterVector.VECTOR_TYPE_LINE])
-        elif tokens[1].lower().strip() == 'vector polygon':
-            param = ParameterVector(tokens[0], desc,
-                                    [ParameterVector.VECTOR_TYPE_POLYGON])
-        elif tokens[1].lower().strip() == 'table':
-            param = ParameterTable(tokens[0], desc, False)
-        elif tokens[1].lower().strip().startswith('multiple raster'):
-            param = ParameterMultipleInput(tokens[0], desc,
-                                           ParameterMultipleInput.TYPE_RASTER)
-            param.optional = False
-        elif tokens[1].lower().strip() == 'multiple vector':
-            param = ParameterMultipleInput(tokens[0], desc,
-                                           ParameterMultipleInput.TYPE_VECTOR_ANY)
-            param.optional = False
-        elif tokens[1].lower().strip().startswith('selection'):
-            options = tokens[1].strip()[len('selection'):].split(';')
-            param = ParameterSelection(tokens[0], desc, options)
-        elif tokens[1].lower().strip().startswith('boolean'):
-            default = tokens[1].strip()[len('boolean') + 1:]
-            param = ParameterBoolean(tokens[0], desc, default)
-        elif tokens[1].lower().strip().startswith('number'):
-            try:
-                default = float(tokens[1].strip()[len('number') + 1:])
-                param = ParameterNumber(tokens[0], desc, default=default)
-            except:
-                raise WrongScriptException(
-                    self.tr('Could not load R script: %s.\n Problem with line %s' % (self.descriptionFile, line)))
-        elif tokens[1].lower().strip().startswith('field'):
-            field = tokens[1].strip()[len('field') + 1:]
-            found = False
-            for p in self.parameters:
-                if p.name == field:
-                    found = True
-                    break
-            if found:
-                param = ParameterTableField(tokens[0], tokens[0], field)
-        elif tokens[1].lower().strip() == 'extent':
-            param = ParameterExtent(tokens[0], desc)
-        elif tokens[1].lower().strip() == 'crs':
-            param = ParameterCrs(tokens[0], desc)
-        elif tokens[1].lower().strip() == 'point':
-            param = ParameterPoint(tokens[0], desc)
-        elif tokens[1].lower().strip() == 'file':
-            param = ParameterFile(tokens[0], desc, False)
-        elif tokens[1].lower().strip() == 'folder':
-            param = ParameterFile(tokens[0], desc, True)
-        elif tokens[1].lower().strip().startswith('string'):
-            default = tokens[1].strip()[len('string') + 1:]
-            param = ParameterString(tokens[0], desc, default)
-        elif tokens[1].lower().strip().startswith('longstring'):
-            default = tokens[1].strip()[len('longstring') + 1:]
-            param = ParameterString(tokens[0], desc, default, multiline=True)
-        elif tokens[1].lower().strip().startswith('output raster'):
-            out = OutputRaster()
-        elif tokens[1].lower().strip().startswith('output vector'):
-            out = OutputVector()
-        elif tokens[1].lower().strip().startswith('output table'):
-            out = OutputTable()
-        elif tokens[1].lower().strip().startswith('output file'):
-            out = OutputFile()
+        if tokens[1].lower().strip() == 'name':
+            self.name = self.i18n_name = tokens[0]
+            return
+
+        if tokens[1].lower().strip().startswith('output'):
+            outToken = tokens[1].strip()[len('output') + 1:]
+            out = self.processOutputParameterToken(outToken)
+
+        elif tokens[1].lower().strip().startswith('optional'):
+            optToken = tokens[1].strip()[len('optional') + 1:]
+            param = self.processInputParameterToken(optToken, tokens[0])
+            if param:
+                param.optional = True
+
+        else:
+            param = self.processInputParameterToken(tokens[1], tokens[0])
 
         if param is not None:
             self.addParameter(param)
@@ -233,6 +181,111 @@ class RAlgorithm(GeoAlgorithm):
         else:
             raise WrongScriptException(
                 self.tr('Could not load R script: %s.\n Problem with line %s' % (self.descriptionFile, line)))
+
+    def processInputParameterToken(self, token, name):
+        param = None
+
+        desc = self.createDescriptiveName(name)
+
+        if token.lower().strip().startswith('raster'):
+            param = ParameterRaster(name, desc, False)
+        elif token.lower().strip() == 'vector':
+            param = ParameterVector(name, desc,
+                                    [ParameterVector.VECTOR_TYPE_ANY])
+        elif token.lower().strip() == 'vector point':
+            param = ParameterVector(name, desc,
+                                    [ParameterVector.VECTOR_TYPE_POINT])
+        elif token.lower().strip() == 'vector line':
+            param = ParameterVector(name, desc,
+                                    [ParameterVector.VECTOR_TYPE_LINE])
+        elif token.lower().strip() == 'vector polygon':
+            param = ParameterVector(name, desc,
+                                    [ParameterVector.VECTOR_TYPE_POLYGON])
+        elif token.lower().strip() == 'table':
+            param = ParameterTable(name, desc, False)
+        elif token.lower().strip().startswith('multiple raster'):
+            param = ParameterMultipleInput(name, desc,
+                                           ParameterMultipleInput.TYPE_RASTER)
+            param.optional = False
+        elif token.lower().strip() == 'multiple vector':
+            param = ParameterMultipleInput(name, desc,
+                                           ParameterMultipleInput.TYPE_VECTOR_ANY)
+            param.optional = False
+        elif token.lower().strip().startswith('selection'):
+            options = token.strip()[len('selection'):].split(';')
+            param = ParameterSelection(name, desc, options)
+        elif token.lower().strip().startswith('boolean'):
+            default = token.strip()[len('boolean') + 1:]
+            if default:
+                param = ParameterBoolean(name, desc, default)
+            else:
+                param = ParameterBoolean(name, desc)
+        elif token.lower().strip().startswith('number'):
+            default = token.strip()[len('number') + 1:]
+            if default:
+                param = ParameterNumber(name, desc, default=default)
+            else:
+                param = ParameterNumber(name, desc)
+        elif token.lower().strip().startswith('field'):
+            field = token.strip()[len('field') + 1:]
+            found = False
+            for p in self.parameters:
+                if p.name == field:
+                    found = True
+                    break
+            if found:
+                param = ParameterTableField(name, desc, field)
+        elif token.lower().strip().startswith('multiple field'):
+            field = token.strip()[len('multiple field') + 1:]
+            found = False
+            for p in self.parameters:
+                if p.name == field:
+                    found = True
+                    break
+            if found:
+                param = ParameterTableMultipleField(token, desc, field)
+        elif token.lower().strip() == 'extent':
+            param = ParameterExtent(name, desc)
+        elif token.lower().strip() == 'point':
+            param = ParameterPoint(name, desc)
+        elif token.lower().strip() == 'file':
+            param = ParameterFile(name, desc, False)
+        elif token.lower().strip() == 'folder':
+            param = ParameterFile(name, desc, True)
+        elif token.lower().strip().startswith('string'):
+            default = token.strip()[len('string') + 1:]
+            if default:
+                param = ParameterString(name, desc, default)
+            else:
+                param = ParameterString(name, desc)
+        elif token.lower().strip().startswith('longstring'):
+            default = token.strip()[len('longstring') + 1:]
+            if default:
+                param = ParameterString(name, desc, default, multiline=True)
+            else:
+                param = ParameterString(name, desc, multiline=True)
+        elif token.lower().strip() == 'crs':
+            default = token.strip()[len('crs') + 1:]
+            if default:
+                param = ParameterCrs(name, desc, default)
+            else:
+                param = ParameterCrs(name, desc)
+
+        return param
+
+    def processOutputParameterToken(self, token):
+        out = None
+
+        if token.lower().strip().startswith('raster'):
+            out = OutputRaster()
+        elif token.lower().strip().startswith('vector'):
+            out = OutputVector()
+        elif token.lower().strip().startswith('table'):
+            out = OutputTable()
+        elif token.lower().strip().startswith('file'):
+            out = OutputFile()
+
+        return out
 
     def processAlgorithm(self, progress):
         if isWindows():
@@ -293,7 +346,7 @@ class RAlgorithm(GeoAlgorithm):
             elif isinstance(out, OutputTable):
                 value = out.value
                 value = value.replace('\\', '/')
-                commands.append('write.csv(' + out.name + ',"' + value + '"')
+                commands.append('write.csv(' + out.name + ',"' + value + '")')
 
         if self.showPlots:
             commands.append('dev.off()')
@@ -320,50 +373,70 @@ class RAlgorithm(GeoAlgorithm):
 
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
-                value = param.value
-                value = value.replace('\\', '/')
-                if self.passFileNames:
-                    commands.append(param.name + ' = "' + value + '"')
-                elif self.useRasterPackage:
-                    commands.append(param.name + ' = ' + 'brick("' + value
-                                    + '")')
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
                 else:
-                    commands.append(param.name + ' = ' + 'readGDAL("' + value
-                                    + '")')
+                    value = param.value
+                    value = value.replace('\\', '/')
+                    if self.passFileNames:
+                        commands.append(param.name + ' = "' + value + '"')
+                    elif self.useRasterPackage:
+                        commands.append(param.name + ' = ' + 'brick("' + value
+                                        + '")')
+                    else:
+                        commands.append(param.name + ' = ' + 'readGDAL("' + value
+                                        + '")')
             elif isinstance(param, ParameterVector):
-                value = param.getSafeExportedLayer()
-                value = value.replace('\\', '/')
-                filename = os.path.basename(value)
-                filename = filename[:-4]
-                folder = os.path.dirname(value)
-                if self.passFileNames:
-                    commands.append(param.name + ' = "' + value + '"')
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
                 else:
-                    commands.append(param.name + ' = readOGR("' + folder
-                                    + '",layer="' + filename + '")')
+                    value = param.getSafeExportedLayer()
+                    value = value.replace('\\', '/')
+                    filename = os.path.basename(value)
+                    filename = filename[:-4]
+                    folder = os.path.dirname(value)
+                    if self.passFileNames:
+                        commands.append(param.name + ' = "' + value + '"')
+                    else:
+                        commands.append(param.name + ' = readOGR("' + folder
+                                        + '",layer="' + filename + '")')
             elif isinstance(param, ParameterTable):
-                value = param.value
-                if not value.lower().endswith('csv'):
-                    raise GeoAlgorithmExecutionException(
-                        'Unsupported input file format.\n' + value)
-                if self.passFileNames:
-                    commands.append(param.name + ' = "' + value + '"')
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
                 else:
-                    commands.append(param.name + ' <- read.csv("' + value
-                                    + '", head=TRUE, sep=",")')
+                    value = param.value
+                    if not value.lower().endswith('csv'):
+                        raise GeoAlgorithmExecutionException(
+                            'Unsupported input file format.\n' + value)
+                    if self.passFileNames:
+                        commands.append(param.name + ' = "' + value + '"')
+                    else:
+                        commands.append(param.name + ' <- read.csv("' + value
+                                        + '", head=TRUE, sep=",")')
             elif isinstance(param, ParameterExtent):
                 if param.value:
                     tokens = unicode(param.value).split(',')
-                    commands.append(param.name + ' = extent(' + tokens[0] + ',' + tokens[2] + ',' + tokens[1] + ',' + tokens[3] + ')')
+                    # Extent from raster package is "xmin, xmax, ymin, ymax" like in Processing
+                    # http://www.inside-r.org/packages/cran/raster/docs/Extent
+                    commands.append(param.name + ' = extent(' + tokens[0] + ',' + tokens[1] + ',' + tokens[2] + ',' + tokens[3] + ')')
                 else:
                     commands.append(param.name + ' = NULL')
             elif isinstance(param, ParameterCrs):
-                commands.append(param.name + ' = "' + param.value + '"')
-            elif isinstance(param, (ParameterTableField, ParameterString,
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
+                else:
+                    commands.append(param.name + ' = "' + param.value + '"')
+            elif isinstance(param, (ParameterTableField, ParameterTableMultipleField, ParameterString,
                                     ParameterFile)):
-                commands.append(param.name + '="' + param.value + '"')
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
+                else:
+                    commands.append(param.name + '="' + param.value + '"')
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                commands.append(param.name + '=' + unicode(param.value))
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
+                else:
+                    commands.append(param.name + '=' + unicode(param.value))
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     commands.append(param.name + '=TRUE')
@@ -434,15 +507,34 @@ class RAlgorithm(GeoAlgorithm):
         else:
             return False, None
 
+    def shortHelp(self):
+        if self.descriptionFile is None:
+            return None
+        helpFile = unicode(self.descriptionFile) + '.help'
+        if os.path.exists(helpFile):
+            with open(helpFile) as f:
+                try:
+                    descriptions = json.load(f)
+                    if 'ALG_DESC' in descriptions:
+                        return self._formatHelp(unicode(descriptions['ALG_DESC']))
+                except:
+                    return None
+        return None
+
     def getParameterDescriptions(self):
         descs = {}
-        helpfile = unicode(self.descriptionFile) + '.help'
-        if os.path.exists(helpfile):
+        if self.descriptionFile is None:
+            return descs
+        helpFile = unicode(self.descriptionFile) + '.help'
+        if os.path.exists(helpFile):
             with open(helpFile) as f:
-                descriptions = json.load(f)
-                for param in self.parameters:
-                    if param.name in descriptions:
-                        descs[param.name] = unicode(descriptions[param.name])
+                try:
+                    descriptions = json.load(f)
+                    for param in self.parameters:
+                        if param.name in descriptions:
+                            descs[param.name] = unicode(descriptions[param.name])
+                except:
+                    return descs
         return descs
 
     def checkBeforeOpeningParametersDialog(self):

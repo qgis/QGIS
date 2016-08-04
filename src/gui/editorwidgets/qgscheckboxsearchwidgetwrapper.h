@@ -17,11 +17,11 @@
 #define QGSCHECKBOXSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include "qgscheckboxwidgetwrapper.h"
 
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
+class QCheckBox;
 
 class QgsCheckboxWidgetFactory;
 

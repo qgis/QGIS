@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 #include "qgscoordinateutils.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgsproject.h"
 #include "qgis.h"
+#include "qgscsexception.h"
 
 ///@cond NOT_STABLE_API
 
@@ -36,7 +39,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
     // - both map CRS and format are geographic
     // - both map CRS and format are not geographic
     // - map CRS is geographic but format is not geographic (i.e. map units)
-    if ( mapCrs.geographicFlag() || !formatGeographic )
+    if ( mapCrs.isGeographic() || !formatGeographic )
     {
       // Work out a suitable number of decimal places for the coordinates with the aim of always
       // having enough decimal places to show the difference in position between adjacent pixels.
@@ -67,7 +70,7 @@ QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPoint& point, c
   if ( format == "DM" || format == "DMS" || format == "D" )
   {
     // degrees
-    if ( destCrs.isValid() && !destCrs.geographicFlag() )
+    if ( destCrs.isValid() && !destCrs.isGeographic() )
     {
       // need to transform to geographic coordinates
       QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( GEOSRID ) );

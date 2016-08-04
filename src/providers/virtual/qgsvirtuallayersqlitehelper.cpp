@@ -95,7 +95,7 @@ namespace Sqlite
     int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
     if ( r )
     {
-      QString err = QString( "Query preparation error on %1" ).arg( q );
+      QString err = QString( "Query preparation error on %1: %2" ).arg( q ).arg( sqlite3_errmsg( db ) );
       throw std::runtime_error( err.toLocal8Bit().constData() );
     }
   }

@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgsmaprenderersequentialjob.h"
+#include "qgsgeometry.h"
 
 #include <QColor>
 #include <QPainter>
@@ -76,11 +77,6 @@ QString QgsRenderChecker::imageToHash( const QString& theImageFile )
   QCryptographicHash myHash( QCryptographicHash::Md5 );
   myHash.addData( myImageString.toUtf8() );
   return myHash.result().toHex().constData();
-}
-
-void QgsRenderChecker::setMapRenderer( QgsMapRenderer* thepMapRenderer )
-{
-  mMapSettings = thepMapRenderer->mapSettings();
 }
 
 void QgsRenderChecker::setMapSettings( const QgsMapSettings& mapSettings )

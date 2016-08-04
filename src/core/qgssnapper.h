@@ -25,7 +25,6 @@
 #include <QList>
 #include <QMultiMap>
 
-class QgsMapRenderer;
 class QgsMapSettings;
 class QgsVectorLayer;
 class QPoint;
@@ -33,6 +32,7 @@ class QPoint;
 /** \ingroup core
  * Represents the result of a snapping operation.
  * */
+// ### QGIS 3: remove from API
 struct CORE_EXPORT QgsSnappingResult
 {
   /** The coordinates of the snapping result*/
@@ -58,7 +58,9 @@ struct CORE_EXPORT QgsSnappingResult
 
 
 
-/** A class that allows advanced snapping operations on a set of vector layers*/
+/** \ingroup core
+ * A class that allows advanced snapping operations on a set of vector layers*/
+// ### QGIS 3: remove from API
 class CORE_EXPORT QgsSnapper
 {
   public:
@@ -93,9 +95,6 @@ class CORE_EXPORT QgsSnapper
       /** What unit is used for tolerance*/
       QgsTolerance::UnitType mUnitType;
     };
-
-    //!@deprecated since 2.4 - use constructor with QgsMapSettings
-    Q_DECL_DEPRECATED QgsSnapper( QgsMapRenderer *mapRender );
 
     explicit QgsSnapper( const QgsMapSettings& mapSettings );
 

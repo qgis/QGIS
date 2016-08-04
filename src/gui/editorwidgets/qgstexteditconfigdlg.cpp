@@ -15,6 +15,7 @@
 
 #include "qgstexteditconfigdlg.h"
 
+#include "qgseditorwidgetconfig.h"
 QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {

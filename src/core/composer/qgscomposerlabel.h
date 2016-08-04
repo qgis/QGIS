@@ -25,7 +25,7 @@ class QgsFeature;
 class QgsDistanceArea;
 class QgsWebPage;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A label that can be placed onto a map composition.
  */
 class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
@@ -141,13 +141,13 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
      * @param doc document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     //Overridden to contain part of label's text
     virtual QString displayName() const override;

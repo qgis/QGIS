@@ -135,6 +135,7 @@ class QgsDualView : QStackedWidget
      * @return The table view
      */
     QgsAttributeTableView* tableView();
+
     /**
      * Set the attribute table config which should be used to control
      * the appearance of the attribute table.
@@ -144,7 +145,7 @@ class QgsDualView : QStackedWidget
     /**
      * Set the expression used for sorting the table and feature list.
      */
-    void setSortExpression( const QString& sortExpression );
+    void setSortExpression( const QString& sortExpression , Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
      * Get the expression used for sorting the table and feature list.
@@ -188,6 +189,12 @@ class QgsDualView : QStackedWidget
      * @note added in QGIS 2.16
      */
     void toggleSearchMode( bool enabled );
+
+    /**
+     * Copy the content of the selected cell in the clipboard.
+     * @note added in QGIS 1.16
+     */
+    void copyCellContent() const;
 
   signals:
     /**

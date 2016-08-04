@@ -22,7 +22,7 @@
 #include <QDir>
 #include <QSettings>
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > > &dt, QWidget *parent, const Qt::WindowFlags& f )
+QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
     : QDialog( parent, f )
     , mDt( dt )
     , mLayerName( layerName )

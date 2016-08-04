@@ -30,10 +30,7 @@
 #ifndef PAL_UTIL_H
 #define PAL_UTIL_H
 
-#include "pal.h"
-#include "rtree.hpp"
-#include "pointset.h"
-#include "qgsgeometry.h"
+#include <QList>
 
 namespace pal
 {
@@ -43,6 +40,7 @@ namespace pal
   class FeaturePart;
 
   /**
+   * \ingroup core
    * \brief For usage in problem solving algorithm
    * \note not available in Python bindings
    */
@@ -79,6 +77,7 @@ namespace pal
   /**
    * \class pal::Util
    * \note not available in Python bindings
+   * \ingroup core
    */
   class Util
   {

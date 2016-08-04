@@ -21,7 +21,7 @@ email                : brush.tyler@gmail.com
 """
 
 from functools import partial
-from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal, pyqtSlot
+from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal
 from qgis.PyQt.QtWidgets import QApplication, QMessageBox
 from qgis.PyQt.QtGui import QIcon
 
@@ -29,7 +29,7 @@ from .db_plugins import supportedDbTypes, createDbPlugin
 from .db_plugins.plugin import BaseError, Table, Database
 from .dlg_db_error import DlgDbError
 
-from qgis.core import QgsDataSourceURI, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
+from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
 
 from . import resources_rc  # NOQA
 
@@ -41,8 +41,8 @@ except:
 
 
 class TreeItem(QObject):
-    itemRemoved = pyqtSignal()
-    itemChanged = pyqtSignal()
+    deleted = pyqtSignal()
+    changed = pyqtSignal()
 
     def __init__(self, data, parent=None):
         QObject.__init__(self, parent)
@@ -53,13 +53,13 @@ class TreeItem(QObject):
             parent.appendChild(self)
 
     def childRemoved(self):
-        self.itemWasChanged()
+        self.itemChanged()
 
-    def itemWasChanged(self):
-        self.itemChanged.emit()
+    def itemChanged(self):
+        self.changed.emit()
 
-    def itemWasRemoved(self):
-        self.itemRemoved.emit()
+    def itemDeleted(self):
+        self.deleted.emit()
 
     def populate(self):
         self.populated = True
@@ -70,7 +70,7 @@ class TreeItem(QObject):
 
     def appendChild(self, child):
         self.childItems.append(child)
-        child.itemRemoved.connect(self.childRemoved)
+        child.deleted.connect(self.childRemoved)
 
     def child(self, row):
         return self.childItems[row]
@@ -78,7 +78,7 @@ class TreeItem(QObject):
     def removeChild(self, row):
         if row >= 0 and row < len(self.childItems):
             self.childItems[row].itemData.deleteLater()
-            self.childItems[row].itemRemoved.disconnect(self.childRemoved)
+            self.childItems[row].deleted.disconnect(self.childRemoved)
             del self.childItems[row]
 
     def childCount(self):
@@ -141,7 +141,7 @@ class ConnectionItem(TreeItem):
     def __init__(self, connection, parent=None):
         TreeItem.__init__(self, connection, parent)
         connection.changed.connect(self.itemChanged)
-        connection.deleted.connect(self.itemRemoved)
+        connection.deleted.connect(self.itemDeleted)
 
         # load (shared) icon with first instance of table item
         if not hasattr(ConnectionItem, 'connectedIcon'):
@@ -170,7 +170,7 @@ class ConnectionItem(TreeItem):
 
         database = connection.database()
         database.changed.connect(self.itemChanged)
-        database.deleted.connect(self.itemRemoved)
+        database.deleted.connect(self.itemDeleted)
 
         schemas = database.schemas()
         if schemas is not None:
@@ -196,7 +196,7 @@ class SchemaItem(TreeItem):
     def __init__(self, schema, parent):
         TreeItem.__init__(self, schema, parent)
         schema.changed.connect(self.itemChanged)
-        schema.deleted.connect(self.itemRemoved)
+        schema.deleted.connect(self.itemDeleted)
 
         # load (shared) icon with first instance of schema item
         if not hasattr(SchemaItem, 'schemaIcon'):
@@ -226,7 +226,7 @@ class TableItem(TreeItem):
     def __init__(self, table, parent):
         TreeItem.__init__(self, table, parent)
         table.changed.connect(self.itemChanged)
-        table.deleted.connect(self.itemRemoved)
+        table.deleted.connect(self.itemDeleted)
         self.populate()
 
         # load (shared) icon with first instance of table item
@@ -284,7 +284,7 @@ class TableItem(TreeItem):
 
 
 class DBModel(QAbstractItemModel):
-    importVector = pyqtSignal(QgsVectorLayer, Database, QgsDataSourceURI, QModelIndex)
+    importVector = pyqtSignal(QgsVectorLayer, Database, QgsDataSourceUri, QModelIndex)
     notPopulated = pyqtSignal(QModelIndex)
 
     def __init__(self, parent=None):
@@ -303,7 +303,7 @@ class DBModel(QAbstractItemModel):
         for dbtype in supportedDbTypes():
             dbpluginclass = createDbPlugin(dbtype)
             item = PluginItem(dbpluginclass, self.rootItem)
-            item.itemChanged.connect(partial(self.refreshItem, item))
+            item.changed.connect(partial(self.refreshItem, item))
 
     def refreshItem(self, item):
         if isinstance(item, TreeItem):
@@ -487,7 +487,7 @@ class DBModel(QAbstractItemModel):
             if prevPopulated or force:
                 if item.populate():
                     for child in item.childItems:
-                        child.itemChanged.connect(partial(self.refreshItem, item))
+                        child.changed.connect(partial(self.refreshItem, child))
                     self._onDataChanged(index)
                 else:
                     self.notPopulated.emit(index)
@@ -556,10 +556,10 @@ class DBModel(QAbstractItemModel):
                         item = index.internalPointer()
 
                         conn_name = QFileInfo(filename).fileName()
-                        uri = QgsDataSourceURI()
+                        uri = QgsDataSourceUri()
                         uri.setDatabase(filename)
                         item.getItemData().addConnection(conn_name, uri)
-                        item.itemChanged.emit(item)
+                        item.changed.emit()
                         added += 1
                         continue
 
@@ -622,7 +622,7 @@ class DBModel(QAbstractItemModel):
 
             # default pk and geom field name value
             if providerKey in ['postgres', 'spatialite']:
-                inUri = QgsDataSourceURI(inLayer.source())
+                inUri = QgsDataSourceUri(inLayer.source())
                 pkCol = inUri.keyColumn()
                 geomCol = inUri.geometryColumn()
 

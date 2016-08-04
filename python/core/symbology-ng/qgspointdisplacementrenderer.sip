@@ -26,7 +26,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     /** Partial proxy that will call this method on the embedded renderer. */
     virtual QList<QString> usedAttributes();
     /** Proxy that will call this method on the embedded renderer. */
-    virtual int capabilities();
+    virtual QgsFeatureRendererV2::Capabilities capabilities();
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as symbols2
      */
@@ -68,9 +68,14 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setLabelAttributeName( const QString& name );
     QString labelAttributeName() const;
 
-    /** Sets embedded renderer (takes ownership)*/
     void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
-    QgsFeatureRendererV2* embeddedRenderer();
+    const QgsFeatureRendererV2* embeddedRenderer() const;
+
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol );
+
+    virtual bool legendSymbolItemsCheckable() const;
+    virtual bool legendSymbolItemChecked( const QString& key );
+    virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
     //! not available in python bindings
     //! @deprecated since 2.4
@@ -133,14 +138,14 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
      * @see toleranceUnit()
      * @note added in QGIS 2.12
      */
-    void setToleranceUnit( QgsSymbolV2::OutputUnit unit );
+    void setToleranceUnit( QgsUnitTypes::RenderUnit unit );
 
     /** Returns the units for the tolerance distance.
      * @see tolerance()
      * @see setToleranceUnit()
      * @note added in QGIS 2.12
      */
-    QgsSymbolV2::OutputUnit toleranceUnit() const;
+    QgsUnitTypes::RenderUnit toleranceUnit() const;
 
     /** Sets the map unit scale object for the distance tolerance. This is only used if the
      * toleranceUnit() is set to QgsSymbolV2::MapUnit.

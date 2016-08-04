@@ -71,13 +71,13 @@ int QgsRasterResampleFilter::bandCount() const
   return 0;
 }
 
-QGis::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
+Qgis::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
 {
-  if ( mOn ) return QGis::ARGB32_Premultiplied;
+  if ( mOn ) return Qgis::ARGB32_Premultiplied;
 
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
 bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
@@ -105,8 +105,8 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != QGis::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != QGis::ARGB32 )
+  if ( input->dataType( 1 ) != Qgis::ARGB32_Premultiplied &&
+       input->dataType( 1 ) != Qgis::ARGB32 )
   {
     QgsDebugMsg( "Unknown input data type" );
     return false;
@@ -129,7 +129,7 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler* r )
   mZoomedOutResampler = r;
 }
 
-QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
@@ -140,7 +140,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
 
   if ( mZoomedInResampler || mZoomedOutResampler )
   {
-    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
+    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->sourceInput() );
     if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
     {
       double xRes = extent.width() / width;
@@ -169,7 +169,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   {
     QgsDebugMsgLevel( "No oversampling.", 4 );
     delete outputBlock;
-    return mInput->block( bandNumber, extent, width, height );
+    return mInput->block( bandNumber, extent, width, height, feedback );
   }
 
   //effective oversampling factors are different to global one because of rounding
@@ -181,7 +181,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   int resWidth = width * oversamplingX;
   int resHeight = height * oversamplingY;
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, resWidth, resHeight );
+  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, resWidth, resHeight, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
@@ -189,7 +189,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
     return outputBlock;
   }
 
-  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
     return outputBlock;
@@ -223,7 +223,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   return outputBlock; // No resampling
 }
 
-void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsRasterResampleFilter::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -244,7 +244,7 @@ void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentEl
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsRasterResampleFilter::readXML( const QDomElement& filterElem )
+void QgsRasterResampleFilter::readXml( const QDomElement& filterElem )
 {
   if ( filterElem.isNull() )
   {

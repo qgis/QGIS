@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshtmlannotationdialog.h"
+#include "qgshtmlannotationitem.h"
 #include "qgsannotationwidget.h"
 #include "qgsvectorlayer.h"
 #include <QFileDialog>
@@ -27,7 +28,6 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, Q
   setupUi( this );
   setWindowTitle( tr( "HTML annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
@@ -93,5 +93,13 @@ void QgsHtmlAnnotationDialog::deleteItem()
   }
   delete mItem;
   mItem = nullptr;
+}
+
+void QgsHtmlAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applySettingsToItem();
+  }
 }
 

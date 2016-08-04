@@ -14,22 +14,19 @@
  ***************************************************************************/
 #include "qgsundowidget.h"
 
-#include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgslayertreeview.h"
+#include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
 
 
 QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
-    : QWidget( parent )
+    : QgsPanelWidget( parent )
 {
   setupUi( this );
 
   connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo() ) );
   connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo() ) );
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
-           this, SLOT( layerChanged( QgsMapLayer* ) ) );
 
   undoButton->setDisabled( true );
   redoButton->setDisabled( true );
@@ -39,20 +36,6 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
   mUndoStack = nullptr;
   mPreviousIndex = 0;
   mPreviousCount = 0;
-}
-
-
-void QgsUndoWidget::layerChanged( QgsMapLayer * layer )
-{
-  if ( layer )
-  {
-    setUndoStack( layer->undoStack() );
-  }
-  else
-  {
-    destroyStack();
-  }
-  emit undoStackChanged();
 }
 
 
@@ -185,13 +168,13 @@ void QgsUndoWidget::setupUi( QWidget *UndoWidget )
 
   undoButton = new QPushButton( dockWidgetContents );
   undoButton->setObjectName( QString::fromUtf8( "undoButton" ) );
-  undoButton->setIcon( QgsApplication::getThemeIcon( "mActionUndo.png" ) );
+  undoButton->setIcon( QgsApplication::getThemeIcon( "mActionUndo.svg" ) );
 
   gridLayout->addWidget( undoButton, 1, 0, 1, 1 );
 
   redoButton = new QPushButton( dockWidgetContents );
   redoButton->setObjectName( QString::fromUtf8( "redoButton" ) );
-  redoButton->setIcon( QgsApplication::getThemeIcon( "mActionRedo.png" ) );
+  redoButton->setIcon( QgsApplication::getThemeIcon( "mActionRedo.svg" ) );
 
   gridLayout->addWidget( redoButton, 1, 1, 1, 1 );
 

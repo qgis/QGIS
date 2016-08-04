@@ -20,14 +20,14 @@
 
 #include "qgsannotationitem.h"
 #include "qgsfeature.h"
-#include "qgswebview.h"
-#include "qgswebframe.h"
 
 #include <QObject>
 
 class QGraphicsProxyWidget;
+class QgsWebView;
 
-/** An annotation item that embedds a designer form showing the feature attribute*/
+/** \ingroup gui
+ * An annotation item that embedds a designer form showing the feature attribute*/
 class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
 {
     Q_OBJECT
@@ -48,8 +48,8 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
     void setHTMLPage( const QString& htmlFile );
     QString htmlPage() const { return mHtmlFile; }
 
-    void writeXML( QDomDocument& doc ) const override;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) override;
+    void writeXml( QDomDocument& doc ) const override;
+    void readXml( const QDomDocument& doc, const QDomElement& itemElem ) override;
 
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 

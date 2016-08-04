@@ -20,12 +20,14 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsdialog.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <QPushButton>
 #include <QTextEdit>
 #include <QTime>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
+#include <QSettings>
 
 /////////
 
@@ -307,7 +309,6 @@ void QgsCptCityColorRampV2Dialog::on_mListWidget_itemSelectionChanged()
 
 void QgsCptCityColorRampV2Dialog::on_tabBar_currentChanged( int index )
 {
-  QgsDebugMsg( "Entered" );
   if ( index == 0 )
   {
     setTreeModel( mSelectionsModel );
@@ -357,7 +358,7 @@ void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
   descFile = mArchive->descFileName( path );
 
   // prepare dialog
-  QgsDialog dlg( this, nullptr, QDialogButtonBox::Close );
+  QgsDialog dlg( this, 0, QDialogButtonBox::Close );
   QVBoxLayout *layout = dlg.layout();
   dlg.setWindowTitle( title );
   QTextEdit *textEdit = new QTextEdit( &dlg );
@@ -562,7 +563,6 @@ bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
 
 bool QgsCptCityColorRampV2Dialog::updateRamp()
 {
-  QgsDebugMsg( "Entered" );
   mListWidget->clear();
   mListRamps.clear();
   cboVariantName->clear();
@@ -643,7 +643,6 @@ void QgsCptCityColorRampV2Dialog::showAll()
 
 void QgsCptCityColorRampV2Dialog::setTreeModel( QgsCptCityBrowserModel* model )
 {
-  QgsDebugMsg( "Entered" );
   mModel = model;
 
   if ( mTreeFilter )

@@ -24,10 +24,12 @@ back to QgsVectorLayer.
 #define QGSATTRIBUTEACTIONDIALOG_H
 
 #include "ui_qgsattributeactiondialogbase.h"
-#include "qgsactionmanager.h"
-#include "qgsfield.h"
 #include "qgsattributetableconfig.h"
+#include "qgsaction.h"
 #include <QMap>
+
+class QgsActionManager;
+class QgsVectorLayer;
 
 class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {

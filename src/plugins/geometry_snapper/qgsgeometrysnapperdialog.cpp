@@ -18,6 +18,7 @@
 #include "qgsgeometrysnapperdialog.h"
 #include "qgsgeometrysnapper.h"
 
+#include "qgsfeatureiterator.h"
 #include "qgisinterface.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
@@ -78,8 +79,8 @@ void QgsGeometrySnapperDialog::updateLayers()
   {
     if ( qobject_cast<QgsVectorLayer*>( layer ) )
     {
-      QGis::WkbType type = QGis::flatType( QGis::singleType( static_cast<QgsVectorLayer*>( layer )->wkbType() ) );
-      if ( type == QGis::WKBPolygon || type == QGis::WKBLineString )
+      QgsWkbTypes::Type type = QgsWkbTypes::flatType( QgsWkbTypes::singleType( static_cast<QgsVectorLayer*>( layer )->wkbType() ) );
+      if ( type == QgsWkbTypes::Polygon || type == QgsWkbTypes::LineString )
       {
         comboBoxInputLayer->addItem( layer->name(), layer->id() );
         comboBoxReferenceLayer->addItem( layer->name(), layer->id() );
@@ -221,7 +222,7 @@ void QgsGeometrySnapperDialog::run()
     }
 
     QString errMsg;
-    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), &layer->crs(), mOutputDriverName, selectedOnly, &errMsg );
+    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), layer->crs(), mOutputDriverName, selectedOnly, &errMsg );
     if ( err != QgsVectorFileWriter::NoError )
     {
       QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create the output layer: %1" ).arg( errMsg ) );
@@ -306,8 +307,8 @@ void QgsGeometrySnapperDialog::run()
 
   layer->setReadOnly( false );
 
-  /** Refresh canvas **/
-  mIface->mapCanvas()->refresh();
+  /** Trigger layer repaint **/
+  layer->triggerRepaint();
 
   /** Show errors **/
   if ( !snapper.getErrors().isEmpty() )

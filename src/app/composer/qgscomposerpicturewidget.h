@@ -23,7 +23,7 @@
 
 class QgsComposerPicture;
 
-/** \ingroup MapComposer
+/** \ingroup app
  * A widget for adding an image to a map composition.
  */
 class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPictureWidgetBase

@@ -53,6 +53,8 @@ my $domajor;
 my $dominor;
 my $dopoint;
 my $doltr = 0;
+my $dopremajor = 0;
+my $skipts = 0;
 
 my $result = GetOptions(
 		"major" => \$domajor,
@@ -62,6 +64,8 @@ my $result = GetOptions(
 		"help" => \$help,
 		"ltr" => \$doltr,
 		"dryrun" => \$dryrun,
+		"premajor" => \$dopremajor,
+		"skipts" => \$skipts,
 	);
 
 pod2usage(1) if $help;
@@ -73,6 +77,7 @@ $i++ if defined $dopoint;
 pod2usage("Exactly one of -major, -minor or -point expected") if $i!=1;
 pod2usage("Release name for major and minor releases expected") if !$dopoint && !defined $newreleasename;
 pod2usage("Long term releases only for major and minor releases") if $doltr && $dopoint;
+pod2usage("Pre-major releases can only be minor releases") if $dopremajor && !$dominor;
 pod2usage("No CMakeLists.txt in current directory") unless -r "CMakeLists.txt";
 
 my $major;
@@ -96,11 +101,11 @@ close F;
 my $branch = `git rev-parse --abbrev-ref HEAD 2>/dev/null`;
 $branch =~ s/\s+$//;
 pod2usage("Not on a branch") unless $branch;
-pod2usage("Current branch is $branch. master or a release branch expected") if $branch !~ /^(master|release-(\d+)_(\d+))$/;
+pod2usage("Current branch is $branch. master or a release branch expected") if $branch !~ /^(master.*|release-(\d+)_(\d+))$/;
 pod2usage("Version mismatch ($2.$3 in branch $branch vs. $major.$minor in CMakeLists.txt)") if $branch ne "master" && ( $major != $2 || $minor != $3 );
 pod2usage("Release name Master expected on master branch" ) if $branch eq "master" && $releasename ne "Master";
 
-if( $branch eq "master" ) {
+if( $branch =~ /^master.*/ ) {
 	pod2usage("No point releases on master branch") if $dopoint;
 	pod2usage("No new release name for major/minor release") unless $newreleasename || $newreleasename eq $releasename;
 } else {
@@ -131,8 +136,6 @@ if( $domajor ) {
 my $splashwidth;
 unless( $dopoint ) {
 	pod2usage("Splash images/splash/splash-$newmajor.$newminor.png not found") unless -r "images/splash/splash-$newmajor.$newminor.png";
-	$splashwidth = `identify -format '%w' images/splash/splash-$newmajor.$newminor.png`;
-	print "WARNING: Splash images/splash/splash-$newmajor.$newminor.png is $splashwidth pixels wide - will be rescaled\n" if $splashwidth != 600;
 	pod2usage("NSIS image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp not found") unless -r "ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp";
 	my $welcomeformat = `identify -format '%wx%h %m' ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp`;
 	pod2usage("NSIS Image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp mis-sized [$welcomeformat vs. 164x314 BMP3]") unless $welcomeformat =~ /^164x314 /;
@@ -148,17 +151,21 @@ my $ltrtag = $doltr ? "ltr-${newmajor}_${newminor}" : "";
 my $reltag = "final-${newmajor}_${newminor}_${newpatch}";
 
 unless( $dopoint ) {
-	print "Pulling transifex translations...\n";
-	run( "scripts/pull_ts.sh", "pull_ts.sh failed" );
-	run( "git add i18n/*.ts", "adding translations failed" );
-	run( "git commit -a -m \"translation update for $release from transifex\"", "could not commit translation updates" );
+	unless( $skipts ) {
+		print "Pulling transifex translations...\n";
+		run( "scripts/pull_ts.sh", "pull_ts.sh failed" );
+		run( "git add i18n/*.ts", "adding translations failed" );
+		run( "git commit -a -m \"translation update for $release from transifex\"", "could not commit translation updates" );
+	} else {
+		print "TRANSIFEX UPDATE SKIPPED!\n";
+	}
 }
 
 print "Updating changelog...\n";
 run( "scripts/create_changelog.sh", "create_changelog.sh failed" );
 
 unless( $dopoint ) {
-	run( "scripts/update-news.pl $newmajor $newminor '$release'", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
+	run( "scripts/update-news.pl $newmajor $newminor '$newreleasename'", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
 
 	run( "git commit -a -m \"changelog and news update for $release\"", "could not commit changelog and news update" );
 
@@ -174,11 +181,7 @@ run( "dch --newversion $version 'Release of $version'", "dch failed" );
 run( "cp debian/changelog /tmp", "backup changelog failed" );
 
 unless( $dopoint ) {
-	if( $splashwidth != 600 ) {
-		run( "convert -resize 600x300 images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "rescale of splash png failed" );
-	} else {
-		run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
-	}
+	run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
 	run( "convert -resize 164x314 ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp BMP3:ms-windows/Installer-Files/WelcomeFinishPage.bmp", "installer bitmap switch failed" );
 
 	if( -f "images/splash/splash-release.xcf.bz2" ) {
@@ -199,23 +202,44 @@ print "Producing archive...\n";
 run( "git archive --format tar --prefix=qgis-$version/ $reltag | bzip2 -c >qgis-$version.tar.bz2", "git archive failed" );
 run( "md5sum qgis-$version.tar.bz2 >qgis-$version.tar.bz2.md5", "md5sum failed" );
 
+my @topush;
 unless( $dopoint ) {
 	$newminor++;
 
 	print "Updating master...\n";
 	run( "git checkout master", "checkout master failed" );
+
+	if($dopremajor) {
+		print " Creating master_$newmajor...\n";
+		run( "git checkout -b master_$newmajor", "checkout master_$newmajor failed" );
+		updateCMakeLists($newmajor,$newminor,0,"Master");
+		run( "cp /tmp/changelog debian", "restore changelog failed" );
+		run( "dch -r ''", "dch failed" );
+		run( "dch --newversion $newmajor.$newminor.0 'New development version $newmajor.$newminor after branch of $release'", "dch failed" );
+		run( "git commit -a -m 'New development branch for interim $newmajor.x releases'", "bump version failed" );
+
+		push @topush, "master_$newmajor";
+
+		run( "git checkout master", "checkout master failed" );
+		$newminor=99;
+	}
+
 	updateCMakeLists($newmajor,$newminor,0,"Master");
 	run( "cp /tmp/changelog debian", "restore changelog failed" );
 	run( "dch -r ''", "dch failed" );
 	run( "dch --newversion $newmajor.$newminor.0 'New development version $newmajor.$newminor after branch of $release'", "dch failed" );
 	run( "git commit -a -m 'Bump version to $newmajor.$newminor'", "bump version failed" );
+
+	push @topush, "master";
 }
 
-my $topush = ($dopoint ? "" : "master ") . "$relbranch";
+push @topush, $relbranch;
+my $topush = join(" ", @topush);
 
 print "Push dry-run...\n";
 run( "git push -n --follow-tags origin $topush", "push dry run failed" );
 print "Now manually push and upload the tarballs :\n\tgit push --follow-tags origin $topush\n\trsync qgis-$version.tar.bz2* qgis.org:/var/www/downloads/\n\n";
+print "WARNING: TRANSIFEX UPDATE SKIPPED!\n" if $skipts;
 
 
 =head1 NAME
@@ -224,7 +248,7 @@ release.pl - create a new release
 
 =head1 SYNOPSIS
 
-release.pl {{-major|-minor} [-ltr] -releasename=releasename|-point}
+release.pl {{-major|-minor [-premajor]} [-skipts] -releasename=releasename|-point} [-ltr]
 
   Options:
     -major              do a new major release
@@ -233,8 +257,17 @@ release.pl {{-major|-minor} [-ltr] -releasename=releasename|-point}
     -releasename=name   new release name for master/minor release
     -ltr                new release is a long term release
     -dryrun             just echo but don't run any commands
+    -skipts		skip transifex update
+    -premajor           branch off a second "master" branch before
+			a major release
 
   Major and minor releases also require a new splash screen
   images/splash/splash-M.N.png and bitmap for the NSIS
   installer ms-windows/Installer-Files/WelcomeFinishPage-M.N.bmp.
+
+  A pre-major minor release also produces a second branch
+  master_$currentmajor to allow more interim minor releases
+  while the new major version is being developed in master.
+  For that the minor version of the master branch leading
+  to the next major release is bumped to 999.
 =cut

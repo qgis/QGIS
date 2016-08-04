@@ -35,6 +35,8 @@
 #include "qgscomposerattributetablev2.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
+#include "qgsgroupungroupitemscommand.h"
+#include "qgsmapsettings.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
 #include "qgsproject.h"
@@ -57,19 +59,11 @@
 #include <QDir>
 
 #include <limits>
-
-QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
-    : QGraphicsScene( nullptr )
-    , mMapRenderer( mapRenderer )
-    , mMapSettings( mapRenderer->mapSettings() )
-    , mAtlasComposition( this )
-{
-  init();
-}
+#include "gdal.h"
+#include "cpl_conv.h"
 
 QgsComposition::QgsComposition( const QgsMapSettings& mapSettings )
     : QGraphicsScene( nullptr )
-    , mMapRenderer( nullptr )
     , mMapSettings( mapSettings )
     , mAtlasComposition( this )
 {
@@ -151,42 +145,6 @@ void QgsComposition::init()
   mItemsModel = new QgsComposerModel( this );
 }
 
-
-/*
-QgsComposition::QgsComposition()
-    : QGraphicsScene( 0 )
-    , mMapRenderer( 0 )
-    , mPlotStyle( QgsComposition::Preview )
-    , mPageWidth( 297 )
-    , mPageHeight( 210 )
-    , mSpaceBetweenPages( 10 )
-    , mPageStyleSymbol( 0 )
-    , mPrintAsRaster( false )
-    , mGenerateWorldFile( false )
-    , mUseAdvancedEffects( true )
-    , mSnapToGrid( false )
-    , mGridVisible( false )
-    , mSnapGridResolution( 0 )
-    , mSnapGridTolerance( 0 )
-    , mSnapGridOffsetX( 0 )
-    , mSnapGridOffsetY( 0 )
-    , mAlignmentSnap( true )
-    , mGuidesVisible( true )
-    , mSmartGuides( true )
-    , mAlignmentSnapTolerance( 0 )
-    , mSelectionHandles( 0 )
-    , mActiveItemCommand( 0 )
-    , mActiveMultiFrameCommand( 0 )
-    , mAtlasComposition( this )
-    , mAtlasMode( QgsComposition::AtlasOff )
-    , mPreventCursorChange( false )
-    , mItemsModel( 0 )
-{
-  //load default composition settings
-  loadDefaults();
-  loadSettings();
-  mItemsModel = new QgsComposerModel( this );
-}*/
 
 QgsComposition::~QgsComposition()
 {
@@ -887,7 +845,7 @@ double QgsComposition::pointFontSize( int pixelSize ) const
   return QgsComposerUtils::mmToPoints( pixelSize );
 }
 
-bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
+bool QgsComposition::writeXml( QDomElement& composerElem, QDomDocument& doc )
 {
   if ( composerElem.isNull() )
   {
@@ -964,7 +922,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
     {
       if ( composerItem->type() != QgsComposerItem::ComposerPaper &&  composerItem->type() != QgsComposerItem::ComposerFrame )
       {
-        composerItem->writeXML( compositionElem, doc );
+        composerItem->writeXml( compositionElem, doc );
       }
     }
   }
@@ -973,7 +931,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   QSet<QgsComposerMultiFrame*>::const_iterator multiFrameIt = mMultiFrames.constBegin();
   for ( ; multiFrameIt != mMultiFrames.constEnd(); ++multiFrameIt )
   {
-    ( *multiFrameIt )->writeXML( compositionElem, doc );
+    ( *multiFrameIt )->writeXml( compositionElem, doc );
   }
   composerElem.appendChild( compositionElem );
 
@@ -986,7 +944,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   return true;
 }
 
-bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocument& doc )
+bool QgsComposition::readXml( const QDomElement& compositionElem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( compositionElem.isNull() )
@@ -1065,6 +1023,8 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   updateBounds();
 
+  emit variablesChanged();
+
   return true;
 }
 
@@ -1101,7 +1061,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     QMap<QString, QString>::const_iterator sIt = substitutionMap->constBegin();
     for ( ; sIt != substitutionMap->constEnd(); ++sIt )
     {
-      xmlString = xmlString.replace( '[' + sIt.key() + ']', encodeStringForXML( sIt.value() ) );
+      xmlString = xmlString.replace( '[' + sIt.key() + ']', encodeStringForXml( sIt.value() ) );
     }
 
     QString errorMsg;
@@ -1126,7 +1086,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
       return false;
     }
 
-    bool ok = readXML( compositionElem, importDoc );
+    bool ok = readXml( compositionElem, importDoc );
     if ( !ok )
     {
       return false;
@@ -1134,7 +1094,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
 
     // read atlas parameters - must be done before adding items
     atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
-    atlasComposition().readXML( atlasElem, importDoc );
+    atlasComposition().readXml( atlasElem, importDoc );
   }
 
   // remove all uuid attributes since we don't want duplicates UUIDS
@@ -1150,13 +1110,13 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   }
 
   //addItemsFromXML
-  addItemsFromXML( importDoc.documentElement(), importDoc, nullptr, addUndoCommands, nullptr );
+  addItemsFromXml( importDoc.documentElement(), importDoc, nullptr, addUndoCommands, nullptr );
 
   //read atlas map parameters (for pre 2.2 templates)
   //this can only be done after items have been added
   if ( clearComposition )
   {
-    atlasComposition().readXMLMapSettings( atlasElem, importDoc );
+    atlasComposition().readXmlMapSettings( atlasElem, importDoc );
   }
   return true;
 }
@@ -1190,7 +1150,7 @@ QPointF QgsComposition::minPointFromXml( const QDomElement& elem ) const
   }
 }
 
-void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore,
+void QgsComposition::addItemsFromXml( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore,
                                       bool addUndoCommands, QPointF* pos, bool pasteInPlace )
 {
   QPointF* pasteInPlacePt = nullptr;
@@ -1225,7 +1185,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerLabelElem = composerLabelList.at( i ).toElement();
     QgsComposerLabel* newLabel = new QgsComposerLabel( this );
-    newLabel->readXML( currentComposerLabelElem, doc );
+    newLabel->readXml( currentComposerLabelElem, doc );
     if ( pos )
     {
       if ( pasteInPlacePt )
@@ -1259,7 +1219,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newMap->setUpdatesEnabled( false );
     }
 
-    newMap->readXML( currentComposerMapElem, doc );
+    newMap->readXml( currentComposerMapElem, doc );
     newMap->assignFreeId();
 
     if ( mapsToRestore )
@@ -1313,7 +1273,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerArrowElem = composerArrowList.at( i ).toElement();
     QgsComposerArrow* newArrow = new QgsComposerArrow( this );
-    newArrow->readXML( currentComposerArrowElem, doc );
+    newArrow->readXml( currentComposerArrowElem, doc );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -1341,7 +1301,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerScaleBarElem = composerScaleBarList.at( i ).toElement();
     QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar( this );
-    newScaleBar->readXML( currentComposerScaleBarElem, doc );
+    newScaleBar->readXml( currentComposerScaleBarElem, doc );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -1369,7 +1329,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerShapeElem = composerShapeList.at( i ).toElement();
     QgsComposerShape* newShape = new QgsComposerShape( this );
-    newShape->readXML( currentComposerShapeElem, doc );
+    newShape->readXml( currentComposerShapeElem, doc );
     //new shapes should default to symbol v2
     newShape->setUseSymbolV2( true );
     if ( pos )
@@ -1400,7 +1360,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerPolygonElem = composerPolygonList.at( i ).toElement();
     QgsComposerPolygon* newPolygon = new QgsComposerPolygon( this );
-    newPolygon->readXML( currentComposerPolygonElem, doc );
+    newPolygon->readXml( currentComposerPolygonElem, doc );
 
     if ( pos )
     {
@@ -1431,7 +1391,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerPolylineElem = addComposerPolylineList.at( i ).toElement();
     QgsComposerPolyline* newPolyline = new QgsComposerPolyline( this );
-    newPolyline->readXML( currentComposerPolylineElem, doc );
+    newPolyline->readXml( currentComposerPolylineElem, doc );
 
     if ( pos )
     {
@@ -1462,7 +1422,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerPictureElem = composerPictureList.at( i ).toElement();
     QgsComposerPicture* newPicture = new QgsComposerPicture( this );
-    newPicture->readXML( currentComposerPictureElem, doc );
+    newPicture->readXml( currentComposerPictureElem, doc );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -1490,7 +1450,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerLegendElem = composerLegendList.at( i ).toElement();
     QgsComposerLegend* newLegend = new QgsComposerLegend( this );
-    newLegend->readXML( currentComposerLegendElem, doc );
+    newLegend->readXml( currentComposerLegendElem, doc );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -1518,7 +1478,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentComposerTableElem = composerTableList.at( i ).toElement();
     QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( this );
-    newTable->readXML( currentComposerTableElem, doc );
+    newTable->readXml( currentComposerTableElem, doc );
     if ( pos )
     {
       if ( pasteInPlace )
@@ -1547,7 +1507,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentHtmlElem = composerHtmlList.at( i ).toElement();
     QgsComposerHtml* newHtml = new QgsComposerHtml( this, false );
-    newHtml->readXML( currentHtmlElem, doc );
+    newHtml->readXml( currentHtmlElem, doc );
     newHtml->setCreateUndoCommands( true );
     this->addMultiFrame( newHtml );
 
@@ -1564,7 +1524,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement currentTableElem = composerAttributeTableV2List.at( i ).toElement();
     QgsComposerAttributeTableV2* newTable = new QgsComposerAttributeTableV2( this, false );
-    newTable->readXML( currentTableElem, doc );
+    newTable->readXml( currentTableElem, doc );
     newTable->setCreateUndoCommands( true );
     this->addMultiFrame( newTable );
 
@@ -1585,8 +1545,12 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   {
     QDomElement groupElem = groupList.at( i ).toElement();
     QgsComposerItemGroup *newGroup = new QgsComposerItemGroup( this );
-    newGroup->readXML( groupElem, doc );
+    newGroup->readXml( groupElem, doc );
     addItem( newGroup );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newGroup, tr( "Group added" ) );
+    }
   }
 
   //Since this function adds items grouped by type, and each item is added to end of
@@ -2012,14 +1976,28 @@ QgsComposerItemGroup *QgsComposition::groupItems( QList<QgsComposerItem *> items
   }
 
   QgsComposerItemGroup* itemGroup = new QgsComposerItemGroup( this );
+  QgsDebugMsg( QString( "itemgroup created with %1 items (%2 to be added)" ) .arg( itemGroup->items().size() ).arg( items.size() ) );
 
   QList<QgsComposerItem*>::iterator itemIter = items.begin();
   for ( ; itemIter != items.end(); ++itemIter )
   {
     itemGroup->addItem( *itemIter );
+    QgsDebugMsg( QString( "itemgroup now has %1" )
+                 .arg( itemGroup->items().size() ) );
   }
 
   addItem( itemGroup );
+
+  QgsGroupUngroupItemsCommand* c = new QgsGroupUngroupItemsCommand( QgsGroupUngroupItemsCommand::Grouped, itemGroup, this, tr( "Items grouped" ) );
+  QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
+  QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
+
+  undoStack()->push( c );
+  QgsProject::instance()->setDirty( true );
+  //QgsDebugMsg( QString( "itemgroup after pushAddRemove has %1" ) .arg( itemGroup->items().size() ) );
+
+  emit composerItemGroupAdded( itemGroup );
+
   return itemGroup;
 }
 
@@ -2031,6 +2009,17 @@ QList<QgsComposerItem *> QgsComposition::ungroupItems( QgsComposerItemGroup* gro
     return ungroupedItems;
   }
 
+  // group ownership transferred to QgsGroupUngroupItemsCommand
+  // Call this before removing group items so it can keep note
+  // of contents
+  QgsGroupUngroupItemsCommand* c = new QgsGroupUngroupItemsCommand( QgsGroupUngroupItemsCommand::Ungrouped, group, this, tr( "Items ungrouped" ) );
+  QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
+  QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
+
+  undoStack()->push( c );
+  QgsProject::instance()->setDirty( true );
+
+
   QSet<QgsComposerItem*> groupedItems = group->items();
   QSet<QgsComposerItem*>::iterator itemIt = groupedItems.begin();
   for ( ; itemIt != groupedItems.end(); ++itemIt )
@@ -2039,10 +2028,9 @@ QList<QgsComposerItem *> QgsComposition::ungroupItems( QgsComposerItemGroup* gro
   }
 
   group->removeItems();
-  removeComposerItem( group, false, false );
 
-  emit itemRemoved( group );
-  delete( group );
+  // note: emits itemRemoved
+  removeComposerItem( group, false, false );
 
   return ungroupedItems;
 }
@@ -2634,6 +2622,7 @@ void QgsComposition::addComposerTableFrame( QgsComposerAttributeTableV2 *table, 
   emit composerTableFrameAdded( table, frame );
 }
 
+/* public */
 void QgsComposition::removeComposerItem( QgsComposerItem* item, const bool createCommand, const bool removeGroupItems )
 {
   QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );
@@ -2642,25 +2631,36 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item, const bool creat
   {
     mItemsModel->setItemRemoved( item );
     removeItem( item );
+    emit itemRemoved( item );
+
+    QgsDebugMsg( QString( "removeComposerItem called, createCommand:%1 removeGroupItems:%2" )
+                 .arg( createCommand ).arg( removeGroupItems ) );
 
     QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( item );
     if ( itemGroup && removeGroupItems )
     {
-      //add add/remove item command for every item in the group
-      QUndoCommand* parentCommand = new QUndoCommand( tr( "Remove item group" ) );
+      QgsDebugMsg( QString( "itemGroup && removeGroupItems" ) );
 
+      // Takes ownership of itemGroup
+      QgsAddRemoveItemCommand* parentCommand = new QgsAddRemoveItemCommand(
+        QgsAddRemoveItemCommand::Removed, itemGroup, this,
+        tr( "Remove item group" ) );
+      connectAddRemoveCommandSignals( parentCommand );
+
+      //add add/remove item command for every item in the group
       QSet<QgsComposerItem*> groupedItems = itemGroup->items();
+      QgsDebugMsg( QString( "itemGroup contains %1 items" ) .arg( groupedItems.size() ) );
       QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
       for ( ; it != groupedItems.end(); ++it )
       {
+        mItemsModel->setItemRemoved( *it );
+        removeItem( *it );
         QgsAddRemoveItemCommand* subcommand = new QgsAddRemoveItemCommand( QgsAddRemoveItemCommand::Removed, *it, this, "", parentCommand );
         connectAddRemoveCommandSignals( subcommand );
         emit itemRemoved( *it );
       }
 
       undoStack()->push( parentCommand );
-      emit itemRemoved( itemGroup );
-      delete itemGroup;
     }
     else
     {
@@ -2672,18 +2672,12 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item, const bool creat
         {
           multiFrame = static_cast<QgsComposerFrame*>( item )->multiFrame();
           item->beginItemCommand( tr( "Frame deleted" ) );
-          emit itemRemoved( item );
           item->endItemCommand();
         }
         else
         {
-          emit itemRemoved( item );
           pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
         }
-      }
-      else
-      {
-        emit itemRemoved( item );
       }
 
       //check if there are frames left. If not, remove the multi frame
@@ -2821,6 +2815,11 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
     emit selectedItemChanged( frame );
     return;
   }
+  QgsComposerItemGroup* group = dynamic_cast<QgsComposerItemGroup*>( item );
+  if ( group )
+  {
+    emit composerItemGroupAdded( group );
+  }
 }
 
 void QgsComposition::updatePaperItems()
@@ -2884,6 +2883,34 @@ bool QgsComposition::exportAsPDF( const QString& file )
   QPrinter printer;
   beginPrintAsPDF( printer, file );
   return print( printer );
+}
+
+void QgsComposition::georeferenceOutput( const QString& file, QgsComposerMap* map,
+    const QRectF& exportRegion, double dpi ) const
+{
+  if ( dpi < 0 )
+    dpi = printResolution();
+
+  double* t = computeGeoTransform( map, exportRegion, dpi );
+  if ( !t )
+    return;
+
+  // important - we need to manually specify the DPI in advance, as GDAL will otherwise
+  // assume a DPI of 150
+  CPLSetConfigOption( "GDAL_PDF_DPI", QString::number( dpi ).toLocal8Bit().constData() );
+  GDALDatasetH outputDS = GDALOpen( file.toLocal8Bit().constData(), GA_Update );
+  if ( outputDS )
+  {
+    GDALSetGeoTransform( outputDS, t );
+#if 0
+    //TODO - metadata can be set here, eg:
+    GDALSetMetadataItem( outputDS, "AUTHOR", "me", nullptr );
+#endif
+    GDALSetProjection( outputDS, mMapSettings.destinationCrs().toWkt().toLocal8Bit().constData() );
+    GDALClose( outputDS );
+  }
+  CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
+  delete[] t;
 }
 
 void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage )
@@ -3086,7 +3113,88 @@ void QgsComposition::renderRect( QPainter* p, const QRectF& rect )
   mPlotStyle = savedPlotStyle;
 }
 
-QString QgsComposition::encodeStringForXML( const QString& str )
+double* QgsComposition::computeGeoTransform( const QgsComposerMap* map, const QRectF& region , double dpi ) const
+{
+  if ( !map )
+    map = worldFileMap();
+
+  if ( !map )
+    return nullptr;
+
+  if ( dpi < 0 )
+    dpi = printResolution();
+
+  // calculate region of composition to export (in mm)
+  QRectF exportRegion = region;
+  if ( !exportRegion.isValid() )
+  {
+    int pageNumber = map->page() - 1;
+    double pageY = pageNumber * ( mPageHeight + mSpaceBetweenPages );
+    exportRegion = QRectF( 0, pageY, mPageWidth, mPageHeight );
+  }
+
+  // map rectangle (in mm)
+  QRectF mapItemSceneRect = map->mapRectToScene( map->rect() );
+
+  // destination width/height in mm
+  double outputHeightMM = exportRegion.height();
+  double outputWidthMM = exportRegion.width();
+
+  // map properties
+  QgsRectangle mapExtent = *map->currentMapExtent();
+  double mapXCenter = mapExtent.center().x();
+  double mapYCenter = mapExtent.center().y();
+  double alpha = - map->mapRotation() / 180 * M_PI;
+  double sinAlpha = sin( alpha );
+  double cosAlpha = cos( alpha );
+
+  // get the extent (in map units) for the exported region
+  QPointF mapItemPos = map->pos();
+  //adjust item position so it is relative to export region
+  mapItemPos.rx() -= exportRegion.left();
+  mapItemPos.ry() -= exportRegion.top();
+
+  // calculate extent of entire page in map units
+  double xRatio = mapExtent.width() / mapItemSceneRect.width();
+  double yRatio = mapExtent.height() / mapItemSceneRect.height();
+  double xmin = mapExtent.xMinimum() - mapItemPos.x() * xRatio;
+  double ymax = mapExtent.yMaximum() + mapItemPos.y() * yRatio;
+  QgsRectangle paperExtent( xmin, ymax - outputHeightMM * yRatio, xmin + outputWidthMM * xRatio, ymax );
+
+  // calculate origin of page
+  double X0 = paperExtent.xMinimum();
+  double Y0 = paperExtent.yMaximum();
+
+  if ( !qgsDoubleNear( alpha, 0.0 ) )
+  {
+    // translate origin to account for map rotation
+    double X1 = X0 - mapXCenter;
+    double Y1 = Y0 - mapYCenter;
+    double X2 = X1 * cosAlpha + Y1 * sinAlpha;
+    double Y2 = -X1 * sinAlpha + Y1 * cosAlpha;
+    X0 = X2 + mapXCenter;
+    Y0 = Y2 + mapYCenter;
+  }
+
+  // calculate scaling of pixels
+  int pageWidthPixels = static_cast< int >( dpi * outputWidthMM / 25.4 );
+  int pageHeightPixels = static_cast< int >( dpi * outputHeightMM / 25.4 );
+  double pixelWidthScale = paperExtent.width() / pageWidthPixels;
+  double pixelHeightScale = paperExtent.height() / pageHeightPixels;
+
+  // transform matrix
+  double* t = new double[6];
+  t[0] = X0;
+  t[1] = cosAlpha * pixelWidthScale;
+  t[2] = -sinAlpha * pixelWidthScale;
+  t[3] = Y0;
+  t[4] = -sinAlpha * pixelHeightScale;
+  t[5] = -cosAlpha * pixelHeightScale;
+
+  return t;
+}
+
+QString QgsComposition::encodeStringForXml( const QString& str )
 {
   QString modifiedStr( str );
   modifiedStr.replace( '&', "&amp;" );
@@ -3354,6 +3462,9 @@ void QgsComposition::setDataDefinedProperty( const QgsComposerObject::DataDefine
 void QgsComposition::setCustomProperty( const QString& key, const QVariant& value )
 {
   mCustomProperties.setValue( key, value );
+
+  if ( key.startsWith( "variable" ) )
+    emit variablesChanged();
 }
 
 QVariant QgsComposition::customProperty( const QString& key, const QVariant& defaultValue ) const

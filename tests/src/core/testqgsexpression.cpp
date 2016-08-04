@@ -22,10 +22,12 @@
 //header for class being tested
 #include <qgsexpression.h>
 #include <qgsfeature.h>
+#include "qgsfeatureiterator.h"
 #include <qgsfeaturerequest.h>
 #include <qgsgeometry.h>
 #include <qgsrenderchecker.h>
 #include "qgsexpressioncontext.h"
+#include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
@@ -427,6 +429,20 @@ class TestQgsExpression: public QObject
       QTest::newRow( "'nan'='x'" ) << "'nan'='x'" << false << QVariant( 0 );
       QTest::newRow( "'inf'='inf'" ) << "'inf'='inf'" << false << QVariant( 1 );
       QTest::newRow( "'inf'='x'" ) << "'inf'='x'" << false << QVariant( 0 );
+      QTest::newRow( "'1.1'='1.1'" ) << "'1.1'='1.1'" << false << QVariant( 1 );
+      QTest::newRow( "'1.1'!='1.1'" ) << "'1.1'!='1.1'" << false << QVariant( 0 );
+      QTest::newRow( "'1.1'='1.10'" ) << "'1.1'='1.10'" << false << QVariant( 0 );
+      QTest::newRow( "'1.1'!='1.10'" ) << "'1.1'!='1.10'" << false << QVariant( 1 );
+      QTest::newRow( "1.1=1.10" ) << "1.1=1.10" << false << QVariant( 1 );
+      QTest::newRow( "1.1 != 1.10" ) << "1.1 != 1.10" << false << QVariant( 0 );
+      QTest::newRow( "'1.1'=1.1" ) << "'1.1'=1.1" << false << QVariant( 1 );
+      QTest::newRow( "'1.10'=1.1" ) << "'1.10'=1.1" << false << QVariant( 1 );
+      QTest::newRow( "1.1='1.10'" ) << "1.1='1.10'" << false << QVariant( 1 );
+      QTest::newRow( "'1.1'='1.10000'" ) << "'1.1'='1.10000'" << false << QVariant( 0 );
+      QTest::newRow( "'1E-23'='1E-23'" ) << "'1E-23'='1E-23'" << false << QVariant( 1 );
+      QTest::newRow( "'1E-23'!='1E-23'" ) << "'1E-23'!='1E-23'" << false << QVariant( 0 );
+      QTest::newRow( "'1E-23'='2E-23'" ) << "'1E-23'='2E-23'" << false << QVariant( 0 );
+      QTest::newRow( "'1E-23'!='2E-23'" ) << "'1E-23'!='2E-23'" << false << QVariant( 1 );
 
       // is, is not
       QTest::newRow( "is null,null" ) << "null is null" << false << QVariant( 1 );
@@ -437,6 +453,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "is not int" ) << "1 is not 1" << false << QVariant( 0 );
       QTest::newRow( "is text" ) << "'x' is 'y'" << false << QVariant( 0 );
       QTest::newRow( "is not text" ) << "'x' is not 'y'" << false << QVariant( 1 );
+      QTest::newRow( "'1.1' is '1.10'" ) << "'1.1' is '1.10'" << false << QVariant( 0 );
+      QTest::newRow( "'1.1' is '1.10000'" ) << "'1.1' is '1.10000'" << false << QVariant( 0 );
+      QTest::newRow( "1.1 is '1.10'" ) << "1.1 is '1.10'" << false << QVariant( 1 );
+      QTest::newRow( "'1.10' is 1.1" ) << "'1.10' is 1.1" << false << QVariant( 1 );
 
       //  logical
       QTest::newRow( "T or F" ) << "1=1 or 2=3" << false << QVariant( 1 );
@@ -647,6 +667,16 @@ class TestQgsExpression: public QObject
       QTest::newRow( "geometry_n collection" ) << "geom_to_wkt(geometry_n(geom_from_wkt('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))'),3))" << false << QVariant( QString( "Point (1 0)" ) );
       QTest::newRow( "geometry_n collection bad index 1" ) << "geometry_n(geom_from_wkt('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))'),0)" << false << QVariant();
       QTest::newRow( "geometry_n collection bad index 2" ) << "geometry_n(geom_from_wkt('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))'),5)" << false << QVariant();
+      QTest::newRow( "boundary not geom" ) << "boundary('g')" << true << QVariant();
+      QTest::newRow( "boundary null" ) << "boundary(NULL)" << false << QVariant();
+      QTest::newRow( "boundary point" ) << "boundary(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
+      QTest::newRow( "boundary polygon" ) << "geom_to_wkt(boundary(geometry:=geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))" << false << QVariant( "LineString (-1 -1, 4 0, 4 2, 0 2, -1 -1)" );
+      QTest::newRow( "boundary line" ) << "geom_to_wkt(boundary(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)')))" << false << QVariant( "MultiPoint ((0 0),(2 2))" );
+      QTest::newRow( "line_merge not geom" ) << "line_merge('g')" << true << QVariant();
+      QTest::newRow( "line_merge null" ) << "line_merge(NULL)" << false << QVariant();
+      QTest::newRow( "line_merge point" ) << "line_merge(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
+      QTest::newRow( "line_merge line" ) << "geom_to_wkt(line_merge(geometry:=geom_from_wkt('LineString(0 0, 10 10)')))" << false << QVariant( "LineString (0 0, 10 10)" );
+      QTest::newRow( "line_merge multiline" ) << "geom_to_wkt(line_merge(geom_from_wkt('MultiLineString((0 0, 10 10),(10 10, 20 20))')))" << false << QVariant( "LineString (0 0, 10 10, 20 20)" );
       QTest::newRow( "start_point point" ) << "geom_to_wkt(start_point(geom_from_wkt('POINT(2 0)')))" << false << QVariant( "Point (2 0)" );
       QTest::newRow( "start_point multipoint" ) << "geom_to_wkt(start_point(geom_from_wkt('MULTIPOINT((3 3), (1 1), (2 2))')))" << false << QVariant( "Point (3 3)" );
       QTest::newRow( "start_point line" ) << "geom_to_wkt(start_point(geom_from_wkt('LINESTRING(4 1, 1 1, 2 2)')))" << false << QVariant( "Point (4 1)" );
@@ -754,6 +784,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "title" ) << "title(' HeLlO   WORLD ')" << false << QVariant( " Hello   World " );
       QTest::newRow( "trim" ) << "trim('   Test String ')" << false << QVariant( "Test String" );
       QTest::newRow( "trim empty string" ) << "trim('')" << false << QVariant( "" );
+      QTest::newRow( "char" ) << "char(81)" << false << QVariant( "Q" );
       QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis',13)" << false << QVariant( "university of\nqgis" );
       QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis',13,' ')" << false << QVariant( "university of\nqgis" );
       QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis',-3)" << false << QVariant( "university\nof qgis" );
@@ -1506,7 +1537,7 @@ class TestQgsExpression: public QObject
     void eval_geometry_data()
     {
       QTest::addColumn<QString>( "string" );
-      QTest::addColumn<void*>( "geomptr" );
+      QTest::addColumn<QgsGeometry>( "geom" );
       QTest::addColumn<bool>( "evalError" );
       QTest::addColumn<double>( "result" );
 
@@ -1514,20 +1545,18 @@ class TestQgsExpression: public QObject
       QgsPolyline line;
       line << QgsPoint( 1, 1 ) << QgsPoint( 4, 2 ) << QgsPoint( 3, 1 );
 
-      QTest::newRow( "geom x" ) << "$x" << ( void* ) QgsGeometry::fromPoint( point ) << false << 123.;
-      QTest::newRow( "geom y" ) << "$y" << ( void* ) QgsGeometry::fromPoint( point ) << false << 456.;
-      QTest::newRow( "geom xat" ) << "xat(-1)" << ( void* ) QgsGeometry::fromPolyline( line ) << false << 3.;
-      QTest::newRow( "geom yat" ) << "yat(1)" << ( void* ) QgsGeometry::fromPolyline( line ) << false << 2.;
+      QTest::newRow( "geom x" ) << "$x" << QgsGeometry::fromPoint( point ) << false << 123.;
+      QTest::newRow( "geom y" ) << "$y" << QgsGeometry::fromPoint( point ) << false << 456.;
+      QTest::newRow( "geom xat" ) << "xat(-1)" << QgsGeometry::fromPolyline( line ) << false << 3.;
+      QTest::newRow( "geom yat" ) << "yat(1)" << QgsGeometry::fromPolyline( line ) << false << 2.;
     }
 
     void eval_geometry()
     {
       QFETCH( QString, string );
-      QFETCH( void*, geomptr );
+      QFETCH( QgsGeometry, geom );
       QFETCH( bool, evalError );
       QFETCH( double, result );
-
-      QgsGeometry* geom = ( QgsGeometry* ) geomptr;
 
       QgsFeature f;
       f.setGeometry( geom );
@@ -1555,8 +1584,10 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
       QgsFeature fPolygon, fPolyline;
-      fPolyline.setGeometry( QgsGeometry::fromPolyline( polyline ) );
-      fPolygon.setGeometry( QgsGeometry::fromPolygon( polygon ) );
+      QgsGeometry polylineGeom = QgsGeometry::fromPolyline( polyline );
+      fPolyline.setGeometry( polylineGeom );
+      QgsGeometry polygonGeom = QgsGeometry::fromPolygon( polygon );
+      fPolygon.setGeometry( polygonGeom );
 
       QgsExpressionContext context;
 
@@ -1715,7 +1746,8 @@ class TestQgsExpression: public QObject
       polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
       QgsPolygon polygon3111;
       polygon3111 << polygonRing3111;
-      feat.setGeometry( QgsGeometry::fromPolygon( polygon3111 ) );
+      QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 );
+      feat.setGeometry( polygon3111G );
       QgsExpressionContext context;
       context.setFeature( feat );
 
@@ -1725,10 +1757,10 @@ class TestQgsExpression: public QObject
       double expected = 1005640568.0;
       QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
       // units should not be converted if no geometry calculator set
-      expArea.setAreaUnits( QgsUnitTypes::SquareFeet );
+      expArea.setAreaUnits( QgsUnitTypes::AreaSquareFeet );
       vArea = expArea.evaluate( &context );
       QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
-      expArea.setAreaUnits( QgsUnitTypes::SquareNauticalMiles );
+      expArea.setAreaUnits( QgsUnitTypes::AreaSquareNauticalMiles );
       vArea = expArea.evaluate( &context );
       QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
 
@@ -1739,13 +1771,13 @@ class TestQgsExpression: public QObject
       expected = 1009089817.0;
       QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
       // test unit conversion
-      expArea2.setAreaUnits( QgsUnitTypes::SquareMeters ); //default units should be square meters
+      expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMeters ); //default units should be square meters
       vArea = expArea2.evaluate( &context );
       QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
-      expArea2.setAreaUnits( QgsUnitTypes::UnknownAreaUnit ); //unknown units should not be converted
+      expArea2.setAreaUnits( QgsUnitTypes::AreaUnknownUnit ); //unknown units should not be converted
       vArea = expArea2.evaluate( &context );
       QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
-      expArea2.setAreaUnits( QgsUnitTypes::SquareMiles );
+      expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMiles );
       expected = 389.6117565069;
       vArea = expArea2.evaluate( &context );
       QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 0.001 ) );
@@ -1756,10 +1788,10 @@ class TestQgsExpression: public QObject
       expected = 128282.086;
       QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
       // units should not be converted if no geometry calculator set
-      expPerimeter.setDistanceUnits( QGis::Feet );
+      expPerimeter.setDistanceUnits( QgsUnitTypes::DistanceFeet );
       vPerimeter = expPerimeter.evaluate( &context );
       QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
-      expPerimeter.setDistanceUnits( QGis::NauticalMiles );
+      expPerimeter.setDistanceUnits( QgsUnitTypes::DistanceNauticalMiles );
       vPerimeter = expPerimeter.evaluate( &context );
       QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
 
@@ -1770,13 +1802,13 @@ class TestQgsExpression: public QObject
       expected = 128289.074;
       QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
       // test unit conversion
-      expPerimeter2.setDistanceUnits( QGis::Meters ); //default units should be meters
+      expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceMeters ); //default units should be meters
       vPerimeter = expPerimeter2.evaluate( &context );
       QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
-      expPerimeter2.setDistanceUnits( QGis::UnknownUnit ); //unknown units should not be converted
+      expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceUnknownUnit ); //unknown units should not be converted
       vPerimeter = expPerimeter2.evaluate( &context );
       QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
-      expPerimeter2.setDistanceUnits( QGis::Feet );
+      expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceFeet );
       expected = 420895.9120735;
       vPerimeter = expPerimeter2.evaluate( &context );
       QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
@@ -1784,7 +1816,8 @@ class TestQgsExpression: public QObject
       // test length without geomCalculator
       QgsPolyline line3111;
       line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
-      feat.setGeometry( QgsGeometry::fromPolyline( line3111 ) );
+      QgsGeometry line3111G =  QgsGeometry::fromPolyline( line3111 ) ;
+      feat.setGeometry( line3111G );
       context.setFeature( feat );
 
       QgsExpression expLength( "$length" );
@@ -1792,10 +1825,10 @@ class TestQgsExpression: public QObject
       expected = 26930.637;
       QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
       // units should not be converted if no geometry calculator set
-      expLength.setDistanceUnits( QGis::Feet );
+      expLength.setDistanceUnits( QgsUnitTypes::DistanceFeet );
       vLength = expLength.evaluate( &context );
       QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
-      expLength.setDistanceUnits( QGis::NauticalMiles );
+      expLength.setDistanceUnits( QgsUnitTypes::DistanceNauticalMiles );
       vLength = expLength.evaluate( &context );
       QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
 
@@ -1806,13 +1839,13 @@ class TestQgsExpression: public QObject
       expected = 26932.156;
       QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
       // test unit conversion
-      expLength2.setDistanceUnits( QGis::Meters ); //default units should be meters
+      expLength2.setDistanceUnits( QgsUnitTypes::DistanceMeters ); //default units should be meters
       vLength = expLength2.evaluate( &context );
       QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
-      expLength2.setDistanceUnits( QGis::UnknownUnit ); //unknown units should not be converted
+      expLength2.setDistanceUnits( QgsUnitTypes::DistanceUnknownUnit ); //unknown units should not be converted
       vLength = expLength2.evaluate( &context );
       QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
-      expLength2.setDistanceUnits( QGis::Feet );
+      expLength2.setDistanceUnits( QgsUnitTypes::DistanceFeet );
       expected = 88360.0918635;
       vLength = expLength2.evaluate( &context );
       QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
@@ -1828,9 +1861,12 @@ class TestQgsExpression: public QObject
       polygon << polygon_ring;
 
       QgsFeature fPoint, fPolygon, fPolyline;
-      fPoint.setGeometry( QgsGeometry::fromPoint( QgsPoint( -1.23456789, 9.87654321 ) ) );
-      fPolyline.setGeometry( QgsGeometry::fromPolyline( polyline ) );
-      fPolygon.setGeometry( QgsGeometry::fromPolygon( polygon ) );
+      QgsGeometry fPointG = QgsGeometry::fromPoint( QgsPoint( -1.23456789, 9.87654321 ) );
+      fPoint.setGeometry( fPointG );
+      QgsGeometry fPolylineG = QgsGeometry::fromPolyline( polyline );
+      fPolyline.setGeometry( fPolylineG );
+      QgsGeometry fPolygonG = QgsGeometry::fromPolygon( polygon );
+      fPolygon.setGeometry( fPolygonG );
 
       QgsExpressionContext context;
 
@@ -1873,7 +1909,7 @@ class TestQgsExpression: public QObject
     void eval_geometry_constructor_data()
     {
       QTest::addColumn<QString>( "string" );
-      QTest::addColumn<void*>( "geomptr" );
+      QTest::addColumn<QgsGeometry>( "geom" );
       QTest::addColumn<bool>( "evalError" );
 
       QgsPoint point( 123, 456 );
@@ -1886,37 +1922,35 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
 
-      QScopedPointer<QgsGeometry> sourcePoint( QgsGeometry::fromPoint( point ) );
-      QTest::newRow( "geomFromWKT Point" ) << "geom_from_wkt('" + sourcePoint->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPoint( point ) << false;
-      QScopedPointer<QgsGeometry> sourceLine( QgsGeometry::fromPolyline( line ) );
-      QTest::newRow( "geomFromWKT Line" ) << "geomFromWKT('" + sourceLine->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolyline( line ) << false;
-      QScopedPointer<QgsGeometry> sourcePolyline( QgsGeometry::fromPolyline( polyline ) );
-      QTest::newRow( "geomFromWKT Polyline" ) << "geomFromWKT('" + sourcePolyline->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false;
-      QScopedPointer<QgsGeometry> sourcePolygon( QgsGeometry::fromPolygon( polygon ) );
-      QTest::newRow( "geomFromWKT Polygon" ) << "geomFromWKT('" + sourcePolygon->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
+      QgsGeometry sourcePoint( QgsGeometry::fromPoint( point ) );
+      QTest::newRow( "geomFromWKT Point" ) << "geom_from_wkt('" + sourcePoint.exportToWkt() + "')" << QgsGeometry::fromPoint( point ) << false;
+      QgsGeometry sourceLine( QgsGeometry::fromPolyline( line ) );
+      QTest::newRow( "geomFromWKT Line" ) << "geomFromWKT('" + sourceLine.exportToWkt() + "')" << QgsGeometry::fromPolyline( line ) << false;
+      QgsGeometry sourcePolyline( QgsGeometry::fromPolyline( polyline ) );
+      QTest::newRow( "geomFromWKT Polyline" ) << "geomFromWKT('" + sourcePolyline.exportToWkt() + "')" << QgsGeometry::fromPolyline( polyline ) << false;
+      QgsGeometry sourcePolygon( QgsGeometry::fromPolygon( polygon ) );
+      QTest::newRow( "geomFromWKT Polygon" ) << "geomFromWKT('" + sourcePolygon.exportToWkt() + "')" << QgsGeometry::fromPolygon( polygon ) << false;
 
       // GML Point
-      QTest::newRow( "GML Point (coordinates)" ) << "geomFromGML('<gml:Point><gml:coordinates>123,456</gml:coordinates></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;
+      QTest::newRow( "GML Point (coordinates)" ) << "geomFromGML('<gml:Point><gml:coordinates>123,456</gml:coordinates></gml:Point>')" << QgsGeometry::fromPoint( point ) << false;
       // gml:pos if from GML3
-      QTest::newRow( "GML Point (pos)" ) << "geomFromGML('<gml:Point srsName=\"foo\"><gml:pos srsDimension=\"2\">123 456</gml:pos></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;
+      QTest::newRow( "GML Point (pos)" ) << "geomFromGML('<gml:Point srsName=\"foo\"><gml:pos srsDimension=\"2\">123 456</gml:pos></gml:Point>')" << QgsGeometry::fromPoint( point ) << false;
 
       // GML Box
       QgsRectangle rect( 135.2239, 34.4879, 135.8578, 34.8471 );
-      QTest::newRow( "GML Box" ) << "geomFromGML('<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
+      QTest::newRow( "GML Box" ) << "geomFromGML('<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>')" << QgsGeometry::fromRect( rect ) << false;
       // Envelope is from GML3 ?
       QTest::newRow( "GML Envelope" ) << "geomFromGML('<gml:Envelope>"
       "<gml:lowerCorner>135.2239 34.4879</gml:lowerCorner>"
       "<gml:upperCorner>135.8578 34.8471</gml:upperCorner>"
-      "</gml:Envelope>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
+      "</gml:Envelope>')" << QgsGeometry::fromRect( rect ) << false;
     }
 
     void eval_geometry_constructor()
     {
       QFETCH( QString, string );
-      QFETCH( void*, geomptr );
+      QFETCH( QgsGeometry, geom );
       QFETCH( bool, evalError );
-
-      QgsGeometry* geom = ( QgsGeometry* ) geomptr;
 
       QgsFeature f;
       f.setGeometry( geom );
@@ -1932,7 +1966,7 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
-      QCOMPARE( geom->equals( &outGeom ), true );
+      QCOMPARE( geom.equals( outGeom ), true );
       Q_NOWARN_DEPRECATED_POP
 
       //replacement method
@@ -1942,13 +1976,13 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       outGeom = out.value<QgsGeometry>();
-      QCOMPARE( geom->equals( &outGeom ), true );
+      QCOMPARE( geom.equals( outGeom ), true );
     }
 
     void eval_geometry_access_transform_data()
     {
       QTest::addColumn<QString>( "string" );
-      QTest::addColumn<void*>( "geomptr" );
+      QTest::addColumn<QgsGeometry>( "geom" );
       QTest::addColumn<bool>( "evalError" );
       QTest::addColumn<bool>( "needsGeom" );
 
@@ -1962,10 +1996,10 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
 
-      QTest::newRow( "geometry Point" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPoint( point ) << false << true;
-      QTest::newRow( "geometry Line" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << true;
-      QTest::newRow( "geometry Polyline" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false << true;
-      QTest::newRow( "geometry Polygon" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false << true;
+      QTest::newRow( "geometry Point" ) << "geometry( $currentfeature )" << QgsGeometry::fromPoint( point ) << false << true;
+      QTest::newRow( "geometry Line" ) << "geometry( $currentfeature )" << QgsGeometry::fromPolyline( line ) << false << true;
+      QTest::newRow( "geometry Polyline" ) << "geometry( $currentfeature )" << QgsGeometry::fromPolyline( polyline ) << false << true;
+      QTest::newRow( "geometry Polygon" ) << "geometry( $currentfeature )" << QgsGeometry::fromPolygon( polygon ) << false << true;
 
       QgsCoordinateReferenceSystem s;
       s.createFromOgcWmsCrs( "EPSG:4326" );
@@ -1973,27 +2007,23 @@ class TestQgsExpression: public QObject
       d.createFromOgcWmsCrs( "EPSG:3857" );
       QgsCoordinateTransform t( s, d );
 
-      QgsGeometry* tLine = QgsGeometry::fromPolyline( line );
-      tLine->transform( t );
-      QgsGeometry* tPolygon = QgsGeometry::fromPolygon( polygon );
-      tPolygon->transform( t );
+      QgsGeometry tLine = QgsGeometry::fromPolyline( line );
+      tLine.transform( t );
+      QgsGeometry tPolygon = QgsGeometry::fromPolygon( polygon );
+      tPolygon.transform( t );
 
-      QgsGeometry* oLine = QgsGeometry::fromPolyline( line );
-      QgsGeometry* oPolygon = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + oLine->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tLine << false << false;
-      QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + oPolygon->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tPolygon << false << false;
-      delete oLine;
-      delete oPolygon;
+      QgsGeometry oLine = QgsGeometry::fromPolyline( line );
+      QgsGeometry oPolygon = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + oLine.exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << tLine << false << false;
+      QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + oPolygon.exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << tPolygon << false << false;
     }
 
     void eval_geometry_access_transform()
     {
       QFETCH( QString, string );
-      QFETCH( void*, geomptr );
+      QFETCH( QgsGeometry, geom );
       QFETCH( bool, evalError );
       QFETCH( bool, needsGeom );
-
-      QgsGeometry* geom = ( QgsGeometry* ) geomptr;
 
       QgsFeature f;
       f.setGeometry( geom );
@@ -2009,7 +2039,7 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
-      QCOMPARE( geom->equals( &outGeom ), true );
+      QCOMPARE( geom.equals( outGeom ), true );
       Q_NOWARN_DEPRECATED_POP
 
       //replacement method
@@ -2018,13 +2048,13 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.hasEvalError(), evalError );
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       outGeom = out.value<QgsGeometry>();
-      QCOMPARE( geom->equals( &outGeom ), true );
+      QCOMPARE( geom.equals( outGeom ), true );
     }
 
     void eval_spatial_operator_data()
     {
       QTest::addColumn<QString>( "string" );
-      QTest::addColumn<void*>( "geomptr" );
+      QTest::addColumn<QgsGeometry>( "geom" );
       QTest::addColumn<bool>( "evalError" );
       QTest::addColumn<QVariant>( "result" );
 
@@ -2035,36 +2065,34 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
 
-      QTest::newRow( "No Intersects" ) << "intersects( $geometry, geomFromWKT('LINESTRING ( 2 0, 0 2 )') )" << ( void* ) QgsGeometry::fromPoint( point ) << false << QVariant( 0 );
-      QTest::newRow( "Intersects" ) << "intersects( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 2 )') )" << ( void* ) QgsGeometry::fromPoint( point ) << false << QVariant( 1 );
-      QTest::newRow( "No Disjoint" ) << "disjoint( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 2 )') )" << ( void* ) QgsGeometry::fromPoint( point ) << false << QVariant( 0 );
-      QTest::newRow( "Disjoint" ) << "disjoint( $geometry, geomFromWKT('LINESTRING ( 2 0, 0 2 )') )" << ( void* ) QgsGeometry::fromPoint( point ) << false << QVariant( 1 );
+      QTest::newRow( "No Intersects" ) << "intersects( $geometry, geomFromWKT('LINESTRING ( 2 0, 0 2 )') )" << QgsGeometry::fromPoint( point ) << false << QVariant( 0 );
+      QTest::newRow( "Intersects" ) << "intersects( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 2 )') )" << QgsGeometry::fromPoint( point ) << false << QVariant( 1 );
+      QTest::newRow( "No Disjoint" ) << "disjoint( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 2 )') )" << QgsGeometry::fromPoint( point ) << false << QVariant( 0 );
+      QTest::newRow( "Disjoint" ) << "disjoint( $geometry, geomFromWKT('LINESTRING ( 2 0, 0 2 )') )" << QgsGeometry::fromPoint( point ) << false << QVariant( 1 );
 
       // OGR test
-      QTest::newRow( "OGR Intersects" ) << "intersects( $geometry, geomFromWKT('LINESTRING ( 10 0, 0 10 )') )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << QVariant( 1 );
-      QTest::newRow( "OGR no Intersects" ) << "intersects( $geometry, geomFromWKT('POLYGON((20 20, 20 30, 30 20, 20 20))') )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << QVariant( 0 );
-      QTest::newRow( "OGR no Disjoint" ) << "disjoint( $geometry, geomFromWKT('LINESTRING ( 10 0, 0 10 )') )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << QVariant( 0 );
-      QTest::newRow( "OGR Disjoint" ) << "disjoint( $geometry, geomFromWKT('POLYGON((20 20, 20 30, 30 20, 20 20))') )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << QVariant( 1 );
-      QTest::newRow( "OGR Touches" ) << "touches( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 10 )') )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << QVariant( 1 );
-      QTest::newRow( "OGR no Touches" ) << "touches( $geometry, geomFromWKT('POLYGON((20 20, 20 30, 30 20, 20 20))') )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << QVariant( 0 );
-      QTest::newRow( "OGR Crosses" ) << "crosses( $geometry, geomFromWKT('LINESTRING ( 10 0, 0 10 )') )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << QVariant( 1 );
-      QTest::newRow( "OGR no Crosses" ) << "crosses( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 10 )') )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << QVariant( 0 );
-      QTest::newRow( "OGR Within" ) << "within( $geometry, geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))') )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false << QVariant( 1 );
-      QTest::newRow( "OGR no Within" ) << "within( geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))'), $geometry )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false << QVariant( 0 );
-      QTest::newRow( "OGR Contians" ) << "contains( geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))'), $geometry )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false << QVariant( 1 );
-      QTest::newRow( "OGR no Contains" ) << "contains( $geometry, geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))') )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false << QVariant( 0 );
-      QTest::newRow( "OGR no Overlaps" ) << "overlaps( geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))'), $geometry )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false << QVariant( 0 );
-      QTest::newRow( "OGR overlaps" ) << "overlaps( geomFromWKT('POLYGON((0 -5,10 5,10 -5,0 -5))'), $geometry )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false << QVariant( 1 );
+      QTest::newRow( "OGR Intersects" ) << "intersects( $geometry, geomFromWKT('LINESTRING ( 10 0, 0 10 )') )" << QgsGeometry::fromPolyline( line ) << false << QVariant( 1 );
+      QTest::newRow( "OGR no Intersects" ) << "intersects( $geometry, geomFromWKT('POLYGON((20 20, 20 30, 30 20, 20 20))') )" << QgsGeometry::fromPolyline( line ) << false << QVariant( 0 );
+      QTest::newRow( "OGR no Disjoint" ) << "disjoint( $geometry, geomFromWKT('LINESTRING ( 10 0, 0 10 )') )" << QgsGeometry::fromPolyline( line ) << false << QVariant( 0 );
+      QTest::newRow( "OGR Disjoint" ) << "disjoint( $geometry, geomFromWKT('POLYGON((20 20, 20 30, 30 20, 20 20))') )" << QgsGeometry::fromPolyline( line ) << false << QVariant( 1 );
+      QTest::newRow( "OGR Touches" ) << "touches( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 10 )') )" << QgsGeometry::fromPolyline( line ) << false << QVariant( 1 );
+      QTest::newRow( "OGR no Touches" ) << "touches( $geometry, geomFromWKT('POLYGON((20 20, 20 30, 30 20, 20 20))') )" << QgsGeometry::fromPolyline( line ) << false << QVariant( 0 );
+      QTest::newRow( "OGR Crosses" ) << "crosses( $geometry, geomFromWKT('LINESTRING ( 10 0, 0 10 )') )" << QgsGeometry::fromPolyline( line ) << false << QVariant( 1 );
+      QTest::newRow( "OGR no Crosses" ) << "crosses( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 10 )') )" << QgsGeometry::fromPolyline( line ) << false << QVariant( 0 );
+      QTest::newRow( "OGR Within" ) << "within( $geometry, geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))') )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 1 );
+      QTest::newRow( "OGR no Within" ) << "within( geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))'), $geometry )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 0 );
+      QTest::newRow( "OGR Contians" ) << "contains( geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))'), $geometry )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 1 );
+      QTest::newRow( "OGR no Contains" ) << "contains( $geometry, geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))') )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 0 );
+      QTest::newRow( "OGR no Overlaps" ) << "overlaps( geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))'), $geometry )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 0 );
+      QTest::newRow( "OGR overlaps" ) << "overlaps( geomFromWKT('POLYGON((0 -5,10 5,10 -5,0 -5))'), $geometry )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 1 );
     }
 
     void eval_spatial_operator()
     {
       QFETCH( QString, string );
-      QFETCH( void*, geomptr );
+      QFETCH( QgsGeometry, geom );
       QFETCH( bool, evalError );
       QFETCH( QVariant, result );
-
-      QgsGeometry* geom = ( QgsGeometry* ) geomptr;
 
       QgsFeature f;
       f.setGeometry( geom );
@@ -2089,10 +2117,10 @@ class TestQgsExpression: public QObject
     void eval_geometry_method_data()
     {
       QTest::addColumn<QString>( "string" );
-      QTest::addColumn<void*>( "geomptr" );
+      QTest::addColumn<QgsGeometry>( "geom" );
       QTest::addColumn<bool>( "evalError" );
       QTest::addColumn<bool>( "needGeom" );
-      QTest::addColumn<void*>( "resultptr" );
+      QTest::addColumn<QgsGeometry>( "result" );
 
       QgsPoint point( 0, 0 );
       QgsPolyline line, polygon_ring;
@@ -2101,52 +2129,48 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
 
-      QgsGeometry *geom;
+      QgsGeometry geom;
 
       geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "buffer" ) << "buffer( $geometry, 1.0, 3)" << ( void* ) geom << false << true << ( void* ) geom->buffer( 1.0, 3 );
+      QTest::newRow( "buffer" ) << "buffer( $geometry, 1.0, 3)" << geom << false << true << geom.buffer( 1.0, 3 );
       geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "buffer" ) << "buffer( $geometry, 2.0)" << ( void* ) geom << false << true << ( void* ) geom->buffer( 2.0, 8 );
+      QTest::newRow( "buffer" ) << "buffer( $geometry, 2.0)" << geom << false << true << geom.buffer( 2.0, 8 );
 
       QgsPoint point1( 10, 20 );
       QgsPoint point2( 30, 20 );
-      QgsGeometry *pnt1 = QgsGeometry::fromPoint( point1 );
-      QgsGeometry *pnt2 = QgsGeometry::fromPoint( point2 );
-      QTest::newRow( "union" ) << "union( $geometry, geomFromWKT('" + pnt2->exportToWkt() + "') )" << ( void* ) pnt1 << false << true << ( void* ) pnt1->combine( pnt2 );
-      delete pnt2;
+      QgsGeometry pnt1 = QgsGeometry::fromPoint( point1 );
+      QgsGeometry pnt2 = QgsGeometry::fromPoint( point2 );
+      QTest::newRow( "union" ) << "union( $geometry, geomFromWKT('" + pnt2.exportToWkt() + "') )" << pnt1 << false << true << pnt1.combine( pnt2 );
 
       geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "intersection" ) << "intersection( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "POLYGON ((0 0,5 5,10 0,0 0))" );
+      QTest::newRow( "intersection" ) << "intersection( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << geom << false << true << QgsGeometry::fromWkt( "POLYGON ((0 0,5 5,10 0,0 0))" );
       geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "difference" ) << "difference( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "POLYGON ((5 5,10 10,10 0,5 5))" );
+      QTest::newRow( "difference" ) << "difference( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << geom << false << true << QgsGeometry::fromWkt( "POLYGON ((5 5,10 10,10 0,5 5))" );
       geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "symDifference" ) << "symDifference( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5)))" );
+      QTest::newRow( "symDifference" ) << "symDifference( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << geom << false << true << QgsGeometry::fromWkt( "MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5)))" );
 
       geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "convexHull simple" ) << "convexHull( $geometry )" << ( void* ) geom << false << true << ( void* ) geom->convexHull();
+      QTest::newRow( "convexHull simple" ) << "convexHull( $geometry )" << geom << false << true << geom.convexHull();
       geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "convexHull multi" ) << "convexHull( geomFromWKT('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))') )" << ( void* ) geom << false << false << ( void* ) QgsGeometry::fromWkt( "POLYGON ((0 0,0 1,1 1,1 0,0 0))" );
+      QTest::newRow( "convexHull multi" ) << "convexHull( geomFromWKT('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))') )" << geom << false << false << QgsGeometry::fromWkt( "POLYGON ((0 0,0 1,1 1,1 0,0 0))" );
       geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "bounds" ) << "bounds( $geometry )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromRect( geom->boundingBox() );
+      QTest::newRow( "bounds" ) << "bounds( $geometry )" << geom << false << true << QgsGeometry::fromRect( geom.boundingBox() );
 
       geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "translate" ) << "translate( $geometry, 1, 2)" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "POLYGON ((1 2,11 12,11 2,1 2))" );
+      QTest::newRow( "translate" ) << "translate( $geometry, 1, 2)" << geom << false << true << QgsGeometry::fromWkt( "POLYGON ((1 2,11 12,11 2,1 2))" );
       geom = QgsGeometry::fromPolyline( line );
-      QTest::newRow( "translate" ) << "translate( $geometry, -1, 2)" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "LINESTRING (-1 2, 9 12)" );
+      QTest::newRow( "translate" ) << "translate( $geometry, -1, 2)" << geom << false << true << QgsGeometry::fromWkt( "LINESTRING (-1 2, 9 12)" );
       geom = QgsGeometry::fromPoint( point );
-      QTest::newRow( "translate" ) << "translate( $geometry, 1, -2)" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "POINT(1 -2)" );
+      QTest::newRow( "translate" ) << "translate( $geometry, 1, -2)" << geom << false << true << QgsGeometry::fromWkt( "POINT(1 -2)" );
     }
 
     void eval_geometry_method()
     {
       QFETCH( QString, string );
-      QFETCH( void *, geomptr );
+      QFETCH( QgsGeometry, geom );
       QFETCH( bool, evalError );
       QFETCH( bool, needGeom );
-      QFETCH( void *, resultptr );
-
-      QgsGeometry *geom = ( QgsGeometry * ) geomptr;
-      QgsGeometry *result = ( QgsGeometry * ) resultptr;
+      QFETCH( QgsGeometry, result );
 
       QgsFeature f;
       f.setGeometry( geom );
@@ -2162,7 +2186,7 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
-      QVERIFY( compareWkt( outGeom.exportToWkt(), result->exportToWkt() ) );
+      QVERIFY( compareWkt( outGeom.exportToWkt(), result.exportToWkt() ) );
       Q_NOWARN_DEPRECATED_POP
 
       //replacement method
@@ -2172,9 +2196,7 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       outGeom = out.value<QgsGeometry>();
-      QVERIFY( compareWkt( outGeom.exportToWkt(), result->exportToWkt() ) );
-
-      delete result;
+      QVERIFY( compareWkt( outGeom.exportToWkt(), result.exportToWkt() ) );
     }
 
     void eval_special_columns()

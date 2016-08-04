@@ -18,7 +18,6 @@
 #ifndef QGSDIAGRAMPROPERTIES_H
 #define QGSDIAGRAMPROPERTIES_H
 
-#include "qgssymbolv2.h"
 #include <QDialog>
 #include <ui_qgsdiagrampropertiesbase.h>
 

@@ -19,8 +19,12 @@
 #include <QDialog>
 #include <QGroupBox>
 
-#include "qgsscalerangewidget.h"
+class QgsMapCanvas;
+class QgsScaleRangeWidget;
 
+/** \ingroup gui
+ * \class QgsScaleVisibilityDialog
+ */
 class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
 {
     Q_OBJECT

@@ -26,6 +26,7 @@
 #include "qgscomposeritem.h"
 #include "qgsatlascomposition.h"
 #include "qgsapplication.h"
+#include "qgsmapsettings.h"
 #include <QSettings>
 #include <QDir>
 
@@ -311,6 +312,19 @@ int QgsExpressionContext::indexOfScope( QgsExpressionContextScope* scope ) const
   return mStack.indexOf( scope );
 }
 
+int QgsExpressionContext::indexOfScope( const QString& scopeName ) const
+{
+  int index = 0;
+  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+  {
+    if ( scope->name() == scopeName )
+      return index;
+
+    index++;
+  }
+  return -1;
+}
+
 QStringList QgsExpressionContext::variableNames() const
 {
   QStringList names;
@@ -496,9 +510,9 @@ QgsExpressionContextScope* QgsExpressionContextUtils::globalScope()
   }
 
   //add some extra global variables
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "qgis_version", QGis::QGIS_VERSION, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "qgis_version_no", QGis::QGIS_VERSION_INT, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "qgis_release_name", QGis::QGIS_RELEASE_NAME, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "qgis_version", Qgis::QGIS_VERSION, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "qgis_version_no", Qgis::QGIS_VERSION_INT, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "qgis_release_name", Qgis::QGIS_RELEASE_NAME, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "qgis_platform", QgsApplication::platform(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "qgis_os_name", QgsApplication::osName(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "user_account_name", QgsApplication::userLoginName(), true ) );
@@ -748,9 +762,8 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_scale", mapSettings.scale(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_width", mapSettings.extent().width(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_height", mapSettings.extent().height(), true ) );
-  QgsGeometry* centerPoint = QgsGeometry::fromPoint( mapSettings.visibleExtent().center() );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( *centerPoint ), true ) );
-  delete centerPoint;
+  QgsGeometry centerPoint = QgsGeometry::fromPoint( mapSettings.visibleExtent().center() );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( centerPoint ), true ) );
 
   return scope;
 }
@@ -871,7 +884,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::atlasScope( const QgsAtlas
     scope->setFeature( atlasFeature );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_feature", QVariant::fromValue( atlasFeature ), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featureid", atlasFeature.id(), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( *atlasFeature.constGeometry() ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( atlasFeature.geometry() ), true ) );
   }
 
   return scope;

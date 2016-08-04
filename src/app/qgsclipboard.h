@@ -24,7 +24,6 @@
 
 #include "qgsfield.h"
 #include "qgsfeature.h"
-#include "qgsfeaturestore.h"
 #include "qgscoordinatereferencesystem.h"
 
 /**
@@ -43,6 +42,7 @@
 */
 
 class QgsVectorLayer;
+class QgsFeatureStore;
 
 /*
  * Constants used to describe copy-paste MIME types

@@ -61,4 +61,6 @@ tests/testdata/raster/band1_float32_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band1_int16_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band3_float32_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band3_int16_noct_epsg4326.tif.aux.xml
+python/plugins/processing/tests/testdata/custom/grass7/float_raster.tif.aux.xml
+python/plugins/processing/tests/testdata/custom/grass7/raster_1class.tif.aux.xml
 Thumb.db

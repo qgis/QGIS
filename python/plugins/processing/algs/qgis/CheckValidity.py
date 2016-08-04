@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QSettings, QVariant
 
-from qgis.core import QGis, QgsGeometry, QgsFeature, QgsField
+from qgis.core import Qgis, QgsGeometry, QgsFeature, QgsField, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -106,7 +106,7 @@ class CheckValidity(GeoAlgorithm):
         valid_fields = layer.pendingFields().toList()
         valid_writer = valid_ouput.getVectorWriter(
             valid_fields,
-            provider.geometryType(),
+            provider.wkbType(),
             layer.crs())
         valid_count = 0
 
@@ -117,7 +117,7 @@ class CheckValidity(GeoAlgorithm):
                      len=255)]
         invalid_writer = invalid_ouput.getVectorWriter(
             invalid_fields,
-            provider.geometryType(),
+            provider.wkbType(),
             layer.crs())
         invalid_count = 0
 
@@ -128,18 +128,18 @@ class CheckValidity(GeoAlgorithm):
                      len=255)]
         error_writer = error_ouput.getVectorWriter(
             error_fields,
-            QGis.WKBPoint,
+            QgsWkbTypes.Point,
             layer.crs())
         error_count = 0
 
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
-            geom = QgsGeometry(inFeat.geometry())
+            geom = inFeat.geometry()
             attrs = inFeat.attributes()
 
             valid = True
-            if not geom.isGeosEmpty():
+            if not geom.isEmpty() and not geom.isGeosEmpty():
                 errors = list(geom.validateGeometry())
                 if errors:
                     # QGIS method return a summary at the end

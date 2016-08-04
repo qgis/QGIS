@@ -18,10 +18,13 @@
 #include "qgsoverlayanalyzer.h"
 
 #include "qgsapplication.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfield.h"
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsspatialindex.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectordataprovider.h"
 #include "qgsdistancearea.h"
@@ -43,13 +46,13 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
     return false;
   }
 
-  QGis::WkbType outputType = dpA->geometryType();
+  QgsWkbTypes::Type outputType = dpA->wkbType();
   QgsCoordinateReferenceSystem crs = layerA->crs();
   QgsFields fieldsA = layerA->fields();
   QgsFields fieldsB = layerB->fields();
   combineFieldLists( fieldsA, fieldsB );
 
-  QgsVectorFileWriter vWriter( shapefileName, dpA->encoding(), fieldsA, outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dpA->encoding(), fieldsA, outputType, crs );
   QgsFeature currentFeature;
   QgsSpatialIndex index;
 
@@ -142,17 +145,17 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
 void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* vfw,
     QgsVectorLayer* vl, QgsSpatialIndex* index )
 {
-  if ( !f.constGeometry() )
+  if ( !f.hasGeometry() )
   {
     return;
   }
 
-  const QgsGeometry* featureGeometry = f.constGeometry();
-  QgsGeometry* intersectGeometry = nullptr;
+  QgsGeometry featureGeometry = f.geometry();
+  QgsGeometry intersectGeometry;
   QgsFeature overlayFeature;
 
   QList<QgsFeatureId> intersects;
-  intersects = index->intersects( featureGeometry->boundingBox() );
+  intersects = index->intersects( featureGeometry.boundingBox() );
   QList<QgsFeatureId>::const_iterator it = intersects.constBegin();
   QgsFeature outFeature;
   for ( ; it != intersects.constEnd(); ++it )
@@ -162,9 +165,9 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
       continue;
     }
 
-    if ( featureGeometry->intersects( overlayFeature.constGeometry() ) )
+    if ( featureGeometry.intersects( overlayFeature.geometry() ) )
     {
-      intersectGeometry = featureGeometry->intersection( overlayFeature.constGeometry() );
+      intersectGeometry = featureGeometry.intersection( overlayFeature.geometry() );
 
       outFeature.setGeometry( intersectGeometry );
       QgsAttributes attributesA = f.attributes();

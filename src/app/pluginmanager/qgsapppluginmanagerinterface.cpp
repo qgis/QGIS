@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsapppluginmanagerinterface.h"
+#include "qgspluginmanager.h"
 #include <qgslogger.h>
 
 

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -52,19 +53,22 @@ class SagaDescriptionCreator:
         self.map = {}
         for libFile in os.listdir('c:\\saga\\desc'):
             if libFile.endswith('sagalib'):
-                print libFile
+                # fix_print_with_import
+                print(libFile)
                 algs = []
                 f = open(os.path.join('c:\\saga\\desc', libFile))
                 for line in f:
                     line = line.strip('\n').strip(' ')
                     digit = line.split('\t')[0]
-                    print digit
+                    # fix_print_with_import
+                    print(digit)
                     if digit.isdigit():
                         algs.append(digit)
                 self.map[libFile[:-8]] = algs
                 f.close()
 
-        print unicode(self.map)
+        # fix_print_with_import
+        print(unicode(self.map))
 
     def createDescriptionFiles(self):
         for lib in self.map.keys():
@@ -72,7 +76,8 @@ class SagaDescriptionCreator:
             for alg in algs:
                 command = ['c:\\saga\\saga_cmd.exe', lib, alg]
                 f = open('c:\\saga\\desc\\' + lib + '_' + alg + '.txt', 'w')
-                print unicode(command)
+                # fix_print_with_import
+                print(unicode(command))
                 subprocess.Popen(
                     command,
                     shell=True,

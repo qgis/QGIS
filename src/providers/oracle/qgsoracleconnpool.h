@@ -25,7 +25,7 @@ inline QString qgsConnectionPool_ConnectionToName( QgsOracleConn* c )
   return c->connInfo();
 }
 
-inline void qgsConnectionPool_ConnectionCreate( QgsDataSourceURI uri, QgsOracleConn*& c )
+inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceUri& uri, QgsOracleConn*& c )
 {
   c = QgsOracleConn::connectDb( uri );
 }
@@ -70,6 +70,8 @@ class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn*, QgsOracleConn
   public:
     static QgsOracleConnPool* instance();
 
+    static void cleanupInstance();
+
   protected:
     Q_DISABLE_COPY( QgsOracleConnPool )
 
@@ -77,7 +79,7 @@ class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn*, QgsOracleConn
     QgsOracleConnPool();
     ~QgsOracleConnPool();
 
-    static QgsOracleConnPool sInstance;
+    static QgsOracleConnPool* sInstance;
 };
 
 

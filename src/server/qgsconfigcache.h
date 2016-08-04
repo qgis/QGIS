@@ -27,8 +27,8 @@
 
 class QgsServerProjectParser;
 class QgsWCSProjectParser;
-class QgsWFSProjectParser;
-class QgsWMSConfigParser;
+class QgsWfsProjectParser;
+class QgsWmsConfigParser;
 class QgsAccessControl;
 
 class QDomDocument;
@@ -47,19 +47,21 @@ class SERVER_EXPORT QgsConfigCache : public QObject
       , const QgsAccessControl* accessControl
 #endif
     );
-    QgsWFSProjectParser* wfsConfiguration(
+    QgsWfsProjectParser* wfsConfiguration(
       const QString& filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
 #endif
     );
-    QgsWMSConfigParser* wmsConfiguration(
+    QgsWmsConfigParser* wmsConfiguration(
       const QString& filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
 #endif
       , const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() )
     );
+
+    void removeEntry( const QString& path );
 
   private:
     QgsConfigCache();
@@ -71,8 +73,8 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     QDomDocument* xmlDocument( const QString& filePath );
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
-    QCache<QString, QgsWMSConfigParser> mWMSConfigCache;
-    QCache<QString, QgsWFSProjectParser> mWFSConfigCache;
+    QCache<QString, QgsWmsConfigParser> mWMSConfigCache;
+    QCache<QString, QgsWfsProjectParser> mWFSConfigCache;
     QCache<QString, QgsWCSProjectParser> mWCSConfigCache;
 
   private slots:

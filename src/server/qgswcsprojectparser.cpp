@@ -18,6 +18,7 @@
 #include "qgswcsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
+#include "qgscsexception.h"
 #include "qgsrasterlayer.h"
 #include "qgsmapserviceexception.h"
 #include "qgsmessagelog.h"

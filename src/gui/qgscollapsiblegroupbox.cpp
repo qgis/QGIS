@@ -42,12 +42,10 @@ QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( const QString &title,
 
 QgsCollapsibleGroupBoxBasic::~QgsCollapsibleGroupBoxBasic()
 {
-  //QgsDebugMsg( "Entered" );
 }
 
 void QgsCollapsibleGroupBoxBasic::init()
 {
-  //QgsDebugMsg( "Entered" );
   // variables
   mCollapsed = false;
   mInitFlat = false;
@@ -83,7 +81,6 @@ void QgsCollapsibleGroupBoxBasic::init()
 
 void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
 {
-  QgsDebugMsg( "Entered" );
   // initialise widget on first show event only
   if ( mShown )
   {
@@ -402,6 +399,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 
 void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
 {
+  bool changed = collapse != mCollapsed;
   mCollapsed = collapse;
 
   if ( !isVisible() )
@@ -438,7 +436,8 @@ void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
     mParentScrollArea->setUpdatesEnabled( true );
   }
   // emit signal for connections using collapsed state
-  emit collapsedStateChanged( isCollapsed() );
+  if ( changed )
+    emit collapsedStateChanged( isCollapsed() );
 }
 
 void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
@@ -492,7 +491,6 @@ QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
 
 QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
 {
-  //QgsDebugMsg( "Entered" );
   saveState();
   if ( mDelSettings ) // local settings obj to delete
     delete mSettings;
@@ -510,7 +508,6 @@ void QgsCollapsibleGroupBox::setSettings( QSettings* settings )
 
 void QgsCollapsibleGroupBox::init()
 {
-  //QgsDebugMsg( "Entered" );
   // use pointer to app qsettings if no custom qsettings specified
   // custom qsettings object may be from Python plugin
   mDelSettings = false;
@@ -529,7 +526,6 @@ void QgsCollapsibleGroupBox::init()
 
 void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
 {
-  //QgsDebugMsg( "Entered" );
   // initialise widget on first show event only
   if ( mShown )
   {
@@ -570,7 +566,6 @@ QString QgsCollapsibleGroupBox::saveKey() const
 
 void QgsCollapsibleGroupBox::loadState()
 {
-  //QgsDebugMsg( "Entered" );
   if ( !mSettings )
     return;
 
@@ -599,7 +594,6 @@ void QgsCollapsibleGroupBox::loadState()
 
 void QgsCollapsibleGroupBox::saveState() const
 {
-  //QgsDebugMsg( "Entered" );
   if ( !mSettings )
     return;
 

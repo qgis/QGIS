@@ -30,10 +30,9 @@
 #ifndef PAL_PROBLEM_H
 #define PAL_PROBLEM_H
 
-#include "pal.h"
-#include "rtree.hpp"
 #include <list>
 #include <QList>
+#include "rtree.hpp"
 
 namespace pal
 {
@@ -43,6 +42,7 @@ namespace pal
 
   /**
    * \class pal::Sol
+   * \ingroup core
    * \note not available in Python bindings
    */
   class Sol
@@ -92,6 +92,7 @@ namespace pal
   } Chain;
 
   /**
+   * \ingroup core
    * \brief Representation of a labeling problem
    * \class pal::Problem
    * \note not available in Python bindings

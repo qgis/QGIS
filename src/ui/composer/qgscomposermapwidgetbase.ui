@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>465</width>
-    <height>2617</height>
+    <width>472</width>
+    <height>2688</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -55,8 +55,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>447</width>
-        <height>2584</height>
+        <width>466</width>
+        <height>2627</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -165,12 +165,21 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
+         <property name="title">
+          <string>Layers</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_12">
             <item>
              <widget class="QCheckBox" name="mFollowVisibilityPresetCheckBox">
               <property name="text">
-               <string>Follow visibility preset</string>
+               <string>Follow map theme</string>
               </property>
              </widget>
             </item>
@@ -186,7 +195,7 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="0" colspan="2">
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
              <widget class="QCheckBox" name="mKeepLayerListCheckBox">
@@ -197,7 +206,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Lock layers for map item</string>
+               <string>Lock layers</string>
               </property>
              </widget>
             </item>
@@ -233,10 +242,10 @@
             </item>
            </layout>
           </item>
-          <item row="6" column="0" colspan="2">
+          <item>
            <widget class="QCheckBox" name="mKeepLayerStylesCheckBox">
             <property name="text">
-             <string>Lock layer styles for map item</string>
+             <string>Lock styles for layers</string>
             </property>
            </widget>
           </item>
@@ -832,7 +841,7 @@
                  </widget>
                 </item>
                 <item row="2" column="2">
-                 <widget class="QgsColorButtonV2" name="mGridFramePenColorButton">
+                 <widget class="QgsColorButton" name="mGridFramePenColorButton">
                   <property name="minimumSize">
                    <size>
                     <width>100</width>
@@ -858,7 +867,7 @@
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QgsColorButtonV2" name="mGridFrameFill1ColorButton">
+                 <widget class="QgsColorButton" name="mGridFrameFill1ColorButton">
                   <property name="minimumSize">
                    <size>
                     <width>100</width>
@@ -877,7 +886,7 @@
                  </widget>
                 </item>
                 <item row="3" column="2">
-                 <widget class="QgsColorButtonV2" name="mGridFrameFill2ColorButton">
+                 <widget class="QgsColorButton" name="mGridFrameFill2ColorButton">
                   <property name="minimumSize">
                    <size>
                     <width>100</width>
@@ -1123,7 +1132,7 @@
                  </widget>
                 </item>
                 <item row="14" column="1">
-                 <widget class="QgsColorButtonV2" name="mAnnotationFontColorButton">
+                 <widget class="QgsColorButton" name="mAnnotationFontColorButton">
                   <property name="minimumSize">
                    <size>
                     <width>120</width>
@@ -1421,9 +1430,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1453,8 +1462,8 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>scrollArea</tabstop>
   <tabstop>groupBox</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mPreviewModeComboBox</tabstop>
   <tabstop>mUpdatePreviewButton</tabstop>
   <tabstop>mScaleLineEdit</tabstop>

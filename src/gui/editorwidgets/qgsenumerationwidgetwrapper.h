@@ -20,7 +20,8 @@
 
 #include <QComboBox>
 
-/** \class QgsEnumerationWidgetWrapper
+/** \ingroup gui
+ * \class QgsEnumerationWidgetWrapper
  * \note not available in Python bindings
  */
 

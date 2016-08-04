@@ -124,7 +124,7 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     QString dataSourceUri();
 
     /** Whether a string contains an authcfg ID */
-    static bool hasConfigID( const QString &txt );
+    static bool hasConfigId( const QString &txt );
 
   private slots:
     void saveChanges();

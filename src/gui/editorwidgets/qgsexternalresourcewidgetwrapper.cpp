@@ -95,8 +95,9 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
     {
       fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
     }
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
   }
+  else
+    mLineEdit = editor->findChild<QLineEdit*>();
 
   if ( mQgsWidget )
   {
@@ -111,7 +112,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
     }
     if ( config().contains( "DefaultRoot" ) )
     {
-      mQgsWidget->fileWidget()->setDefaultRoot( config( "DefaultRoot" ).toString() );
+      mQgsWidget->setDefaultRoot( config( "DefaultRoot" ).toString() );
     }
     if ( config().contains( "StorageMode" ) )
     {
@@ -119,7 +120,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
     }
     if ( config().contains( "RelativeStorage" ) )
     {
-      mQgsWidget->fileWidget()->setRelativeStorage(( QgsFileWidget::RelativeStorage )config( "RelativeStorage" ).toInt() );
+      mQgsWidget->setRelativeStorage(( QgsFileWidget::RelativeStorage )config( "RelativeStorage" ).toInt() );
     }
     if ( config().contains( "FileWidget" ) )
     {
@@ -138,6 +139,10 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
       mQgsWidget->fileWidget()->setFilter( config( "FileWidgetFilter" ).toString() );
     }
   }
+
+  if ( mLineEdit )
+    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+
 }
 
 void QgsExternalResourceWidgetWrapper::setValue( const QVariant& value )
@@ -181,4 +186,15 @@ void QgsExternalResourceWidgetWrapper::setEnabled( bool enabled )
 
   if ( mQgsWidget )
     mQgsWidget->setReadOnly( !enabled );
+}
+
+void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+{
+  if ( mLineEdit )
+  {
+    if ( constraintValid )
+      mLineEdit->setStyleSheet( QString() );
+    else
+      mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );
+  }
 }

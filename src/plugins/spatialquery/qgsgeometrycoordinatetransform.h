@@ -65,7 +65,7 @@ class QgsGeometryCoordinateTransform
     void setNoneGeomTransform( QgsGeometry *geom )
     { Q_UNUSED( geom ); }
 
-    QgsCoordinateTransform * mCoordTransform;
+    QgsCoordinateTransform mCoordTransform;
     void ( QgsGeometryCoordinateTransform::* mFuncTransform )( QgsGeometry * );
 
     QgsGeometryCoordinateTransform( const QgsGeometryCoordinateTransform& rh );

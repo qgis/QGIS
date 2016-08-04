@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * A base class for objects which belong to a map composition.
  */
 class QgsComposerObject : QObject
@@ -76,13 +76,13 @@ class QgsComposerObject : QObject
      * @param elem is DOM element corresponding to item tag
      * @param doc is the DOM document
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets item state from DOM element
      * @param itemElem is DOM node corresponding to item tag
      * @param doc is DOM document
      */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Returns a reference to the data defined settings for one of the item's data defined properties.
      * @param property data defined property to return

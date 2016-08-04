@@ -28,6 +28,8 @@
 #include <cstdlib>
 #include "qgsproject.h"
 #include "qgsprojectproperty.h"
+#include "qgsrasterbandstats.h"
+#include "qgsrasterdataprovider.h"
 
 typedef QgsProjectVersion PFV;
 
@@ -204,7 +206,6 @@ void QgsProjectFileTransform::transform081to090()
 
 void QgsProjectFileTransform::transform091to0100()
 {
-  QgsDebugMsg( "entering" );
   if ( ! mDom.isNull() )
   {
     // Insert transforms here!
@@ -396,7 +397,7 @@ void QgsProjectFileTransform::transform1100to1200()
     units << "0";
 
   QgsPropertyValue value( units );
-  value.writeXML( "LayerSnappingToleranceUnitList", digitizing, mDom );
+  value.writeXml( "LayerSnappingToleranceUnitList", digitizing, mDom );
 }
 
 void QgsProjectFileTransform::transform1400to1500()
@@ -477,7 +478,7 @@ void QgsProjectFileTransform::transform1800to1900()
     QgsRasterLayer rasterLayer;
     // TODO: We have to use more data from project file to read the layer it correctly,
     // OTOH, we should not read it until it was converted
-    rasterLayer.readLayerXML( layerNode.toElement() );
+    rasterLayer.readLayerXml( layerNode.toElement() );
     convertRasterProperties( mDom, layerNode, rasterPropertiesElem, &rasterLayer );
   }
 

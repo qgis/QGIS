@@ -17,6 +17,8 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayerdefinitionutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsvirtuallayerdefinition.h"
 
 QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVectorLayer* layer )
 {
@@ -25,10 +27,8 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
   QStringList leftJoins;
   QStringList columns;
 
-  columns << "t.*"; // columns from the main layer
-
   // look for the uid
-  const QgsFields& fields = layer->dataProvider()->fields();
+  QgsFields fields = layer->dataProvider()->fields();
   {
     QgsAttributeList pk = layer->dataProvider()->pkAttributeIndexes();
     if ( pk.size() == 1 )
@@ -47,14 +47,21 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
       def.setUid( uid );
     }
   }
+  Q_FOREACH ( const QgsField& f, layer->dataProvider()->fields() )
+  {
+    columns << "t." + f.name();
+  }
 
   int joinIdx = 0;
   Q_FOREACH ( const QgsVectorJoinInfo& join, layer->vectorJoins() )
   {
     QString joinName = QString( "j%1" ).arg( ++joinIdx );
-    QString prefix = join.prefix.isEmpty() ? layer->name() + "_" : join.prefix;
+    QgsVectorLayer* joinedLayer = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join.joinLayerId ) );
+    if ( !joinedLayer )
+      continue;
+    QString prefix = join.prefix.isEmpty() ? joinedLayer->name() + "_" : join.prefix;
 
-    leftJoins << QString( "LEFT JOIN %1 AS %2 ON t.\"%3\"=%2.\"%5\"" ).arg( join.joinLayerId, joinName, join.joinFieldName, join.targetFieldName );
+    leftJoins << QString( "LEFT JOIN %1 AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( join.joinLayerId, joinName, join.joinFieldName, join.targetFieldName );
     if ( join.joinFieldNamesSubset() )
     {
       Q_FOREACH ( const QString& f, *join.joinFieldNamesSubset() )
@@ -64,8 +71,10 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     }
     else
     {
-      Q_FOREACH ( const QgsField& f, layer->dataProvider()->fields() )
+      Q_FOREACH ( const QgsField& f, joinedLayer->fields() )
       {
+        if ( f.name() == join.joinFieldName )
+          continue;
         columns << joinName + "." + f.name() + " AS " + prefix + f.name();
       }
     }

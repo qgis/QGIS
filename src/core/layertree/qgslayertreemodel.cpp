@@ -32,6 +32,28 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
 
+///@cond PRIVATE
+
+/** In order to support embedded widgets in layer tree view, the model
+ * generates one placeholder legend node for each embedded widget.
+ * The placeholder will be replaced by an embedded widget in QgsLayerTreeView
+ */
+class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
+{
+  public:
+    EmbeddedWidgetLegendNode( QgsLayerTreeLayer* nodeL )
+        : QgsLayerTreeModelLegendNode( nodeL )
+    {
+    }
+
+    virtual QVariant data( int role ) const override
+    {
+      Q_UNUSED( role );
+      return QVariant();
+    }
+};
+
+///@endcond
 
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
     : QAbstractItemModel( parent )
@@ -216,13 +238,13 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       }
       else if ( vlayer && layer->type() == QgsMapLayer::VectorLayer )
       {
-        if ( vlayer->geometryType() == QGis::Point )
+        if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
           icon = QgsLayerItem::iconPoint();
-        else if ( vlayer->geometryType() == QGis::Line )
+        else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
           icon = QgsLayerItem::iconLine();
-        else if ( vlayer->geometryType() == QGis::Polygon )
+        else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
           icon = QgsLayerItem::iconPolygon();
-        else if ( vlayer->geometryType() == QGis::NoGeometry )
+        else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
           icon = QgsLayerItem::iconTable();
         else
           icon = QgsLayerItem::iconDefault();
@@ -252,7 +274,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
       if ( nodeLayer->layer() && nodeLayer->layer()->type() == QgsMapLayer::VectorLayer )
       {
-        if ( qobject_cast<QgsVectorLayer*>( nodeLayer->layer() )->geometryType() == QGis::NoGeometry )
+        if ( qobject_cast<QgsVectorLayer*>( nodeLayer->layer() )->geometryType() == QgsWkbTypes::NullGeometry )
           return QVariant(); // do not show checkbox for non-spatial tables
       }
       return nodeLayer->isVisible();
@@ -605,7 +627,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings* settings, bool us
         }
       }
     }
-    bool polygonValid = !polygon.isEmpty() && polygon.type() == QGis::Polygon;
+    bool polygonValid = !polygon.isEmpty() && polygon.type() == QgsWkbTypes::PolygonGeometry;
     if ( useExpressions && !useExtent && !polygonValid ) // only expressions
     {
       mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );
@@ -836,7 +858,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
     connect( layer, SIGNAL( editingStarted() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
     connect( layer, SIGNAL( editingStopped() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
     connect( layer, SIGNAL( layerModified() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
-    connect( layer, SIGNAL( layerNameChanged() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
+    connect( layer, SIGNAL( nameChanged() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
   }
 }
 
@@ -984,7 +1006,7 @@ QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
   QDomDocument doc;
   QDomElement rootElem = doc.createElement( "layer_tree_model_data" );
   Q_FOREACH ( QgsLayerTreeNode* node, nodesFinal )
-    node->writeXML( rootElem );
+    node->writeXml( rootElem );
   doc.appendChild( rootElem );
   QString txt = doc.toString();
 
@@ -1022,7 +1044,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData* data, Qt::DropAction acti
   QDomElement elem = rootElem.firstChildElement();
   while ( !elem.isNull() )
   {
-    QgsLayerTreeNode* node = QgsLayerTreeNode::readXML( elem );
+    QgsLayerTreeNode* node = QgsLayerTreeNode::readXml( elem );
     if ( node )
       nodes << node;
 
@@ -1169,9 +1191,20 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
   // apply filtering defined in layer node's custom properties (reordering, filtering, custom labels)
   QgsMapLayerLegendUtils::applyLayerNodeProperties( nodeL, lstNew );
 
+  if ( testFlag( UseEmbeddedWidgets ) )
+  {
+    // generate placeholder legend nodes that will be replaced by widgets in QgsLayerTreeView
+    int widgetsCount = ml->customProperty( "embeddedWidgets/count", 0 ).toInt();
+    while ( widgetsCount > 0 )
+    {
+      lstNew.insert( 0, new EmbeddedWidgetLegendNode( nodeL ) );
+      --widgetsCount;
+    }
+  }
+
   QList<QgsLayerTreeModelLegendNode*> filteredLstNew = filterLegendNodes( lstNew );
 
-  bool isEmbedded = filteredLstNew.count() == 1 && filteredLstNew[0]->isEmbeddedInParent();
+  bool hasOnlyEmbedded = filteredLstNew.count() == 1 && filteredLstNew[0]->isEmbeddedInParent();
 
   Q_FOREACH ( QgsLayerTreeModelLegendNode* n, lstNew )
   {
@@ -1190,11 +1223,11 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
 
   int count = data.tree ? data.tree->children[nullptr].count() : filteredLstNew.count();
 
-  if ( ! isEmbedded ) beginInsertRows( node2index( nodeL ), 0, count - 1 );
+  if ( ! hasOnlyEmbedded ) beginInsertRows( node2index( nodeL ), 0, count - 1 );
 
   mLegend[nodeL] = data;
 
-  if ( ! isEmbedded ) endInsertRows();
+  if ( ! hasOnlyEmbedded ) endInsertRows();
 
   if ( hasStyleOverride )
     ml->styleManager()->restoreOverrideStyle();
@@ -1291,9 +1324,6 @@ int QgsLayerTreeModel::legendNodeRowCount( QgsLayerTreeModelLegendNode* node ) c
 
 int QgsLayerTreeModel::legendRootRowCount( QgsLayerTreeLayer* nL ) const
 {
-  if ( legendEmbeddedInParent( nL ) )
-    return 0;
-
   if ( !mLegend.contains( nL ) )
     return 0;
 
@@ -1301,7 +1331,12 @@ int QgsLayerTreeModel::legendRootRowCount( QgsLayerTreeLayer* nL ) const
   if ( data.tree )
     return data.tree->children[nullptr].count();
 
-  return data.activeNodes.count();
+  int count = data.activeNodes.count();
+
+  if ( legendEmbeddedInParent( nL ) )
+    count--;  // one item less -- it is embedded in parent
+
+  return count;
 }
 
 
@@ -1365,14 +1400,29 @@ Qt::ItemFlags QgsLayerTreeModel::legendNodeFlags( QgsLayerTreeModelLegendNode* n
 
 bool QgsLayerTreeModel::legendEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const
 {
+  return legendNodeEmbeddedInParent( nodeLayer );
+}
+
+QgsLayerTreeModelLegendNode* QgsLayerTreeModel::legendNodeEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const
+{
+  // legend node embedded in parent does not have to be the first one...
+  // there could be extra legend nodes generated for embedded widgets
   const LayerLegendData& data = mLegend[nodeLayer];
-  return data.activeNodes.count() == 1 && data.activeNodes[0]->isEmbeddedInParent();
+  Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, data.activeNodes )
+  {
+    if ( legendNode->isEmbeddedInParent() )
+      return legendNode;
+  }
+  return nullptr;
 }
 
 
 QIcon QgsLayerTreeModel::legendIconEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const
 {
-  return QIcon( qvariant_cast<QPixmap>( mLegend[nodeLayer].activeNodes[0]->data( Qt::DecorationRole ) ) );
+  QgsLayerTreeModelLegendNode* legendNode = legendNodeEmbeddedInParent( nodeLayer );
+  if ( !legendNode )
+    return QIcon();
+  return QIcon( qvariant_cast<QPixmap>( legendNode->data( Qt::DecorationRole ) ) );
 }
 
 

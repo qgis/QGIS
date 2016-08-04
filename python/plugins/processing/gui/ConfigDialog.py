@@ -207,7 +207,7 @@ class ConfigDialog(BASE, WIDGET):
             groupItem.setEditable(False)
 
             for alg in provider.algs:
-                algItem = QStandardItem(alg.name)
+                algItem = QStandardItem(alg.i18n_name or alg.name)
                 algItem.setIcon(icon)
                 algItem.setEditable(False)
                 try:
@@ -254,7 +254,6 @@ class ConfigDialog(BASE, WIDGET):
             setting.save()
         Processing.updateAlgsList()
         settingsWatcher.settingsChanged.emit()
-        updateMenus()
 
         QDialog.accept(self)
 

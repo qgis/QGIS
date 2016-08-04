@@ -211,8 +211,8 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsSimpleMarkerSymbolLayerBase
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
     bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolV2RenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
     QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context );
@@ -220,6 +220,8 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsSimpleMarkerSymbolLayerBase
     void setOutlineColor( const QColor& color );
     QColor fillColor() const;
     void setFillColor( const QColor& color );
+    void setColor( const QColor& color );
+    virtual QColor color() const;
 
     // new methods
 
@@ -299,14 +301,14 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsSimpleMarkerSymbolLayerBase
      * @see setOutlineWidth()
      * @see setOutlineWidthMapUnitScale()
      */
-    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit u );
+    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit u );
 
     /** Returns the unit for the width of the marker's outline.
      * @see setOutlineWidthUnit()
      * @see outlineWidth()
      * @see outlineWidthMapUnitScale()
      */
-    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
 
     /** Sets the map scale for the width of the marker's outline.
      * @param scale outline width map unit scale
@@ -446,14 +448,22 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     double outlineWidth() const;
     void setOutlineWidth( double w );
 
-    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+    /** Sets the units for the outline width.
+     * @param unit width units
+     * @see outlineWidthUnit()
+    */
+    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+    /** Returns the units for the outline width.
+     * @see outlineWidthUnit()
+    */
+    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
 
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& outlineWidthMapUnitScale() const;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    QgsUnitTypes::RenderUnit outputUnit() const;
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
@@ -523,10 +533,10 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     /** Get outline width unit.
      * @note added in 2.16 */
-    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
     /** Set outline width unit.
      * @note added in 2.16 */
-    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
+    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
 
     /** Get outline width map unit scale.
      * @note added in 2.16 */

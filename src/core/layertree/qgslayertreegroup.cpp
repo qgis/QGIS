@@ -240,7 +240,7 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::findGroup( const QString& name )
   return nullptr;
 }
 
-QgsLayerTreeGroup* QgsLayerTreeGroup::readXML( QDomElement& element )
+QgsLayerTreeGroup* QgsLayerTreeGroup::readXml( QDomElement& element )
 {
   if ( element.tagName() != "layer-tree-group" )
     return nullptr;
@@ -254,16 +254,16 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::readXML( QDomElement& element )
   QgsLayerTreeGroup* groupNode = new QgsLayerTreeGroup( name, checked );
   groupNode->setExpanded( isExpanded );
 
-  groupNode->readCommonXML( element );
+  groupNode->readCommonXml( element );
 
-  groupNode->readChildrenFromXML( element );
+  groupNode->readChildrenFromXml( element );
 
   groupNode->setIsMutuallyExclusive( isMutuallyExclusive, mutuallyExclusiveChildIndex );
 
   return groupNode;
 }
 
-void QgsLayerTreeGroup::writeXML( QDomElement& parentElement )
+void QgsLayerTreeGroup::writeXml( QDomElement& parentElement )
 {
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( "layer-tree-group" );
@@ -276,21 +276,21 @@ void QgsLayerTreeGroup::writeXML( QDomElement& parentElement )
     elem.setAttribute( "mutually-exclusive-child", mMutuallyExclusiveChildIndex );
   }
 
-  writeCommonXML( elem );
+  writeCommonXml( elem );
 
   Q_FOREACH ( QgsLayerTreeNode* node, mChildren )
-    node->writeXML( elem );
+    node->writeXml( elem );
 
   parentElement.appendChild( elem );
 }
 
-void QgsLayerTreeGroup::readChildrenFromXML( QDomElement& element )
+void QgsLayerTreeGroup::readChildrenFromXml( QDomElement& element )
 {
   QList<QgsLayerTreeNode*> nodes;
   QDomElement childElem = element.firstChildElement();
   while ( !childElem.isNull() )
   {
-    QgsLayerTreeNode* newNode = QgsLayerTreeNode::readXML( childElem );
+    QgsLayerTreeNode* newNode = QgsLayerTreeNode::readXml( childElem );
     if ( newNode )
       nodes << newNode;
 

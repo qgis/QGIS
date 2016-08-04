@@ -577,10 +577,11 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const QVector<QgsPo
     return false;
 
   // HACK: flip y coordinates, because georeferencer and gdal use different conventions
-  QVector<QgsPoint> flippedPixelCoords( pixelCoords.size() );
-  for ( int i = 0; i < pixelCoords.size(); i++ )
+  QVector<QgsPoint> flippedPixelCoords;
+  flippedPixelCoords.reserve( pixelCoords.size() );
+  Q_FOREACH ( const QgsPoint& coord, pixelCoords )
   {
-    flippedPixelCoords[i] = pixelCoords[i];
+    flippedPixelCoords << QgsPoint( coord.x(), -coord.y() );
   }
 
   QgsLeastSquares::projective( mapCoords, flippedPixelCoords, mParameters.H );

@@ -56,7 +56,7 @@ bool QgsMapToolRotatePointSymbols::layerIsRotatable( QgsMapLayer* ml )
   }
 
   //does it have point or multipoint type?
-  if ( vLayer->geometryType() != QGis::Point )
+  if ( vLayer->geometryType() != QgsWkbTypes::PointGeometry )
   {
     return false;
   }
@@ -199,7 +199,8 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent* e )
   mRotating = false;
   delete mRotationItem;
   mRotationItem = nullptr;
-  mCanvas->refresh();
+  if ( mActiveLayer )
+    mActiveLayer->triggerRepaint();
 }
 
 double QgsMapToolRotatePointSymbols::calculateAzimut( QPoint mousePos )

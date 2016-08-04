@@ -17,6 +17,7 @@
 
 #include "qgsmaptoollabel.h"
 #include "qgsdatadefined.h"
+#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
@@ -66,7 +67,7 @@ void QgsMapToolLabel::createRubberBands()
 
   //label rubber band
   QgsRectangle rect = mCurrentLabel.pos.labelRect;
-  mLabelRubberBand = new QgsRubberBand( mCanvas, QGis::Line );
+  mLabelRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
   mLabelRubberBand->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
   mLabelRubberBand->addPoint( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
   mLabelRubberBand->addPoint( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
@@ -83,15 +84,15 @@ void QgsMapToolLabel::createRubberBands()
     QgsFeature f;
     if ( currentFeature( f, true ) )
     {
-      const QgsGeometry* geom = f.constGeometry();
-      if ( geom )
+      QgsGeometry geom = f.geometry();
+      if ( !geom.isEmpty() )
       {
         QSettings settings;
         int r = settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt();
         int g = settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt();
         int b = settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt();
         int a = settings.value( "/qgis/digitizing/line_color_alpha", 200 ).toInt();
-        mFeatureRubberBand = new QgsRubberBand( mCanvas, geom->type() );
+        mFeatureRubberBand = new QgsRubberBand( mCanvas, geom.type() );
         mFeatureRubberBand->setColor( QColor( r, g, b, a ) );
         mFeatureRubberBand->setToGeometry( geom, vlayer );
         mFeatureRubberBand->show();
@@ -111,12 +112,11 @@ void QgsMapToolLabel::createRubberBands()
         }
       }
 
-      QgsGeometry* pointGeom = QgsGeometry::fromPoint( fixPoint );
-      mFixPointRubberBand = new QgsRubberBand( mCanvas, QGis::Line );
+      QgsGeometry pointGeom = QgsGeometry::fromPoint( fixPoint );
+      mFixPointRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
       mFixPointRubberBand->setColor( QColor( 0, 0, 255, 65 ) );
       mFixPointRubberBand->setToGeometry( pointGeom, vlayer );
       mFixPointRubberBand->show();
-      delete pointGeom;
     }
   }
 }
@@ -620,7 +620,6 @@ bool QgsMapToolLabel::layerCanPin( QgsVectorLayer* vlayer, int& xCol, int& yCol 
 
 bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer* vlayer, int& showCol ) const
 {
-  //QgsDebugMsg( "entered" );
   if ( !vlayer || !vlayer->isEditable() )
   {
     return false;
@@ -689,7 +688,11 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition& p )
   if ( layer && layer->labeling() )
   {
     settings = layer->labeling()->settings( layer, pos.providerID );
-    valid = settings.enabled;
+
+    if ( p.isDiagram )
+      valid = layer->diagramsEnabled();
+    else
+      valid = settings.enabled;
   }
 
   if ( !valid )

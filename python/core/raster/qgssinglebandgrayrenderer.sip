@@ -16,7 +16,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
 
     int grayBand() const;
     void setGrayBand( int band );
@@ -27,7 +27,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
     void setGradient( Gradient theGradient );
     Gradient gradient() const;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 

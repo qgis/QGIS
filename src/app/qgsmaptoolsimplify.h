@@ -38,6 +38,11 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
     void updateStatusText();
     void enableOkButton( bool enabled );
 
+  protected:
+
+    //! Also cancels pending simplification
+    virtual void closeEvent( QCloseEvent* e ) override;
+
   private:
     QgsMapToolSimplify* mTool;
 
@@ -83,7 +88,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     void updateSimplificationPreview();
 
-    int vertexCount( const QgsGeometry *g ) const;
+    int vertexCount( const QgsGeometry& g ) const;
 
     // data
     /** Dialog with slider to set correct tolerance value */

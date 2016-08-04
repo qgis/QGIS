@@ -21,7 +21,7 @@
 #include "qgspointv2.h"
 #include <QPainter>
 
-QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
+QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
     mGeometry( nullptr ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
@@ -43,7 +43,7 @@ void QgsGeometryRubberBand::paint( QPainter* painter )
   painter->save();
   painter->translate( -pos() );
 
-  if ( mGeometryType == QGis::Polygon )
+  if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
   {
     painter->setBrush( mBrush );
   }

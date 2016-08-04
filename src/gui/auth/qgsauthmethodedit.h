@@ -20,7 +20,6 @@
 #include <QWidget>
 
 #include "qgis.h"
-#include "qgsauthconfig.h"
 
 /** \ingroup gui
  * Abstract base class for the edit widget of authentication method plugins

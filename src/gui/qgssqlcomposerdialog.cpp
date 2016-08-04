@@ -22,6 +22,7 @@ email                : even.rouault at spatialys.com
 #include "qgssqlstatement.h"
 
 #include <QMessageBox>
+#include <QKeyEvent>
 
 #include <Qsci/qscilexer.h>
 
@@ -50,6 +51,8 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget * parent, Qt::WindowFlags fl
   mTableJoins->installEventFilter( this );
   mWhereEditor->installEventFilter( this );
   mOrderEditor->installEventFilter( this );
+  mTablesCombo->view()->installEventFilter( this );
+
 
   connect( mButtonBox->button( QDialogButtonBox::Reset ), SIGNAL( clicked() ),
            this, SLOT( reset() ) );
@@ -118,7 +121,7 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget * parent, Qt::WindowFlags fl
 
 QgsSQLComposerDialog::~QgsSQLComposerDialog()
 {
-  // Besides avoid memory leaks, this is usefull since QSciAPIs::prepare()
+  // Besides avoid memory leaks, this is useful since QSciAPIs::prepare()
   // starts a thread. If the dialog was killed before the thread had started,
   // he could run against a dead widget. This can happen in unit tests.
   delete mQueryEdit->lexer()->apis();
@@ -128,7 +131,56 @@ QgsSQLComposerDialog::~QgsSQLComposerDialog()
 bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
 {
   if ( event->type() == QEvent::FocusIn )
-    mFocusedObject = obj;
+  {
+    if ( obj == mTablesCombo->view() )
+      lastSearchedText.clear();
+    else
+      mFocusedObject = obj;
+  }
+
+  // Custom search in table combobox
+  if ( event->type() == QEvent::KeyPress && obj == mTablesCombo->view() )
+  {
+    QString currentString = (( QKeyEvent* )event )->text();
+    if ( !currentString.isEmpty() && (( currentString[0] >= 'a' && currentString[0] <= 'z' ) ||
+                                      ( currentString[0] >= 'A' && currentString[0] <= 'Z' ) ||
+                                      ( currentString[0] >= '0' && currentString[0] <= '9' ) ||
+                                      currentString[0] == ':' || currentString[0] == '_' || currentString[0] == ' ' ||
+                                      currentString[0] == '(' || currentString[0] == ')' ) )
+    {
+      // First attempt is concatenation of existing search text
+      // Second attempt is just the new character
+      int attemptCount = ( lastSearchedText.isEmpty() ) ? 1 : 2;
+      for ( int attempt = 0; attempt < attemptCount; attempt ++ )
+      {
+        if ( attempt == 0 )
+          lastSearchedText += currentString;
+        else
+          lastSearchedText = currentString;
+
+        // Find the string that contains the searched text, and in case
+        // of several matches, pickup the one where the searched text is the
+        // most at the beginning.
+        int iBestCandidate = 0;
+        int idxInTextOfBestCandidate = 1000;
+        for ( int i = 1; i < mTablesCombo->count(); i++ )
+        {
+          int idxInText = mTablesCombo->itemText( i ).indexOf( lastSearchedText, Qt::CaseInsensitive );
+          if ( idxInText >= 0 && idxInText < idxInTextOfBestCandidate )
+          {
+            iBestCandidate = i;
+            idxInTextOfBestCandidate = idxInText;
+          }
+        }
+        if ( iBestCandidate > 0 )
+        {
+          mTablesCombo->view()->setCurrentIndex( mTablesCombo->model()->index( 0, 0 ).sibling( iBestCandidate, 0 ) );
+          return true;
+        }
+      }
+      lastSearchedText.clear();
+    }
+  }
 
   return QObject::eventFilter( obj, event );
 }
@@ -158,13 +210,17 @@ void QgsSQLComposerDialog::accept()
 {
   if ( mSQLValidatorCallback )
   {
-    QString errorMsg;
-    if ( !mSQLValidatorCallback->isValid( sql(), errorMsg ) )
+    QString errorMsg, warningMsg;
+    if ( !mSQLValidatorCallback->isValid( sql(), errorMsg, warningMsg ) )
     {
       if ( errorMsg.isEmpty() )
-        errorMsg = tr( "An error occured during evaluation of the SQL statement" );
+        errorMsg = tr( "An error occurred during evaluation of the SQL statement" );
       QMessageBox::critical( this, tr( "SQL error" ), errorMsg );
       return;
+    }
+    if ( !warningMsg.isEmpty() )
+    {
+      QMessageBox::warning( this, tr( "SQL warning" ), warningMsg );
     }
   }
   QDialog::accept();
@@ -361,6 +417,35 @@ void QgsSQLComposerDialog::addOperators( const QStringList& list )
   addApis( list );
 }
 
+static QString getFunctionAbbridgedParameters( const QgsSQLComposerDialog::Function& f )
+{
+  if ( f.minArgs >= 0 && f.maxArgs > f.minArgs )
+  {
+    return QObject::tr( "%1 to %2 arguments" ).arg( f.minArgs ).arg( f.maxArgs );
+  }
+  else if ( f.minArgs == 0 && f.maxArgs == 0 )
+  {
+  }
+  else if ( f.minArgs > 0 && f.maxArgs == f.minArgs )
+  {
+    if ( f.minArgs == 1 )
+      return QObject::tr( "1 argument" );
+    else
+      return QObject::tr( "%1 arguments" ).arg( f.minArgs );
+  }
+  else if ( f.minArgs >= 0 && f.maxArgs < 0 )
+  {
+    if ( f.minArgs > 1 )
+      return QObject::tr( "%1 arguments or more" ).arg( f.minArgs );
+    else if ( f.minArgs == 1 )
+      return QObject::tr( "1 argument or more" );
+    else
+      return QObject::tr( "0 argument or more" );
+  }
+  return QString();
+}
+
+
 void QgsSQLComposerDialog::getFunctionList( const QList<Function>& list,
     QStringList& listApi,
     QStringList& listCombo,
@@ -394,29 +479,16 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function>& list,
         }
         if ( f.minArgs >= 0 && i >= f.minArgs ) entryText += "]";
       }
+      if ( entryText.size() > 60 )
+      {
+        entryText = f.name ;
+        entryText += "(";
+        entryText += getFunctionAbbridgedParameters( f );
+      }
     }
-    else if ( f.minArgs >= 0 && f.maxArgs > f.minArgs )
+    else
     {
-      entryText += tr( "%1 to %2 arguments" ).arg( f.minArgs ).arg( f.maxArgs );
-    }
-    else if ( f.minArgs == 0 && f.maxArgs == 0 )
-    {
-    }
-    else if ( f.minArgs > 0 && f.maxArgs == f.minArgs )
-    {
-      if ( f.minArgs == 1 )
-        entryText += tr( "1 argument" );
-      else
-        entryText += tr( "%1 arguments" ).arg( f.minArgs );
-    }
-    else if ( f.minArgs >= 0 && f.maxArgs < 0 )
-    {
-      if ( f.minArgs > 1 )
-        entryText += tr( "%1 arguments or more" ).arg( f.minArgs );
-      else if ( f.minArgs == 1 )
-        entryText += tr( "1 argument or more" );
-      else
-        entryText += tr( "0 argument or more" );
+      entryText += getFunctionAbbridgedParameters( f );
     }
     entryText += ")";
     if ( !f.returnType.isEmpty() )
@@ -694,11 +766,18 @@ void QgsSQLComposerDialog::addApis( const QStringList& list )
   mQueryEdit->lexer()->setAPIs( apis );
 }
 
-void QgsSQLComposerDialog::setSupportMultipleTables( bool on )
+void QgsSQLComposerDialog::setSupportMultipleTables( bool on, QString mainTypename )
 {
   mJoinsLabels->setVisible( on );
   mTableJoins->setVisible( on );
   mAddJoinButton->setVisible( on );
   mRemoveJoinButton->setVisible( on );
   mTablesCombo->setVisible( on );
+
+  QString mainTypenameFormatted;
+  if ( !mainTypename.isEmpty() )
+    mainTypenameFormatted = " (" + mainTypename + ")";
+  mQueryEdit->setToolTip( tr( "This is the SQL query editor. The SQL statement can select data from several tables, \n"
+                              "but it must compulsory include the main typename%1 in the selected tables, \n"
+                              "and only the geometry column of the main typename can be used as the geometry column of the resulting layer." ).arg( mainTypenameFormatted ) );
 }

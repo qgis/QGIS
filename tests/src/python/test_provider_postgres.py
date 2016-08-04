@@ -157,9 +157,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         test_unique([f for f in vl.getFeatures()], 4)
 
     # See http://hub.qgis.org/issues/14262
+    # TODO: accept multi-featured layers, and an array of values/fids
     def testSignedIdentifiers(self):
-        def test_query_attribute(dbconn, query, att, val, fidval):
-            ql = QgsVectorLayer('%s table="%s" (g) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), att), "testgeom", "postgres")
+
+        def test_layer(ql, att, val, fidval):
             self.assertTrue(ql.isValid())
             features = ql.getFeatures()
             att_idx = ql.fieldNameIndex(att)
@@ -167,12 +168,53 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             for f in features:
                 count += 1
                 self.assertEqual(f.attributes()[att_idx], val)
-                #self.assertEqual(f.id(), val)
+                self.assertEqual(f.id(), fidval)
             self.assertEqual(count, 1)
-        test_query_attribute(self.dbconn, '(SELECT -1::int4 i, NULL::geometry(Point) g)', 'i', -1, 1)
-        test_query_attribute(self.dbconn, '(SELECT -1::int2 i, NULL::geometry(Point) g)', 'i', -1, 1)
-        test_query_attribute(self.dbconn, '(SELECT -1::int8 i, NULL::geometry(Point) g)', 'i', -1, 1)
-        test_query_attribute(self.dbconn, '(SELECT -65535::int8 i, NULL::geometry(Point) g)', 'i', -65535, 1)
+
+        def test(dbconn, query, att, val, fidval):
+            table = query.replace('"', '\\"')
+            uri = '%s table="%s" (g) key=\'%s\'' % (dbconn, table, att)
+            ql = QgsVectorLayer(uri, "t", "postgres")
+            test_layer(ql, att, val, fidval)
+            # now with estimated metadata
+            uri += ' estimatedmetadata="true"'
+            test_layer(ql, att, val, fidval)
+
+        #### --- INT16 ----
+        # zero
+        test(self.dbconn, '(SELECT 0::int2 i, NULL::geometry(Point) g)', 'i', 0, 0)
+        # low positive
+        test(self.dbconn, '(SELECT 1::int2 i, NULL::geometry(Point) g)', 'i', 1, 1)
+        # low negative
+        test(self.dbconn, '(SELECT -1::int2 i, NULL::geometry(Point) g)', 'i', -1, 4294967295)
+        # max positive signed 16bit integer
+        test(self.dbconn, '(SELECT 32767::int2 i, NULL::geometry(Point) g)', 'i', 32767, 32767)
+        # max negative signed 16bit integer
+        test(self.dbconn, '(SELECT (-32768)::int2 i, NULL::geometry(Point) g)', 'i', -32768, 4294934528)
+
+        #### --- INT32 ----
+        # zero
+        test(self.dbconn, '(SELECT 0::int4 i, NULL::geometry(Point) g)', 'i', 0, 0)
+        # low positive
+        test(self.dbconn, '(SELECT 2::int4 i, NULL::geometry(Point) g)', 'i', 2, 2)
+        # low negative
+        test(self.dbconn, '(SELECT -2::int4 i, NULL::geometry(Point) g)', 'i', -2, 4294967294)
+        # max positive signed 32bit integer
+        test(self.dbconn, '(SELECT 2147483647::int4 i, NULL::geometry(Point) g)', 'i', 2147483647, 2147483647)
+        # max negative signed 32bit integer
+        test(self.dbconn, '(SELECT (-2147483648)::int4 i, NULL::geometry(Point) g)', 'i', -2147483648, 2147483648)
+
+        #### --- INT64 (FIDs are always 1 because assigned ex-novo) ----
+        # zero
+        test(self.dbconn, '(SELECT 0::int8 i, NULL::geometry(Point) g)', 'i', 0, 1)
+        # low positive
+        test(self.dbconn, '(SELECT 3::int8 i, NULL::geometry(Point) g)', 'i', 3, 1)
+        # low negative
+        test(self.dbconn, '(SELECT -3::int8 i, NULL::geometry(Point) g)', 'i', -3, 1)
+        # max positive signed 64bit integer
+        test(self.dbconn, '(SELECT 9223372036854775807::int8 i, NULL::geometry(Point) g)', 'i', 9223372036854775807, 1)
+        # max negative signed 32bit integer
+        test(self.dbconn, '(SELECT (-9223372036854775808)::int8 i, NULL::geometry(Point) g)', 'i', -9223372036854775808, 1)
 
     def testPktIntInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="pk" sql='.format(self.dbconn, 'bikes_view'), "bikes_view", "postgres")
@@ -231,6 +273,44 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             if 'precision' in e:
                 self.assertEqual(fields.at(fields.indexFromName(f)).precision(), e['precision'])
 
+    def testRenameAttributes(self):
+        ''' Test renameAttributes() '''
+        vl = QgsVectorLayer('%s table="qgis_test"."rename_table" sql=' % (self.dbconn), "renames", "postgres")
+        provider = vl.dataProvider()
+        provider.renameAttributes({1: 'field1', 2: 'field2'})
+
+        # bad rename
+        self.assertFalse(provider.renameAttributes({-1: 'not_a_field'}))
+        self.assertFalse(provider.renameAttributes({100: 'not_a_field'}))
+        # already exists
+        self.assertFalse(provider.renameAttributes({1: 'field2'}))
+
+        # rename one field
+        self.assertTrue(provider.renameAttributes({1: 'newname'}))
+        self.assertEqual(provider.fields().at(1).name(), 'newname')
+        vl.updateFields()
+        fet = next(vl.getFeatures())
+        self.assertEqual(fet.fields()[1].name(), 'newname')
+
+        # rename two fields
+        self.assertTrue(provider.renameAttributes({1: 'newname2', 2: 'another'}))
+        self.assertEqual(provider.fields().at(1).name(), 'newname2')
+        self.assertEqual(provider.fields().at(2).name(), 'another')
+        vl.updateFields()
+        fet = next(vl.getFeatures())
+        self.assertEqual(fet.fields()[1].name(), 'newname2')
+        self.assertEqual(fet.fields()[2].name(), 'another')
+
+        # close layer and reopen, then recheck to confirm that changes were saved to db
+        del vl
+        vl = None
+        vl = QgsVectorLayer('%s table="qgis_test"."rename_table" sql=' % (self.dbconn), "renames", "postgres")
+        provider = vl.dataProvider()
+        self.assertEqual(provider.fields().at(1).name(), 'newname2')
+        self.assertEqual(provider.fields().at(2).name(), 'another')
+        fet = next(vl.getFeatures())
+        self.assertEqual(fet.fields()[1].name(), 'newname2')
+        self.assertEqual(fet.fields()[2].name(), 'another')
 
 if __name__ == '__main__':
     unittest.main()

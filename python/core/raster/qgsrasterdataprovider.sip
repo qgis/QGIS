@@ -10,17 +10,22 @@ class QgsImageFetcher : QObject
 #include <qgsrasterdataprovider.h>
 %End
   public:
-
-    QgsImageFetcher();
+    /** Constructor */
+    QgsImageFetcher( QObject* parent = 0 );
+    /** Destructor */
     virtual ~QgsImageFetcher();
 
-    // Make sure to connect to "finish" and "error" before starting
+    /** Starts the image download
+     * @note Make sure to connect to "finish" and "error" before starting */
     virtual void start() = 0;
 
   signals:
-
+    /** Emitted when the download completes
+     *  @param legend The downloaded legend image */
     void finish( const QImage& legend );
+    /** Emitted to report progress */
     void progress( qint64 received, qint64 total );
+    /** Emitted when an error occurs */
     void error( const QString& msg );
 };
 
@@ -59,15 +64,15 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Get the extent of the data source.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() = 0;
+    virtual QgsRectangle extent() const = 0;
 
     /** Returns data type for the band specified by number */
-    virtual QGis::DataType dataType( int bandNo ) const = 0;
+    virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QGis::DataType srcDataType( int bandNo ) const = 0;
+    virtual Qgis::DataType sourceDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const;
@@ -97,19 +102,19 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual int ySize() const;
 
     /** Read block of data using given extent and size. */
-    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) / Factory /;
+    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
 
     /** Return true if source band has no data value */
-    virtual bool srcHasNoDataValue( int bandNo ) const;
+    virtual bool sourceHasNoDataValue( int bandNo ) const;
 
     /** \brief Get source nodata value usage */
-    virtual bool useSrcNoDataValue( int bandNo ) const;
+    virtual bool useSourceNoDataValue( int bandNo ) const;
 
     /** \brief Set source nodata value usage */
-    virtual void setUseSrcNoDataValue( int bandNo, bool use );
+    virtual void setUseSourceNoDataValue( int bandNo, bool use );
 
     /** Value representing no data value. */
-    virtual double srcNoDataValue( int bandNo ) const;
+    virtual double sourceNoDataValue( int bandNo ) const;
 
     virtual void setUserNoDataValue( int bandNo, const QgsRasterRangeList& noData );
 
@@ -121,6 +126,9 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** \brief Returns the sublayers of this layer - useful for providers that manage
      *  their own layers, such as WMS */
     virtual QStringList subLayers() const;
+
+    /** \brief Returns whether the provider supplies a legend graphic */
+    virtual bool supportsLegendGraphic() const;
 
     /** \brief Returns the legend rendered as pixmap
      *
@@ -186,6 +194,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      * @param theExtent context extent
      * @param theWidth context width
      * @param theHeight context height
+     * @param theDpi context dpi
      * @return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
@@ -194,7 +203,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      *         Empty if failed or there are no results (TODO: better error reporting).
      */
     //virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
-    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -241,7 +250,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     static QgsRasterDataProvider* create( const QString &providerKey,
                                           const QString &uri,
                                           const QString& format, int nBands,
-                                          QGis::DataType type,
+                                          Qgis::DataType type,
                                           int width, int height, double* geoTransform,
                                           const QgsCoordinateReferenceSystem& crs,
                                           const QStringList& createOptions = QStringList() );
@@ -286,7 +295,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
      * @note added in 2.14
      */
-    void statusChanged( const QString& );
+    void statusChanged( const QString& ) const;
 
   protected:
     /** Read block of data
@@ -297,7 +306,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Read block of data using give extent and size
      * @note not available in python bindings
      */
-    //virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
+    //virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr );
 
     /** Returns true if user no data contains value */
     bool userNoDataValuesContains( int bandNo, double value ) const;

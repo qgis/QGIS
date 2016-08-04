@@ -155,7 +155,7 @@ def removeMenus():
 
 
 def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, addButton=False):
-    action = QAction(icon or alg.getIcon(), actionText or alg.name, iface.mainWindow())
+    action = QAction(icon or alg.getIcon(), actionText or alg.i18n_name or alg.name, iface.mainWindow())
     action.triggered.connect(lambda: _executeAlgorithm(alg))
     action.setObjectName("mProcessingUserMenu_%s" % alg.commandLineName())
 
@@ -232,6 +232,6 @@ def getMenu(name, parent):
 
 def findAction(actions, alg, actionText=None):
     for action in actions:
-        if action.text() in [actionText, alg.name]:
+        if action.text() in [actionText, alg.i18n_name, alg.name]:
             return action
     return None

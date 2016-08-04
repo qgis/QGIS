@@ -73,7 +73,6 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource* source,
     , mNextCidx( 0 )
     , mNextLid( 1 )
 {
-  QgsDebugMsg( "entered" );
 
   // WARNING: the iterater cannot use mutex lock for its whole life, because QgsVectorLayerFeatureIterator is opening
   // multiple iterators if features are edited -> lock only critical sections
@@ -495,7 +494,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   {
     if ( oldGeometry )
     {
-      feature.setGeometry( new QgsGeometry( oldGeometry->clone() ) );
+      feature.setGeometry( QgsGeometry( oldGeometry->clone() ) );
     }
     else
     {
@@ -584,7 +583,6 @@ bool QgsGrassFeatureIterator::rewind()
 
 bool QgsGrassFeatureIterator::close()
 {
-  QgsDebugMsg( "entered" );
   if ( mClosed )
   {
     QgsDebugMsg( "already closed" );
@@ -620,7 +618,7 @@ void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature& feature, int id, i
   {
     QgsDebugMsg( QString( "unknown type = %1" ).arg( type ) );
   }
-  feature.setGeometry( new QgsGeometry( geometry ) );
+  feature.setGeometry( QgsGeometry( geometry ) );
 }
 
 QgsFeatureId QgsGrassFeatureIterator::makeFeatureId( int grassId, int cat, int layer )

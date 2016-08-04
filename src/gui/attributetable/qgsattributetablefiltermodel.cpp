@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsmapcanvas.h"
@@ -63,8 +64,10 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
 
 void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
 {
-  masterModel()->prefetchColumnData( column );
-  QSortFilterProxyModel::sort( column, order );
+  int myColumn = mColumnMapping.at( column );
+  masterModel()->prefetchColumnData( myColumn );
+  QSortFilterProxyModel::sort( myColumn, order );
+  emit sortColumnChanged( column, order );
 }
 
 QVariant QgsAttributeTableFilterModel::data( const QModelIndex& index, int role ) const
@@ -95,7 +98,15 @@ QVariant QgsAttributeTableFilterModel::headerData( int section, Qt::Orientation 
       return QSortFilterProxyModel::headerData( section, orientation, role );
   }
   else
-    return QSortFilterProxyModel::headerData( section, orientation, role );
+  {
+    if ( role == Qt::DisplayRole )
+      return section + 1;
+    else
+    {
+      int sourceSection = mapToSource( index( section, ( !mColumnMapping.isEmpty() && mColumnMapping.at( 0 ) == -1 ) ? 1 : 0 ) ).row();
+      return sourceModel()->headerData( sourceSection, orientation, role );
+    }
+  }
 }
 
 int QgsAttributeTableFilterModel::actionColumnIndex() const
@@ -119,11 +130,11 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, mConfig.columns() )
   {
     // Hidden? Forget about this column
-    if ( columnConfig.mHidden )
+    if ( columnConfig.hidden )
       continue;
 
     // The new value for the mapping (field index or -1 for action column)
-    int newValue = ( columnConfig.mType == QgsAttributeTableConfig::Action ) ? -1 : layer()->fieldNameIndex( columnConfig.mName );
+    int newValue = ( columnConfig.type == QgsAttributeTableConfig::Action ) ? -1 : layer()->fieldNameIndex( columnConfig.name );
     newColumnMapping << newValue;
   }
 
@@ -195,7 +206,7 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
     }
   }
 
-  sort( config.sortExpression() );
+  sort( config.sortExpression(), config.sortOrder() );
 }
 
 void QgsAttributeTableFilterModel::sort( QString expression, Qt::SortOrder order )
@@ -314,11 +325,18 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
       QgsVectorLayerEditBuffer* editBuffer = layer()->editBuffer();
       if ( editBuffer )
       {
-        const QList<QgsFeatureId> addedFeatures = editBuffer->addedFeatures().keys();
-        const QList<QgsFeatureId> changedFeatures = editBuffer->changedAttributeValues().keys();
-        const QList<QgsFeatureId> changedGeometries = editBuffer->changedGeometries().keys();
-        const QgsFeatureId fid = masterModel()->rowToId( sourceRow );
-        return addedFeatures.contains( fid ) || changedFeatures.contains( fid ) || changedGeometries.contains( fid );
+        QgsFeatureId fid = masterModel()->rowToId( sourceRow );
+
+        if ( editBuffer->isFeatureAdded( fid ) )
+          return true;
+
+        if ( editBuffer->isFeatureAttributesChanged( fid ) )
+          return true;
+
+        if ( editBuffer->isFeatureGeometryChanged( fid ) )
+          return true;
+
+        return false;
       }
       return false;
     }
@@ -358,7 +376,9 @@ void QgsAttributeTableFilterModel::onColumnsChanged()
 int QgsAttributeTableFilterModel::mapColumnToSource( int column ) const
 {
   if ( mColumnMapping.isEmpty() )
-    return 0;
+    return column;
+  if ( column < 0 || column >= mColumnMapping.size() )
+    return -1;
   else
     return mColumnMapping.at( column );
 }
@@ -476,9 +496,10 @@ QModelIndex QgsAttributeTableFilterModel::mapToSource( const QModelIndex& proxyI
 
   int sourceColumn = mapColumnToSource( proxyIndex.column() );
 
-  // For the action column there is no matching column in the source model: invalid
+  // For the action column there is no matching column in the source model, just return the first one
+  // so we are still able to query for the feature id, the feature...
   if ( sourceColumn == -1 )
-    return QModelIndex();
+    sourceColumn = 0;
 
   return QSortFilterProxyModel::mapToSource( index( proxyIndex.row(), sourceColumn, proxyIndex.parent() ) );
 }
@@ -490,7 +511,11 @@ QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex& sour
   if ( proxyIndex.column() < 0 )
     return QModelIndex();
 
-  return index( proxyIndex.row(), mapColumnToSource( proxyIndex.column() ), proxyIndex.parent() );
+  int col = mapColumnToSource( proxyIndex.column() );
+  if ( col == -1 )
+    col = 0;
+
+  return index( proxyIndex.row(), col , proxyIndex.parent() );
 }
 
 Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex& index ) const

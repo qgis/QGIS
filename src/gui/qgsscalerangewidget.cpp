@@ -16,7 +16,7 @@
 #include "qgsscalerangewidget.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
-
+#include "qgsscalewidget.h"
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
     : QWidget( parent )
@@ -25,12 +25,12 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   mLayout = new QGridLayout( this );
   mLayout->setContentsMargins( 0, 0, 0, 0 );
 
-  QLabel* minLbl = new QLabel( tr( "Minimum\n(exclusive)" ), this );
+  QLabel* minLbl = new QLabel( tr( "Minimum (exclusive)" ), this );
   minLbl->setWordWrap( true );
   minLbl->setAlignment( Qt::AlignTop );
   minLbl->setToolTip( tr( "Minimum scale, i.e. maximum scale denominator. "
                           "This limit is exclusive, that means the layer will not be displayed on this scale." ) );
-  QLabel* maxLbl = new QLabel( tr( "Maximum\n(inclusive)" ), this );
+  QLabel* maxLbl = new QLabel( tr( "Maximum (inclusive)" ), this );
   maxLbl->setWordWrap( true );
   maxLbl->setAlignment( Qt::AlignTop );
   maxLbl->setToolTip( tr( "Maximum scale, i.e. minimum scale denominator. "
@@ -51,19 +51,20 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   mMinimumScaleWidget->setScale( 1.0 / 100000 );
   mMaximumScaleWidget->setScale( 1.0 / 1000 );
 
-  mLayout->addWidget( minLbl, 0, 0, 2, 1 );
-  mLayout->addWidget( mMinimumScaleIconLabel, 0, 1 );
-  mLayout->addWidget( mMinimumScaleWidget, 0, 2 );
-  mLayout->addWidget( maxLbl, 0, 3, 2, 1 );
-  mLayout->addWidget( mMaximumScaleIconLabel, 0, 4 );
-  mLayout->addWidget( mMaximumScaleWidget, 0, 5 );
+  mLayout->addWidget( minLbl, 0, 0, 1, 2 );
+  mLayout->addWidget( mMinimumScaleIconLabel, 1, 0 );
+  mLayout->addWidget( mMinimumScaleWidget, 1, 1 );
+  mLayout->addWidget( maxLbl, 0, 2, 1, 2 );
+  mLayout->addWidget( mMaximumScaleIconLabel, 1, 2 );
+  mLayout->addWidget( mMaximumScaleWidget, 1, 3 );
 
   mLayout->setColumnStretch( 0, 0 );
-  mLayout->setColumnStretch( 1, 0 );
-  mLayout->setColumnStretch( 2, 3 );
-  mLayout->setColumnStretch( 3, 0 );
-  mLayout->setColumnStretch( 4, 0 );
-  mLayout->setColumnStretch( 5, 3 );
+  mLayout->setColumnStretch( 1, 3 );
+  mLayout->setColumnStretch( 2, 0 );
+  mLayout->setColumnStretch( 3, 3 );
+
+  connect( mMinimumScaleWidget, SIGNAL( scaleChanged( double ) ), this, SLOT( emitRangeChanged() ) );
+  connect( mMaximumScaleWidget, SIGNAL( scaleChanged( double ) ), this, SLOT( emitRangeChanged() ) );
 }
 
 QgsScaleRangeWidget::~QgsScaleRangeWidget()
@@ -121,5 +122,10 @@ void QgsScaleRangeWidget::setScaleRange( double min, double max )
 {
   setMaximumScale( max );
   setMinimumScale( min );
+}
+
+void QgsScaleRangeWidget::emitRangeChanged()
+{
+  emit rangeChanged( minimumScale(), maximumScale() );
 }
 

@@ -26,7 +26,6 @@
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
-  QgsDebugMsg( "Entered" );
 
   // first get the GDAL driver manager
   QgsGdalProviderBase::registerGdalDrivers();
@@ -39,7 +38,6 @@ QgsGdalProviderBase::QgsGdalProviderBase()
  */
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int theBandNumber )const
 {
-  QgsDebugMsg( "entered." );
   QList<QgsColorRampShader::ColorRampItem> ct;
 
   //Invalid band number, segfault prevention
@@ -142,37 +140,37 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   return ct;
 }
 
-QGis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType theGdalDataType ) const
+Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {
     case GDT_Byte:
-      return QGis::Byte;
+      return Qgis::Byte;
     case GDT_UInt16:
-      return QGis::UInt16;
+      return Qgis::UInt16;
     case GDT_Int16:
-      return QGis::Int16;
+      return Qgis::Int16;
     case GDT_UInt32:
-      return QGis::UInt32;
+      return Qgis::UInt32;
     case GDT_Int32:
-      return QGis::Int32;
+      return Qgis::Int32;
     case GDT_Float32:
-      return QGis::Float32;
+      return Qgis::Float32;
     case GDT_Float64:
-      return QGis::Float64;
+      return Qgis::Float64;
     case GDT_CInt16:
-      return QGis::CInt16;
+      return Qgis::CInt16;
     case GDT_CInt32:
-      return QGis::CInt32;
+      return Qgis::CInt32;
     case GDT_CFloat32:
-      return QGis::CFloat32;
+      return Qgis::CFloat32;
     case GDT_CFloat64:
-      return QGis::CFloat64;
+      return Qgis::CFloat64;
     case GDT_Unknown:
     case GDT_TypeCount:
-      return QGis::UnknownDataType;
+      return Qgis::UnknownDataType;
   }
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
 int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const
@@ -282,7 +280,17 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess 
   return hDS;
 }
 
-CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace )
+int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszMessage, void *pProgressArg )
+{
+  Q_UNUSED( dfComplete );
+  Q_UNUSED( pszMessage );
+
+  QgsRasterBlockFeedback* feedback = static_cast<QgsRasterBlockFeedback*>( pProgressArg );
+  return !feedback->isCancelled();
+}
+
+
+CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback* feedback )
 {
   // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
 #if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
@@ -291,7 +299,24 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
   QgsDebugMsg( "Disabled VSI_CACHE" );
 #endif
 
+#if GDAL_VERSION_MAJOR >= 2
+  GDALRasterIOExtraArg extra;
+  INIT_RASTERIO_EXTRA_ARG( extra );
+  if ( 0 && feedback )  // disabled!
+  {
+    // Currently the cancellation is disabled... When RasterIO call is cancelled,
+    // GDAL returns CE_Failure with error code = 0 (CPLE_None), however one would
+    // expect to get CPLE_UserInterrupt to clearly identify that the failure was
+    // caused by the cancellation and not that something dodgy is going on.
+    // Are both error codes acceptable?
+    extra.pfnProgress = _gdalProgressFnWithFeedback;
+    extra.pProgressData = ( void* ) feedback;
+  }
+  CPLErr err = GDALRasterIOEx( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace, &extra );
+#else
+  Q_UNUSED( feedback );
   CPLErr err = GDALRasterIO( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace );
+#endif
 
 #if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
   CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );

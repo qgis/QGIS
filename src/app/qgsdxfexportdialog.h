@@ -19,8 +19,8 @@
 #define QGSDXFEXPORTDIALOG_H
 
 #include "ui_qgsdxfexportdialogbase.h"
-#include "qgsdxfexport.h"
 #include "qgslayertreemodel.h"
+#include "qgsdxfexport.h"
 
 #include <QList>
 #include <QPair>
@@ -77,7 +77,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    QgsDxfExportDialog( QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsDxfExportDialog( QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsDxfExportDialog();
 
     QList< QPair<QgsVectorLayer *, int> > layers() const;

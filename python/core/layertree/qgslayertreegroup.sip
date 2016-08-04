@@ -56,11 +56,11 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     QgsLayerTreeGroup* findGroup( const QString& name );
 
     //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error)
-    static QgsLayerTreeGroup* readXML( QDomElement& element ) /Factory/;
+    static QgsLayerTreeGroup* readXml( QDomElement& element ) /Factory/;
     //! Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
-    virtual void writeXML( QDomElement& parentElement );
+    virtual void writeXml( QDomElement& parentElement );
     //! Read children from XML and append them to the group.
-    void readChildrenFromXML( QDomElement& element );
+    void readChildrenFromXml( QDomElement& element );
 
     //! Return text representation of the tree. For debugging purposes only.
     virtual QString dump() const;

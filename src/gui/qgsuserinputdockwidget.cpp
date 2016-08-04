@@ -19,7 +19,7 @@
 #include <QBoxLayout>
 
 QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
-    : QDockWidget( tr( "User Input Panel" ), parent )
+    : QgsDockWidget( tr( "User Input Panel" ), parent )
     , mLayoutHorizontal( true )
 {
   QWidget* w = new QWidget( nullptr );
@@ -69,8 +69,7 @@ void QgsUserInputDockWidget::widgetDestroyed( QObject *obj )
       {
         i.value()->deleteLater();
       }
-      mWidgetList.remove( i.key() );
-      ++i;
+      i = mWidgetList.erase( i );
     }
   }
 }
@@ -124,6 +123,6 @@ void QgsUserInputDockWidget::paintEvent( QPaintEvent * event )
   }
   else
   {
-    QDockWidget::paintEvent( event );
+    QgsDockWidget::paintEvent( event );
   }
 }

@@ -18,6 +18,7 @@
 #include "qgscomposertexttable.h"
 #include "qgscomposertablecolumn.h"
 #include "qgscomposerframe.h"
+#include "qgscomposition.h"
 
 QgsComposerTextTable::QgsComposerTextTable( QgsComposition* c ): QgsComposerTable( c )
 {
@@ -51,19 +52,19 @@ void QgsComposerTextTable::setHeaderLabels( const QStringList& labels )
   }
 }
 
-bool QgsComposerTextTable::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerTextTable::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerTableElem = doc.createElement( "ComposerTextTable" );
   //todo: write headers and text entries
-  bool ok = _writeXML( composerTableElem, doc );
+  bool ok = _writeXml( composerTableElem, doc );
   elem.appendChild( composerTableElem );
   return ok;
 }
 
-bool QgsComposerTextTable::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerTextTable::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   //todo: read headers and text entries
-  return tableReadXML( itemElem, doc );
+  return tableReadXml( itemElem, doc );
 }
 
 bool QgsComposerTextTable::getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps )

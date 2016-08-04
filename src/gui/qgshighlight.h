@@ -16,9 +16,7 @@
 #define QGSHIGHLIGHT_H
 
 #include "qgsmapcanvasitem.h"
-#include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
-#include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
 #include <QBrush>
 #include <QColor>
@@ -31,13 +29,27 @@ class QgsMapLayer;
 class QgsVectorLayer;
 class QgsSymbolV2;
 
-/** A class for highlight features on the map.
+/** \ingroup gui
+ * A class for highlight features on the map.
  */
 class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {
   public:
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsMapLayer *layer );
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsVectorLayer *layer );
+
+    /** Constructor for QgsHighlight
+     * @param mapCanvas associated map canvas
+     * @param geom initial geometry of highlight
+     * @param layer associated map layer
+     */
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsMapLayer *layer );
+
+    /** Constructor for QgsHighlight
+     * @param mapCanvas associated map canvas
+     * @param geom initial geometry of highlight
+     * @param layer associated vector layer
+     */
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsVectorLayer *layer );
+
     /** Constructor for highlighting true feature shape using feature attributes
      * and renderer.
      * @param mapCanvas map canvas
@@ -79,7 +91,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
   private:
     void init();
     void setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
-    double getSymbolWidth( const QgsRenderContext & context, double width, QgsSymbolV2::OutputUnit unit );
+    double getSymbolWidth( const QgsRenderContext & context, double width, QgsUnitTypes::RenderUnit unit );
     /** Get renderer for current color mode and colors. The renderer should be freed by caller. */
     QgsFeatureRendererV2 * getRenderer( QgsRenderContext &context, const QColor & color, const QColor & fillColor );
     void paintPoint( QPainter *p, const QgsPoint& point );

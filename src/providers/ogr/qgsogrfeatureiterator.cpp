@@ -199,7 +199,7 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
     else
       OGR_F_Destroy( fet );
 
-    if ( !mRequest.filterRect().isNull() && !feature.constGeometry() )
+    if ( !mRequest.filterRect().isNull() && !feature.hasGeometry() )
       continue;
 
     // we have a feature, end this cycle
@@ -281,10 +281,10 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
       feature.setGeometry( QgsOgrUtils::ogrGeometryToQgsGeometry( geom ) );
     }
     else
-      feature.setGeometry( nullptr );
+      feature.clearGeometry();
 
-    if (( useIntersect && ( !feature.constGeometry() || !feature.constGeometry()->intersects( mRequest.filterRect() ) ) )
-        || ( geometryTypeFilter && ( !feature.constGeometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.constGeometry()->wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
+    if (( useIntersect && ( !feature.hasGeometry() || !feature.geometry().intersects( mRequest.filterRect() ) ) )
+        || ( geometryTypeFilter && ( !feature.hasGeometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.geometry().wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
     {
       OGR_F_Destroy( fet );
       return false;
@@ -293,13 +293,13 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
   if ( !mFetchGeometry )
   {
-    feature.setGeometry( nullptr );
+    feature.clearGeometry();
   }
 
   // fetch attributes
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
-    const QgsAttributeList& attrs = mRequest.subsetOfAttributes();
+    QgsAttributeList attrs = mRequest.subsetOfAttributes();
     for ( QgsAttributeList::const_iterator it = attrs.begin(); it != attrs.end(); ++it )
     {
       getFeatureAttribute( fet, feature, *it );

@@ -31,6 +31,12 @@ class QgsCapabilitiesCache: QObject
     /** Inserts new capabilities document (creates a copy of the document, does not take ownership)*/
     void insertCapabilitiesDocument( const QString& configFilePath, const QString& version, const QDomDocument* doc );
 
+    /** Remove capabilities document
+     * @param path the project file path
+     * @note added in QGIS 2.16
+     */
+    void removeCapabilitiesDocument( const QString& path );
+
 };
 
 

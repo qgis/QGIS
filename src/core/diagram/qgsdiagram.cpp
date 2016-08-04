@@ -16,6 +16,7 @@
 #include "qgsdiagramrendererv2.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <QPainter>
 
@@ -87,7 +88,7 @@ float QgsDiagram::sizePainterUnits( float l, const QgsDiagramSettings& s, const 
 QFont QgsDiagram::scaledFont( const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
   QFont f = s.font;
-  if ( s.sizeType == QgsSymbolV2::MapUnit )
+  if ( s.sizeType == QgsUnitTypes::RenderMapUnits )
   {
     int pixelsize = s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel();
     f.setPixelSize( pixelsize > 0 ? pixelsize : 1 );

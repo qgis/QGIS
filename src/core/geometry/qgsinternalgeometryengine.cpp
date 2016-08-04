@@ -20,6 +20,7 @@
 #include "qgsmultipolygonv2.h"
 #include "qgspolygonv2.h"
 #include "qgsmulticurvev2.h"
+#include "qgsgeometry.h"
 
 #include <QTransform>
 

@@ -36,6 +36,8 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     ~QgsMeasureTool();
 
+    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+
     //! returns whether measuring distance or area
     bool measureArea() { return mMeasureArea; }
 
@@ -95,6 +97,9 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! indicates whether we've recently warned the user about having the wrong
     // project projection
     bool mWrongProjectProjection;
+
+    //! Destination CoordinateReferenceSystem used by the MapCanvas
+    QgsCoordinateReferenceSystem mDestinationCrs;
 
     //! Returns the snapped (map) coordinate
     //@param p (pixel) coordinate

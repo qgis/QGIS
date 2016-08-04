@@ -18,6 +18,7 @@
 #include "qgsoracletablemodel.h"
 #include "qgsdataitem.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 QgsOracleTableModel::QgsOracleTableModel()
     : QStandardItemModel()
@@ -54,16 +55,16 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
-    QGis::WkbType wkbType = layerProperty.types[ i ];
+    QgsWkbTypes::Type wkbType = layerProperty.types[ i ];
     int srid = layerProperty.srids[ i ];
 
 
     QString tip;
-    if ( wkbType == QGis::WKBUnknown )
+    if ( wkbType == QgsWkbTypes::Unknown )
     {
       tip = tr( "Specify a geometry type" );
     }
-    else if ( wkbType != QGis::WKBNoGeometry && srid == 0 )
+    else if ( wkbType != QgsWkbTypes::NoGeometry && srid == 0 )
     {
       tip = tr( "Enter a SRID" );
     }
@@ -74,16 +75,16 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     }
 
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
-    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QGis::WKBUnknown ? tr( "Select..." ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
-    typeItem->setData( wkbType == QGis::WKBUnknown, Qt::UserRole + 1 );
+    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select..." ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
+    typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
-    if ( wkbType == QGis::WKBUnknown )
+    if ( wkbType == QgsWkbTypes::Unknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != QGis::WKBNoGeometry ? QString::number( srid ) : "" );
-    sridItem->setEditable( wkbType != QGis::WKBNoGeometry && srid == 0 );
+    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : "" );
+    sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == 0 );
     if ( sridItem->isEditable() )
     {
       sridItem->setText( tr( "Enter..." ) );
@@ -224,28 +225,28 @@ void QgsOracleTableModel::setSql( const QModelIndex &index, const QString &sql )
   }
 }
 
-QIcon QgsOracleTableModel::iconForWkbType( QGis::WkbType type )
+QIcon QgsOracleTableModel::iconForWkbType( QgsWkbTypes::Type type )
 {
   switch ( type )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
       return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::LineString25D:
+    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::MultiLineString25D:
       return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Polygon25D:
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygon25D:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-    case QGis::WKBNoGeometry:
+    case QgsWkbTypes::NoGeometry:
       return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
-    case QGis::WKBUnknown:
+    case QgsWkbTypes::Unknown:
       break;
   }
   return QgsApplication::getThemeIcon( "/mIconLayer.png" );
@@ -258,14 +259,14 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
 
   if ( idx.column() == dbtmType || idx.column() == dbtmSrid || idx.column() == dbtmPkCol )
   {
-    QGis::WkbType wkbType = ( QGis::WkbType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
+    QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
 
     QString tip;
-    if ( wkbType == QGis::WKBUnknown )
+    if ( wkbType == QgsWkbTypes::Unknown )
     {
       tip = tr( "Specify a geometry type" );
     }
-    else if ( wkbType != QGis::WKBNoGeometry )
+    else if ( wkbType != QgsWkbTypes::NoGeometry )
     {
       bool ok;
       int srid = idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
@@ -303,7 +304,7 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
   return true;
 }
 
-QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSourceURI &connInfo )
+QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSourceUri &connInfo )
 {
   if ( !index.isValid() )
   {
@@ -311,8 +312,8 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
     return QString::null;
   }
 
-  QGis::WkbType wkbType = ( QGis::WkbType ) itemFromIndex( index.sibling( index.row(), dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
-  if ( wkbType == QGis::WKBUnknown )
+  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  if ( wkbType == QgsWkbTypes::Unknown )
   {
     QgsDebugMsg( "unknown geometry type" );
     // no geometry type selected
@@ -336,7 +337,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
 
   QString geomColumnName;
   QString srid;
-  if ( wkbType != QGis::WKBNoGeometry )
+  if ( wkbType != QgsWkbTypes::NoGeometry )
   {
     geomColumnName = index.sibling( index.row(), dbtmGeomCol ).data( Qt::DisplayRole ).toString();
 
@@ -353,7 +354,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   bool selectAtId = itemFromIndex( index.sibling( index.row(), dbtmSelectAtId ) )->checkState() == Qt::Checked;
   QString sql = index.sibling( index.row(), dbtmSql ).data( Qt::DisplayRole ).toString();
 
-  QgsDataSourceURI uri( connInfo );
+  QgsDataSourceUri uri( connInfo );
   uri.setDataSource( ownerName, tableName, geomColumnName, sql, pkColumnName );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );

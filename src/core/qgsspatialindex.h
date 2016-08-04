@@ -42,6 +42,9 @@ class QgsPoint;
 class QgsSpatialIndexData;
 class QgsFeatureIterator;
 
+/** \ingroup core
+ * \class QgsSpatialIndex
+ */
 class CORE_EXPORT QgsSpatialIndex
 {
 

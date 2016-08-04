@@ -1,8 +1,16 @@
 /***************************************************************************
- *  qgsgeometrycheckfactory.cpp                                            *
- *  -------------------                                                    *
- *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
- *  email                : smani@sourcepole.ch                             *
+    qgsgeometrycheckfactory.cpp
+    ---------------------
+    begin                : September 2015
+    copyright            : (C) 2014 by Sandro Mani / Sourcepole AG
+    email                : smani at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
 
 #include <QSettings>
@@ -34,9 +42,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::restorePrevious
   ui.doubleSpinBoxAngle->setValue( QSettings().value( sSettingsGroup + "minimalAngle" ).toDouble() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxAngle->setEnabled( geomType == QGis::Polygon || geomType == QGis::Line );
+  ui.checkBoxAngle->setEnabled( geomType == QgsWkbTypes::PolygonGeometry || geomType == QgsWkbTypes::LineGeometry );
   return ui.checkBoxAngle->isEnabled();
 }
 
@@ -64,9 +72,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::restorePrevious(
   ui.doubleSpinBoxArea->setValue( QSettings().value( sSettingsGroup + "minimalArea" ).toDouble() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxArea->setEnabled( geomType == QGis::Polygon );
+  ui.checkBoxArea->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxArea->isEnabled();
 }
 
@@ -93,9 +101,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>::restorePrev
   ui.checkBoxCovered->setChecked( QSettings().value( sSettingsGroup + "checkCovers" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxCovered->setEnabled( geomType == QGis::Polygon );
+  ui.checkBoxCovered->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxCovered->isEnabled();
 }
 
@@ -121,9 +129,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryDegeneratePolygonCheck>::res
   ui.checkBoxDegeneratePolygon->setChecked( QSettings().value( sSettingsGroup + "checkDegeneratePolygon" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryDegeneratePolygonCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryDegeneratePolygonCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxDegeneratePolygon->setEnabled( geomType == QGis::Polygon );
+  ui.checkBoxDegeneratePolygon->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxDegeneratePolygon->isEnabled();
 }
 
@@ -149,9 +157,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::restorePrev
   ui.checkBoxDuplicates->setChecked( QSettings().value( sSettingsGroup + "checkDuplicates" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxDuplicates->setEnabled( geomType == QGis::Polygon );
+  ui.checkBoxDuplicates->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxDuplicates->isEnabled();
 }
 
@@ -177,9 +185,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesCheck>::restor
   ui.checkBoxDuplicateNodes->setChecked( QSettings().value( sSettingsGroup + "checkDuplicateNodes" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxDuplicateNodes->setEnabled( geomType == QGis::Polygon || geomType == QGis::Line );
+  ui.checkBoxDuplicateNodes->setEnabled( geomType == QgsWkbTypes::PolygonGeometry || geomType == QgsWkbTypes::LineGeometry );
   return ui.checkBoxDuplicateNodes->isEnabled();
 }
 
@@ -206,9 +214,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryGapCheck>::restorePrevious( 
   ui.doubleSpinBoxGapArea->setValue( QSettings().value( sSettingsGroup + "maxGapArea" ).toDouble() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryGapCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryGapCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxGaps->setEnabled( geomType == QGis::Polygon );
+  ui.checkBoxGaps->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   ui.doubleSpinBoxGapArea->setEnabled( ui.checkBoxGaps->isEnabled() );
   return ui.checkBoxGaps->isEnabled();
 }
@@ -236,9 +244,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::restorePrevious(
   ui.checkBoxNoHoles->setChecked( QSettings().value( sSettingsGroup + "checkHoles" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxNoHoles->setEnabled( geomType == QGis::Polygon );
+  ui.checkBoxNoHoles->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxNoHoles->isEnabled();
 }
 
@@ -264,7 +272,7 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::restorePrev
   ui.checkBoxMultipart->setChecked( QSettings().value( sSettingsGroup + "checkMultipart" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& /*ui*/, QGis::GeometryType /*geomType*/ ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& /*ui*/, QgsWkbTypes::GeometryType /*geomType*/ ) const
 {
   return true;
 }
@@ -292,9 +300,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::restorePrevio
   ui.doubleSpinBoxOverlapArea->setValue( QSettings().value( sSettingsGroup + "maxOverlapArea" ).toDouble() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxOverlaps->setEnabled( geomType == QGis::Polygon );
+  ui.checkBoxOverlaps->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   ui.doubleSpinBoxOverlapArea->setEnabled( ui.checkBoxOverlaps->isEnabled() );
   return ui.checkBoxOverlaps->isEnabled();
 }
@@ -323,9 +331,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCheck>::restore
   ui.doubleSpinBoxSegmentLength->setValue( QSettings().value( sSettingsGroup + "minSegmentLength" ).toDouble() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxSegmentLength->setEnabled( geomType == QGis::Polygon || geomType == QGis::Line );
+  ui.checkBoxSegmentLength->setEnabled( geomType == QgsWkbTypes::PolygonGeometry || geomType == QgsWkbTypes::LineGeometry );
   ui.doubleSpinBoxSegmentLength->setEnabled( ui.checkBoxSegmentLength->isEnabled() );
   return ui.checkBoxSegmentLength->isEnabled();
 }
@@ -353,9 +361,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>::rest
   ui.checkBoxSelfIntersections->setChecked( QSettings().value( sSettingsGroup + "checkSelfIntersections" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxSelfIntersections->setEnabled( geomType == QGis::Polygon || geomType == QGis::Line );
+  ui.checkBoxSelfIntersections->setEnabled( geomType == QgsWkbTypes::PolygonGeometry || geomType == QgsWkbTypes::LineGeometry );
   return ui.checkBoxSelfIntersections->isEnabled();
 }
 
@@ -381,13 +389,13 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::restore
   ui.checkBoxSliverPolygons->setChecked( QSettings().value( sSettingsGroup + "checkSliverPolygons" ).toBool() );
   ui.checkBoxSliverArea->setChecked( QSettings().value( sSettingsGroup + "sliverPolygonsAreaThresholdEnabled" ).toBool() );
   ui.doubleSpinBoxSliverArea->setValue( QSettings().value( sSettingsGroup + "sliverPolygonsAreaThreshold" ).toDouble() );
-  ui.doubleSpinBoxSliverThinness->setValue( QSettings().value( sSettingsGroup + "sliverPolygonsThinnessThreshold" ).toDouble() );
+  ui.doubleSpinBoxSliverThinness->setValue( QSettings().value( sSettingsGroup + "sliverPolygonsThinnessThreshold", 20 ).toDouble() );
   ui.checkBoxSliverPolygons->setChecked( QSettings().value( sSettingsGroup + "checkSliverPolygons" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
 {
-  ui.checkBoxSliverPolygons->setEnabled( geomType == QGis::Polygon );
+  ui.checkBoxSliverPolygons->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxSliverPolygons->isEnabled();
 }
 
@@ -423,7 +431,7 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::restorePrevious(
   ui.checkBoxMultipolygon->setChecked( QSettings().value( sSettingsGroup + "checkTypeMultipolygon" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& /*ui*/, QGis::GeometryType /*geomType*/ ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& /*ui*/, QgsWkbTypes::GeometryType /*geomType*/ ) const
 {
   return true;
 }
@@ -440,27 +448,27 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::cre
   int allowedTypes = 0;
   if ( ui.checkBoxPoint->isChecked() )
   {
-    allowedTypes |= 1 << QGis::WKBPoint;
+    allowedTypes |= 1 << QgsWkbTypes::Point;
   }
   if ( ui.checkBoxMultipoint->isChecked() )
   {
-    allowedTypes |= 1 << QGis::WKBMultiPoint;
+    allowedTypes |= 1 << QgsWkbTypes::MultiPoint;
   }
   if ( ui.checkBoxLine->isChecked() )
   {
-    allowedTypes |= 1 << QGis::WKBLineString;
+    allowedTypes |= 1 << QgsWkbTypes::LineString;
   }
   if ( ui.checkBoxMultiline->isChecked() )
   {
-    allowedTypes |= 1 << QGis::WKBMultiLineString;
+    allowedTypes |= 1 << QgsWkbTypes::MultiLineString;
   }
   if ( ui.checkBoxPolygon->isChecked() )
   {
-    allowedTypes |= 1 << QGis::WKBPolygon;
+    allowedTypes |= 1 << QgsWkbTypes::Polygon;
   }
   if ( ui.checkBoxMultipolygon->isChecked() )
   {
-    allowedTypes |= 1 << QGis::WKBMultiPolygon;
+    allowedTypes |= 1 << QgsWkbTypes::MultiPolygon;
   }
   if ( allowedTypes != 0 )
   {

@@ -28,7 +28,7 @@ class QDomElement;
 class QgsFillSymbolV2;
 class QgsComposerMapOverview;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapOverviewStack
  * \brief A collection of overviews which are drawn above the map content in a
  * QgsComposerMap. The overview stack controls which overviews are drawn and the
@@ -119,13 +119,13 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * @param elem is DOM node corresponding to a 'ComposerMap' tag
      * @param doc DOM document
      * @returns true if read was successful
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& elem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& elem, const QDomDocument& doc ) override;
 
 };
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapOverview
  * \brief An individual overview which is drawn above the map content in a
  * QgsComposerMap, and shows the extent of another QgsComposerMap.
@@ -154,16 +154,16 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     /** Stores overview state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
      * @param doc DOM document
-     * @see readXML
+     * @see readXml
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets overview state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapOverview' tag
      * @param doc is DOM document
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     bool usesAdvancedEffects() const override;
 

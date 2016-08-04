@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsrastercalcnode.h"
 #include "qgsrasterblock.h"
+#include "qgsrastermatrix.h"
 #include <cfloat>
 
 QgsRasterCalcNode::QgsRasterCalcNode()
@@ -90,7 +91,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
   QMap<QString, QgsRasterMatrix*>::const_iterator it = rasterData.constBegin();
   for ( ; it != rasterData.constEnd(); ++it )
   {
-    QgsRasterBlock* block = new QgsRasterBlock( QGis::Float32, it.value()->nColumns(), it.value()->nRows(), it.value()->nodataValue() );
+    QgsRasterBlock* block = new QgsRasterBlock( Qgis::Float32, it.value()->nColumns(), it.value()->nRows(), it.value()->nodataValue() );
     for ( int row = 0; row < it.value()->nRows(); ++row )
     {
       for ( int col = 0; col < it.value()->nColumns(); ++col )

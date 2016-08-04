@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsRendererRulePropsDialog</class>
- <widget class="QDialog" name="QgsRendererRulePropsDialog">
+ <class>QgsRendererRulePropsWidget</class>
+ <widget class="QWidget" name="QgsRendererRulePropsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>489</width>
-    <height>261</height>
+    <width>376</width>
+    <height>155</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Rule properties</string>
+   <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -116,16 +116,6 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -135,16 +125,6 @@
    <header>qgsscalerangewidget.h</header>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>editLabel</tabstop>
-  <tabstop>editFilter</tabstop>
-  <tabstop>btnExpressionBuilder</tabstop>
-  <tabstop>btnTestFilter</tabstop>
-  <tabstop>editDescription</tabstop>
-  <tabstop>groupScale</tabstop>
-  <tabstop>groupSymbol</tabstop>
-  <tabstop>buttonBox</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

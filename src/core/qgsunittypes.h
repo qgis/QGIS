@@ -36,6 +36,19 @@ class CORE_EXPORT QgsUnitTypes
 {
   public:
 
+    //! Units of distance
+    enum DistanceUnit
+    {
+      DistanceMeters = 0, /*!< meters */
+      DistanceKilometers, /*!< kilometers */
+      DistanceFeet, /*!< imperial feet */
+      DistanceNauticalMiles, /*!< nautical miles */
+      DistanceYards, /*!< imperial yards */
+      DistanceMiles, /*!< terrestial miles */
+      DistanceDegrees, /*!< degrees, for planar geographic CRS distance measurements */
+      DistanceUnknownUnit, /*!< unknown distance unit */
+    };
+
     /** Types of distance units
      */
     enum DistanceUnitType
@@ -48,42 +61,55 @@ class CORE_EXPORT QgsUnitTypes
     //! Units of area
     enum AreaUnit
     {
-      SquareMeters = 0, /*!< square meters */
-      SquareKilometers, /*!< square kilometers */
-      SquareFeet, /*!< square feet */
-      SquareYards, /*!< square yards */
-      SquareMiles, /*!< square miles */
-      Hectares, /*!< hectares */
-      Acres, /*!< acres */
-      SquareNauticalMiles, /*!< square nautical miles */
-      SquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
-      UnknownAreaUnit, /*!< unknown areal unit */
+      AreaSquareMeters = 0, /*!< square meters */
+      AreaSquareKilometers, /*!< square kilometers */
+      AreaSquareFeet, /*!< square feet */
+      AreaSquareYards, /*!< square yards */
+      AreaSquareMiles, /*!< square miles */
+      AreaHectares, /*!< hectares */
+      AreaAcres, /*!< acres */
+      AreaSquareNauticalMiles, /*!< square nautical miles */
+      AreaSquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
+      AreaUnknownUnit, /*!< unknown areal unit */
     };
 
     //! Units of angles
     enum AngleUnit
     {
       AngleDegrees = 0, /*!< degrees */
-      Radians, /*!< square kilometers */
-      Gon, /*!< gon/gradian */
-      MinutesOfArc, /*!< minutes of arc */
-      SecondsOfArc, /*!< seconds of arc */
-      Turn, /*!< turn/revolutions */
-      UnknownAngleUnit, /*!< unknown angle unit */
+      AngleRadians, /*!< square kilometers */
+      AngleGon, /*!< gon/gradian */
+      AngleMinutesOfArc, /*!< minutes of arc */
+      AngleSecondsOfArc, /*!< seconds of arc */
+      AngleTurn, /*!< turn/revolutions */
+      AngleUnknownUnit, /*!< unknown angle unit */
     };
+
+    //! Rendering size units
+    enum RenderUnit
+    {
+      RenderMillimeters = 0, //!< millimeters
+      RenderMapUnits, //!< map units
+      RenderPixels, //!< pixels
+      RenderPercentage, //!< percentage of another measurement (eg canvas size, feature size)
+      RenderUnknownUnit, //!< mixed or unknown units
+    };
+
+    //! List of render units
+    typedef QList<RenderUnit> RenderUnitList;
 
     // DISTANCE UNITS
 
     /** Returns the type for a distance unit.
      */
-    static DistanceUnitType unitType( QGis::UnitType unit );
+    static DistanceUnitType unitType( DistanceUnit unit );
 
     /** Encodes a distance unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeDistanceUnit()
      */
-    static QString encodeUnit( QGis::UnitType unit );
+    static QString encodeUnit( QgsUnitTypes::DistanceUnit unit );
 
     /** Decodes a distance unit from a string.
      * @param string string to decode
@@ -91,27 +117,27 @@ class CORE_EXPORT QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
      */
-    static QGis::UnitType decodeDistanceUnit( const QString& string, bool *ok = 0 );
+    static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString& string, bool *ok = 0 );
 
     /** Returns a translated string representing a distance unit.
      * @param unit unit to convert to string
      * @see stringToDistanceUnit()
      */
-    static QString toString( QGis::UnitType unit );
+    static QString toString( QgsUnitTypes::DistanceUnit unit );
 
     /** Converts a translated string to a distance unit.
      * @param string string representing a distance unit
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
-    static QGis::UnitType stringToDistanceUnit( const QString& string, bool *ok = 0 );
+    static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString& string, bool *ok = 0 );
 
     /** Returns the conversion factor between the specified distance units.
      * @param fromUnit distance unit to convert from
      * @param toUnit distance unit to convert to
      * @returns multiplication factor to convert between units
      */
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+    static double fromUnitToUnitFactor( QgsUnitTypes::DistanceUnit fromUnit, QgsUnitTypes::DistanceUnit toUnit );
 
     // AREAL UNITS
 
@@ -158,7 +184,7 @@ class CORE_EXPORT QgsUnitTypes
      * @param distanceUnit distance unit to convert
      * @return matching areal unit
      */
-    static AreaUnit distanceToAreaUnit( QGis::UnitType distanceUnit );
+    static AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
 
     // ANGULAR UNITS
 
@@ -197,25 +223,22 @@ class CORE_EXPORT QgsUnitTypes
      */
     static QString formatAngle( double angle, int decimals, AngleUnit unit );
 
-    //TODO QGIS 3.0 - enable and move symbol units here! Otherwise creates circular dependencies...
-#if 0
-    // SYMBOL UNITS
+    // RENDER UNITS
 
-    /** Encodes a symbol unit to a string.
+    /** Encodes a render unit to a string.
      * @param unit unit to encode
      * @returns encoded string
-     * @see decodeSymbolUnit()
+     * @see decodeRenderUnit()
      */
-    static QString encodeUnit( QgsSymbolV2::OutputUnit unit );
+    static QString encodeUnit( RenderUnit unit );
 
-    /** Decodes a symbol unit from a string.
+    /** Decodes a render unit from a string.
      * @param string string to decode
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @returns decoded units
      * @see encodeUnit()
      */
-    static QgsSymbolV2::OutputUnit decodeSymbolUnit( const QString& string, bool *ok = 0 );
-#endif
+    static RenderUnit decodeRenderUnit( const QString& string, bool *ok = 0 );
 
 };
 

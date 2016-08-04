@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsGeometry, NULL
+from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -124,7 +124,7 @@ class SpatialJoin(GeoAlgorithm):
         else:
             numFields = {}
             for j in xrange(len(joinFields)):
-                if joinFields[j].type() in [QVariant.Int, QVariant.Double]:
+                if joinFields[j].type() in [QVariant.Int, QVariant.Double, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
                     numFields[j] = []
                     for i in sumList:
                         field = QgsField(i + unicode(joinFields[j].name()), QVariant.Double, '', 24, 16)
@@ -162,7 +162,7 @@ class SpatialJoin(GeoAlgorithm):
             inGeom = vector.snapToPrecision(f.geometry(), precision)
             none = True
             joinList = []
-            if inGeom.type() == QGis.Point:
+            if inGeom.type() == QgsWkbTypes.PointGeometry:
                 bbox = inGeom.buffer(10, 2).boundingBox()
             else:
                 bbox = inGeom.boundingBox()

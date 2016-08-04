@@ -23,12 +23,12 @@
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgsdockwidget.h"
 
 #include <QCheckBox>
 #include <QDoubleValidator>
 #include <QComboBox>
 #include <QLineEdit>
-#include <QDockWidget>
 #include <QPushButton>
 #include <QDoubleSpinBox>
 
@@ -303,7 +303,7 @@ void QgsSnappingDialog::addLayers( const QList<QgsMapLayer *>& layers )
 void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
 {
   QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( theMapLayer );
-  if ( !currentVectorLayer || currentVectorLayer->geometryType() == QGis::NoGeometry )
+  if ( !currentVectorLayer || currentVectorLayer->geometryType()  == QgsWkbTypes::NullGeometry )
     return;
 
   QSettings myQsettings;
@@ -368,7 +368,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
   mLayerTreeWidget->setItemWidget( item, 4, cbxUnits );
 
   QCheckBox *cbxAvoidIntersection = nullptr;
-  if ( currentVectorLayer->geometryType() == QGis::Polygon )
+  if ( currentVectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry )
   {
     cbxAvoidIntersection = new QCheckBox( mLayerTreeWidget );
     mLayerTreeWidget->setItemWidget( item, 5, cbxAvoidIntersection );
@@ -503,7 +503,7 @@ void QgsSnappingDialog::setSnappingMode()
 //
 
 QgsSnappingDock::QgsSnappingDock( const QString& title, QWidget* parent, Qt::WindowFlags flags )
-    : QDockWidget( title, parent, flags )
+    : QgsDockWidget( title, parent, flags )
 {
   setObjectName( "Snapping and Digitizing Options" ); // set object name so the position can be saved
 }

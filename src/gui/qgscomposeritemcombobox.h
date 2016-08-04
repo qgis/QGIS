@@ -22,11 +22,11 @@
 class QgsComposerProxyModel;
 
 /**
- * /class QgsComposerItemComboBox
- * /ingroup gui
- * /brief The QgsComposerItemComboBox class is a combo box which displays items of
+ * \class QgsComposerItemComboBox
+ * \ingroup gui
+ * \brief The QgsComposerItemComboBox class is a combo box which displays items of
  * a matching type from a composition.
- * /note added in 2.16
+ * \note added in 2.16
  */
 class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
 {

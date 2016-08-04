@@ -125,6 +125,7 @@ void QgsGeometryCheckerFixDialog::fixError()
 
   QgsGeometryCheckError* error = mErrors.at( 0 );
   mChecker->fixError( error, mRadioGroup->checkedId() );
+  mChecker->getLayer()->triggerRepaint();
 
   unsetCursor();
 
@@ -165,7 +166,6 @@ void QgsGeometryCheckerFixDialog::fixError()
   }
   adjustSize();
   emit currentErrorChanged( error );
-  mIface->mapCanvas()->refresh();
 }
 
 void QgsGeometryCheckerFixDialog::skipError()

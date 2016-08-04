@@ -21,6 +21,7 @@
 #include "qgscomposerattributetable.h"
 #include "qgscomposertablecolumn.h"
 #include "qgscomposermap.h"
+#include "qgscomposition.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -318,7 +319,7 @@ void QgsComposerTableWidget::updateGuiElements()
   if ( mComposerTable->vectorLayer() )
   {
     mLayerComboBox->setLayer( mComposerTable->vectorLayer() );
-    if ( mComposerTable->vectorLayer()->geometryType() == QGis::NoGeometry )
+    if ( mComposerTable->vectorLayer()->geometryType() == QgsWkbTypes::NullGeometry )
     {
       //layer has no geometry, so uncheck & disable controls which require geometry
       mShowOnlyVisibleFeaturesCheckBox->setChecked( false );
@@ -512,7 +513,7 @@ void QgsComposerTableWidget::changeLayer( QgsMapLayer *layer )
   mComposerTable->update();
   mComposerTable->endCommand();
 
-  if ( vl->geometryType() == QGis::NoGeometry )
+  if ( vl->geometryType() == QgsWkbTypes::NullGeometry )
   {
     //layer has no geometry, so uncheck & disable controls which require geometry
     mShowOnlyVisibleFeaturesCheckBox->setChecked( false );

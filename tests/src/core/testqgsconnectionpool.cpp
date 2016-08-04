@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgspointv2.h"
 #include "qgslinestringv2.h"
@@ -114,14 +115,16 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
 
   for ( int i = 0, n = layer1Features.count(); i < n; ++i )
   {
-    const QgsPointV2* geom = dynamic_cast<const QgsPointV2*>( layer1Features[i].geometry()->geometry() );
+    QgsGeometry featureGeom = layer1Features[i].geometry();
+    const QgsPointV2* geom = dynamic_cast<const QgsPointV2*>( featureGeom.geometry() );
     QVERIFY( geom != nullptr );
     QVERIFY( qFuzzyCompare( geom->x(), i ) );
     QVERIFY( qFuzzyCompare( geom->y(), i ) );
   }
   for ( int i = 0, n = layer2Features.count(); i < n; ++i )
   {
-    const QgsLineStringV2* geom = dynamic_cast<const QgsLineStringV2*>( layer2Features[i].geometry()->geometry() );
+    QgsGeometry featureGeom = layer2Features[i].geometry();
+    const QgsLineStringV2* geom = dynamic_cast<const QgsLineStringV2*>( featureGeom.geometry() );
     QVERIFY( geom != nullptr );
     int nVtx = geom->vertexCount();
     QVERIFY( nVtx == nRoutePts );

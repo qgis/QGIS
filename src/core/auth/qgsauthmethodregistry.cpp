@@ -277,7 +277,7 @@ QgsAuthMethod *QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
   }
   else
   {
-    QgsDebugMsg( "dlopen suceeded" );
+    QgsDebugMsg( "dlopen succeeded" );
     dlclose( handle );
   }
 

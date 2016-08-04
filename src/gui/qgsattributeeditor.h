@@ -21,16 +21,13 @@
 #include <QMetaType>
 #include <QGridLayout>
 
-#include "qgsfeature.h"
-#include "qgsrelationmanager.h"
-
 class QgsAttributeEditorContext;
 class QgsAttributeEditorElement;
 class QgsDualView;
 class QgsRelationManager;
 class QgsVectorLayer;
 
-/**
+/** \ingroup gui
  * \brief create attribute widget for editing
  *
  * @deprecated

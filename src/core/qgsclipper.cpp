@@ -40,12 +40,12 @@ const double QgsClipper::SMALL_NUM = 1e-12;
 
 QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr& wkbPtr, const QgsRectangle& clipExtent, QPolygonF& line )
 {
-  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
+  QgsWkbTypes::Type wkbType = wkbPtr.readHeader();
 
   int nPoints;
   wkbPtr >> nPoints;
 
-  int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
+  int skipZM = ( QgsWkbTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
 
   if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
   {

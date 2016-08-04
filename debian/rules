@@ -53,6 +53,8 @@ QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 
+WITH_GLOBE=$(shell dpkg --compare-versions "$$(dpkg-query -W --showformat='$${Version}' libosgearth-dev)" ge 2.7 && echo 1)
+
 CMAKE_OPTS := \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
@@ -67,11 +69,11 @@ CMAKE_OPTS := \
 	-DWITH_APIDOC=TRUE \
 	-DGENERATE_QHP=TRUE \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
-	-DWITH_GLOBE=TRUE \
 	-DWITH_INTERNAL_HTTPLIB2=FALSE \
 	-DWITH_INTERNAL_JINJA2=FALSE \
 	-DWITH_INTERNAL_MARKUPSAFE=FALSE \
 	-DWITH_INTERNAL_PYGMENTS=FALSE \
+	-DWITH_INTERNAL_REQUESTS=FALSE \
 	-DWITH_INTERNAL_DATEUTIL=FALSE \
 	-DWITH_INTERNAL_PYTZ=FALSE \
 	-DWITH_INTERNAL_YAML=FALSE \
@@ -111,15 +113,20 @@ else
 	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=FALSE
 endif
 
+ifneq (,$(WITH_GLOBE))
+	CMAKE_OPTS += -DWITH_GLOBE=TRUE
+endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"wheezy precise"))
 	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
-	CMAKE_OPTS += \
-		-DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so \
-		-DWITH_QTWEBKIT=FALSE
+	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
+endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
+	CMAKE_OPTS += -DWITH_QTWEBKIT=FALSE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid"))
@@ -197,6 +204,10 @@ endif
 # - remove remaining comments
 
 CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
+
+ifneq (,$(WITH_GLOBE))
+	CONTROL_EXPRESSIONS += globe
+endif
 
 ifneq (,$(WITH_ORACLE))
 	CONTROL_EXPRESSIONS += oracle
@@ -309,8 +320,10 @@ override_dh_auto_install:
 	for file_type in qgs qlr qml qpt; do \
 		for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
 			install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes ; \
-			install -o root -g root -m 644 $(CURDIR)/debian/qgis-$${file_type}-mime$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes/qgis-qgs.png ; \
-		done
+			install -o root -g root -m 644 \
+				$(CURDIR)/debian/qgis-$${file_type}$${size}.png \
+				$(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes/qgis-$${file_type}.png ; \
+		done ; \
 	done
 
 	# Install application icon
@@ -320,9 +333,9 @@ override_dh_auto_install:
 		install -o root -g root -m 644 $(CURDIR)/debian/qbrowser-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qbrowser.png ; \
 	done
 	
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps/qbrowser.svg
+	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qgis.svg
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qbrowser.svg
 
 	# Install desktop files
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/applications

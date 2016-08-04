@@ -96,13 +96,13 @@ class QgsWcsCapabilities : public QObject
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsWcsCapabilities( QgsDataSourceURI const & theUri );
+    explicit QgsWcsCapabilities( QgsDataSourceUri const & theUri );
     QgsWcsCapabilities();
 
     //! Destructor
     ~QgsWcsCapabilities();
 
-    void setUri( QgsDataSourceURI const &theUri );
+    void setUri( QgsDataSourceUri const &theUri );
 
     QgsWcsCapabilitiesProperty capabilities();
 
@@ -277,7 +277,7 @@ class QgsWcsCapabilities : public QObject
                                QgsWcsCoverageSummary *parent = nullptr );
 
     //! Data source uri
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
 
     //! Response capabilities version
     QString mVersion;

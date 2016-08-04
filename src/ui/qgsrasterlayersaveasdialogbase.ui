@@ -564,8 +564,8 @@ datasets with maximum width and height specified below.</string>
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
               </property>
              </widget>
             </item>
@@ -578,8 +578,8 @@ datasets with maximum width and height specified below.</string>
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>../../images/themes/default/mActionCopySelected.png</normaloff>../../images/themes/default/mActionCopySelected.png</iconset>
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionCopySelected.png</normaloff>:/images/themes/default/mActionCopySelected.png</iconset>
               </property>
              </widget>
             </item>
@@ -595,8 +595,8 @@ datasets with maximum width and height specified below.</string>
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
               </property>
              </widget>
             </item>
@@ -609,8 +609,8 @@ datasets with maximum width and height specified below.</string>
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>../../images/themes/default/mActionRemove.png</normaloff>../../images/themes/default/mActionRemove.png</iconset>
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionRemove.svg</normaloff>:/images/themes/default/mActionRemove.svg</iconset>
               </property>
              </widget>
             </item>
@@ -714,7 +714,9 @@ datasets with maximum width and height specified below.</string>
   <tabstop>mLoadTransparentNoDataToolButton</tabstop>
   <tabstop>mRemoveAllNoDataToolButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>mButtonBox</sender>

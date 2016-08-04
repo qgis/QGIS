@@ -21,7 +21,8 @@
 #include <QBrush>
 #include <QPen>
 
-/** An abstract composer item that provides generic methods for nodes based
+/** \ingroup core
+ * An abstract composer item that provides generic methods for nodes based
  * shapes such as polygon or polylines.
  * @note added in QGIS 2.16
  */
@@ -90,7 +91,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /** Remove a node from the shape.
      * @param index of the node to delete
@@ -118,7 +119,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
   protected:
 
@@ -134,11 +135,11 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     /** Method called in paint. */
     virtual void _draw( QPainter *painter ) = 0;
 
-    /** Method called in readXML. */
-    virtual void _readXMLStyle( const QDomElement &elmt ) = 0;
+    /** Method called in readXml. */
+    virtual void _readXmlStyle( const QDomElement &elmt ) = 0;
 
-    /** Method called in writeXML. */
-    virtual void _writeXMLStyle( QDomDocument &doc, QDomElement &elmt ) const = 0;
+    /** Method called in writeXml. */
+    virtual void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const = 0;
 
     /** Rescale the current shape according to the boudning box. Useful when
      * the shape is resized thanks to the rubber band. */

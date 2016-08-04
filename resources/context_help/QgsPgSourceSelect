@@ -31,6 +31,10 @@ To add a layer:
 To filter a layer before adding it to the map, double click on its name or use <label>Build query</label> button. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
 
 <a name="search">
-<h4>Search options</h4>
+<h4>Options</h4>
 </a>
-Ticking <label>Search options</label> enables additional options for searching in different column types and using 2 search modes: <label>Wildcard</label> or <label>RegExp</label>.
+<ul>
+<li><label>Also list tables with no geometry</label>  Indicates that tables without geometry should also be listed.
+<li><label>Keep dialog open</label> Indicated that the dialog should not be closed when tables are added.
+<li>Ticking <label>Search options</label> enables additional options for searching in different column types and using 2 search modes: <label>Wildcard</label> or <label>RegExp</label>.
+</ul>

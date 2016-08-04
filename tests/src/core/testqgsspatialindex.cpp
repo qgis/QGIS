@@ -18,6 +18,7 @@
 #include <QString>
 
 #include <qgsapplication.h>
+#include "qgsfeatureiterator.h"
 #include <qgsgeometry.h>
 #include <qgsspatialindex.h>
 #include <qgsvectordataprovider.h>
@@ -26,7 +27,8 @@
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
   QgsFeature f( id );
-  f.setGeometry( QgsGeometry::fromPoint( QgsPoint( x, y ) ) );
+  QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( x, y ) );
+  f.setGeometry( g );
   return f;
 }
 
@@ -126,7 +128,8 @@ class TestQgsSpatialIndex : public QObject
         for ( int k = 0; k < 500; ++k )
         {
           QgsFeature f( i*1000 + k );
-          f.setGeometry( QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) ) );
+          QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) );
+          f.setGeometry( g );
           index.insertFeature( f );
         }
       }
@@ -147,7 +150,8 @@ class TestQgsSpatialIndex : public QObject
         for ( int k = 0; k < 500; ++k )
         {
           QgsFeature f( i*1000 + k );
-          f.setGeometry( QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) ) );
+          QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) );
+          f.setGeometry( g );
           flist << f;
         }
         vl->dataProvider()->addFeatures( flist );

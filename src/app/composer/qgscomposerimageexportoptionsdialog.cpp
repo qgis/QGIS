@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposerimageexportoptionsdialog.h"
+#include "qgis.h"
 #include <QSettings>
 #include <QCheckBox>
 #include <QPushButton>

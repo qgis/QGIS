@@ -32,7 +32,7 @@
 #include <QStyle>
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI& uri )
-    : QgsWFSRequest( uri.uri() )
+    : QgsWfsRequest( uri.uri() )
     , mNumberMatched( -1 )
 {
   connect( this, SIGNAL( downloadFinished() ), this, SLOT( hitsReplyFinished() ) );
@@ -78,7 +78,7 @@ QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString& re
 // -------------------------
 
 QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData* shared )
-    : QgsWFSRequest( shared->mURI.uri() )
+    : QgsWfsRequest( shared->mURI.uri() )
     , mShared( shared )
     , mStop( false )
     , mProgressDialog( nullptr )
@@ -294,7 +294,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
   {
     bool invertAxis = false;
     if ( !mShared->mWFSVersion.startsWith( "1.0" ) && !mShared->mURI.ignoreAxisOrientation() &&
-         mShared->mSourceCRS.axisInverted() )
+         mShared->mSourceCRS.hasAxisInverted() )
     {
       invertAxis = true;
     }
@@ -302,11 +302,15 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     {
       invertAxis = !invertAxis;
     }
-    getFeatureUrl.addQueryItem( "BBOX",  QString(( invertAxis ) ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                                .arg( qgsDoubleToString( mShared->mRect.xMinimum() ),
-                                      qgsDoubleToString( mShared->mRect.yMinimum() ),
-                                      qgsDoubleToString( mShared->mRect.xMaximum() ),
-                                      qgsDoubleToString( mShared->mRect.yMaximum() ) ) );
+    QString bbox( QString(( invertAxis ) ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+                  .arg( qgsDoubleToString( mShared->mRect.xMinimum() ),
+                        qgsDoubleToString( mShared->mRect.yMinimum() ),
+                        qgsDoubleToString( mShared->mRect.xMaximum() ),
+                        qgsDoubleToString( mShared->mRect.yMaximum() ) ) );
+    // Some servers like Geomedia need the srsname to be explictly appended
+    // otherwise they are confused and do not interpret it properly
+    bbox += "," + mShared->srsName();
+    getFeatureUrl.addQueryItem( "BBOX",  bbox );
   }
   else if ( !mShared->mWFSFilter.isEmpty() )
   {
@@ -389,47 +393,19 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     connect( &mFeatureHitsAsyncRequest, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
   }
 
-  QgsGmlStreamingParser::AxisOrientationLogic axisOrientationLogic( QgsGmlStreamingParser::Honour_EPSG_if_urn );
-  if ( mShared->mURI.ignoreAxisOrientation() )
-  {
-    axisOrientationLogic = QgsGmlStreamingParser::Ignore_EPSG;
-  }
-
   bool interrupted = false;
   bool truncatedResponse = false;
   QSettings s;
   const int maxRetry = s.value( "/qgis/defaultTileMaxRetry", "3" ).toInt();
   int retryIter = 0;
   int lastValidTotalDownloadedFeatureCount = 0;
+  int pagingIter = 1;
+  QString gmlIdFirstFeatureFirstIter;
+  bool disablePaging = false;
   while ( true )
   {
     success = true;
-    QgsGmlStreamingParser* parser;
-    if ( mShared->mLayerPropertiesList.size() )
-    {
-      QList< QgsGmlStreamingParser::LayerProperties > layerPropertiesList;
-      Q_FOREACH ( QgsOgcUtils::LayerProperties layerProperties, mShared->mLayerPropertiesList )
-      {
-        QgsGmlStreamingParser::LayerProperties layerPropertiesOut;
-        layerPropertiesOut.mName = layerProperties.mName;
-        layerPropertiesOut.mGeometryAttribute = layerProperties.mGeometryAttribute;
-        layerPropertiesList << layerPropertiesOut;
-      }
-
-      parser = new QgsGmlStreamingParser( layerPropertiesList,
-                                          mShared->mFields,
-                                          mShared->mMapFieldNameToSrcLayerNameFieldName,
-                                          axisOrientationLogic,
-                                          mShared->mURI.invertAxisOrientation() );
-    }
-    else
-    {
-      parser = new QgsGmlStreamingParser( mShared->mURI.typeName(),
-                                          mShared->mGeometryAttribute,
-                                          mShared->mFields,
-                                          axisOrientationLogic,
-                                          mShared->mURI.invertAxisOrientation() );
-    }
+    QgsGmlStreamingParser* parser = mShared->createParser();
 
     QUrl url( buildURL( mTotalDownloadedFeatureCount,
                         maxFeatures ? maxFeatures : mShared->mMaxFeatures, false ) );
@@ -445,7 +421,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
              true, /* forceRefresh */
              false /* cache */ );
 
-    int featureCount = 0;
+    int featureCountForThisResponse = 0;
     while ( true )
     {
       loop.exec( QEventLoop::ExcludeUserInputEvents );
@@ -555,7 +531,6 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
       QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList =
         parser->getAndStealReadyFeatures();
 
-      featureCount += featurePtrList.size();
       mTotalDownloadedFeatureCount += featurePtrList.size();
 
       if ( !mStop )
@@ -565,11 +540,64 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
       if ( featurePtrList.size() != 0 )
       {
+        // Heuristics to try to detect MapServer WFS 1.1 that honours EPSG axis order, but returns
+        // EPSG:XXXX srsName and not EPSG urns
+        if ( pagingIter == 1 && featureCountForThisResponse == 0 &&
+             mShared->mWFSVersion.startsWith( "1.1" ) &&
+             parser->srsName().startsWith( "EPSG:" ) &&
+             !parser->layerExtent().isNull() &&
+             !mShared->mURI.ignoreAxisOrientation() &&
+             !mShared->mURI.invertAxisOrientation() )
+        {
+          QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( parser->srsName() );
+          if ( crs.isValid() && crs.hasAxisInverted() &&
+               !mShared->mCapabilityExtent.contains( parser->layerExtent() ) )
+          {
+            QgsRectangle invertedRectangle( parser->layerExtent() );
+            invertedRectangle.invert();
+            if ( mShared->mCapabilityExtent.contains( invertedRectangle ) )
+            {
+              mShared->mGetFeatureEPSGDotHonoursEPSGOrder = true;
+              QgsDebugMsg( "Server is likely MapServer. Using mGetFeatureEPSGDotHonoursEPSGOrder mode" );
+            }
+          }
+        }
+
         QVector<QgsWFSFeatureGmlIdPair> featureList;
         for ( int i = 0;i < featurePtrList.size();i++ )
         {
           QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair = featurePtrList[i];
-          featureList.push_back( QgsWFSFeatureGmlIdPair( *( featPair.first ), featPair.second ) );
+          QgsFeature& f = *( featPair.first );
+          QString gmlId( featPair.second );
+          if ( gmlId.isEmpty() )
+          {
+            // Should normally not happen on sane WFS sources, but can happen with
+            // Geomedia
+            gmlId = QgsWFSUtils::getMD5( f );
+            if ( !mShared->mHasWarnedAboutMissingFeatureId )
+            {
+              QgsDebugMsg( "Server returns features without fid/gml:id. Computing a fake one using feature attributes" );
+              mShared->mHasWarnedAboutMissingFeatureId = true;
+            }
+          }
+          if ( pagingIter == 1 && featureCountForThisResponse == 0 )
+          {
+            gmlIdFirstFeatureFirstIter = gmlId;
+          }
+          else if ( pagingIter == 2 && featureCountForThisResponse == 0 && gmlIdFirstFeatureFirstIter == gmlId )
+          {
+            disablePaging = true;
+            QgsDebugMsg( "Server does not seem to properly support paging since it returned the same first feature for 2 different page requests. Disabling paging" );
+          }
+
+          if ( mShared->mGetFeatureEPSGDotHonoursEPSGOrder && f.hasGeometry() )
+          {
+            QgsGeometry g = f.geometry();
+            g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
+            f.setGeometry( g );
+          }
+
+          featureList.push_back( QgsWFSFeatureGmlIdPair( f, gmlId ) );
           delete featPair.first;
           if (( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featurePtrList.size() )
           {
@@ -588,6 +616,8 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
             featureList.clear();
           }
+
+          featureCountForThisResponse ++;
         }
       }
 
@@ -611,7 +641,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
       if ( ++retryIter <= maxRetry )
       {
         QgsMessageLog::logMessage( tr( "Retrying request %1: %2/%3" ).arg( url.toString() ).arg( retryIter ).arg( maxRetry ), tr( "WFS" ) );
-        featureCount = 0;
+        featureCountForThisResponse = 0;
         mTotalDownloadedFeatureCount = lastValidTotalDownloadedFeatureCount;
         continue;
       }
@@ -627,8 +657,18 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     if ( maxFeatures == 1 )
       break;
     // Detect if we are at the last page
-    if (( mShared->mMaxFeatures > 0 && featureCount < mShared->mMaxFeatures ) || featureCount == 0 )
+    if (( mShared->mMaxFeatures > 0 && featureCountForThisResponse < mShared->mMaxFeatures ) || featureCountForThisResponse == 0 )
       break;
+    ++ pagingIter;
+    if ( disablePaging )
+    {
+      mSupportsPaging = mShared->mCaps.supportsPaging = false;
+      mTotalDownloadedFeatureCount = 0;
+      if ( mShared->mMaxFeaturesWasSetFromDefaultForPaging )
+      {
+        mShared->mMaxFeatures = 0;
+      }
+    }
   }
 
   mStop = true;
@@ -753,7 +793,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source,
 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
-    const QgsFields & dataProviderFields = mShared->mCacheDataProvider->fields();
+    QgsFields dataProviderFields = mShared->mCacheDataProvider->fields();
     QgsAttributeList cacheSubSet;
     Q_FOREACH ( int i, mRequest.subsetOfAttributes() )
     {
@@ -861,7 +901,7 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGml
     thisStr.sprintf( "%p", this );
     ++ mCounter;
     mWriterFilename = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QString( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
-    QgsDebugMsg( QString( "Transfering feature iterator cache to %1" ).arg( mWriterFilename ) );
+    QgsDebugMsg( QString( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ) );
     mWriterFile = new QFile( mWriterFilename );
     if ( !mWriterFile->open( QIODevice::WriteOnly ) )
     {
@@ -922,34 +962,34 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
       if ( !v.isNull() && v.type() == QVariant::String )
       {
         QByteArray wkbGeom( QByteArray::fromHex( v.toString().toAscii() ) );
-        QgsGeometry *g = new QgsGeometry();
+        QgsGeometry g;
         unsigned char* wkbClone = new unsigned char[wkbGeom.size()];
         memcpy( wkbClone, wkbGeom.data(), wkbGeom.size() );
         try
         {
-          g->fromWkb( wkbClone, wkbGeom.size() );
+          g.fromWkb( wkbClone, wkbGeom.size() );
           cachedFeature.setGeometry( g );
         }
         catch ( const QgsWkbException& )
         {
           QgsDebugMsg( QString( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
           delete[] wkbClone;
-          cachedFeature.setGeometry( nullptr );
+          cachedFeature.clearGeometry();
         }
       }
       else
       {
-        cachedFeature.setGeometry( nullptr );
+        cachedFeature.clearGeometry();
       }
     }
     else
     {
-      cachedFeature.setGeometry( nullptr );
+      cachedFeature.clearGeometry();
     }
 
-    const QgsGeometry* constGeom = cachedFeature.constGeometry();
+    QgsGeometry constGeom = cachedFeature.geometry();
     if ( !mRequest.filterRect().isNull() &&
-         ( !constGeom || !constGeom->intersects( mRequest.filterRect() ) ) )
+         ( constGeom.isEmpty() || !constGeom.intersects( mRequest.filterRect() ) ) )
     {
       continue;
     }
@@ -1027,9 +1067,9 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
           }
         }
 
-        const QgsGeometry* constGeom = feat.constGeometry();
+        QgsGeometry constGeom = feat.geometry();
         if ( !mRequest.filterRect().isNull() &&
-             ( !constGeom || !constGeom->intersects( mRequest.filterRect() ) ) )
+             ( constGeom.isEmpty() || !constGeom.intersects( mRequest.filterRect() ) ) )
         {
           continue;
         }
@@ -1118,21 +1158,21 @@ bool QgsWFSFeatureIterator::close()
 void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeature& dstFeature )
 {
   //copy the geometry
-  const QgsGeometry* geometry = srcFeature.constGeometry();
-  if ( !mShared->mGeometryAttribute.isEmpty() && geometry && !geometry->isEmpty() )
+  QgsGeometry geometry = srcFeature.geometry();
+  if ( !mShared->mGeometryAttribute.isEmpty() && !geometry.isEmpty() )
   {
-    const unsigned char *geom = geometry->asWkb();
-    int geomSize = geometry->wkbSize();
+    const unsigned char *geom = geometry.asWkb();
+    int geomSize = geometry.wkbSize();
     unsigned char* copiedGeom = new unsigned char[geomSize];
     memcpy( copiedGeom, geom, geomSize );
 
-    QgsGeometry *g = new QgsGeometry();
-    g->fromWkb( copiedGeom, geomSize );
+    QgsGeometry g;
+    g.fromWkb( copiedGeom, geomSize );
     dstFeature.setGeometry( g );
   }
   else
   {
-    dstFeature.setGeometry( nullptr );
+    dstFeature.clearGeometry();
   }
 
   //and the attributes

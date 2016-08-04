@@ -40,6 +40,8 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     Q_PROPERTY( DocumentViewerContent documentViewerContent READ documentViewerContent WRITE setDocumentViewerContent )
     Q_PROPERTY( int documentViewerHeight READ documentViewerHeight WRITE setDocumentViewerHeight )
     Q_PROPERTY( int documentViewerWidth READ documentViewerWidth WRITE setDocumentViewerWidth )
+    Q_PROPERTY( QgsFileWidget::RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
+    Q_PROPERTY( QString defaultRoot READ defaultRoot WRITE setDefaultRoot )
 
   public:
     enum DocumentViewerContent
@@ -94,6 +96,31 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     //! defines if the widget is readonly
     void setReadOnly( bool readOnly );
 
+    /**
+     * Configures if paths are handled absolute or relative and if relative,
+     * which should be the base path.
+     */
+    QgsFileWidget::RelativeStorage relativeStorage() const;
+
+    /**
+     * Configures if paths are handled absolute or relative and if relative,
+     * which should be the base path.
+     */
+    void setRelativeStorage( const QgsFileWidget::RelativeStorage& relativeStorage );
+
+
+    /**
+     * Configures the base path which should be used if the relativeStorage property
+     * is set to QgsFileWidget::RelativeDefaultPath.
+     */
+    QString defaultRoot() const;
+
+    /**
+     * Configures the base path which should be used if the relativeStorage property
+     * is set to QgsFileWidget::RelativeDefaultPath.
+     */
+    void setDefaultRoot( const QString& defaultRoot );
+
   signals:
     //! emitteed as soon as the current document changes
     void valueChanged( const QString& );
@@ -104,11 +131,15 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
   private:
     void updateDocumentViewer();
 
+    QString resolvePath( const QString& path );
+
     //! properties
     bool mFileWidgetVisible;
     DocumentViewerContent mDocumentViewerContent;
     int mDocumentViewerHeight;
     int mDocumentViewerWidth;
+    QgsFileWidget::RelativeStorage mRelativeStorage;
+    QString mDefaultRoot; // configured default root path for QgsFileWidget::RelativeStorage::RelativeDefaultPath
 
     //! UI objects
     QgsFileWidget* mFileWidget;

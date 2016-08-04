@@ -36,6 +36,7 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
 
     virtual QString geometryType() const override { return "Polygon"; }
     virtual QgsPolygonV2* clone() const override;
+    void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
 
@@ -57,6 +58,8 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
     void addInteriorRing( QgsCurveV2* ring ) override;
     //overridden to handle LineString25D rings
     virtual void setExteriorRing( QgsCurveV2* ring ) override;
+
+    virtual QgsAbstractGeometryV2* boundary() const override;
 
 };
 #endif // QGSPOLYGONV2_H

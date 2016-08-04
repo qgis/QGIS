@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsogrconnpool.h"
+#include "qgslogger.h"
 
 QgsOgrConnPool* QgsOgrConnPool::mInstance = nullptr;
 

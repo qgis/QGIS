@@ -53,7 +53,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /*
      * the geometry for the selected feature has changed
      */
-    void geometryChanged( QgsFeatureId fid, QgsGeometry &geom );
+    void geometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
 
     /*
      * the current layer changed
@@ -84,7 +84,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /**
      * Update select feature rubber band using a certain geometry
      */
-    void updateSelectFeature( QgsGeometry &geom );
+    void updateSelectFeature( const QgsGeometry &geom );
 
     /**
      * Deletes the rubber band pointers and clears mRubberBands

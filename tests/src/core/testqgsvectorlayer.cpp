@@ -22,10 +22,10 @@
 #include <QDesktopServices>
 
 //qgis includes...
-#include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
+#include "qgsfeatureiterator.h"
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
@@ -72,7 +72,6 @@ class TestQgsVectorLayer : public QObject
   public:
     TestQgsVectorLayer()
         : mTestHasError( false )
-        , mpMapRenderer( 0 )
         , mpPointsLayer( 0 )
         , mpLinesLayer( 0 )
         , mpPolysLayer( 0 )
@@ -81,7 +80,6 @@ class TestQgsVectorLayer : public QObject
 
   private:
     bool mTestHasError;
-    QgsMapRenderer * mpMapRenderer;
     QgsMapLayer * mpPointsLayer;
     QgsMapLayer * mpLinesLayer;
     QgsMapLayer * mpPolysLayer;
@@ -161,17 +159,7 @@ void TestQgsVectorLayer::initTestCase()
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
-  //
-  // We only need maprender instead of mapcanvas
-  // since maprender does not require a qui
-  // and is more light weight
-  //
-  mpMapRenderer = new QgsMapRenderer();
-  QStringList myLayers;
-  myLayers << mpPointsLayer->id();
-  myLayers << mpPolysLayer->id();
-  myLayers << mpLinesLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
+
   mReport += "<h1>Vector Renderer Tests</h1>\n";
 }
 
@@ -186,7 +174,6 @@ void TestQgsVectorLayer::cleanupTestCase()
     myFile.close();
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
-  delete mpMapRenderer;
   QgsApplication::exitQgis();
 }
 
@@ -282,7 +269,7 @@ void TestQgsVectorLayer::QgsVectorLayersetRendererV2()
   TestSignalReceiver receiver;
   QObject::connect( vLayer, SIGNAL( rendererChanged() ),
                     &receiver, SLOT( onRendererChanged() ) );
-  QgsSingleSymbolRendererV2* symbolRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( QGis::Point ) );
+  QgsSingleSymbolRendererV2* symbolRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   QCOMPARE( receiver.rendererChanged, false );
   vLayer->setRendererV2( symbolRenderer );

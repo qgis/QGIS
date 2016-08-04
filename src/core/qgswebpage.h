@@ -28,9 +28,10 @@
 #include <QMenu>
 #include <QNetworkAccessManager>
 #include <QPalette>
+#include <QTextBrowser>
 
 
-/**
+/** \ingroup core
  * @brief The QWebSettings class is a collection of stubs to mimic the API of a QWebSettings on systems
  * where QtWebkit is not available.
  */
@@ -78,22 +79,20 @@ class CORE_EXPORT QWebSettings : public QObject
     explicit QWebSettings( QObject* parent = 0 )
         : QObject( parent )
     {
-
     }
 
     void setUserStyleSheetUrl( const QUrl& )
     {
-
     }
 
-    void setAttribute( WebAttribute, bool on )
+    void setAttribute( WebAttribute, bool )
     {
-      Q_UNUSED( on );
     }
 /// @endcond
 };
 
 /**
+ * \ingroup core
  * @brief The QWebPage class is a collection of stubs to mimic the API of a QWebPage on systems
  * where QtWebkit is not available.
  */
@@ -147,7 +146,14 @@ class CORE_EXPORT QWebPage : public QObject
 
     void setLinkDelegationPolicy( LinkDelegationPolicy linkDelegationPolicy )
     {
-      Q_UNUSED( linkDelegationPolicy );
+      if ( !parent() )
+        return;
+
+      QTextBrowser *tb = qobject_cast<QTextBrowser *>( parent() );
+      if ( !tb )
+        return;
+
+      tb->setOpenExternalLinks( linkDelegationPolicy != DontDelegateLinks );
     }
 
     void setNetworkAccessManager( QNetworkAccessManager* networkAccessManager )

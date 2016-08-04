@@ -16,11 +16,14 @@
 #define QGSHEATMAPRENDERERWIDGET_H
 
 #include "ui_qgsheatmaprendererwidgetbase.h"
-#include "qgsheatmaprenderer.h"
 #include "qgsrendererv2widget.h"
 
 class QMenu;
+class QgsHeatmapRenderer;
 
+/** \ingroup gui
+ * \class QgsHeatmapRendererWidget
+ */
 class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererV2Widget, private Ui::QgsHeatmapRendererWidgetBase
 {
     Q_OBJECT

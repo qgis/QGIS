@@ -1,4 +1,4 @@
-class QgsWKBTypes
+class QgsWkbTypes
 {
 %TypeHeaderCode
 #include <qgswkbtypes.h>
@@ -96,6 +96,9 @@ class QgsWKBTypes
      */
     static Type flatType( Type type );
 
+    /** Returns the modified input geometry type according to hasZ / hasM */
+    static Type zmType( Type type, bool hasZ, bool hasM );
+
     /** Attempts to extract the WKB type from a WKT string.
      * @param wktStr a valid WKT string
      */
@@ -142,6 +145,22 @@ class QgsWKBTypes
     /** Returns a display string type for a WKB type, eg the geometry name used in WKT geometry representations.
      */
     static QString displayString( Type type );
+
+    /**
+     * Return a display string for a geometry type.
+     *
+     * This will return one of the following strings:
+     *
+     * - Point
+     * - Line
+     * - Polygon
+     * - Unknown Geometry
+     * - No Geometry
+     * - Invalid Geometry
+     *
+     * @note added in QGIS 3.0
+     */
+    static QString geometryDisplayString( GeometryType type );
 
     /** Tests whether a WKB type contains the z-dimension.
      * @returns true if type has z values

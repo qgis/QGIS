@@ -22,6 +22,7 @@
 #include "qgscomposerarrow.h"
 #include "qgscomposerhtml.h"
 #include "qgscomposerframe.h"
+#include "qgscomposermap.h"
 #include "qgsmapsettings.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsfillsymbollayerv2.h"
@@ -51,6 +52,8 @@ class TestQgsComposition : public QObject
     void resizeToContents();
     void resizeToContentsMargin();
     void resizeToContentsMultiPage();
+    void georeference();
+    void variablesEdited();
 
   private:
     QgsComposition *mComposition;
@@ -74,7 +77,7 @@ void TestQgsComposition::initTestCase()
 
   //create composition
   mMapSettings->setCrsTransformEnabled( true );
-  mMapSettings->setMapUnits( QGis::Meters );
+  mMapSettings->setMapUnits( QgsUnitTypes::DistanceMeters );
   mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposition->setNumPages( 3 );
@@ -305,7 +308,7 @@ void TestQgsComposition::writeRetrieveCustomProperties()
       "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
   QDomDocument doc( documentType );
   QDomElement rootNode = doc.createElement( "qgis" );
-  QVERIFY( composition->writeXML( rootNode, doc ) );
+  QVERIFY( composition->writeXml( rootNode, doc ) );
 
   //check if composition node was written
   QDomNodeList evalNodeList = rootNode.elementsByTagName( "Composition" );
@@ -314,7 +317,7 @@ void TestQgsComposition::writeRetrieveCustomProperties()
 
   //test reading node containing custom properties
   QgsComposition* readComposition = new QgsComposition( *mMapSettings );
-  QVERIFY( readComposition->readXML( compositionElem, doc ) );
+  QVERIFY( readComposition->readXml( compositionElem, doc ) );
 
   //test retrieved custom properties
   QCOMPARE( readComposition->customProperties().length(), 2 );
@@ -509,6 +512,90 @@ void TestQgsComposition::resizeToContentsMultiPage()
   QVERIFY( checker.testComposition( mReport ) );
 
   delete composition;
+}
+
+void TestQgsComposition::georeference()
+{
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsMapSettings ms;
+  ms.setExtent( extent );
+  QgsComposition* composition = new QgsComposition( ms );
+
+  // no map
+  double* t = composition->computeGeoTransform( nullptr );
+  QVERIFY( !t );
+
+  QgsComposerMap* map = new QgsComposerMap( composition );
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  composition->addComposerMap( map );
+
+  t = composition->computeGeoTransform( map );
+  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
+  QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
+  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+  delete[] t;
+
+  // don't specify map
+  composition->setWorldFileMap( map );
+  t = composition->computeGeoTransform();
+  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
+  QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
+  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+  delete[] t;
+
+  // specify extent
+  t = composition->computeGeoTransform( map, QRectF( 70, 100, 50, 60 ) );
+  QVERIFY( qgsDoubleNear( t[0], 2100.0, 1.0 ) );
+  QVERIFY( qgsDoubleNear( t[1], 0.211864, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[3], 2950, 1 ) );
+  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[5], -0.211864, 0.0001 ) );
+  delete[] t;
+
+  // specify dpi
+  t = composition->computeGeoTransform( map, QRectF(), 75 );
+  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1 ) );
+  QVERIFY( qgsDoubleNear( t[1], 0.847603, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[3], 3200.0, 1 ) );
+  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[5], -0.846774, 0.0001 ) );
+  delete[] t;
+
+  // rotation
+  map->setMapRotation( 45 );
+  t = composition->computeGeoTransform( map );
+  QVERIFY( qgsDoubleNear( t[0], 1825.7, 1 ) );
+  QVERIFY( qgsDoubleNear( t[1], 0.149708, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[2], 0.149708, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[3], 2889.64, 1 ) );
+  QVERIFY( qgsDoubleNear( t[4], 0.14969, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[5], -0.14969, 0.0001 ) );
+  delete[] t;
+
+  delete composition;
+}
+
+void TestQgsComposition::variablesEdited()
+{
+  QgsMapSettings ms;
+  QgsComposition c( ms );
+  QSignalSpy spyVariablesChanged( &c, SIGNAL( variablesChanged() ) );
+
+  c.setCustomProperty( "not a variable", "1" );
+  QVERIFY( spyVariablesChanged.count() == 0 );
+  c.setCustomProperty( "variableNames", "1" );
+  QVERIFY( spyVariablesChanged.count() == 1 );
+  c.setCustomProperty( "variableValues", "1" );
+  QVERIFY( spyVariablesChanged.count() == 2 );
 }
 
 QTEST_MAIN( TestQgsComposition )

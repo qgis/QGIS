@@ -62,7 +62,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
     QString mMimeFormat;
 };
 
-// View style which shows drop indicator line between items
+/** \ingroup gui
+ * View style which shows drop indicator line between items
+ */
 class QgsCategorizedSymbolRendererV2ViewStyle: public QProxyStyle
 {
     Q_OBJECT
@@ -75,6 +77,9 @@ class QgsCategorizedSymbolRendererV2ViewStyle: public QProxyStyle
 
 ///@endcond
 
+/** \ingroup gui
+ * \class QgsCategorizedSymbolRendererV2Widget
+ */
 class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsCategorizedSymbolRendererV2Widget
 {
     Q_OBJECT
@@ -129,6 +134,11 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
      */
     void matchToSymbolsFromXml();
 
+  private slots:
+
+    void cleanUpSymbolSelector( QgsPanelWidget* container );
+    void updateSymbolsFromWidget();
+
   protected:
 
     void updateUiFromRenderer();
@@ -153,7 +163,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
     QList<QgsSymbolV2*> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();
-    void refreshSymbolView() override { populateCategories(); }
+    void refreshSymbolView() override;
     void keyPressEvent( QKeyEvent* event ) override;
 
   protected:

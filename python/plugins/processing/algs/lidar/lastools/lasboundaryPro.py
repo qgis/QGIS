@@ -4,7 +4,7 @@
 ***************************************************************************
     lasboundaryPro.py
     ---------------------
-    Date                 : October 2014
+    Date                 : October 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -35,7 +35,7 @@ from processing.core.parameters import ParameterNumber
 class lasboundaryPro(LAStoolsAlgorithm):
 
     MODE = "MODE"
-    MODES = ["points", "spatial index (the *.lax file)", "bounding box"]
+    MODES = ["points", "spatial index (the *.lax file)", "bounding box", "tile bounding box"]
     CONCAVITY = "CONCAVITY"
     DISJOINT = "DISJOINT"
     HOLES = "HOLES"
@@ -69,8 +69,10 @@ class lasboundaryPro(LAStoolsAlgorithm):
         if (mode != 0):
             if (mode == 1):
                 commands.append("-use_lax")
-            else:
+            elif (mode == 2):
                 commands.append("-use_bb")
+            else:
+                commands.append("-use_tile_bb")
         else:
             concavity = self.getParameterValue(lasboundaryPro.CONCAVITY)
             commands.append("-concavity")

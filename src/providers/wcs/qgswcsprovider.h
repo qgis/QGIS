@@ -28,6 +28,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
+#include "qgscoordinatetransform.h"
 
 #include <QString>
 #include <QStringList>
@@ -102,19 +103,14 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsWcsProvider( QString const & uri = nullptr );
+    explicit QgsWcsProvider( const QString& uri = QString() );
 
     //! Destructor
     virtual ~QgsWcsProvider();
 
     QgsWcsProvider * clone() const override;
 
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be return, ti will return 0
-     */
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
     /**
      * Get the coverage format used in the transfer from the WCS server
@@ -149,20 +145,16 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
+    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void readBlock( int theBandNo, int xBlock, int yBlock, void *block ) override;
 
     /** Download cache */
-    void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = "" );
+    void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = QString(), QgsRasterBlockFeedback* feedback = nullptr ) const;
 
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
+    virtual QgsRectangle extent() const override;
 
-    /** Returns true if layer is valid
-     */
-    bool isValid() override;
+    bool isValid() const override;
 
     /** Returns the base url
      */
@@ -173,8 +165,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     // Reimplemented QgsRasterDataProvider virtual methods
     int capabilities() const override;
-    QGis::DataType dataType( int bandNo ) const override;
-    QGis::DataType srcDataType( int bandNo ) const override;
+    Qgis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
     //double noDataValue() const;
     int xBlockSize() const override;
@@ -182,7 +174,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const override;
     int ySize() const override;
     QString metadata() override;
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     QString lastErrorFormat() override;
@@ -223,7 +215,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      * \retval false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      */
-    bool calculateExtent();
+    bool calculateExtent() const;
 
     /**
      * \brief Check for parameters in the uri,
@@ -245,10 +237,10 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString coverageMetadata( const QgsWcsCoverageSummary& c );
 
     //! remove query item and replace it with a new value
-    void setQueryItem( QUrl &url, const QString& key, const QString& value );
+    void setQueryItem( QUrl &url, const QString& key, const QString& value ) const;
 
     //! Release cache resources
-    void clearCache();
+    void clearCache() const;
 
     //! Create html cell (used by metadata)
     QString htmlCell( const QString &text );
@@ -286,7 +278,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString mSrid;
 
     /** Rectangle that contains the extent (bounding box) of the layer */
-    QgsRectangle mCoverageExtent;
+    mutable QgsRectangle mCoverageExtent;
 
     /** Coverage width, may be 0 if it could not be found in DescribeCoverage */
     int mWidth;
@@ -339,27 +331,27 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString mCoverageCrs;
 
     /** Cached data */
-    QByteArray mCachedData;
+    mutable QByteArray mCachedData;
 
     /** Name of memory file for cached data */
     QString mCachedMemFilename;
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-    VSILFILE * mCachedMemFile;
+    mutable VSILFILE * mCachedMemFile;
 #else
-    FILE * mCachedMemFile;
+    mutable FILE * mCachedMemFile;
 #endif
 
     /** Pointer to cached GDAL dataset */
-    GDALDatasetH mCachedGdalDataset;
+    mutable GDALDatasetH mCachedGdalDataset;
 
     /** Current cache error last getCache() error. */
-    QgsError mCachedError;
+    mutable QgsError mCachedError;
 
     /** The previous parameters to draw(). */
-    QgsRectangle mCachedViewExtent;
-    int mCachedViewWidth;
-    int mCachedViewHeight;
+    mutable QgsRectangle mCachedViewExtent;
+    mutable int mCachedViewWidth;
+    mutable int mCachedViewHeight;
 
     /** Maximum width and height of getmap requests */
     int mMaxWidth;
@@ -376,10 +368,10 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString mErrorFormat;
 
     //! A QgsCoordinateTransform is used for transformation of WCS layer extents
-    QgsCoordinateTransform *mCoordinateTransform;
+    mutable QgsCoordinateTransform mCoordinateTransform;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
-    bool mExtentDirty;
+    mutable bool mExtentDirty;
 
     //! Base URL for WCS GetFeatureInfo requests
     QString mGetFeatureInfoUrlBase;
@@ -394,7 +386,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int mErrors;
 
     //! http authorization details
-    QgsWcsAuthorization mAuth;
+    mutable QgsWcsAuthorization mAuth;
 
     //! whether to use hrefs from GetCapabilities (default) or
     // the given base urls for GetMap and GetFeatureInfo
@@ -419,7 +411,7 @@ class QgsWcsDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError );
+    QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError, QgsRasterBlockFeedback* feedback );
     ~QgsWcsDownloadHandler();
 
     void blockingDownload();
@@ -427,6 +419,7 @@ class QgsWcsDownloadHandler : public QObject
   protected slots:
     void cacheReplyFinished();
     void cacheReplyProgress( qint64, qint64 );
+    void cancelled();
 
   protected:
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }

@@ -22,6 +22,7 @@
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerimport.h"
 #include "qgsmessageoutput.h"
+#include "qgsvectorlayer.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -54,7 +55,7 @@ void QgsSLLayerItem::deleteLayer()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  QgsDataSourceURI uri( mUri );
+  QgsDataSourceUri uri( mUri );
   QString errCause;
   bool res = ::deleteLayer( uri.database(), uri.table(), errCause );
   if ( !res )
@@ -107,7 +108,6 @@ static QgsLayerItem::LayerType _layerTypeFromDb( QString dbType )
 
 QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
   QgsSpatiaLiteConnection connection( mName );
 
@@ -141,7 +141,7 @@ QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
   }
 
   QString connectionInfo = QString( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', "\\'" ) );
-  QgsDataSourceURI uri( connectionInfo );
+  QgsDataSourceUri uri( connectionInfo );
 
   Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
   {
@@ -200,7 +200,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
   // TODO: probably should show a GUI with settings etc
 
-  QgsDataSourceURI destUri;
+  QgsDataSourceUri destUri;
   destUri.setDatabase( mDbPath );
 
   qApp->setOverrideCursor( Qt::WaitCursor );
@@ -229,11 +229,11 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     if ( srcLayer->isValid() )
     {
-      destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QGis::NoGeometry ? "geom" : QString() );
+      destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? "geom" : QString() );
       QgsDebugMsg( "URI " + destUri.uri() );
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, destUri.uri(), "spatialite", &srcLayer->crs(), false, &importError, false, nullptr, progress );
+      err = QgsVectorLayerImport::importLayer( srcLayer, destUri.uri(), "spatialite", srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
       else if ( err == QgsVectorLayerImport::ErrUserCancelled )
@@ -319,9 +319,9 @@ QList<QAction*> QgsSLRootItem::actions()
   return lst;
 }
 
-QWidget * QgsSLRootItem::paramWidget()
+QWidget* QgsSLRootItem::paramWidget()
 {
-  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, nullptr, true );
+  QgsSpatiaLiteSourceSelect* select = new QgsSpatiaLiteSourceSelect( nullptr, 0, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }

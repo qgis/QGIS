@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 
 __author__ = 'Victor Olaya'
@@ -76,11 +77,17 @@ class Processing:
     contextMenuActions = []
 
     @staticmethod
+    def algs():
+        """Use this method to get algorithms for wps4server.
+        """
+        return algList.algs
+
+    @staticmethod
     def addProvider(provider, updateList=True):
         """Use this method to add algorithms from external providers.
         """
 
-        if provider.getName() in [p.getName for p in algList.providers]:
+        if provider.getName() in [p.getName() for p in algList.providers]:
             return
         try:
             provider.initializeSettings()
@@ -106,9 +113,12 @@ class Processing:
         """
         try:
             provider.unload()
-            Processing.providers.remove(provider)
-            algList.remove(provider.getName())
-            del Processing.actions[provider.getName()]
+            for p in Processing.providers:
+                if p.getName() == provider.getName():
+                    Processing.providers.remove(p)
+            algList.removeProvider(provider.getName())
+            if provider.getName() in Processing.actions:
+                del Processing.actions[provider.getName()]
             for act in provider.contextMenuActions:
                 Processing.contextMenuActions.remove(act)
         except:
@@ -124,8 +134,15 @@ class Processing:
         return algList.getProviderFromName(name)
 
     @staticmethod
+    def activateProvider(providerOrName, activate=True):
+        providerName = providerOrName.getName() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
+        name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
+        ProcessingConfig.setSettingValue(name, activate)
+        algList.providerUpdated.emit(providerName)
+
+    @staticmethod
     def initialize():
-        if Processing.providers:
+        if "model" in [p.getName() for p in Processing.providers]:
             return
         # Add the basic providers
         for c in AlgorithmProvider.__subclasses__():
@@ -140,7 +157,8 @@ class Processing:
         Processing.initialize()
         provider = Processing.getProviderFromName("qgis")
         scripts = ScriptUtils.loadFromFolder(folder)
-        print scripts
+        # fix_print_with_import
+        print(scripts)
         for script in scripts:
             script.allowEdit = False
             script._icon = provider._icon
@@ -196,7 +214,8 @@ class Processing:
         else:
             alg = Processing.getAlgorithm(algOrName)
         if alg is None:
-            print 'Error: Algorithm not found\n'
+            # fix_print_with_import
+            print('Error: Algorithm not found\n')
             QgsMessageLog.logMessage(Processing.tr('Error: Algorithm {0} not found\n').format(algOrName), Processing.tr("Processing"))
             return
         alg = alg.getCopy()
@@ -213,7 +232,8 @@ class Processing:
                 output = alg.getOutputFromName(name)
                 if output and output.setValue(value):
                     continue
-                print 'Error: Wrong parameter value %s for parameter %s.' % (value, name)
+                # fix_print_with_import
+                print('Error: Wrong parameter value %s for parameter %s.' % (value, name))
                 QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name), Processing.tr("Processing"))
                 ProcessingLog.addToLog(
                     ProcessingLog.LOG_ERROR,
@@ -225,7 +245,8 @@ class Processing:
             for param in alg.parameters:
                 if param.name not in setParams:
                     if not param.setDefaultValue():
-                        print 'Error: Missing parameter value for parameter %s.' % param.name
+                        # fix_print_with_import
+                        print('Error: Missing parameter value for parameter %s.' % param.name)
                         QgsMessageLog.logMessage(Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name), Processing.tr("Processing"))
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
@@ -235,7 +256,8 @@ class Processing:
                         return
         else:
             if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
-                print 'Error: Wrong number of parameters'
+                # fix_print_with_import
+                print('Error: Wrong number of parameters')
                 QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'), Processing.tr("Processing"))
                 processing.alghelp(algOrName)
                 return
@@ -243,7 +265,8 @@ class Processing:
             for param in alg.parameters:
                 if not param.hidden:
                     if not param.setValue(args[i]):
-                        print'Error: Wrong parameter value: ' + unicode(args[i])
+                        # fix_print_with_import
+                        print('Error: Wrong parameter value: ' + unicode(args[i]))
                         QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + unicode(args[i]), Processing.tr("Processing"))
                         return
                     i = i + 1
@@ -251,14 +274,16 @@ class Processing:
             for output in alg.outputs:
                 if not output.hidden:
                     if not output.setValue(args[i]):
-                        print 'Error: Wrong output value: ' + unicode(args[i])
+                        # fix_print_with_import
+                        print('Error: Wrong output value: ' + unicode(args[i]))
                         QgsMessageLog.logMessage(Processing.tr('Error: Wrong output value: ') + unicode(args[i]), Processing.tr("Processing"))
                         return
                     i = i + 1
 
         msg = alg._checkParameterValuesBeforeExecuting()
         if msg:
-            print 'Unable to execute algorithm\n' + unicode(msg)
+            # fix_print_with_import
+            print('Unable to execute algorithm\n' + unicode(msg))
             QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg), Processing.tr("Processing"))
             return
 
@@ -283,7 +308,7 @@ class Processing:
         if kwargs is not None and "progress" in kwargs.keys():
             progress = kwargs["progress"]
         elif iface is not None:
-            progress = MessageBarProgress()
+            progress = MessageBarProgress(alg.name)
 
         ret = runalg(alg, progress)
         if ret:

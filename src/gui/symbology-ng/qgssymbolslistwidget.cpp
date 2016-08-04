@@ -27,6 +27,7 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
 #include <QString>
 #include <QStringList>
@@ -52,7 +53,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
 {
   setupUi( this );
 
-  mSymbolUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
   btnAdvanced->hide(); // advanced button is hidden by default
   if ( menu ) // show it if there is a menu pointer
@@ -534,7 +535,7 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
   lblSymbolName->setText( symbolName );
   // get new instance of symbol from style
   QgsSymbolV2* s = mStyle->symbol( symbolName );
-  QgsSymbolV2::OutputUnit unit = s->outputUnit();
+  QgsUnitTypes::RenderUnit unit = s->outputUnit();
   // remove all symbol layers from original symbol
   while ( mSymbol->symbolLayerCount() )
     mSymbol->deleteSymbolLayer( 0 );

@@ -120,7 +120,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
       // connect to modification signals to invalidate statistics
       connect( vl, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( invalidateStatistics() ) );
       connect( vl, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( invalidateStatistics() ) );
-      connect( vl, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( invalidateStatistics() ) );
+      connect( vl, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( invalidateStatistics() ) );
     }
     else
     {
@@ -276,7 +276,7 @@ bool QgsVirtualLayerProvider::createIt()
   resetSqlite();
   initVirtualLayerMetadata( mSqlite.get() );
 
-  bool noGeometry = mDefinition.geometryWkbType() == QgsWKBTypes::NoGeometry;
+  bool noGeometry = mDefinition.geometryWkbType() == QgsWkbTypes::NoGeometry;
 
   // load source layers (and populate mLayers)
   if ( !loadSourceLayers() )
@@ -475,17 +475,17 @@ QString QgsVirtualLayerProvider::storageType() const
   return "No storage per se, view data from other data sources";
 }
 
-QgsCoordinateReferenceSystem QgsVirtualLayerProvider::crs()
+QgsCoordinateReferenceSystem QgsVirtualLayerProvider::crs() const
 {
   return mCrs;
 }
 
-QgsFeatureIterator QgsVirtualLayerProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsVirtualLayerProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   return QgsFeatureIterator( new QgsVirtualLayerFeatureIterator( new QgsVirtualLayerFeatureSource( this ), false, request ) );
 }
 
-QString QgsVirtualLayerProvider::subsetString()
+QString QgsVirtualLayerProvider::subsetString() const
 {
   return mSubset;
 }
@@ -500,9 +500,9 @@ bool QgsVirtualLayerProvider::setSubsetString( const QString& subset, bool updat
 }
 
 
-QGis::WkbType QgsVirtualLayerProvider::geometryType() const
+QgsWkbTypes::Type QgsVirtualLayerProvider::wkbType() const
 {
-  return static_cast<QGis::WkbType>( mDefinition.geometryWkbType() );
+  return static_cast<QgsWkbTypes::Type>( mDefinition.geometryWkbType() );
 }
 
 long QgsVirtualLayerProvider::featureCount() const
@@ -514,7 +514,7 @@ long QgsVirtualLayerProvider::featureCount() const
   return mFeatureCount;
 }
 
-QgsRectangle QgsVirtualLayerProvider::extent()
+QgsRectangle QgsVirtualLayerProvider::extent() const
 {
   if ( !mCachedStatistics )
   {
@@ -525,7 +525,7 @@ QgsRectangle QgsVirtualLayerProvider::extent()
 
 void QgsVirtualLayerProvider::updateStatistics() const
 {
-  bool hasGeometry = mDefinition.geometryWkbType() != QgsWKBTypes::NoGeometry;
+  bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
   QString subset = mSubset.isEmpty() ? "" : " WHERE " + mSubset;
   QString sql = QString( "SELECT Count(*)%1 FROM %2%3" )
                 .arg( hasGeometry ? QString( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : "",
@@ -553,21 +553,21 @@ void QgsVirtualLayerProvider::invalidateStatistics()
   mCachedStatistics = false;
 }
 
-const QgsFields & QgsVirtualLayerProvider::fields() const
+QgsFields QgsVirtualLayerProvider::fields() const
 {
   return mDefinition.fields();
 }
 
-bool QgsVirtualLayerProvider::isValid()
+bool QgsVirtualLayerProvider::isValid() const
 {
   return mValid;
 }
 
-int QgsVirtualLayerProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsVirtualLayerProvider::capabilities() const
 {
   if ( !mDefinition.uid().isNull() )
   {
-    return SelectAtId | SelectGeometryAtId;
+    return SelectAtId;
   }
   return 0;
 }
@@ -582,7 +582,7 @@ QString QgsVirtualLayerProvider::description() const
   return VIRTUAL_LAYER_DESCRIPTION;
 }
 
-QgsAttributeList QgsVirtualLayerProvider::pkAttributeIndexes()
+QgsAttributeList QgsVirtualLayerProvider::pkAttributeIndexes() const
 {
   if ( !mDefinition.uid().isNull() )
   {

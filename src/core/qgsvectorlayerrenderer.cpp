@@ -33,6 +33,7 @@
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgspainteffect.h"
 #include "qgsfeaturefilterprovider.h"
+#include "qgscsexception.h"
 
 #include <QSettings>
 #include <QPicture>
@@ -92,7 +93,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   if ( !mRendererV2 )
     return;
 
-  QgsDebugMsg( "rendering v2:\n  " + mRendererV2->dump() );
+  QgsDebugMsgLevel( "rendering v2:\n  " + mRendererV2->dump(), 2 );
 
   if ( mDrawVertexMarkers )
   {
@@ -120,7 +121,7 @@ QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
 
 bool QgsVectorLayerRenderer::render()
 {
-  if ( mGeometryType == QGis::NoGeometry || mGeometryType == QGis::UnknownGeometry )
+  if ( mGeometryType == QgsWkbTypes::NullGeometry || mGeometryType == QgsWkbTypes::UnknownGeometry )
     return true;
 
   if ( !mRendererV2 )
@@ -178,21 +179,21 @@ bool QgsVectorLayerRenderer::render()
 
     const QgsMapToPixel& mtp = mContext.mapToPixel();
     map2pixelTol *= mtp.mapUnitsPerPixel();
-    const QgsCoordinateTransform* ct = mContext.coordinateTransform();
+    QgsCoordinateTransform ct = mContext.coordinateTransform();
 
     // resize the tolerance using the change of size of an 1-BBOX from the source CoordinateSystem to the target CoordinateSystem
-    if ( ct && !( ct->isShortCircuited() ) )
+    if ( ct.isValid() && !ct.isShortCircuited() )
     {
       try
       {
         QgsPoint center = mContext.extent().center();
-        double rectSize = ct->sourceCrs().geographicFlag() ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
+        double rectSize = ct.sourceCrs().isGeographic() ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
-        QgsRectangle targetRect = ct->transform( sourceRect );
+        QgsRectangle targetRect = ct.transform( sourceRect );
 
-        QgsDebugMsg( QString( "Simplify - SourceTransformRect=%1" ).arg( sourceRect.toString( 16 ) ) );
-        QgsDebugMsg( QString( "Simplify - TargetTransformRect=%1" ).arg( targetRect.toString( 16 ) ) );
+        QgsDebugMsgLevel( QString( "Simplify - SourceTransformRect=%1" ).arg( sourceRect.toString( 16 ) ), 4 );
+        QgsDebugMsgLevel( QString( "Simplify - TargetTransformRect=%1" ).arg( targetRect.toString( 16 ) ), 4 );
 
         if ( !sourceRect.isEmpty() && sourceRect.isFinite() && !targetRect.isEmpty() && targetRect.isFinite() )
         {
@@ -204,8 +205,8 @@ bool QgsVectorLayerRenderer::render()
           double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
           double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
 
-          QgsDebugMsg( QString( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ) );
-          QgsDebugMsg( QString( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ) );
+          QgsDebugMsgLevel( QString( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ), 4 );
+          QgsDebugMsgLevel( QString( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ), 4 );
 
           if ( !qgsDoubleNear( targetHypothenuse, 0.0 ) )
             map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
@@ -302,11 +303,11 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
     {
       if ( mContext.renderingStopped() )
       {
-        QgsDebugMsg( QString( "Drawing of vector layer %1 cancelled." ).arg( layerID() ) );
+        QgsDebugMsg( QString( "Drawing of vector layer %1 cancelled." ).arg( layerId() ) );
         break;
       }
 
-      if ( !fet.constGeometry() )
+      if ( !fet.hasGeometry() )
         continue; // skip features without geometry
 
       mContext.expressionContext().setFeature( fet );
@@ -317,7 +318,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
       if ( mCache )
       {
         // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-        mCache->cacheGeometry( fet.id(), *fet.constGeometry() );
+        mCache->cacheGeometry( fet.id(), fet.geometry() );
       }
 
       // render feature
@@ -343,7 +344,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
           QScopedPointer<QgsGeometry> obstacleGeometry;
           QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
 
-          if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
+          if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
           {
             obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
           }
@@ -384,7 +385,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
   QgsSingleSymbolRendererV2* selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( mGeometryType ) );
+    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( mGeometryType ) ) ;
     selRenderer->symbol()->setColor( mContext.selectionColor() );
     selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
     selRenderer->startRender( mContext, mFields );
@@ -405,7 +406,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       return;
     }
 
-    if ( !fet.constGeometry() )
+    if ( !fet.hasGeometry() )
       continue; // skip features without geometry
 
     mContext.expressionContext().setFeature( fet );
@@ -424,7 +425,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     if ( mCache )
     {
       // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-      mCache->cacheGeometry( fet.id(), *fet.constGeometry() );
+      mCache->cacheGeometry( fet.id(), fet.geometry() );
     }
 
     if ( mContext.labelingEngine() )
@@ -445,7 +446,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       QScopedPointer<QgsGeometry> obstacleGeometry;
       QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
 
-      if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
+      if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
         obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
       }

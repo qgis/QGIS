@@ -15,6 +15,7 @@
 
 #include "qgsvectorlayerdiagramprovider.h"
 
+#include "qgsgeometry.h"
 #include "qgslabelsearchtree.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
@@ -91,8 +92,8 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderC
     return QList<QgsLabelFeature*>();
 
   QgsRectangle layerExtent = context.extent();
-  if ( mSettings.coordinateTransform() )
-    layerExtent = mSettings.coordinateTransform()->transformBoundingBox( context.extent(), QgsCoordinateTransform::ReverseTransform );
+  if ( mSettings.coordinateTransform().isValid() )
+    layerExtent = mSettings.coordinateTransform().transformBoundingBox( context.extent(), QgsCoordinateTransform::ReverseTransform );
 
   QgsFeatureRequest request;
   request.setFilterRect( layerExtent );
@@ -161,16 +162,16 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QS
 
   if ( mapSettings.hasCrsTransformEnabled() )
   {
-    if ( context.coordinateTransform() )
+    if ( context.coordinateTransform().isValid() )
       // this is context for layer rendering - use its CT as it includes correct datum transform
-      s2.setCoordinateTransform( context.coordinateTransform()->clone() );
+      s2.setCoordinateTransform( context.coordinateTransform() );
     else
       // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
-      s2.setCoordinateTransform( new QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() ) );
+      s2.setCoordinateTransform( QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() ) );
   }
   else
   {
-    s2.setCoordinateTransform( nullptr );
+    s2.setCoordinateTransform( QgsCoordinateTransform() );
   }
 
   s2.setRenderer( mDiagRenderer );
@@ -219,26 +220,26 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   }
 
   //convert geom to geos
-  const QgsGeometry* geom = feat.constGeometry();
-  QScopedPointer<QgsGeometry> extentGeom( QgsGeometry::fromRect( mapSettings.visibleExtent() ) );
+  QgsGeometry geom = feat.geometry();
+  QgsGeometry extentGeom = QgsGeometry::fromRect( mapSettings.visibleExtent() );
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
-    extentGeom->rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
+    extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
   const GEOSGeometry* geos_geom = nullptr;
   QScopedPointer<QgsGeometry> preparedGeom;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), extentGeom.data() ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
-    preparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), extentGeom.data() ) );
-    if ( !preparedGeom.data() )
+    QgsGeometry preparedGeom = QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom );
+    if ( preparedGeom.isEmpty() )
       return nullptr;
-    geos_geom = preparedGeom.data()->asGeos();
+    geos_geom = preparedGeom.asGeos();
   }
   else
   {
-    geos_geom = geom->asGeos();
+    geos_geom = geom.asGeos();
   }
 
   if ( !geos_geom )
@@ -248,10 +249,10 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 
   const GEOSGeometry* geosObstacleGeom = nullptr;
   QScopedPointer<QgsGeometry> scopedObstacleGeom;
-  if ( mSettings.isObstacle() && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom.data() ) )
+  if ( mSettings.isObstacle() && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
-    scopedObstacleGeom.reset( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom.data() ) );
-    geosObstacleGeom = scopedObstacleGeom.data()->asGeos();
+    QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom );
+    geosObstacleGeom = preparedObstacleGeom.asGeos();
   }
   else if ( mSettings.isObstacle() && obstacleGeometry )
   {
@@ -294,11 +295,11 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     }
     else
     {
-      const QgsCoordinateTransform* ct = mSettings.coordinateTransform();
-      if ( ct )
+      QgsCoordinateTransform ct = mSettings.coordinateTransform();
+      if ( ct.isValid() && !ct.isShortCircuited() )
       {
         double z = 0;
-        ct->transformInPlace( ddPosX, ddPosY, z );
+        ct.transformInPlace( ddPosX, ddPosY, z );
       }
       //data defined diagram position is always centered
       ddPosX -= diagramWidth / 2.0;
@@ -339,6 +340,6 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 
   QgsPoint ptZero = mapSettings.mapToPixel().toMapCoordinates( 0, 0 );
   QgsPoint ptOne = mapSettings.mapToPixel().toMapCoordinates( 1, 0 );
-  lf->setDistLabel( qAbs( ptOne.x() - ptZero.x() ) * mSettings.distance() );
+  lf->setDistLabel( ptOne.distance( ptZero ) * mSettings.distance() );
   return lf;
 }

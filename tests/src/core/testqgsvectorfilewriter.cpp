@@ -138,16 +138,13 @@ void TestQgsVectorFileWriter::createPoint()
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
-                                QGis::WKBPoint,
-                                &mCRS );
+                                QgsWkbTypes::Point,
+                                mCRS );
   //
   // Create a feature
   //
   //
-  // NOTE: don't delete this pointer again -
-  // ownership is passed to the feature which will
-  // delete it in its dtor!
-  QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
+  QgsGeometry mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPointGeometry );
   myFeature.initAttributes( 1 );
@@ -184,18 +181,14 @@ void TestQgsVectorFileWriter::createLine()
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
-                                QGis::WKBLineString,
-                                &mCRS );
+                                QgsWkbTypes::LineString,
+                                mCRS );
   //
   // Create a feature
   //
   QgsPolyline myPolyline;
   myPolyline << mPoint1 << mPoint2 << mPoint3;
-  //
-  // NOTE: don't delete this pointer again -
-  // ownership is passed to the feature which will
-  // delete it in its dtor!
-  QgsGeometry * mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
+  QgsGeometry mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
   QgsFeature myFeature;
   myFeature.setGeometry( mypLineGeometry );
   myFeature.initAttributes( 1 );
@@ -233,8 +226,8 @@ void TestQgsVectorFileWriter::createPolygon()
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
-                                QGis::WKBPolygon,
-                                &mCRS );
+                                QgsWkbTypes::Polygon,
+                                mCRS );
   //
   // Create a polygon feature
   //
@@ -245,10 +238,7 @@ void TestQgsVectorFileWriter::createPolygon()
   //polygon: first item of the list is outer ring,
   // inner rings (if any) start from second item
   //
-  // NOTE: don't delete this pointer again -
-  // ownership is passed to the feature which will
-  // delete it in its dtor!
-  QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+  QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPolygonGeometry );
   myFeature.initAttributes( 1 );
@@ -284,8 +274,8 @@ void TestQgsVectorFileWriter::polygonGridTest()
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
-                                QGis::WKBPolygon,
-                                &mCRS );
+                                QgsWkbTypes::Polygon,
+                                mCRS );
   double myInterval = 5.0;
   for ( double i = -180.0; i <= 180.0; i += myInterval )
   {
@@ -305,10 +295,7 @@ void TestQgsVectorFileWriter::polygonGridTest()
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      // NOTE: don't delete this pointer again -
-      // ownership is passed to the feature which will
-      // delete it in its dtor!
-      QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.initAttributes( 1 );
@@ -357,8 +344,8 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
-                                QGis::WKBPolygon,
-                                &mCRS );
+                                QgsWkbTypes::Polygon,
+                                mCRS );
   double myInterval = 1000.0; //1km2
   for ( double i = 0.0; i <= 10000.0; i += myInterval ) //10km
   {
@@ -378,10 +365,7 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      // NOTE: don't delete this pointer again -
-      // ownership is passed to the feature which will
-      // delete it in its dtor!
-      QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.initAttributes( 1 );
@@ -439,14 +423,11 @@ void TestQgsVectorFileWriter::regression1141()
     QgsVectorFileWriter myWriter( fileName,
                                   encoding,
                                   fields,
-                                  QGis::WKBPoint,
-                                  &crs );
+                                  QgsWkbTypes::Point,
+                                  crs );
 
     QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
-    // NOTE: don't delete this pointer again -
-    // ownership is passed to the feature which will
-    // delete it in its dtor!
-    QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( myPoint );
+    QgsGeometry mypPointGeometry = QgsGeometry::fromPoint( myPoint );
     QgsFeature myFeature;
     myFeature.setGeometry( mypPointGeometry );
     myFeature.initAttributes( 1 );

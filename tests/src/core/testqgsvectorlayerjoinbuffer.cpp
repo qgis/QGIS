@@ -19,6 +19,8 @@
 
 //qgis includes...
 #include <qgsvectorlayer.h>
+#include "qgsfeatureiterator.h"
+#include "qgslayertreegroup.h"
 #include <qgsvectordataprovider.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayerjoinbuffer.h>
@@ -57,6 +59,8 @@ class TestVectorLayerJoinBuffer : public QObject
     void testJoinTwoTimes_data();
     void testJoinTwoTimes();
     void testJoinLayerDefinitionFile();
+    void testCacheUpdate_data();
+    void testCacheUpdate();
 
   private:
     QList<QString> mProviders;
@@ -517,6 +521,87 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
 
   // Check for joined field
   QVERIFY( vLayer->fieldNameIndex( joinInfo.prefix + "value" ) >= 0 );
+}
+
+void TestVectorLayerJoinBuffer::testCacheUpdate_data()
+{
+  QTest::addColumn<bool>( "useCache" );
+  QTest::newRow( "cache" ) << true;
+  QTest::newRow( "no cache" ) << false;
+}
+
+void TestVectorLayerJoinBuffer::testCacheUpdate()
+{
+  QFETCH( bool, useCache );
+
+  QgsVectorLayer* vlA = new QgsVectorLayer( "Point?field=id_a:integer", "cacheA", "memory" );
+  QVERIFY( vlA->isValid() );
+  QgsVectorLayer* vlB = new QgsVectorLayer( "Point?field=id_b:integer&field=value_b", "cacheB", "memory" );
+  QVERIFY( vlB->isValid() );
+  QgsMapLayerRegistry::instance()->addMapLayer( vlA );
+  QgsMapLayerRegistry::instance()->addMapLayer( vlB );
+
+  QgsFeature fA1( vlA->dataProvider()->fields(), 1 );
+  fA1.setAttribute( "id_a", 1 );
+  QgsFeature fA2( vlA->dataProvider()->fields(), 2 );
+  fA2.setAttribute( "id_a", 2 );
+
+  vlA->dataProvider()->addFeatures( QgsFeatureList() << fA1 << fA2 );
+
+  QgsFeature fB1( vlB->dataProvider()->fields(), 1 );
+  fB1.setAttribute( "id_b", 1 );
+  fB1.setAttribute( "value_b", 11 );
+  QgsFeature fB2( vlB->dataProvider()->fields(), 2 );
+  fB2.setAttribute( "id_b", 2 );
+  fB2.setAttribute( "value_b", 12 );
+
+  vlB->dataProvider()->addFeatures( QgsFeatureList() << fB1 << fB2 );
+
+  QgsVectorJoinInfo joinInfo;
+  joinInfo.targetFieldName = "id_a";
+  joinInfo.joinLayerId = vlB->id();
+  joinInfo.joinFieldName = "id_b";
+  joinInfo.memoryCache = useCache;
+  joinInfo.prefix = "B_";
+  vlA->addJoin( joinInfo );
+
+  QgsFeatureIterator fi = vlA->getFeatures();
+  fi.nextFeature( fA1 );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "B_value_b" ).toInt(), 11 );
+  fi.nextFeature( fA2 );
+  QCOMPARE( fA2.attribute( "id_a" ).toInt(), 2 );
+  QCOMPARE( fA2.attribute( "B_value_b" ).toInt(), 12 );
+
+  // change value in join target layer
+  vlB->startEditing();
+  vlB->changeAttributeValue( 1, 1, 111 );
+  vlB->changeAttributeValue( 2, 0, 3 );
+  vlB->commitChanges();
+
+  fi = vlA->getFeatures();
+  fi.nextFeature( fA1 );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "B_value_b" ).toInt(), 111 );
+  fi.nextFeature( fA2 );
+  QCOMPARE( fA2.attribute( "id_a" ).toInt(), 2 );
+  QVERIFY( fA2.attribute( "B_value_b" ).isNull() );
+
+  // change value in joined layer
+  vlA->startEditing();
+  vlA->changeAttributeValue( 2, 0, 3 );
+  vlA->commitChanges();
+
+  fi = vlA->getFeatures();
+  fi.nextFeature( fA1 );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "B_value_b" ).toInt(), 111 );
+  fi.nextFeature( fA2 );
+  QCOMPARE( fA2.attribute( "id_a" ).toInt(), 3 );
+  QCOMPARE( fA2.attribute( "B_value_b" ).toInt(), 12 );
+
+  QgsMapLayerRegistry::instance()->removeMapLayer( vlA );
+  QgsMapLayerRegistry::instance()->removeMapLayer( vlB );
 }
 
 

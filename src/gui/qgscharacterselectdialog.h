@@ -24,7 +24,8 @@
 
 class CharacterWidget;
 
-/** A dialog for selecting a single character from a single font
+/** \ingroup gui
+ * A dialog for selecting a single character from a single font
   */
 
 class GUI_EXPORT QgsCharacterSelectorDialog : public QDialog, private Ui::QgsCharacterSelectorBase
@@ -32,7 +33,7 @@ class GUI_EXPORT QgsCharacterSelectorDialog : public QDialog, private Ui::QgsCha
     Q_OBJECT
 
   public:
-    QgsCharacterSelectorDialog( QWidget* parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+    QgsCharacterSelectorDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsCharacterSelectorDialog();
 
   public slots:

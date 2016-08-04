@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsattributeselectiondialog.h"
+#include "qgscomposerattributetable.h"
 #include "qgscomposerattributetablev2.h"
 #include "qgscomposerattributetablemodel.h"
 #include "qgscomposerattributetablemodelv2.h"

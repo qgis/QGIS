@@ -24,6 +24,8 @@
 #include <QWebView>
 #include <QDesktopWidget>
 
+/** \ingroup core
+ */
 class CORE_EXPORT QgsWebView : public QWebView
 {
     Q_OBJECT
@@ -42,8 +44,9 @@ class CORE_EXPORT QgsWebView : public QWebView
 };
 #else
 #include "qgswebpage.h"
+#include <QTextBrowser>
 
-/**
+/** \ingroup core
  * @brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
  * library is not available. It should be used instead of QWebView inside QGIS.
  *
@@ -51,17 +54,18 @@ class CORE_EXPORT QgsWebView : public QWebView
  * WITH_QTWEBKIT=OFF then this will be an empty QWidget. If you miss methods in here that you would like to use,
  * please add additional stubs.
  */
-class CORE_EXPORT QgsWebView : public QWidget
+class CORE_EXPORT QgsWebView : public QTextBrowser
 {
 
 /// @cond NOT_STABLE_API
     Q_OBJECT
   public:
     explicit QgsWebView( QWidget *parent = 0 )
-        : QWidget( parent )
+        : QTextBrowser( parent )
         , mSettings( new QWebSettings() )
-        , mPage( new QWebPage() )
+        , mPage( new QWebPage( this ) )
     {
+      connect( this, SIGNAL( anchorClicked( const QUrl & ) ), this, SIGNAL( linkClicked( const QUrl & ) ) );
     }
 
     ~QgsWebView()
@@ -72,13 +76,12 @@ class CORE_EXPORT QgsWebView : public QWidget
 
     void setUrl( const QUrl& url )
     {
-      Q_UNUSED( url );
-
+      setSource( url );
     }
 
     void load( const QUrl& url )
     {
-      Q_UNUSED( url );
+      setSource( url );
     }
 
     QWebPage* page() const
@@ -91,11 +94,6 @@ class CORE_EXPORT QgsWebView : public QWidget
       return mSettings;
     }
 
-    void setHtml( const QString& html )
-    {
-      Q_UNUSED( html );
-    }
-
     virtual QgsWebView* createWindow( QWebPage::WebWindowType )
     {
       return new QgsWebView();
@@ -103,21 +101,18 @@ class CORE_EXPORT QgsWebView : public QWidget
 
     void setContent( const QByteArray&, const QString&, const QUrl& )
     {
-
     }
 
     void print( QPrinter* )
     {
-
     }
 
   signals:
-
-  public slots:
+    void linkClicked( const QUrl &link );
 
   private:
-    QWebSettings* mSettings;
-    QWebPage* mPage;
+    QWebSettings *mSettings;
+    QWebPage *mPage;
 
 /// @endcond
 };

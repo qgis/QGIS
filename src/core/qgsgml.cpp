@@ -31,6 +31,8 @@
 #include <QSettings>
 #include <QUrl>
 
+#include "ogr_api.h"
+
 #include <limits>
 
 static const char NS_SEPARATOR = '?';
@@ -57,7 +59,7 @@ QgsGml::~QgsGml()
 {
 }
 
-int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent, const QString& userName, const QString& password , const QString& authcfg )
+int QgsGml::getFeatures( const QString& uri, QgsWkbTypes::Type* wkbType, QgsRectangle* extent, const QString& userName, const QString& password , const QString& authcfg )
 {
   //start with empty extent
   mExtent.setMinimal();
@@ -144,7 +146,7 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
 
   *wkbType = mParser.wkbType();
 
-  if ( *wkbType != QGis::WKBNoGeometry )
+  if ( *wkbType != QgsWkbTypes::Unknown )
   {
     if ( mExtent.isEmpty() )
     {
@@ -159,7 +161,7 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   return 0;
 }
 
-int QgsGml::getFeatures( const QByteArray &data, QGis::WkbType* wkbType, QgsRectangle* extent )
+int QgsGml::getFeatures( const QByteArray &data, QgsWkbTypes::Type* wkbType, QgsRectangle* extent )
 {
   mExtent.setMinimal();
 
@@ -217,7 +219,7 @@ void QgsGml::calculateExtentFromFeatures()
   }
 
   QgsFeature* currentFeature = nullptr;
-  const QgsGeometry* currentGeometry = nullptr;
+  QgsGeometry currentGeometry;
   bool bboxInitialised = false; //gets true once bbox has been set to the first geometry
 
   for ( int i = 0; i < mFeatures.size(); ++i )
@@ -227,17 +229,17 @@ void QgsGml::calculateExtentFromFeatures()
     {
       continue;
     }
-    currentGeometry = currentFeature->constGeometry();
-    if ( currentGeometry )
+    currentGeometry = currentFeature->geometry();
+    if ( !currentGeometry.isEmpty() )
     {
       if ( !bboxInitialised )
       {
-        mExtent = currentGeometry->boundingBox();
+        mExtent = currentGeometry.boundingBox();
         bboxInitialised = true;
       }
       else
       {
-        mExtent.unionRect( currentGeometry->boundingBox() );
+        mExtent.unionRect( currentGeometry.boundingBox() );
       }
     }
   }
@@ -248,7 +250,7 @@ QgsCoordinateReferenceSystem QgsGml::crs() const
   QgsCoordinateReferenceSystem crs;
   if ( mParser.getEPSGCode() != 0 )
   {
-    crs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( mParser.getEPSGCode() ) );
+    crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( mParser.getEPSGCode() ) );
   }
   return crs;
 }
@@ -265,7 +267,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString& typeName,
     : mTypeName( typeName )
     , mTypeNameBA( mTypeName.toUtf8() )
     , mTypeNamePtr( mTypeNameBA.constData() )
-    , mWkbType( QGis::WKBUnknown )
+    , mWkbType( QgsWkbTypes::Unknown )
     , mGeometryAttribute( geometryAttribute )
     , mGeometryAttributeBA( geometryAttribute.toUtf8() )
     , mGeometryAttributePtr( mGeometryAttributeBA.constData() )
@@ -287,6 +289,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString& typeName,
     , mInvertAxisOrientation( invertAxisOrientation )
     , mNumberReturned( -1 )
     , mNumberMatched( -1 )
+    , mFoundUnhandledGeometryElement( false )
 {
   mThematicAttributes.clear();
   for ( int i = 0; i < fields.size(); i++ )
@@ -327,7 +330,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties>& laye
     bool invertAxisOrientation )
     : mLayerProperties( layerProperties )
     , mTypeNamePtr( nullptr )
-    , mWkbType( QGis::WKBUnknown )
+    , mWkbType( QgsWkbTypes::Unknown )
     , mGeometryAttributePtr( nullptr )
     , mFields( fields )
     , mIsException( false )
@@ -347,6 +350,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties>& laye
     , mInvertAxisOrientation( invertAxisOrientation )
     , mNumberReturned( -1 )
     , mNumberMatched( -1 )
+    , mFoundUnhandledGeometryElement( false )
 {
   mThematicAttributes.clear();
   for ( int i = 0; i < fields.size(); i++ )
@@ -410,6 +414,8 @@ QgsGmlStreamingParser::~QgsGmlStreamingParser()
   {
     delete featPair.first;
   }
+
+  delete mCurrentFeature;
 }
 
 bool QgsGmlStreamingParser::processData( const QByteArray& data, bool atEnd )
@@ -475,6 +481,24 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
 
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
   bool isGeom = false;
+
+  if ( theParseMode == geometry || theParseMode == coordinate || theParseMode == posList ||
+       theParseMode == multiPoint || theParseMode == multiLine || theParseMode == multiPolygon )
+  {
+    mGeometryString.append( "<", 1 );
+    mGeometryString.append( pszLocalName, localNameLen );
+    mGeometryString.append( " ", 1 );
+    for ( const XML_Char** attrIter = attr; attrIter && *attrIter; attrIter += 2 )
+    {
+      mGeometryString.append( attrIter[0] );
+      mGeometryString.append( "=\"", 2 );
+      mGeometryString.append( attrIter[1] );
+      mGeometryString.append( "\" ", 2 );
+
+    }
+    mGeometryString.append( ">", 1 );
+  }
+
   if ( isGMLNS && LOCALNAME_EQUALS( "coordinates" ) )
   {
     mParseModeStack.push( coordinate );
@@ -512,6 +536,8 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
             memcmp( pszLocalName, mGeometryAttributePtr, localNameLen ) == 0 )
   {
     mParseModeStack.push( QgsGmlStreamingParser::geometry );
+    mFoundUnhandledGeometryElement = false;
+    mGeometryString.clear();
   }
   //else if ( mParseModeStack.size() == 0 && elementName == mGMLNameSpaceURI + NS_SEPARATOR + "boundedBy" )
   else if ( isGMLNS && LOCALNAME_EQUALS( "boundedBy" ) )
@@ -736,6 +762,27 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     // e.g: http://services.cuzk.cz/wfs/inspire-cp-wfs.asp?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=cp:CadastralParcel
     mTruncatedResponse = true;
   }
+  else if ( !mGeometryString.empty() &&
+            !LOCALNAME_EQUALS( "exterior" ) &&
+            !LOCALNAME_EQUALS( "interior" ) &&
+            !LOCALNAME_EQUALS( "innerBoundaryIs" ) &&
+            !LOCALNAME_EQUALS( "outerBoundaryIs" ) &&
+            !LOCALNAME_EQUALS( "LinearRing" ) &&
+            !LOCALNAME_EQUALS( "pointMember" ) &&
+            !LOCALNAME_EQUALS( "curveMember" ) &&
+            !LOCALNAME_EQUALS( "lineStringMember" ) &&
+            !LOCALNAME_EQUALS( "polygonMember" ) &&
+            !LOCALNAME_EQUALS( "surfaceMember" ) &&
+            !LOCALNAME_EQUALS( "Curve" ) &&
+            !LOCALNAME_EQUALS( "segments" ) &&
+            !LOCALNAME_EQUALS( "LineStringSegment" ) )
+  {
+    //QgsDebugMsg( "Found unhandled geometry element " + QString::fromUtf8( pszLocalName, localNameLen ) );
+    mFoundUnhandledGeometryElement = true;
+  }
+
+  if ( !mGeometryString.empty() )
+    isGeom = true;
 
   if ( mDimension == 0 && isGeom )
   {
@@ -804,15 +851,43 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
             memcmp( pszLocalName, mGeometryAttributePtr, localNameLen ) == 0 )
   {
     mParseModeStack.pop();
+    if ( mFoundUnhandledGeometryElement )
+    {
+      OGRGeometryH hGeom = OGR_G_CreateFromGML( mGeometryString.c_str() );
+      if ( hGeom )
+      {
+        const int wkbSize = OGR_G_WkbSize( hGeom );
+        unsigned char* pabyBuffer = new unsigned char[ wkbSize ];
+#if GDAL_VERSION_MAJOR >= 2
+        OGR_G_ExportToIsoWkb( hGeom, wkbNDR, pabyBuffer );
+#else
+        OGR_G_ExportToWkb( hGeom, wkbNDR, pabyBuffer );
+#endif
+        QgsGeometry g;
+        g.fromWkb( pabyBuffer, wkbSize );
+        if ( mInvertAxisOrientation )
+        {
+          g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
+        }
+        mCurrentFeature->setGeometry( g );
+        OGR_G_DestroyGeometry( hGeom );
+      }
+    }
+    mGeometryString.clear();
   }
   else if ( theParseMode == boundingBox && isGMLNS && LOCALNAME_EQUALS( "boundedBy" ) )
   {
     //create bounding box from mStringCash
     if ( mCurrentExtent.isNull() &&
          !mBoundedByNullFound &&
-         createBBoxFromCoordinateString( mCurrentExtent, mStringCash ) != 0 )
+         !createBBoxFromCoordinateString( mCurrentExtent, mStringCash ) )
     {
       QgsDebugMsg( "creation of bounding box failed" );
+    }
+    if ( !mCurrentExtent.isNull() && mLayerExtent.isNull() &&
+         mCurrentFeature == nullptr && mFeatureCount == 0 )
+    {
+      mLayerExtent = mCurrentExtent;
     }
 
     mParseModeStack.pop();
@@ -858,20 +933,19 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
              memcmp( pszLocalName, mTypeNamePtr, mTypeName.size() ) == 0 ) )
   {
     Q_ASSERT( mCurrentFeature );
-    if ( mCurrentWKB.size() > 0 )
+    if ( !mCurrentFeature->hasGeometry() )
     {
-      QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( mCurrentWKB, mCurrentWKB.size() );
-      mCurrentFeature->setGeometry( g );
-      mCurrentWKB = QgsWkbPtr( nullptr, 0 );
-    }
-    else if ( !mCurrentExtent.isEmpty() )
-    {
-      mCurrentFeature->setGeometry( QgsGeometry::fromRect( mCurrentExtent ) );
-    }
-    else
-    {
-      mCurrentFeature->setGeometry( nullptr );
+      if ( mCurrentWKB.size() > 0 )
+      {
+        QgsGeometry g;
+        g.fromWkb( mCurrentWKB, mCurrentWKB.size() );
+        mCurrentFeature->setGeometry( g );
+        mCurrentWKB = QgsWkbPtr( nullptr, 0 );
+      }
+      else if ( !mCurrentExtent.isEmpty() )
+      {
+        mCurrentFeature->setGeometry( QgsGeometry::fromRect( mCurrentExtent ) );
+      }
     }
     mCurrentFeature->setValid( true );
 
@@ -900,9 +974,9 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
         //error
       }
 
-      if ( mWkbType != QGis::WKBMultiPoint ) //keep multitype in case of geometry type mix
+      if ( mWkbType != QgsWkbTypes::MultiPoint ) //keep multitype in case of geometry type mix
       {
-        mWkbType = QGis::WKBPoint;
+        mWkbType = QgsWkbTypes::Point;
       }
     }
     else //multipoint, add WKB as fragment
@@ -939,9 +1013,9 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
         //error
       }
 
-      if ( mWkbType != QGis::WKBMultiLineString )//keep multitype in case of geometry type mix
+      if ( mWkbType != QgsWkbTypes::MultiLineString )//keep multitype in case of geometry type mix
       {
-        mWkbType = QGis::WKBLineString;
+        mWkbType = QgsWkbTypes::LineString;
       }
     }
     else //multiline, add WKB as fragment
@@ -990,9 +1064,9 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
   else if (( theParseMode == geometry || theParseMode == multiPolygon ) && isGMLNS &&
            LOCALNAME_EQUALS( "Polygon" ) )
   {
-    if ( mWkbType != QGis::WKBMultiPolygon )//keep multitype in case of geometry type mix
+    if ( mWkbType != QgsWkbTypes::MultiPolygon )//keep multitype in case of geometry type mix
     {
-      mWkbType = QGis::WKBPolygon;
+      mWkbType = QgsWkbTypes::Polygon;
     }
 
     if ( theParseMode == geometry )
@@ -1003,21 +1077,21 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
   else if ( theParseMode == multiPoint &&  isGMLNS &&
             LOCALNAME_EQUALS( "MultiPoint" ) )
   {
-    mWkbType = QGis::WKBMultiPoint;
+    mWkbType = QgsWkbTypes::MultiPoint;
     mParseModeStack.pop();
     createMultiPointFromFragments();
   }
   else if ( theParseMode == multiLine && isGMLNS &&
             ( LOCALNAME_EQUALS( "MultiLineString" )  || LOCALNAME_EQUALS( "MultiCurve" ) ) )
   {
-    mWkbType = QGis::WKBMultiLineString;
+    mWkbType = QgsWkbTypes::MultiLineString;
     mParseModeStack.pop();
     createMultiLineFromFragments();
   }
   else if ( theParseMode == multiPolygon && isGMLNS &&
             ( LOCALNAME_EQUALS( "MultiPolygon" )  || LOCALNAME_EQUALS( "MultiSurface" ) ) )
   {
-    mWkbType = QGis::WKBMultiPolygon;
+    mWkbType = QgsWkbTypes::MultiPolygon;
     mParseModeStack.pop();
     createMultiPolygonFromFragments();
   }
@@ -1030,6 +1104,14 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
     mExceptionText = mStringCash;
     mParseModeStack.pop();
   }
+
+  if ( !mGeometryString.empty() )
+  {
+    mGeometryString.append( "</", 2 );
+    mGeometryString.append( pszLocalName, localNameLen );
+    mGeometryString.append( ">", 1 );
+  }
+
 }
 
 void QgsGmlStreamingParser::characters( const XML_Char* chars, int len )
@@ -1038,6 +1120,11 @@ void QgsGmlStreamingParser::characters( const XML_Char* chars, int len )
   if ( mParseModeStack.isEmpty() )
   {
     return;
+  }
+
+  if ( !mGeometryString.empty() )
+  {
+    mGeometryString.append( chars, len );
   }
 
   QgsGmlStreamingParser::ParseMode theParseMode = mParseModeStack.top();
@@ -1115,12 +1202,13 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int& epsgNr, const XML_Char** 
         return 1;
       }
       epsgNr = eNr;
+      mSrsName = epsgString;
 
-      QgsCoordinateReferenceSystem crs;
-      if ( crs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgNr ) ) )
+      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgNr ) );
+      if ( crs.isValid() )
       {
         if ((( mAxisOrientationLogic == Honour_EPSG_if_urn && bIsUrn ) ||
-             mAxisOrientationLogic == Honour_EPSG ) && crs.axisInverted() )
+             mAxisOrientationLogic == Honour_EPSG ) && crs.hasAxisInverted() )
         {
           mInvertAxisOrientation = !mInvertAxisOrientationRequest;
         }
@@ -1147,22 +1235,22 @@ QString QgsGmlStreamingParser::readAttribute( const QString& attributeName, cons
   return QString();
 }
 
-int QgsGmlStreamingParser::createBBoxFromCoordinateString( QgsRectangle &r, const QString& coordString ) const
+bool QgsGmlStreamingParser::createBBoxFromCoordinateString( QgsRectangle &r, const QString& coordString ) const
 {
   QList<QgsPoint> points;
   if ( pointsFromCoordinateString( points, coordString ) != 0 )
   {
-    return 2;
+    return false;
   }
 
   if ( points.size() < 2 )
   {
-    return 3;
+    return false;
   }
 
   r.set( points[0], points[1] );
 
-  return 0;
+  return true;
 }
 
 int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPoint>& points, const QString& coordString ) const
@@ -1244,7 +1332,7 @@ int QgsGmlStreamingParser::getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint& point
   wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
 
   QgsWkbPtr fillPtr( wkbPtr );
-  fillPtr << mEndian << QGis::WKBPoint << point.x() << point.y();
+  fillPtr << mEndian << QgsWkbTypes::Point << point.x() << point.y();
 
   return 0;
 }
@@ -1256,7 +1344,7 @@ int QgsGmlStreamingParser::getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>&
 
   QgsWkbPtr fillPtr( wkbPtr );
 
-  fillPtr << mEndian << QGis::WKBLineString << lineCoordinates.size();
+  fillPtr << mEndian << QgsWkbTypes::LineString << lineCoordinates.size();
 
   QList<QgsPoint>::const_iterator iter;
   for ( iter = lineCoordinates.constBegin(); iter != lineCoordinates.constEnd(); ++iter )
@@ -1292,7 +1380,7 @@ int QgsGmlStreamingParser::createMultiLineFromFragments()
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
 
-  wkbPtr << mEndian << QGis::WKBMultiLineString << mCurrentWKBFragments.constBegin()->size();
+  wkbPtr << mEndian << QgsWkbTypes::MultiLineString << mCurrentWKBFragments.constBegin()->size();
 
   //copy (and delete) all the wkb fragments
   QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
@@ -1304,7 +1392,7 @@ int QgsGmlStreamingParser::createMultiLineFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = QGis::WKBMultiLineString;
+  mWkbType = QgsWkbTypes::MultiLineString;
   return 0;
 }
 
@@ -1314,7 +1402,7 @@ int QgsGmlStreamingParser::createMultiPointFromFragments()
   mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << mEndian << QGis::WKBMultiPoint << mCurrentWKBFragments.constBegin()->size();
+  wkbPtr << mEndian << QgsWkbTypes::MultiPoint << mCurrentWKBFragments.constBegin()->size();
 
   QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
   for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
@@ -1325,7 +1413,7 @@ int QgsGmlStreamingParser::createMultiPointFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = QGis::WKBMultiPoint;
+  mWkbType = QgsWkbTypes::MultiPoint;
   return 0;
 }
 
@@ -1336,7 +1424,7 @@ int QgsGmlStreamingParser::createPolygonFromFragments()
   mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << mEndian << QGis::WKBPolygon << mCurrentWKBFragments.constBegin()->size();
+  wkbPtr << mEndian << QgsWkbTypes::Polygon << mCurrentWKBFragments.constBegin()->size();
 
   QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
   for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
@@ -1347,7 +1435,7 @@ int QgsGmlStreamingParser::createPolygonFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = QGis::WKBPolygon;
+  mWkbType = QgsWkbTypes::Polygon;
   return 0;
 }
 
@@ -1361,7 +1449,7 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
   mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << ( char ) mEndian << QGis::WKBMultiPolygon << mCurrentWKBFragments.size();
+  wkbPtr << ( char ) mEndian << QgsWkbTypes::MultiPolygon << mCurrentWKBFragments.size();
 
   //have outer and inner iterators
   QList< QList<QgsWkbPtr> >::const_iterator outerWkbIt = mCurrentWKBFragments.constBegin();
@@ -1369,7 +1457,7 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
   for ( ; outerWkbIt != mCurrentWKBFragments.constEnd(); ++outerWkbIt )
   {
     //new polygon
-    wkbPtr << ( char ) mEndian << QGis::WKBPolygon << outerWkbIt->size();
+    wkbPtr << ( char ) mEndian << QgsWkbTypes::Polygon << outerWkbIt->size();
 
     QList<QgsWkbPtr>::const_iterator innerWkbIt = outerWkbIt->constBegin();
     for ( ; innerWkbIt != outerWkbIt->constEnd(); ++innerWkbIt )
@@ -1381,7 +1469,7 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = QGis::WKBMultiPolygon;
+  mWkbType = QgsWkbTypes::MultiPolygon;
   return 0;
 }
 

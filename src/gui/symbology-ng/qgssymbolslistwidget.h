@@ -25,6 +25,9 @@ class QgsStyleV2;
 
 class QMenu;
 
+/** \ingroup gui
+ * \class QgsSymbolsListWidget
+ */
 class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListWidget
 {
     Q_OBJECT

@@ -80,11 +80,9 @@ class QgsDb2TableModel : public QStandardItemModel
 
     QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata );
 
-    static QIcon iconForWkbType( QGis::WkbType type );
+    static QIcon iconForWkbType( QgsWkbTypes::Type type );
 
-    static QGis::WkbType wkbTypeFromDb2( QString dbType, int dim = 2 );
-
-    static QString displayStringForWkbType( QGis::WkbType type );
+    static QgsWkbTypes::Type wkbTypeFromDb2( QString dbType, int dim = 2 );
 
   private:
     /** Number of tables in the model*/

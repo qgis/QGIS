@@ -10,12 +10,7 @@ ENDIF (QT5_BUILD)
 SET(QT_USE_QTDESIGNER ON)
 
 
-IF (NOT MSVC)
-  ADD_DEFINITIONS("-UCUSTOMWIDGETS_EXPORT")
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
-  ENDIF()
-ENDIF (NOT MSVC)
+REMOVE_DEFINITIONS("-DCUSTOMWIDGETS_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("\"-DCUSTOMWIDGETS_EXPORT=${DLLEXPORT}\"")
 
 ########################################################
@@ -25,9 +20,9 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgiscustomwidgets.cpp
   qgscollapsiblegroupboxplugin.cpp
   qgscolorbuttonplugin.cpp
-  qgscolorbuttonv2plugin.cpp
   qgsdatetimeeditplugin.cpp
   qgsdatadefinedbuttonplugin.cpp
+  qgsdockwidgetplugin.cpp
   qgsdoublespinboxplugin.cpp
   qgsexpressionbuilderwidgetplugin.cpp
   qgsextentgroupboxplugin.cpp
@@ -49,9 +44,9 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgiscustomwidgets.h
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
-  qgscolorbuttonv2plugin.h
   qgsdatetimeeditplugin.h
   qgsdatadefinedbuttonplugin.h
+  qgsdockwidgetplugin.h
   qgsdoublespinboxplugin.h
   qgsexpressionbuilderwidgetplugin.h
   qgsextentgroupboxplugin.h
@@ -79,9 +74,9 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgiscustomwidgets.h
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
-  qgscolorbuttonv2plugin.h
   qgsdatetimeeditplugin.h
   qgsdatadefinedbuttonplugin.h
+  qgsdockwidgetplugin.h
   qgsdoublespinboxplugin.h
   qgsexpressionbuilderwidgetplugin.h
   qgsextentgroupboxplugin.h

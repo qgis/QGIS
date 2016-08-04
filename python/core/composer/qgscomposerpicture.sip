@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * A composer class that displays svg files or raster format (jpg, png, ...)
  * */
 class QgsComposerPicture: QgsComposerItem
@@ -85,13 +85,13 @@ class QgsComposerPicture: QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc is Dom document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Returns the rotation used for drawing the picture within the composer item
      * @deprecated Use pictureRotation() instead

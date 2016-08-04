@@ -58,7 +58,7 @@ class EquivalentNumField(GeoAlgorithm):
         fieldindex = vlayer.fieldNameIndex(fieldname)
         fields = vprovider.fields()
         fields.append(QgsField('NUM_FIELD', QVariant.Int))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(),
+        writer = output.getVectorWriter(fields, vprovider.wkbType(),
                                         vlayer.crs())
         outFeat = QgsFeature()
         classes = {}

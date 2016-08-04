@@ -179,7 +179,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   QString userAgent = s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString();
   if ( !userAgent.isEmpty() )
     userAgent += ' ';
-  userAgent += QString( "QGIS/%1" ).arg( QGis::QGIS_VERSION );
+  userAgent += QString( "QGIS/%1" ).arg( Qgis::QGIS_VERSION );
   pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
 
 #ifndef QT_NO_OPENSSL
@@ -372,10 +372,10 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
   if ( !newcache )
     newcache = new QgsNetworkDiskCache( this );
 
-  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+  QString cacheDirectory = settings.value( "cache/directory" ).toString();
+  if ( cacheDirectory.isEmpty() )
+    cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
   qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
-  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
-  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
   newcache->setCacheDirectory( cacheDirectory );
   newcache->setMaximumCacheSize( cacheSize );
   QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ) );
@@ -387,14 +387,12 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
 
 void QgsNetworkAccessManager::sendGet( const QNetworkRequest & request )
 {
-  QgsDebugMsg( "Entered" );
   QNetworkReply * reply = get( request );
   emit requestSent( reply, QObject::sender() );
 }
 
 void QgsNetworkAccessManager::deleteReply( QNetworkReply * reply )
 {
-  QgsDebugMsg( "Entered" );
   if ( !reply )
   {
     return;

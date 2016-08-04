@@ -21,6 +21,7 @@
 #define QGSWMSPROVIDER_H
 
 #include "qgsrasterdataprovider.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkreplyparser.h"
 #include "qgswmscapabilities.h"
 
@@ -120,20 +121,14 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \param   capabilities   Optionally existing parsed capabilities for the given URI
      *
      */
-    QgsWmsProvider( QString const & uri = nullptr, const QgsWmsCapabilities* capabilities = nullptr );
+    QgsWmsProvider( const QString& uri = QString(), const QgsWmsCapabilities* capabilities = 0 );
 
     //! Destructor
     virtual ~QgsWmsProvider();
 
     QgsWmsProvider * clone() const override;
 
-
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be return, ti will return 0
-     */
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
     /**
      * Reorder the list of WMS layer names to be rendered by this server
@@ -168,17 +163,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
+    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
 
+    virtual QgsRectangle extent() const override;
 
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
-
-    /** Returns true if layer is valid
-     */
-    bool isValid() override;
+    bool isValid() const override;
 
 #if 0
     /** Returns true if layer has tile set profiles
@@ -221,6 +211,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * WMS client.
      */
     QStringList subLayerStyles() const override;
+
+    /** \brief Returns whether the provider supplies a legend graphic */
+    bool supportsLegendGraphic() const override { return true; }
 
 
     /**
@@ -265,8 +258,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
       */
     int capabilities() const override;
 
-    QGis::DataType dataType( int bandNo ) const override;
-    QGis::DataType srcDataType( int bandNo ) const override;
+    Qgis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
 
     /**
@@ -275,7 +268,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString metadata() override;
 
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -370,10 +363,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   private:
 
+    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback* feedback );
+
     /**
      * Try to get best extent for the layer in given CRS. Returns true on success, false otherwise (layer not found, invalid CRS, transform failed)
      */
-    bool extentForNonTiledLayer( const QString& layerName, const QString& crs, QgsRectangle& extent );
+    bool extentForNonTiledLayer( const QString& layerName, const QString& crs, QgsRectangle& extent ) const;
 
     // case insensitive attribute value lookup
     static QString nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue = QString::null );
@@ -416,7 +411,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \retval false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      */
-    bool calculateExtent();
+    bool calculateExtent() const;
 
     /* \brief Bounding box in WMS format
      *
@@ -462,7 +457,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * Rectangle that contains the extent (bounding box) of the layer
      */
-    QgsRectangle mLayerExtent;
+    mutable QgsRectangle mLayerExtent;
 
     /**
      * GetLegendGraphic of the WMS (raw)
@@ -537,11 +532,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString mErrorFormat;
 
-    //! A QgsCoordinateTransform is used for transformation of WMS layer extents
-    QgsCoordinateTransform *mCoordinateTransform;
-
     //! See if calculateExtents() needs to be called before extent() returns useful data
-    bool mExtentDirty;
+    mutable bool mExtentDirty;
 
     QString mServiceMetadataURL;
 
@@ -571,7 +563,7 @@ class QgsWmsImageDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image );
+    QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image, QgsRasterBlockFeedback* feedback );
     ~QgsWmsImageDownloadHandler();
 
     void downloadBlocking();
@@ -579,6 +571,7 @@ class QgsWmsImageDownloadHandler : public QObject
   protected slots:
     void cacheReplyFinished();
     void cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal );
+    void cancelled();
 
   protected:
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
@@ -610,13 +603,14 @@ class QgsWmsTiledImageDownloadHandler : public QObject
       int index;
     };
 
-    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform );
+    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback* feedback );
     ~QgsWmsTiledImageDownloadHandler();
 
     void downloadBlocking();
 
   protected slots:
     void tileReplyFinished();
+    void cancelled();
 
   protected:
     /**

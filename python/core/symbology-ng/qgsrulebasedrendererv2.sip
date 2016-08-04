@@ -80,7 +80,12 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
          * Return the attributes used to evaluate the expression of this rule
          * @return A set of attribute names
          */
-        QSet<QString> usedAttributes();
+        QSet<QString> usedAttributes() const;
+
+        /**
+         * Returns true if this rule or one of its chilren needs the geometry to be applied.
+         */
+        bool needsGeometry() const;
 
 	//! @note available in python bindings as symbol2
         QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() ) /PyName=symbols2/;
@@ -199,7 +204,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         QgsRuleBasedRendererV2::Rule* clone() const /Factory/;
 
         void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props );
-        static QgsRuleBasedRendererV2::Rule* createFromSld( QDomElement& element, QGis::GeometryType geomType ) /Factory/;
+        static QgsRuleBasedRendererV2::Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
         QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
 
@@ -357,11 +362,13 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes();
 
+    virtual bool filterNeedsGeometry() const;
+
     virtual QgsRuleBasedRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType ) /Factory/;
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
     virtual QgsSymbolV2List symbols( QgsRenderContext &context );
 
@@ -411,7 +418,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     virtual QSet<QString> legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities();
+    virtual QgsFeatureRendererV2::Capabilities capabilities();
 
     /////
 

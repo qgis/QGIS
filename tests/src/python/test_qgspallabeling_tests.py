@@ -185,6 +185,22 @@ class TestPointBase(object):
         self.lyr.shadowTransparency = 0
         self.checkTest()
 
+    def test_letter_spacing(self):
+        # Modified letter spacing
+        font = QFont(self._TestFont)
+        font.setLetterSpacing(QFont.AbsoluteSpacing, 3.5)
+        font.setPointSizeF(30)
+        self.lyr.textFont = font
+        self.checkTest()
+
+    def test_word_spacing(self):
+        # Modified word spacing
+        font = QFont(self._TestFont)
+        font.setPointSizeF(30)
+        font.setWordSpacing(20.5)
+        self.lyr.textFont = font
+        self.checkTest()
+
 # noinspection PyPep8Naming
 
 

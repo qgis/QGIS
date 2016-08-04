@@ -24,7 +24,7 @@ class QgsComposition;
 class QgsComposerItem;
 class QGraphicsView;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Handles drawing of selection outlines and mouse handles. Responsible for mouse
  * interactions such as resizing and moving selected items.
  * \note not available in Python bindings

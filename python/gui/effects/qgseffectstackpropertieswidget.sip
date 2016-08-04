@@ -9,7 +9,7 @@
  * \see QgsEffectStackCompactWidget
  */
 
-class QgsEffectStackPropertiesWidget : QWidget
+class QgsEffectStackPropertiesWidget : QgsPanelWidget
 {
 %TypeHeaderCode
 #include <qgseffectstackpropertieswidget.h>
@@ -147,7 +147,7 @@ class QgsEffectStackPropertiesDialog : QgsDialog
  * \see QgsEffectStackPropertiesDialog
  */
 
-class QgsEffectStackCompactWidget : QWidget
+class QgsEffectStackCompactWidget : QgsPanelWidget
 {
 %TypeHeaderCode
 #include <qgseffectstackpropertieswidget.h>
@@ -187,5 +187,4 @@ class QgsEffectStackCompactWidget : QWidget
     /** Emitted when the paint effect properties change
      */
     void changed();
-
 };

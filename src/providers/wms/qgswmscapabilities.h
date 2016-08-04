@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgswmscapabilities.h
+    ---------------------
+    begin                : January 2014
+    copyright            : (C) 2014 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSWMSCAPABILITIES_H
 #define QGSWMSCAPABILITIES_H
 
@@ -385,7 +399,12 @@ struct QgsWmsCapabilityProperty
 {
   QgsWmsRequestProperty                request;
   QgsWmsExceptionProperty              exception;
-  QgsWmsLayerProperty                  layer;
+
+  // Top level layer should normally be present max once
+  // <element name="Capability">
+  //    <element ref="wms:Layer" minOccurs="0"/>  - default maxOccurs=1
+  // but there are a few non conformant capabilities around (#13762)
+  QList<QgsWmsLayerProperty>           layers;
 
   QList<QgsWmtsTileLayer>              tileLayers;
   QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets;
@@ -648,11 +667,6 @@ class QgsWmsCapabilities
      * Used in determining if the Identify map tool can be useful on the rendered WMS map layer.
      */
     QMap<QString, bool> mQueryableForLayer;
-
-    /**
-     * available CRSs per layer
-     */
-    QMap<QString, QStringList > mCrsForLayer;
 
     /**
      * layers hosted by the WMS

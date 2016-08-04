@@ -29,25 +29,22 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterVector, ParameterBoolean
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
-
-GEOM_25D = [QGis.WKBPoint25D, QGis.WKBLineString25D, QGis.WKBPolygon25D,
-            QGis.WKBMultiPoint25D, QGis.WKBMultiLineString25D,
-            QGis.WKBMultiPolygon25D]
 
 
 class Difference(GeoAlgorithm):
 
     INPUT = 'INPUT'
     OVERLAY = 'OVERLAY'
+    IGNORE_INVALID = 'IGNORE_INVALID'
     OUTPUT = 'OUTPUT'
 
     def getIcon(self):
@@ -60,6 +57,8 @@ class Difference(GeoAlgorithm):
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(Difference.OVERLAY,
                                           self.tr('Difference layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterBoolean(Difference.IGNORE_INVALID,
+                                           self.tr('Ignore invalid input features'), False, True))
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
     def processAlgorithm(self, progress):
@@ -67,12 +66,9 @@ class Difference(GeoAlgorithm):
             self.getParameterValue(Difference.INPUT))
         layerB = dataobjects.getObjectFromUri(
             self.getParameterValue(Difference.OVERLAY))
+        ignoreInvalid = self.getParameterValue(Difference.IGNORE_INVALID)
 
-        geomType = layerA.dataProvider().geometryType()
-        if geomType in GEOM_25D:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Input layer has unsupported geometry type {}').format(geomType))
-
+        geomType = layerA.dataProvider().wkbType()
         writer = self.getOutputFromName(
             Difference.OUTPUT).getVectorWriter(layerA.pendingFields(),
                                                geomType,
@@ -84,22 +80,26 @@ class Difference(GeoAlgorithm):
         total = 100.0 / len(selectionA)
         for current, inFeatA in enumerate(selectionA):
             add = True
-            geom = QgsGeometry(inFeatA.geometry())
+            geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)
             attrs = inFeatA.attributes()
             intersections = index.intersects(geom.boundingBox())
             for i in intersections:
                 request = QgsFeatureRequest().setFilterFid(i)
                 inFeatB = layerB.getFeatures(request).next()
-                tmpGeom = QgsGeometry(inFeatB.geometry())
+                tmpGeom = inFeatB.geometry()
                 if diff_geom.intersects(tmpGeom):
                     diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
-                    if diff_geom.isGeosEmpty() or not diff_geom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry.'))
-                        add = False
+                    if diff_geom.isGeosEmpty():
+                        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                                               self.tr('Feature with NULL geometry found.'))
+                    if not diff_geom.isGeosValid():
+                        if ignoreInvalid:
+                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                                   self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
+                            add = False
+                        else:
+                            raise GeoAlgorithmExecutionException(self.tr('Features with invalid geometries found. Please fix these errors or specify the "Ignore invalid input features" flag'))
                         break
 
             if add:

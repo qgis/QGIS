@@ -1,5 +1,5 @@
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Item model implementation based on layer tree model for composer legend.
  * Overrides some functionality of QgsLayerTreeModel to better fit the needs of composer legend.
  *
@@ -20,7 +20,7 @@ class QgsLegendModelV2 : QgsLayerTreeModel
 };
 
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A legend that can be placed onto a map composition
  */
 class QgsComposerLegend : QgsComposerItem
@@ -45,6 +45,20 @@ class QgsComposerLegend : QgsComposerItem
 
     /** Sets item box to the whole content*/
     void adjustBoxSize();
+
+    /** Sets whether the legend should automatically resize to fit its contents.
+     * @param enabled set to false to disable automatic resizing. The legend frame will not
+     * be expanded to fit legend items, and items may be cropped from display.
+     * @see resizeToContents()
+     * @note added in QGIS 3.0
+     */
+    void setResizeToContents( bool enabled );
+
+    /** Returns whether the legend should automatically resize to fit its contents.
+     * @see setResizeToContents()
+     * @note added in QGIS 3.0
+     */
+    bool resizeToContents() const;
 
     /** Returns pointer to the legend model*/
     //! @deprecated in 2.6 - use modelV2()
@@ -208,13 +222,13 @@ class QgsComposerLegend : QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     //Overridden to show legend title
     virtual QString displayName() const;

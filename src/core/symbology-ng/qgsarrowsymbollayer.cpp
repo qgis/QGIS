@@ -18,22 +18,28 @@
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
     : QgsLineSymbolLayerV2()
     , mArrowWidth( 1.0 )
-    , mArrowWidthUnit( QgsSymbolV2::MM )
+    , mArrowWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mArrowStartWidth( 1.0 )
-    , mArrowStartWidthUnit( QgsSymbolV2::MM )
-    , mHeadSize( 1.5 )
-    , mHeadSizeUnit( QgsSymbolV2::MM )
+    , mArrowStartWidthUnit( QgsUnitTypes::RenderMillimeters )
+    , mHeadLength( 1.5 )
+    , mHeadLengthUnit( QgsUnitTypes::RenderMillimeters )
+    , mHeadThickness( 1.5 )
+    , mHeadThicknessUnit( QgsUnitTypes::RenderMillimeters )
     , mHeadType( HeadSingle )
+    , mArrowType( ArrowPlain )
     , mIsCurved( true )
+    , mIsRepeated( true )
     , mScaledArrowWidth( 1.0 )
     , mScaledArrowStartWidth( 1.0 )
-    , mScaledHeadSize( 1.5 )
+    , mScaledHeadLength( 1.5 )
+    , mScaledHeadThickness( 1.5 )
     , mScaledOffset( 0.0 )
     , mComputedHeadType( HeadSingle )
+    , mComputedArrowType( ArrowPlain )
 {
   /* default values */
   setOffset( 0.0 );
-  setOffsetUnit( QgsSymbolV2::MM );
+  setOffsetUnit( QgsUnitTypes::RenderMillimeters );
 
   mSymbol.reset( static_cast<QgsFillSymbolV2*>( QgsFillSymbolV2::createSimple( QgsStringMap() ) ) );
 }
@@ -57,7 +63,7 @@ QgsSymbolLayerV2* QgsArrowSymbolLayer::create( const QgsStringMap& props )
     l->setArrowWidth( props["arrow_width"].toDouble() );
 
   if ( props.contains( "arrow_width_unit" ) )
-    l->setArrowWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["arrow_width_unit"] ) );
+    l->setArrowWidthUnit( QgsUnitTypes::decodeRenderUnit( props["arrow_width_unit"] ) );
 
   if ( props.contains( "arrow_width_unit_scale" ) )
     l->setArrowWidthUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["arrow_width_unit_scale"] ) );
@@ -66,7 +72,7 @@ QgsSymbolLayerV2* QgsArrowSymbolLayer::create( const QgsStringMap& props )
     l->setArrowStartWidth( props["arrow_start_width"].toDouble() );
 
   if ( props.contains( "arrow_start_width_unit" ) )
-    l->setArrowStartWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["arrow_start_width_unit"] ) );
+    l->setArrowStartWidthUnit( QgsUnitTypes::decodeRenderUnit( props["arrow_start_width_unit"] ) );
 
   if ( props.contains( "arrow_start_width_unit_scale" ) )
     l->setArrowStartWidthUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["arrow_start_width_unit_scale"] ) );
@@ -74,23 +80,38 @@ QgsSymbolLayerV2* QgsArrowSymbolLayer::create( const QgsStringMap& props )
   if ( props.contains( "is_curved" ) )
     l->setIsCurved( props["is_curved"].toInt() == 1 );
 
-  if ( props.contains( "head_size" ) )
-    l->setHeadSize( props["head_size"].toDouble() );
+  if ( props.contains( "is_repeated" ) )
+    l->setIsRepeated( props["is_repeated"].toInt() == 1 );
 
-  if ( props.contains( "head_size_unit" ) )
-    l->setHeadSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["head_size_unit"] ) );
+  if ( props.contains( "head_length" ) )
+    l->setHeadLength( props["head_length"].toDouble() );
 
-  if ( props.contains( "head_size_unit_scale" ) )
-    l->setHeadSizeUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["head_size_unit_scale"] ) );
+  if ( props.contains( "head_length_unit" ) )
+    l->setHeadLengthUnit( QgsUnitTypes::decodeRenderUnit( props["head_length_unit"] ) );
+
+  if ( props.contains( "head_length_unit_scale" ) )
+    l->setHeadLengthUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["head_length_unit_scale"] ) );
+
+  if ( props.contains( "head_thickness" ) )
+    l->setHeadThickness( props["head_thickness"].toDouble() );
+
+  if ( props.contains( "head_thickness_unit" ) )
+    l->setHeadThicknessUnit( QgsUnitTypes::decodeRenderUnit( props["head_thickness_unit"] ) );
+
+  if ( props.contains( "head_thickness_unit_scale" ) )
+    l->setHeadThicknessUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["head_thickness_unit_scale"] ) );
 
   if ( props.contains( "head_type" ) )
     l->setHeadType( static_cast<HeadType>( props["head_type"].toInt() ) );
+
+  if ( props.contains( "arrow_type" ) )
+    l->setArrowType( static_cast<ArrowType>( props["arrow_type"].toInt() ) );
 
   if ( props.contains( "offset" ) )
     l->setOffset( props["offset"].toDouble() );
 
   if ( props.contains( "offset_unit" ) )
-    l->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+    l->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props["offset_unit"] ) );
 
   if ( props.contains( "offset_unit_scale" ) )
     l->setOffsetMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["offset_unit_scale"] ) );
@@ -121,23 +142,29 @@ QgsStringMap QgsArrowSymbolLayer::properties() const
   QgsStringMap map;
 
   map["arrow_width"] = QString::number( arrowWidth() );
-  map["arrow_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( arrowWidthUnit() );
+  map["arrow_width_unit"] = QgsUnitTypes::encodeUnit( arrowWidthUnit() );
   map["arrow_width_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( arrowWidthUnitScale() );
 
   map["arrow_start_width"] = QString::number( arrowStartWidth() );
-  map["arrow_start_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( arrowStartWidthUnit() );
+  map["arrow_start_width_unit"] = QgsUnitTypes::encodeUnit( arrowStartWidthUnit() );
   map["arrow_start_width_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( arrowStartWidthUnitScale() );
 
   map["is_curved"] = QString::number( isCurved() ? 1 : 0 );
+  map["is_repeated"] = QString::number( isRepeated() ? 1 : 0 );
 
-  map["head_size"] = QString::number( headSize() );
-  map["head_size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( headSizeUnit() );
-  map["head_size_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( headSizeUnitScale() );
+  map["head_length"] = QString::number( headLength() );
+  map["head_length_unit"] = QgsUnitTypes::encodeUnit( headLengthUnit() );
+  map["head_length_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( headLengthUnitScale() );
+
+  map["head_thickness"] = QString::number( headThickness() );
+  map["head_thickness_unit"] = QgsUnitTypes::encodeUnit( headThicknessUnit() );
+  map["head_thickness_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( headThicknessUnitScale() );
 
   map["head_type"] = QString::number( headType() );
+  map["arrow_type"] = QString::number( arrowType() );
 
   map["offset"] = QString::number( offset() );
-  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( offsetUnit() );
+  map["offset_unit"] = QgsUnitTypes::encodeUnit( offsetUnit() );
   map["offset_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( offsetMapUnitScale() );
 
   saveDataDefinedProperties( map );
@@ -159,9 +186,11 @@ void QgsArrowSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   mExpressionScope.reset( new QgsExpressionContextScope() );
   mScaledArrowWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), arrowWidth(), arrowWidthUnit(), arrowWidthUnitScale() );
   mScaledArrowStartWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), arrowStartWidth(), arrowStartWidthUnit(), arrowStartWidthUnitScale() );
-  mScaledHeadSize = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), headSize(), headSizeUnit(), headSizeUnitScale() );
+  mScaledHeadLength = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), headLength(), headLengthUnit(), headLengthUnitScale() );
+  mScaledHeadThickness = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), headThickness(), headThicknessUnit(), headThicknessUnitScale() );
   mScaledOffset = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), offset(), offsetUnit(), offsetMapUnitScale() );
   mComputedHeadType = headType();
+  mComputedArrowType = arrowType();
 
   mSymbol->startRender( context.renderContext() );
 }
@@ -176,34 +205,38 @@ inline qreal euclidian_distance( const QPointF& po, const QPointF& pd )
   return sqrt(( po.x() - pd.x() ) * ( po.x() - pd.x() ) + ( po.y() - pd.y() ) * ( po.y() - pd.y() ) );
 }
 
-QPolygonF straightArrow( QPointF po, QPointF pd, qreal startWidth, qreal width, qreal headSize, QgsArrowSymbolLayer::HeadType headType, qreal offset )
+QPolygonF straightArrow( QPointF po, QPointF pd,
+                         qreal startWidth, qreal width,
+                         qreal headWidth, qreal headHeight,
+                         QgsArrowSymbolLayer::HeadType headType, QgsArrowSymbolLayer::ArrowType arrowType,
+                         qreal offset )
 {
   QPolygonF polygon; // implicitly shared
   // vector length
   qreal length = euclidian_distance( po, pd );
 
   // shift points if there is not enough room for the head(s)
-  if (( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headSize ) )
+  if (( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headWidth ) )
   {
-    po = pd - ( pd - po ) / length * headSize;
-    length = headSize;
+    po = pd - ( pd - po ) / length * headWidth;
+    length = headWidth;
   }
-  else if (( headType == QgsArrowSymbolLayer::HeadReversed ) && ( length < headSize ) )
+  else if (( headType == QgsArrowSymbolLayer::HeadReversed ) && ( length < headWidth ) )
   {
-    pd = po + ( pd - po ) / length * headSize;
-    length = headSize;
+    pd = po + ( pd - po ) / length * headWidth;
+    length = headWidth;
   }
-  else if (( headType == QgsArrowSymbolLayer::HeadDouble ) && ( length < 2 * headSize ) )
+  else if (( headType == QgsArrowSymbolLayer::HeadDouble ) && ( length < 2 * headWidth ) )
   {
-    QPointF v = ( pd - po ) / length * headSize;
+    QPointF v = ( pd - po ) / length * headWidth;
     QPointF npo = ( po + pd ) / 2.0 - v;
     QPointF npd = ( po + pd ) / 2.0 + v;
     po = npo;
     pd = npd;
-    length = 2 * headSize;
+    length = 2 * headWidth;
   }
 
-  qreal bodyLength = length - headSize;
+  qreal bodyLength = length - headWidth;
 
   // unit vector
   QPointF unitVec = ( pd - po ) / length;
@@ -218,44 +251,77 @@ QPolygonF straightArrow( QPointF po, QPointF pd, qreal startWidth, qreal width, 
   {
     // first head
     polygon << po;
-    polygon << po + unitVec * headSize + perpVec * headSize;
-    polygon << po + unitVec * headSize + perpVec * ( width * 0.5 );
+    if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowRightHalf )
+    {
+      polygon << po + unitVec * headWidth + perpVec * headHeight;
+      polygon << po + unitVec * headWidth + perpVec * ( width * 0.5 );
 
-    polygon << po + unitVec * bodyLength + perpVec * ( width * 0.5 );
+      polygon << po + unitVec * bodyLength + perpVec * ( width * 0.5 );
 
-    // second head
-    polygon << po + unitVec * bodyLength + perpVec * headSize;
+      // second head
+      polygon << po + unitVec * bodyLength + perpVec * headHeight;
+    }
     polygon << pd;
-    polygon << po + unitVec * bodyLength - perpVec * headSize;
 
-    polygon << po + unitVec * bodyLength - perpVec * ( width * 0.5 );
+    if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowLeftHalf )
+    {
+      polygon << po + unitVec * bodyLength - perpVec * headHeight;
+      polygon << po + unitVec * bodyLength - perpVec * ( width * 0.5 );
 
-    // end of the first head
-    polygon << po + unitVec * headSize - perpVec * ( width * 0.5 );
-    polygon << po + unitVec * headSize - perpVec * headSize;
+      // end of the first head
+      polygon << po + unitVec * headWidth - perpVec * ( width * 0.5 );
+      polygon << po + unitVec * headWidth - perpVec * headHeight;
+    }
   }
   else if ( headType == QgsArrowSymbolLayer::HeadSingle )
   {
-    polygon << po - perpVec * ( startWidth * 0.5 );
-    polygon << po + perpVec * ( startWidth * 0.5 );
-    polygon << po + unitVec * bodyLength + perpVec * ( width * 0.5 );
-    polygon << po + unitVec * bodyLength + perpVec * headSize;
+    if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowRightHalf )
+    {
+      polygon << po + perpVec * ( startWidth * 0.5 );
+      polygon << po + unitVec * bodyLength + perpVec * ( width * 0.5 );
+      polygon << po + unitVec * bodyLength + perpVec * headHeight;
+    }
+    else
+    {
+      polygon << po;
+    }
     polygon << pd;
-    polygon << po + unitVec * bodyLength - perpVec * headSize;
-    polygon << po + unitVec * bodyLength - perpVec * ( width * 0.5 );
+    if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowLeftHalf )
+    {
+      polygon << po + unitVec * bodyLength - perpVec * headHeight;
+      polygon << po + unitVec * bodyLength - perpVec * ( width * 0.5 );
+      polygon << po - perpVec * ( startWidth * 0.5 );
+    }
+    else
+    {
+      polygon << po;
+    }
   }
   else if ( headType == QgsArrowSymbolLayer::HeadReversed )
   {
-    // first head
     polygon << po;
-    polygon << po + unitVec * headSize + perpVec * headSize;
-    polygon << po + unitVec * headSize + perpVec * ( width * 0.5 );
+    if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowRightHalf )
+    {
+      polygon << po + unitVec * headWidth + perpVec * headHeight;
+      polygon << po + unitVec * headWidth + perpVec * ( width * 0.5 );
 
-    polygon << pd + perpVec * ( startWidth * 0.5 );
-    polygon << pd - perpVec * ( startWidth * 0.5 );
+      polygon << pd + perpVec * ( startWidth * 0.5 );
+    }
+    else
+    {
+      polygon << pd;
+    }
+    if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowLeftHalf )
+    {
+      polygon << pd - perpVec * ( startWidth * 0.5 );
 
-    polygon << po + unitVec * headSize - perpVec * ( width * 0.5 );
-    polygon << po + unitVec * headSize - perpVec * headSize;
+      polygon << po + unitVec * headWidth - perpVec * ( width * 0.5 );
+      polygon << po + unitVec * headWidth - perpVec * headHeight;
+    }
+    else
+    {
+      polygon << pd;
+    }
   }
   // close the polygon
   polygon << polygon.first();
@@ -393,14 +459,18 @@ void spiralArcTo( QPainterPath& path, const QPointF& center, qreal startAngle, q
   }
 }
 
-QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd, qreal startWidth, qreal width, qreal headSize, QgsArrowSymbolLayer::HeadType headType, qreal offset )
+QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
+                       qreal startWidth, qreal width,
+                       qreal headWidth, qreal headHeight,
+                       QgsArrowSymbolLayer::HeadType headType, QgsArrowSymbolLayer::ArrowType arrowType,
+                       qreal offset )
 {
   qreal circleRadius;
   QPointF circleCenter;
-  if ( ! pointsToCircle( po, pm, pd, circleCenter, circleRadius ) || circleRadius > 10000.0 )
+  if ( ! pointsToCircle( po, pm, pd, circleCenter, circleRadius ) )
   {
     // aligned points => draw a straight arrow
-    return straightArrow( po, pd, startWidth, width, headSize, headType, offset );
+    return straightArrow( po, pd, startWidth, width, headWidth, headHeight, headType, arrowType, offset );
   }
 
   // angles of each point
@@ -411,17 +481,24 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd, qreal startWidth, qre
   // arc direction : 1 = counter-clockwise, -1 = clockwise
   int direction = clampAngle( angle_m - angle_o ) < clampAngle( angle_m - angle_d ) ? 1 : -1;
 
+  // arrow type, independent of the direction
+  int aType = 0;
+  if ( arrowType == QgsArrowSymbolLayer::ArrowRightHalf )
+    aType = direction;
+  else if ( arrowType == QgsArrowSymbolLayer::ArrowLeftHalf )
+    aType = -direction;
+
   qreal deltaAngle = angle_d - angle_o;
   if ( direction * deltaAngle < 0.0 )
     deltaAngle = deltaAngle + direction * 2 * M_PI;
 
   qreal length = euclidian_distance( po, pd );
   // for close points and deltaAngle < 180, draw a straight line
-  if ( fabs( deltaAngle ) < M_PI && ((( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headSize ) ) ||
-                                     (( headType == QgsArrowSymbolLayer::HeadReversed ) && ( length < headSize ) ) ||
-                                     (( headType == QgsArrowSymbolLayer::HeadDouble ) && ( length < 2*headSize ) ) ) )
+  if ( fabs( deltaAngle ) < M_PI && ((( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headWidth ) ) ||
+                                     (( headType == QgsArrowSymbolLayer::HeadReversed ) && ( length < headWidth ) ) ||
+                                     (( headType == QgsArrowSymbolLayer::HeadDouble ) && ( length < 2*headWidth ) ) ) )
   {
-    return straightArrow( po, pd, startWidth, width, headSize, headType, offset );
+    return straightArrow( po, pd, startWidth, width, headWidth, headHeight, headType, arrowType, offset );
   }
 
   // ajust coordinates to include offset
@@ -430,7 +507,7 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd, qreal startWidth, qre
   pm = circlePoint( circleCenter, circleRadius, angle_m );
   pd = circlePoint( circleCenter, circleRadius, angle_d );
 
-  qreal headAngle = direction * atan( headSize / circleRadius );
+  qreal headAngle = direction * atan( headWidth / circleRadius );
 
   QPainterPath path;
 
@@ -438,50 +515,94 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd, qreal startWidth, qre
   {
     // the first head
     path.moveTo( po );
-    path.lineTo( circlePoint( circleCenter, circleRadius + direction * headSize, angle_o + headAngle ) );
+    if ( aType <= 0 )
+    {
+      path.lineTo( circlePoint( circleCenter, circleRadius + direction * headHeight, angle_o + headAngle ) );
 
-    pathArcTo( path, circleCenter, circleRadius + direction * width / 2, angle_o + headAngle, angle_d - headAngle, direction );
+      pathArcTo( path, circleCenter, circleRadius + direction * width / 2, angle_o + headAngle, angle_d - headAngle, direction );
 
-    // the second head
-    path.lineTo( circlePoint( circleCenter, circleRadius + direction * headSize, angle_d - headAngle ) );
-    path.lineTo( pd );
-    path.lineTo( circlePoint( circleCenter, circleRadius - direction * headSize, angle_d - headAngle ) );
+      // the second head
+      path.lineTo( circlePoint( circleCenter, circleRadius + direction * headHeight, angle_d - headAngle ) );
+      path.lineTo( pd );
+    }
+    else
+    {
+      pathArcTo( path, circleCenter, circleRadius, angle_o, angle_d, direction );
+    }
+    if ( aType >= 0 )
+    {
+      path.lineTo( circlePoint( circleCenter, circleRadius - direction * headHeight, angle_d - headAngle ) );
 
-    pathArcTo( path, circleCenter, circleRadius - direction * width / 2, angle_d - headAngle, angle_o + headAngle, -direction );
+      pathArcTo( path, circleCenter, circleRadius - direction * width / 2, angle_d - headAngle, angle_o + headAngle, -direction );
 
-    // the end of the first head
-    path.lineTo( circlePoint( circleCenter, circleRadius - direction * headSize, angle_o + headAngle ) );
-    path.lineTo( po );
+      // the end of the first head
+      path.lineTo( circlePoint( circleCenter, circleRadius - direction * headHeight, angle_o + headAngle ) );
+      path.lineTo( po );
+    }
+    else
+    {
+      pathArcTo( path, circleCenter, circleRadius, angle_d, angle_o, -direction );
+    }
   }
   else if ( headType == QgsArrowSymbolLayer::HeadSingle )
   {
-    path.moveTo( circlePoint( circleCenter, circleRadius + direction * startWidth / 2, angle_o ) );
+    if ( aType <= 0 )
+    {
+      path.moveTo( circlePoint( circleCenter, circleRadius + direction * startWidth / 2, angle_o ) );
 
-    spiralArcTo( path, circleCenter, angle_o, circleRadius + direction * startWidth / 2, angle_d - headAngle, circleRadius + direction * width / 2, direction );
+      spiralArcTo( path, circleCenter, angle_o, circleRadius + direction * startWidth / 2, angle_d - headAngle, circleRadius + direction * width / 2, direction );
 
-    // the arrow head
-    path.lineTo( circlePoint( circleCenter, circleRadius + direction * headSize, angle_d - headAngle ) );
-    path.lineTo( pd );
-    path.lineTo( circlePoint( circleCenter, circleRadius - direction * headSize, angle_d - headAngle ) );
+      // the arrow head
+      path.lineTo( circlePoint( circleCenter, circleRadius + direction * headHeight, angle_d - headAngle ) );
+      path.lineTo( pd );
+    }
+    else
+    {
+      path.moveTo( po );
+      pathArcTo( path, circleCenter, circleRadius, angle_o, angle_d, direction );
+    }
+    if ( aType >= 0 )
+    {
+      path.lineTo( circlePoint( circleCenter, circleRadius - direction * headHeight, angle_d - headAngle ) );
 
-    spiralArcTo( path, circleCenter, angle_d - headAngle, circleRadius - direction * width / 2, angle_o, circleRadius - direction * startWidth / 2, -direction );
+      spiralArcTo( path, circleCenter, angle_d - headAngle, circleRadius - direction * width / 2, angle_o, circleRadius - direction * startWidth / 2, -direction );
 
-    path.lineTo( circlePoint( circleCenter, circleRadius + direction * startWidth / 2, angle_o ) );
+      path.lineTo( circlePoint( circleCenter, circleRadius + direction * startWidth / 2, angle_o ) );
+    }
+    else
+    {
+      pathArcTo( path, circleCenter, circleRadius, angle_d, angle_o, -direction );
+      path.lineTo( circlePoint( circleCenter, circleRadius + direction * startWidth / 2, angle_o ) );
+    }
   }
   else if ( headType == QgsArrowSymbolLayer::HeadReversed )
   {
-    path.moveTo( circlePoint( circleCenter, circleRadius + direction * width / 2, angle_o + headAngle ) );
+    path.moveTo( po );
+    if ( aType <= 0 )
+    {
+      path.lineTo( circlePoint( circleCenter, circleRadius + direction * headHeight, angle_o + headAngle ) );
+      path.lineTo( circlePoint( circleCenter, circleRadius + direction * width / 2, angle_o + headAngle ) );
 
-    spiralArcTo( path, circleCenter, angle_o + headAngle, circleRadius + direction * width / 2, angle_d, circleRadius + direction * startWidth / 2, direction );
+      spiralArcTo( path, circleCenter, angle_o + headAngle, circleRadius + direction * width / 2, angle_d, circleRadius + direction * startWidth / 2, direction );
+    }
+    else
+    {
+      pathArcTo( path, circleCenter, circleRadius, angle_o, angle_d, direction );
+    }
+    if ( aType >= 0 )
+    {
+      path.lineTo( circlePoint( circleCenter, circleRadius - direction * startWidth / 2, angle_d ) );
 
-    path.lineTo( circlePoint( circleCenter, circleRadius - direction * startWidth / 2, angle_d ) );
+      spiralArcTo( path, circleCenter, angle_d, circleRadius - direction * startWidth / 2, angle_o + headAngle, circleRadius - direction * width / 2, - direction );
 
-    spiralArcTo( path, circleCenter, angle_d, circleRadius - direction * startWidth / 2, angle_o + headAngle, circleRadius - direction * width / 2, - direction );
-
-    path.lineTo( circlePoint( circleCenter, circleRadius - direction * headSize, angle_o + headAngle ) );
-    path.lineTo( po );
-    path.lineTo( circlePoint( circleCenter, circleRadius + direction * headSize, angle_o + headAngle ) );
-    path.lineTo( circlePoint( circleCenter, circleRadius + direction * width / 2, angle_o + headAngle ) );
+      path.lineTo( circlePoint( circleCenter, circleRadius - direction * headHeight, angle_o + headAngle ) );
+      path.lineTo( po );
+    }
+    else
+    {
+      path.lineTo( pd );
+      pathArcTo( path, circleCenter, circleRadius, angle_d, angle_o, -direction );
+    }
   }
 
   return path.toSubpathPolygons().at( 0 );
@@ -511,13 +632,22 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolV2RenderContext& context
       mScaledArrowStartWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), w, arrowStartWidthUnit(), arrowStartWidthUnitScale() );
     }
   }
-  if ( hasDataDefinedProperty( "head_size" ) )
+  if ( hasDataDefinedProperty( "head_length" ) )
   {
-    context.setOriginalValueVariable( headSize() );
-    double w = evaluateDataDefinedProperty( "head_size", context, QVariant(), &ok ).toDouble();
+    context.setOriginalValueVariable( headLength() );
+    double w = evaluateDataDefinedProperty( "head_length", context, QVariant(), &ok ).toDouble();
     if ( ok )
     {
-      mScaledHeadSize = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), w, headSizeUnit(), headSizeUnitScale() );
+      mScaledHeadLength = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), w, headLengthUnit(), headLengthUnitScale() );
+    }
+  }
+  if ( hasDataDefinedProperty( "head_thickness" ) )
+  {
+    context.setOriginalValueVariable( headThickness() );
+    double w = evaluateDataDefinedProperty( "head_thickness", context, QVariant(), &ok ).toDouble();
+    if ( ok )
+    {
+      mScaledHeadThickness = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), w, headThicknessUnit(), headThicknessUnitScale() );
     }
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET ) )
@@ -539,6 +669,16 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolV2RenderContext& context
       mComputedHeadType = static_cast<HeadType>( h );
     }
   }
+
+  if ( hasDataDefinedProperty( "arrow_type" ) )
+  {
+    context.setOriginalValueVariable( arrowType() );
+    int h = evaluateDataDefinedProperty( "arrow_type", context, QVariant(), &ok ).toInt();
+    if ( ok )
+    {
+      mComputedArrowType = static_cast<ArrowType>( h );
+    }
+  }
 }
 
 void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
@@ -555,51 +695,100 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2Re
   mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1 );
   if ( isCurved() )
   {
-    for ( int pIdx = 0; pIdx < points.size() - 1; pIdx += 2 )
-    {
-      mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1 );
-      _resolveDataDefined( context );
+    _resolveDataDefined( context );
 
-      if ( points.size() - pIdx >= 3 )
+    if ( ! isRepeated() )
+    {
+      if ( points.size() >= 3 )
       {
         // origin point
-        QPointF po( points.at( pIdx ) );
+        QPointF po( points.at( 0 ) );
         // middle point
-        QPointF pm( points.at( pIdx + 1 ) );
+        QPointF pm( points.at( points.size() / 2 ) );
         // destination point
-        QPointF pd( points.at( pIdx + 2 ) );
+        QPointF pd( points.back() );
 
-        QPolygonF poly = curvedArrow( po, pm, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadSize, mComputedHeadType, mScaledOffset );
+        QPolygonF poly = curvedArrow( po, pm, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
         mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
       }
       // straight arrow
-      else if ( points.size() - pIdx == 2 )
+      else if ( points.size() == 2 )
       {
         // origin point
-        QPointF po( points.at( pIdx ) );
+        QPointF po( points.at( 0 ) );
         // destination point
-        QPointF pd( points.at( pIdx + 1 ) );
+        QPointF pd( points.at( 1 ) );
 
-        QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadSize, mComputedHeadType, mScaledOffset );
+        QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
         mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+      }
+    }
+    else
+    {
+      for ( int pIdx = 0; pIdx < points.size() - 1; pIdx += 2 )
+      {
+        mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1 );
+        _resolveDataDefined( context );
+
+        if ( points.size() - pIdx >= 3 )
+        {
+          // origin point
+          QPointF po( points.at( pIdx ) );
+          // middle point
+          QPointF pm( points.at( pIdx + 1 ) );
+          // destination point
+          QPointF pd( points.at( pIdx + 2 ) );
+
+          QPolygonF poly = curvedArrow( po, pm, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
+          mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+        }
+        // straight arrow
+        else if ( points.size() - pIdx == 2 )
+        {
+          // origin point
+          QPointF po( points.at( pIdx ) );
+          // destination point
+          QPointF pd( points.at( pIdx + 1 ) );
+
+          QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
+          mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+        }
       }
     }
   }
   else
   {
-    // only straight arrows
-    for ( int pIdx = 0; pIdx < points.size() - 1; pIdx++ )
+    if ( !isRepeated() )
     {
-      mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1 );
       _resolveDataDefined( context );
 
-      // origin point
-      QPointF po( points.at( pIdx ) );
-      // destination point
-      QPointF pd( points.at( pIdx + 1 ) );
+      if ( !points.isEmpty() )
+      {
+        // origin point
+        QPointF po( points.at( 0 ) );
+        // destination point
+        QPointF pd( points.back() );
 
-      QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadSize, mComputedHeadType, mScaledOffset );
-      mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+        QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
+        mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+      }
+    }
+    else
+    {
+      // only straight arrows
+      for ( int pIdx = 0; pIdx < points.size() - 1; pIdx++ )
+      {
+        mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1 );
+        _resolveDataDefined( context );
+
+        // origin point
+        QPointF po( points.at( pIdx ) );
+        // destination point
+        QPointF pd( points.at( pIdx + 1 ) );
+
+        QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
+        mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+      }
     }
   }
   context.renderContext().expressionContext().popScope();

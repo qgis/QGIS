@@ -26,8 +26,6 @@ class QgsVectorLayer;
 class QgsMapCanvas;
 class QgsCharacterSelectorDialog;
 
-#include "qgspallabeling.h"
-
 class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 {
     Q_OBJECT

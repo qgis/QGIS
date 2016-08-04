@@ -188,3 +188,16 @@ void QgsWebViewWidgetWrapper::selectFileName()
   if ( mLineEdit )
     mLineEdit->setText( filePath );
 }
+
+void QgsWebViewWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+{
+  if ( mLineEdit )
+  {
+    if ( constraintValid )
+      mLineEdit->setStyleSheet( QString() );
+    else
+    {
+      mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );
+    }
+  }
+}

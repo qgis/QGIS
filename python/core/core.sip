@@ -18,6 +18,7 @@
 
 %Include qgis.sip
 
+%Include qgsannotation.sip
 %Include qgsapplication.sip
 %Include qgsaction.sip
 %Include qgsactionmanager.sip
@@ -53,6 +54,7 @@
 %Include qgsfeaturefilterprovider.sip
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip
+%Include qgsfeedback.sip
 %Include qgsfield.sip
 %Include qgsgeometrysimplifier.sip
 %Include qgsgeometryvalidator.sip
@@ -70,8 +72,6 @@
 %Include qgsdartmeasurement.sip
 %Include qgsexpressionfieldbuffer.sip
 %Include qgsfontutils.sip
-%Include qgslabel.sip
-%Include qgslabelattributes.sip
 %Include qgslabelsearchtree.sip
 %Include qgslegendrenderer.sip
 %Include qgslegendsettings.sip
@@ -82,7 +82,6 @@
 %Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
 %Include qgsmaplayerstylemanager.sip
-%Include qgsmaprenderer.sip
 %Include qgsmaprenderercache.sip
 %Include qgsmaprenderercustompainterjob.sip
 %Include qgsmaprendererjob.sip
@@ -102,6 +101,7 @@
 %Include qgsogcutils.sip
 %Include qgsowsconnection.sip
 %Include qgspaintenginehack.sip
+%Include qgspainting.sip
 %Include qgspallabeling.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
@@ -121,6 +121,7 @@
 %Include qgsrenderchecker.sip
 %Include qgsrendercontext.sip
 %Include qgsrunprocess.sip
+%Include qgsruntimeprofiler.sip
 %Include qgsscalecalculator.sip
 %Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip
@@ -157,7 +158,7 @@
 %Include qgsvectorlayerfeatureiterator.sip
 %Include qgsvirtuallayerdefinition.sip
 %Include qgsvirtuallayerdefinitionutils.sip
-%Include qgsvisibilitypresetcollection.sip
+%Include qgsmapthemecollection.sip
 %Include qgsxmlutils.sip
 
 %Include auth/qgsauthcertutils.sip
@@ -167,6 +168,7 @@
 %Include auth/qgsauthmethod.sip
 
 %Include composer/qgsaddremoveitemcommand.sip
+%Include composer/qgsgroupungroupitemscommand.sip
 %Include composer/qgsaddremovemultiframecommand.sip
 %Include composer/qgsatlascomposition.sip
 %Include composer/qgscomposerarrow.sip
@@ -256,7 +258,6 @@
 %Include raster/qgslinearminmaxenhancementwithclip.sip
 %Include raster/qgsmultibandcolorrenderer.sip
 %Include raster/qgspalettedrasterrenderer.sip
-%Include raster/qgspseudocolorshader.sip
 %Include raster/qgsraster.sip
 %Include raster/qgsrasterbandstats.sip
 %Include raster/qgsrasterblock.sip
@@ -284,6 +285,7 @@
 %Include raster/qgssinglebandcolordatarenderer.sip
 %Include raster/qgssinglebandgrayrenderer.sip
 %Include raster/qgssinglebandpseudocolorrenderer.sip
+%Include raster/qgshillshaderenderer.sip
 
 %Include symbology-ng/qgscolorbrewerpalette.sip
 %Include symbology-ng/qgscptcityarchive.sip

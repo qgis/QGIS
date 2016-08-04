@@ -23,6 +23,7 @@
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsexpressioncontext.h"
+#include "qgsproject.h"
 #include <QColorDialog>
 #include <QWidget>
 #include <QPrinter> //for screen resolution
@@ -45,13 +46,15 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   //read with/height from composition and find suitable entries to display
   displayCompositionWidthHeight();
 
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::compositionScope( mComposition ) );
-  mVariableEditor->reloadContext();
-  mVariableEditor->setEditableScopeIndex( 2 );
-
+  updateVariables();
   connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
+  // listen out for variable edits
+  QgsApplication* app = qobject_cast<QgsApplication*>( QgsApplication::instance() );
+  if ( app )
+  {
+    connect( app, SIGNAL( settingsChanged() ), this, SLOT( updateVariables() ) );
+  }
+  connect( QgsProject::instance(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
 
   if ( mComposition )
   {
@@ -78,7 +81,6 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
     // world file generation
     mGenerateWorldFileCheckBox->setChecked( mComposition->generateWorldFile() );
-    mWorldFileMapComboBox->setEnabled( mComposition->generateWorldFile() );
 
     // populate the map list
     mWorldFileMapComboBox->setComposition( mComposition );
@@ -208,6 +210,16 @@ void QgsCompositionWidget::resizeMarginsChanged()
       mRightMarginSpinBox->value(),
       mBottomMarginSpinBox->value(),
       mLeftMarginSpinBox->value() );
+}
+
+void QgsCompositionWidget::updateVariables()
+{
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::compositionScope( mComposition );
+  mVariableEditor->setContext( &context );
+  mVariableEditor->setEditableScopeIndex( 2 );
 }
 
 void QgsCompositionWidget::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsComposerObject::DataDefinedProperty property )
@@ -658,7 +670,6 @@ void QgsCompositionWidget::on_mGenerateWorldFileCheckBox_toggled( bool state )
   }
 
   mComposition->setGenerateWorldFile( state );
-  mWorldFileMapComboBox->setEnabled( state );
 }
 
 void QgsCompositionWidget::worldFileMapChanged( QgsComposerItem* item )

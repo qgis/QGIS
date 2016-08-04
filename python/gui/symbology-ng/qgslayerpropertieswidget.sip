@@ -1,4 +1,4 @@
-class QgsLayerPropertiesWidget : QWidget
+class QgsLayerPropertiesWidget : QgsPanelWidget
 {
 %TypeHeaderCode
 #include <qgslayerpropertieswidget.h>

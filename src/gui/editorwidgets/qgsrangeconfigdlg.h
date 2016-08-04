@@ -19,7 +19,8 @@
 #include "ui_qgsrangeconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
 
-/** \class QgsRangeConfigDlg
+/** \ingroup gui
+ * \class QgsRangeConfigDlg
  * \note not available in Python bindings
  */
 

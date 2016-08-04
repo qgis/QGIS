@@ -20,28 +20,29 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
+
 #include <QDomDocument>
 #include <QSettings>
 #include <QStringList>
 
-QgsWFSCapabilities::QgsWFSCapabilities( const QString& theUri )
-    : QgsWFSRequest( theUri )
+QgsWfsCapabilities::QgsWfsCapabilities( const QString& theUri )
+    : QgsWfsRequest( theUri )
 {
   connect( this, SIGNAL( downloadFinished() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 
-QgsWFSCapabilities::~QgsWFSCapabilities()
+QgsWfsCapabilities::~QgsWfsCapabilities()
 {
 }
 
-bool QgsWFSCapabilities::requestCapabilities( bool synchronous )
+bool QgsWfsCapabilities::requestCapabilities( bool synchronous )
 {
   QUrl url( baseURL() );
   url.addQueryItem( "REQUEST", "GetCapabilities" );
 
   const QString& version = mUri.version();
   if ( version == QgsWFSConstants::VERSION_AUTO )
-    // MapServer honours the order with the first value being the prefered one
+    // MapServer honours the order with the first value being the preferred one
     url.addQueryItem( "ACCEPTVERSIONS", "2.0.0,1.1.0,1.0.0" );
   else
     url.addQueryItem( "VERSION", version );
@@ -54,12 +55,12 @@ bool QgsWFSCapabilities::requestCapabilities( bool synchronous )
   return true;
 }
 
-QgsWFSCapabilities::Capabilities::Capabilities()
+QgsWfsCapabilities::Capabilities::Capabilities()
 {
   clear();
 }
 
-void QgsWFSCapabilities::Capabilities::clear()
+void QgsWfsCapabilities::Capabilities::clear()
 {
   maxFeatures = 0;
   supportsHits = false;
@@ -72,9 +73,10 @@ void QgsWFSCapabilities::Capabilities::clear()
   setAllTypenames.clear();
   mapUnprefixedTypenameToPrefixedTypename.clear();
   setAmbiguousUnprefixedTypename.clear();
+  useEPSGColumnFormat = false;
 }
 
-QString QgsWFSCapabilities::Capabilities::addPrefixIfNeeded( const QString& name ) const
+QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString& name ) const
 {
   if ( name.contains( ':' ) )
     return name;
@@ -83,7 +85,7 @@ QString QgsWFSCapabilities::Capabilities::addPrefixIfNeeded( const QString& name
   return mapUnprefixedTypenameToPrefixedTypename[name];
 }
 
-void QgsWFSCapabilities::capabilitiesReplyFinished()
+void QgsWfsCapabilities::capabilitiesReplyFinished()
 {
   const QByteArray& buffer = mResponse;
 
@@ -94,7 +96,7 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
   QDomDocument capabilitiesDocument;
   if ( !capabilitiesDocument.setContent( buffer, true, &capabilitiesDocError ) )
   {
-    mErrorCode = QgsWFSRequest::XmlError;
+    mErrorCode = QgsWfsRequest::XmlError;
     mErrorMessage = capabilitiesDocError;
     emit gotCapabilities();
     return;
@@ -108,7 +110,7 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
     QDomNode ex = doc.firstChild();
     QString exc = ex.toElement().attribute( "exceptionCode", "Exception" );
     QDomElement ext = ex.firstChild().toElement();
-    mErrorCode = QgsWFSRequest::ServerExceptionError;
+    mErrorCode = QgsWfsRequest::ServerExceptionError;
     mErrorMessage = exc + ": " + ext.firstChild().nodeValue();
     emit gotCapabilities();
     return;
@@ -283,7 +285,11 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
       defaultCRSList = featureTypeElem.elementsByTagName( "DefaultCRS" );
     if ( defaultCRSList.length() > 0 )
     {
-      featureType.crslist.append( NormalizeSRSName( defaultCRSList.at( 0 ).toElement().text() ) );
+      QString srsname( defaultCRSList.at( 0 ).toElement().text() );
+      // Some servers like Geomedia advertize EPSG:XXXX even in WFS 1.1 or 2.0
+      if ( srsname.startsWith( "EPSG:" ) )
+        mCaps.useEPSGColumnFormat = true;
+      featureType.crslist.append( NormalizeSRSName( srsname ) );
     }
 
     //OtherSRS
@@ -307,31 +313,72 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
     QDomElement latLongBB = featureTypeElem.firstChildElement( "LatLongBoundingBox" );
     if ( latLongBB.hasAttributes() )
     {
-      featureType.bboxLongLat = QgsRectangle(
-                                  latLongBB.attribute( "minx" ).toDouble(),
-                                  latLongBB.attribute( "miny" ).toDouble(),
-                                  latLongBB.attribute( "maxx" ).toDouble(),
-                                  latLongBB.attribute( "maxy" ).toDouble() );
+      // Despite the name LatLongBoundingBox, the coordinates are supposed to
+      // be expressed in <SRS>. From the WFS schema;
+      // <!-- The LatLongBoundingBox element is used to indicate the edges of
+      // an enclosing rectangle in the SRS of the associated feature type.
+      featureType.bbox = QgsRectangle(
+                           latLongBB.attribute( "minx" ).toDouble(),
+                           latLongBB.attribute( "miny" ).toDouble(),
+                           latLongBB.attribute( "maxx" ).toDouble(),
+                           latLongBB.attribute( "maxy" ).toDouble() );
+      featureType.bboxSRSIsWGS84 = false;
+
+      // But some servers do not honour this and systematically reproject to WGS84
+      // such as GeoServer. See http://osgeo-org.1560.x6.nabble.com/WFS-LatLongBoundingBox-td3813810.html
+      // This is also true of TinyOWS
+      if ( !featureType.crslist.isEmpty() &&
+           featureType.bbox.xMinimum() >= -180 && featureType.bbox.yMinimum() >= -90 &&
+           featureType.bbox.xMaximum() <= 180 && featureType.bbox.yMaximum() < 90 )
+      {
+        QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( featureType.crslist[0] );
+        if ( !crs.isGeographic() )
+        {
+          // If the CRS is projected then check that projecting the corner of the bbox, assumed to be in WGS84,
+          // into the CRS, and then back to WGS84, works (check that we are in the validity area)
+          QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "CRS:84" );
+          QgsCoordinateTransform ct( crsWGS84, crs );
+
+          QgsPoint ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
+          QgsPoint ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPoint ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
+          QgsPoint ptMaxBack( ct.transform( ct.transform( ptMax, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+
+          QgsDebugMsg( featureType.bbox.toString() );
+          QgsDebugMsg( ptMinBack.toString() );
+          QgsDebugMsg( ptMaxBack.toString() );
+
+          if ( fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
+               fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
+               fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
+               fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
+          {
+            QgsDebugMsg( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" );
+            featureType.bboxSRSIsWGS84 = true;
+          }
+        }
+      }
     }
     else
     {
       // WFS 1.1 way
-      latLongBB = featureTypeElem.firstChildElement( "WGS84BoundingBox" );
-      if ( !latLongBB.isNull() )
+      QDomElement WGS84BoundingBox = featureTypeElem.firstChildElement( "WGS84BoundingBox" );
+      if ( !WGS84BoundingBox.isNull() )
       {
-        QDomElement lowerCorner = latLongBB.firstChildElement( "LowerCorner" );
-        QDomElement upperCorner = latLongBB.firstChildElement( "UpperCorner" );
+        QDomElement lowerCorner = WGS84BoundingBox.firstChildElement( "LowerCorner" );
+        QDomElement upperCorner = WGS84BoundingBox.firstChildElement( "UpperCorner" );
         if ( !lowerCorner.isNull() && !upperCorner.isNull() )
         {
           QStringList lowerCornerList = lowerCorner.text().split( " ", QString::SkipEmptyParts );
           QStringList upperCornerList = upperCorner.text().split( " ", QString::SkipEmptyParts );
           if ( lowerCornerList.size() == 2 && upperCornerList.size() == 2 )
           {
-            featureType.bboxLongLat = QgsRectangle(
-                                        lowerCornerList[0].toDouble(),
-                                        lowerCornerList[1].toDouble(),
-                                        upperCornerList[0].toDouble(),
-                                        upperCornerList[1].toDouble() );
+            featureType.bbox = QgsRectangle(
+                                 lowerCornerList[0].toDouble(),
+                                 lowerCornerList[1].toDouble(),
+                                 upperCornerList[0].toDouble(),
+                                 upperCornerList[1].toDouble() );
+            featureType.bboxSRSIsWGS84 = true;
           }
         }
       }
@@ -396,7 +443,7 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
   emit gotCapabilities();
 }
 
-QString QgsWFSCapabilities::NormalizeSRSName( QString crsName )
+QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
 {
   QRegExp re( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
   if ( re.exactMatch( crsName ) )
@@ -412,13 +459,13 @@ QString QgsWFSCapabilities::NormalizeSRSName( QString crsName )
   return crsName;
 }
 
-int QgsWFSCapabilities::defaultExpirationInSec()
+int QgsWfsCapabilities::defaultExpirationInSec()
 {
   QSettings s;
   return s.value( "/qgis/defaultCapabilitiesExpiry", "24" ).toInt() * 60 * 60;
 }
 
-void QgsWFSCapabilities::parseSupportedOperations( const QDomElement& operationsElem,
+void QgsWfsCapabilities::parseSupportedOperations( const QDomElement& operationsElem,
     bool& insertCap,
     bool& updateCap,
     bool& deleteCap )
@@ -474,9 +521,9 @@ void QgsWFSCapabilities::parseSupportedOperations( const QDomElement& operations
   }
 }
 
-static QgsWFSCapabilities::Function getSpatialPredicate( const QString& name )
+static QgsWfsCapabilities::Function getSpatialPredicate( const QString& name )
 {
-  QgsWFSCapabilities::Function f;
+  QgsWfsCapabilities::Function f;
   // WFS 1.0 advertize Intersect, but for conveniency we internally convert it to Intersects
   if ( name == "Intersect" )
     f.name = "ST_Intersects";
@@ -487,21 +534,21 @@ static QgsWFSCapabilities::Function getSpatialPredicate( const QString& name )
   {
     f.minArgs = 3;
     f.maxArgs = 3;
-    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
-    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
-    f.argumentList << QgsWFSCapabilities::Argument( "distance" );
+    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWfsCapabilities::Argument( "distance" );
   }
   else
   {
     f.minArgs = 2;
     f.maxArgs = 2;
-    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
-    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
   }
   return f;
 }
 
-void QgsWFSCapabilities::parseFilterCapabilities( const QDomElement& filterCapabilitiesElem )
+void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement& filterCapabilitiesElem )
 {
   // WFS 1.0
   QDomElement spatial_Operators = filterCapabilitiesElem.firstChildElement( "Spatial_Capabilities" ).firstChildElement( "Spatial_Operators" );
@@ -614,7 +661,7 @@ void QgsWFSCapabilities::parseFilterCapabilities( const QDomElement& filterCapab
   }
 }
 
-QString QgsWFSCapabilities::errorMessageWithReason( const QString& reason )
+QString QgsWfsCapabilities::errorMessageWithReason( const QString& reason )
 {
   return tr( "Download of capabilities failed: %1" ).arg( reason );
 }

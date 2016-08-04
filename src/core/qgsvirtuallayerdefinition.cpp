@@ -24,7 +24,7 @@ email                : hugo dot mercier at oslandia dot com
 
 QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString& filePath )
     : mFilePath( filePath )
-    , mGeometryWkbType( QgsWKBTypes::Unknown )
+    , mGeometryWkbType( QgsWkbTypes::Unknown )
     , mGeometrySrid( 0 )
 {
 }
@@ -113,10 +113,10 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl& url )
         if ( reGeom.captureCount() > 1 )
         {
           // not used by the spatialite provider for now ...
-          QgsWKBTypes::Type wkbType = QgsWKBTypes::parseType( reGeom.cap( 2 ) );
-          if ( wkbType == QgsWKBTypes::Unknown )
+          QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( reGeom.cap( 2 ) );
+          if ( wkbType == QgsWkbTypes::Unknown )
           {
-            wkbType = static_cast<QgsWKBTypes::Type>( reGeom.cap( 2 ).toLong() );
+            wkbType = static_cast<QgsWkbTypes::Type>( reGeom.cap( 2 ).toLong() );
           }
           def.setGeometryWkbType( wkbType );
           def.setGeometrySrid( reGeom.cap( 3 ).toLong() );
@@ -125,7 +125,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl& url )
     }
     else if ( key == "nogeometry" )
     {
-      def.setGeometryWkbType( QgsWKBTypes::NoGeometry );
+      def.setGeometryWkbType( QgsWkbTypes::NoGeometry );
     }
     else if ( key == "uid" )
     {
@@ -191,7 +191,7 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   if ( !uid().isEmpty() )
     url.addQueryItem( "uid", uid() );
 
-  if ( geometryWkbType() == QgsWKBTypes::NoGeometry )
+  if ( geometryWkbType() == QgsWkbTypes::NoGeometry )
     url.addQueryItem( "nogeometry", "" );
   else if ( !geometryField().isEmpty() )
   {

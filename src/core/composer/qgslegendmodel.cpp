@@ -21,7 +21,9 @@
 #include "qgslayertree.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterrenderer.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectordataprovider.h"
@@ -107,7 +109,7 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
         {
           return; //should never happen
         }
-        QString layerID = layerItem->layerID();
+        QString layerID = layerItem->layerId();
         if ( layerList.contains( layerID ) )
         {
           takeRow( i );
@@ -259,7 +261,7 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
   }
 
   QgsDebugMsg( QString( "layer providertype:: %1" ).arg( rasterLayer->providerType() ) );
-  if ( rasterLayer->providerType() == "wms" )
+  if ( rasterLayer->dataProvider()->supportsLegendGraphic() )
   {
     QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( "" );
     // GetLegendGraphics in case of WMS service... image can return null if GetLegendGraphics
@@ -282,7 +284,7 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
       currentSymbolItem->setText( tr( "No Legend Available" ) );
     }
 
-    currentSymbolItem->setLayerID( rasterLayer->id() );
+    currentSymbolItem->setLayerId( rasterLayer->id() );
     currentSymbolItem->setColor( QColor() );
     layerItem->removeRows( 0, layerItem->rowCount() );
     layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
@@ -309,7 +311,7 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
         itemPixmap.fill( itemIt->second );
         currentSymbolItem->setIcon( QIcon( itemPixmap ) );
       }
-      currentSymbolItem->setLayerID( rasterLayer->id() );
+      currentSymbolItem->setLayerId( rasterLayer->id() );
 
       QColor itemColor = itemIt->second;
 
@@ -347,7 +349,7 @@ void QgsLegendModel::updateSymbolV2ItemText( QStandardItem* symbolItem )
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( sv2Item->parent() );
   if ( !lItem ) return;
 
-  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
+  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerId() );
   if ( !mapLayer ) return;
 
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
@@ -404,7 +406,7 @@ void QgsLegendModel::updateRasterSymbolItemText( QStandardItem* symbolItem )
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( rItem->parent() );
   if ( !lItem ) return;
 
-  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
+  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerId() );
   if ( !mapLayer ) return;
 
   QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( mapLayer );
@@ -483,7 +485,7 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
   if ( lItem )
   {
-    QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
+    QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerId() );
     if ( mapLayer )
     {
       updateLayerItemText( lItem );
@@ -508,7 +510,7 @@ void QgsLegendModel::updateLayerItemText( QStandardItem* layerItem )
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
   if ( !lItem ) return;
 
-  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
+  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerId() );
   if ( !mapLayer ) return;
 
   QString label = lItem->userText().isEmpty() ? mapLayer->name() : lItem->userText();
@@ -536,11 +538,11 @@ void QgsLegendModel::removeLayer( const QString& layerId )
       continue;
     }
 
-    if ( layerId == lItem->layerID() )
+    if ( layerId == lItem->layerId() )
     {
       if ( QgsMapLayerRegistry::instance() )
       {
-        QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
+        QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerId() );
         if ( layer )
         {
           disconnect( layer, SIGNAL( rendererChanged() ), this, SLOT( updateLayer() ) );
@@ -569,7 +571,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
     layerItem->setText( theMapLayer->title() );
     layerItem->setUserText( theMapLayer->title() );
   }
-  layerItem->setLayerID( theMapLayer->id() );
+  layerItem->setLayerId( theMapLayer->id() );
   layerItem->setDefaultStyle( scaleDenominator, rule );
   layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
@@ -610,7 +612,7 @@ void QgsLegendModel::updateLayer()
   for ( int i = 0, n = rowCount(); i < n ; ++i )
   {
     QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( item( i ) );
-    if ( lItem && layerId == lItem->layerID() )
+    if ( lItem && layerId == lItem->layerId() )
     {
       updateLayer( lItem );
       emit layersChanged();
@@ -619,7 +621,7 @@ void QgsLegendModel::updateLayer()
   }
 }
 
-bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const
+bool QgsLegendModel::writeXml( QDomElement& composerLegendElem, QDomDocument& doc ) const
 {
   if ( composerLegendElem.isNull() )
   {
@@ -638,7 +640,7 @@ bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& do
     currentLegendItem = dynamic_cast<QgsComposerLegendItem*>( currentItem );
     if ( currentLegendItem )
     {
-      currentLegendItem->writeXML( legendModelElem, doc );
+      currentLegendItem->writeXml( legendModelElem, doc );
     }
   }
 
@@ -646,7 +648,7 @@ bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& do
   return true;
 }
 
-bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocument& doc )
+bool QgsLegendModel::readXml( const QDomElement& legendModelElem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
 
@@ -686,7 +688,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
     if ( !currentItem )
       continue;
 
-    currentItem->readXML( currentElem, mHasTopLevelWindow );
+    currentItem->readXml( currentElem, mHasTopLevelWindow );
 
     QList<QStandardItem *> itemsList;
     itemsList << currentItem << new QgsComposerStyleItem( currentItem );
@@ -797,7 +799,7 @@ QMimeData* QgsLegendModel::mimeData( const QModelIndexList &indexes ) const
       QgsComposerLegendItem* mItem = dynamic_cast<QgsComposerLegendItem*>( sItem );
       if ( mItem )
       {
-        mItem->writeXML( xmlRootElement, xmlDoc );
+        mItem->writeXml( xmlRootElement, xmlDoc );
       }
     }
   }
@@ -869,7 +871,7 @@ bool QgsLegendModel::dropMimeData( const QMimeData *data, Qt::DropAction action,
     {
       continue;
     }
-    currentItem->readXML( currentElem );
+    currentItem->readXml( currentElem );
     int index;
     if ( row < 0 )
     {
@@ -907,7 +909,7 @@ void QgsLegendModel::setAutoUpdate( bool autoUpdate )
         QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( item( i ) );
         if ( lItem )
         {
-          QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
+          QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerId() );
           if ( layer )
           {
             connect( layer, SIGNAL( rendererChanged() ), this, SLOT( updateLayer() ) );
@@ -928,7 +930,7 @@ void QgsLegendModel::setAutoUpdate( bool autoUpdate )
         QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( item( i ) );
         if ( lItem )
         {
-          QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
+          QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerId() );
           if ( layer )
           {
             disconnect( layer, SIGNAL( rendererChanged() ), this, SLOT( updateLayer() ) );

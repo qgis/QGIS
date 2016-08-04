@@ -19,7 +19,7 @@
 #include "qgsdialog.h"
 #include "qgscolordialog.h"
 #include "qgscptcityarchive.h"
-
+#include <qmath.h>
 #include <QColorDialog>
 #include <QInputDialog>
 #include <QPainter>

@@ -45,7 +45,7 @@ void QgsComposerLegendStyle::setMargin( double margin )
   mMarginMap[Right] = margin;
 }
 
-void QgsComposerLegendStyle::writeXML( const QString& name, QDomElement& elem, QDomDocument & doc ) const
+void QgsComposerLegendStyle::writeXml( const QString& name, QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() ) return;
 
@@ -63,7 +63,7 @@ void QgsComposerLegendStyle::writeXML( const QString& name, QDomElement& elem, Q
   elem.appendChild( styleElem );
 }
 
-void QgsComposerLegendStyle::readXML( const QDomElement& elem, const QDomDocument& doc )
+void QgsComposerLegendStyle::readXml( const QDomElement& elem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( elem.isNull() ) return;

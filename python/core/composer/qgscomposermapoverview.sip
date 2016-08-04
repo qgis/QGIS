@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapOverviewStack
  * \brief A collection of overviews which are drawn above the map content in a
  * QgsComposerMap. The overview stack controls which overviews are drawn and the
@@ -94,11 +94,11 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
      * @returns true if read was successful
      * @see writeXML
      */
-    bool readXML( const QDomElement& elem, const QDomDocument& doc );
+    bool readXml( const QDomElement& elem, const QDomDocument& doc );
 
 };
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapOverview
  * \brief An individual overview which is drawn above the map content in a
  * QgsComposerMap, and shows the extent of another QgsComposerMap.
@@ -131,14 +131,14 @@ class QgsComposerMapOverview : QgsComposerMapItem
      * @param doc DOM document
      * @see readXML
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets overview state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapOverview' tag
      * @param doc is DOM document
      * @see writeXML
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     bool usesAdvancedEffects() const;
 

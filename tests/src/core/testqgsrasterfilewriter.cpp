@@ -27,9 +27,11 @@
 
 //qgis includes...
 #include <qgsrasterchecker.h>
+#include "qgsrasterdataprovider.h"
 #include <qgsrasterlayer.h>
 #include <qgsrasterfilewriter.h>
 #include <qgsrasternuller.h>
+#include "qgsrasterprojector.h"
 #include <qgsapplication.h>
 
 /** \ingroup UnitTests
@@ -153,7 +155,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
 
   // Reprojection not really done
   QgsRasterProjector *projector = new QgsRasterProjector;
-  projector->setCRS( provider->crs(), provider->crs() );
+  projector->setCrs( provider->crs(), provider->crs() );
   if ( !pipe->insert( 2, projector ) )
   {
     logError( "Cannot set pipe projector" );

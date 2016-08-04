@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsosmbase.h
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef OSMBASE_H
 #define OSMBASE_H
 
@@ -20,7 +34,7 @@ struct QgsOSMElementID
 };
 
 
-/**
+/** \ingroup analysis
 Elements (also data primitives) are the basic components in OpenStreetMap from which everything else
 is defined. These consist of Nodes (which define a point in space), Ways (which define a linear features
 and areas), and Relations - with an optional role - which are sometimes used to define the relation
@@ -35,7 +49,7 @@ class ANALYSIS_EXPORT QgsOSMElement
     bool isValid() const { return mElemID.type != QgsOSMElementID::Invalid; }
 
     // fetched automatically from DB
-    QgsOSMElementID elemID() const { return mElemID; }
+    QgsOSMElementID elemId() const { return mElemID; }
     QgsOSMId id() const { return mElemID.id; }
     //QString username() const;
     //QDateTime timestamp() const;
@@ -47,7 +61,7 @@ class ANALYSIS_EXPORT QgsOSMElement
 
 
 
-/**
+/** \ingroup analysis
 A node is one of the core elements in the OpenStreetMap data model. It consists of a single geospatial
 point using a latitude and longitude. A third optional dimension, altitude, can be recorded; key:ele
 and a node can also be defined at a particular layer=* or level=*. Nodes can be used to define standalone
@@ -69,7 +83,7 @@ class ANALYSIS_EXPORT QgsOSMNode : public QgsOSMElement
 };
 
 
-/**
+/** \ingroup analysis
 A way is an ordered list of nodes which normally also has at least one tag or is included within
 a Relation. A way can have between 2 and 2,000 nodes, although it's possible that faulty ways with zero
 or a single node exist. A way can be open or closed. A closed way is one whose last node on the way
@@ -96,7 +110,7 @@ class ANALYSIS_EXPORT QgsOSMWay : public QgsOSMElement
 
 
 #if 0
-/**
+/** \ingroup analysis
 A relation is one of the core data elements that consists of one or more tags and also an ordered list
 of one or more nodes and/or ways as members which is used to define logical or geographic relationships
 between other elements. A member of a relation can optionally have a role which describe the part that
@@ -111,7 +125,7 @@ class ANALYSIS_EXPORT QgsOSMRelation : public QgsOSMElement
 };
 #endif
 
-/**
+/** \ingroup analysis
  * This class is a container of tags for a node, way or a relation.
  */
 class ANALYSIS_EXPORT QgsOSMTags

@@ -20,6 +20,9 @@
 
 class QgsEllipseSymbolLayerV2;
 
+/** \ingroup gui
+ * \class QgsEllipseSymbolLayerV2Widget
+ */
 class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, private Ui::WidgetEllipseBase
 {
     Q_OBJECT

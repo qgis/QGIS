@@ -43,7 +43,7 @@ class QgsUnitSelectionWidget : QWidget
      * @param units list of valid units
      * @note added in QGIS 2.9
      */
-    void setUnits( const QgsSymbolV2::OutputUnitList& units );
+    void setUnits( const QgsUnitTypes::RenderUnitList& units );
 
     /** Get the selected unit index */
     int getUnit() const;
@@ -52,7 +52,7 @@ class QgsUnitSelectionWidget : QWidget
      * @returns selected output unit, or QgsSymbolV2::Mixed if the widget was populated with custom unit types
      * @note added in QGIS 2.9
      */
-    QgsSymbolV2::OutputUnit unit() const;
+    QgsUnitTypes::RenderUnit unit() const;
 
     /** Sets the selected unit index
      * @param unitIndex index of unit to set as current
@@ -63,7 +63,7 @@ class QgsUnitSelectionWidget : QWidget
     /** Sets the selected unit
      * @param unit predefined unit to set as current
      */
-    void setUnit( QgsSymbolV2::OutputUnit unit );
+    void setUnit( QgsUnitTypes::RenderUnit unit );
 
     /** Returns the map unit scale */
     QgsMapUnitScale getMapUnitScale() const;

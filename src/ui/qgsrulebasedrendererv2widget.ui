@@ -71,6 +71,20 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btnRemoveRule">
+       <property name="toolTip">
+        <string>Remove selected rules</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnEditRule">
        <property name="toolTip">
         <string>Edit current rule</string>
@@ -85,19 +99,40 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnRemoveRule">
+      <widget class="QPushButton" name="btnCountFeatures">
        <property name="toolTip">
-        <string>Remove selected rules</string>
-       </property>
-       <property name="text">
-        <string/>
+        <string>Count features</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+         <normaloff>:/images/themes/default/mActionSum.svg</normaloff>:/images/themes/default/mActionSum.svg</iconset>
        </property>
       </widget>
      </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnRenderingOrder">
+       <property name="text">
+        <string>Symbol levels...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout2">
      <item>
       <widget class="QPushButton" name="btnRefineRule">
        <property name="enabled">
@@ -121,14 +156,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnCountFeatures">
-       <property name="text">
-        <string>Count features</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
+      <spacer name="horizontalSpacer2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -139,13 +167,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnRenderingOrder">
-       <property name="text">
-        <string>Symbol levels...</string>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>

@@ -18,10 +18,11 @@
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 #include <qgsvectorlayer.h>
-#include <qgsmaprenderer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsrenderchecker.h>
 #include <qgsvectordataprovider.h>
+#include <qgsmaptoolpan.h>
+#include "qgstestutils.h"
 
 namespace QTest
 {
@@ -33,23 +34,31 @@ namespace QTest
   }
 }
 
+class QgsMapToolTest : public QgsMapTool
+{
+  public:
+    QgsMapToolTest( QgsMapCanvas* canvas ) : QgsMapTool( canvas ) {}
+
+};
+
 class TestQgsMapCanvas : public QObject
 {
     Q_OBJECT
   public:
     TestQgsMapCanvas()
-        : mCanvas( 0 )
+        : mCanvas( nullptr )
     {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
-    void testMapRendererInteraction();
     void testPanByKeyboard();
     void testMagnification();
     void testMagnificationExtent();
     void testMagnificationScale();
+    void testZoomByWheel();
+    void testShiftZoom();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -69,69 +78,6 @@ void TestQgsMapCanvas::cleanupTestCase()
 {
 }
 
-void TestQgsMapCanvas::testMapRendererInteraction()
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  QgsMapRenderer* mr = mCanvas->mapRenderer();
-  Q_NOWARN_DEPRECATED_POP
-
-  // CRS transforms
-
-  QSignalSpy spy0( mCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ) );
-  mr->setProjectionsEnabled( true );
-  QCOMPARE( mr->hasCrsTransformEnabled(), true );
-  QCOMPARE( mCanvas->hasCrsTransformEnabled(), true );
-  QCOMPARE( spy0.count(), 1 );
-
-  QSignalSpy spy1( mr, SIGNAL( hasCrsTransformEnabled( bool ) ) );
-  mCanvas->setCrsTransformEnabled( false );
-  QCOMPARE( mr->hasCrsTransformEnabled(), false );
-  QCOMPARE( mCanvas->hasCrsTransformEnabled(), false );
-  QCOMPARE( spy1.count(), 1 );
-
-  // Extent
-
-  QSignalSpy spy2( mCanvas, SIGNAL( extentsChanged() ) );
-  QgsRectangle r1( 10, 10, 20, 20 );
-  mr->setExtent( r1 );
-  QgsRectangle r2 = mr->extent();
-  QVERIFY( qgsDoubleNear( mCanvas->extent().xMinimum(), r2.xMinimum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().yMinimum(), r2.yMinimum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().xMaximum(), r2.xMaximum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().yMaximum(), r2.yMaximum(), 0.0000000001 ) );
-  QCOMPARE( spy2.count(), 1 );
-
-  QgsRectangle r3( 100, 100, 200, 200 );
-  QSignalSpy spy3( mr, SIGNAL( extentsChanged() ) );
-  mCanvas->setExtent( r3 );
-  QgsRectangle r4 = mCanvas->extent();
-  QVERIFY( qgsDoubleNear( mr->extent().xMinimum(), r4.xMinimum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mr->extent().yMinimum(), r4.yMinimum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mr->extent().xMaximum(), r4.xMaximum(), 0.0000000001 ) );
-  QVERIFY( qgsDoubleNear( mr->extent().yMaximum(), r4.yMaximum(), 0.0000000001 ) );
-  QCOMPARE( spy3.count(), 1 );
-
-  // Destination CRS
-
-  QgsCoordinateReferenceSystem crs1( "EPSG:27700" );
-  QCOMPARE( crs1.isValid(), true );
-  QSignalSpy spy4( mCanvas, SIGNAL( destinationCrsChanged() ) );
-  mr->setDestinationCrs( crs1 );
-  qDebug( " crs %s vs %s", mCanvas->mapSettings().destinationCrs().authid().toAscii().data(), crs1.authid().toAscii().data() );
-  QCOMPARE( mCanvas->mapSettings().destinationCrs(), crs1 );
-  QCOMPARE( mr->destinationCrs(), crs1 );
-  QCOMPARE( spy4.count(), 1 );
-
-  QgsCoordinateReferenceSystem crs2( "EPSG:4326" );
-  QCOMPARE( crs2.isValid(), true );
-  QSignalSpy spy5( mr, SIGNAL( destinationSrsChanged() ) );
-  mCanvas->setDestinationCrs( crs2 );
-  QCOMPARE( mCanvas->mapSettings().destinationCrs(), crs2 );
-  QCOMPARE( mr->destinationCrs(), crs2 );
-  QCOMPARE( spy5.count(), 1 );
-
-  // TODO: set map units
-}
 
 void TestQgsMapCanvas::testPanByKeyboard()
 {
@@ -257,10 +203,10 @@ void TestQgsMapCanvas::testMagnification()
 void compareExtent( const QgsRectangle &initialExtent,
                     const QgsRectangle &extent )
 {
-  QVERIFY( qgsDoubleNear( initialExtent.xMinimum(), extent.xMinimum(), 0.00000000001 ) );
-  QVERIFY( qgsDoubleNear( initialExtent.xMaximum(), extent.xMaximum(), 0.00000000001 ) );
-  QVERIFY( qgsDoubleNear( initialExtent.yMinimum(), extent.yMinimum(), 0.00000000001 ) );
-  QVERIFY( qgsDoubleNear( initialExtent.yMaximum(), extent.yMaximum(), 0.00000000001 ) );
+  QGSCOMPARENEAR( initialExtent.xMinimum(), extent.xMinimum(), 0.00000000001 );
+  QGSCOMPARENEAR( initialExtent.xMaximum(), extent.xMaximum(), 0.00000000001 );
+  QGSCOMPARENEAR( initialExtent.yMinimum(), extent.yMinimum(), 0.00000000001 );
+  QGSCOMPARENEAR( initialExtent.yMaximum(), extent.yMaximum(), 0.00000000001 );
 }
 
 void TestQgsMapCanvas::testMagnificationExtent()
@@ -358,6 +304,106 @@ void TestQgsMapCanvas::testMagnificationScale()
 
   mCanvas->setMagnificationFactor( 1.0 );
   QCOMPARE( initialScale, mCanvas->scale() );
+}
+
+void TestQgsMapCanvas::testZoomByWheel()
+{
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  QgsRectangle initialExtent = mCanvas->extent();
+  double originalWidth = initialExtent.width();
+  double originalHeight = initialExtent.height();
+
+  mCanvas->setWheelFactor( 2 );
+
+  //test zoom out
+  QWheelEvent e( QPoint( 0, 0 ), -1, Qt::NoButton, Qt::NoModifier );
+  mCanvas->wheelEvent( &e );
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth * 2.0, 0.1 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight * 2.0, 0.1 );
+
+  //test zoom in
+  e = QWheelEvent( QPoint( 0, 0 ), 1, Qt::NoButton, Qt::NoModifier );
+  mCanvas->wheelEvent( &e );
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
+
+  // test zoom out with ctrl
+  e = QWheelEvent( QPoint( 0, 0 ), -1, Qt::NoButton, Qt::ControlModifier );
+  mCanvas->wheelEvent( &e );
+  QGSCOMPARENEAR( mCanvas->extent().width(), 1.05 * originalWidth, 0.1 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), 1.05 * originalHeight, 0.1 );
+
+  //test zoom in with ctrl
+  e = QWheelEvent( QPoint( 0, 0 ), 1, Qt::NoButton, Qt::ControlModifier );
+  mCanvas->wheelEvent( &e );
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
+}
+
+void TestQgsMapCanvas::testShiftZoom()
+{
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  QgsRectangle initialExtent = mCanvas->extent();
+  double originalWidth = initialExtent.width();
+  double originalHeight = initialExtent.height();
+
+  QPoint startPos = QPoint( mCanvas->width() / 4, mCanvas->height() / 4 );
+  QPoint endPos = QPoint( mCanvas->width() * 3 / 4.0, mCanvas->height() * 3 / 4.0 );
+
+  QgsMapToolPan panTool( mCanvas );
+
+  // start by testing a tool with shift-zoom enabled
+  mCanvas->setMapTool( &panTool );
+
+  QMouseEvent e( QMouseEvent::MouseButtonPress, startPos,
+                 Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseMove, endPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseButtonRelease, endPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( &e );
+
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth / 2.0, 0.2 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight / 2.0, 0.2 );
+
+  //reset
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+
+  //test that a shift-click (no movement) will not zoom
+  e = QMouseEvent( QMouseEvent::MouseButtonPress, startPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseMove, startPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseButtonRelease, startPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( &e );
+
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.0001 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.0001 );
+
+  //reset
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+
+  //test with map tool which does not have shift-zoom enabled
+  QgsMapToolTest mapTool( mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  e = QMouseEvent( QMouseEvent::MouseButtonPress, startPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseMove, endPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseButtonRelease, endPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( &e );
+
+  QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.00001 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.00001 );
 }
 
 QTEST_MAIN( TestQgsMapCanvas )

@@ -43,7 +43,7 @@ except:
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis
+from qgis.core import Qgis, QgsWkbTypes
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
@@ -146,6 +146,7 @@ from .SpatialIndex import SpatialIndex
 from .DefineProjection import DefineProjection
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
+from .MergeLines import MergeLines
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -197,7 +198,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
                         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
                         RectanglesOvalsDiamondsVariable(),
-                        RectanglesOvalsDiamondsFixed()
+                        RectanglesOvalsDiamondsFixed(), MergeLines()
                         ]
 
         if hasMatplotlib:
@@ -218,7 +219,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
             from .Polygonize import Polygonize
             self.alglist.extend([Polygonize()])
 
-        if QGis.QGIS_VERSION_INT >= 21300:
+        if Qgis.QGIS_VERSION_INT >= 21300:
             from .ExecuteSQL import ExecuteSQL
             self.alglist.extend([ExecuteSQL()])
 

@@ -54,6 +54,7 @@ from qgis.core import (QgsCentroidFillSymbolLayerV2,
                        QgsShapeburstFillSymbolLayerV2,
                        QgsArrowSymbolLayer,
                        QgsSymbolV2,
+                       QgsUnitTypes
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -78,7 +79,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
      """
 
     def testBinding(self):
-        """Test python bindings existance."""
+        """Test python bindings existence."""
         mType = type(QgsSymbolLayerV2)
         mExpectedType = pyqtWrapperType
         mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
@@ -383,7 +384,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsSymbolV2.MapUnit
+        mExpectedValue = QgsUnitTypes.RenderMapUnits
         mGradientLayer.setOffsetUnit(mExpectedValue)
         mValue = mGradientLayer.offsetUnit()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
@@ -796,6 +797,20 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         """
         # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer = QgsFilledMarkerSymbolLayer.create()
+
+        mSymbolLayer.setColor(QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(150, 50, 100))
+        mSymbolLayer.subSymbol().setColor(QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
+
+    def testQgsVectorFieldSymbolLayer(self):
+        """
+        Test QgsVectorFieldSymbolLayer
+        """
+        # test colors, need to make sure colors are passed/retrieved from subsymbol
+        mSymbolLayer = QgsVectorFieldSymbolLayer.create()
 
         mSymbolLayer.setColor(QColor(150, 50, 100))
         self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))

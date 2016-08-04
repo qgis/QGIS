@@ -79,7 +79,7 @@ QString QgsLayerTreeLayer::layerName() const
 void QgsLayerTreeLayer::setLayerName( const QString& n )
 {
   if ( mLayer )
-    mLayer->setLayerName( n );
+    mLayer->setName( n );
   else
     mLayerName = n;
 }
@@ -93,7 +93,7 @@ void QgsLayerTreeLayer::setVisible( Qt::CheckState state )
   emit visibilityChanged( this, state );
 }
 
-QgsLayerTreeLayer* QgsLayerTreeLayer::readXML( QDomElement& element )
+QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element )
 {
   if ( element.tagName() != "layer-tree-layer" )
     return nullptr;
@@ -112,14 +112,14 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXML( QDomElement& element )
   else
     nodeLayer = new QgsLayerTreeLayer( layerID, layerName );
 
-  nodeLayer->readCommonXML( element );
+  nodeLayer->readCommonXml( element );
 
   nodeLayer->setVisible( checked );
   nodeLayer->setExpanded( isExpanded );
   return nodeLayer;
 }
 
-void QgsLayerTreeLayer::writeXML( QDomElement& parentElement )
+void QgsLayerTreeLayer::writeXml( QDomElement& parentElement )
 {
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( "layer-tree-layer" );
@@ -128,7 +128,7 @@ void QgsLayerTreeLayer::writeXML( QDomElement& parentElement )
   elem.setAttribute( "checked", QgsLayerTreeUtils::checkStateToXml( mVisible ) );
   elem.setAttribute( "expanded", mExpanded ? "1" : "0" );
 
-  writeCommonXML( elem );
+  writeCommonXml( elem );
 
   parentElement.appendChild( elem );
 }

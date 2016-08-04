@@ -93,7 +93,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& chang
     }
 
     vlayer->endEditCommand();
-    mCanvas->refresh();
+    vlayer->triggerRepaint();
   }
 }
 

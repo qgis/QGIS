@@ -99,6 +99,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
 
   // upside down ? (curved labels are always correct)
   if ( feature->layer()->arrangement() != QgsPalLayerSettings::Curved &&
+       feature->layer()->arrangement() != QgsPalLayerSettings::PerimeterCurved &&
        this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
   {
     bool uprightLabel = false;

@@ -97,18 +97,28 @@ class QgsWFSSharedData : public QObject
     /** Compute WFS filter from the sql or filter in the URI */
     bool computeFilter( QString& errorMsg );
 
+    /** Return extent computed from currently downloaded features */
+    QgsRectangle computedExtent();
+
     /** Return srsName */
     QString srsName() const;
+
+    /** Return whether the feature download is finished */
+    bool downloadFinished() const { return mDownloadFinished; }
 
   signals:
 
     /** Raise error */
     void raiseError( const QString& errorMsg );
 
+    /** Extent has been updated */
+    void extentUpdated();
+
   protected:
     friend class QgsWFSFeatureIterator;
     friend class QgsWFSFeatureDownloader;
     friend class QgsWFSProvider;
+    friend class QgsWFSSingleFeatureRequest;
 
     /** Datasource URI */
     QgsWFSDataSourceURI mURI;
@@ -140,14 +150,30 @@ class QgsWFSSharedData : public QObject
     /** Server-side or user-side limit of downloaded features (in a single GetFeature()). Valid if > 0 */
     int mMaxFeatures;
 
+    /** Whether mMaxFeatures was set to a non 0 value for the purpose of paging */
+    bool mMaxFeaturesWasSetFromDefaultForPaging;
+
     /** Server capabilities */
-    QgsWFSCapabilities::Capabilities mCaps;
+    QgsWfsCapabilities::Capabilities mCaps;
 
     /** Whether progress dialog should be hidden */
     bool mHideProgressDialog;
 
     /** SELECT DISTINCT */
     bool mDistinctSelect;
+
+    /** Bounding box for the layer as returned by GetCapabilities */
+    QgsRectangle mCapabilityExtent;
+
+    /** If we have already issued a warning about missing feature ids */
+    bool mHasWarnedAboutMissingFeatureId;
+
+    /** Create GML parser */
+    QgsGmlStreamingParser* createParser();
+
+    /** If the server (typically MapServer WFS 1.1) honours EPSG axis order, but returns
+        EPSG:XXXX srsName and not EPSG urns */
+    bool mGetFeatureEPSGDotHonoursEPSGOrder;
 
   private:
 
@@ -185,6 +211,9 @@ class QgsWFSSharedData : public QObject
     /** Whether mFeatureCount value is exact or approximate / in construction */
     bool mFeatureCountExact;
 
+    /** Extent computed from downloaded features */
+    QgsRectangle mComputedExtent;
+
     /** Filename of the on-disk cache */
     QString mCacheDbname;
 
@@ -203,6 +232,9 @@ class QgsWFSSharedData : public QObject
     /** Number of features that have been cached, or attempted to be cached */
     int mTotalFeaturesAttemptedToBeCached;
 
+    /** Whether we have already tried fetching one feature after realizing that the capabilities extent is wrong */
+    bool mTryFetchingOneFeature;
+
     /** Returns the set of gmlIds that have already been downloaded and
         cached, so as to avoid to cache duplicates. */
     QSet<QString> getExistingCachedGmlIds( const QVector<QgsWFSFeatureGmlIdPair>& featureList );
@@ -219,7 +251,7 @@ class QgsWFSSharedData : public QObject
 };
 
 /** Utility class to issue a GetFeature resultType=hits request */
-class QgsWFSFeatureHitsRequest: public QgsWFSRequest
+class QgsWFSFeatureHitsRequest: public QgsWfsRequest
 {
     Q_OBJECT
   public:
@@ -231,6 +263,25 @@ class QgsWFSFeatureHitsRequest: public QgsWFSRequest
 
   protected:
     virtual QString errorMessageWithReason( const QString& reason ) override;
+};
+
+/** Utility class to issue a GetFeature requets with maxfeatures/count=1
+ * Used by QgsWFSSharedData::endOfDownload() when capabilities extent are likely wrong */
+class QgsWFSSingleFeatureRequest: public QgsWfsRequest
+{
+    Q_OBJECT
+  public:
+    explicit QgsWFSSingleFeatureRequest( QgsWFSSharedData* shared );
+    ~QgsWFSSingleFeatureRequest();
+
+    /** Return the feature  extent of the single feature requested */
+    QgsRectangle getExtent();
+
+  protected:
+    virtual QString errorMessageWithReason( const QString& reason ) override;
+
+  private:
+    QgsWFSSharedData* mShared;
 };
 
 #endif // QGSWFSSHAREDDATA_H

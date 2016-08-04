@@ -30,9 +30,9 @@
 #include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>
+#include "qgsrasterdataprovider.h"
 #include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
-#include <qgsmaprenderer.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
 #include <qgsvectorcolorrampv2.h>

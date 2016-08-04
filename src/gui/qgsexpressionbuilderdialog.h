@@ -17,10 +17,10 @@
 #define QGSEXPRESSIONBUILDERDIALOG_H
 
 #include <QDialog>
-#include "qgsdistancearea.h"
 #include "ui_qgsexpressionbuilderdialogbase.h"
 
-/** A generic dialog for building expression strings
+/** \ingroup gui
+ * A generic dialog for building expression strings
   * @remarks This class also shows an example on how to use QgsExpressionBuilderWidget
   */
 class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExpressionBuilderDialogBase

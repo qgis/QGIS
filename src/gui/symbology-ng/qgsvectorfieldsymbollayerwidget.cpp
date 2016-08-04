@@ -20,17 +20,19 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
 {
   setupUi( this );
 
-  mDistanceUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
   if ( mVectorLayer )
   {
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
+    int i = 0;
     Q_FOREACH ( const QgsField& f, mVectorLayer->fields() )
     {
       QString fieldName = f.name();
-      mXAttributeComboBox->addItem( fieldName );
-      mYAttributeComboBox->addItem( fieldName );
+      mXAttributeComboBox->addItem( mVectorLayer->fields().iconForField( i ), fieldName );
+      mYAttributeComboBox->addItem( mVectorLayer->fields().iconForField( i ), fieldName );
+      i++;
     }
   }
 }

@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
-#include "qgsmapmouseevent.h"
 
 /** A tool to cut holes into polygon and multipolygon features and fill them
  *  with new feature. Attributes are copied from parent feature.

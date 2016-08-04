@@ -26,7 +26,7 @@
 class QgsProject;
 class QgsVectorLayer;
 
-/**
+/** \ingroup core
  * This class manages a set of relations between layers.
  */
 class CORE_EXPORT QgsRelationManager : public QObject
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * @return A list of relations matching the given layer and fieldIdx.
      */
-    QList<QgsRelation> referencingRelations( QgsVectorLayer *layer = nullptr, int fieldIdx = -2 ) const;
+    QList<QgsRelation> referencingRelations( const QgsVectorLayer* layer = nullptr, int fieldIdx = -2 ) const;
 
     /**
      * Get all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).

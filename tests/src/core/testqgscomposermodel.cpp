@@ -19,6 +19,7 @@
 #include "qgscomposermodel.h"
 #include "qgscomposerlabel.h"
 #include "qgsapplication.h"
+#include "qgsmapsettings.h"
 
 #include <QObject>
 #include <QtTest/QtTest>

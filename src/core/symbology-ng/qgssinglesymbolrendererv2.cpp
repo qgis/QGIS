@@ -266,7 +266,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
   return r;
 }
 
-QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& element, QGis::GeometryType geomType )
+QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType )
 {
   // XXX this renderer can handle only one Rule!
 
@@ -333,15 +333,15 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
   QgsSymbolV2 *symbol;
   switch ( geomType )
   {
-    case QGis::Line:
+    case QgsWkbTypes::LineGeometry:
       symbol = new QgsLineSymbolV2( layers );
       break;
 
-    case QGis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
       symbol = new QgsFillSymbolV2( layers );
       break;
 
-    case QGis::Point:
+    case QgsWkbTypes::PointGeometry:
       symbol = new QgsMarkerSymbolV2( layers );
       break;
 

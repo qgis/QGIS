@@ -8,7 +8,7 @@
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
     ---------------------
-    Date                 : September 2013
+    Date                 : September 2013 and May 2016
     Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -39,7 +39,7 @@ from processing.core.parameters import ParameterNumber
 class lasboundary(LAStoolsAlgorithm):
 
     MODE = "MODE"
-    MODES = ["points", "spatial index (the *.lax file)", "bounding box"]
+    MODES = ["points", "spatial index (the *.lax file)", "bounding box", "tile bounding box"]
     CONCAVITY = "CONCAVITY"
     DISJOINT = "DISJOINT"
     HOLES = "HOLES"
@@ -70,8 +70,10 @@ class lasboundary(LAStoolsAlgorithm):
         if (mode != 0):
             if (mode == 1):
                 commands.append("-use_lax")
-            else:
+            elif (mode == 2):
                 commands.append("-use_bb")
+            else:
+                commands.append("-use_tile_bb")
         else:
             concavity = self.getParameterValue(lasboundary.CONCAVITY)
             commands.append("-concavity")

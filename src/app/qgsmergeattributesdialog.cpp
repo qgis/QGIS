@@ -19,6 +19,7 @@
 #include "qgsmergeattributesdialog.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfield.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
@@ -512,7 +513,7 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( QgsFeatureId featureI
   mSelectionRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
   QgsFeature featureToSelect;
   mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( featureToSelect );
-  mSelectionRubberBand->setToGeometry( featureToSelect.constGeometry(), mVectorLayer );
+  mSelectionRubberBand->setToGeometry( featureToSelect.geometry(), mVectorLayer );
 }
 
 QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const

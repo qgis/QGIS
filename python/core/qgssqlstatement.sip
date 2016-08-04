@@ -18,7 +18,7 @@ class QgsSQLStatement
 
     /** Performs basic validity checks. Basically checking that columns referencing
      * a table, references a specified table. Returns true if the validation is
-     * succesful */
+     * successful */
     bool doBasicValidationChecks( QString& errorMsgOut /Out/ ) const;
 
     //! Returns root node of the statement. Root node is null is parsing has failed

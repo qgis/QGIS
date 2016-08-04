@@ -28,7 +28,7 @@ class QgsOSMWayIterator;
 
 typedef QPair<QString, int> QgsOSMTagCountPair;
 
-/**
+/** \ingroup analysis
  * Class that encapsulates access to OpenStreetMap data stored in a database
  * previously imported from XML file.
  *
@@ -125,7 +125,8 @@ class ANALYSIS_EXPORT QgsOSMDatabase
 };
 
 
-/** Encapsulate iteration over table of nodes/
+/** \ingroup analysis
+ * Encapsulate iteration over table of nodes/
  * @note not available in Python bindings
 */
 class ANALYSIS_EXPORT QgsOSMNodeIterator
@@ -148,7 +149,8 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator
 
 
 
-/** Encapsulate iteration over table of ways
+/** \ingroup analysis
+ * Encapsulate iteration over table of ways
  * @note not available in Python bindings
  */
 class ANALYSIS_EXPORT QgsOSMWayIterator

@@ -30,6 +30,23 @@ class QgsMapTool : QObject
 
   public:
 
+    //! Enumeration of flags that adjust the way the map tool operates
+    //! @note added in QGIS 2.16
+    enum Flag
+    {
+      Transient, /*!< Indicates that this map tool performs a transient (one-off) operation.
+                               If it does, the tool can be operated once and then a previous map
+                               tool automatically restored. */
+      EditTool, /*!< Map tool is an edit tool, which can only be used when layer is editable*/
+      AllowZoomRect, /*!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active*/
+    };
+    typedef QFlags<QgsMapTool::Flag> Flags;
+
+    /** Returns the flags for the map tool.
+     * @note added in QGIS 2.16
+     */
+    virtual Flags flags() const;
+
     //! virtual destructor
     virtual ~QgsMapTool();
 
@@ -85,13 +102,16 @@ class QgsMapTool : QObject
 
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then
-     * resume operations with the original / previously used tool.*/
-    virtual bool isTransient();
+     * resume operations with the original / previously used tool.
+     * @deprecated use flags() instead
+    */
+    virtual bool isTransient() const /Deprecated/;
 
     /** Check whether this MapTool performs an edit operation.
-     * If it does, we will deactivate it when editing is turned off
+     * If it does, we will deactivate it when editing is turned off.
+     * @deprecated use flags() instead
      */
-    virtual bool isEditTool();
+    virtual bool isEditTool() const /Deprecated/;
 
     //! called when set as currently active map tool
     virtual void activate();
@@ -108,7 +128,7 @@ class QgsMapTool : QObject
 
     /** Get search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
-     *  and defaults to QGis::DEFAULT_SEARCH_RADIUS_MM.
+     *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
      *  @note added in 2.3 */
     static double searchRadiusMM();
 
@@ -164,3 +184,6 @@ class QgsMapTool : QObject
 
 
 };
+
+
+QFlags<QgsMapTool::Flag> operator|(QgsMapTool::Flag f1, QFlags<QgsMapTool::Flag> f2);

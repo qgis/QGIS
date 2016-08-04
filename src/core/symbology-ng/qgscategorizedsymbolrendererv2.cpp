@@ -25,7 +25,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgsscaleexpression.h"
 #include "qgsdatadefined.h"
-
+#include "qgssymbollayerv2.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
@@ -726,7 +726,7 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
     QgsSymbolV2Map symbols;
     QDomElement catsElem = doc.createElement( "categories" );
     QgsCategoryList::const_iterator it = mCategories.constBegin();
-    for ( ; it != mCategories.end(); ++it )
+    for ( ; it != mCategories.constEnd(); ++it )
     {
       const QgsRendererCategoryV2& cat = *it;
       QString symbolName = QString::number( i );

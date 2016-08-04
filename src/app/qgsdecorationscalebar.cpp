@@ -55,7 +55,7 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
     , mMarginVertical( 0 )
 {
   mPlacement = TopLeft;
-  mMarginUnit = QgsSymbolV2::MM;
+  mMarginUnit = QgsUnitTypes::RenderMillimeters;
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
   << tr( "Bar" ) << tr( "Box" );
 
@@ -133,10 +133,10 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
 
     QSettings settings;
     bool ok = false;
-    QGis::UnitType myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( "/qgis/measure/displayunits" ).toString(), &ok );
+    QgsUnitTypes::DistanceUnit myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( "/qgis/measure/displayunits" ).toString(), &ok );
     if ( !ok )
-      myPreferredUnits = QGis::Meters;
-    QGis::UnitType myMapUnits = canvas->mapUnits();
+      myPreferredUnits = QgsUnitTypes::DistanceMeters;
+    QgsUnitTypes::DistanceUnit myMapUnits = canvas->mapUnits();
 
     // Adjust units meter/feet/... or vice versa
     myMapUnitsPerPixelDouble *= QgsUnitTypes::fromUnitToUnitFactor( myMapUnits, myPreferredUnits );
@@ -175,7 +175,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     QString myScaleBarUnitLabel;
     switch ( myMapUnits )
     {
-      case QGis::Meters:
+      case QgsUnitTypes::DistanceMeters:
         if ( myActualSize > 1000.0 )
         {
           myScaleBarUnitLabel = tr( " km" );
@@ -194,7 +194,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         else
           myScaleBarUnitLabel = tr( " m" );
         break;
-      case QGis::Feet:
+      case QgsUnitTypes::DistanceFeet:
         if ( myActualSize > 5280.0 ) //5280 feet to the mile
         {
           myScaleBarUnitLabel = tr( " miles" );
@@ -224,13 +224,13 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
           myScaleBarUnitLabel = tr( " feet" );
         }
         break;
-      case QGis::Degrees:
+      case QgsUnitTypes::DistanceDegrees:
         if ( myActualSize == 1.0 )
           myScaleBarUnitLabel = tr( " degree" );
         else
           myScaleBarUnitLabel = tr( " degrees" );
         break;
-      case QGis::UnknownUnit:
+      case QgsUnitTypes::DistanceUnknownUnit:
         myScaleBarUnitLabel = tr( " unknown" );
         //intentional fall-through
         FALLTHROUGH;
@@ -260,7 +260,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     // Set  margin according to selected units
     switch ( mMarginUnit )
     {
-      case QgsSymbolV2::MM:
+      case QgsUnitTypes::RenderMillimeters:
       {
         int myPixelsInchX = theQPainter->device()->logicalDpiX();
         int myPixelsInchY = theQPainter->device()->logicalDpiY();
@@ -269,12 +269,12 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         break;
       }
 
-      case QgsSymbolV2::Pixel:
+      case QgsUnitTypes::RenderPixels:
         myOriginX = mMarginHorizontal - 5.; // Minus 5 to shift tight into corner
         myOriginY = mMarginVertical - 5.;
         break;
 
-      case QgsSymbolV2::Percentage:
+      case QgsUnitTypes::RenderPercentage:
       {
         float myMarginDoubledW = myMarginW * 2.0;
         float myMarginDoubledH = myMarginH * 2.0;

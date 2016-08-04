@@ -18,14 +18,14 @@
 
 #include "qgsowsconnection.h"
 
-class QgsWFSConnection : public QgsOWSConnection
+class QgsWfsConnection : public QgsOwsConnection
 {
   public:
     /**
      * Constructor
      * @param theConnName connection name
      */
-    explicit QgsWFSConnection( const QString & theConnName );
+    explicit QgsWfsConnection( const QString & theConnName );
 
     static QStringList connectionList();
 

@@ -28,7 +28,6 @@ class QgsComposerMapOverviewStack;
 class QgsComposerMapOverview;
 class QgsComposerMapGridStack;
 class QgsComposerMapGrid;
-class QgsMapRenderer;
 class QgsMapToPixel;
 class QDomNode;
 class QDomDocument;
@@ -37,8 +36,9 @@ class QPainter;
 class QgsFillSymbolV2;
 class QgsLineSymbolV2;
 class QgsVectorLayer;
+class QgsAnnotation;
 
-/** \ingroup MapComposer
+/** \ingroup core
  *  \class QgsComposerMap
  *  \brief Object representing map window.
  */
@@ -262,17 +262,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Stores the current layer styles into style overrides. @note added in 2.8 */
     void storeCurrentLayerStyles();
 
-    /** Whether the map should follow a visibility preset. If true, the layers and layer styles
+    /** Whether the map should follow a map theme. If true, the layers and layer styles
      * will be used from given preset name (configured with setFollowVisibilityPresetName() method).
      * This means when preset's settings are changed, the new settings are automatically
      * picked up next time when rendering, without having to explicitly update them.
      * At most one of the flags keepLayerSet() and followVisibilityPreset() should be enabled
      * at any time since they are alternative approaches - if both are enabled,
-     * following visibility preset has higher priority. If neither is enabled (or if preset name is not set),
+     * following map theme has higher priority. If neither is enabled (or if preset name is not set),
      * map will use the same configuration as the map canvas uses.
      * @note added in 2.16 */
     bool followVisibilityPreset() const { return mFollowVisibilityPreset; }
-    /** Sets whether the map should follow a visibility preset. See followVisibilityPreset() for more details.
+    /** Sets whether the map should follow a map theme. See followVisibilityPreset() for more details.
      * @note added in 2.16 */
     void setFollowVisibilityPreset( bool follow ) { mFollowVisibilityPreset = follow; }
     /** Preset name that decides which layers and layer styles are used for map rendering. It is only
@@ -288,14 +288,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     QgsRectangle extent() const {return mExtent;}
 
-    //! @deprecated since 2.4 - use mapSettings() - may return 0 if not initialized with QgsMapRenderer
-    Q_DECL_DEPRECATED const QgsMapRenderer* mapRenderer() const;
-
     /** Sets offset values to shift image (useful for live updates when moving item content)*/
     void setOffset( double xOffset, double yOffset );
 
     /** True if composer map renders a WMS layer*/
-    bool containsWMSLayer() const;
+    bool containsWmsLayer() const;
 
     /** True if composer map contains layers with blend modes or flattened layers for vectors */
     bool containsAdvancedEffects() const;
@@ -304,13 +301,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc Dom document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to 'ComposerMap' tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /** Enables a coordinate grid that is shown on top of this composermap.
      * @deprecated use grid()->setEnabled() or grids() instead
@@ -913,7 +910,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * in mVisibilityPresetName and may be overridden by data-defined expression).
      * This flag has higher priority than mKeepLayerSet. */
     bool mFollowVisibilityPreset;
-    /** Visibility preset name to be used for map's layers and styles in case mFollowVisibilityPreset
+    /** Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
      *  is true. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
 
@@ -972,8 +969,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void transformShift( double& xShift, double& yShift ) const;
 
     void drawCanvasItems( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
-    void drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
-    QPointF composerMapPosForItem( const QGraphicsItem* item ) const;
+    void drawCanvasItem( const QgsAnnotation* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
+    QPointF composerMapPosForItem( const QgsAnnotation* item ) const;
 
     enum PartType
     {

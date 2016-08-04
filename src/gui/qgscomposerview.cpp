@@ -47,8 +47,12 @@
 #include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
 #include "qgscursors.h"
 #include "qgscomposerutils.h"
+#include "qgscomposerattributetable.h"
 
-QgsComposerView::QgsComposerView( QWidget* parent, const char* name, const Qt::WindowFlags& f )
+#define MIN_VIEW_SCALE 0.05
+#define MAX_VIEW_SCALE 1000.0
+
+QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowFlags f )
     : QGraphicsView( parent )
     , mCurrentTool( Select )
     , mPreviousTool( Select )
@@ -1501,10 +1505,10 @@ void QgsComposerView::copyItems( ClipboardMode mode )
       QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
       for ( ; it != groupedItems.end(); ++it )
       {
-        ( *it )->writeXML( documentElement, doc );
+        ( *it )->writeXml( documentElement, doc );
       }
     }
-    ( *itemIt )->writeXML( documentElement, doc );
+    ( *itemIt )->writeXml( documentElement, doc );
     if ( mode == ClipboardModeCut )
     {
       composition()->removeComposerItem( *itemIt );
@@ -1561,7 +1565,7 @@ void QgsComposerView::pasteItems( PasteMode mode )
           pt = mapToScene( viewport()->rect().center() );
         }
         bool pasteInPlace = ( mode == PasteModeInPlace );
-        composition()->addItemsFromXML( docElem, doc, nullptr, true, &pt, pasteInPlace );
+        composition()->addItemsFromXml( docElem, doc, nullptr, true, &pt, pasteInPlace );
       }
     }
   }
@@ -2032,13 +2036,7 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
 {
   //get mouse wheel zoom behaviour settings
   QSettings mySettings;
-  int wheelAction = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
-
-  if (( QgsMapCanvas::WheelAction )wheelAction == QgsMapCanvas::WheelNothing )
-  {
-    return;
-  }
 
   if ( event->modifiers() & Qt::ControlModifier )
   {
@@ -2057,36 +2055,20 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
   //transform the mouse pos to scene coordinates
   QPointF scenePoint = mapToScene( event->pos() );
 
-  //adjust view center according to wheel action setting
-  switch (( QgsMapCanvas::WheelAction )wheelAction )
-  {
-    case QgsMapCanvas::WheelZoomAndRecenter:
-    {
-      centerOn( scenePoint.x(), scenePoint.y() );
-      break;
-    }
-
-    case QgsMapCanvas::WheelZoomToMouseCursor:
-    {
-      QgsPoint oldCenter( visibleRect.center() );
-      QgsPoint newCenter( scenePoint.x() + (( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
-                          scenePoint.y() + (( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
-      centerOn( newCenter.x(), newCenter.y() );
-      break;
-    }
-
-    default:
-      break;
-  }
+  //adjust view center
+  QgsPoint oldCenter( visibleRect.center() );
+  QgsPoint newCenter( scenePoint.x() + (( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
+                      scenePoint.y() + (( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
+  centerOn( newCenter.x(), newCenter.y() );
 
   //zoom composition
   if ( zoomIn )
   {
-    scale( zoomFactor, zoomFactor );
+    scaleSafe( zoomFactor );
   }
   else
   {
-    scale( 1 / zoomFactor, 1 / zoomFactor );
+    scaleSafe( 1 / zoomFactor );
   }
 
   //update composition for new zoom
@@ -2114,12 +2096,20 @@ void QgsComposerView::setZoomLevel( double zoomLevel )
     dpi = 72;
 
   //desired pixel width for 1mm on screen
-  double scale = zoomLevel * dpi / 25.4;
+  double scale = qBound( MIN_VIEW_SCALE, zoomLevel * dpi / 25.4, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
 
   updateRulers();
   update();
   emit zoomLevelChanged();
+}
+
+void QgsComposerView::scaleSafe( double scale )
+{
+  double currentScale = transform().m11();
+  scale *= currentScale;
+  scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
+  setTransform( QTransform::fromScale( scale, scale ) );
 }
 
 void QgsComposerView::setPreviewModeEnabled( bool enabled )

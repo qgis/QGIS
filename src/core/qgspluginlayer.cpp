@@ -45,8 +45,9 @@ QgsLegendSymbologyList QgsPluginLayer::legendSymbologyItems( QSize iconSize )
   return QgsLegendSymbologyList();
 }
 
-/** Fallback layer renderer implementation for layer that do not support map renderer yet.
- *
+/**
+ * \ingroup core
+ * Fallback layer renderer implementation for layer that do not support map renderer yet.
  * @note added in 2.4
  * @note not available in Python bindings
  */

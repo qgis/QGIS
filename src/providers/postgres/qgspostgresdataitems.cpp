@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
 #include "qgsnewnamedialog.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -30,7 +31,7 @@
 #include <climits>
 
 QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause );
-QGISEXTERN bool deleteSchema( const QString& schema, const QgsDataSourceURI& uri, QString& errCause, bool cascade = false );
+QGISEXTERN bool deleteSchema( const QString& schema, const QgsDataSourceUri& uri, QString& errCause, bool cascade = false );
 
 
 // ---------------------------------------------------------------------------
@@ -46,11 +47,10 @@ QgsPGConnectionItem::~QgsPGConnectionItem()
 
 QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
 
   QVector<QgsDataItem*>items;
 
-  QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( mName );
   // TODO: wee need to cancel somehow acquireConnection() if deleteLater() was called on this item to avoid later credential dialog if connection failed
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
   if ( !conn )
@@ -161,7 +161,7 @@ void QgsPGConnectionItem::createSchema()
   if ( schemaName.isEmpty() )
     return;
 
-  QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( mName );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
   if ( !conn )
   {
@@ -196,7 +196,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
     return false;
 
   // TODO: probably should show a GUI with settings etc
-  QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( mName );
 
   qApp->setOverrideCursor( Qt::WaitCursor );
 
@@ -224,7 +224,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 
     if ( srcLayer->isValid() )
     {
-      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QGis::NoGeometry ? "geom" : QString() );
+      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? "geom" : QString() );
       QgsDebugMsg( "URI " + uri.uri( false ) );
 
       if ( !toSchema.isNull() )
@@ -234,7 +234,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri( false ), "postgres", &srcLayer->crs(), false, &importError, false, nullptr, progress );
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri( false ), "postgres", srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
       else if ( err == QgsVectorLayerImport::ErrUserCancelled )
@@ -363,7 +363,7 @@ void QgsPGLayerItem::renameLayer()
   QString oldName = schemaTableName + QgsPostgresConn::quotedIdentifier( tableName );
   QString newName = QgsPostgresConn::quotedIdentifier( dlg.name() );
 
-  QgsDataSourceURI dsUri( mUri );
+  QgsDataSourceUri dsUri( mUri );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
@@ -404,7 +404,7 @@ void QgsPGLayerItem::truncateTable()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  QgsDataSourceURI dsUri( mUri );
+  QgsDataSourceUri dsUri( mUri );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
@@ -447,10 +447,10 @@ QString QgsPGLayerItem::createUri()
     return QString::null;
   }
 
-  QgsDataSourceURI uri( QgsPostgresConn::connUri( connItem->name() ).connectionInfo( false ) );
+  QgsDataSourceUri uri( QgsPostgresConn::connUri( connItem->name() ).connectionInfo( false ) );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
-  uri.setWkbType( QGis::fromOldWkbType( mLayerProperty.types.at( 0 ) ) );
-  if ( uri.newWkbType() != QgsWKBTypes::NoGeometry )
+  uri.setWkbType( mLayerProperty.types.at( 0 ) );
+  if ( uri.wkbType() != QgsWkbTypes::NoGeometry )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
   QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );
@@ -470,11 +470,10 @@ QgsPGSchemaItem::~QgsPGSchemaItem()
 
 QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
 
   QVector<QgsDataItem*>items;
 
-  QgsDataSourceURI uri = QgsPostgresConn::connUri( mConnectionName );
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
   if ( !conn )
   {
@@ -503,7 +502,7 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
       continue;
 
     if ( !layerProperty.geometryColName.isNull() &&
-         ( layerProperty.types.value( 0, QGis::WKBUnknown ) == QGis::WKBUnknown ||
+         ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
            layerProperty.srids.value( 0, INT_MIN ) == INT_MIN ) )
     {
       if ( dontResolveType )
@@ -553,7 +552,7 @@ QList<QAction *> QgsPGSchemaItem::actions()
 void QgsPGSchemaItem::deleteSchema()
 {
   // check if schema contains tables/views
-  QgsDataSourceURI uri = QgsPostgresConn::connUri( mConnectionName );
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
   if ( !conn )
   {
@@ -626,7 +625,7 @@ void QgsPGSchemaItem::renameSchema()
     return;
 
   QString schemaName = QgsPostgresConn::quotedIdentifier( mName );
-  QgsDataSourceURI uri = QgsPostgresConn::connUri( mConnectionName );
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
   if ( !conn )
   {
@@ -656,7 +655,7 @@ void QgsPGSchemaItem::renameSchema()
 QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
 {
   //QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
-  QGis::WkbType wkbType = layerProperty.types.at( 0 );
+  QgsWkbTypes::Type wkbType = layerProperty.types.at( 0 );
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
   if ( !layerProperty.tableComment.isEmpty() )
   {
@@ -664,16 +663,16 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   }
 
   QgsLayerItem::LayerType layerType;
-  QgsWKBTypes::GeometryType geomType = QgsWKBTypes::geometryType(( QgsWKBTypes::Type )wkbType );
+  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType(( QgsWkbTypes::Type )wkbType );
   switch ( geomType )
   {
-    case QgsWKBTypes::PointGeometry:
+    case QgsWkbTypes::PointGeometry:
       layerType = QgsLayerItem::Point;
       break;
-    case QgsWKBTypes::LineGeometry:
+    case QgsWkbTypes::LineGeometry:
       layerType = QgsLayerItem::Line;
       break;
-    case QgsWKBTypes::PolygonGeometry:
+    case QgsWkbTypes::PolygonGeometry:
       layerType = QgsLayerItem::Polygon;
       break;
     default:
@@ -734,7 +733,7 @@ QList<QAction*> QgsPGRootItem::actions()
 
 QWidget *QgsPGRootItem::paramWidget()
 {
-  QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, nullptr, true, true );
+  QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, 0, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }

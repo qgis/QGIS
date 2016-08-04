@@ -19,6 +19,7 @@
 #include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfield.h"
 
 class QTextCodec;
 class QgsVectorLayer;
@@ -112,7 +113,7 @@ class CORE_EXPORT QgsJSONExporter
      * correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
      * @see setSourceCrs()
      */
-    const QgsCoordinateReferenceSystem& sourceCrs() const;
+    QgsCoordinateReferenceSystem sourceCrs() const;
 
     /** Sets the list of attributes to include in the JSON exports.
      * @param attributes list of attribute indexes, or an empty list to include all

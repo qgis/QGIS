@@ -15,13 +15,12 @@
  ***************************************************************************/
 
 #include "ui_qgscompositionwidgetbase.h"
-#include "qgscomposeritem.h"
 
 class QgsComposition;
 class QgsComposerMap;
 class QgsDataDefinedButton;
 
-/** \ingroup MapComposer
+/** \ingroup app
  * Struct to hold map composer paper properties.
  */
 struct QgsCompositionPaper
@@ -32,7 +31,7 @@ struct QgsCompositionPaper
   double mHeight;
 };
 
-/** \ingroup MapComposer
+/** \ingroup app
   * Input widget for QgsComposition
   */
 class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
@@ -83,6 +82,8 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void variablesChanged();
 
     void resizeMarginsChanged();
+
+    void updateVariables();
 
   private:
     QgsComposition* mComposition;

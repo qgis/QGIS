@@ -17,7 +17,6 @@
 #define QGSMAPTOOLDELETEPART_H
 
 #include "qgsmaptooledit.h"
-#include "qgsrubberband.h"
 
 class QgsVertexMarker;
 
@@ -42,7 +41,7 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
   private:
     QgsVectorLayer* vlayer;
 
-    QgsGeometry* partUnderPoint( QPoint p, QgsFeatureId &fid, int &partNum );
+    QgsGeometry partUnderPoint( QPoint p, QgsFeatureId &fid, int &partNum );
 
     /* Rubberband that shows the part being deleted*/
     QgsRubberBand* mRubberBand;

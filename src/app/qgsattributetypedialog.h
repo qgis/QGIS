@@ -19,9 +19,8 @@
 
 #include "ui_qgsattributetypeedit.h"
 
-#include "qgsvectorlayer.h"
 #include "qgseditorconfigwidget.h"
-
+#include "qgsvectorlayer.h"
 class QDialog;
 class QLayout;
 class QgsField;
@@ -70,6 +69,11 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     void setLabelOnTop( bool onTop );
 
     /**
+     * Getter for checkbox for label on top of field
+     */
+    bool labelOnTop() const;
+
+    /**
      * Setter for checkbox for editable state of field
      */
     void setFieldEditable( bool editable );
@@ -77,12 +81,43 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     /**
      * Getter for checkbox for editable state of field
      */
-    bool fieldEditable();
+    bool fieldEditable() const;
 
     /**
-     * Getter for checkbox for label on top of field
+     * Setter for checkbox for not null
      */
-    bool labelOnTop();
+    void setNotNull( bool notNull );
+
+    /**
+     * Getter for checkbox for not null
+     */
+    bool notNull() const;
+
+    /*
+     * Setter for constraint expression description
+     * @param desc the expression description
+     * @note added in QGIS 2.16
+     **/
+    void setExpressionDescription( const QString &desc );
+
+    /*
+     * Getter for constraint expression description
+     * @return the expression description
+     * @note added in QGIS 2.16
+     **/
+    QString expressionDescription();
+
+    /**
+     * Getter for the constraint expression
+     * @note added in QGIS 2.16
+     */
+    QString expression() const;
+
+    /**
+     * Setter for the constraint expression
+     * @note added in QGIS 2.16
+     */
+    void setExpression( const QString &str );
 
   private slots:
     /**

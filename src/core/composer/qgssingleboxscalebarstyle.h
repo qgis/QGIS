@@ -19,7 +19,7 @@
 
 #include "qgsscalebarstyle.h"
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Scalebar style that draws a single box with alternating
  * color for the segments.
  */

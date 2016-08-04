@@ -41,7 +41,10 @@ class lasmergePro(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         self.addParametersFilesAreFlightlinesCommands(commands)

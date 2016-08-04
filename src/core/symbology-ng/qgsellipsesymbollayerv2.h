@@ -22,7 +22,8 @@
 
 class QgsExpression;
 
-/** A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*/
+/** \ingroup core
+ * A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*/
 class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
 {
   public:
@@ -72,26 +73,54 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setOutlineColor( const QColor& c ) override { mOutlineColor = c; }
     QColor outlineColor() const override { return mOutlineColor; }
 
-    void setSymbolWidthUnit( QgsSymbolV2::OutputUnit unit ) { mSymbolWidthUnit = unit; }
-    QgsSymbolV2::OutputUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
+    /** Sets the units for the symbol's width.
+     * @param unit symbol units
+     * @see symbolWidthUnit()
+     * @see setSymbolHeightUnit()
+    */
+    void setSymbolWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolWidthUnit = unit; }
+
+    /** Returns the units for the symbol's width.
+     * @see setSymbolWidthUnit()
+     * @see symbolHeightUnit()
+    */
+    QgsUnitTypes::RenderUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
 
     void setSymbolWidthMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolWidthMapUnitScale = scale; }
     const QgsMapUnitScale& symbolWidthMapUnitScale() const { return mSymbolWidthMapUnitScale; }
 
-    void setSymbolHeightUnit( QgsSymbolV2::OutputUnit unit ) { mSymbolHeightUnit = unit; }
-    QgsSymbolV2::OutputUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
+    /** Sets the units for the symbol's height.
+     * @param unit symbol units
+     * @see symbolHeightUnit()
+     * @see setSymbolWidthUnit()
+    */
+    void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolHeightUnit = unit; }
+
+    /** Returns the units for the symbol's height.
+     * @see setSymbolHeightUnit()
+     * @see symbolWidthUnit()
+    */
+    QgsUnitTypes::RenderUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
 
     void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolHeightMapUnitScale = scale; }
     const QgsMapUnitScale& symbolHeightMapUnitScale() const { return mSymbolHeightMapUnitScale; }
 
-    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
-    QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+    /** Sets the units for the symbol's outline width.
+     * @param unit symbol units
+     * @see outlineWidthUnit()
+    */
+    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mOutlineWidthUnit = unit; }
+
+    /** Returns the units for the symbol's outline width.
+     * @see setOutlineWidthUnit()
+    */
+    QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
 
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
     const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
-    QgsSymbolV2::OutputUnit outputUnit() const override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
 
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -101,16 +130,16 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
   private:
     QString mSymbolName;
     double mSymbolWidth;
-    QgsSymbolV2::OutputUnit mSymbolWidthUnit;
+    QgsUnitTypes::RenderUnit mSymbolWidthUnit;
     QgsMapUnitScale mSymbolWidthMapUnitScale;
     double mSymbolHeight;
-    QgsSymbolV2::OutputUnit mSymbolHeightUnit;
+    QgsUnitTypes::RenderUnit mSymbolHeightUnit;
     QgsMapUnitScale mSymbolHeightMapUnitScale;
     QColor mOutlineColor;
     Qt::PenStyle mOutlineStyle;
     Qt::PenJoinStyle mPenJoinStyle;
     double mOutlineWidth;
-    QgsSymbolV2::OutputUnit mOutlineWidthUnit;
+    QgsUnitTypes::RenderUnit mOutlineWidthUnit;
     QgsMapUnitScale mOutlineWidthMapUnitScale;
 
     QPainterPath mPainterPath;

@@ -30,7 +30,7 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
     : QgsAuthMethod()
 {
   setVersion( 2 );
-  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceURI );
+  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
   setDataProviders( QStringList()
                     << "postgres"
                     << "db2"

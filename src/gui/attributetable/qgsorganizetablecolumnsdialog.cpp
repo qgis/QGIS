@@ -14,13 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDockWidget>
 #include <QMessageBox>
 
 #include "qgsorganizetablecolumnsdialog.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
+#include "qgsdockwidget.h"
 
 #include <qgsapplication.h>
 #include <qgsvectordataprovider.h>
@@ -45,6 +45,10 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
     : QDialog( parent, flags )
 {
   setupUi( this );
+
+  connect( mShowAllButton, SIGNAL( clicked( bool ) ), this, SLOT( showAll() ) );
+  connect( mHideAllButton, SIGNAL( clicked( bool ) ), this, SLOT( hideAll() ) );
+
   if ( vl )
   {
     mConfig = vl->attributeTableConfig();
@@ -55,14 +59,14 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
     Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, mConfig.columns() )
     {
       QListWidgetItem* item;
-      if ( columnConfig.mType == QgsAttributeTableConfig::Action )
+      if ( columnConfig.type == QgsAttributeTableConfig::Action )
       {
         item = new QListWidgetItem( tr( "[Action Widget]" ), mFieldsList );
         item->setIcon( QgsApplication::getThemeIcon( "/propertyicons/action.svg" ) );
       }
       else
       {
-        int idx = vl->fieldNameIndex( columnConfig.mName );
+        int idx = vl->fieldNameIndex( columnConfig.name );
         item = new QListWidgetItem( vl->attributeDisplayName( idx ), mFieldsList );
 
         switch ( vl->fields().fieldOrigin( idx ) )
@@ -81,10 +85,17 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
         }
       }
 
-      item->setCheckState( columnConfig.mHidden ? Qt::Unchecked : Qt::Checked );
+      item->setCheckState( columnConfig.hidden ? Qt::Unchecked : Qt::Checked );
       item->setData( Qt::UserRole, QVariant::fromValue( columnConfig ) );
     }
   }
+
+  if ( !vl || mConfig.columns().count() < 7 )
+  {
+    mShowAllButton->hide();
+    mHideAllButton->hide();
+  }
+
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ).toByteArray() );
@@ -105,7 +116,7 @@ QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
     const QListWidgetItem* item = mFieldsList->item( i );
     QgsAttributeTableConfig::ColumnConfig columnConfig = item->data( Qt::UserRole ).value<QgsAttributeTableConfig::ColumnConfig>();
 
-    columnConfig.mHidden = item->checkState() == Qt::Unchecked;
+    columnConfig.hidden = item->checkState() == Qt::Unchecked;
 
     columns.append( columnConfig );
   }
@@ -113,4 +124,20 @@ QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
   QgsAttributeTableConfig config = mConfig;
   config.setColumns( columns );
   return config;
+}
+
+void QgsOrganizeTableColumnsDialog::showAll()
+{
+  for ( int i = 0 ; i < mFieldsList->count() ; i++ )
+  {
+    mFieldsList->item( i )->setCheckState( Qt::Checked );
+  }
+}
+
+void QgsOrganizeTableColumnsDialog::hideAll()
+{
+  for ( int i = 0 ; i < mFieldsList->count() ; i++ )
+  {
+    mFieldsList->item( i )->setCheckState( Qt::Unchecked );
+  }
 }

@@ -108,7 +108,7 @@ QgsFeatureRendererV2::~QgsFeatureRendererV2()
   delete mPaintEffect;
 }
 
-QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType geomType )
+QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QgsWkbTypes::GeometryType geomType )
 {
   return new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( geomType ) );
 }
@@ -151,6 +151,11 @@ QSet< QString > QgsFeatureRendererV2::legendKeysForFeature( QgsFeature& feature,
 void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer )
 {
   startRender( context, vlayer->fields() );
+}
+
+bool QgsFeatureRendererV2::filterNeedsGeometry() const
+{
+  return false;
 }
 
 bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
@@ -244,7 +249,7 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage )
+QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage )
 {
   QDomElement element = node.toElement();
   if ( element.isNull() )

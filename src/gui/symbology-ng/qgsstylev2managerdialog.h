@@ -26,6 +26,9 @@
 
 class QgsStyleV2;
 
+/** \ingroup gui
+ * \class QgsStyleV2ManagerDialog
+ */
 class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV2ManagerDialogBase
 {
     Q_OBJECT

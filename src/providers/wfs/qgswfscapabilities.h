@@ -22,12 +22,12 @@
 #include "qgswfsrequest.h"
 
 /** Manages the GetCapabilities request */
-class QgsWFSCapabilities : public QgsWFSRequest
+class QgsWfsCapabilities : public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWFSCapabilities( const QString& theUri );
-    virtual ~QgsWFSCapabilities();
+    explicit QgsWfsCapabilities( const QString& theUri );
+    virtual ~QgsWfsCapabilities();
 
     //! start network connection to get capabilities
     bool requestCapabilities( bool synchronous );
@@ -35,11 +35,15 @@ class QgsWFSCapabilities : public QgsWFSRequest
     //! description of a vector layer
     struct FeatureType
     {
+      //! Default constructor
+      FeatureType() : bboxSRSIsWGS84( false ), insertCap( false ), updateCap( false ), deleteCap( false ) {}
+
       QString name;
       QString title;
       QString abstract;
       QList<QString> crslist; // first is default
-      QgsRectangle bboxLongLat;
+      QgsRectangle bbox;
+      bool bboxSRSIsWGS84; // if false, the bbox is expressed in crslist[0] CRS
       bool insertCap;
       bool updateCap;
       bool deleteCap;
@@ -92,6 +96,7 @@ class QgsWFSCapabilities : public QgsWFSRequest
       QList<FeatureType> featureTypes;
       QList<Function> spatialPredicatesList;
       QList<Function> functionList;
+      bool useEPSGColumnFormat; // whether to use EPSG:XXXX srsname
 
       QSet< QString > setAllTypenames;
       QMap< QString, QString> mapUnprefixedTypenameToPrefixedTypename;
@@ -105,7 +110,7 @@ class QgsWFSCapabilities : public QgsWFSRequest
     const Capabilities& capabilities() const { return mCaps; }
 
   signals:
-    //! emitted when the capabilities have been fully parsed, or an error occured */
+    //! emitted when the capabilities have been fully parsed, or an error occurred */
     void gotCapabilities();
 
   private slots:

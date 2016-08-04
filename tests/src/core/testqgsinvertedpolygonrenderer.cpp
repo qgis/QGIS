@@ -22,7 +22,6 @@
 #include <QDesktopServices>
 
 //qgis includes...
-#include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
@@ -51,10 +50,13 @@ class TestQgsInvertedPolygon : public QObject
     void graduatedSubRenderer();
     void preprocess();
     void projectionTest();
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_MAJOR >= 2
+    void curvedPolygons();
+#endif
 
   private:
     bool mTestHasError;
-    bool setQml( const QString& qmlFile );
+    bool setQml( QgsVectorLayer* vlayer, const QString& qmlFile );
     bool imageCheck( const QString& theType, const QgsRectangle* = 0 );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
@@ -93,8 +95,7 @@ void TestQgsInvertedPolygon::initTestCase()
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
   mReport += "<h1>Inverted Polygon Renderer Tests</h1>\n";
@@ -117,14 +118,14 @@ void TestQgsInvertedPolygon::cleanupTestCase()
 void TestQgsInvertedPolygon::singleSubRenderer()
 {
   mReport += "<h2>Inverted polygon renderer, single sub renderer test</h2>\n";
-  QVERIFY( setQml( "inverted_polys_single.qml" ) );
+  QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_single" ) );
 }
 
 void TestQgsInvertedPolygon::graduatedSubRenderer()
 {
   mReport += "<h2>Inverted polygon renderer, graduated sub renderer test</h2>\n";
-  QVERIFY( setQml( "inverted_polys_graduated.qml" ) );
+  QVERIFY( setQml( mpPolysLayer, "inverted_polys_graduated.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_graduated" ) );
 }
 
@@ -132,7 +133,7 @@ void TestQgsInvertedPolygon::preprocess()
 {
   // FIXME will have to find some overlapping polygons
   mReport += "<h2>Inverted polygon renderer, preprocessing test</h2>\n";
-  QVERIFY( setQml( "inverted_polys_preprocess.qml" ) );
+  QVERIFY( setQml( mpPolysLayer, "inverted_polys_preprocess.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_preprocess" ) );
 }
 
@@ -142,25 +143,44 @@ void TestQgsInvertedPolygon::projectionTest()
   mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:2154" ) );
   mMapSettings.setCrsTransformEnabled( true );
   QgsRectangle extent( QgsPoint( -8639421, 8382691 ), QgsPoint( -3969110, 12570905 ) );
-  QVERIFY( setQml( "inverted_polys_single.qml" ) );
+  QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_projection", &extent ) );
-  QVERIFY( setQml( "inverted_polys_preprocess.qml" ) );
+  QVERIFY( setQml( mpPolysLayer, "inverted_polys_preprocess.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_projection2", &extent ) );
   mMapSettings.setCrsTransformEnabled( false );
 }
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_MAJOR >= 2
+// This test relies on GDAL support of curved polygons
+void TestQgsInvertedPolygon::curvedPolygons()
+{
+  QString myCurvedPolysFileName = mTestDataDir + "curved_polys.gpkg";
+  QFileInfo myCurvedPolyFileInfo( myCurvedPolysFileName );
+  QgsVectorLayer* curvedLayer = new QgsVectorLayer( myCurvedPolyFileInfo.filePath() + "|layername=polys",
+      myCurvedPolyFileInfo.completeBaseName(), "ogr" );
+  curvedLayer->setSimplifyMethod( simplifyMethod );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << curvedLayer );
+
+  mReport += "<h2>Inverted polygon renderer, curved polygons test</h2>\n";
+  mMapSettings.setLayers( QStringList() << curvedLayer->id() );
+  QVERIFY( setQml( mpCurvedPolysLayer, "inverted_polys_single.qml" ) );
+  QVERIFY( imageCheck( "inverted_polys_curved" ) );
+  mMapSettings.setLayers( QStringList() << curvedLayer->id() );
+}
+#endif
 
 //
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsInvertedPolygon::setQml( const QString& qmlFile )
+bool TestQgsInvertedPolygon::setQml( QgsVectorLayer* vlayer, const QString& qmlFile )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
   //type we are testing
   bool myStyleFlag = false;
   QString myFileName = mTestDataDir + qmlFile;
-  QString error = mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
+  QString error = vlayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
     qDebug( "%s", error.toLocal8Bit().constData() );

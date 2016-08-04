@@ -36,6 +36,8 @@ class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
 
     ~QgsMapToolFeatureAction();
 
+    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 

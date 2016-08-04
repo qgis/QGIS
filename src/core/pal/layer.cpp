@@ -362,7 +362,7 @@ void Layer::joinConnectedFeatures()
     QLinkedList<FeaturePart*>* parts = mConnectedHashtable.value( labelText );
 
     // go one-by-one part, try to merge
-    while ( !parts->isEmpty() )
+    while ( !parts->isEmpty() && parts->count() > 1 )
     {
       // part we'll be checking against other in this round
       FeaturePart* partCheck = parts->takeFirst();
@@ -371,24 +371,29 @@ void Layer::joinConnectedFeatures()
       if ( otherPart )
       {
         // remove partCheck from r-tree
-        double bmin[2], bmax[2];
-        partCheck->getBoundingBox( bmin, bmax );
-        mFeatureIndex->Remove( bmin, bmax, partCheck );
-        mFeatureParts.removeOne( partCheck );
+        double checkpartBMin[2], checkpartBMax[2];
+        partCheck->getBoundingBox( checkpartBMin, checkpartBMax );
 
-        mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
-        otherPart->getBoundingBox( bmin, bmax );
+        double otherPartBMin[2], otherPartBMax[2];
+        otherPart->getBoundingBox( otherPartBMin, otherPartBMax );
 
         // merge points from partCheck to p->item
         if ( otherPart->mergeWithFeaturePart( partCheck ) )
         {
+          // remove the parts we are joining from the index
+          mFeatureIndex->Remove( checkpartBMin, checkpartBMax, partCheck );
+          mFeatureIndex->Remove( otherPartBMin, otherPartBMax, otherPart );
+
+          // reinsert merged line to r-tree (probably not needed)
+          otherPart->getBoundingBox( otherPartBMin, otherPartBMax );
+          mFeatureIndex->Insert( otherPartBMin, otherPartBMax, otherPart );
+
+          mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
           mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
-          // reinsert p->item to r-tree (probably not needed)
-          mFeatureIndex->Remove( bmin, bmax, otherPart );
-          otherPart->getBoundingBox( bmin, bmax );
-          mFeatureIndex->Insert( bmin, bmax, otherPart );
+
+          mFeatureParts.removeOne( partCheck );
+          delete partCheck;
         }
-        delete partCheck;
       }
     }
 

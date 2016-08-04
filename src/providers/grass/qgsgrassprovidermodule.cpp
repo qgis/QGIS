@@ -19,6 +19,8 @@
 #include "qgsnewnamedialog.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterprojector.h"
 #include "qgslogger.h"
 
 #include "qgsgrassprovidermodule.h"
@@ -121,7 +123,6 @@ QList<QAction*> QgsGrassItemActions::actions()
 
 void QgsGrassItemActions::newMapset()
 {
-  QgsDebugMsg( "entered" );
 
   QStringList existingNames = QgsGrass::mapsets( mGrassObject.gisdbase(), mGrassObject.mapsetPath() );
   QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
@@ -145,7 +146,6 @@ void QgsGrassItemActions::newMapset()
 
 void QgsGrassItemActions::openMapset()
 {
-  QgsDebugMsg( "entered" );
   QString error = QgsGrass::openMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
   if ( !error.isEmpty() )
   {
@@ -157,7 +157,6 @@ void QgsGrassItemActions::openMapset()
 
 void QgsGrassItemActions::addMapsetToSearchPath()
 {
-  QgsDebugMsg( "entered" );
   QString error;
   QgsGrass::instance()->addMapsetToSearchPath( mGrassObject.mapset(), error );
   if ( !error.isEmpty() )
@@ -169,7 +168,6 @@ void QgsGrassItemActions::addMapsetToSearchPath()
 
 void QgsGrassItemActions::removeMapsetFromSearchPath()
 {
-  QgsDebugMsg( "entered" );
   QString error;
   QgsGrass::instance()->removeMapsetFromSearchPath( mGrassObject.mapset(), error );
   if ( !error.isEmpty() )
@@ -181,7 +179,6 @@ void QgsGrassItemActions::removeMapsetFromSearchPath()
 
 void QgsGrassItemActions::renameGrassObject()
 {
-  QgsDebugMsg( "Entered" );
 
   QStringList existingNames = QgsGrass::grassObjects( mGrassObject, mGrassObject.type() );
   // remove current name to avoid warning that exists
@@ -225,7 +222,6 @@ void QgsGrassItemActions::renameGrassObject()
 
 void QgsGrassItemActions::deleteGrassObject()
 {
-  QgsDebugMsg( "Entered" );
 
   if ( !QgsGrass::deleteObjectDialog( mGrassObject ) )
     return;
@@ -239,7 +235,6 @@ void QgsGrassItemActions::deleteGrassObject()
 
 QString QgsGrassItemActions::newVectorMap()
 {
-  QgsDebugMsg( "entered" );
 
   QStringList existingNames = QgsGrass::grassObjects( mGrassObject, QgsGrassObject::Vector );
   QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
@@ -272,7 +267,6 @@ QString QgsGrassItemActions::newVectorMap()
 
 void QgsGrassItemActions::newLayer( QString type )
 {
-  QgsDebugMsg( "entered" );
   QString name;
   if ( mGrassObject.type() == QgsGrassObject::Mapset )
   {
@@ -307,19 +301,16 @@ void QgsGrassItemActions::newLayer( QString type )
 
 void QgsGrassItemActions::newPointLayer()
 {
-  QgsDebugMsg( "entered" );
   newLayer( "point" );
 }
 
 void QgsGrassItemActions::newLineLayer()
 {
-  QgsDebugMsg( "entered" );
   newLayer( "line" );
 }
 
 void QgsGrassItemActions::newPolygonLayer()
 {
-  QgsDebugMsg( "entered" );
   newLayer( "polygon" );
 }
 
@@ -419,7 +410,6 @@ QIcon QgsGrassMapsetItem::icon()
 
 void QgsGrassMapsetItem::setState( State state )
 {
-  QgsDebugMsg( "Entered" );
 
   // TODO: it seems to be causing strange icon switching during import, sometimes
   if ( state == Populated )
@@ -467,7 +457,6 @@ bool QgsGrassMapsetItem::objectInImports( QgsGrassObject grassObject )
 
 QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
 
   QVector<QgsDataItem*> items;
 
@@ -846,7 +835,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
         if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
         {
           QgsRasterProjector * projector = new QgsRasterProjector;
-          projector->setCRS( providerCrs, mapsetCrs );
+          projector->setCrs( providerCrs, mapsetCrs );
           if ( useSrcRegion )
           {
             projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),
@@ -920,7 +909,6 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
 void QgsGrassMapsetItem::onImportFinished( QgsGrassImport* import )
 {
-  QgsDebugMsg( "entered" );
   if ( !import->error().isEmpty() )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
@@ -938,7 +926,6 @@ void QgsGrassMapsetItem::onImportFinished( QgsGrassImport* import )
 
 void QgsGrassMapsetItem::onDirectoryChanged()
 {
-  QgsDebugMsg( "entered" );
   if ( state() == Populating )
   {
     // schedule to refresh later, because refres() simply returns if Populating
@@ -1020,7 +1007,6 @@ QgsGrassVectorItem::~QgsGrassVectorItem()
 
 void QgsGrassVectorItem::onDirectoryChanged()
 {
-  QgsDebugMsg( "entered" );
   if ( parent() )
   {
     parent()->refresh();
@@ -1199,7 +1185,6 @@ QList<QAction*> QgsGrassImportItem::actions()
 
 QWidget * QgsGrassImportItem::paramWidget()
 {
-  QgsDebugMsg( "entered" );
   QgsGrassImportItemWidget *widget = new QgsGrassImportItemWidget();
 
   if ( mImport && mImport->progress() )
@@ -1214,7 +1199,6 @@ QWidget * QgsGrassImportItem::paramWidget()
 
 void QgsGrassImportItem::cancel()
 {
-  QgsDebugMsg( "Entered" );
   if ( !mImport ) // should not happen
   {
     QgsDebugMsg( "mImport is null" );

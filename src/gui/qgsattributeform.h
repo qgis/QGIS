@@ -17,10 +17,10 @@
 #define QGSATTRIBUTEFORM_H
 
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include "qgsattributeeditorcontext.h"
 
 #include <QWidget>
+#include <QLabel>
 #include <QDialogButtonBox>
 
 class QgsAttributeFormInterface;
@@ -29,6 +29,9 @@ class QgsMessageBar;
 class QgsMessageBarItem;
 class QgsWidgetWrapper;
 
+/** \ingroup gui
+ * \class QgsAttributeForm
+ */
 class GUI_EXPORT QgsAttributeForm : public QWidget
 {
     Q_OBJECT
@@ -53,25 +56,31 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       FilterOr, /*!< Filter should be combined using "OR" */
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
+    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(),
+                               const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
     ~QgsAttributeForm();
 
     const QgsFeature& feature() { return mFeature; }
 
     /**
      * Hides the button box (Ok/Cancel) and enables auto-commit
+     * @note set Embed in QgsAttributeEditorContext in constructor instead
      */
+    // TODO QGIS 3.0 - make private
     void hideButtonBox();
 
     /**
      * Shows the button box (Ok/Cancel) and disables auto-commit
+     * @note set Embed in QgsAttributeEditorContext in constructor instead
      */
+    // TODO QGIS 3.0 - make private
     void showButtonBox();
 
     /**
      * Disconnects the button box (Ok/Cancel) from the accept/resetValues slots
      * If this method is called, you have to create these connections from outside
      */
+    // TODO QGIS 3.0 - make private
     void disconnectButtonBox();
 
     /**
@@ -140,6 +149,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void setMultiEditFeatureIds( const QgsFeatureIds& fids );
 
+    /** Sets the message bar to display feedback from the form in. This is used in the search/filter
+     * mode to display the count of selected features.
+     * @param messageBar target message bar
+     * @note added in QGIS 2.16
+     */
+    void setMessageBar( QgsMessageBar* messageBar );
+
   signals:
     /**
      * Notifies about changes of attributes
@@ -175,6 +191,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * @param mode new mode
      */
     void modeChanged( QgsAttributeForm::Mode mode );
+
+    /** Emitted when the user selects the close option from the form's button bar.
+     * @note added in QGIS 2.16
+     */
+    void closed();
 
   public slots:
     /**
@@ -233,7 +254,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
     void onUpdatedFields();
-
+    void onConstraintStatusChanged( const QString& constraint,
+                                    const QString &description, const QString& err, bool ok );
     void preventFeatureRefresh();
     void synchronizeEnabledState();
     void layerSelectionChanged();
@@ -282,7 +304,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Called once maximally.
      */
     void createWrappers();
-    void connectWrappers();
+    void afterWidgetInit();
 
     void scanForEqualAttributes( QgsFeatureIterator& fit, QSet< int >& mixedValueFields, QHash< int, QVariant >& fieldSharedValues ) const;
 
@@ -296,11 +318,23 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QString createFilterExpression() const;
 
+    //! constraints management
+    void updateAllConstaints();
+    void updateConstraints( QgsEditorWidgetWrapper *w );
+    bool currentFormFeature( QgsFeature &feature );
+    bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
+    void constraintDependencies( QgsEditorWidgetWrapper *w, QList<QgsEditorWidgetWrapper*> &wDeps );
+    void clearInvalidConstraintsMessage();
+    void displayInvalidConstraintMessage( const QStringList &invalidFields,
+                                          const QStringList &description );
+
     QgsVectorLayer* mLayer;
     QgsFeature mFeature;
     QgsMessageBar* mMessageBar;
+    bool mOwnsMessageBar;
     QgsMessageBarItem* mMultiEditUnsavedMessageBarItem;
     QgsMessageBarItem* mMultiEditMessageBarItem;
+    QLabel* mInvalidConstraintMessage;
     QList<QgsWidgetWrapper*> mWidgets;
     QgsAttributeEditorContext mContext;
     QDialogButtonBox* mButtonBox;
@@ -330,7 +364,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     Mode mMode;
 
+    //! Backlinks widgets to buddies.
+    QMap<QWidget*, QLabel*> mBuddyMap;
+
     friend class TestQgsDualView;
+    friend class TestQgsAttributeForm;
 };
 
 #endif // QGSATTRIBUTEFORM_H

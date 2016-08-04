@@ -28,7 +28,6 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWid
   setupUi( this );
   setWindowTitle( tr( "SVG annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
@@ -89,4 +88,12 @@ void QgsSvgAnnotationDialog::deleteItem()
   }
   delete mItem;
   mItem = nullptr;
+}
+
+void QgsSvgAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applySettingsToItem();
+  }
 }

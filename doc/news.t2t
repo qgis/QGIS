@@ -38,6 +38,103 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 2.16 'Nødebo'? =
+
+This release has following new features:
+
+- User Interface: Improvements to map zooming
+- User Interface: Map canvas magnifier
+- User Interface: Redesigned interactive gradient editor
+- User Interface: Choice of default view for the attribute dialog
+- User Interface: Improvements to calendar popups
+- User Interface: Improved color pickers
+- User Interface: Copy cell contents from attribute table
+- User Interface: Improved HiDPI support
+- User Interface: Improved map select tool behaviour
+- Symbology: Arrow symbol layer
+- Symbology: New "Filled marker" symbol layer type
+- Symbology: New accessibility and low vision symbols
+- Symbology: New simple marker symbols
+- Symbology: "No symbol" renderer
+- Symbology: More control over centroid fill point rendering
+- Symbology: Outline setting for font markers symbol
+- Symbology: Control outline join style for simple, ellipse, and font markers
+- Symbology: New map tool for interactively setting point symbol offset
+- Symbology: Style Dock
+- Labelling: Labeling map tools now work with rule-based labeling
+- Diagrams: Legend entries for diagram size
+- Diagrams: Unit selection for outline width
+- Diagrams: Diagrams behave like labels and can be managed from toolbar
+- Rendering: New options for on the fly simplification
+- Rendering: Quantile based classification for raster layers
+- Rendering: Live hillshade renderer
+- Digitising: "Repeating" locking mode for constraints
+- Digitising: Extend linestring geometries with reshape tool
+- Digitising: Segmentation tolerance
+- Data management: New configuration options for attribute table
+- Data management: Multiple columns in attribute forms
+- Data management: Control over attributes to export when saving a vector layer
+- Data management: Forms view: side column now sortable
+- Data management: Relation reference widget: shortcut for adding new values
+- Data management: DXF export improvements
+- Data management: Top level widgets in drag and drop designer
+- Data management: Form based select and filter
+- Data management: Create GeoPackage layers
+- Data management: Constraints on widgets
+- Data management: Edit attributes of multiple features simultaneously
+- Layer Legend: New option to zoom to a layer's visible scale range
+- Map Composer: New tools for drawing polygons and polylines
+- Map Composer: Embed atlas features into composer HTML source as GeoJSON
+- Map Composer: Parameterized svg support for composer svg images
+- Map Composer: Easier use of HTML in labels
+- Map Composer: Relative links in composer labels
+- Map Composer: Georeference outputs (eg PDF) from composer
+- Map Composer: Composer maps now auto-update with presets
+- Analysis tools: Named parameters in expressions
+- Analysis tools: More distance units
+- Analysis tools: Changes to expressions
+- Analysis tools: Statistics for string and date fields
+- Analysis tools: Show curve point radius in info tool
+- Analysis tools: Aggregate support for expressions
+- Analysis tools: fTools plugin has been replaced with Processing algorithms
+- Processing: Set point locations by clicking on canvas
+- Processing: Additional GRASS algorithms in processing
+- Processing: Support for expressions and variables
+- Processing: Preconfigured algorithms
+- Processing: Create a plugin with script-based algorithms from the toolbox
+- Processing: Use of authentication manager in PostGIS related algorithms
+- Processing: Support for writing tables with no geometry
+- General: Copying features in GeoJSON format
+- General: Store spatial bookmarks in project files
+- General: Support for GNSS GNRMC messages
+- General: Paste GeoJSON features directly into QGIS
+- General: Map tip improvements
+- General: QGIS Paid Bugfixing Programme
+- General: Desktop MIME icons for QGIS file types
+- Data Providers: OGR datasets are opened in read-only mode by default
+- Data Providers: Improved handling of Postgres DOMAIN type fields
+- Data Providers: Make readOnly mode of vector layers configurable in project
+- Data Providers: Support for DB2 databases
+- Data Providers: Refresh Postgres materialized views in db manager
+- Data Providers: OGR FID attribute shown
+- Data Providers: Save styles in MS SQL and Oracle databases
+- Data Providers: Rename fields in layers
+- Data Providers: ArcGIS Map and Feature REST services
+- Data Providers: Basic support for Oracle Workspace Manager
+- Data Providers: Massive improvements to WFS Provider
+- Data Providers: Generation of default values on Postgres layers "just in time"
+- QGIS Server: Redlining support in GetMap and GetPrint
+- QGIS Server: Default datum transformation for server
+- Plugins: Refreshed globe plugin
+- Plugins: Globe: Extrude objects
+- Plugins: API: Add pages to vector layer properties
+- Plugins: Globe: Vector support
+- Plugins: Globe: Vertical exaggeration for DTM
+- Programmability: Embedded widgets in layer tree
+- Programmability: Plugins can add pages to vector layer properties
+-
+
+
 = What's new in Version 2.14 'Essen'? =
 
 This release has following new features:
@@ -96,7 +193,7 @@ This release has following new features:
 - QGIS Server : STARTINDEX param in WFS GetFeature Request
 - QGIS Server : showFeatureCount in GetLegendGraphic
 - QGIS Server : Enhance store project keyword list
-- QGIS Server : Option to avoid rendering artefacts at edges of tiles
+- QGIS Server : Option to avoid rendering artifacts at edges of tiles
 - QGIS Server : WMS INSPIRE Capabilities
 - QGIS Server : Configuration checker in project properties
 - QGIS Server : Add short name to layers, groups and project

@@ -44,6 +44,9 @@ class QgsDataDefined;
 class QgsRenderContext;
 class QgsPaintEffect;
 
+/** \ingroup core
+ * \class QgsSymbolLayerV2
+ */
 class CORE_EXPORT QgsSymbolLayerV2
 {
   public:
@@ -121,8 +124,23 @@ class CORE_EXPORT QgsSymbolLayerV2
       be affected by data defined symbology rules.*/
     virtual double estimateMaxBleed() const { return 0; }
 
-    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit ) { Q_UNUSED( unit ); }
-    virtual QgsSymbolV2::OutputUnit outputUnit() const { return QgsSymbolV2::Mixed; }
+    /** Sets the units to use for sizes and widths within the symbol layer. Individual
+     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * layer may use it to specify the units for the marker size, while a line symbol
+     * layer may use it to specify the units for the line width.
+     * @param unit output units
+     * @see outputUnit()
+     */
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit ) { Q_UNUSED( unit ); }
+
+    /** Returns the units to use for sizes and widths within the symbol layer. Individual
+     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * layer may use it to specify the units for the marker size, while a line symbol
+     * layer may use it to specify the units for the line width.
+     * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol layer contains mixed units
+     * @see setOutputUnit()
+     */
+    virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::RenderUnknownUnit; }
 
     virtual void setMapUnitScale( const QgsMapUnitScale& scale ) { Q_UNUSED( scale ); }
     virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); }
@@ -251,7 +269,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual double dxfAngle( QgsSymbolV2RenderContext& context ) const;
 
     //! get dash pattern
-    virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
+    virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const;
 
     //! get pen style
     virtual Qt::PenStyle dxfPenStyle() const;
@@ -477,14 +495,14 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
      * @see setSize()
      * @see setSizeMapUnitScale()
      */
-    void setSizeUnit( QgsSymbolV2::OutputUnit unit ) { mSizeUnit = unit; }
+    void setSizeUnit( QgsUnitTypes::RenderUnit unit ) { mSizeUnit = unit; }
 
     /** Returns the units for the symbol's size.
      * @see setSizeUnit()
      * @see size()
      * @see sizeMapUnitScale()
      */
-    QgsSymbolV2::OutputUnit sizeUnit() const { return mSizeUnit; }
+    QgsUnitTypes::RenderUnit sizeUnit() const { return mSizeUnit; }
 
     /** Sets the map unit scale for the symbol's size.
      * @param scale size map unit scale
@@ -535,14 +553,14 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
      * @see setOffset()
      * @see setOffsetMapUnitScale()
      */
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /** Returns the units for the symbol's offset.
      * @see setOffsetUnit()
      * @see offset()
      * @see offsetMapUnitScale()
      */
-    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /** Sets the map unit scale for the symbol's offset.
      * @param scale offset map unit scale
@@ -599,8 +617,8 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
-    QgsSymbolV2::OutputUnit outputUnit() const override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
@@ -641,7 +659,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
     //! @note available in python bindings as markerOffset2
     void markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
-                       QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
+                       QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
                        double& offsetX, double& offsetY,
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const;
 
@@ -659,13 +677,13 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     //! Marker size
     double mSize;
     //! Marker size unit
-    QgsSymbolV2::OutputUnit mSizeUnit;
+    QgsUnitTypes::RenderUnit mSizeUnit;
     //! Marker size map unit scale
     QgsMapUnitScale mSizeMapUnitScale;
     //! Marker offset
     QPointF mOffset;
     //! Offset units
-    QgsSymbolV2::OutputUnit mOffsetUnit;
+    QgsUnitTypes::RenderUnit mOffsetUnit;
     //! Offset map unit scale
     QgsMapUnitScale mOffsetMapUnitScale;
     //! Marker size scaling method
@@ -680,6 +698,9 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     static QgsMarkerSymbolLayerV2::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString& str );
 };
 
+/** \ingroup core
+ * \class QgsLineSymbolLayerV2
+ */
 class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
 {
   public:
@@ -693,20 +714,36 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     double offset() const { return mOffset; }
     void setOffset( double offset ) { mOffset = offset; }
 
-    void setWidthUnit( QgsSymbolV2::OutputUnit unit ) { mWidthUnit = unit; }
-    QgsSymbolV2::OutputUnit widthUnit() const { return mWidthUnit; }
+    /** Sets the units for the line's width.
+     * @param unit width units
+     * @see widthUnit()
+    */
+    void setWidthUnit( QgsUnitTypes::RenderUnit unit ) { mWidthUnit = unit; }
+
+    /** Returns the units for the line's width.
+     * @see setWidthUnit()
+    */
+    QgsUnitTypes::RenderUnit widthUnit() const { return mWidthUnit; }
 
     void setWidthMapUnitScale( const QgsMapUnitScale& scale ) { mWidthMapUnitScale = scale; }
     const QgsMapUnitScale& widthMapUnitScale() const { return mWidthMapUnitScale; }
 
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
-    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+    /** Sets the units for the line's offset.
+     * @param unit offset units
+     * @see offsetUnit()
+    */
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+
+    /** Returns the units for the line's offset.
+     * @see setOffsetUnit()
+    */
+    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
     const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
-    QgsSymbolV2::OutputUnit outputUnit() const override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
 
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -719,13 +756,16 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     QgsLineSymbolLayerV2( bool locked = false );
 
     double mWidth;
-    QgsSymbolV2::OutputUnit mWidthUnit;
+    QgsUnitTypes::RenderUnit mWidthUnit;
     QgsMapUnitScale mWidthMapUnitScale;
     double mOffset;
-    QgsSymbolV2::OutputUnit mOffsetUnit;
+    QgsUnitTypes::RenderUnit mOffsetUnit;
     QgsMapUnitScale mOffsetMapUnitScale;
 };
 
+/** \ingroup core
+ * \class QgsFillSymbolLayerV2
+ */
 class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
 {
   public:

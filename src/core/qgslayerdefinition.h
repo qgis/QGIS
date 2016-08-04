@@ -15,9 +15,13 @@
 #ifndef QGSLAYERDEFINITION_H
 #define QGSLAYERDEFINITION_H
 
-#include "qgslayertreegroup.h"
 
-/**
+#include <QString>
+
+class QgsLayerTreeGroup;
+class QgsLayerTreeNode;
+
+/** \ingroup core
  * @brief The QgsLayerDefinition class holds generic methods for loading/exporting QLR files.
  *
  * QLR files are an export of the layer xml including the style and datasource location.  There is no link
@@ -37,6 +41,7 @@ class CORE_EXPORT QgsLayerDefinition
     static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath = QString::null );
 
     /**
+     * \ingroup core
      * Class used to work with layer dependencies stored in a XML project or layer definition file
      */
     class CORE_EXPORT DependencySorter

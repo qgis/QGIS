@@ -473,6 +473,13 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   int logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
+
+  // Clean up  Expression Context
+  // because each call to QgsMapLayer::draw add items to QgsExpressionContext scope
+  // list. This prevent the scope list to grow indefinitely and seriously deteriorate
+  // performances and memory in the long run
+  sMapRenderer->rendererContext()->setExpressionContext( QgsExpressionContext() );
+
   sQgsApplication->processEvents();
   if ( logLevel < 1 )
   {
@@ -577,7 +584,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
     }
     else if ( serviceString == "WFS" )
     {
-      QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration(
+      QgsWfsProjectParser* p = QgsConfigCache::instance()->wfsConfiguration(
                                  configFilePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
                                  , accessControl
@@ -589,7 +596,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
       }
       else
       {
-        QgsWFSServer wfsServer(
+        QgsWfsServer wfsServer(
           configFilePath
           , parameterMap
           , p
@@ -603,7 +610,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
     }
     else if ( serviceString == "WMS" )
     {
-      QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration(
+      QgsWmsConfigParser* p = QgsConfigCache::instance()->wmsConfiguration(
                                 configFilePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
                                 , accessControl
@@ -615,7 +622,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
       }
       else
       {
-        QgsWMSServer wmsServer(
+        QgsWmsServer wmsServer(
           configFilePath
           , parameterMap
           , p

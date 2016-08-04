@@ -18,6 +18,9 @@
 
 #include <QComboBox>
 
+/** \ingroup gui
+ * \class QgsPenStyleComboBox
+ */
 class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
 {
     Q_OBJECT
@@ -34,6 +37,9 @@ class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
 
 };
 
+/** \ingroup gui
+ * \class QgsPenJoinStyleComboBox
+ */
 class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
 {
     Q_OBJECT
@@ -46,6 +52,9 @@ class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
     void setPenJoinStyle( Qt::PenJoinStyle style );
 };
 
+/** \ingroup gui
+ * \class QgsPenCapStyleComboBox
+ */
 class GUI_EXPORT QgsPenCapStyleComboBox : public QComboBox
 {
     Q_OBJECT

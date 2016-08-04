@@ -28,7 +28,8 @@ email                : even.rouault at spatialys.com
 #include <QStringList>
 #include <QSet>
 
-/** SQL composer dialog
+/** \ingroup gui
+ * SQL composer dialog
  *  @note not available in Python bindings
  */
 class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLComposerDialogBase
@@ -43,7 +44,8 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     //! pair (name, type)
     typedef QPair<QString, QString> PairNameType;
 
-    /** Callback to do actions on table selection
+    /** \ingroup gui
+     * Callback to do actions on table selection
      * @note not available in Python bindings
      */
     class GUI_EXPORT TableSelectedCallback
@@ -54,7 +56,8 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
         virtual void tableSelected( const QString& name ) = 0;
     };
 
-    /** Callback to do validation check on dialog validation.
+    /** \ingroup gui
+     * Callback to do validation check on dialog validation.
      * @note not available in Python bindings
      */
     class GUI_EXPORT SQLValidatorCallback
@@ -62,7 +65,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
       public:
         virtual ~SQLValidatorCallback();
         //! method should return true if the SQL is valid. Otherwise return false and set the errorReason
-        virtual bool isValid( const QString& sql, QString& errorReason ) = 0;
+        virtual bool isValid( const QString& sql, QString& errorReason, QString& warningMsg ) = 0;
     };
 
     //! argument of a function
@@ -131,7 +134,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     void addApis( const QStringList& list );
 
     //! set if multiple tables/joins are supported. Default is false
-    void setSupportMultipleTables( bool );
+    void setSupportMultipleTables( bool bMultipleTables, QString mainTypename = QString() );
 
     /** Set a callback that will be called when a new table is selected, so
         that new column names can be added typically.
@@ -176,6 +179,8 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     QMap<QString, QString> mapColumnEntryTextToName;
     QMap<QString, QString> mapSpatialPredicateEntryTextToName;
     QMap<QString, QString> mapFunctionEntryTextToName;
+    QString lastSearchedText;
+
 
     void loadTableColumns( const QString& table );
     void functionCurrentIndexChanged( QComboBox* combo,

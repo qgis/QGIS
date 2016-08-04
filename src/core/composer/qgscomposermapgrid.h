@@ -21,7 +21,6 @@
 #include "qgscomposermapitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgsrendercontext.h"
 #include <QString>
 #include <QPainter>
 
@@ -33,8 +32,9 @@ class QgsComposerMap;
 class QDomDocument;
 class QDomElement;
 class QPainter;
+class QgsRenderContext;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapGridStack
  * \brief A collection of grids which is drawn above the map content in a
  * QgsComposerMap. The grid stack controls which grids are drawn and the
@@ -125,9 +125,9 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * @param elem is DOM node corresponding to 'a ComposerMap' tag
      * @param doc DOM document
      * @returns true if read was successful
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& elem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& elem, const QDomDocument& doc ) override;
 
     /** Calculates the maximum distance grids within the stack extend
      * beyond the QgsComposerMap's item rect
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
 // QgsComposerMapGrid
 //
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapGrid
  * \brief An individual grid which is drawn above the map content in a
  * QgsComposerMap.
@@ -288,16 +288,16 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Stores grid state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
      * @param doc DOM document
-     * @see readXML
+     * @see readXml
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets grid state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * @param doc is DOM document
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /** Sets the CRS for the grid.
      * @param crs coordinate reference system for grid
@@ -984,9 +984,9 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
         @return 0 in case of success*/
     int yGridLines( QList< QPair< double, QLineF > >& lines ) const;
 
-    int xGridLinesCRSTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const;
+    int xGridLinesCrsTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const;
 
-    int yGridLinesCRSTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const;
+    int yGridLinesCrsTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const;
 
     void drawGridLine( const QLineF& line, QgsRenderContext &context ) const;
 
@@ -1014,7 +1014,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     QPolygonF scalePolygon( const QPolygonF &polygon, const double scale ) const;
 
     /** Draws grid if CRS is different to map CRS*/
-    void drawGridCRSTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
+    void drawGridCrsTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
                                QList< QPair< double, QLineF > > &verticalLines , bool calculateLinesOnly = false );
 
     void drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList<QPair<double, QLineF> > &horizontalLines, QList<QPair<double, QLineF> > &verticalLines, bool calculateLinesOnly = false ) const;
@@ -1031,7 +1031,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void drawGridFrameLineBorder( QPainter *p, BorderSide border, double* extension = nullptr ) const;
 
-    void calculateCRSTransformLines();
+    void calculateCrsTransformLines();
 
     bool shouldShowDivisionForSide( AnnotationCoordinate coordinate, BorderSide side ) const;
     bool shouldShowDivisionForDisplayMode( AnnotationCoordinate coordinate, DisplayMode mode ) const;

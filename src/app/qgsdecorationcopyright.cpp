@@ -47,7 +47,7 @@ QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
     , mMarginVertical( 0 )
 {
   mPlacement = BottomRight;
-  mMarginUnit = QgsSymbolV2::MM;
+  mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
   setName( "Copyright Label" );
   // initialise default values in the gui
@@ -116,7 +116,7 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
     // Set  margin according to selected units
     switch ( mMarginUnit )
     {
-      case QgsSymbolV2::MM:
+      case QgsUnitTypes::RenderMillimeters:
       {
         int myPixelsInchX = theQPainter->device()->logicalDpiX();
         int myPixelsInchY = theQPainter->device()->logicalDpiY();
@@ -125,12 +125,12 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
         break;
       }
 
-      case QgsSymbolV2::Pixel:
+      case QgsUnitTypes::RenderPixels:
         myXOffset = mMarginHorizontal;
         myYOffset = mMarginVertical;
         break;
 
-      case QgsSymbolV2::Percentage:
+      case QgsUnitTypes::RenderPercentage:
         myXOffset = (( myWidth - size.width() ) / 100. ) * mMarginHorizontal;
         myYOffset = (( myHeight - size.height() ) / 100. ) * mMarginVertical;
         break;

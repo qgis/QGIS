@@ -32,7 +32,10 @@ static bool _palIsCancelled( void* ctx )
   return ( reinterpret_cast< QgsRenderContext* >( ctx ) )->renderingStopped();
 }
 
-// helper class for sorting labels into correct draw order
+/** \ingroup core
+ * \class QgsLabelSorter
+ * Helper class for sorting labels into correct draw order
+ */
 class QgsLabelSorter
 {
   public:
@@ -219,15 +222,14 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
 
   QPainter* painter = context.painter();
 
-  QgsGeometry* extentGeom( QgsGeometry::fromRect( mMapSettings.visibleExtent() ) );
+  QgsGeometry extentGeom = QgsGeometry::fromRect( mMapSettings.visibleExtent() );
   if ( !qgsDoubleNear( mMapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
-    extentGeom->rotate( -mMapSettings.rotation(), mMapSettings.visibleExtent().center() );
+    extentGeom.rotate( -mMapSettings.rotation(), mMapSettings.visibleExtent().center() );
   }
 
-  QgsRectangle extent = extentGeom->boundingBox();
-  delete extentGeom;
+  QgsRectangle extent = extentGeom.boundingBox();
 
   p.registerCancellationCallback( &_palIsCancelled, reinterpret_cast< void* >( &context ) );
 
@@ -347,7 +349,7 @@ void QgsLabelingEngineV2::readSettingsFromProject()
   mCandLine = prj->readNumEntry( "PAL", "/CandidatesLine", 8, &saved );
   mCandPolygon = prj->readNumEntry( "PAL", "/CandidatesPolygon", 8, &saved );
 
-  mFlags = nullptr;
+  mFlags = 0;
   if ( prj->readBoolEntry( "PAL", "/ShowingCandidates", false, &saved ) ) mFlags |= DrawCandidates;
   if ( prj->readBoolEntry( "PAL", "/DrawRectOnly", false, &saved ) ) mFlags |= DrawLabelRectOnly;
   if ( prj->readBoolEntry( "PAL", "/ShowingShadowRects", false, &saved ) ) mFlags |= DrawShadowRects;

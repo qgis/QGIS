@@ -78,7 +78,7 @@ class CORE_EXPORT QgsMessageOutput
 };
 
 
-/**
+/** \ingroup core
 \brief Default implementation of message output interface
 
 This class outputs messages to the standard output. Therefore it might

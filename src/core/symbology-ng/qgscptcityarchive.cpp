@@ -26,6 +26,8 @@
 #include <QVector>
 #include <QStyle>
 #include <QSettings>
+#include <QDomDocument>
+#include <QDomElement>
 
 #include "qgscptcityarchive.h"
 #include "qgis.h"
@@ -35,7 +37,7 @@
 #include "qgsconfig.h"
 #include "qgsmimedatautils.h"
 #include "qgsapplication.h"
-
+#include "qgssymbollayerv2utils.h"
 
 QString QgsCptCityArchive::mDefaultArchiveName;
 QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::mArchiveRegistry;
@@ -845,7 +847,6 @@ QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
 
 QgsCptCityCollectionItem::~QgsCptCityCollectionItem()
 {
-  // QgsDebugMsg( "Entered" );
   Q_FOREACH ( QgsCptCityDataItem* i, mChildren )
   {
     // QgsDebugMsg( QString( "delete child = 0x%0" ).arg(( qlonglong )i, 8, 16, QLatin1Char( '0' ) ) );
@@ -1169,7 +1170,7 @@ QgsCptCitySelectionItem::QgsCptCitySelectionItem( QgsCptCityDataItem* parent,
   mType = Selection;
   mValid = ! path.isNull();
   if ( mValid )
-    parseXML();
+    parseXml();
 }
 
 QgsCptCitySelectionItem::~QgsCptCitySelectionItem()
@@ -1219,7 +1220,7 @@ QVector<QgsCptCityDataItem*> QgsCptCitySelectionItem::createChildren()
   return children;
 }
 
-void QgsCptCitySelectionItem::parseXML()
+void QgsCptCitySelectionItem::parseXml()
 {
   QString filename = QgsCptCityArchive::defaultBaseDir() + '/' + mPath;
 
@@ -1651,7 +1652,6 @@ void QgsCptCityBrowserModel::beginInsertItems( QgsCptCityDataItem *parent, int f
 }
 void QgsCptCityBrowserModel::endInsertItems()
 {
-  QgsDebugMsg( "Entered" );
   endInsertRows();
 }
 void QgsCptCityBrowserModel::beginRemoveItems( QgsCptCityDataItem *parent, int first, int last )
@@ -1664,7 +1664,6 @@ void QgsCptCityBrowserModel::beginRemoveItems( QgsCptCityDataItem *parent, int f
 }
 void QgsCptCityBrowserModel::endRemoveItems()
 {
-  QgsDebugMsg( "Entered" );
   endRemoveRows();
 }
 void QgsCptCityBrowserModel::connectItem( QgsCptCityDataItem* item )

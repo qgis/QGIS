@@ -515,6 +515,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
   protected:
 
     virtual void mouseMoveEvent( QMouseEvent *event ) override;
+    virtual void wheelEvent( QWheelEvent* event ) override;
     virtual void mousePressEvent( QMouseEvent *event ) override;
     virtual void keyPressEvent( QKeyEvent * event ) override;
 

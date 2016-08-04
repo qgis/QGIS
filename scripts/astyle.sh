@@ -78,7 +78,7 @@ for f in "$@"; do
 
 		*.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
 			if [ -x "$f" ]; then
-							chmod a-x "$f"
+				chmod a-x "$f"
 			fi
 			cmd=astyleit
 			;;

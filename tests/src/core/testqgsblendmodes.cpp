@@ -29,6 +29,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgsmultibandcolorrenderer.h>
 #include <qgsrasterlayer.h>
+#include "qgsrasterdataprovider.h"
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 

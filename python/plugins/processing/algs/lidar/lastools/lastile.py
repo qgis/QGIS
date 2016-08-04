@@ -4,7 +4,7 @@
 ***************************************************************************
     lastile.py
     ---------------------
-    Date                 : September 2013
+    Date                 : September 2013 and May 2016
     Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -27,6 +27,7 @@ import os
 from .LAStoolsUtils import LAStoolsUtils
 from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
+from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 
 
@@ -35,21 +36,23 @@ class lastile(LAStoolsAlgorithm):
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     REVERSIBLE = "REVERSIBLE"
+    FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('lastile')
         self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParametersFilesAreFlightlinesGUI()
-        self.addParametersApplyFileSourceIdGUI()
         self.addParameter(ParameterNumber(lastile.TILE_SIZE,
                                           self.tr("tile size (side length of square tile)"),
-                                          None, None, 1000.0))
+                                          0.0, None, 1000.0))
         self.addParameter(ParameterNumber(lastile.BUFFER,
-                                          self.tr("buffer around each tile"), None, None, 0.0))
-        self.addParameter(ParameterNumber(lastile.REVERSIBLE,
-                                          self.tr("make tiling reversible (advanced, usually not needed)"), False))
+                                          self.tr("buffer around each tile"),
+                                          0.0, None, 25.0))
+        self.addParameter(ParameterBoolean(lastile.FLAG_AS_WITHHELD,
+                                           self.tr("flag buffer points as 'withheld' for easier removal later"), True))
+        self.addParameter(ParameterBoolean(lastile.REVERSIBLE,
+                                           self.tr("make tiling reversible (advanced, usually not needed)"), False))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -57,8 +60,6 @@ class lastile(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        self.addParametersFilesAreFlightlinesCommands(commands)
-        self.addParametersApplyFileSourceIdCommands(commands)
         tile_size = self.getParameterValue(lastile.TILE_SIZE)
         commands.append("-tile_size")
         commands.append(unicode(tile_size))
@@ -66,6 +67,8 @@ class lastile(LAStoolsAlgorithm):
         if buffer != 0.0:
             commands.append("-buffer")
             commands.append(unicode(buffer))
+        if self.getParameterValue(lastile.FLAG_AS_WITHHELD):
+            commands.append("-flag_as_withheld")
         if self.getParameterValue(lastile.REVERSIBLE):
             commands.append("-reversible")
         self.addParametersPointOutputCommands(commands)

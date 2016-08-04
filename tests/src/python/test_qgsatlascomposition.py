@@ -22,7 +22,7 @@ import tempfile
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QFileInfo, QRectF, qWarning
-from qgis.core import QGis, QgsVectorLayer, QgsMapLayerRegistry, QgsMapSettings, QgsCoordinateReferenceSystem, \
+from qgis.core import QgsUnitTypes, QgsVectorLayer, QgsMapLayerRegistry, QgsMapSettings, QgsCoordinateReferenceSystem, \
     QgsComposition, QgsFillSymbolV2, QgsSingleSymbolRendererV2, QgsComposerLabel, QgsComposerMap, QgsFontUtils, \
     QgsRectangle, QgsComposerLegend, QgsFeature, QgsGeometry, QgsPoint, QgsRendererCategoryV2, QgsCategorizedSymbolRendererV2, QgsMarkerSymbolV2
 from qgscompositionchecker import QgsCompositionChecker
@@ -48,7 +48,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         layerStringList.append(mVectorLayer.id())
         self.mapSettings.setLayers(layerStringList)
         self.mapSettings.setCrsTransformEnabled(True)
-        self.mapSettings.setMapUnits(QGis.Meters)
+        self.mapSettings.setMapUnits(QgsUnitTypes.DistanceMeters)
 
         # select epsg:2154
         crs = QgsCoordinateReferenceSystem()

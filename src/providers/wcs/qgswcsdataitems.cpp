@@ -33,15 +33,13 @@ QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, Q
 
 QgsWCSConnectionItem::~QgsWCSConnectionItem()
 {
-  QgsDebugMsg( "Entered" );
 }
 
 QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
 
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   uri.setEncodedUri( mUri );
   QgsDebugMsg( "mUri = " + mUri );
 
@@ -111,7 +109,7 @@ void QgsWCSConnectionItem::editConnection()
 
 void QgsWCSConnectionItem::deleteConnection()
 {
-  QgsOWSConnection::deleteConnection( "WCS", mName );
+  QgsOwsConnection::deleteConnection( "WCS", mName );
   // the parent should be updated
   mParent->refresh();
 }
@@ -119,7 +117,7 @@ void QgsWCSConnectionItem::deleteConnection()
 
 // ---------------------------------------------------------------------------
 
-QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWcsCapabilitiesProperty& capabilitiesProperty, const QgsDataSourceURI &dataSourceUri, const QgsWcsCoverageSummary& coverageSummary )
+QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWcsCapabilitiesProperty& capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWcsCoverageSummary& coverageSummary )
     : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wcs" )
     , mCapabilities( capabilitiesProperty )
     , mDataSourceUri( dataSourceUri )
@@ -196,7 +194,7 @@ QString QgsWCSLayerItem::createUri()
   QgsCoordinateReferenceSystem testCrs;
   Q_FOREACH ( const QString& c, mCoverageSummary.supportedCrs )
   {
-    testCrs.createFromOgcWmsCrs( c );
+    testCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( c );
     if ( testCrs.isValid() )
     {
       crs = c;
@@ -232,9 +230,9 @@ QgsWCSRootItem::~QgsWCSRootItem()
 QVector<QgsDataItem*>QgsWCSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  Q_FOREACH ( const QString& connName, QgsOWSConnection::connectionList( "WCS" ) )
+  Q_FOREACH ( const QString& connName, QgsOwsConnection::connectionList( "WCS" ) )
   {
-    QgsOWSConnection connection( "WCS", connName );
+    QgsOwsConnection connection( "WCS", connName );
     QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + '/' + connName, connection.uri().encodedUri() );
     connections.append( conn );
   }
@@ -253,9 +251,9 @@ QList<QAction*> QgsWCSRootItem::actions()
 }
 
 
-QWidget * QgsWCSRootItem::paramWidget()
+QWidget* QgsWCSRootItem::paramWidget()
 {
-  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, nullptr, true, true );
+  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, 0, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -299,9 +297,9 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( thePath.startsWith( "wcs:/" ) )
   {
     QString connectionName = thePath.split( '/' ).last();
-    if ( QgsOWSConnection::connectionList( "WCS" ).contains( connectionName ) )
+    if ( QgsOwsConnection::connectionList( "WCS" ).contains( connectionName ) )
     {
-      QgsOWSConnection connection( "WCS", connectionName );
+      QgsOwsConnection connection( "WCS", connectionName );
       return new QgsWCSConnectionItem( parentItem, "WCS", thePath, connection.uri().encodedUri() );
     }
   }

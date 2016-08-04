@@ -255,7 +255,7 @@ class GeoAlgorithm:
             for line in lines:
                 script += line
             exec(script, ns)
-        except Exception, e:
+        except Exception as e:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                    "Error in hook script: " + str(e))
             # A wrong script should not cause problems, so we swallow
@@ -276,7 +276,7 @@ class GeoAlgorithm:
                     provider = layer.dataProvider()
                     writer = out.getVectorWriter(
                         provider.fields(),
-                        provider.geometryType(), layer.crs()
+                        provider.wkbType(), layer.crs()
                     )
                     features = vector.features(layer)
                     for feature in features:

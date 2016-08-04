@@ -18,7 +18,7 @@
 
 
 #include "qgsscalevisibilitydialog.h"
-
+#include "qgsscalerangewidget.h"
 
 
 QgsScaleVisibilityDialog::QgsScaleVisibilityDialog( QWidget *parent, const QString& title, QgsMapCanvas* mapCanvas )

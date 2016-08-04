@@ -20,6 +20,7 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscomposermodel.h"
+#include "qgsmapsettings.h"
 #include <QPainter>
 
 QgsComposerShape::QgsComposerShape( QgsComposition* composition )
@@ -271,7 +272,7 @@ double QgsComposerShape::estimatedFrameBleed() const
   return mMaxSymbolBleed;
 }
 
-bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerShape::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerShapeElem = doc.createElement( "ComposerShape" );
   composerShapeElem.setAttribute( "shapeType", mShape );
@@ -281,10 +282,10 @@ bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerShapeElem.appendChild( shapeStyleElem );
 
   elem.appendChild( composerShapeElem );
-  return _writeXML( composerShapeElem, doc );
+  return _writeXml( composerShapeElem, doc );
 }
 
-bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   mShape = QgsComposerShape::Shape( itemElem.attribute( "shapeType", "0" ).toInt() );
   mCornerRadius = itemElem.attribute( "cornerRadius", "0" ).toDouble();
@@ -302,7 +303,7 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
       setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
     }
 
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   QDomElement shapeStyleSymbolElem = itemElem.firstChildElement( "symbol" );

@@ -18,6 +18,7 @@
 #include "qgshandlebadlayers.h"
 #include "qgisapp.h"
 #include "qgsauthconfigselect.h"
+#include "qgsdataprovider.h"
 #include "qgisgui.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
@@ -126,7 +127,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 2, item );
 
-    if ( QgsAuthConfigUriEdit::hasConfigID( datasource ) )
+    if ( QgsAuthConfigUriEdit::hasConfigId( datasource ) )
     {
       QToolButton *btn = new QToolButton( this );
       btn->setMaximumWidth( 75 );
@@ -157,7 +158,6 @@ QgsHandleBadLayers::~QgsHandleBadLayers()
 
 void QgsHandleBadLayers::selectionChanged()
 {
-  QgsDebugMsg( "entered." );
 
   mRows.clear();
 
@@ -186,7 +186,7 @@ QString QgsHandleBadLayers::filename( int row )
   {
     if ( provider == "spatialite" )
     {
-      QgsDataSourceURI uri( datasource );
+      QgsDataSourceUri uri( datasource );
       return uri.database();
     }
     else if ( provider == "ogr" )
@@ -222,7 +222,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString& filename )
   {
     if ( provider == "spatialite" )
     {
-      QgsDataSourceURI uri( datasource );
+      QgsDataSourceUri uri( datasource );
       uri.setDatabase( filename );
       datasource = uri.uri();
     }
@@ -250,7 +250,6 @@ void QgsHandleBadLayers::setFilename( int row, const QString& filename )
 
 void QgsHandleBadLayers::browseClicked()
 {
-  QgsDebugMsg( "entered." );
 
   if ( mRows.size() == 1 )
   {
@@ -362,7 +361,6 @@ void QgsHandleBadLayers::editAuthCfg()
 
 void QgsHandleBadLayers::apply()
 {
-  QgsDebugMsg( "entered." );
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
     int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
@@ -385,7 +383,6 @@ void QgsHandleBadLayers::apply()
 
 void QgsHandleBadLayers::accept()
 {
-  QgsDebugMsg( "entered." );
   apply();
 
   if ( mLayerList->rowCount() > 0  &&
@@ -405,7 +402,6 @@ void QgsHandleBadLayers::accept()
 
 void QgsHandleBadLayers::rejected()
 {
-  QgsDebugMsg( "entered." );
 
   if ( mLayerList->rowCount() > 0  &&
        QMessageBox::warning( this,

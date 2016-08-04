@@ -18,8 +18,6 @@
 #include "qgssldconfigparser.h"
 #include "qgsapplication.h"
 #include "qgsconfigparserutils.h"
-#include "qgslabel.h"
-#include "qgslabelattributes.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsrasterlayer.h"
@@ -57,7 +55,7 @@
 #endif
 
 QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters )
-    : QgsWMSConfigParser()
+    : QgsWmsConfigParser()
     , mXMLDoc( doc )
     , mParameterMap( parameters )
     , mSLDNamespace( "http://www.opengis.net/sld" )
@@ -163,9 +161,9 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
         }
 
         //append geographic bbox and the CRS elements
-        QStringList crsNumbers = QgsConfigParserUtils::createCRSListForLayer( theMapLayer );
+        QStringList crsNumbers = QgsConfigParserUtils::createCrsListForLayer( theMapLayer );
         QStringList crsRestriction; //no crs restrictions in SLD parser
-        QgsConfigParserUtils::appendCRSElementsToLayer( layerElement, doc, crsNumbers, crsRestriction );
+        QgsConfigParserUtils::appendCrsElementsToLayer( layerElement, doc, crsNumbers, crsRestriction );
         QgsConfigParserUtils::appendLayerBoundingBoxes( layerElement, doc, theMapLayer->extent(), theMapLayer->crs(), crsNumbers, crsRestriction );
 
         //iterate over all <UserStyle> nodes within a user layer
@@ -698,20 +696,20 @@ double QgsSLDConfigParser::imageQuality() const
   return -1;
 }
 
-int QgsSLDConfigParser::WMSPrecision() const
+int QgsSLDConfigParser::wmsPrecision() const
 {
   if ( mFallbackParser )
   {
-    return mFallbackParser->WMSPrecision();
+    return mFallbackParser->wmsPrecision();
   }
   return -1;
 }
 
-bool QgsSLDConfigParser::WMSInspireActivated() const
+bool QgsSLDConfigParser::wmsInspireActivated() const
 {
   if ( mFallbackParser )
   {
-    return mFallbackParser->WMSInspireActivated();
+    return mFallbackParser->wmsInspireActivated();
   }
   return false;
 }
@@ -971,362 +969,11 @@ bool QgsSLDConfigParser::rasterSymbologyFromUserStyle( const QDomElement& userSt
 
 bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
 {
-  if ( userStyleElement.isNull() || !vec )
-    return false;
-
-  Q_NOWARN_DEPRECATED_PUSH
-  vec->enableLabels( false );
-  Q_NOWARN_DEPRECATED_POP
-
-  QDomNodeList featureTypeList = userStyleElement.elementsByTagName( "FeatureTypeStyle" );
-  if ( featureTypeList.size() <= 0 )
-    return false;
-
-  //QGIS WMS server only supports one featureTypeStyle per layer
-  QDomNodeList ruleNodeList = featureTypeList.item( 0 ).toElement().elementsByTagName( "Rule" );
-  // if there are rule elements:
-  if ( ruleNodeList.size() <= 0 )
-    return false;
-
-  // rule element
-  QDomElement ruleElement = ruleNodeList.item( ruleNodeList.size() - 1 ).toElement();
-  //find <TextSymbolizer>.
-  //Unfortunately, QGIS does not support having different labels for different classifications.
-  //Therefore we take the last text symbolizer for all features
-  QDomNodeList textSymbolizerList = ruleElement.elementsByTagName( "TextSymbolizer" );
-  // if there are textSymbolizers
-  if ( textSymbolizerList.size() <= 0 )
-    return false;
-
-  int opacity = 255;
-  int polyColorRed = 0;
-  int polyColorGreen = 0;
-  int polyColorBlue = 0;
-  QString fontfamily = QString( "Helvetica" );
-  QString fontstyle = QString( "Normal" );
-  int fontsize = 14;
-  QString fontweight = QString( "Normal" );
-  QString fontunderline = QString( "Normal" );
-  bool success = false;
-
-  QDomElement textSymbolizerElement = textSymbolizerList.item( textSymbolizerList.size() - 1 ).toElement();
-  // if there is a viable text textSymbolizerElement
-  if ( textSymbolizerElement.isNull() )
-    return false;
-
-  QgsLabelAttributes * myLabelAttributes = vec->label()->labelAttributes();
-  //element <Label> contains the attribute name
-  QDomNodeList labelNodeList = textSymbolizerElement.elementsByTagName( "Label" );
-  // if a viable label element is provided
-  if ( labelNodeList.size() <= 0 )
-    //from the specs: 'if a Label element is not provided ... then no text will be rendered'
-    return false;
-
-  QDomElement labelElement = labelNodeList.item( 0 ).toElement();
-  //we need the text of an <ogc:PropertyName> element
-  QDomNodeList propertyNameList = labelElement.elementsByTagName( "PropertyName" );
-  if ( propertyNameList.size() <= 0 )
-    return false;
-
-  Q_NOWARN_DEPRECATED_PUSH
-  vec->enableLabels( true );
-  Q_NOWARN_DEPRECATED_POP
-
-  QDomElement propertyNameElement = propertyNameList.item( 0 ).toElement();
-  QString labelAttribute = propertyNameElement.text();
-  vec->label()->setLabelField( QgsLabel::Text, vec->dataProvider()->fieldNameIndex( labelAttribute ) );
-
-  // Iterate through each of CssParameter from the sld:font, sld:fill, sld:halo
-  QDomNodeList labelFontElementList = textSymbolizerElement.elementsByTagName( "Font" );
-  QDomNodeList labelFillElementList = textSymbolizerElement.elementsByTagName( "Fill" );
-  QDomNodeList labelBufferElementList = textSymbolizerElement.elementsByTagName( "Halo" );
-  QDomNodeList labelPlacementElementList = textSymbolizerElement.elementsByTagName( "LabelPlacement" );
-  // Iterate through sld:font
-  if ( !labelFontElementList.isEmpty() )
-  {
-    if ( !labelFontElementList.item( 0 ).toElement().isNull() )
-    {
-      QDomNodeList cssNodes = labelFontElementList.item( 0 ).toElement().elementsByTagName( "CssParameter" );
-      QString cssName;
-      QDomElement currentElement;
-      QgsDebugMsg( "Number of Css Properties: " + QString::number( cssNodes.size() ) );
-      for ( int i = 0; i < cssNodes.size(); ++i )
-      {
-        currentElement = cssNodes.item( i ).toElement();
-        if ( currentElement.isNull() )
-        {
-          continue;
-        }
-        QString elemText = currentElement.text();
-
-        //switch depending on attribute 'name'
-        cssName = currentElement.attribute( "name", "not_found" );
-        QgsDebugMsg( "property " + QString::number( i ) + ": " + cssName  + " " + elemText );
-        if ( cssName != "not_found" )
-        {
-          if ( cssName == "font-family" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            fontfamily = elemText;
-          }
-          else if ( cssName == "font-style" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            fontstyle = elemText;
-          }
-          else if ( cssName == "font-size" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            success = false;
-            fontsize = elemText.toInt( &success );
-            if ( !success )
-            {
-              fontsize = 12;
-            }
-
-          }
-          else if ( cssName == "font-weight" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            fontweight = elemText;
-          }
-          else if ( cssName == "font-underline" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            fontunderline = elemText;
-          }
-        }
-
-      }
-    }
-  }
-
-  // Iterate through sld:fill
-  if ( !labelFillElementList.isEmpty() )
-  {
-    if ( !labelFillElementList.item( 0 ).toElement().isNull() )
-    {
-      QDomNodeList cssNodes = labelFillElementList.item( 0 ).toElement().elementsByTagName( "CssParameter" );
-      QString cssName;
-      QDomElement currentElement;
-      QgsDebugMsg( "Number of Css Properties: " + QString::number( cssNodes.size() ) );
-      for ( int i = 0; i < cssNodes.size(); ++i )
-      {
-        currentElement = cssNodes.item( i ).toElement();
-        if ( currentElement.isNull() )
-        {
-          continue;
-        }
-        QString elemText = currentElement.text();
-
-        //switch depending on attribute 'name'
-        cssName = currentElement.attribute( "name", "not_found" );
-        QgsDebugMsg( "property " + QString::number( i ) + ": " + cssName  + " " + elemText );
-        if ( cssName != "not_found" )
-        {
-          if ( cssName == "fill" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            //accept input in the form of #ff0000
-            if ( elemText.length() == 7 )
-            {
-              bool success;
-              polyColorRed = elemText.mid( 1, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorRed = 0;
-              }
-              polyColorGreen = elemText.mid( 3, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorGreen = 0;
-              }
-              polyColorBlue = elemText.mid( 5, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorBlue = 0;
-              }
-            }
-          }
-          else if ( cssName == "fill-opacity" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            bool success;
-            double op = elemText.toDouble( &success );
-            if ( success )
-            {
-              if ( op > 1.0 )
-              {
-                opacity = 255;
-              }
-              else if ( op < 0.0 )
-              {
-                opacity = 0;
-              }
-              else
-              {
-                opacity = ( int )( 255 * op );
-              }
-            }
-          }
-        }
-
-      }
-    }
-  }
-
-  myLabelAttributes->setSize( fontsize, QgsLabelAttributes::PointUnits );
-  myLabelAttributes->setFamily( fontfamily );
-  myLabelAttributes->setColor( QColor( polyColorRed, polyColorGreen, polyColorBlue, opacity ) );
-  if (( fontstyle == "italic" ) || ( fontstyle == "Italic" ) )
-  {
-    myLabelAttributes->setItalic( true );
-  }
-  if (( fontweight == "bold" ) || ( fontweight == "Bold" ) )
-  {
-    myLabelAttributes->setBold( true );
-  }
-  if (( fontunderline == "underline" ) || ( fontunderline == "Underline" ) )
-  {
-    myLabelAttributes->setUnderline( true );
-  }
-  // set label buffer(sld:halo)
-
-  if ( !labelBufferElementList.isEmpty() )
-  {
-    if ( !labelBufferElementList.item( 0 ).toElement().isNull() )
-    {
-      QDomNodeList cssNodes = labelBufferElementList.item( 0 ).toElement().elementsByTagName( "CssParameter" );
-      QString cssName;
-      QDomElement currentElement;
-      QgsDebugMsg( "Number of Css Properties: " + QString::number( cssNodes.size() ) );
-      for ( int i = 0; i < cssNodes.size(); ++i )
-      {
-        currentElement = cssNodes.item( i ).toElement();
-        if ( currentElement.isNull() )
-        {
-          continue;
-        }
-        QString elemText = currentElement.text();
-
-        //switch depending on attribute 'name'
-        cssName = currentElement.attribute( "name", "not_found" );
-        QgsDebugMsg( "property " + QString::number( i ) + ": " + cssName  + " " + elemText );
-        if ( cssName != "not_found" )
-        {
-          if ( cssName == "fill" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            //accept input in the form of #ff0000
-            if ( elemText.length() == 7 )
-            {
-              bool success;
-              polyColorRed = elemText.mid( 1, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorRed = 255;
-              }
-              polyColorGreen = elemText.mid( 3, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorGreen = 255;
-              }
-              polyColorBlue = elemText.mid( 5, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorBlue = 255;
-              }
-            }
-          }
-          else if ( cssName == "fill-opacity" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            bool success;
-            double op = elemText.toDouble( &success );
-            if ( success )
-            {
-              if ( op > 1.0 )
-              {
-                opacity = 255;
-              }
-              else if ( op < 0.0 )
-              {
-                opacity = 0;
-              }
-              else
-              {
-                opacity = ( int )( 255 * op );
-              }
-            }
-          }
-        }
-      }
-
-      //QgsMapServerLogger::instance()->printMessage("radius " + QString::number(radius));
-      myLabelAttributes->setBufferEnabled( true );
-      myLabelAttributes->setBufferColor( QColor( polyColorRed, polyColorGreen, polyColorBlue, opacity ) );
-
-#if 0
-      double radius = 5.0;
-      QDomElement radiusElement = labelBufferElementList.item( 0 ).toElement().elementsByTagName( "Radius" ).item( 0 ).toElement();
-      if ( !radiusElement.isNull() )
-      {
-        bool success = false;
-        radius = radiusElement.text().toDouble( &success );
-        if ( !success )
-        {
-          radius = 5.0;
-        }
-      }
-      myLabelAttributes->setBufferSize( radius, QgsLabelAttributes::PointUnits );
-#endif
-
-      // ******** BUG ************  see why setting buffersize dows not work (is a problem in QGIS vector layer rendering)
-
-    }
-  }
-
-  // label placement
-  if ( !labelPlacementElementList.isEmpty() )
-  {
-    if ( !labelPlacementElementList.item( 0 ).toElement().isNull() )
-    {
-      double displacementX = 0.0;
-      double displacementY = 0.0;
-      double rotationAngle = 0.0;
-
-      QDomElement pointPlacementElement = labelPlacementElementList.item( 0 ).toElement().elementsByTagName( "PointPlacement" ).item( 0 ).toElement();
-      if ( !pointPlacementElement.isNull() )
-      {
-        bool success = false;
-        rotationAngle = pointPlacementElement.elementsByTagName( "Rotation" ).item( 0 ).toElement().text().toDouble( &success );
-        if ( !success )
-        {
-          rotationAngle = 0.0;
-        }
-        success = false;
-        displacementX = pointPlacementElement.elementsByTagName( "DisplacementX" ).item( 0 ).toElement().text().toDouble( &success );
-        if ( !success )
-        {
-          displacementX = 0.0;
-        }
-        displacementY = pointPlacementElement.elementsByTagName( "DisplacementY" ).item( 0 ).toElement().text().toDouble( &success );
-        if ( !success )
-        {
-          displacementY = 0.0;
-        }
-      }
-      QgsDebugMsg( "rotationAngle " + QString::number( rotationAngle ) );
-
-      myLabelAttributes->setOffset( displacementX, displacementY, QgsLabelAttributes::PointUnits );
-      myLabelAttributes->setAngle( rotationAngle );
-    }
-  } // end labelPlacement
-  Q_NOWARN_DEPRECATED_PUSH
-  vec->enableLabels( true );
-  Q_NOWARN_DEPRECATED_POP
-
-  return true;
+  // TODO create rule based labeling from user's SLD
+  // (there is QgsVectorLayer::readSldLabeling() that does something very similar)
+  Q_UNUSED( userStyleElement );
+  Q_UNUSED( vec );
+  return false;
 }
 
 QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& userStyleElem, QgsRasterLayer* rasterLayer ) const
@@ -1675,8 +1322,7 @@ void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLay
     if ( conversionOk )
     {
       //set spatial ref sys
-      QgsCoordinateReferenceSystem srs;
-      srs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+      QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
       ml->setCrs( srs );
     }
   }
@@ -1685,8 +1331,7 @@ void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLay
     QString projString = layerElem.attribute( "proj", "" );
     if ( !projString.isEmpty() )
     {
-      QgsCoordinateReferenceSystem srs;
-      srs.createFromProj4( projString );
+      QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromProj4( projString );
       //TODO: createFromProj4 used to save to the user database any new CRS
       // this behavior was changed in order to separate creation and saving.
       // Not sure if it necessary to save it here, should be checked by someone
@@ -1696,7 +1341,7 @@ void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLay
         QString myName = QString( " * %1 (%2)" )
                          .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                                srs.toProj4() );
-        srs.saveAsUserCRS( myName );
+        srs.saveAsUserCrs( myName );
       }
 
       ml->setCrs( srs );

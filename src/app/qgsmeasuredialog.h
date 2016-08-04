@@ -33,7 +33,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   public:
 
     //! Constructor
-    QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f = nullptr );
+    QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f = 0 );
 
     //! Save position
     void saveWindowLocation();
@@ -87,7 +87,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
      */
     void repopulateComboBoxUnits( bool isArea );
 
-    double convertLength( double length, QGis::UnitType toUnit ) const;
+    double convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const;
 
     double convertArea( double area, QgsUnitTypes::AreaUnit toUnit ) const;
 
@@ -100,10 +100,10 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     int mDecimalPlaces;
 
     //! Current unit for input values
-    QGis::UnitType mCanvasUnits;
+    QgsUnitTypes::DistanceUnit mCanvasUnits;
 
     //! Current unit for distance values
-    QGis::UnitType mDistanceUnits;
+    QgsUnitTypes::DistanceUnit mDistanceUnits;
 
     //! Current unit for area values
     QgsUnitTypes::AreaUnit mAreaUnits;

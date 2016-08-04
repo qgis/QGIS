@@ -37,6 +37,21 @@ start_app(sys.platform != 'darwin')
 TEST_DATA_DIR = unitTestDataPath()
 
 
+def count_opened_filedescriptors(filename_to_test):
+    count = -1
+    if sys.platform.startswith('linux'):
+        count = 0
+        open_files_dirname = '/proc/%d/fd' % os.getpid()
+        filenames = os.listdir(open_files_dirname)
+        for filename in filenames:
+            full_filename = open_files_dirname + '/' + filename
+            if os.path.exists(full_filename):
+                link = os.readlink(full_filename)
+                if os.path.basename(link) == os.path.basename(filename_to_test):
+                    count += 1
+    return count
+
+
 class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
     @classmethod
@@ -216,6 +231,74 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         layer.getFeatures()
         layer = None
         os.unlink(corrupt_dbname)
+
+    def testNoDanglingFileDescriptorAfterCloseVariant1(self):
+        ''' Test that when closing the provider all file handles are released '''
+
+        temp_dbname = self.dbname + '.no_dangling_test1'
+        shutil.copy(self.dbname, temp_dbname)
+
+        vl = QgsVectorLayer("dbname=%s table=test_n (geometry)" % temp_dbname, "test_n", "spatialite")
+        self.assertTrue(vl.isValid())
+        # The iterator will take one extra connection
+        myiter = vl.getFeatures()
+        print(vl.featureCount())
+        # Consume one feature but the iterator is still opened
+        f = next(myiter)
+        self.assertTrue(f.isValid())
+
+        if sys.platform.startswith('linux'):
+            self.assertEqual(count_opened_filedescriptors(temp_dbname), 2)
+
+        # does NO release one file descriptor, because shared with the iterator
+        del vl
+
+        # Non portable, but Windows testing is done with trying to unlink
+        if sys.platform.startswith('linux'):
+            self.assertEqual(count_opened_filedescriptors(temp_dbname), 2)
+
+        f = next(myiter)
+        self.assertTrue(f.isValid())
+
+        # Should release one file descriptor
+        del myiter
+
+        # Non portable, but Windows testing is done with trying to unlink
+        if sys.platform.startswith('linux'):
+            self.assertEqual(count_opened_filedescriptors(temp_dbname), 0)
+
+        # Check that deletion works well (can only fail on Windows)
+        os.unlink(temp_dbname)
+        self.assertFalse(os.path.exists(temp_dbname))
+
+    def testNoDanglingFileDescriptorAfterCloseVariant2(self):
+        ''' Test that when closing the provider all file handles are released '''
+
+        temp_dbname = self.dbname + '.no_dangling_test2'
+        shutil.copy(self.dbname, temp_dbname)
+
+        vl = QgsVectorLayer("dbname=%s table=test_n (geometry)" % temp_dbname, "test_n", "spatialite")
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.isValid())
+        # Consume all features.
+        myiter = vl.getFeatures()
+        for feature in myiter:
+            pass
+        # The iterator is closed
+        if sys.platform.startswith('linux'):
+            self.assertEqual(count_opened_filedescriptors(temp_dbname), 2)
+
+        # Should release one file descriptor
+        del vl
+
+        # Non portable, but Windows testing is done with trying to unlink
+        if sys.platform.startswith('linux'):
+            self.assertEqual(count_opened_filedescriptors(temp_dbname), 0)
+
+        # Check that deletion works well (can only fail on Windows)
+        os.unlink(temp_dbname)
+        self.assertFalse(os.path.exists(temp_dbname))
+
 
 if __name__ == '__main__':
     unittest.main()

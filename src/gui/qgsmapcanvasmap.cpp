@@ -16,11 +16,11 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
-#include "qgsmaprenderer.h"
 #include "qgsmapsettings.h"
-#include "qgsmaplayer.h"
 
 #include <QPainter>
+
+/// @cond PRIVATE
 
 QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
     : QgsMapCanvasItem( canvas )
@@ -77,7 +77,4 @@ void QgsMapCanvasMap::paint( QPainter* painter )
 #endif
 }
 
-QPaintDevice& QgsMapCanvasMap::paintDevice()
-{
-  return mImage;
-}
+/// @endcond

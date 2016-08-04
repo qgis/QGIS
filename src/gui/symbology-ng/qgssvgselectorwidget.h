@@ -35,6 +35,9 @@ class QListView;
 class QPushButton;
 class QTreeView;
 
+/** \ingroup gui
+ * \class QgsSvgSelectorListModel
+ */
 class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -53,6 +56,9 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
     QStringList mSvgFiles;
 };
 
+/** \ingroup gui
+ * \class QgsSvgSelectorGroupsModel
+ */
 class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
 {
     Q_OBJECT
@@ -64,7 +70,9 @@ class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
     void createTree( QStandardItem* &parentGroup );
 };
 
-
+/** \ingroup gui
+ * \class QgsSvgSelectorWidget
+ */
 class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSelector
 {
     Q_OBJECT
@@ -108,11 +116,14 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     QString mCurrentSvgPath; // always stored as absolute path
 };
 
+/** \ingroup gui
+ * \class QgsSvgSelectorDialog
+ */
 class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
 {
     Q_OBJECT
   public:
-    QgsSvgSelectorDialog( QWidget* parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
+    QgsSvgSelectorDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
                           const QDialogButtonBox::StandardButtons& buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();

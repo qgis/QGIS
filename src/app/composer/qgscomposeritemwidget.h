@@ -142,8 +142,7 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
   private slots:
 
     void variablesChanged();
-
-
+    void updateVariables();
 };
 
 #endif //QGSCOMPOSERITEMWIDGET_H

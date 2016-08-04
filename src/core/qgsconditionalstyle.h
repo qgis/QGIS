@@ -7,7 +7,6 @@
 #include <QDomNode>
 #include <QDomDocument>
 
-#include "qgsfeature.h"
 #include "qgssymbolv2.h"
 
 class QgsConditionalStyle;
@@ -15,7 +14,7 @@ class QgsConditionalStyle;
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 
-/**
+/** \ingroup core
  * @brief The QgsConditionalLayerStyles class holds conditional style information
  * for a layer. This includes field styles and full row styles.
  */

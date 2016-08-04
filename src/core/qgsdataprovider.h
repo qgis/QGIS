@@ -61,6 +61,19 @@ class CORE_EXPORT QgsDataProvider : public QObject
       Net                 = 1 << 3  // Internet source
     };
 
+    /**
+     * Properties are used to pass custom configuration options into data providers.
+     * This enum defines a list of custom properties which can be used on different
+     * providers. It depends on the provider, which properties are supported.
+     * In addition to these default properties, providers can add their custom properties
+     * starting from CustomData.
+     */
+    enum ProviderProperty
+    {
+      EvaluateDefaultValues,       //!< Evaluate default values on provider side when calling QgsVectorDataProvider::defaultValue( int index ) rather than on commit.
+      CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
+    };
+
     QgsDataProvider( QString const & uri = "" )
         : mDataSourceURI( uri )
     {}
@@ -71,12 +84,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual ~QgsDataProvider() {}
 
 
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be return, ti will return 0
+    /** Returns the coordinate system for the data source.
+     * If the provider isn't capable of returning its projection then an invalid
+     * QgsCoordinateReferenceSystem will be returned.
      */
-    virtual QgsCoordinateReferenceSystem crs() = 0;
+    virtual QgsCoordinateReferenceSystem crs() const = 0;
 
 
     /**
@@ -102,7 +114,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       if ( expandAuthConfig && mDataSourceURI.contains( "authcfg" ) )
       {
-        QgsDataSourceURI uri( mDataSourceURI );
+        QgsDataSourceUri uri( mDataSourceURI );
         return uri.uri( expandAuthConfig );
       }
       else
@@ -113,21 +125,21 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Get the extent of the layer
+     * Returns the extent of the layer
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() = 0;
+    virtual QgsRectangle extent() const = 0;
 
 
     /**
      * Returns true if this is a valid layer. It is up to individual providers
-     * to determine what constitutes a valid layer
+     * to determine what constitutes a valid layer.
      */
-    virtual bool isValid() = 0;
+    virtual bool isValid() const = 0;
 
 
     /**
-     * Update the extents of the layer. Not implemented by default
+     * Update the extents of the layer. Not implemented by default.
      */
     virtual void updateExtents()
     {
@@ -150,8 +162,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
-    /** Provider supports setting of subset strings */
-    virtual bool supportsSubsetString() { return false; }
+    /** Returns true if the provider supports setting of subset strings.
+    */
+    virtual bool supportsSubsetString() const { return false; }
 
     /**
      * Returns the subset definition string (typically sql) currently in
@@ -159,7 +172,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Must be overridden in the dataprovider, otherwise returns a null
      * QString.
      */
-    virtual QString subsetString()
+    virtual QString subsetString() const
     {
       return QString::null;
     }
@@ -338,7 +351,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * This is aimed at providers that can open differently the connection to
      * the datasource, according it to be in update mode or in read-only mode.
-     * This method shall be balanced with a succesful call to enterUpdateMode().
+     * This method shall be balanced with a successful call to enterUpdateMode().
      *
      * Most providers will have an empty implementation for that method.
      *
@@ -351,6 +364,38 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * @note added in QGIS 2.16
      */
     virtual bool leaveUpdateMode() { return true; }
+
+    /**
+     * Allows setting arbitrary properties on the provider.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    void setProviderProperty( ProviderProperty property, const QVariant& value );
+
+    /**
+     * Allows setting arbitrary properties on the provider.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    void setProviderProperty( int property, const QVariant& value );
+
+    /**
+     * Get the current value of a certain provider property.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    QVariant providerProperty( ProviderProperty property, const QVariant& defaultValue = QVariant() ) const;
+
+    /**
+     * Get the current value of a certain provider property.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    QVariant providerProperty( int property , const QVariant& defaultValue ) const;
 
   signals:
 
@@ -398,6 +443,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * This could be a file, database, or server address.
      */
     QString mDataSourceURI;
+
+    QMap< int, QVariant > mProviderProperties;
 };
 
 

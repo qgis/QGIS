@@ -31,7 +31,7 @@ class QgsMapSettings;
 class QgsSymbolV2;
 class QgsRenderContext;
 
-/**
+/** \ingroup core
  * The QgsLegendRendererItem class is abstract interface for legend items
  * returned from QgsMapLayerLegend implementation.
  *
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
 #include "qgslegendsymbolitemv2.h"
 
-/**
+/** \ingroup core
  * Implementation of legend node interface for displaying preview of vector symbols and their labels
  * and allowing interaction with the symbol / renderer.
  *
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 };
 
 
-/**
+/** \ingroup core
  * Implementation of legend node interface for displaying arbitrary label with icon.
  *
  * @note added in 2.6
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 };
 
 
-/**
+/** \ingroup core
  * Implementation of legend node interface for displaying arbitrary raster image
  *
  * @note added in 2.6
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
     QImage mImage;
 };
 
-/**
+/** \ingroup core
  * Implementation of legend node interface for displaying raster legend entries
  *
  * @note added in 2.6
@@ -291,17 +291,22 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
 class QgsImageFetcher;
 
-/**
+/** \ingroup core
  * Implementation of legend node interface for displaying WMS legend entries
  *
  * @note added in 2.8
  */
-class CORE_EXPORT QgsWMSLegendNode : public QgsLayerTreeModelLegendNode
+class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 {
     Q_OBJECT
 
   public:
-    QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent = nullptr );
+
+    /** Constructor for QgsWmsLegendNode.
+     * @param nodeLayer layer node
+     * @param parent parent object
+     */
+    QgsWmsLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent = nullptr );
 
     virtual QVariant data( int role ) const override;
 

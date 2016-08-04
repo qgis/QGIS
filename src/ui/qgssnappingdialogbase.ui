@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Snapping mode</string>
+        <string>Layer selection</string>
        </property>
       </widget>
      </item>
@@ -38,7 +38,7 @@
        </item>
        <item>
         <property name="text">
-         <string>All layers</string>
+         <string>All visible layers</string>
         </property>
        </item>
        <item>

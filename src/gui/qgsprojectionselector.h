@@ -29,7 +29,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
 {
     Q_OBJECT
   public:
-    QgsProjectionSelector( QWidget* parent, const char *name = "", const Qt::WindowFlags& fl = nullptr );
+    QgsProjectionSelector( QWidget* parent, const char *name = "", Qt::WindowFlags fl = 0 );
 
     ~QgsProjectionSelector();
 
@@ -165,7 +165,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     /**
      * Utility method used in conjunction with name based searching tool
      */
-    long getLargestCRSIDMatch( const QString& theSql );
+    long getLargestCrsIdMatch( const QString& theSql );
 
     //! add recently used CRS
     void insertRecent( long theCrsId );

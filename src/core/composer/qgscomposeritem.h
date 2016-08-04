@@ -18,11 +18,10 @@
 #define QGSCOMPOSERITEM_H
 
 #include "qgscomposeritemcommand.h"
-#include "qgscomposereffect.h"
 #include "qgscomposerobject.h"
-#include "qgsmaprenderer.h" // for blend mode functions & enums
 #include <QGraphicsRectItem>
 #include <QObject>
+#include <QPainter>
 
 class QWidget;
 class QDomDocument;
@@ -32,8 +31,9 @@ class QgsComposerItemGroup;
 class QgsDataDefined;
 class QgsComposition;
 class QgsExpressionContext;
+class QgsComposerEffect;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A item that forms part of a map composition.
  */
 class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRectItem
@@ -224,11 +224,11 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      corresponds to 1 scene size unit*/
     virtual void setSceneRect( const QRectF& rectangle );
 
-    /** Writes parameter that are not subclass specific in document. Usually called from writeXML methods of subclasses*/
-    bool _writeXML( QDomElement& itemElem, QDomDocument& doc ) const;
+    /** Writes parameter that are not subclass specific in document. Usually called from writeXml methods of subclasses*/
+    bool _writeXml( QDomElement& itemElem, QDomDocument& doc ) const;
 
-    /** Reads parameter that are not subclass specific in document. Usually called from readXML methods of subclasses*/
-    bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    /** Reads parameter that are not subclass specific in document. Usually called from readXml methods of subclasses*/
+    bool _readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.

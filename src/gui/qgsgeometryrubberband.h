@@ -27,7 +27,8 @@ class QgsAbstractGeometryV2;
 class QgsPointV2;
 struct QgsVertexId;
 
-/** A rubberband class for QgsAbstractGeometryV2 (considering curved geometries)*/
+/** \ingroup gui
+ * A rubberband class for QgsAbstractGeometryV2 (considering curved geometries)*/
 class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 {
   public:
@@ -59,7 +60,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
       ICON_FULL_BOX
     };
 
-    QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geomType = QGis::Line );
+    QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
     ~QgsGeometryRubberBand();
 
     /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
@@ -90,7 +91,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     QPen mPen;
     int mIconSize;
     IconType mIconType;
-    QGis::GeometryType mGeometryType;
+    QgsWkbTypes::GeometryType mGeometryType;
 
     void drawVertex( QPainter* p, double x, double y );
     QgsRectangle rubberBandRectangle() const;

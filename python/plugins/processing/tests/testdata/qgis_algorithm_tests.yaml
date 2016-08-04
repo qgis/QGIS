@@ -23,7 +23,93 @@ tests:
       OUTPUT:
         name: expected/polys_deleteholes.gml
         type: vector
-
+        
+  - algorithm: qgis:clip
+    name: Clip lines by polygons
+    params:
+      INPUT:
+        name: custom/lines2.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_lines_by_polygon.gml
+        type: vector
+          
+        
+  - algorithm: qgis:clip
+    name: Clip lines by multipolygon
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      OVERLAY:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_lines_by_multipolygon.gml
+        type: vector
+          
+  - algorithm: qgis:clip
+    name: Clip polygons by multipolygons
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      OVERLAY:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_polys_by_multipolygon.gml
+        type: vector
+        
+  - algorithm: qgis:clip
+    name: Clip multipolygons by polygons
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_multipolygons_by_polygons.gml
+        type: vector
+          
+  - algorithm: qgis:clip
+    name: Clip points by polygons
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_points_by_polygons.gml
+        type: vector
+    
+  - algorithm: qgis:clip
+    name: Clip points by multipolygons
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      OVERLAY:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_points_by_multipolygons.gml
+        type: vector
+  
+            
   # These datasets should produce a geometry collection and not a polygon only
   # dataset. If the algorithm is fixed, a new test should be introduced to
   # check this behavior.
@@ -205,6 +291,31 @@ tests:
         name: expected/eliminate_largest_area.gml
         type: vector
 
+  - algorithm: qgis:dissolve
+    name: Dissolve using field
+    params:
+      DISSOLVE_ALL: false
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/dissolve_field.gml
+        type: vector
+
+  - algorithm: qgis:dissolve
+    name: Dissolve using two fields
+    params:
+      DISSOLVE_ALL: false
+      FIELD: intval;name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/dissolve_two_fields.gml
+        type: vector
 
   - name: Dissolve with geometries reported as valid but as invalid with isGeosValid
     algorithm: qgis:dissolve
@@ -306,3 +417,26 @@ tests:
         compare:
           geometry:
             precision: 7
+
+  - algorithm: qgis:mergelines
+    name: Merge lines algorithm
+    params:
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/merge_lines.gml
+        type: vector
+
+  - algorithm: qgis:multiparttosingleparts
+    name: Multiparts to singleparts
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/multi_to_single.gml
+        type: vector
+  

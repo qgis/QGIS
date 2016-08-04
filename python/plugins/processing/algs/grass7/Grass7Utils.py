@@ -114,58 +114,55 @@ class Grass7Utils:
         folder = Grass7Utils.grassPath()
 
         script = Grass7Utils.grassScriptFilename()
-        gisrc = userFolder() + os.sep + 'processing.gisrc7'  # FIXME: use temporary file
+        gisrc = os.path.join(userFolder(), 'processing.gisrc7')  # FIXME: use temporary file
 
         # Temporary gisrc file
-        output = open(gisrc, 'w')
-        location = 'temp_location'
-        gisdbase = Grass7Utils.grassDataFolder()
+        with open(gisrc, 'w') as output:
+            location = 'temp_location'
+            gisdbase = Grass7Utils.grassDataFolder()
 
-        output.write('GISDBASE: ' + gisdbase + '\n')
-        output.write('LOCATION_NAME: ' + location + '\n')
-        output.write('MAPSET: PERMANENT \n')
-        output.write('GRASS_GUI: text\n')
-        output.close()
+            output.write('GISDBASE: ' + gisdbase + '\n')
+            output.write('LOCATION_NAME: ' + location + '\n')
+            output.write('MAPSET: PERMANENT \n')
+            output.write('GRASS_GUI: text\n')
 
-        output = open(script, 'w')
-        output.write('set HOME=' + os.path.expanduser('~') + '\n')
-        output.write('set GISRC=' + gisrc + '\n')
-        output.write('set WINGISBASE=' + folder + '\n')
-        output.write('set GISBASE=' + folder + '\n')
-        output.write('set GRASS_PROJSHARE=' + folder + os.sep + 'share'
-                     + os.sep + 'proj' + '\n')
-        output.write('set GRASS_MESSAGE_FORMAT=plain\n')
+        with open(script, 'w') as output:
+            output.write('set HOME=' + os.path.expanduser('~') + '\n')
+            output.write('set GISRC=' + gisrc + '\n')
+            output.write('set WINGISBASE=' + folder + '\n')
+            output.write('set GISBASE=' + folder + '\n')
+            output.write('set GRASS_PROJSHARE=' + folder + os.sep + 'share'
+                         + os.sep + 'proj' + '\n')
+            output.write('set GRASS_MESSAGE_FORMAT=plain\n')
 
-        # Replacement code for etc/Init.bat
-        output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
-        output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
-        output.write('\n')
-        output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion() + '\n')
-        output.write('if not "%LANG%"=="" goto langset\n')
-        output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
-        output.write(':langset\n')
-        output.write('\n')
-        output.write('set PATHEXT=%PATHEXT%;.PY\n')
-        output.write('set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n')
-        output.write('\n')
-        output.write('g.gisenv.exe set="MAPSET=PERMANENT"\n')
-        output.write('g.gisenv.exe set="LOCATION=' + location + '"\n')
-        output.write('g.gisenv.exe set="LOCATION_NAME=' + location + '"\n')
-        output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
-        output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
-        for command in commands:
-            output.write(command.encode('utf8') + '\n')
-        output.write('\n')
-        output.write('exit\n')
-        output.close()
+            # Replacement code for etc/Init.bat
+            output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
+            output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
+            output.write('\n')
+            output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion() + '\n')
+            output.write('if not "%LANG%"=="" goto langset\n')
+            output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
+            output.write(':langset\n')
+            output.write('\n')
+            output.write('set PATHEXT=%PATHEXT%;.PY\n')
+            output.write('set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n')
+            output.write('\n')
+            output.write('g.gisenv.exe set="MAPSET=PERMANENT"\n')
+            output.write('g.gisenv.exe set="LOCATION=' + location + '"\n')
+            output.write('g.gisenv.exe set="LOCATION_NAME=' + location + '"\n')
+            output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
+            output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
+            for command in commands:
+                Grass7Utils.writeCommand(output, command)
+            output.write('\n')
+            output.write('exit\n')
 
     @staticmethod
     def createGrass7BatchJobFileFromGrass7Commands(commands):
-        fout = open(Grass7Utils.grassBatchJobFilename(), 'w')
-        for command in commands:
-            fout.write(command.encode('utf8') + '\n')
-        fout.write('exit')
-        fout.close()
+        with open(Grass7Utils.grassBatchJobFilename(), 'w') as fout:
+            for command in commands:
+                Grass7Utils.writeCommand(fout, command)
+            fout.write('exit')
 
     @staticmethod
     def grassMapsetFolder():
@@ -393,3 +390,12 @@ class Grass7Utils:
         if context == '':
             context = 'Grass7Utils'
         return QCoreApplication.translate(context, string)
+
+    @staticmethod
+    def writeCommand(output, command):
+        try:
+            # Python 2
+            output.write(command.encode('utf8') + '\n')
+        except TypeError:
+            # Python 3
+            output.write(command + '\n')

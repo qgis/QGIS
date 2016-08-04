@@ -184,6 +184,7 @@ cmake %CMAKE_OPT% ^
 	-D WITH_INTERNAL_JINJA2=FALSE ^
 	-D WITH_INTERNAL_MARKUPSAFE=FALSE ^
 	-D WITH_INTERNAL_PYGMENTS=FALSE ^
+	-D WITH_INTERNAL_REQUESTS=FALSE ^
 	-D WITH_INTERNAL_DATEUTIL=FALSE ^
 	-D WITH_INTERNAL_PYTZ=FALSE ^
 	-D WITH_INTERNAL_SIX=FALSE ^
@@ -320,6 +321,8 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/plugins/wcsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wfsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wmsprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/arcgismapserverprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/arcgisfeatureserverprovider.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^

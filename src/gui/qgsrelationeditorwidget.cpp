@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
@@ -24,6 +25,8 @@
 #include "qgsgenericfeatureselectionmanager.h"
 #include "qgsrelation.h"
 #include "qgsvectorlayertools.h"
+#include "qgsproject.h"
+#include "qgstransactiongroup.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -58,7 +61,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   buttonLayout->addWidget( mSaveEditsButton );
   // add feature
   mAddFeatureButton = new QToolButton( this );
-  mAddFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.png" ) );
+  mAddFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.svg" ) );
   mAddFeatureButton->setText( tr( "Add child feature" ) );
   mAddFeatureButton->setToolTip( tr( "Add child feature" ) );
   mAddFeatureButton->setObjectName( "mAddFeatureButton" );
@@ -198,6 +201,17 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation& relation, const Q
 
   if ( !mRelation.isValid() )
     return;
+
+  mToggleEditingButton->setVisible( true );
+
+  Q_FOREACH ( QgsTransactionGroup* tg, QgsProject::instance()->transactionGroups().values() )
+  {
+    if ( tg->layers().contains( mRelation.referencingLayer() ) )
+    {
+      mToggleEditingButton->setVisible( false );
+      mSaveEditsButton->setVisible( false );
+    }
+  }
 
   connect( mRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
   connect( mRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );

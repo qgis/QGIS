@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgslabelingwidget.h
+    ---------------------
+    begin                : September 2015
+    copyright            : (C) 2015 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSLABELINGWIDGET_H
 #define QGSLABELINGWIDGET_H
 
@@ -6,6 +20,8 @@
 #include <ui_qgslabelingwidget.h>
 #include <qgspallabeling.h>
 #include "qgsvectorlayerlabeling.h"
+
+#include "qgsmaplayerconfigwidget.h"
 
 class QgsLabelingGui;
 class QgsMapCanvas;
@@ -16,7 +32,7 @@ class QgsMapLayer;
 /**
  * Master widget for configuration of labeling of a vector layer
  */
-class QgsLabelingWidget : public QWidget, private Ui::QgsLabelingWidget
+class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelingWidget
 {
     Q_OBJECT
   public:
@@ -46,8 +62,6 @@ class QgsLabelingWidget : public QWidget, private Ui::QgsLabelingWidget
   protected:
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mCanvas;
-
-    bool mDockMode;
 
     QWidget* mWidget;
     QgsLabelingGui* mLabelGui;

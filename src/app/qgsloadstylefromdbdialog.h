@@ -1,4 +1,10 @@
 /***************************************************************************
+    qgsloadstylefromdbdialog.h
+    ---------------------
+    begin                : April 2013
+    copyright            : (C) 2013 by Emilio Loi
+    email                : loi at faunalia dot it
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,7 +18,6 @@
 
 #include "ui_qgsloadstylefromdbdialog.h"
 #include "qgisgui.h"
-#include "qgsfield.h"
 
 class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadStyleFromDBDialogLayout
 {

@@ -20,7 +20,8 @@
 
 #include "qgsninecellfilter.h"
 
-/** Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis*/
+/** \ingroup analysis
+ * Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis*/
 class ANALYSIS_EXPORT QgsTotalCurvatureFilter: public QgsNineCellFilter
 {
   public:

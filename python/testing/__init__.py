@@ -73,12 +73,15 @@ class TestCase(_TestCase):
         except KeyError:
             precision = 14
 
-        for feats in zip(layer_expected.getFeatures(request), layer_result.getFeatures(request)):
-            if feats[0].geometry() is not None:
+        expected_features = sorted(layer_expected.getFeatures(request), key=lambda f: f.id())
+        result_features = sorted(layer_expected.getFeatures(request), key=lambda f: f.id())
+
+        for feats in zip(expected_features, result_features):
+            if feats[0].hasGeometry():
                 geom0 = feats[0].geometry().geometry().asWkt(precision)
             else:
                 geom0 = None
-            if feats[1].geometry() is not None:
+            if feats[1].hasGeometry():
                 geom1 = feats[1].geometry().geometry().asWkt(precision)
             else:
                 geom1 = None

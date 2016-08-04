@@ -30,6 +30,7 @@ SET ( qgis_mapserv_SRCS
   qgswfsserver.cpp
   qgswcsserver.cpp
   qgsmapserviceexception.cpp
+  qgsmaprenderer.cpp
   qgsmslayercache.cpp
   qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp
@@ -64,6 +65,7 @@ ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
 SET (qgis_mapserv_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
+  qgsmaprenderer.h
   qgsmslayercache.h
   qgsserverlogger.h
   qgsserverstreamingdevice.h
@@ -100,16 +102,18 @@ SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
 )
 ENDIF (WITH_SERVER_PLUGINS)
 
-IF (NOT MSVC)
-  ADD_DEFINITIONS("-USERVER_EXPORT")
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
-  ENDIF()
-ENDIF (NOT MSVC)
+REMOVE_DEFINITIONS("-DSERVER_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("\"-DSERVER_EXPORT=${DLLEXPORT}\"")
 
 
 QT4_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
+
+IF(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(${qgis_mapserv_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
+ELSE(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(${qgis_mapserv_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
+ENDIF(MSVC)
+
 
 ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})
 

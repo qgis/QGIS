@@ -56,9 +56,12 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
             else:
                 value = distance
 
-            inGeom = QgsGeometry(inFeat.geometry())
-            if inGeom.isGeosEmpty() or not inGeom.isGeosValid():
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has empty or invalid geometry. Skipping...'.format(inFeat.id()))
+            inGeom = inFeat.geometry()
+            if inGeom.isEmpty() or inGeom.isGeosEmpty():
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has empty geometry. Skipping...'.format(inFeat.id()))
+                continue
+            if not inGeom.isGeosValid():
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has invalid geometry. Skipping...'.format(inFeat.id()))
                 continue
             outGeom = inGeom.buffer(float(value), segments)
             if first:
@@ -81,9 +84,12 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
                 value = attrs[field]
             else:
                 value = distance
-            inGeom = QgsGeometry(inFeat.geometry())
-            if inGeom.isGeosEmpty() or not inGeom.isGeosValid():
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has empty or invalid geometry. Skipping...'.format(inFeat.id()))
+            inGeom = inFeat.geometry()
+            if inGeom.isEmpty() or inGeom.isGeosEmpty():
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has empty geometry. Skipping...'.format(inFeat.id()))
+                continue
+            if not inGeom.isGeosValid():
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has invalid geometry. Skipping...'.format(inFeat.id()))
                 continue
 
             outGeom = inGeom.buffer(float(value), segments)

@@ -17,7 +17,7 @@
 #include "qgsrangeconfigdlg.h"
 #include "qgsrangewidgetwrapper.h"
 #include "qgsvectorlayer.h"
-
+#include <QDial>
 
 QgsRangeWidgetFactory::QgsRangeWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )
@@ -38,7 +38,7 @@ QgsEditorWidgetConfig QgsRangeWidgetFactory::readConfig( const QDomElement& conf
 {
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
-  QMap<QString, QVariant> cfg;
+  QgsEditorWidgetConfig cfg;
 
   cfg.insert( "Style", configElement.attribute( "Style" ) );
   cfg.insert( "Min", configElement.attribute( "Min" ) );

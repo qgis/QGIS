@@ -20,6 +20,7 @@
 #include "qgsdialog.h"
 #include "qgsrasterlayer.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterdataprovider.h"
 
 #include <QSettings>
 #include <QInputDialog>
@@ -30,6 +31,9 @@
 
 
 QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::mBuiltinProfiles;
+
+static const QString PYRAMID_JPEG_YCBCR_COMPRESSION( "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG PHOTOMETRIC_OVERVIEW=YCBCR INTERLEAVE_OVERVIEW=PIXEL" );
+static const QString PYRAMID_JPEG_COMPRESSION( "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG INTERLEAVE_OVERVIEW=PIXEL" );
 
 QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, const QString& format,
     QgsRasterFormatSaveOptionsWidget::Type type, const QString& provider )
@@ -81,7 +85,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
         << "COMPRESS_OVERVIEW=DEFLATE PREDICTOR_OVERVIEW=2 ZLEVEL=9" ); // how to set zlevel?
     mBuiltinProfiles[ "z__pyramids_gtiff_4jpeg" ] =
       ( QStringList() << "_pyramids" << tr( "JPEG compression" )
-        << "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG PHOTOMETRIC_OVERVIEW=YCBCR INTERLEAVE_OVERVIEW=PIXEL" );
+        << PYRAMID_JPEG_YCBCR_COMPRESSION );
   }
 
   connect( mProfileComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
@@ -151,10 +155,15 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   }
 }
 
+QString QgsRasterFormatSaveOptionsWidget::pseudoFormat() const
+{
+  return mPyramids ? "_pyramids" : mFormat;
+}
+
 void QgsRasterFormatSaveOptionsWidget::updateProfiles()
 {
   // build profiles list = user + builtin(last)
-  QString format = mPyramids ? "_pyramids" : mFormat;
+  QString format = pseudoFormat();
   QStringList profileKeys = profiles();
   QMapIterator<QString, QStringList> it( mBuiltinProfiles );
   while ( it.hasNext() )
@@ -208,6 +217,14 @@ void QgsRasterFormatSaveOptionsWidget::updateOptions()
 {
   QString myOptions = mOptionsMap.value( currentProfileKey() );
   QStringList myOptionsList = myOptions.trimmed().split( ' ', QString::SkipEmptyParts );
+
+  // If the default JPEG compression profile was selected, remove PHOTOMETRIC_OVERVIEW=YCBCR
+  // if the raster is not RGB. Otherwise this is bound to fail afterwards.
+  if ( mRasterLayer && mRasterLayer->bandCount() != 3 &&
+       myOptions == PYRAMID_JPEG_YCBCR_COMPRESSION )
+  {
+    myOptions = PYRAMID_JPEG_COMPRESSION;
+  }
 
   if ( mOptionsStackedWidget->currentIndex() == 0 )
   {
@@ -487,7 +504,7 @@ QString QgsRasterFormatSaveOptionsWidget::settingsKey( QString profileName ) con
     profileName = "/profile_" + profileName;
   else
     profileName = "/profile_default" + profileName;
-  return mProvider + "/driverOptions/" + mFormat.toLower() + profileName + "/create";
+  return mProvider + "/driverOptions/" + pseudoFormat().toLower() + profileName + "/create";
 }
 
 QString QgsRasterFormatSaveOptionsWidget::currentProfileKey() const
@@ -523,9 +540,9 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions()
     myProfiles += i.key() + QLatin1String( " " );
     ++i;
   }
-  mySettings.setValue( mProvider + "/driverOptions/" + mFormat.toLower() + "/profiles",
+  mySettings.setValue( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/profiles",
                        myProfiles.trimmed() );
-  mySettings.setValue( mProvider + "/driverOptions/" + mFormat.toLower() + "/defaultProfile",
+  mySettings.setValue( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/defaultProfile",
                        currentProfileKey().trimmed() );
 }
 
@@ -543,7 +560,7 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString& profileN
 QStringList QgsRasterFormatSaveOptionsWidget::profiles() const
 {
   QSettings mySettings;
-  return mySettings.value( mProvider + "/driverOptions/" + mFormat.toLower() + "/profiles", "" ).toString().trimmed().split( ' ', QString::SkipEmptyParts );
+  return mySettings.value( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/profiles", "" ).toString().trimmed().split( ' ', QString::SkipEmptyParts );
 }
 
 void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )

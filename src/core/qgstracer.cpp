@@ -15,11 +15,14 @@
 
 #include "qgstracer.h"
 
+
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeos.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgscsexception.h"
 
 #include <queue>
 #include <vector>
@@ -406,26 +409,38 @@ void resetGraph( QgsTracerGraph& g )
 }
 
 
-void extractLinework( const QgsGeometry* g, QgsMultiPolyline& mpl )
+void extractLinework( const QgsGeometry& g, QgsMultiPolyline& mpl )
 {
-  switch ( QgsWKBTypes::flatType( g->geometry()->wkbType() ) )
+  QgsGeometry geom = g;
+  // segmentize curved geometries - we will use noding algorithm from GEOS
+  // to find all intersections a bit later (so we need them segmentized anyway)
+  if ( QgsWkbTypes::isCurvedType( g.geometry()->wkbType() ) )
   {
-    case QgsWKBTypes::LineString:
-      mpl << g->asPolyline();
+    QgsAbstractGeometryV2* segmentizedGeomV2 = g.geometry()->segmentize();
+    if ( !segmentizedGeomV2 )
+      return;
+
+    geom = QgsGeometry( segmentizedGeomV2 );
+  }
+
+  switch ( QgsWkbTypes::flatType( geom.geometry()->wkbType() ) )
+  {
+    case QgsWkbTypes::LineString:
+      mpl << geom.asPolyline();
       break;
 
-    case QgsWKBTypes::Polygon:
-      Q_FOREACH ( const QgsPolyline& ring, g->asPolygon() )
+    case QgsWkbTypes::Polygon:
+      Q_FOREACH ( const QgsPolyline& ring, geom.asPolygon() )
         mpl << ring;
       break;
 
-    case QgsWKBTypes::MultiLineString:
-      Q_FOREACH ( const QgsPolyline& linestring, g->asMultiPolyline() )
+    case QgsWkbTypes::MultiLineString:
+      Q_FOREACH ( const QgsPolyline& linestring, geom.asMultiPolyline() )
         mpl << linestring;
       break;
 
-    case QgsWKBTypes::MultiPolygon:
-      Q_FOREACH ( const QgsPolygon& polygon, g->asMultiPolygon() )
+    case QgsWkbTypes::MultiPolygon:
+      Q_FOREACH ( const QgsPolygon& polygon, geom.asMultiPolygon() )
         Q_FOREACH ( const QgsPolyline& ring, polygon )
           mpl << ring;
       break;
@@ -477,14 +492,16 @@ bool QgsTracer::initGraph()
     QgsFeatureIterator fi = vl->getFeatures( request );
     while ( fi.nextFeature( f ) )
     {
-      if ( !f.constGeometry() )
+      if ( !f.hasGeometry() )
         continue;
 
       if ( mReprojectionEnabled && !ct.isShortCircuited() )
       {
         try
         {
-          f.geometry()->transform( ct );
+          QgsGeometry transformedGeom = f.geometry();
+          transformedGeom.transform( ct );
+          f.setGeometry( transformedGeom );
         }
         catch ( QgsCsException& )
         {
@@ -492,7 +509,7 @@ bool QgsTracer::initGraph()
         }
       }
 
-      extractLinework( f.constGeometry(), mpl );
+      extractLinework( f.geometry(), mpl );
 
       ++featuresCounted;
       if ( mMaxFeatureCount != 0 && featuresCounted >= mMaxFeatureCount )
@@ -510,18 +527,17 @@ bool QgsTracer::initGraph()
 #if 0
   // without noding - if data are known to be noded beforehand
 #else
-  QgsGeometry* allGeom = QgsGeometry::fromMultiPolyline( mpl );
+  QgsGeometry allGeom = QgsGeometry::fromMultiPolyline( mpl );
 
   try
   {
     t2a.start();
     // GEOSNode_r may throw an exception
-    GEOSGeometry* allNoded = GEOSNode_r( QgsGeometry::getGEOSHandler(), allGeom->asGeos() );
+    GEOSGeometry* allNoded = GEOSNode_r( QgsGeometry::getGEOSHandler(), allGeom.asGeos() );
     timeNodingCall = t2a.elapsed();
 
     QgsGeometry* noded = new QgsGeometry;
     noded->fromGeos( allNoded );
-    delete allGeom;
 
     mpl = noded->asMultiPolyline();
 
@@ -569,7 +585,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
   {
     disconnect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
     disconnect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-    disconnect( layer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+    disconnect( layer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
     disconnect( layer, SIGNAL( destroyed( QObject* ) ), this, SLOT( onLayerDestroyed( QObject* ) ) );
   }
 
@@ -579,7 +595,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
   {
     connect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
     connect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-    connect( layer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+    connect( layer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
     connect( layer, SIGNAL( destroyed( QObject* ) ), this, SLOT( onLayerDestroyed( QObject* ) ) );
   }
 
@@ -643,7 +659,7 @@ void QgsTracer::onFeatureDeleted( QgsFeatureId fid )
   invalidateGraph();
 }
 
-void QgsTracer::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
+void QgsTracer::onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom )
 {
   Q_UNUSED( fid );
   Q_UNUSED( geom );

@@ -18,6 +18,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 __author__ = 'Julien Malik, Oscar Picas, Alexia Mondot'
 __copyright__ = '(C) 2013, CS Systemes d\'information  (CS SI)'
 # This will get replaced with a git SHA1 when you do a git archive
@@ -162,7 +163,8 @@ def retrieve_module_name(param):
                 exec("from processing.core.outputs import %s" % param)
                 return os.path.join(dir_p, "outputs.py")
         except ImportError:
-            print "Error parsing ", param
+            # fix_print_with_import
+            print("Error parsing ", param)
     return None
 
 

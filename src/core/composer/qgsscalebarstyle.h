@@ -23,7 +23,7 @@
 class QgsComposerScaleBar;
 class QPainter;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Abstraction of composer scale bar style. Subclasses draw themselves, have the
 possibility to implement custom labeling and calculate corresponding box size.
 */

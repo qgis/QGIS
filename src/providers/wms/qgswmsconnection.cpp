@@ -116,7 +116,7 @@ QgsWMSConnection::~QgsWMSConnection()
 
 }
 
-QgsDataSourceURI QgsWMSConnection::uri()
+QgsDataSourceUri QgsWMSConnection::uri()
 {
   return mUri;
 }

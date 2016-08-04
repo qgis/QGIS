@@ -33,7 +33,6 @@ QgsBrowserTreeView::~QgsBrowserTreeView()
 
 void QgsBrowserTreeView::setModel( QAbstractItemModel* model )
 {
-  QgsDebugMsg( "Entered" );
 
   QTreeView::setModel( model );
 
@@ -43,7 +42,6 @@ void QgsBrowserTreeView::setModel( QAbstractItemModel* model )
 void QgsBrowserTreeView::showEvent( QShowEvent * e )
 {
   Q_UNUSED( e );
-  QgsDebugMsg( "Entered" );
   if ( model() )
     restoreState();
   QTreeView::showEvent( e );
@@ -53,7 +51,6 @@ void QgsBrowserTreeView::showEvent( QShowEvent * e )
 void QgsBrowserTreeView::hideEvent( QHideEvent * e )
 {
   Q_UNUSED( e );
-  QgsDebugMsg( "Entered" );
   // hideEvent() may be called (Mac) before showEvent
   if ( model() )
     saveState();
@@ -62,7 +59,6 @@ void QgsBrowserTreeView::hideEvent( QHideEvent * e )
 
 void QgsBrowserTreeView::saveState()
 {
-  QgsDebugMsg( "Entered" );
   QSettings settings;
   QStringList expandedPaths = expandedPathsList( QModelIndex() );
   settings.setValue( expandedPathsKey(), expandedPaths );
@@ -71,7 +67,6 @@ void QgsBrowserTreeView::saveState()
 
 void QgsBrowserTreeView::restoreState()
 {
-  QgsDebugMsg( "Entered" );
   QSettings settings;
   mExpandPaths = settings.value( expandedPathsKey(), QVariant() ).toStringList();
 

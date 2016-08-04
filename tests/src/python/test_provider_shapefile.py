@@ -17,6 +17,7 @@ import tempfile
 import shutil
 import glob
 import osgeo.gdal
+import osgeo.ogr
 import sys
 
 from qgis.core import QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider
@@ -24,12 +25,6 @@ from qgis.PyQt.QtCore import QSettings, QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-
-try:
-    from osgeo import gdal
-    gdal_ok = True
-except:
-    gdal_ok = False
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -205,11 +200,9 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.dataProvider().deleteFeatures([fid]))
 
         # Check that it has really disappeared
-        if gdal_ok:
-            gdal.PushErrorHandler('CPLQuietErrorHandler')
+        osgeo.gdal.PushErrorHandler('CPLQuietErrorHandler')
         features = [f_iter for f_iter in vl.getFeatures(QgsFeatureRequest().setFilterFid(fid))]
-        if gdal_ok:
-            gdal.PopErrorHandler()
+        osgeo.gdal.PopErrorHandler()
         self.assertEquals(features, [])
 
         self.assertTrue(vl.dataProvider().addAttributes([QgsField("new_field", QVariant.Int, "integer")]))
@@ -293,6 +286,99 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         vl2.reload()
         # And now check that fields are up-to-date
         self.assertEquals(len(vl1.fields()), len(vl2.fields()))
+
+    def testRenameAttributes(self):
+        ''' Test renameAttributes() '''
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        provider = vl.dataProvider()
+
+        # bad rename
+        self.assertFalse(provider.renameAttributes({-1: 'not_a_field'}))
+        self.assertFalse(provider.renameAttributes({100: 'not_a_field'}))
+        # already exists
+        self.assertFalse(provider.renameAttributes({2: 'cnt'}))
+
+        # rename one field
+        self.assertTrue(provider.renameAttributes({2: 'newname'}))
+        self.assertEqual(provider.fields().at(2).name(), 'newname')
+        vl.updateFields()
+        fet = next(vl.getFeatures())
+        self.assertEqual(fet.fields()[2].name(), 'newname')
+
+        # rename two fields
+        self.assertTrue(provider.renameAttributes({2: 'newname2', 3: 'another'}))
+        self.assertEqual(provider.fields().at(2).name(), 'newname2')
+        self.assertEqual(provider.fields().at(3).name(), 'another')
+        vl.updateFields()
+        fet = next(vl.getFeatures())
+        self.assertEqual(fet.fields()[2].name(), 'newname2')
+        self.assertEqual(fet.fields()[3].name(), 'another')
+
+        # close file and reopen, then recheck to confirm that changes were saved to file
+        del vl
+        vl = None
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        provider = vl.dataProvider()
+        self.assertEqual(provider.fields().at(2).name(), 'newname2')
+        self.assertEqual(provider.fields().at(3).name(), 'another')
+        fet = next(vl.getFeatures())
+        self.assertEqual(fet.fields()[2].name(), 'newname2')
+        self.assertEqual(fet.fields()[3].name(), 'another')
+
+    def testDeleteGeometry(self):
+        ''' Test changeGeometryValues() with a null geometry '''
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        self.assertTrue(vl.dataProvider().changeGeometryValues({0: QgsGeometry()}))
+        vl = None
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        fet = next(vl.getFeatures())
+        self.assertFalse(fet.hasGeometry())
+
+    def testDeleteShapes(self):
+        ''' Test fix for #11007 '''
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        feature_count = vl.featureCount()
+        # Start an iterator that will open a new connection
+        iterator = vl.getFeatures()
+        f = next(iterator)
+
+        # Delete a feature
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.deleteFeature(1))
+        self.assertTrue(vl.commitChanges())
+
+        # Test the content of the shapefile while it is still opened
+        ds = osgeo.ogr.Open(datasource)
+        # Test repacking has been done
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount(), feature_count - 1)
+        ds = None
+
+        vl = None
 
 if __name__ == '__main__':
     unittest.main()

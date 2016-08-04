@@ -20,7 +20,7 @@
 
 #include "ui_qgsdatumtransformdialogbase.h"
 
-/**
+/** \ingroup gui
  * \class QgsDatumTransformDialog
  * \note not available in Python bindings
  */
@@ -28,7 +28,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 {
     Q_OBJECT
   public:
-    QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget * parent = nullptr, const Qt::WindowFlags& f = nullptr );
+    QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsDatumTransformDialog();
 
     //! @note added in 2.4

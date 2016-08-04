@@ -19,6 +19,7 @@
 #include "qgscomposertablecolumn.h"
 #include "qgscomposermap.h"
 #include "qgscomposerutils.h"
+#include "qgsfeatureiterator.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgscomposerframe.h"
@@ -26,6 +27,8 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsgeometry.h"
+#include "qgscsexception.h"
+#include "qgsmapsettings.h"
 
 //QgsComposerAttributeTableCompareV2
 
@@ -530,13 +533,13 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     //check against atlas feature intersection
     if ( mFilterToAtlasIntersection )
     {
-      if ( !f.constGeometry() || ! mComposition->atlasComposition().enabled() )
+      if ( !f.hasGeometry() || ! mComposition->atlasComposition().enabled() )
       {
         continue;
       }
       QgsFeature atlasFeature = mComposition->atlasComposition().feature();
-      if ( !atlasFeature.constGeometry() ||
-           !f.constGeometry()->intersects( atlasFeature.constGeometry() ) )
+      if ( !atlasFeature.hasGeometry() ||
+           !f.geometry().intersects( atlasFeature.geometry() ) )
       {
         //feature falls outside current atlas feature
         continue;
@@ -686,7 +689,7 @@ void QgsComposerAttributeTableV2::setWrapString( const QString &wrapString )
   emit changed();
 }
 
-bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
+bool QgsComposerAttributeTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement composerTableElem = doc.createElement( "ComposerAttributeTableV2" );
   composerTableElem.setAttribute( "source", QString::number( static_cast< int >( mSource ) ) );
@@ -712,14 +715,14 @@ bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & do
     composerTableElem.setAttribute( "vectorLayer", mVectorLayer->id() );
   }
 
-  bool ok = QgsComposerTableV2::writeXML( composerTableElem, doc, ignoreFrames );
+  bool ok = QgsComposerTableV2::writeXml( composerTableElem, doc, ignoreFrames );
 
   elem.appendChild( composerTableElem );
 
   return ok;
 }
 
-bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
+bool QgsComposerAttributeTableV2::readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
   if ( itemElem.isNull() )
   {
@@ -727,7 +730,7 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   }
 
   //read general table properties
-  if ( !QgsComposerTableV2::readXML( itemElem, doc, ignoreFrames ) )
+  if ( !QgsComposerTableV2::readXml( itemElem, doc, ignoreFrames ) )
   {
     return false;
   }

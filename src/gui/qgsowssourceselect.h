@@ -24,20 +24,18 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
-#include "qgsdataprovider.h"
-
 #include <QStringList>
 #include <QPushButton>
 #include <QNetworkRequest>
 
 class QgsDataProvider;
 class QButtonGroup;
-class QgsNumericSortTreeWidgetItem;
+class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 
 
-/*!
+/** \ingroup gui
  * \brief  Dialog to create connections and add layers from WMS, WFS, WCS etc.
  *
  * This dialog allows the user to define and save connection information
@@ -59,7 +57,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString& service, QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( const QString& service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOWSSourceSelect();
 
@@ -123,7 +121,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     virtual QStringList selectedLayersFormats();
 
     //! Server CRS supported for currently selected layer item(s)
-    virtual QStringList selectedLayersCRSs();
+    virtual QStringList selectedLayersCrses();
 
     //! List of times (temporalDomain timePosition/timePeriod for currently selected layer item(s)
     virtual QStringList selectedLayersTimes();
@@ -140,10 +138,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     void clearFormats();
 
     //! Set supported CRSs
-    void populateCRS();
+    void populateCrs();
 
     //! Clear CRSs
-    void clearCRS();
+    void clearCrs();
 
     //! Populate times
     void populateTimes();
@@ -182,12 +180,12 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     //! create an item including possible parents
     //! @note not available in python bindings
-    QgsNumericSortTreeWidgetItem *createItem( int id,
-        const QStringList &names,
-        QMap<int, QgsNumericSortTreeWidgetItem *> &items,
-        int &layerAndStyleCount,
-        const QMap<int, int> &layerParents,
-        const QMap<int, QStringList> &layerParentNames );
+    QgsTreeWidgetItem *createItem( int id,
+                                   const QStringList &names,
+                                   QMap<int, QgsTreeWidgetItem *> &items,
+                                   int &layerAndStyleCount,
+                                   const QMap<int, int> &layerParents,
+                                   const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( const QString& authId );
@@ -199,8 +197,8 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     QMap<QString, QString> mCrsNames;
 
-    void addWMSListRow( const QDomElement& item, int row );
-    void addWMSListItem( const QDomElement& el, int row, int column );
+    void addWmsListRow( const QDomElement& item, int row );
+    void addWmsListItem( const QDomElement& el, int row, int column );
 
     virtual void enableLayersForCrs( QTreeWidgetItem *item );
 
@@ -208,7 +206,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     QString selectedFormat();
 
     //! Returns currently selected Crs
-    QString selectedCRS();
+    QString selectedCrs();
 
     //! Returns currently selected time
     QString selectedTime();
@@ -226,7 +224,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     QString mConnectionInfo;
 
     //! URI for selected connection
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
 
   private:
     //! Selected CRS

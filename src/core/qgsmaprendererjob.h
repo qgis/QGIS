@@ -36,7 +36,8 @@ class QgsMapRendererCache;
 class QgsPalLabeling;
 
 
-/** Structure keeping low-level rendering job information.
+/** \ingroup core
+ * Structure keeping low-level rendering job information.
  * @note not part of public API!
  */
 struct LayerRenderJob
@@ -53,7 +54,7 @@ struct LayerRenderJob
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
 
-/**
+/** \ingroup core
  * Abstract base class for map rendering implementations.
  *
  * The API is designed in a way that rendering is done asynchronously, therefore
@@ -151,10 +152,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * source CRS coordinates, and if it was split, returns true, and
      * also sets the contents of the r2 parameter
      */
-    static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform *ct, QgsRectangle &extent, QgsRectangle &r2 );
+    static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );
 
     //! @note not available in python bindings
-    LayerRenderJobs prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine, QgsLabelingEngineV2* labelingEngine2 );
+    LayerRenderJobs prepareJobs( QPainter* painter, QgsLabelingEngineV2* labelingEngine2 );
 
     //! @note not available in python bindings
     void cleanupJobs( LayerRenderJobs& jobs );
@@ -167,9 +168,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     bool needTemporaryImage( QgsMapLayer* ml );
 
     //! @note not available in Python bindings
-    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QgsLabelingEngineV2* labelingEngine2, QPainter* painter );
-    static void drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext );
-    static void drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine );
+    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsLabelingEngineV2* labelingEngine2, QPainter* painter );
 
     //! called when rendering has finished to update all layers' geometry caches
     void updateLayerGeometryCaches();
@@ -189,7 +188,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 };
 
 
-/** Intermediate base class adding functionality that allows client to query the rendered image.
+/** \ingroup core
+ * Intermediate base class adding functionality that allows client to query the rendered image.
  *  The image can be queried even while the rendering is still in progress to get intermediate result
  *
  * @note added in 2.4

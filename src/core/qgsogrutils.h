@@ -52,7 +52,7 @@ class CORE_EXPORT QgsOgrUtils
     /** Retrieves an attribute value from an OGR feature.
      * @param ogrFet OGR feature handle
      * @param fields fields collection corresponding to feature
-     * @param attIndex index of attribute to retreive
+     * @param attIndex index of attribute to retrieve
      * @param encoding text encoding
      * @param ok optional storage for success of retrieval
      * @returns attribute converted to a QVariant object
@@ -81,10 +81,11 @@ class CORE_EXPORT QgsOgrUtils
 
     /** Converts an OGR geometry representation to a QgsGeometry object
      * @param geom OGR geometry handle
-     * @returns new QgsGeometry object, if conversion was successful
+     * @returns QgsGeometry object. If conversion was not successful the geometry
+     * will be empty.
      * @see readOgrFeatureGeometry()
      */
-    static QgsGeometry* ogrGeometryToQgsGeometry( OGRGeometryH geom );
+    static QgsGeometry ogrGeometryToQgsGeometry( OGRGeometryH geom );
 
     /** Attempts to parse a string representing a collection of features using OGR. For example, this method can be
      * used to convert a GeoJSON encoded collection to a list of QgsFeatures.

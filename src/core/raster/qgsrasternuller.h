@@ -18,7 +18,6 @@
 #ifndef QGSRASTERNULLER_H
 #define QGSRASTERNULLER_H
 
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterrange.h"
 #include "qgsrasterinterface.h"
 
@@ -43,9 +42,9 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 
     int bandCount() const override;
 
-    QGis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType dataType( int bandNo ) const override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void setNoData( int bandNo, const QgsRasterRangeList& noData );
 

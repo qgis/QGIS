@@ -21,7 +21,7 @@
 #include "qgsdistancearea.h"
 #include "qgsscalebarstyle.h"
 #include "qgsdoubleboxscalebarstyle.h"
-#include "qgsmaprenderer.h"
+#include "qgsmapsettings.h"
 #include "qgsnumericscalebarstyle.h"
 #include "qgssingleboxscalebarstyle.h"
 #include "qgsticksscalebarstyle.h"
@@ -306,20 +306,20 @@ double QgsComposerScaleBar::mapWidth() const
     da.setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
     da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
 
-    QGis::UnitType units = QGis::Meters;
+    QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceMeters;
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),
                                      QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ),
                                      units );
     switch ( mUnits )
     {
       case QgsComposerScaleBar::Feet:
-        measure /= QgsUnitTypes::fromUnitToUnitFactor( QGis::Feet, units );
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, units );
         break;
       case QgsComposerScaleBar::NauticalMiles:
-        measure /= QgsUnitTypes::fromUnitToUnitFactor( QGis::NauticalMiles, units );
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceNauticalMiles, units );
         break;
       case QgsComposerScaleBar::Meters:
-        measure /= QgsUnitTypes::fromUnitToUnitFactor( QGis::Meters, units );
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, units );
         break;
       case QgsComposerScaleBar::MapUnits:
         //avoid warning
@@ -661,7 +661,7 @@ void QgsComposerScaleBar::setFont( const QFont& font )
   emit itemChanged();
 }
 
-bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerScaleBar::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {
@@ -740,10 +740,10 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   composerScaleBarElem.setAttribute( "alignment", QString::number( static_cast< int >( mAlignment ) ) );
 
   elem.appendChild( composerScaleBarElem );
-  return _writeXML( composerScaleBarElem, doc );
+  return _writeXml( composerScaleBarElem, doc );
 }
 
-bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
   {
@@ -894,7 +894,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   return true;

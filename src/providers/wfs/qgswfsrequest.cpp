@@ -24,10 +24,10 @@
 #include <QNetworkCacheMetaData>
 #include <QCryptographicHash> // just for testin file:// fake_qgis_http_endpoint hack
 
-QgsWFSRequest::QgsWFSRequest( const QString& theUri )
+QgsWfsRequest::QgsWfsRequest( const QString& theUri )
     : mUri( theUri )
     , mReply( nullptr )
-    , mErrorCode( QgsWFSRequest::NoError )
+    , mErrorCode( QgsWfsRequest::NoError )
     , mIsAborted( false )
     , mForceRefresh( false )
     , mTimedout( false )
@@ -37,18 +37,18 @@ QgsWFSRequest::QgsWFSRequest( const QString& theUri )
   connect( QgsNetworkAccessManager::instance(), SIGNAL( requestTimedOut( QNetworkReply* ) ), this, SLOT( requestTimedOut( QNetworkReply* ) ) );
 }
 
-QgsWFSRequest::~QgsWFSRequest()
+QgsWfsRequest::~QgsWfsRequest()
 {
   abort();
 }
 
-void QgsWFSRequest::requestTimedOut( QNetworkReply* reply )
+void QgsWfsRequest::requestTimedOut( QNetworkReply* reply )
 {
   if ( reply == mReply )
     mTimedout = true;
 }
 
-bool QgsWFSRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefresh, bool cache )
+bool QgsWfsRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefresh, bool cache )
 {
   abort(); // cancel previous
   mIsAborted = false;
@@ -56,7 +56,7 @@ bool QgsWFSRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
   mGotNonEmptyResponse = false;
 
   mErrorMessage.clear();
-  mErrorCode = QgsWFSRequest::NoError;
+  mErrorCode = QgsWfsRequest::NoError;
   mForceRefresh = forceRefresh;
   mResponse.clear();
 
@@ -103,7 +103,7 @@ bool QgsWFSRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
   QNetworkRequest request( modifiedUrl );
   if ( !mUri.auth().setAuthorization( request ) )
   {
-    mErrorCode = QgsWFSRequest::NetworkError;
+    mErrorCode = QgsWfsRequest::NetworkError;
     mErrorMessage = errorMessageFailedAuth();
     QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
     return false;
@@ -129,7 +129,7 @@ bool QgsWFSRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
   return mErrorMessage.isEmpty();
 }
 
-bool QgsWFSRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader, const QByteArray& data )
+bool QgsWfsRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader, const QByteArray& data )
 {
   abort(); // cancel previous
   mIsAborted = false;
@@ -137,7 +137,7 @@ bool QgsWFSRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader,
   mGotNonEmptyResponse = false;
 
   mErrorMessage.clear();
-  mErrorCode = QgsWFSRequest::NoError;
+  mErrorCode = QgsWfsRequest::NoError;
   mForceRefresh = true;
   mResponse.clear();
 
@@ -152,7 +152,7 @@ bool QgsWFSRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader,
   QNetworkRequest request( url );
   if ( !mUri.auth().setAuthorization( request ) )
   {
-    mErrorCode = QgsWFSRequest::NetworkError;
+    mErrorCode = QgsWfsRequest::NetworkError;
     mErrorMessage = errorMessageFailedAuth();
     QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
     return false;
@@ -170,9 +170,8 @@ bool QgsWFSRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader,
   return mErrorMessage.isEmpty();
 }
 
-void QgsWFSRequest::abort()
+void QgsWfsRequest::abort()
 {
-  QgsDebugMsg( "Entered" );
   mIsAborted = true;
   if ( mReply )
   {
@@ -181,7 +180,7 @@ void QgsWFSRequest::abort()
   }
 }
 
-void QgsWFSRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
+void QgsWfsRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
   QgsDebugMsg( tr( "%1 of %2 bytes downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
 
@@ -204,9 +203,8 @@ void QgsWFSRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
   emit downloadProgress( bytesReceived, bytesTotal );
 }
 
-void QgsWFSRequest::replyFinished()
+void QgsWfsRequest::replyFinished()
 {
-  QgsDebugMsg( "entering." );
   if ( !mIsAborted && mReply )
   {
     if ( mReply->error() == QNetworkReply::NoError )
@@ -232,7 +230,7 @@ void QgsWFSRequest::replyFinished()
           {
             mResponse.clear();
             mErrorMessage = errorMessageFailedAuth();
-            mErrorCode = QgsWFSRequest::NetworkError;
+            mErrorCode = QgsWfsRequest::NetworkError;
             QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
             emit downloadFinished();
             return;
@@ -289,7 +287,7 @@ void QgsWFSRequest::replyFinished()
         if ( mResponse.isEmpty() && !mGotNonEmptyResponse )
         {
           mErrorMessage = tr( "empty response: %1" ).arg( mReply->errorString() );
-          mErrorCode = QgsWFSRequest::ServerExceptionError;
+          mErrorCode = QgsWfsRequest::ServerExceptionError;
           QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
         }
       }
@@ -297,13 +295,13 @@ void QgsWFSRequest::replyFinished()
     else
     {
       mErrorMessage = errorMessageWithReason( mReply->errorString() );
-      mErrorCode = QgsWFSRequest::ServerExceptionError;
+      mErrorCode = QgsWfsRequest::ServerExceptionError;
       QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
       mResponse.clear();
     }
   }
   if ( mTimedout )
-    mErrorCode = QgsWFSRequest::TimeoutError;
+    mErrorCode = QgsWfsRequest::TimeoutError;
 
   if ( mReply )
   {
@@ -314,7 +312,7 @@ void QgsWFSRequest::replyFinished()
   emit downloadFinished();
 }
 
-QString QgsWFSRequest::errorMessageFailedAuth()
+QString QgsWfsRequest::errorMessageFailedAuth()
 {
   return errorMessageWithReason( tr( "network request update failed for authentication config" ) );
 }

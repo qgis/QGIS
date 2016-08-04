@@ -47,7 +47,7 @@ QgsComposerLegendItem::~QgsComposerLegendItem()
 {
 }
 
-void QgsComposerLegendItem::writeXMLChildren( QDomElement& elem, QDomDocument& doc ) const
+void QgsComposerLegendItem::writeXmlChildren( QDomElement& elem, QDomDocument& doc ) const
 {
   int numRows = rowCount();
   QgsComposerLegendItem* currentItem = nullptr;
@@ -56,7 +56,7 @@ void QgsComposerLegendItem::writeXMLChildren( QDomElement& elem, QDomDocument& d
     currentItem = dynamic_cast<QgsComposerLegendItem*>( child( i, 0 ) );
     if ( currentItem )
     {
-      currentItem->writeXML( elem, doc );
+      currentItem->writeXml( elem, doc );
     }
   }
 }
@@ -93,7 +93,7 @@ QStandardItem* QgsComposerSymbolV2Item::clone() const
   return cloneItem;
 }
 
-void QgsComposerSymbolV2Item::writeXML( QDomElement& elem, QDomDocument& doc ) const
+void QgsComposerSymbolV2Item::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement vectorClassElem = doc.createElement( "VectorClassificationItemNg" );
   if ( mSymbolV2 )
@@ -108,7 +108,7 @@ void QgsComposerSymbolV2Item::writeXML( QDomElement& elem, QDomDocument& doc ) c
   elem.appendChild( vectorClassElem );
 }
 
-void QgsComposerSymbolV2Item::readXML( const QDomElement& itemElem, bool xServerAvailable )
+void QgsComposerSymbolV2Item::readXml( const QDomElement& itemElem, bool xServerAvailable )
 {
   if ( itemElem.isNull() )
   {
@@ -166,11 +166,11 @@ QStandardItem* QgsComposerRasterSymbolItem::clone() const
 {
   QgsComposerRasterSymbolItem* cloneItem  = new QgsComposerRasterSymbolItem();
   *cloneItem = *this;
-  cloneItem->setLayerID( mLayerID );
+  cloneItem->setLayerId( mLayerID );
   return cloneItem;
 }
 
-void QgsComposerRasterSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc ) const
+void QgsComposerRasterSymbolItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement rasterClassElem = doc.createElement( "RasterClassificationItem" );
   rasterClassElem.setAttribute( "layerId", mLayerID );
@@ -180,7 +180,7 @@ void QgsComposerRasterSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc
   elem.appendChild( rasterClassElem );
 }
 
-void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem, bool xServerAvailable )
+void QgsComposerRasterSymbolItem::readXml( const QDomElement& itemElem, bool xServerAvailable )
 {
   if ( itemElem.isNull() )
   {
@@ -188,7 +188,7 @@ void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem, bool xSe
   }
   setText( itemElem.attribute( "text", "" ) );
   setUserText( itemElem.attribute( "userText", "" ) );
-  setLayerID( itemElem.attribute( "layerId", "" ) );
+  setLayerId( itemElem.attribute( "layerId", "" ) );
   setColor( QColor( itemElem.attribute( "color" ) ) );
 
   if ( xServerAvailable )
@@ -219,11 +219,11 @@ QStandardItem* QgsComposerLayerItem::clone() const
 {
   QgsComposerLayerItem* cloneItem  = new QgsComposerLayerItem();
   *cloneItem = *this;
-  cloneItem->setLayerID( mLayerID );
+  cloneItem->setLayerId( mLayerID );
   return cloneItem;
 }
 
-void QgsComposerLayerItem::writeXML( QDomElement& elem, QDomDocument& doc ) const
+void QgsComposerLayerItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement layerItemElem = doc.createElement( "LayerItem" );
   layerItemElem.setAttribute( "layerId", mLayerID );
@@ -231,11 +231,11 @@ void QgsComposerLayerItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
   layerItemElem.setAttribute( "userText", userText() );
   layerItemElem.setAttribute( "showFeatureCount", showFeatureCount() );
   layerItemElem.setAttribute( "style", QgsComposerLegendStyle::styleName( mStyle ) );
-  writeXMLChildren( layerItemElem, doc );
+  writeXmlChildren( layerItemElem, doc );
   elem.appendChild( layerItemElem );
 }
 
-void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAvailable )
+void QgsComposerLayerItem::readXml( const QDomElement& itemElem, bool xServerAvailable )
 {
   if ( itemElem.isNull() )
   {
@@ -243,11 +243,11 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
   }
   setText( itemElem.attribute( "text", "" ) );
   setUserText( itemElem.attribute( "userText", "" ) );
-  setLayerID( itemElem.attribute( "layerId", "" ) );
+  setLayerId( itemElem.attribute( "layerId", "" ) );
   setShowFeatureCount( itemElem.attribute( "showFeatureCount", "" ) == "1" ? true : false );
   setStyle( QgsComposerLegendStyle::styleFromName( itemElem.attribute( "style", "subgroup" ) ) );
 
-  //now call readXML for all the child items
+  //now call readXml for all the child items
   QDomNodeList childList = itemElem.childNodes();
   QDomNode currentNode;
   QDomElement currentElem;
@@ -280,7 +280,7 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
     {
       continue; //unsupported child type
     }
-    currentChildItem->readXML( currentElem, xServerAvailable );
+    currentChildItem->readXml( currentElem, xServerAvailable );
     appendRow( currentChildItem );
   }
 }
@@ -288,7 +288,7 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
 void QgsComposerLayerItem::setDefaultStyle( double scaleDenominator, const QString& rule )
 {
   // set default style according to number of symbols
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID() ) );
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId() ) );
   if ( vLayer )
   {
     QgsFeatureRendererV2* renderer = vLayer->rendererV2();
@@ -329,18 +329,18 @@ QStandardItem* QgsComposerGroupItem::clone() const
   return cloneItem;
 }
 
-void QgsComposerGroupItem::writeXML( QDomElement& elem, QDomDocument& doc ) const
+void QgsComposerGroupItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement layerGroupElem = doc.createElement( "GroupItem" );
   // text is always user text, but for forward compatibility for now write both
   layerGroupElem.setAttribute( "text", text() );
   layerGroupElem.setAttribute( "userText", userText() );
   layerGroupElem.setAttribute( "style", QgsComposerLegendStyle::styleName( mStyle ) );
-  writeXMLChildren( layerGroupElem, doc );
+  writeXmlChildren( layerGroupElem, doc );
   elem.appendChild( layerGroupElem );
 }
 
-void QgsComposerGroupItem::readXML( const QDomElement& itemElem, bool xServerAvailable )
+void QgsComposerGroupItem::readXml( const QDomElement& itemElem, bool xServerAvailable )
 {
   if ( itemElem.isNull() )
   {
@@ -357,7 +357,7 @@ void QgsComposerGroupItem::readXML( const QDomElement& itemElem, bool xServerAva
 
   setStyle( QgsComposerLegendStyle::styleFromName( itemElem.attribute( "style", "group" ) ) );
 
-  //now call readXML for all the child items
+  //now call readXml for all the child items
   QDomNodeList childList = itemElem.childNodes();
   QDomNode currentNode;
   QDomElement currentElem;
@@ -387,7 +387,7 @@ void QgsComposerGroupItem::readXML( const QDomElement& itemElem, bool xServerAva
     {
       continue; //unsupported child item type
     }
-    currentChildItem->readXML( currentElem, xServerAvailable );
+    currentChildItem->readXml( currentElem, xServerAvailable );
 
     QList<QStandardItem *> itemsList;
     itemsList << currentChildItem << new QgsComposerStyleItem( currentChildItem );

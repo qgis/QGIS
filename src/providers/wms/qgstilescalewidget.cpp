@@ -18,10 +18,11 @@
 #include "qgstilescalewidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
+#include "qgsdockwidget.h"
 
-#include <QDockWidget>
 #include <QMainWindow>
 #include <QMenu>
 #include <QGraphicsView>
@@ -109,7 +110,7 @@ void QgsTileScaleWidget::on_mSlider_valueChanged( int value )
 
 void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
 {
-  QDockWidget *dock = mainWindow->findChild<QDockWidget *>( "theTileScaleDock" );
+  QgsDockWidget *dock = mainWindow->findChild<QgsDockWidget *>( "theTileScaleDock" );
   if ( dock )
   {
     dock->setVisible( dock->isHidden() );
@@ -139,7 +140,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
 
   //create the dock widget
-  dock = new QDockWidget( tr( "Tile Scale Panel" ), mainWindow );
+  dock = new QgsDockWidget( tr( "Tile Scale Panel" ), mainWindow );
   dock->setObjectName( "theTileScaleDock" );
   dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mainWindow->addDockWidget( Qt::RightDockWidgetArea, dock );

@@ -19,12 +19,15 @@
 #ifndef QGSRASTERCALCNODE_H
 #define QGSRASTERCALCNODE_H
 
-#include "qgsrastermatrix.h"
 #include <QMap>
 #include <QString>
 
 class QgsRasterBlock;
+class QgsRasterMatrix;
 
+/** \ingroup analysis
+ * \class QgsRasterCalcNode
+ */
 class ANALYSIS_EXPORT QgsRasterCalcNode
 {
   public:

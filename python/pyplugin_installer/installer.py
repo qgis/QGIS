@@ -30,8 +30,10 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 import qgis
 from qgis.core import QgsApplication, QgsNetworkAccessManager
 from qgis.gui import QgsMessageBar
-from qgis.utils import iface, startPlugin, unloadPlugin, loadPlugin, reloadPlugin, updateAvailablePlugins
-from .installer_data import repositories, plugins, officialRepo, settingsGroup, reposGroup, removeDir
+from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
+                        reloadPlugin, updateAvailablePlugins)
+from .installer_data import (repositories, plugins, officialRepo,
+                             settingsGroup, reposGroup, removeDir)
 from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
 from .qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDialog
 from .qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
@@ -211,6 +213,7 @@ class QgsPluginInstaller(QObject):
                 "error_details": plugin["error_details"],
                 "experimental": plugin["experimental"] and "true" or "false",
                 "deprecated": plugin["deprecated"] and "true" or "false",
+                "trusted": plugin["trusted"] and "true" or "false",
                 "version_available": plugin["version_available"],
                 "zip_repository": plugin["zip_repository"],
                 "download_url": plugin["download_url"],

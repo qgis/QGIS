@@ -18,7 +18,8 @@
 
 #include <QFlags>
 
-/** This class contains information how to simplify geometries fetched from a vector layer
+/** \ingroup core
+ * This class contains information how to simplify geometries fetched from a vector layer
  * @note added in 2.2
  */
 class CORE_EXPORT QgsVectorSimplifyMethod

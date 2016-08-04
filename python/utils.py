@@ -34,7 +34,7 @@ QGIS utilities module
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale
 from qgis.PyQt.QtWidgets import QPushButton, QApplication
-from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput
+from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 
 import sys
@@ -67,9 +67,16 @@ warnings.filterwarnings("ignore", "the sets module is deprecated")
 def showWarning(message, category, filename, lineno, file=None, line=None):
     stk = ""
     for s in traceback.format_stack()[:-2]:
-        stk += s.decode('utf-8', 'replace') if hasattr(s, 'decode') else s
+        if hasattr(s, 'decode'):
+            stk += s.decode(sys.getfilesystemencoding())
+        else:
+            stk += s
+    if hasattr(filename, 'decode'):
+        decoded_filename = filename.decode(sys.getfilesystemencoding())
+    else:
+        decoded_filename = filename
     QgsMessageLog.logMessage(
-        "warning:%s\ntraceback:%s" % (warnings.formatwarning(message, category, filename, lineno), stk),
+        u"warning:{}\ntraceback:{}".format(warnings.formatwarning(message, category, decoded_filename, lineno), stk),
         QCoreApplication.translate("Python", "Python warning")
     )
 
@@ -171,9 +178,9 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
                      version_label=version_label,
                      num=sys.version,
                      qgis_label=qgis_label,
-                     qversion=QGis.QGIS_VERSION,
-                     qgisrelease=QGis.QGIS_RELEASE_NAME,
-                     devversion=QGis.QGIS_DEV_VERSION,
+                     qversion=Qgis.QGIS_VERSION,
+                     qgisrelease=Qgis.QGIS_RELEASE_NAME,
+                     devversion=Qgis.QGIS_DEV_VERSION,
                      pypath_label=pypath_label,
                      pypath=u"".join(u"<li>{}</li>".format(path) for path in sys.path))
 

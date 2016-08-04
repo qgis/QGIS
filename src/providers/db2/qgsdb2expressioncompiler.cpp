@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsdb2expressioncompiler.h"
+#include "qgslogger.h"
 
 QgsDb2ExpressionCompiler::QgsDb2ExpressionCompiler( QgsDb2FeatureSource* source )
     : QgsSqlExpressionCompiler( source->mFields

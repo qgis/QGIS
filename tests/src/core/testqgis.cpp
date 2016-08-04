@@ -22,9 +22,9 @@
 #include <qgis.h>
 
 /** \ingroup UnitTests
- * Includes unit tests for the QGis namespace
+ * Includes unit tests for the Qgis namespace
  */
-class TestQGis : public QObject
+class TestQgis : public QObject
 {
     Q_OBJECT
 
@@ -47,13 +47,13 @@ class TestQGis : public QObject
 };
 
 //runs before all tests
-void TestQGis::initTestCase()
+void TestQgis::initTestCase()
 {
-  mReport = "<h1>QGis Tests</h1>\n";
+  mReport = "<h1>Qgis Tests</h1>\n";
 }
 
 //runs after all tests
-void TestQGis::cleanupTestCase()
+void TestQgis::cleanupTestCase()
 {
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
@@ -65,67 +65,67 @@ void TestQGis::cleanupTestCase()
   }
 }
 
-void TestQGis::permissiveToDouble()
+void TestQgis::permissiveToDouble()
 {
   //good inputs
   bool ok = false;
-  double result = QGis::permissiveToDouble( QString( "1000" ), ok );
+  double result = qgsPermissiveToDouble( QString( "1000" ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = QGis::permissiveToDouble( QString( "1" ) + QLocale::system().groupSeparator() + "000", ok );
+  result = qgsPermissiveToDouble( QString( "1" ) + QLocale::system().groupSeparator() + "000", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = QGis::permissiveToDouble( QString( "5" ) + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QString( "5" ) + QLocale::system().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 5.5 );
   ok = false;
-  result = QGis::permissiveToDouble( QString( "1" ) + QLocale::system().groupSeparator() + "000" + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QString( "1" ) + QLocale::system().groupSeparator() + "000" + QLocale::system().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 
   //bad input
   ok = false;
-  ( void ) QGis::permissiveToDouble( QString( "a" ), ok );
+  ( void ) qgsPermissiveToDouble( QString( "a" ), ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = QGis::permissiveToDouble( QString( "10" ) + QLocale::system().groupSeparator() + "00", ok );
+  result = qgsPermissiveToDouble( QString( "10" ) + QLocale::system().groupSeparator() + "00", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = QGis::permissiveToDouble( QString( "10" ) + QLocale::system().groupSeparator() + "00" + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QString( "10" ) + QLocale::system().groupSeparator() + "00" + QLocale::system().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 }
 
-void TestQGis::permissiveToInt()
+void TestQgis::permissiveToInt()
 {
   //good inputs
   bool ok = false;
-  int result = QGis::permissiveToInt( QString( "1000" ), ok );
+  int result = qgsPermissiveToInt( QString( "1000" ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
   ok = false;
-  result = QGis::permissiveToInt( QString( "1%01000" ).arg( QLocale::system().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( QString( "1%01000" ).arg( QLocale::system().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 
   //bad input
   ok = false;
-  ( void ) QGis::permissiveToInt( QString( "a" ), ok );
+  ( void ) qgsPermissiveToInt( QString( "a" ), ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = QGis::permissiveToInt( QString( "10%0100" ).arg( QLocale::system().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( QString( "10%0100" ).arg( QLocale::system().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 }
 
-void TestQGis::doubleToString()
+void TestQgis::doubleToString()
 {
   QCOMPARE( qgsDoubleToString( 5.6783212, 5 ), QString( "5.67832" ) );
   QCOMPARE( qgsDoubleToString( 5.5555555, 5 ), QString( "5.55556" ) );
@@ -141,7 +141,7 @@ void TestQGis::doubleToString()
   QCOMPARE( qgsDoubleToString( 12345, -1 ), QString( "12345" ) );
 }
 
-void TestQGis::qgsround()
+void TestQgis::qgsround()
 {
   QCOMPARE( qgsRound( 3.141592653589793 ), 3. );
   QCOMPARE( qgsRound( 2.718281828459045 ), 3. );
@@ -155,7 +155,7 @@ void TestQGis::qgsround()
   QCOMPARE( qgsRound( -1.5 ), -2. );
 }
 
-void TestQGis::signalBlocker()
+void TestQgis::signalBlocker()
 {
   QScopedPointer< QCheckBox > checkbox( new QCheckBox() );
 
@@ -226,7 +226,7 @@ void TestQGis::signalBlocker()
   QVERIFY( checkbox->signalsBlocked() );
 }
 
-void TestQGis::qVariantCompare_data()
+void TestQgis::qVariantCompare_data()
 {
   QTest::addColumn<QVariant>( "lhs" );
   QTest::addColumn<QVariant>( "rhs" );
@@ -281,7 +281,7 @@ void TestQGis::qVariantCompare_data()
   QTest::newRow( "string 2" ) << QVariant( "d e f" ) << QVariant( "a b c" ) << false << true;
 }
 
-void TestQGis::qVariantCompare()
+void TestQgis::qVariantCompare()
 {
   QFETCH( QVariant, lhs );
   QFETCH( QVariant, rhs );
@@ -293,5 +293,5 @@ void TestQGis::qVariantCompare()
 }
 
 
-QTEST_MAIN( TestQGis )
+QTEST_MAIN( TestQgis )
 #include "testqgis.moc"

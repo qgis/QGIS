@@ -16,7 +16,6 @@
 #ifndef QGSEXPRESSIONHIGHLIGHTER_H
 #define QGSEXPRESSIONHIGHLIGHTER_H
 
-#include "qgsfield.h"
 #include <QSyntaxHighlighter>
 
 #include <QHash>
@@ -25,6 +24,9 @@
 
 class QTextDocument;
 
+/** \ingroup gui
+ * \class QgsExpressionHighlighter
+ */
 class GUI_EXPORT QgsExpressionHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT

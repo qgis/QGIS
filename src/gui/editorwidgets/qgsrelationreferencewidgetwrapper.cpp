@@ -17,7 +17,7 @@
 #include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-
+#include "qgsrelationreferencewidget.h"
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsMapCanvas* canvas, QgsMessageBar* messageBar, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -138,4 +138,15 @@ void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
     value = QVariant( field().type() );
   }
   emit valueChanged( value );
+}
+
+void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+{
+  if ( mWidget )
+  {
+    if ( constraintValid )
+      mWidget->setStyleSheet( QString() );
+    else
+      mWidget->setStyleSheet( ".QComboBox { background-color: #dd7777; }" );
+  }
 }

@@ -20,6 +20,7 @@
 
 #include <qgsvectorlayer.h>
 #include <qgsfeature.h>
+#include "qgsfeatureiterator.h"
 
 /**
 * \class QgsReaderFeatures

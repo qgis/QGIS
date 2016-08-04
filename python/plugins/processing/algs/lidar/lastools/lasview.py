@@ -20,6 +20,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -72,5 +73,6 @@ class lasview(LAStoolsAlgorithm):
             commands.append("-win " + lasview.SIZES[size])
         self.addParametersAdditionalCommands(commands)
 
-        print commands
+        # fix_print_with_import
+        print(commands)
         LAStoolsUtils.runLAStools(commands, progress)

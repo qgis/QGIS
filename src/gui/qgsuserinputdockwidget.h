@@ -18,27 +18,29 @@
 #ifndef QGSUSERINPUTDOCKWIDGET_H
 #define QGSUSERINPUTDOCKWIDGET_H
 
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 #include <QMap>
 
 class QFrame;
 class QBoxLayout;
 
 
-/**
+/** \ingroup gui
  * @brief The QgsUserInputDockWidget class is a dock widget that shall be used to display widgets for user inputs.
  * It can be used by map tools, plugins, etc.
  * Several widgets can be displayed at once, they will be separated by a separator. Widgets will be either layout horizontally or vertically.
  * The dock is automatically hidden if it contains no widget.
  */
-class GUI_EXPORT QgsUserInputDockWidget : public QDockWidget
+class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
     QgsUserInputDockWidget( QWidget* parent = nullptr );
     ~QgsUserInputDockWidget();
 
-    //! add a widget to be displayed in the dock
+    /** Add a widget to be displayed in the dock.
+     * @param widget widget to add. Ownership is not transferred.
+     */
     void addUserInputWidget( QWidget* widget );
 
   protected:

@@ -170,7 +170,7 @@ void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
 void QgsOfflineEditingPluginGui::restoreState()
 {
   QSettings settings;
-  mOfflineDataPath = settings.value( "Plugin-OfflineEditing/offline_data_path", QDir().absolutePath() ).toString();
+  mOfflineDataPath = settings.value( "Plugin-OfflineEditing/offline_data_path", QDir::homePath() ).toString();
   restoreGeometry( settings.value( "Plugin-OfflineEditing/geometry" ).toByteArray() );
 }
 

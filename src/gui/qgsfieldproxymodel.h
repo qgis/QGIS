@@ -18,9 +18,9 @@
 
 #include <QSortFilterProxyModel>
 
-#include "qgsfieldmodel.h"
+class QgsFieldModel;
 
-/**
+/** \ingroup gui
  * @brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
  * @note added in 2.3
  */
@@ -41,7 +41,8 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
       Numeric = Int | LongLong | Double, /*!< All numeric fields */
       Date = 16, /*!< Date or datetime fields */
       Time = 32, /*!< Time fields */
-      All = Numeric | Date | String | Time, /*!< All fields */
+      HideReadOnly = 64,  /*!< Hide read-only fields */
+      All = Numeric | Date | String | Time, /*!< All field types */ //TODO QGIS 3 - rename to AllTypes
     };
     Q_DECLARE_FLAGS( Filters, Filter )
 
@@ -69,6 +70,9 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
   private:
     Filters mFilters;
     QgsFieldModel* mModel;
+
+    //! Returns true if the specified index represents a read only field
+    bool isReadOnly( const QModelIndex& index ) const;
 
     // QSortFilterProxyModel interface
   public:

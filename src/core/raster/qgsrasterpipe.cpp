@@ -21,6 +21,13 @@
 
 #include "qgslogger.h"
 #include "qgsrasterpipe.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgsbrightnesscontrastfilter.h"
+#include "qgshuesaturationfilter.h"
+#include "qgsrasterprojector.h"
+#include "qgsrasternuller.h"
 
 QgsRasterPipe::QgsRasterPipe()
 {

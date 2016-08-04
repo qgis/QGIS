@@ -4,7 +4,7 @@
 ***************************************************************************
     las2txt.py
     ---------------------
-    Date                 : September 2013
+    Date                 : September 2013 and May 2016
     Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -47,7 +47,10 @@ class las2txt(LAStoolsAlgorithm):
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         parse = self.getParameterValue(las2txt.PARSE)

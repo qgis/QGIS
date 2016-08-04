@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdxfpaintdevice.h"
+#include "qgsdxfpaintengine.h"
 
 QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport* dxf ): QPaintDevice(), mPaintEngine( nullptr )
 {
@@ -55,6 +56,10 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
       return 96;
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     case QPaintDevice::PdmDevicePixelRatio:
+      return 1;
+#endif
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+    case QPaintDevice::PdmDevicePixelRatioScaled:
       return 1;
 #endif
   }

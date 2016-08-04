@@ -15,6 +15,7 @@
 #include "qgscomposerlegendlayersdialog.h"
 
 #include <QStandardItem>
+#include "qgsmaplayer.h"
 
 QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog( QList<QgsMapLayer*> layers, QWidget* parent ): QDialog( parent )
 {

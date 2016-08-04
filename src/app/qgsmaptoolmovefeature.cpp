@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmovefeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -82,8 +83,8 @@ void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
     QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
     //find the closest feature
-    QgsGeometry* pointGeometry = QgsGeometry::fromPoint( layerCoords );
-    if ( !pointGeometry )
+    QgsGeometry pointGeometry = QgsGeometry::fromPoint( layerCoords );
+    if ( pointGeometry.isEmpty() )
     {
       return;
     }
@@ -94,19 +95,16 @@ void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
     QgsFeature f;
     while ( fit.nextFeature( f ) )
     {
-      if ( f.constGeometry() )
+      if ( f.hasGeometry() )
       {
-        double currentDistance = pointGeometry->distance( *f.constGeometry() );
+        double currentDistance = pointGeometry.distance( f.geometry() );
         if ( currentDistance < minDistance )
         {
           minDistance = currentDistance;
           cf = f;
         }
       }
-
     }
-
-    delete pointGeometry;
 
     if ( minDistance == std::numeric_limits<double>::max() )
     {
@@ -117,7 +115,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
     mMovedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
     mRubberBand = createRubberBand( vlayer->geometryType() );
-    mRubberBand->setToGeometry( cf.constGeometry(), vlayer );
+    mRubberBand->setToGeometry( cf.geometry(), vlayer );
   }
   else
   {
@@ -129,7 +127,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
 
     while ( it.nextFeature( feat ) )
     {
-      mRubberBand->addGeometry( feat.constGeometry(), vlayer );
+      mRubberBand->addGeometry( feat.geometry(), vlayer );
     }
   }
 
@@ -142,7 +140,6 @@ void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolMoveFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
-  //QgsDebugMsg("entering.");
   if ( !mRubberBand )
   {
     return;
@@ -166,8 +163,8 @@ void QgsMapToolMoveFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
   delete mRubberBand;
   mRubberBand = nullptr;
-  mCanvas->refresh();
   vlayer->endEditCommand();
+  vlayer->triggerRepaint();
 }
 
 //! called when map tool is being deactivated

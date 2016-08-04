@@ -19,6 +19,8 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgssvgcache.h"
+#include "qgsmapsettings.h"
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QVector2D>
@@ -252,22 +254,14 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     imageFixPoint.setY( 0 );
   }
 
-  //rasterize svg
+  QString svgFileName = ( type == StartMarker ? mStartMarkerFile : mEndMarkerFile );
+  if ( svgFileName.isEmpty() )
+    return;
+
   QSvgRenderer r;
-  if ( type == StartMarker )
-  {
-    if ( mStartMarkerFile.isEmpty() || !r.load( mStartMarkerFile ) )
-    {
-      return;
-    }
-  }
-  else //end marker
-  {
-    if ( mEndMarkerFile.isEmpty() || !r.load( mEndMarkerFile ) )
-    {
-      return;
-    }
-  }
+  const QByteArray &svgContent = QgsSvgCache::instance()->svgContent( svgFileName, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadOutlineColor, mArrowHeadOutlineWidth,
+                                 1.0, 1.0 );
+  r.load( svgContent );
 
   p->save();
   p->setRenderHint( QPainter::Antialiasing );
@@ -475,7 +469,7 @@ void QgsComposerArrow::setMarkerMode( MarkerMode mode )
   adaptItemSceneRect();
 }
 
-bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerArrow::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerArrowElem = doc.createElement( "ComposerArrow" );
   composerArrowElem.setAttribute( "arrowHeadWidth", QString::number( mArrowHeadWidth ) );
@@ -505,10 +499,10 @@ bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerArrowElem.appendChild( stopPointElem );
 
   elem.appendChild( composerArrowElem );
-  return _writeXML( composerArrowElem, doc );
+  return _writeXml( composerArrowElem, doc );
 }
 
-bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   mArrowHeadWidth = itemElem.attribute( "arrowHeadWidth", "2.0" ).toDouble();
   mArrowHeadFillColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "arrowHeadFillColor", "0,0,0,255" ) );
@@ -578,7 +572,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   //start point

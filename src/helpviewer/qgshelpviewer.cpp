@@ -50,7 +50,7 @@ void QgsReaderThread::run()
   }
 }
 
-QgsHelpViewer::QgsHelpViewer( QWidget *parent, const Qt::WindowFlags& fl )
+QgsHelpViewer::QgsHelpViewer( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );

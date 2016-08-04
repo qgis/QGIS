@@ -27,6 +27,7 @@ back to QgsVectorLayer.
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
 #include <QHeaderView>
@@ -74,8 +75,8 @@ void QgsAttributeActionDialog::init( const QgsActionManager& actions, const QgsA
   updateButtons();
 
   QgsAttributeTableConfig::ColumnConfig visibleActionWidgetConfig = QgsAttributeTableConfig::ColumnConfig();
-  visibleActionWidgetConfig.mType = QgsAttributeTableConfig::Action;
-  visibleActionWidgetConfig.mHidden = false;
+  visibleActionWidgetConfig.type = QgsAttributeTableConfig::Action;
+  visibleActionWidgetConfig.hidden = false;
 
   mShowInAttributeTable->setChecked( attributeTableConfig.actionWidgetVisible() );
   mAttributeTableWidgetType->setCurrentIndex( attributeTableConfig.actionWidgetStyle() );
@@ -298,8 +299,8 @@ void QgsAttributeActionDialog::addDefaultActions()
   insertRow( pos++, QgsAction::Generic, tr( "Echo attribute's value" ), "echo \"[% \"MY_FIELD\" %]\"", "", true );
   insertRow( pos++, QgsAction::Generic, tr( "Run an application" ), "ogr2ogr -f \"ESRI Shapefile\" \"[% \"OUTPUT_PATH\" %]\" \"[% \"INPUT_FILE\" %]\"", "", true );
   insertRow( pos++, QgsAction::GenericPython, tr( "Get feature id" ), "QtGui.QMessageBox.information(None, \"Feature id\", \"feature id is [% $id %]\")", "", false );
-  insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), "QtGui.QMessageBox.information(None, \"Current field's value\", \"[% $currentfield %]\")", "", false );
-  insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), "QtGui.QMessageBox.information(None, \"Clicked coords\", \"layer: [% $layerid %]\\ncoords: ([% $clickx %],[% $clicky %])\")", "", false );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), "QtGui.QMessageBox.information(None, \"Current field's value\", \"[% @current_field %]\")", "", false );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), "QtGui.QMessageBox.information(None, \"Clicked coords\", \"layer: [% @layer_id %]\\ncoords: ([% @click_x %],[% @click_y %])\")", "", false );
   insertRow( pos++, QgsAction::OpenUrl, tr( "Open file" ), "[% \"PATH\" %]", "", false );
   insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), "http://www.google.com/search?q=[% \"ATTRIBUTE\" %]", "", false );
 }

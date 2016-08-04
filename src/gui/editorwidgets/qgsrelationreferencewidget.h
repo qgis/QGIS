@@ -17,13 +17,7 @@
 #define QGSRELATIONREFERENCEWIDGET_H
 
 #include "qgsattributeeditorcontext.h"
-#include "qgscollapsiblegroupbox.h"
 #include "qgsfeature.h"
-#include "qgshighlight.h"
-#include "qgsmaptoolidentifyfeature.h"
-#include "qgsattributetablemodel.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsfeaturelistmodel.h"
 
 #include <QComboBox>
 #include <QToolButton>
@@ -33,7 +27,20 @@
 
 class QgsAttributeForm;
 class QgsVectorLayerTools;
+class QgsMapCanvas;
+class QgsMessageBar;
+class QgsHighlight;
+class QgsMapToolIdentifyFeature;
+class QgsMessageBarItem;
+class QgsAttributeTableModel;
+class QgsAttributeTableFilterModel;
+class QgsFeatureListModel;
+class QgsCollapsibleGroupBox;
+class QLabel;
 
+/** \ingroup gui
+ * \class QgsRelationReferenceWidget
+ */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
     Q_OBJECT
@@ -62,7 +69,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setForeignKey( const QVariant &value );
 
     //! returns the related feature foreign key
-    QVariant foreignKey();
+    QVariant foreignKey() const;
 
     void setEditorContext( const QgsAttributeEditorContext& context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
@@ -106,7 +113,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     //! return the related feature (from the referenced layer)
     //! if no feature is related, it returns an invalid feature
-    QgsFeature referencedFeature();
+    QgsFeature referencedFeature() const;
 
     /** Sets the widget to display in an indeterminate "mixed value" state.
      * @note added in QGIS 2.16

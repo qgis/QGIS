@@ -1,8 +1,16 @@
 /***************************************************************************
- *  qgsgeometrycheck.h                                                     *
- *  -------------------                                                    *
- *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
- *  email                : smani@sourcepole.ch                             *
+    qgsgeometrycheck.cpp
+    ---------------------
+    begin                : September 2015
+    copyright            : (C) 2014 by Sandro Mani / Sourcepole AG
+    email                : smani at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
 
 #include "qgsgeometrycollectionv2.h"
@@ -69,10 +77,11 @@ QgsGeometryCheckError::~QgsGeometryCheckError()
 QgsAbstractGeometryV2 *QgsGeometryCheckError::geometry()
 {
   QgsFeature f;
-  if ( mCheck->getFeaturePool()->get( featureId(), f ) && f.geometry() )
+  if ( mCheck->getFeaturePool()->get( featureId(), f ) && f.hasGeometry() )
   {
-    QgsAbstractGeometryV2* geom = f.geometry()->geometry();
-    return mVidx.part >= 0 ? QgsGeomUtils::getGeomPart( geom, mVidx.part )->clone() : geom->clone();
+    QgsGeometry featureGeom = f.geometry();
+    QgsAbstractGeometryV2* geom = featureGeom.geometry();
+    return mVidx.part >= 0 ? QgsGeometryCheckerUtils::getGeomPart( geom, mVidx.part )->clone() : geom->clone();
   }
   return nullptr;
 }
@@ -145,7 +154,8 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes& chan
 
 void QgsGeometryCheck::replaceFeatureGeometryPart( QgsFeature& feature, int partIdx, QgsAbstractGeometryV2* newPartGeom, Changes& changes ) const
 {
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry featureGeom = feature.geometry();
+  QgsAbstractGeometryV2* geom = featureGeom.geometry();
   if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
   {
     QgsGeometryCollectionV2* GeomCollection = static_cast<QgsGeometryCollectionV2*>( geom );
@@ -153,10 +163,11 @@ void QgsGeometryCheck::replaceFeatureGeometryPart( QgsFeature& feature, int part
     GeomCollection->addGeometry( newPartGeom );
     changes[feature.id()].append( Change( ChangeFeature, ChangeRemoved, QgsVertexId( partIdx ) ) );
     changes[feature.id()].append( Change( ChangeFeature, ChangeAdded, QgsVertexId( GeomCollection->partCount() - 1 ) ) );
+    feature.setGeometry( featureGeom );
   }
   else
   {
-    feature.setGeometry( new QgsGeometry( newPartGeom ) );
+    feature.setGeometry( QgsGeometry( newPartGeom ) );
     changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
   }
   mFeaturePool->updateFeature( feature );
@@ -164,7 +175,8 @@ void QgsGeometryCheck::replaceFeatureGeometryPart( QgsFeature& feature, int part
 
 void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature &feature, int partIdx, Changes &changes ) const
 {
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry featureGeom = feature.geometry();
+  QgsAbstractGeometryV2* geom = featureGeom.geometry();
   if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
   {
     static_cast<QgsGeometryCollectionV2*>( geom )->removeGeometry( partIdx );
@@ -175,6 +187,7 @@ void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature &feature, int partI
     }
     else
     {
+      feature.setGeometry( featureGeom );
       mFeaturePool->updateFeature( feature );
       changes[feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( partIdx ) ) );
     }
@@ -188,7 +201,8 @@ void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature &feature, int partI
 
 void QgsGeometryCheck::deleteFeatureGeometryRing( QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const
 {
-  QgsAbstractGeometryV2* partGeom = QgsGeomUtils::getGeomPart( feature.geometry()->geometry(), partIdx );
+  QgsGeometry featureGeom = feature.geometry();
+  QgsAbstractGeometryV2* partGeom = QgsGeometryCheckerUtils::getGeomPart( featureGeom.geometry(), partIdx );
   if ( dynamic_cast<QgsCurvePolygonV2*>( partGeom ) )
   {
     // If we delete the exterior ring of a polygon, it makes no sense to keep the interiors
@@ -199,6 +213,7 @@ void QgsGeometryCheck::deleteFeatureGeometryRing( QgsFeature &feature, int partI
     else
     {
       static_cast<QgsCurvePolygonV2*>( partGeom )->removeInteriorRing( ringIdx - 1 );
+      feature.setGeometry( featureGeom );
       mFeaturePool->updateFeature( feature );
       changes[feature.id()].append( Change( ChangeRing, ChangeRemoved, QgsVertexId( partIdx, ringIdx ) ) );
     }

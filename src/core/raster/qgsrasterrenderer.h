@@ -20,7 +20,6 @@
 
 #include <QPair>
 
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;
@@ -33,6 +32,9 @@ class QgsRasterTransparency;
   */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
+
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer );
+
   public:
     // Origin of min / max values
     enum MinMaxOrigin
@@ -60,13 +62,13 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual int bandCount() const override;
 
-    virtual QGis::DataType dataType( int bandNo ) const override;
+    virtual Qgis::DataType dataType( int bandNo ) const override;
 
     virtual QString type() const { return mType; }
 
     virtual bool setInput( QgsRasterInterface* input ) override;
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override = 0;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override = 0;
 
     bool usesTransparency() const;
 
@@ -83,7 +85,12 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
 
     /** Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& rendererElem ) override;
+    void readXml( const QDomElement& rendererElem ) override;
+
+    /** Copies common properties like opacity / transparency data from other renderer.
+     *  Useful when cloning renderers.
+     *  @note added in 2.16  */
+    void copyCommonProperties( const QgsRasterRenderer* other );
 
     /** Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const { return QList<int>(); }
@@ -94,8 +101,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
   protected:
 
-    /** Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
-    void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
+    /** Write upper class info into rasterrenderer element (called by writeXml method of subclasses)*/
+    void _writeXml( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
     QString mType;
 

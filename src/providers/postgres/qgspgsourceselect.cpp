@@ -55,15 +55,15 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    Q_FOREACH ( QGis::WkbType type,
-                QList<QGis::WkbType>()
-                << QGis::WKBPoint
-                << QGis::WKBLineString
-                << QGis::WKBPolygon
-                << QGis::WKBMultiPoint
-                << QGis::WKBMultiLineString
-                << QGis::WKBMultiPolygon
-                << QGis::WKBNoGeometry )
+    Q_FOREACH ( QgsWkbTypes::Type type,
+                QList<QgsWkbTypes::Type>()
+                << QgsWkbTypes::Point
+                << QgsWkbTypes::LineString
+                << QgsWkbTypes::Polygon
+                << QgsWkbTypes::MultiPoint
+                << QgsWkbTypes::MultiLineString
+                << QgsWkbTypes::MultiPolygon
+                << QgsWkbTypes::NoGeometry )
     {
       cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
     }
@@ -157,10 +157,10 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   {
     if ( index.column() == QgsPgTableModel::dbtmType )
     {
-      QGis::WkbType type = ( QGis::WkbType ) cb->itemData( cb->currentIndex() ).toInt();
+      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->itemData( cb->currentIndex() ).toInt();
 
       model->setData( index, QgsPgTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QGis::WKBUnknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsPgTableModel::dbtmPkCol )
@@ -251,6 +251,8 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   mTablesTreeView->setSortingEnabled( true );
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( new QgsPgSourceSelectDelegate( this ) );
+
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
   QSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "/qgis/addPostgisDC", false ).toBool() ?
@@ -446,7 +448,6 @@ void QgsPgSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QStrin
 
 void QgsPgSourceSelect::setLayerType( const QgsPostgresLayerProperty& layerProperty )
 {
-  QgsDebugMsg( "entering." );
   mTableModel.addTableEntry( layerProperty );
 }
 
@@ -529,7 +530,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   // populate the table list
-  QgsDataSourceURI uri = QgsPostgresConn::connUri( cmbConnections->currentText() );
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( cmbConnections->currentText() );
 
   QgsDebugMsg( "Connection info: " + uri.connectionInfo( false ) );
 
@@ -556,9 +557,6 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 void QgsPgSourceSelect::finishList()
 {
   QApplication::restoreOverrideCursor();
-
-  if ( cmbConnections->count() > 0 )
-    mAddButton->setEnabled( true );
 
 #if 0
   for ( int i = 0; i < QgsPgTableModel::dbtmColumns; i++ )
@@ -588,7 +586,7 @@ QString QgsPgSourceSelect::connectionInfo( bool expandAuthCfg )
   return mDataSrcUri.connectionInfo( expandAuthCfg );
 }
 
-QgsDataSourceURI QgsPgSourceSelect::dataSourceUri()
+QgsDataSourceUri QgsPgSourceSelect::dataSourceUri()
 {
   return mDataSrcUri;
 }
@@ -657,4 +655,11 @@ void QgsPgSourceSelect::setConnectionListPosition()
 void QgsPgSourceSelect::setSearchExpression( const QString& regexp )
 {
   Q_UNUSED( regexp );
+}
+
+void QgsPgSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+{
+  Q_UNUSED( deselected )
+  Q_UNUSED( selected )
+  mAddButton->setEnabled( !mTablesTreeView->selectionModel()->selection().isEmpty() );
 }

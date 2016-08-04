@@ -1,8 +1,16 @@
 /***************************************************************************
- *  qgsgeometryholescheck.cpp                                              *
- *  -------------------                                                    *
- *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
- *  email                : smani@sourcepole.ch                             *
+    qgsgeometryholecheck.cpp
+    ---------------------
+    begin                : September 2015
+    copyright            : (C) 2014 by Sandro Mani / Sourcepole AG
+    email                : smani at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
 
 #include "qgsgeometryholecheck.h"
@@ -20,13 +28,14 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
       continue;
     }
 
-    QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+    QgsGeometry featureGeom = feature.geometry();
+    QgsAbstractGeometryV2* geom = featureGeom.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       // Rings after the first one are interiors
       for ( int iRing = 1, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        errors.append( new QgsGeometryCheckError( this, featureid, QgsGeomUtils::getGeomPart( geom, iPart )->centroid(), QgsVertexId( iPart, iRing ) ) );
+        errors.append( new QgsGeometryCheckError( this, featureid, QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid(), QgsVertexId( iPart, iRing ) ) );
       }
     }
   }
@@ -40,7 +49,8 @@ void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError* error, int method, i
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry featureGeom = feature.geometry();
+  QgsAbstractGeometryV2* geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists

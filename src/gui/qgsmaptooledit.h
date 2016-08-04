@@ -24,7 +24,9 @@ class QgsGeometryRubberBand;
 class QgsVectorLayer;
 class QKeyEvent;
 
-/** Base class for map tools that edit vector geometry*/
+/** \ingroup gui
+ * Base class for map tools that edit vector geometry
+*/
 class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
 {
     Q_OBJECT
@@ -33,11 +35,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     QgsMapToolEdit( QgsMapCanvas* canvas );
     virtual ~QgsMapToolEdit();
 
-    /**
-     * Is this an edit tool?
-     * @return  Of course it is or you would not be inheriting from it.
-     */
-    virtual bool isEditTool() override { return true; }
+    virtual Flags flags() const override { return QgsMapTool::EditTool; }
 
   protected:
 
@@ -47,9 +45,9 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      *   @param geometryType
      *   @param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
      */
-    QgsRubberBand* createRubberBand( QGis::GeometryType geometryType = QGis::Line, bool alternativeBand = false );
+    QgsRubberBand* createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false );
 
-    QgsGeometryRubberBand* createGeometryRubberBand( QGis::GeometryType geometryType = QGis::Line, bool alternativeBand = false ) const;
+    QgsGeometryRubberBand* createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const;
 
     /** Returns the current vector layer of the map canvas or 0*/
     QgsVectorLayer* currentVectorLayer();

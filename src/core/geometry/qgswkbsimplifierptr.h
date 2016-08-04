@@ -16,11 +16,12 @@
 #define QGSWKBSIMPLIFIERPTR_H
 
 #include "qgswkbptr.h"
-#include "qgsvectorsimplifymethod.h"
 
 class QgsGeometry;
+class QgsVectorSimplifyMethod;
 
-/** \class QgsConstWkbSimplifierPtr
+/** \ingroup core
+ * \class QgsConstWkbSimplifierPtr
  * \note not available in Python bindings
  */
 

@@ -98,6 +98,20 @@ params:
   OTHER: another param
 ```
 
+### File type parameters
+
+If you need an external file for the algorithm test, you need to specify the 'file' type and the (relative) path to the file in its 'name':
+
+```yaml
+params:
+  PAR: 2
+  STR: string
+  EXTFILE:
+    type: file
+    name: custom/grass7/extfile.txt
+  OTHER: another param
+```
+
 ### Results
 
 Results are specified very similar.

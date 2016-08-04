@@ -1,4 +1,10 @@
 /***************************************************************************
+    qgsloadstylefromdbdialog.cpp
+    ---------------------
+    begin                : April 2013
+    copyright            : (C) 2013 by Emilio Loi
+    email                : loi at faunalia dot it
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

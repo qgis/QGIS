@@ -10,7 +10,7 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     virtual QgsPalettedRasterRenderer * clone() const /Factory/;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) /Factory/;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) /Factory/;
 
     /** Returns number of colors*/
     int nColors() const;
@@ -30,7 +30,7 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
      *  @note added in 2.1 */
     void setLabel( int idx, const QString& label );
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 

@@ -18,7 +18,6 @@
 #ifndef QGSBRIGHTNESSCONTRASTFILTER_H
 #define QGSBRIGHTNESSCONTRASTFILTER_H
 
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;
@@ -36,11 +35,11 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 
     int bandCount() const override;
 
-    QGis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType dataType( int bandNo ) const override;
 
     bool setInput( QgsRasterInterface* input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
     int brightness() const { return mBrightness; }
@@ -48,10 +47,10 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
     int contrast() const { return mContrast; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     /** Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem ) override;
+    void readXml( const QDomElement& filterElem ) override;
 
   private:
     /** Adjusts a color component by the specified brightness and contrast factor*/

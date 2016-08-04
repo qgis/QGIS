@@ -237,7 +237,7 @@ bool QgsPluginRegistry::checkQgisVersion( const QString& minVersion, const QStri
   }
 
   // our qgis version - cut release name after version number
-  QString qgisVersion = QString( QGis::QGIS_VERSION ).section( '-', 0, 0 );
+  QString qgisVersion = Qgis::QGIS_VERSION.section( '-', 0, 0 );
 
   QStringList qgisVersionParts = qgisVersion.split( '.' );
 

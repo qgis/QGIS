@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="12" column="2">
-    <widget class="QgsColorButtonV2" name="mLastRowColorButton">
+    <widget class="QgsColorButton" name="mLastRowColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -92,7 +92,7 @@
     </widget>
    </item>
    <item row="3" column="2">
-    <widget class="QgsColorButtonV2" name="mOddColumnsColorButton">
+    <widget class="QgsColorButton" name="mOddColumnsColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -117,7 +117,7 @@
     </widget>
    </item>
    <item row="5" column="2">
-    <widget class="QgsColorButtonV2" name="mEvenColumnsColorButton">
+    <widget class="QgsColorButton" name="mEvenColumnsColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -142,7 +142,7 @@
     </widget>
    </item>
    <item row="11" column="2">
-    <widget class="QgsColorButtonV2" name="mFirstRowColorButton">
+    <widget class="QgsColorButton" name="mFirstRowColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -167,7 +167,7 @@
     </widget>
    </item>
    <item row="9" column="2">
-    <widget class="QgsColorButtonV2" name="mLastColumnColorButton">
+    <widget class="QgsColorButton" name="mLastColumnColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -212,7 +212,7 @@
     </spacer>
    </item>
    <item row="8" column="2">
-    <widget class="QgsColorButtonV2" name="mFirstColumnColorButton">
+    <widget class="QgsColorButton" name="mFirstColumnColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -237,7 +237,7 @@
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QgsColorButtonV2" name="mDefaultColorButton">
+    <widget class="QgsColorButton" name="mDefaultColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -262,7 +262,7 @@
     </widget>
    </item>
    <item row="10" column="2">
-    <widget class="QgsColorButtonV2" name="mHeaderRowColorButton">
+    <widget class="QgsColorButton" name="mHeaderRowColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -311,7 +311,7 @@
     </widget>
    </item>
    <item row="7" column="2">
-    <widget class="QgsColorButtonV2" name="mEvenRowsColorButton">
+    <widget class="QgsColorButton" name="mEvenRowsColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -343,7 +343,7 @@
     </widget>
    </item>
    <item row="6" column="2">
-    <widget class="QgsColorButtonV2" name="mOddRowsColorButton">
+    <widget class="QgsColorButton" name="mOddRowsColorButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -371,9 +371,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

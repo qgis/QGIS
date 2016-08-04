@@ -24,7 +24,7 @@
 class QDomDocument;
 class QDomNode;
 
-/**
+/** \ingroup core
  * Simple key-value store (keys = strings, values = variants) that supports loading/saving to/from XML
  * in \verbatim <customproperties> \endverbatim element.
  *

@@ -19,12 +19,14 @@
 #include <QString>
 #include <QVector>
 #include <QDomNode>
+#include <QVariant>
 
-#include "qgsfield.h"
+class QgsFields;
 
-/**
+/** \ingroup core
  * This is a container for configuration of the attribute table.
  * The configuration is specific for one vector layer.
+ * \note added in QGIS 2.16
  */
 
 class CORE_EXPORT QgsAttributeTableConfig
@@ -44,9 +46,19 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     struct ColumnConfig
     {
-      Type mType;    //!< The type of this column.
-      QString mName; //!< The name of the attribute if this column represents a field
-      bool mHidden;  //!< Flag that controls if the column is hidden
+      //! Constructor for ColumnConfig
+      ColumnConfig()
+          : type( Field )
+          , hidden( false )
+          , width( -1 )
+      {}
+
+      bool operator== ( const ColumnConfig& other ) const;
+
+      Type type;    //!< The type of this column.
+      QString name; //!< The name of the attribute if this column represents a field
+      bool hidden;  //!< Flag that controls if the column is hidden
+      int width; //!< Width of column, or -1 for default width
     };
 
     /**
@@ -65,6 +77,16 @@ class CORE_EXPORT QgsAttributeTableConfig
      * The list order defines the order of appearance.
      */
     QVector<ColumnConfig> columns() const;
+
+    /** Returns true if the configuration is empty, ie it contains no columns.
+     */
+    bool isEmpty() const;
+
+    /** Maps a visible column index to its original column index.
+     * @param visibleColumn index of visible column
+     * @returns corresponding index when hidden columns are considered
+     */
+    int mapVisibleColumnToIndex( int visibleColumn ) const;
 
     /**
      * Set the list of columns visible in the attribute table.
@@ -120,10 +142,54 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     void setSortExpression( const QString& sortExpression );
 
+    /** Returns the width of a column, or -1 if column should use default width.
+     * @param column column index
+     * @see setColumnWidth()
+     */
+    int columnWidth( int column ) const;
+
+    /** Sets the width of a column.
+     * @param column column index
+     * @param width column width in pixels, or -1 if column should use default width
+     * @see columnWidth()
+     */
+    void setColumnWidth( int column, int width );
+
+    /** Returns true if the specified column is hidden.
+     * @param column column index
+     * @see setColumnHidden()
+     */
+    bool columnHidden( int column ) const;
+
+    /** Sets whether the specified column should be hidden.
+     * @param column column index
+     * @param hidden set to true to hide column
+     * @see columnHidden()
+     */
+    void setColumnHidden( int column, bool hidden );
+
+    /**
+     * Get the sort order
+     * @note Added in 2.16
+     */
+    Qt::SortOrder sortOrder() const;
+
+    /**
+     * Set the sort order
+     * @note Added in 2.16
+     */
+    void setSortOrder( const Qt::SortOrder& sortOrder );
+
+    /**
+     * Compare this configuration to other.
+     */
+    bool operator!= ( const QgsAttributeTableConfig& other ) const;
+
   private:
     QVector<ColumnConfig> mColumns;
     ActionWidgetStyle mActionWidgetStyle;
     QString mSortExpression;
+    Qt::SortOrder mSortOrder;
 };
 
 Q_DECLARE_METATYPE( QgsAttributeTableConfig::ColumnConfig )

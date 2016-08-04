@@ -17,10 +17,13 @@
 #ifndef RTREE_H
 #define RTREE_H
 
+#include "qgis.h"
 #include <cstdio>
 #include <cmath>
 #include <cassert>
 #include <QtGlobal>
+
+/// @cond PRIVATE
 
 #define ASSERT assert // RTree uses ASSERT( condition )
 
@@ -41,22 +44,23 @@ namespace pal
   class RTFileStream;  // File I/O helper class, look below for implementation and notes.
 
 
-/// \class RTree
-/// Implementation of RTree, a multidimensional bounding rectangle tree.
-/// Example usage: For a 3-dimensional tree use RTree<Object*, float, 3> myTree;
-///
-/// This modified, templated C++ version by Greg Douglas at Auran (http://www.auran.com)
-///
-/// DATATYPE Referenced data, should be int, void*, obj* etc. no larger than sizeof<void*> and simple type
-/// ELEMTYPE Type of element such as int or float
-/// NUMDIMS Number of dimensions such as 2 or 3
-/// ELEMTYPEREAL Type of element that allows fractional and large values such as float or double, for use in volume calcs
-///
-/// NOTES: Inserting and removing data requires the knowledge of its constant Minimal Bounding Rectangle.
-///        This version uses new/delete for nodes, I recommend using a fixed size allocator for efficiency.
-///        Instead of using a callback function for returned results, I recommend and efficient pre-sized, grow-only memory
-///        array similar to MFC CArray or STL Vector for returning search query result.
-///
+  /** \ingroup core
+     Implementation of RTree, a multidimensional bounding rectangle tree.
+     Example usage: For a 3-dimensional tree use RTree<Object*, float, 3> myTree;
+
+     This modified, templated C++ version by Greg Douglas at Auran (http://www.auran.com)
+
+     DATATYPE Referenced data, should be int, void*, obj* etc. no larger than sizeof<void*> and simple type
+     ELEMTYPE Type of element such as int or float
+     NUMDIMS Number of dimensions such as 2 or 3
+     ELEMTYPEREAL Type of element that allows fractional and large values such as float or double, for use in volume calcs
+
+     NOTES: Inserting and removing data requires the knowledge of its constant Minimal Bounding Rectangle.
+            This version uses new/delete for nodes, I recommend using a fixed size allocator for efficiency.
+            Instead of using a callback function for returned results, I recommend and efficient pre-sized, grow-only memory
+            array similar to MFC CArray or STL Vector for returning search query result.
+  */
+
   template < class DATATYPE, class ELEMTYPE, int NUMDIMS,
   class ELEMTYPEREAL = ELEMTYPE, int TMAXNODES = 8, int TMINNODES = TMAXNODES / 2 >
   class RTree
@@ -119,7 +123,9 @@ namespace pal
       /// Save tree contents to stream
       bool Save( RTFileStream& a_stream );
 
-      /// Iterator is not remove safe.
+      /** \ingroup core
+       * Iterator is not remove safe.
+       */
       class Iterator
       {
         private:
@@ -355,8 +361,10 @@ namespace pal
   };
 
 
-// Because there is not stream support, this is a quick and dirty file I/O helper.
-// Users will likely replace its usage with a Stream implementation from their favorite API.
+  // Because there is not stream support, this is a quick and dirty file I/O helper.
+  // Users will likely replace its usage with a Stream implementation from their favorite API.
+  /** \ingroup core
+   */
   class RTFileStream
   {
       FILE* m_file;
@@ -1587,6 +1595,8 @@ namespace pal
 #undef RTREE_QUAL
 
 }
+
+/// @endcond
 
 #endif //RTREE_H
 

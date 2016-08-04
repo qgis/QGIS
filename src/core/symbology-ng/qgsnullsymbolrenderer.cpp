@@ -15,6 +15,7 @@
 
 #include "qgsnullsymbolrenderer.h"
 #include "qgssymbolv2.h"
+#include "qgsgeometry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -46,15 +47,15 @@ bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext
     return true;
   }
 
-  if ( !feature.constGeometry() ||
-       feature.constGeometry()->type() == QGis::NoGeometry ||
-       feature.constGeometry()->type() == QGis::UnknownGeometry )
+  if ( !feature.hasGeometry() ||
+       feature.geometry().type() == QgsWkbTypes::NullGeometry ||
+       feature.geometry().type() == QgsWkbTypes::UnknownGeometry )
     return true;
 
   if ( mSymbol.isNull() )
   {
     //create default symbol
-    mSymbol.reset( QgsSymbolV2::defaultSymbol( feature.constGeometry()->type() ) );
+    mSymbol.reset( QgsSymbolV2::defaultSymbol( feature.geometry().type() ) );
     mSymbol->startRender( context );
   }
 

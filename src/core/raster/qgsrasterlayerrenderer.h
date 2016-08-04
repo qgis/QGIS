@@ -21,12 +21,13 @@
 class QPainter;
 
 class QgsMapToPixel;
+class QgsRasterBlockFeedback;
 class QgsRasterLayer;
 class QgsRasterPipe;
 struct QgsRasterViewPort;
 class QgsRenderContext;
 
-/**
+/** \ingroup core
  * Implementation of threaded rendering for raster layers.
  *
  * @note added in 2.4
@@ -40,6 +41,8 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     virtual bool render() override;
 
+    virtual QgsFeedback* feedback() const override;
+
   protected:
 
     QPainter* mPainter;
@@ -47,6 +50,9 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterViewPort* mRasterViewPort;
 
     QgsRasterPipe* mPipe;
+    QgsRenderContext& mContext;
+
+    QgsRasterBlockFeedback* mFeedback;
 };
 
 #endif // QGSRASTERLAYERRENDERER_H

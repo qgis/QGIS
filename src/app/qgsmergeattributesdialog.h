@@ -22,6 +22,7 @@
 #include "ui_qgsmergeattributesdialogbase.h"
 #include "qgsfeature.h"
 #include "qgsstatisticalsummary.h"
+#include "qgsfield.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;
@@ -41,7 +42,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     };
 
 
-    QgsMergeAttributesDialog( const QgsFeatureList& features, QgsVectorLayer* vl, QgsMapCanvas* canvas, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsMergeAttributesDialog( const QgsFeatureList& features, QgsVectorLayer* vl, QgsMapCanvas* canvas, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsMergeAttributesDialog();
 
     QgsAttributes mergedAttributes() const;

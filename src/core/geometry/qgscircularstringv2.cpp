@@ -28,7 +28,7 @@
 
 QgsCircularStringV2::QgsCircularStringV2(): QgsCurveV2()
 {
-
+  mWkbType = QgsWkbTypes::CircularString;
 }
 
 QgsCircularStringV2::~QgsCircularStringV2()
@@ -57,11 +57,11 @@ QgsCircularStringV2 *QgsCircularStringV2::clone() const
 
 void QgsCircularStringV2::clear()
 {
+  mWkbType = QgsWkbTypes::CircularString;
   mX.clear();
   mY.clear();
   mZ.clear();
   mM.clear();
-  mWkbType = QgsWKBTypes::Unknown;
   clearCache();
 }
 
@@ -78,7 +78,7 @@ QgsRectangle QgsCircularStringV2::calculateBoundingBox() const
     else
     {
       QgsRectangle segmentBox = segmentBoundingBox( QgsPointV2( mX[i], mY[i] ), QgsPointV2( mX[i + 1], mY[i + 1] ), QgsPointV2( mX[i + 2], mY[i + 2] ) );
-      bbox.combineExtentWith( &segmentBox );
+      bbox.combineExtentWith( segmentBox );
     }
   }
 
@@ -212,8 +212,8 @@ bool QgsCircularStringV2::fromWkb( QgsConstWkbPtr wkbPtr )
   if ( !wkbPtr )
     return false;
 
-  QgsWKBTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::CircularString )
+  QgsWkbTypes::Type type = wkbPtr.readHeader();
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::CircularString )
   {
     return false;
   }
@@ -250,9 +250,9 @@ bool QgsCircularStringV2::fromWkt( const QString& wkt )
 {
   clear();
 
-  QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
+  QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::parseType( geometryType() ) )
+  if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::CircularString )
     return false;
   mWkbType = parts.first;
 
@@ -392,18 +392,18 @@ QgsPointV2 QgsCircularStringV2::pointN( int i ) const
     m = mM.at( i );
   }
 
-  QgsWKBTypes::Type t = QgsWKBTypes::Point;
+  QgsWkbTypes::Type t = QgsWkbTypes::Point;
   if ( is3D() && isMeasure() )
   {
-    t = QgsWKBTypes::PointZM;
+    t = QgsWkbTypes::PointZM;
   }
   else if ( is3D() )
   {
-    t = QgsWKBTypes::PointZ;
+    t = QgsWkbTypes::PointZ;
   }
   else if ( isMeasure() )
   {
-    t = QgsWKBTypes::PointM;
+    t = QgsWkbTypes::PointM;
   }
   return QgsPointV2( t, x, y, z, m );
 }
@@ -424,7 +424,7 @@ void QgsCircularStringV2::setPoints( const QgsPointSequenceV2 &points )
 
   if ( points.size() < 1 )
   {
-    mWkbType = QgsWKBTypes::Unknown;
+    mWkbType = QgsWkbTypes::Unknown;
     mX.clear();
     mY.clear();
     mZ.clear();
@@ -437,7 +437,7 @@ void QgsCircularStringV2::setPoints( const QgsPointSequenceV2 &points )
   bool hasZ = firstPt.is3D();
   bool hasM = firstPt.isMeasure();
 
-  setZMTypeFromSubGeometry( &firstPt, QgsWKBTypes::CircularString );
+  setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::CircularString );
 
   mX.resize( points.size() );
   mY.resize( points.size() );
@@ -536,11 +536,11 @@ void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2
   points.append( p1 );
   if ( p2 != p3 && p1 != p2 ) //draw straight line segment if two points have the same position
   {
-    QgsWKBTypes::Type pointWkbType = QgsWKBTypes::Point;
+    QgsWkbTypes::Type pointWkbType = QgsWkbTypes::Point;
     if ( hasZ )
-      pointWkbType = QgsWKBTypes::addZ( pointWkbType );
+      pointWkbType = QgsWkbTypes::addZ( pointWkbType );
     if ( hasM )
-      pointWkbType = QgsWKBTypes::addM( pointWkbType );
+      pointWkbType = QgsWkbTypes::addM( pointWkbType );
 
     //make sure the curve point p2 is part of the segmentized vertices. But only if p1 != p3
     bool addP2 = true;
@@ -629,7 +629,7 @@ void QgsCircularStringV2::draw( QPainter& p ) const
   p.drawPath( path );
 }
 
-void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
+void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   clearCache();
 
@@ -637,7 +637,8 @@ void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordi
 
   bool hasZ = is3D();
   int nPoints = numPoints();
-  if ( !hasZ )
+  bool useDummyZ = !hasZ || !transformZ;
+  if ( useDummyZ )
   {
     zArray = new double[nPoints];
     for ( int i = 0; i < nPoints; ++i )
@@ -646,7 +647,7 @@ void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordi
     }
   }
   ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
-  if ( !hasZ )
+  if ( useDummyZ )
   {
     delete[] zArray;
   }
@@ -779,9 +780,10 @@ bool QgsCircularStringV2::deleteVertex( QgsVertexId position )
   int nVertices = this->numPoints();
   if ( nVertices < 4 ) //circular string must have at least 3 vertices
   {
-    return false;
+    clear();
+    return true;
   }
-  if ( position.vertex < 1 || position.vertex > ( nVertices - 2 ) )
+  if ( position.vertex < 0 || position.vertex > ( nVertices - 1 ) )
   {
     return false;
   }
@@ -878,7 +880,7 @@ void QgsCircularStringV2::sumUpArea( double& sum ) const
     //segment is a full circle, p2 is the center point
     if ( p1 == p3 )
     {
-      double r2 = QgsGeometryUtils::sqrDistance2D( p1, p2 );
+      double r2 = QgsGeometryUtils::sqrDistance2D( p1, p2 ) / 4.0;
       sum += M_PI * r2;
       continue;
     }
@@ -1078,11 +1080,11 @@ QgsCircularStringV2* QgsCircularStringV2::reversed() const
 
 bool QgsCircularStringV2::addZValue( double zValue )
 {
-  if ( QgsWKBTypes::hasZ( mWkbType ) )
+  if ( QgsWkbTypes::hasZ( mWkbType ) )
     return false;
 
   clearCache();
-  mWkbType = QgsWKBTypes::addZ( mWkbType );
+  mWkbType = QgsWkbTypes::addZ( mWkbType );
 
   int nPoints = numPoints();
   mZ.clear();
@@ -1096,11 +1098,11 @@ bool QgsCircularStringV2::addZValue( double zValue )
 
 bool QgsCircularStringV2::addMValue( double mValue )
 {
-  if ( QgsWKBTypes::hasM( mWkbType ) )
+  if ( QgsWkbTypes::hasM( mWkbType ) )
     return false;
 
   clearCache();
-  mWkbType = QgsWKBTypes::addM( mWkbType );
+  mWkbType = QgsWkbTypes::addM( mWkbType );
 
   int nPoints = numPoints();
   mM.clear();
@@ -1114,24 +1116,24 @@ bool QgsCircularStringV2::addMValue( double mValue )
 
 bool QgsCircularStringV2::dropZValue()
 {
-  if ( !QgsWKBTypes::hasZ( mWkbType ) )
+  if ( !QgsWkbTypes::hasZ( mWkbType ) )
     return false;
 
   clearCache();
 
-  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  mWkbType = QgsWkbTypes::dropZ( mWkbType );
   mZ.clear();
   return true;
 }
 
 bool QgsCircularStringV2::dropMValue()
 {
-  if ( !QgsWKBTypes::hasM( mWkbType ) )
+  if ( !QgsWkbTypes::hasM( mWkbType ) )
     return false;
 
   clearCache();
 
-  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  mWkbType = QgsWkbTypes::dropM( mWkbType );
   mM.clear();
   return true;
 }

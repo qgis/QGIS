@@ -17,7 +17,6 @@ import qgis  # NOQA
 from qgis.testing import unittest
 from qgis.core import (
     QgsUnitTypes,
-    QGis,
     QgsSymbolV2
 )
 from qgis.PyQt.QtCore import QLocale
@@ -31,14 +30,14 @@ class TestQgsUnitTypes(unittest.TestCase):
 
     def testDistanceUnitType(self):
         """Test QgsUnitTypes::unitType() """
-        expected = {QGis.Meters: QgsUnitTypes.Standard,
-                    QGis.Kilometers: QgsUnitTypes.Standard,
-                    QGis.Feet: QgsUnitTypes.Standard,
-                    QGis.Yards: QgsUnitTypes.Standard,
-                    QGis.Miles: QgsUnitTypes.Standard,
-                    QGis.Degrees: QgsUnitTypes.Geographic,
-                    QGis.UnknownUnit: QgsUnitTypes.UnknownType,
-                    QGis.NauticalMiles: QgsUnitTypes.Standard
+        expected = {QgsUnitTypes.DistanceMeters: QgsUnitTypes.Standard,
+                    QgsUnitTypes.DistanceKilometers: QgsUnitTypes.Standard,
+                    QgsUnitTypes.DistanceFeet: QgsUnitTypes.Standard,
+                    QgsUnitTypes.DistanceYards: QgsUnitTypes.Standard,
+                    QgsUnitTypes.DistanceMiles: QgsUnitTypes.Standard,
+                    QgsUnitTypes.DistanceDegrees: QgsUnitTypes.Geographic,
+                    QgsUnitTypes.DistanceUnknownUnit: QgsUnitTypes.UnknownType,
+                    QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.Standard
                     }
 
         for t in expected.keys():
@@ -46,14 +45,14 @@ class TestQgsUnitTypes(unittest.TestCase):
 
     def testEncodeDecodeDistanceUnits(self):
         """Test encoding and decoding distance units"""
-        units = [QGis.Meters,
-                 QGis.Kilometers,
-                 QGis.Feet,
-                 QGis.Yards,
-                 QGis.Miles,
-                 QGis.Degrees,
-                 QGis.UnknownUnit,
-                 QGis.NauticalMiles]
+        units = [QgsUnitTypes.DistanceMeters,
+                 QgsUnitTypes.DistanceKilometers,
+                 QgsUnitTypes.DistanceFeet,
+                 QgsUnitTypes.DistanceYards,
+                 QgsUnitTypes.DistanceMiles,
+                 QgsUnitTypes.DistanceDegrees,
+                 QgsUnitTypes.DistanceUnknownUnit,
+                 QgsUnitTypes.DistanceNauticalMiles]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeDistanceUnit(QgsUnitTypes.encodeUnit(u))
@@ -63,23 +62,23 @@ class TestQgsUnitTypes(unittest.TestCase):
         # Test decoding bad units
         res, ok = QgsUnitTypes.decodeDistanceUnit('bad')
         self.assertFalse(ok)
-        self.assertEqual(res, QGis.UnknownUnit)
+        self.assertEqual(res, QgsUnitTypes.DistanceUnknownUnit)
 
         # Test that string is cleaned before decoding
         res, ok = QgsUnitTypes.decodeDistanceUnit(' FeEt  ')
         assert ok
-        self.assertEqual(res, QGis.Feet)
+        self.assertEqual(res, QgsUnitTypes.DistanceFeet)
 
     def testDistanceUnitsToFromString(self):
         """Test converting distance units to and from translated strings"""
-        units = [QGis.Meters,
-                 QGis.Kilometers,
-                 QGis.Feet,
-                 QGis.Yards,
-                 QGis.Miles,
-                 QGis.Degrees,
-                 QGis.UnknownUnit,
-                 QGis.NauticalMiles]
+        units = [QgsUnitTypes.DistanceMeters,
+                 QgsUnitTypes.DistanceKilometers,
+                 QgsUnitTypes.DistanceFeet,
+                 QgsUnitTypes.DistanceYards,
+                 QgsUnitTypes.DistanceMiles,
+                 QgsUnitTypes.DistanceDegrees,
+                 QgsUnitTypes.DistanceUnknownUnit,
+                 QgsUnitTypes.DistanceNauticalMiles]
 
         for u in units:
             res, ok = QgsUnitTypes.stringToDistanceUnit(QgsUnitTypes.toString(u))
@@ -89,26 +88,26 @@ class TestQgsUnitTypes(unittest.TestCase):
         # Test converting bad strings
         res, ok = QgsUnitTypes.stringToDistanceUnit('bad')
         self.assertFalse(ok)
-        self.assertEqual(res, QGis.UnknownUnit)
+        self.assertEqual(res, QgsUnitTypes.DistanceUnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToDistanceUnit(' {}  '.format(QgsUnitTypes.toString(QGis.Feet).upper()))
-        print(' {}  '.format(QgsUnitTypes.toString(QGis.Feet).upper()))
+        res, ok = QgsUnitTypes.stringToDistanceUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.DistanceFeet).upper()))
+        print(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.DistanceFeet).upper()))
         assert ok
-        self.assertEqual(res, QGis.Feet)
+        self.assertEqual(res, QgsUnitTypes.DistanceFeet)
 
     def testAreaUnitType(self):
         """Test QgsUnitTypes::unitType() for area units """
-        expected = {QgsUnitTypes.SquareMeters: QgsUnitTypes.Standard,
-                    QgsUnitTypes.SquareKilometers: QgsUnitTypes.Standard,
-                    QgsUnitTypes.SquareFeet: QgsUnitTypes.Standard,
-                    QgsUnitTypes.SquareYards: QgsUnitTypes.Standard,
-                    QgsUnitTypes.SquareMiles: QgsUnitTypes.Standard,
-                    QgsUnitTypes.Hectares: QgsUnitTypes.Standard,
-                    QgsUnitTypes.Acres: QgsUnitTypes.Standard,
-                    QgsUnitTypes.SquareNauticalMiles: QgsUnitTypes.Standard,
-                    QgsUnitTypes.SquareDegrees: QgsUnitTypes.Geographic,
-                    QgsUnitTypes.UnknownAreaUnit: QgsUnitTypes.UnknownType,
+        expected = {QgsUnitTypes.AreaSquareMeters: QgsUnitTypes.Standard,
+                    QgsUnitTypes.AreaSquareKilometers: QgsUnitTypes.Standard,
+                    QgsUnitTypes.AreaSquareFeet: QgsUnitTypes.Standard,
+                    QgsUnitTypes.AreaSquareYards: QgsUnitTypes.Standard,
+                    QgsUnitTypes.AreaSquareMiles: QgsUnitTypes.Standard,
+                    QgsUnitTypes.AreaHectares: QgsUnitTypes.Standard,
+                    QgsUnitTypes.AreaAcres: QgsUnitTypes.Standard,
+                    QgsUnitTypes.AreaSquareNauticalMiles: QgsUnitTypes.Standard,
+                    QgsUnitTypes.AreaSquareDegrees: QgsUnitTypes.Geographic,
+                    QgsUnitTypes.AreaUnknownUnit: QgsUnitTypes.UnknownType,
                     }
 
         for t in expected.keys():
@@ -116,16 +115,16 @@ class TestQgsUnitTypes(unittest.TestCase):
 
     def testEncodeDecodeAreaUnits(self):
         """Test encoding and decoding area units"""
-        units = [QgsUnitTypes.SquareMeters,
-                 QgsUnitTypes.SquareKilometers,
-                 QgsUnitTypes.SquareFeet,
-                 QgsUnitTypes.SquareYards,
-                 QgsUnitTypes.SquareMiles,
-                 QgsUnitTypes.Hectares,
-                 QgsUnitTypes.Acres,
-                 QgsUnitTypes.SquareNauticalMiles,
-                 QgsUnitTypes.SquareDegrees,
-                 QgsUnitTypes.UnknownAreaUnit]
+        units = [QgsUnitTypes.AreaSquareMeters,
+                 QgsUnitTypes.AreaSquareKilometers,
+                 QgsUnitTypes.AreaSquareFeet,
+                 QgsUnitTypes.AreaSquareYards,
+                 QgsUnitTypes.AreaSquareMiles,
+                 QgsUnitTypes.AreaHectares,
+                 QgsUnitTypes.AreaAcres,
+                 QgsUnitTypes.AreaSquareNauticalMiles,
+                 QgsUnitTypes.AreaSquareDegrees,
+                 QgsUnitTypes.AreaUnknownUnit]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeAreaUnit(QgsUnitTypes.encodeUnit(u))
@@ -135,25 +134,25 @@ class TestQgsUnitTypes(unittest.TestCase):
         # Test decoding bad units
         res, ok = QgsUnitTypes.decodeAreaUnit('bad')
         self.assertFalse(ok)
-        self.assertEqual(res, QgsUnitTypes.UnknownAreaUnit)
+        self.assertEqual(res, QgsUnitTypes.AreaUnknownUnit)
 
         # Test that string is cleaned before decoding
         res, ok = QgsUnitTypes.decodeAreaUnit(' Ha  ')
         assert ok
-        self.assertEqual(res, QgsUnitTypes.Hectares)
+        self.assertEqual(res, QgsUnitTypes.AreaHectares)
 
     def testAreaUnitsToFromString(self):
         """Test converting area units to and from translated strings"""
-        units = [QgsUnitTypes.SquareMeters,
-                 QgsUnitTypes.SquareKilometers,
-                 QgsUnitTypes.SquareFeet,
-                 QgsUnitTypes.SquareYards,
-                 QgsUnitTypes.SquareMiles,
-                 QgsUnitTypes.Hectares,
-                 QgsUnitTypes.Acres,
-                 QgsUnitTypes.SquareNauticalMiles,
-                 QgsUnitTypes.SquareDegrees,
-                 QgsUnitTypes.UnknownAreaUnit]
+        units = [QgsUnitTypes.AreaSquareMeters,
+                 QgsUnitTypes.AreaSquareKilometers,
+                 QgsUnitTypes.AreaSquareFeet,
+                 QgsUnitTypes.AreaSquareYards,
+                 QgsUnitTypes.AreaSquareMiles,
+                 QgsUnitTypes.AreaHectares,
+                 QgsUnitTypes.AreaAcres,
+                 QgsUnitTypes.AreaSquareNauticalMiles,
+                 QgsUnitTypes.AreaSquareDegrees,
+                 QgsUnitTypes.AreaUnknownUnit]
 
         for u in units:
             res, ok = QgsUnitTypes.stringToAreaUnit(QgsUnitTypes.toString(u))
@@ -163,48 +162,47 @@ class TestQgsUnitTypes(unittest.TestCase):
         # Test converting bad strings
         res, ok = QgsUnitTypes.stringToAreaUnit('bad')
         self.assertFalse(ok)
-        self.assertEqual(res, QgsUnitTypes.UnknownAreaUnit)
+        self.assertEqual(res, QgsUnitTypes.AreaUnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToAreaUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.SquareMiles).upper()))
+        res, ok = QgsUnitTypes.stringToAreaUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.AreaSquareMiles).upper()))
         assert ok
-        self.assertEqual(res, QgsUnitTypes.SquareMiles)
+        self.assertEqual(res, QgsUnitTypes.AreaSquareMiles)
 
-    @unittest.skip("enable for 3.0")
-    def testEncodeDecodeSymbolUnits(self):
-        """Test encoding and decoding symbol units"""
-        units = [QgsSymbolV2.MM,
-                 QgsSymbolV2.MapUnit,
-                 QgsSymbolV2.Pixel,
-                 QgsSymbolV2.Percentage]
+    def testEncodeDecodeRenderUnits(self):
+        """Test encoding and decoding render units"""
+        units = [QgsUnitTypes.RenderMillimeters,
+                 QgsUnitTypes.RenderMapUnits,
+                 QgsUnitTypes.RenderPixels,
+                 QgsUnitTypes.RenderPercentage]
 
         for u in units:
-            res, ok = QgsUnitTypes.decodeSymbolUnit(QgsUnitTypes.encodeUnit(u))
+            res, ok = QgsUnitTypes.decodeRenderUnit(QgsUnitTypes.encodeUnit(u))
             assert ok
             self.assertEqual(res, u)
 
         # Test decoding bad units
-        res, ok = QgsUnitTypes.decodeSymbolUnit('bad')
+        res, ok = QgsUnitTypes.decodeRenderUnit('bad')
         self.assertFalse(ok)
         # default units should be MM
-        self.assertEqual(res, QgsSymbolV2.MM)
+        self.assertEqual(res, QgsUnitTypes.RenderMillimeters)
 
         # Test that string is cleaned before decoding
-        res, ok = QgsUnitTypes.decodeSymbolUnit(' PiXeL  ')
+        res, ok = QgsUnitTypes.decodeRenderUnit(' PiXeL  ')
         assert ok
-        self.assertEqual(res, QgsSymbolV2.Pixel)
+        self.assertEqual(res, QgsUnitTypes.RenderPixels)
 
     def testFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between units"""
 
-        expected = {QGis.Meters: {QGis.Meters: 1.0, QGis.Kilometers: 0.001, QGis.Feet: 3.28083989501, QGis.Yards: 1.0936133, QGis.Miles: 0.00062136931818182, QGis.Degrees: 0.00000898315, QGis.NauticalMiles: 0.000539957},
-                    QGis.Kilometers: {QGis.Meters: 1000.0, QGis.Kilometers: 1.0, QGis.Feet: 3280.8398950, QGis.Yards: 1093.6132983, QGis.Miles: 0.62137121212119317271, QGis.Degrees: 0.0089832, QGis.NauticalMiles: 0.53995682073432482717},
-                    QGis.Feet: {QGis.Meters: 0.3048, QGis.Kilometers: 0.0003048, QGis.Feet: 1.0, QGis.Yards: 0.3333333, QGis.Miles: 0.00018939375, QGis.Degrees: 2.73806498599629E-06, QGis.NauticalMiles: 0.000164579},
-                    QGis.Yards: {QGis.Meters: 0.9144, QGis.Kilometers: 0.0009144, QGis.Feet: 3.0, QGis.Yards: 1.0, QGis.Miles: 0.000568182, QGis.Degrees: 0.0000082, QGis.NauticalMiles: 0.0004937366590756},
-                    QGis.Degrees: {QGis.Meters: 111319.49079327358, QGis.Kilometers: 111.3194908, QGis.Feet: 365221.4264871, QGis.Yards: 121740.4754957, QGis.Miles: 69.1707247, QGis.Degrees: 1.0, QGis.NauticalMiles: 60.1077164},
-                    QGis.Miles: {QGis.Meters: 1609.3440000, QGis.Kilometers: 1.6093440, QGis.Feet: 5280.0000000, QGis.Yards: 1760.0000000, QGis.Miles: 1.0, QGis.Degrees: 0.0144570, QGis.NauticalMiles: 0.8689762},
-                    QGis.NauticalMiles: {QGis.Meters: 1852.0, QGis.Kilometers: 1.8520000, QGis.Feet: 6076.1154856, QGis.Yards: 2025.3718285, QGis.Miles: 1.1507794, QGis.Degrees: 0.0166367990650, QGis.NauticalMiles: 1.0},
-                    QGis.UnknownUnit: {QGis.Meters: 1.0, QGis.Kilometers: 1.0, QGis.Feet: 1.0, QGis.Yards: 1.0, QGis.Miles: 1.0, QGis.Degrees: 1.0, QGis.NauticalMiles: 1.0}
+        expected = {QgsUnitTypes.DistanceMeters: {QgsUnitTypes.DistanceMeters: 1.0, QgsUnitTypes.DistanceKilometers: 0.001, QgsUnitTypes.DistanceFeet: 3.28083989501, QgsUnitTypes.DistanceYards: 1.0936133, QgsUnitTypes.DistanceMiles: 0.00062136931818182, QgsUnitTypes.DistanceDegrees: 0.00000898315, QgsUnitTypes.DistanceNauticalMiles: 0.000539957},
+                    QgsUnitTypes.DistanceKilometers: {QgsUnitTypes.DistanceMeters: 1000.0, QgsUnitTypes.DistanceKilometers: 1.0, QgsUnitTypes.DistanceFeet: 3280.8398950, QgsUnitTypes.DistanceYards: 1093.6132983, QgsUnitTypes.DistanceMiles: 0.62137121212119317271, QgsUnitTypes.DistanceDegrees: 0.0089832, QgsUnitTypes.DistanceNauticalMiles: 0.53995682073432482717},
+                    QgsUnitTypes.DistanceFeet: {QgsUnitTypes.DistanceMeters: 0.3048, QgsUnitTypes.DistanceKilometers: 0.0003048, QgsUnitTypes.DistanceFeet: 1.0, QgsUnitTypes.DistanceYards: 0.3333333, QgsUnitTypes.DistanceMiles: 0.00018939375, QgsUnitTypes.DistanceDegrees: 2.73806498599629E-06, QgsUnitTypes.DistanceNauticalMiles: 0.000164579},
+                    QgsUnitTypes.DistanceYards: {QgsUnitTypes.DistanceMeters: 0.9144, QgsUnitTypes.DistanceKilometers: 0.0009144, QgsUnitTypes.DistanceFeet: 3.0, QgsUnitTypes.DistanceYards: 1.0, QgsUnitTypes.DistanceMiles: 0.000568182, QgsUnitTypes.DistanceDegrees: 0.0000082, QgsUnitTypes.DistanceNauticalMiles: 0.0004937366590756},
+                    QgsUnitTypes.DistanceDegrees: {QgsUnitTypes.DistanceMeters: 111319.49079327358, QgsUnitTypes.DistanceKilometers: 111.3194908, QgsUnitTypes.DistanceFeet: 365221.4264871, QgsUnitTypes.DistanceYards: 121740.4754957, QgsUnitTypes.DistanceMiles: 69.1707247, QgsUnitTypes.DistanceDegrees: 1.0, QgsUnitTypes.DistanceNauticalMiles: 60.1077164},
+                    QgsUnitTypes.DistanceMiles: {QgsUnitTypes.DistanceMeters: 1609.3440000, QgsUnitTypes.DistanceKilometers: 1.6093440, QgsUnitTypes.DistanceFeet: 5280.0000000, QgsUnitTypes.DistanceYards: 1760.0000000, QgsUnitTypes.DistanceMiles: 1.0, QgsUnitTypes.DistanceDegrees: 0.0144570, QgsUnitTypes.DistanceNauticalMiles: 0.8689762},
+                    QgsUnitTypes.DistanceNauticalMiles: {QgsUnitTypes.DistanceMeters: 1852.0, QgsUnitTypes.DistanceKilometers: 1.8520000, QgsUnitTypes.DistanceFeet: 6076.1154856, QgsUnitTypes.DistanceYards: 2025.3718285, QgsUnitTypes.DistanceMiles: 1.1507794, QgsUnitTypes.DistanceDegrees: 0.0166367990650, QgsUnitTypes.DistanceNauticalMiles: 1.0},
+                    QgsUnitTypes.DistanceUnknownUnit: {QgsUnitTypes.DistanceMeters: 1.0, QgsUnitTypes.DistanceKilometers: 1.0, QgsUnitTypes.DistanceFeet: 1.0, QgsUnitTypes.DistanceYards: 1.0, QgsUnitTypes.DistanceMiles: 1.0, QgsUnitTypes.DistanceDegrees: 1.0, QgsUnitTypes.DistanceNauticalMiles: 1.0}
                     }
 
         for from_unit in expected.keys():
@@ -217,7 +215,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                                                                                                               QgsUnitTypes.toString(from_unit),
                                                                                                               QgsUnitTypes.toString(to_unit)))
                 #test conversion to unknown units
-                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QGis.UnknownUnit)
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.DistanceUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
                                        msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
@@ -226,15 +224,15 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testAreaFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between areal units"""
 
-        expected = {QgsUnitTypes.SquareMeters: {QgsUnitTypes.SquareMeters: 1.0, QgsUnitTypes.SquareKilometers: 1e-6, QgsUnitTypes.SquareFeet: 10.7639104, QgsUnitTypes.SquareYards: 1.19599, QgsUnitTypes.SquareMiles: 3.86102e-7, QgsUnitTypes.Hectares: 0.0001, QgsUnitTypes.Acres: 0.000247105, QgsUnitTypes.SquareNauticalMiles: 2.91553e-7, QgsUnitTypes.SquareDegrees: 0.000000000080697, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareKilometers: {QgsUnitTypes.SquareMeters: 1e6, QgsUnitTypes.SquareKilometers: 1, QgsUnitTypes.SquareFeet: 10763910.4167097, QgsUnitTypes.SquareYards: 1195990.04630108, QgsUnitTypes.SquareMiles: 0.386102158, QgsUnitTypes.Hectares: 100, QgsUnitTypes.Acres: 247.105381467, QgsUnitTypes.SquareNauticalMiles: 0.291553349598, QgsUnitTypes.SquareDegrees: 0.000080697034968, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareFeet: {QgsUnitTypes.SquareMeters: 0.092903, QgsUnitTypes.SquareKilometers: 9.2903e-8, QgsUnitTypes.SquareFeet: 1.0, QgsUnitTypes.SquareYards: 0.11111111111, QgsUnitTypes.SquareMiles: 3.58701e-8, QgsUnitTypes.Hectares: 9.2903e-6, QgsUnitTypes.Acres: 2.29568e-5, QgsUnitTypes.SquareNauticalMiles: 2.70862e-8, QgsUnitTypes.SquareDegrees: 0.000000000007497, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareYards: {QgsUnitTypes.SquareMeters: 0.836127360, QgsUnitTypes.SquareKilometers: 8.36127e-7, QgsUnitTypes.SquareFeet: 9.0, QgsUnitTypes.SquareYards: 1.0, QgsUnitTypes.SquareMiles: 3.22831e-7, QgsUnitTypes.Hectares: 8.3612736E-5, QgsUnitTypes.Acres: 0.00020661157, QgsUnitTypes.SquareNauticalMiles: 2.43776e-7, QgsUnitTypes.SquareDegrees: 0.000000000067473, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareMiles: {QgsUnitTypes.SquareMeters: 2589988.110336, QgsUnitTypes.SquareKilometers: 2.589988110, QgsUnitTypes.SquareFeet: 27878400, QgsUnitTypes.SquareYards: 3097600, QgsUnitTypes.SquareMiles: 1.0, QgsUnitTypes.Hectares: 258.998811, QgsUnitTypes.Acres: 640, QgsUnitTypes.SquareNauticalMiles: 0.75511970898, QgsUnitTypes.SquareDegrees: 0.000209004361107, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.Hectares: {QgsUnitTypes.SquareMeters: 10000, QgsUnitTypes.SquareKilometers: 0.01, QgsUnitTypes.SquareFeet: 107639.1041670972, QgsUnitTypes.SquareYards: 11959.9004630, QgsUnitTypes.SquareMiles: 0.00386102, QgsUnitTypes.Hectares: 1.0, QgsUnitTypes.Acres: 2.471053814, QgsUnitTypes.SquareNauticalMiles: 0.00291553, QgsUnitTypes.SquareDegrees: 0.000000806970350, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.Acres: {QgsUnitTypes.SquareMeters: 4046.8564224, QgsUnitTypes.SquareKilometers: 0.00404686, QgsUnitTypes.SquareFeet: 43560, QgsUnitTypes.SquareYards: 4840, QgsUnitTypes.SquareMiles: 0.0015625, QgsUnitTypes.Hectares: 0.404685642, QgsUnitTypes.Acres: 1.0, QgsUnitTypes.SquareNauticalMiles: 0.00117987, QgsUnitTypes.SquareDegrees: 0.000000326569314, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareNauticalMiles: {QgsUnitTypes.SquareMeters: 3429904, QgsUnitTypes.SquareKilometers: 3.4299040, QgsUnitTypes.SquareFeet: 36919179.39391434, QgsUnitTypes.SquareYards: 4102131.04376826, QgsUnitTypes.SquareMiles: 1.324293337, QgsUnitTypes.Hectares: 342.9904000000, QgsUnitTypes.Acres: 847.54773631, QgsUnitTypes.SquareNauticalMiles: 1.0, QgsUnitTypes.SquareDegrees: 0.000276783083025, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareDegrees: {QgsUnitTypes.SquareMeters: 12392029030.5, QgsUnitTypes.SquareKilometers: 12392.029030499, QgsUnitTypes.SquareFeet: 133386690365.5682220, QgsUnitTypes.SquareYards: 14820743373.9520263, QgsUnitTypes.SquareMiles: 4784.5891573967, QgsUnitTypes.Hectares: 1239202.903050, QgsUnitTypes.Acres: 3062137.060733889, QgsUnitTypes.SquareNauticalMiles: 3612.93757215, QgsUnitTypes.SquareDegrees: 1.0, QgsUnitTypes.UnknownAreaUnit: 1.0}}
+        expected = {QgsUnitTypes.AreaSquareMeters: {QgsUnitTypes.AreaSquareMeters: 1.0, QgsUnitTypes.AreaSquareKilometers: 1e-6, QgsUnitTypes.AreaSquareFeet: 10.7639104, QgsUnitTypes.AreaSquareYards: 1.19599, QgsUnitTypes.AreaSquareMiles: 3.86102e-7, QgsUnitTypes.AreaHectares: 0.0001, QgsUnitTypes.AreaAcres: 0.000247105, QgsUnitTypes.AreaSquareNauticalMiles: 2.91553e-7, QgsUnitTypes.AreaSquareDegrees: 0.000000000080697, QgsUnitTypes.AreaUnknownUnit: 1.0},
+                    QgsUnitTypes.AreaSquareKilometers: {QgsUnitTypes.AreaSquareMeters: 1e6, QgsUnitTypes.AreaSquareKilometers: 1, QgsUnitTypes.AreaSquareFeet: 10763910.4167097, QgsUnitTypes.AreaSquareYards: 1195990.04630108, QgsUnitTypes.AreaSquareMiles: 0.386102158, QgsUnitTypes.AreaHectares: 100, QgsUnitTypes.AreaAcres: 247.105381467, QgsUnitTypes.AreaSquareNauticalMiles: 0.291553349598, QgsUnitTypes.AreaSquareDegrees: 0.000080697034968, QgsUnitTypes.AreaUnknownUnit: 1.0},
+                    QgsUnitTypes.AreaSquareFeet: {QgsUnitTypes.AreaSquareMeters: 0.092903, QgsUnitTypes.AreaSquareKilometers: 9.2903e-8, QgsUnitTypes.AreaSquareFeet: 1.0, QgsUnitTypes.AreaSquareYards: 0.11111111111, QgsUnitTypes.AreaSquareMiles: 3.58701e-8, QgsUnitTypes.AreaHectares: 9.2903e-6, QgsUnitTypes.AreaAcres: 2.29568e-5, QgsUnitTypes.AreaSquareNauticalMiles: 2.70862e-8, QgsUnitTypes.AreaSquareDegrees: 0.000000000007497, QgsUnitTypes.AreaUnknownUnit: 1.0},
+                    QgsUnitTypes.AreaSquareYards: {QgsUnitTypes.AreaSquareMeters: 0.836127360, QgsUnitTypes.AreaSquareKilometers: 8.36127e-7, QgsUnitTypes.AreaSquareFeet: 9.0, QgsUnitTypes.AreaSquareYards: 1.0, QgsUnitTypes.AreaSquareMiles: 3.22831e-7, QgsUnitTypes.AreaHectares: 8.3612736E-5, QgsUnitTypes.AreaAcres: 0.00020661157, QgsUnitTypes.AreaSquareNauticalMiles: 2.43776e-7, QgsUnitTypes.AreaSquareDegrees: 0.000000000067473, QgsUnitTypes.AreaUnknownUnit: 1.0},
+                    QgsUnitTypes.AreaSquareMiles: {QgsUnitTypes.AreaSquareMeters: 2589988.110336, QgsUnitTypes.AreaSquareKilometers: 2.589988110, QgsUnitTypes.AreaSquareFeet: 27878400, QgsUnitTypes.AreaSquareYards: 3097600, QgsUnitTypes.AreaSquareMiles: 1.0, QgsUnitTypes.AreaHectares: 258.998811, QgsUnitTypes.AreaAcres: 640, QgsUnitTypes.AreaSquareNauticalMiles: 0.75511970898, QgsUnitTypes.AreaSquareDegrees: 0.000209004361107, QgsUnitTypes.AreaUnknownUnit: 1.0},
+                    QgsUnitTypes.AreaHectares: {QgsUnitTypes.AreaSquareMeters: 10000, QgsUnitTypes.AreaSquareKilometers: 0.01, QgsUnitTypes.AreaSquareFeet: 107639.1041670972, QgsUnitTypes.AreaSquareYards: 11959.9004630, QgsUnitTypes.AreaSquareMiles: 0.00386102, QgsUnitTypes.AreaHectares: 1.0, QgsUnitTypes.AreaAcres: 2.471053814, QgsUnitTypes.AreaSquareNauticalMiles: 0.00291553, QgsUnitTypes.AreaSquareDegrees: 0.000000806970350, QgsUnitTypes.AreaUnknownUnit: 1.0},
+                    QgsUnitTypes.AreaAcres: {QgsUnitTypes.AreaSquareMeters: 4046.8564224, QgsUnitTypes.AreaSquareKilometers: 0.00404686, QgsUnitTypes.AreaSquareFeet: 43560, QgsUnitTypes.AreaSquareYards: 4840, QgsUnitTypes.AreaSquareMiles: 0.0015625, QgsUnitTypes.AreaHectares: 0.404685642, QgsUnitTypes.AreaAcres: 1.0, QgsUnitTypes.AreaSquareNauticalMiles: 0.00117987, QgsUnitTypes.AreaSquareDegrees: 0.000000326569314, QgsUnitTypes.AreaUnknownUnit: 1.0},
+                    QgsUnitTypes.AreaSquareNauticalMiles: {QgsUnitTypes.AreaSquareMeters: 3429904, QgsUnitTypes.AreaSquareKilometers: 3.4299040, QgsUnitTypes.AreaSquareFeet: 36919179.39391434, QgsUnitTypes.AreaSquareYards: 4102131.04376826, QgsUnitTypes.AreaSquareMiles: 1.324293337, QgsUnitTypes.AreaHectares: 342.9904000000, QgsUnitTypes.AreaAcres: 847.54773631, QgsUnitTypes.AreaSquareNauticalMiles: 1.0, QgsUnitTypes.AreaSquareDegrees: 0.000276783083025, QgsUnitTypes.AreaUnknownUnit: 1.0},
+                    QgsUnitTypes.AreaSquareDegrees: {QgsUnitTypes.AreaSquareMeters: 12392029030.5, QgsUnitTypes.AreaSquareKilometers: 12392.029030499, QgsUnitTypes.AreaSquareFeet: 133386690365.5682220, QgsUnitTypes.AreaSquareYards: 14820743373.9520263, QgsUnitTypes.AreaSquareMiles: 4784.5891573967, QgsUnitTypes.AreaHectares: 1239202.903050, QgsUnitTypes.AreaAcres: 3062137.060733889, QgsUnitTypes.AreaSquareNauticalMiles: 3612.93757215, QgsUnitTypes.AreaSquareDegrees: 1.0, QgsUnitTypes.AreaUnknownUnit: 1.0}}
 
         for from_unit in expected.keys():
             for to_unit in expected[from_unit].keys():
@@ -246,7 +244,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                                                                                                                 QgsUnitTypes.toString(from_unit),
                                                                                                                 QgsUnitTypes.toString(to_unit)))
                 #test conversion to unknown units
-                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.UnknownAreaUnit)
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.AreaUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
                                        msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
@@ -254,14 +252,14 @@ class TestQgsUnitTypes(unittest.TestCase):
 
     def testDistanceToAreaUnit(self):
         """Test distanceToAreaUnit conversion"""
-        expected = {QGis.Meters: QgsUnitTypes.SquareMeters,
-                    QGis.Kilometers: QgsUnitTypes.SquareKilometers,
-                    QGis.Feet: QgsUnitTypes.SquareFeet,
-                    QGis.Yards: QgsUnitTypes.SquareYards,
-                    QGis.Miles: QgsUnitTypes.SquareMiles,
-                    QGis.Degrees: QgsUnitTypes.SquareDegrees,
-                    QGis.UnknownUnit: QgsUnitTypes.UnknownAreaUnit,
-                    QGis.NauticalMiles: QgsUnitTypes.SquareNauticalMiles
+        expected = {QgsUnitTypes.DistanceMeters: QgsUnitTypes.AreaSquareMeters,
+                    QgsUnitTypes.DistanceKilometers: QgsUnitTypes.AreaSquareKilometers,
+                    QgsUnitTypes.DistanceFeet: QgsUnitTypes.AreaSquareFeet,
+                    QgsUnitTypes.DistanceYards: QgsUnitTypes.AreaSquareYards,
+                    QgsUnitTypes.DistanceMiles: QgsUnitTypes.AreaSquareMiles,
+                    QgsUnitTypes.DistanceDegrees: QgsUnitTypes.AreaSquareDegrees,
+                    QgsUnitTypes.DistanceUnknownUnit: QgsUnitTypes.AreaUnknownUnit,
+                    QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.AreaSquareNauticalMiles
                     }
 
         for t in expected.keys():
@@ -270,12 +268,12 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testEncodeDecodeAngleUnits(self):
         """Test encoding and decoding angle units"""
         units = [QgsUnitTypes.AngleDegrees,
-                 QgsUnitTypes.Radians,
-                 QgsUnitTypes.Gon,
-                 QgsUnitTypes.MinutesOfArc,
-                 QgsUnitTypes.SecondsOfArc,
-                 QgsUnitTypes.Turn,
-                 QgsUnitTypes.UnknownAngleUnit]
+                 QgsUnitTypes.AngleRadians,
+                 QgsUnitTypes.AngleGon,
+                 QgsUnitTypes.AngleMinutesOfArc,
+                 QgsUnitTypes.AngleSecondsOfArc,
+                 QgsUnitTypes.AngleTurn,
+                 QgsUnitTypes.AngleUnknownUnit]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeAngleUnit(QgsUnitTypes.encodeUnit(u))
@@ -285,22 +283,22 @@ class TestQgsUnitTypes(unittest.TestCase):
         # Test decoding bad units
         res, ok = QgsUnitTypes.decodeAngleUnit('bad')
         self.assertFalse(ok)
-        self.assertEqual(res, QgsUnitTypes.UnknownAngleUnit)
+        self.assertEqual(res, QgsUnitTypes.AngleUnknownUnit)
 
         # Test that string is cleaned before decoding
         res, ok = QgsUnitTypes.decodeAngleUnit(' MoA  ')
         assert ok
-        self.assertEqual(res, QgsUnitTypes.MinutesOfArc)
+        self.assertEqual(res, QgsUnitTypes.AngleMinutesOfArc)
 
     def testAngleToString(self):
         """Test converting angle unit to string"""
         units = [QgsUnitTypes.AngleDegrees,
-                 QgsUnitTypes.Radians,
-                 QgsUnitTypes.Gon,
-                 QgsUnitTypes.MinutesOfArc,
-                 QgsUnitTypes.SecondsOfArc,
-                 QgsUnitTypes.Turn,
-                 QgsUnitTypes.UnknownAngleUnit]
+                 QgsUnitTypes.AngleRadians,
+                 QgsUnitTypes.AngleGon,
+                 QgsUnitTypes.AngleMinutesOfArc,
+                 QgsUnitTypes.AngleSecondsOfArc,
+                 QgsUnitTypes.AngleTurn,
+                 QgsUnitTypes.AngleUnknownUnit]
 
         dupes = set()
 
@@ -314,12 +312,12 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testAngleFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between angular units"""
 
-        expected = {QgsUnitTypes.AngleDegrees: {QgsUnitTypes.AngleDegrees: 1.0, QgsUnitTypes.Radians: 0.0174533, QgsUnitTypes.Gon: 1.1111111, QgsUnitTypes.MinutesOfArc: 60, QgsUnitTypes.SecondsOfArc: 3600, QgsUnitTypes.Turn: 0.00277777777778},
-                    QgsUnitTypes.Radians: {QgsUnitTypes.AngleDegrees: 57.2957795, QgsUnitTypes.Radians: 1.0, QgsUnitTypes.Gon: 63.6619772, QgsUnitTypes.MinutesOfArc: 3437.7467708, QgsUnitTypes.SecondsOfArc: 206264.8062471, QgsUnitTypes.Turn: 0.159154943092},
-                    QgsUnitTypes.Gon: {QgsUnitTypes.AngleDegrees: 0.9000000, QgsUnitTypes.Radians: 0.015707968623450838802, QgsUnitTypes.Gon: 1.0, QgsUnitTypes.MinutesOfArc: 54.0000000, QgsUnitTypes.SecondsOfArc: 3240.0000000, QgsUnitTypes.Turn: 0.0025},
-                    QgsUnitTypes.MinutesOfArc: {QgsUnitTypes.AngleDegrees: 0.016666672633390722247, QgsUnitTypes.Radians: 0.00029088831280398030638, QgsUnitTypes.Gon: 0.018518525464057963154, QgsUnitTypes.MinutesOfArc: 1.0, QgsUnitTypes.SecondsOfArc: 60.0, QgsUnitTypes.Turn: 4.62962962962963e-05},
-                    QgsUnitTypes.SecondsOfArc: {QgsUnitTypes.AngleDegrees: 0.00027777787722304257169, QgsUnitTypes.Radians: 4.848138546730629518e-6, QgsUnitTypes.Gon: 0.0003086420910674814405, QgsUnitTypes.MinutesOfArc: 0.016666672633325253783, QgsUnitTypes.SecondsOfArc: 1.0, QgsUnitTypes.Turn: 7.71604938271605e-07},
-                    QgsUnitTypes.Turn: {QgsUnitTypes.AngleDegrees: 360.0, QgsUnitTypes.Radians: 6.2831853071795, QgsUnitTypes.Gon: 400.0, QgsUnitTypes.MinutesOfArc: 21600, QgsUnitTypes.SecondsOfArc: 1296000, QgsUnitTypes.Turn: 1}
+        expected = {QgsUnitTypes.AngleDegrees: {QgsUnitTypes.AngleDegrees: 1.0, QgsUnitTypes.AngleRadians: 0.0174533, QgsUnitTypes.AngleGon: 1.1111111, QgsUnitTypes.AngleMinutesOfArc: 60, QgsUnitTypes.AngleSecondsOfArc: 3600, QgsUnitTypes.AngleTurn: 0.00277777777778},
+                    QgsUnitTypes.AngleRadians: {QgsUnitTypes.AngleDegrees: 57.2957795, QgsUnitTypes.AngleRadians: 1.0, QgsUnitTypes.AngleGon: 63.6619772, QgsUnitTypes.AngleMinutesOfArc: 3437.7467708, QgsUnitTypes.AngleSecondsOfArc: 206264.8062471, QgsUnitTypes.AngleTurn: 0.159154943092},
+                    QgsUnitTypes.AngleGon: {QgsUnitTypes.AngleDegrees: 0.9000000, QgsUnitTypes.AngleRadians: 0.015707968623450838802, QgsUnitTypes.AngleGon: 1.0, QgsUnitTypes.AngleMinutesOfArc: 54.0000000, QgsUnitTypes.AngleSecondsOfArc: 3240.0000000, QgsUnitTypes.AngleTurn: 0.0025},
+                    QgsUnitTypes.AngleMinutesOfArc: {QgsUnitTypes.AngleDegrees: 0.016666672633390722247, QgsUnitTypes.AngleRadians: 0.00029088831280398030638, QgsUnitTypes.AngleGon: 0.018518525464057963154, QgsUnitTypes.AngleMinutesOfArc: 1.0, QgsUnitTypes.AngleSecondsOfArc: 60.0, QgsUnitTypes.AngleTurn: 4.62962962962963e-05},
+                    QgsUnitTypes.AngleSecondsOfArc: {QgsUnitTypes.AngleDegrees: 0.00027777787722304257169, QgsUnitTypes.AngleRadians: 4.848138546730629518e-6, QgsUnitTypes.AngleGon: 0.0003086420910674814405, QgsUnitTypes.AngleMinutesOfArc: 0.016666672633325253783, QgsUnitTypes.AngleSecondsOfArc: 1.0, QgsUnitTypes.AngleTurn: 7.71604938271605e-07},
+                    QgsUnitTypes.AngleTurn: {QgsUnitTypes.AngleDegrees: 360.0, QgsUnitTypes.AngleRadians: 6.2831853071795, QgsUnitTypes.AngleGon: 400.0, QgsUnitTypes.AngleMinutesOfArc: 21600, QgsUnitTypes.AngleSecondsOfArc: 1296000, QgsUnitTypes.AngleTurn: 1}
                     }
 
         for from_unit in expected.keys():
@@ -332,7 +330,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                                                                                                               QgsUnitTypes.toString(from_unit),
                                                                                                               QgsUnitTypes.toString(to_unit)))
                 #test conversion to unknown units
-                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.UnknownAngleUnit)
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.AngleUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
                                        msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
@@ -341,12 +339,12 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testFormatAngle(self):
         """Test formatting angles"""
         self.assertEqual(QgsUnitTypes.formatAngle(45, 3, QgsUnitTypes.AngleDegrees), u'45.000°')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.Radians), '1.00 rad')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, 0, QgsUnitTypes.Gon), u'1 gon')
-        self.assertEqual(QgsUnitTypes.formatAngle(1.11111111, 4, QgsUnitTypes.MinutesOfArc), u'1.1111′')
-        self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, 2, QgsUnitTypes.SecondsOfArc), u'2.00″')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.Turn), u'1.00 tr')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.UnknownAngleUnit), u'1.00')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleRadians), '1.00 rad')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 0, QgsUnitTypes.AngleGon), u'1 gon')
+        self.assertEqual(QgsUnitTypes.formatAngle(1.11111111, 4, QgsUnitTypes.AngleMinutesOfArc), u'1.1111′')
+        self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, 2, QgsUnitTypes.AngleSecondsOfArc), u'2.00″')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleTurn), u'1.00 tr')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnknownUnit), u'1.00')
 
 if __name__ == "__main__":
     unittest.main()

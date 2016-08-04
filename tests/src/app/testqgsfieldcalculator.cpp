@@ -17,6 +17,7 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfieldcalculator.h"
@@ -79,7 +80,8 @@ void TestQgsFieldCalculator::testLengthCalculations()
   f1.setAttribute( "col1", 0.0 );
   QgsPolyline line3111;
   line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
-  f1.setGeometry( QgsGeometry::fromPolyline( line3111 ) );
+  QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
+  f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
@@ -89,7 +91,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
   QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QGis::Meters ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceMeters ) );
 
   // run length calculation
   tempLayer->startEditing();
@@ -111,7 +113,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 
   // change project length unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QGis::Feet ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
   tempLayer->startEditing();
   QScopedPointer< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.data() ) );
   calc2->mUpdateExistingGroupBox->setChecked( true );
@@ -142,7 +144,8 @@ void TestQgsFieldCalculator::testAreaCalculations()
   polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
   QgsPolygon polygon3111;
   polygon3111 << polygonRing3111;
-  f1.setGeometry( QgsGeometry::fromPolygon( polygon3111 ) );
+  QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 ) ;
+  f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
@@ -152,7 +155,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
   QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMeters ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMeters ) );
 
   // run area calculation
   tempLayer->startEditing();
@@ -174,7 +177,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 1.0 ) );
 
   // change project area unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMiles ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMiles ) );
   tempLayer->startEditing();
   QScopedPointer< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.data() ) );
   calc2->mUpdateExistingGroupBox->setChecked( true );

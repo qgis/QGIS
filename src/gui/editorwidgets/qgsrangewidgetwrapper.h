@@ -21,10 +21,12 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 
-#include "qgsdial.h"
-#include "qgsslider.h"
+class QSlider;
+class QDial;
+class QgsSlider;
+class QgsDial;
 
-/**
+/** \ingroup gui
  * Wraps a range widget.
  *
  * Options:

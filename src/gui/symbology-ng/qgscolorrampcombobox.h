@@ -20,6 +20,9 @@
 class QgsStyleV2;
 class QgsVectorColorRampV2;
 
+/** \ingroup gui
+ * \class QgsColorRampComboBox
+ */
 class GUI_EXPORT QgsColorRampComboBox : public QComboBox
 {
     Q_OBJECT

@@ -20,10 +20,14 @@
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxwidget.h"
+#include "qgsmapcanvas.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterdataprovider.h"
 
-QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent ):
-    QWidget( parent )
+QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent )
+    : QWidget( parent )
     , mLayer( theLayer )
+    , mCanvas( nullptr )
 {
   QgsDebugMsg( "Entered." );
   setupUi( this );
@@ -50,6 +54,29 @@ QgsRasterMinMaxWidget::~QgsRasterMinMaxWidget()
 {
 }
 
+void QgsRasterMinMaxWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  mCanvas = canvas;
+}
+
+QgsMapCanvas* QgsRasterMinMaxWidget::mapCanvas()
+{
+  return mCanvas;
+}
+
+QgsRectangle QgsRasterMinMaxWidget::extent()
+{
+  if ( !cbxClipExtent->isChecked() )
+    return QgsRectangle();
+
+  if ( mLayer && mCanvas )
+    return mCanvas->mapSettings().outputExtentToLayerExtent( mLayer, mCanvas->extent() );
+  else if ( mCanvas )
+    return mCanvas->extent();
+  else
+    return QgsRectangle();
+}
+
 void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
 {
   QgsDebugMsg( "Entered." );
@@ -65,10 +92,9 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
     double myMin = std::numeric_limits<double>::quiet_NaN();
     double myMax = std::numeric_limits<double>::quiet_NaN();
 
-    QgsRectangle myExtent; // empty == full
-    if ( mCurrentExtentRadioButton->isChecked() )
+    QgsRectangle myExtent = extent(); // empty == full
+    if ( cbxClipExtent->isChecked() )
     {
-      myExtent = mExtent; // current
       origin |= QgsRasterRenderer::MinMaxSubExtent;
     }
     else
@@ -77,10 +103,9 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
     }
     QgsDebugMsg( QString( "myExtent.isEmpty() = %1" ).arg( myExtent.isEmpty() ) );
 
-    int mySampleSize = 0; // 0 == exact
-    if ( mEstimateRadioButton->isChecked() )
+    int mySampleSize = sampleSize(); // 0 == exact
+    if ( cboAccuracy->currentIndex() == 0 )
     {
-      mySampleSize = 250000;
       origin |= QgsRasterRenderer::MinMaxEstimated;
     }
     else

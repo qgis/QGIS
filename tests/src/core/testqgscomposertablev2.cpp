@@ -791,11 +791,11 @@ void TestQgsComposerTableV2::cellStyles()
 
   //test writing with no node
   QDomElement node = doc.createElement( "style" );
-  QVERIFY( original.writeXML( node, doc ) );
+  QVERIFY( original.writeXml( node, doc ) );
 
   //read from xml
   QgsComposerTableStyle styleFromXml;
-  styleFromXml.readXML( node );
+  styleFromXml.readXml( node );
 
   //check
   QCOMPARE( original.enabled, styleFromXml.enabled );
@@ -816,11 +816,11 @@ void TestQgsComposerTableV2::cellStyles()
 
   //write to XML
   QDomElement tableElement = doc.createElement( "table" );
-  QVERIFY( originalTable.writeXML( tableElement, doc, true ) );
+  QVERIFY( originalTable.writeXml( tableElement, doc, true ) );
 
   //read from XML
   QgsComposerAttributeTableV2 tableFromXml( mComposition, false );
-  tableFromXml.readXML( tableElement, doc, true );
+  tableFromXml.readXml( tableElement, doc, true );
 
   //check that styles were correctly read
   QCOMPARE( tableFromXml.cellStyle( QgsComposerTableV2::FirstRow )->enabled, originalTable.cellStyle( QgsComposerTableV2::FirstRow )->enabled );

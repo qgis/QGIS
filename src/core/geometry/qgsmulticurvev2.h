@@ -27,6 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsMultiCurveV2: public QgsGeometryCollectionV2
 {
   public:
+    QgsMultiCurveV2();
     virtual QString geometryType() const override { return "MultiCurve"; }
     QgsMultiCurveV2* clone() const override;
 
@@ -46,6 +47,9 @@ class CORE_EXPORT QgsMultiCurveV2: public QgsGeometryCollectionV2
      * @note added in QGIS 2.14
      */
     QgsMultiCurveV2* reversed() const;
+
+    virtual QgsAbstractGeometryV2* boundary() const override;
+
 };
 
 #endif // QGSMULTICURVEV2_H

@@ -20,7 +20,8 @@
 
 #include <QSortFilterProxyModel>
 
-/** A class that implements a custom filter and can be used
+/** \ingroup core
+ * A class that implements a custom filter and can be used
  as a proxy for QgsDbTableModel*/
 class CORE_EXPORT QgsDbFilterProxyModel: public QSortFilterProxyModel
 {

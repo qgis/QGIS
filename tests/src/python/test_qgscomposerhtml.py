@@ -139,7 +139,7 @@ class TestQgsComposerHtml(unittest.TestCase):
     def testComposerHtmlAccessor(self):
         """Test that we can retrieve the ComposerHtml instance given an item.
         """
-        myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
+        myComposition = QgsComposition(self.iface.mapCanvas().mapSettings())
         mySubstitutionMap = {'replace-me': 'Foo bar'}
         myFile = os.path.join(TEST_DATA_DIR, 'template.qpt')
         with open(myFile, 'rt') as myTemplateFile:

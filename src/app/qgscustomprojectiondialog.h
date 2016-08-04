@@ -33,7 +33,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
 {
     Q_OBJECT
   public:
-    QgsCustomProjectionDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsCustomProjectionDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsCustomProjectionDialog();
 
   public slots:
@@ -51,8 +51,8 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     //helper functions
     void populateList();
     QString quotedValue( QString value );
-    bool deleteCRS( const QString& id );
-    bool saveCRS( QgsCoordinateReferenceSystem myParameters, const QString& myName, QString myId, bool newEntry );
+    bool deleteCrs( const QString& id );
+    bool saveCrs( QgsCoordinateReferenceSystem myParameters, const QString& myName, QString myId, bool newEntry );
     void insertProjection( const QString& myProjectionAcronym );
 
     //These two QMap store the values as they are on the database when loading

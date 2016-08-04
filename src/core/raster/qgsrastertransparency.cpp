@@ -182,7 +182,7 @@ bool QgsRasterTransparency::isEmpty() const
   return mTransparentSingleValuePixelList.isEmpty() && mTransparentThreeValuePixelList.isEmpty();
 }
 
-void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsRasterTransparency::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   QDomElement rasterTransparencyElem = doc.createElement( "rasterTransparency" );
   if ( !mTransparentSingleValuePixelList.isEmpty() )
@@ -218,7 +218,7 @@ void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem
   parentElem.appendChild( rasterTransparencyElem );
 }
 
-void QgsRasterTransparency::readXML( const QDomElement& elem )
+void QgsRasterTransparency::readXml( const QDomElement& elem )
 {
   if ( elem.isNull() )
   {

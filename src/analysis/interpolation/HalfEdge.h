@@ -17,6 +17,9 @@
 #ifndef HALFEDGE_H
 #define HALFEDGE_H
 
+/** \ingroup analysis
+ * \class HalfEdge
+ */
 class ANALYSIS_EXPORT HalfEdge
 {
   protected:

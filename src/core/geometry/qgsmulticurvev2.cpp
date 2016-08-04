@@ -20,6 +20,13 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscompoundcurvev2.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
+#include "qgsmultipointv2.h"
+
+QgsMultiCurveV2::QgsMultiCurveV2()
+    : QgsGeometryCollectionV2()
+{
+  mWkbType = QgsWkbTypes::MultiCurve;
+}
 
 QgsMultiCurveV2 *QgsMultiCurveV2::clone() const
 {
@@ -103,7 +110,7 @@ bool QgsMultiCurveV2::addGeometry( QgsAbstractGeometryV2* g )
     return false;
   }
 
-  setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiCurve );
+  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiCurve );
   return QgsGeometryCollectionV2::addGeometry( g );
 }
 
@@ -118,4 +125,26 @@ QgsMultiCurveV2* QgsMultiCurveV2::reversed() const
     }
   }
   return reversedMultiCurve;
+}
+
+QgsAbstractGeometryV2* QgsMultiCurveV2::boundary() const
+{
+  QgsMultiPointV2* multiPoint = new QgsMultiPointV2();
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    if ( QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( mGeometries.at( i ) ) )
+    {
+      if ( !curve->isClosed() )
+      {
+        multiPoint->addGeometry( new QgsPointV2( curve->startPoint() ) );
+        multiPoint->addGeometry( new QgsPointV2( curve->endPoint() ) );
+      }
+    }
+  }
+  if ( multiPoint->numGeometries() == 0 )
+  {
+    delete multiPoint;
+    return nullptr;
+  }
+  return multiPoint;
 }

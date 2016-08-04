@@ -16,6 +16,7 @@
 
 #include "qgsmaptoolfillring.h"
 #include "qgsgeometry.h"
+#include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributedialog.h"
@@ -146,7 +147,8 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
         //create QgsFeature with wkb representation
         QgsFeature* ft = new QgsFeature( vlayer->fields(), 0 );
 
-        ft->setGeometry( QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() ) );
+        QgsGeometry g = QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() );
+        ft->setGeometry( g );
         ft->setAttributes( f.attributes() );
 
         bool res = false;

@@ -17,8 +17,9 @@
 
 #include <QWidget>
 #include <QMenu>
+#include <QStackedWidget>
 #include "qgssymbolv2.h"
-#include "qgsdatadefined.h"
+#include "qgspanelwidget.h"
 
 class QgsVectorLayer;
 class QgsStyleV2;
@@ -26,7 +27,7 @@ class QgsFeatureRendererV2;
 class QgsSymbolV2SelectorDialog;
 class QgsMapCanvas;
 
-/**
+/** \ingroup gui
   Base class for renderer settings widgets
 
 WORKFLOW:
@@ -36,7 +37,7 @@ WORKFLOW:
 - on any change of renderer type, create some default (dummy?) version and change the stacked widget
 - when clicked ok/apply, get the renderer from active widget and clone it for the layer
 */
-class GUI_EXPORT QgsRendererV2Widget : public QWidget
+class GUI_EXPORT QgsRendererV2Widget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
@@ -81,12 +82,6 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      * to re-synchronize with the variables.
      */
     void layerVariablesChanged();
-
-    /**
-     * Emmited when something on the widget has changed.
-     * All widgets will fire this event to notify of an internal change.
-     */
-    void widgetChanged();
 
   protected:
     QgsVectorLayer* mLayer;
@@ -138,7 +133,7 @@ class QgsField;
 class QgsFields;
 
 
-/**
+/** \ingroup gui
 Utility class for providing GUI for data-defined rendering.
 @deprecated unused, will be removed in QGIS 3.0
 @note not available in Python bindings
@@ -183,7 +178,7 @@ class QgsRendererV2DataDefinedMenus : public QObject
 #include "ui_widget_set_dd_value.h"
 #include "qgssizescalewidget.h"
 
-/**
+/** \ingroup gui
 Utility classes for "en masse" size definition
 */
 class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataDefinedValueDialog
@@ -223,10 +218,10 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
 
   protected:
     QgsDataDefined symbolDataDefined() const;
-    void init( const QString & description ); // needed in children ctor to call virtual
+    void init( const QString& description ); // needed in children ctor to call virtual
 
-    virtual QgsDataDefined symbolDataDefined( const QgsSymbolV2 * ) const = 0;
-    virtual double value( const QgsSymbolV2 * ) const = 0;
+    virtual QgsDataDefined symbolDataDefined( const QgsSymbolV2* ) const = 0;
+    virtual double value( const QgsSymbolV2* ) const = 0;
     virtual void setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd ) = 0;
 
     QList<QgsSymbolV2*> mSymbolList;
@@ -234,6 +229,9 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     QgsMapCanvas* mMapCanvas;
 };
 
+/** \ingroup gui
+ * \class QgsDataDefinedSizeDialog
+ */
 class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
@@ -254,6 +252,9 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
     void setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd ) override;
 };
 
+/** \ingroup gui
+ * \class QgsDataDefinedRotationDialog
+ */
 class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
@@ -272,7 +273,9 @@ class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
     void setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd ) override;
 };
 
-
+/** \ingroup gui
+ * \class QgsDataDefinedWidthDialog
+ */
 class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT

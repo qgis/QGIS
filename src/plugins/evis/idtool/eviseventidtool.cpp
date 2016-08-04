@@ -31,6 +31,7 @@
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsfeatureiterator.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -120,6 +121,6 @@ void eVisEventIdTool::select( const QgsPoint& thePoint )
   myLayer->selectByIds( newSelectedFeatures );
 
   //Launch a new event browser to view selected features
-  mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, nullptr );
+  mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, 0 );
   mBrowser->setAttribute( Qt::WA_DeleteOnClose );
 }

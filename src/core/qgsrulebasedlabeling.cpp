@@ -372,7 +372,7 @@ QgsRuleBasedLabeling::QgsRuleBasedLabeling( const QgsRuleBasedLabeling& other )
   mRootRule = other.mRootRule->clone();
 
   // normally with clone() the individual rules get new keys (UUID), but here we want to keep
-  // the tree of rules intact, so that other components that may use the rule keys work nicely (e.g. visibility presets)
+  // the tree of rules intact, so that other components that may use the rule keys work nicely (e.g. map themes)
   mRootRule->setRuleKey( other.mRootRule->ruleKey() );
   RuleList origDescendants = other.mRootRule->descendants();
   RuleList clonedDescendants = mRootRule->descendants();

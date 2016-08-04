@@ -55,7 +55,7 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl
   }
 }
 
-void QgsRelationReferenceConfigDlg::setConfig( const QMap<QString, QVariant>& config )
+void QgsRelationReferenceConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
   if ( config.contains( "AllowNULL" ) )
   {

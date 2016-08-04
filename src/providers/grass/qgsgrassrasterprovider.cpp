@@ -225,7 +225,6 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
 void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
 {
   Q_UNUSED( xBlock );
-  QgsDebugMsg( "Entered" );
   clearLastError();
   // TODO: optimize, see extent()
 
@@ -279,9 +278,9 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
   memcpy( block, data.data(), size );
 }
 
-void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
+void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback* feedback )
 {
-  QgsDebugMsg( "Entered" );
+  Q_UNUSED( feedback );
   QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
   QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
   QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
@@ -388,7 +387,6 @@ QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int th
 QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int bandNo )const
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsg( "Entered" );
   QList<QgsColorRampShader::ColorRampItem> ct;
 
   // TODO: check if color can be realy discontinuous in GRASS,
@@ -429,15 +427,13 @@ QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int
   return ct;
 }
 
-QgsCoordinateReferenceSystem QgsGrassRasterProvider::crs()
+QgsCoordinateReferenceSystem QgsGrassRasterProvider::crs() const
 {
-  QgsDebugMsg( "Entered" );
   return mCrs;
 }
 
-QgsRectangle QgsGrassRasterProvider::extent()
+QgsRectangle QgsGrassRasterProvider::extent() const
 {
-  QgsDebugMsg( "Entered" );
   // The extend can change of course so we get always fresh, to avoid running always the module
   // we should save mExtent and mLastModified and check if the map was modified
 
@@ -460,12 +456,11 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight, int /*theDpi*/ )
 {
   Q_UNUSED( theExtent );
   Q_UNUSED( theWidth );
   Q_UNUSED( theHeight );
-  QgsDebugMsg( "Entered" );
   QMap<int, QVariant> results;
   QMap<int, QVariant> noDataResults;
   noDataResults.insert( 1, QVariant() );
@@ -519,24 +514,24 @@ int QgsGrassRasterProvider::capabilities() const
   return capability;
 }
 
-QGis::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
+Qgis::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
 {
-  return srcDataType( bandNo );
+  return sourceDataType( bandNo );
 }
 
-QGis::DataType QgsGrassRasterProvider::srcDataType( int bandNo ) const
+Qgis::DataType QgsGrassRasterProvider::sourceDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
   switch ( mGrassDataType )
   {
     case CELL_TYPE:
-      return QGis::Int32;
+      return Qgis::Int32;
     case FCELL_TYPE:
-      return QGis::Float32;
+      return Qgis::Float32;
     case DCELL_TYPE:
-      return QGis::Float64;
+      return Qgis::Float64;
   }
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
 int QgsGrassRasterProvider::bandCount() const
@@ -576,7 +571,7 @@ QString QgsGrassRasterProvider::metadata()
   return myMetadata;
 }
 
-bool QgsGrassRasterProvider::isValid()
+bool QgsGrassRasterProvider::isValid() const
 {
   return mValid;
 }
@@ -643,14 +638,12 @@ QDateTime QgsGrassRasterProvider::dataTimestamp() const
 
 void QgsGrassRasterProvider::freeze()
 {
-  QgsDebugMsg( "entered" );
   mRasterValue.stop();
   mValid = false;
 }
 
 void QgsGrassRasterProvider::thaw()
 {
-  QgsDebugMsg( "entered" );
   mValid = true;
 }
 
@@ -676,7 +669,6 @@ void QgsGrassRasterValue::set( const QString & gisdbase, const QString & locatio
 
 void QgsGrassRasterValue::start()
 {
-  QgsDebugMsg( "entered" );
   if ( mProcess )
   {
     QgsDebugMsg( "already running" );
@@ -701,7 +693,6 @@ void QgsGrassRasterValue::start()
 
 void QgsGrassRasterValue::stop()
 {
-  QgsDebugMsg( "entered" );
   if ( mProcess )
   {
     QgsDebugMsg( "closing process" );

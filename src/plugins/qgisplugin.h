@@ -41,7 +41,8 @@ class QgisInterface;
 
 //#include "qgisplugingui.h"
 
-/** \class QgisPlugin
+/** \ingroup plugins
+ * \class QgisPlugin
  * \brief Abstract base class from which all plugins must inherit
  * \note not available in Python bindings
  */

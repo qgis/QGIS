@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from math import degrees, atan2
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QGis, QgsField, QgsPoint, QgsGeometry, QgsFeature
+from qgis.core import Qgis, QgsField, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -59,7 +59,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
             self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
-        if byFeature and layer.geometryType() == QGis.Point and layer.featureCount() <= 2:
+        if byFeature and layer.geometryType() == QgsWkbTypes.PointGeometry and layer.featureCount() <= 2:
             raise GeoAlgorithmExecutionException(self.tr("Can't calculate an OMBB for each point, it's a point. The number of points must be greater than 2"))
 
         fields = [
@@ -71,7 +71,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QGis.WKBPolygon, layer.crs())
+                                                                     QgsWkbTypes.Polygon, layer.crs())
 
         if byFeature:
             self.featureOmbb(layer, writer, progress)
@@ -91,7 +91,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         first = True
         while fit.nextFeature(inFeat):
             if first:
-                newgeometry = QgsGeometry(inFeat.geometry())
+                newgeometry = inFeat.geometry()
                 first = False
             else:
                 newgeometry = newgeometry.combine(inFeat.geometry())
@@ -141,7 +141,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
     def OMBBox(self, geom):
         g = geom.convexHull()
 
-        if g.type() != QGis.Polygon:
+        if g.type() != QgsWkbTypes.PolygonGeometry:
             return None, None, None, None, None, None
         r = g.asPolygon()[0]
 

@@ -47,7 +47,7 @@ QgsDecorationItem::QgsDecorationItem( QObject* parent )
     : QObject( parent )
     , mEnabled( false )
     , mPlacement( TopLeft )
-    , mMarginUnit( QgsSymbolV2::MM )
+    , mMarginUnit( QgsUnitTypes::RenderMillimeters )
 {
 }
 
@@ -64,18 +64,16 @@ void QgsDecorationItem::update()
 
 void QgsDecorationItem::projectRead()
 {
-  QgsDebugMsg( "Entered" );
   mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
   mPlacement = static_cast< Placement >( QgsProject::instance()->readNumEntry( mNameConfig, "/Placement", static_cast< int >( mPlacement ) ) );
-  mMarginUnit = QgsSymbolLayerV2Utils::decodeOutputUnit( QgsProject::instance()->readEntry( mNameConfig, "/MarginUnit", QgsSymbolLayerV2Utils::encodeOutputUnit( mMarginUnit ) ) );
+  mMarginUnit = QgsUnitTypes::decodeRenderUnit( QgsProject::instance()->readEntry( mNameConfig, "/MarginUnit", QgsUnitTypes::encodeUnit( mMarginUnit ) ) );
 }
 
 void QgsDecorationItem::saveToProject()
 {
-  QgsDebugMsg( "Entered" );
   QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
   QgsProject::instance()->writeEntry( mNameConfig, "/Placement", static_cast< int >( mPlacement ) );
-  QgsProject::instance()->writeEntry( mNameConfig, "/MarginUnit", QgsSymbolLayerV2Utils::encodeOutputUnit( mMarginUnit ) );
+  QgsProject::instance()->writeEntry( mNameConfig, "/MarginUnit", QgsUnitTypes::encodeUnit( mMarginUnit ) );
 }
 
 void QgsDecorationItem::setName( const char *name )

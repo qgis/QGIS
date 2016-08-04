@@ -18,6 +18,9 @@
 
 #include "qgssymbollayerv2.h"
 
+/** \ingroup core
+ * \class QgsGeometryGeneratorSymbolLayerV2
+ */
 class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
 {
   public:

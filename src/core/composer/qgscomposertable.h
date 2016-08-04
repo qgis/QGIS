@@ -19,14 +19,14 @@
 #define QGSCOMPOSERTABLE_H
 
 #include "qgscomposeritem.h"
-#include "qgscomposition.h"
 #include "qgsfeature.h"
 #include <QSet>
 #include <QObject>
 
 class QgsComposerTableColumn;
 
-/** A class to display feature attributes in the print composer
+/** \ingroup core
+ * A class to display feature attributes in the print composer
  * @deprecated use QgsComposerTableV2 instead
 */
 //TODO QGIS 3.0 -remove
@@ -55,8 +55,8 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     /** \brief Reimplementation of QCanvasItem::paint*/
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const override = 0;
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override = 0;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const override = 0;
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override = 0;
 
     /** Sets the margin distance between cell borders and their contents.
      * @param d margin for cell contents
@@ -306,17 +306,17 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
      * @param itemElem an existing QDomElement in which to store the table's properties.
      * @param doc QDomDocument for the destination xml.
      * @see tableReadXML
-     * @see writeXML
+     * @see writeXml
      */
-    bool tableWriteXML( QDomElement& itemElem, QDomDocument& doc ) const;
+    bool tableWriteXml( QDomElement& itemElem, QDomDocument& doc ) const;
 
     /** Reads the table's common properties from xml.
      * @param itemElem a QDomElement holding the table's desired properties.
      * @param doc QDomDocument for the source xml.
      * @see tableWriteXML
-     * @see readXML
+     * @see readXml
      */
-    bool tableReadXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool tableReadXml( const QDomElement& itemElem, const QDomDocument& doc );
 };
 
 #endif // QGSCOMPOSERTABLE_H

@@ -15,23 +15,23 @@
 #ifndef QGSDIAGRAM_H
 #define QGSDIAGRAM_H
 
-#include "qgsfeature.h"
-#include "qgsexpressioncontext.h"
 #include <QPen>
 #include <QBrush>
+#include "qgsexpression.h" //for QMap with QgsExpression
 
 class QPainter;
 class QPointF;
 class QgsDiagramSettings;
 class QgsDiagramInterpolationSettings;
-
+class QgsFeature;
 class QgsRenderContext;
+class QgsExpressionContext;
+class QgsFields;
+class QgsAttributes;
 
-class QgsExpression;
 
-
-
-/** Base class for all diagram types*/
+/** \ingroup core
+ * Base class for all diagram types*/
 class CORE_EXPORT QgsDiagram
 {
   public:

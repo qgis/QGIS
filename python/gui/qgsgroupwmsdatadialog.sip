@@ -1,4 +1,4 @@
-class QgsGroupWMSDataDialog : QDialog
+class QgsGroupWmsDataDialog : QDialog
 {
 %TypeHeaderCode
 #include <qgsgroupwmsdatadialog.h>
@@ -6,8 +6,8 @@ class QgsGroupWMSDataDialog : QDialog
 
   public:
     //! Constructor
-    QgsGroupWMSDataDialog( QWidget *parent /TransferThis/ = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
-    //~QgsGroupWMSDataDialog();
+    QgsGroupWmsDataDialog( QWidget *parent /TransferThis/ = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+    //~QgsGroupWmsDataDialog();
 
     //! return group WMS title
     QString groupTitle();

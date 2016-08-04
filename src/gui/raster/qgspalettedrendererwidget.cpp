@@ -17,6 +17,7 @@
 
 #include "qgspalettedrendererwidget.h"
 #include "qgspalettedrasterrenderer.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgscolordialog.h"
 #include <QColorDialog>

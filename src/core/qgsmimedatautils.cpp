@@ -25,7 +25,7 @@ QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
     : providerKey( layerItem->providerKey() )
     , name( layerItem->layerName() )
     , uri( layerItem->uri() )
-    , supportedCrs( layerItem->supportedCRS() )
+    , supportedCrs( layerItem->supportedCrs() )
     , supportedFormats( layerItem->supportedFormats() )
 {
   switch ( layerItem->mapLayerType() )

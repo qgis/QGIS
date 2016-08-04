@@ -68,7 +68,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   lastVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayerV2::LastVertex );
   Q_FOREACH ( int value, colors.keys() )
   {
-    QgsSymbolV2 * symbol = QgsSymbolV2::defaultSymbol( QGis::Line );
+    QgsSymbolV2 * symbol = QgsSymbolV2::defaultSymbol( QgsWkbTypes::LineGeometry );
     symbol->setColor( colors.value( value ) );
     symbol->appendSymbolLayer( firstVertexMarkerLine->clone() );
     symbol->appendSymbolLayer( lastVertexMarkerLine->clone() );
@@ -95,7 +95,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
 
   Q_FOREACH ( int value, colors.keys() )
   {
-    QgsSymbolV2 * symbol = QgsSymbolV2::defaultSymbol( QGis::Point );
+    QgsSymbolV2 * symbol = QgsSymbolV2::defaultSymbol( QgsWkbTypes::PointGeometry );
     symbol->setColor( colors.value( value ) );
     categoryList << QgsRendererCategoryV2( QVariant( value ), symbol, labels.value( value ) );
   }
@@ -204,7 +204,6 @@ QString QgsGrassEditRenderer::dump() const
 
 QDomElement QgsGrassEditRenderer::save( QDomDocument& doc )
 {
-  QgsDebugMsg( "entered" );
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "grassEdit" );
 
@@ -222,7 +221,6 @@ QDomElement QgsGrassEditRenderer::save( QDomDocument& doc )
 
 QgsFeatureRendererV2* QgsGrassEditRenderer::create( QDomElement& element )
 {
-  QgsDebugMsg( "entered" );
   QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
 
   QDomElement childElem = element.firstChildElement();
@@ -260,7 +258,6 @@ QgsFeatureRendererV2* QgsGrassEditRenderer::create( QDomElement& element )
 
 QgsRendererV2Widget* QgsGrassEditRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
-  QgsDebugMsg( "entered" );
   return new QgsGrassEditRendererWidget( layer, style, renderer );
 }
 
@@ -270,7 +267,6 @@ QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer* layer, Q
     , mLineRendererWidget( 0 )
     , mPointRendererWidget( 0 )
 {
-  QgsDebugMsg( "entered" );
   mRenderer = dynamic_cast<QgsGrassEditRenderer*>( renderer->clone() );
   if ( !mRenderer )
   {
@@ -288,13 +284,11 @@ QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer* layer, Q
 
 QgsGrassEditRendererWidget::~QgsGrassEditRendererWidget()
 {
-  QgsDebugMsg( "entered" );
   delete mRenderer;
 }
 
 QgsFeatureRendererV2* QgsGrassEditRendererWidget::renderer()
 {
-  QgsDebugMsg( "entered" );
   mRenderer->setLineRenderer( mLineRendererWidget->renderer()->clone() );
   mRenderer->setMarkerRenderer( mPointRendererWidget->renderer()->clone() );
   return mRenderer;

@@ -21,6 +21,13 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslinestringv2.h"
 #include "qgspolygonv2.h"
 #include "qgscurvepolygonv2.h"
+#include "qgsmulticurvev2.h"
+
+QgsMultiSurfaceV2::QgsMultiSurfaceV2()
+    : QgsGeometryCollectionV2()
+{
+  mWkbType = QgsWkbTypes::MultiSurface;
+}
 
 QgsMultiSurfaceV2 *QgsMultiSurfaceV2::clone() const
 {
@@ -123,6 +130,24 @@ bool QgsMultiSurfaceV2::addGeometry( QgsAbstractGeometryV2* g )
     return false;
   }
 
-  setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiSurface );
+  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiSurface );
   return QgsGeometryCollectionV2::addGeometry( g );
+}
+
+QgsAbstractGeometryV2* QgsMultiSurfaceV2::boundary() const
+{
+  QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    if ( QgsSurfaceV2* surface = dynamic_cast<QgsSurfaceV2*>( mGeometries.at( i ) ) )
+    {
+      multiCurve->addGeometry( surface->boundary() );
+    }
+  }
+  if ( multiCurve->numGeometries() == 0 )
+  {
+    delete multiCurve;
+    return nullptr;
+  }
+  return multiCurve;
 }

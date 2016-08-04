@@ -670,7 +670,7 @@ class Table(DbItemObject):
         uri = self.database().uri()
         schema = self.schemaName() if self.schemaName() else ''
         geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else ""
-        uniqueCol = self.getValidQGisUniqueFields(True) if self.isView else None
+        uniqueCol = self.getValidQgisUniqueFields(True) if self.isView else None
         uri.setDataSource(schema, self.name, geomCol if geomCol else None, None, uniqueCol.name if uniqueCol else "")
         return uri
 
@@ -687,9 +687,9 @@ class Table(DbItemObject):
             return QgsRasterLayer(uri, self.name, provider)
         return QgsVectorLayer(uri, self.name, provider)
 
-    def getValidQGisUniqueFields(self, onlyOne=False):
-        """ list of fields valid to load the table as layer in QGis canvas.
-                QGis automatically search for a valid unique field, so it's
+    def getValidQgisUniqueFields(self, onlyOne=False):
+        """ list of fields valid to load the table as layer in Qgis canvas.
+                Qgis automatically search for a valid unique field, so it's
                 needed only for queries and views """
 
         ret = []
@@ -1091,7 +1091,7 @@ class TableField(TableSubItemObject):
         return self.update(new_name)
 
     def update(self, new_name, new_type_str=None, new_not_null=None, new_default_str=None):
-        self.table().aboutToChange()
+        self.table().aboutToChange.emit()
         if self.name == new_name:
             new_name = None
         if self.type2String() == new_type_str:

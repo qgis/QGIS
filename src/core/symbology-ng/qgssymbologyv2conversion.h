@@ -23,13 +23,14 @@ class QgsFeatureRendererV2;
 
 #include <Qt>
 
-/** This class is not a part of public API, it is intended only for compatibility with older versions of QGIS (1.x) */
+/** \ingroup core
+ * This class is not a part of public API, it is intended only for compatibility with older versions of QGIS (1.x) */
 class CORE_EXPORT QgsSymbologyV2Conversion
 {
   public:
 
     /** Read old renderer definition from XML and create matching new renderer */
-    static QgsFeatureRendererV2* readOldRenderer( const QDomNode& layerNode, QGis::GeometryType geomType );
+    static QgsFeatureRendererV2* readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType );
 
     static QString penStyle2QString( Qt::PenStyle penstyle );
     static Qt::PenStyle qString2PenStyle( const QString& string );

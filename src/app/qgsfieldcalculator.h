@@ -18,6 +18,7 @@
 
 #include "ui_qgsfieldcalculatorbase.h"
 #include "qgscontexthelp.h"
+#include "qgsfield.h"
 
 class QgsVectorLayer;
 

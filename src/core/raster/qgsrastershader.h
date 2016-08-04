@@ -20,10 +20,9 @@ email                : ersts@amnh.org
 #ifndef QGSRASTERSHADER_H
 #define QGSRASTERSHADER_H
 
-#include "qgsrastershaderfunction.h"
-
 class QDomDocument;
 class QDomElement;
+class QgsRasterShaderFunction;
 
 /** \ingroup core
  * Interface for all raster shaders.
@@ -70,9 +69,9 @@ class CORE_EXPORT QgsRasterShader
     /** \brief Return the minimum value */
     void setMinimumValue( double );
 
-    void writeXML( QDomDocument& doc, QDomElement& parent ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parent ) const;
 
-    void readXML( const QDomElement& elem );
+    void readXml( const QDomElement& elem );
 
   private:
     /** \brief User defineable minimum value for the raster shader */

@@ -25,7 +25,7 @@
 class QgsComposerMap;
 class QgsExpression;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A composer class that displays svg files or raster format (jpg, png, ...)
  * */
 class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
@@ -108,13 +108,13 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc is Dom document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /** Returns the rotation used for drawing the picture within the composer item
      * @deprecated Use pictureRotation() instead

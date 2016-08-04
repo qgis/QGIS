@@ -21,6 +21,7 @@
 
 #include <qgisapp.h>
 #include <qgsapplication.h>
+#include "qgspythonutils.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the QgisApp python support.

@@ -1,5 +1,7 @@
+from __future__ import (absolute_import, division, print_function)
+
 from owslib.waterml.wml import SitesResponse, TimeSeriesResponse, VariablesResponse, namespaces
-from owslib.etree import etree
+from owslib.etree import etree, ElementType
 
 def ns(namespace):
     return namespaces.get(namespace)
@@ -7,10 +9,10 @@ def ns(namespace):
 class WaterML_1_1(object):
     def __init__(self, element):
 
-        if isinstance(element, str) or isinstance(element, unicode):
-            self._root = etree.fromstring(str(element))
-        else:
+        if isinstance(element, ElementType):
             self._root = element
+        else:
+            self._root = etree.fromstring(element)
 
         if hasattr(self._root, 'getroot'):
             self._root = self._root.getroot()

@@ -51,8 +51,8 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     int mTableCount;
     QString mSqliteDb;
 
-    QIcon iconForType( QGis::WkbType type ) const;
-    QString displayStringForType( QGis::WkbType type ) const;
+    QIcon iconForType( QgsWkbTypes::Type type ) const;
+    QString displayStringForType( QgsWkbTypes::Type type ) const;
     /** Returns qgis wkbtype from database typename*/
-    QGis::WkbType qgisTypeFromDbType( const QString & dbType ) const;
+    QgsWkbTypes::Type qgisTypeFromDbType( const QString & dbType ) const;
 };

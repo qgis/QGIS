@@ -73,7 +73,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Connection info (database, host, user, password)
     QString connectionInfo( bool expandAuthCfg = true );
     //! Data source URI
-    QgsDataSourceURI dataSourceUri();
+    QgsDataSourceUri dataSourceUri();
 
   signals:
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
@@ -112,6 +112,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setLayerType( const QgsPostgresLayerProperty& layerProperty );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
+    void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 
@@ -142,7 +143,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsGeomColumnTypeThread* mColumnTypeThread;
-    QgsDataSourceURI mDataSrcUri;
+    QgsDataSourceUri mDataSrcUri;
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata;
     // Storage for the range of layer type icons

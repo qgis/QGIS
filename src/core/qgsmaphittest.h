@@ -25,7 +25,7 @@ class QgsSymbolV2;
 class QgsVectorLayer;
 class QgsExpression;
 
-/**
+/** \ingroup core
  * Class that runs a hit test with given map settings. Based on the hit test it returns which symbols
  * will be visible on the map - this is useful for content based legend.
  *

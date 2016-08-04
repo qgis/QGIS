@@ -26,6 +26,9 @@ class QgsVectorLayer;
 class QgsNetworkContentFetcher;
 class QgsDistanceArea;
 
+/** \ingroup core
+ * \class QgsComposerHtml
+ */
 class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 {
     Q_OBJECT
@@ -199,8 +202,8 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     virtual QString displayName() const override;
     QSizeF totalSize() const override;
     void render( QPainter* p, const QRectF& renderExtent, const int frameIndex ) override;
-    bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
     void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
     //overridden to break frames without dividing lines of text
     double findNearbyPageBreak( double yPos ) override;

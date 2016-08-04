@@ -19,10 +19,10 @@
 #include <QDateTimeEdit>
 
 #include "qgseditorwidgetwrapper.h"
-#include "qgsdatetimeedit.h"
-#include "qgsdatetimeeditfactory.h"
 
-/**
+class QgsDateTimeEdit;
+
+/** \ingroup gui
  * Wraps a date time widget. Users will be able to choose date and time from an appropriate dialog.
  *
  * Options:

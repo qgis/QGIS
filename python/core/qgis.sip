@@ -19,9 +19,9 @@
 
 
 /** \ingroup core
- * The QGis class provides global constants for use throughout the application.
+ * The Qgis class provides global constants for use throughout the application.
  */
-class QGis
+class Qgis
 {
 %TypeHeaderCode
 #include <qgis.h>
@@ -31,87 +31,16 @@ class QGis
     // Version constants
     //
     // Version string
-    static const char* QGIS_VERSION;
+    static QString QGIS_VERSION;
     // Version number used for comparing versions using the "Check QGIS Version" function
     static const int QGIS_VERSION_INT;
     // Release name
-    static const char* QGIS_RELEASE_NAME;
+    static QString QGIS_RELEASE_NAME;
     // The development version
     static const char* QGIS_DEV_VERSION;
 
     // Enumerations
     //
-
-    //! Used for symbology operations
-    // Feature types
-    enum WkbType
-    {
-      WKBUnknown,
-      WKBPoint,
-      WKBLineString,
-      WKBPolygon,
-      WKBMultiPoint,
-      WKBMultiLineString,
-      WKBMultiPolygon,
-      WKBNoGeometry, //attributes only
-      WKBPoint25D,
-      WKBLineString25D,
-      WKBPolygon25D,
-      WKBMultiPoint25D,
-      WKBMultiLineString25D,
-      WKBMultiPolygon25D,
-    };
-
-    //! Map multi to single type
-    // @deprecated use QgsWKBTypes::singleType
-    /* Q_DECL_DEPRECATED */
-    static WkbType singleType( WkbType type );
-
-    //! Map single to multitype type
-    // @deprecated use QgsWKBTypes::multiType
-    /* Q_DECL_DEPRECATED */
-    static WkbType multiType( WkbType type );
-
-    //! Map 2d+ to 2d type
-    // @deprecated use QgsWKBTypes::flatType
-    /* Q_DECL_DEPRECATED */
-    static WkbType flatType( WkbType type );
-
-    //! Return if type is a single type
-    // @deprecated use QgsWKBTypes::isSingleType
-    /* Q_DECL_DEPRECATED */
-    static bool isSingleType( WkbType type );
-
-    //! Return if type is a multi type
-    // @deprecated use QgsWKBTypes::isMultiType
-    /* Q_DECL_DEPRECATED */
-    static bool isMultiType( WkbType type );
-
-    // get dimension of points
-    // @deprecated use QgsWKBTypes::coordDimensions()
-    /* Q_DECL_DEPRECATED */
-    static int wkbDimensions( WkbType type );
-
-    //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
-    static QgsWKBTypes::Type fromOldWkbType(QGis::WkbType type);
-
-    //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
-    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
-
-    enum GeometryType
-    {
-      Point,
-      Line,
-      Polygon,
-      UnknownGeometry,
-      NoGeometry
-    };
-
-    //! description strings for geometry types
-    static const char *vectorGeometryType( GeometryType type );
-
-    //! description strings for feature types
-    static const char *featureType( WkbType type );
 
     /** Raster data types.
      *  This is modified and extended copy of GDALDataType.
@@ -136,70 +65,6 @@ class QGis
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied,
     };
 
-
-    /** Map units that qgis supports
-     * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
-     * @note and QGIS >1.8 returns to that
-     */
-    //TODO QGIS 3.0 - clean up and move to QgsUnitTypes and rename to DistanceUnit
-    enum UnitType
-    {
-      Meters, /*!< meters */
-      Feet, /*!< imperial feet */
-      Degrees, /*!< degrees, for planar geographic CRS distance measurements */ //for 1.0 api backwards compatibility
-      NauticalMiles, /*!< nautical miles */
-      Kilometers, /*!< kilometers */
-      Yards, /*!< imperial yards */
-      Miles, /*!< terrestial miles */
-
-      UnknownUnit, /*!< unknown distance unit */
-
-      // for [1.4;1.8] api compatibility
-      DecimalDegrees,         // was 2
-      DegreesMinutesSeconds,  // was 4
-      DegreesDecimalMinutes,  // was 5
-    };
-
-    //! Provides the canonical name of the type value
-    //! @deprecated use QgsUnitTypes::encodeUnit() instead
-    static QString toLiteral( QGis::UnitType unit ) /Deprecated/;
-
-    //! Converts from the canonical name to the type value
-    //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
-    static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit ) /Deprecated/;
-
-    //! Provides translated version of the type value
-    //! @deprecated use QgsUnitTypes::toString() instead
-    static QString tr( QGis::UnitType unit ) /Deprecated/;
-
-    //! Provides type value from translated version
-    //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
-    static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit ) /Deprecated/;
-
-    //! Returns the conversion factor between the specified units
-    //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit ) /Deprecated/;
-
-    /** Converts a string to a double in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand separators
-     * @param string string to convert
-     * @param ok will be set to true if conversion was successful
-     * @returns string converted to double if possible
-     * @note added in version 2.9
-     * @see permissiveToInt
-     */
-    static double permissiveToDouble( QString string, bool& ok );
-
-    /** Converts a string to an integer in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand separators
-     * @param string string to convert
-     * @param ok will be set to true if conversion was successful
-     * @returns string converted to int if possible
-     * @note added in version 2.9
-     * @see permissiveToDouble
-     */
-    static int permissiveToInt( QString string, bool& ok );
-
     //! User defined event types
     enum UserEvent
     {
@@ -211,10 +76,6 @@ class QGis
       //! The row count has been calculated by a provider of a layer
       ProviderCountCalcEvent
     };
-
-    /** Old search radius in % of canvas width
-     *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
-    static const double DEFAULT_IDENTIFY_RADIUS;
 
     /** Identify search radius in mm
      *  @note added in 2.3 */
@@ -243,6 +104,25 @@ class QGis
     static double SCALE_PRECISION;
 };
 
+/** Converts a string to a double in a permissive way, eg allowing for incorrect
+ * numbers of digits between thousand separators
+ * @param string string to convert
+ * @param ok will be set to true if conversion was successful
+ * @returns string converted to double if possible
+ * @note added in version 2.9
+ * @see permissiveToInt
+ */
+double qgsPermissiveToDouble( QString string, bool& ok );
+
+/** Converts a string to an integer in a permissive way, eg allowing for incorrect
+ * numbers of digits between thousand separators
+ * @param string string to convert
+ * @param ok will be set to true if conversion was successful
+ * @returns string converted to int if possible
+ * @note added in version 2.9
+ * @see permissiveToDouble
+ */
+int qgsPermissiveToInt( QString string, bool& ok );
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
@@ -288,8 +168,6 @@ const QString GEO_NONE;
 // Constants for point symbols
 //
 
-/** Magic number that determines the minimum allowable point size for point symbols */
-const double MINIMUM_POINT_SIZE;
 /** Magic number that determines the default point size for point symbols */
 const double DEFAULT_POINT_SIZE;
 const double DEFAULT_LINE_WIDTH;

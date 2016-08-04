@@ -17,13 +17,11 @@
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
 
-#include <QDockWidget>
 #include <QSqlTableModel>
 #include <QScopedPointer>
 
 #include "ui_qgsbookmarksbase.h"
-#include "qgscontexthelp.h"
-
+#include "qgsdockwidget.h"
 
 /*
  * Model for project bookmarks
@@ -100,7 +98,7 @@ class QgsMergedBookmarksTableModel: public QAbstractTableModel
 };
 
 
-class APP_EXPORT QgsBookmarks : public QDockWidget, private Ui::QgsBookmarksBase
+class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBase
 {
     Q_OBJECT
 
@@ -114,11 +112,10 @@ class APP_EXPORT QgsBookmarks : public QDockWidget, private Ui::QgsBookmarksBase
   private slots:
     void deleteClicked();
     void zoomToBookmark();
-    void exportToXML();
-    void importFromXML();
+    void exportToXml();
+    void importFromXml();
 
     void on_lstBookmarks_doubleClicked( const QModelIndex & );
-    void on_actionHelp_triggered() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
     QSqlTableModel* mQgisModel;

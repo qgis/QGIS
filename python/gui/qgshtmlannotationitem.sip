@@ -20,8 +20,8 @@ class QgsHtmlAnnotationItem: QObject, QgsAnnotationItem
     void setHTMLPage( const QString& htmlFile );
     QString htmlPage() const;
 
-    void writeXML( QDomDocument& doc ) const;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem );
+    void writeXml( QDomDocument& doc ) const;
+    void readXml( const QDomDocument& doc, const QDomElement& itemElem );
 
     QgsVectorLayer* vectorLayer() const;
 };

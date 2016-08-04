@@ -16,8 +16,6 @@
 #ifndef QGSLABELINGENGINEV2_H
 #define QGSLABELINGENGINEV2_H
 
-#include "qgsgeometry.h"
-
 #include "qgsmapsettings.h"
 
 #include "qgspallabeling.h"
@@ -28,7 +26,7 @@
 class QgsLabelingEngineV2;
 
 
-/**
+/** \ingroup core
  * @brief The QgsAbstractLabelProvider class is an interface class. Implementations
  * return list of labels and their associated geometries - these are used by
  * QgsLabelingEngineV2 to compute the final layout of labels.
@@ -128,7 +126,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
 
 
 
-/**
+/** \ingroup core
  * @brief The QgsLabelingEngineV2 class provides map labeling functionality.
  * The input for the engine is a list of label provider objects and map settings.
  * Based on the input, the engine computes layout of labels for the given map view
@@ -251,7 +249,7 @@ class CORE_EXPORT QgsLabelingEngineV2
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngineV2::Flags )
 
 
-/**
+/** \ingroup core
  * @class QgsLabelingUtils
  * @brief Contains helper utilities for working with QGIS' labeling engine.
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2

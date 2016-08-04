@@ -35,6 +35,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerblob.h"
 #include "qgsslottofunction.h"
+#include "qgsfeatureiterator.h"
 
 /**
  * Create metadata tables if needed
@@ -219,13 +220,13 @@ private:
     }
 
     QgsVectorDataProvider* provider = mLayer ? mLayer->dataProvider() : mProvider;
-    if ( provider->geometryType() != QGis::WKBNoGeometry )
+    if ( provider->wkbType() != QgsWkbTypes::NoGeometry )
     {
       // we have here a convenient hack
       // the type of a column can be declared with two numeric arguments, usually for setting numeric precision
       // we are using them to set the geometry type and srid
       // these will be reused by the provider when it will introspect the query to detect types
-      sqlFields << QString( "geometry geometry(%1,%2)" ).arg( provider->geometryType() ).arg( provider->crs().postgisSrid() );
+      sqlFields << QString( "geometry geometry(%1,%2)" ).arg( provider->wkbType() ).arg( provider->crs().postgisSrid() );
     }
 
     QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
@@ -300,10 +301,10 @@ struct VTableCursor
   {
     int blob_len = 0;
     char* blob = nullptr;
-    const QgsGeometry* g = mCurrentFeature.constGeometry();
-    if ( g && ! g->isEmpty() )
+    QgsGeometry g = mCurrentFeature.geometry();
+    if ( ! g.isEmpty() )
     {
-      qgsGeometryToSpatialiteBlob( *g, mVtab->crs(), blob, blob_len );
+      qgsGeometryToSpatialiteBlob( g, mVtab->crs(), blob, blob_len );
     }
     return qMakePair( blob, blob_len );
   }
@@ -312,10 +313,10 @@ struct VTableCursor
 void getGeometryType( const QgsVectorDataProvider* provider, QString& geometryTypeStr, int& geometryDim, int& geometryWkbType, long& srid )
 {
   srid = const_cast<QgsVectorDataProvider*>( provider )->crs().postgisSrid();
-  QgsWKBTypes::Type t = QGis::fromOldWkbType( provider->geometryType() );
-  geometryTypeStr = QgsWKBTypes::displayString( t );
-  geometryDim = QgsWKBTypes::coordDimensions( t );
-  if (( t != QgsWKBTypes::NoGeometry ) && ( t != QgsWKBTypes::Unknown ) )
+  QgsWkbTypes::Type t = provider->wkbType();
+  geometryTypeStr = QgsWkbTypes::displayString( t );
+  geometryDim = QgsWkbTypes::coordDimensions( t );
+  if (( t != QgsWkbTypes::NoGeometry ) && ( t != QgsWkbTypes::Unknown ) )
     geometryWkbType = static_cast<int>( t );
   else
     geometryWkbType = 0;

@@ -27,7 +27,7 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, const Qt::WindowFlags& fl )
+QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WindowFlags fl )
     : QWidget( parent, fl )
     , mUserProjList( nullptr )
     , mGeoList( nullptr )
@@ -362,7 +362,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   // not a top-level projection node
   QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
   if ( !lvi || lvi->text( QGIS_CRS_ID_COLUMN ).isEmpty() )
-    return nullptr;
+    return QString();
 
   //
   // Determine if this is a user projection or a system on
@@ -374,7 +374,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
     databaseFileName = QgsApplication::qgisUserDbFilePath();
     if ( !QFileInfo( databaseFileName ).exists() )
     {
-      return nullptr;
+      return QString();
     }
   }
   else
@@ -392,7 +392,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   if ( rc )
   {
     showDBMissingWarning( databaseFileName );
-    return nullptr;
+    return QString();
   }
 
   // prepare the sql statement
@@ -498,7 +498,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   if ( result )
   {
     // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist. But we checked earlier for its existance
+    //     database if it does not exist. But we checked earlier for its existence
     //     and aborted in that case. This is because we may be runnig from read only
     //     media such as live cd and don't want to force trying to create a db.
     showDBMissingWarning( databaseFileName );
@@ -871,7 +871,7 @@ void QgsProjectionSelector::pushProjectionToFront()
 }
 
 
-long QgsProjectionSelector::getLargestCRSIDMatch( const QString& theSql )
+long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
 {
   long srsId = 0;
 
@@ -894,7 +894,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( const QString& theSql )
     if ( result )
     {
       // XXX This will likely never happen since on open, sqlite creates the
-      //     database if it does not exist. But we checked earlier for its existance
+      //     database if it does not exist. But we checked earlier for its existence
       //     and aborted in that case. This is because we may be runnig from read only
       //     media such as live cd and don't want to force trying to create a db.
       showDBMissingWarning( databaseFileName );

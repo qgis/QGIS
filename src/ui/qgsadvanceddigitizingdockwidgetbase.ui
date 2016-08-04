@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsAdvancedDigitizingDockWidgetBase</class>
- <widget class="QDockWidget" name="QgsAdvancedDigitizingDockWidgetBase">
+ <widget class="QgsDockWidget" name="QgsAdvancedDigitizingDockWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -21,6 +21,18 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="mLayout">
       <item>
@@ -491,6 +503,14 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mEnabledButton</tabstop>
   <tabstop>mConstructionModeButton</tabstop>
@@ -514,8 +534,8 @@
   <tabstop>mRepeatingLockYButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../plugins/georeferencer/georeferencer.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>

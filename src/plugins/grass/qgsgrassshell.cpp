@@ -76,7 +76,6 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
 
 QgsGrassShell::~QgsGrassShell()
 {
-  QgsDebugMsg( "entered" );
 }
 
 void QgsGrassShell::closeShell()

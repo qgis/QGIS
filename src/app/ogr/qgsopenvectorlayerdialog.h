@@ -32,7 +32,7 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     Q_OBJECT
 
   public:
-    QgsOpenVectorLayerDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsOpenVectorLayerDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsOpenVectorLayerDialog();
     //! Opens a dialog to select a file datasource*/
     QStringList openFile();

@@ -37,7 +37,7 @@
 
 QgsLineStringV2::QgsLineStringV2(): QgsCurveV2()
 {
-  mWkbType = QgsWKBTypes::LineString;
+  mWkbType = QgsWkbTypes::LineString;
 }
 
 QgsLineStringV2::~QgsLineStringV2()
@@ -87,7 +87,7 @@ void QgsLineStringV2::clear()
   mY.clear();
   mZ.clear();
   mM.clear();
-  mWkbType = QgsWKBTypes::Unknown;
+  mWkbType = QgsWkbTypes::LineString;
   clearCache();
 }
 
@@ -98,8 +98,8 @@ bool QgsLineStringV2::fromWkb( QgsConstWkbPtr wkbPtr )
     return false;
   }
 
-  QgsWKBTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::LineString )
+  QgsWkbTypes::Type type = wkbPtr.readHeader();
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::LineString )
   {
     return false;
   }
@@ -108,7 +108,7 @@ bool QgsLineStringV2::fromWkb( QgsConstWkbPtr wkbPtr )
   return true;
 }
 
-void QgsLineStringV2::fromWkbPoints( QgsWKBTypes::Type type, const QgsConstWkbPtr& wkb )
+void QgsLineStringV2::fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr& wkb )
 {
   mWkbType = type;
   importVerticesFromWkb( wkb );
@@ -148,9 +148,9 @@ bool QgsLineStringV2::fromWkt( const QString& wkt )
 {
   clear();
 
-  QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
+  QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::parseType( geometryType() ) )
+  if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::LineString )
     return false;
   mWkbType = parts.first;
 
@@ -306,22 +306,22 @@ QgsPointV2 QgsLineStringV2::pointN( int i ) const
     m = mM.at( i );
   }
 
-  QgsWKBTypes::Type t = QgsWKBTypes::Point;
-  if ( mWkbType == QgsWKBTypes::LineString25D )
+  QgsWkbTypes::Type t = QgsWkbTypes::Point;
+  if ( mWkbType == QgsWkbTypes::LineString25D )
   {
-    t = QgsWKBTypes::Point25D;
+    t = QgsWkbTypes::Point25D;
   }
   else if ( hasZ && hasM )
   {
-    t = QgsWKBTypes::PointZM;
+    t = QgsWkbTypes::PointZM;
   }
   else if ( hasZ )
   {
-    t = QgsWKBTypes::PointZ;
+    t = QgsWkbTypes::PointZ;
   }
   else if ( hasM )
   {
-    t = QgsWKBTypes::PointM;
+    t = QgsWkbTypes::PointM;
   }
   return QgsPointV2( t, x, y, z, m );
 }
@@ -421,7 +421,7 @@ void QgsLineStringV2::setPoints( const QgsPointSequenceV2 &points )
   bool hasZ = firstPt.is3D();
   bool hasM = firstPt.isMeasure();
 
-  setZMTypeFromSubGeometry( &firstPt, QgsWKBTypes::LineString );
+  setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::LineString );
 
   mX.resize( points.size() );
   mY.resize( points.size() );
@@ -472,7 +472,7 @@ void QgsLineStringV2::append( const QgsLineStringV2* line )
 
   if ( numPoints() < 1 )
   {
-    setZMTypeFromSubGeometry( line, QgsWKBTypes::LineString );
+    setZMTypeFromSubGeometry( line, QgsWkbTypes::LineString );
   }
 
   // do not store duplicit points
@@ -599,13 +599,14 @@ QgsAbstractGeometryV2* QgsLineStringV2::toCurveType() const
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
+void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   double* zArray = mZ.data();
 
   bool hasZ = is3D();
   int nPoints = numPoints();
-  if ( !hasZ )
+  bool useDummyZ = !hasZ || !transformZ;
+  if ( useDummyZ )
   {
     zArray = new double[nPoints];
     for ( int i = 0; i < nPoints; ++i )
@@ -614,7 +615,7 @@ void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinate
     }
   }
   ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
-  if ( !hasZ )
+  if ( useDummyZ )
   {
     delete[] zArray;
   }
@@ -647,9 +648,9 @@ bool QgsLineStringV2::insertVertex( QgsVertexId position, const QgsPointV2& vert
     return false;
   }
 
-  if ( mWkbType == QgsWKBTypes::Unknown || mX.isEmpty() )
+  if ( mWkbType == QgsWkbTypes::Unknown || mX.isEmpty() )
   {
-    setZMTypeFromSubGeometry( &vertex, QgsWKBTypes::LineString );
+    setZMTypeFromSubGeometry( &vertex, QgsWkbTypes::LineString );
   }
 
   mX.insert( position.vertex, vertex.x() );
@@ -721,9 +722,9 @@ bool QgsLineStringV2::deleteVertex( QgsVertexId position )
 
 void QgsLineStringV2::addVertex( const QgsPointV2& pt )
 {
-  if ( mWkbType == QgsWKBTypes::Unknown || mX.isEmpty() )
+  if ( mWkbType == QgsWkbTypes::Unknown || mX.isEmpty() )
   {
-    setZMTypeFromSubGeometry( &pt, QgsWKBTypes::LineString );
+    setZMTypeFromSubGeometry( &pt, QgsWkbTypes::LineString );
   }
 
   mX.append( pt.x() );
@@ -946,17 +947,17 @@ double QgsLineStringV2::vertexAngle( QgsVertexId vertex ) const
 
 bool QgsLineStringV2::addZValue( double zValue )
 {
-  if ( QgsWKBTypes::hasZ( mWkbType ) )
+  if ( QgsWkbTypes::hasZ( mWkbType ) )
     return false;
 
   clearCache();
-  if ( mWkbType == QgsWKBTypes::Unknown )
+  if ( mWkbType == QgsWkbTypes::Unknown )
   {
-    mWkbType = QgsWKBTypes::LineStringZ;
+    mWkbType = QgsWkbTypes::LineStringZ;
     return true;
   }
 
-  mWkbType = QgsWKBTypes::addZ( mWkbType );
+  mWkbType = QgsWkbTypes::addZ( mWkbType );
 
   mZ.clear();
   int nPoints = numPoints();
@@ -970,23 +971,23 @@ bool QgsLineStringV2::addZValue( double zValue )
 
 bool QgsLineStringV2::addMValue( double mValue )
 {
-  if ( QgsWKBTypes::hasM( mWkbType ) )
+  if ( QgsWkbTypes::hasM( mWkbType ) )
     return false;
 
   clearCache();
-  if ( mWkbType == QgsWKBTypes::Unknown )
+  if ( mWkbType == QgsWkbTypes::Unknown )
   {
-    mWkbType = QgsWKBTypes::LineStringM;
+    mWkbType = QgsWkbTypes::LineStringM;
     return true;
   }
 
-  if ( mWkbType == QgsWKBTypes::LineString25D )
+  if ( mWkbType == QgsWkbTypes::LineString25D )
   {
-    mWkbType = QgsWKBTypes::LineStringZM;
+    mWkbType = QgsWkbTypes::LineStringZM;
   }
   else
   {
-    mWkbType = QgsWKBTypes::addM( mWkbType );
+    mWkbType = QgsWkbTypes::addM( mWkbType );
   }
 
   mM.clear();
@@ -1005,7 +1006,7 @@ bool QgsLineStringV2::dropZValue()
     return false;
 
   clearCache();
-  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  mWkbType = QgsWkbTypes::dropZ( mWkbType );
   mZ.clear();
   return true;
 }
@@ -1016,23 +1017,23 @@ bool QgsLineStringV2::dropMValue()
     return false;
 
   clearCache();
-  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  mWkbType = QgsWkbTypes::dropM( mWkbType );
   mM.clear();
   return true;
 }
 
-bool QgsLineStringV2::convertTo( QgsWKBTypes::Type type )
+bool QgsLineStringV2::convertTo( QgsWkbTypes::Type type )
 {
   if ( type == mWkbType )
     return true;
 
   clearCache();
-  if ( type == QgsWKBTypes::LineString25D )
+  if ( type == QgsWkbTypes::LineString25D )
   {
     //special handling required for conversion to LineString25D
     dropMValue();
     addZValue();
-    mWkbType = QgsWKBTypes::LineString25D;
+    mWkbType = QgsWkbTypes::LineString25D;
     return true;
   }
   else

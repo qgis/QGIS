@@ -20,7 +20,7 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.core import QgsDataSourceURI
+from qgis.core import QgsDataSourceUri
 
 from .plugin import DbError, ConnectionError
 
@@ -38,11 +38,11 @@ class DBConnector:
         self.connection = None
 
     def uri(self):
-        return QgsDataSourceURI(self._uri.uri(False))
+        return QgsDataSourceUri(self._uri.uri(False))
 
     def publicUri(self):
-        publicUri = QgsDataSourceURI.removePassword(self._uri.uri(False))
-        return QgsDataSourceURI(publicUri)
+        publicUri = QgsDataSourceUri.removePassword(self._uri.uri(False))
+        return QgsDataSourceUri(publicUri)
 
     def hasSpatialSupport(self):
         return False

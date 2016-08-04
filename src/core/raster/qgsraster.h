@@ -110,12 +110,22 @@ class CORE_EXPORT QgsRaster
     static QString contrastEnhancementLimitsAsString( QgsRaster::ContrastEnhancementLimits theLimits );
     static ContrastEnhancementLimits contrastEnhancementLimitsFromString( const QString& theLimits );
 
-    /** Get value representable by given data type.
+    /** Check if the specified value is representable in the given data type.
      * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.
      * @param value
      * @param dataType
+     * @note added in version 2.16
+     *  @note not available in Python bindings */
+    static bool isRepresentableValue( double value, Qgis::DataType dataType );
+
+    /** Get value representable by given data type.
+     * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.
+     * This is done through C casting, so you have to be sure that the provided value is
+     * representable in the output data type. This can be checked with isRepresentableValue().
+     * @param value
+     * @param dataType
      * @note added in version 2.1 */
-    static double representableValue( double value, QGis::DataType dataType );
+    static double representableValue( double value, Qgis::DataType dataType );
 };
 
 #endif

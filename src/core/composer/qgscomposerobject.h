@@ -27,7 +27,7 @@ class QgsComposition;
 class QPainter;
 class QgsDataDefined;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A base class for objects which belong to a map composition.
  */
 class CORE_EXPORT QgsComposerObject: public QObject
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
       MapYMax, /*!< map extent y maximum */
       MapAtlasMargin, /*!< map atlas margin*/
       MapLayers, /*!< map layer set*/
-      MapStylePreset, /*!< layer and style visibility preset */
+      MapStylePreset, /*!< layer and style map theme */
       //composer picture
       PictureSource, /*!< picture source url */
       //html item
@@ -102,13 +102,13 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * @param elem is DOM element corresponding to item tag
      * @param doc is the DOM document
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets item state from DOM element
      * @param itemElem is DOM node corresponding to item tag
      * @param doc is DOM document
      */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Returns a reference to the data defined settings for one of the item's data defined properties.
      * @param property data defined property to return

@@ -21,7 +21,7 @@
 
 #include <QNetworkReply>
 
-/**
+/** \ingroup core
   \brief Multipart QNetworkReply parser.
 
   It seams that Qt does not have currently support for multipart reply

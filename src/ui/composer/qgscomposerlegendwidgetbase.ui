@@ -64,8 +64,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>374</width>
-        <height>1293</height>
+        <width>375</width>
+        <height>1506</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -130,7 +130,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_15">
             <property name="text">
-             <string>Title alignment:</string>
+             <string>Title alignment</string>
             </property>
            </widget>
           </item>
@@ -151,6 +151,13 @@
               <string>Right</string>
              </property>
             </item>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QCheckBox" name="mCheckboxResizeContents">
+            <property name="text">
+             <string>Resize to fit contents</string>
+            </property>
            </widget>
           </item>
          </layout>
@@ -356,7 +363,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionSum.png</normaloff>:/images/themes/default/mActionSum.png</iconset>
+                <normaloff>:/images/themes/default/mActionSum.svg</normaloff>:/images/themes/default/mActionSum.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -493,7 +500,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsColorButtonV2" name="mFontColorButton">
+             <widget class="QgsColorButton" name="mFontColorButton">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -676,7 +683,7 @@
              <item row="0" column="1">
               <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
-                <widget class="QgsColorButtonV2" name="mRasterBorderColorButton">
+                <widget class="QgsColorButton" name="mRasterBorderColorButton">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -996,9 +1003,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1034,6 +1041,7 @@
   <tabstop>mTitleAlignCombo</tabstop>
   <tabstop>mMapComboBox</tabstop>
   <tabstop>mWrapCharLineEdit</tabstop>
+  <tabstop>mCheckboxResizeContents</tabstop>
   <tabstop>mLegendItemColGroupBox</tabstop>
   <tabstop>mCheckBoxAutoUpdate</tabstop>
   <tabstop>mUpdateAllPushButton</tabstop>

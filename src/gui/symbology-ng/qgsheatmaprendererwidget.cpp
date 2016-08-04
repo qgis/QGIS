@@ -66,20 +66,20 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
     return;
   }
   // the renderer only applies to point vector layers
-  if ( layer->geometryType() != QGis::Point )
+  if ( layer->geometryType() != QgsWkbTypes::PointGeometry )
   {
     //setup blank dialog
     mRenderer = nullptr;
-    QGridLayout* layout = new QGridLayout( this );
     QLabel* label = new QLabel( tr( "The heatmap renderer only applies to point and multipoint layers. \n"
                                     "'%1' is not a point layer and cannot be rendered as a heatmap." )
                                 .arg( layer->name() ), this );
-    layout->addWidget( label );
+    layout()->addWidget( label );
     return;
   }
 
   setupUi( this );
-  mRadiusUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Pixel << QgsSymbolV2::MapUnit );
+
+  mRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits );
   mWeightExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
 
   if ( renderer )

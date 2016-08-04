@@ -44,12 +44,12 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const;
+    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const;
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry ) const;
 
     //! Simplifies the specified WKB-point array
-    virtual bool simplifyPoints( QgsWKBTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints ) const;
+    virtual bool simplifyPoints( QgsWkbTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints ) const;
 
     // MapToPixel simplification helper methods
   public:
@@ -64,6 +64,6 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
     static bool simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
 
     //! Simplifies the WKB-point array when is applied the specified map2pixel context
-    static bool simplifyPoints( QgsWKBTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints, int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
+    static bool simplifyPoints( QgsWkbTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints, int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
 
 };

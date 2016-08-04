@@ -1,0 +1,14 @@
+i.pansharpen
+Image fusion algorithms to sharpen multispectral with high-res panchromatic channels
+Imagery (i.*)
+ParameterRaster|red|Name of red channel|False
+ParameterRaster|green|Name of green channel|False
+ParameterRaster|blue|Name of blue channel|False
+ParameterRaster|pan|Name of raster map to be used for high resolution panchromatic channel|False
+ParameterSelection|method|Method|brovey;ihs;pca|1
+*ParameterBoolean|-l|Rebalance blue channel for LANDSAT|False
+*ParameterBoolean|-s|Process bands serially (default: run in parallel)|False
+OutputRaster|redoutput|Enhanced Red
+OutputRaster|greenoutput|Enhanced Green
+OutputRaster|blueoutput|Enhanced Blue
+

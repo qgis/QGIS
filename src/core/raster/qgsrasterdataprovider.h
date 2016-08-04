@@ -30,15 +30,9 @@
 #include <QImage>
 
 #include "qgscolorrampshader.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsdataprovider.h"
-#include "qgserror.h"
-#include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgslogger.h"
-#include "qgsrasterbandstats.h"
 #include "qgsraster.h"
-#include "qgsrasterhistogram.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
@@ -53,24 +47,29 @@ class QgsMapSettings;
 
 /**
  * \brief Handles asynchronous download of images
- *
+ * \ingroup core
  * \note added in 2.8
  */
 class CORE_EXPORT QgsImageFetcher : public QObject
 {
     Q_OBJECT
   public:
-
-    QgsImageFetcher() {}
+    /** Constructor */
+    QgsImageFetcher( QObject* parent = 0 ) : QObject( parent ) {}
+    /** Destructor */
     virtual ~QgsImageFetcher() {}
 
-    // Make sure to connect to "finish" and "error" before starting
+    /** Starts the image download
+     * @note Make sure to connect to "finish" and "error" before starting */
     virtual void start() = 0;
 
   signals:
-
+    /** Emitted when the download completes
+     *  @param legend The downloaded legend image */
     void finish( const QImage& legend );
+    /** Emitted to report progress */
     void progress( qint64 received, qint64 total );
+    /** Emitted when an error occurs */
     void error( const QString& msg );
 };
 
@@ -103,18 +102,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) = 0;
 
-    /** Get the extent of the data source.
-     * @return QgsRectangle containing the extent of the layer
-     */
-    virtual QgsRectangle extent() override = 0;
+    virtual QgsRectangle extent() const override = 0;
 
     /** Returns data type for the band specified by number */
-    virtual QGis::DataType dataType( int bandNo ) const override = 0;
+    virtual Qgis::DataType dataType( int bandNo ) const override = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QGis::DataType srcDataType( int bandNo ) const override = 0;
+    virtual Qgis::DataType sourceDataType( int bandNo ) const override = 0;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const
@@ -203,19 +199,19 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: remove or make protected all readBlock working with void*
 
     /** Read block of data using given extent and size. */
-    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) override;
+    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     /** Return true if source band has no data value */
-    virtual bool srcHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo -1 ); }
+    virtual bool sourceHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo -1 ); }
 
     /** \brief Get source nodata value usage */
-    virtual bool useSrcNoDataValue( int bandNo ) const { return mUseSrcNoDataValue.value( bandNo -1 ); }
+    virtual bool useSourceNoDataValue( int bandNo ) const { return mUseSrcNoDataValue.value( bandNo -1 ); }
 
     /** \brief Set source nodata value usage */
-    virtual void setUseSrcNoDataValue( int bandNo, bool use );
+    virtual void setUseSourceNoDataValue( int bandNo, bool use );
 
     /** Value representing no data value. */
-    virtual double srcNoDataValue( int bandNo ) const { return mSrcNoDataValue.value( bandNo -1 ); }
+    virtual double sourceNoDataValue( int bandNo ) const { return mSrcNoDataValue.value( bandNo -1 ); }
 
     virtual void setUserNoDataValue( int bandNo, const QgsRasterRangeList& noData );
 
@@ -231,6 +227,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     {
       return QStringList();
     }
+
+    /** \brief Returns whether the provider supplies a legend graphic */
+    virtual bool supportsLegendGraphic() const { return false; }
 
     /** \brief Returns the legend rendered as pixmap
      *
@@ -314,6 +313,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * @param theExtent context extent
      * @param theWidth context width
      * @param theHeight context height
+     * @param theDpi context dpi
      * @return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
@@ -322,7 +322,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *         Empty if failed or there are no results (TODO: better error reporting).
      */
     //virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
-    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -378,7 +378,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     static QgsRasterDataProvider* create( const QString &providerKey,
                                           const QString &uri,
                                           const QString& format, int nBands,
-                                          QGis::DataType type,
+                                          Qgis::DataType type,
                                           int width, int height, double* geoTransform,
                                           const QgsCoordinateReferenceSystem& crs,
                                           const QStringList& createOptions = QStringList() );
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
      * @note added in 2.14
      */
-    void statusChanged( const QString& );
+    void statusChanged( const QString& ) const;
 
   protected:
     /** Read block of data
@@ -437,8 +437,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Read block of data using give extent and size
      * @note not available in python bindings
      */
-    virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data )
-    { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); }
+    virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr )
+    { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); }
 
     /** Returns true if user no data contains value */
     bool userNoDataValuesContains( int bandNo, double value ) const;
@@ -475,7 +475,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *  for each band, indexed from 0 */
     QList< QgsRasterRangeList > mUserNoDataValue;
 
-    QgsRectangle mExtent;
+    mutable QgsRectangle mExtent;
 
     static QStringList mPyramidResamplingListGdal;
     static QgsStringMap mPyramidResamplingMapGdal;

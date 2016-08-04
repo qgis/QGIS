@@ -18,6 +18,7 @@
 #include "qgszonalstatisticsdialog.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgisinterface.h"
@@ -126,7 +127,7 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
     else
     {
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
-      if ( vl && vl->geometryType() == QGis::Polygon )
+      if ( vl && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
         QgsVectorDataProvider* provider  = vl->dataProvider();
         if ( provider->capabilities() & QgsVectorDataProvider::AddAttributes )
@@ -178,7 +179,7 @@ QString QgsZonalStatisticsDialog::attributePrefix() const
 
 QgsZonalStatistics::Statistics QgsZonalStatisticsDialog::selectedStats() const
 {
-  QgsZonalStatistics::Statistics stats = nullptr;
+  QgsZonalStatistics::Statistics stats = 0;
   for ( int i = 0; i < mStatsListWidget->count(); ++i )
   {
     QListWidgetItem* item = mStatsListWidget->item( i );

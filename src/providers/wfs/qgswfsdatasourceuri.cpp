@@ -45,7 +45,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
     url.removeQueryItem( QgsWFSConstants::URI_PARAM_PASSWORD );
     url.removeQueryItem( QgsWFSConstants::URI_PARAM_AUTHCFG );
 
-    mURI = QgsDataSourceURI();
+    mURI = QgsDataSourceUri();
     mURI.setParam( QgsWFSConstants::URI_PARAM_URL, url.toEncoded() );
     setTypeName( typeName );
     setSRSName( srsname );

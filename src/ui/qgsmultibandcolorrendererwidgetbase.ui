@@ -34,93 +34,123 @@ enhancement</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="1" colspan="3">
+     <item row="6" column="1" colspan="4">
       <widget class="QComboBox" name="mContrastEnhancementAlgorithmComboBox"/>
      </item>
      <item row="1" column="1">
-      <widget class="QLabel" name="mMinLabel">
+      <widget class="QLabel" name="mRedMinLabel">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
        <property name="text">
-        <string>Min/max</string>
+        <string>Min</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLabel" name="mRedMaxLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="text">
+        <string>Max</string>
        </property>
       </widget>
      </item>
      <item row="1" column="2">
       <widget class="QLineEdit" name="mRedMinLineEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>75</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="maxLength">
         <number>16</number>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="3">
+     <item row="0" column="1" colspan="4">
       <widget class="QComboBox" name="mRedBandComboBox"/>
      </item>
      <item row="5" column="1">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Min/max</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1" colspan="3">
-      <widget class="QComboBox" name="mGreenBandComboBox"/>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Min/max</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1" colspan="3">
-      <widget class="QComboBox" name="mBlueBandComboBox"/>
-     </item>
-     <item row="1" column="3">
-      <widget class="QLineEdit" name="mRedMaxLineEdit">
+      <widget class="QLabel" name="mBlueMinLabel">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="maximumSize">
-        <size>
-         <width>75</width>
-         <height>16777215</height>
-        </size>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
+       <property name="text">
+        <string>Min</string>
        </property>
+      </widget>
+     </item>
+     <item row="5" column="3">
+      <widget class="QLabel" name="mBlueMaxLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="text">
+        <string>Max</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="4">
+      <widget class="QComboBox" name="mGreenBandComboBox"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="mGreenMinLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="text">
+        <string>Min</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QLabel" name="mGreenMaxLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="text">
+        <string>Max</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="4">
+      <widget class="QComboBox" name="mBlueBandComboBox"/>
+     </item>
+     <item row="1" column="4">
+      <widget class="QLineEdit" name="mRedMaxLineEdit">
        <property name="maxLength">
         <number>16</number>
        </property>
@@ -128,24 +158,6 @@ enhancement</string>
      </item>
      <item row="3" column="2">
       <widget class="QLineEdit" name="mGreenMinLineEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>75</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="maxLength">
         <number>16</number>
        </property>
@@ -153,6 +165,15 @@ enhancement</string>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="mBlueBandLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
        <property name="text">
         <string>Blue band</string>
        </property>
@@ -160,49 +181,13 @@ enhancement</string>
      </item>
      <item row="5" column="2">
       <widget class="QLineEdit" name="mBlueMinLineEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>75</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="maxLength">
         <number>16</number>
        </property>
       </widget>
      </item>
-     <item row="5" column="3">
+     <item row="5" column="4">
       <widget class="QLineEdit" name="mBlueMaxLineEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>75</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="maxLength">
         <number>16</number>
        </property>
@@ -210,37 +195,31 @@ enhancement</string>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="mGreenBandLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
        <property name="text">
         <string>Green band</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="3">
+     <item row="3" column="4">
       <widget class="QLineEdit" name="mGreenMaxLineEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>75</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="maxLength">
         <number>16</number>
        </property>
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="4" column="0" colspan="5"> 
+    <widget class="QWidget" name="mMinMaxContainerWidget" native="true"/>
    </item>
   </layout>
  </widget>

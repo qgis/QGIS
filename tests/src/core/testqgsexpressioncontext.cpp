@@ -37,6 +37,7 @@ class TestQgsExpressionContext : public QObject
     void contextScopeCopy();
     void contextScopeFunctions();
     void contextStack();
+    void scopeByName();
     void contextCopy();
     void contextStackFunctions();
     void evaluate();
@@ -302,6 +303,17 @@ void TestQgsExpressionContext::contextStack()
   QCOMPARE( scopes.at( 0 ), scope1 );
 }
 
+void TestQgsExpressionContext::scopeByName()
+{
+  QgsExpressionContext context;
+  QCOMPARE( context.indexOfScope( "test1" ), -1 );
+  context << new QgsExpressionContextScope( "test1" );
+  context << new QgsExpressionContextScope( "test2" );
+  QCOMPARE( context.indexOfScope( "test1" ), 0 );
+  QCOMPARE( context.indexOfScope( "test2" ), 1 );
+  QCOMPARE( context.indexOfScope( "not in context" ), -1 );
+}
+
 void TestQgsExpressionContext::contextCopy()
 {
   QgsExpressionContext context;
@@ -495,9 +507,9 @@ void TestQgsExpressionContext::globalScope()
   QgsExpression expOsName( "var('qgis_os_name')" );
   QgsExpression expPlatform( "var('qgis_platform')" );
 
-  QCOMPARE( expVersion.evaluate( &context ).toString(), QString( QGis::QGIS_VERSION ) );
-  QCOMPARE( expVersionNo.evaluate( &context ).toInt(), QGis::QGIS_VERSION_INT );
-  QCOMPARE( expReleaseName.evaluate( &context ).toString(), QString( QGis::QGIS_RELEASE_NAME ) );
+  QCOMPARE( expVersion.evaluate( &context ).toString(), Qgis::QGIS_VERSION );
+  QCOMPARE( expVersionNo.evaluate( &context ).toInt(), Qgis::QGIS_VERSION_INT );
+  QCOMPARE( expReleaseName.evaluate( &context ).toString(), Qgis::QGIS_RELEASE_NAME );
   QCOMPARE( expAccountName.evaluate( &context ).toString(), QgsApplication::userLoginName() );
   QCOMPARE( expUserFullName.evaluate( &context ).toString(), QgsApplication::userFullName() );
   QCOMPARE( expOsName.evaluate( &context ).toString(), QgsApplication::osName() );

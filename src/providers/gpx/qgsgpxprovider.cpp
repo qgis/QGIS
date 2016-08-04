@@ -125,7 +125,7 @@ QString QgsGPXProvider::storageType() const
   return tr( "GPS eXchange file" );
 }
 
-int QgsGPXProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsGPXProvider::capabilities() const
 {
   return QgsVectorDataProvider::AddFeatures |
          QgsVectorDataProvider::DeleteFeatures |
@@ -135,7 +135,7 @@ int QgsGPXProvider::capabilities() const
 
 
 // Return the extent of the layer
-QgsRectangle QgsGPXProvider::extent()
+QgsRectangle QgsGPXProvider::extent() const
 {
   return data->getExtent();
 }
@@ -144,15 +144,15 @@ QgsRectangle QgsGPXProvider::extent()
 /**
  * Return the feature type
  */
-QGis::WkbType QgsGPXProvider::geometryType() const
+QgsWkbTypes::Type QgsGPXProvider::wkbType() const
 {
   if ( mFeatureType == WaypointType )
-    return QGis::WKBPoint;
+    return QgsWkbTypes::Point;
 
   if ( mFeatureType == RouteType || mFeatureType == TrackType )
-    return QGis::WKBLineString;
+    return QgsWkbTypes::LineString;
 
-  return QGis::WKBUnknown;
+  return QgsWkbTypes::Unknown;
 }
 
 
@@ -171,20 +171,20 @@ long QgsGPXProvider::featureCount() const
 }
 
 
-const QgsFields& QgsGPXProvider::fields() const
+QgsFields QgsGPXProvider::fields() const
 {
   return attributeFields;
 }
 
 
 
-bool QgsGPXProvider::isValid()
+bool QgsGPXProvider::isValid() const
 {
   return mValid;
 }
 
 
-QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   return QgsFeatureIterator( new QgsGPXFeatureIterator( new QgsGPXFeatureSource( this ), true, request ) );
 }
@@ -206,22 +206,22 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList & flist )
   if ( !file.open( QIODevice::WriteOnly ) )
     return false;
   QTextStream ostr( &file );
-  data->writeXML( ostr );
+  data->writeXml( ostr );
   return true;
 }
 
 
 bool QgsGPXProvider::addFeature( QgsFeature& f )
 {
-  const unsigned char* geo = f.constGeometry()->asWkb();
-  QGis::WkbType wkbType = f.constGeometry()->wkbType();
+  const unsigned char* geo = f.geometry().asWkb();
+  QgsWkbTypes::Type wkbType = f.geometry().wkbType();
   bool success = false;
   QgsGPSObject* obj = nullptr;
   QgsAttributes attrs = f.attributes();
   QgsAttributeMap::const_iterator it;
 
   // is it a waypoint?
-  if ( mFeatureType == WaypointType && geo && wkbType == QGis::WKBPoint )
+  if ( mFeatureType == WaypointType && geo && wkbType == QgsWkbTypes::Point )
   {
 
     // add geometry
@@ -251,7 +251,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   }
 
   // is it a route?
-  if ( mFeatureType == RouteType && geo && wkbType == QGis::WKBLineString )
+  if ( mFeatureType == RouteType && geo && wkbType == QgsWkbTypes::LineString )
   {
 
     QgsRoute rte;
@@ -298,7 +298,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   }
 
   // is it a track?
-  if ( mFeatureType == TrackType && geo && wkbType == QGis::WKBLineString )
+  if ( mFeatureType == TrackType && geo && wkbType == QgsWkbTypes::LineString )
   {
 
     QgsTrack trk;
@@ -394,7 +394,7 @@ bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds & id )
   if ( !file.open( QIODevice::WriteOnly ) )
     return false;
   QTextStream ostr( &file );
-  data->writeXML( ostr );
+  data->writeXml( ostr );
   return true;
 }
 
@@ -444,7 +444,7 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( !file.open( QIODevice::WriteOnly ) )
     return false;
   QTextStream ostr( &file );
-  data->writeXML( ostr );
+  data->writeXml( ostr );
   return true;
 }
 
@@ -515,7 +515,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
 }
 
 
-QVariant QgsGPXProvider::defaultValue( int fieldId )
+QVariant QgsGPXProvider::defaultValue( int fieldId ) const
 {
   if ( fieldId == SrcAttr )
     return tr( "Digitized in QGIS" );
@@ -535,7 +535,7 @@ QString QgsGPXProvider::description() const
   return GPX_DESCRIPTION;
 } // QgsGPXProvider::description()
 
-QgsCoordinateReferenceSystem QgsGPXProvider::crs()
+QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
 {
   return QgsCoordinateReferenceSystem( GEOSRID, QgsCoordinateReferenceSystem::PostgisCrsId ); // use WGS84
 }

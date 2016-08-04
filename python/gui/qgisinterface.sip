@@ -279,6 +279,19 @@ class QgisInterface : QObject
     /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded) */
     virtual bool unregisterMainWindowAction( QAction* action ) = 0;
 
+    /** Register a new tab in the vector layer properties dialog.
+     * @note added in QGIS 2.16
+     * @note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * @see unregisterMapLayerPropertiesFactory() */
+    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
+
+    /** Unregister a previously registered tab in the vector layer properties dialog.
+     * @note added in QGIS 2.16
+     * @see registerMapLayerPropertiesFactory()
+    */
+    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
+
     // @todo is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
@@ -410,6 +423,10 @@ class QgisInterface : QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+    /** Get access to the native Add ArcGIS FeatureServer action. */
+    virtual QAction *actionAddAfsLayer() = 0;
+    /** Get access to the native Add ArcGIS MapServer action. */
+    virtual QAction *actionAddAmsLayer() = 0;
     virtual QAction *actionCopyLayerStyle() = 0;
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;

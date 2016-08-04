@@ -18,7 +18,6 @@
 #ifndef QGSRASTERCALCULATOR_H
 #define QGSRASTERCALCULATOR_H
 
-#include "qgsfield.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QString>
@@ -36,7 +35,8 @@ struct ANALYSIS_EXPORT QgsRasterCalculatorEntry
   int bandNumber; //raster band number
 };
 
-/** Raster calculator class*/
+/** \ingroup analysis
+ * Raster calculator class*/
 class ANALYSIS_EXPORT QgsRasterCalculator
 {
   public:

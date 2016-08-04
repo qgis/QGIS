@@ -16,8 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.algs.qgis import postgis_utils
-from processing.algs.qgis import spatialite_utils
+from __future__ import print_function
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
@@ -37,23 +36,24 @@ import cStringIO
 import psycopg2
 
 from qgis.PyQt.QtCore import QVariant, QSettings
-from qgis.core import (QGis, QgsFields, QgsField, QgsGeometry, QgsRectangle,
+from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTypes,
                        QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
-                       QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceURI, QgsCredentials)
+                       QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceUri, QgsCredentials,
+                       QgsFeatureRequest, QgsWkbTypes)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects
+from processing.tools import dataobjects, spatialite, postgis
 
 
 GEOM_TYPE_MAP = {
-    QGis.WKBNoGeometry: 'none',
-    QGis.WKBPoint: 'Point',
-    QGis.WKBLineString: 'LineString',
-    QGis.WKBPolygon: 'Polygon',
-    QGis.WKBMultiPoint: 'MultiPoint',
-    QGis.WKBMultiLineString: 'MultiLineString',
-    QGis.WKBMultiPolygon: 'MultiPolygon',
+    QgsWkbTypes.NullGeometry: 'none',
+    QgsWkbTypes.Point: 'Point',
+    QgsWkbTypes.LineString: 'LineString',
+    QgsWkbTypes.Polygon: 'Polygon',
+    QgsWkbTypes.MultiPoint: 'MultiPoint',
+    QgsWkbTypes.MultiLineString: 'MultiLineString',
+    QgsWkbTypes.MultiPolygon: 'MultiPolygon',
 }
 
 
@@ -88,26 +88,26 @@ TYPE_MAP_SPATIALITE_LAYER = {
 }
 
 
-def features(layer):
+def features(layer, request=QgsFeatureRequest()):
     """This returns an iterator over features in a vector layer,
     considering the selection that might exist in the layer, and the
     configuration that indicates whether to use only selected feature
     or all of them.
 
-    This should be used by algorithms instead of calling the QGis API
+    This should be used by algorithms instead of calling the Qgis API
     directly, to ensure a consistent behaviour across algorithms.
     """
     class Features:
 
-        def __init__(self, layer):
+        def __init__(self, layer, request):
             self.layer = layer
             self.selection = False
-            self.iter = layer.getFeatures()
-            if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED):
-                selected = layer.selectedFeatures()
-                if len(selected) > 0:
-                    self.selection = True
-                    self.iter = iter(selected)
+            if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)\
+                    and layer.selectedFeatureCount() > 0:
+                self.iter = layer.selectedFeaturesIterator(request)
+                self.selection = True
+            else:
+                self.iter = layer.getFeatures(request)
 
         def __iter__(self):
             return self.iter
@@ -118,7 +118,7 @@ def features(layer):
             else:
                 return int(self.layer.featureCount())
 
-    return Features(layer)
+    return Features(layer, request)
 
 
 def uniqueValues(layer, attribute):
@@ -201,10 +201,7 @@ def testForUniqueness(fieldList1, fieldList2):
 def spatialindex(layer):
     """Creates a spatial index for the passed vector layer.
     """
-    idx = QgsSpatialIndex()
-    feats = features(layer)
-    for ft in feats:
-        idx.insertFeature(ft)
+    idx = QgsSpatialIndex(layer.getFeatures())
     return idx
 
 
@@ -245,19 +242,19 @@ def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
 
 def extractPoints(geom):
     points = []
-    if geom.type() == QGis.Point:
+    if geom.type() == QgsWkbTypes.PointGeometry:
         if geom.isMultipart():
             points = geom.asMultiPoint()
         else:
             points.append(geom.asPoint())
-    elif geom.type() == QGis.Line:
+    elif geom.type() == QgsWkbTypes.LineGeometry:
         if geom.isMultipart():
             lines = geom.asMultiPolyline()
             for line in lines:
                 points.extend(line)
         else:
             points = geom.asPolyline()
-    elif geom.type() == QGis.Polygon:
+    elif geom.type() == QgsWkbTypes.PolygonGeometry:
         if geom.isMultipart():
             polygons = geom.asMultiPolygon()
             for poly in polygons:
@@ -277,11 +274,11 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
     # 1 - project CRS
     # 2 - ellipsoidal
 
-    if geom.wkbType() in [QGis.WKBPoint, QGis.WKBPoint25D]:
+    if geom.wkbType() in [QgsWkbTypes.Point, QgsWkbTypes.Point25D]:
         pt = geom.asPoint()
         attr1 = pt.x()
         attr2 = pt.y()
-    elif geom.wkbType() in [QGis.WKBMultiPoint, QGis.WKBMultiPoint25D]:
+    elif geom.wkbType() in [QgsWkbTypes.MultiPoint, QgsWkbTypes.MultiPoint25D]:
         pt = geom.asMultiPoint()
         attr1 = pt[0].x()
         attr2 = pt[0].y()
@@ -294,7 +291,7 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
             measure.setEllipsoidalMode(True)
 
         attr1 = measure.measure(geom)
-        if geom.type() == QGis.Polygon:
+        if geom.type() == QgsWkbTypes.PolygonGeometry:
             attr2 = measure.measurePerimeter(geom)
         else:
             attr2 = None
@@ -351,11 +348,11 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
 
     if layer.type() == QgsMapLayer.VectorLayer:
         geomType = layer.geometryType()
-        if geomType == QGis.Point:
+        if geomType == QgsWkbTypes.PointGeometry:
             strType = 'Point'
-        elif geomType == QGis.Line:
+        elif geomType == QgsWkbTypes.LineGeometry:
             strType = 'Line'
-        elif geomType == QGis.Polygon:
+        elif geomType == QgsWkbTypes.PolygonGeometry:
             strType = 'Polygon'
         else:
             raise RuntimeError('Layer is whether Point nor Line nor Polygon')
@@ -456,7 +453,7 @@ def ogrConnectionString(uri):
         # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
         # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
         # table="t4" (geom) sql=
-        dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+        dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
         conninfo = dsUri.connectionInfo()
         conn = None
         ok = False
@@ -480,7 +477,7 @@ def ogrConnectionString(uri):
         ogrstr = "PG:%s" % dsUri.connectionInfo()
     elif provider == "oracle":
         # OCI:user/password@host:port/service:table
-        dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+        dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
         ogrstr = "OCI:"
         if dsUri.username() != "":
             ogrstr += dsUri.username()
@@ -572,25 +569,26 @@ class VectorWriter:
             self.writer = self.layer.dataProvider()
         elif self.destination.startswith(self.POSTGIS_LAYER_PREFIX):
             self.isNotFileBased = True
-            uri = QgsDataSourceURI(self.destination[len(self.POSTGIS_LAYER_PREFIX):])
+            uri = QgsDataSourceUri(self.destination[len(self.POSTGIS_LAYER_PREFIX):])
             connInfo = uri.connectionInfo()
             (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
             if success:
                 QgsCredentials.instance().put(connInfo, user, passwd)
             else:
                 raise GeoAlgorithmExecutionException("Couldn't connect to database")
-            print uri.uri()
+            # fix_print_with_import
+            print(uri.uri())
             try:
-                db = postgis_utils.GeoDB(host=uri.host(), port=int(uri.port()),
-                                         dbname=uri.database(), user=user, passwd=passwd)
-            except postgis_utils.DbError as e:
+                db = postgis.GeoDB(host=uri.host(), port=int(uri.port()),
+                                   dbname=uri.database(), user=user, passwd=passwd)
+            except postgis.DbError as e:
                 raise GeoAlgorithmExecutionException(
                     "Couldn't connect to database:\n%s" % e.message)
 
             def _runSQL(sql):
                 try:
                     db._exec_sql_and_commit(unicode(sql))
-                except postgis_utils.DbError as e:
+                except postgis.DbError as e:
                     raise GeoAlgorithmExecutionException(
                         'Error creating output PostGIS table:\n%s' % e.message)
 
@@ -600,7 +598,7 @@ class VectorWriter:
                                   for f in fields)
 
             _runSQL("CREATE TABLE %s.%s (%s)" % (uri.schema(), uri.table().lower(), fieldsdesc))
-            if geometryType != QGis.WKBNoGeometry:
+            if geometryType != QgsWkbTypes.NullGeometry:
                 _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
                     table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
                     typmod=GEOM_TYPE_MAP[geometryType].upper()))
@@ -609,18 +607,19 @@ class VectorWriter:
             self.writer = self.layer.dataProvider()
         elif self.destination.startswith(self.SPATIALITE_LAYER_PREFIX):
             self.isNotFileBased = True
-            uri = QgsDataSourceURI(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
-            print uri.uri()
+            uri = QgsDataSourceUri(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
+            # fix_print_with_import
+            print(uri.uri())
             try:
-                db = spatialite_utils.GeoDB(uri=uri)
-            except spatialite_utils.DbError as e:
+                db = spatialite.GeoDB(uri=uri)
+            except spatialite.DbError as e:
                 raise GeoAlgorithmExecutionException(
                     "Couldn't connect to database:\n%s" % e.message)
 
             def _runSQL(sql):
                 try:
                     db._exec_sql_and_commit(unicode(sql))
-                except spatialite_utils.DbError as e:
+                except spatialite.DbError as e:
                     raise GeoAlgorithmExecutionException(
                         'Error creating output Spatialite table:\n%s' % unicode(e))
 
@@ -631,7 +630,7 @@ class VectorWriter:
 
             _runSQL("DROP TABLE IF EXISTS %s" % uri.table().lower())
             _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
-            if geometryType != QGis.WKBNoGeometry:
+            if geometryType != QgsWkbTypes.NullGeometry:
                 _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
                     table=uri.table().lower(), srid=crs.authid().split(":")[-1],
                     typmod=GEOM_TYPE_MAP[geometryType].upper()))
@@ -654,7 +653,7 @@ class VectorWriter:
                 extension = 'shp'
                 self.destination = self.destination + '.shp'
 
-            if geometryType == QGis.WKBNoGeometry:
+            if geometryType == QgsWkbTypes.NullGeometry:
                 if extension == 'shp':
                     extension = 'dbf'
                     self.destination = self.destination[:self.destination.rfind('.')] + '.dbf'

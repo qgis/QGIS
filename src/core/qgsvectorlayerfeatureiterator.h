@@ -16,6 +16,7 @@
 #define QGSVECTORLAYERFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
+#include "qgsfield.h"
 
 #include <QSet>
 
@@ -30,13 +31,19 @@ class QgsExpressionContext;
 
 class QgsVectorLayerFeatureIterator;
 
-/** Partial snapshot of vector layer's state (only the members necessary for access to features)
+/** \ingroup core
+ * Partial snapshot of vector layer's state (only the members necessary for access to features)
  * @note not available in Python bindings
 */
 class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsVectorLayerFeatureSource( QgsVectorLayer* layer );
+
+    /** Constructor for QgsVectorLayerFeatureSource.
+     * @param layer source layer
+     */
+    explicit QgsVectorLayerFeatureSource( const QgsVectorLayer* layer );
+
     ~QgsVectorLayerFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
@@ -68,7 +75,8 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     long mCrsId;
 };
 
-
+/** \ingroup core
+ */
 class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>
 {
   public:
@@ -97,10 +105,19 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     //! @note not available in Python bindings
     void rewindEditBuffer();
+
     //! @note not available in Python bindings
-    void prepareJoins();
+    void prepareJoin( int fieldIdx );
+
     //! @note not available in Python bindings
-    void prepareExpressions();
+    void prepareExpression( int fieldIdx );
+
+    //! @note not available in Python bindings
+    void prepareFields();
+
+    //! @note not available in Python bindings
+    void prepareField( int fieldIdx );
+
     //! @note not available in Python bindings
     bool fetchNextAddedFeature( QgsFeature& f );
     //! @note not available in Python bindings
@@ -126,6 +143,14 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * @note not available in Python bindings
      */
     void addVirtualAttributes( QgsFeature &f );
+
+    /** Adds an expression based attribute to a feature
+     * @param f feature
+     * @param attrIndex attribute index
+     * @note added in QGIS 2.14
+     * @note not available in Python bindings
+     */
+    void addExpressionAttribute( QgsFeature& f, int attrIndex );
 
     /** Update feature with uncommited attribute updates.
      * @note not available in Python bindings
@@ -177,6 +202,9 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QScopedPointer<QgsExpressionContext> mExpressionContext;
 
     QgsInterruptionChecker* mInterruptionChecker;
+
+    QList< int > mPreparedFields;
+    QList< int > mFieldsToPrepare;
 
     /**
      * Will always return true. We assume that ordering has been done on provider level already.

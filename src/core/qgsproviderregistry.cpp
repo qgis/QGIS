@@ -108,11 +108,8 @@ void QgsProviderRegistry::init()
     fileRegexp.setPattern( filePattern );
   }
 
-  QListIterator<QFileInfo> it( mLibraryDirectory.entryInfoList() );
-  while ( it.hasNext() )
+  Q_FOREACH ( const QFileInfo& fi, mLibraryDirectory.entryInfoList() )
   {
-    QFileInfo fi( it.next() );
-
     if ( !fileRegexp.isEmpty() )
     {
       if ( fileRegexp.indexIn( fi.fileName() ) == -1 )
@@ -369,7 +366,7 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
   }
   else
   {
-    QgsDebugMsg( "dlopen suceeded" );
+    QgsDebugMsg( "dlopen succeeded" );
     dlclose( handle );
   }
 
@@ -424,7 +421,7 @@ int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) cons
 typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WindowFlags fl );
 
 QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
-    QWidget * parent, const Qt::WindowFlags& fl )
+    QWidget * parent, Qt::WindowFlags fl )
 {
   selectFactoryFunction_t * selectFactory =
     reinterpret_cast< selectFactoryFunction_t * >( cast_to_fptr( function( providerKey, "selectWidget" ) ) );

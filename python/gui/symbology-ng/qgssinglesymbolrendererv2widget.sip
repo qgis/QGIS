@@ -13,6 +13,8 @@ class QgsSingleSymbolRendererV2Widget : QgsRendererV2Widget
 
     virtual void setMapCanvas( QgsMapCanvas* canvas );
 
+    virtual void setDockMode( bool dockMode );
+
   public slots:
     void changeSingleSymbol();
 

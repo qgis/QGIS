@@ -21,17 +21,16 @@
 #include <QModelIndex>
 #include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"
-#include "qgsfield.h"
 #include "qgscontexthelp.h"
 
 class QgsVectorLayer;
 
-/*!
+/** \ingroup gui
  * \class QgsQueryBuilder
  * \brief Query Builder for layers.
  *
  * The query builder allows interactive creation of a SQL for limiting the
- * features displayed in a database layer.  The fields in the table are
+ * features displayed in a vector layer.  The fields in the table are
  * displayed and sample values (or all values) can be viewed to aid in
  * constructing the query. A test function returns the number of features that
  * will be returned.
@@ -48,7 +47,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * @param fl dialog flags
      */
     QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent = nullptr,
-                     const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+                     Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     ~QgsQueryBuilder();
 
@@ -80,7 +79,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-    /** Test the constructed sql statement to see if the database likes it.
+    /** Test the constructed sql statement to see if the vector layer data provider likes it.
      * The number of rows that would be returned is displayed in a message box.
      * The test uses a "select count(*) from ..." query to test the SQL
      * statement.

@@ -25,25 +25,28 @@
 
 class QgsComposerTableColumn;
 
-/** List of QVariants, representing a the contents of a single row in
+/** \ingroup core
+ * List of QVariants, representing a the contents of a single row in
  * a QgsComposerTable
  * \note Added in version 2.5
 */
 typedef QList< QVariant > QgsComposerTableRow;
 
-/** List of QgsComposerTableRows, representing rows and column cell contents
+/** \ingroup core
+ * List of QgsComposerTableRows, representing rows and column cell contents
  * for a QgsComposerTable
  * \note Added in version 2.5
 */
 typedef QList< QgsComposerTableRow > QgsComposerTableContents;
 
-/** List of column definitions for a QgsComposerTable
+/** \ingroup core
+ * List of column definitions for a QgsComposerTable
  * \note Added in version 2.5
 */
 typedef QList<QgsComposerTableColumn*> QgsComposerTableColumns;
 
 
-/** \ingroup MapComposer
+/** \ingroup core
  *  \class QgsComposerTableStyle
  *  \brief Styling option for a composer table cell
  *  \note added in QGIS 2.12
@@ -67,21 +70,21 @@ class CORE_EXPORT QgsComposerTableStyle
     /** Writes the style's properties to XML for storage.
      * @param styleElem an existing QDomElement in which to store the style's properties.
      * @param doc QDomDocument for the destination XML.
-     * @see readXML
+     * @see readXml
      */
-    bool writeXML( QDomElement& styleElem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& styleElem, QDomDocument & doc ) const;
 
     /** Reads the style's properties from XML.
      * @param styleElem a QDomElement holding the style's desired properties.
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& styleElem );
+    bool readXml( const QDomElement& styleElem );
 
 };
 
 /** A class to display a table in the print composer, and allow
  * the table to span over multiple frames
- * \ingroup MapComposer
+ * \ingroup core
  * @note added in QGIS 2.5
  */
 class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
@@ -387,7 +390,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setCellStyle( CellStyleGroup group, const QgsComposerTableStyle& style );
 
     /** Returns the cell style for a cell group.
-     * @param group group to retreive style for
+     * @param group group to retrieve style for
      * @see setCellStyle()
      * @note added in QGIS 2.12
      */
@@ -418,8 +421,8 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     //reimplemented to return min frame height
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const override;
 
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
     virtual QSizeF totalSize() const override;
     virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex ) override;
 

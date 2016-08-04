@@ -72,7 +72,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see setSpread
      * @see setSpreadMapUnitScale
      */
-    void setSpreadUnit( const QgsSymbolV2::OutputUnit unit ) { mSpreadUnit = unit; }
+    void setSpreadUnit( const QgsUnitTypes::RenderUnit unit ) { mSpreadUnit = unit; }
 
     /** Returns the units used for the glow spread distance.
      * @returns units for spread distance
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see spread
      * @see spreadMapUnitScale
      */
-    QgsSymbolV2::OutputUnit spreadUnit() const { return mSpreadUnit; }
+    QgsUnitTypes::RenderUnit spreadUnit() const { return mSpreadUnit; }
 
     /** Sets the map unit scale used for the spread distance.
      * @param scale map unit scale for spread distance
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     virtual bool shadeExterior() const = 0;
 
     double mSpread;
-    QgsSymbolV2::OutputUnit mSpreadUnit;
+    QgsUnitTypes::RenderUnit mSpreadUnit;
     QgsMapUnitScale mSpreadMapUnitScale;
     QgsVectorColorRampV2* mRamp;
     int mBlurLevel;

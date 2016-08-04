@@ -18,10 +18,8 @@
 
 #include <QMenu>
 
-#include "qgsactionmenu.h"
-#include "qgsmapcanvas.h"
+#include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolidentify.h"
-#include "qgsvectorlayer.h"
 
 /// @cond PRIVATE
 class CustomActionRegistry : public QgsMapLayerActionRegistry
@@ -35,7 +33,7 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
 };
 ///@endcond
 
-/**
+/** \ingroup gui
  * @brief The QgsIdentifyMenu class builds a menu to be used with identify results (@see QgsMapToolIdentify).
  * It is customizable and can display attribute actions (@see QgsAction) as well as map layer actions (@see QgsMapLayerAction).
  * It can also embed custom map layer actions, defined for this menu exclusively.

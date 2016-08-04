@@ -19,12 +19,13 @@
 #include "qgsapplication.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
+#include "qgsmultilinestringv2.h"
 #include "qgswkbptr.h"
 
 QgsPolygonV2::QgsPolygonV2()
     : QgsCurvePolygonV2()
 {
-  mWkbType = QgsWKBTypes::Polygon;
+  mWkbType = QgsWkbTypes::Polygon;
 }
 
 bool QgsPolygonV2::operator==( const QgsPolygonV2& other ) const
@@ -70,6 +71,12 @@ QgsPolygonV2* QgsPolygonV2::clone() const
   return new QgsPolygonV2( *this );
 }
 
+void QgsPolygonV2::clear()
+{
+  QgsCurvePolygonV2::clear();
+  mWkbType = QgsWkbTypes::Polygon;
+}
+
 bool QgsPolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
 {
   clear();
@@ -78,30 +85,30 @@ bool QgsPolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
     return false;
   }
 
-  QgsWKBTypes::Type type = wkbPtr.readHeader();
-  if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::Polygon )
+  QgsWkbTypes::Type type = wkbPtr.readHeader();
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Polygon )
   {
     return false;
   }
   mWkbType = type;
 
-  QgsWKBTypes::Type ringType;
+  QgsWkbTypes::Type ringType;
   switch ( mWkbType )
   {
-    case QgsWKBTypes::PolygonZ:
-      ringType = QgsWKBTypes::LineStringZ;
+    case QgsWkbTypes::PolygonZ:
+      ringType = QgsWkbTypes::LineStringZ;
       break;
-    case QgsWKBTypes::PolygonM:
-      ringType = QgsWKBTypes::LineStringM;
+    case QgsWkbTypes::PolygonM:
+      ringType = QgsWkbTypes::LineStringM;
       break;
-    case QgsWKBTypes::PolygonZM:
-      ringType = QgsWKBTypes::LineStringZM;
+    case QgsWkbTypes::PolygonZM:
+      ringType = QgsWkbTypes::LineStringZM;
       break;
-    case QgsWKBTypes::Polygon25D:
-      ringType = QgsWKBTypes::LineString25D;
+    case QgsWkbTypes::Polygon25D:
+      ringType = QgsWkbTypes::LineString25D;
       break;
     default:
-      ringType = QgsWKBTypes::LineString;
+      ringType = QgsWkbTypes::LineString;
       break;
   }
 
@@ -188,9 +195,9 @@ void QgsPolygonV2::addInteriorRing( QgsCurveV2* ring )
     lineString->close();
   }
 
-  if ( mWkbType == QgsWKBTypes::Polygon25D )
+  if ( mWkbType == QgsWkbTypes::Polygon25D )
   {
-    ring->convertTo( QgsWKBTypes::LineString25D );
+    ring->convertTo( QgsWkbTypes::LineString25D );
     mInteriorRings.append( ring );
   }
   else
@@ -225,7 +232,7 @@ void QgsPolygonV2::setExteriorRing( QgsCurveV2* ring )
   mExteriorRing = ring;
 
   //set proper wkb type
-  setZMTypeFromSubGeometry( ring, QgsWKBTypes::Polygon );
+  setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
 
   //match dimensionality for rings
   Q_FOREACH ( QgsCurveV2* ring, mInteriorRings )
@@ -234,6 +241,28 @@ void QgsPolygonV2::setExteriorRing( QgsCurveV2* ring )
   }
 
   clearCache();
+}
+
+QgsAbstractGeometryV2* QgsPolygonV2::boundary() const
+{
+  if ( !mExteriorRing )
+    return nullptr;
+
+  if ( mInteriorRings.isEmpty() )
+  {
+    return mExteriorRing->clone();
+  }
+  else
+  {
+    QgsMultiLineStringV2* multiLine = new QgsMultiLineStringV2();
+    multiLine->addGeometry( mExteriorRing->clone() );
+    int nInteriorRings = mInteriorRings.size();
+    for ( int i = 0; i < nInteriorRings; ++i )
+    {
+      multiLine->addGeometry( mInteriorRings.at( i )->clone() );
+    }
+    return multiLine;
+  }
 }
 
 QgsPolygonV2* QgsPolygonV2::surfaceToPolygon() const

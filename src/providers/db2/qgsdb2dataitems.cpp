@@ -23,6 +23,7 @@
 //#include <qaction.h>
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerimport.h"
+#include "qgsvectorlayer.h"
 
 #include <QSettings>
 #include <QMessageBox>
@@ -356,12 +357,12 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
       }
 
       QString uri = connInfo() + " table=" + tableName;
-      if ( srcLayer->geometryType() != QGis::NoGeometry )
+      if ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry )
         uri += " (geom)";
 
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "DB2", &srcLayer->crs(), false, &importError, false, nullptr, progress );
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "DB2", srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
       {
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
@@ -498,10 +499,10 @@ QString QgsDb2LayerItem::createUri()
     return QString::null;
   }
   QgsDebugMsg( "connInfo: '" + connItem->connInfo() + "'" );
-  QgsDataSourceURI uri = QgsDataSourceURI( connItem->connInfo() );
+  QgsDataSourceUri uri = QgsDataSourceUri( connItem->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, mLayerProperty.pkColumnName );
   uri.setSrid( mLayerProperty.srid );
-  uri.setWkbType( QGis::fromOldWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) ) );
+  uri.setWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) );
   uri.setParam( "extents", mLayerProperty.extents );
   QString uriString = uri.uri( false );
   QgsDebugMsg( "Layer URI: " + uriString );
@@ -557,30 +558,30 @@ bool QgsDb2SchemaItem::handleDrop( const QMimeData* data, Qt::DropAction )
 
 QgsDb2LayerItem* QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, bool refresh )
 {
-  QGis::WkbType wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
+  QgsWkbTypes::Type wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
   QString tip = tr( "DB2 *** %1 as %2 in %3" ).arg( layerProperty.geometryColName,
-                QgsDb2TableModel::displayStringForWkbType( wkbType ),
+                QgsWkbTypes::displayString( wkbType ),
                 layerProperty.srid );
   QgsDebugMsg( tip );
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::LineString25D:
+    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::MultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Polygon25D:
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:

@@ -16,15 +16,19 @@
 #define QGSRASTERFILEWRITER_H
 
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterpipe.h"
-#include "qgsrectangle.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QString>
+#include <QStringList>
+
+#include "qgsraster.h"
 
 class QProgressDialog;
 class QgsRasterIterator;
+class QgsRasterPipe;
+class QgsRectangle;
+class QgsRasterDataProvider;
+class QgsRasterInterface;
 
 /** \ingroup core
  * The raster file writer which allows you to save a raster to a new file.
@@ -104,7 +108,7 @@ class CORE_EXPORT QgsRasterFileWriter
                                  int nCols, int nRows,
                                  const QgsRectangle& outputExtent,
                                  const QgsCoordinateReferenceSystem& crs,
-                                 QGis::DataType destDataType,
+                                 Qgis::DataType destDataType,
                                  const QList<bool>& destHasNoDataValueList,
                                  const QList<double>& destNoDataValueList,
                                  QgsRasterDataProvider* destProvider,
@@ -122,7 +126,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
      *  @param destNoDataValueList no data value, indexed from 0
      */
-    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, QGis::DataType type, const QList<bool>& destHasNoDataValueList, const QList<double>& destNoDataValueList );
+    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, Qgis::DataType type, const QList<bool>& destHasNoDataValueList, const QList<double>& destNoDataValueList );
     //write vrt document to disk
     bool writeVRT( const QString& file );
     //add file entry to vrt
@@ -132,7 +136,7 @@ class CORE_EXPORT QgsRasterFileWriter
     /** Create provider and datasource for a part image (vrt mode)*/
     QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
         int iterLeft, int iterTop,
-        const QString& outputUrl, int fileIndex, int nBands, QGis::DataType type,
+        const QString& outputUrl, int fileIndex, int nBands, Qgis::DataType type,
         const QgsCoordinateReferenceSystem& crs );
 
     /** \brief Init VRT (for tiled mode) or create global output provider (single-file mode)
@@ -147,7 +151,7 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     QgsRasterDataProvider* initOutput( int nCols, int nRows,
                                        const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
-                                       QGis::DataType type,
+                                       Qgis::DataType type,
                                        const QList<bool>& destHasNoDataValueList = QList<bool>(), const QList<double>& destNoDataValueList = QList<double>() );
 
     /** Calculate nRows, geotransform and pixel size for output*/

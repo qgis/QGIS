@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * Graphics scene for map printing. The class manages the paper item which always
  * is the item in the back (z-value 0). It maintains the z-Values of the items and stores
  * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
@@ -40,8 +40,6 @@ class QgsComposition : QGraphicsScene
       Landscape
     };
 
-    //! @deprecated since 2.4 - use the constructor with QgsMapSettings
-    QgsComposition( QgsMapRenderer* mapRenderer ) /Deprecated/;
     explicit QgsComposition( const QgsMapSettings& mapSettings );
 
     /** Composition atlas modes*/
@@ -413,10 +411,6 @@ class QgsComposition : QGraphicsScene
     /** Used to enable or disable advanced effects such as blend modes in a composition */
     void setUseAdvancedEffects( const bool effectsEnabled );
 
-    /** Returns pointer to map renderer of qgis map canvas*/
-    //! @deprecated since 2.4 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
-    QgsMapRenderer* mapRenderer() /Deprecated/;
-
     //! Return setting of QGIS map canvas
     //! @note added in 2.4
     const QgsMapSettings& mapSettings() const;
@@ -436,10 +430,10 @@ class QgsComposition : QGraphicsScene
     double pointFontSize( int pixelSize ) const /Deprecated/;
 
     /** Writes settings to xml (paper dimension)*/
-    bool writeXML( QDomElement& composerElem, QDomDocument& doc );
+    bool writeXml( QDomElement& composerElem, QDomDocument& doc );
 
     /** Reads settings from xml file*/
-    bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& compositionElem, const QDomDocument& doc );
 
     /** Load a template document
      * @param doc template document
@@ -461,7 +455,7 @@ class QgsComposition : QGraphicsScene
      * @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
      * @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
      */
-    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc );
+    void addItemsFromXml( const QDomElement& elem, const QDomDocument& doc );
 
     /** Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );
@@ -678,6 +672,18 @@ class QgsComposition : QGraphicsScene
      */
     void renderRect( QPainter* p, const QRectF& rect );
 
+    /** Georeferences a file (image of PDF) exported from the composition.
+     * @param file filename of exported file
+     * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
+     * currently defined worldFileMap().
+     * @param exportRegion set to a valid rectangle to indicate that only part of the composition was
+     * exported
+     * @param dpi set to DPI of exported file, or leave as -1 to use composition's DPI.
+     * @note added in QGIS 2.16
+     */
+    void georeferenceOutput( const QString& file, QgsComposerMap* referenceMap = nullptr,
+                             const QRectF& exportRegion = QRectF(), double dpi = -1 ) const;
+
     /** Compute world file parameters. Assumes the whole page containing the associated map item
      * will be exported.
      */
@@ -862,6 +868,8 @@ class QgsComposition : QGraphicsScene
     void composerPolylineAdded( QgsComposerPolyline* polyline );
     /** Is emitted when a new composer html has been added to the view*/
     void composerHtmlFrameAdded( QgsComposerHtml* html, QgsComposerFrame* frame );
+    /** Is emitted when a new item group has been added to the view*/
+    void composerItemGroupAdded( QgsComposerItemGroup* group );
     /** Is emitted when new composer label has been added to the view*/
     void composerLabelAdded( QgsComposerLabel* label );
     /** Is emitted when new composer map has been added to the view*/
@@ -886,4 +894,9 @@ class QgsComposition : QGraphicsScene
 
     /** Is emitted when the composition has an updated status bar message for the composer window*/
     void statusMsgChanged( QString message );
+
+    /** Emitted whenever the expression variables stored in the composition have been changed.
+     * @note added in QGIS 3.0
+     */
+    void variablesChanged();
 };

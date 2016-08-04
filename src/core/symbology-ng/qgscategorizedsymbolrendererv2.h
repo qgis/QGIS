@@ -25,7 +25,9 @@
 class QgsVectorColorRampV2;
 class QgsVectorLayer;
 
-/** \brief categorized renderer */
+/** \ingroup core
+ * \brief categorized renderer
+*/
 class CORE_EXPORT QgsRendererCategoryV2
 {
   public:
@@ -70,6 +72,9 @@ class CORE_EXPORT QgsRendererCategoryV2
 typedef QList<QgsRendererCategoryV2> QgsCategoryList;
 
 Q_NOWARN_DEPRECATED_PUSH
+/** \ingroup core
+ * \class QgsCategorizedSymbolRendererV2
+ */
 class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:
@@ -97,7 +102,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() override { return SymbolLevels | RotationField | Filter; }
+    virtual Capabilities capabilities() override { return SymbolLevels | RotationField | Filter; }
 
     virtual QString filter( const QgsFields& fields = QgsFields() ) override;
 

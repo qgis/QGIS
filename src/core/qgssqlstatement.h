@@ -24,7 +24,7 @@
 #include <QList>
 #include <QSet>
 
-/**
+/** \ingroup core
 Class for parsing SQL statements.
 * @note Added in QGIS 2.16
 */
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /** Performs basic validity checks. Basically checking that columns referencing
      * a table, references a specified table. Returns true if the validation is
-     * succesful */
+     * successful */
     bool doBasicValidationChecks( QString& errorMsgOut ) const;
 
     class Node;
@@ -189,7 +189,8 @@ class CORE_EXPORT QgsSQLStatement
       ntCast
     };
 
-    /** Abstract node class */
+    /** \ingroup core
+     * Abstract node class */
     class CORE_EXPORT Node
     {
       public:
@@ -237,7 +238,8 @@ class CORE_EXPORT QgsSQLStatement
         virtual void accept( Visitor& v ) const = 0;
     };
 
-    /** List of nodes */
+    /** \ingroup core
+     * List of nodes */
     class CORE_EXPORT NodeList
     {
       public:
@@ -268,7 +270,8 @@ class CORE_EXPORT QgsSQLStatement
         QList<Node*> mList;
     };
 
-    /** Unary logicial/arithmetical operator ( NOT, - ) */
+    /** \ingroup core
+     * Unary logicial/arithmetical operator ( NOT, - ) */
     class CORE_EXPORT NodeUnaryOperator : public Node
     {
       public:
@@ -293,7 +296,8 @@ class CORE_EXPORT QgsSQLStatement
         Node* mOperand;
     };
 
-    /** Binary logical/arithmetical operator (AND, OR, =, +, ...) */
+    /** \ingroup core
+     * Binary logical/arithmetical operator (AND, OR, =, +, ...) */
     class CORE_EXPORT NodeBinaryOperator : public Node
     {
       public:
@@ -329,7 +333,8 @@ class CORE_EXPORT QgsSQLStatement
         Node* mOpRight;
     };
 
-    /** 'x IN (y, z)' operator */
+    /** \ingroup core
+     * 'x IN (y, z)' operator */
     class CORE_EXPORT NodeInOperator : public Node
     {
       public:
@@ -358,7 +363,8 @@ class CORE_EXPORT QgsSQLStatement
         bool mNotIn;
     };
 
-    /** 'X BETWEEN y and z' operator */
+    /** \ingroup core
+     * 'X BETWEEN y and z' operator */
     class CORE_EXPORT NodeBetweenOperator : public Node
     {
       public:
@@ -391,7 +397,8 @@ class CORE_EXPORT QgsSQLStatement
         bool mNotBetween;
     };
 
-    /** Function with a name and arguments node */
+    /** \ingroup core
+     * Function with a name and arguments node */
     class CORE_EXPORT NodeFunction : public Node
     {
       public:
@@ -417,7 +424,8 @@ class CORE_EXPORT QgsSQLStatement
 
     };
 
-    /** Literal value (integer, integer64, double, string) */
+    /** \ingroup core
+     * Literal value (integer, integer64, double, string) */
     class CORE_EXPORT NodeLiteral : public Node
     {
       public:
@@ -437,7 +445,8 @@ class CORE_EXPORT QgsSQLStatement
         QVariant mValue;
     };
 
-    /** Reference to a column */
+    /** \ingroup core
+     * Reference to a column */
     class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
@@ -476,7 +485,8 @@ class CORE_EXPORT QgsSQLStatement
         bool mStar;
     };
 
-    /** Selected column */
+    /** \ingroup core
+     * Selected column */
     class CORE_EXPORT NodeSelectedColumn : public Node
     {
       public:
@@ -506,7 +516,8 @@ class CORE_EXPORT QgsSQLStatement
         QString mAlias;
     };
 
-    /** CAST operator */
+    /** \ingroup core
+     * CAST operator */
     class CORE_EXPORT NodeCast : public Node
     {
       public:
@@ -531,7 +542,8 @@ class CORE_EXPORT QgsSQLStatement
         QString mType;
     };
 
-    /** Table definition */
+    /** \ingroup core
+     * Table definition */
     class CORE_EXPORT NodeTableDef : public Node
     {
       public:
@@ -559,7 +571,8 @@ class CORE_EXPORT QgsSQLStatement
         QString mAlias;
     };
 
-    /** Join definition */
+    /** \ingroup core
+     * Join definition */
     class CORE_EXPORT NodeJoin : public Node
     {
       public:
@@ -596,7 +609,8 @@ class CORE_EXPORT QgsSQLStatement
         JoinType mType;
     };
 
-    /** Column in a ORDER BY */
+    /** \ingroup core
+     * Column in a ORDER BY */
     class CORE_EXPORT NodeColumnSorted : public Node
     {
       public:
@@ -623,7 +637,8 @@ class CORE_EXPORT QgsSQLStatement
         bool mAsc;
     };
 
-    /** SELECT node */
+    /** \ingroup core
+     * SELECT node */
     class CORE_EXPORT NodeSelect : public Node
     {
       public:
@@ -670,7 +685,8 @@ class CORE_EXPORT QgsSQLStatement
 
     //////
 
-    /** Support for visitor pattern - algorithms dealing with the statement
+    /** \ingroup core
+     * Support for visitor pattern - algorithms dealing with the statement
         may be implemented without modifying the Node classes */
     class CORE_EXPORT Visitor
     {
@@ -704,7 +720,8 @@ class CORE_EXPORT QgsSQLStatement
         virtual void visit( const NodeCast& n ) = 0;
     };
 
-    /** A visitor that recursively explores all children */
+    /** \ingroup core
+     * A visitor that recursively explores all children */
     class CORE_EXPORT RecursiveVisitor: public QgsSQLStatement::Visitor
     {
       public:

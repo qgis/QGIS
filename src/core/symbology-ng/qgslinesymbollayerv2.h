@@ -29,7 +29,9 @@ class QgsExpression;
 #define DEFAULT_SIMPLELINE_JOINSTYLE Qt::BevelJoin
 #define DEFAULT_SIMPLELINE_CAPSTYLE  Qt::SquareCap
 
-
+/** \ingroup core
+ * \class QgsSimpleLineSymbolLayerV2
+ */
 class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 {
   public:
@@ -63,8 +65,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
-    QgsSymbolV2::OutputUnit outputUnit() const override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -85,8 +87,16 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     bool useCustomDashPattern() const { return mUseCustomDashPattern; }
     void setUseCustomDashPattern( bool b ) { mUseCustomDashPattern = b; }
 
-    void setCustomDashPatternUnit( QgsSymbolV2::OutputUnit unit ) { mCustomDashPatternUnit = unit; }
-    QgsSymbolV2::OutputUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
+    /** Sets the units for lengths used in the custom dash pattern.
+     * @param unit length units
+     * @see customDashPatternUnit()
+    */
+    void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit ) { mCustomDashPatternUnit = unit; }
+
+    /** Returns the units for lengths used in the custom dash pattern.
+     * @see setCustomDashPatternUnit()
+    */
+    QgsUnitTypes::RenderUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
 
     const QgsMapUnitScale& customDashPatternMapUnitScale() const { return mCustomDashPatternMapUnitScale; }
     void setCustomDashPatternMapUnitScale( const QgsMapUnitScale& scale ) { mCustomDashPatternMapUnitScale = scale; }
@@ -99,7 +109,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     //Set to true if the line should only be drawn inside the polygon
     void setDrawInsidePolygon( bool drawInsidePolygon ) { mDrawInsidePolygon = drawInsidePolygon; }
 
-    QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const override;
+    QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const override;
     Qt::PenStyle dxfPenStyle() const override;
 
     double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const override;
@@ -115,7 +125,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     //use a custom dash dot pattern instead of the predefined ones
     bool mUseCustomDashPattern;
-    QgsSymbolV2::OutputUnit mCustomDashPatternUnit;
+    QgsUnitTypes::RenderUnit mCustomDashPatternUnit;
     QgsMapUnitScale mCustomDashPatternMapUnitScale;
 
     /** Vector with an even number of entries for the */
@@ -134,6 +144,9 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 #define DEFAULT_MARKERLINE_ROTATE     true
 #define DEFAULT_MARKERLINE_INTERVAL   3
 
+/** \ingroup core
+ * \class QgsMarkerLineSymbolLayerV2
+ */
 class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 {
   public:
@@ -219,12 +232,17 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void setRotateMarker( bool rotate ) { mRotateMarker = rotate; }
 
     /**
-     * The interval between individual markers.
+     * Returns the interval between individual markers. Units are specified through intervalUnits().
+     * @see setInterval()
+     * @see intervalUnit()
      */
     double interval() const { return mInterval; }
 
     /**
-     * The interval between individual markers.
+     * Sets the interval between individual markers.
+     * @param interval interval size. Units are specified through setIntervalUnits()
+     * @see interval()
+     * @see setIntervalUnits()
      */
     void setInterval( double interval ) { mInterval = interval; }
 
@@ -268,14 +286,14 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
      * @see setOffsetAlongLineUnit
      * @see offsetAlongLine
      */
-    QgsSymbolV2::OutputUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
+    QgsUnitTypes::RenderUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
 
     /** Sets the unit used for calculating the offset along line for markers.
      * @param unit Offset along line unit type.
      * @see offsetAlongLineUnit
      * @see setOffsetAlongLine
      */
-    void setOffsetAlongLineUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetAlongLineUnit = unit; }
+    void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetAlongLineUnit = unit; }
 
     /** Returns the map unit scale used for calculating the offset in map units along line for markers.
      * @returns Offset along line map unit scale.
@@ -287,14 +305,24 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
      */
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetAlongLineMapUnitScale = scale; }
 
-    void setIntervalUnit( QgsSymbolV2::OutputUnit unit ) { mIntervalUnit = unit; }
-    QgsSymbolV2::OutputUnit intervalUnit() const { return mIntervalUnit; }
+    /** Sets the units for the interval between markers.
+     * @param unit interval units
+     * @see intervalUnit()
+     * @see setInterval()
+    */
+    void setIntervalUnit( QgsUnitTypes::RenderUnit unit ) { mIntervalUnit = unit; }
+
+    /** Returns the units for the interval between markers.
+     * @see setIntervalUnit()
+     * @see interval()
+    */
+    QgsUnitTypes::RenderUnit intervalUnit() const { return mIntervalUnit; }
 
     void setIntervalMapUnitScale( const QgsMapUnitScale& scale ) { mIntervalMapUnitScale = scale; }
     const QgsMapUnitScale& intervalMapUnitScale() const { return mIntervalMapUnitScale; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
-    QgsSymbolV2::OutputUnit outputUnit() const override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
 
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -313,12 +341,12 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     bool mRotateMarker;
     double mInterval;
-    QgsSymbolV2::OutputUnit mIntervalUnit;
+    QgsUnitTypes::RenderUnit mIntervalUnit;
     QgsMapUnitScale mIntervalMapUnitScale;
     QgsMarkerSymbolV2* mMarker;
     Placement mPlacement;
     double mOffsetAlongLine; //distance to offset along line before marker is drawn
-    QgsSymbolV2::OutputUnit mOffsetAlongLineUnit; //unit for offset along line
+    QgsUnitTypes::RenderUnit mOffsetAlongLineUnit; //unit for offset along line
     QgsMapUnitScale mOffsetAlongLineMapUnitScale;
 
   private:

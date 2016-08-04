@@ -55,12 +55,14 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         DesignerTreeItemData()
             : mType( Field )
             , mColumnCount( 1 )
+            , mShowAsGroupBox( false )
         {}
 
         DesignerTreeItemData( Type type, const QString& name )
             : mType( type )
             , mName( name )
             , mColumnCount( 1 )
+            , mShowAsGroupBox( false )
         {}
 
         QString name() const { return mName; }
@@ -74,10 +76,14 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         int columnCount() const { return mColumnCount; }
         void setColumnCount( int count ) { mColumnCount = count; }
 
+        bool showAsGroupBox() const;
+        void setShowAsGroupBox( bool showAsGroupBox );
+
       private:
         Type mType;
         QString mName;
         int mColumnCount;
+        bool mShowAsGroupBox;
     };
 
     /**
@@ -92,6 +98,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         bool mEditable;
         bool mEditableEnabled;
         bool mLabelOnTop;
+        bool mNotNull;
+        QString mConstraint;
+        QString mConstraintDescription;
         QPushButton* mButton;
         QString mEditorWidgetV2Type;
         QMap<QString, QVariant> mEditorWidgetV2Config;
@@ -108,10 +117,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     bool addAttribute( const QgsField &field );
 
     /** Creates the a proper item to save from the tree
-     * @param item The tree widget item to process
      * @return A widget definition. Containing another container or the final field
      */
-    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent );
+    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent, bool forceGroup = true );
 
     void init();
     void apply();
@@ -189,13 +197,13 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     {
       attrIdCol = 0,
       attrNameCol,
+      attrEditTypeCol,
+      attrAliasCol,
       attrTypeCol,
       attrTypeNameCol,
       attrLengthCol,
       attrPrecCol,
       attrCommentCol,
-      attrEditTypeCol,
-      attrAliasCol,
       attrWMSCol,
       attrWFSCol,
       attrColCount,
@@ -214,6 +222,11 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     static QMap< QgsVectorLayer::EditType, QString > editTypeMap;
     static void setupEditTypes();
     static QString editTypeButtonText( QgsVectorLayer::EditType type );
+
+  private:
+
+    void updateFieldRenamingStatus();
+
 };
 
 QDataStream& operator<< ( QDataStream& stream, const QgsFieldsProperties::DesignerTreeItemData& data );

@@ -23,11 +23,22 @@
 #include <QCoreApplication> // for tr()
 #include <QImage>
 
-#include "qgslogger.h"
+#include "qgsfeedback.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
+
+/** \ingroup core
+ * Feedback object tailored for raster block reading.
+ *
+ * @note added in QGIS 3.0
+ */
+class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
+{
+    // TODO: extend with preview functionality??
+};
+
 
 /** \ingroup core
  * Base class for processing filters like renderers, reprojector, resampler etc.
@@ -71,17 +82,17 @@ class CORE_EXPORT QgsRasterInterface
     QString capabilitiesString() const;
 
     /** Returns data type for the band specified by number */
-    virtual QGis::DataType dataType( int bandNo ) const = 0;
+    virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
-    virtual QGis::DataType srcDataType( int bandNo ) const { return mInput ? mInput->srcDataType( bandNo ) : QGis::UnknownDataType; }
+    virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::UnknownDataType; }
 
     /**
      * Get the extent of the interface.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() { return mInput ? mInput->extent() : QgsRectangle(); }
+    virtual QgsRectangle extent() const { return mInput ? mInput->extent() : QgsRectangle(); }
 
     int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
 
@@ -109,8 +120,9 @@ class CORE_EXPORT QgsRasterInterface
      * @param extent extent of block
      * @param width pixel width of block
      * @param height pixel height of block
+     * @param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
@@ -129,15 +141,20 @@ class CORE_EXPORT QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual const QgsRasterInterface *srcInput() const
+    virtual const QgsRasterInterface *sourceInput() const
     {
       QgsDebugMsgLevel( "Entered", 4 );
-      return mInput ? mInput->srcInput() : this;
+      return mInput ? mInput->sourceInput() : this;
     }
-    virtual QgsRasterInterface * srcInput()
+
+    /** Get source / raw input, the first in pipe, usually provider.
+     *  It may be used to get info about original data, e.g. resolution to decide
+     *  resampling etc.
+     */
+    virtual QgsRasterInterface * sourceInput()
     {
       QgsDebugMsgLevel( "Entered", 4 );
-      return mInput ? mInput->srcInput() : this;
+      return mInput ? mInput->sourceInput() : this;
     }
 
     /** \brief Get band statistics.
@@ -208,9 +225,9 @@ class CORE_EXPORT QgsRasterInterface
                                 int theSampleSize = 0 );
 
     /** Write base class members to xml. */
-    virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
+    virtual void writeXml( QDomDocument& doc, QDomElement& parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
     /** Sets base class members from xml. Usually called from create() methods of subclasses */
-    virtual void readXML( const QDomElement& filterElem ) { Q_UNUSED( filterElem ); }
+    virtual void readXml( const QDomElement& filterElem ) { Q_UNUSED( filterElem ); }
 
   protected:
     // QgsRasterInterface used as input

@@ -21,9 +21,11 @@
 #include <TriangleInterpolator.h>
 #include <MathUtils.h>
 #include "qgslogger.h"
+
 class QProgressDialog;
 
-/** Decorator class which adds the functionality of estimating normals at the data points*/
+/** \ingroup analysis
+ * Decorator class which adds the functionality of estimating normals at the data points*/
 class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
 {
   public:

@@ -93,7 +93,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent* e )
 
       mRotationItem = new QgsPointRotationItem( mCanvas );
       mRotationItem->setOrientation( QgsPointRotationItem::Counterclockwise );
-      mRotationItem->setSymbol( QgsApplication::getThemePixmap( "mActionRotatePointSymbols.png" ).toImage() );
+      mRotationItem->setSymbol( QgsApplication::getThemePixmap( "mActionRotatePointSymbols.svg" ).toImage() );
       mRotationItem->setPointLocation( mRotationPoint );
       mRotationItem->setSymbolRotation( mCurrentRotation );
     }
@@ -173,7 +173,7 @@ void QgsMapToolRotateLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
   vlayer->beginEditCommand( tr( "Rotated label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
   vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation );
   vlayer->endEditCommand();
-  mCanvas->refresh();
+  vlayer->triggerRepaint();
 }
 
 int QgsMapToolRotateLabel::roundTo15Degrees( double n )
@@ -196,7 +196,7 @@ QgsRubberBand* QgsMapToolRotateLabel::createRotationPreviewBox()
     return nullptr;
   }
 
-  mRotationPreviewBox = new QgsRubberBand( mCanvas, QGis::Line );
+  mRotationPreviewBox = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
   mRotationPreviewBox->setColor( QColor( 0, 0, 255, 65 ) );
   mRotationPreviewBox->setWidth( 3 );
   setRotationPreviewBox( mCurrentRotation - mStartRotation );

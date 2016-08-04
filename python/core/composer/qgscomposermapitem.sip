@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  *  \class QgsComposerMapItem
  *  \brief An item which is drawn inside a QgsComposerMap, eg a grid or map overview.
  */
@@ -28,14 +28,14 @@ class QgsComposerMapItem : QgsComposerObject
      * @param doc DOM document
      * @see readXML
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets map item state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * @param doc is DOM document
      * @see writeXML
      */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Sets composer map for the item
      * @param map composer map
@@ -87,7 +87,7 @@ class QgsComposerMapItem : QgsComposerObject
 
 
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapItemStack
  * \brief A collection of map items which are drawn above the map content in a
  * QgsComposerMap. The item stack controls which items are drawn and the
@@ -121,7 +121,7 @@ class QgsComposerMapItemStack
      * @returns true if write was successful
      * @see readXML
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets the item stack's state from a DOM document
      * @param elem is DOM node corresponding to 'a ComposerMap' tag
@@ -129,7 +129,7 @@ class QgsComposerMapItemStack
      * @returns true if read was successful
      * @see writeXML
      */
-    virtual bool readXML( const QDomElement& elem, const QDomDocument& doc ) = 0;
+    virtual bool readXml( const QDomElement& elem, const QDomDocument& doc ) = 0;
 
     /** Draws the items from the stack on a specified painter
      * @param painter destination QPainter

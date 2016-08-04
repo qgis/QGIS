@@ -18,6 +18,7 @@
 #include "qgsformannotationitem.h"
 #include "qgsattributeeditor.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
@@ -172,7 +173,7 @@ QSizeF QgsFormAnnotationItem::preferredFrameSize() const
   }
 }
 
-void QgsFormAnnotationItem::writeXML( QDomDocument& doc ) const
+void QgsFormAnnotationItem::writeXml( QDomDocument& doc ) const
 {
   QDomElement documentElem = doc.documentElement();
   if ( documentElem.isNull() )
@@ -188,11 +189,11 @@ void QgsFormAnnotationItem::writeXML( QDomDocument& doc ) const
   formAnnotationElem.setAttribute( "hasFeature", mHasAssociatedFeature );
   formAnnotationElem.setAttribute( "feature", mFeature );
   formAnnotationElem.setAttribute( "designerForm", mDesignerForm );
-  _writeXML( doc, formAnnotationElem );
+  _writeXml( doc, formAnnotationElem );
   documentElem.appendChild( formAnnotationElem );
 }
 
-void QgsFormAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsFormAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
 {
   mVectorLayer = nullptr;
   if ( itemElem.hasAttribute( "vectorLayer" ) )
@@ -211,7 +212,7 @@ void QgsFormAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
   QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
   if ( !annotationElem.isNull() )
   {
-    _readXML( doc, annotationElem );
+    _readXml( doc, annotationElem );
   }
 
   mDesignerWidget = createDesignerWidget( mDesignerForm );

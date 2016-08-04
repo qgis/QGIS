@@ -474,7 +474,48 @@ class QgsEditFormConfig : QObject
     /**
      * If set to false, the widget at the given index will be read-only.
      */
-    void setReadOnly(int idx, bool readOnly );
+    void setReadOnly( int idx, bool readOnly = true );
+
+    /**
+     * Returns the constraint expression of a specific field
+     * @param idx The index of the field
+     * @return the expression
+     * @note added in QGIS 2.16
+     */
+    QString expression( int idx ) const;
+
+    /**
+     * Set the constraint expression for a specific field
+     * @param idx the field index
+     * @param str the constraint expression
+     * @note added in QGIS 2.16
+     */
+    void setExpression( int idx, const QString& str );
+
+    /**
+     * Returns the constraint expression description of a specific filed.
+     * @param idx The index of the field
+     * @return the expression description
+     * @note added in QGIS 2.16
+     */
+    QString expressionDescription( int idx ) const;
+
+    /**
+     * Set the constraint expression description for a specific field.
+     * @param idx The index of the field
+     * @param descr The description of the expression
+     * @note added in QGIS 2.16
+     */
+    void setExpressionDescription( int idx, const QString &descr );
+
+    /**
+     * Returns if the field at fieldidx should be treated as NOT NULL value
+     */
+    bool notNull( int fieldidx) const;
+    /**
+     * Set if the field at fieldidx should be treated as NOT NULL value
+     */
+    void setNotNull( int idx, bool notnull = true );
 
     /**
      * If this returns true, the widget at the given index will receive its label on the previous line

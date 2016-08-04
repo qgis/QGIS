@@ -35,6 +35,7 @@
 #include "qgslegendinterface.h"
 #include "qgsapplication.h"
 
+#include "qgscomposition.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposermap.h"
 #include "qgscomposertexttable.h"
@@ -43,7 +44,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
 
@@ -69,7 +69,7 @@
 #include "qgsmessagebar.h"
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
-    : QDockWidget( title, parent, flags )
+    : QgsDockWidget( title, parent, flags )
 {
   setObjectName( "GeorefDockWidget" ); // set object name so the position can be saved
 }
@@ -908,11 +908,11 @@ void QgsGeorefPluginGui::createActions()
   connect( mActionGeorefConfig, SIGNAL( triggered() ), this, SLOT( showGeorefConfigDialog() ) );
 
   // Histogram stretch
-  mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
+  mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.svg" ) );
   connect( mActionLocalHistogramStretch, SIGNAL( triggered() ), this, SLOT( localHistogramStretch() ) );
   mActionLocalHistogramStretch->setEnabled( false );
 
-  mActionFullHistogramStretch->setIcon( getThemeIcon( "/mActionFullHistogramStretch.png" ) );
+  mActionFullHistogramStretch->setIcon( getThemeIcon( "/mActionFullHistogramStretch.svg" ) );
   connect( mActionFullHistogramStretch, SIGNAL( triggered() ), this, SLOT( fullHistogramStretch() ) );
   mActionFullHistogramStretch->setEnabled( false );
 
@@ -947,7 +947,8 @@ void QgsGeorefPluginGui::createActionGroups()
 void QgsGeorefPluginGui::createMapCanvas()
 {
   // set up the canvas
-  mCanvas = new QgsMapCanvas( this->centralWidget(), "georefCanvas" );
+  mCanvas = new QgsMapCanvas( this->centralWidget() );
+  mCanvas->setObjectName( "georefCanvas" );
   mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   mCanvas->setCanvasColor( Qt::white );
   mCanvas->setMinimumWidth( 400 );
@@ -993,9 +994,8 @@ void QgsGeorefPluginGui::createMapCanvas()
            this, SLOT( releasePoint( const QPoint & ) ) );
 
   QSettings s;
-  int action = s.value( "/qgis/wheel_action", 2 ).toInt();
   double zoomFactor = s.value( "/qgis/zoom_factor", 2 ).toDouble();
-  mCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
+  mCanvas->setWheelFactor( zoomFactor );
 
   mExtentsChangedRecursionGuard = false;
 
@@ -1826,7 +1826,7 @@ void QgsGeorefPluginGui::showGDALScript( const QStringList& commands )
 
   // create window to show gdal script
   QDialogButtonBox *bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
-  QPushButton *pbnCopyInClipBoard = new QPushButton( getThemeIcon( "/mActionEditPaste.png" ),
+  QPushButton *pbnCopyInClipBoard = new QPushButton( getThemeIcon( "/mActionEditPaste.svg" ),
       tr( "Copy to Clipboard" ), bbxGdalScript );
   bbxGdalScript->addButton( pbnCopyInClipBoard, QDialogButtonBox::AcceptRole );
 

@@ -31,7 +31,6 @@
 #include <QSettings>
 
 #include "qgsapplication.h"
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgis.h" //const vals declared here
@@ -47,6 +46,19 @@
 #include <cpl_csv.h>
 
 CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = nullptr;
+
+QReadWriteLock QgsCoordinateReferenceSystem::mSrIdCacheLock;
+QHash< long, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mSrIdCache;
+QReadWriteLock QgsCoordinateReferenceSystem::mOgcLock;
+QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mOgcCache;
+QReadWriteLock QgsCoordinateReferenceSystem::mProj4CacheLock;
+QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mProj4Cache;
+QReadWriteLock QgsCoordinateReferenceSystem::mCRSWktLock;
+QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mWktCache;
+QReadWriteLock QgsCoordinateReferenceSystem::mCRSSrsIdLock;
+QHash< long, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mSrsIdCache;
+QReadWriteLock QgsCoordinateReferenceSystem::mCrsStringLock;
+QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mStringCache;
 
 //--------------------------
 
@@ -78,6 +90,39 @@ QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const Qgs
   return *this;
 }
 
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromOgcWmsCrs( const QString& ogcCrs )
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromOgcWmsCrs( ogcCrs );
+  return crs;
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromEpsgId( long epsg )
+{
+  return fromOgcWmsCrs( "EPSG:" + QString::number( epsg ) );
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProj4( const QString& proj4 )
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromProj4( proj4 );
+  return crs;
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromWkt( const QString& wkt )
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromWkt( wkt );
+  return crs;
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromSrsId( long srsId )
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromSrsId( srsId );
+  return crs;
+}
+
 QgsCoordinateReferenceSystem::~QgsCoordinateReferenceSystem()
 {
 }
@@ -105,6 +150,17 @@ bool QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theTy
 
 bool QgsCoordinateReferenceSystem::createFromString( const QString &theDefinition )
 {
+  mCrsStringLock.lockForRead();
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mStringCache.constFind( theDefinition );
+  if ( crsIt != mStringCache.constEnd() )
+  {
+    // found a match in the cache
+    *this = crsIt.value();
+    mCrsStringLock.unlock();
+    return true;
+  }
+  mCrsStringLock.unlock();
+
   bool result = false;
   QRegExp reCrsId( "^(epsg|postgis|internal)\\:(\\d+)$", Qt::CaseInsensitive );
   if ( reCrsId.indexIn( theDefinition ) == 0 )
@@ -135,7 +191,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &theDefinitio
           QString myName = QString( " * %1 (%2)" )
                            .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                                  toProj4() );
-          saveAsUserCRS( myName );
+          saveAsUserCrs( myName );
         }
       }
       else
@@ -144,6 +200,10 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &theDefinitio
       }
     }
   }
+
+  mCrsStringLock.lockForWrite();
+  mStringCache.insert( theDefinition, *this );
+  mCrsStringLock.unlock();
   return result;
 }
 
@@ -199,6 +259,17 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
 
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString& theCrs )
 {
+  mOgcLock.lockForRead();
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mOgcCache.constFind( theCrs );
+  if ( crsIt != mOgcCache.constEnd() )
+  {
+    // found a match in the cache
+    *this = crsIt.value();
+    mOgcLock.unlock();
+    return true;
+  }
+  mOgcLock.unlock();
+
   QString wmsCrs = theCrs;
 
   QRegExp re( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
@@ -211,12 +282,20 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString& theCrs )
     re.setPattern( "(user|custom|qgis):(\\d+)" );
     if ( re.exactMatch( wmsCrs ) && createFromSrsId( re.cap( 2 ).toInt() ) )
     {
+      mOgcLock.lockForWrite();
+      mOgcCache.insert( theCrs, *this );
+      mOgcLock.unlock();
       return true;
     }
   }
 
   if ( loadFromDb( QgsApplication::srsDbFilePath(), "lower(auth_name||':'||auth_id)", wmsCrs.toLower() ) )
+  {
+    mOgcLock.lockForWrite();
+    mOgcCache.insert( theCrs, *this );
+    mOgcLock.unlock();
     return true;
+  }
 
   // NAD27
   if ( wmsCrs.compare( "CRS:27", Qt::CaseInsensitive ) == 0 ||
@@ -238,12 +317,22 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString& theCrs )
   if ( wmsCrs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 ||
        wmsCrs.compare( "OGC:CRS84", Qt::CaseInsensitive ) == 0 )
   {
-    d.detach();
     createFromOgcWmsCrs( "EPSG:4326" );
-    d->mAxisInverted = 0;
+
+    d.detach();
+    d->mAxisInverted = false;
+    d->mAxisInvertedDirty = false;
+
+    mOgcLock.lockForWrite();
+    mOgcCache.insert( theCrs, *this );
+    mOgcLock.unlock();
+
     return d->mIsValid;
   }
 
+  mOgcLock.lockForWrite();
+  mOgcCache.insert( theCrs, QgsCoordinateReferenceSystem() );
+  mOgcLock.unlock();
   return false;
 }
 
@@ -263,20 +352,54 @@ void QgsCoordinateReferenceSystem::validate()
 
   if ( !d->mIsValid )
   {
-    *this = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
+    *this = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
   }
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrid( long id )
 {
-  return loadFromDb( QgsApplication::srsDbFilePath(), "srid", QString::number( id ) );
+  mSrIdCacheLock.lockForRead();
+  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = mSrIdCache.constFind( id );
+  if ( crsIt != mSrIdCache.constEnd() )
+  {
+    // found a match in the cache
+    *this = crsIt.value();
+    mSrIdCacheLock.unlock();
+    return true;
+  }
+  mSrIdCacheLock.unlock();
+
+  bool result = loadFromDb( QgsApplication::srsDbFilePath(), "srid", QString::number( id ) );
+
+  mSrIdCacheLock.lockForWrite();
+  mSrIdCache.insert( id, *this );
+  mSrIdCacheLock.unlock();
+
+  return result;
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
 {
-  return loadFromDb( id < USER_CRS_START_ID ? QgsApplication::srsDbFilePath() :
-                     QgsApplication::qgisUserDbFilePath(),
-                     "srs_id", QString::number( id ) );
+  mCRSSrsIdLock.lockForRead();
+  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = mSrsIdCache.constFind( id );
+  if ( crsIt != mSrsIdCache.constEnd() )
+  {
+    // found a match in the cache
+    *this = crsIt.value();
+    mCRSSrsIdLock.unlock();
+    return true;
+  }
+  mCRSSrsIdLock.unlock();
+
+  bool result = loadFromDb( id < USER_CRS_START_ID ? QgsApplication::srsDbFilePath() :
+                            QgsApplication::qgisUserDbFilePath(),
+                            "srs_id", QString::number( id ) );
+
+  mCRSSrsIdLock.lockForWrite();
+  mSrsIdCache.insert( id, *this );
+  mCRSSrsIdLock.unlock();
+
+  return result;
 }
 
 bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString& expression, const QString& value )
@@ -337,7 +460,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString&
     d->mSRID = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 5 ) ) ).toLong() ;
     d->mAuthId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 6 ) ) );
     d->mIsGeographic = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 7 ) ) ).toInt() != 0;
-    d->mAxisInverted = -1;
+    d->mAxisInvertedDirty = true;
 
     if ( d->mSrsId >= USER_CRS_START_ID && d->mAuthId.isEmpty() )
     {
@@ -365,9 +488,9 @@ bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString&
   return d->mIsValid;
 }
 
-bool QgsCoordinateReferenceSystem::axisInverted() const
+bool QgsCoordinateReferenceSystem::hasAxisInverted() const
 {
-  if ( d->mAxisInverted == -1 )
+  if ( d->mAxisInvertedDirty )
   {
     OGRAxisOrientation orientation;
     OSRGetAxis( d->mCRS, OSRIsGeographic( d->mCRS ) ? "GEOGCS" : "PROJCS", 0, &orientation );
@@ -386,14 +509,26 @@ bool QgsCoordinateReferenceSystem::axisInverted() const
     }
 
     d->mAxisInverted = orientation == OAO_North;
+    d->mAxisInvertedDirty = false;
   }
 
-  return d->mAxisInverted != 0;
+  return d->mAxisInverted;
 }
 
 bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
 {
   d.detach();
+
+  mCRSWktLock.lockForRead();
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mWktCache.constFind( theWkt );
+  if ( crsIt != mWktCache.constEnd() )
+  {
+    // found a match in the cache
+    *this = crsIt.value();
+    mCRSWktLock.unlock();
+    return true;
+  }
+  mCRSWktLock.unlock();
 
   d->mIsValid = false;
   d->mWkt.clear();
@@ -417,6 +552,10 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
     QgsDebugMsg( "INPUT: " + theWkt );
     QgsDebugMsg( QString( "UNUSED WKT: %1" ).arg( pWkt ) );
     QgsDebugMsg( "---------------------------------------------------------------\n" );
+
+    mCRSWktLock.lockForWrite();
+    mWktCache.insert( theWkt, *this );
+    mCRSWktLock.unlock();
     return d->mIsValid;
   }
 
@@ -426,7 +565,11 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
                      .arg( OSRGetAuthorityName( d->mCRS, nullptr ),
                            OSRGetAuthorityCode( d->mCRS, nullptr ) );
     QgsDebugMsg( "authid recognized as " + authid );
-    return createFromOgcWmsCrs( authid );
+    bool result = createFromOgcWmsCrs( authid );
+    mCRSWktLock.lockForWrite();
+    mWktCache.insert( theWkt, *this );
+    mCRSWktLock.unlock();
+    return result;
   }
 
   // always morph from esri as it doesn't hurt anything
@@ -460,10 +603,14 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
     QString myName = QString( " * %1 (%2)" )
                      .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                            toProj4() );
-    saveAsUserCRS( myName );
+    saveAsUserCrs( myName );
   }
 
   CPLFree( proj4src );
+
+  mCRSWktLock.lockForWrite();
+  mWktCache.insert( theWkt, *this );
+  mCRSWktLock.unlock();
 
   return d->mIsValid;
   //setMapunits will be called by createfromproj above
@@ -477,6 +624,17 @@ bool QgsCoordinateReferenceSystem::isValid() const
 bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4String )
 {
   d.detach();
+
+  mProj4CacheLock.lockForRead();
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mProj4Cache.constFind( theProj4String );
+  if ( crsIt != mProj4Cache.constEnd() )
+  {
+    // found a match in the cache
+    *this = crsIt.value();
+    mProj4CacheLock.unlock();
+    return true;
+  }
+  mProj4CacheLock.unlock();
 
   //
   // Examples:
@@ -496,6 +654,11 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
   if ( myStart == -1 )
   {
     QgsDebugMsg( "proj string supplied has no +proj argument" );
+
+    mProj4CacheLock.lockForWrite();
+    mProj4Cache.insert( theProj4String, *this );
+    mProj4CacheLock.unlock();
+
     return d->mIsValid;
   }
 
@@ -520,21 +683,13 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
     QgsDebugMsg( "proj string supplied has no +a argument" );
   }
 
-  /*
-   * We try to match the proj string to and srsid using the following logic:
-   *
-   * - perform a whole text search on srs name (if not null). The srs name will
-   *   have been set if this method has been delegated to from createFromWkt.
-   * Normally we wouldnt expect this to work, but its worth trying first
-   * as its quicker than methods below..
-   */
   long mySrsId = 0;
   QgsCoordinateReferenceSystem::RecordMap myRecord;
 
   /*
-   * - if the above does not match perform a whole text search on proj4 string (if not null)
+   * We try to match the proj string to and srsid using the following logic:
+   * - perform a whole text search on proj4 string (if not null)
    */
-  // QgsDebugMsg( "wholetext match on name failed, trying proj4string match" );
   myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( myProj4String ) + " order by deprecated" );
   if ( myRecord.empty() )
   {
@@ -668,6 +823,10 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
     //setProj4String will set mIsValidFlag to true if there is no issue
     setProj4String( myProj4String );
   }
+
+  mProj4CacheLock.lockForWrite();
+  mProj4Cache.insert( theProj4String, *this );
+  mProj4CacheLock.unlock();
 
   return d->mIsValid;
 }
@@ -855,12 +1014,12 @@ QString QgsCoordinateReferenceSystem::toProj4() const
   return d->mProj4.trimmed();
 }
 
-bool QgsCoordinateReferenceSystem::geographicFlag() const
+bool QgsCoordinateReferenceSystem::isGeographic() const
 {
   return d->mIsGeographic;
 }
 
-QGis::UnitType QgsCoordinateReferenceSystem::mapUnits() const
+QgsUnitTypes::DistanceUnit QgsCoordinateReferenceSystem::mapUnits() const
 {
   return d->mMapUnits;
 }
@@ -899,6 +1058,20 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString& theProj4String
   OSRDestroySpatialReference( d->mCRS );
   d->mCRS = OSRNewSpatialReference( nullptr );
   d->mIsValid = OSRImportFromProj4( d->mCRS, theProj4String.trimmed().toLatin1().constData() ) == OGRERR_NONE;
+  // OSRImportFromProj4() may accept strings that are not valid proj.4 strings,
+  // e.g if they lack a +ellps parameter, it will automatically add +ellps=WGS84, but as
+  // we use the original mProj4 with QgsCoordinateTransform, it will fail to initialize
+  // so better detect it now.
+  projPJ theProj = pj_init_plus( theProj4String.trimmed().toLatin1().constData() );
+  if ( !theProj )
+  {
+    QgsDebugMsg( "proj.4 string rejected by pj_init_plus()" );
+    d->mIsValid = false;
+  }
+  else
+  {
+    pj_free( theProj );
+  }
   d->mWkt.clear();
   setMapUnits();
 
@@ -932,7 +1105,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   d.detach();
   if ( !d->mIsValid )
   {
-    d->mMapUnits = QGis::UnknownUnit;
+    d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     return;
   }
 
@@ -961,13 +1134,13 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     QgsDebugMsg( "Projection has linear units of " + unit );
 
     if ( qgsDoubleNear( toMeter, 1.0 ) ) //Unit name for meters would be "metre"
-      d->mMapUnits = QGis::Meters;
+      d->mMapUnits = QgsUnitTypes::DistanceMeters;
     else if ( unit == "Foot" )
-      d->mMapUnits = QGis::Feet;
+      d->mMapUnits = QgsUnitTypes::DistanceFeet;
     else
     {
       QgsDebugMsg( "Unsupported map units of " + unit );
-      d->mMapUnits = QGis::UnknownUnit;
+      d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     }
   }
   else
@@ -975,28 +1148,19 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     OSRGetAngularUnits( d->mCRS, &unitName );
     QString unit( unitName );
     if ( unit == "degree" )
-      d->mMapUnits = QGis::Degrees;
+      d->mMapUnits = QgsUnitTypes::DistanceDegrees;
     else
     {
       QgsDebugMsg( "Unsupported map units of " + unit );
-      d->mMapUnits = QGis::UnknownUnit;
+      d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     }
     QgsDebugMsgLevel( "Projection has angular units of " + unit, 3 );
   }
 }
 
-/*
-*    check if srs is a geocs or a proj cs (using ogr isGeographic)
-*   then sequentially walk through the database (first users qgis.db srs tbl then
-*   system srs.db tbl), converting each entry into an ogr srs and using isSame
-*   or isSameGeocs (essentially calling the == overloaded operator). We'll try to
-*   be smart about this and first parse out the proj and ellpse strings and only
-*   check for a match in entities that have the same ellps and proj entries so
-*   that it doesnt munch yer cpu so much.
-*/
+
 long QgsCoordinateReferenceSystem::findMatchingProj()
 {
-  QgsDebugMsg( "entered." );
   if ( d->mEllipsoidAcronym.isNull() || d->mProjectionAcronym.isNull()
        || !d->mIsValid )
   {
@@ -1122,7 +1286,7 @@ QString QgsCoordinateReferenceSystem::toWkt() const
   return d->mWkt;
 }
 
-bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
+bool QgsCoordinateReferenceSystem::readXml( const QDomNode & theNode )
 {
   d.detach();
   QgsDebugMsg( "Reading Spatial Ref Sys from xml ------------------------!" );
@@ -1142,7 +1306,7 @@ bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
       myNode = srsNode.namedItem( "authid" );
       if ( !myNode.isNull() )
       {
-        operator=( QgsCRSCache::instance()->crsByAuthId( myNode.toElement().text() ) );
+        operator=( QgsCoordinateReferenceSystem::fromOgcWmsCrs( myNode.toElement().text() ) );
         if ( isValid() )
         {
           initialized = true;
@@ -1154,7 +1318,7 @@ bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
         myNode = srsNode.namedItem( "epsg" );
         if ( !myNode.isNull() )
         {
-          operator=( QgsCRSCache::instance()->crsByEpsgId( myNode.toElement().text().toLong() ) );
+          operator=( QgsCoordinateReferenceSystem::fromEpsgId( myNode.toElement().text().toLong() ) );
           if ( isValid() )
           {
             initialized = true;
@@ -1230,7 +1394,7 @@ bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
         QString myName = QString( " * %1 (%2)" )
                          .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                                toProj4() );
-        saveAsUserCRS( myName );
+        saveAsUserCrs( myName );
       }
 
     }
@@ -1244,7 +1408,7 @@ bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
   return result;
 }
 
-bool QgsCoordinateReferenceSystem::writeXML( QDomNode & theNode, QDomDocument & theDoc ) const
+bool QgsCoordinateReferenceSystem::writeXml( QDomNode & theNode, QDomDocument & theDoc ) const
 {
 
   QDomElement myLayerNode = theNode.toElement();
@@ -1280,7 +1444,7 @@ bool QgsCoordinateReferenceSystem::writeXML( QDomNode & theNode, QDomDocument & 
 
   QDomElement myGeographicFlagElement  = theDoc.createElement( "geographicflag" );
   QString myGeoFlagText = "false";
-  if ( geographicFlag() )
+  if ( isGeographic() )
   {
     myGeoFlagText = "true";
   }
@@ -1385,12 +1549,12 @@ int QgsCoordinateReferenceSystem::openDb( const QString& path, sqlite3 **db, boo
   return myResult;
 }
 
-void QgsCoordinateReferenceSystem::setCustomSrsValidation( CUSTOM_CRS_VALIDATION f )
+void QgsCoordinateReferenceSystem::setCustomCrsValidation( CUSTOM_CRS_VALIDATION f )
 {
   mCustomSrsValidation = f;
 }
 
-CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customSrsValidation()
+CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customCrsValidation()
 {
   return mCustomSrsValidation;
 }
@@ -1403,15 +1567,15 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "* Proj4 : " + toProj4() );
   QgsDebugMsg( "* WKT   : " + toWkt() );
   QgsDebugMsg( "* Desc. : " + d->mDescription );
-  if ( mapUnits() == QGis::Meters )
+  if ( mapUnits() == QgsUnitTypes::DistanceMeters )
   {
     QgsDebugMsg( "* Units : meters" );
   }
-  else if ( mapUnits() == QGis::Feet )
+  else if ( mapUnits() == QgsUnitTypes::DistanceFeet )
   {
     QgsDebugMsg( "* Units : feet" );
   }
-  else if ( mapUnits() == QGis::Degrees )
+  else if ( mapUnits() == QgsUnitTypes::DistanceDegrees )
   {
     QgsDebugMsg( "* Units : degrees" );
   }
@@ -1431,7 +1595,7 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-bool QgsCoordinateReferenceSystem::saveAsUserCRS( const QString& name )
+bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString& name )
 {
   if ( !d->mIsValid )
   {
@@ -1599,7 +1763,7 @@ bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const ch
   return true;
 }
 
-bool QgsCoordinateReferenceSystem::loadIDs( QHash<int, QString> &wkts )
+bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 {
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
@@ -1708,7 +1872,7 @@ int QgsCoordinateReferenceSystem::syncDb()
   QString proj4;
   QString sql;
   QHash<int, QString> wkts;
-  loadIDs( wkts );
+  loadIds( wkts );
   loadWkts( wkts, "epsg.wkt" );
 
   qDebug( "%d WKTs loaded", wkts.count() );
@@ -2128,9 +2292,9 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
   return true;
 }
 
-QString QgsCoordinateReferenceSystem::geographicCRSAuthId() const
+QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 {
-  if ( geographicFlag() )
+  if ( isGeographic() )
   {
     return d->mAuthId;
   }
@@ -2184,4 +2348,26 @@ QStringList QgsCoordinateReferenceSystem::recentProjections()
     }
   }
   return projections;
+}
+
+void QgsCoordinateReferenceSystem::invalidateCache()
+{
+  mSrIdCacheLock.lockForWrite();
+  mSrIdCache.clear();
+  mSrIdCacheLock.unlock();
+  mOgcLock.lockForWrite();
+  mOgcCache.clear();
+  mOgcLock.unlock();
+  mProj4CacheLock.lockForWrite();
+  mProj4Cache.clear();
+  mProj4CacheLock.unlock();
+  mCRSWktLock.lockForWrite();
+  mWktCache.clear();
+  mCRSWktLock.unlock();
+  mCRSSrsIdLock.lockForWrite();
+  mSrsIdCache.clear();
+  mCRSSrsIdLock.unlock();
+  mCrsStringLock.lockForWrite();
+  mStringCache.clear();
+  mCrsStringLock.unlock();
 }

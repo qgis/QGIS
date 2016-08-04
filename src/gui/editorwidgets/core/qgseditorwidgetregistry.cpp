@@ -21,6 +21,8 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgssearchwidgetwrapper.h"
 
 // Editors
 #include "qgsclassificationwidgetwrapperfactory.h"
@@ -79,6 +81,7 @@ QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
   connect( QgsProject::instance(), SIGNAL( readMapLayer( QgsMapLayer*, const QDomElement& ) ), this, SLOT( readMapLayer( QgsMapLayer*, const QDomElement& ) ) );
   // connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ), this, SLOT( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ) );
 
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( mapLayerWillBeRemoved( QgsMapLayer* ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( mapLayerAdded( QgsMapLayer* ) ) );
 }
 
@@ -251,6 +254,10 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
 
       vectorLayer->editFormConfig()->setReadOnly( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) != "1" );
       vectorLayer->editFormConfig()->setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
+      vectorLayer->editFormConfig()->setNotNull( idx, ewv2CfgElem.attribute( "notNull", "0" ) == "1" );
+      vectorLayer->editFormConfig()->setExpression( idx, ewv2CfgElem.attribute( "constraint", QString() ) );
+      vectorLayer->editFormConfig()->setExpressionDescription( idx, ewv2CfgElem.attribute( "constraintDescription", QString() ) );
+
       vectorLayer->editFormConfig()->setWidgetConfig( idx, cfg );
     }
     else
@@ -307,6 +314,9 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
       QDomElement ewv2CfgElem = doc.createElement( "widgetv2config" );
       ewv2CfgElem.setAttribute( "fieldEditable", !vectorLayer->editFormConfig()->readOnly( idx ) );
       ewv2CfgElem.setAttribute( "labelOnTop", vectorLayer->editFormConfig()->labelOnTop( idx ) );
+      ewv2CfgElem.setAttribute( "notNull", vectorLayer->editFormConfig()->notNull( idx ) );
+      ewv2CfgElem.setAttribute( "constraint", vectorLayer->editFormConfig()->expression( idx ) );
+      ewv2CfgElem.setAttribute( "constraintDescription", vectorLayer->editFormConfig()->expressionDescription( idx ) );
 
       mWidgetFactories[widgetType]->writeConfig( vectorLayer->editFormConfig()->widgetConfig( idx ), ewv2CfgElem, doc, vectorLayer, idx );
 
@@ -317,6 +327,17 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
   }
 
   layerElem.appendChild( editTypesNode );
+}
+
+void QgsEditorWidgetRegistry::mapLayerWillBeRemoved( QgsMapLayer* mapLayer )
+{
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mapLayer );
+
+  if ( vl )
+  {
+    disconnect( vl, SIGNAL( readCustomSymbology( const QDomElement&, QString& ) ), this, SLOT( readSymbology( const QDomElement&, QString& ) ) );
+    disconnect( vl, SIGNAL( writeCustomSymbology( QDomElement&, QDomDocument&, QString& ) ), this, SLOT( writeSymbology( QDomElement&, QDomDocument&, QString& ) ) );
+  }
 }
 
 void QgsEditorWidgetRegistry::mapLayerAdded( QgsMapLayer* mapLayer )

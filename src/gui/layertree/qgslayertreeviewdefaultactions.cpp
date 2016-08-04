@@ -225,7 +225,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
     QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( layer );
     if ( vLayer )
     {
-      if ( vLayer->geometryType() == QGis::NoGeometry )
+      if ( vLayer->geometryType() == QgsWkbTypes::NullGeometry )
         continue;
 
       if ( layerExtent.isEmpty() )
@@ -242,7 +242,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
     if ( canvas->hasCrsTransformEnabled() )
       layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
 
-    extent.combineExtentWith( &layerExtent );
+    extent.combineExtentWith( layerExtent );
   }
 
   if ( extent.isNull() )

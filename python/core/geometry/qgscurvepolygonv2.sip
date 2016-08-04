@@ -29,6 +29,8 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     virtual double area() const;
     virtual double perimeter() const;
     QgsPolygonV2* surfaceToPolygon() const;
+    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+
 
     //curve polygon interface
     int numInteriorRings() const;
@@ -57,11 +59,8 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     bool removeInteriorRing( int nr );
 
     virtual void draw( QPainter& p ) const;
-    /** Transforms the geometry using a coordinate transform
-     * @param ct coordinate transform
-     * @param d transformation direction
-     */
-    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+                    bool transformZ = false );
     void transform( const QTransform& t );
 
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );
@@ -87,7 +86,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const;
     virtual int ringCount( int /*part*/ = 0 ) const;
     virtual int partCount() const;
-    virtual QgsPointV2 vertexAt( QgsVertexId id ) const;
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );

@@ -19,7 +19,11 @@
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterformatsaveoptionswidget.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrastertransparency.h"
 #include "qgsgenericprojectionselector.h"
+
+#include "gdal.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -28,7 +32,7 @@
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
     QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
     const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-    QWidget* parent, const Qt::WindowFlags& f )
+    QWidget* parent, Qt::WindowFlags f )
     : QDialog( parent, f )
     , mRasterLayer( rasterLayer )
     , mDataProvider( sourceProvider )
@@ -38,9 +42,9 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     , mResolutionState( OriginalResolution )
 {
   setupUi( this );
-  mAddNoDataManuallyToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
+  mAddNoDataManuallyToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.svg" ) );
   mLoadTransparentNoDataToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionCopySelected.png" ) );
-  mRemoveSelectedNoDataToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
+  mRemoveSelectedNoDataToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.svg" ) );
   mRemoveAllNoDataToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionRemove.png" ) );
 
   mNoDataTableWidget->setColumnCount( 2 );
@@ -165,13 +169,14 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
 
   if ( mTileModeCheckBox->isChecked() )
   {
-    while ( true )
+    Q_FOREVER
     {
       // TODO: would not it be better to select .vrt file instead of directory?
       fileName = QFileDialog::getExistingDirectory( this, tr( "Select output directory" ), dirName );
       //fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), QString(), tr( "VRT" ) + " (*.vrt *.VRT)" );
 
-      if ( fileName.isEmpty() ) break; // canceled
+      if ( fileName.isEmpty() )
+        break; // canceled
 
       // Check if directory is empty
       QDir dir( fileName );
@@ -179,39 +184,30 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
       QStringList filters;
       filters << QString( "%1.*" ).arg( baseName );
       QStringList files = dir.entryList( filters );
-      if ( !files.isEmpty() )
-      {
-        QMessageBox::StandardButton button = QMessageBox::warning( this, tr( "Warning" ),
-                                             tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( ", " ) ),
-                                             QMessageBox::Ok | QMessageBox::Cancel );
-
-        if ( button == QMessageBox::Ok )
-        {
-          break;
-        }
-        else
-        {
-          fileName = "";
-        }
-      }
-      else
-      {
+      if ( files.isEmpty() )
         break;
-      }
+
+      if ( QMessageBox::warning( this, tr( "Warning" ),
+                                 tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( ", " ) ),
+                                 QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+        break;
+
+      fileName = "";
     }
   }
   else
   {
     fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, tr( "GeoTIFF" ) + " (*.tif *.tiff *.TIF *.TIFF)" );
+
+    // ensure the user never omits the extension from the file name
+    if ( !fileName.isEmpty() && !fileName.endsWith( ".tif", Qt::CaseInsensitive ) && !fileName.endsWith( ".tiff", Qt::CaseInsensitive ) )
+    {
+      fileName += ".tif";
+    }
   }
 
   if ( !fileName.isEmpty() )
   {
-    // ensure the user never ommited the extension from the file name
-    if ( !fileName.endsWith( ".tif", Qt::CaseInsensitive ) && !fileName.endsWith( ".tiff", Qt::CaseInsensitive ) )
-    {
-      fileName += ".tif";
-    }
     mSaveAsLineEdit->setText( fileName );
   }
 }
@@ -373,7 +369,6 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
 
 void QgsRasterLayerSaveAsDialog::recalcSize()
 {
-  QgsDebugMsg( "Entered" );
   QgsRectangle extent = outputRectangle();
   int xSize =  xResolution() != 0 ? static_cast<int>( qRound( extent.width() / xResolution() ) ) : 0;
   int ySize =  yResolution() != 0 ? static_cast<int>( qRound( extent.height() / yResolution() ) ) : 0;
@@ -391,7 +386,6 @@ void QgsRasterLayerSaveAsDialog::setOriginalSize()
 
 void QgsRasterLayerSaveAsDialog::recalcResolution()
 {
-  QgsDebugMsg( "Entered" );
   QgsRectangle extent = outputRectangle();
   double xRes = nColumns() != 0 ? extent.width() / nColumns() : 0;
   double yRes = nRows() != 0 ? extent.height() / nRows() : 0;
@@ -402,7 +396,6 @@ void QgsRasterLayerSaveAsDialog::recalcResolution()
 
 void QgsRasterLayerSaveAsDialog::recalcResolutionSize()
 {
-  QgsDebugMsg( "Entered" );
   if ( mResolutionRadioButton->isChecked() )
   {
     recalcSize();
@@ -550,10 +543,10 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
     lineEdit->setFrame( false );
     lineEdit->setContentsMargins( 1, 1, 1, 1 );
     QString valueString;
-    switch ( mRasterLayer->dataProvider()->srcDataType( 1 ) )
+    switch ( mRasterLayer->dataProvider()->sourceDataType( 1 ) )
     {
-      case QGis::Float32:
-      case QGis::Float64:
+      case Qgis::Float32:
+      case Qgis::Float64:
         lineEdit->setValidator( new QDoubleValidator( nullptr ) );
         if ( !qIsNaN( value ) )
         {

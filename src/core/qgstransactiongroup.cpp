@@ -39,7 +39,7 @@ bool QgsTransactionGroup::addLayer( QgsVectorLayer* layer )
   if ( !QgsTransaction::supportsTransaction( layer ) )
     return false;
 
-  QString connString = QgsDataSourceURI( layer->source() ).connectionInfo();
+  QString connString = QgsDataSourceUri( layer->source() ).connectionInfo();
 
   if ( mConnString.isEmpty() )
   {

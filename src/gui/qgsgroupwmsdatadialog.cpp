@@ -17,7 +17,7 @@
 #include "qgsgroupwmsdatadialog.h"
 
 
-QgsGroupWMSDataDialog::QgsGroupWMSDataDialog( QWidget *parent, const Qt::WindowFlags& fl )
+QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -26,32 +26,32 @@ QgsGroupWMSDataDialog::QgsGroupWMSDataDialog( QWidget *parent, const Qt::WindowF
   mShortNameLineEdit->setValidator( shortNameValidator );
 }
 
-QString QgsGroupWMSDataDialog::groupShortName()
+QString QgsGroupWmsDataDialog::groupShortName()
 {
   return mShortNameLineEdit->text();
 }
 
-void QgsGroupWMSDataDialog::setGroupShortName( const QString& shortName )
+void QgsGroupWmsDataDialog::setGroupShortName( const QString& shortName )
 {
   mShortNameLineEdit->setText( shortName );
 }
 
-QString QgsGroupWMSDataDialog::groupTitle()
+QString QgsGroupWmsDataDialog::groupTitle()
 {
   return mTitleLineEdit->text();
 }
 
-void QgsGroupWMSDataDialog::setGroupTitle( const QString& title )
+void QgsGroupWmsDataDialog::setGroupTitle( const QString& title )
 {
   mTitleLineEdit->setText( title );
 }
 
-QString QgsGroupWMSDataDialog::groupAbstract()
+QString QgsGroupWmsDataDialog::groupAbstract()
 {
   return mAbstractTextEdit->toPlainText();
 }
 
-void QgsGroupWMSDataDialog::setGroupAbstract( const QString& abstract )
+void QgsGroupWmsDataDialog::setGroupAbstract( const QString& abstract )
 {
   mAbstractTextEdit->setPlainText( abstract );
 }

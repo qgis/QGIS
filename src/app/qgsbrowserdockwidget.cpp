@@ -262,13 +262,17 @@ void QgsBrowserPropertiesDialog::setItem( QgsDataItem* item )
 }
 
 QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * parent )
-    : QDockWidget( parent )
+    : QgsDockWidget( parent )
     , mModel( nullptr )
     , mProxyModel( nullptr )
     , mPropertiesWidgetEnabled( false )
     , mPropertiesWidgetHeight( 0 )
 {
   setupUi( this );
+
+  mContents->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mContents->layout()->setMargin( 0 );
+  static_cast< QVBoxLayout* >( mContents->layout() )->setSpacing( 0 );
 
   setWindowTitle( name );
 
@@ -365,7 +369,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mSplitter->setSizes( sizes );
   }
 
-  QDockWidget::showEvent( e );
+  QgsDockWidget::showEvent( e );
 }
 
 void QgsBrowserDockWidget::showContextMenu( QPoint pt )
@@ -470,7 +474,6 @@ void QgsBrowserDockWidget::refresh()
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
 {
-  QgsDebugMsg( "Entered" );
   QgsDataItem *item = mModel->dataItem( index );
   if ( item )
   {
@@ -513,7 +516,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
   if ( !layerItem )
     return;
 
-  QString uri = QgisApp::instance()->crsAndFormatAdjustedLayerUri( layerItem->uri(), layerItem->supportedCRS(), layerItem->supportedFormats() );
+  QString uri = QgisApp::instance()->crsAndFormatAdjustedLayerUri( layerItem->uri(), layerItem->supportedCrs(), layerItem->supportedFormats() );
   if ( uri.isEmpty() )
     return;
 

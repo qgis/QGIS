@@ -19,11 +19,12 @@
 
 #include <QDialog>
 
+#include "ui_qgsorderbydialogbase.h"
 #include "qgsfeaturerequest.h"
 
-#include "ui_qgsorderbydialogbase.h"
+class QgsVectorLayer;
 
-/**
+/** \ingroup gui
  * This is a dialog to build and manage a list of order by clauses.
  *
  * @note added in 2.14

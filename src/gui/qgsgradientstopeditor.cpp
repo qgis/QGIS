@@ -15,6 +15,8 @@
 
 #include "qgsgradientstopeditor.h"
 #include "qgsapplication.h"
+#include "qgssymbollayerv2utils.h"
+
 #include <QPainter>
 #include <QStyleOptionFrameV3>
 #include <QMouseEvent>

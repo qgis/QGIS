@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsGeometry, QgsFeature
+from qgis.core import Qgis, QgsGeometry, QgsFeature, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -64,7 +64,7 @@ class Centroids(GeoAlgorithm):
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
                 layer.pendingFields().toList(),
-                QGis.WKBPoint,
+                QgsWkbTypes.Point,
                 layer.crs())
 
         outFeat = QgsFeature()
@@ -75,7 +75,7 @@ class Centroids(GeoAlgorithm):
             inGeom = feat.geometry()
             attrs = feat.attributes()
 
-            if not inGeom:
+            if inGeom.isEmpty():
                 outGeom = QgsGeometry(None)
             else:
                 outGeom = QgsGeometry(inGeom.centroid())

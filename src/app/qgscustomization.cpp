@@ -279,11 +279,8 @@ void QgsCustomizationDialog::on_actionSelectAll_triggered( bool checked )
   Q_UNUSED( checked );
   QList<QTreeWidgetItem*> items = treeWidget->findItems( "*", Qt::MatchWildcard | Qt::MatchRecursive, 0 );
 
-  QList<QTreeWidgetItem*>::iterator i;
-  for ( i = items.begin(); i != items.end(); ++i )
-  {
-    ( *i )->setCheckState( 0, Qt::Checked );
-  }
+  Q_FOREACH ( QTreeWidgetItem* item, items )
+    item->setCheckState( 0, Qt::Checked );
 }
 
 void QgsCustomizationDialog::on_mCustomizationEnabledCheckBox_toggled( bool checked )
@@ -294,7 +291,6 @@ void QgsCustomizationDialog::on_mCustomizationEnabledCheckBox_toggled( bool chec
 
 void QgsCustomizationDialog::init()
 {
-  QgsDebugMsg( "Entered" );
   QTreeWidgetItem * wi = createTreeItemWidgets();
   if ( wi )
   {
@@ -316,7 +312,6 @@ void QgsCustomizationDialog::init()
 
 QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
 {
-  QgsDebugMsg( "Entered" );
 
   QDomDocument myDoc( "QgsWidgets" );
   QFile myFile( QgsApplication::pkgDataPath() +  "/resources/customization.xml" );
@@ -345,7 +340,6 @@ QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
 
 QTreeWidgetItem * QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode& theNode )
 {
-  QgsDebugMsg( "Entered" );
   QDomElement myElement = theNode.toElement();
 
   QString name = myElement.attribute( "objectName", "" );
@@ -385,13 +379,13 @@ QTreeWidgetItem * QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode& th
 bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
 {
   Q_UNUSED( e );
-  QgsDebugMsg( "Entered" );
   if ( !actionCatch->isChecked() )
     return false;
+
   QString path = widgetPath( widget );
   QgsDebugMsg( "path = " + path );
 
-  if ( path.startsWith( "/QgsCustomizationDialogBase" ) )
+  if ( path.contains( "/QgsCustomizationDialogBase" ) )
   {
     // do not allow modification of this dialog
     return false;
@@ -639,7 +633,6 @@ QgsCustomization::QgsCustomization()
     , mSettings( nullptr )
     , mStatusPath( "/Customization/status" )
 {
-  QgsDebugMsg( "Entered" );
 
   QSettings settings;
   mEnabled = settings.value( "/UI/Customization/enabled", "false" ).toString() == "true";
@@ -797,7 +790,6 @@ void QgsCustomization::updateMenu( QMenu* menu, QSettings* settings )
 
 void QgsCustomization::openDialog( QWidget *parent )
 {
-  QgsDebugMsg( "Entered" );
   if ( !pDialog )
   {
     pDialog = new QgsCustomizationDialog( parent, mSettings );

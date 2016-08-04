@@ -20,7 +20,6 @@
 
 #include <QComboBox>
 #include <QPainter> // For QPainter::CompositionMode enum
-#include "qgsmaprenderer.h" //for getCompositionMode
 
 /** \ingroup gui
  * A combobox which lets the user select blend modes from a predefined list

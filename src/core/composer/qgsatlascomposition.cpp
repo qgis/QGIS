@@ -18,6 +18,7 @@
 #include <QtAlgorithms>
 
 #include "qgsatlascomposition.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
@@ -29,6 +30,7 @@
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontext.h"
 #include "qgscrscache.h"
+#include "qgsmapsettings.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
     : mComposition( composition )
@@ -157,8 +159,7 @@ void QgsAtlasComposition::setSortKeyAttributeIndex( int idx )
   mSortKeyAttributeName = "";
 }
 
-//
-// Private class only used for the sorting of features
+/// @cond PRIVATE
 class FieldSorter
 {
   public:
@@ -177,6 +178,8 @@ class FieldSorter
     QgsAtlasComposition::SorterKeys& mKeys;
     bool mAscending;
 };
+
+/// @endcond
 
 int QgsAtlasComposition::updateFeatures()
 {
@@ -219,7 +222,10 @@ int QgsAtlasComposition::updateFeatures()
     {
       nameExpression.reset( nullptr );
     }
-    nameExpression->prepare( &expressionContext );
+    else
+    {
+      nameExpression->prepare( &expressionContext );
+    }
   }
 
   // We cannot use nextFeature() directly since the feature pointer is rewinded by the rendering process
@@ -498,7 +504,7 @@ void QgsAtlasComposition::computeExtent( QgsComposerMap* map )
 
 void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
 {
-  if ( !map->atlasDriven() || mCoverageLayer->wkbType() == QGis::WKBNoGeometry )
+  if ( !map->atlasDriven() || mCoverageLayer->wkbType() == QgsWkbTypes::NoGeometry )
   {
     return;
   }
@@ -521,10 +527,10 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   bool isPointLayer = false;
   switch ( mCoverageLayer->wkbType() )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
       isPointLayer = true;
       break;
     default:
@@ -629,7 +635,7 @@ QString QgsAtlasComposition::currentFilename() const
   return mCurrentFilename;
 }
 
-void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
+void QgsAtlasComposition::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement atlasElem = doc.createElement( "Atlas" );
   atlasElem.setAttribute( "enabled", mEnabled ? "true" : "false" );
@@ -667,7 +673,7 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
   elem.appendChild( atlasElem );
 }
 
-void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocument& )
+void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocument& )
 {
   mEnabled = atlasElem.attribute( "enabled", "false" ) == "true" ? true : false;
   emit toggled( mEnabled );
@@ -723,7 +729,7 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   emit parameterChanged();
 }
 
-void QgsAtlasComposition::readXMLMapSettings( const QDomElement &elem, const QDomDocument &doc )
+void QgsAtlasComposition::readXmlMapSettings( const QDomElement &elem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   //look for stored composer map, to upgrade pre 2.1 projects
@@ -900,7 +906,7 @@ void QgsAtlasComposition::setMargin( float margin )
 
 QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSystem& crs ) const
 {
-  if ( !mCoverageLayer || !mCurrentFeature.isValid() || !mCurrentFeature.constGeometry() )
+  if ( !mCoverageLayer || !mCurrentFeature.isValid() || !mCurrentFeature.hasGeometry() )
   {
     return QgsGeometry();
   }
@@ -908,7 +914,7 @@ QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSy
   if ( !crs.isValid() )
   {
     // no projection, return the native geometry
-    return *mCurrentFeature.constGeometry();
+    return mCurrentFeature.geometry();
   }
 
   QMap<long, QgsGeometry>::const_iterator it = mGeometryCache.constFind( crs.srsid() );
@@ -920,11 +926,11 @@ QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSy
 
   if ( mCoverageLayer->crs() == crs )
   {
-    return *mCurrentFeature.constGeometry();
+    return mCurrentFeature.geometry();
   }
 
-  QgsGeometry transformed = *mCurrentFeature.constGeometry();
-  transformed.transform( *QgsCoordinateTransformCache::instance()->transform( mCoverageLayer->crs().authid(), crs.authid() ) );
+  QgsGeometry transformed = mCurrentFeature.geometry();
+  transformed.transform( QgsCoordinateTransformCache::instance()->transform( mCoverageLayer->crs().authid(), crs.authid() ) );
   mGeometryCache[crs.srsid()] = transformed;
   return transformed;
 }

@@ -359,9 +359,9 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPointV2& pt1, const QgsPoint
   //closed circle
   if ( qgsDoubleNear( pt1.x(), pt3.x() ) && qgsDoubleNear( pt1.y(), pt3.y() ) )
   {
-    centerX = pt2.x();
-    centerY = pt2.y();
-    radius = sqrt( pow( pt2.x() - pt1.x(), 2.0 ) + pow( pt2.y() - pt1.y(), 2.0 ) );
+    centerX = ( pt1.x() + pt2.x() ) / 2.0;
+    centerY = ( pt1.y() + pt2.y() ) / 2.0;
+    radius = sqrt( pow( centerX - pt1.x(), 2.0 ) + pow( centerY - pt1.y(), 2.0 ) );
     return;
   }
 
@@ -598,20 +598,20 @@ QgsPointSequenceV2 QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinate
     if (( isMeasure || foundM ) && coordinates.length() > idx )
       m = coordinates[idx++].toDouble();
 
-    QgsWKBTypes::Type t = QgsWKBTypes::Point;
+    QgsWkbTypes::Type t = QgsWkbTypes::Point;
     if ( is3D || foundZ )
     {
       if ( isMeasure || foundM )
-        t = QgsWKBTypes::PointZM;
+        t = QgsWkbTypes::PointZM;
       else
-        t = QgsWKBTypes::PointZ;
+        t = QgsWkbTypes::PointZ;
     }
     else
     {
       if ( isMeasure || foundM )
-        t = QgsWKBTypes::PointM;
+        t = QgsWkbTypes::PointM;
       else
-        t = QgsWKBTypes::Point;
+        t = QgsWkbTypes::Point;
     }
 
     points.append( QgsPointV2( t, x, y, z, m ) );
@@ -720,9 +720,9 @@ double QgsGeometryUtils::normalizedAngle( double angle )
   return clippedAngle;
 }
 
-QPair<QgsWKBTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt )
+QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt )
 {
-  QgsWKBTypes::Type wkbType = QgsWKBTypes::parseType( wkt );
+  QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wkt );
 
   QRegExp cooRegEx( "^[^\\(]*\\((.*)\\)[^\\)]*$" );
   QString contents = cooRegEx.indexIn( wkt ) >= 0 ? cooRegEx.cap( 1 ) : QString();

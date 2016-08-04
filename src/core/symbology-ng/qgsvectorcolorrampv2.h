@@ -18,9 +18,7 @@
 
 #include <QColor>
 #include <QGradient>
-
-#include "qgssymbollayerv2.h" // for QgsStringMap
-#include "qgslogger.h"
+#include "qgis.h"
 
 /** \ingroup core
  * \class QgsVectorColorRampV2
@@ -279,6 +277,9 @@ class CORE_EXPORT QgsVectorRandomColorRampV2 : public QgsVectorColorRampV2
     QList<QColor> mColors;
 };
 
+/** \ingroup core
+ * \class QgsRandomColorsV2
+ */
 class CORE_EXPORT QgsRandomColorsV2: public QgsVectorColorRampV2
 {
   public:
@@ -316,6 +317,9 @@ class CORE_EXPORT QgsRandomColorsV2: public QgsVectorColorRampV2
 #define DEFAULT_COLORBREWER_SCHEMENAME "Spectral"
 #define DEFAULT_COLORBREWER_COLORS     5
 
+/** \ingroup core
+ * \class QgsVectorColorBrewerColorRampV2
+ */
 class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
 {
   public:
@@ -357,6 +361,9 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
 #define DEFAULT_CPTCITY_SCHEMENAME "cb/div/BrBG_" //change this
 #define DEFAULT_CPTCITY_VARIANTNAME "05"
 
+/** \ingroup core
+ * \class QgsCptCityColorRampV2
+ */
 class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorGradientColorRampV2
 {
   public:

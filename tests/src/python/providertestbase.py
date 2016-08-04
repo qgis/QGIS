@@ -57,7 +57,7 @@ class ProviderTestCase(object):
             # field
             attrs[4] = str(attrs[4])
             attributes[f['pk']] = attrs
-            geometries[f['pk']] = f.constGeometry() and f.constGeometry().exportToWkt()
+            geometries[f['pk']] = f.hasGeometry() and f.geometry().exportToWkt()
 
         expected_attributes = {5: [5, -200, NULL, 'NuLl', '5'],
                                3: [3, 300, 'Pear', 'PEaR', '3'],
@@ -370,6 +370,7 @@ class ProviderTestCase(object):
 
     def testGetFeaturesFidsTests(self):
         fids = [f.id() for f in self.provider.getFeatures()]
+        self.assertEqual(len(fids), 5)
 
         request = QgsFeatureRequest().setFilterFids([fids[0], fids[2]])
         result = set([f.id() for f in self.provider.getFeatures(request)])
@@ -570,7 +571,7 @@ class ProviderTestCase(object):
         """ Test that no geometry is present when fetching features without geometry"""
 
         for f in self.provider.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)):
-            self.assertFalse(f.constGeometry(), 'Expected no geometry, got one')
+            self.assertFalse(f.hasGeometry(), 'Expected no geometry, got one')
             self.assertTrue(f.isValid())
 
     def testGetFeaturesWithGeometry(self):
@@ -580,5 +581,5 @@ class ProviderTestCase(object):
                 # no geometry for this feature
                 continue
 
-            assert f.constGeometry(), 'Expected geometry, got none'
+            assert f.hasGeometry(), 'Expected geometry, got none'
             self.assertTrue(f.isValid())

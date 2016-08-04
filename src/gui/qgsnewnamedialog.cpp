@@ -26,7 +26,7 @@
 QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initial,
                                     const QStringList& extensions, const QStringList& existing,
                                     const QRegExp& regexp, Qt::CaseSensitivity cs,
-                                    QWidget *parent, const Qt::WindowFlags& flags )
+                                    QWidget *parent, Qt::WindowFlags flags )
     : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
     , mExiting( existing )
     , mExtensions( extensions )
@@ -111,7 +111,6 @@ QString QgsNewNameDialog::highlightText( const QString& text )
 
 void QgsNewNameDialog::nameChanged()
 {
-  QgsDebugMsg( "entered" );
 
   QString namesString = tr( "Full names" ) + ": ";
   if ( !mExtensions.isEmpty() )

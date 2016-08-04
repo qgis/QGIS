@@ -24,7 +24,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
                        QgsVectorFileWriter,
                        QgsFeatureRequest,
-                       QgsWKBTypes
+                       QgsWkbTypes
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
@@ -213,8 +213,8 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertTrue(features)
 
         # check with both a standard PointZ and 25d style Point25D type
-        for t in [QgsWKBTypes.PointZ, QgsWKBTypes.Point25D]:
-            dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}.shp'.format(QgsWKBTypes.displayString(t)))
+        for t in [QgsWkbTypes.PointZ, QgsWkbTypes.Point25D]:
+            dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}.shp'.format(QgsWkbTypes.displayString(t)))
             crs = QgsCoordinateReferenceSystem()
             crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             write_result = QgsVectorFileWriter.writeAsVectorFormat(
@@ -237,7 +237,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             #also try saving out the shapefile version again, as an extra test
             #this tests that saving a layer with z WITHOUT explicitly telling the writer to keep z values,
             #will stay retain the z values
-            dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}_copy.shp'.format(QgsWKBTypes.displayString(t)))
+            dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}_copy.shp'.format(QgsWkbTypes.displayString(t)))
             crs = QgsCoordinateReferenceSystem()
             crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             write_result = QgsVectorFileWriter.writeAsVectorFormat(

@@ -18,7 +18,6 @@
 #define QGSCOLORDIALOG_H
 
 #include <QColorDialog>
-#include "qgisgui.h"
 #include "ui_qgscolordialog.h"
 
 class QColor;
@@ -48,7 +47,7 @@ class GUI_EXPORT QgsColorDialog : public QObject
     static QColor getLiveColor( const QColor& initialColor, QObject* updateObject, const char* updateSlot,
                                 QWidget* parent = nullptr,
                                 const QString& title = "",
-                                const QColorDialog::ColorDialogOptions& options = nullptr );
+                                const QColorDialog::ColorDialogOptions& options = 0 );
 };
 
 
@@ -71,7 +70,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
      * @param fl window flags
      * @param color initial color for dialog
      */
-    QgsColorDialogV2( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
+    QgsColorDialogV2( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
                       const QColor& color = QColor() );
 
     ~QgsColorDialogV2();

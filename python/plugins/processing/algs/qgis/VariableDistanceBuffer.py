@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis
+from qgis.core import Qgis, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -76,7 +76,7 @@ class VariableDistanceBuffer(GeoAlgorithm):
         segments = int(self.getParameterValue(self.SEGMENTS))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs())
+            layer.pendingFields().toList(), QgsWkbTypes.Polygon, layer.crs())
 
         buff.buffering(progress, writer, 0, field, True, layer, dissolve,
                        segments)

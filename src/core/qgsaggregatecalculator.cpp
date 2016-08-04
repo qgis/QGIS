@@ -23,13 +23,13 @@
 
 
 
-QgsAggregateCalculator::QgsAggregateCalculator( QgsVectorLayer* layer )
+QgsAggregateCalculator::QgsAggregateCalculator( const QgsVectorLayer* layer )
     : mLayer( layer )
 {
 
 }
 
-QgsVectorLayer*QgsAggregateCalculator::layer() const
+const QgsVectorLayer* QgsAggregateCalculator::layer() const
 {
   return mLayer;
 }
@@ -106,7 +106,8 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       return QVariant();
     }
 
-    context->setFeature( f );
+    if ( context )
+      context->setFeature( f );
     QVariant v = expression->evaluate( context );
     resultType = v.type();
   }
@@ -230,7 +231,9 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     }
   }
 
+#ifndef _MSC_VER
   return QVariant();
+#endif
 }
 
 QgsStatisticalSummary::Statistic QgsAggregateCalculator::numericStatFromAggregate( QgsAggregateCalculator::Aggregate aggregate, bool* ok )

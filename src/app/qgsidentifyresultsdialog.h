@@ -19,14 +19,11 @@
 #define QGSIDENTIFYRESULTSDIALOG_H
 
 #include "ui_qgsidentifyresultsbase.h"
-#include "qgsactionmanager.h"
 #include "qgscontexthelp.h"
 #include "qgsfeature.h"
-#include "qgsfeaturestore.h"
 #include "qgsfield.h"
-#include "qgsmaptoolidentify.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsmaplayeractionregistry.h"
+#include "qgsmaptoolidentify.h"
 #include "qgswebview.h"
 
 #include <QWidget>
@@ -37,11 +34,13 @@ class QTreeWidgetItem;
 class QAction;
 class QMenu;
 
+class QgsFeatureStore;
 class QgsVectorLayer;
 class QgsRasterLayer;
 class QgsHighlight;
 class QgsMapCanvas;
-class QDockWidget;
+class QgsDockWidget;
+class QgsMapLayerAction;
 
 class QwtPlotCurve;
 
@@ -68,7 +67,7 @@ class APP_EXPORT QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
     QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList & strings = QStringList() );
     const QgsFields &fields() const { return mFields; }
     const QgsFeature &feature() const { return mFeature; }
-    const QgsCoordinateReferenceSystem &crs() { return mCrs; }
+    QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
   private:
     QgsFields mFields;
@@ -118,7 +117,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     //! Constructor - takes it own copy of the QgsAttributeAction so
     // that it is independent of whoever created it.
-    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
     ~QgsIdentifyResultsDialog();
 
@@ -253,7 +252,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action );
 
-    QDockWidget *mDock;
+    QgsDockWidget *mDock;
 
     QVector<QgsIdentifyPlotCurve *> mPlotCurves;
 };

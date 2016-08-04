@@ -26,8 +26,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsimageoperation.h"
 #include "qgsvectorlayer.h"
-
-
+#include "qgsrasterrenderer.h"
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent )
     : QObject( parent )
@@ -141,7 +140,7 @@ QgsSymbolV2LegendNode::QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, cons
   updateLabel();
 
   if ( mItem.symbol() )
-    mSymbolUsesMapUnits = ( mItem.symbol()->outputUnit() != QgsSymbolV2::MM );
+    mSymbolUsesMapUnits = ( mItem.symbol()->outputUnit() != QgsUnitTypes::RenderMillimeters );
 }
 
 QgsSymbolV2LegendNode::~QgsSymbolV2LegendNode()
@@ -587,13 +586,13 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings,
 
 // -------------------------------------------------------------------------
 
-QgsWMSLegendNode::QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent )
+QgsWmsLegendNode::QgsWmsLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent )
     : QgsLayerTreeModelLegendNode( nodeLayer, parent )
     , mValid( false )
 {
 }
 
-const QImage& QgsWMSLegendNode::getLegendGraphic() const
+const QImage& QgsWmsLegendNode::getLegendGraphic() const
 {
   if ( ! mValid && ! mFetcher )
   {
@@ -622,7 +621,7 @@ const QImage& QgsWMSLegendNode::getLegendGraphic() const
   return mImage;
 }
 
-QVariant QgsWMSLegendNode::data( int role ) const
+QVariant QgsWmsLegendNode::data( int role ) const
 {
   //QgsDebugMsg( QString("XXX data called with role %1 -- mImage size is %2x%3").arg(role).arg(mImage.width()).arg(mImage.height()) );
 
@@ -637,7 +636,7 @@ QVariant QgsWMSLegendNode::data( int role ) const
   return QVariant();
 }
 
-QSizeF QgsWMSLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const
+QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const
 {
   Q_UNUSED( itemHeight );
 
@@ -651,7 +650,7 @@ QSizeF QgsWMSLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemCont
 }
 
 /* private */
-QImage QgsWMSLegendNode::renderMessage( const QString& msg ) const
+QImage QgsWmsLegendNode::renderMessage( const QString& msg ) const
 {
   const int fontHeight = 10;
   const int margin = fontHeight / 2;
@@ -671,7 +670,7 @@ QImage QgsWMSLegendNode::renderMessage( const QString& msg ) const
   return theImage;
 }
 
-void QgsWMSLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
+void QgsWmsLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
 {
   QString msg = QString( "Downloading... %1/%2" ).arg( cur ).arg( tot );
   //QgsDebugMsg ( QString("XXX %1").arg(msg) );
@@ -679,7 +678,7 @@ void QgsWMSLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
   emit dataChanged();
 }
 
-void QgsWMSLegendNode::getLegendGraphicErrored( const QString& msg )
+void QgsWmsLegendNode::getLegendGraphicErrored( const QString& msg )
 {
   if ( ! mFetcher ) return; // must be coming after finish
 
@@ -695,7 +694,7 @@ void QgsWMSLegendNode::getLegendGraphicErrored( const QString& msg )
   //QTimer::singleShot(5000, this, SLOT(invalidateMapBasedData()));
 }
 
-void QgsWMSLegendNode::getLegendGraphicFinished( const QImage& theImage )
+void QgsWmsLegendNode::getLegendGraphicFinished( const QImage& theImage )
 {
   if ( ! mFetcher ) return; // must be coming after error
 
@@ -713,7 +712,7 @@ void QgsWMSLegendNode::getLegendGraphicFinished( const QImage& theImage )
   mFetcher.reset();
 }
 
-void QgsWMSLegendNode::invalidateMapBasedData()
+void QgsWmsLegendNode::invalidateMapBasedData()
 {
   //QgsDebugMsg( QString("XXX invalidateMapBasedData called") );
   // TODO: do this only if this extent != prev extent ?

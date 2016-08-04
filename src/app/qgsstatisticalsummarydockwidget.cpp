@@ -17,6 +17,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
 #include <QTableWidget>
 #include <QAction>
 #include <QSettings>
@@ -74,7 +75,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 }
 
 QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
-    : QDockWidget( parent )
+    : QgsDockWidget( parent )
     , mLayer( nullptr )
 {
   setupUi( this );
@@ -182,7 +183,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly
   }
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
-  QgsStatisticalSummary::Statistics statsToCalc = nullptr;
+  QgsStatisticalSummary::Statistics statsToCalc = 0;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )

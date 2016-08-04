@@ -44,41 +44,31 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     /** Returns the permanent storage type for this layer as a friendly name */
     virtual QString storageType() const override;
 
-    /** Get the QgsCoordinateReferenceSystem for this layer */
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
-    /** Access features through an iterator */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
 
     /** Get the feature geometry type */
-    QGis::WkbType geometryType() const override;
+    QgsWkbTypes::Type wkbType() const override;
 
     /** Get the number of features in the layer */
     long featureCount() const override;
 
-    /** Return the extent for this data layer */
-    virtual QgsRectangle extent() override;
+    virtual QgsRectangle extent() const override;
 
-    /** Accessor for sql where clause used to limit dataset */
-    virtual QString subsetString() override;
+    virtual QString subsetString() const override;
 
     /** Set the subset string used to create a subset of features in the layer (WHERE clause) */
     virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true ) override;
 
-    /** Provider supports setting of subset strings */
-    virtual bool supportsSubsetString() override { return true; }
+    virtual bool supportsSubsetString() const override { return true; }
 
-    /**
-     * Get the field information for the layer
-     * @return vector of QgsField objects
-     */
-    const QgsFields & fields() const override;
+    QgsFields fields() const override;
 
-    /** Returns true if layer is valid */
-    bool isValid() override;
+    bool isValid() const override;
 
     /** Returns a bitmask containing the supported capabilities*/
-    int capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** Return the provider name */
     QString name() const override;
@@ -86,8 +76,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     /** Return description  */
     QString description() const override;
 
-    /** Return list of indexes of fields that make up the primary key */
-    QgsAttributeList pkAttributeIndexes() override;
+    QgsAttributeList pkAttributeIndexes() const override;
 
     /** Get the list of layer ids on which this layer depends */
     QSet<QString> layerDependencies() const override;

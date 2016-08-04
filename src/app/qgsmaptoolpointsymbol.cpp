@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsmaptoolpointsymbol.h"
+#include "qgsfeatureiterator.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
+#include "qgssnappingutils.h"
 
 #include <QMouseEvent>
 
@@ -46,7 +48,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
     return;
   }
 
-  if ( mActiveLayer->geometryType() != QGis::Point )
+  if ( mActiveLayer->geometryType() != QgsWkbTypes::PointGeometry )
   {
     return;
   }

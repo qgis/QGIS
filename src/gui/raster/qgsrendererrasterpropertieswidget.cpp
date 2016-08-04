@@ -1,7 +1,23 @@
+/***************************************************************************
+    qgsrendererrasterpropertieswidget.cpp
+    ---------------------
+    begin                : May 2016
+    copyright            : (C) 2016 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsrendererrasterpropertieswidget.h"
 
 #include "qgis.h"
 #include "qgsmapcanvas.h"
+#include "qgsbrightnesscontrastfilter.h"
+#include "qgshuesaturationfilter.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsrasterrendererregistry.h"
@@ -9,6 +25,10 @@
 #include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgspalettedrendererwidget.h"
+#include "qgshillshaderendererwidget.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
 
 
 static void _initRendererWidgetFunctions()
@@ -21,57 +41,67 @@ static void _initRendererWidgetFunctions()
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "multibandcolor", QgsMultiBandColorRendererWidget::create );
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandpseudocolor", QgsSingleBandPseudoColorRendererWidget::create );
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandgray", QgsSingleBandGrayRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "hillshade", QgsHillshadeRendererWidget::create );
 
   initialized = true;
 }
 
 
 
-QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapCanvas* canvas, QWidget *parent )
-    : QWidget( parent )
-    , mRasterLayer( nullptr )
-    , mMapCanvas( canvas )
+QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas* canvas, QWidget *parent )
+    : QgsMapLayerConfigWidget( layer, canvas, parent )
     , mRendererWidget( nullptr )
 {
+  mRasterLayer = qobject_cast<QgsRasterLayer*>( layer );
+  if ( !mRasterLayer )
+    return;
+
   setupUi( this );
 
   _initRendererWidgetFunctions();
+
+  mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
+  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ) );
+  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ) );
+  mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
+  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Average" ) );
 
   connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
 
   connect( mSliderBrightness, SIGNAL( valueChanged( int ) ), mBrightnessSpinBox, SLOT( setValue( int ) ) );
   connect( mBrightnessSpinBox, SIGNAL( valueChanged( int ) ), mSliderBrightness, SLOT( setValue( int ) ) );
 
-  // Just connect the spin box because the slidder updates the spinner
-  connect( mBrightnessSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
-
   connect( mSliderContrast, SIGNAL( valueChanged( int ) ), mContrastSpinBox, SLOT( setValue( int ) ) );
   connect( mContrastSpinBox, SIGNAL( valueChanged( int ) ), mSliderContrast, SLOT( setValue( int ) ) );
-
-  // Just connect the spin box because the slidder updates the spinner
-  connect( mContrastSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
 
   // Connect saturation slider and spin box
   connect( sliderSaturation, SIGNAL( valueChanged( int ) ), spinBoxSaturation, SLOT( setValue( int ) ) );
   connect( spinBoxSaturation, SIGNAL( valueChanged( int ) ), sliderSaturation, SLOT( setValue( int ) ) );
 
-  // Just connect the spin box because the slidder updates the spinner
-  connect( spinBoxSaturation, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
-
   // Connect colorize strength slider and spin box
   connect( sliderColorizeStrength, SIGNAL( valueChanged( int ) ), spinColorizeStrength, SLOT( setValue( int ) ) );
   connect( spinColorizeStrength, SIGNAL( valueChanged( int ) ), sliderColorizeStrength, SLOT( setValue( int ) ) );
 
-  // Connect colorize strength slider and spin box
-  connect( spinColorizeStrength, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
-
   // enable or disable saturation slider and spin box depending on grayscale combo choice
   connect( comboGrayscale, SIGNAL( currentIndexChanged( int ) ), this, SLOT( toggleSaturationControls( int ) ) );
 
-  connect( mBlendModeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
-
   // enable or disable colorize colorbutton with colorize checkbox
   connect( mColorizeCheck, SIGNAL( toggled( bool ) ), this, SLOT( toggleColorizeControls( bool ) ) );
+
+  // Just connect the spin boxes because the sliders update the spinners
+  connect( mBrightnessSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mContrastSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( spinBoxSaturation, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( spinColorizeStrength, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+
+  connect( mBlendModeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mZoomedInResamplingComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mZoomedOutResamplingComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mMaximumOversamplingSpinBox, SIGNAL( valueChanged( double ) ), this, SIGNAL( widgetChanged() ) );
+
+  // finally sync to the layer - even though some actions may emit widgetChanged signal,
+  // this is not a problem - nobody is listening to our signals yet
+  syncToLayer( mRasterLayer );
 }
 
 QgsRendererRasterPropertiesWidget::~QgsRendererRasterPropertiesWidget()
@@ -99,7 +129,15 @@ void QgsRendererRasterPropertiesWidget::apply()
   QgsRasterRendererWidget* rendererWidget = dynamic_cast<QgsRasterRendererWidget*>( stackedWidget->currentWidget() );
   if ( rendererWidget )
   {
-    mRasterLayer->setRenderer( rendererWidget->renderer() );
+    QgsRasterRenderer* newRenderer = rendererWidget->renderer();
+
+    // there are transparency related data stored in renderer instances, but they
+    // are not configured in the widget, so we need to copy them over from existing renderer
+    QgsRasterRenderer* oldRenderer = mRasterLayer->renderer();
+    if ( oldRenderer )
+      newRenderer->copyCommonProperties( oldRenderer );
+
+    mRasterLayer->setRenderer( newRenderer );
   }
 
   // Hue and saturation controls
@@ -111,6 +149,35 @@ void QgsRendererRasterPropertiesWidget::apply()
     hueSaturationFilter->setColorizeOn( mColorizeCheck->checkState() );
     hueSaturationFilter->setColorizeColor( btnColorizeColor->color() );
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
+  }
+
+  QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
+  if ( resampleFilter )
+  {
+    QgsRasterResampler *zoomedInResampler = nullptr;
+    QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
+    if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
+    {
+      zoomedInResampler = new QgsBilinearRasterResampler();
+    }
+    else if ( zoomedInResamplingMethod == tr( "Cubic" ) )
+    {
+      zoomedInResampler = new QgsCubicRasterResampler();
+    }
+
+    resampleFilter->setZoomedInResampler( zoomedInResampler );
+
+    //raster resampling
+    QgsRasterResampler *zoomedOutResampler = nullptr;
+    QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
+    if ( zoomedOutResamplingMethod == tr( "Average" ) )
+    {
+      zoomedOutResampler = new QgsBilinearRasterResampler();
+    }
+
+    resampleFilter->setZoomedOutResampler( zoomedOutResampler );
+
+    resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
   }
 
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
@@ -173,6 +240,42 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
 
   //blend mode
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
+
+  const QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
+  //set combo boxes to current resampling types
+  if ( resampleFilter )
+  {
+    const QgsRasterResampler* zoomedInResampler = resampleFilter->zoomedInResampler();
+    if ( zoomedInResampler )
+    {
+      if ( zoomedInResampler->type() == "bilinear" )
+      {
+        mZoomedInResamplingComboBox->setCurrentIndex( 1 );
+      }
+      else if ( zoomedInResampler->type() == "cubic" )
+      {
+        mZoomedInResamplingComboBox->setCurrentIndex( 2 );
+      }
+    }
+    else
+    {
+      mZoomedInResamplingComboBox->setCurrentIndex( 0 );
+    }
+
+    const QgsRasterResampler* zoomedOutResampler = resampleFilter->zoomedOutResampler();
+    if ( zoomedOutResampler )
+    {
+      if ( zoomedOutResampler->type() == "bilinear" ) //bilinear resampler does averaging when zooming out
+      {
+        mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
+      }
+    }
+    else
+    {
+      mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
+    }
+    mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
+  }
 }
 
 void QgsRendererRasterPropertiesWidget::on_mResetColorRenderingBtn_clicked()
@@ -225,6 +328,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
+      mRendererWidget->setMapCanvas( mMapCanvas );
       connect( mRendererWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
       stackedWidget->addWidget( mRendererWidget );
       stackedWidget->setCurrentWidget( mRendererWidget );

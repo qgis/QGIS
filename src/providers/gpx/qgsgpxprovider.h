@@ -22,7 +22,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "gpsdata.h"
-
+#include "qgsfield.h"
 
 class QgsFeature;
 class QgsField;
@@ -55,13 +55,13 @@ class QgsGPXProvider : public QgsVectorDataProvider
      */
     virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
 
     /**
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const override;
+    virtual QgsWkbTypes::Type wkbType() const override;
 
     /**
      * Number of features in the layer
@@ -69,10 +69,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
      */
     virtual long featureCount() const override;
 
-    /**
-     * Get the field information for the layer
-     */
-    virtual const QgsFields& fields() const override;
+    virtual QgsFields fields() const override;
 
     /**
      * Adds a list of features
@@ -94,23 +91,15 @@ class QgsGPXProvider : public QgsVectorDataProvider
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
 
-    virtual int capabilities() const override;
+    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    /**
-     * Returns the default value for field specified by @c fieldId
-     */
-    virtual QVariant defaultValue( int fieldId ) override;
+    virtual QVariant defaultValue( int fieldId ) const override;
 
 
     /* Functions inherited from QgsDataProvider */
 
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
-
-    /** Returns true if this is a valid delimited file
-     */
-    virtual bool isValid() override;
+    virtual QgsRectangle extent() const override;
+    virtual bool isValid() const override;
 
     /** Return a provider name */
     virtual QString name() const override;
@@ -118,7 +107,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     /** Return description */
     virtual QString description() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
 
     /* new functions */

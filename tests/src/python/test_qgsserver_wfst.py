@@ -35,6 +35,7 @@ __revision__ = '$Format:%H$'
 
 
 import os
+import sys
 import subprocess
 from shutil import copytree, rmtree
 import tempfile
@@ -69,7 +70,6 @@ class TestWFST(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests"""
         cls.port = QGIS_SERVER_WFST_DEFAULT_PORT
-        cls.testdata_path = unitTestDataPath('wfs_transactional') + '/'
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
         cls.testdata_path = cls.temp_path + '/' + 'wfs_transactional' + '/'
@@ -92,7 +92,7 @@ class TestWFST(unittest.TestCase):
         os.environ['QGIS_SERVER_DEFAULT_PORT'] = str(cls.port)
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
-        cls.server = subprocess.Popen(['python', server_path],
+        cls.server = subprocess.Popen([sys.executable, server_path],
                                       env=os.environ)
         sleep(2)
 
@@ -152,7 +152,7 @@ class TestWFST(unittest.TestCase):
             'table': '',
             #'sql': '',
         }
-        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in parms.iteritems()])
+        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in parms.items()])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         assert wfs_layer.isValid()
         return wfs_layer
@@ -165,7 +165,7 @@ class TestWFST(unittest.TestCase):
         request = QgsFeatureRequest(QgsExpression("%s=%s" % (attr_name,
                                                              attr_value)))
         try:
-            return layer.dataProvider().getFeatures(request).next()
+            return next(layer.dataProvider().getFeatures(request))
         except StopIteration:
             raise Exception("Wrong attributes in WFS layer %s" %
                             layer.name())
@@ -187,6 +187,7 @@ class TestWFST(unittest.TestCase):
             f = self._getFeatureByAttribute(wfs_layer, 'id', old_features[i]['id'])
             self.assertTrue(wfs_layer.dataProvider().changeGeometryValues({f.id(): new_features[i].geometry()}))
             self.assertTrue(wfs_layer.dataProvider().changeAttributeValues({f.id(): {0: new_features[i]['id']}}))
+            self.assertTrue(wfs_layer.dataProvider().changeAttributeValues({f.id(): {1: new_features[i]['name']}}))
 
     def _checkMatchFeatures(self, wfs_layer, features):
         """
@@ -196,6 +197,7 @@ class TestWFST(unittest.TestCase):
             wf = self._getFeatureByAttribute(wfs_layer, 'id', f['id'])
             self.assertEqual(wf.geometry().exportToWkt(),
                              f.geometry().exportToWkt())
+            self.assertEqual(f['name'], wf['name'])
 
     def _checkDeleteFeatures(self, layer, features):
         """
@@ -242,6 +244,35 @@ class TestWFST(unittest.TestCase):
         new_features = [new_feat1, feat2]
         self._testLayer(wfs_layer, layer, old_features, new_features)
 
+    def testWFSPointsMultipleEdits(self):
+        """
+        Adds some points, then check.
+        Modify 2 points, then checks and clear all
+        """
+        layer_name = 'test_point'
+        layer = self._getLayer(layer_name)
+        wfs_layer = self._getWFSLayer(layer_name)
+        feat1 = QgsFeature(wfs_layer.pendingFields())
+        feat1['id'] = 11
+        feat1['name'] = 'name 11'
+        feat1.setGeometry(QgsGeometry.fromPoint(QgsPoint(9, 45)))
+        feat2 = QgsFeature(wfs_layer.pendingFields())
+        feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(9.5, 45.5)))
+        feat2['id'] = 12
+        feat2['name'] = 'name 12'
+        old_features = [feat1, feat2]
+        # Change feat1 and feat2
+        new_feat1 = QgsFeature(wfs_layer.pendingFields())
+        new_feat1['id'] = 121
+        new_feat1['name'] = 'name 121'
+        new_feat1.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 46)))
+        new_feat2 = QgsFeature(wfs_layer.pendingFields())
+        new_feat2['id'] = 122
+        new_feat2['name'] = 'name 122'
+        new_feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(10.5, 47)))
+        new_features = [new_feat1, new_feat2]
+        self._testLayer(wfs_layer, layer, old_features, new_features)
+
     def testWFSPolygons(self):
         """
         Adds some polygons, then check and clear all
@@ -251,14 +282,17 @@ class TestWFST(unittest.TestCase):
         wfs_layer = self._getWFSLayer(layer_name)
         feat1 = QgsFeature(wfs_layer.pendingFields())
         feat1['id'] = 11
+        feat1['name'] = 'name 11'
         feat1.setGeometry(QgsGeometry.fromRect(QgsRectangle(QgsPoint(9, 45), QgsPoint(10, 46))))
         feat2 = QgsFeature(wfs_layer.pendingFields())
         feat2.setGeometry(QgsGeometry.fromRect(QgsRectangle(QgsPoint(9.5, 45.5), QgsPoint(10.5, 46.5))))
         feat2['id'] = 12
+        feat2['name'] = 'name 12'
         old_features = [feat1, feat2]
         # Change feat1
         new_feat1 = QgsFeature(wfs_layer.pendingFields())
         new_feat1['id'] = 121
+        new_feat1['name'] = 'name 121'
         new_feat1.setGeometry(QgsGeometry.fromRect(QgsRectangle(QgsPoint(10, 46), QgsPoint(11.5, 47.5))))
         new_features = [new_feat1, feat2]
         self._testLayer(wfs_layer, layer, old_features, new_features)
@@ -272,14 +306,17 @@ class TestWFST(unittest.TestCase):
         wfs_layer = self._getWFSLayer(layer_name)
         feat1 = QgsFeature(wfs_layer.pendingFields())
         feat1['id'] = 11
+        feat1['name'] = 'name 11'
         feat1.setGeometry(QgsGeometry.fromPolyline([QgsPoint(9, 45), QgsPoint(10, 46)]))
         feat2 = QgsFeature(wfs_layer.pendingFields())
         feat2.setGeometry(QgsGeometry.fromPolyline([QgsPoint(9.5, 45.5), QgsPoint(10.5, 46.5)]))
         feat2['id'] = 12
+        feat2['name'] = 'name 12'
         old_features = [feat1, feat2]
         # Change feat1
         new_feat1 = QgsFeature(wfs_layer.pendingFields())
         new_feat1['id'] = 121
+        new_feat1['name'] = 'name 121'
         new_feat1.setGeometry(QgsGeometry.fromPolyline([QgsPoint(9.8, 45.8), QgsPoint(10.8, 46.8)]))
         new_features = [new_feat1, feat2]
         self._testLayer(wfs_layer, layer, old_features, new_features)

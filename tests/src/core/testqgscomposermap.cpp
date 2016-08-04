@@ -20,13 +20,13 @@
 #include "qgsmultirenderchecker.h"
 #include "qgscomposermap.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
-#include "qgsvisibilitypresetcollection.h"
+#include "qgsmapthemecollection.h"
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -146,8 +146,8 @@ void TestQgsComposerMap::uniqueId()
 {
   QDomDocument doc;
   QDomElement documentElement = doc.createElement( "ComposerItemClipboard" );
-  mComposerMap->writeXML( documentElement, doc );
-  mComposition->addItemsFromXML( documentElement, doc, 0, false );
+  mComposerMap->writeXml( documentElement, doc );
+  mComposition->addItemsFromXml( documentElement, doc, 0, false );
 
   //test if both composer maps have different ids
   const QgsComposerMap* newMap = 0;
@@ -349,11 +349,11 @@ void TestQgsComposerMap::dataDefinedStyles()
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
 
-  QgsVisibilityPresetCollection::PresetRecord rec;
+  QgsMapThemeCollection::PresetRecord rec;
   rec.mVisibleLayerIDs << mPointsLayer->id();
   rec.mVisibleLayerIDs << mLinesLayer->id();
 
-  QgsProject::instance()->visibilityPresetCollection()->insert( "test preset", rec );
+  QgsProject::instance()->mapThemeCollection()->insert( "test preset", rec );
 
   // test following of preset
   mComposerMap->setFollowVisibilityPreset( true );

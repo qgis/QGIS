@@ -46,7 +46,7 @@ class LayerPreview(QgsMapCanvas):
         self.enableAntiAliasing(settings.value("/qgis/enable_anti_aliasing", False, type=bool))
         action = settings.value("/qgis/wheel_action", 0, type=float)
         zoomFactor = settings.value("/qgis/zoom_factor", 2, type=float)
-        self.setWheelAction(QgsMapCanvas.WheelAction(action), zoomFactor)
+        self.setWheelFactor(zoomFactor)
 
     def refresh(self):
         self.setDirty(True)
@@ -97,7 +97,7 @@ class LayerPreview(QgsMapCanvas):
         if table and table.geomType:
             # limit the query result if required
             if limit and table.rowCount > 1000:
-                uniqueField = table.getValidQGisUniqueFields(True)
+                uniqueField = table.getValidQgisUniqueFields(True)
                 if uniqueField is None:
                     self.parent.tabs.setCurrentWidget(self.parent.info)
                     self.parent.infoBar.pushMessage(

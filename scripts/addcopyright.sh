@@ -16,6 +16,8 @@
 
 # licensecheck -r src
 
+export LC_TIME=C
+
 set -e
 
 if [ $# -gt 0 ]; then
@@ -155,7 +157,7 @@ for i in $FILES; do
 		authoremail="loi at faunalia dot it"
 		;;
 
-	"Nathan Woodrow")
+	"Nathan Woodrow"|Nathan)
 		authorname="Nathan Woodrow"
 		authoremail="woodrow dot nathan at gmail dot com"
 		;;
@@ -188,6 +190,31 @@ for i in $FILES; do
 	elpaso)
 		authorname="Alessandro Pasotti"
 		authoremail="elpaso at itopen dot it"
+		;;
+
+        "Patrick Valsecchi")
+		authorname="Patrick Valsecchi"
+		authoremail="patrick dot valsecchi at camptocamp dot com"
+		;;
+
+	"Stéphane Brunner")
+		authorname="Stéphane Brunner"
+		authoremail="stephane dot brunner at camptocamp dot com"
+		;;
+
+	"ersts")
+		authorname="Peter Ersts"
+		authoremail="ersts at amnh dot org"
+		;;
+
+	"Etienne Tourigny")
+		authorname="Etienne Tourigny"
+		authoremail="etourigny dot dev at gmail dot com"
+		;;
+
+	"Nyall Dawson")
+		authorname="Nyall Dawson"
+		authoremail="nyall dot dawson at gmail dot com"
 		;;
 
 	*)

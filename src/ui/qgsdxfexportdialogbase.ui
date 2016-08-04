@@ -138,7 +138,7 @@
    <item row="4" column="0">
     <widget class="QLabel" name="mSymbologyScaleLabel_2">
      <property name="text">
-      <string>Visibility presets</string>
+      <string>Map themes</string>
      </property>
     </widget>
    </item>

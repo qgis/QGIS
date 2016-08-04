@@ -18,6 +18,9 @@
 
 #include "qgsvectorlayertools.h"
 
+/** \ingroup gui
+ * \class QgsTrackedVectorLayerTools
+ */
 class GUI_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
 {
   public:

@@ -18,11 +18,6 @@
 
 #include "qgis.h"
 #include "qgsmaptoolidentify.h"
-#include "qgspoint.h"
-#include "qgsfeature.h"
-#include "qgsfeaturestore.h"
-#include "qgsfield.h"
-#include "qgsdistancearea.h"
 
 #include <QObject>
 #include <QPointer>
@@ -31,6 +26,7 @@ class QgsIdentifyResultsDialog;
 class QgsMapLayer;
 class QgsRasterLayer;
 class QgsVectorLayer;
+class QgsFeatureStore;
 
 /**
   \brief Map tool for identifying features layers and showing results
@@ -80,7 +76,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     QgsIdentifyResultsDialog *resultsDialog();
 
-    virtual QGis::UnitType displayDistanceUnits() const override;
+    virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const override;
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const override;
 
 };

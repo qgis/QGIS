@@ -31,7 +31,6 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsrendercontext.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 
 #include <QPainter>
 #include <QAction>
@@ -94,8 +93,8 @@ void QgsDecorationGrid::projectRead()
   QgsDecorationItem::projectRead();
 
   mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
-  mMapUnits = static_cast< QGis::UnitType >( QgsProject::instance()->readNumEntry( mNameConfig, "/MapUnits",
-              QGis::UnknownUnit ) );
+  mMapUnits = static_cast< QgsUnitTypes::DistanceUnit >( QgsProject::instance()->readNumEntry( mNameConfig, "/MapUnits",
+              QgsUnitTypes::DistanceUnknownUnit ) );
   mGridStyle = static_cast< GridStyle >( QgsProject::instance()->readNumEntry( mNameConfig, "/Style",
                                          QgsDecorationGrid::Line ) );
   mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalX", 10 );
@@ -748,11 +747,11 @@ void QgsDecorationGrid::checkMapUnitsChanged()
   // this is to avoid problems when CRS changes to/from geographic and projected
   // a better solution would be to change the grid interval, but this is a little tricky
   // note: we could be less picky (e.g. from degrees to DMS)
-  QGis::UnitType mapUnits = QgisApp::instance()->mapCanvas()->mapSettings().mapUnits();
+  QgsUnitTypes::DistanceUnit mapUnits = QgisApp::instance()->mapCanvas()->mapSettings().mapUnits();
   if ( mEnabled && ( mMapUnits != mapUnits ) )
   {
     mEnabled = false;
-    mMapUnits = QGis::UnknownUnit; // make sure isDirty() returns true
+    mMapUnits = QgsUnitTypes::DistanceUnknownUnit; // make sure isDirty() returns true
     if ( ! QgisApp::instance()->mapCanvas()->isFrozen() )
     {
       update();
@@ -764,7 +763,7 @@ bool QgsDecorationGrid::isDirty()
 {
   // checks if stored map units is undefined or different from canvas map units
   // or if interval is 0
-  if ( mMapUnits == QGis::UnknownUnit ||
+  if ( mMapUnits == QgsUnitTypes::DistanceUnknownUnit ||
        mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
        qgsDoubleNear( mGridIntervalX, 0.0 ) || qgsDoubleNear( mGridIntervalY, 0.0 ) )
     return true;
@@ -775,7 +774,7 @@ void QgsDecorationGrid::setDirty( bool dirty )
 {
   if ( dirty )
   {
-    mMapUnits = QGis::UnknownUnit;
+    mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
   }
   else
   {
@@ -833,7 +832,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
     return false;
   }
   QgsCoordinateReferenceSystem layerCRS = layer->crs();
-  const QgsCoordinateReferenceSystem& mapCRS =
+  QgsCoordinateReferenceSystem mapCRS =
     QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
   // is this the best way to compare CRS? should we also make sure map has OTF enabled?
   // TODO calculate transformed values if necessary

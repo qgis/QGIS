@@ -20,7 +20,6 @@
 #include "qgsproject.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
-#include "qgscrscache.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmslayercache.h"
@@ -58,7 +57,7 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
 
     mLegendGroupElements = findLegendGroupElements();
 
-    mUseLayerIDs = findUseLayerIDs();
+    mUseLayerIDs = findUseLayerIds();
     mRestrictedLayers = findRestrictedLayers();
 
     mCustomLayerOrder.clear();
@@ -179,7 +178,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     //convert relative pathes to absolute ones if necessary
     if ( uri.startsWith( "dbname" ) ) //database
     {
-      QgsDataSourceURI dsUri( uri );
+      QgsDataSourceUri dsUri( uri );
       if ( dsUri.host().isEmpty() ) //only convert path for file based databases
       {
         QString dbnameUri = dsUri.database();
@@ -269,7 +268,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
       QObject::connect( layer, SIGNAL( readCustomSymbology( const QDomElement&, QString& ) ), QgsEditorWidgetRegistry::instance(), SLOT( readSymbology( const QDomElement&, QString& ) ) );
     }
 
-    layer->readLayerXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
+    layer->readLayerXml( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
     //layer->setLayerName( layerName( elem ) );
 
     // Insert layer in registry and cache before addValueRelationLayersForLayer
@@ -715,7 +714,7 @@ void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& gr
     if ( childElem.tagName() != "Layer" )
       continue;
 
-    QgsRectangle bbox = layerBoundingBoxInProjectCRS( childElem, doc );
+    QgsRectangle bbox = layerBoundingBoxInProjectCrs( childElem, doc );
     if ( !bbox.isEmpty() )
     {
       if ( firstBBox )
@@ -725,7 +724,7 @@ void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& gr
       }
       else
       {
-        combinedBBox.combineExtentWith( &bbox );
+        combinedBBox.combineExtentWith( bbox );
       }
     }
 
@@ -745,9 +744,9 @@ void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& gr
     }
   }
 
-  QgsConfigParserUtils::appendCRSElementsToLayer( groupElem, doc, combinedCRSSet.toList(), supportedOutputCrsList() );
+  QgsConfigParserUtils::appendCrsElementsToLayer( groupElem, doc, combinedCRSSet.toList(), supportedOutputCrsList() );
 
-  const QgsCoordinateReferenceSystem& groupCRS = projectCRS();
+  QgsCoordinateReferenceSystem groupCRS = projectCrs();
   if ( considerMapExtent )
   {
     QgsRectangle mapRect = mapRectangle();
@@ -774,9 +773,16 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
   if ( currentLayer->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
-    const QSet<QString>& excludedAttributes = vLayer->excludeAttributesWMS();
-    int displayFieldIdx = vLayer->fieldNameIndex( vLayer->displayField() );
-    QString displayField = displayFieldIdx < 0 ? "maptip" : vLayer->displayField();
+    const QSet<QString>& excludedAttributes = vLayer->excludeAttributesWms();
+
+    int displayFieldIdx = -1;
+    QString displayField = "maptip";
+    QgsExpression exp( vLayer->displayExpression() );
+    if ( exp.isField() )
+    {
+      displayField = static_cast<const QgsExpression::NodeColumnRef*>( exp.rootNode() )->name();
+      displayFieldIdx = vLayer->fieldNameIndex( displayField );
+    }
 
     //attributes
     QDomElement attributesElem = doc.createElement( "Attributes" );
@@ -814,13 +820,13 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
     layerElem.setAttribute( "displayField", displayField );
 
     //geometry type
-    layerElem.setAttribute( "geometryType", QGis::featureType( vLayer->wkbType() ) );
+    layerElem.setAttribute( "geometryType", QgsWkbTypes::displayString( vLayer->wkbType() ) );
 
     layerElem.appendChild( attributesElem );
   }
 }
 
-QgsRectangle QgsServerProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& layerElem, const QDomDocument &doc ) const
+QgsRectangle QgsServerProjectParser::layerBoundingBoxInProjectCrs( const QDomElement& layerElem, const QDomDocument &doc ) const
 {
   QgsRectangle BBox;
   if ( layerElem.isNull() )
@@ -862,7 +868,7 @@ QgsRectangle QgsServerProjectParser::layerBoundingBoxInProjectCRS( const QDomEle
   QString version = doc.documentElement().attribute( "version" );
 
   //create layer crs
-  const QgsCoordinateReferenceSystem& layerCrs = QgsCRSCache::instance()->crsByAuthId( boundingBoxElem.attribute( version == "1.1.1" ? "SRS" : "CRS" ) );
+  QgsCoordinateReferenceSystem layerCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( boundingBoxElem.attribute( version == "1.1.1" ? "SRS" : "CRS" ) );
   if ( !layerCrs.isValid() )
   {
     return BBox;
@@ -873,14 +879,13 @@ QgsRectangle QgsServerProjectParser::layerBoundingBoxInProjectCRS( const QDomEle
   BBox.setYMinimum( miny );
   BBox.setYMaximum( maxy );
 
-  if ( version != "1.1.1" && layerCrs.axisInverted() )
+  if ( version != "1.1.1" && layerCrs.hasAxisInverted() )
   {
     BBox.invert();
   }
 
   //get project crs
-  const QgsCoordinateReferenceSystem& projectCrs = projectCRS();
-  QgsCoordinateTransform t( layerCrs, projectCrs );
+  QgsCoordinateTransform t( layerCrs, projectCrs() );
 
   //transform
   BBox = t.transformBoundingBox( BBox );
@@ -912,7 +917,7 @@ bool QgsServerProjectParser::crsSetForLayer( const QDomElement& layerElement, QS
   return true;
 }
 
-const QgsCoordinateReferenceSystem& QgsServerProjectParser::projectCRS() const
+QgsCoordinateReferenceSystem QgsServerProjectParser::projectCrs() const
 {
   //mapcanvas->destinationsrs->spatialrefsys->authid
   if ( mXMLDoc )
@@ -921,10 +926,10 @@ const QgsCoordinateReferenceSystem& QgsServerProjectParser::projectCRS() const
                              firstChildElement( "spatialrefsys" ).firstChildElement( "authid" );
     if ( !authIdElem.isNull() )
     {
-      return QgsCRSCache::instance()->crsByAuthId( authIdElem.text() );
+      return QgsCoordinateReferenceSystem::fromOgcWmsCrs( authIdElem.text() );
     }
   }
-  return QgsCRSCache::instance()->crsByEpsgId( GEO_EPSG_CRS_ID );
+  return QgsCoordinateReferenceSystem::fromEpsgId( GEO_EPSG_CRS_ID );
 }
 
 QgsRectangle QgsServerProjectParser::mapRectangle() const
@@ -1012,7 +1017,7 @@ QStringList QgsServerProjectParser::supportedOutputCrsList() const
     else
     {
       //no CRS restriction defined in the project. Provide project CRS, wgs84 and pseudo mercator
-      QString projectCrsId = projectCRS().authid();
+      QString projectCrsId = projectCrs().authid();
       crsList.append( projectCrsId );
       if ( projectCrsId.compare( "EPSG:4326", Qt::CaseInsensitive ) != 0 )
       {
@@ -1166,7 +1171,7 @@ QSet<QString> QgsServerProjectParser::findRestrictedLayers() const
   return restrictedLayerSet;
 }
 
-bool QgsServerProjectParser::findUseLayerIDs() const
+bool QgsServerProjectParser::findUseLayerIds() const
 {
   if ( !mXMLDoc )
     return false;
@@ -1206,7 +1211,7 @@ QList<QDomElement> QgsServerProjectParser::findLegendGroupElements() const
   QDomElement layerTreeElem = mXMLDoc->documentElement().firstChildElement( "layer-tree-group" );
   if ( !layerTreeElem.isNull() )
   {
-    rootLayerTreeGroup = QgsLayerTreeGroup::readXML( layerTreeElem );
+    rootLayerTreeGroup = QgsLayerTreeGroup::readXml( layerTreeElem );
   }
 
   QDomElement legendElement = mXMLDoc->documentElement().firstChildElement( "legend" );

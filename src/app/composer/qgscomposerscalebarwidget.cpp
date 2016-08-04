@@ -19,6 +19,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposition.h"
+#include "qgisgui.h"
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QWidget>

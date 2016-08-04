@@ -84,7 +84,7 @@ void TestQgsComposerDD::initTestCase()
   //create composition with composer map
   mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
   mMapSettings->setCrsTransformEnabled( true );
-  mMapSettings->setMapUnits( QGis::Meters );
+  mMapSettings->setMapUnits( QgsUnitTypes::DistanceMeters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;

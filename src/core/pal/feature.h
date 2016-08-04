@@ -30,18 +30,16 @@
 #ifndef FEATURE_H
 #define FEATURE_H
 
-#include "qgsgeometry.h"
 #include "pointset.h"
-#include "util.h"
-#include "labelposition.h"
+#include "labelposition.h" // for LabelPosition enum
+#include "qgslabelfeature.h"
+#include "rtree.hpp"
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <QString>
 
-#include "qgslabelfeature.h"
-
-/**
+/** \ingroup core
  * \class pal::LabelInfo
  * \note not available in Python bindings
  */
@@ -83,6 +81,7 @@ namespace pal
   class FeaturePart;
 
   /**
+   * \ingroup core
    * \brief Main class to handle feature
    * \class pal::FeaturePart
    * \note not available in Python bindings

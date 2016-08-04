@@ -30,7 +30,7 @@ class QgsSymbolV2;
 
 #include "qgslegendsettings.h"
 
-/**
+/** \ingroup core
  * @brief The QgsLegendRenderer class handles automatic layout and rendering of legend.
  * The content is given by QgsLayerTreeModel instance. Various layout properties can be configured
  * within QgsLegendRenderer.

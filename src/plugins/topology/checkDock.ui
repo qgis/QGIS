@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>checkDock</class>
- <widget class="QDockWidget" name="checkDock">
+ <widget class="QgsDockWidget" name="checkDock">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -128,6 +128,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+  </customwidget>
+</customwidgets>
  <resources>
   <include location="topol.qrc"/>
  </resources>

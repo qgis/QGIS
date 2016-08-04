@@ -17,6 +17,7 @@
 #include <QtTest/QtTest>
 
 #include "qgsapplication.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgszonalstatistics.h"
 #include "qgsmaplayerregistry.h"

@@ -18,7 +18,9 @@
 
 #include "qgseditorwidgetfactory.h"
 
-/** \class QgsUniqueValueWidgetFactory
+/**
+ * \ingroup gui
+ * \class QgsUniqueValueWidgetFactory
  * \note not available in Python bindings
  */
 

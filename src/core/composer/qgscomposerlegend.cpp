@@ -27,6 +27,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgslogger.h"
+#include "qgsmapsettings.h"
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgslayertreeutils.h"
@@ -42,10 +43,11 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mFilterOutAtlas( false )
     , mFilterAskedForUpdate( false )
     , mInAtlas( false )
+    , mInitialMapScaleCalculated( false )
+    , mForceResize( false )
+    , mSizeToContents( true )
 {
   mLegendModel2 = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
-
-  adjustBoxSize();
 
   connect( &mLegendModel, SIGNAL( layersChanged() ), this, SLOT( synchronizeWithModel() ) );
 
@@ -67,6 +69,9 @@ QgsComposerLegend::QgsComposerLegend()
     , mFilterOutAtlas( false )
     , mFilterAskedForUpdate( false )
     , mInAtlas( false )
+    , mInitialMapScaleCalculated( false )
+    , mForceResize( false )
+    , mSizeToContents( true )
 {
 
 }
@@ -115,6 +120,35 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
     ms.setOutputDpi( dpi );
     mSettings.setMapScale( ms.scale() );
   }
+  mInitialMapScaleCalculated = true;
+
+  QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
+  legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
+
+  //adjust box if width or height is too small
+  if ( mSizeToContents )
+  {
+    QSizeF size = legendRenderer.minimumSize();
+    if ( mForceResize )
+    {
+      mForceResize = false;
+      //set new rect, respecting position mode and data defined size/position
+      QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
+      setSceneRect( evalItemRect( targetRect, true ) );
+    }
+    else if ( size.height() > rect().height() || size.width() > rect().width() )
+    {
+      //need to resize box
+      QRectF targetRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
+      if ( size.height() > targetRect.height() )
+        targetRect.setHeight( size.height() );
+      if ( size.width() > rect().width() )
+        targetRect.setWidth( size.width() );
+
+      //set new rect, respecting position mode and data defined size/position
+      setSceneRect( evalItemRect( targetRect, true ) );
+    }
+  }
 
   drawBackground( painter );
   painter->save();
@@ -122,22 +156,11 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   painter->setRenderHint( QPainter::Antialiasing, true );
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
 
-  QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
-  legendRenderer.setLegendSize( rect().size() );
-
-  //adjust box if width or height is too small
-  QSizeF size = legendRenderer.minimumSize();
-  if ( size.height() > rect().height() || size.width() > rect().width() )
+  if ( !mSizeToContents )
   {
-    //need to resize box
-    QRectF targetRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
-    if ( size.height() > targetRect.height() )
-      targetRect.setHeight( size.height() );
-    if ( size.width() > rect().width() )
-      targetRect.setWidth( size.width() );
-
-    //set new rect, respecting position mode and data defined size/position
-    setSceneRect( evalItemRect( targetRect, true ) );
+    // set a clip region to crop out parts of legend which don't fit
+    QRectF thisPaintRect = QRectF( 0, 0, rect().width(), rect().height() );
+    painter->setClipRect( thisPaintRect );
   }
 
   legendRenderer.drawLegend( painter );
@@ -170,6 +193,18 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
 void QgsComposerLegend::adjustBoxSize()
 {
+  if ( !mSizeToContents )
+    return;
+
+  if ( !mInitialMapScaleCalculated )
+  {
+    // this is messy - but until we have painted the item we have no knowledge of the current DPI
+    // and so cannot correctly calculate the map scale. This results in incorrect size calculations
+    // for marker symbols with size in map units, causing the legends to initially expand to huge
+    // sizes if we attempt to calculate the box size first.
+    return;
+  }
+
   QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
   QSizeF size = legendRenderer.minimumSize();
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
@@ -181,6 +216,15 @@ void QgsComposerLegend::adjustBoxSize()
   }
 }
 
+void QgsComposerLegend::setResizeToContents( bool enabled )
+{
+  mSizeToContents = enabled;
+}
+
+bool QgsComposerLegend::resizeToContents() const
+{
+  return mSizeToContents;
+}
 
 void QgsComposerLegend::setCustomLayerTree( QgsLayerTreeGroup* rootGroup )
 {
@@ -291,7 +335,6 @@ void QgsComposerLegend::setRasterBorderWidth( double width ) { mSettings.setRast
 
 void QgsComposerLegend::synchronizeWithModel()
 {
-  QgsDebugMsg( "Entered" );
   adjustBoxSize();
   updateItem();
 }
@@ -299,18 +342,20 @@ void QgsComposerLegend::synchronizeWithModel()
 void QgsComposerLegend::updateLegend()
 {
   // take layer list from map renderer (to have legend order)
+  mLegendModel.blockSignals( true );
   mLegendModel.setLayerSet( mComposition ? mComposition->mapSettings().layers() : QStringList() );
+  mLegendModel.blockSignals( false );
   adjustBoxSize();
   updateItem();
 }
 
 void QgsComposerLegend::updateItem()
 {
-  updateFilterByMap();
+  updateFilterByMap( false );
   QgsComposerItem::updateItem();
 }
 
-bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {
@@ -342,6 +387,8 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "wrapChar", mSettings.wrapChar() );
   composerLegendElem.setAttribute( "fontColor", mSettings.fontColor().name() );
 
+  composerLegendElem.setAttribute( "resizeToContents", mSizeToContents );
+
   if ( mComposerMap )
   {
     composerLegendElem.setAttribute( "map", mComposerMap->id() );
@@ -350,16 +397,16 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   QDomElement composerLegendStyles = doc.createElement( "styles" );
   composerLegendElem.appendChild( composerLegendStyles );
 
-  style( QgsComposerLegendStyle::Title ).writeXML( "title", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Group ).writeXML( "group", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Subgroup ).writeXML( "subgroup", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Symbol ).writeXML( "symbol", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::SymbolLabel ).writeXML( "symbolLabel", composerLegendStyles, doc );
+  style( QgsComposerLegendStyle::Title ).writeXml( "title", composerLegendStyles, doc );
+  style( QgsComposerLegendStyle::Group ).writeXml( "group", composerLegendStyles, doc );
+  style( QgsComposerLegendStyle::Subgroup ).writeXml( "subgroup", composerLegendStyles, doc );
+  style( QgsComposerLegendStyle::Symbol ).writeXml( "symbol", composerLegendStyles, doc );
+  style( QgsComposerLegendStyle::SymbolLabel ).writeXml( "symbolLabel", composerLegendStyles, doc );
 
   if ( mCustomLayerTree )
   {
     // if not using auto-update - store the custom layer tree
-    mCustomLayerTree->writeXML( composerLegendElem );
+    mCustomLayerTree->writeXml( composerLegendElem );
   }
 
   if ( mLegendFilterByMap )
@@ -367,7 +414,7 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
     composerLegendElem.setAttribute( "legendFilterByMap", "1" );
   }
 
-  return _writeXML( composerLegendElem, doc );
+  return _writeXml( composerLegendElem, doc );
 }
 
 static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGroup )
@@ -410,7 +457,7 @@ static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGro
   }
 }
 
-bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
   {
@@ -437,7 +484,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
     {
       QDomElement styleElem = stylesNode.childNodes().at( i ).toElement();
       QgsComposerLegendStyle style;
-      style.readXML( styleElem, doc );
+      style.readXml( styleElem, doc );
       QString name = styleElem.attribute( "name" );
       QgsComposerLegendStyle::Style s;
       if ( name == "title" ) s = QgsComposerLegendStyle::Title;
@@ -468,6 +515,8 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   mSettings.setWrapChar( itemElem.attribute( "wrapChar" ) );
 
+  mSizeToContents = itemElem.attribute( "resizeToContents", "1" ) != "0";
+
   //composer map
   mLegendFilterByMap = itemElem.attribute( "legendFilterByMap", "0" ).toInt();
   if ( !itemElem.attribute( "map" ).isEmpty() )
@@ -487,7 +536,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   {
     // QGIS >= 2.6
     QDomElement layerTreeElem = itemElem.firstChildElement( "layer-tree-group" );
-    setCustomLayerTree( QgsLayerTreeGroup::readXML( layerTreeElem ) );
+    setCustomLayerTree( QgsLayerTreeGroup::readXml( layerTreeElem ) );
   }
 
   //restore general composer item properties
@@ -495,7 +544,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   // < 2.0 projects backward compatibility >>>>>
@@ -605,7 +654,7 @@ void QgsComposerLegend::mapLayerStyleOverridesChanged()
   {
     // legend is being filtered by map, so we need to re run the hit test too
     // as the style overrides may also have affected the visible symbols
-    updateFilterByMap();
+    updateFilterByMap( false );
   }
   else
   {
@@ -619,7 +668,7 @@ void QgsComposerLegend::mapLayerStyleOverridesChanged()
   updateItem();
 }
 
-void QgsComposerLegend::updateFilterByMap()
+void QgsComposerLegend::updateFilterByMap( bool redraw )
 {
   if ( isRemoved() )
     return;
@@ -627,6 +676,9 @@ void QgsComposerLegend::updateFilterByMap()
   // the actual update will take place before the redraw.
   // This is to avoid multiple calls to the filter
   mFilterAskedForUpdate = true;
+
+  if ( redraw )
+    QgsComposerItem::updateItem();
 }
 
 void QgsComposerLegend::doUpdateFilterByMap()
@@ -660,6 +712,8 @@ void QgsComposerLegend::doUpdateFilterByMap()
   }
   else
     mLegendModel2->setLegendFilterByMap( nullptr );
+
+  mForceResize = true;
 }
 
 void QgsComposerLegend::setLegendFilterOutAtlas( bool doFilter )

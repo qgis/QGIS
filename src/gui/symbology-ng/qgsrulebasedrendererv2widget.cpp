@@ -16,6 +16,7 @@
 #include "qgsrulebasedrendererv2widget.h"
 
 #include "qgsrulebasedrendererv2.h"
+#include "qgsfeatureiterator.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
@@ -25,6 +26,8 @@
 #include "qgslogger.h"
 #include "qstring.h"
 #include "qgssinglesymbolrendererv2.h"
+#include "qgspanelwidget.h"
+#include "qgsmapcanvas.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -106,6 +109,8 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
 
   connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SIGNAL( widgetChanged() ) );
 
   currentRuleChanged();
   selectedRulesChanged();
@@ -133,29 +138,24 @@ void QgsRuleBasedRendererV2Widget::addRule()
   QgsSymbolV2* s = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRuleBasedRendererV2::Rule* newrule = new QgsRuleBasedRendererV2::Rule( s );
 
-  QgsRendererRulePropsDialog dlg( newrule, mLayer, mStyle, this, mMapCanvas );
-  if ( dlg.exec() )
+  QgsRuleBasedRendererV2::Rule* current = currentRule();
+  if ( current )
   {
-    QgsRuleBasedRendererV2::Rule* current = currentRule();
-    if ( current )
-    {
-      // add after this rule
-      QModelIndex currentIndex = viewRules->selectionModel()->currentIndex();
-      mModel->insertRule( currentIndex.parent(), currentIndex.row() + 1, newrule );
-    }
-    else
-    {
-      // append to root rule
-      int rows = mModel->rowCount();
-      mModel->insertRule( QModelIndex(), rows, newrule );
-    }
-    mModel->clearFeatureCounts();
-    emit widgetChanged();
+    // add after this rule
+    QModelIndex currentIndex = viewRules->selectionModel()->currentIndex();
+    mModel->insertRule( currentIndex.parent(), currentIndex.row() + 1, newrule );
+    QModelIndex newindex = mModel->index( currentIndex.row() + 1, 0, currentIndex.parent() );
+    viewRules->selectionModel()->setCurrentIndex( newindex, QItemSelectionModel::ClearAndSelect );
   }
   else
   {
-    delete newrule;
+    // append to root rule
+    int rows = mModel->rowCount();
+    mModel->insertRule( QModelIndex(), rows, newrule );
+    QModelIndex newindex = mModel->index( rows, 0 );
+    viewRules->selectionModel()->setCurrentIndex( newindex, QItemSelectionModel::ClearAndSelect );
   }
+  editRule();
 }
 
 QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2Widget::currentRule()
@@ -176,15 +176,15 @@ void QgsRuleBasedRendererV2Widget::editRule( const QModelIndex& index )
 {
   if ( !index.isValid() )
     return;
+
   QgsRuleBasedRendererV2::Rule* rule = mModel->ruleForIndex( index );
 
-  QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle, this, mMapCanvas );
-  if ( dlg.exec() )
-  {
-    // model should know about the change and emit dataChanged signal for the view
-    mModel->updateRule( index.parent(), index.row() );
-    mModel->clearFeatureCounts();
-  }
+  QgsRendererRulePropsWidget* widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mMapCanvas );
+  widget->setDockMode( true );
+  widget->setPanelTitle( tr( "Edit rule" ) );
+  connect( widget, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( ruleWidgetPanelAccepted( QgsPanelWidget* ) ) );
+  connect( widget, SIGNAL( widgetChanged() ), this, SLOT( liveUpdateRuleFromPanel() ) );
+  openPanel( widget );
 }
 
 void QgsRuleBasedRendererV2Widget::removeRule()
@@ -255,63 +255,24 @@ void QgsRuleBasedRendererV2Widget::refineRuleScales()
   refineRule( 2 );
 }
 
-void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexList& indexList )
+void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexList& )
 {
-  QDialog dlg;
-  dlg.setWindowTitle( tr( "Refine a rule to categories" ) );
-  QVBoxLayout* l = new QVBoxLayout();
   QgsCategorizedSymbolRendererV2Widget* w = new QgsCategorizedSymbolRendererV2Widget( mLayer, mStyle, nullptr );
+  w->setPanelTitle( tr( "Add categories to rules" ) );
+  connect( w, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( refineRuleCategoriesAccepted( QgsPanelWidget* ) ) );
+  w->setDockMode( this->dockMode() );
   w->setMapCanvas( mMapCanvas );
-  l->addWidget( w );
-  QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-  l->addWidget( bb );
-  connect( bb, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
-  connect( bb, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
-  dlg.setLayout( l );
-
-  if ( !dlg.exec() )
-    return;
-
-  // create new rules
-  QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>( w->renderer() );
-  Q_FOREACH ( const QModelIndex& index, indexList )
-  {
-    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
-    mModel->willAddRules( index, r->categories().count() );
-    QgsRuleBasedRendererV2::refineRuleCategories( initialRule, r );
-  }
-  mModel->finishedAddingRules();
+  openPanel( w );
 }
 
-
-void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& indexList )
+void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& )
 {
-
-
-  QDialog dlg;
-  dlg.setWindowTitle( tr( "Refine a rule to ranges" ) );
-  QVBoxLayout* l = new QVBoxLayout();
   QgsGraduatedSymbolRendererV2Widget* w = new QgsGraduatedSymbolRendererV2Widget( mLayer, mStyle, nullptr );
+  w->setPanelTitle( tr( "Add ranges to rules" ) );
+  connect( w, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( refineRuleRangesAccepted( QgsPanelWidget* ) ) );
   w->setMapCanvas( mMapCanvas );
-  l->addWidget( w );
-  QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-  l->addWidget( bb );
-  connect( bb, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
-  connect( bb, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
-  dlg.setLayout( l );
-
-  if ( !dlg.exec() )
-    return;
-
-  // create new rules
-  QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>( w->renderer() );
-  Q_FOREACH ( const QModelIndex& index, indexList )
-  {
-    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
-    mModel->willAddRules( index, r->ranges().count() );
-    QgsRuleBasedRendererV2::refineRuleRanges( initialRule, r );
-  }
-  mModel->finishedAddingRules();
+  w->setDockMode( this->dockMode() );
+  openPanel( w );
 }
 
 void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& indexList )
@@ -404,6 +365,7 @@ void QgsRuleBasedRendererV2Widget::refreshSymbolView()
     treeRules->populateRules();
   }
   */
+  emit widgetChanged();
 }
 
 void QgsRuleBasedRendererV2Widget::keyPressEvent( QKeyEvent* event )
@@ -488,6 +450,53 @@ void QgsRuleBasedRendererV2Widget::paste()
   else
     index = indexlist.first();
   mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
+}
+
+void QgsRuleBasedRendererV2Widget::refineRuleCategoriesAccepted( QgsPanelWidget *panel )
+{
+  QgsCategorizedSymbolRendererV2Widget* w = qobject_cast<QgsCategorizedSymbolRendererV2Widget*>( panel );
+
+  // create new rules
+  QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>( w->renderer() );
+  QModelIndexList indexList = viewRules->selectionModel()->selectedRows();
+  Q_FOREACH ( const QModelIndex& index, indexList )
+  {
+    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
+    mModel->willAddRules( index, r->categories().count() );
+    QgsRuleBasedRendererV2::refineRuleCategories( initialRule, r );
+  }
+  mModel->finishedAddingRules();
+}
+
+void QgsRuleBasedRendererV2Widget::refineRuleRangesAccepted( QgsPanelWidget *panel )
+{
+  QgsGraduatedSymbolRendererV2Widget* w = qobject_cast<QgsGraduatedSymbolRendererV2Widget*>( panel );
+  // create new rules
+  QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>( w->renderer() );
+  QModelIndexList indexList = viewRules->selectionModel()->selectedRows();
+  Q_FOREACH ( const QModelIndex& index, indexList )
+  {
+    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
+    mModel->willAddRules( index, r->ranges().count() );
+    QgsRuleBasedRendererV2::refineRuleRanges( initialRule, r );
+  }
+  mModel->finishedAddingRules();
+}
+
+void QgsRuleBasedRendererV2Widget::ruleWidgetPanelAccepted( QgsPanelWidget *panel )
+{
+  QgsRendererRulePropsWidget* widget = qobject_cast<QgsRendererRulePropsWidget*>( panel );
+  widget->apply();
+
+  // model should know about the change and emit dataChanged signal for the view
+  QModelIndex index = viewRules->selectionModel()->currentIndex();
+  mModel->updateRule( index.parent(), index.row() );
+  mModel->clearFeatureCounts();
+}
+
+void QgsRuleBasedRendererV2Widget::liveUpdateRuleFromPanel()
+{
+  ruleWidgetPanelAccepted( qobject_cast<QgsPanelWidget*>( sender() ) );
 }
 
 
@@ -592,8 +601,8 @@ void QgsRuleBasedRendererV2Widget::selectedRulesChanged()
 
 ///////////
 
-QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent , QgsMapCanvas* mapCanvas )
-    : QDialog( parent )
+QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent , QgsMapCanvas* mapCanvas )
+    : QgsPanelWidget( parent )
     , mRule( rule )
     , mLayer( layer )
     , mSymbolSelector( nullptr )
@@ -601,12 +610,6 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
     , mMapCanvas( mapCanvas )
 {
   setupUi( this );
-#ifdef Q_OS_MAC
-  setWindowModality( Qt::WindowModal );
-#endif
-
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   editFilter->setText( mRule->filterExpression() );
   editFilter->setToolTip( mRule->filterExpression() );
@@ -636,14 +639,47 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
     mSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   }
 
-  mSymbolSelector = new QgsSymbolV2SelectorDialog( mSymbol, style, mLayer, this, true );
+  mSymbolSelector = new QgsSymbolV2SelectorWidget( mSymbol, style, mLayer, this );
   mSymbolSelector->setMapCanvas( mMapCanvas );
+  connect( mSymbolSelector, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+  connect( mSymbolSelector, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
+
   QVBoxLayout* l = new QVBoxLayout;
   l->addWidget( mSymbolSelector );
   groupSymbol->setLayout( l );
 
   connect( btnExpressionBuilder, SIGNAL( clicked() ), this, SLOT( buildExpression() ) );
   connect( btnTestFilter, SIGNAL( clicked() ), this, SLOT( testFilter() ) );
+  connect( editFilter, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+  connect( editLabel, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+  connect( editDescription, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+  connect( groupSymbol, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
+  connect( groupScale, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mScaleRangeWidget, SIGNAL( rangeChanged( double, double ) ), this, SIGNAL( widgetChanged() ) );
+}
+
+QgsRendererRulePropsWidget::~QgsRendererRulePropsWidget()
+{
+
+}
+
+QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule *rule, QgsVectorLayer *layer, QgsStyleV2 *style, QWidget *parent, QgsMapCanvas *mapCanvas )
+    : QDialog( parent )
+{
+
+#ifdef Q_OS_MAC
+  setWindowModality( Qt::WindowModal );
+#endif
+  this->setLayout( new QVBoxLayout() );
+
+  buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  mPropsWidget = new QgsRendererRulePropsWidget( rule, layer, style, this, mapCanvas );
+
+  this->layout()->addWidget( mPropsWidget );
+  this->layout()->addWidget( buttonBox );
+
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsRendererRulePropsDialog/geometry" ).toByteArray() );
@@ -651,12 +687,27 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
 
 QgsRendererRulePropsDialog::~QgsRendererRulePropsDialog()
 {
-  delete mSymbol;
   QSettings settings;
   settings.setValue( "/Windows/QgsRendererRulePropsDialog/geometry", saveGeometry() );
 }
 
+void QgsRendererRulePropsDialog::testFilter()
+{
+  mPropsWidget->testFilter();
+}
+
 void QgsRendererRulePropsDialog::buildExpression()
+{
+  mPropsWidget->buildExpression();
+}
+
+void QgsRendererRulePropsDialog::accept()
+{
+  mPropsWidget->apply();
+  QDialog::accept();
+}
+
+void QgsRendererRulePropsWidget::buildExpression()
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
@@ -679,7 +730,7 @@ void QgsRendererRulePropsDialog::buildExpression()
     editFilter->setText( dlg.expressionText() );
 }
 
-void QgsRendererRulePropsDialog::testFilter()
+void QgsRendererRulePropsWidget::testFilter()
 {
   QgsExpression filter( editFilter->text() );
   if ( filter.hasParserError() )
@@ -731,7 +782,7 @@ void QgsRendererRulePropsDialog::testFilter()
   QMessageBox::information( this, tr( "Filter" ), tr( "Filter returned %n feature(s)", "number of filtered features", count ) );
 }
 
-void QgsRendererRulePropsDialog::accept()
+void QgsRendererRulePropsWidget::apply()
 {
   mRule->setFilterExpression( editFilter->text() );
   mRule->setLabel( editLabel->text() );
@@ -740,8 +791,12 @@ void QgsRendererRulePropsDialog::accept()
   mRule->setScaleMinDenom( groupScale->isChecked() ? mScaleRangeWidget->minimumScaleDenom() : 0 );
   mRule->setScaleMaxDenom( groupScale->isChecked() ? mScaleRangeWidget->maximumScaleDenom() : 0 );
   mRule->setSymbol( groupSymbol->isChecked() ? mSymbol->clone() : nullptr );
+}
 
-  QDialog::accept();
+void QgsRendererRulePropsWidget::setDockMode( bool dockMode )
+{
+  QgsPanelWidget::setDockMode( dockMode );
+  mSymbolSelector->setDockMode( true );
 }
 
 ////////

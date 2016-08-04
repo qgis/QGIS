@@ -20,7 +20,7 @@
 #include "qgscomposeritem.h"
 #include <QSet>
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A container for grouping several QgsComposerItems
  */
 class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
@@ -51,13 +51,13 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc is the Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is the Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     QSet<QgsComposerItem*> items() { return mItems; }
 

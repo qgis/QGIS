@@ -20,7 +20,7 @@
 
 class QgsMapLayer;
 
-/**
+/** \ingroup core
  * Layer tree node points to a map layer.
  *
  * When using with existing QgsMapLayer instance, it is expected that the layer
@@ -57,8 +57,8 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     Qt::CheckState isVisible() const { return mVisible; }
     void setVisible( Qt::CheckState visible );
 
-    static QgsLayerTreeLayer* readXML( QDomElement& element );
-    virtual void writeXML( QDomElement& parentElement ) override;
+    static QgsLayerTreeLayer* readXml( QDomElement& element );
+    virtual void writeXml( QDomElement& parentElement ) override;
 
     virtual QString dump() const override;
 

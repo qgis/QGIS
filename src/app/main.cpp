@@ -37,6 +37,7 @@
 #if QT_VERSION < 0x050000
 #include <QPlastiqueStyle>
 #endif
+#include <QDesktopWidget>
 #include <QTranslator>
 #include <QImageReader>
 #include <QMessageBox>
@@ -99,7 +100,7 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 #include "qgsdxfexport.h"
-#include "qgsvisibilitypresets.h"
+#include "qgsmapthemes.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
@@ -119,7 +120,7 @@ void usage( std::string const & appName )
             << "\t[--project projectfile]\tload the given QGIS project\n"
             << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
             << "\t[--nologo]\thide splash screen\n"
-            << "\t[--noversioncheck]\tdon't check for new version of QGIS at startup"
+            << "\t[--noversioncheck]\tdon't check for new version of QGIS at startup\n"
             << "\t[--noplugins]\tdon't restore plugins on startup\n"
             << "\t[--nocustomization]\tdon't apply GUI customization\n"
             << "\t[--customizationfile]\tuse the given ini file as GUI customization\n"
@@ -133,7 +134,7 @@ void usage( std::string const & appName )
             << "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n"
             << "\t[--dxf-scale-denom scale]\tscale for dxf output\n"
             << "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n"
-            << "\t[--dxf-preset visiblity-preset]\tlayer visibility preset to use for dxf output\n"
+            << "\t[--dxf-preset visiblity-preset]\tlayer map theme to use for dxf output\n"
             << "\t[--help]\t\tthis text\n"
             << "\t[--]\t\ttreat all following arguments as FILEs\n\n"
             << "  FILE:\n"
@@ -193,6 +194,14 @@ static void dumpBacktrace( unsigned int depth )
     depth = 20;
 
 #if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
+  // Below there is a bunch of operations that are not safe in multi-threaded
+  // environment (dup()+close() combo, wait(), juggling with file descriptors).
+  // Maybe some problems could be resolved with dup2() and waitpid(), but it seems
+  // that if the operations on descriptors are not serialized, things will get nasty.
+  // That's why there's this lovely mutex here...
+  static QMutex mutex;
+  QMutexLocker locker( &mutex );
+
   int stderr_fd = -1;
   if ( access( "/usr/bin/c++filt", X_OK ) < 0 )
   {
@@ -1032,12 +1041,12 @@ int main( int argc, char *argv[] )
   //set up splash screen
   QString mySplashPath( QgsCustomization::instance()->splashPath() );
   QPixmap myPixmap( mySplashPath + QLatin1String( "splash.png" ) );
-  QSplashScreen *mypSplash = new QSplashScreen( myPixmap );
-  if ( mySettings.value( "/qgis/hideSplash" ).toBool() || myHideSplash )
-  {
-    //splash screen hidden
-  }
-  else
+
+  int w = 600 * qApp->desktop()->logicalDpiX() / 96;
+  int h = 300 * qApp->desktop()->logicalDpiY() / 96;
+
+  QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+  if ( !myHideSplash && !mySettings.value( "/qgis/hideSplash" ).toBool() )
   {
     //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( myPixmap.mask() );
@@ -1145,10 +1154,7 @@ int main( int argc, char *argv[] )
     //replace backslashes with forward slashes
     pythonfile.replace( '\\', '/' );
 #endif
-    QFile f( pythonfile );
-    QTextStream in( &f );
-    QgsPythonRunner::run( QString( "code = compile('%1', '%2', 'exec')" ).arg( in.readAll(), pythonfile ) );
-    QgsPythonRunner::run( QString( "exec(code, global_vars, local_vars)" ) );
+    QgsPythonRunner::run( QString( "exec(open('%1').read())" ).arg( pythonfile ) );
   }
 
   /////////////////////////////////`////////////////////////////////////
@@ -1189,7 +1195,7 @@ int main( int argc, char *argv[] )
     QList< QPair<QgsVectorLayer *, int > > layers;
     if ( !dxfPreset.isEmpty() )
     {
-      Q_FOREACH ( const QString& layer, QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( const QString& layer, QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( dxfPreset ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer ) );
         if ( !vl )

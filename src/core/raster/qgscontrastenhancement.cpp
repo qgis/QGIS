@@ -25,10 +25,11 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include "qgslinearminmaxenhancement.h"
 #include "qgslinearminmaxenhancementwithclip.h"
 #include "qgscliptominmaxenhancement.h"
+#include "qgsrasterblock.h"
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsContrastEnhancement::QgsContrastEnhancement( QGis::DataType theDataType )
+QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType theDataType )
     : mContrastEnhancementAlgorithm( NoEnhancement )
     , mContrastEnhancementFunction( nullptr )
     , mEnhancementDirty( false )
@@ -86,35 +87,35 @@ QgsContrastEnhancement::~QgsContrastEnhancement()
 /**
     Simple function to compute the maximum possible value for a data types.
 */
-double QgsContrastEnhancement::maximumValuePossible( QGis::DataType theDataType )
+double QgsContrastEnhancement::maximumValuePossible( Qgis::DataType theDataType )
 {
   switch ( theDataType )
   {
-    case QGis::Byte:
+    case Qgis::Byte:
       return std::numeric_limits<unsigned char>::max();
-    case QGis::UInt16:
+    case Qgis::UInt16:
       return std::numeric_limits<unsigned short>::max();
-    case QGis::Int16:
+    case Qgis::Int16:
       return std::numeric_limits<short>::max();
-    case QGis::UInt32:
+    case Qgis::UInt32:
       return std::numeric_limits<unsigned int>::max();
-    case QGis::Int32:
+    case Qgis::Int32:
       return std::numeric_limits<int>::max();
-    case QGis::Float32:
+    case Qgis::Float32:
       return std::numeric_limits<float>::max();
-    case QGis::Float64:
+    case Qgis::Float64:
       return std::numeric_limits<double>::max();
-    case QGis::CInt16:
+    case Qgis::CInt16:
       return std::numeric_limits<short>::max();
-    case QGis::CInt32:
+    case Qgis::CInt32:
       return std::numeric_limits<int>::max();
-    case QGis::CFloat32:
+    case Qgis::CFloat32:
       return std::numeric_limits<float>::max();
-    case QGis::CFloat64:
+    case Qgis::CFloat64:
       return std::numeric_limits<double>::max();
-    case QGis::ARGB32:
-    case QGis::ARGB32_Premultiplied:
-    case QGis::UnknownDataType:
+    case Qgis::ARGB32:
+    case Qgis::ARGB32_Premultiplied:
+    case Qgis::UnknownDataType:
       // XXX - mloskot: not handled?
       break;
   }
@@ -124,35 +125,35 @@ double QgsContrastEnhancement::maximumValuePossible( QGis::DataType theDataType 
 /**
     Simple function to compute the minimum possible value for a data type.
 */
-double QgsContrastEnhancement::minimumValuePossible( QGis::DataType theDataType )
+double QgsContrastEnhancement::minimumValuePossible( Qgis::DataType theDataType )
 {
   switch ( theDataType )
   {
-    case QGis::Byte:
+    case Qgis::Byte:
       return std::numeric_limits<unsigned char>::min();
-    case QGis::UInt16:
+    case Qgis::UInt16:
       return std::numeric_limits<unsigned short>::min();
-    case QGis::Int16:
+    case Qgis::Int16:
       return std::numeric_limits<short>::min();
-    case QGis::UInt32:
+    case Qgis::UInt32:
       return std::numeric_limits<unsigned int>::min();
-    case QGis::Int32:
+    case Qgis::Int32:
       return std::numeric_limits<int>::min();
-    case QGis::Float32:
+    case Qgis::Float32:
       return std::numeric_limits<float>::max() * -1.0;
-    case QGis::Float64:
+    case Qgis::Float64:
       return std::numeric_limits<double>::max() * -1.0;
-    case QGis::CInt16:
+    case Qgis::CInt16:
       return std::numeric_limits<short>::min();
-    case QGis::CInt32:
+    case Qgis::CInt32:
       return std::numeric_limits<int>::min();
-    case QGis::CFloat32:
+    case Qgis::CFloat32:
       return std::numeric_limits<float>::max() * -1.0;
-    case QGis::CFloat64:
+    case Qgis::CFloat64:
       return std::numeric_limits<double>::max() * -1.0;
-    case QGis::ARGB32:
-    case QGis::ARGB32_Premultiplied:
-    case QGis::UnknownDataType:
+    case Qgis::ARGB32:
+    case Qgis::ARGB32_Premultiplied:
+    case Qgis::UnknownDataType:
       // XXX - mloskot: not handled?
       break;
   }
@@ -201,7 +202,7 @@ bool QgsContrastEnhancement::generateLookupTable()
     return false;
   if ( NoEnhancement == mContrastEnhancementAlgorithm )
     return false;
-  if ( QGis::Byte != mRasterDataType && QGis::UInt16 != mRasterDataType && QGis::Int16 != mRasterDataType )
+  if ( Qgis::Byte != mRasterDataType && Qgis::UInt16 != mRasterDataType && Qgis::Int16 != mRasterDataType )
     return false;
   if ( !mLookupTable )
     return false;
@@ -357,17 +358,17 @@ void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTabl
   }
 }
 
-void QgsContrastEnhancement::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsContrastEnhancement::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   //minimum value
   QDomElement minElem = doc.createElement( "minValue" );
-  QDomText minText = doc.createTextNode( QString::number( mMinimumValue ) );
+  QDomText minText = doc.createTextNode( QgsRasterBlock::printValue( mMinimumValue ) );
   minElem.appendChild( minText );
   parentElem.appendChild( minElem );
 
   //maximum value
   QDomElement maxElem = doc.createElement( "maxValue" );
-  QDomText maxText = doc.createTextNode( QString::number( mMaximumValue ) );
+  QDomText maxText = doc.createTextNode( QgsRasterBlock::printValue( mMaximumValue ) );
   maxElem.appendChild( maxText );
   parentElem.appendChild( maxElem );
 
@@ -378,7 +379,7 @@ void QgsContrastEnhancement::writeXML( QDomDocument& doc, QDomElement& parentEle
   parentElem.appendChild( algorithmElem );
 }
 
-void QgsContrastEnhancement::readXML( const QDomElement& elem )
+void QgsContrastEnhancement::readXml( const QDomElement& elem )
 {
   QDomElement minValueElem = elem.firstChildElement( "minValue" );
   if ( !minValueElem.isNull() )

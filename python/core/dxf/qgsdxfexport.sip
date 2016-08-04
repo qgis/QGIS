@@ -63,14 +63,14 @@ class QgsDxfExport
      * Set map units
      * @param u unit
      */
-    void setMapUnits( QGis::UnitType u );
+    void setMapUnits( QgsUnitTypes::DistanceUnit u );
 
     /**
      * Retrieve map units
      * @returns unit
      * @see setMapUnits
      */
-    QGis::UnitType mapUnits() const;
+    QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**
      * Set symbology export mode
@@ -327,7 +327,8 @@ class QgsDxfExport
     //! @note added in 2.15
     void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor& color );
 
-    static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+    //! Calculates a scaling factor to convert from map units to a specified symbol unit.
+    static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
     //! Return cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );

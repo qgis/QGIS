@@ -27,7 +27,7 @@ class QgsExpression;
 class QgsCategorizedSymbolRendererV2;
 class QgsGraduatedSymbolRendererV2;
 
-/**
+/** \ingroup core
 When drawing a vector layer with rule-based renderer, it goes through
 the rules and draws features with symbols from rules that match.
  */
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     class Rule;
     typedef QList<Rule*> RuleList;
 
-    /**
+    /** \ingroup core
       This class keeps data about a rules for rule-based renderer.
       A rule consists of a symbol, filter expression and range of scales.
       If filter is empty, it matches all features.
@@ -135,6 +135,11 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
          * @return A set of attribute names
          */
         QSet<QString> usedAttributes() const;
+
+        /**
+         * Returns true if this rule or one of its chilren needs the geometry to be applied.
+         */
+        bool needsGeometry() const;
 
         //! @note available in python bindings as symbol2
         QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() ) const;
@@ -253,7 +258,11 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         Rule* clone() const;
 
         void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
-        static Rule* createFromSld( QDomElement& element, QGis::GeometryType geomType );
+
+        /**
+         * Create a rule from the SLD provided in element and for the specified geometry type.
+         */
+        static Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
         QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap ) const;
 
@@ -428,11 +437,13 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes() override;
 
+    virtual bool filterNeedsGeometry() const override;
+
     virtual QgsRuleBasedRendererV2* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
 
@@ -482,7 +493,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     virtual QSet<QString> legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
+    virtual Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////
 

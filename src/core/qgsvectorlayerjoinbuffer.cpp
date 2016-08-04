@@ -17,6 +17,8 @@
 
 #include "qgsvectorlayerjoinbuffer.h"
 
+#include "qgsfeatureiterator.h"
+#include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
 
@@ -62,6 +64,7 @@ static bool _hasCycleDFS( QgsVectorLayer* n, QHash<QgsVectorLayer*, int>& mark )
 
 bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
 {
+  QMutexLocker locker( &mMutex );
   mVectorJoins.push_back( joinInfo );
 
   // run depth-first search to detect cycles in the graph of joins between layers.
@@ -87,6 +90,7 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
   if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) ) )
   {
     connect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ), Qt::UniqueConnection );
+    connect( vl, SIGNAL( layerModified() ), this, SLOT( joinedLayerModified() ), Qt::UniqueConnection );
   }
 
   emit joinedFieldsChanged();
@@ -96,6 +100,7 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
 
 bool QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
 {
+  QMutexLocker locker( &mMutex );
   bool res = false;
   for ( int i = 0; i < mVectorJoins.size(); ++i )
   {
@@ -118,7 +123,7 @@ bool QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
 void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
 {
   //memory cache not required or already done
-  if ( !joinInfo.memoryCache || !joinInfo.cachedAttributes.isEmpty() )
+  if ( !joinInfo.memoryCache || !joinInfo.cacheDirty )
   {
     return;
   }
@@ -175,6 +180,7 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
         joinInfo.cachedAttributes.insert( key, attrs2 );
       }
     }
+    joinInfo.cacheDirty = false;
   }
 }
 
@@ -257,14 +263,19 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
 
 void QgsVectorLayerJoinBuffer::createJoinCaches()
 {
+  QMutexLocker locker( &mMutex );
   QList< QgsVectorJoinInfo >::iterator joinIt = mVectorJoins.begin();
   for ( ; joinIt != mVectorJoins.end(); ++joinIt )
   {
-    cacheJoinLayer( *joinIt );
+    if ( joinIt->memoryCache && joinIt->cacheDirty )
+      cacheJoinLayer( *joinIt );
 
     // make sure we are connected to the joined layer
     if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinIt->joinLayerId ) ) )
+    {
       connect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ), Qt::UniqueConnection );
+      connect( vl, SIGNAL( layerModified() ), this, SLOT( joinedLayerModified() ), Qt::UniqueConnection );
+    }
   }
 }
 
@@ -329,6 +340,7 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode& layer_node )
       info.joinLayerId = infoElem.attribute( "joinLayerId" );
       info.targetFieldName = infoElem.attribute( "targetFieldName" );
       info.memoryCache = infoElem.attribute( "memoryCache" ).toInt();
+      info.cacheDirty = true;
 
       info.joinFieldIndex = infoElem.attribute( "joinField" ).toInt();   //for compatibility with 1.x
       info.targetFieldIndex = infoElem.attribute( "targetField" ).toInt();   //for compatibility with 1.x
@@ -397,6 +409,9 @@ QgsVectorLayerJoinBuffer* QgsVectorLayerJoinBuffer::clone() const
 
 void QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields()
 {
+  // TODO - check - this whole method is probably not needed anymore,
+  // since the cache handling is covered by joinedLayerModified()
+
   QgsVectorLayer* joinedLayer = qobject_cast<QgsVectorLayer*>( sender() );
   Q_ASSERT( joinedLayer );
 
@@ -411,4 +426,19 @@ void QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields()
   }
 
   emit joinedFieldsChanged();
+}
+
+void QgsVectorLayerJoinBuffer::joinedLayerModified()
+{
+  QgsVectorLayer* joinedLayer = qobject_cast<QgsVectorLayer*>( sender() );
+  Q_ASSERT( joinedLayer );
+
+  // recache the joined layer
+  for ( QgsVectorJoinList::iterator it = mVectorJoins.begin(); it != mVectorJoins.end(); ++it )
+  {
+    if ( joinedLayer->id() == it->joinLayerId )
+    {
+      it->cacheDirty = true;
+    }
+  }
 }

@@ -19,7 +19,6 @@
 #include <QAction>
 #include <QApplication>
 #include <QButtonGroup>
-#include <QDockWidget>
 #include <QGridLayout>
 #include <QPushButton>
 #include <QSpacerItem>
@@ -27,13 +26,15 @@
 #include <QUndoView>
 #include <QUndoStack>
 
+#include "qgspanelwidget.h"
+
 class QgsMapCanvas;
 class QgsMapLayer;
 
 /**
  * Class that handles undo display fo undo commands
  */
-class APP_EXPORT QgsUndoWidget : public QWidget
+class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
@@ -62,10 +63,6 @@ class APP_EXPORT QgsUndoWidget : public QWidget
     QWidget* dockContents() { return dockWidgetContents; }
 
   public slots:
-    /**
-     * Changes undo stack which is displayed by undo view
-     */
-    void layerChanged( QgsMapLayer * layer );
 
     /**
      * Slot to handle undo changed signal

@@ -30,7 +30,7 @@ email                : tim@linfiniti.com
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
+#include "qgscsexception.h"
 
 // qt includes
 #include <QPainter>
@@ -62,7 +62,7 @@ QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject* parent )
     , mMarginVertical( 0 )
 {
   mPlacement = BottomLeft;
-  mMarginUnit = QgsSymbolV2::MM;
+  mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
   setName( "North Arrow" );
   projectRead();
@@ -145,7 +145,7 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
       int myYOffset = 0;
       switch ( mMarginUnit )
       {
-        case QgsSymbolV2::MM:
+        case QgsUnitTypes::RenderMillimeters:
         {
           int myPixelsInchX = theQPainter->device()->logicalDpiX();
           int myPixelsInchY = theQPainter->device()->logicalDpiY();
@@ -154,12 +154,12 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
           break;
         }
 
-        case QgsSymbolV2::Pixel:
+        case QgsUnitTypes::RenderPixels:
           myXOffset = mMarginHorizontal - 5; // Minus 5 to shift tight into corner
           myYOffset = mMarginVertical - 5;
           break;
 
-        case QgsSymbolV2::Percentage:
+        case QgsUnitTypes::RenderPercentage:
           myXOffset = (( myWidth - myQPixmap.width() ) / 100. ) * mMarginHorizontal;
           myYOffset = (( myHeight - myQPixmap.height() ) / 100. ) * mMarginVertical;
           break;
@@ -227,11 +227,10 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
   {
     QgsCoordinateReferenceSystem outputCRS = mapCanvas->mapSettings().destinationCrs();
 
-    if ( outputCRS.isValid() && !outputCRS.geographicFlag() )
+    if ( outputCRS.isValid() && !outputCRS.isGeographic() )
     {
       // Use a geographic CRS to get lat/long to work out direction
-      QgsCoordinateReferenceSystem ourCRS;
-      ourCRS.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsCoordinateReferenceSystem ourCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
       assert( ourCRS.isValid() );
 
       QgsCoordinateTransform transform( outputCRS, ourCRS );

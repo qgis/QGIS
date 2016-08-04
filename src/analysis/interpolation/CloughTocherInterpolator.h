@@ -17,14 +17,13 @@
 #ifndef CLOUGHTOCHERINTERPOLATOR_H
 #define CLOUGHTOCHERINTERPOLATOR_H
 
-#include "NormVecDecorator.h"
 #include "TriangleInterpolator.h"
 #include "Point3D.h"
-#include "Vector3D.h"
-#include "MathUtils.h"
-#include "Bezier3D.h"
 
-/** This is an implementation of a Clough-Tocher interpolator based on a triangular tessellation. The derivatives orthogonal to the boundary curves are interpolated linearly along a triangle edge.*/
+class NormVecDecorator;
+
+/** \ingroup analysis
+ * This is an implementation of a Clough-Tocher interpolator based on a triangular tessellation. The derivatives orthogonal to the boundary curves are interpolated linearly along a triangle edge.*/
 class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
 {
   protected:

@@ -23,7 +23,6 @@
 #include <QStandardItem>
 
 #include "ui_qgsfieldconditionalformatwidget.h"
-#include "qgsfieldcombobox.h"
 #include "qgsconditionalstyle.h"
 
 /** \ingroup gui

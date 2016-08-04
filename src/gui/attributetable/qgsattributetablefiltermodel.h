@@ -20,7 +20,6 @@
 #include <QSortFilterProxyModel>
 #include <QModelIndex>
 
-#include "qgsvectorlayer.h" //QgsFeatureIds
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
 
@@ -28,6 +27,9 @@ class QgsVectorLayerCache;
 class QgsMapCanvas;
 class QItemSelectionModel;
 
+/** \ingroup gui
+ * \class QgsAttributeTableFilterModel
+ */
 class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, public QgsFeatureModel
 {
     Q_OBJECT
@@ -213,6 +215,14 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * is shown.
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig& config );
+
+  signals:
+    /**
+     * Is emitted whenever the sort column is changed
+     * @param column The sort column
+     * @param order The sort order
+     */
+    void sortColumnChanged( int column, Qt::SortOrder order );
 
   protected:
     /**

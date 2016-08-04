@@ -20,6 +20,9 @@
 
 #include "qgssymbollayerv2utils.h"
 
+/** \ingroup core
+ * \class QgsColorBrewerPalette
+ */
 class CORE_EXPORT QgsColorBrewerPalette
 {
   public:

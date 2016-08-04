@@ -4,7 +4,7 @@
 ***************************************************************************
     lasindex.py
     ---------------------
-    Date                 : September 2013
+    Date                 : September 2013 and May 2016
     Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -47,7 +47,10 @@ class lasindex(LAStoolsAlgorithm):
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         if self.getParameterValue(lasindex.APPEND_LAX):

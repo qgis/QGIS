@@ -19,13 +19,15 @@
 #include "qgssymbollevelsv2dialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsmapcanvas.h"
+#include "qgspanelwidget.h"
+#include "qgsdatadefined.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QMenu>
 
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
-    : QWidget()
+    : QgsPanelWidget()
     , mLayer( layer )
     , mStyle( style )
     , mMapCanvas( nullptr )
@@ -42,11 +44,11 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
   contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
   contextMenu->addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
 
-  if ( mLayer && mLayer->geometryType() == QGis::Line )
+  if ( mLayer && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
   {
     contextMenu->addAction( tr( "Change width" ), this, SLOT( changeSymbolWidth() ) );
   }
-  else if ( mLayer && mLayer->geometryType() == QGis::Point )
+  else if ( mLayer && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
   {
     contextMenu->addAction( tr( "Change size" ), this, SLOT( changeSymbolSize() ) );
     contextMenu->addAction( tr( "Change angle" ), this, SLOT( changeSymbolAngle() ) );
@@ -145,11 +147,11 @@ void QgsRendererV2Widget::changeSymbolUnit()
     return;
 
   bool ok;
-  int currentUnit = ( firstSymbol->outputUnit() == QgsSymbolV2::MM ) ? 0 : 1;
+  int currentUnit = ( firstSymbol->outputUnit() == QgsUnitTypes::RenderMillimeters ) ? 0 : 1;
   QString item = QInputDialog::getItem( this, tr( "Symbol unit" ), tr( "Select symbol unit" ), QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), currentUnit, false, &ok );
   if ( ok )
   {
-    QgsSymbolV2::OutputUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsSymbolV2::MM : QgsSymbolV2::MapUnit;
+    QgsUnitTypes::RenderUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
 
     Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
     {
@@ -253,6 +255,7 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
   if ( dlg.exec() )
   {
     r->setUsingSymbolLevels( dlg.usingLevels() );
+    emit widgetChanged();
   }
 }
 
@@ -270,6 +273,7 @@ void QgsRendererV2Widget::applyChanges()
 {
   apply();
 }
+
 
 
 ////////////
@@ -501,7 +505,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-void QgsDataDefinedValueDialog::init( const QString & description )
+void QgsDataDefinedValueDialog::init( const QString& description )
 {
   QgsDataDefined dd = symbolDataDefined();
   mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );

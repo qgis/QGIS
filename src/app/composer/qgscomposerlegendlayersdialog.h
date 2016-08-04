@@ -16,9 +16,10 @@
 #define QGSCOMPOSERLEGENDLAYERSDIALOG_H
 
 #include "ui_qgscomposerlegendlayersdialogbase.h"
-#include "qgsmaplayer.h"
 
-/** \ingroup MapComposer
+class QgsMapLayer;
+
+/** \ingroup app
  * A dialog to add new layers to the legend.
  * */
 class QgsComposerLegendLayersDialog: public QDialog, private Ui::QgsComposerLegendLayersDialogBase

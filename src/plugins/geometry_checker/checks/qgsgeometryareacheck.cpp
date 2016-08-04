@@ -1,8 +1,16 @@
 /***************************************************************************
- *  qgsgeometryareacheck.cpp                                               *
- *  -------------------                                                    *
- *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
- *  email                : smani@sourcepole.ch                             *
+    qgsgeometryareacheck.cpp
+    ---------------------
+    begin                : September 2015
+    copyright            : (C) 2014 by Sandro Mani / Sourcepole AG
+    email                : smani at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
 
 #include "qgsgeometryengine.h"
@@ -22,7 +30,8 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
       continue;
     }
 
-    QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+    QgsGeometry g = feature.geometry();
+    QgsAbstractGeometryV2* geom = g.geometry();
     if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
     {
       QgsGeometryCollectionV2* multiGeom = static_cast<QgsGeometryCollectionV2*>( geom );
@@ -54,7 +63,8 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, i
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry g = feature.geometry();
+  QgsAbstractGeometryV2* geom = g.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if polygon still exists
@@ -118,24 +128,26 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
   QgsFeature mergeFeature;
   int mergePartIdx = -1;
   bool matchFound = false;
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry g = feature.geometry();;
+  QgsAbstractGeometryV2* geom = g.geometry();
 
   // Search for touching neighboring geometries
-  Q_FOREACH ( QgsFeatureId testId, mFeaturePool->getIntersects( feature.geometry()->boundingBox() ) )
+  Q_FOREACH ( QgsFeatureId testId, mFeaturePool->getIntersects( g.boundingBox() ) )
   {
     QgsFeature testFeature;
     if ( !mFeaturePool->get( testId, testFeature ) )
     {
       continue;
     }
-    QgsAbstractGeometryV2* testGeom = testFeature.geometry()->geometry();
+    QgsGeometry testFeatureGeom = testFeature.geometry();
+    QgsAbstractGeometryV2* testGeom = testFeatureGeom.geometry();
     for ( int testPartIdx = 0, nTestParts = testGeom->partCount(); testPartIdx < nTestParts; ++testPartIdx )
     {
       if ( testId == feature.id() && testPartIdx == partIdx )
       {
         continue;
       }
-      double len = QgsGeomUtils::sharedEdgeLength( QgsGeomUtils::getGeomPart( geom, partIdx ), QgsGeomUtils::getGeomPart( testGeom, testPartIdx ), QgsGeometryCheckPrecision::reducedTolerance() );
+      double len = QgsGeometryCheckerUtils::sharedEdgeLength( QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), QgsGeometryCheckerUtils::getGeomPart( testGeom, testPartIdx ), QgsGeometryCheckPrecision::reducedTolerance() );
       if ( len > 0. )
       {
         if ( method == MergeLongestEdge || method == MergeLargestArea )
@@ -183,23 +195,24 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
   }
 
   // Merge geometries
-  QgsAbstractGeometryV2* mergeGeom = mergeFeature.geometry()->geometry();
-  QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( QgsGeomUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
-  QgsAbstractGeometryV2* combinedGeom = geomEngine->combine( *QgsGeomUtils::getGeomPart( geom, partIdx ), &errMsg );
+  QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
+  QgsAbstractGeometryV2* mergeGeom = mergeFeatureGeom.geometry();
+  QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
+  QgsAbstractGeometryV2* combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
   delete geomEngine;
   if ( !combinedGeom || combinedGeom->isEmpty() )
   {
     return false;
   }
 
-  // Remove polygon from source geometry
-  deleteFeatureGeometryPart( feature, partIdx, changes );
+  // Replace polygon in merge geometry
   if ( mergeFeature.id() == feature.id() && mergePartIdx > partIdx )
   {
     --mergePartIdx;
   }
-  // Replace polygon in merge geometry
   replaceFeatureGeometryPart( mergeFeature, mergePartIdx, combinedGeom, changes );
+  // Remove polygon from source geometry
+  deleteFeatureGeometryPart( feature, partIdx, changes );
 
   return true;
 }

@@ -21,18 +21,23 @@
 #include <QTimer>
 
 #include "qgsattributeform.h"
+#include "qgsattributetablefiltermodel.h"
 #include "qgsattributedialog.h"
 #include "qgsapplication.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
+#include "qgsfeaturelistmodel.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsrelationreferenceconfigdlg.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributetablemodel.h"
+#include "qgsmaptoolidentifyfeature.h"
+#include "qgsfeatureiterator.h"
 
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     : QWidget( parent )
@@ -197,7 +202,6 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation& relation, bool 
     {
       mAttributeEditorFrame->setTitle( mReferencedLayer->name() );
       mReferencedAttributeForm = new QgsAttributeForm( relation.referencedLayer(), QgsFeature(), context, this );
-      mReferencedAttributeForm->hideButtonBox();
       mAttributeEditorLayout->addWidget( mReferencedAttributeForm );
     }
 
@@ -324,7 +328,7 @@ void QgsRelationReferenceWidget::deleteForeignKey()
   emit foreignKeyChanged( QVariant( QVariant::Int ) );
 }
 
-QgsFeature QgsRelationReferenceWidget::referencedFeature()
+QgsFeature QgsRelationReferenceWidget::referencedFeature() const
 {
   QgsFeature f;
   if ( mReferencedLayer )
@@ -357,7 +361,7 @@ void QgsRelationReferenceWidget::showIndeterminateState()
   updateAttributeEditorFrame( QgsFeature() );
 }
 
-QVariant QgsRelationReferenceWidget::foreignKey()
+QVariant QgsRelationReferenceWidget::foreignKey() const
 {
   if ( mReadOnlySelector )
   {
@@ -558,6 +562,7 @@ void QgsRelationReferenceWidget::init()
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboReferenceChanged( int ) ) );
+    updateAttributeEditorFrame( mFeature );
     QApplication::restoreOverrideCursor();
   }
 }
@@ -602,22 +607,22 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
       return;
   }
 
-  if ( !f.constGeometry() )
+  if ( !f.hasGeometry() )
   {
     return;
   }
 
-  const QgsGeometry* geom = f.constGeometry();
+  QgsGeometry geom = f.geometry();
 
   // scale or pan
   if ( canvasExtent == Scale )
   {
-    QgsRectangle featBBox = geom->boundingBox();
+    QgsRectangle featBBox = geom.boundingBox();
     featBBox = mCanvas->mapSettings().layerToMapCoordinates( mReferencedLayer, featBBox );
     QgsRectangle extent = mCanvas->extent();
     if ( !extent.contains( featBBox ) )
     {
-      extent.combineExtentWith( &featBBox );
+      extent.combineExtentWith( featBBox );
       extent.scale( 1.1 );
       mCanvas->setExtent( extent );
       mCanvas->refresh();
@@ -625,9 +630,8 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
   }
   else if ( canvasExtent == Pan )
   {
-    QgsGeometry* centroid = geom->centroid();
-    QgsPoint center = centroid->asPoint();
-    delete centroid;
+    QgsGeometry centroid = geom.centroid();
+    QgsPoint center = centroid.asPoint();
     center = mCanvas->mapSettings().layerToMapCoordinates( mReferencedLayer, center );
     mCanvas->zoomByFactor( 1.0, &center ); // refresh is done in this method
   }
@@ -636,10 +640,10 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
   deleteHighlight();
   mHighlight = new QgsHighlight( mCanvas, f, mReferencedLayer );
   QSettings settings;
-  QColor color = QColor( settings.value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  int alpha = settings.value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-  double buffer = settings.value( "/Map/highlight/buffer", QGis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-  double minWidth = settings.value( "/Map/highlight/minWidth", QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+  QColor color = QColor( settings.value( "/Map/highlight/color", Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  int alpha = settings.value( "/Map/highlight/colorAlpha", Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+  double buffer = settings.value( "/Map/highlight/buffer", Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+  double minWidth = settings.value( "/Map/highlight/minWidth", Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
 
   mHighlight->setColor( color ); // sets also fill with default alpha
   color.setAlpha( alpha );
@@ -707,13 +711,11 @@ void QgsRelationReferenceWidget::comboReferenceChanged( int index )
 
 void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature& feature )
 {
+  mOpenFormButton->setEnabled( feature.isValid() );
   // Check if we're running with an embedded frame we need to update
-  if ( mAttributeEditorFrame )
+  if ( mAttributeEditorFrame && mReferencedAttributeForm )
   {
-    if ( mReferencedAttributeForm )
-    {
-      mReferencedAttributeForm->setFeature( feature );
-    }
+    mReferencedAttributeForm->setFeature( feature );
   }
 }
 
@@ -749,7 +751,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
   }
   else
   {
-    mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mReferencedFieldIdx ), QgsAttributeTableModel::FeatureIdRole ) );
+    mComboBox->setCurrentIndex( mComboBox->findData( feature.id(), QgsAttributeTableModel::FeatureIdRole ) );
     mFeature = feature;
   }
 

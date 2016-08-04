@@ -124,8 +124,8 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     const QgsMarkerSymbolV2* markerSymbol() const { return mMarkerSymbol; }
 
     /** Sets map unit type */
-    void setMapUnits( QGis::UnitType t ) { mMapUnits = t; }
-    QGis::UnitType mapUnits() { return mMapUnits; }
+    void setMapUnits( QgsUnitTypes::DistanceUnit t ) { mMapUnits = t; }
+    QgsUnitTypes::DistanceUnit mapUnits() { return mMapUnits; }
 
     /** Set mapUnits value */
     void setDirty( bool dirty = true );
@@ -193,7 +193,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     QgsLineSymbolV2* mLineSymbol;
     QgsMarkerSymbolV2* mMarkerSymbol;
 
-    QGis::UnitType mMapUnits;
+    QgsUnitTypes::DistanceUnit mMapUnits;
 
     /** Draw coordinates for mGridAnnotationType Coordinate
         @param p drawing painter

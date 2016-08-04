@@ -19,7 +19,8 @@ class QgsFieldModel : QAbstractItemModel
       ExpressionRole, /*!< return field name or expression */
       IsExpressionRole, /*!< return if index corresponds to an expression */
       ExpressionValidityRole, /*!< return if expression is valid or not */
-      FieldTypeRole /*!< return the field type (if a field, return QVariant if expression) */
+      FieldTypeRole, /*!< return the field type (if a field, return QVariant if expression) */
+      FieldOriginRole, /*!< return the field origin (if a field, returns QVariant if expression) */
     };
 
     /**

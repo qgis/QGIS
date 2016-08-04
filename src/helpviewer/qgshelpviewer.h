@@ -44,7 +44,7 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
 {
     Q_OBJECT
   public:
-    QgsHelpViewer( QWidget *parent = nullptr, const Qt::WindowFlags& = nullptr );
+    QgsHelpViewer( QWidget *parent = nullptr, Qt::WindowFlags = 0 );
     ~QgsHelpViewer();
   public slots:
     void showHelp( const QString& );

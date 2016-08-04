@@ -197,6 +197,20 @@ QSet<QString> QgsRuleBasedRendererV2::Rule::usedAttributes() const
   return attrs;
 }
 
+bool QgsRuleBasedRendererV2::Rule::needsGeometry() const
+{
+  if ( mFilter && mFilter->needsGeometry() )
+    return true;
+
+  Q_FOREACH ( Rule* rule, mChildren )
+  {
+    if ( rule->needsGeometry() )
+      return true;
+  }
+
+  return false;
+}
+
 QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbols( const QgsRenderContext& context ) const
 {
   QgsSymbolV2List lst;
@@ -703,7 +717,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement&
   return rule;
 }
 
-QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomElement& ruleElem, QGis::GeometryType geomType )
+QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomElement& ruleElem, QgsWkbTypes::GeometryType geomType )
 {
   if ( ruleElem.localName() != "Rule" )
   {
@@ -796,15 +810,15 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
   {
     switch ( geomType )
     {
-      case QGis::Line:
+      case QgsWkbTypes::LineGeometry:
         symbol = new QgsLineSymbolV2( layers );
         break;
 
-      case QGis::Polygon:
+      case QgsWkbTypes::PolygonGeometry:
         symbol = new QgsFillSymbolV2( layers );
         break;
 
-      case QGis::Point:
+      case QgsWkbTypes::PointGeometry:
         symbol = new QgsMarkerSymbolV2( layers );
         break;
 
@@ -879,7 +893,7 @@ void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFi
   {
     zLevelsToNormLevels[zLevel] = ++maxNormLevel;
     mRenderQueue.append( RenderLevel( zLevel ) );
-    QgsDebugMsg( QString( "zLevel %1 -> %2" ).arg( zLevel ).arg( maxNormLevel ) );
+    QgsDebugMsgLevel( QString( "zLevel %1 -> %2" ).arg( zLevel ).arg( maxNormLevel ), 4 );
   }
 
   mRootRule->setNormZLevels( zLevelsToNormLevels );
@@ -935,7 +949,12 @@ QString QgsRuleBasedRendererV2::filter( const QgsFields& )
 QList<QString> QgsRuleBasedRendererV2::usedAttributes()
 {
   QSet<QString> attrs = mRootRule->usedAttributes();
-  return attrs.values();
+  return attrs.toList();
+}
+
+bool QgsRuleBasedRendererV2::filterNeedsGeometry() const
+{
+  return mRootRule->needsGeometry();
 }
 
 QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::clone() const
@@ -943,7 +962,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::clone() const
   QgsRuleBasedRendererV2::Rule* clonedRoot = mRootRule->clone();
 
   // normally with clone() the individual rules get new keys (UUID), but here we want to keep
-  // the tree of rules intact, so that other components that may use the rule keys work nicely (e.g. visibility presets)
+  // the tree of rules intact, so that other components that may use the rule keys work nicely (e.g. map themes)
   clonedRoot->setRuleKey( mRootRule->ruleKey() );
   RuleList origDescendants = mRootRule->descendants();
   RuleList clonedDescendants = clonedRoot->descendants();
@@ -1073,7 +1092,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
   return r;
 }
 
-QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& element, QGis::GeometryType geomType )
+QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType )
 {
   // retrieve child rules
   Rule* root = nullptr;
@@ -1216,12 +1235,12 @@ QSet< QString > QgsRuleBasedRendererV2::legendKeysForFeature( QgsFeature& featur
 
 QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFeatureRendererV2* renderer )
 {
+  QgsRuleBasedRendererV2* r = nullptr;
   if ( renderer->type() == "RuleRenderer" )
   {
-    return dynamic_cast<QgsRuleBasedRendererV2*>( renderer->clone() );
+    r = dynamic_cast<QgsRuleBasedRendererV2*>( renderer->clone() );
   }
-
-  if ( renderer->type() == "singleSymbol" )
+  else if ( renderer->type() == "singleSymbol" )
   {
     const QgsSingleSymbolRendererV2* singleSymbolRenderer = dynamic_cast<const QgsSingleSymbolRendererV2*>( renderer );
     if ( !singleSymbolRenderer )
@@ -1229,10 +1248,9 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
 
     QgsSymbolV2* origSymbol = singleSymbolRenderer->symbol()->clone();
     convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField() );
-    return new QgsRuleBasedRendererV2( origSymbol );
+    r = new QgsRuleBasedRendererV2( origSymbol );
   }
-
-  if ( renderer->type() == "categorizedSymbol" )
+  else if ( renderer->type() == "categorizedSymbol" )
   {
     const QgsCategorizedSymbolRendererV2* categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRendererV2*>( renderer );
     if ( !categorizedRenderer )
@@ -1293,10 +1311,9 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       rootrule->appendChild( rule );
     }
 
-    return new QgsRuleBasedRendererV2( rootrule );
+    r = new QgsRuleBasedRendererV2( rootrule );
   }
-
-  if ( renderer->type() == "graduatedSymbol" )
+  else if ( renderer->type() == "graduatedSymbol" )
   {
     const QgsGraduatedSymbolRendererV2* graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRendererV2*>( renderer );
     if ( !graduatedRenderer )
@@ -1350,23 +1367,28 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       rootrule->appendChild( rule );
     }
 
-    return new QgsRuleBasedRendererV2( rootrule );
+    r = new QgsRuleBasedRendererV2( rootrule );
   }
-
-  if ( renderer->type() == "pointDisplacement" )
+  else if ( renderer->type() == "pointDisplacement" )
   {
     const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
     if ( pointDisplacementRenderer )
-      return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+      r = convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
   }
-  if ( renderer->type() == "invertedPolygonRenderer" )
+  else if ( renderer->type() == "invertedPolygonRenderer" )
   {
     const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
     if ( invertedPolygonRenderer )
-      return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+      r = convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
 
-  return nullptr;
+  if ( r )
+  {
+    r->setOrderBy( renderer->orderBy() );
+    r->setOrderByEnabled( renderer->orderByEnabled() );
+  }
+
+  return r;
 }
 
 void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol, const QString& sizeScaleField, const QString& rotationField )

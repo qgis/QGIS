@@ -49,9 +49,6 @@ class QgsRenderChecker
      */
     QString renderedImage();
 
-    //! @deprecated since 2.4 - use setMapSettings()
-    void setMapRenderer( QgsMapRenderer *thepMapRenderer ) /Deprecated/;
-
     //! @note added in 2.4
     void setMapSettings( const QgsMapSettings& mapSettings );
 

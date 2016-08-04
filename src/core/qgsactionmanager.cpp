@@ -65,15 +65,34 @@ void QgsActionManager::removeAction( int index )
 
 void QgsActionManager::doAction( int index, const QgsFeature& feat, int defaultValueIndex )
 {
-  QMap<QString, QVariant> substitutionMap;
-  if ( defaultValueIndex >= 0 )
-  {
-    QVariant defaultValue = feat.attribute( defaultValueIndex );
-    if ( defaultValue.isValid() )
-      substitutionMap.insert( "$currfield", defaultValue );
-  }
+  QgsExpressionContext context = createExpressionContext();
+  QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
+  actionScope->setVariable( "current_field", feat.attribute( defaultValueIndex ) );
+  context << actionScope;
+  doAction( index, feat, context );
+}
 
-  doAction( index, feat, &substitutionMap );
+void QgsActionManager::doAction( int index, const QgsFeature& feat, const QgsExpressionContext& context, const QMap<QString, QVariant> *substitutionMap )
+{
+  if ( index < 0 || index >= size() )
+    return;
+
+  const QgsAction &action = at( index );
+  if ( !action.runable() )
+    return;
+
+  QgsExpressionContext actionContext( context );
+
+  if ( mLayer )
+    actionContext << QgsExpressionContextUtils::layerScope( mLayer );
+  actionContext.setFeature( feat );
+
+  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &actionContext, substitutionMap );
+  if ( expandedAction.isEmpty() )
+    return;
+
+  QgsAction newAction( action.type(), action.name(), expandedAction, action.capture() );
+  runAction( newAction );
 }
 
 void QgsActionManager::doAction( int index, const QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
@@ -271,9 +290,10 @@ QString QgsActionManager::expandAction( const QString& action, QgsFeature &feat,
 }
 
 
-bool QgsActionManager::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
+bool QgsActionManager::writeXml( QDomNode& layer_node, QDomDocument& doc ) const
 {
   QDomElement aActions = doc.createElement( "attributeactions" );
+  aActions.setAttribute( "default", mDefaultAction );
 
   Q_FOREACH ( const QgsAction& action, mActions )
   {
@@ -292,7 +312,7 @@ bool QgsActionManager::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
   return true;
 }
 
-bool QgsActionManager::readXML( const QDomNode& layer_node )
+bool QgsActionManager::readXml( const QDomNode& layer_node )
 {
   mActions.clear();
 
@@ -300,6 +320,8 @@ bool QgsActionManager::readXML( const QDomNode& layer_node )
 
   if ( !aaNode.isNull() )
   {
+    mDefaultAction = aaNode.toElement().attribute( "default", 0 ).toInt();
+
     QDomNodeList actionsettings = aaNode.childNodes();
     for ( int i = 0; i < actionsettings.size(); ++i )
     {

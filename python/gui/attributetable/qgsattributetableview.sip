@@ -28,6 +28,13 @@ class QgsAttributeTableView : QTableView
      */
     virtual bool eventFilter( QObject* object, QEvent* event );
 
+    /**
+     * Set the attribute table config which should be used to control
+     * the appearance of the attribute table.
+     * @note added in QGIS 2.16
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
+
   protected:
     /**
      * Called for mouse press events on a table cell.
@@ -88,6 +95,13 @@ class QgsAttributeTableView : QTableView
     void willShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
     void finished();
+
+    /** Emitted when a column in the view has been resized.
+     * @param column column index (starts at 0)
+     * @param width new width in pixel
+     * @note added in QGIS 2.16
+     */
+    void columnResized( int column, int width );
 
   public slots:
     void repaintRequested( const QModelIndexList& indexes );

@@ -66,11 +66,11 @@ int QgsHueSaturationFilter::bandCount() const
   return 0;
 }
 
-QGis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
+Qgis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
 {
   if ( mOn )
   {
-    return QGis::ARGB32_Premultiplied;
+    return Qgis::ARGB32_Premultiplied;
   }
 
   if ( mInput )
@@ -78,7 +78,7 @@ QGis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
     return mInput->dataType( bandNo );
   }
 
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
 bool QgsHueSaturationFilter::setInput( QgsRasterInterface* input )
@@ -106,8 +106,8 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface* input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != QGis::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != QGis::ARGB32 )
+  if ( input->dataType( 1 ) != Qgis::ARGB32_Premultiplied &&
+       input->dataType( 1 ) != Qgis::ARGB32 )
   {
     QgsDebugMsg( "Unknown input data type" );
     return false;
@@ -118,7 +118,7 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface* input )
   return true;
 }
 
-QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
@@ -131,7 +131,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
 
   // At this moment we know that we read rendered image
   int bandNumber = 1;
-  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, width, height );
+  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, width, height, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
@@ -146,7 +146,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
     return inputBlock;
   }
 
-  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
     return outputBlock;
@@ -185,7 +185,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
     myColor.getRgb( &r, &g, &b );
     if ( alpha != 255 )
     {
-      // Semi-transparent pixel. We need to adjust the colors since we are using QGis::ARGB32_Premultiplied
+      // Semi-transparent pixel. We need to adjust the colors since we are using Qgis::ARGB32_Premultiplied
       // and color values have been premultiplied by alpha
       alphaFactor = alpha / 255.;
       r /= alphaFactor;
@@ -343,7 +343,7 @@ void QgsHueSaturationFilter::setColorizeColor( const QColor& colorizeColor )
   mColorizeS = mColorizeColor.saturation();
 }
 
-void QgsHueSaturationFilter::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsHueSaturationFilter::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -363,7 +363,7 @@ void QgsHueSaturationFilter::writeXML( QDomDocument& doc, QDomElement& parentEle
   parentElem.appendChild( filterElem );
 }
 
-void QgsHueSaturationFilter::readXML( const QDomElement& filterElem )
+void QgsHueSaturationFilter::readXml( const QDomElement& filterElem )
 {
   if ( filterElem.isNull() )
   {

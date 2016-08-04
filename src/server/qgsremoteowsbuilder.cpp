@@ -209,7 +209,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
   QgsDebugMsg( "layerList first item: " + layerList.at( 0 ) );
   QgsDebugMsg( "styleList first item: " + styleList.at( 0 ) );
 
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   uri.setParam( "url", baseUrl );
   uri.setParam( "format", format );
   uri.setParam( "crs", crs );

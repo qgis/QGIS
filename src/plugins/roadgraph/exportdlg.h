@@ -36,7 +36,7 @@ class RgExportDlg : public QDialog
 {
     Q_OBJECT
   public:
-    RgExportDlg( QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
+    RgExportDlg( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~RgExportDlg();
 
   public:

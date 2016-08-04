@@ -31,14 +31,14 @@ QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2()
     : QgsMarkerSymbolLayerV2()
     , mSymbolName( "circle" )
     , mSymbolWidth( 4 )
-    , mSymbolWidthUnit( QgsSymbolV2::MM )
+    , mSymbolWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mSymbolHeight( 3 )
-    , mSymbolHeightUnit( QgsSymbolV2::MM )
+    , mSymbolHeightUnit( QgsUnitTypes::RenderMillimeters )
     , mOutlineColor( Qt::black )
     , mOutlineStyle( Qt::SolidLine )
     , mPenJoinStyle( DEFAULT_ELLIPSE_JOINSTYLE )
     , mOutlineWidth( 0 )
-    , mOutlineWidthUnit( QgsSymbolV2::MM )
+    , mOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = Qt::white;
   mPen.setColor( mOutlineColor );
@@ -68,7 +68,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   }
   if ( properties.contains( "symbol_width_unit" ) )
   {
-    layer->setSymbolWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["symbol_width_unit"] ) );
+    layer->setSymbolWidthUnit( QgsUnitTypes::decodeRenderUnit( properties["symbol_width_unit"] ) );
   }
   if ( properties.contains( "symbol_width_map_unit_scale" ) )
   {
@@ -80,7 +80,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   }
   if ( properties.contains( "symbol_height_unit" ) )
   {
-    layer->setSymbolHeightUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["symbol_height_unit"] ) );
+    layer->setSymbolHeightUnit( QgsUnitTypes::decodeRenderUnit( properties["symbol_height_unit"] ) );
   }
   if ( properties.contains( "symbol_height_map_unit_scale" ) )
   {
@@ -112,11 +112,11 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   }
   if ( properties.contains( "outline_width_unit" ) )
   {
-    layer->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["outline_width_unit"] ) );
+    layer->setOutlineWidthUnit( QgsUnitTypes::decodeRenderUnit( properties["outline_width_unit"] ) );
   }
   else if ( properties.contains( "line_width_unit" ) )
   {
-    layer->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["line_width_unit"] ) );
+    layer->setOutlineWidthUnit( QgsUnitTypes::decodeRenderUnit( properties["line_width_unit"] ) );
   }
   if ( properties.contains( "outline_width_map_unit_scale" ) )
   {
@@ -145,7 +145,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   }
   if ( properties.contains( "size_unit" ) )
   {
-    layer->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["size_unit"] ) );
+    layer->setSizeUnit( QgsUnitTypes::decodeRenderUnit( properties["size_unit"] ) );
   }
   if ( properties.contains( "size_map_unit_scale" ) )
   {
@@ -157,7 +157,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   }
   if ( properties.contains( "offset_unit" ) )
   {
-    layer->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["offset_unit"] ) );
+    layer->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties["offset_unit"] ) );
   }
   if ( properties.contains( "offset_map_unit_scale" ) )
   {
@@ -323,8 +323,8 @@ void QgsEllipseSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2RenderConte
     const QgsFeature* f = context.feature();
     if ( f )
     {
-      const QgsGeometry *g = f->constGeometry();
-      if ( g && g->type() == QGis::Point )
+      const QgsGeometry g = f->geometry();
+      if ( !g.isEmpty() && g.type() == QgsWkbTypes::PointGeometry )
       {
         const QgsMapToPixel& m2p = context.renderContext().mapToPixel();
         angle += m2p.mapRotation();
@@ -510,24 +510,24 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   QgsStringMap map;
   map["symbol_name"] = mSymbolName;
   map["symbol_width"] = QString::number( mSymbolWidth );
-  map["symbol_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSymbolWidthUnit );
+  map["symbol_width_unit"] = QgsUnitTypes::encodeUnit( mSymbolWidthUnit );
   map["symbol_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mSymbolWidthMapUnitScale );
   map["symbol_height"] = QString::number( mSymbolHeight );
-  map["symbol_height_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSymbolHeightUnit );
+  map["symbol_height_unit"] = QgsUnitTypes::encodeUnit( mSymbolHeightUnit );
   map["symbol_height_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mSymbolHeightMapUnitScale );
   map["angle"] = QString::number( mAngle );
   map["outline_style"] = QgsSymbolLayerV2Utils::encodePenStyle( mOutlineStyle );
   map["outline_width"] = QString::number( mOutlineWidth );
-  map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
+  map["outline_width_unit"] = QgsUnitTypes::encodeUnit( mOutlineWidthUnit );
   map["outline_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale );
   map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mOutlineColor );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
-  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
   map["size"] = QString::number( mSize );
-  map["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSizeUnit );
+  map["size_unit"] = QgsUnitTypes::encodeUnit( mSizeUnit );
   map["size_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mSizeMapUnitScale );
   map["horizontal_anchor_point"] = QString::number( mHorizontalAnchorPoint );
   map["vertical_anchor_point"] = QString::number( mVerticalAnchorPoint );
@@ -637,7 +637,7 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   }
 }
 
-void QgsEllipseSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsEllipseSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsMarkerSymbolLayerV2::setOutputUnit( unit );
   mSymbolWidthUnit = unit;
@@ -645,12 +645,12 @@ void QgsEllipseSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
   mOutlineWidthUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsEllipseSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsEllipseSymbolLayerV2::outputUnit() const
 {
-  QgsSymbolV2::OutputUnit unit = QgsMarkerSymbolLayerV2::outputUnit();
+  QgsUnitTypes::RenderUnit unit = QgsMarkerSymbolLayerV2::outputUnit();
   if ( mSymbolWidthUnit != unit || mSymbolHeightUnit != unit || mOutlineWidthUnit != unit )
   {
-    return QgsSymbolV2::Mixed;
+    return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
 }
@@ -743,7 +743,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   {
     symbolWidth = mSize;
   }
-  if ( mSymbolWidthUnit == QgsSymbolV2::MM )
+  if ( mSymbolWidthUnit == QgsUnitTypes::RenderMillimeters )
   {
     symbolWidth *= mmMapUnitScaleFactor;
   }
@@ -759,7 +759,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   {
     symbolHeight = mSize;
   }
-  if ( mSymbolHeightUnit == QgsSymbolV2::MM )
+  if ( mSymbolHeightUnit == QgsUnitTypes::RenderMillimeters )
   {
     symbolHeight *= mmMapUnitScaleFactor;
   }
@@ -772,7 +772,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     context.setOriginalValueVariable( mOutlineWidth );
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
   }
-  if ( mOutlineWidthUnit == QgsSymbolV2::MM )
+  if ( mOutlineWidthUnit == QgsUnitTypes::RenderMillimeters )
   {
     outlineWidth *= outlineWidth;
   }

@@ -34,8 +34,9 @@ class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
   public:
     QgsMapToolPointSymbol( QgsMapCanvas* canvas );
 
+    virtual Flags flags() const override { return QgsMapTool::EditTool; }
+
     void canvasPressEvent( QgsMapMouseEvent* e ) override;
-    bool isEditTool() override { return true; }
 
   protected:
     QgsVectorLayer* mActiveLayer;

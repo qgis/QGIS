@@ -21,7 +21,7 @@
 #include <QtCore>
 #include "qgsrendercontext.h"
 
-/**
+/** \ingroup core
  * \class QgsMapUnitScale
  * \brief Struct for storing maximum and minimum scales for measurements in map units
  *

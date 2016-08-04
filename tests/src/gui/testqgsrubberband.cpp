@@ -46,6 +46,7 @@ class TestQgsRubberband : public QObject
     void testAddSingleMultiGeometries(); //test for #7728
     void testBoundingRect(); //test for #12392
     void testVisibility(); //test for 12486
+    void testClose(); //test closing geometry
 
   private:
     QgsMapCanvas* mCanvas;
@@ -98,13 +99,13 @@ void TestQgsRubberband::cleanup()
 void TestQgsRubberband::testAddSingleMultiGeometries()
 {
   mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
-  QSharedPointer<QgsGeometry> geomSinglePart( QgsGeometry::fromWkt( "POLYGON((-0.00022418 -0.00000279,-0.0001039 0.00002395,-0.00008677 -0.00005313,-0.00020705 -0.00007987,-0.00022418 -0.00000279))" ) );
-  QSharedPointer<QgsGeometry> geomMultiPart( QgsGeometry::fromWkt( "MULTIPOLYGON(((-0.00018203 0.00012178,-0.00009444 0.00014125,-0.00007861 0.00007001,-0.00016619 0.00005054,-0.00018203 0.00012178)),((-0.00030957 0.00009464,-0.00021849 0.00011489,-0.00020447 0.00005184,-0.00029555 0.00003158,-0.00030957 0.00009464)))" ) );
+  QgsGeometry geomSinglePart( QgsGeometry::fromWkt( "POLYGON((-0.00022418 -0.00000279,-0.0001039 0.00002395,-0.00008677 -0.00005313,-0.00020705 -0.00007987,-0.00022418 -0.00000279))" ) );
+  QgsGeometry geomMultiPart( QgsGeometry::fromWkt( "MULTIPOLYGON(((-0.00018203 0.00012178,-0.00009444 0.00014125,-0.00007861 0.00007001,-0.00016619 0.00005054,-0.00018203 0.00012178)),((-0.00030957 0.00009464,-0.00021849 0.00011489,-0.00020447 0.00005184,-0.00029555 0.00003158,-0.00030957 0.00009464)))" ) );
 
   mCanvas->setExtent( QgsRectangle( -1e-3, -1e-3, 1e-3, 1e-3 ) ); // otherwise point cannot be converted to canvas coord
 
-  mRubberband->addGeometry( geomSinglePart.data(), mPolygonLayer );
-  mRubberband->addGeometry( geomMultiPart.data(), mPolygonLayer );
+  mRubberband->addGeometry( geomSinglePart, mPolygonLayer );
+  mRubberband->addGeometry( geomMultiPart, mPolygonLayer );
   QVERIFY( mRubberband->numberOfVertices() == 15 );
 }
 
@@ -121,13 +122,13 @@ void TestQgsRubberband::testBoundingRect()
   QCOMPARE( mCanvas->mapUnitsPerPixel(), 1.0 );
 
   // Polygon extent is 10,10 to 30,30
-  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt(
-                                      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
-                                    ) );
+  QgsGeometry geom( QgsGeometry::fromWkt(
+                      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
+                    ) );
   mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
   mRubberband->setIconSize( 5 ); // default, but better be explicit
   mRubberband->setWidth( 1 );    // default, but better be explicit
-  mRubberband->addGeometry( geom.data(), mPolygonLayer );
+  mRubberband->addGeometry( geom, mPolygonLayer );
 
   // 20 pixels for the extent + 3 for pen & icon per side + 2 of padding
   QCOMPARE( mRubberband->boundingRect(), QRectF( QPointF( -1, -1 ), QSizeF( 28, 28 ) ) );
@@ -162,23 +163,23 @@ void TestQgsRubberband::testVisibility()
 
   // Check visibility after setting to empty geometry
   QSharedPointer<QgsGeometry> emptyGeom( new QgsGeometry );
-  mRubberband->setToGeometry( emptyGeom.data(), mPolygonLayer );
+  mRubberband->setToGeometry( *emptyGeom.data(), mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Check that visibility changes
   mRubberband->setVisible( true );
-  mRubberband->setToGeometry( emptyGeom.data(), mPolygonLayer );
+  mRubberband->setToGeometry( *emptyGeom.data(), mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Check visibility after setting to valid geometry
-  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt(
-                                      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
-                                    ) );
-  mRubberband->setToGeometry( geom.data(), mPolygonLayer );
+  QgsGeometry geom( QgsGeometry::fromWkt(
+                      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
+                    ) );
+  mRubberband->setToGeometry( geom, mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), true );
 
   // Add point without update
-  mRubberband->reset( QGis::Polygon );
+  mRubberband->reset( QgsWkbTypes::PolygonGeometry );
   mRubberband->addPoint( QgsPoint( 10, 10 ), false );
   QCOMPARE( mRubberband->isVisible(), false );
 
@@ -191,6 +192,34 @@ void TestQgsRubberband::testVisibility()
   mCanvas->zoomIn();
   QCOMPARE( mRubberband->isVisible(), false );
 
+}
+
+void TestQgsRubberband::testClose()
+{
+  QgsRubberBand r( mCanvas, QgsWkbTypes::PolygonGeometry );
+
+  // try closing empty rubber band, don't want to crash
+  r.closePoints();
+  QCOMPARE( r.partSize( 0 ), 0 );
+
+  r.addPoint( QgsPoint( 1, 2 ) );
+  r.addPoint( QgsPoint( 1, 3 ) );
+  r.addPoint( QgsPoint( 2, 3 ) );
+  QCOMPARE( r.partSize( 0 ), 3 );
+
+  // test with some bad geometry indexes - don't want to crash!
+  r.closePoints( true, -1 );
+  QCOMPARE( r.partSize( 0 ), 3 );
+  r.closePoints( true, 100 );
+  QCOMPARE( r.partSize( 0 ), 3 );
+
+  // valid close
+  r.closePoints();
+  QCOMPARE( r.partSize( 0 ), 4 );
+
+  // close already closed polygon, should be no change
+  r.closePoints();
+  QCOMPARE( r.partSize( 0 ), 4 );
 }
 
 

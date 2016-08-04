@@ -25,12 +25,14 @@
 #include <QNetworkReply>
 #include <QStandardItem>
 
-#include "qgsstylev2groupselectiondialog.h"
-
 #include "ui_qgsstylev2exportimportdialogbase.h"
 
 class QgsStyleV2;
+class QgsStyleV2GroupSelectionDialog;
 
+/** \ingroup gui
+ * \class QgsStyleV2ExportImportDialog
+ */
 class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsStyleV2ExportImportDialogBase
 {
     Q_OBJECT
@@ -104,7 +106,7 @@ class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsS
     void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
 
   private:
-    void downloadStyleXML( const QUrl& url );
+    void downloadStyleXml( const QUrl& url );
     bool populateStyles( QgsStyleV2* style );
     void moveStyles( QModelIndexList* selection, QgsStyleV2* src, QgsStyleV2* dst );
 

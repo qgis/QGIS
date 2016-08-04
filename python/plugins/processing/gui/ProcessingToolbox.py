@@ -180,9 +180,9 @@ class ProcessingToolbox(BASE, WIDGET):
 
     def showPopupMenu(self, point):
         item = self.algorithmTree.itemAt(point)
+        popupmenu = QMenu()
         if isinstance(item, TreeAlgorithmItem):
             alg = item.alg
-            popupmenu = QMenu()
             executeAction = QAction(self.tr('Execute'), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
@@ -308,9 +308,8 @@ class ProcessingToolbox(BASE, WIDGET):
 
     def addProvider(self, providerName):
         name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
-        providerItem = TreeProviderItem(providerName, None, self)
+        providerItem = TreeProviderItem(providerName, self.algorithmTree, self)
         if not ProcessingConfig.getSetting(name):
-            providerItem = TreeProviderItem(providerName, None, self)
             providerItem.setHidden(True)
             self.disabledProviderItems[providerName] = providerItem
 

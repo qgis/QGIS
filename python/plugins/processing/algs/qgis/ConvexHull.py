@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QGis, QgsField, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsField, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -79,8 +79,8 @@ class ConvexHull(GeoAlgorithm):
         if useField:
             index = layer.fieldNameIndex(fieldName)
             fType = layer.pendingFields()[index].type()
-            if fType == QVariant.Int:
-                f.setType(QVariant.Int)
+            if fType in [QVariant.Int, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
+                f.setType(fType)
                 f.setLength(20)
             elif fType == QVariant.Double:
                 f.setType(QVariant.Double)
@@ -97,7 +97,7 @@ class ConvexHull(GeoAlgorithm):
                   ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QGis.WKBPolygon, layer.dataProvider().crs())
+            fields, QgsWkbTypes.Polygon, layer.dataProvider().crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -121,7 +121,7 @@ class ConvexHull(GeoAlgorithm):
                             val = idVar
                             first = False
 
-                        inGeom = QgsGeometry(f.geometry())
+                        inGeom = f.geometry()
                         points = vector.extractPoints(inGeom)
                         hull.extend(points)
                     current += 1
@@ -144,7 +144,7 @@ class ConvexHull(GeoAlgorithm):
             total = 100.0 / layer.featureCount()
             features = vector.features(layer)
             for current, f in enumerate(features):
-                inGeom = QgsGeometry(f.geometry())
+                inGeom = f.geometry()
                 points = vector.extractPoints(inGeom)
                 hull.extend(points)
                 progress.setPercentage(int(current * total))

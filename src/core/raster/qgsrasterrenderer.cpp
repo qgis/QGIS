@@ -24,8 +24,6 @@
 #include <QImage>
 #include <QPainter>
 
-#define tr( sourceText ) QCoreApplication::translate ( "QgsRasterRenderer", sourceText )
-
 // See #9101 before any change of NODATA_COLOR!
 const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 
@@ -50,15 +48,15 @@ int QgsRasterRenderer::bandCount() const
   return 0;
 }
 
-QGis::DataType QgsRasterRenderer::dataType( int bandNo ) const
+Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
   QgsDebugMsgLevel( "Entered", 4 );
 
-  if ( mOn ) return QGis::ARGB32_Premultiplied;
+  if ( mOn ) return Qgis::ARGB32_Premultiplied;
 
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
 bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
@@ -99,7 +97,7 @@ void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency* t )
   mRasterTransparency = t;
 }
 
-void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const
+void QgsRasterRenderer::_writeXml( QDomDocument& doc, QDomElement& rasterRendererElem ) const
 {
   if ( rasterRendererElem.isNull() )
   {
@@ -112,11 +110,11 @@ void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendere
 
   if ( mRasterTransparency )
   {
-    mRasterTransparency->writeXML( doc, rasterRendererElem );
+    mRasterTransparency->writeXml( doc, rasterRendererElem );
   }
 }
 
-void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
+void QgsRasterRenderer::readXml( const QDomElement& rendererElem )
 {
   if ( rendererElem.isNull() )
   {
@@ -132,8 +130,18 @@ void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
   {
     delete mRasterTransparency;
     mRasterTransparency = new QgsRasterTransparency();
-    mRasterTransparency->readXML( rasterTransparencyElem );
+    mRasterTransparency->readXml( rasterTransparencyElem );
   }
+}
+
+void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer* other )
+{
+  if ( !other )
+    return;
+
+  setOpacity( other->opacity() );
+  setAlphaBand( other->alphaBand() );
+  setRasterTransparency( other->rasterTransparency() ? new QgsRasterTransparency( *other->rasterTransparency() ) : nullptr );
 }
 
 QString QgsRasterRenderer::minMaxOriginName( int theOrigin )

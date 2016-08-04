@@ -25,7 +25,8 @@ class Triangulation;
 class TriangleInterpolator;
 class QgsFeature;
 
-/** Interpolation in a triangular irregular network*/
+/** \ingroup analysis
+ *  Interpolation in a triangular irregular network*/
 class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
 {
   public:

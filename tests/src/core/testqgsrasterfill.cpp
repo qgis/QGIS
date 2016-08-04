@@ -137,7 +137,7 @@ void TestQgsRasterFill::init()
 {
   mRasterFill->setImageFilePath( mTestDataDir + QLatin1String( "sample_image.png" ) );
   mRasterFill->setWidth( 30.0 );
-  mRasterFill->setWidthUnit( QgsSymbolV2::Pixel );
+  mRasterFill->setWidthUnit( QgsUnitTypes::RenderPixels );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );
   mRasterFill->setAlpha( 1.0 );
   mRasterFill->setOffset( QPointF( 0, 0 ) );
@@ -182,7 +182,7 @@ void TestQgsRasterFill::offset()
 void TestQgsRasterFill::width()
 {
   mReport += "<h2>Raster fill width</h2>\n";
-  mRasterFill->setWidthUnit( QgsSymbolV2::MM );
+  mRasterFill->setWidthUnit( QgsUnitTypes::RenderMillimeters );
   mRasterFill->setWidth( 5.0 );
   bool result = imageCheck( "rasterfill_width" );
   QVERIFY( result );

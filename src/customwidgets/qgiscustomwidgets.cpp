@@ -16,12 +16,11 @@
 #include "qplugin.h"
 
 #include "qgiscustomwidgets.h"
-
 #include "qgscollapsiblegroupboxplugin.h"
 #include "qgscolorbuttonplugin.h"
-#include "qgscolorbuttonv2plugin.h"
 #include "qgsdatadefinedbuttonplugin.h"
 #include "qgsdatetimeeditplugin.h"
+#include "qgsdockwidgetplugin.h"
 #include "qgsdoublespinboxplugin.h"
 #include "qgsexpressionbuilderwidgetplugin.h"
 #include "qgsextentgroupboxplugin.h"
@@ -42,9 +41,9 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
 {
   mWidgets.append( new QgsCollapsibleGroupBoxPlugin( this ) );
   mWidgets.append( new QgsColorButtonPlugin( this ) );
-  mWidgets.append( new QgsColorButtonV2Plugin( this ) );
   mWidgets.append( new QgsDataDefinedButtonPlugin( this ) );
   mWidgets.append( new QgsDateTimeEditPlugin( this ) );
+  mWidgets.append( new QgsDockWidgetPlugin( this ) );
   mWidgets.append( new QgsDoubleSpinBoxPlugin( this ) );
   mWidgets.append( new QgsExpressionBuilderWidgetPlugin( this ) );
   mWidgets.append( new QgsExtentGroupBoxPlugin( this ) );

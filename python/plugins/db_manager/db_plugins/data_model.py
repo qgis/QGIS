@@ -57,10 +57,15 @@ class BaseTableModel(QAbstractTableModel):
         return len(self._header)
 
     def data(self, index, role):
-        if role != Qt.DisplayRole and role != Qt.FontRole:
+        if role not in [Qt.DisplayRole,
+                        Qt.EditRole,
+                        Qt.FontRole]:
             return None
 
         val = self.getData(index.row(), index.column())
+
+        if role == Qt.EditRole:
+            return val
 
         if role == Qt.FontRole:  # draw NULL in italic
             if val is not None:

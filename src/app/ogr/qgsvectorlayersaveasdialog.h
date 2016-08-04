@@ -21,7 +21,10 @@
 #include <ui_qgsvectorlayersaveasdialogbase.h>
 #include <QDialog>
 #include "qgscontexthelp.h"
+#include "qgsfield.h"
 #include "qgsvectorfilewriter.h"
+
+class QgsVectorLayer;
 
 /**
  *  Class to select destination file, type and CRS for ogr layers
@@ -38,8 +41,8 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
       AllOptions = ~0
     };
 
-    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
@@ -74,7 +77,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
      * @see forceMulti()
      * @see includeZ()
      */
-    QgsWKBTypes::Type geometryType() const;
+    QgsWkbTypes::Type geometryType() const;
 
     /** Returns true if geometry type is set to automatic.
      * @see geometryType()

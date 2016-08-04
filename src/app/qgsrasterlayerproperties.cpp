@@ -21,6 +21,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsbilinearrasterresampler.h"
+#include "qgsbrightnesscontrastfilter.h"
 #include "qgscontexthelp.h"
 #include "qgscontrastenhancement.h"
 #include "qgscoordinatetransform.h"
@@ -30,7 +31,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmaptopixel.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -38,6 +38,7 @@
 #include "qgspalettedrendererwidget.h"
 #include "qgsproject.h"
 #include "qgsrasterbandstats.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterhistogramwidget.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
@@ -46,10 +47,12 @@
 #include "qgsrasterrange.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterrendererregistry.h"
+#include "qgsrasterresamplefilter.h"
 #include "qgsrastertransparency.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgshuesaturationfilter.h"
+#include "qgshillshaderendererwidget.h"
 
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -183,6 +186,16 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     {
       cboResamplingMethod->addItem( method.second, method.first );
     }
+
+    // keep it in sync with qgsrasterpyramidsoptionwidget.cpp
+    QString prefix = provider->name() + "/driverOptions/_pyramids/";
+    QSettings mySettings;
+    QString defaultMethod = mySettings.value( prefix + "resampling", "AVERAGE" ).toString();
+    int idx = cboResamplingMethod->findData( defaultMethod );
+    if ( idx >= 0 )
+      cboResamplingMethod->setCurrentIndex( idx );
+
+
     // build pyramid list
     QList< QgsRasterPyramid > myPyramidList = provider->buildPyramidList();
     QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
@@ -356,6 +369,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "multibandcolor", QgsMultiBandColorRendererWidget::create );
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandpseudocolor", QgsSingleBandPseudoColorRendererWidget::create );
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandgray", QgsSingleBandGrayRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "hillshade", QgsHillshadeRendererWidget::create );
 
   //fill available renderers into combo box
   QgsRasterRendererRegistryEntry entry;
@@ -416,7 +430,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
+  mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.svg" ) );
 
   QString title = QString( tr( "Layer Properties - %1" ) ).arg( lyr->name() );
   restoreOptionsBaseUi( title );
@@ -433,7 +447,6 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
 
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
 {
-  QgsDebugMsg( "Entered" );
   tableTransparency->clear();
   tableTransparency->setColumnCount( 0 );
   tableTransparency->setRowCount( 0 );
@@ -472,7 +485,6 @@ void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
 
 void QgsRasterLayerProperties::populateTransparencyTable( QgsRasterRenderer* renderer )
 {
-  QgsDebugMsg( "entering." );
   if ( !mRasterLayer )
   {
     return;
@@ -539,6 +551,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
+      mRendererWidget->setMapCanvas( mMapCanvas );
       mRendererStackedWidget->addWidget( mRendererWidget );
       if ( oldWidget )
       {
@@ -579,8 +592,8 @@ void QgsRasterLayerProperties::sync()
 {
   QSettings myQSettings;
 
-  if ( mRasterLayer->dataProvider()->dataType( 1 ) == QGis::ARGB32
-       || mRasterLayer->dataProvider()->dataType( 1 ) == QGis::ARGB32_Premultiplied )
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32
+       || mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
   {
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
@@ -649,18 +662,18 @@ void QgsRasterLayerProperties::sync()
   //add current NoDataValue to NoDataValue line edit
   // TODO: should be per band
   // TODO: no data ranges
-  if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
+  if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
   {
-    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) ) );
+    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
   }
   else
   {
     lblSrcNoDataValue->setText( tr( "not defined" ) );
   }
 
-  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSrcNoDataValue( 1 ) );
+  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSourceNoDataValue( 1 ) );
 
-  bool enableSrcNoData = mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) );
+  bool enableSrcNoData = mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) );
 
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
@@ -706,17 +719,17 @@ void QgsRasterLayerProperties::sync()
     lblRows->setText( tr( "Rows: " ) + tr( "n/a" ) );
   }
 
-  if ( mRasterLayer->dataProvider()->dataType( 1 ) == QGis::ARGB32
-       || mRasterLayer->dataProvider()->dataType( 1 ) == QGis::ARGB32_Premultiplied )
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32
+       || mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
   {
     lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
   }
   else
   {
     // TODO: all bands
-    if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
+    if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
     {
-      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) ) );
+      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
     }
     else
     {
@@ -785,6 +798,12 @@ void QgsRasterLayerProperties::sync()
 
   mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
+
+  /*
+   * Legend Tab
+   */
+  mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
+
 } // QgsRasterLayerProperties::sync()
 
 /*
@@ -794,6 +813,11 @@ void QgsRasterLayerProperties::sync()
  */
 void QgsRasterLayerProperties::apply()
 {
+  /*
+   * Legend Tab
+   */
+  mLegendConfigEmbeddedWidget->applyToLayer();
+
   QgsDebugMsg( "apply processing symbology tab" );
   /*
    * Symbology Tab
@@ -825,7 +849,7 @@ void QgsRasterLayerProperties::apply()
   for ( int bandNo = 1; bandNo <= mRasterLayer->dataProvider()->bandCount(); bandNo++ )
   {
     mRasterLayer->dataProvider()->setUserNoDataValue( bandNo, myNoDataRangeList );
-    mRasterLayer->dataProvider()->setUseSrcNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
+    mRasterLayer->dataProvider()->setUseSourceNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
   }
 
   //set renderer from widget
@@ -882,7 +906,7 @@ void QgsRasterLayerProperties::apply()
   /*
    * General Tab
    */
-  mRasterLayer->setLayerName( mLayerOrigNameLineEd->text() );
+  mRasterLayer->setName( mLayerOrigNameLineEd->text() );
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
@@ -988,6 +1012,13 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     //mark to be pyramided
     myPyramidList[myCounterInt].build = myItem->isSelected() || myPyramidList[myCounterInt].exists;
   }
+
+  // keep it in sync with qgsrasterpyramidsoptionwidget.cpp
+  QString prefix = provider->name() + "/driverOptions/_pyramids/";
+  QSettings mySettings;
+  QString resamplingMethod( cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString() );
+  mySettings.setValue( prefix + "resampling", resamplingMethod );
+
   //
   // Ask raster layer to build the pyramids
   //
@@ -996,7 +1027,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QString res = provider->buildPyramids(
                   myPyramidList,
-                  cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString(),
+                  resamplingMethod,
                   ( QgsRaster::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );
@@ -1130,7 +1161,6 @@ void QgsRasterLayerProperties::on_mCrsSelector_crsChanged( const QgsCoordinateRe
 
 void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 {
-  QgsDebugMsg( "Entered" );
   if ( !mRendererWidget )
   {
     return;
@@ -1177,10 +1207,10 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
   {
     // value
     QString valueString;
-    switch ( provider->srcDataType( 1 ) )
+    switch ( provider->sourceDataType( 1 ) )
     {
-      case QGis::Float32:
-      case QGis::Float64:
+      case Qgis::Float32:
+      case Qgis::Float64:
         lineEdit->setValidator( new QDoubleValidator( nullptr ) );
         if ( !qIsNaN( value ) )
         {

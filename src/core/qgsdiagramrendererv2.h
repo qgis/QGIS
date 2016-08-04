@@ -22,16 +22,16 @@
 #include <QSizeF>
 #include <QDomDocument>
 
-#include "qgsfeature.h"
 #include "qgsexpressioncontext.h"
-#include "qgssymbollayerv2.h"
+#include "qgsfield.h"
+#include "qgscoordinatetransform.h"
+#include "qgssymbolv2.h"
 
 class QgsDiagram;
 class QgsDiagramRendererV2;
 class QgsFeature;
 class QgsRenderContext;
 class QDomElement;
-class QgsCoordinateTransform;
 class QgsMapToPixel;
 class QgsVectorLayer;
 class QgsLayerTreeModelLegendNode;
@@ -222,28 +222,19 @@ class CORE_EXPORT QgsDiagramLayerSettings
     // TODO QGIS 3.0 - make private, rename to mRenderer
     QgsDiagramRendererV2* renderer;
 
-    /** Returns the coordinate transform associated with the layer.
+    /** Returns the coordinate transform associated with the layer, or an
+     * invalid transform if no transformation is required.
      * @see setCoordinateTransform()
      * @note added in QGIS 2.16
      */
-    QgsCoordinateTransform* coordinateTransform() { return ct; }
-
-    /** Returns the coordinate transform associated with the layer.
-     * @see setCoordinateTransform()
-     * @note added in QGIS 2.16
-     */
-    const QgsCoordinateTransform* coordinateTransform() const { return ct; }
+    QgsCoordinateTransform coordinateTransform() const { return mCt; }
 
     /** Sets the coordinate transform associated with the layer.
      * @param transform coordinate transform. Ownership is transferred to the object.
      * @see coordinateTransform()
      * @note added in QGIS 2.16
      */
-    void setCoordinateTransform( QgsCoordinateTransform* transform );
-
-    //! Associated coordinate transform. Owned by this object.
-    // TODO QGIS 3.0 - make private, rename to mCt
-    QgsCoordinateTransform* ct;
+    void setCoordinateTransform( const QgsCoordinateTransform& transform );
 
     //! @deprecated will be removed in QGIS 3.0
     Q_DECL_DEPRECATED const QgsMapToPixel* xform;
@@ -277,8 +268,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
     // TODO QGIS 3.0 - make private, rename to mShowAll
     bool showAll;
 
-    void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
-    void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+    void readXml( const QDomElement& elem, const QgsVectorLayer* layer );
+    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
     /** Returns the set of any fields referenced by the layer's diagrams.
      * @param context expression context the diagrams will be drawn using
@@ -288,6 +279,10 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //TODO QGIS 3.0 - remove need for fields parameter
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
 
+  private:
+
+    //! Associated coordinate transform, or invalid transform for no transformation
+    QgsCoordinateTransform mCt;
 };
 
 /** \ingroup core
@@ -302,7 +297,7 @@ class CORE_EXPORT QgsDiagramSettings
 {
   public:
 
-    //! @deprecated use QgsSymbolV2::OutputUnit instead
+    //! @deprecated use QgsUnitTypes::RenderUnit instead
     enum SizeType
     {
       MM,
@@ -326,8 +321,8 @@ class CORE_EXPORT QgsDiagramSettings
 
     QgsDiagramSettings()
         : enabled( true )
-        , sizeType( QgsSymbolV2::MM )
-        , lineSizeUnit( QgsSymbolV2::MM )
+        , sizeType( QgsUnitTypes::RenderMillimeters )
+        , lineSizeUnit( QgsUnitTypes::RenderMillimeters )
         , penWidth( 0.0 )
         , labelPlacementMethod( QgsDiagramSettings::Height )
         , diagramOrientation( QgsDiagramSettings::Up )
@@ -350,7 +345,7 @@ class CORE_EXPORT QgsDiagramSettings
 
     /** Diagram size unit
      */
-    QgsSymbolV2::OutputUnit sizeType;
+    QgsUnitTypes::RenderUnit sizeType;
 
     /** Diagram size unit scale
      * @note added in 2.16
@@ -360,7 +355,7 @@ class CORE_EXPORT QgsDiagramSettings
     /** Line unit index
      * @note added in 2.16
      */
-    QgsSymbolV2::OutputUnit lineSizeUnit;
+    QgsUnitTypes::RenderUnit lineSizeUnit;
 
     /** Line unit scale
      * @note added in 2.16
@@ -385,8 +380,8 @@ class CORE_EXPORT QgsDiagramSettings
     //! Scale diagrams smaller than mMinimumSize to mMinimumSize
     double minimumSize;
 
-    void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
-    void writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+    void readXml( const QDomElement& elem, const QgsVectorLayer* layer );
+    void writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
     /** Returns list of legend nodes for the diagram
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
@@ -396,7 +391,10 @@ class CORE_EXPORT QgsDiagramSettings
 
 };
 
-//additional diagram settings for interpolated size rendering
+/** \ingroup core
+ * \class QgsDiagramInterpolationSettings
+ * Additional diagram settings for interpolated size rendering.
+ */
 class CORE_EXPORT QgsDiagramInterpolationSettings
 {
   public:
@@ -454,8 +452,8 @@ class CORE_EXPORT QgsDiagramRendererV2
     /** Returns list with all diagram settings in the renderer*/
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
 
-    virtual void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) = 0;
-    virtual void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const = 0;
+    virtual void readXml( const QDomElement& elem, const QgsVectorLayer* layer ) = 0;
+    virtual void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const = 0;
 
     /** Returns list of legend nodes for the diagram
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
@@ -531,8 +529,8 @@ class CORE_EXPORT QgsDiagramRendererV2
     static int dpiPaintDevice( const QPainter* );
 
     //read / write diagram
-    void _readXML( const QDomElement& elem, const QgsVectorLayer* layer );
-    void _writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+    void _readXml( const QDomElement& elem, const QgsVectorLayer* layer );
+    void _writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
     /** Reference to the object that does the real diagram rendering*/
     QgsDiagram* mDiagram;
@@ -547,7 +545,9 @@ class CORE_EXPORT QgsDiagramRendererV2
     QScopedPointer< QgsMarkerSymbolV2 > mSizeLegendSymbol;
 };
 
-/** Renders the diagrams for all features with the same settings*/
+/** \ingroup core
+ * Renders the diagrams for all features with the same settings
+*/
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
 {
   public:
@@ -564,8 +564,8 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
 
     QList<QgsDiagramSettings> diagramSettings() const override;
 
-    void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) override;
-    void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const override;
+    void readXml( const QDomElement& elem, const QgsVectorLayer* layer ) override;
+    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const override;
 
     QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const override;
 
@@ -578,6 +578,9 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
     QgsDiagramSettings mSettings;
 };
 
+/** \ingroup core
+ * \class QgsLinearlyInterpolatedDiagramRenderer
+ */
 class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRendererV2
 {
   public:
@@ -618,8 +621,8 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     bool classificationAttributeIsExpression() const { return mInterpolationSettings.classificationAttributeIsExpression; }
     void setClassificationAttributeIsExpression( bool isExpression ) { mInterpolationSettings.classificationAttributeIsExpression = isExpression; }
 
-    void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) override;
-    void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const override;
+    void readXml( const QDomElement& elem, const QgsVectorLayer* layer ) override;
+    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const override;
 
     QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const override;
 

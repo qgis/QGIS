@@ -22,8 +22,6 @@
 #include "ui_qgsoptionsbase.h"
 #include "qgisgui.h"
 #include "qgisapp.h"
-#include "qgisappstylesheet.h"
-#include "qgsautheditorwidgets.h"
 #include "qgscontexthelp.h"
 
 #include <qgscoordinatereferencesystem.h>

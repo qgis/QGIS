@@ -19,7 +19,6 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-#include "qgscrscache.h"
 #include "qgsmaplayer.h"
 #include "qgsrectangle.h"
 
@@ -37,7 +36,7 @@ class QDomElement;
 class QString;
 class QStringList;
 
-void QgsConfigParserUtils::appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc,
+void QgsConfigParserUtils::appendCrsElementsToLayer( QDomElement& layerElement, QDomDocument& doc,
     const QStringList &crsList, const QStringList& constrainedCrsList )
 {
   if ( layerElement.isNull() )
@@ -55,19 +54,19 @@ void QgsConfigParserUtils::appendCRSElementsToLayer( QDomElement& layerElement, 
   {
     for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
     {
-      appendCRSElementToLayer( layerElement, CRSPrecedingElement, constrainedCrsList.at( i ), doc );
+      appendCrsElementToLayer( layerElement, CRSPrecedingElement, constrainedCrsList.at( i ), doc );
     }
   }
   else //no crs constraint
   {
     Q_FOREACH ( const QString& crs, crsList )
     {
-      appendCRSElementToLayer( layerElement, CRSPrecedingElement, crs, doc );
+      appendCrsElementToLayer( layerElement, CRSPrecedingElement, crs, doc );
     }
   }
 }
 
-void QgsConfigParserUtils::appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
+void QgsConfigParserUtils::appendCrsElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
     const QString& crsText, QDomDocument& doc )
 {
   QString version = doc.documentElement().attribute( "version" );
@@ -85,7 +84,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
     return;
   }
 
-  const QgsCoordinateReferenceSystem& wgs84 = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
+  QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
 
   QString version = doc.documentElement().attribute( "version" );
 
@@ -136,7 +135,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
   }
 
   QgsRectangle r( layerExtent );
-  if ( version != "1.1.1" && layerCRS.axisInverted() )
+  if ( version != "1.1.1" && layerCRS.hasAxisInverted() )
   {
     r.invert();
   }
@@ -186,7 +185,7 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
 
   QString version = doc.documentElement().attribute( "version" );
 
-  const QgsCoordinateReferenceSystem& crs = QgsCRSCache::instance()->crsByAuthId( crsText );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsText );
 
   //transform the layers native CRS into CRS
   QgsRectangle crsExtent;
@@ -203,7 +202,7 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
     bBoxElement.setAttribute( version == "1.1.1" ? "SRS" : "CRS", crs.authid() );
   }
 
-  if ( version != "1.1.1" && crs.axisInverted() )
+  if ( version != "1.1.1" && crs.hasAxisInverted() )
   {
     crsExtent.invert();
   }
@@ -232,7 +231,7 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
   }
 }
 
-QStringList QgsConfigParserUtils::createCRSListForLayer( QgsMapLayer* theMapLayer )
+QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLayer )
 {
   QStringList crsNumbers;
   QString myDatabaseFileName = QgsApplication::srsDbFilePath();

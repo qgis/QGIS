@@ -16,15 +16,15 @@
 #define QgsHTMLAnnotationDialog_H
 
 #include "ui_qgsformannotationdialogbase.h"
-#include "qgshtmlannotationitem.h"
 
 class QgsAnnotationWidget;
+class QgsHtmlAnnotationItem;
 
 class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
 {
     Q_OBJECT
   public:
-    QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsHtmlAnnotationDialog();
 
   private:
@@ -35,6 +35,7 @@ class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnn
     void applySettingsToItem();
     void on_mBrowseToolButton_clicked();
     void deleteItem();
+    void on_mButtonBox_clicked( QAbstractButton* button );
 };
 
 #endif // QgsHTMLAnnotationDialog_H

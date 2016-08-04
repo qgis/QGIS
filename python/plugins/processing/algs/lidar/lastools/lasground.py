@@ -8,7 +8,7 @@
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
     ---------------------
-    Date                 : September 2013
+    Date                 : September 2013 and May 2016
     Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -38,6 +38,7 @@ from processing.core.parameters import ParameterSelection
 class lasground(LAStoolsAlgorithm):
 
     NO_BULGE = "NO_BULGE"
+    BY_FLIGHTLINE = "BY_FLIGHTLINE"
     TERRAIN = "TERRAIN"
     TERRAINS = ["wilderness", "nature", "town", "city", "metro"]
     GRANULARITY = "GRANULARITY"
@@ -48,9 +49,12 @@ class lasground(LAStoolsAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
+        self.addParametersIgnoreClass1GUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
         self.addParameter(ParameterBoolean(lasground.NO_BULGE,
                                            self.tr("no triangle bulging during TIN refinement"), False))
+        self.addParameter(ParameterBoolean(lasground.BY_FLIGHTLINE,
+                                           self.tr("classify flightlines separately (needs point source IDs populated)"), False))
         self.addParameter(ParameterSelection(lasground.TERRAIN,
                                              self.tr("terrain type"), lasground.TERRAINS, 1))
         self.addParameter(ParameterSelection(lasground.GRANULARITY,
@@ -62,9 +66,12 @@ class lasground(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
+        self.addParametersIgnoreClass1Commands(commands)
         self.addParametersHorizontalAndVerticalFeetCommands(commands)
         if (self.getParameterValue(lasground.NO_BULGE)):
             commands.append("-no_bulge")
+        if (self.getParameterValue(lasground.BY_FLIGHTLINE)):
+            commands.append("-by_flightline")
         method = self.getParameterValue(lasground.TERRAIN)
         if (method != 1):
             commands.append("-" + lasground.TERRAINS[method])

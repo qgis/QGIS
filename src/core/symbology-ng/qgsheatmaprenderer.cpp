@@ -37,7 +37,7 @@ QgsHeatmapRenderer::QgsHeatmapRenderer()
     , mRadius( 10 )
     , mRadiusPixels( 0 )
     , mRadiusSquared( 0 )
-    , mRadiusUnit( QgsSymbolV2::MM )
+    , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
     , mWeightAttrNum( -1 )
     , mGradientRamp( nullptr )
     , mInvertRamp( false )
@@ -110,7 +110,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
     return false;
   }
 
-  if ( !feature.constGeometry() || feature.constGeometry()->type() != QGis::Point )
+  if ( !feature.hasGeometry() || feature.geometry().type() != QgsWkbTypes::PointGeometry )
   {
     //can only render point type
     return false;
@@ -142,19 +142,15 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
   int height = context.painter()->device()->height() / mRenderQuality;
 
   //transform geometry if required
-  QgsGeometry* transformedGeom = nullptr;
-  const QgsCoordinateTransform* xform = context.coordinateTransform();
-  if ( xform )
+  QgsGeometry geom = feature.geometry();
+  QgsCoordinateTransform xform = context.coordinateTransform();
+  if ( xform.isValid() )
   {
-    transformedGeom = new QgsGeometry( *feature.constGeometry() );
-    transformedGeom->transform( *xform );
+    geom.transform( xform );
   }
 
   //convert point to multipoint
-  QgsMultiPoint multiPoint = convertToMultipoint( transformedGeom ? transformedGeom : feature.constGeometry() );
-
-  delete transformedGeom;
-  transformedGeom = nullptr;
+  QgsMultiPoint multiPoint = convertToMultipoint( &geom );
 
   //loop through all points in multipoint
   for ( QgsMultiPoint::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )
@@ -307,14 +303,14 @@ void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderCon
   //we need to expand out the request extent so that it includes points which are up to the heatmap radius outside of the
   //actual visible extent
   double extension = 0.0;
-  if ( mRadiusUnit == QgsSymbolV2::Pixel )
+  if ( mRadiusUnit == QgsUnitTypes::RenderPixels )
   {
-    extension = mRadius / QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsSymbolV2::MapUnit, QgsMapUnitScale() );
+    extension = mRadius / QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
   }
-  else if ( mRadiusUnit == QgsSymbolV2::MM )
+  else if ( mRadiusUnit == QgsUnitTypes::RenderMillimeters )
   {
-    double pixelSize = mRadius * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsSymbolV2::MM, QgsMapUnitScale() );
-    extension = pixelSize / QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsSymbolV2::MapUnit, QgsMapUnitScale() );
+    double pixelSize = mRadius * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMillimeters, QgsMapUnitScale() );
+    extension = pixelSize / QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
   }
   else
   {
@@ -330,7 +326,7 @@ QgsFeatureRendererV2* QgsHeatmapRenderer::create( QDomElement& element )
 {
   QgsHeatmapRenderer* r = new QgsHeatmapRenderer();
   r->setRadius( element.attribute( "radius", "50.0" ).toFloat() );
-  r->setRadiusUnit( static_cast< QgsSymbolV2::OutputUnit >( element.attribute( "radius_unit", "0" ).toInt() ) );
+  r->setRadiusUnit( static_cast< QgsUnitTypes::RenderUnit >( element.attribute( "radius_unit", "0" ).toInt() ) );
   r->setRadiusMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( element.attribute( "radius_map_unit_scale", QString() ) ) );
   r->setMaximumValue( element.attribute( "max_value", "0.0" ).toFloat() );
   r->setRenderQuality( element.attribute( "quality", "0" ).toInt() );

@@ -100,6 +100,26 @@ class QgsRuleBasedRendererV2Widget : QgsRendererV2Widget
 
 ///////
 
+class QgsRendererRulePropsWidget: QgsPanelWidget
+{
+%TypeHeaderCode
+#include <qgsrulebasedrendererv2widget.h>
+%End
+
+  public:
+    QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
+    ~QgsRendererRulePropsWidget();
+
+    QgsRuleBasedRendererV2::Rule* rule();
+
+  public slots:
+    void testFilter();
+    void buildExpression();
+    void apply();
+    virtual void setDockMode( bool dockMode);
+};
+
+
 class QgsRendererRulePropsDialog : QDialog
 {
 %TypeHeaderCode

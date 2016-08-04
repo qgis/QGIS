@@ -28,7 +28,6 @@
 #include <QTreeWidget>
 #include <QVector>
 
-#include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -37,7 +36,9 @@ class QgsDataItem;
 
 typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
 
-/** Animated icon is keeping an animation running if there are listeners connected to frameChanged */
+/** \ingroup core
+ * Animated icon is keeping an animation running if there are listeners connected to frameChanged
+*/
 class CORE_EXPORT QgsAnimatedIcon : public QObject
 {
     Q_OBJECT
@@ -70,8 +71,10 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
     QIcon mIcon;
 };
 
-/** Base class for all items in the model.
- *  Parent/children hierarchy is not based on QObject. */
+/** \ingroup core
+ * Base class for all items in the model.
+ * Parent/children hierarchy is not based on QObject.
+*/
 class CORE_EXPORT QgsDataItem : public QObject
 {
     Q_OBJECT
@@ -115,9 +118,6 @@ class CORE_EXPORT QgsDataItem : public QObject
      * @note added in 2.8
      */
     virtual void setState( State state );
-
-    //! @deprecated in 2.8, use state()
-    Q_DECL_DEPRECATED bool isPopulated() { return state() == Populated; }
 
     /** Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
      * @param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
@@ -174,9 +174,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual bool setCrs( QgsCoordinateReferenceSystem crs )
     { Q_UNUSED( crs ); return false; }
 
-    //! @deprecated since 2.8, returned type this will changed to Capabilities
-    Q_DECL_DEPRECATED virtual Capability capabilities() { return NoCapabilities; }
-
+    // ### QGIS 3 - rename to capabilities()
     virtual Capabilities capabilities2() const { return mCapabilities; }
 
     virtual void setCapabilities( const Capabilities& capabilities ) { mCapabilities = capabilities; }
@@ -236,8 +234,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     QgsDataItem* mParent;
     QVector<QgsDataItem*> mChildren; // easier to have it always
     State mState;
-    //! @deprecated since 2.8, use mState
-    bool mPopulated;
     QString mName;
     // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be differen if it is
     // necessary to distinguish paths of two providers to the same source (e.g GRASS location and standard directory have the same
@@ -268,13 +264,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual void refresh();
 
-    void emitBeginInsertItems( QgsDataItem* parent, int first, int last );
-    void emitEndInsertItems();
-    void emitBeginRemoveItems( QgsDataItem* parent, int first, int last );
-    void emitEndRemoveItems();
-    void emitDataChanged( QgsDataItem* item );
     void emitDataChanged();
-    void emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState );
     virtual void childrenCreated();
 
   signals:
@@ -297,7 +287,9 @@ class CORE_EXPORT QgsDataItem : public QObject
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
 
-/** Item that represents a layer that can be opened with one of the providers */
+/** \ingroup core
+ * Item that represents a layer that can be opened with one of the providers
+*/
 class CORE_EXPORT QgsLayerItem : public QgsDataItem
 {
     Q_OBJECT
@@ -336,7 +328,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     /** Returns the supported CRS
      *  @note Added in 2.8
      */
-    QStringList supportedCRS() { return mSupportedCRS; }
+    QStringList supportedCrs() { return mSupportedCRS; }
 
     /** Returns the supported formats
      *  @note Added in 2.8
@@ -374,7 +366,9 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 };
 
 
-/** A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source? */
+/** \ingroup core
+ * A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
+*/
 class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
@@ -388,7 +382,9 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
     static const QIcon &iconDataCollection(); // default icon for data collection
 };
 
-/** A directory: contains subdirectories and layers */
+/** \ingroup core
+ * A directory: contains subdirectories and layers
+*/
 class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -423,11 +419,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     virtual QIcon icon() override;
     virtual QWidget *paramWidget() override;
 
-    /* static QVector<QgsDataProvider*> mProviders; */
-    //! @note not available via python bindings
-    //! @note deprecated since 2.10 - use QgsDataItemProviderRegistry
-    Q_DECL_DEPRECATED static QVector<QLibrary*> mLibraries;
-
     /** Check if the given path is hidden from the browser model */
     static bool hiddenPath( QString path );
 
@@ -444,7 +435,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     bool mRefreshLater;
 };
 
-/**
+/** \ingroup core
  Data item that can be used to represent QGIS projects.
  */
 class CORE_EXPORT QgsProjectItem : public QgsDataItem
@@ -463,7 +454,7 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
 
 };
 
-/**
+/** \ingroup core
  Data item that can be used to report problems (e.g. network error)
  */
 class CORE_EXPORT QgsErrorItem : public QgsDataItem
@@ -478,7 +469,9 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 
 // ---------
-
+/** \ingroup core
+ * \class QgsDirectoryParamWidget
+ */
 class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 {
     Q_OBJECT
@@ -493,7 +486,9 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
     void showHideColumn();
 };
 
-/** Contains various Favourites directories */
+/** \ingroup core
+ * Contains various Favourites directories
+*/
 class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -512,7 +507,9 @@ class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
     QVector<QgsDataItem*> createChildren( const QString& favDir );
 };
 
-/** A zip file: contains layers, using GDAL/OGR VSIFILE mechanism */
+/** \ingroup core
+ * A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
+*/
 class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 {
     Q_OBJECT

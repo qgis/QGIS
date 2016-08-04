@@ -15,7 +15,8 @@
 
 #include "qgsmapmouseevent.h"
 #include "qgsmaptooladvanceddigitizing.h"
-
+#include "qgsmapcanvas.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget )
     : QgsMapToolEdit( canvas )
@@ -69,9 +70,9 @@ void QgsMapToolAdvancedDigitizing::deactivate()
 
 void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPoint& point )
 {
-  QgsMapMouseEvent fakeEvent( mCanvas, QMouseEvent::Move, QPoint( 0, 0 ) );
-  fakeEvent.setMapPoint( point );
-  canvasMoveEvent( &fakeEvent );
+  Q_UNUSED( point );
+  QMouseEvent* ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );
+  qApp->postEvent( mCanvas->viewport(), ev );  // event queue will delete the event when processed
 }
 
 void QgsMapToolAdvancedDigitizing::snap( QgsMapMouseEvent* e )

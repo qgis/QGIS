@@ -28,8 +28,11 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 import platform
+
+from osgeo import gdal
+
 from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsVectorFileWriter
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.SilentProgress import SilentProgress
 
@@ -143,6 +146,18 @@ class GdalUtils:
         return allexts
 
     @staticmethod
+    def getVectorDriverFromFileName(filename):
+        ext = os.path.splitext(filename)[1]
+        if ext == '':
+            return 'ESRI Shapefile'
+
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats()
+        for k, v in formats.iteritems():
+            if ext in k:
+                return v
+        return 'ESRI Shapefile'
+
+    @staticmethod
     def getFormatShortNameFromFilename(filename):
         ext = filename[filename.rfind('.') + 1:]
         supported = GdalUtils.getSupportedRasters()
@@ -163,3 +178,7 @@ class GdalUtils:
                 escaped = s
             joined += escaped + ' '
         return joined.strip()
+
+    @staticmethod
+    def version():
+        return int(gdal.VersionInfo('VERSION_NUM'))

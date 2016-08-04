@@ -31,10 +31,10 @@ class QgsComposerPolygon: QgsComposerNodesItem
     void _draw( QPainter *painter );
 
     /** Read symbol in XML. */
-    void _readXMLStyle( const QDomElement &elmt  );
+    void _readXmlStyle( const QDomElement &elmt  );
 
     /** Write the symbol in an XML document. */
-    void _writeXMLStyle( QDomDocument &doc, QDomElement &elmt ) const;
+    void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const;
 
     /** Create a default symbol. */
     void createDefaultPolygonStyleSymbol();

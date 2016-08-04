@@ -23,7 +23,7 @@
 
 class QgsComposerMap;
 class QgsScaleBarStyle;
-/** \ingroup MapComposer
+/** \ingroup core
  * A scale bar item that can be added to a map composition.
  */
 
@@ -285,13 +285,13 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc Dom document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /** Moves scalebar position to the left / right depending on alignment and change in item width*/
     void correctXPositionAlignment( double width, double widthAfter );

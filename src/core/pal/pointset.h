@@ -30,11 +30,10 @@
 #ifndef POINTSET_H
 #define POINTSET_H
 
-#include "qgsgeometry.h"
-#include "rtree.hpp"
 #include <cfloat>
 #include <cmath>
 #include <QLinkedList>
+#include <geos_c.h>
 
 namespace pal
 {
@@ -59,6 +58,7 @@ namespace pal
   /**
    * \class pal::PointSet
    * \note not available in Python bindings
+   * \ingroup core
    */
   class CORE_EXPORT PointSet
   {

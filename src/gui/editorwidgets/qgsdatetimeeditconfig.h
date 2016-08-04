@@ -19,7 +19,8 @@
 #include "qgseditorconfigwidget.h"
 #include "ui_qgsdatetimeeditconfig.h"
 
-/** \class QgsDateTimeEditConfig
+/** \ingroup gui
+ * \class QgsDateTimeEditConfig
  * \note not available in Python bindings
  */
 

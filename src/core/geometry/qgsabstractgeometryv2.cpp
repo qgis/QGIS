@@ -18,11 +18,12 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 #include "qgsgeos.h"
 #include "qgsmaptopixel.h"
+#include "qgspointv2.h"
 
 #include <limits>
 #include <QTransform>
 
-QgsAbstractGeometryV2::QgsAbstractGeometryV2(): mWkbType( QgsWKBTypes::Unknown )
+QgsAbstractGeometryV2::QgsAbstractGeometryV2(): mWkbType( QgsWkbTypes::Unknown )
 {
 }
 
@@ -47,12 +48,12 @@ QgsAbstractGeometryV2& QgsAbstractGeometryV2::operator=( const QgsAbstractGeomet
 
 bool QgsAbstractGeometryV2::is3D() const
 {
-  return QgsWKBTypes::hasZ( mWkbType );
+  return QgsWkbTypes::hasZ( mWkbType );
 }
 
 bool QgsAbstractGeometryV2::isMeasure() const
 {
-  return QgsWKBTypes::hasM( mWkbType );
+  return QgsWkbTypes::hasM( mWkbType );
 }
 
 #if 0
@@ -66,7 +67,7 @@ void QgsAbstractGeometryV2::clip( const QgsRectangle& rect )
 }
 #endif
 
-void QgsAbstractGeometryV2::setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subgeom, QgsWKBTypes::Type baseGeomType )
+void QgsAbstractGeometryV2::setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subgeom, QgsWkbTypes::Type baseGeomType )
 {
   if ( !subgeom )
   {
@@ -74,16 +75,16 @@ void QgsAbstractGeometryV2::setZMTypeFromSubGeometry( const QgsAbstractGeometryV
   }
 
   //special handling for 25d types:
-  if ( baseGeomType == QgsWKBTypes::LineString &&
-       ( subgeom->wkbType() == QgsWKBTypes::Point25D || subgeom->wkbType() == QgsWKBTypes::LineString25D ) )
+  if ( baseGeomType == QgsWkbTypes::LineString &&
+       ( subgeom->wkbType() == QgsWkbTypes::Point25D || subgeom->wkbType() == QgsWkbTypes::LineString25D ) )
   {
-    mWkbType = QgsWKBTypes::LineString25D;
+    mWkbType = QgsWkbTypes::LineString25D;
     return;
   }
-  else if ( baseGeomType == QgsWKBTypes::Polygon &&
-            ( subgeom->wkbType() == QgsWKBTypes::Point25D || subgeom->wkbType() == QgsWKBTypes::LineString25D ) )
+  else if ( baseGeomType == QgsWkbTypes::Polygon &&
+            ( subgeom->wkbType() == QgsWkbTypes::Point25D || subgeom->wkbType() == QgsWkbTypes::LineString25D ) )
   {
-    mWkbType = QgsWKBTypes::Polygon25D;
+    mWkbType = QgsWkbTypes::Polygon25D;
     return;
   }
 
@@ -92,15 +93,15 @@ void QgsAbstractGeometryV2::setZMTypeFromSubGeometry( const QgsAbstractGeometryV
 
   if ( hasZ && hasM )
   {
-    mWkbType = QgsWKBTypes::addM( QgsWKBTypes::addZ( baseGeomType ) );
+    mWkbType = QgsWkbTypes::addM( QgsWkbTypes::addZ( baseGeomType ) );
   }
   else if ( hasZ )
   {
-    mWkbType = QgsWKBTypes::addZ( baseGeomType );
+    mWkbType = QgsWkbTypes::addZ( baseGeomType );
   }
   else if ( hasM )
   {
-    mWkbType =  QgsWKBTypes::addM( baseGeomType );
+    mWkbType =  QgsWkbTypes::addM( baseGeomType );
   }
   else
   {
@@ -174,6 +175,7 @@ QgsPointV2 QgsAbstractGeometryV2::centroid() const
   double A = 0.;
   double Cx = 0.;
   double Cy = 0.;
+  QgsPointV2 v0 = vertexAt( QgsVertexId( 0, 0, 0 ) );
   int i = 0, j = 1;
   if ( vertexAt( QgsVertexId( 0, 0, 0 ) ) != vertexAt( QgsVertexId( 0, 0, n - 1 ) ) )
   {
@@ -184,6 +186,10 @@ QgsPointV2 QgsAbstractGeometryV2::centroid() const
   {
     QgsPointV2 vi = vertexAt( QgsVertexId( 0, 0, i ) );
     QgsPointV2 vj = vertexAt( QgsVertexId( 0, 0, j ) );
+    vi.rx() -= v0.x();
+    vi.ry() -= v0.y();
+    vj.rx() -= v0.x();
+    vj.ry() -= v0.y();
     double d = vi.x() * vj.y() - vj.x() * vi.y();
     A += d;
     Cx += ( vi.x() + vj.x() ) * d;
@@ -203,20 +209,20 @@ QgsPointV2 QgsAbstractGeometryV2::centroid() const
   }
   else
   {
-    return QgsPointV2( Cx / ( 3. * A ), Cy / ( 3. * A ) );
+    return QgsPointV2( v0.x() + Cx / ( 3. * A ), v0.y() + Cy / ( 3. * A ) );
   }
 }
 
-bool QgsAbstractGeometryV2::convertTo( QgsWKBTypes::Type type )
+bool QgsAbstractGeometryV2::convertTo( QgsWkbTypes::Type type )
 {
   if ( type == mWkbType )
     return true;
 
-  if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::flatType( mWkbType ) )
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::flatType( mWkbType ) )
     return false;
 
-  bool needZ = QgsWKBTypes::hasZ( type );
-  bool needM = QgsWKBTypes::hasM( type );
+  bool needZ = QgsWkbTypes::hasZ( type );
+  bool needM = QgsWkbTypes::hasM( type );
   if ( !needZ )
   {
     dropZValue();

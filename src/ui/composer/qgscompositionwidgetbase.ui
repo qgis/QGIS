@@ -59,9 +59,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-445</y>
-        <width>326</width>
-        <height>949</height>
+        <y>-311</y>
+        <width>327</width>
+        <height>1113</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -432,6 +432,35 @@
           <string>Export settings</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="mPrintAsRasterCheckBox">
+            <property name="text">
+             <string>Print as raster</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="mGenerateWorldFileCheckBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>If checked, a separate world file which georeferences exported images will be created</string>
+            </property>
+            <property name="text">
+             <string>Save world file</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="1">
            <widget class="QgsSpinBox" name="mResolutionSpinBox">
             <property name="suffix">
@@ -448,46 +477,30 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="mPrintAsRasterCheckBox">
-            <property name="text">
-             <string>Print as raster</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QgsComposerItemComboBox" name="mWorldFileMapComboBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="editable">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="mGenerateWorldFileCheckBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>World file on</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
              <string>Export resolution</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Reference map</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QgsComposerItemComboBox" name="mWorldFileMapComboBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>Specifies the map which is used to georeference composer exports</string>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -709,7 +722,6 @@
   <tabstop>mResolutionSpinBox</tabstop>
   <tabstop>mPrintAsRasterCheckBox</tabstop>
   <tabstop>mGenerateWorldFileCheckBox</tabstop>
-  <tabstop>mWorldFileMapComboBox</tabstop>
   <tabstop>mSnapToGridGroupCheckBox</tabstop>
   <tabstop>mGridResolutionSpinBox</tabstop>
   <tabstop>mOffsetXSpinBox</tabstop>

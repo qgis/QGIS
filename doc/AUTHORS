@@ -1,4 +1,4 @@
-# The following have contributed to QGis:
+# The following have contributed to QGIS:
 # --------------------------------------------------------
 # Please note that this file is parsed by the about box
 # for the contributors list, so names should be strictly
@@ -60,3 +60,4 @@ Denis Rouzaud	<denis.rouzaud at gmail.com>
 Tom Kralidis	<tomkralidis at gmail.com>
 Sandro Santilli	<strk at keybit.net>
 Alessandro Pasotti	<elpaso at itopen.it>
+Even Rouault	<even dot rouault at spatialys dot com>

@@ -48,7 +48,7 @@
 #include <QDir>
 #endif
 
-QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri )
+QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &theUri )
     : mUri( theUri )
     , mCapabilitiesReply( nullptr )
     , mCoverageCount( 0 )
@@ -89,7 +89,7 @@ void QgsWcsCapabilities::parseUri()
 }
 
 // TODO: return if successful
-void QgsWcsCapabilities::setUri( QgsDataSourceURI const &theUri )
+void QgsWcsCapabilities::setUri( QgsDataSourceUri const &theUri )
 {
   mUri = theUri;
 
@@ -187,7 +187,6 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
 
 void QgsWcsCapabilities::clear()
 {
-  QgsDebugMsg( "Entered" );
   mCoverageCount = 0;
   mCoveragesSupported.clear();
   mCapabilities = QgsWcsCapabilitiesProperty();
@@ -690,7 +689,6 @@ void QgsWcsCapabilities::parseContentMetadata( QDomElement const & e, QgsWcsCove
 void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const & e, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
 {
   Q_UNUSED( parent );
-  QgsDebugMsg( "Entered" );
   coverageSummary.orderId = ++mCoverageCount;
 
   coverageSummary.identifier = firstChildText( e, "name" );
@@ -956,8 +954,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     else
     {
       QgsRectangle box;
-      QgsCoordinateReferenceSystem crs;
-      if ( crs.createFromOgcWmsCrs( authid ) && crs.axisInverted() )
+      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid );
+      if ( crs.isValid() && crs.hasAxisInverted() )
       {
         box = QgsRectangle( low[1], low[0], high[1], high[0] );
       }
@@ -966,7 +964,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
         box = QgsRectangle( low[0], low[1], high[0], high[1] );
       }
       coverage->boundingBoxes.insert( authid, box );
-      QgsDebugMsg( "crs: " + crs.authid() + ' ' + crs.description() + QString( " axisInverted = %1" ).arg( crs.axisInverted() ) );
+      QgsDebugMsg( "crs: " + crs.authid() + ' ' + crs.description() + QString( " axisInverted = %1" ).arg( crs.hasAxisInverted() ) );
       QgsDebugMsg( "BoundingBox: " + authid + " : " + box.toString() );
     }
   }
@@ -1168,7 +1166,6 @@ QString QgsWcsCapabilities::lastErrorFormat()
 
 bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
 {
-  QgsDebugMsg( "entered" );
   if ( mUri.hasParam( "authcfg" ) && !mUri.param( "authcfg" ).isEmpty() )
   {
     return QgsAuthManager::instance()->updateNetworkRequest( request, mUri.param( "authcfg" ) );

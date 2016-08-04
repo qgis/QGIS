@@ -31,7 +31,7 @@ class QgsRenderContext;
 class QgsGeometry;
 class QgsRuleBasedLabelProvider;
 
-/**
+/** \ingroup core
  * @class QgsRuleBasedLabeling
  * @note not available in Python bindings
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
@@ -45,6 +45,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     typedef QMap<Rule*, QgsVectorLayerLabelProvider*> RuleToProviderMap;
 
     /**
+     * \ingroup core
      * @class QgsRuleBasedLabeling::Rule
      * @note not available in Python bindings
      * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
@@ -316,7 +317,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 };
 
 
-/**
+/** \ingroup core
  * @class QgsRuleBasedLabelProvider
  * @note not available in Python bindings
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2

@@ -75,6 +75,9 @@ class QgsGraduatedSymbolRendererV2ViewStyle: public QProxyStyle
 
 ///@endcond
 
+/** \ingroup gui
+ * \class QgsGraduatedSymbolRendererV2Widget
+ */
 class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsGraduatedSymbolRendererV2Widget
 {
     Q_OBJECT
@@ -117,6 +120,10 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void on_mSizeUnitWidget_changed();
     void on_methodComboBox_currentIndexChanged( int );
     void refreshRanges( bool reset = false );
+
+  private slots:
+    void cleanUpSymbolSelector( QgsPanelWidget* container );
+    void updateSymbolsFromWidget();
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );

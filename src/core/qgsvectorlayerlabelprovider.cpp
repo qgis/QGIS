@@ -81,7 +81,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSetti
     bool ownsSource, QgsFeatureRendererV2* renderer )
     : QgsAbstractLabelProvider( layerId )
     , mSettings( settings )
-    , mLayerGeometryType( QGis::UnknownGeometry )
+    , mLayerGeometryType( QgsWkbTypes::UnknownGeometry )
     , mRenderer( renderer )
     , mFields( fields )
     , mCrs( crs )
@@ -105,7 +105,7 @@ void QgsVectorLayerLabelProvider::init()
   if ( mSettings.labelPerPart ) mFlags |= LabelPerFeaturePart;
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
-  if ( mLayerGeometryType == QGis::Point && mRenderer )
+  if ( mLayerGeometryType == QgsWkbTypes::PointGeometry && mRenderer )
   {
     //override obstacle type to treat any intersection of a label with the point symbol as a high cost conflict
     mObstacleType = QgsPalLayerSettings::PolygonWhole;
@@ -228,15 +228,15 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
   lyr.fieldIndex = mFields.fieldNameIndex( lyr.fieldName );
 
   lyr.xform = &mapSettings.mapToPixel();
-  lyr.ct = nullptr;
+  lyr.ct = QgsCoordinateTransform();
   if ( mapSettings.hasCrsTransformEnabled() )
   {
-    if ( context.coordinateTransform() )
+    if ( context.coordinateTransform().isValid() )
       // this is context for layer rendering - use its CT as it includes correct datum transform
-      lyr.ct = context.coordinateTransform()->clone();
+      lyr.ct = context.coordinateTransform();
     else
       // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
-      lyr.ct = new QgsCoordinateTransform( mCrs, mapSettings.destinationCrs() );
+      lyr.ct = QgsCoordinateTransform( mCrs, mapSettings.destinationCrs() );
   }
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );
   lyr.ptOne = lyr.xform->toMapCoordinates( 1, 0 );
@@ -246,7 +246,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
-    lyr.extentGeom->rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
+    lyr.extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
   lyr.mFeatsSendingToPal = 0;
@@ -273,8 +273,8 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
     mRenderer->startRender( ctx, mFields );
 
   QgsRectangle layerExtent = ctx.extent();
-  if ( mSettings.ct )
-    layerExtent = mSettings.ct->transformBoundingBox( ctx.extent(), QgsCoordinateTransform::ReverseTransform );
+  if ( mSettings.ct.isValid() && !mSettings.ct.isShortCircuited() )
+    layerExtent = mSettings.ct.transformBoundingBox( ctx.extent(), QgsCoordinateTransform::ReverseTransform );
 
   QgsFeatureRequest request;
   request.setFilterRect( layerExtent );
@@ -290,7 +290,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
     if ( mRenderer )
     {
       QgsSymbolV2List symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
-      if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
+      if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
         //point feature, use symbol bounds as obstacle
         obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols ) );
@@ -323,27 +323,27 @@ void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRende
 
 QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolV2List& symbols )
 {
-  if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() || fet.constGeometry()->type() != QGis::Point )
+  if ( !fet.hasGeometry() || fet.geometry().type() != QgsWkbTypes::PointGeometry )
     return nullptr;
 
-  bool isMultiPoint = fet.constGeometry()->geometry()->nCoordinates() > 1;
+  bool isMultiPoint = fet.geometry().geometry()->nCoordinates() > 1;
   QgsAbstractGeometryV2* obstacleGeom = nullptr;
   if ( isMultiPoint )
     obstacleGeom = new QgsMultiPolygonV2();
 
   // for each point
-  for ( int i = 0; i < fet.constGeometry()->geometry()->nCoordinates(); ++i )
+  for ( int i = 0; i < fet.geometry().geometry()->nCoordinates(); ++i )
   {
     QRectF bounds;
-    QgsPointV2 p =  fet.constGeometry()->geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
+    QgsPointV2 p =  fet.geometry().geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
     double x = p.x();
     double y = p.y();
     double z = 0; // dummy variable for coordinate transforms
 
     //transform point to pixels
-    if ( context.coordinateTransform() )
+    if ( context.coordinateTransform().isValid() )
     {
-      context.coordinateTransform()->transformInPlace( x, y, z );
+      context.coordinateTransform().transformInPlace( x, y, z );
     }
     context.mapToPixel().transformInPlace( x, y );
 
@@ -374,9 +374,9 @@ QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& 
       boundLineString->setXAt( i, point.x() );
       boundLineString->setYAt( i, point.y() );
     }
-    if ( context.coordinateTransform() )
+    if ( context.coordinateTransform().isValid() )
     {
-      boundLineString->transform( *context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+      boundLineString->transform( context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
     }
     boundLineString->close();
 

@@ -23,6 +23,7 @@
 #include "qgspoint.h"
 #include "qgsdatadefinedbutton.h"
 #include "qgsexpressioncontext.h"
+#include "qgsproject.h"
 #include <QColorDialog>
 #include <QPen>
 
@@ -109,6 +110,16 @@ QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const
 
 //QgsComposerItemWidget
 
+void QgsComposerItemWidget::updateVariables()
+{
+  QgsExpressionContext* context = mItem->createExpressionContext();
+  mVariableEditor->setContext( context );
+  int editableIndex = context->indexOfScope( tr( "Composer Item" ) );
+  if ( editableIndex >= 0 )
+    mVariableEditor->setEditableScopeIndex( editableIndex );
+  delete context;
+}
+
 QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item )
     : QgsComposerItemBaseWidget( parent, item )
     , mItem( item )
@@ -141,12 +152,17 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
 
   connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpnBx, SLOT( setValue( int ) ) );
 
-  QgsExpressionContext* context = mItem->createExpressionContext();
-  mVariableEditor->setContext( context );
-  mVariableEditor->setEditableScopeIndex( context->scopeCount() - 1 );
-  delete context;
-
+  updateVariables();
   connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
+  // listen out for variable edits
+  QgsApplication* app = qobject_cast<QgsApplication*>( QgsApplication::instance() );
+  if ( app )
+  {
+    connect( app, SIGNAL( settingsChanged() ), this, SLOT( updateVariables() ) );
+  }
+  connect( QgsProject::instance(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
+  if ( mItem->composition() )
+    connect( mItem->composition(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
 
   //connect atlas signals to data defined buttons
   QgsAtlasComposition* atlas = atlasComposition();

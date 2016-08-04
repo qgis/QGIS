@@ -41,7 +41,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height ) override;
+    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     int grayBand() const { return mGrayBand; }
     void setGrayBand( int band ) { mGrayBand = band; }
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     void setGradient( Gradient theGradient ) { mGradient = theGradient; }
     Gradient gradient() const { return mGradient; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
 

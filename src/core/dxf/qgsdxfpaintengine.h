@@ -19,14 +19,14 @@
 #define QGSDXFPAINTENGINE_H
 
 #include <QPaintEngine>
-#include "qgsgeometryfactory.h"
 #include "qgsabstractgeometryv2.h"
 
 class QgsDxfExport;
 class QgsDxfPaintDevice;
 
 
-/** \class QgsDxfPaintEngine
+/** \ingroup core
+ * \class QgsDxfPaintEngine
  * \note not available in Python bindings
 */
 

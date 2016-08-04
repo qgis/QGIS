@@ -879,6 +879,13 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
       delete slp;
       return nullptr;
     }
+    // Shift the character downwards since the draw position is specified at the baseline
+    // and we're calculating the mean line here
+    double dist = 0.9 * li->label_height / 2;
+    if ( orientation < 0 )
+      dist = -dist;
+    start_x += dist * cos( angle + M_PI_2 );
+    start_y -= dist * sin( angle + M_PI_2 );
 
     double render_angle = angle;
 
@@ -1001,10 +1008,21 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
   // and the line has right-to-left direction
   bool reversed = ( !( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
 
+  // an orientation of 0 means try both orientations and choose the best
+  int orientation = 0;
+  if ( !( flags & FLAG_MAP_ORIENTATION )
+       && mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
+  {
+    //... but if we are labeling the perimeter of a polygon and using line orientation flags,
+    // then we can only accept a single orientation, as we need to ensure that the labels fall
+    // inside or outside the polygon (and not mixed)
+    orientation = reversed ? -1 : 1;
+  }
+
   // generate curved labels
   for ( int i = 0; i*delta < total_distance; i++ )
   {
-    LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, 0, 1, i * delta );
+    LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i * delta );
 
     if ( slp )
     {
@@ -1042,11 +1060,11 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
       double angle_avg = atan2( sin_avg / li->char_num, cos_avg / li->char_num );
       // displacement
       if (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) )
-        positions.append( _createCurvedCandidate( slp, angle_avg, mLF->distLabel() ) );
+        positions.append( _createCurvedCandidate( slp, angle_avg, mLF->distLabel() + li->label_height / 2 ) );
       if ( flags & FLAG_ON_LINE )
-        positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 ) );
+        positions.append( _createCurvedCandidate( slp, angle_avg, 0 ) );
       if (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) )
-        positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height - mLF->distLabel() ) );
+        positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 - mLF->distLabel() ) );
 
       // delete original candidate
       delete slp;
@@ -1308,15 +1326,17 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
     switch ( type )
     {
       case GEOS_POINT:
-        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint || mLF->hasFixedQuadrant() )
-          createCandidatesOverPoint( x[0], y[0], lPos, angle );
-        else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OrderedPositionsAroundPoint )
+        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OrderedPositionsAroundPoint )
           createCandidatesAtOrderedPositionsOverPoint( x[0], y[0], lPos, angle );
+        else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint || mLF->hasFixedQuadrant() )
+          createCandidatesOverPoint( x[0], y[0], lPos, angle );
         else
           createCandidatesAroundPoint( x[0], y[0], lPos, angle );
         break;
       case GEOS_LINESTRING:
         if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Curved )
+          createCurvedCandidatesAlongLine( lPos, mapShape );
+        else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
           createCurvedCandidatesAlongLine( lPos, mapShape );
         else
           createCandidatesAlongLine( lPos, mapShape );
@@ -1336,6 +1356,9 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
             break;
           case QgsPalLayerSettings::Line:
             createCandidatesAlongLine( lPos, mapShape );
+            break;
+          case QgsPalLayerSettings::PerimeterCurved:
+            createCurvedCandidatesAlongLine( lPos, mapShape );
             break;
           default:
             createCandidatesForPolygon( lPos, mapShape );

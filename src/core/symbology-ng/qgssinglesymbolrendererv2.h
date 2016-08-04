@@ -22,6 +22,9 @@
 #include <QScopedPointer>
 
 Q_NOWARN_DEPRECATED_PUSH
+/** \ingroup core
+ * \class QgsSingleSymbolRendererV2
+ */
 class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:
@@ -59,10 +62,10 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     virtual QgsSingleSymbolRendererV2* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() override { return SymbolLevels | RotationField; }
+    virtual Capabilities capabilities() override { return SymbolLevels | RotationField; }
 
     //! @note available in python as symbol2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;

@@ -32,7 +32,7 @@ QgsTransformEffect::QgsTransformEffect()
     : QgsPaintEffect()
     , mTranslateX( 0.0 )
     , mTranslateY( 0.0 )
-    , mTranslateUnit( QgsSymbolV2::MM )
+    , mTranslateUnit( QgsUnitTypes::RenderMillimeters )
     , mScaleX( 1.0 )
     , mScaleY( 1.0 )
     , mRotation( 0.0 )
@@ -78,7 +78,7 @@ QgsStringMap QgsTransformEffect::properties() const
   props.insert( "shear_y", QString::number( mShearY ) );
   props.insert( "translate_x", QString::number( mTranslateX ) );
   props.insert( "translate_y", QString::number( mTranslateY ) );
-  props.insert( "translate_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mTranslateUnit ) );
+  props.insert( "translate_unit", QgsUnitTypes::encodeUnit( mTranslateUnit ) );
   props.insert( "translate_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mTranslateMapUnitScale ) );
   props.insert( "enabled", mEnabled ? "1" : "0" );
   props.insert( "draw_mode", QString::number( int( mDrawMode ) ) );
@@ -96,7 +96,7 @@ void QgsTransformEffect::readProperties( const QgsStringMap &props )
   mRotation = props.value( "rotation", "0.0" ).toDouble();
   mTranslateX = props.value( "translate_x", "0.0" ).toDouble();
   mTranslateY = props.value( "translate_y", "0.0" ).toDouble();
-  mTranslateUnit = QgsSymbolLayerV2Utils::decodeOutputUnit( props.value( "translate_unit" ) );
+  mTranslateUnit = QgsUnitTypes::decodeRenderUnit( props.value( "translate_unit" ) );
   mTranslateMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( props.value( "translate_unit_scale" ) );
 }
 

@@ -26,7 +26,9 @@ class QgsComposerTableColumn;
 
 //QgsComposerAttributeTableColumnModelV2
 
-/** A model for displaying columns shown in a QgsComposerAttributeTableV2*/
+/** \ingroup core
+ * A model for displaying columns shown in a QgsComposerAttributeTableV2
+*/
 class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableModel
 {
     Q_OBJECT
@@ -124,7 +126,9 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
 
 //QgsComposerTableSortColumnsProxyModelV2
 
-/** Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted*/
+/** \ingroup core
+ * Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted
+*/
 class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterProxyModel
 {
     Q_OBJECT

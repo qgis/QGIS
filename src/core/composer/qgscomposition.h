@@ -32,16 +32,14 @@
 #include "qgscomposeritemcommand.h"
 #include "qgscomposermultiframecommand.h"
 #include "qgsatlascomposition.h"
-#include "qgspaperitem.h"
 #include "qgscomposerobject.h"
-#include "qgscomposeritem.h"
+#include "qgscomposeritem.h" // required for nested name
 #include "qgsobjectcustomproperties.h"
 
 class QgisApp;
 class QgsComposerFrame;
 class QgsComposerMap;
 class QGraphicsRectItem;
-class QgsMapRenderer;
 class QDomElement;
 class QgsComposerArrow;
 class QgsComposerPolygon;
@@ -66,8 +64,9 @@ class QgsComposer;
 class QgsFillSymbolV2;
 class QgsDataDefined;
 class QgsComposerModel;
+class QgsPaperItem;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Graphics scene for map printing. The class manages the paper item which always
  * is the item in the back (z-value 0). It maintains the z-Values of the items and stores
  * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
@@ -106,8 +105,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       Landscape
     };
 
-    //! @deprecated since 2.4 - use the constructor with QgsMapSettings
-    Q_DECL_DEPRECATED QgsComposition( QgsMapRenderer* mapRenderer );
     explicit QgsComposition( const QgsMapSettings& mapSettings );
 
     /** Composition atlas modes*/
@@ -477,10 +474,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** Used to enable or disable advanced effects such as blend modes in a composition */
     void setUseAdvancedEffects( const bool effectsEnabled );
 
-    /** Returns pointer to map renderer of qgis map canvas*/
-    //! @deprecated since 2.4 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
-    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer() { return mMapRenderer; }
-
     //! Return setting of QGIS map canvas
     //! @note added in 2.4
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
@@ -500,10 +493,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     Q_DECL_DEPRECATED double pointFontSize( int pixelSize ) const;
 
     /** Writes settings to xml (paper dimension)*/
-    bool writeXML( QDomElement& composerElem, QDomDocument& doc );
+    bool writeXml( QDomElement& composerElem, QDomDocument& doc );
 
     /** Reads settings from xml file*/
-    bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& compositionElem, const QDomDocument& doc );
 
     /** Load a template document
      * @param doc template document
@@ -525,7 +518,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
      * @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
      */
-    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = nullptr,
+    void addItemsFromXml( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = nullptr,
                           bool addUndoCommands = false, QPointF* pos = nullptr, bool pasteInPlace = false );
 
     /** Adds item to z list. Usually called from constructor of QgsComposerItem*/
@@ -743,6 +736,18 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      */
     void renderRect( QPainter* p, const QRectF& rect );
 
+    /** Georeferences a file (image of PDF) exported from the composition.
+     * @param file filename of exported file
+     * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
+     * currently defined worldFileMap().
+     * @param exportRegion set to a valid rectangle to indicate that only part of the composition was
+     * exported
+     * @param dpi set to DPI of exported file, or leave as -1 to use composition's DPI.
+     * @note added in QGIS 2.16
+     */
+    void georeferenceOutput( const QString& file, QgsComposerMap* referenceMap = nullptr,
+                             const QRectF& exportRegion = QRectF(), double dpi = -1 ) const;
+
     /** Compute world file parameters. Assumes the whole page containing the associated map item
      * will be exported.
      */
@@ -911,8 +916,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
 
   private:
-    /** Pointer to map renderer of QGIS main map*/
-    QgsMapRenderer* mMapRenderer;
+    /** Reference to map settings of QGIS main map*/
     const QgsMapSettings& mMapSettings;
 
     QgsComposition::PlotStyle mPlotStyle;
@@ -1016,7 +1020,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void removePaperItems();
     void deleteAndRemoveMultiFrames();
 
-    static QString encodeStringForXML( const QString& str );
+    static QString encodeStringForXml( const QString& str );
 
     //tries to return the current QGraphicsView attached to the composition
     QGraphicsView* graphicsView() const;
@@ -1075,6 +1079,17 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      */
     bool ddPageSizeActive() const;
 
+    /** Computes a GDAL style geotransform for georeferencing a composition.
+     * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
+     * currently defined worldFileMap().
+     * @param exportRegion set to a valid rectangle to indicate that only part of the composition is
+     * being exported
+     * @param dpi allows overriding the default composition DPI, or leave as -1 to use composition's DPI.
+     * @note added in QGIS 2.16
+     */
+    double* computeGeoTransform( const QgsComposerMap* referenceMap = nullptr, const QRectF& exportRegion = QRectF(), double dpi = -1 ) const;
+
+
   private slots:
     /*Prepares all data defined expressions*/
     void prepareAllDataDefinedExpressions();
@@ -1096,6 +1111,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void composerPolylineAdded( QgsComposerPolyline* polyline );
     /** Is emitted when a new composer html has been added to the view*/
     void composerHtmlFrameAdded( QgsComposerHtml* html, QgsComposerFrame* frame );
+    /** Is emitted when a new item group has been added to the view*/
+    void composerItemGroupAdded( QgsComposerItemGroup* group );
     /** Is emitted when new composer label has been added to the view*/
     void composerLabelAdded( QgsComposerLabel* label );
     /** Is emitted when new composer map has been added to the view*/
@@ -1121,8 +1138,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** Is emitted when the composition has an updated status bar message for the composer window*/
     void statusMsgChanged( const QString& message );
 
+    /** Emitted whenever the expression variables stored in the composition have been changed.
+     * @note added in QGIS 3.0
+     */
+    void variablesChanged();
+
     friend class QgsComposerObject; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
     friend class QgsComposerModel; //for accessing updateZValues (should not be public)
+    friend class TestQgsComposition;
 };
 
 template<class T> void QgsComposition::composerItems( QList<T*>& itemList )

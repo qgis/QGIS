@@ -17,11 +17,11 @@
 #define QGSSYMBOLLAYERV2REGISTRY_H
 
 #include "qgssymbolv2.h"
-#include "qgssymbollayerv2.h"
 
 class QgsVectorLayer;
+class QgsSymbolLayerV2Widget;
 
-/**
+/** \ingroup core
  Stores metadata about one symbol layer class.
 
  @note It's necessary to implement createSymbolLayer() function.
@@ -60,7 +60,7 @@ typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFunc )( const QgsStringMap& );
 typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )( const QgsVectorLayer* );
 typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFromSldFunc )( QDomElement& );
 
-/**
+/** \ingroup core
  Convenience metadata class that uses static functions to create symbol layer and its widget.
  */
 class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMetadata
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
 };
 
 
-/**
+/** \ingroup core
  Registry of available symbol layer classes.
  Implemented as a singleton.
  */

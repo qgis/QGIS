@@ -66,7 +66,7 @@ QColor QgsColorDialog::getLiveColor( const QColor& initialColor, QObject* update
 // QgsColorDialogV2
 //
 
-QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, const Qt::WindowFlags& fl, const QColor& color )
+QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const QColor& color )
     : QDialog( parent, fl )
     , mPreviousColor( color )
     , mAllowAlpha( true )
@@ -117,7 +117,7 @@ void QgsColorDialogV2::setAllowAlpha( const bool allowAlpha )
 QColor QgsColorDialogV2::getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot, QWidget *parent, const QString &title, const bool allowAlpha )
 {
   QColor returnColor( initialColor );
-  QgsColorDialogV2* liveDialog = new QgsColorDialogV2( parent, nullptr, initialColor );
+  QgsColorDialogV2* liveDialog = new QgsColorDialogV2( parent, 0, initialColor );
   liveDialog->setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
   if ( !allowAlpha )
   {
@@ -150,7 +150,7 @@ QColor QgsColorDialogV2::getColor( const QColor &initialColor, QWidget *parent, 
   }
   else
   {
-    QgsColorDialogV2* dialog = new QgsColorDialogV2( parent, nullptr, initialColor );
+    QgsColorDialogV2* dialog = new QgsColorDialogV2( parent, 0, initialColor );
     dialog->setWindowTitle( dialogTitle );
     dialog->setAllowAlpha( allowAlpha );
 

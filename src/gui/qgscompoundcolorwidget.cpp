@@ -29,6 +29,7 @@
 #include <QMouseEvent>
 #include <QInputDialog>
 
+
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& color )
     : QWidget( parent )
     , mAllowAlpha( true )
@@ -51,13 +52,9 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   activeScheme = activeScheme >= mSchemeComboBox->count() ? 0 : activeScheme;
 
   mSchemeList->setScheme( schemeList.at( activeScheme ) );
+
   mSchemeComboBox->setCurrentIndex( activeScheme );
-  mActionImportColors->setEnabled( schemeList.at( activeScheme )->isEditable() );
-  mActionPasteColors->setEnabled( schemeList.at( activeScheme )->isEditable() );
-  mAddColorToSchemeButton->setEnabled( schemeList.at( activeScheme )->isEditable() );
-  mRemoveColorsFromSchemeButton->setEnabled( schemeList.at( activeScheme )->isEditable() );
-  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( schemeList.at( activeScheme ) );
-  mActionRemovePalette->setEnabled( userScheme ? true : false );
+  updateActionsForCurrentScheme();
 
   //listen out for selection changes in list, so we can enable/disable the copy colors option
   connect( mSchemeList->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( listSelectionChanged( QItemSelection, QItemSelection ) ) );
@@ -83,6 +80,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   schemeMenu->addAction( mActionNewPalette );
   schemeMenu->addAction( mActionImportPalette );
   schemeMenu->addAction( mActionRemovePalette );
+  schemeMenu->addAction( mActionShowInButtons );
   mSchemeToolButton->setMenu( schemeMenu );
 
   connect( mSchemeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( schemeIndexChanged( int ) ) );
@@ -103,37 +101,37 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   mAlphaSlider->setComponent( QgsColorWidget::Alpha );
 
   mSwatchButton1->setShowMenu( false );
-  mSwatchButton1->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton1->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton2->setShowMenu( false );
-  mSwatchButton2->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton2->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton3->setShowMenu( false );
-  mSwatchButton3->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton3->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton4->setShowMenu( false );
-  mSwatchButton4->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton4->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton5->setShowMenu( false );
-  mSwatchButton5->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton5->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton6->setShowMenu( false );
-  mSwatchButton6->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton6->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton7->setShowMenu( false );
-  mSwatchButton7->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton7->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton8->setShowMenu( false );
-  mSwatchButton8->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton8->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton9->setShowMenu( false );
-  mSwatchButton9->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton9->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton10->setShowMenu( false );
-  mSwatchButton10->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton10->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton11->setShowMenu( false );
-  mSwatchButton11->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton11->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton12->setShowMenu( false );
-  mSwatchButton12->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton12->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton13->setShowMenu( false );
-  mSwatchButton13->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton13->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton14->setShowMenu( false );
-  mSwatchButton14->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton14->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton15->setShowMenu( false );
-  mSwatchButton15->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton15->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton16->setShowMenu( false );
-  mSwatchButton16->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton16->setBehaviour( QgsColorButton::SignalOnly );
   //restore custom colors
   mSwatchButton1->setColor( settings.value( "/Windows/ColorDialog/customColor1", QVariant( QColor() ) ).value<QColor>() );
   mSwatchButton2->setColor( settings.value( "/Windows/ColorDialog/customColor2", QVariant( QColor() ) ).value<QColor>() );
@@ -479,12 +477,8 @@ void QgsCompoundColorWidget::schemeIndexChanged( int index )
 
   QgsColorScheme* scheme = schemeList.at( index );
   mSchemeList->setScheme( scheme );
-  mActionImportColors->setEnabled( scheme->isEditable() );
-  mActionPasteColors->setEnabled( scheme->isEditable() );
-  mAddColorToSchemeButton->setEnabled( scheme->isEditable() );
-  mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
-  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( scheme );
-  mActionRemovePalette->setEnabled( userScheme ? true : false );
+
+  updateActionsForCurrentScheme();
 
   //copy action defaults to disabled
   mActionCopyColors->setEnabled( false );
@@ -577,6 +571,15 @@ void QgsCompoundColorWidget::on_mTabWidget_currentChanged( int index )
   mHueRadio->setEnabled( enabled );
   mSaturationRadio->setEnabled( enabled );
   mValueRadio->setEnabled( enabled );
+}
+
+void QgsCompoundColorWidget::on_mActionShowInButtons_toggled( bool state )
+{
+  QgsUserColorScheme* scheme = dynamic_cast< QgsUserColorScheme* >( mSchemeList->scheme() );
+  if ( scheme )
+  {
+    scheme->setShowSchemeInMenu( state );
+  }
 }
 
 void QgsCompoundColorWidget::saveSettings()
@@ -837,4 +840,27 @@ void QgsCompoundColorWidget::on_mBlueRadio_toggled( bool checked )
 void QgsCompoundColorWidget::on_mAddColorToSchemeButton_clicked()
 {
   mSchemeList->addColor( mColorPreview->color(), QgsSymbolLayerV2Utils::colorToName( mColorPreview->color() ) );
+}
+
+void QgsCompoundColorWidget::updateActionsForCurrentScheme()
+{
+  QgsColorScheme* scheme = mSchemeList->scheme();
+
+  mActionImportColors->setEnabled( scheme->isEditable() );
+  mActionPasteColors->setEnabled( scheme->isEditable() );
+  mAddColorToSchemeButton->setEnabled( scheme->isEditable() );
+  mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
+
+  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( scheme );
+  mActionRemovePalette->setEnabled( userScheme ? true : false );
+  if ( userScheme )
+  {
+    mActionShowInButtons->setEnabled( true );
+    whileBlocking( mActionShowInButtons )->setChecked( userScheme->flags() & QgsColorScheme::ShowInColorButtonMenu );
+  }
+  else
+  {
+    whileBlocking( mActionShowInButtons )->setChecked( false );
+    mActionShowInButtons->setEnabled( false );
+  }
 }

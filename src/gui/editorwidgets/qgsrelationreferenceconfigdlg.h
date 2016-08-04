@@ -21,7 +21,8 @@
 #include "ui_qgsrelationreferenceconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
 
-/** \class QgsRelationReferenceConfigDlg
+/** \ingroup gui
+ * \class QgsRelationReferenceConfigDlg
  * \note not available in Python bindings
  */
 

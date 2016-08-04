@@ -459,7 +459,6 @@ QStringList QgsGrassMapcalc::arguments()
 
 QStringList QgsGrassMapcalc::checkOutput()
 {
-  QgsDebugMsg( "entered." );
   QStringList list;
 
   QString value = mOutputLineEdit->text().trimmed();
@@ -484,7 +483,6 @@ QStringList QgsGrassMapcalc::checkOutput()
 
 QStringList QgsGrassMapcalc::checkRegion()
 {
-  QgsDebugMsg( "entered." );
   QStringList list;
 
   QList<QGraphicsItem *> l = mCanvasScene->items();
@@ -545,7 +543,6 @@ bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, QgsCoordinateRefere
 {
   Q_UNUSED( crs );
   Q_UNUSED( all );
-  QgsDebugMsg( "entered." );
 
   try
   {
@@ -610,7 +607,6 @@ bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, QgsCoordinateRefere
 
 QStringList QgsGrassMapcalc::output( int type )
 {
-  QgsDebugMsg( "entered." );
   QStringList list;
   if ( type == QgsGrassModuleOption::Raster )
   {
@@ -650,7 +646,6 @@ void QgsGrassMapcalc::showOptions( int tool )
 
 void QgsGrassMapcalc::setOption()
 {
-  QgsDebugMsg( "entered." );
 
   if ( mTool != Select )
     return;
@@ -846,7 +841,6 @@ void QgsGrassMapcalc::setToolActionsOff()
 
 void QgsGrassMapcalc::mapChanged( const QString & text )
 {
-  QgsDebugMsg( "entered." );
 
   if (( mTool != AddMap && mTool != Select )  || !mObject )
     return;
@@ -859,7 +853,6 @@ void QgsGrassMapcalc::mapChanged( const QString & text )
 
 void QgsGrassMapcalc::constantChanged()
 {
-  QgsDebugMsg( "entered." );
 
   if (( mTool != AddConstant && mTool != Select ) || !mObject )
     return;
@@ -872,7 +865,6 @@ void QgsGrassMapcalc::constantChanged()
 
 void QgsGrassMapcalc::functionChanged()
 {
-  QgsDebugMsg( "entered." );
 
   if (( mTool != AddFunction && mTool != Select ) || !mObject )
     return;
@@ -904,7 +896,6 @@ void QgsGrassMapcalc::resizeCanvas( int width, int height )
 
 void QgsGrassMapcalc::growCanvas( int left, int right, int top, int bottom )
 {
-  QgsDebugMsg( "entered." );
   QgsDebugMsg( QString( "left = %1 right = %2 top = %3 bottom = %4" ).arg( left ).arg( right ).arg( top ).arg( bottom ) );
 
   int width = mCanvasScene->width() + left + right;
@@ -940,7 +931,6 @@ void QgsGrassMapcalc::growCanvas( int left, int right, int top, int bottom )
 
 void QgsGrassMapcalc::autoGrow()
 {
-  QgsDebugMsg( "entered." );
 
   int thresh = 15;
 
@@ -988,7 +978,6 @@ void QgsGrassMapcalc::autoGrow()
 
 void QgsGrassMapcalc::saveAs()
 {
-  QgsDebugMsg( "entered." );
 
   // Check/create 'mapcalc' directory in current mapset
   QString ms = QgsGrass::getDefaultGisdbase() + "/"
@@ -1045,7 +1034,6 @@ void QgsGrassMapcalc::saveAs()
 
 void QgsGrassMapcalc::save()
 {
-  QgsDebugMsg( "entered." );
   if ( mFileName.isEmpty() ) // Should not happen
   {
     QMessageBox::warning( this, tr( "Save mapcalc" ), tr( "File name empty" ) );
@@ -1176,7 +1164,6 @@ void QgsGrassMapcalc::save()
 
 void QgsGrassMapcalc::load()
 {
-  QgsDebugMsg( "entered." );
 
   QgsGrassSelect *sel = new QgsGrassSelect( this, QgsGrassSelect::MAPCALC );
   if ( sel->exec() == QDialog::Rejected )
@@ -1379,7 +1366,6 @@ void QgsGrassMapcalc::load()
 
 void QgsGrassMapcalc::clear()
 {
-  QgsDebugMsg( "entered." );
 
   setTool( Select );
 
@@ -1402,7 +1388,6 @@ QgsGrassMapcalcItem::QgsGrassMapcalcItem()
     : mSelected( false )
     , mId( -1 )
 {
-  QgsDebugMsg( "entered." );
 }
 
 QgsGrassMapcalcItem::~QgsGrassMapcalcItem()
@@ -1425,7 +1410,6 @@ QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
     , mOutputConnector( 0 )
     , mOutputConnectorEnd( 0 )
 {
-  QgsDebugMsg( "entered." );
 
   QGraphicsRectItem::setZValue( 20 );
 
@@ -1447,7 +1431,6 @@ QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
 
 QgsGrassMapcalcObject::~QgsGrassMapcalcObject()
 {
-  QgsDebugMsg( "entered." );
   // Delete connections
   for ( int i = 0; i < mInputCount; i++ )
   {
@@ -1703,7 +1686,6 @@ void QgsGrassMapcalcObject::setSelected( bool s )
 bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
                                         int end )
 {
-  QgsDebugMsg( "entered." );
 
   QPoint p = connector->point( end );
 
@@ -1749,7 +1731,6 @@ bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
 void QgsGrassMapcalcObject::setConnector( int direction, int socket,
     QgsGrassMapcalcConnector *connector, int end )
 {
-  QgsDebugMsg( "entered." );
 
   if ( direction == In )
   {
@@ -1767,7 +1748,6 @@ void QgsGrassMapcalcObject::setConnector( int direction, int socket,
 
 QPoint QgsGrassMapcalcObject::socketPoint( int direction, int socket )
 {
-  // QgsDebugMsg("entered.");
 
   if ( direction == In )
   {
@@ -1779,7 +1759,6 @@ QPoint QgsGrassMapcalcObject::socketPoint( int direction, int socket )
 
 QString QgsGrassMapcalcObject::expression()
 {
-  QgsDebugMsg( "entered." );
   QgsDebugMsg( QString( "mType = %1" ).arg( mType ) );
 
   if ( mType == Map || mType == Constant )
@@ -1833,7 +1812,6 @@ QgsGrassMapcalcConnector::QgsGrassMapcalcConnector( QGraphicsScene *canvas )
     , QgsGrassMapcalcItem()
     , mSelectedEnd( -1 )
 {
-  QgsDebugMsg( "entered." );
 
   canvas->addItem( this );
 
@@ -1919,7 +1897,6 @@ void QgsGrassMapcalcConnector::setSelected( bool s )
 
 void QgsGrassMapcalcConnector::selectEnd( QPoint point )
 {
-  QgsDebugMsg( "entered." );
   mSelectedEnd = -1;
 
   double d0 = sqrt( pow(( double )( point.x() - mPoints[0].x() ), 2.0 )
@@ -1950,7 +1927,6 @@ int QgsGrassMapcalcConnector::selectedEnd()
 
 bool QgsGrassMapcalcConnector::tryConnectEnd( int end )
 {
-  QgsDebugMsg( "entered." );
 
   QList<QGraphicsItem *> l = scene()->items( mPoints[end] );
   QgsGrassMapcalcObject *object = 0;
@@ -1970,7 +1946,6 @@ bool QgsGrassMapcalcConnector::tryConnectEnd( int end )
 void QgsGrassMapcalcConnector::setSocket( int end,
     QgsGrassMapcalcObject *object, int direction, int socket )
 {
-  QgsDebugMsg( "entered." );
 
   // Remove old connection from object
   if ( mSocketObjects[end] )
@@ -2010,7 +1985,6 @@ bool QgsGrassMapcalcConnector::connected( int direction )
 
 QString QgsGrassMapcalcConnector::expression()
 {
-  QgsDebugMsg( "entered." );
   for ( int i = 0; i < 2; i++ )
   {
     if ( !mSocketObjects[i] )

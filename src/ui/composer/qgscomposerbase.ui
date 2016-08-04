@@ -168,7 +168,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilePrint.png</normaloff>:/images/themes/default/mActionFilePrint.png</iconset>
+     <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Print...</string>
@@ -306,7 +306,7 @@
   <action name="mActionExportAsImage">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSaveMapAsImage.png</normaloff>:/images/themes/default/mActionSaveMapAsImage.png</iconset>
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
     <string>Export as &amp;Image...</string>
@@ -318,7 +318,7 @@
   <action name="mActionExportAsPDF">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSaveAsPDF.png</normaloff>:/images/themes/default/mActionSaveAsPDF.png</iconset>
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Export as PDF...</string>
@@ -327,7 +327,7 @@
   <action name="mActionExportAsSVG">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
    </property>
    <property name="text">
     <string>Export as S&amp;VG...</string>
@@ -638,7 +638,7 @@
   <action name="mActionUndo">
    <property name="icon">
     <iconset>
-     <normalon>:/images/themes/default/mActionUndo.png</normalon>
+     <normalon>:/images/themes/default/mActionUndo.svg</normalon>
     </iconset>
    </property>
    <property name="text">
@@ -654,7 +654,7 @@
   <action name="mActionRedo">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRedo.png</normaloff>:/images/themes/default/mActionRedo.png</iconset>
+     <normaloff>:/images/themes/default/mActionRedo.svg</normaloff>:/images/themes/default/mActionRedo.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Redo</string>
@@ -963,7 +963,7 @@
   <action name="mActionPrintAtlas">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilePrint.png</normaloff>:/images/themes/default/mActionFilePrint.png</iconset>
+     <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Print Atlas...</string>
@@ -972,7 +972,7 @@
   <action name="mActionExportAtlasAsImage">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSaveMapAsImage.png</normaloff>:/images/themes/default/mActionSaveMapAsImage.png</iconset>
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
     <string>Export Atlas as &amp;Images...</string>
@@ -981,7 +981,7 @@
   <action name="mActionExportAtlasAsSVG">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
    </property>
    <property name="text">
     <string>Export Atlas as S&amp;VG...</string>
@@ -990,7 +990,7 @@
   <action name="mActionExportAtlasAsPDF">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSaveAsPDF.png</normaloff>:/images/themes/default/mActionSaveAsPDF.png</iconset>
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Export Atlas as PDF...</string>

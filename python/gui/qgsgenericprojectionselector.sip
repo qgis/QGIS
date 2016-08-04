@@ -7,7 +7,7 @@
  * a coordinate system identifier e.g. from a plugin you might do this
  * to get an epsg code:
  * \code
- * QgsGenericProjectionSelector mySelector( mQGisIface->mainWindow() );
+ * QgsGenericProjectionSelector mySelector( mQgisIface->mainWindow() );
  * mySelector.setSelectedEpsg( mEpsgId );
  * if ( mySelector.exec() )
  * {

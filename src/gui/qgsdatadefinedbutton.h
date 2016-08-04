@@ -338,6 +338,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     void showExpressionDialog();
     void showAssistant();
     void updateGui();
+    void updateFieldLists();
 
     const QgsVectorLayer* mVectorLayer;
     QStringList mFieldNameList;

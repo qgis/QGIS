@@ -104,7 +104,7 @@ void QgsComposerItemCommand::saveState( QDomDocument& stateDoc ) const
 
   stateDoc.clear();
   QDomElement documentElement = stateDoc.createElement( "ComposerItemState" );
-  source->writeXML( documentElement, stateDoc );
+  source->writeXml( documentElement, stateDoc );
   stateDoc.appendChild( documentElement );
 }
 
@@ -116,7 +116,7 @@ void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
     return;
   }
 
-  destItem->readXML( stateDoc.documentElement().firstChild().toElement(), stateDoc );
+  destItem->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc );
   destItem->repaint();
   QgsProject::instance()->setDirty( true );
 }

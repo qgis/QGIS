@@ -19,7 +19,7 @@
 #include <QSpinBox>
 #include <QToolButton>
 
-/**
+/** \ingroup gui
  * @brief The QgsSpinBox is a spin box with a clear button that will set the value to the defined clear value.
  * The clear value can be either the minimum or the maiximum value of the spin box or a custom value.
  * This value can then be handled by a special value text.

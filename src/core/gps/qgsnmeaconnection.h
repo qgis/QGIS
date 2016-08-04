@@ -20,7 +20,9 @@
 
 #include "qgsgpsconnection.h"
 
-/** Evaluates NMEA sentences coming from a GPS device*/
+/** \ingroup core
+ * Evaluates NMEA sentences coming from a GPS device
+*/
 class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
 {
     Q_OBJECT

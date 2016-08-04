@@ -288,6 +288,19 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded. */
     virtual bool unregisterMainWindowAction( QAction* action ) override;
 
+    /** Register a new tab in the vector layer properties dialog.
+     * @note added in QGIS 2.16
+     * @note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * @see unregisterMapLayerPropertiesFactory() */
+    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) override;
+
+    /** Unregister a previously registered tab in the vector layer properties dialog.
+     * @note added in QGIS 2.16
+     * @see registerMapLayerPropertiesFactory()
+    */
+    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) override;
+
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
      */
@@ -384,6 +397,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionAddRasterLayer() override;
     virtual QAction *actionAddPgLayer() override;
     virtual QAction *actionAddWmsLayer() override;
+    /** Get access to the native Add ArcGIS FeatureServer action. */
+    virtual QAction *actionAddAfsLayer() override;
+    /** Get access to the native Add ArcGIS MapServer action. */
+    virtual QAction *actionAddAmsLayer() override;
     virtual QAction *actionCopyLayerStyle() override;
     virtual QAction *actionPasteLayerStyle() override;
     virtual QAction *actionOpenTable() override;

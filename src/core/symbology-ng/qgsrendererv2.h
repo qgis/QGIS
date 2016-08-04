@@ -51,6 +51,9 @@ typedef QList< QPair<QString, QgsSymbolV2*> > QgsLegendSymbolList;
 ////////
 // symbol levels
 
+/** \ingroup core
+ * \class QgsSymbolV2LevelItem
+ */
 class CORE_EXPORT QgsSymbolV2LevelItem
 {
   public:
@@ -75,13 +78,16 @@ typedef QList< QgsSymbolV2Level > QgsSymbolV2LevelOrder;
 //////////////
 // renderers
 
+/** \ingroup core
+ * \class QgsFeatureRendererV2
+ */
 class CORE_EXPORT QgsFeatureRendererV2
 {
   public:
     // renderer takes ownership of its symbols!
 
     //! return a new renderer - used by default in vector layers
-    static QgsFeatureRendererV2* defaultRenderer( QGis::GeometryType geomType );
+    static QgsFeatureRendererV2* defaultRenderer( QgsWkbTypes::GeometryType geomType );
 
     QString type() const { return mType; }
 
@@ -163,14 +169,27 @@ class CORE_EXPORT QgsFeatureRendererV2
     virtual QString filter( const QgsFields& fields = QgsFields() ) { Q_UNUSED( fields ); return QString::null; }
 
     /**
-     * Returns a set of attributes required for this renderer.
+     * Return a list of attributes required by this renderer. Attributes not listed in here may
+     * not have been requested from the provider at rendering time.
      *
-     * TODO QGIS3: Change QList to QSet
+     * @return A set of attributes
      */
+    // TODO QGIS3: Change QList to QSet
     virtual QList<QString> usedAttributes() = 0;
+
+    /**
+     * Returns true if this renderer requires the geometry to apply the filter.
+     */
+    virtual bool filterNeedsGeometry() const;
 
     virtual ~QgsFeatureRendererV2();
 
+    /**
+     * Create a deep copy of this renderer. Should be implemented by all subclasses
+     * and generate a proper subclass.
+     *
+     * @return A copy of this renderer
+     */
     virtual QgsFeatureRendererV2* clone() const = 0;
 
     /**
@@ -185,20 +204,37 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
-    //! for debugging
+    //! Returns debug information about this renderer
     virtual QString dump() const;
 
-    enum Capabilities
+    /**
+     * Used to specify details about a renderer.
+     * Is returned from the capabilities() method.
+     */
+    enum Capability
     {
-      SymbolLevels = 1,               // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
-      RotationField = 1 <<  1,        // rotate symbols by attribute value
-      MoreSymbolsPerFeature = 1 << 2, // may use more than one symbol to render a feature: symbolsForFeature() will return them
-      Filter         = 1 << 3,        // features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
-      ScaleDependent = 1 << 4         // depends on scale if feature will be rendered (rule based )
+      SymbolLevels          = 1,      //!< rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+      RotationField         = 1 << 1, //!< rotate symbols by attribute value
+      MoreSymbolsPerFeature = 1 << 2, //!< may use more than one symbol to render a feature: symbolsForFeature() will return them
+      Filter                = 1 << 3, //!< features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
+      ScaleDependent        = 1 << 4  //!< depends on scale if feature will be rendered (rule based )
     };
 
-    //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() { return 0; }
+    Q_DECLARE_FLAGS( Capabilities, Capability )
+
+    /**
+     * Returns details about internals of this renderer.
+     *
+     * E.g. if you only want to deal with visible features:
+     *
+     * ~~~{.py}
+     * if not renderer.capabilities().testFlag(QgsFeatureRendererV2.Filter) or renderer.willRenderFeature(feature, context):
+     *     deal_with_my_feature()
+     * else:
+     *     skip_the_curren_feature()
+     * ~~~
+     */
+    virtual Capabilities capabilities() { return 0; }
 
     /** For symbol levels
      * @deprecated use symbols( QgsRenderContext& context ) instead
@@ -239,7 +275,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * went wrong
      * @return the renderer
      */
-    static QgsFeatureRendererV2* loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage );
+    static QgsFeatureRendererV2* loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage );
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const
@@ -408,6 +444,21 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     void setOrderByEnabled( bool enabled );
 
+    /** Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
+     * does nothing with subrenderers, but individual derived classes can use these to modify their behaviour.
+     * @param subRenderer the embedded renderer. Ownership will be transferred.
+     * @see embeddedRenderer()
+     * @note added in QGIS 2.16
+     */
+    virtual void setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer ) { delete subRenderer; }
+
+    /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
+     * implementation does not use subrenderers and will always return null.
+     * @see setEmbeddedRenderer()
+     * @note added in QGIS 2.16
+     */
+    virtual const QgsFeatureRendererV2* embeddedRenderer() const { return nullptr; }
+
   protected:
     QgsFeatureRendererV2( const QString& type );
 
@@ -490,6 +541,8 @@ class CORE_EXPORT QgsFeatureRendererV2
   private:
     Q_DISABLE_COPY( QgsFeatureRendererV2 )
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRendererV2::Capabilities )
 
 // for some reason SIP compilation fails if these lines are not included:
 class QgsRendererV2Widget;

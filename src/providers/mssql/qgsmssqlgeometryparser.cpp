@@ -217,9 +217,9 @@ void QgsMssqlGeometryParser::CopyPoint( int iPoint )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBPoint25D;
+    wkbType = QgsWkbTypes::Point25D;
   else
-    wkbType = QGis::WKBPoint;
+    wkbType = QgsWkbTypes::Point;
   CopyBytes( &wkbType, 4 );
   // copy coordinates
   CopyCoordinates( iPoint );
@@ -257,9 +257,9 @@ void QgsMssqlGeometryParser::ReadMultiPoint( int iShape )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBMultiPoint25D;
+    wkbType = QgsWkbTypes::MultiPoint25D;
   else
-    wkbType = QGis::WKBMultiPoint;
+    wkbType = QgsWkbTypes::MultiPoint;
   CopyBytes( &wkbType, 4 );
   // copy point count
   CopyBytes( &iCount, 4 );
@@ -293,9 +293,9 @@ void QgsMssqlGeometryParser::ReadLineString( int iShape )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBLineString25D;
+    wkbType = QgsWkbTypes::LineString25D;
   else
-    wkbType = QGis::WKBLineString;
+    wkbType = QgsWkbTypes::LineString;
   CopyBytes( &wkbType, 4 );
   // copy length
   CopyBytes( &iCount, 4 );
@@ -324,9 +324,9 @@ void QgsMssqlGeometryParser::ReadMultiLineString( int iShape )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBMultiLineString25D;
+    wkbType = QgsWkbTypes::MultiLineString25D;
   else
-    wkbType = QGis::WKBMultiLineString;
+    wkbType = QgsWkbTypes::MultiLineString;
   CopyBytes( &wkbType, 4 );
   // copy length
   CopyBytes( &iCount, 4 );
@@ -357,9 +357,9 @@ void QgsMssqlGeometryParser::ReadPolygon( int iShape )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBPolygon25D;
+    wkbType = QgsWkbTypes::Polygon25D;
   else
-    wkbType = QGis::WKBPolygon;
+    wkbType = QgsWkbTypes::Polygon;
   CopyBytes( &wkbType, 4 );
   // copy ring count
   CopyBytes( &iCount, 4 );
@@ -399,9 +399,9 @@ void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBMultiPolygon25D;
+    wkbType = QgsWkbTypes::MultiPolygon25D;
   else
-    wkbType = QGis::WKBMultiPolygon;
+    wkbType = QgsWkbTypes::MultiPolygon;
   CopyBytes( &wkbType, 4 );
   // copy poly count
   CopyBytes( &iCount, 4 );
@@ -429,7 +429,7 @@ void QgsMssqlGeometryParser::ReadGeometryCollection( int iShape )
   // copy byte order
   CopyBytes( &chByteOrder, 1 );
   // copy type
-  int wkbType = QGis::WKBUnknown;
+  int wkbType = QgsWkbTypes::Unknown;
   CopyBytes( &wkbType, 4 );
   // copy geom count
   CopyBytes( &iCount, 4 );
@@ -541,9 +541,9 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
     // copy type
     int wkbType;
     if ( chProps & SP_HASZVALUES )
-      wkbType = QGis::WKBLineString25D;
+      wkbType = QgsWkbTypes::LineString25D;
     else
-      wkbType = QGis::WKBLineString;
+      wkbType = QgsWkbTypes::LineString;
     CopyBytes( &wkbType, 4 );
     // copy point count
     int iCount = 2;

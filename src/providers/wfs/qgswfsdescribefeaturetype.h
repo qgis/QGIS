@@ -18,7 +18,7 @@
 #include "qgswfsrequest.h"
 
 /** Manages the DescribeFeatureType request */
-class QgsWFSDescribeFeatureType : public QgsWFSRequest
+class QgsWFSDescribeFeatureType : public QgsWfsRequest
 {
     Q_OBJECT
   public:

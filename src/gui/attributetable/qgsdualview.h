@@ -20,19 +20,17 @@
 
 #include "ui_qgsdualviewbase.h"
 
-#include "qgsfieldconditionalformatwidget.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributetablefiltermodel.h"
-#include "qgscachedfeatureiterator.h"
 #include "qgsdistancearea.h"
 #include "qgsattributeform.h"
 
-class QgsAttributeForm;
 class QgsFeatureRequest;
 class QSignalMapper;
 class QgsMapLayerAction;
+class QScrollArea;
 
-/**
+/** \ingroup gui
  * This widget is used to show the attributes of a set of features of a {@link QgsVectorLayer}.
  * The attributes can be edited.
  * It supports two different layouts: the table layout, in which the attributes for the features
@@ -184,7 +182,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Set the expression used for sorting the table and feature list.
      */
-    void setSortExpression( const QString& sortExpression );
+    void setSortExpression( const QString& sortExpression , Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
      * Get the expression used for sorting the table and feature list.
@@ -225,6 +223,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @note added in QGIS 2.16
      */
     void toggleSearchMode( bool enabled );
+
+    /**
+     * Copy the content of the selected cell in the clipboard.
+     * @note added in QGIS 1.16
+     */
+    void copyCellContent() const;
 
   signals:
     /**
@@ -267,7 +271,23 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void viewWillShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
+    void showViewHeaderMenu( QPoint point );
+
+    void organizeColumns();
+
+    void tableColumnResized( int column, int width );
+
+    void hideColumn();
+
+    void resizeColumn();
+
+    void autosizeColumn();
+
+    void modifySort();
+
     void previewExpressionChanged( const QString& expression );
+
+    void onSortColumnChanged();
 
     void sortByPreviewExpression();
 
@@ -294,6 +314,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     /** Zooms to the active feature*/
     void zoomToCurrentFeature();
+    /** Pans to the active feature*/
+    void panToCurrentFeature();
 
   private:
     void initLayerCache( QgsVectorLayer *layer, bool cacheGeometry );
@@ -306,15 +328,21 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsAttributeForm* mAttributeForm;
     QSignalMapper* mPreviewActionMapper;
     QMenu* mPreviewColumnsMenu;
+    QMenu* mHorizontalHeaderMenu;
     QgsVectorLayerCache* mLayerCache;
     QProgressDialog* mProgressDlg;
     QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsDistanceArea mDistanceArea;
     QString mDisplayExpression;
+    QgsAttributeTableConfig mConfig;
+    QScrollArea* mAttributeEditorScrollArea;
 
     friend class TestQgsDualView;
 };
 
+/** \ingroup gui
+ * \class QgsAttributeTableAction
+ */
 class GUI_EXPORT QgsAttributeTableAction : public QAction
 {
     Q_OBJECT
@@ -337,6 +365,9 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     QModelIndex mFieldIdx;
 };
 
+/** \ingroup gui
+ * \class QgsAttributeTableMapLayerAction
+ */
 class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
 {
     Q_OBJECT
@@ -357,5 +388,7 @@ class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
     QgsMapLayerAction* mAction;
     QModelIndex mFieldIdx;
 };
+
+Q_DECLARE_METATYPE( QModelIndex );
 
 #endif // QGSDUALVIEW_H

@@ -26,7 +26,6 @@
 QgsRenderContext::QgsRenderContext()
     : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
     , mPainter( nullptr )
-    , mCoordTransform( nullptr )
     , mRenderingStopped( false )
     , mScaleFactor( 1.0 )
     , mRasterScaleFactor( 1.0 )
@@ -124,11 +123,12 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   ctx.setFlag( ForceVectorOutput, mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
   ctx.setFlag( UseAdvancedEffects, mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
   ctx.setFlag( UseRenderingOptimization, mapSettings.testFlag( QgsMapSettings::UseRenderingOptimization ) );
-  ctx.setCoordinateTransform( nullptr );
+  ctx.setCoordinateTransform( QgsCoordinateTransform() );
   ctx.setSelectionColor( mapSettings.selectionColor() );
   ctx.setFlag( DrawSelection, mapSettings.testFlag( QgsMapSettings::DrawSelection ) );
   ctx.setFlag( DrawSymbolBounds, mapSettings.testFlag( QgsMapSettings::DrawSymbolBounds ) );
   ctx.setFlag( RenderMapTile, mapSettings.testFlag( QgsMapSettings::RenderMapTile ) );
+  ctx.setFlag( Antialiasing, mapSettings.testFlag( QgsMapSettings::Antialiasing ) );
   ctx.setRasterScaleFactor( 1.0 );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
@@ -168,7 +168,7 @@ bool QgsRenderContext::showSelection() const
   return mFlags.testFlag( DrawSelection );
 }
 
-void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform* t )
+void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform& t )
 {
   mCoordTransform = t;
 }

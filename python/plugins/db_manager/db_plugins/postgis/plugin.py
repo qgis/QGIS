@@ -73,15 +73,15 @@ class PostGisDBPlugin(DBPlugin):
         if not settings.contains("database"):  # non-existent entry?
             raise InvalidDataException(self.tr('There is no defined database connection "%s".') % conn_name)
 
-        from qgis.core import QgsDataSourceURI
+        from qgis.core import QgsDataSourceUri
 
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
 
         settingsList = ["service", "host", "port", "database", "username", "password", "authcfg"]
         service, host, port, database, username, password, authcfg = [settings.value(x, "", type=str) for x in settingsList]
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
-        sslmode = settings.value("sslmode", QgsDataSourceURI.SSLprefer, type=int)
+        sslmode = settings.value("sslmode", QgsDataSourceUri.SSLprefer, type=int)
 
         settings.endGroup()
 
@@ -108,6 +108,10 @@ class PGDatabase(Database):
 
     def dataTablesFactory(self, row, db, schema=None):
         return PGTable(row, db, schema)
+
+    def info(self):
+        from .info_model import PGDatabaseInfo
+        return PGDatabaseInfo(self)
 
     def vectorTablesFactory(self, row, db, schema=None):
         return PGVectorTable(row, db, schema)
@@ -184,7 +188,7 @@ class PGTable(Table):
         self.schema().refresh() if self.schema() else self.database().refresh()
 
     def runRefreshMaterializedView(self):
-        self.aboutToChange()
+        self.aboutToChange.emit()
         self.database().connector.runRefreshMaterializedView((self.schemaName(), self.name))
         # TODO: change only this item, not re-create all the tables in the schema/database
         self.schema().refresh() if self.schema() else self.database().refresh()
@@ -321,12 +325,12 @@ class PGRasterTable(PGTable, RasterTable):
         return uri
 
     def toMapLayer(self):
-        from qgis.core import QgsRasterLayer, QgsContrastEnhancement, QgsDataSourceURI, QgsCredentials
+        from qgis.core import QgsRasterLayer, QgsContrastEnhancement, QgsDataSourceUri, QgsCredentials
 
         rl = QgsRasterLayer(self.gdalUri(), self.name)
         if not rl.isValid():
             err = rl.error().summary()
-            uri = QgsDataSourceURI(self.database().uri())
+            uri = QgsDataSourceUri(self.database().uri())
             conninfo = uri.connectionInfo(False)
             username = uri.username()
             password = uri.password()

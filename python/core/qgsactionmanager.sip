@@ -54,6 +54,11 @@ class QgsActionManager
      */
     void addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture = false );
 
+    /**
+     * Add a new action to this list.
+     */
+    void addAction( const QgsAction& action );
+
     //! Remove an action at given index
     void removeAction( int index );
 
@@ -64,6 +69,20 @@ class QgsActionManager
     void doAction( int index,
                    const QgsFeature &feat,
                    int defaultValueIndex = 0 ) /PyName=doActionFeature/;
+
+    /** Does the action using the expression engine to replace any embedded expressions
+     * in the action definition.
+     * @param index action index
+     * @param feature feature to run action for
+     * @param context expression context to evalute expressions under
+     * @param substitutionMap deprecated - kept for compatibility with projects, will be removed for 3.0
+     */
+    // TODO QGIS 3.0 remove substition map - force use of expression variables
+    void doAction( int index,
+                   const QgsFeature& feature,
+                   const QgsExpressionContext& context,
+                   const QMap<QString, QVariant> *substitutionMap = nullptr );
+
 
     /** Does the action using the expression builder to expand it
      *  and getting values from the passed feature attribute map.
@@ -86,8 +105,9 @@ class QgsActionManager
 
     /** Expands the given action, replacing all %'s with the value as
      *  given.
+     * @deprecated use QgsExpression::replaceExpressionText() instead
      */
-    QString expandAction( QString action, const QMap<int, QVariant> &attributes, uint defaultValueIndex );
+    QString expandAction( QString action, const QMap<int, QVariant> &attributes, uint defaultValueIndex ) /Deprecated/;
 
     /** Expands the given action using the expression builder
      *  This function currently replaces each expression between [% and %]
@@ -96,27 +116,51 @@ class QgsActionManager
      *
      *  Additional substitutions can be passed through the substitutionMap
      *  parameter
+     *  @deprecated use QgsExpression::replaceExpressionText() instead
      */
     QString expandAction( const QString& action,
                           QgsFeature &feat,
-                          const QMap<QString, QVariant> *substitutionMap = 0 );
+                          const QMap<QString, QVariant> *substitutionMap = 0 ) /Deprecated/;
 
 
     //! Writes the actions out in XML format
-    bool writeXML( QDomNode& layer_node, QDomDocument& doc ) const;
+    bool writeXml( QDomNode& layer_node, QDomDocument& doc ) const;
 
     //! Reads the actions in in XML format
-    bool readXML( const QDomNode& layer_node );
+    bool readXml( const QDomNode& layer_node );
 
     int size() const;
     /**
      * Get the action at the specified index.
      */
-    QgsAction at( int idx ) const;
+    QgsAction at( int idx ) const /Factory/;
+%MethodCode
+  if ( a0 < 0 || a0 >= sipCpp->size() )
+  {
+    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+    sipIsErr = 1;
+  }
+  else
+  {
+    sipRes = new QgsAction( sipCpp->at( a0 ) );
+  }
+%End
+
     /**
      * Get the action at the specified index.
      */
     QgsAction operator[]( int idx ) const;
+%MethodCode
+  if ( a0 < 0 || a0 >= sipCpp->size() )
+  {
+    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+    sipIsErr = 1;
+  }
+  else
+  {
+    sipRes = new QgsAction( sipCpp->at( a0 ) );
+  }
+%End
 
     /** @deprecated Initialize QgsPythonRunner instead
      * @note not available in Python bindings
@@ -124,11 +168,15 @@ class QgsActionManager
     // Q_DECL_DEPRECATED static void setPythonExecute( void ( * )( const QString & ) );
 
     /**
-     * Get the index of the default action
+     * Returns the index of the default action, or -1 if no default action is available.
+     * @see setDefaultAction()
      */
     int defaultAction() const;
+
     /**
-     * Set the index of the default action
+     * Set the index of the default action.
+     * @param actionNumber index of action which should be made the default for the layer
+     * @see defaultAction()
      */
     void setDefaultAction( int actionNumber );
 };

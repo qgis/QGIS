@@ -21,22 +21,22 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgslogger.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptopixel.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendercontext.h"
 #include "qgsscalecalculator.h"
 #include "qgsvectorlayer.h"
 #include "qgspallabeling.h"
 #include "qgsexpression.h"
-#include "qgsvisibilitypresetcollection.h"
+#include "qgsmapthemecollection.h"
+#include "qgsannotation.h"
 
-#include "qgslabel.h"
-#include "qgslabelattributes.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 
 #include <QGraphicsScene>
@@ -520,13 +520,6 @@ void QgsComposerMap::setCacheUpdated( bool u )
   mCacheUpdated = u;
 }
 
-const QgsMapRenderer *QgsComposerMap::mapRenderer() const
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  return mComposition->mapRenderer();
-  Q_NOWARN_DEPRECATED_POP
-}
-
 QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context ) const
 {
   const QgsExpressionContext* evalContext = context;
@@ -550,8 +543,8 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
-      renderLayerSet = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
+    if ( QgsProject::instance()->mapThemeCollection()->hasPreset( presetName ) )
+      renderLayerSet = QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( presetName );
     else  // fallback to using map canvas layers
       renderLayerSet = mComposition->mapSettings().layers();
   }
@@ -611,8 +604,8 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
-      return QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName );
+    if ( QgsProject::instance()->mapThemeCollection()->hasPreset( presetName ) )
+      return QgsProject::instance()->mapThemeCollection()->presetStyleOverrides( presetName );
     else
       return QMap<QString, QString>();
   }
@@ -1159,7 +1152,7 @@ void QgsComposerMap::updateItem()
   QgsComposerItem::updateItem();
 }
 
-bool QgsComposerMap::containsWMSLayer() const
+bool QgsComposerMap::containsWmsLayer() const
 {
   QStringList layers = mComposition->mapSettings().layers();
 
@@ -1263,7 +1256,7 @@ void QgsComposerMap::connectUpdateSlot()
   }
 }
 
-bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {
@@ -1313,7 +1306,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   extentElem.setAttribute( "ymax", qgsDoubleToString( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
 
-  // follow visibility preset
+  // follow map theme
   composerMapElem.setAttribute( "followPreset", mFollowVisibilityPreset ? "true" : "false" );
   composerMapElem.setAttribute( "followPresetName", mFollowVisibilityPresetName );
 
@@ -1353,10 +1346,10 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerMapElem.appendChild( gridElem );
 
   //grids
-  mGridStack->writeXML( composerMapElem, doc );
+  mGridStack->writeXml( composerMapElem, doc );
 
   //overviews
-  mOverviewStack->writeXML( composerMapElem, doc );
+  mOverviewStack->writeXml( composerMapElem, doc );
 
   //atlas
   QDomElement atlasElem = doc.createElement( "AtlasMap" );
@@ -1366,10 +1359,10 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerMapElem.appendChild( atlasElem );
 
   elem.appendChild( composerMapElem );
-  return _writeXML( composerMapElem, doc );
+  return _writeXml( composerMapElem, doc );
 }
 
-bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   if ( itemElem.isNull() )
   {
@@ -1418,7 +1411,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mMapRotation = itemElem.attribute( "mapRotation", "0" ).toDouble();
   }
 
-  // follow visibility preset
+  // follow map theme
   mFollowVisibilityPreset = itemElem.attribute( "followPreset" ).compare( "true" ) == 0;
   mFollowVisibilityPresetName = itemElem.attribute( "followPresetName" );
 
@@ -1483,10 +1476,10 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   mCacheUpdated = false;
 
   //overviews
-  mOverviewStack->readXML( itemElem, doc );
+  mOverviewStack->readXml( itemElem, doc );
 
   //grids
-  mGridStack->readXML( itemElem, doc );
+  mGridStack->readXml( itemElem, doc );
 
   //load grid / grid annotation in old xml format
   //only do this if the grid stack didn't load any grids, otherwise this will
@@ -1509,7 +1502,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mapGrid->setFramePenColor( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "framePenColor", "0,0,0" ) ) );
     mapGrid->setFrameFillColor1( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor1", "255,255,255,255" ) ) );
     mapGrid->setFrameFillColor2( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor2", "0,0,0,255" ) ) );
-    mapGrid->setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) ) );
+    mapGrid->setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) ) );
     QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
     QgsLineSymbolV2* lineSymbol = nullptr;
     if ( gridSymbolElem.isNull() )
@@ -1560,7 +1553,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     QgsComposerMapOverview* mapOverview = new QgsComposerMapOverview( tr( "Overview %1" ).arg( mOverviewStack->size() + 1 ), this );
 
     mapOverview->setFrameMap( overviewFrameElem.attribute( "overviewFrameMap", "-1" ).toInt() );
-    mapOverview->setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( overviewFrameElem.attribute( "overviewBlendMode", "0" ).toUInt() ) ) );
+    mapOverview->setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( overviewFrameElem.attribute( "overviewBlendMode", "0" ).toUInt() ) ) );
     mapOverview->setInverted( overviewFrameElem.attribute( "overviewInverted" ).compare( "true", Qt::CaseInsensitive ) == 0 );
     mapOverview->setCentered( overviewFrameElem.attribute( "overviewCentered" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
@@ -1603,7 +1596,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
       mMapRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
     }
 
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   updateBoundingRect();
@@ -2182,9 +2175,8 @@ QgsExpressionContext* QgsComposerMap::createExpressionContext() const
   QgsRectangle extent( *currentMapExtent() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_width", extent.width(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_height", extent.height(), true ) );
-  QgsGeometry* centerPoint = QgsGeometry::fromPoint( extent.center() );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( *centerPoint ), true ) );
-  delete centerPoint;
+  QgsGeometry centerPoint = QgsGeometry::fromPoint( extent.center() );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( centerPoint ), true ) );
 
   context->appendScope( scope );
 
@@ -2373,18 +2365,19 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
   for ( int i = itemList.size() - 1; i >= 0; --i )
   {
     currentItem = itemList.at( i );
-    //don't draw mapcanvasmap (has z value -10)
-    if ( !currentItem || currentItem->data( 0 ).toString() != "AnnotationItem" )
+
+    const QgsAnnotation* annotation = dynamic_cast< const QgsAnnotation* >( currentItem );
+    if ( !annotation )
     {
       continue;
     }
-    drawCanvasItem( currentItem, painter, itemStyle );
+    drawCanvasItem( annotation, painter, itemStyle );
   }
 }
 
-void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
+void QgsComposerMap::drawCanvasItem( const QgsAnnotation* annotation, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
 {
-  if ( !item || !mMapCanvas || !item->isVisible() )
+  if ( !annotation || !annotation->showItem() )
   {
     return;
   }
@@ -2392,56 +2385,52 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
   painter->save();
   painter->setRenderHint( QPainter::Antialiasing );
 
-  //determine scale factor according to graphics view dpi
-  double scaleFactor = 1.0 / mMapCanvas->logicalDpiX() * 25.4;
+  double scaleFactor = annotation->scaleFactor();
 
   double itemX, itemY;
-  QGraphicsItem* parent = item->parentItem();
-  if ( !parent )
+  if ( annotation->mapPositionFixed() )
   {
-    QPointF mapPos = composerMapPosForItem( item );
+    QPointF mapPos = composerMapPosForItem( annotation );
     itemX = mapPos.x();
     itemY = mapPos.y();
   }
-  else //place item relative to the parent item
+  else
   {
-    QPointF itemScenePos = item->scenePos();
-    QPointF parentScenePos = parent->scenePos();
-
-    QPointF mapPos = composerMapPosForItem( parent );
-
-    itemX = mapPos.x() + ( itemScenePos.x() - parentScenePos.x() ) * scaleFactor;
-    itemY = mapPos.y() + ( itemScenePos.y() - parentScenePos.y() ) * scaleFactor;
+    itemX = annotation->relativePosition().x() * rect().width();
+    itemY = annotation->relativePosition().y() * rect().height();
   }
-  painter->translate( itemX, itemY );
 
+  painter->translate( itemX, itemY );
   painter->scale( scaleFactor, scaleFactor );
 
   //a little trick to let the item know that the paint request comes from the composer
-  item->setData( 1, "composer" );
-  item->paint( painter, itemStyle, nullptr );
-  item->setData( 1, "" );
+  const_cast< QgsAnnotation* >( annotation )->setItemData( 1, "composer" );
+  const_cast< QgsAnnotation* >( annotation )->paint( painter, itemStyle, nullptr );
+  const_cast< QgsAnnotation* >( annotation )->setItemData( 1, "" );
+
   painter->restore();
 }
 
-QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
+QPointF QgsComposerMap::composerMapPosForItem( const QgsAnnotation* annotation ) const
 {
-  if ( !item || !mMapCanvas )
-  {
+  if ( !annotation )
     return QPointF( 0, 0 );
+
+  double mapX = 0.0;
+  double mapY = 0.0;
+
+  mapX = annotation->mapPosition().x();
+  mapY = annotation->mapPosition().y();
+  QgsCoordinateReferenceSystem crs = annotation->mapPositionCrs();
+
+  if ( crs != mComposition->mapSettings().destinationCrs() )
+  {
+    //need to reproject
+    QgsCoordinateTransform t( crs, mComposition->mapSettings().destinationCrs() );
+    double z = 0.0;
+    t.transformInPlace( mapX, mapY, z );
   }
 
-  if ( currentMapExtent()->height() <= 0 || currentMapExtent()->width() <= 0 || mMapCanvas->width() <= 0 || mMapCanvas->height() <= 0 )
-  {
-    return QPointF( 0, 0 );
-  }
-
-  QRectF graphicsSceneRect = mMapCanvas->sceneRect();
-  QPointF itemScenePos = item->scenePos();
-  QgsRectangle mapRendererExtent = mComposition->mapSettings().visibleExtent();
-
-  double mapX = itemScenePos.x() / graphicsSceneRect.width() * mapRendererExtent.width() + mapRendererExtent.xMinimum();
-  double mapY = mapRendererExtent.yMaximum() - itemScenePos.y() / graphicsSceneRect.height() * mapRendererExtent.height();
   return mapToItemCoords( QPointF( mapX, mapY ) );
 }
 

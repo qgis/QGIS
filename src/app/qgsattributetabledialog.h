@@ -24,13 +24,8 @@
 #include <time.h>
 
 #include "ui_qgsattributetabledialog.h"
-#include "qgscontexthelp.h"
-
-#include "qgsattributedialog.h"
-#include "qgsvectorlayer.h" //QgsFeatureIds
-#include "qgsfieldmodel.h"
 #include "qgssearchwidgetwrapper.h"
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 
 class QDialogButtonBox;
 class QPushButton;
@@ -74,71 +69,66 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     /**
      * Copies selected rows to the clipboard
      */
-    void on_mCopySelectedRowsButton_clicked();
+    void on_mActionCopySelectedRows_triggered();
     /**
      * Paste features from the clipboard
      */
-    void on_mPasteFeatures_clicked();
+    void on_mActionPasteFeatures_triggered();
     /**
      * Toggles editing mode
      */
-    void on_mToggleEditingButton_toggled();
+    void on_mActionToggleEditing_toggled( bool );
     /**
      * Saves edits
      */
-    void on_mSaveEditsButton_clicked();
+    void on_mActionSaveEdits_triggered();
     /**
      * Reload the data
      */
-    void on_mReloadButton_clicked();
-    /**
-     * Filter the columns (open a dialog, ...)
-     */
-    void on_mFilterTableFields_clicked();
-
+    void on_mActionReload_triggered();
     /**
      * Inverts selection
      */
-    void on_mInvertSelectionButton_clicked();
+    void on_mActionInvertSelection_triggered();
     /**
      * Clears selection
      */
-    void on_mRemoveSelectionButton_clicked();
+    void on_mActionRemoveSelection_triggered();
     /**
      * Select all
      */
-    void on_mSelectAllButton_clicked();
+    void on_mActionSelectAll_triggered();
     /**
      * Zooms to selected features
      */
-    void on_mZoomMapToSelectedRowsButton_clicked();
+    void on_mActionZoomMapToSelectedRows_triggered();
     /**
      * Pans to selected features
      */
-    void on_mPanMapToSelectedRowsButton_clicked();
+    void on_mActionPanMapToSelectedRows_triggered();
     /**
      * Moves selected lines to the top
      */
-    void on_mSelectedToTopButton_toggled();
+    void on_mActionSelectedToTop_toggled( bool );
 
     /**
      * Opens dialog to add new attribute
      */
-    void on_mAddAttribute_clicked();
+    void on_mActionAddAttribute_triggered();
 
     /**
      * Opens dialog to remove attribute
      */
-    void on_mRemoveAttribute_clicked();
+    void on_mActionRemoveAttribute_triggered();
     /**
      * Opens field calculator dialog
      */
-    void on_mOpenFieldCalculator_clicked();
+    void on_mActionOpenFieldCalculator_triggered();
 
     /**
      * deletes the selected features
      */
-    void on_mDeleteSelectedButton_clicked();
+    void on_mActionDeleteSelected_triggered();
 
     /**
      * Called when the current index changes in the main view
@@ -152,13 +142,9 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     /**
      * add feature
      */
-    void on_mAddFeature_clicked();
+    void on_mActionAddFeature_triggered();
 
-    void on_mHelpButton_clicked() { QgsContextHelp::run( metaObject()->className() ); }
-
-    void on_mSortButton_clicked();
-
-    void on_mExpressionSelectButton_clicked();
+    void on_mActionExpressionSelect_triggered();
     void filterColumnChanged( QObject* filterAction );
     void filterExpressionBuilder();
     void filterShowAll();
@@ -219,9 +205,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
   private:
     QMenu* mMenuActions;
-    QAction* mActionToggleEditing;
 
-    QDockWidget* mDock;
+    QgsDockWidget* mDock;
     QgsDistanceArea* myDa;
 
 
@@ -229,8 +214,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QSignalMapper* mFilterActionMapper;
 
     QgsVectorLayer* mLayer;
-    QgsFieldModel* mFieldModel;
-
     QgsRubberBand* mRubberBand;
     QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
     QStringList mVisibleFields;
@@ -242,12 +225,12 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 };
 
 
-class QgsAttributeTableDock : public QDockWidget
+class QgsAttributeTableDock : public QgsDockWidget
 {
     Q_OBJECT
 
   public:
-    QgsAttributeTableDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsAttributeTableDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = 0 );
 
     virtual void closeEvent( QCloseEvent * ev ) override;
 };

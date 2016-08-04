@@ -22,7 +22,6 @@
 #include "qgscontexthelp.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsunittypes.h"
@@ -99,6 +98,7 @@ void QgsMeasureDialog::updateSettings()
   QgsDebugMsg( QString( "Area units: %1" ).arg( QgsUnitTypes::encodeUnit( mAreaUnits ) ) );
   QgsDebugMsg( QString( "Canvas units : %1" ).arg( QgsUnitTypes::encodeUnit( mCanvasUnits ) ) );
 
+  mTable->clear();
   mTotal = 0;
   updateUi();
 }
@@ -108,7 +108,7 @@ void QgsMeasureDialog::unitsChanged( int index )
   if ( mMeasureArea )
     mAreaUnits = static_cast< QgsUnitTypes::AreaUnit >( mUnitsCombo->itemData( index ).toInt() );
   else
-    mDistanceUnits = static_cast< QGis::UnitType >( mUnitsCombo->itemData( index ).toInt() );
+    mDistanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
   mTable->clear();
   mTotal = 0.;
   updateUi();
@@ -274,8 +274,8 @@ void QgsMeasureDialog::updateUi()
 
   if ( mMeasureArea )
   {
-    if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QGis::Degrees
-         && ( mAreaUnits == QgsUnitTypes::SquareDegrees || mAreaUnits == QgsUnitTypes::UnknownAreaUnit ) )
+    if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+         && ( mAreaUnits == QgsUnitTypes::AreaSquareDegrees || mAreaUnits == QgsUnitTypes::AreaUnknownUnit ) )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using cartesian calculations in square degrees." ).arg(
@@ -285,7 +285,7 @@ void QgsMeasureDialog::updateUi()
     }
     else
     {
-      QgsUnitTypes::AreaUnit resultUnit = QgsUnitTypes::UnknownAreaUnit;
+      QgsUnitTypes::AreaUnit resultUnit = QgsUnitTypes::AreaUnknownUnit;
       if ( ! mTool->canvas()->hasCrsTransformEnabled() )
       {
         resultUnit = QgsUnitTypes::distanceToAreaUnit( mTool->canvas()->mapSettings().destinationCrs().mapUnits() );
@@ -299,7 +299,7 @@ void QgsMeasureDialog::updateUi()
       {
         if ( mDa.willUseEllipsoid() )
         {
-          resultUnit = QgsUnitTypes::SquareMeters;
+          resultUnit = QgsUnitTypes::AreaSquareMeters;
           toolTip += "<br> * " + tr( "Project CRS transformation is turned on and ellipsoidal calculation is selected." ) + ' ';
           toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the area is calculated in %2." ).arg( mDa.ellipsoid(),
                      QgsUnitTypes::toString( resultUnit ) );
@@ -318,13 +318,13 @@ void QgsMeasureDialog::updateUi()
            QgsUnitTypes::unitType( mAreaUnits ) == QgsUnitTypes::Standard )
       {
         toolTip += "<br> * Area is roughly converted to square meters by using scale at equator (1 degree = 111319.49 meters).";
-        resultUnit = QgsUnitTypes::SquareMeters;
+        resultUnit = QgsUnitTypes::AreaSquareMeters;
       }
       else if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Standard &&
                 QgsUnitTypes::unitType( mAreaUnits ) == QgsUnitTypes::Geographic )
       {
         toolTip += "<br> * Area is roughly converted to square degrees by using scale at equator (1 degree = 111319.49 meters).";
-        resultUnit = QgsUnitTypes::SquareDegrees;
+        resultUnit = QgsUnitTypes::AreaSquareDegrees;
       }
 
       if ( resultUnit != mAreaUnits )
@@ -348,8 +348,8 @@ void QgsMeasureDialog::updateUi()
   }
   else
   {
-    if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QGis::Degrees
-         && mDistanceUnits == QGis::Degrees )
+    if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+         && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using cartesian calculations in degrees." ).arg(
@@ -359,7 +359,7 @@ void QgsMeasureDialog::updateUi()
     }
     else
     {
-      QGis::UnitType resultUnit = QGis::UnknownUnit;
+      QgsUnitTypes::DistanceUnit resultUnit = QgsUnitTypes::DistanceUnknownUnit;
       if ( ! mTool->canvas()->hasCrsTransformEnabled() )
       {
         resultUnit =  mTool->canvas()->mapSettings().destinationCrs().mapUnits();
@@ -373,7 +373,7 @@ void QgsMeasureDialog::updateUi()
       {
         if ( mDa.willUseEllipsoid() )
         {
-          resultUnit = QGis::Meters;
+          resultUnit = QgsUnitTypes::DistanceMeters;
           toolTip += "<br> * " + tr( "Project CRS transformation is turned on and ellipsoidal calculation is selected." ) + ' ';
           toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the distance is calculated in %2." ).arg( mDa.ellipsoid(),
                      QgsUnitTypes::toString( resultUnit ) );
@@ -392,13 +392,13 @@ void QgsMeasureDialog::updateUi()
            QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Standard )
       {
         toolTip += "<br> * Distance is roughly converted to meters by using scale at equator (1 degree = 111319.49 meters).";
-        resultUnit = QGis::Meters;
+        resultUnit = QgsUnitTypes::DistanceMeters;
       }
       else if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Standard &&
                 QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Geographic )
       {
         toolTip += "<br> * Distance is roughly converted to degrees by using scale at equator (1 degree = 111319.49 meters).";
-        resultUnit = QGis::Degrees;
+        resultUnit = QgsUnitTypes::DistanceDegrees;
       }
 
       if ( resultUnit != mDistanceUnits )
@@ -491,30 +491,30 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
   mUnitsCombo->clear();
   if ( isArea )
   {
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::SquareMeters ), QgsUnitTypes::SquareMeters );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::SquareKilometers ), QgsUnitTypes::SquareKilometers );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::SquareFeet ), QgsUnitTypes::SquareFeet );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::SquareYards ), QgsUnitTypes::SquareYards );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::SquareMiles ), QgsUnitTypes::SquareMiles );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::Hectares ), QgsUnitTypes::Hectares );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::Acres ), QgsUnitTypes::Acres );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::SquareNauticalMiles ), QgsUnitTypes::SquareNauticalMiles );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::SquareDegrees ), QgsUnitTypes::SquareDegrees );
-    mUnitsCombo->addItem( tr( "map units" ), QgsUnitTypes::UnknownAreaUnit );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareMeters ), QgsUnitTypes::AreaSquareMeters );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareKilometers ), QgsUnitTypes::AreaSquareKilometers );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareFeet ), QgsUnitTypes::AreaSquareFeet );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareYards ), QgsUnitTypes::AreaSquareYards );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareMiles ), QgsUnitTypes::AreaSquareMiles );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaHectares ), QgsUnitTypes::AreaHectares );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaAcres ), QgsUnitTypes::AreaAcres );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareNauticalMiles ), QgsUnitTypes::AreaSquareNauticalMiles );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareDegrees ), QgsUnitTypes::AreaSquareDegrees );
+    mUnitsCombo->addItem( tr( "map units" ), QgsUnitTypes::AreaUnknownUnit );
   }
   else
   {
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Meters ), QGis::Meters );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Kilometers ), QGis::Kilometers );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Feet ), QGis::Feet );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Yards ), QGis::Yards );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Miles ), QGis::Miles );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Degrees ), QGis::Degrees );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::NauticalMiles ), QGis::NauticalMiles );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ), QgsUnitTypes::DistanceMeters );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceKilometers ), QgsUnitTypes::DistanceKilometers );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceFeet ), QgsUnitTypes::DistanceFeet );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceYards ), QgsUnitTypes::DistanceYards );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMiles ), QgsUnitTypes::DistanceMiles );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceDegrees ), QgsUnitTypes::DistanceDegrees );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceNauticalMiles ), QgsUnitTypes::DistanceNauticalMiles );
   }
 }
 
-double QgsMeasureDialog::convertLength( double length, QGis::UnitType toUnit ) const
+double QgsMeasureDialog::convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const
 {
   return mDa.convertLengthMeasurement( length, toUnit );
 }

@@ -18,6 +18,7 @@
 #include "qgsmessagelogviewer.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
+#include "qgsdockwidget.h"
 
 #include <QFile>
 #include <QDateTime>
@@ -25,12 +26,11 @@
 #include <QToolButton>
 #include <QStatusBar>
 #include <QToolTip>
-#include <QDockWidget>
 #include <QPlainTextEdit>
 #include <QScrollBar>
 
 
-QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, const Qt::WindowFlags& fl )
+QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   Q_UNUSED( statusBar )
@@ -78,5 +78,6 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
 
 void QgsMessageLogViewer::closeTab( int index )
 {
-  tabWidget->removeTab( index );
+  if ( tabWidget->count() > 1 )
+    tabWidget->removeTab( index );
 }

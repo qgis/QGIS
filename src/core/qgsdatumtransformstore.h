@@ -23,7 +23,7 @@ class QgsMapLayer;
 class QDomElement;
 
 
-/**
+/** \ingroup core
  * @brief The QgsDatumTransformStore class keeps track of datum transformations
  * as chosen by the user.
  *
@@ -44,13 +44,14 @@ class CORE_EXPORT QgsDatumTransformStore
 
     /** Will return transform from layer's CRS to current destination CRS.
      *  Will emit datumTransformInfoRequested signal if the layer has no entry.
-     *  Returns an instance from QgsCoordinateTransformCache
+     *  @returns transformation associated with layer, or an invalid QgsCoordinateTransform
+     *  if no transform is associated with the layer
      */
-    const QgsCoordinateTransform* transformation( QgsMapLayer* layer ) const;
+    QgsCoordinateTransform transformation( QgsMapLayer* layer ) const;
 
-    void readXML( const QDomNode& parentNode );
+    void readXml( const QDomNode& parentNode );
 
-    void writeXML( QDomNode& parentNode, QDomDocument& theDoc ) const;
+    void writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const;
 
     struct Entry
     {

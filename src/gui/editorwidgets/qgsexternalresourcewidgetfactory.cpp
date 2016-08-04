@@ -16,6 +16,8 @@
 
 #include "qgsexternalresourcewidgetfactory.h"
 #include "qgsfilewidget.h"
+#include "qgsexternalresourcewidgetwrapper.h"
+#include "qgsexternalresourceconfigdlg.h"
 
 QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )

@@ -20,7 +20,9 @@
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
 #include "qgshighlight.h"
-
+#include "qgsmapcanvas.h"
+#include "qgsactionmenu.h"
+#include "qgsvectorlayer.h"
 
 /// @cond PRIVATE
 CustomActionRegistry::CustomActionRegistry( QObject* parent )
@@ -310,13 +312,13 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     // icons
     switch ( layer->geometryType() )
     {
-      case QGis::Point:
+      case QgsWkbTypes::PointGeometry:
         layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.png" ) );
         break;
-      case QGis::Line:
+      case QgsWkbTypes::LineGeometry:
         layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.png" ) );
         break;
-      case QGis::Polygon:
+      case QgsWkbTypes::PolygonGeometry:
         layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
         break;
       default:
@@ -597,12 +599,12 @@ void QgsIdentifyMenu::handleMenuHover()
     if ( !vl )
       continue;
 
-    QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.constGeometry(), vl );
+    QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.geometry(), vl );
     QSettings settings;
-    QColor color = QColor( settings.value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-    int alpha = settings.value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-    double buffer = settings.value( "/Map/highlight/buffer", QGis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-    double minWidth = settings.value( "/Map/highlight/minWidth", QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+    QColor color = QColor( settings.value( "/Map/highlight/color", Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+    int alpha = settings.value( "/Map/highlight/colorAlpha", Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+    double buffer = settings.value( "/Map/highlight/buffer", Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+    double minWidth = settings.value( "/Map/highlight/minWidth", Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
     hl->setColor( color ); // sets also fill with default alpha
     color.setAlpha( alpha );
     hl->setFillColor( color ); // sets fill with alpha

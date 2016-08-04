@@ -22,10 +22,10 @@
 #include "qgscomposermap.h"
 #include "qgscomposerlabel.h"
 #include "qgsmultibandcolorrenderer.h"
-#include "qgsmaprenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsfontutils.h"
+#include "qgsrasterdataprovider.h"
 #include <QObject>
 #include <QtTest/QtTest>
 #include <QColor>

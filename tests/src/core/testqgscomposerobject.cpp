@@ -121,12 +121,12 @@ void TestQgsComposerObject::writeReadXml()
   //test writing with no node
   QDomElement rootNode = doc.createElement( "qgis" );
   QDomElement noNode;
-  QCOMPARE( object->writeXML( noNode, doc ), false );
+  QCOMPARE( object->writeXml( noNode, doc ), false );
 
   //test writing with node
   QDomElement composerObjectElem = doc.createElement( "ComposerObject" );
   rootNode.appendChild( composerObjectElem );
-  QVERIFY( object->writeXML( composerObjectElem, doc ) );
+  QVERIFY( object->writeXml( composerObjectElem, doc ) );
 
   //check if object node was written
   QDomNodeList evalNodeList = rootNode.elementsByTagName( "ComposerObject" );
@@ -136,10 +136,10 @@ void TestQgsComposerObject::writeReadXml()
   QgsComposerObject* readObject = new QgsComposerObject( mComposition );
 
   //test reading with no node
-  QCOMPARE( readObject->readXML( noNode, doc ), false );
+  QCOMPARE( readObject->readXml( noNode, doc ), false );
 
   //test reading node
-  QVERIFY( readObject->readXML( composerObjectElem, doc ) );
+  QVERIFY( readObject->readXml( composerObjectElem, doc ) );
 
   delete object;
   delete readObject;
@@ -206,7 +206,7 @@ void TestQgsComposerObject::writeRetrieveDDProperty()
   QDomElement rootNode = doc.createElement( "qgis" );
   QDomElement composerObjectElem = doc.createElement( "ComposerObject" );
   rootNode.appendChild( composerObjectElem );
-  QVERIFY( object->writeXML( composerObjectElem, doc ) );
+  QVERIFY( object->writeXml( composerObjectElem, doc ) );
 
   //check if object node was written
   QDomNodeList evalNodeList = rootNode.elementsByTagName( "ComposerObject" );
@@ -214,7 +214,7 @@ void TestQgsComposerObject::writeRetrieveDDProperty()
 
   //test reading node containing dd settings
   QgsComposerObject* readObject = new QgsComposerObject( mComposition );
-  QVERIFY( readObject->readXML( composerObjectElem, doc ) );
+  QVERIFY( readObject->readXml( composerObjectElem, doc ) );
 
   QVariant result;
   //test getting not set dd from restored object
@@ -277,7 +277,7 @@ void TestQgsComposerObject::writeRetrieveCustomProperties()
   QDomElement rootNode = doc.createElement( "qgis" );
   QDomElement composerObjectElem = doc.createElement( "ComposerObject" );
   rootNode.appendChild( composerObjectElem );
-  QVERIFY( object->writeXML( composerObjectElem, doc ) );
+  QVERIFY( object->writeXml( composerObjectElem, doc ) );
 
   //check if object node was written
   QDomNodeList evalNodeList = rootNode.elementsByTagName( "ComposerObject" );
@@ -285,7 +285,7 @@ void TestQgsComposerObject::writeRetrieveCustomProperties()
 
   //test reading node containing custom properties
   QgsComposerObject* readObject = new QgsComposerObject( mComposition );
-  QVERIFY( readObject->readXML( composerObjectElem, doc ) );
+  QVERIFY( readObject->readXml( composerObjectElem, doc ) );
 
   //test retrieved custom properties
   QCOMPARE( readObject->customProperties().length(), 2 );

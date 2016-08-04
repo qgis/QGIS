@@ -146,9 +146,9 @@
    <addaction name="mActionLinkGeorefToQGis"/>
    <addaction name="mActionLinkQGisToGeoref"/>
   </widget>
-  <widget class="QDockWidget" name="dockWidgetGCPpoints">
+  <widget class="QgsDockWidget" name="dockWidgetGCPpoints">
    <property name="features">
-    <set>QDockWidget::AllDockWidgetFeatures</set>
+    <set>QgsDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="allowedAreas">
     <set>Qt::AllDockWidgetAreas</set>
@@ -386,6 +386,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

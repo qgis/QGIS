@@ -1,102 +1,95 @@
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules ${CMAKE_MODULE_PATH})
-IF (KEEP_GLOBE_CXX_FLAGS)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_OLD}")
-ENDIF()
 
 FIND_PACKAGE(OSG REQUIRED)
 FIND_PACKAGE(OSGEARTH REQUIRED)
 FIND_PACKAGE(Threads)
-IF(QT5_BUILD)
-  FIND_PACKAGE(Qt5OpenGL REQUIRED)
-ENDIF(QT5_BUILD)
-
-IF(HAVE_OSGEARTH_CHILD_SPACING)
-  ADD_DEFINITIONS(-DHAVE_OSGEARTH_CHILD_SPACING)
-ENDIF(HAVE_OSGEARTH_CHILD_SPACING)
-
-IF(OSGEARTH_ELEVATION_QUERY)
-  ADD_DEFINITIONS(-DHAVE_OSGEARTH_ELEVATION_QUERY)
-ENDIF(OSGEARTH_ELEVATION_QUERY)
 
 ########################################################
 # Files
 
-SET (globe_plugin_SRCS
-     globe_plugin.cpp
-     qgsosgearthtilesource.cpp
-     globe_plugin_dialog.cpp
-)
-IF (NOT HAVE_OSGEARTHQT)
-    SET(globe_plugin_SRCS
-        ${globe_plugin_SRCS}
-        osgEarthQt/ViewerWidget.cpp
-        osgEarthUtil/Controls.cpp
-        )
-ENDIF (NOT HAVE_OSGEARTHQT)
-
-SET (globe_plugin_UIS
-     globe_plugin_dialog_guibase.ui
-     )
-
-SET (globe_plugin_MOC_HDRS
-     globe_plugin.h
-     globe_plugin_dialog.h
+SET (GLOBE_PLUGIN_SRCS
+    globe_plugin.cpp
+    qgsglobetilesource.cpp
+    qgsglobeplugindialog.cpp
+    qgsglobevectorlayerproperties.cpp
+    qgsglobefeatureidentify.cpp
+    qgsglobefrustumhighlight.cpp
+    qgsglobewidget.cpp
 )
 
-SET (globe_plugin_RCCS  globe_plugin.qrc)
+SET (GLOBE_PLUGIN_UIS
+    qgsglobeplugindialog.ui
+    qgsglobevectorlayerpropertiespage.ui
+)
+
+SET (GLOBE_PLUGIN_MOC_HDRS
+    globe_plugin.h
+    qgsglobeplugindialog.h
+    qgsglobevectorlayerproperties.h
+    qgsglobetilesource.h
+    qgsglobewidget.h
+)
+
+SET (GLOBE_PLUGIN_HDRS
+    qgsglobevectorlayerproperties.h
+    qgsglobefeatureidentify.h
+    qgsglobefrustumhighlight.h
+)
+
+SET (GLOBE_PLUGIN_RCCS  globe_plugin.qrc)
 
 ########################################################
 # Build
 
-QT4_WRAP_UI (globe_plugin_UIS_H  ${globe_plugin_UIS})
+IF(WIN32)
+    ADD_DEFINITIONS("\"-DGLOBE_EXPORT=${DLLEXPORT}\"")
+ELSE(WIN32)
+    ADD_DEFINITIONS("-DGLOBE_EXPORT=")
+ENDIF(WIN32)
 
-QT4_WRAP_CPP (globe_plugin_MOC_SRCS  ${globe_plugin_MOC_HDRS})
+QT4_WRAP_UI (GLOBE_PLUGIN_UIS_H  ${GLOBE_PLUGIN_UIS})
 
-QT4_ADD_RESOURCES(globe_plugin_RCC_SRCS ${globe_plugin_RCCS})
+QT4_WRAP_CPP (GLOBE_PLUGIN_MOC_SRCS  ${GLOBE_PLUGIN_MOC_HDRS})
 
-ADD_LIBRARY (globeplugin MODULE ${globe_plugin_SRCS} ${globe_plugin_MOC_SRCS} ${globe_plugin_RCC_SRCS} ${globe_plugin_UIS_H})
+QT4_ADD_RESOURCES(GLOBE_PLUGIN_RCC_SRCS ${GLOBE_PLUGIN_RCCS})
 
-INCLUDE_DIRECTORIES(SYSTEM
-     ${Qt5OpenGL_INCLUDE_DIRS}
-     ${OSGEARTH_INCLUDE_DIR}
-     ${OSG_INCLUDE_DIR}
-     ${GEOS_INCLUDE_DIR}
-)
+ADD_LIBRARY (globeplugin SHARED ${GLOBE_PLUGIN_SRCS} ${GLOBE_PLUGIN_MOC_SRCS} ${GLOBE_PLUGIN_RCC_SRCS} ${GLOBE_PLUGIN_UIS_H} ${GLOBE_PLUGIN_HDRS})
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/geometry ../../core/raster
+     ${OSGEARTH_INCLUDE_DIR}
+     ${OSG_INCLUDE_DIR}
+     ${GEOS_INCLUDE_DIR}
+     ${SIP_INCLUDE_DIR}
+     ../../core
+     ../../core/geometry
+     ../../core/raster
+     ../../core/symbology-ng
      ../../gui
      ..
 )
 
-SET (OSGEARTH_LIBS
-  ${OSGEARTH_LIBRARY}
-  ${OSGEARTHFEATURES_LIBRARY}
-  ${OSGEARTHUTIL_LIBRARY}
-)
-IF (HAVE_OSGEARTHQT)
-    SET(OSGEARTH_LIBS
-        ${OSGEARTH_LIBS}
-        ${OSGEARTHQT_LIBRARY}
-        )
-ENDIF (HAVE_OSGEARTHQT)
 TARGET_LINK_LIBRARIES(globeplugin
   qgis_core
   qgis_gui
   ${QT_QTOPENGL_LIBRARY}
-  ${Qt5OpenGL_LIBRARIES}
   ${OSGDB_LIBRARY}
   ${OSGGA_LIBRARY}
   ${OSGUTIL_LIBRARY}
   ${OSG_LIBRARY}
   ${OSGQT_LIBRARY}
   ${OSGVIEWER_LIBRARY}
-  ${OSGEARTH_LIBS}
+  ${OSGEARTH_LIBRARY}
+  ${OSGEARTHANNOTATION_LIBRARY}
+  ${OSGEARTHFEATURES_LIBRARY}
+  ${OSGEARTHUTIL_LIBRARY}
+  ${OSGEARTHSYMBOLOGY_LIBRARY}
+  ${OSGEARTHQT_LIBRARY}
   ${OPENTHREADS_LIBRARY}
 )
 
+ADD_SUBDIRECTORY(featuresource)
 
 ########################################################
 # Install

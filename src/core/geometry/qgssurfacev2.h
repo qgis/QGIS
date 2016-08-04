@@ -19,10 +19,13 @@
 #define QGSSURFACEV2_H
 
 #include "qgsabstractgeometryv2.h"
-#include "qgspointv2.h"
+#include "qgsrectangle.h"
 
 class QgsPolygonV2;
 
+/** \ingroup core
+ * \class QgsSurfaceV2
+ */
 class CORE_EXPORT QgsSurfaceV2: public QgsAbstractGeometryV2
 {
   public:

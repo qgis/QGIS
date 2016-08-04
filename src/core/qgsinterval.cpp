@@ -132,7 +132,7 @@ QDateTime operator+( const QDateTime& start, const QgsInterval& interval )
 
 QgsInterval operator-( const QDate& date1, const QDate& date2 )
 {
-  qint64 seconds = date2.daysTo( date1 ) * 24 * 60 * 60;
+  qint64 seconds = static_cast< qint64 >( date2.daysTo( date1 ) ) * 24 * 60 * 60;
   return QgsInterval( seconds );
 }
 

@@ -52,7 +52,7 @@ class QgsComposerNodesItem: QgsComposerItem
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Remove a node from the shape.
      * @param index of the node to delete
@@ -80,7 +80,7 @@ class QgsComposerNodesItem: QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
   protected:
 
@@ -94,10 +94,10 @@ class QgsComposerNodesItem: QgsComposerItem
     virtual void _draw( QPainter *painter ) = 0;
 
     /** Method called in readXML. */
-    virtual void _readXMLStyle( const QDomElement &elmt ) = 0;
+    virtual void _readXmlStyle( const QDomElement &elmt ) = 0;
 
     /** Method called in writeXML. */
-    virtual void _writeXMLStyle( QDomDocument &doc, QDomElement &elmt ) const = 0;
+    virtual void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const = 0;
 
     /** Rescale the current shape according to the boudning box. Useful when
      * the shape is resized thanks to the rubber band. */

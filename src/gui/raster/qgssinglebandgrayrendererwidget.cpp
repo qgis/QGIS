@@ -18,6 +18,8 @@
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterminmaxwidget.h"
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
     : QgsRasterRendererWidget( layer, extent )
@@ -41,6 +43,7 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
 
     mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
     mMinMaxWidget->setExtent( extent );
+    mMinMaxWidget->setMapCanvas( mCanvas );
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins( 0, 0, 0, 0 );
@@ -89,7 +92,7 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
   }
   int band = mGrayBandComboBox->itemData( mGrayBandComboBox->currentIndex() ).toInt();
 
-  QgsContrastEnhancement* e = new QgsContrastEnhancement(( QGis::DataType )(
+  QgsContrastEnhancement* e = new QgsContrastEnhancement(( Qgis::DataType )(
         provider->dataType( band ) ) );
   e->setMinimumValue( mMinLineEdit->text().toDouble() );
   e->setMaximumValue( mMaxLineEdit->text().toDouble() );
@@ -103,6 +106,12 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
   renderer->setGradient(( QgsSingleBandGrayRenderer::Gradient ) mGradientComboBox->itemData( mGradientComboBox->currentIndex() ).toInt() );
 
   return renderer;
+}
+
+void QgsSingleBandGrayRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRasterRendererWidget::setMapCanvas( canvas );
+  mMinMaxWidget->setMapCanvas( canvas );
 }
 
 void QgsSingleBandGrayRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )

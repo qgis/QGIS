@@ -16,11 +16,15 @@
  ***************************************************************************/
 
 #include "qgsrasterrendererregistry.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrastershader.h"
+#include "qgsrastertransparency.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspalettedrasterrenderer.h"
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgshillshaderenderer.h"
 #include "qgsapplication.h"
 
 #include <QSettings>
@@ -28,9 +32,11 @@
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName,
     QgsRasterRendererCreateFunc rendererFunction,
-    QgsRasterRendererWidgetCreateFunc widgetFunction ):
-    name( theName ), visibleName( theVisibleName ), rendererCreateFunction( rendererFunction ),
-    widgetCreateFunction( widgetFunction )
+    QgsRasterRendererWidgetCreateFunc widgetFunction )
+    : name( theName )
+    , visibleName( theVisibleName )
+    , rendererCreateFunction( rendererFunction )
+    , widgetCreateFunction( widgetFunction )
 {
 }
 
@@ -61,6 +67,8 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
                                           QgsSingleBandPseudoColorRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( "singlebandcolordata", QObject::tr( "Singleband color data" ),
                                           QgsSingleBandColorDataRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( "hillshade", QObject::tr( "Hillshade" ),
+                                          QgsHillshadeRenderer::create, nullptr ) );
 }
 
 void QgsRasterRendererRegistry::insert( const QgsRasterRendererRegistryEntry& entry )
@@ -161,7 +169,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       int grayBand = 1;
       renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
 
-      QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QGis::DataType )(
+      QgsContrastEnhancement* ce = new QgsContrastEnhancement(( Qgis::DataType )(
             provider->dataType( grayBand ) ) );
 
 // Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).

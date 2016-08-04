@@ -25,7 +25,7 @@ class QgsVectorLayer;
 class QgsRasterLayer;
 class QTemporaryFile;
 
-class QgsSLDConfigParser : public QgsWMSConfigParser
+class QgsSLDConfigParser : public QgsWmsConfigParser
 {
   public:
     /** Constructor takes a dom document as argument. The class takes ownership of the document and deletes it in the destructor
@@ -34,7 +34,7 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
     QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters );
     virtual ~QgsSLDConfigParser();
 
-    void setFallbackParser( QgsWMSConfigParser* p ) { mFallbackParser = p; }
+    void setFallbackParser( QgsWmsConfigParser* p ) { mFallbackParser = p; }
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
@@ -102,10 +102,10 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
     double maxWidth() const override;
     double maxHeight() const override;
     double imageQuality() const override;
-    int WMSPrecision() const override;
+    int wmsPrecision() const override;
 
     // WMS inspire capabilities
-    bool WMSInspireActivated() const override;
+    bool wmsInspireActivated() const override;
     /** Adds inspire capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
@@ -142,7 +142,7 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
     /** Output units (pixel or mm)*/
     QgsMapRenderer::OutputUnits mOutputUnits;
 
-    QgsWMSConfigParser *mFallbackParser;
+    QgsWmsConfigParser *mFallbackParser;
 
     QFont mLegendLayerFont;
 
@@ -197,7 +197,7 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
     /** Reads attributes "epsg" or "proj" from layer element and sets specified CRS if present*/
     void setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml ) const;
 
-    bool useLayerIDs() const override { return false; }
+    bool useLayerIds() const override { return false; }
 };
 
 #endif // QGSSLDCONFIGPARSER_H

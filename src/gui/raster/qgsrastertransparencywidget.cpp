@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsrastertransparencywidget.cpp
+    ---------------------
+    begin                : May 2016
+    copyright            : (C) 2016 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include <QWidget>
 #include <QDoubleValidator>
 #include <QIntValidator>
@@ -23,7 +37,7 @@
 
 
 QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas* canvas, QWidget *parent )
-    : QWidget( parent )
+    : QgsMapLayerConfigWidget( layer, canvas, parent )
     , TRSTRING_NOT_SET( tr( "Not Set" ) )
     , mRasterLayer( layer )
     , mMapCanvas( canvas )
@@ -92,18 +106,18 @@ void QgsRasterTransparencyWidget::syncToLayer()
     }
   }
 
-  if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
+  if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
   {
-    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) ) );
+    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
   }
   else
   {
     lblSrcNoDataValue->setText( tr( "not defined" ) );
   }
 
-  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSrcNoDataValue( 1 ) );
+  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSourceNoDataValue( 1 ) );
 
-  bool enableSrcNoData = mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) );
+  bool enableSrcNoData = mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) );
 
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
@@ -480,7 +494,6 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPoint & canvasPoint )
 
 void QgsRasterTransparencyWidget::populateTransparencyTable( QgsRasterRenderer *renderer )
 {
-  QgsDebugMsg( "entering." );
   if ( !mRasterLayer )
   {
     return;
@@ -536,7 +549,6 @@ void QgsRasterTransparencyWidget::populateTransparencyTable( QgsRasterRenderer *
 
 void QgsRasterTransparencyWidget::setupTransparencyTable( int nBands )
 {
-  QgsDebugMsg( "Entered" );
   tableTransparency->clear();
   tableTransparency->setColumnCount( 0 );
   tableTransparency->setRowCount( 0 );
@@ -599,10 +611,10 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
   {
     // value
     QString valueString;
-    switch ( provider->srcDataType( 1 ) )
+    switch ( provider->sourceDataType( 1 ) )
     {
-      case QGis::Float32:
-      case QGis::Float64:
+      case Qgis::Float32:
+      case Qgis::Float64:
         lineEdit->setValidator( new QDoubleValidator( nullptr ) );
         if ( !qIsNaN( value ) )
         {

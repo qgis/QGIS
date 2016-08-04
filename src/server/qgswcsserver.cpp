@@ -16,7 +16,7 @@
  ***************************************************************************/
 #include "qgswcsserver.h"
 #include "qgswcsprojectparser.h"
-#include "qgscrscache.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterprojector.h"
@@ -367,7 +367,7 @@ QByteArray* QgsWCSServer::getCoverage()
     throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
   }
 
-  QgsCoordinateReferenceSystem requestCRS = QgsCRSCache::instance()->crsByAuthId( crs );
+  QgsCoordinateReferenceSystem requestCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
   if ( !requestCRS.isValid() )
   {
     mErrors << QString( "Could not create request CRS" );
@@ -392,7 +392,7 @@ QByteArray* QgsWCSServer::getCoverage()
     crs = mParameters.value( "RESPONSE_CRS", "" );
     if ( crs != "" )
     {
-      responseCRS = QgsCRSCache::instance()->crsByAuthId( crs );
+      responseCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
       if ( !responseCRS.isValid() )
       {
         responseCRS = rLayer->crs();
@@ -422,7 +422,7 @@ QByteArray* QgsWCSServer::getCoverage()
     if ( responseCRS != rLayer->crs() )
     {
       QgsRasterProjector * projector = new QgsRasterProjector;
-      projector->setCRS( rLayer->crs(), responseCRS );
+      projector->setCrs( rLayer->crs(), responseCRS );
       if ( !pipe->insert( 2, projector ) )
       {
         mErrors << QString( "Cannot set pipe projector" );

@@ -27,7 +27,7 @@
 #include <QSortFilterProxyModel>
 
 class QgsGenericProjectionSelector;
-class QgsWFSCapabilities;
+class QgsWfsCapabilities;
 class QgsSQLComposerDialog;
 
 class QgsWFSItemDelegate : public QItemDelegate
@@ -61,14 +61,14 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     QMap<QString, QStringList > mAvailableCRS;
-    QgsWFSCapabilities* mCapabilities;
+    QgsWfsCapabilities* mCapabilities;
     QString mUri;            // data source URI
     QgsWFSItemDelegate* mItemDelegate;
     QStandardItemModel* mModel;
     QSortFilterProxyModel* mModelProxy;
     QPushButton *mBuildQueryButton;
     QPushButton *mAddButton;
-    QgsWFSCapabilities::Capabilities mCaps;
+    QgsWfsCapabilities::Capabilities mCaps;
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog* mSQLComposerDialog;
 

@@ -19,6 +19,8 @@
 
 #include "ui_qgsrasterhistogramwidgetbase.h"
 
+#include "qgsmaplayerconfigwidget.h"
+
 class QgsRasterLayer;
 class QgsRasterRendererWidget;
 class QwtPlotPicker;
@@ -30,11 +32,12 @@ class QwtPlotZoomer;
 typedef QPointF QwtDoublePoint;
 #endif
 
-/** Histogram widget
+/** \ingroup gui
+ * Histogram widget
   *@author Etienne Tourigny
   */
 
-class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRasterHistogramWidgetBase
+class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterHistogramWidgetBase
 {
     Q_OBJECT
 
@@ -60,18 +63,13 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     /** Apply a histoActionTriggered() event. */
     void setSelectedBand( int index );
 
-  signals:
-    /**
-     * Emmited when something on the widget has changed.
-     * All widgets will fire this event to notify of an internal change.
-     */
-    void widgetChanged();
-
   public slots:
     /** \brief slot executed when user wishes to refresh raster histogramwidget */
     void refreshHistogram();
     /** This slot lets you save the histogram as an image to disk */
     void on_mSaveAsImageButton_clicked();
+
+    void apply() override;
 
   private slots:
     /** Used when the histogram band selector changes, or when tab is loaded. */

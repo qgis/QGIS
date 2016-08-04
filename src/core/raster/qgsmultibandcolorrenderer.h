@@ -37,7 +37,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
+    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     int redBand() const { return mRedBand; }
     void setRedBand( int band ) { mRedBand = band; }
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     /** Takes ownership*/
     void setBlueContrastEnhancement( QgsContrastEnhancement* ce );
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     QList<int> usesBands() const override;
 

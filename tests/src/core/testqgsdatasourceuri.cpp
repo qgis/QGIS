@@ -18,8 +18,8 @@
 //header for class being tested
 #include <qgsdatasourceuri.h>
 
-Q_DECLARE_METATYPE( QgsWKBTypes::Type )
-Q_DECLARE_METATYPE( QgsDataSourceURI::SSLmode )
+Q_DECLARE_METATYPE( QgsWkbTypes::Type )
+Q_DECLARE_METATYPE( QgsDataSourceUri::SslMode )
 
 class TestQgsDataSourceUri: public QObject
 {
@@ -37,7 +37,7 @@ void TestQgsDataSourceUri::checkparser_data()
   QTest::addColumn<QString>( "key" );
   QTest::addColumn<bool>( "estimatedmetadata" );
   QTest::addColumn<QString>( "srid" );
-  QTest::addColumn<QgsWKBTypes::Type>( "type" );
+  QTest::addColumn<QgsWkbTypes::Type>( "type" );
   QTest::addColumn<bool>( "selectatid" );
   QTest::addColumn<QString>( "service" );
   QTest::addColumn<QString>( "user" );
@@ -46,7 +46,7 @@ void TestQgsDataSourceUri::checkparser_data()
   QTest::addColumn<QString>( "host" );
   QTest::addColumn<QString>( "port" );
   QTest::addColumn<QString>( "driver" );
-  QTest::addColumn<QgsDataSourceURI::SSLmode>( "sslmode" );
+  QTest::addColumn<QgsDataSourceUri::SslMode>( "sslmode" );
   QTest::addColumn<QString>( "sql" );
   QTest::addColumn<QString>( "myparam" );
 
@@ -58,7 +58,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "" // key
   << true // estimatedmetadata
   << "1000003007" // srid
-  << QgsWKBTypes::Unknown // type
+  << QgsWkbTypes::Unknown // type
   << false // selectatid
   << "" // service
   << "myname" // user
@@ -67,7 +67,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "myhost" // host
   << "1234" // port
   << "" // driver
-  << QgsDataSourceURI::SSLprefer // sslmode
+  << QgsDataSourceUri::SslPrefer // sslmode
   << "" // sql
   << "myvalue" // myparam
   ;
@@ -79,7 +79,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "" // key
   << false // estimatedmetadata
   << "" // srid
-  << QgsWKBTypes::Unknown // type
+  << QgsWkbTypes::Unknown // type
   << false // selectatid
   << "" // service
   << "myname" // user
@@ -88,7 +88,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "myhost" // host
   << "5432" // port
   << "" // driver
-  << QgsDataSourceURI::SSLprefer // sslmode
+  << QgsDataSourceUri::SslPrefer // sslmode
   << "" // sql
   << "" // myparam
   ;
@@ -100,7 +100,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "" // key
   << false // estimatedmetadata
   << "" // srid
-  << QgsWKBTypes::MultiLineStringZ // type
+  << QgsWkbTypes::MultiLineStringZ // type
   << false // selectatid
   << "" // service
   << "myname" // user
@@ -109,7 +109,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "myhost" // host
   << "5432" // port
   << "" // driver
-  << QgsDataSourceURI::SSLprefer // sslmode
+  << QgsDataSourceUri::SslPrefer // sslmode
   << "" // sql
   << "" // myparam
   ;
@@ -121,7 +121,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "OBJECTID" // key
   << true // estimatedmetadata
   << "4326" // srid
-  << QgsWKBTypes::Unknown // type
+  << QgsWkbTypes::Unknown // type
   << false // selectatid
   << "" // service
   << "osuser" // user
@@ -130,7 +130,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "localhost" // host
   << "50000" // port
   << "IBM DB2 ODBC DRIVER" // driver
-  << QgsDataSourceURI::SSLprefer // sslmode
+  << QgsDataSourceUri::SslPrefer // sslmode
   << "" // sql
   << "myvalue" // myparam
   ;
@@ -144,7 +144,7 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QString, key );
   QFETCH( bool, estimatedmetadata );
   QFETCH( QString, srid );
-  QFETCH( QgsWKBTypes::Type, type );
+  QFETCH( QgsWkbTypes::Type, type );
   QFETCH( bool, selectatid );
   QFETCH( QString, service );
   QFETCH( QString, user );
@@ -153,17 +153,17 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QString, host );
   QFETCH( QString, port );
   QFETCH( QString, driver );
-  QFETCH( QgsDataSourceURI::SSLmode, sslmode );
+  QFETCH( QgsDataSourceUri::SslMode, sslmode );
   QFETCH( QString, sql );
   QFETCH( QString, myparam );
 
-  QgsDataSourceURI ds( uri );
+  QgsDataSourceUri ds( uri );
   QCOMPARE( ds.table(), table );
   QCOMPARE( ds.geometryColumn(), geometrycolumn );
   QCOMPARE( ds.keyColumn(), key );
   QCOMPARE( ds.useEstimatedMetadata(), estimatedmetadata );
   QCOMPARE( ds.srid(), srid );
-  QCOMPARE( ds.newWkbType(), type );
+  QCOMPARE( ds.wkbType(), type );
   QCOMPARE( ds.selectAtIdDisabled(), selectatid );
   QCOMPARE( ds.service(), service );
   QCOMPARE( ds.username(), user );

@@ -19,6 +19,7 @@
 #include "qgscomposerutils.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgsmapsettings.h"
 #include <limits>
 
 QgsComposerPolygon::QgsComposerPolygon( QgsComposition* c )
@@ -101,7 +102,7 @@ void QgsComposerPolygon::_draw( QPainter *painter )
   painter->scale( dotsPerMM, dotsPerMM );
 }
 
-void QgsComposerPolygon::_readXMLStyle( const QDomElement &elmt )
+void QgsComposerPolygon::_readXmlStyle( const QDomElement &elmt )
 {
   mPolygonStyleSymbol.reset( QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( elmt ) );
 }
@@ -113,7 +114,7 @@ void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbolV2* symbol )
   emit frameChanged();
 }
 
-void QgsComposerPolygon::_writeXMLStyle( QDomDocument &doc, QDomElement &elmt ) const
+void QgsComposerPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
   const QDomElement pe = QgsSymbolLayerV2Utils::saveSymbol( QString(),
                          mPolygonStyleSymbol.data(),

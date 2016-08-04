@@ -233,13 +233,13 @@ void QgsInterpolationDialog::on_mInputLayerComboBox_currentIndexChanged( const Q
   }
 
   //find out if the layer has 25D type
-  QGis::WkbType geomType = provider->geometryType();
-  if ( geomType == QGis::WKBPoint25D ||
-       geomType == QGis::WKBLineString25D ||
-       geomType == QGis::WKBPolygon25D ||
-       geomType == QGis::WKBMultiPoint25D ||
-       geomType == QGis::WKBMultiLineString25D ||
-       geomType == QGis::WKBMultiPolygon25D )
+  QgsWkbTypes::Type geomType = provider->wkbType();
+  if ( geomType == QgsWkbTypes::Point25D ||
+       geomType == QgsWkbTypes::LineString25D ||
+       geomType == QgsWkbTypes::Polygon25D ||
+       geomType == QgsWkbTypes::MultiPoint25D ||
+       geomType == QgsWkbTypes::MultiLineString25D ||
+       geomType == QgsWkbTypes::MultiPolygon25D )
   {
     mUseZCoordCheckBox->setEnabled( true );
   }
@@ -458,7 +458,7 @@ QgsRectangle QgsInterpolationDialog::boundingBoxOfLayers()
     }
     else
     {
-      combinedLayerExtent.combineExtentWith( &currentLayerExtent );
+      combinedLayerExtent.combineExtentWith( currentLayerExtent );
     }
   }
   return combinedLayerExtent;

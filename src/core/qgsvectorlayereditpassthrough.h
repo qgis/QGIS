@@ -19,6 +19,9 @@
 
 class QgsVectorLayer;
 
+/** \ingroup core
+ * \class QgsVectorLayerEditPassthrough
+ */
 class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffer
 {
     Q_OBJECT
@@ -29,10 +32,11 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
     bool addFeatures( QgsFeatureList& features ) override;
     bool deleteFeature( QgsFeatureId fid ) override;
     bool deleteFeatures( const QgsFeatureIds& fids ) override;
-    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom ) override;
+    bool changeGeometry( QgsFeatureId fid, QgsGeometry geom ) override;
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() ) override;
     bool addAttribute( const QgsField &field ) override;
     bool deleteAttribute( int attr ) override;
+    bool renameAttribute( int attr, const QString& newName ) override;
     bool commitChanges( QStringList& commitErrors ) override;
     void rollBack() override;
 

@@ -59,7 +59,6 @@ QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )
     : QStandardItemModel( parent )
     , mWatcher( 0 )
 {
-  QgsDebugMsg( "entered" );
   setColumnCount( 1 );
 
   mWatcher = new QFileSystemWatcher( this );
@@ -274,7 +273,6 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
 void QgsGrassModuleInputModel::reload()
 {
 
-  QgsDebugMsg( "entered" );
   if ( !mWatcher->files().isEmpty() )
   {
     mWatcher->removePaths( mWatcher->files() );
@@ -316,7 +314,6 @@ void QgsGrassModuleInputModel::reload()
 
 void QgsGrassModuleInputModel::onMapsetChanged()
 {
-  QgsDebugMsg( "entered" );
   if ( mLocationPath != QgsGrass::getDefaultLocationPath() )
   {
     reload();
@@ -325,7 +322,6 @@ void QgsGrassModuleInputModel::onMapsetChanged()
 
 void QgsGrassModuleInputModel::onMapsetSearchPathChanged()
 {
-  QgsDebugMsg( "entered" );
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
@@ -438,7 +434,6 @@ QgsGrassModuleInputPopup::QgsGrassModuleInputPopup( QWidget * parent )
 
 void QgsGrassModuleInputPopup::setModel( QAbstractItemModel * model )
 {
-  QgsDebugMsg( "entered" );
   QTreeView::setModel( model );
 }
 
@@ -494,7 +489,6 @@ QModelIndex QgsGrassModuleInputCompleterProxy::mapToSource( const QModelIndex & 
 void QgsGrassModuleInputCompleterProxy::refreshMapping()
 {
   // TODO: emit data changed
-  QgsDebugMsg( "entered" );
   mIndexes.clear();
   mRows.clear();
   map( QModelIndex() );
@@ -503,7 +497,6 @@ void QgsGrassModuleInputCompleterProxy::refreshMapping()
 
 void QgsGrassModuleInputCompleterProxy::map( const QModelIndex & parent, int level )
 {
-  //QgsDebugMsg( "entered" );
   if ( !sourceModel() )
   {
     return;
@@ -825,7 +818,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     , mUsesRegion( false )
     , mRequired( false )
 {
-  QgsDebugMsg( "entered" );
   mGeometryTypeMask = GV_POINT | GV_LINE | GV_AREA;
 
   if ( mTitle.isEmpty() )
@@ -1062,7 +1054,6 @@ QgsGrassModuleInput::~QgsGrassModuleInput()
 
 bool QgsGrassModuleInput::useRegion()
 {
-  QgsDebugMsg( "entered" );
 
   return mUsesRegion && mType == QgsGrassObject::Raster && mRegionButton && mRegionButton->isChecked();
 }
@@ -1110,7 +1101,6 @@ QStringList QgsGrassModuleInput::options()
 
 QgsFields QgsGrassModuleInput::currentFields()
 {
-  QgsDebugMsg( "entered" );
 
   QgsGrassVectorLayer * layer = currentLayer();
   if ( !layer )
@@ -1122,7 +1112,6 @@ QgsFields QgsGrassModuleInput::currentFields()
 
 QgsGrassObject QgsGrassModuleInput::currentGrassObject()
 {
-  QgsDebugMsg( "entered" );
 
   QgsGrassObject grassObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), "", "", mType );
   grassObject.setFullName( mComboBox->currentText() );
@@ -1240,7 +1229,6 @@ void QgsGrassModuleInput::onChanged( const QString & text )
 
 void QgsGrassModuleInput::onLayerChanged()
 {
-  QgsDebugMsg( "entered" );
 
   // TODO(?): support vector sublayers/types for multiple input
   if ( multiple() )
@@ -1289,7 +1277,6 @@ void QgsGrassModuleInput::onLayerChanged()
 
 QString QgsGrassModuleInput::ready()
 {
-  QgsDebugMsg( "entered" );
 
   QString error;
 
@@ -1363,7 +1350,6 @@ void QgsGrassModuleInput::onActivated( const QString & text )
 
 void QgsGrassModuleInput::deleteSelectedItem( const QModelIndex &index )
 {
-  QgsDebugMsg( "entered" );
   if ( index.isValid() )
   {
     mSelectedModel->removeRow( index.row() );

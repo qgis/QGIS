@@ -26,6 +26,7 @@
 #include <QMouseEvent>
 #include <QRect>
 #include <QColor>
+#include <QScopedPointer>
 
 
 QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
@@ -43,14 +44,13 @@ void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( !vlayer )
     return;
 
-  QgsRubberBand rubberBand( mCanvas, QGis::Polygon );
+  QgsRubberBand rubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
   rubberBand.setFillColor( mFillColor );
   rubberBand.setBorderColor( mBorderColour );
   QRect selectRect( 0, 0, 0, 0 );
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
-  QgsGeometry* selectGeom = rubberBand.asGeometry();
+  QgsGeometry selectGeom( rubberBand.asGeometry() );
   QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e );
-  delete selectGeom;
-  rubberBand.reset( QGis::Polygon );
+  rubberBand.reset( QgsWkbTypes::PolygonGeometry );
 }

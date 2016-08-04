@@ -21,12 +21,12 @@
 
 // QGIS includes
 #include <qgsfeature.h>
-#include <qgslabel.h>
+#include <qgsfeaturerequest.h>
 
 /**
  * \ingroup networkanalysis
- * \class QgsEdgeProperter
- * \brief QgsEdgeProperter is a strategy pattern.
+ * \class QgsArcProperter
+ * \brief QgsArcProperter is a strategy pattern.
  * You can use it for customize arc property. For example look at QgsDistanceArcProperter or src/plugins/roadgraph/speedproperter.h
  */
 class ANALYSIS_EXPORT QgsArcProperter

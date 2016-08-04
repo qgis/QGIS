@@ -23,7 +23,7 @@
 
 class QgsRectangle;
 
-/**
+/** \ingroup analysis
  * @brief OSMDownload is a utility class for downloading OpenStreetMap via Overpass API.
  *
  * To use this class, it is necessary to set query, output file name and start the request.
@@ -31,7 +31,7 @@ class QgsRectangle;
  * emitted whe the request has finished (successfully or with an error).
  *
  * To check whether the the request has been successful, check hasError() and use errorString()
- * to retreive error message. An error may happen either directly in start() method
+ * to retrieve error message. An error may happen either directly in start() method
  * or during the network communication.
  *
  * By default OSMDownload uses remote service at location returned by defaultServiceUrl() method.

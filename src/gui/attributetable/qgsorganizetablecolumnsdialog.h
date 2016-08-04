@@ -25,6 +25,11 @@
 
 class QgsVectorLayer;
 
+/** \class QgsOrganizeTableColumnsDialog
+ * \ingroup gui
+ * Dialog for organising (hiding and reordering) columns in the attributes table.
+ * \note added in QGIS 2.16
+ */
 class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::QgsOrganizeTableColumnsDialog
 {
     Q_OBJECT
@@ -48,8 +53,20 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      */
     QgsAttributeTableConfig config() const;
 
+  public slots:
+    /**
+     * showAll checks all the  fields to show them all in the attribute table
+     */
+    void showAll();
+
+    /**
+     * hideAll unchecks all the fields to hide them all in the attribute table
+     */
+    void hideAll();
+
   private:
     QgsAttributeTableConfig mConfig;
+
 };
 
 #endif

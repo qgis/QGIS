@@ -1,8 +1,16 @@
 /***************************************************************************
- *  qgsgeometrymultipartcheck.cpp                                          *
- *  -------------------                                                    *
- *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
- *  email                : smani@sourcepole.ch                             *
+    qgsgeometrymultipartcheck.cpp
+    ---------------------
+    begin                : September 2015
+    copyright            : (C) 2014 by Sandro Mani / Sourcepole AG
+    email                : smani at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
 
 #include "qgsgeometrymultipartcheck.h"
@@ -19,10 +27,11 @@ void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError*>& er
     {
       continue;
     }
-    QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+    QgsGeometry featureGeom = feature.geometry();
+    QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
-    QgsWKBTypes::Type type = geom->wkbType();
-    if ( geom->partCount() == 1 && QgsWKBTypes::isMultiType( type ) )
+    QgsWkbTypes::Type type = geom->wkbType();
+    if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
     {
       errors.append( new QgsGeometryCheckError( this, featureid, geom->centroid() ) );
     }
@@ -37,10 +46,11 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError* error, int meth
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry featureGeom = feature.geometry();
+  QgsAbstractGeometryV2* geom = featureGeom.geometry();
 
   // Check if error still applies
-  if ( geom->partCount() > 1 || !QgsWKBTypes::isMultiType( geom->wkbType() ) )
+  if ( geom->partCount() > 1 || !QgsWkbTypes::isMultiType( geom->wkbType() ) )
   {
     error->setObsolete();
     return;
@@ -53,7 +63,7 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError* error, int meth
   }
   else if ( method == ConvertToSingle )
   {
-    feature.setGeometry( new QgsGeometry( QgsGeomUtils::getGeomPart( geom, 0 )->clone() ) );
+    feature.setGeometry( QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
     mFeaturePool->updateFeature( feature );
     error->setFixed( method );
     changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );

@@ -17,8 +17,11 @@
 
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
+#include "qgsrasterprojector.h"
 
 #include <QProgressDialog>
 #include <QFile>
@@ -88,7 +91,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     if ( it->raster->crs() != mOutputCrs )
     {
       QgsRasterProjector proj;
-      proj.setCRS( it->raster->crs(), mOutputCrs );
+      proj.setCrs( it->raster->crs(), mOutputCrs );
       proj.setInput( it->raster->dataProvider() );
       proj.setPrecision( QgsRasterProjector::Exact );
 

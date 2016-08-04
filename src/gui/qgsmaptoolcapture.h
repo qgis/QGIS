@@ -19,10 +19,7 @@
 
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgscompoundcurvev2.h"
-#include "qgspoint.h"
 #include "qgsgeometry.h"
-#include "qgslayertreeview.h"
-#include "qgspointlocator.h"
 
 #include <QPoint>
 #include <QList>
@@ -32,6 +29,9 @@ class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
 
+/** \ingroup gui
+ * \class QgsMapToolCapture
+ */
 class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT

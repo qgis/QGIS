@@ -69,7 +69,7 @@ class QgsSnappingUtils : QObject
      */
     struct LayerConfig
     {
-      LayerConfig( QgsVectorLayer* l, const QgsPointLocator::Types& t, double tol, QgsTolerance::UnitType u );
+      LayerConfig( QgsVectorLayer* l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u );
 
       bool operator==( const QgsSnappingUtils::LayerConfig& other ) const;
       bool operator!=( const QgsSnappingUtils::LayerConfig& other ) const;

@@ -14,7 +14,9 @@
  ***************************************************************************/
 
 #include "qgscolorwidgetwrapper.h"
+#include "qgscolorbutton.h"
 #include <QLayout>
+
 
 QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -47,7 +49,7 @@ QWidget* QgsColorWidgetWrapper::createWidget( QWidget* parent )
   container->setLayout( layout );
   layout->setMargin( 0 );
   layout->setContentsMargins( 0, 0, 0, 0 );
-  QgsColorButtonV2* button = new QgsColorButtonV2();
+  QgsColorButton* button = new QgsColorButton();
   button->setContext( QString( "editor" ) );
   layout->addWidget( button );
   layout->addStretch();
@@ -57,10 +59,10 @@ QWidget* QgsColorWidgetWrapper::createWidget( QWidget* parent )
 
 void QgsColorWidgetWrapper::initWidget( QWidget* editor )
 {
-  mColorButton = qobject_cast<QgsColorButtonV2*>( editor );
+  mColorButton = qobject_cast<QgsColorButton*>( editor );
   if ( !mColorButton )
   {
-    mColorButton = editor->findChild<QgsColorButtonV2*>();
+    mColorButton = editor->findChild<QgsColorButton*>();
   }
 
   mColorButton->setShowNull( true );
@@ -76,4 +78,9 @@ void QgsColorWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mColorButton )
     mColorButton->setColor( !value.isNull() ? QColor( value.toString() ) : QColor() );
+}
+
+void QgsColorWidgetWrapper::updateConstraintWidgetStatus( bool /*constraintValid*/ )
+{
+  // nothing
 }

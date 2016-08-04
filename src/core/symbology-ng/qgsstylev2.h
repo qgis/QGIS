@@ -34,7 +34,7 @@ class QDomElement;
 typedef QMap<QString, QgsVectorColorRampV2* > QgsVectorColorRampV2Map;
 typedef QMap<int, QString> QgsSymbolGroupMap;
 
-/*!
+/** \ingroup core
  *  A multimap to hold the smart group conditions as constraint and parameter pairs.
  *  Both the key and the value of the map are QString. The key is the constraint of the condition and the value is the parameter which is applied for the constraint.
  *
@@ -63,6 +63,9 @@ enum TagmapTable { TagmapTagId, TagmapSymbolId };
 enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampGroupId };
 enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
 
+/** \ingroup core
+ * \class QgsStyleV2
+ */
 class CORE_EXPORT QgsStyleV2 : public QObject
 {
     Q_OBJECT
@@ -320,10 +323,10 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     QStringList symbolsOfSmartgroup( StyleEntity type, int id );
 
     //! Exports the style as a XML file
-    bool exportXML( const QString& filename );
+    bool exportXml( const QString& filename );
 
     //! Imports the symbols and colorramps into the default style database from the given XML file
-    bool importXML( const QString& filename );
+    bool importXml( const QString& filename );
 
   signals:
     void symbolSaved( const QString& name, QgsSymbolV2* symbol );

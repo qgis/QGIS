@@ -23,7 +23,7 @@
 
 class QgsLineSymbolV2;
 
-/**
+/** \ingroup core
  * Composer item for polylines.
  * @note added in QGIS 2.16
  */
@@ -74,10 +74,10 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
     void _draw( QPainter *painter ) override;
 
     /** Read symbol in XML. */
-    void _readXMLStyle( const QDomElement &elmt ) override;
+    void _readXmlStyle( const QDomElement &elmt ) override;
 
     /** Write the symbol in an XML document. */
-    void _writeXMLStyle( QDomDocument &doc, QDomElement &elmt ) const override;
+    void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const override;
 
     /** Create a default symbol. */
     void createDefaultPolylineStyleSymbol();
