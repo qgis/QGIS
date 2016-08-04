@@ -18,7 +18,7 @@
 
 #include "qgseditorwidgetwrapper.h"
 
-class QgsColorButtonV2;
+class QgsColorButton;
 
 /** \ingroup gui
  * Wraps a color widget. Users will be able to choose a color.
@@ -47,7 +47,7 @@ class GUI_EXPORT  QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     void updateConstraintWidgetStatus( bool constraintValid ) override;
 
-    QgsColorButtonV2* mColorButton;
+    QgsColorButton* mColorButton;
 };
 
 #endif // QGSCOLORWIDGETWRAPPER_H

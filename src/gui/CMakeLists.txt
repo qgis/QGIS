@@ -183,7 +183,6 @@ SET(QGIS_GUI_SRCS
   qgscodeeditorsql.cpp
   qgscollapsiblegroupbox.cpp
   qgscolorbutton.cpp
-  qgscolorbuttonv2.cpp
   qgscolordialog.cpp
   qgscolorschemelist.cpp
   qgscolorswatchgrid.cpp
@@ -343,7 +342,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgscodeeditorsql.h
   qgscollapsiblegroupbox.h
   qgscolorbutton.h
-  qgscolorbuttonv2.h
   qgscolordialog.h
   qgscolorschemelist.h
   qgscolorswatchgrid.h

@@ -478,7 +478,7 @@
           <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QgsColorButtonV2" name="mFontColorButton">
+             <widget class="QgsColorButton" name="mFontColorButton">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -521,7 +521,7 @@
           <item row="2" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QgsColorButtonV2" name="mFillColorButton">
+             <widget class="QgsColorButton" name="mFillColorButton">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -564,7 +564,7 @@
           <item row="3" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
-             <widget class="QgsColorButtonV2" name="mFillColor2Button">
+             <widget class="QgsColorButton" name="mFillColor2Button">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -607,7 +607,7 @@
           <item row="4" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
-             <widget class="QgsColorButtonV2" name="mStrokeColorButton">
+             <widget class="QgsColorButton" name="mStrokeColorButton">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -665,9 +665,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

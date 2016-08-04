@@ -1,7 +1,7 @@
 /***************************************************************************
    qgscolorbuttonplugin.h
     --------------------------------------
-   Date                 : 25.04.2014
+   Date                 : 18.08.2014
    Copyright            : (C) 2014 Denis Rouzaud
    Email                : denis.rouzaud@gmail.com
 ***************************************************************************
@@ -13,8 +13,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef QGSCOLORBUTTONPLUGIN_H
-#define QGSCOLORBUTTONPLUGIN_H
+#ifndef QgsColorButtonPLUGIN_H
+#define QgsColorButtonPLUGIN_H
 
 
 #include <QtGlobal>
@@ -52,4 +52,4 @@ class CUSTOMWIDGETS_EXPORT QgsColorButtonPlugin : public QObject, public QDesign
     QString whatsThis() const override;
     QString domXml() const override;
 };
-#endif // QGSCOLORBUTTONPLUGIN_H
+#endif // QgsColorButtonPLUGIN_H

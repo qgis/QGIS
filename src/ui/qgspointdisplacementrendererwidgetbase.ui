@@ -62,7 +62,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QgsColorButtonV2" name="mLabelColorButton">
+       <widget class="QgsColorButton" name="mLabelColorButton">
         <property name="minimumSize">
          <size>
           <width>120</width>
@@ -117,7 +117,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="2" column="1">
-       <widget class="QgsColorButtonV2" name="mCircleColorButton">
+       <widget class="QgsColorButton" name="mCircleColorButton">
         <property name="minimumSize">
          <size>
           <width>120</width>
@@ -257,9 +257,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
