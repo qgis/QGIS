@@ -295,7 +295,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsColorButtonV2" name="pbnSelectionColor">
+                     <widget class="QgsColorButton" name="pbnSelectionColor">
                       <property name="minimumSize">
                        <size>
                         <width>120</width>
@@ -330,7 +330,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsColorButtonV2" name="pbnCanvasColor">
+                     <widget class="QgsColorButton" name="pbnCanvasColor">
                       <property name="minimumSize">
                        <size>
                         <width>120</width>
@@ -2575,9 +2575,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

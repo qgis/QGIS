@@ -296,7 +296,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QgsColorButtonV2" name="mPreviewBackgroundBtn">
+             <widget class="QgsColorButton" name="mPreviewBackgroundBtn">
               <property name="minimumSize">
                <size>
                 <width>100</width>
@@ -1011,7 +1011,7 @@
                           </widget>
                          </item>
                          <item row="7" column="1">
-                          <widget class="QgsColorButtonV2" name="btnTextColor">
+                          <widget class="QgsColorButton" name="btnTextColor">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                              <horstretch>0</horstretch>
@@ -2299,7 +2299,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="2" column="1">
-                            <widget class="QgsColorButtonV2" name="btnBufferColor">
+                            <widget class="QgsColorButton" name="btnBufferColor">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -2570,7 +2570,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="18" column="1">
-                            <widget class="QgsColorButtonV2" name="mShapeBorderColorBtn">
+                            <widget class="QgsColorButton" name="mShapeBorderColorBtn">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -3020,7 +3020,7 @@ font-style: italic;</string>
                             <widget class="QgsPenJoinStyleComboBox" name="mShapePenStyleCmbBx"/>
                            </item>
                            <item row="17" column="1">
-                            <widget class="QgsColorButtonV2" name="mShapeFillColorBtn">
+                            <widget class="QgsColorButton" name="mShapeFillColorBtn">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -3331,7 +3331,7 @@ font-style: italic;</string>
                             <number>0</number>
                            </property>
                            <item row="10" column="1">
-                            <widget class="QgsColorButtonV2" name="mShadowColorBtn">
+                            <widget class="QgsColorButton" name="mShadowColorBtn">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -6377,9 +6377,9 @@ font-style: italic;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

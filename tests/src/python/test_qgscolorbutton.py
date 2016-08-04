@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsColorButtonV2.
+"""QGIS Unit tests for QgsColorButton.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,13 +14,13 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.gui import QgsColorButtonV2
+from qgis.gui import QgsColorButton
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QColor
 start_app()
 
 
-class TestQgsColorButtonV2(unittest.TestCase):
+class TestQgsColorButton(unittest.TestCase):
 
     def testClearingColors(self):
         """
@@ -28,7 +28,7 @@ class TestQgsColorButtonV2(unittest.TestCase):
         """
 
         # start with a valid color
-        button = QgsColorButtonV2()
+        button = QgsColorButton()
         button.setAllowAlpha(True)
         button.setColor(QColor(255, 100, 200, 255))
         self.assertEqual(button.color(), QColor(255, 100, 200, 255))

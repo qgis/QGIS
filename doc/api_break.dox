@@ -21,12 +21,13 @@ This page tries to maintain a list with incompatible changes that happened in pr
 \subsection qgis_api_break_3_0_removed_classes Removed Classes
 
 <ul>
-<li>QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.</li>
-<li>QgsMapCanvasMap. It is an internal class used by map canvas.</li>
-<li>QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.</li>
+<li>QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.
 <li>QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).</li>
+<li>QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.</li>
+<li>QgsMapCanvasMap. It is an internal class used by map canvas.</li>
+<li>QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.</li>
 <li>QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.</li>
 </ul>
 

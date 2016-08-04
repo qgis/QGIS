@@ -374,7 +374,7 @@
           <item row="7" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
-             <widget class="QgsColorButtonV2" name="mBackgroundColorButton">
+             <widget class="QgsColorButton" name="mBackgroundColorButton">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -471,7 +471,7 @@
           <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QgsColorButtonV2" name="mGridColorButton">
+             <widget class="QgsColorButton" name="mGridColorButton">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -552,7 +552,7 @@
              <item row="1" column="1">
               <layout class="QHBoxLayout" name="horizontalLayout_3">
                <item>
-                <widget class="QgsColorButtonV2" name="mHeaderFontColorButton">
+                <widget class="QgsColorButton" name="mHeaderFontColorButton">
                  <property name="minimumSize">
                   <size>
                    <width>120</width>
@@ -655,7 +655,7 @@
              <item row="1" column="1">
               <layout class="QHBoxLayout" name="horizontalLayout_4">
                <item>
-                <widget class="QgsColorButtonV2" name="mContentFontColorButton">
+                <widget class="QgsColorButton" name="mContentFontColorButton">
                  <property name="minimumSize">
                   <size>
                    <width>120</width>
@@ -775,9 +775,9 @@
    <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

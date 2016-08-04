@@ -68,7 +68,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsColorButtonV2" name="mFontColorButton">
+      <widget class="QgsColorButton" name="mFontColorButton">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -117,9 +117,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

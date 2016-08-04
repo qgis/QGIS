@@ -2771,7 +2771,7 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
                   <item row="0" column="4">
-                   <widget class="QgsColorButtonV2" name="pbnCanvasColor">
+                   <widget class="QgsColorButton" name="pbnCanvasColor">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2835,7 +2835,7 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QgsColorButtonV2" name="pbnSelectionColor">
+                   <widget class="QgsColorButton" name="pbnSelectionColor">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3163,7 +3163,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsColorButtonV2" name="mIdentifyHighlightColorButton">
+                     <widget class="QgsColorButton" name="mIdentifyHighlightColorButton">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -3332,7 +3332,7 @@
                    <widget class="QComboBox" name="mAngleUnitsComboBox"/>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QgsColorButtonV2" name="pbnMeasureColor">
+                   <widget class="QgsColorButton" name="pbnMeasureColor">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3588,7 +3588,7 @@
                    </widget>
                   </item>
                   <item row="0" column="4">
-                   <widget class="QgsColorButtonV2" name="mGridColorButton">
+                   <widget class="QgsColorButton" name="mGridColorButton">
                     <property name="minimumSize">
                      <size>
                       <width>120</width>
@@ -3925,7 +3925,7 @@
                    </widget>
                   </item>
                   <item row="0" column="5">
-                   <widget class="QgsColorButtonV2" name="mFillColorToolButton">
+                   <widget class="QgsColorButton" name="mFillColorToolButton">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3963,7 +3963,7 @@
                    </widget>
                   </item>
                   <item row="0" column="3">
-                   <widget class="QgsColorButtonV2" name="mLineColorToolButton">
+                   <widget class="QgsColorButton" name="mLineColorToolButton">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5362,9 +5362,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

@@ -517,7 +517,7 @@ void QgsLabelingGui::connectValueChanged( QList<QWidget *> widgets, const char *
     {
       connect( w , SIGNAL( valueChanged( double ) ), this, slot );
     }
-    else if ( QgsColorButtonV2* w = qobject_cast<QgsColorButtonV2*>( widget ) )
+    else if ( QgsColorButton* w = qobject_cast<QgsColorButton*>( widget ) )
     {
       connect( w, SIGNAL( colorChanged( QColor ) ), this, slot );
     }
