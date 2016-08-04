@@ -78,7 +78,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      * Get the feature type as defined in WkbType (qgis.h).
      * @return int representing the feature type
      */
-    QgsWkbTypes::Type geometryType() const override;
+    QgsWkbTypes::Type wkbType() const override;
 
 
     /**

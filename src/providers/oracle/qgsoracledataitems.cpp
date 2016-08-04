@@ -257,7 +257,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
     if ( srcLayer->isValid() )
     {
       uri.setDataSource( QString(), u.name.left( 30 ).toUpper(), "GEOM" );
-      uri.setWkbType( QGis::fromOldWkbType( srcLayer->wkbType() ) );
+      uri.setWkbType( srcLayer->wkbType() );
       QString authid = srcLayer->crs().authid();
       if ( authid.startsWith( "EPSG:", Qt::CaseInsensitive ) )
       {
@@ -374,7 +374,7 @@ QString QgsOracleLayerItem::createUri()
   QgsDataSourceUri uri = QgsOracleConn::connUri( connItem->name() );
   uri.setDataSource( mLayerProperty.ownerName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, QString::null );
   uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
-  uri.setWkbType( QGis::fromOldWkbType( mLayerProperty.types.at( 0 ) ) );
+  uri.setWkbType( mLayerProperty.types.at( 0 ) );
   if ( mLayerProperty.isView && mLayerProperty.pkCols.size() > 0 )
     uri.setKeyColumn( mLayerProperty.pkCols[0] );
   QgsDebugMsgLevel( QString( "layer uri: %1" ).arg( uri.uri() ), 3 );

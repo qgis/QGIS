@@ -105,7 +105,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * WKBMultiPolygon
      * as defined in qgis.h
      */
-    QgsWkbTypes::Type geometryType() const override;
+    QgsWkbTypes::Type wkbType() const override;
 
     /** Return the number of layers for the current data source
      * @note Should this be subLayerCount() instead?

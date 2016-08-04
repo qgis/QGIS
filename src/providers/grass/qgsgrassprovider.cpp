@@ -443,7 +443,7 @@ QgsRectangle QgsGrassProvider::extent() const
 /**
 * Return the feature type
 */
-QgsWkbTypes::Type QgsGrassProvider::geometryType() const
+QgsWkbTypes::Type QgsGrassProvider::wkbType() const
 {
   return mQgisType;
 }

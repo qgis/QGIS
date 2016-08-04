@@ -499,7 +499,7 @@ void QgsOracleProvider::setExtent( QgsRectangle& newExtent )
 /**
  * Return the feature type
  */
-QgsWkbTypes::Type QgsOracleProvider::geometryType() const
+QgsWkbTypes::Type QgsOracleProvider::wkbType() const
 {
   return mRequestedGeomType != QgsWkbTypes::Unknown ? mRequestedGeomType : mDetectedGeomType;
 }
@@ -2419,7 +2419,7 @@ bool QgsOracleProvider::getGeometryDetails()
     mEnabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
   }
 
-  QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::featureType( geometryType() ) ) );
+  QgsDebugMsg( QString( "Feature type name is %1" ).arg( QgsWkbTypes::displayString( wkbType() ) ) );
 
   return mValid;
 }
