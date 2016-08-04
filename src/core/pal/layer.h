@@ -94,6 +94,10 @@ namespace pal
        */
       QgsPalLayerSettings::Placement arrangement() const { return mArrangement; }
 
+      /** Returns true if the layer has curved labels
+       */
+      bool isCurved() const { return mArrangement == QgsPalLayerSettings::Curved || mArrangement == QgsPalLayerSettings::PerimeterCurved; }
+
       /** Sets the layer's arrangement policy.
        * @param arrangement arrangement policy
        * @see arrangement

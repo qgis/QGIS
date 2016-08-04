@@ -178,7 +178,7 @@ namespace pal
       int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape, double initialCost = 0.0 );
 
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
-                                              int orientation, int index, double distance );
+                                              int& orientation, int index, double distance, bool& flip );
 
       /** Generate curved candidates for line features.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
@@ -213,13 +213,28 @@ namespace pal
       double getLabelHeight() const { return mLF->size().height(); }
       double getLabelDistance() const { return mLF->distLabel(); }
 
-      bool getFixedRotation() { return mLF->hasFixedAngle(); }
-      double getLabelAngle() { return mLF->fixedAngle(); }
-      bool getFixedPosition() { return mLF->hasFixedPosition(); }
-      bool getAlwaysShow() { return mLF->alwaysShow(); }
-      bool isObstacle() { return mLF->isObstacle(); }
-      double obstacleFactor() { return mLF->obstacleFactor(); }
-      double repeatDistance() { return mLF->repeatDistance(); }
+      //! Returns true if the feature's label has a fixed rotation
+      bool hasFixedRotation() const { return mLF->hasFixedAngle(); }
+
+      //! Returns the fixed angle for the feature's label
+      double fixedAngle() const { return mLF->fixedAngle(); }
+
+      //! Returns true if the feature's label has a fixed position
+      bool hasFixedPosition() const { return mLF->hasFixedPosition(); }
+
+      //! Returns true if the feature's label should always been shown,
+      //! even when it collides with other labels
+      bool alwaysShow() const { return mLF->alwaysShow(); }
+
+      //! Returns true if the feature should act as an obstacle to labels
+      bool isObstacle() const { return mLF->isObstacle(); }
+
+      //! Returns the feature's obstacle factor, which represents the penalty
+      //! incurred for a label to overlap the feature
+      double obstacleFactor() const { return mLF->obstacleFactor(); }
+
+      //! Returns the distance between repeating labels for this feature
+      double repeatDistance() const { return mLF->repeatDistance(); }
 
       //! Get number of holes (inner rings) - they are considered as obstacles
       int getNumSelfObstacles() const { return mHoles.count(); }
@@ -242,6 +257,8 @@ namespace pal
        */
       double calculatePriority() const;
 
+      //! Returns true if feature's label must be displayed upright
+      bool isUprightLabel() const;
 
     protected:
 
