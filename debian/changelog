@@ -4,8 +4,9 @@ qgis (2.17.0) UNRELEASED; urgency=medium
   * drop support for debian wheezy and ubuntu wily
   * add python-requests dependency for metasearch plugin
   * lintian fixes
+  * add version constraint to libqgis-customwidgets dependency.
 
- -- Jürgen E. Fischer <jef@norbit.de>  Mon, 01 Aug 2016 10:06:23 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 04 Aug 2016 11:38:39 +0200
 
 qgis (2.16.0) unstable; urgency=medium
 
