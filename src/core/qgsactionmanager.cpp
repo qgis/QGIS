@@ -210,13 +210,13 @@ QString QgsActionManager::expandAction( QString action, const QgsAttributeMap &a
       switch ( i )
       {
         case 0:
-          to_replace = "[%" + fields[attrIdx].name() + ']';
+          to_replace = "[%" + fields.at( attrIdx ).name() + ']';
           break;
         case 1:
           to_replace = "[%" + mLayer->attributeDisplayName( attrIdx ) + ']';
           break;
         case 2:
-          to_replace = '%' + fields[attrIdx].name();
+          to_replace = '%' + fields.at( attrIdx ).name();
           break;
         case 3:
           to_replace = '%' + mLayer->attributeDisplayName( attrIdx );

@@ -1112,7 +1112,7 @@ bool TestQgsGrassProvider::setAttributes( QgsFeature & feature, const QMap<QStri
   bool attributesSet = true;
   Q_FOREACH ( const QString fieldName, attributes.keys() )
   {
-    int index = feature.fields()->indexFromName( fieldName );
+    int index = feature.fields().indexFromName( fieldName );
     if ( index < 0 )
     {
       attributesSet = false;
@@ -1501,26 +1501,26 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
   }
   // GRASS feature has always additional cat field
   QSet<int> indexes;
-  for ( int i = 0; i < feature.fields()->size(); i++ )
+  for ( int i = 0; i < feature.fields().size(); i++ )
   {
-    QString name = feature.fields()->at( i ).name();
+    QString name = feature.fields().at( i ).name();
     if ( name == "cat" ) // skip cat
     {
       continue;
     }
     indexes << i;
   }
-  for ( int i = 0; i < expectedFeature.fields()->size(); i++ )
+  for ( int i = 0; i < expectedFeature.fields().size(); i++ )
   {
-    QString name = expectedFeature.fields()->at( i ).name();
-    int index = feature.fields()->indexFromName( name );
+    QString name = expectedFeature.fields().at( i ).name();
+    int index = feature.fields().indexFromName( name );
     if ( index < 0 )
     {
       // not found
       QStringList names;
-      for ( int j = 0; j < feature.fields()->size(); j++ )
+      for ( int j = 0; j < feature.fields().size(); j++ )
       {
-        names << feature.fields()->at( j ).name();
+        names << feature.fields().at( j ).name();
       }
       reportRow( QString( "Attribute %1 not found, feature attributes: %2" ).arg( name, names.join( "," ) ) );
       return false;
@@ -1539,7 +1539,7 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
     QStringList names;
     Q_FOREACH ( int i, indexes )
     {
-      names << feature.fields()->at( i ).name();
+      names << feature.fields().at( i ).name();
     }
     reportRow( QString( "feature has %1 unexpected attributes: %2" ).arg( indexes.size() ).arg( names.join( "," ) ) );
     return false;

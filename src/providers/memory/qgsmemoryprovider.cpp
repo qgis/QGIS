@@ -262,7 +262,7 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
   QgsAttributeList attrs = const_cast<QgsMemoryProvider *>( this )->attributeIndexes();
   for ( int i = 0; i < attrs.size(); i++ )
   {
-    QgsField field = mFields[attrs[i]];
+    QgsField field = mFields.at( attrs[i] );
     QString fieldDef = field.name();
     fieldDef.append( QString( ":%2(%3,%4)" ).arg( field.typeName() ).arg( field.length() ).arg( field.precision() ) );
     uri.addQueryItem( "field", fieldDef );

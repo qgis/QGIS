@@ -424,14 +424,14 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
     if ( !range.symbol() )
       continue;
 
-    range.symbol()->startRender( context, &fields );
+    range.symbol()->startRender( context, fields );
 
     if ( mRotation.data() || mSizeScale.data() )
     {
       QgsSymbolV2* tempSymbol = range.symbol()->clone();
       tempSymbol->setRenderHints(( mRotation.data() ? QgsSymbolV2::DataDefinedRotation : 0 ) |
                                  ( mSizeScale.data() ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
-      tempSymbol->startRender( context, &fields );
+      tempSymbol->startRender( context, fields );
       mTempSymbols[ range.symbol()] = tempSymbol;
     }
   }

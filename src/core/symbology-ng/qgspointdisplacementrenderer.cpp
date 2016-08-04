@@ -364,7 +364,7 @@ void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const
 
   if ( mCenterSymbol )
   {
-    mCenterSymbol->startRender( context, &fields );
+    mCenterSymbol->startRender( context, fields );
   }
   return;
 }

@@ -869,7 +869,7 @@ void QgsAttributeForm::onUpdatedFields()
     QgsAttributes attrs( layer()->fields().size() );
     for ( int i = 0; i < layer()->fields().size(); i++ )
     {
-      int idx = mFeature.fields()->indexFromName( layer()->fields().at( i ).name() );
+      int idx = mFeature.fields().indexFromName( layer()->fields().at( i ).name() );
       if ( idx != -1 )
       {
         attrs[i] = mFeature.attributes().at( idx );

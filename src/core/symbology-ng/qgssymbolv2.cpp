@@ -443,7 +443,7 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 }
 
 
-void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields* fields )
+void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   delete mSymbolRenderContext;
   mSymbolRenderContext = new QgsSymbolV2RenderContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, fields, mapUnitScale() );
@@ -497,7 +497,7 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderConte
 {
   QgsRenderContext context = customContext ? *customContext : QgsSymbolLayerV2Utils::createRenderContext( painter );
   context.setForceVectorOutput( true );
-  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, nullptr, mapUnitScale() );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, QgsFields(), mapUnitScale() );
 
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
@@ -1024,7 +1024,7 @@ void QgsSymbolV2::renderVertexMarker( QPointF pt, QgsRenderContext& context, int
 ////////////////////
 
 
-QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f, const QgsFields* fields, const QgsMapUnitScale& mapUnitScale )
+QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f, const QgsFields& fields, const QgsMapUnitScale& mapUnitScale )
     : mRenderContext( c )
     , mExpressionContextScope( nullptr )
     , mOutputUnit( u )
@@ -1472,7 +1472,7 @@ void QgsMarkerSymbolV2::renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, QP
 
 void QgsMarkerSymbolV2::renderPoint( QPointF point, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, nullptr, mapUnitScale() );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, QgsFields(), mapUnitScale() );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
@@ -1680,7 +1680,7 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
 {
   //save old painter
   QPainter* renderPainter = context.painter();
-  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, nullptr, mapUnitScale() );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, QgsFields(), mapUnitScale() );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
@@ -1759,7 +1759,7 @@ QgsFillSymbolV2::QgsFillSymbolV2( const QgsSymbolLayerV2List& layers )
 
 void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, nullptr, mapUnitScale() );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, QgsFields(), mapUnitScale() );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 

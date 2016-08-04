@@ -2305,13 +2305,13 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       for ( int i = 0; i < featureAttributes.count(); ++i )
       {
         //skip attribute if it is explicitly excluded from WMS publication
-        if ( excludedAttributes.contains( fields[i].name() ) )
+        if ( excludedAttributes.contains( fields.at( i ).name() ) )
         {
           continue;
         }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         //skip attribute if it is excluded by access control
-        if ( !attributes.contains( fields[i].name() ) )
+        if ( !attributes.contains( fields.at( i ).name() ) )
         {
           continue;
         }
@@ -3273,10 +3273,10 @@ QDomElement QgsWmsServer::createFeatureGML(
 
   //read all allowed attribute values from the feature
   QgsAttributes featureAttributes = feat->attributes();
-  const QgsFields* fields = feat->fields();
-  for ( int i = 0; i < fields->count(); ++i )
+  QgsFields fields = feat->fields();
+  for ( int i = 0; i < fields.count(); ++i )
   {
-    QString attributeName = fields->at( i ).name();
+    QString attributeName = fields.at( i ).name();
     //skip attribute if it is explicitly excluded from WMS publication
     if ( layer && layer->excludeAttributesWms().contains( attributeName ) )
     {

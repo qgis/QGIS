@@ -1268,7 +1268,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       // It may be that user manualy entered cat value
       QgsFeatureMap& addedFeatures = mEditBuffer->mAddedFeatures;
       QgsFeature& feature = addedFeatures[fid];
-      int catIndex = feature.fields()->indexFromName( mLayer->keyColumnName() );
+      int catIndex = feature.fields().indexFromName( mLayer->keyColumnName() );
       if ( catIndex != -1 )
       {
         QVariant userCatVariant = feature.attributes().value( catIndex );

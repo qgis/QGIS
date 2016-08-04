@@ -233,6 +233,13 @@ instead.</li>
 be returned in place of a null pointer.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsDiagram QgsDiagram
+
+<ul>
+<li>The deprecated getExpression( const QString& expression, const QgsFields* fields ) method has been removed.
+Use the variant which accepts an expression context instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsDiagramLayerSettings QgsDiagramLayerSettings
 
 <ul>
@@ -255,12 +262,19 @@ a feature has a geometry is now done using the new hasGeometry() method. Any cod
 None will need to be modified, as the method will return an empty geometry if the feature has no geometry.</b></li>
 <li>The temporary constGeometry() method has been removed. Use geometry() instead.</li>
 <li>setFields( const QgsFields*, bool ) has been removed, use setFields( const QgsFields&, bool ) instead.</li>
+<li>fields() no longer returns a pointer, but instead a QgsFields value.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsFeatureRendererV2 QgsFeatureRendererV2
 
 <ul>
 <li>The method capabilities() returns QgsFeatureRendererV2::Capabilities flags instead of an integer. The two are binary compatible.
+</ul>
+
+\subsection qgis_api_break_3_0_QgsFields QgsFields
+
+<ul>
+<li>All const methods which return a field from QgsFields now return a QgsField value, not a reference.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsGeometry QgsGeometry
@@ -523,6 +537,21 @@ be returned instead of a null pointer if no transformation is required.</li>
 <li>The OutputUnit enum, including QgsSymbolV2::MM, QgsSymbolV2::MapUnit, QgsSymbolV2::Mixed, QgsSymbolV2::Pixel and QgsSymbolV2::Percentage has been moved to QgsUnitTypes
 and renamed to RenderUnit. QgsSymbolV2::OutputUnitList was renamed to QgsUnitTypes::RenderUnitList. All methods which previously accepted QgsSymbolV2::OutputUnit
 parameters or QgsSymbolV2::OutputUnitList parameters now take QgsUnitTypes::RenderUnit or QgsUnitTypes::RenderUnitList parameters respectively.</li>
+<li>startRender() now accepts a QgsFields reference, not a pointer.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSymbolLayerV2 QgsSymbolLayerV2
+
+<ul>
+<li>The deprecated prepareExpressions( const QgsFields* fields, double scale = -1.0 ) method has been removed. Use
+the variant which takes QgsSymbolV2RenderContext instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSymbolV2RenderContext QgsSymbolV2RenderContext
+
+<ul>
+<li>The constructor now accepts a QgsFields reference, not a pointer.</li>
+<li>fields() now returns a QgsFields value, not a pointer.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSymbolLayerV2Utils QgsSymbolLayerV2Utils

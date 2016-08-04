@@ -398,13 +398,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
   {
-    QgsField attrField = fields[fldIdx];
+    QgsField attrField = fields.at( fldIdx );
 
     OGRFieldType ogrType = OFTString; //default to string
 
     if ( fieldValueConverter )
     {
-      attrField = fieldValueConverter->fieldDefinition( fields[fldIdx] );
+      attrField = fieldValueConverter->fieldDefinition( fields.at( fldIdx ) );
     }
 
     int ogrWidth = attrField.length();
@@ -489,7 +489,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         name = QString( "ogc_fid%1" ).arg( i );
 
         int j;
-        for ( j = 0; j < fields.size() && name.compare( fields[j].name(), Qt::CaseInsensitive ) != 0; j++ )
+        for ( j = 0; j < fields.size() && name.compare( fields.at( j ).name(), Qt::CaseInsensitive ) != 0; j++ )
           ;
 
         if ( j == fields.size() )
@@ -2174,7 +2174,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   {
     Q_FOREACH ( int idx, layer->attributeList() )
     {
-      const QgsField &fld = layer->fields()[idx];
+      QgsField fld = layer->fields().at( idx );
       if ( layer->providerType() == "oracle" && fld.typeName().contains( "SDO_GEOMETRY" ) )
         continue;
       attributes.append( idx );
@@ -2186,7 +2186,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   {
     Q_FOREACH ( int attrIdx, attributes )
     {
-      fields.append( layer->fields()[attrIdx] );
+      fields.append( layer->fields().at( attrIdx ) );
     }
   }
 

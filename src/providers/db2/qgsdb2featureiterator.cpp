@@ -338,7 +338,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
         {
           v = QVariant( v.toString() );
         }
-        const QgsField &fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
+        QgsField fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
 //        QgsDebugMsg( QString( "v.type: %1; fld.type: %2" ).arg( v.type() ).arg( fld.type() ) );
         if ( v.type() != fld.type() )
         {

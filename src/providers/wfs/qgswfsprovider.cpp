@@ -530,7 +530,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
         const QgsFields tableFields = mapTypenameToFields[columnTableTypename];
         for ( int i = 0; i < tableFields.size();i++ )
         {
-          const QgsField& srcField = tableFields[i];
+          QgsField srcField = tableFields.at( i );
           QString fieldName( srcField.name() );
           // If several tables selected, prefix by table name
           if ( typenameList.size() > 1 )
@@ -562,7 +562,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
           const QgsFields tableFields = mapTypenameToFields[typeName];
           for ( int i = 0; i < tableFields.size();i++ )
           {
-            const QgsField& srcField = tableFields[i];
+            QgsField srcField = tableFields.at( i );
             QString fieldName( srcField.name() );
             // If several tables selected, prefix by table name
             if ( typenameList.size() > 1 )
@@ -618,9 +618,9 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
         return false;
       }
 
-      QgsField field( fieldName, tableFields[idx].type(), tableFields[idx].typeName() );
+      QgsField field( fieldName, tableFields.at( idx ).type(), tableFields.at( idx ).typeName() );
       mapFieldNameToSrcLayerNameFieldName[ field.name()] =
-        QPair<QString, QString>( columnTableTypename, tableFields[idx].name() );
+        QPair<QString, QString>( columnTableTypename, tableFields.at( idx ).name() );
       mShared->mFields.append( field );
     }
   }

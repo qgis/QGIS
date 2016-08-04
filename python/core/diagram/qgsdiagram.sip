@@ -11,9 +11,6 @@ class QgsDiagram
 
     void clearCache();
 
-    //! @deprecated use QgsExpressionContext variant instead
-    QgsExpression* getExpression( const QString& expression, const QgsFields* fields ) /Deprecated/;
-
     /** Returns a prepared expression for the specified context.
      * @param expression expression string
      * @param context expression context

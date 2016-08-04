@@ -303,14 +303,6 @@ class QgsSymbolLayerV2
 
     /** Prepares all data defined property expressions for evaluation. This should
      * be called prior to evaluating data defined properties.
-     * @param fields associated layer fields
-     * @param scale map scale
-     * @deprecated use variant which takes QgsSymbolV2RenderContext instead
-     */
-    virtual void prepareExpressions( const QgsFields* fields, double scale = -1.0 ) /Deprecated/;
-
-    /** Prepares all data defined property expressions for evaluation. This should
-     * be called prior to evaluating data defined properties.
      * @param context symbol render context
      * @note added in QGIS 2.12
      */

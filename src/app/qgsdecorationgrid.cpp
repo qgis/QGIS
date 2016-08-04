@@ -232,7 +232,7 @@ void QgsDecorationGrid::render( QPainter * p )
 
     QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
     context.setPainter( p );
-    mLineSymbol->startRender( context, nullptr );
+    mLineSymbol->startRender( context );
 
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
     {
@@ -310,7 +310,7 @@ void QgsDecorationGrid::render( QPainter * p )
 
     QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
     context.setPainter( p );
-    mMarkerSymbol->startRender( context, nullptr );
+    mMarkerSymbol->startRender( context );
 
     QPointF intersectionPoint;
     for ( ; vIt != verticalLines.constEnd(); ++vIt )

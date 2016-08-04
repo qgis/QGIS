@@ -465,7 +465,7 @@ void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
           //xsd:element
           QDomElement attElem = doc.createElement( "element"/*xsd:element*/ );
           attElem.setAttribute( "name", attributeName );
-          QVariant::Type attributeType = fields[idx].type();
+          QVariant::Type attributeType = fields.at( idx ).type();
           if ( attributeType == QVariant::Int )
             attElem.setAttribute( "type", "integer" );
           else if ( attributeType == QVariant::LongLong )

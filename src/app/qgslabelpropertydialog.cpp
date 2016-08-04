@@ -103,7 +103,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, const QString& provid
       {
         mLabelTextLineEdit->setText( attributeValues.at( mCurLabelField ).toString() );
         const QgsFields& layerFields = vlayer->fields();
-        switch ( layerFields[mCurLabelField].type() )
+        switch ( layerFields.at( mCurLabelField ).type() )
         {
           case QVariant::Double:
             mLabelTextLineEdit->setValidator( new QDoubleValidator( this ) );

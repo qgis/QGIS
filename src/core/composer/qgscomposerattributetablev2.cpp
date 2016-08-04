@@ -338,7 +338,7 @@ void QgsComposerAttributeTableV2::setDisplayAttributes( const QSet<int>& attr, b
       }
       QString currentAlias = source->attributeDisplayName( attrIdx );
       QgsComposerTableColumn* col = new QgsComposerTableColumn;
-      col->setAttribute( fields[attrIdx].name() );
+      col->setAttribute( fields.at( attrIdx ).name() );
       col->setHeading( currentAlias );
       mColumns.append( col );
     }

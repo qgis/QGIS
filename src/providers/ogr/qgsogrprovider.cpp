@@ -2726,7 +2726,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
     return;
 
-  const QgsField& fld = mAttributeFields.at( index );
+  QgsField fld = mAttributeFields.at( index );
   if ( fld.name().isNull() )
   {
     return; //not a provider field
@@ -2774,7 +2774,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   {
     return QVariant();
   }
-  const QgsField& fld = mAttributeFields.at( index );
+  QgsField fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MIN(" + mEncoding->fromUnicode( fld.name() );
@@ -2813,7 +2813,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   {
     return QVariant();
   }
-  const QgsField& fld = mAttributeFields.at( index );
+  QgsField fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MAX(" + mEncoding->fromUnicode( fld.name() );

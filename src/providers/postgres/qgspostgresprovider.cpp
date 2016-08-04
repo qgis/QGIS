@@ -444,7 +444,7 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
       for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
       {
         int idx = mPrimaryKeyAttrs[i];
-        const QgsField &fld = field( idx );
+        QgsField fld = field( idx );
 
         whereClause += delim + QString( "%3%1=$%2" ).arg( connectionRO()->fieldExpression( fld ) ).arg( offset++ ).arg( aliased );
         delim = " AND ";
@@ -544,12 +544,12 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
 
     case pktInt:
       Q_ASSERT( pkAttrs.size() == 1 );
-      whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ).arg( FID2PKINT( featureId ) );
+      whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ).arg( FID2PKINT( featureId ) );
       break;
 
     case pktUint64:
       Q_ASSERT( pkAttrs.size() == 1 );
-      whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ).arg( featureId );
+      whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ).arg( featureId );
       break;
 
     case pktFidMap:
@@ -565,7 +565,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
         for ( int i = 0; i < pkAttrs.size(); i++ )
         {
           int idx = pkAttrs[i];
-          const QgsField &fld = fields[ idx ];
+          QgsField fld = fields.at( idx );
 
           whereClause += delim + conn->fieldExpression( fld );
           if ( pkVals[i].isNull() )
@@ -607,7 +607,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
       if ( !featureIds.isEmpty() )
       {
         QString delim;
-        expr = QString( "%1 IN (" ).arg(( pkType == pktOid ? "oid" : QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ) );
+        expr = QString( "%1 IN (" ).arg(( pkType == pktOid ? "oid" : QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ) );
 
         Q_FOREACH ( const QgsFeatureId featureId, featureIds )
         {
@@ -691,7 +691,7 @@ QgsWkbTypes::Type QgsPostgresProvider::wkbType() const
   return mRequestedGeomType != QgsWkbTypes::Unknown ? mRequestedGeomType : mDetectedGeomType;
 }
 
-const QgsField &QgsPostgresProvider::field( int index ) const
+QgsField QgsPostgresProvider::field( int index ) const
 {
   if ( index < 0 || index >= mAttributeFields.count() )
   {
@@ -699,7 +699,7 @@ const QgsField &QgsPostgresProvider::field( int index ) const
     throw PGFieldNotFound();
   }
 
-  return mAttributeFields[index];
+  return mAttributeFields.at( index );
 }
 
 QgsFields QgsPostgresProvider::fields() const
@@ -1350,7 +1350,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           QgsDebugMsg( "Skipping " + name );
           continue;
         }
-        const QgsField& fld = mAttributeFields.at( idx );
+        QgsField fld = mAttributeFields.at( idx );
 
         // Always use pktFidMap for multi-field keys
         mPrimaryKeyType = i ? pktFidMap : pkType( fld );
@@ -1448,7 +1448,7 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
         mPrimaryKeyType = pktFidMap; // Map by default
         if ( mPrimaryKeyAttrs.size() == 1 )
         {
-          const QgsField& fld = mAttributeFields.at( 0 );
+          QgsField fld = mAttributeFields.at( 0 );
           mPrimaryKeyType = pkType( fld );
         }
       }
@@ -1493,7 +1493,7 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
   try
   {
     // get the field name
-    const QgsField &fld = field( index );
+    QgsField fld = field( index );
     QString sql = QString( "SELECT min(%1) AS %1 FROM %2" )
                   .arg( quotedIdentifier( fld.name() ),
                         mQuery );
@@ -1522,7 +1522,7 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
   try
   {
     // get the field name
-    const QgsField &fld = field( index );
+    QgsField fld = field( index );
     QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
                   .arg( quotedIdentifier( fld.name() ),
                         mQuery );
@@ -1668,7 +1668,7 @@ QVariant QgsPostgresProvider::maximumValue( int index ) const
   try
   {
     // get the field name
-    const QgsField &fld = field( index );
+    QgsField fld = field( index );
     QString sql = QString( "SELECT max(%1) AS %1 FROM %2" )
                   .arg( quotedIdentifier( fld.name() ),
                         mQuery );
@@ -1702,7 +1702,7 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
 
   if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isNull() )
   {
-    const QgsField& fld = field( fieldId );
+    QgsField fld = field( fieldId );
 
     QgsPostgresResult res( connectionRO()->PQexec( QString( "SELECT %1" ).arg( defVal.toString() ) ) );
 
@@ -2003,7 +2003,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         QString v;
         if ( value.isNull() )
         {
-          const QgsField &fld = field( attrIdx );
+          QgsField fld = field( attrIdx );
           v = paramValue( defaultValues[ i ], defaultValues[ i ] );
           features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
         }
@@ -2013,7 +2013,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
           if ( v != value.toString() )
           {
-            const QgsField &fld = field( attrIdx );
+            QgsField fld = field( attrIdx );
             features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
           }
         }
@@ -3489,7 +3489,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
     QString pk = primaryKey = "id";
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      if ( fields[fldIdx].name() == primaryKey )
+      if ( fields.at( fldIdx ).name() == primaryKey )
       {
         // it already exists, try again with a new name
         primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
@@ -3502,10 +3502,10 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
     // search for the passed field
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      if ( fields[fldIdx].name() == primaryKey )
+      if ( fields.at( fldIdx ).name() == primaryKey )
       {
         // found, get the field type
-        QgsField fld = fields[fldIdx];
+        QgsField fld = fields.at( fldIdx );
         if ( convertField( fld, options ) )
         {
           primaryKeyType = fld.typeName();
@@ -3658,7 +3658,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
     QList<QgsField> flist;
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      QgsField fld = fields[fldIdx];
+      QgsField fld = fields.at( fldIdx );
 
       if ( fld.name() == geometryColumn )
       {

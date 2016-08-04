@@ -358,7 +358,7 @@ QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary
 
   if ( values.isEmpty() )
   {
-    return QVariant( mVectorLayer->fields()[col].type() );
+    return QVariant( mVectorLayer->fields().at( col ).type() );
   }
 
   summary.calculate( values );

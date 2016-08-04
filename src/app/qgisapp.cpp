@@ -6848,7 +6848,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
         continue;
 
       QVariant val = merged.at( i );
-      const QgsField &fld( vl->fields().at( i ) );
+      QgsField fld( vl->fields().at( i ) );
       bool isDefaultValue = vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
                             vl->dataProvider() &&
                             vl->dataProvider()->defaultValue( vl->fields().fieldOriginIndex( i ) ) == val;

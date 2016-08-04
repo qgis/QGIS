@@ -116,9 +116,9 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
 
     if ( mIncludeAttributes )
     {
-      const QgsFields* fields = feature.fields();
+      QgsFields fields = feature.fields();
 
-      for ( int i = 0; i < fields->count(); ++i )
+      for ( int i = 0; i < fields.count(); ++i )
       {
         if (( !mAttributeIndexes.isEmpty() && !mAttributeIndexes.contains( i ) ) || mExcludedAttributeIndexes.contains( i ) )
           continue;
@@ -127,7 +127,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
           properties += ",\n";
         QVariant val =  feature.attributes().at( i );
 
-        properties += QString( "      \"%1\":%2" ).arg( fields->at( i ).name(), QgsJSONUtils::encodeValue( val ) );
+        properties += QString( "      \"%1\":%2" ).arg( fields.at( i ).name(), QgsJSONUtils::encodeValue( val ) );
 
         ++attributeCounter;
       }
@@ -296,15 +296,15 @@ QString QgsJSONUtils::encodeValue( const QVariant &value )
 
 QString QgsJSONUtils::exportAttributes( const QgsFeature& feature )
 {
-  const QgsFields* fields = feature.fields();
+  QgsFields fields = feature.fields();
   QString attrs;
-  for ( int i = 0; i < fields->count(); ++i )
+  for ( int i = 0; i < fields.count(); ++i )
   {
     if ( i > 0 )
       attrs += ",\n";
 
     QVariant val = feature.attributes().at( i );
-    attrs += encodeValue( fields->at( i ).name() ) + ':' + encodeValue( val );
+    attrs += encodeValue( fields.at( i ).name() ) + ':' + encodeValue( val );
   }
   return attrs.prepend( '{' ).append( '}' );
 }

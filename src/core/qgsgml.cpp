@@ -294,7 +294,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString& typeName,
   mThematicAttributes.clear();
   for ( int i = 0; i < fields.size(); i++ )
   {
-    mThematicAttributes.insert( fields[i].name(), qMakePair( i, fields[i] ) );
+    mThematicAttributes.insert( fields.at( i ).name(), qMakePair( i, fields.at( i ) ) );
   }
 
   mEndian = QgsApplication::endian();
@@ -355,13 +355,13 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties>& laye
   mThematicAttributes.clear();
   for ( int i = 0; i < fields.size(); i++ )
   {
-    QMap< QString, QPair<QString, QString> >::const_iterator att_it = mapFieldNameToSrcLayerNameFieldName.constFind( fields[i].name() );
+    QMap< QString, QPair<QString, QString> >::const_iterator att_it = mapFieldNameToSrcLayerNameFieldName.constFind( fields.at( i ).name() );
     if ( att_it != mapFieldNameToSrcLayerNameFieldName.constEnd() )
     {
       if ( mLayerProperties.size() == 1 )
-        mThematicAttributes.insert( att_it.value().second, qMakePair( i, fields[i] ) );
+        mThematicAttributes.insert( att_it.value().second, qMakePair( i, fields.at( i ) ) );
       else
-        mThematicAttributes.insert( stripNS( att_it.value().first ) + "|" + att_it.value().second, qMakePair( i, fields[i] ) );
+        mThematicAttributes.insert( stripNS( att_it.value().first ) + "|" + att_it.value().second, qMakePair( i, fields.at( i ) ) );
     }
   }
   bool alreadyFoundGeometry = false;

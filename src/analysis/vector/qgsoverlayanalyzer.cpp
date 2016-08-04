@@ -192,7 +192,7 @@ void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFiel
 
   for ( int idx = 0; idx < fieldListB.count(); ++idx )
   {
-    QgsField field = fieldListB[idx];
+    QgsField field = fieldListB.at( idx );
     int count = 0;
     while ( names.contains( field.name() ) )
     {

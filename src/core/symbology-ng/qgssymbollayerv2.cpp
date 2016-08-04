@@ -335,38 +335,6 @@ QgsSymbolLayerV2::QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked )
   mPaintEffect->setEnabled( false );
 }
 
-void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale )
-{
-  QMap< QString, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constBegin();
-  for ( ; it != mDataDefinedProperties.constEnd(); ++it )
-  {
-    if ( it.value() )
-    {
-      QMap<QString, QVariant> params;
-      if ( scale > 0 )
-      {
-        params.insert( "scale", scale );
-      }
-      it.value()->setExpressionParams( params );
-
-      if ( fields )
-      {
-        it.value()->prepareExpression( QgsExpressionContextUtils::createFeatureBasedContext( QgsFeature(), *fields ) );
-      }
-      else
-      {
-        it.value()->prepareExpression();
-      }
-    }
-  }
-
-  if ( fields )
-  {
-    //QgsFields is implicitly shared, so it's cheap to make a copy
-    mFields = *fields;
-  }
-}
-
 void QgsSymbolLayerV2::prepareExpressions( const QgsSymbolV2RenderContext& context )
 {
   QMap< QString, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constBegin();
@@ -384,10 +352,10 @@ void QgsSymbolLayerV2::prepareExpressions( const QgsSymbolV2RenderContext& conte
     }
   }
 
-  if ( context.fields() )
+  if ( !context.fields().isEmpty() )
   {
     //QgsFields is implicitly shared, so it's cheap to make a copy
-    mFields = *context.fields();
+    mFields = context.fields();
   }
 }
 

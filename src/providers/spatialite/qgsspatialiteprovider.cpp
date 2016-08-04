@@ -144,7 +144,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
       QString pk = primaryKey = "pk";
       for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
-        if ( fields[fldIdx].name() == primaryKey )
+        if ( fields.at( fldIdx ).name() == primaryKey )
         {
           // it already exists, try again with a new name
           primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
@@ -157,10 +157,10 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
       // search for the passed field
       for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
-        if ( fields[fldIdx].name() == primaryKey )
+        if ( fields.at( fldIdx ).name() == primaryKey )
         {
           // found, get the field type
-          QgsField fld = fields[fldIdx];
+          QgsField fld = fields.at( fldIdx );
           if ( convertField( fld ) )
           {
             primaryKeyType = fld.typeName();
@@ -357,7 +357,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
     QList<QgsField> flist;
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      QgsField fld = fields[fldIdx];
+      QgsField fld = fields.at( fldIdx );
       if ( fld.name() == primaryKey )
         continue;
 
@@ -3381,7 +3381,7 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index ) const
   try
   {
     // get the field name
-    const QgsField& fld = field( index );
+    QgsField fld = field( index );
 
     sql = QString( "SELECT Min(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ), mQuery );
 
@@ -3444,7 +3444,7 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index ) const
   try
   {
     // get the field name
-    const QgsField & fld = field( index );
+    QgsField fld = field( index );
 
     sql = QString( "SELECT Max(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ), mQuery );
 
@@ -3506,7 +3506,7 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   {
     return; //invalid field
   }
-  const QgsField& fld = mAttributeFields.at( index );
+  QgsField fld = mAttributeFields.at( index );
 
   sql = QString( "SELECT DISTINCT %1 FROM %2" ).arg( quotedIdentifier( fld.name() ), mQuery );
 
@@ -3971,7 +3971,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
       // Loop over all changed attributes
       try
       {
-        const QgsField& fld = field( siter.key() );
+        QgsField fld = field( siter.key() );
         const QVariant& val = siter.value();
 
         if ( !first )
@@ -4995,7 +4995,7 @@ error:
   return false;
 }
 
-const QgsField & QgsSpatiaLiteProvider::field( int index ) const
+QgsField QgsSpatiaLiteProvider::field( int index ) const
 {
   if ( index < 0 || index >= mAttributeFields.count() )
   {
@@ -5003,7 +5003,7 @@ const QgsField & QgsSpatiaLiteProvider::field( int index ) const
     throw SLFieldNotFound();
   }
 
-  return mAttributeFields[index];
+  return mAttributeFields.at( index );
 }
 
 void QgsSpatiaLiteProvider::invalidateConnections( const QString& connection )

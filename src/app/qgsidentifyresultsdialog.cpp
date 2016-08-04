@@ -493,7 +493,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     featItem->addChild( attrItem );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
-    attrItem->setData( 0, Qt::UserRole, fields[i].name() );
+    attrItem->setData( 0, Qt::UserRole, fields.at( i ).name() );
     attrItem->setData( 0, Qt::UserRole + 1, i );
 
     attrItem->setData( 1, Qt::UserRole, value );
@@ -515,7 +515,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       attrItem->treeWidget()->setItemWidget( attrItem, 1, nullptr );
     }
 
-    if ( fields[i].name() == vlayer->displayField() )
+    if ( fields.at( i ).name() == vlayer->displayField() )
     {
       featItem->setText( 0, attrItem->text( 0 ) );
       featItem->setText( 1, attrItem->text( 1 ) );
@@ -560,11 +560,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     tblResults->setItem( j, 1, item );
 
     item = new QTableWidgetItem( QString::number( i ) );
-    if ( fields[i].name() == vlayer->displayField() )
+    if ( fields.at( i ).name() == vlayer->displayField() )
       item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) + " *" );
     else
       item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
-    item->setData( Qt::UserRole, fields[i].name() );
+    item->setData( Qt::UserRole, fields.at( i ).name() );
     item->setData( Qt::UserRole + 1, i );
     tblResults->setItem( j, 2, item );
 
@@ -765,7 +765,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
       QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs.at( i ).toString() );
 
-      attrItem->setData( 0, Qt::DisplayRole, fields[i].name() );
+      attrItem->setData( 0, Qt::DisplayRole, fields.at( i ).name() );
 
       QVariant value = attrs.at( i );
       attrItem->setData( 1, Qt::DisplayRole, value );
@@ -1188,7 +1188,7 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
     const QgsFields& fields = layer->fields();
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      if ( fields[fldIdx].name() == fieldName )
+      if ( fields.at( fldIdx ).name() == fieldName )
       {
         idx = fldIdx;
         break;
@@ -1741,7 +1741,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
       if ( attrIdx < 0 || attrIdx >= fields.count() )
         continue;
 
-      text += QString( "%1: %2\n" ).arg( fields[attrIdx].name(), it.value().toString() );
+      text += QString( "%1: %2\n" ).arg( fields.at( attrIdx ).name(), it.value().toString() );
     }
   }
   else if ( rlayer )
