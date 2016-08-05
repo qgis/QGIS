@@ -267,7 +267,6 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposition.cpp
   composer/qgsdoubleboxscalebarstyle.cpp
   composer/qgsgroupungroupitemscommand.cpp
-  composer/qgslegendmodel.cpp
   composer/qgsnumericscalebarstyle.cpp
   composer/qgspaperitem.cpp
   composer/qgsscalebarstyle.cpp
@@ -533,7 +532,6 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposertexttable.h
   composer/qgscomposition.h
   composer/qgsgroupungroupitemscommand.h
-  composer/qgslegendmodel.h
   composer/qgspaperitem.h
 
   raster/qgsrasterlayer.h

@@ -49,8 +49,6 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
 {
   mLegendModel2 = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
 
-  connect( &mLegendModel, SIGNAL( layersChanged() ), this, SLOT( synchronizeWithModel() ) );
-
   connect( &composition->atlasComposition(), SIGNAL( renderEnded() ), this, SLOT( onAtlasEnded() ) );
   connect( &composition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( onAtlasFeature( QgsFeature* ) ) );
 
@@ -341,10 +339,6 @@ void QgsComposerLegend::synchronizeWithModel()
 
 void QgsComposerLegend::updateLegend()
 {
-  // take layer list from map renderer (to have legend order)
-  mLegendModel.blockSignals( true );
-  mLegendModel.setLayerSet( mComposition ? mComposition->mapSettings().layers() : QStringList() );
-  mLegendModel.blockSignals( false );
   adjustBoxSize();
   updateItem();
 }

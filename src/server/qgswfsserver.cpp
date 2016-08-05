@@ -33,7 +33,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsmapserviceexception.h"
 #include "qgssymbol.h"
-#include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
 #include "qgsrequesthandler.h"
 #include "qgsogcutils.h"
