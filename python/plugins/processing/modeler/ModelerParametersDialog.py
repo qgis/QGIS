@@ -69,7 +69,8 @@ from processing.core.outputs import (OutputRaster,
                                      OutputDirectory,
                                      OutputNumber,
                                      OutputString,
-                                     OutputExtent)
+                                     OutputExtent,
+                                     OutputCrs)
 
 from processing.modeler.ModelerAlgorithm import (ValueFromInput,
                                                  ValueFromOutput,
@@ -384,7 +385,7 @@ class ModelerParametersDialog(QDialog):
             item.setEditText(unicode(param.default))
         elif isinstance(param, ParameterCrs):
             item = QComboBox()
-            values = self.getAvailableValuesOfType(ParameterCrs)
+            values = self.getAvailableValuesOfType(ParameterCrs, OutputCrs)
             for v in values:
                 item.addItem(self.resolveValueDescription(v), v)
         elif isinstance(param, ParameterExtent):
