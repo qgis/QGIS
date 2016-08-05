@@ -30,7 +30,7 @@
 #include <qgssymbol.h>
 #include <qgssinglesymbolrendererv2.h>
 #include "qgsmarkersymbollayerv2.h"
-#include "qgsellipsesymbollayerv2.h"
+#include "qgsellipsesymbollayer.h"
 #include "qgsdatadefined.h"
 
 //qgis test includes
@@ -70,7 +70,7 @@ class TestQgsEllipseMarkerSymbol : public QObject
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPointsLayer;
-    QgsEllipseSymbolLayerV2* mEllipseMarkerLayer;
+    QgsEllipseSymbolLayer* mEllipseMarkerLayer;
     QgsMarkerSymbolV2* mMarkerSymbol;
     QgsSingleSymbolRendererV2* mSymbolRenderer;
     QString mTestDataDir;
@@ -103,7 +103,7 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //setup symbol
-  mEllipseMarkerLayer = new QgsEllipseSymbolLayerV2();
+  mEllipseMarkerLayer = new QgsEllipseSymbolLayer();
   mMarkerSymbol = new QgsMarkerSymbolV2();
   mMarkerSymbol->changeSymbolLayer( 0, mEllipseMarkerLayer );
   mSymbolRenderer = new QgsSingleSymbolRendererV2( mMarkerSymbol );

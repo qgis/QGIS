@@ -32,7 +32,7 @@ from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsCentroidFillSymbolLayerV2,
-                       QgsEllipseSymbolLayerV2,
+                       QgsEllipseSymbolLayer,
                        QgsFillSymbolLayerV2,
                        QgsFontMarkerSymbolLayerV2,
                        QgsFilledMarkerSymbolLayer,
@@ -222,7 +222,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         assert mExpectedType == mType, mMessage
 
         try:
-            mType = type(QgsEllipseSymbolLayerV2)
+            mType = type(QgsEllipseSymbolLayer)
         except:
             mType = None
         mExpectedType = pyqtWrapperType
@@ -671,11 +671,11 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-    def testQgsEllipseSymbolLayerV2(self):
+    def testQgsEllipseSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
         """
-        mTestName = 'QgsEllipseSymbolLayerV2'
+        mTestName = 'QgsEllipseSymbolLayer'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
@@ -683,10 +683,10 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mFile.open(QIODevice.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
-        mSymbolLayer = QgsEllipseSymbolLayerV2.createFromSld(
+        mSymbolLayer = QgsEllipseSymbolLayer.createFromSld(
             mDoc.elementsByTagName('PointSymbolizer').item(0).toElement())
 
-        mExpectedValue = type(QgsEllipseSymbolLayerV2())
+        mExpectedValue = type(QgsEllipseSymbolLayer())
         mValue = type(mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage

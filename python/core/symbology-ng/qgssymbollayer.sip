@@ -9,8 +9,8 @@ class QgsSymbolLayer
   switch (sipCpp->type())
   {
     case QgsSymbol::Marker:
-      if (dynamic_cast<QgsEllipseSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsEllipseSymbolLayerV2;
+      if (dynamic_cast<QgsEllipseSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsEllipseSymbolLayer;
       else if (dynamic_cast<QgsFontMarkerSymbolLayerV2*>(sipCpp) != NULL)
 	sipType = sipType_QgsFontMarkerSymbolLayerV2;
       else if (dynamic_cast<QgsSimpleMarkerSymbolLayerV2*>(sipCpp) != NULL)

@@ -24,6 +24,8 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <caption id="renamed_classes">Renamed classes</caption>
 <tr><th>API 2.x                          <th>API 3.X
 <tr><td>QgsColorButtonV2                 <td>QgsColorButton
+<tr><td>QgsEllipseSymbolLayerV2          <td>QgsEllipseSymbolLayer
+<tr><td>QgsEllipseSymbolLayerV2Widget    <td>QgsEllipseSymbolLayerWidget
 <tr><td>QgsSymbolLayerV2                 <td>QgsSymbolLayer
 <tr><td>QgsSymbolLayerV2AbstractMetadata <td>QgsSymbolLayerAbstractMetadata
 <tr><td>QgsSymbolLayerV2Metadata         <td>QgsSymbolLayerMetadata

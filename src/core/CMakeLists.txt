@@ -20,7 +20,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgscategorizedsymbolrendererv2.cpp
   symbology-ng/qgscolorbrewerpalette.cpp
   symbology-ng/qgscptcityarchive.cpp
-  symbology-ng/qgsellipsesymbollayerv2.cpp
+  symbology-ng/qgsellipsesymbollayer.cpp
   symbology-ng/qgsfillsymbollayerv2.cpp
   symbology-ng/qgsgeometrygeneratorsymbollayerv2.cpp
   symbology-ng/qgsgraduatedsymbolrendererv2.cpp
@@ -810,7 +810,7 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgs25drenderer.h
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h
-  symbology-ng/qgsellipsesymbollayerv2.h
+  symbology-ng/qgsellipsesymbollayer.h
   symbology-ng/qgsfillsymbollayerv2.h
   symbology-ng/qgsgraduatedsymbolrendererv2.h
   symbology-ng/qgslegendsymbolitemv2.h

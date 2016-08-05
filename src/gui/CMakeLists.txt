@@ -19,7 +19,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgscolorrampcombobox.cpp
   symbology-ng/qgscptcitycolorrampv2dialog.cpp
   symbology-ng/qgsdashspacedialog.cpp
-  symbology-ng/qgsellipsesymbollayerv2widget.cpp
+  symbology-ng/qgsellipsesymbollayerwidget.cpp
   symbology-ng/qgsgraduatedhistogramwidget.cpp
   symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp
   symbology-ng/qgsheatmaprendererwidget.cpp
@@ -468,7 +468,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgscolorrampcombobox.h
   symbology-ng/qgscptcitycolorrampv2dialog.h
   symbology-ng/qgsdashspacedialog.h
-  symbology-ng/qgsellipsesymbollayerv2widget.h
+  symbology-ng/qgsellipsesymbollayerwidget.h
   symbology-ng/qgsgraduatedhistogramwidget.h
   symbology-ng/qgsgraduatedsymbolrendererv2widget.h
   symbology-ng/qgsheatmaprendererwidget.h

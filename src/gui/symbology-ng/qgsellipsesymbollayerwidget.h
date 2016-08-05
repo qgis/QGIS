@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsellipsesymbollayerv2widget.h
+    qgsellipsesymbollayerwidget.h
     ---------------------
     begin                : June 2011
     copyright            : (C) 2011 by Marco Hugentobler
@@ -12,32 +12,32 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSELLIPSESYMBOLLAYERV2WIDGET_H
-#define QGSELLIPSESYMBOLLAYERV2WIDGET_H
+#ifndef QGSELLIPSESYMBOLLAYERWIDGET_H
+#define QGSELLIPSESYMBOLLAYERWIDGET_H
 
 #include "ui_widget_ellipse.h"
 #include "qgssymbollayerwidget.h"
 
-class QgsEllipseSymbolLayerV2;
+class QgsEllipseSymbolLayer;
 
 /** \ingroup gui
- * \class QgsEllipseSymbolLayerV2Widget
+ * \class QgsEllipseSymbolLayerWidget
  */
-class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerWidget, private Ui::WidgetEllipseBase
+class GUI_EXPORT QgsEllipseSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::WidgetEllipseBase
 {
     Q_OBJECT
 
   public:
-    QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
+    QgsEllipseSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsEllipseSymbolLayerV2Widget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsEllipseSymbolLayerWidget( vl ); }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
     virtual QgsSymbolLayer* symbolLayer() override;
 
   protected:
-    QgsEllipseSymbolLayerV2* mLayer;
+    QgsEllipseSymbolLayer* mLayer;
 
   private:
     void blockComboSignals( bool block );
@@ -64,4 +64,4 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerWidget, pri
     void setOffset();
 };
 
-#endif // QGSELLIPSESYMBOLLAYERV2WIDGET_H
+#endif // QGSELLIPSESYMBOLLAYERWIDGET_H

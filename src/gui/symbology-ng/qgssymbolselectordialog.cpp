@@ -26,7 +26,7 @@
 #include "qgssymbolslistwidget.h"
 #include "qgslayerpropertieswidget.h"
 #include "qgssymbollayerwidget.h"
-#include "qgsellipsesymbollayerv2widget.h"
+#include "qgsellipsesymbollayerwidget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 
 #include "qgslogger.h"

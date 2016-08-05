@@ -1,10 +1,10 @@
-class QgsEllipseSymbolLayerV2Widget: QgsSymbolLayerWidget
+class QgsEllipseSymbolLayerWidget: QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgsellipsesymbollayerv2widget.h>
+#include <qgsellipsesymbollayerwidget.h>
 %End
   public:
-    QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0 );
+    QgsEllipseSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 

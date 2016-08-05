@@ -16,7 +16,7 @@
 #include "qgssymbollayerregistry.h"
 
 #include "qgsarrowsymbollayer.h"
-#include "qgsellipsesymbollayerv2.h"
+#include "qgsellipsesymbollayer.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgslinesymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
@@ -41,7 +41,7 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
   addSymbolLayerType( new QgsSymbolLayerMetadata( "FontMarker", QObject::tr( "Font marker" ), QgsSymbol::Marker,
                       QgsFontMarkerSymbolLayerV2::create, QgsFontMarkerSymbolLayerV2::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( "EllipseMarker", QObject::tr( "Ellipse marker" ), QgsSymbol::Marker,
-                      QgsEllipseSymbolLayerV2::create, QgsEllipseSymbolLayerV2::createFromSld ) );
+                      QgsEllipseSymbolLayer::create, QgsEllipseSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( "VectorField", QObject::tr( "Vector field marker" ), QgsSymbol::Marker,
                       QgsVectorFieldSymbolLayer::create ) );
 

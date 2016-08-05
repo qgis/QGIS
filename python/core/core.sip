@@ -307,7 +307,7 @@
 %Include symbology-ng/qgsrulebasedrendererv2.sip
 %Include symbology-ng/qgssinglesymbolrendererv2.sip
 
-%Include symbology-ng/qgsellipsesymbollayerv2.sip
+%Include symbology-ng/qgsellipsesymbollayer.sip
 %Include symbology-ng/qgsfillsymbollayerv2.sip
 %Include symbology-ng/qgsgeometrygeneratorsymbollayerv2.sip
 %Include symbology-ng/qgslinesymbollayerv2.sip
