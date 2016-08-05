@@ -294,8 +294,8 @@ def exportVectorLayer(layer, supported=None):
     useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
     if useSelection and layer.selectedFeatureCount() != 0:
         writer = QgsVectorFileWriter(output, systemEncoding,
-                                     layer.pendingFields(),
-                                     provider.wkbType(), layer.crs())
+                                     layer.fields(),
+                                     layer.wkbType(), layer.crs())
         selection = layer.selectedFeatures()
         for feat in selection:
             writer.addFeature(feat)
@@ -310,7 +310,7 @@ def exportVectorLayer(layer, supported=None):
         if not os.path.splitext(layer.source())[1].lower() in supported or not isASCII:
             writer = QgsVectorFileWriter(
                 output, systemEncoding,
-                layer.pendingFields(), provider.wkbType(),
+                layer.fields(), layer.wkbType(),
                 layer.crs()
             )
             for feat in layer.getFeatures():
@@ -354,7 +354,6 @@ def exportTable(table):
     settings = QSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
     output = getTempFilename()
-    provider = table.dataProvider()
     isASCII = True
     try:
         unicode(table.source()).decode('ascii')
@@ -364,7 +363,7 @@ def exportTable(table):
         or unicode(table.source()).endswith('shp')
     if not isDbf or not isASCII:
         writer = QgsVectorFileWriter(output, systemEncoding,
-                                     provider.fields(), QgsWkbTypes.NullGeometry,
+                                     layer.fields(), QgsWkbTypes.NullGeometry,
                                      QgsCoordinateReferenceSystem('4326'))
         for feat in table.getFeatures():
             writer.addFeature(feat)

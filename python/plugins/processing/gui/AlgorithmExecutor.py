@@ -64,13 +64,12 @@ def runalgIterating(alg, paramToIter, progress):
     feat = QgsFeature()
     filelist = []
     outputs = {}
-    provider = layer.dataProvider()
     features = vector.features(layer)
     for feat in features:
         output = getTempFilename('shp')
         filelist.append(output)
         writer = QgsVectorFileWriter(output, systemEncoding,
-                                     provider.fields(), provider.wkbType(), layer.crs())
+                                     layer.fields(), layer.wkbType(), layer.crs())
         writer.addFeature(feat)
         del writer
 

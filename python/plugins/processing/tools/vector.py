@@ -316,10 +316,10 @@ def combineVectorFields(layerA, layerB):
     """Create single field map from two input field maps.
     """
     fields = []
-    fieldsA = layerA.pendingFields()
+    fieldsA = layerA.fields()
     fields.extend(fieldsA)
     namesA = [unicode(f.name()).lower() for f in fieldsA]
-    fieldsB = layerB.pendingFields()
+    fieldsB = layerB.fields()
     for field in fieldsB:
         name = unicode(field.name()).lower()
         if name in namesA:
@@ -366,7 +366,7 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
     memProvider = memLayer.dataProvider()
 
     provider = layer.dataProvider()
-    fields = provider.fields().toList()
+    fields = layer.fields().toList()
     memProvider.addAttributes(fields)
     memLayer.updateFields()
 
