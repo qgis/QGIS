@@ -18,7 +18,7 @@
 #include "qgsannotationwidget.h"
 #include "qgsannotationitem.h"
 #include "qgsstylev2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"
 #include <QColorDialog>
@@ -117,7 +117,7 @@ void QgsAnnotationWidget::updateCenterIcon()
   {
     return;
   }
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol.data(), mMapMarkerButton->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol.data(), mMapMarkerButton->iconSize() );
   mMapMarkerButton->setIcon( icon );
 }
 

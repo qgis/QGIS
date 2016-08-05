@@ -18,7 +18,7 @@
 #include "qgscomposertablev2.h"
 #include "qgscomposerutils.h"
 #include "qgscomposertablecolumn.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgscomposerframe.h"
 #include "qgsfontutils.h"
 
@@ -29,14 +29,14 @@
 bool QgsComposerTableStyle::writeXml( QDomElement& styleElem, QDomDocument& doc ) const
 {
   Q_UNUSED( doc );
-  styleElem.setAttribute( "cellBackgroundColor", QgsSymbolLayerV2Utils::encodeColor( cellBackgroundColor ) );
+  styleElem.setAttribute( "cellBackgroundColor", QgsSymbolLayerUtils::encodeColor( cellBackgroundColor ) );
   styleElem.setAttribute( "enabled", enabled );
   return true;
 }
 
 bool QgsComposerTableStyle::readXml( const QDomElement& styleElem )
 {
-  cellBackgroundColor = QgsSymbolLayerV2Utils::decodeColor( styleElem.attribute( "cellBackgroundColor", "255,255,255,255" ) );
+  cellBackgroundColor = QgsSymbolLayerUtils::decodeColor( styleElem.attribute( "cellBackgroundColor", "255,255,255,255" ) );
   enabled = ( styleElem.attribute( "enabled", "0" ) != "0" );
   return true;
 }
@@ -113,15 +113,15 @@ bool QgsComposerTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool i
   elem.setAttribute( "emptyTableMessage", mEmptyTableMessage );
   elem.setAttribute( "showEmptyRows", mShowEmptyRows );
   elem.appendChild( QgsFontUtils::toXmlElement( mHeaderFont, doc, "headerFontProperties" ) );
-  elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
+  elem.setAttribute( "headerFontColor", QgsSymbolLayerUtils::encodeColor( mHeaderFontColor ) );
   elem.setAttribute( "headerHAlignment", QString::number( static_cast< int >( mHeaderHAlignment ) ) );
   elem.setAttribute( "headerMode", QString::number( static_cast< int >( mHeaderMode ) ) );
   elem.appendChild( QgsFontUtils::toXmlElement( mContentFont, doc, "contentFontProperties" ) );
-  elem.setAttribute( "contentFontColor", QgsSymbolLayerV2Utils::encodeColor( mContentFontColor ) );
+  elem.setAttribute( "contentFontColor", QgsSymbolLayerUtils::encodeColor( mContentFontColor ) );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
-  elem.setAttribute( "gridColor", QgsSymbolLayerV2Utils::encodeColor( mGridColor ) );
+  elem.setAttribute( "gridColor", QgsSymbolLayerUtils::encodeColor( mGridColor ) );
   elem.setAttribute( "showGrid", mShowGrid );
-  elem.setAttribute( "backgroundColor", QgsSymbolLayerV2Utils::encodeColor( mBackgroundColor ) );
+  elem.setAttribute( "backgroundColor", QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
   elem.setAttribute( "wrapBehaviour", QString::number( static_cast< int >( mWrapBehaviour ) ) );
 
   //columns
@@ -173,19 +173,19 @@ bool QgsComposerTableV2::readXml( const QDomElement &itemElem, const QDomDocumen
   {
     mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
   }
-  mHeaderFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "headerFontColor", "0,0,0,255" ) );
+  mHeaderFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "headerFontColor", "0,0,0,255" ) );
   mHeaderHAlignment = QgsComposerTableV2::HeaderHAlignment( itemElem.attribute( "headerHAlignment", "0" ).toInt() );
   mHeaderMode = QgsComposerTableV2::HeaderMode( itemElem.attribute( "headerMode", "0" ).toInt() );
   if ( !QgsFontUtils::setFromXmlChildNode( mContentFont, itemElem, "contentFontProperties" ) )
   {
     mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
   }
-  mContentFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "contentFontColor", "0,0,0,255" ) );
+  mContentFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "contentFontColor", "0,0,0,255" ) );
   mCellMargin = itemElem.attribute( "cellMargin", "1.0" ).toDouble();
   mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();
   mShowGrid = itemElem.attribute( "showGrid", "1" ).toInt();
-  mGridColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "gridColor", "0,0,0,255" ) );
-  mBackgroundColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "backgroundColor", "255,255,255,0" ) );
+  mGridColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "gridColor", "0,0,0,255" ) );
+  mBackgroundColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "backgroundColor", "255,255,255,0" ) );
   mWrapBehaviour = QgsComposerTableV2::WrapBehaviour( itemElem.attribute( "wrapBehaviour", "0" ).toInt() );
 
   //restore column specifications

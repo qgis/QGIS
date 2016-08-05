@@ -17,7 +17,7 @@
 
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 
 #include "qgssymbolv2selectordialog.h"
@@ -269,7 +269,7 @@ void QgsStyleV2ManagerDialog::populateSymbols( const QStringList& symbolNames, b
     if ( symbol && symbol->type() == type )
     {
       QStandardItem* item = new QStandardItem( name );
-      QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, listItems->iconSize() );
+      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize() );
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
@@ -295,7 +295,7 @@ void QgsStyleV2ManagerDialog::populateColorRamps( const QStringList& colorRamps,
     QgsVectorColorRampV2* ramp = mStyle->colorRamp( name );
 
     QStandardItem* item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, listItems->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, listItems->iconSize() );
     item->setIcon( icon );
     item->setData( name ); // used to find out original name when user edited the name
     item->setCheckable( check );

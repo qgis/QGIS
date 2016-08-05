@@ -16,7 +16,7 @@
 #include "qgspanelwidget.h"
 
 #include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsstylev2.h"
 
@@ -145,7 +145,7 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && range.symbol() )
   {
-    return QgsSymbolLayerV2Utils::symbolPreviewIcon( range.symbol(), QSize( 16, 16 ) );
+    return QgsSymbolLayerUtils::symbolPreviewIcon( range.symbol(), QSize( 16, 16 ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {
@@ -844,7 +844,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateGraduatedSymbolIcon()
   if ( !mGraduatedSymbol )
     return;
 
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mGraduatedSymbol, btnChangeGraduatedSymbol->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mGraduatedSymbol, btnChangeGraduatedSymbol->iconSize() );
   btnChangeGraduatedSymbol->setIcon( icon );
 }
 

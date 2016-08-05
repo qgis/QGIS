@@ -1,15 +1,15 @@
-class QgsSymbolLayerV2Widget : QWidget
+class QgsSymbolLayerWidget : QWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
-    QgsSymbolLayerV2Widget( QWidget* parent /TransferThis/, const QgsVectorLayer* vl = 0 );
-    virtual ~QgsSymbolLayerV2Widget();
+    QgsSymbolLayerWidget( QWidget* parent /TransferThis/, const QgsVectorLayer* vl = 0 );
+    virtual ~QgsSymbolLayerWidget();
 
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
-    virtual QgsSymbolLayerV2* symbolLayer() = 0;
+    virtual void setSymbolLayer( QgsSymbolLayer* layer ) = 0;
+    virtual QgsSymbolLayer* symbolLayer() = 0;
 
     /** Returns the expression context used for the widget, if set. This expression context is used for
      * evaluating data defined symbol properties and for populating based expression widgets in
@@ -81,20 +81,20 @@ class QgsSymbolLayerV2Widget : QWidget
 
 ///////////
 
-class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
     QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
   public slots:
     void penWidthChanged();
@@ -115,21 +115,21 @@ class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
 ///////////
 
-class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
     QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
     ~QgsSimpleMarkerSymbolLayerV2Widget();
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
   public slots:
     void setName();
@@ -149,20 +149,20 @@ class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
 ///////////
 
-class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
     QgsSimpleFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
   public slots:
     void setColor( const QColor& color );
@@ -183,10 +183,10 @@ class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
  * \brief Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
  * \note Added in version 2.16
  */
-class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerV2Widget
+class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
@@ -202,30 +202,30 @@ class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerV2Widget
     /** Creates a new QgsFilledMarkerSymbolLayerWidget.
      * @param vl associated vector layer
      */
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
 };
 
 ///////////
 
 
-class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
   public:
     QgsGradientFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
   public slots:
     void setColor( const QColor& color );
@@ -243,19 +243,19 @@ class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
 ///////////
 
-class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
   public:
     QgsShapeburstFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
   public slots:
     void setColor( const QColor& color );
@@ -273,19 +273,19 @@ class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
 ///////////
 
-class QgsMarkerLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+class QgsMarkerLineSymbolLayerV2Widget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
   public:
     QgsMarkerLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
   public slots:
 
@@ -302,21 +302,21 @@ class QgsMarkerLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
 ///////////
 
-class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
     QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
     ~QgsSvgMarkerSymbolLayerV2Widget();
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
   public slots:
     void setName( const QModelIndex& idx );
@@ -345,39 +345,39 @@ class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
 ///////////
 
-class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerV2Widget
+class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
     QgsRasterFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
 };
 
 ///////////
 
-class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
+class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
     QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
   protected:
     void insertIcons();
@@ -391,42 +391,42 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 
 //////////
 
-class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerV2Widget
+class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
   public:
 
     QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 };
 
 //////////
 
-class QgsPointPatternFillSymbolLayerWidget: QgsSymbolLayerV2Widget
+class QgsPointPatternFillSymbolLayerWidget: QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
     QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 };
 
 /////////
 
-class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
@@ -434,11 +434,11 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
     ~QgsFontMarkerSymbolLayerV2Widget();
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 
   public slots:
     void setFontFamily( const QFont& font );
@@ -461,27 +461,27 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
 //////////
 
-class QgsCentroidFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
+class QgsCentroidFillSymbolLayerV2Widget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
 
   public:
     QgsCentroidFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 };
 
 
-class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerV2Widget
+class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
+#include <qgssymbollayerwidget.h>
 %End
   public:
     QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = nullptr );
@@ -489,9 +489,9 @@ class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerV2Widget
     /**
      * Will be registered as factory
      */
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 };

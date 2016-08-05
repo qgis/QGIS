@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgstransformeffect.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 #include <QPicture>
 #include <QTransform>
@@ -79,7 +79,7 @@ QgsStringMap QgsTransformEffect::properties() const
   props.insert( "translate_x", QString::number( mTranslateX ) );
   props.insert( "translate_y", QString::number( mTranslateY ) );
   props.insert( "translate_unit", QgsUnitTypes::encodeUnit( mTranslateUnit ) );
-  props.insert( "translate_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mTranslateMapUnitScale ) );
+  props.insert( "translate_unit_scale", QgsSymbolLayerUtils::encodeMapUnitScale( mTranslateMapUnitScale ) );
   props.insert( "enabled", mEnabled ? "1" : "0" );
   props.insert( "draw_mode", QString::number( int( mDrawMode ) ) );
   return props;
@@ -97,7 +97,7 @@ void QgsTransformEffect::readProperties( const QgsStringMap &props )
   mTranslateX = props.value( "translate_x", "0.0" ).toDouble();
   mTranslateY = props.value( "translate_y", "0.0" ).toDouble();
   mTranslateUnit = QgsUnitTypes::decodeRenderUnit( props.value( "translate_unit" ) );
-  mTranslateMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( props.value( "translate_unit_scale" ) );
+  mTranslateMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( "translate_unit_scale" ) );
 }
 
 QgsTransformEffect* QgsTransformEffect::clone() const
@@ -128,9 +128,9 @@ QTransform QgsTransformEffect::createTransform( const QgsRenderContext& context 
   //so, first the reflection applies, then scale, shear, rotate and lastly translation
 
   double translateX = mTranslateX *
-                      QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mTranslateUnit, mTranslateMapUnitScale );
+                      QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mTranslateUnit, mTranslateMapUnitScale );
   double translateY = mTranslateY *
-                      QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mTranslateUnit, mTranslateMapUnitScale );
+                      QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mTranslateUnit, mTranslateMapUnitScale );
 
   t.translate( translateX + left + width / 2.0,
                translateY + top + height / 2.0 );

@@ -193,13 +193,13 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsSimpleMarkerSymbolLayerBase
      * @param properties a property map containing symbol properties (see properties())
      * @returns new QgsSimpleMarkerSymbolLayerV2
      */
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     /** Creates a new QgsSimpleMarkerSymbolLayerV2 from an SLD XML element.
      * @param element XML element containing SLD definition of symbol
      * @returns new QgsSimpleMarkerSymbolLayerV2
      */
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // reimplemented from base classes
 
@@ -381,7 +381,7 @@ class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
      * @param properties a property map containing symbol properties (see properties())
      * @returns new QgsFilledMarkerSymbolLayer
      */
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     QString layerType() const;
     void startRender( QgsSymbolV2RenderContext& context );
@@ -417,8 +417,8 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     // static stuff
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 
@@ -490,8 +490,8 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     // static stuff
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 

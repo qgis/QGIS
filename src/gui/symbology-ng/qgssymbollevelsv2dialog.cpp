@@ -15,8 +15,8 @@
 
 #include "qgssymbollevelsv2dialog.h"
 
-#include "qgssymbollayerv2utils.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbollayer.h"
 #include "qgssymbolv2.h"
 
 #include <QTableWidgetItem>
@@ -56,7 +56,7 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& lis
     QgsSymbolV2* sym = mList.at( i ).second;
 
     // set icons for the rows
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( sym, QSize( 16, 16 ) );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( sym, QSize( 16, 16 ) );
     tableLevels->setVerticalHeaderItem( i, new QTableWidgetItem( icon, QString() ) );
 
     // find out max. number of layers per symbol
@@ -110,8 +110,8 @@ void QgsSymbolLevelsV2Dialog::populateTable()
       }
       else
       {
-        QgsSymbolLayerV2* sl = sym->symbolLayer( layer );
-        QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) );
+        QgsSymbolLayer* sl = sym->symbolLayer( layer );
+        QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) );
         item = new QTableWidgetItem( icon, QString::number( sl->renderingPass() ) );
       }
       tableLevels->setItem( row, layer + 1, item );

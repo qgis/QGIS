@@ -22,7 +22,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include <QDomDocument>
@@ -100,7 +100,7 @@ void QgsComposerSymbolV2Item::writeXml( QDomElement& elem, QDomDocument& doc ) c
   {
     QgsSymbolV2Map saveSymbolMap;
     saveSymbolMap.insert( "classificationSymbol", mSymbolV2 );
-    QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( saveSymbolMap, "symbols", doc );
+    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( saveSymbolMap, "symbols", doc );
     vectorClassElem.appendChild( symbolsElem );
   }
   vectorClassElem.setAttribute( "text", text() );
@@ -120,7 +120,7 @@ void QgsComposerSymbolV2Item::readXml( const QDomElement& itemElem, bool xServer
   QDomElement symbolsElem = itemElem.firstChildElement( "symbols" );
   if ( !symbolsElem.isNull() )
   {
-    QgsSymbolV2Map loadSymbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
+    QgsSymbolV2Map loadSymbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
     //we assume there is only one symbol in the map...
     QgsSymbolV2Map::iterator mapIt = loadSymbolMap.begin();
     if ( mapIt != loadSymbolMap.end() )
@@ -131,7 +131,7 @@ void QgsComposerSymbolV2Item::readXml( const QDomElement& itemElem, bool xServer
         setSymbolV2( symbolNg );
         if ( xServerAvailable )
         {
-          setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
+          setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
         }
       }
     }

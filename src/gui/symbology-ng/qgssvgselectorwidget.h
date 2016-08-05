@@ -1,6 +1,6 @@
 /***************************************************************************
     qgssvgselectorwidget.h - group and preview selector for SVG files
-                             built off of work in qgssymbollayerv2widget
+                             built off of work in qgssymbollayerwidget
 
     ---------------------
     begin                : April 2, 2013

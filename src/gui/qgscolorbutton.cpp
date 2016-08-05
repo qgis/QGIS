@@ -17,7 +17,7 @@
 #include "qgscolordialog.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgscursors.h"
 #include "qgscolorswatchgrid.h"
 #include "qgscolorschemeregistry.h"
@@ -172,7 +172,7 @@ bool QgsColorButton::event( QEvent *e )
     QString info = QString( "HEX: %1 \n"
                             "RGB: %2 \n"
                             "HSV: %3,%4,%4" ).arg( name )
-                   .arg( QgsSymbolLayerV2Utils::encodeColor( this->color() ) )
+                   .arg( QgsSymbolLayerUtils::encodeColor( this->color() ) )
                    .arg( hue ).arg( value ).arg( saturation );
     setToolTip( info );
   }
@@ -213,7 +213,7 @@ void QgsColorButton::mousePressEvent( QMouseEvent *e )
 bool QgsColorButton::colorFromMimeData( const QMimeData * mimeData, QColor& resultColor )
 {
   bool hasAlpha = false;
-  QColor mimeColor = QgsSymbolLayerV2Utils::colorFromMimeData( mimeData, hasAlpha );
+  QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( mimeData, hasAlpha );
 
   if ( mimeColor.isValid() )
   {
@@ -271,7 +271,7 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
 
   //user is dragging color
   QDrag *drag = new QDrag( this );
-  drag->setMimeData( QgsSymbolLayerV2Utils::colorToMimeData( mColor ) );
+  drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mColor ) );
   drag->setPixmap( QgsColorWidget::createDragIcon( mColor ) );
   drag->exec( Qt::CopyAction );
   setDown( false );
@@ -635,7 +635,7 @@ void QgsColorButton::setButtonBackground( const QColor &color )
 void QgsColorButton::copyColor()
 {
   //copy color
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerV2Utils::colorToMimeData( mColor ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mColor ) );
 }
 
 void QgsColorButton::pasteColor()

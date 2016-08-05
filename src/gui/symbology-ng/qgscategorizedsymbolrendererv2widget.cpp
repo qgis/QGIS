@@ -19,7 +19,7 @@
 #include "qgscategorizedsymbolrendererv2.h"
 
 #include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsstylev2.h"
 
@@ -136,7 +136,7 @@ QVariant QgsCategorizedSymbolRendererV2Model::data( const QModelIndex &index, in
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && category.symbol() )
   {
-    return QgsSymbolLayerV2Utils::symbolPreviewIcon( category.symbol(), QSize( 16, 16 ) );
+    return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( 16, 16 ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {
@@ -583,7 +583,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
 {
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mCategorizedSymbol, btnChangeCategorizedSymbol->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mCategorizedSymbol, btnChangeCategorizedSymbol->iconSize() );
   btnChangeCategorizedSymbol->setIcon( icon );
 }
 
@@ -628,7 +628,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
 static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV2* symbol )
 {
   // sort the categories first
-  QgsSymbolLayerV2Utils::sortVariantList( values, Qt::AscendingOrder );
+  QgsSymbolLayerUtils::sortVariantList( values, Qt::AscendingOrder );
 
   int num = values.count();
 

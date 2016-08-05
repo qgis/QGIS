@@ -22,10 +22,10 @@
 
 #include <sqlite3.h>
 
-#include "qgssymbollayerv2utils.h" // QgsStringMap
+#include "qgssymbollayerutils.h" // QgsStringMap
 
 class QgsSymbolV2;
-class QgsSymbolLayerV2;
+class QgsSymbolLayer;
 class QgsVectorColorRampV2;
 
 class QDomDocument;

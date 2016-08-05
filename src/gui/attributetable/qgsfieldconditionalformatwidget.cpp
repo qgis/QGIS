@@ -17,7 +17,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsstylev2.h"
 #include "qgsvectorlayer.h"
 
@@ -68,7 +68,7 @@ void QgsFieldConditionalFormatWidget::updateIcon()
     return;
   }
 
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mSymbol, btnChangeIcon->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, btnChangeIcon->iconSize() );
   btnChangeIcon->setIcon( icon );
 }
 

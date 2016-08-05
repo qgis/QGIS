@@ -18,7 +18,7 @@
 #include "qgscomposermapoverview.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgssymbolv2.h"
 #include "qgsmapsettings.h"
 #include "qgspainting.h"
@@ -166,7 +166,7 @@ bool QgsComposerMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) co
   overviewFrameElem.setAttribute( "inverted", mInverted );
   overviewFrameElem.setAttribute( "centered", mCentered );
 
-  QDomElement frameStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mFrameSymbol, doc );
+  QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol, doc );
   overviewFrameElem.appendChild( frameStyleElem );
 
   bool ok = QgsComposerMapItem::writeXml( overviewFrameElem, doc );
@@ -193,7 +193,7 @@ bool QgsComposerMapOverview::readXml( const QDomElement &itemElem, const QDomDoc
   if ( !frameStyleElem.isNull() )
   {
     delete mFrameSymbol;
-    mFrameSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( frameStyleElem );
+    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbolV2>( frameStyleElem );
   }
   return ok;
 }

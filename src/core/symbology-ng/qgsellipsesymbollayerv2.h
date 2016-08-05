@@ -30,8 +30,8 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QgsEllipseSymbolLayerV2();
     ~QgsEllipseSymbolLayerV2();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer* createFromSld( QDomElement &element );
 
     void renderPoint( QPointF point, QgsSymbolV2RenderContext& context ) override;
     QString layerType() const override;

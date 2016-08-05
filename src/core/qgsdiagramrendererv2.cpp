@@ -20,7 +20,7 @@
 #include "qgsrendercontext.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsfontutils.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -198,11 +198,11 @@ void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer*
   {
     sizeType = QgsUnitTypes::decodeRenderUnit( elem.attribute( "sizeType" ) );
   }
-  sizeScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( elem.attribute( "sizeScale" ) );
+  sizeScale = QgsSymbolLayerUtils::decodeMapUnitScale( elem.attribute( "sizeScale" ) );
 
   //line width unit type and scale
   lineSizeUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( "lineSizeType" ) );
-  lineSizeScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( elem.attribute( "lineSizeScale" ) );
+  lineSizeScale = QgsSymbolLayerUtils::decodeMapUnitScale( elem.attribute( "lineSizeScale" ) );
 
   //label placement method
   if ( elem.attribute( "labelPlacementMethod" ) == "Height" )
@@ -314,11 +314,11 @@ void QgsDiagramSettings::writeXml( QDomElement& rendererElem, QDomDocument& doc,
 
   //diagram size unit type and scale
   categoryElem.setAttribute( "sizeType", QgsUnitTypes::encodeUnit( sizeType ) );
-  categoryElem.setAttribute( "sizeScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( sizeScale ) );
+  categoryElem.setAttribute( "sizeScale", QgsSymbolLayerUtils::encodeMapUnitScale( sizeScale ) );
 
   //line width unit type and scale
   categoryElem.setAttribute( "lineSizeType", QgsUnitTypes::encodeUnit( lineSizeUnit ) );
-  categoryElem.setAttribute( "lineSizeScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( lineSizeScale ) );
+  categoryElem.setAttribute( "lineSizeScale", QgsSymbolLayerUtils::encodeMapUnitScale( lineSizeScale ) );
 
   // label placement method (text diagram)
   if ( labelPlacementMethod == Height )
@@ -444,7 +444,7 @@ QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsFeature& feature, const QgsR
   QSizeF size = diagramSize( feature, c );
   if ( size.isValid() )
   {
-    double width = QgsSymbolLayerV2Utils::convertToMapUnits( c, size.width(), s.sizeType, s.sizeScale );
+    double width = QgsSymbolLayerUtils::convertToMapUnits( c, size.width(), s.sizeType, s.sizeScale );
     size.rheight() *= width / size.width();
     size.setWidth( width );
   }
@@ -523,7 +523,7 @@ void QgsDiagramRendererV2::_readXml( const QDomElement& elem, const QgsVectorLay
   QDomElement sizeLegendSymbolElem = elem.firstChildElement( "symbol" );
   if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( "name" ) == "sizeSymbol" )
   {
-    mSizeLegendSymbol.reset( QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( sizeLegendSymbolElem ) );
+    mSizeLegendSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( sizeLegendSymbolElem ) );
   }
 }
 
@@ -538,7 +538,7 @@ void QgsDiagramRendererV2::_writeXml( QDomElement& rendererElem, QDomDocument& d
   }
   rendererElem.setAttribute( "attributeLegend", mShowAttributeLegend );
   rendererElem.setAttribute( "sizeLegend", mShowSizeLegend );
-  QDomElement sizeLegendSymbolElem = QgsSymbolLayerV2Utils::saveSymbol( "sizeSymbol", mSizeLegendSymbol.data(), doc );
+  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( "sizeSymbol", mSizeLegendSymbol.data(), doc );
   rendererElem.appendChild( sizeLegendSymbolElem );
 }
 
@@ -734,7 +734,7 @@ QList< QgsLayerTreeModelLegendNode* > QgsLinearlyInterpolatedDiagramRenderer::le
   if ( mShowSizeLegend && mDiagram && mSizeLegendSymbol.data() )
   {
     // add size legend
-    Q_FOREACH ( double v, QgsSymbolLayerV2Utils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
+    Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
     {
       double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
       QgsLegendSymbolItemV2 si( mSizeLegendSymbol.data(), QString::number( v ), QString() );

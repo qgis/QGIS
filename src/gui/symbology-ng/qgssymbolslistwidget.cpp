@@ -23,7 +23,7 @@
 
 #include "qgssymbolv2.h"
 #include "qgsstylev2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
@@ -209,7 +209,7 @@ void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
     itemFont.setPointSize( 10 );
     item->setFont( itemFont );
     // create preview icon
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( s, previewSize );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( s, previewSize );
     item->setIcon( icon );
     // add to model
     model->appendRow( item );
@@ -542,7 +542,7 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
   // move all symbol layers to our symbol
   while ( s->symbolLayerCount() )
   {
-    QgsSymbolLayerV2* sl = s->takeSymbolLayer( 0 );
+    QgsSymbolLayer* sl = s->takeSymbolLayer( 0 );
     mSymbol->appendSymbolLayer( sl );
   }
   mSymbol->setAlpha( s->alpha() );

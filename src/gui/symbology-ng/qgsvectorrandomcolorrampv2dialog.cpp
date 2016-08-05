@@ -15,7 +15,7 @@
 
 #include "qgsvectorrandomcolorrampv2dialog.h"
 
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 
 #include <QColorDialog>
@@ -51,7 +51,7 @@ void QgsVectorRandomColorRampV2Dialog::updatePreview()
   mRamp->updateColors();
 
   QSize size( 300, 40 );
-  lblPreview->setPixmap( QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size ) );
+  lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size ) );
 }
 
 void QgsVectorRandomColorRampV2Dialog::setCount( int val )

@@ -11,8 +11,8 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     // static stuff
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 
@@ -123,7 +123,7 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
      *
      * @return A new MarkerLineSymbolLayerV2
      */
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     /**
      * Create a new MarkerLineSymbolLayerV2 from SLD
@@ -132,7 +132,7 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
      *
      * @return A new MarkerLineSymbolLayerV2
      */
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 

@@ -15,7 +15,7 @@
 
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsrulebasedrendererv2.h"
 #include "qgsdatadefined.h"
 

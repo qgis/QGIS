@@ -15,8 +15,8 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     // static stuff
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 
@@ -156,7 +156,7 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     // static stuff
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     // implemented from base classes
 
@@ -254,7 +254,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     // static stuff
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     // implemented from base classes
 
@@ -510,7 +510,7 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
     QgsRasterFillSymbolLayer( const QString& imageFilePath = QString() );
     ~QgsRasterFillSymbolLayer();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
 
     // implemented from base classes
     QString layerType() const;
@@ -671,8 +671,8 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     QgsSVGFillSymbolLayer( const QByteArray& svgData, double width = 20, double rotation = 0.0 );
     ~QgsSVGFillSymbolLayer();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 
@@ -747,8 +747,8 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     QgsLinePatternFillSymbolLayer();
     ~QgsLinePatternFillSymbolLayer();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     QString layerType() const;
 
@@ -855,8 +855,8 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     QgsPointPatternFillSymbolLayer();
     ~QgsPointPatternFillSymbolLayer();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     QString layerType() const;
 
@@ -959,8 +959,8 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     // static stuff
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 

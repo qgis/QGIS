@@ -1,7 +1,7 @@
-class QgsSymbolLayerV2Utils
+class QgsSymbolLayerUtils
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2utils.h>
+#include <qgssymbollayerutils.h>
 %End
 
   public:
@@ -83,7 +83,7 @@ class QgsSymbolLayerV2Utils
      * @note added in QGIS 2.9
      * @see symbolLayerPreviewIcon()
      */
-    static QPicture symbolLayerPreviewPicture( QgsSymbolLayerV2* layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Draws a symbol layer preview to an icon.
      * @param layer symbol layer to draw
@@ -93,7 +93,7 @@ class QgsSymbolLayerV2Utils
      * @returns icon containing symbol layer preview
      * @see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static QIcon symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
@@ -120,7 +120,7 @@ class QgsSymbolLayerV2Utils
      */
     //template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element );
 
-    static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element ) /Factory/;
+    static QgsSymbolLayer* loadSymbolLayer( QDomElement& element ) /Factory/;
     static QDomElement saveSymbol( const QString& symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
 
     /** Returns a string representing the symbol. Can be used to test for equality
@@ -129,13 +129,13 @@ class QgsSymbolLayerV2Utils
      */
     static QString symbolProperties( QgsSymbolV2* symbol );
 
-    static bool createSymbolLayerV2ListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerV2List &layers );
+    static bool createSymbolLayerV2ListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
 
-    static QgsSymbolLayerV2* createFillLayerFromSld( QDomElement &element );
-    static QgsSymbolLayerV2* createLineLayerFromSld( QDomElement &element );
-    static QgsSymbolLayerV2* createMarkerLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer* createFillLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer* createLineLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer* createMarkerLayerFromSld( QDomElement &element );
 
-    static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerV2List &layerList );
+    static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList );
     static bool hasExternalGraphic( QDomElement &element );
     static bool hasWellKnownMark( QDomElement &element );
 

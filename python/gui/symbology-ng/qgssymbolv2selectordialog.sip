@@ -54,7 +54,7 @@ class QgsSymbolV2SelectorWidget : QgsPanelWidget
 
     //! @note not available in python bindings
     // SymbolLayerItem* currentLayerItem();
-    QgsSymbolLayerV2* currentLayer();
+    QgsSymbolLayer* currentLayer();
 
     void moveLayerByOffset( int offset );
 
@@ -87,7 +87,7 @@ class QgsSymbolV2SelectorWidget : QgsPanelWidget
     void symbolChanged();
     //! alters tree and sets proper widget when Layer Type is changed
     //! @note: The layer is received from the LayerPropertiesWidget
-    void changeLayer( QgsSymbolLayerV2* layer );
+    void changeLayer( QgsSymbolLayer* layer );
 };
 
 class QgsSymbolV2SelectorDialog : QDialog
@@ -141,7 +141,7 @@ class QgsSymbolV2SelectorDialog : QDialog
 
     //! @note not available in python bindings
     // SymbolLayerItem* currentLayerItem();
-    QgsSymbolLayerV2* currentLayer();
+    QgsSymbolLayer* currentLayer();
 
     void moveLayerByOffset( int offset );
 
@@ -174,7 +174,7 @@ class QgsSymbolV2SelectorDialog : QDialog
     void symbolChanged();
     //! alters tree and sets proper widget when Layer Type is changed
     //! @note: The layer is received from the LayerPropertiesWidget
-    void changeLayer( QgsSymbolLayerV2* layer );
+    void changeLayer( QgsSymbolLayer* layer );
 
 
 };

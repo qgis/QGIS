@@ -37,7 +37,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsogcutils.h"
 #include "qgsvectorlayer.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsstylev2.h"
 #include "qgsexpressioncontext.h"
@@ -2704,7 +2704,7 @@ static QVariant fncColorRgba( const QVariantList &values, const QgsExpressionCon
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( red ).arg( green ).arg( blue ).arg( alpha ) );
     color = QColor( 0, 0, 0 );
   }
-  return QgsSymbolLayerV2Utils::encodeColor( color );
+  return QgsSymbolLayerUtils::encodeColor( color );
 }
 
 QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -2718,7 +2718,7 @@ QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *,
   }
   double value = getDoubleValue( values.at( 1 ), parent );
   QColor color = mRamp->color( value );
-  return QgsSymbolLayerV2Utils::encodeColor( color );
+  return QgsSymbolLayerUtils::encodeColor( color );
 }
 
 static QVariant fcnColorHsl( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -2758,7 +2758,7 @@ static QVariant fncColorHsla( const QVariantList &values, const QgsExpressionCon
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( hue ).arg( saturation ).arg( lightness ).arg( alpha ) );
     color = QColor( 0, 0, 0 );
   }
-  return QgsSymbolLayerV2Utils::encodeColor( color );
+  return QgsSymbolLayerUtils::encodeColor( color );
 }
 
 static QVariant fcnColorHsv( const QVariantList &values, const QgsExpressionContext*, QgsExpression *parent )
@@ -2798,7 +2798,7 @@ static QVariant fncColorHsva( const QVariantList &values, const QgsExpressionCon
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( hue ).arg( saturation ).arg( value ).arg( alpha ) );
     color = QColor( 0, 0, 0 );
   }
-  return QgsSymbolLayerV2Utils::encodeColor( color );
+  return QgsSymbolLayerUtils::encodeColor( color );
 }
 
 static QVariant fcnColorCmyk( const QVariantList &values, const QgsExpressionContext*, QgsExpression *parent )
@@ -2842,12 +2842,12 @@ static QVariant fncColorCmyka( const QVariantList &values, const QgsExpressionCo
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4:%5' to color" ).arg( cyan ).arg( magenta ).arg( yellow ).arg( black ).arg( alpha ) );
     color = QColor( 0, 0, 0 );
   }
-  return QgsSymbolLayerV2Utils::encodeColor( color );
+  return QgsSymbolLayerUtils::encodeColor( color );
 }
 
 static QVariant fncColorPart( const QVariantList &values, const QgsExpressionContext*, QgsExpression *parent )
 {
-  QColor color = QgsSymbolLayerV2Utils::decodeColor( values.at( 0 ).toString() );
+  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
   if ( ! color.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
@@ -2890,7 +2890,7 @@ static QVariant fncColorPart( const QVariantList &values, const QgsExpressionCon
 
 static QVariant fncSetColorPart( const QVariantList &values, const QgsExpressionContext*, QgsExpression *parent )
 {
-  QColor color = QgsSymbolLayerV2Utils::decodeColor( values.at( 0 ).toString() );
+  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
   if ( ! color.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
@@ -2932,12 +2932,12 @@ static QVariant fncSetColorPart( const QVariantList &values, const QgsExpression
     parent->setEvalErrorString( QObject::tr( "Unknown color component '%1'" ).arg( part ) );
     return QVariant();
   }
-  return QgsSymbolLayerV2Utils::encodeColor( color );
+  return QgsSymbolLayerUtils::encodeColor( color );
 }
 
 static QVariant fncDarker( const QVariantList &values, const QgsExpressionContext*, QgsExpression *parent )
 {
-  QColor color = QgsSymbolLayerV2Utils::decodeColor( values.at( 0 ).toString() );
+  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
   if ( ! color.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
@@ -2946,12 +2946,12 @@ static QVariant fncDarker( const QVariantList &values, const QgsExpressionContex
 
   color = color.darker( getIntValue( values.at( 1 ), parent ) );
 
-  return QgsSymbolLayerV2Utils::encodeColor( color );
+  return QgsSymbolLayerUtils::encodeColor( color );
 }
 
 static QVariant fncLighter( const QVariantList &values, const QgsExpressionContext*, QgsExpression *parent )
 {
-  QColor color = QgsSymbolLayerV2Utils::decodeColor( values.at( 0 ).toString() );
+  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
   if ( ! color.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
@@ -2960,7 +2960,7 @@ static QVariant fncLighter( const QVariantList &values, const QgsExpressionConte
 
   color = color.lighter( getIntValue( values.at( 1 ), parent ) );
 
-  return QgsSymbolLayerV2Utils::encodeColor( color );
+  return QgsSymbolLayerUtils::encodeColor( color );
 }
 
 static QVariant fcnSpecialColumn( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )

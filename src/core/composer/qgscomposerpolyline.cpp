@@ -17,7 +17,7 @@
 #include "qgscomposerpolyline.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgssymbolv2.h"
 #include "qgsmapsettings.h"
 #include <limits>
@@ -126,7 +126,7 @@ void QgsComposerPolyline::_draw( QPainter *painter )
 
 void QgsComposerPolyline::_readXmlStyle( const QDomElement &elmt )
 {
-  mPolylineStyleSymbol.reset( QgsSymbolLayerV2Utils::loadSymbol<QgsLineSymbolV2>( elmt ) );
+  mPolylineStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbolV2>( elmt ) );
 }
 
 void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbolV2* symbol )
@@ -138,7 +138,7 @@ void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbolV2* symbol )
 
 void QgsComposerPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
-  const QDomElement pe = QgsSymbolLayerV2Utils::saveSymbol( QString(),
+  const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
                          mPolylineStyleSymbol.data(),
                          doc );
   elmt.appendChild( pe );

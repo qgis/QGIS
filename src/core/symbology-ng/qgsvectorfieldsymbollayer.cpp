@@ -69,7 +69,7 @@ QgsMapUnitScale QgsVectorFieldSymbolLayer::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& properties )
+QgsSymbolLayer* QgsVectorFieldSymbolLayer::create( const QgsStringMap& properties )
 {
   QgsVectorFieldSymbolLayer* symbolLayer = new QgsVectorFieldSymbolLayer();
   if ( properties.contains( "x_attribute" ) )
@@ -86,7 +86,7 @@ QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& propert
   }
   if ( properties.contains( "distance_map_unit_scale" ) )
   {
-    symbolLayer->setDistanceMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( properties["distance_map_unit_scale"] ) );
+    symbolLayer->setDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties["distance_map_unit_scale"] ) );
   }
   if ( properties.contains( "scale" ) )
   {
@@ -114,11 +114,11 @@ QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& propert
   }
   if ( properties.contains( "size_map_unit_scale" ) )
   {
-    symbolLayer->setSizeMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( properties["size_map_unit_scale"] ) );
+    symbolLayer->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties["size_map_unit_scale"] ) );
   }
   if ( properties.contains( "offset" ) )
   {
-    symbolLayer->setOffset( QgsSymbolLayerV2Utils::decodePoint( properties["offset"] ) );
+    symbolLayer->setOffset( QgsSymbolLayerUtils::decodePoint( properties["offset"] ) );
   }
   if ( properties.contains( "offset_unit" ) )
   {
@@ -126,7 +126,7 @@ QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& propert
   }
   if ( properties.contains( "offset_map_unit_scale" ) )
   {
-    symbolLayer->setOffsetMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( properties["offset_map_unit_scale"] ) );
+    symbolLayer->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties["offset_map_unit_scale"] ) );
   }
   return symbolLayer;
 }
@@ -178,17 +178,17 @@ void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolV2RenderCon
   switch ( mVectorFieldType )
   {
     case Cartesian:
-      xComponent = QgsSymbolLayerV2Utils::convertToPainterUnits( ctx, xVal, mDistanceUnit, mDistanceMapUnitScale );
-      yComponent = QgsSymbolLayerV2Utils::convertToPainterUnits( ctx, yVal, mDistanceUnit, mDistanceMapUnitScale );
+      xComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, xVal, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, yVal, mDistanceUnit, mDistanceMapUnitScale );
       break;
     case Polar:
       convertPolarToCartesian( xVal, yVal, xComponent, yComponent );
-      xComponent = QgsSymbolLayerV2Utils::convertToPainterUnits( ctx, xComponent, mDistanceUnit, mDistanceMapUnitScale );
-      yComponent = QgsSymbolLayerV2Utils::convertToPainterUnits( ctx, yComponent, mDistanceUnit, mDistanceMapUnitScale );
+      xComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, xComponent, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, yComponent, mDistanceUnit, mDistanceMapUnitScale );
       break;
     case Height:
       xComponent = 0;
-      yComponent = QgsSymbolLayerV2Utils::convertToPainterUnits( ctx, yVal, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, yVal, mDistanceUnit, mDistanceMapUnitScale );
       break;
     default:
       break;
@@ -233,7 +233,7 @@ void QgsVectorFieldSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
 
 QgsVectorFieldSymbolLayer* QgsVectorFieldSymbolLayer::clone() const
 {
-  QgsSymbolLayerV2* clonedLayer = QgsVectorFieldSymbolLayer::create( properties() );
+  QgsSymbolLayer* clonedLayer = QgsVectorFieldSymbolLayer::create( properties() );
   if ( mLineSymbol )
   {
     clonedLayer->setSubSymbol( mLineSymbol->clone() );
@@ -247,17 +247,17 @@ QgsStringMap QgsVectorFieldSymbolLayer::properties() const
   properties["x_attribute"] = mXAttribute;
   properties["y_attribute"] = mYAttribute;
   properties["distance_unit"] = QgsUnitTypes::encodeUnit( mDistanceUnit );
-  properties["distance_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mDistanceMapUnitScale );
+  properties["distance_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mDistanceMapUnitScale );
   properties["scale"] = QString::number( mScale );
   properties["vector_field_type"] = QString::number( mVectorFieldType );
   properties["angle_orientation"] = QString::number( mAngleOrientation );
   properties["angle_units"] = QString::number( mAngleUnits );
   properties["size"] = QString::number( mSize );
   properties["size_unit"] = QgsUnitTypes::encodeUnit( mSizeUnit );
-  properties["size_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mSizeMapUnitScale );
-  properties["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  properties["size_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );
+  properties["offset"] = QgsSymbolLayerUtils::encodePoint( mOffset );
   properties["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
-  properties["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
+  properties["offset_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
   return properties;
 }
 
@@ -267,7 +267,7 @@ void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement &element, 
   mLineSymbol->toSld( doc, element, props );
 }
 
-QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )
+QgsSymbolLayer* QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )
 {
   Q_UNUSED( element );
   return nullptr;

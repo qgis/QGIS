@@ -21,7 +21,7 @@
 #include "qgscomposeritem.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2selectordialog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
 #include <QColorDialog>
@@ -611,7 +611,7 @@ void QgsCompositionWidget::updatePageStyle()
 {
   if ( mComposition )
   {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposition->pageStyleSymbol(), mPageStyleButton->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mComposition->pageStyleSymbol(), mPageStyleButton->iconSize() );
     mPageStyleButton->setIcon( icon );
   }
 }

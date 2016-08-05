@@ -17,7 +17,7 @@
 
 #include "qgsrulebasedrendererv2.h"
 #include "qgsfeatureiterator.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
@@ -906,7 +906,7 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && rule->symbol() )
   {
-    return QgsSymbolLayerV2Utils::symbolPreviewIcon( rule->symbol(), QSize( 16, 16 ) );
+    return QgsSymbolLayerUtils::symbolPreviewIcon( rule->symbol(), QSize( 16, 16 ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {
@@ -1088,7 +1088,7 @@ QMimeData *QgsRuleBasedRendererV2Model::mimeData( const QModelIndexList &indexes
     rootElem.setAttribute( "type", "renderer" ); // for determining whether rules are from renderer or labeling
     QDomElement rulesElem = rule->save( doc, symbols );
     rootElem.appendChild( rulesElem );
-    QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( symbols, "symbols", doc );
+    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, "symbols", doc );
     rootElem.appendChild( symbolsElem );
     doc.appendChild( rootElem );
 
@@ -1159,7 +1159,7 @@ bool QgsRuleBasedRendererV2Model::dropMimeData( const QMimeData *data,
     QDomElement symbolsElem = rootElem.firstChildElement( "symbols" );
     if ( symbolsElem.isNull() )
       continue;
-    QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
+    QgsSymbolV2Map symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
     QDomElement ruleElem = rootElem.firstChildElement( "rule" );
     if ( rootElem.attribute( "type" ) == "labeling" )
       _labeling2rendererRules( ruleElem );

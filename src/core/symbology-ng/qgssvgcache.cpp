@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -201,7 +201,7 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
     double widthScaleFactor, double rasterScaleFactor )
 {
   // The file may be relative path (e.g. if path is data defined)
-  QString path = QgsSymbolLayerV2Utils::symbolNameToPath( file );
+  QString path = QgsSymbolLayerUtils::symbolNameToPath( file );
 
   QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( path, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline, file );
 

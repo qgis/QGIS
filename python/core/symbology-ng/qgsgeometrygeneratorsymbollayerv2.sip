@@ -12,13 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayerV2
+class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayer
 {
 %TypeHeaderCode
 #include "qgsgeometrygeneratorsymbollayerv2.h"
 %End
   public:
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
 
     QString layerType() const;
 
@@ -42,7 +42,7 @@ class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayerV2
 
     void stopRender( QgsSymbolV2RenderContext& context );
 
-    QgsSymbolLayerV2* clone() const;
+    QgsSymbolLayer* clone() const;
 
     QgsStringMap properties() const;
 

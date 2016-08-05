@@ -18,7 +18,7 @@
 #include <QColorDialog>
 
 QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
     , mLayer( nullptr )
 {
   setupUi( this );
@@ -32,7 +32,7 @@ QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer* vl, 
   mOffsetSpin->setClearValue( 0.0 );
 }
 
-void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( !layer || layer->layerType() != "ArrowLine" )
   {
@@ -76,7 +76,7 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
 }
 
 
-QgsSymbolLayerV2* QgsArrowSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer* QgsArrowSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }

@@ -8,8 +8,8 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     QgsEllipseSymbolLayerV2();
     ~QgsEllipseSymbolLayerV2();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     void renderPoint( QPointF point, QgsSymbolV2RenderContext& context );
     QString layerType() const;

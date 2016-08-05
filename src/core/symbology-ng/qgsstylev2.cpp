@@ -18,7 +18,7 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorcolorrampv2.h"
 
-#include "qgssymbollayerv2registry.h"
+#include "qgssymbollayerregistry.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -106,7 +106,7 @@ bool QgsStyleV2::saveSymbol( const QString& name, QgsSymbolV2* symbol, int group
 {
   // TODO add support for groups
   QDomDocument doc( "dummy" );
-  QDomElement symEl = QgsSymbolLayerV2Utils::saveSymbol( name, symbol, doc );
+  QDomElement symEl = QgsSymbolLayerUtils::saveSymbol( name, symbol, doc );
   if ( symEl.isNull() )
   {
     QgsDebugMsg( "Couldn't convert symbol to valid XML!" );
@@ -211,7 +211,7 @@ bool QgsStyleV2::saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp,
 {
   // insert it into the database
   QDomDocument doc( "dummy" );
-  QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp( name, ramp, doc );
+  QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp, doc );
   if ( rampEl.isNull() )
   {
     QgsDebugMsg( "Couldn't convert color ramp to valid XML!" );
@@ -323,7 +323,7 @@ bool QgsStyleV2::load( const QString& filename )
     }
 
     QDomElement symElement = doc.documentElement();
-    QgsSymbolV2 *symbol = QgsSymbolLayerV2Utils::loadSymbol( symElement );
+    QgsSymbolV2 *symbol = QgsSymbolLayerUtils::loadSymbol( symElement );
     if ( symbol )
       mSymbols.insert( symbol_name, symbol );
   }
@@ -343,7 +343,7 @@ bool QgsStyleV2::load( const QString& filename )
       continue;
     }
     QDomElement rampElement = doc.documentElement();
-    QgsVectorColorRampV2 *ramp = QgsSymbolLayerV2Utils::loadColorRamp( rampElement );
+    QgsVectorColorRampV2 *ramp = QgsSymbolLayerUtils::loadColorRamp( rampElement );
     if ( ramp )
       mColorRamps.insert( ramp_name, ramp );
   }
@@ -369,14 +369,14 @@ bool QgsStyleV2::save( QString filename )
   root.setAttribute( "version", STYLE_CURRENT_VERSION );
   doc.appendChild( root );
 
-  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( mSymbols, "symbols", doc );
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, "symbols", doc );
 
   QDomElement rampsElem = doc.createElement( "colorramps" );
 
   // save color ramps
   for ( QMap<QString, QgsVectorColorRampV2*>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr )
   {
-    QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp( itr.key(), itr.value(), doc );
+    QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( itr.key(), itr.value(), doc );
     rampsElem.appendChild( rampEl );
   }
 
@@ -1373,13 +1373,13 @@ bool QgsStyleV2::exportXml( const QString& filename )
   doc.appendChild( root );
 
   // TODO work on the groups and tags
-  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( mSymbols, "symbols", doc );
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, "symbols", doc );
   QDomElement rampsElem = doc.createElement( "colorramps" );
 
   // save color ramps
   for ( QMap<QString, QgsVectorColorRampV2*>::const_iterator itr = mColorRamps.constBegin(); itr != mColorRamps.constEnd(); ++itr )
   {
-    QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp( itr.key(), itr.value(), doc );
+    QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( itr.key(), itr.value(), doc );
     rampsElem.appendChild( rampEl );
   }
 
@@ -1450,7 +1450,7 @@ bool QgsStyleV2::importXml( const QString& filename )
     {
       if ( e.tagName() == "symbol" )
       {
-        QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol( e );
+        QgsSymbolV2* symbol = QgsSymbolLayerUtils::loadSymbol( e );
         if ( symbol )
         {
           symbols.insert( e.attribute( "name" ), symbol );
@@ -1466,7 +1466,7 @@ bool QgsStyleV2::importXml( const QString& filename )
   else
   {
     // for the old version, use the utility function to solve @symbol@layer subsymbols
-    symbols = QgsSymbolLayerV2Utils::loadSymbols( symbolsElement );
+    symbols = QgsSymbolLayerUtils::loadSymbols( symbolsElement );
   }
 
   // save the symbols with proper name
@@ -1482,7 +1482,7 @@ bool QgsStyleV2::importXml( const QString& filename )
   {
     if ( e.tagName() == "colorramp" )
     {
-      QgsVectorColorRampV2* ramp = QgsSymbolLayerV2Utils::loadColorRamp( e );
+      QgsVectorColorRampV2* ramp = QgsSymbolLayerUtils::loadColorRamp( e );
       if ( ramp )
       {
         addColorRamp( e.attribute( "name" ), ramp );
@@ -1518,7 +1518,7 @@ bool QgsStyleV2::updateSymbol( StyleEntity type, const QString& name )
       return false;
     }
 
-    symEl = QgsSymbolLayerV2Utils::saveSymbol( name, symbol( name ), doc );
+    symEl = QgsSymbolLayerUtils::saveSymbol( name, symbol( name ), doc );
     if ( symEl.isNull() )
     {
       QgsDebugMsg( "Couldn't convert symbol to valid XML!" );
@@ -1536,7 +1536,7 @@ bool QgsStyleV2::updateSymbol( StyleEntity type, const QString& name )
       return false;
     }
 
-    symEl = QgsSymbolLayerV2Utils::saveColorRamp( name, colorRamp( name ), doc );
+    symEl = QgsSymbolLayerUtils::saveColorRamp( name, colorRamp( name ), doc );
     if ( symEl.isNull() )
     {
       QgsDebugMsg( "Couldn't convert color ramp to valid XML!" );

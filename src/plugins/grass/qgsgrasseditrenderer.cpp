@@ -23,8 +23,8 @@
 #include "qgslogger.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsrendererv2registry.h"
-#include "qgssymbollayerv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
 #include "qgssymbolv2.h"
 
 #include "qgsgrasseditrenderer.h"
@@ -59,7 +59,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   markerSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   markerSymbolLayer->setBorderColor( QColor( 255, 0, 0 ) );
   markerSymbolLayer->setOutlineWidth( 0.5 );
-  QgsSymbolLayerV2List markerLayers;
+  QgsSymbolLayerList markerLayers;
   markerLayers << markerSymbolLayer;
   QgsMarkerSymbolV2 * markerSymbol = new QgsMarkerSymbolV2( markerLayers );
   firstVertexMarkerLine->setSubSymbol( markerSymbol );

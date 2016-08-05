@@ -29,7 +29,7 @@
 
 class QgsStyleV2;
 class QgsSymbolV2;
-class QgsSymbolLayerV2;
+class QgsSymbolLayer;
 class QgsVectorLayer;
 
 class QMenu;
@@ -49,7 +49,7 @@ class DataDefinedRestorer: public QObject
 {
     Q_OBJECT
   public:
-    DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayerV2* symbolLayer );
+    DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayer* symbolLayer );
 
   public slots:
     void restore();
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
      * The current symbol layer that is active in the interface.
      * @return The active symbol layer.
      */
-    QgsSymbolLayerV2* currentLayer();
+    QgsSymbolLayer* currentLayer();
 
     /**
      * Move the current active layer by a set offset in the list.
@@ -235,7 +235,7 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
     void symbolChanged();
     //! alters tree and sets proper widget when Layer Type is changed
     //! @note: The layer is received from the LayerPropertiesWidget
-    void changeLayer( QgsSymbolLayerV2* layer );
+    void changeLayer( QgsSymbolLayer* layer );
 
 
   protected: // data
@@ -312,7 +312,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog
 
     //! @note not available in python bindings
     SymbolLayerItem* currentLayerItem();
-    QgsSymbolLayerV2* currentLayer();
+    QgsSymbolLayer* currentLayer();
 
     void moveLayerByOffset( int offset );
 
@@ -345,7 +345,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog
     void symbolChanged();
     //! alters tree and sets proper widget when Layer Type is changed
     //! @note: The layer is received from the LayerPropertiesWidget
-    void changeLayer( QgsSymbolLayerV2* layer );
+    void changeLayer( QgsSymbolLayer* layer );
 
   private:
     QgsSymbolV2SelectorWidget* mSelectorWidget;

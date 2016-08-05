@@ -20,7 +20,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 #include "qgsrenderchecker.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 
 class TestQgsImageOperation : public QObject

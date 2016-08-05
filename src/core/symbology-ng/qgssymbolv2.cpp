@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgssymbolv2.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 
 #include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
@@ -83,7 +83,7 @@ QgsDataDefined* scaleWholeSymbol( double scaleFactorX, double scaleFactorY, cons
 
 ////////////////////
 
-QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
+QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerList& layers )
     : mType( type )
     , mLayers( layers )
     , mAlpha( 1.0 )
@@ -257,7 +257,7 @@ QgsUnitTypes::RenderUnit QgsSymbolV2::outputUnit() const
     return QgsUnitTypes::RenderUnknownUnit;
   }
 
-  QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin();
+  QgsSymbolLayerList::const_iterator it = mLayers.constBegin();
 
   QgsUnitTypes::RenderUnit unit = ( *it )->outputUnit();
 
@@ -278,7 +278,7 @@ QgsMapUnitScale QgsSymbolV2::mapUnitScale() const
     return QgsMapUnitScale();
   }
 
-  QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin();
+  QgsSymbolLayerList::const_iterator it = mLayers.constBegin();
   if ( it == mLayers.constEnd() )
     return QgsMapUnitScale();
 
@@ -297,7 +297,7 @@ QgsMapUnitScale QgsSymbolV2::mapUnitScale() const
 
 void QgsSymbolV2::setOutputUnit( QgsUnitTypes::RenderUnit u )
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     layer->setOutputUnit( u );
   }
@@ -305,7 +305,7 @@ void QgsSymbolV2::setOutputUnit( QgsUnitTypes::RenderUnit u )
 
 void QgsSymbolV2::setMapUnitScale( const QgsMapUnitScale &scale )
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     layer->setMapUnitScale( scale );
   }
@@ -368,7 +368,7 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   return s;
 }
 
-QgsSymbolLayerV2* QgsSymbolV2::symbolLayer( int layer )
+QgsSymbolLayer* QgsSymbolV2::symbolLayer( int layer )
 {
   return mLayers.value( layer );
 }
@@ -384,7 +384,7 @@ bool QgsSymbolV2::isSymbolLayerCompatible( SymbolType layerType )
 }
 
 
-bool QgsSymbolV2::insertSymbolLayer( int index, QgsSymbolLayerV2* layer )
+bool QgsSymbolV2::insertSymbolLayer( int index, QgsSymbolLayer* layer )
 {
   if ( index < 0 || index > mLayers.count() ) // can be added also after the last index
     return false;
@@ -397,7 +397,7 @@ bool QgsSymbolV2::insertSymbolLayer( int index, QgsSymbolLayerV2* layer )
 }
 
 
-bool QgsSymbolV2::appendSymbolLayer( QgsSymbolLayerV2* layer )
+bool QgsSymbolV2::appendSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( !layer || !layer->isCompatibleWithSymbol( this ) )
     return false;
@@ -418,7 +418,7 @@ bool QgsSymbolV2::deleteSymbolLayer( int index )
 }
 
 
-QgsSymbolLayerV2* QgsSymbolV2::takeSymbolLayer( int index )
+QgsSymbolLayer* QgsSymbolV2::takeSymbolLayer( int index )
 {
   if ( index < 0 || index >= mLayers.count() )
     return nullptr;
@@ -427,9 +427,9 @@ QgsSymbolLayerV2* QgsSymbolV2::takeSymbolLayer( int index )
 }
 
 
-bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
+bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayer* layer )
 {
-  QgsSymbolLayerV2* oldLayer = mLayers.value( index );
+  QgsSymbolLayer* oldLayer = mLayers.value( index );
 
   if ( oldLayer == layer )
     return false;
@@ -454,7 +454,7 @@ void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields& field
 
   mSymbolRenderContext->setExpressionContextScope( scope );
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
     layer->startRender( symbolContext );
 }
 
@@ -463,7 +463,7 @@ void QgsSymbolV2::stopRender( QgsRenderContext& context )
   Q_UNUSED( context )
   if ( mSymbolRenderContext )
   {
-    Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+    Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
       layer->stopRender( *mSymbolRenderContext );
   }
 
@@ -475,7 +475,7 @@ void QgsSymbolV2::stopRender( QgsRenderContext& context )
 
 void QgsSymbolV2::setColor( const QColor& color )
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( !layer->isLocked() )
       layer->setColor( color );
@@ -484,7 +484,7 @@ void QgsSymbolV2::setColor( const QColor& color )
 
 QColor QgsSymbolV2::color() const
 {
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     // return color of the first unlocked layer
     if ( !( *it )->isLocked() )
@@ -495,11 +495,11 @@ QColor QgsSymbolV2::color() const
 
 void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext )
 {
-  QgsRenderContext context = customContext ? *customContext : QgsSymbolLayerV2Utils::createRenderContext( painter );
+  QgsRenderContext context = customContext ? *customContext : QgsSymbolLayerUtils::createRenderContext( painter );
   context.setForceVectorOutput( true );
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, QgsFields(), mapUnitScale() );
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( mType == Fill && layer->type() == Line )
     {
@@ -571,7 +571,7 @@ QImage QgsSymbolV2::bigSymbolPreviewImage( QgsExpressionContext* expressionConte
     p.drawLine( 50, 0, 50, 100 );
   }
 
-  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &p );
+  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &p );
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 
@@ -616,9 +616,9 @@ QString QgsSymbolV2::dump() const
     default:
       Q_ASSERT( 0 && "unknown symbol type" );
   }
-  QString s = QString( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsSymbolLayerV2Utils::encodeColor( color() ) );
+  QString s = QString( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsSymbolLayerUtils::encodeColor( color() ) );
 
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     // TODO:
   }
@@ -629,21 +629,21 @@ void QgsSymbolV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap p
 {
   props[ "alpha" ] = QString::number( alpha() );
   double scaleFactor = 1.0;
-  props[ "uom" ] = QgsSymbolLayerV2Utils::encodeSldUom( outputUnit(), &scaleFactor );
+  props[ "uom" ] = QgsSymbolLayerUtils::encodeSldUom( outputUnit(), &scaleFactor );
   props[ "uomScale" ] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : "" );
 
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     ( *it )->toSld( doc, element, props );
   }
 }
 
-QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
+QgsSymbolLayerList QgsSymbolV2::cloneLayers() const
 {
-  QgsSymbolLayerV2List lst;
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  QgsSymbolLayerList lst;
+  for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    QgsSymbolLayerV2* layer = ( *it )->clone();
+    QgsSymbolLayer* layer = ( *it )->clone();
     layer->setLocked(( *it )->isLocked() );
     layer->setRenderingPass(( *it )->renderingPass() );
     lst.append( layer );
@@ -651,7 +651,7 @@ QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
   return lst;
 }
 
-void QgsSymbolV2::renderUsingLayer( QgsSymbolLayerV2* layer, QgsSymbolV2RenderContext& context )
+void QgsSymbolV2::renderUsingLayer( QgsSymbolLayer* layer, QgsSymbolV2RenderContext& context )
 {
   Q_ASSERT( layer->type() == Hybrid );
 
@@ -678,7 +678,7 @@ void QgsSymbolV2::renderUsingLayer( QgsSymbolLayerV2* layer, QgsSymbolV2RenderCo
 QSet<QString> QgsSymbolV2::usedAttributes() const
 {
   QSet<QString> attributes;
-  QgsSymbolLayerV2List::const_iterator sIt = mLayers.constBegin();
+  QgsSymbolLayerList::const_iterator sIt = mLayers.constBegin();
   for ( ; sIt != mLayers.constEnd(); ++sIt )
   {
     if ( *sIt )
@@ -691,7 +691,7 @@ QSet<QString> QgsSymbolV2::usedAttributes() const
 
 bool QgsSymbolV2::hasDataDefinedProperties() const
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->hasDataDefinedProperties() )
       return true;
@@ -1051,12 +1051,12 @@ void QgsSymbolV2RenderContext::setOriginalValueVariable( const QVariant& value )
 
 double QgsSymbolV2RenderContext::outputLineWidth( double width ) const
 {
-  return QgsSymbolLayerV2Utils::convertToPainterUnits( mRenderContext, width, mOutputUnit, mMapUnitScale );
+  return QgsSymbolLayerUtils::convertToPainterUnits( mRenderContext, width, mOutputUnit, mMapUnitScale );
 }
 
 double QgsSymbolV2RenderContext::outputPixelSize( double size ) const
 {
-  return size * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( mRenderContext, mOutputUnit, mMapUnitScale );
+  return size * QgsSymbolLayerUtils::pixelSizeScaleFactor( mRenderContext, mOutputUnit, mMapUnitScale );
 }
 
 QgsSymbolV2RenderContext& QgsSymbolV2RenderContext::operator=( const QgsSymbolV2RenderContext& )
@@ -1083,40 +1083,40 @@ void QgsSymbolV2RenderContext::setExpressionContextScope( QgsExpressionContextSc
 
 QgsMarkerSymbolV2* QgsMarkerSymbolV2::createSimple( const QgsStringMap& properties )
 {
-  QgsSymbolLayerV2* sl = QgsSimpleMarkerSymbolLayerV2::create( properties );
+  QgsSymbolLayer* sl = QgsSimpleMarkerSymbolLayerV2::create( properties );
   if ( !sl )
     return nullptr;
 
-  QgsSymbolLayerV2List layers;
+  QgsSymbolLayerList layers;
   layers.append( sl );
   return new QgsMarkerSymbolV2( layers );
 }
 
 QgsLineSymbolV2* QgsLineSymbolV2::createSimple( const QgsStringMap& properties )
 {
-  QgsSymbolLayerV2* sl = QgsSimpleLineSymbolLayerV2::create( properties );
+  QgsSymbolLayer* sl = QgsSimpleLineSymbolLayerV2::create( properties );
   if ( !sl )
     return nullptr;
 
-  QgsSymbolLayerV2List layers;
+  QgsSymbolLayerList layers;
   layers.append( sl );
   return new QgsLineSymbolV2( layers );
 }
 
 QgsFillSymbolV2* QgsFillSymbolV2::createSimple( const QgsStringMap& properties )
 {
-  QgsSymbolLayerV2* sl = QgsSimpleFillSymbolLayerV2::create( properties );
+  QgsSymbolLayer* sl = QgsSimpleFillSymbolLayerV2::create( properties );
   if ( !sl )
     return nullptr;
 
-  QgsSymbolLayerV2List layers;
+  QgsSymbolLayerList layers;
   layers.append( sl );
   return new QgsFillSymbolV2( layers );
 }
 
 ///////////////////
 
-QgsMarkerSymbolV2::QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers )
+QgsMarkerSymbolV2::QgsMarkerSymbolV2( const QgsSymbolLayerList& layers )
     : QgsSymbolV2( Marker, layers )
 {
   if ( mLayers.isEmpty() )
@@ -1127,7 +1127,7 @@ void QgsMarkerSymbolV2::setAngle( double ang )
 {
   double origAngle = angle();
   double angleDiff = ang - origAngle;
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
     if ( markerLayer )
@@ -1137,7 +1137,7 @@ void QgsMarkerSymbolV2::setAngle( double ang )
 
 double QgsMarkerSymbolV2::angle() const
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1149,7 +1149,7 @@ double QgsMarkerSymbolV2::angle() const
 
 void QgsMarkerSymbolV2::setLineAngle( double lineAng )
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1162,7 +1162,7 @@ void QgsMarkerSymbolV2::setDataDefinedAngle( const QgsDataDefined& dd )
 {
   const double symbolRotation = angle();
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1192,7 +1192,7 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedAngle() const
   QgsDataDefined* symbolDD = nullptr;
 
   // find the base of the "en masse" pattern
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1208,7 +1208,7 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedAngle() const
     return QgsDataDefined();
 
   // check that all layer's angle expressions match the "en masse" pattern
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1235,7 +1235,7 @@ void QgsMarkerSymbolV2::setSize( double s )
 {
   double origSize = size();
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1258,7 +1258,7 @@ double QgsMarkerSymbolV2::size() const
 {
   // return size of the largest symbol
   double maxSize = 0;
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1272,7 +1272,7 @@ double QgsMarkerSymbolV2::size() const
 
 void QgsMarkerSymbolV2::setSizeUnit( QgsUnitTypes::RenderUnit unit )
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1287,7 +1287,7 @@ QgsUnitTypes::RenderUnit QgsMarkerSymbolV2::sizeUnit() const
   bool first = true;
   QgsUnitTypes::RenderUnit unit = QgsUnitTypes::RenderUnknownUnit;
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1308,7 +1308,7 @@ QgsUnitTypes::RenderUnit QgsMarkerSymbolV2::sizeUnit() const
 
 void QgsMarkerSymbolV2::setSizeMapUnitScale( const QgsMapUnitScale &scale )
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1320,7 +1320,7 @@ void QgsMarkerSymbolV2::setSizeMapUnitScale( const QgsMapUnitScale &scale )
 
 QgsMapUnitScale QgsMarkerSymbolV2::sizeMapUnitScale() const
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1335,7 +1335,7 @@ void QgsMarkerSymbolV2::setDataDefinedSize( const QgsDataDefined &dd )
 {
   const double symbolSize = size();
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1374,7 +1374,7 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedSize() const
   QgsDataDefined* symbolDD = nullptr;
 
   // find the base of the "en masse" pattern
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1390,7 +1390,7 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedSize() const
     return QgsDataDefined();
 
   // check that all layers size expressions match the "en masse" pattern
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1424,7 +1424,7 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedSize() const
 
 void QgsMarkerSymbolV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1435,7 +1435,7 @@ void QgsMarkerSymbolV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
 
 QgsSymbolV2::ScaleMethod QgsMarkerSymbolV2::scaleMethod()
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
@@ -1478,7 +1478,7 @@ void QgsMarkerSymbolV2::renderPoint( QPointF point, const QgsFeature* f, QgsRend
 
   if ( layerIdx != -1 )
   {
-    QgsSymbolLayerV2* symbolLayer = mLayers.value( layerIdx );
+    QgsSymbolLayer* symbolLayer = mLayers.value( layerIdx );
     if ( symbolLayer )
     {
       if ( symbolLayer->type() == QgsSymbolV2::Marker )
@@ -1492,7 +1492,7 @@ void QgsMarkerSymbolV2::renderPoint( QPointF point, const QgsFeature* f, QgsRend
     return;
   }
 
-  Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* symbolLayer, mLayers )
   {
     if ( symbolLayer->type() == QgsSymbolV2::Marker )
     {
@@ -1509,7 +1509,7 @@ QRectF QgsMarkerSymbolV2::bounds( QPointF point, QgsRenderContext& context, cons
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, &feature, feature.fields(), mapUnitScale() );
 
   QRectF bound;
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() == QgsSymbolV2::Marker )
     {
@@ -1536,7 +1536,7 @@ QgsMarkerSymbolV2* QgsMarkerSymbolV2::clone() const
 ///////////////////
 // LINE
 
-QgsLineSymbolV2::QgsLineSymbolV2( const QgsSymbolLayerV2List& layers )
+QgsLineSymbolV2::QgsLineSymbolV2( const QgsSymbolLayerList& layers )
     : QgsSymbolV2( Line, layers )
 {
   if ( mLayers.isEmpty() )
@@ -1547,7 +1547,7 @@ void QgsLineSymbolV2::setWidth( double w )
 {
   double origWidth = width();
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( layer );
 
@@ -1575,7 +1575,7 @@ double QgsLineSymbolV2::width() const
   if ( mLayers.isEmpty() )
     return maxWidth;
 
-  Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* symbolLayer, mLayers )
   {
     const QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( symbolLayer );
     if ( lineLayer )
@@ -1592,7 +1592,7 @@ void QgsLineSymbolV2::setDataDefinedWidth( const QgsDataDefined& dd )
 {
   const double symbolWidth = width();
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( layer );
 
@@ -1630,7 +1630,7 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
   QgsDataDefined* symbolDD = nullptr;
 
   // find the base of the "en masse" pattern
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     const QgsLineSymbolLayerV2* layer = dynamic_cast<const QgsLineSymbolLayerV2*>( *it );
     if ( layer && qgsDoubleNear( layer->width(), symbolWidth ) && layer->getDataDefinedProperty( "width" ) )
@@ -1644,7 +1644,7 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
     return QgsDataDefined();
 
   // check that all layers width expressions match the "en masse" pattern
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() !=  QgsSymbolV2::Line )
       continue;
@@ -1686,7 +1686,7 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
 
   if ( layerIdx != -1 )
   {
-    QgsSymbolLayerV2* symbolLayer = mLayers.value( layerIdx );
+    QgsSymbolLayer* symbolLayer = mLayers.value( layerIdx );
     if ( symbolLayer )
     {
       if ( symbolLayer->type() == QgsSymbolV2::Line )
@@ -1700,7 +1700,7 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
     return;
   }
 
-  Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* symbolLayer, mLayers )
   {
     if ( symbolLayer->type() == QgsSymbolV2::Line )
     {
@@ -1750,7 +1750,7 @@ QgsLineSymbolV2* QgsLineSymbolV2::clone() const
 ///////////////////
 // FILL
 
-QgsFillSymbolV2::QgsFillSymbolV2( const QgsSymbolLayerV2List& layers )
+QgsFillSymbolV2::QgsFillSymbolV2( const QgsSymbolLayerList& layers )
     : QgsSymbolV2( Fill, layers )
 {
   if ( mLayers.isEmpty() )
@@ -1765,7 +1765,7 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
 
   if ( layerIdx != -1 )
   {
-    QgsSymbolLayerV2* symbolLayer = mLayers.value( layerIdx );
+    QgsSymbolLayer* symbolLayer = mLayers.value( layerIdx );
     if ( symbolLayer )
     {
       if ( symbolLayer->type() == Fill || symbolLayer->type() == Line )
@@ -1776,7 +1776,7 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
     return;
   }
 
-  Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* symbolLayer, mLayers )
   {
     if ( symbolLayer->type() == Fill || symbolLayer->type() == Line )
       renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
@@ -1785,7 +1785,7 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
   }
 }
 
-void QgsFillSymbolV2::renderPolygonUsingLayer( QgsSymbolLayerV2* layer, const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+void QgsFillSymbolV2::renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
 {
   QgsSymbolV2::SymbolType layertype = layer->type();
 
@@ -1865,7 +1865,7 @@ QgsFillSymbolV2* QgsFillSymbolV2::clone() const
 
 void QgsFillSymbolV2::setAngle( double angle )
 {
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     if ( layer->type() != QgsSymbolV2::Fill )
       continue;

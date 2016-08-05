@@ -27,7 +27,7 @@
 
 class QgsMapLayer;
 class QgsPoint;
-class QgsSymbolLayerV2;
+class QgsSymbolLayer;
 class QIODevice;
 class QgsPalLayerSettings;
 
@@ -400,8 +400,8 @@ class CORE_EXPORT QgsDxfExport
     int mNextHandleId;
     int mBlockCounter;
 
-    QHash< const QgsSymbolLayerV2*, QString > mLineStyles; //symbol layer name types
-    QHash< const QgsSymbolLayerV2*, QString > mPointSymbolBlocks; //reference to point symbol blocks
+    QHash< const QgsSymbolLayer*, QString > mLineStyles; //symbol layer name types
+    QHash< const QgsSymbolLayer*, QString > mPointSymbolBlocks; //reference to point symbol blocks
 
     //AC1009
     void writeHeader( const QString& codepage );
@@ -414,18 +414,18 @@ class CORE_EXPORT QgsDxfExport
     void startSection();
     void endSection();
 
-    void writePoint( const QgsPointV2 &pt, const QString &layer, const QColor& color, QgsSymbolV2RenderContext &ctx, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol, double angle );
+    void writePoint( const QgsPointV2 &pt, const QString &layer, const QColor& color, QgsSymbolV2RenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbolV2 *symbol, double angle );
     void writeDefaultLinetypes();
-    void writeSymbolLayerLinetype( const QgsSymbolLayerV2 *symbolLayer );
+    void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );
 
     QgsRectangle dxfExtent() const;
 
-    void addFeature( QgsSymbolV2RenderContext &ctx, const QString &layer, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol );
+    void addFeature( QgsSymbolV2RenderContext &ctx, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbolV2 *symbol );
 
     //returns dxf palette index from symbol layer color
-    static QColor colorFromSymbolLayer( const QgsSymbolLayerV2 *symbolLayer, QgsSymbolV2RenderContext &ctx );
-    QString lineStyleFromSymbolLayer( const QgsSymbolLayerV2 *symbolLayer );
+    static QColor colorFromSymbolLayer( const QgsSymbolLayer *symbolLayer, QgsSymbolV2RenderContext &ctx );
+    QString lineStyleFromSymbolLayer( const QgsSymbolLayer *symbolLayer );
 
     //functions for dxf palette
     static int color_distance( QRgb p1, int index );
@@ -434,9 +434,9 @@ class CORE_EXPORT QgsDxfExport
     //helper functions for symbology export
     QgsRenderContext renderContext() const;
 
-    QList< QPair< QgsSymbolLayerV2 *, QgsSymbolV2 * > > symbolLayers( QgsRenderContext& context );
-    static int nLineTypes( const QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> > &symbolLayers );
-    static bool hasDataDefinedProperties( const QgsSymbolLayerV2 *sl, const QgsSymbolV2 *symbol );
+    QList< QPair< QgsSymbolLayer *, QgsSymbolV2 * > > symbolLayers( QgsRenderContext& context );
+    static int nLineTypes( const QList< QPair< QgsSymbolLayer*, QgsSymbolV2*> > &symbolLayers );
+    static bool hasDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbolV2 *symbol );
     double dashSize() const;
     double dotSize() const;
     double dashSeparatorSize() const;

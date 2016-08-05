@@ -19,7 +19,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgsstylev2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 QgsComposerPolylineWidget::QgsComposerPolylineWidget( QgsComposerPolyline* composerPolyline ):
     QgsComposerItemBaseWidget( nullptr, composerPolyline )
@@ -78,7 +78,7 @@ void QgsComposerPolylineWidget::updatePolylineStyle()
 {
   if ( mComposerPolyline )
   {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerPolyline->polylineStyleSymbol(), mLineStyleButton->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mComposerPolyline->polylineStyleSymbol(), mLineStyleButton->iconSize() );
     mLineStyleButton->setIcon( icon );
   }
 }

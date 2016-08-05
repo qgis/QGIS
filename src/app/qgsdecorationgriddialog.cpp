@@ -92,7 +92,7 @@ void QgsDecorationGridDialog::updateGuiElements()
   if ( mDeco.lineSymbol() )
   {
     mLineSymbol = static_cast<QgsLineSymbolV2*>( mDeco.lineSymbol()->clone() );
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
     mLineSymbolButton->setIcon( icon );
   }
   if ( mMarkerSymbol )
@@ -100,7 +100,7 @@ void QgsDecorationGridDialog::updateGuiElements()
   if ( mDeco.markerSymbol() )
   {
     mMarkerSymbol = static_cast<QgsMarkerSymbolV2*>( mDeco.markerSymbol()->clone() );
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
     mMarkerSymbolButton->setIcon( icon );
   }
 
@@ -225,7 +225,7 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
     mLineSymbol = lineSymbol;
     if ( mLineSymbol )
     {
-      QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
+      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
       mLineSymbolButton->setIcon( icon );
     }
   }
@@ -248,7 +248,7 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
     mMarkerSymbol = markerSymbol;
     if ( mMarkerSymbol )
     {
-      QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
+      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
       mMarkerSymbolButton->setIcon( icon );
     }
   }

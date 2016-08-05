@@ -21,7 +21,7 @@
 #include "qgsfield.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2selectordialog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgisgui.h"
 
@@ -389,7 +389,7 @@ void QgsPointDisplacementRendererWidget::updateCenterIcon()
   {
     return;
   }
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, mCenterSymbolPushButton->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, mCenterSymbolPushButton->iconSize() );
   mCenterSymbolPushButton->setIcon( icon );
 }
 

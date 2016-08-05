@@ -16,7 +16,7 @@
 #ifndef QGSARROWSYMBOLLAYERV2_H
 #define QGSARROWSYMBOLLAYERV2_H
 
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 
 
 /** \ingroup core
@@ -38,7 +38,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
      *
      * @return A new QgsArrowSymbolLayer
      */
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
 
     /** Virtual constructor */
     virtual QgsArrowSymbolLayer* clone() const override;

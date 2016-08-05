@@ -28,7 +28,7 @@
 #include "qgsgloweffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
@@ -337,7 +337,7 @@ void TestQgsPaintEffect::drawSource()
 
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &painter );
+  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
 
   effect = new QgsDrawSourceEffect();
   effect->render( *mPicture, context );
@@ -411,7 +411,7 @@ void TestQgsPaintEffect::blur()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &painter );
+  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
 
   effect = new QgsBlurEffect();
   effect->render( *mPicture, context );
@@ -509,7 +509,7 @@ void TestQgsPaintEffect::dropShadow()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &painter );
+  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
 
   effect = new QgsDropShadowEffect();
   effect->render( *mPicture, context );
@@ -612,7 +612,7 @@ void TestQgsPaintEffect::glow()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &painter );
+  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
 
   effect = new QgsOuterGlowEffect();
   effect->setSpread( 20 );
@@ -674,7 +674,7 @@ void TestQgsPaintEffect::stack()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &painter );
+  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
 
   effect = new QgsEffectStack();
   QgsBlurEffect* blur = new QgsBlurEffect();

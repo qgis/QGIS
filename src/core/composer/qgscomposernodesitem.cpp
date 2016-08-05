@@ -17,7 +17,7 @@
 #include "qgscomposernodesitem.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgssymbolv2.h"
 #include "qgsmapsettings.h"
 #include <limits>

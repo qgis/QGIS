@@ -45,7 +45,7 @@
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
 #include "qgscolorschemeregistry.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmapoverviewcanvas.h"
@@ -1702,7 +1702,7 @@ void QgsProjectProperties::populateStyles()
     }
     if ( cbo )
     {
-      QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, cbo->iconSize() );
+      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, cbo->iconSize() );
       cbo->addItem( icon, name );
     }
     delete symbol;
@@ -1714,7 +1714,7 @@ void QgsProjectProperties::populateStyles()
   {
     QString name = colorRamps[i];
     QgsVectorColorRampV2* ramp = mStyle->colorRamp( name );
-    QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, cboStyleColorRamp->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, cboStyleColorRamp->iconSize() );
     cboStyleColorRamp->addItem( icon, name );
     delete ramp;
   }
@@ -1805,7 +1805,7 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
   mStyle->addSymbol( symbolName, symbol );
 
   // update icon
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, cbo->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, cbo->iconSize() );
   cbo->setItemIcon( cbo->currentIndex(), icon );
 }
 
@@ -2027,7 +2027,7 @@ void QgsProjectProperties::on_mButtonAddColor_clicked()
   }
   activateWindow();
 
-  mTreeProjectColors->addColor( newColor, QgsSymbolLayerV2Utils::colorToName( newColor ) );
+  mTreeProjectColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
 }
 
 void QgsProjectProperties::on_mButtonImportColors_clicked()

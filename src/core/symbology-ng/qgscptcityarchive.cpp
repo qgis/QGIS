@@ -37,7 +37,7 @@
 #include "qgsconfig.h"
 #include "qgsmimedatautils.h"
 #include "qgsapplication.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 QString QgsCptCityArchive::mDefaultArchiveName;
 QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::mArchiveRegistry;
@@ -381,7 +381,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
         offset = offsetStr.toDouble();
 
       // QColor color( 255, 0, 0 ); // red color as a warning :)
-      QColor color = QgsSymbolLayerV2Utils::parseColor( colorStr );
+      QColor color = QgsSymbolLayerUtils::parseColor( colorStr );
       if ( color != QColor() )
       {
         int alpha = opacityStr.toDouble() * 255; // test
@@ -823,7 +823,7 @@ QIcon QgsCptCityColorRampItem::icon( QSize size )
 
   if ( mValid && mRamp.count() > 0 )
   {
-    icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( &mRamp, size );
+    icon = QgsSymbolLayerUtils::colorRampPreviewIcon( &mRamp, size );
   }
   else
   {

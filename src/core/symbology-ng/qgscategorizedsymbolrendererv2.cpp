@@ -17,7 +17,7 @@
 #include "qgscategorizedsymbolrendererv2.h"
 
 #include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
@@ -25,7 +25,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgsscaleexpression.h"
 #include "qgsdatadefined.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
@@ -139,7 +139,7 @@ void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsS
   QString filterFunc = QString( "%1 = '%2'" )
                        .arg( attrName.replace( '\"', "\"\"" ),
                              mValue.toString().replace( '\'', "''" ) );
-  QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, filterFunc );
+  QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc );
 
   mSymbol->toSld( doc, ruleElem, props );
 }
@@ -627,7 +627,7 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
   if ( catsElem.isNull() )
     return nullptr;
 
-  QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
+  QgsSymbolV2Map symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
   QgsCategoryList cats;
 
   QDomElement catElem = catsElem.firstChildElement();
@@ -653,25 +653,25 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
   QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( attrName, cats );
 
   // delete symbols if there are any more
-  QgsSymbolLayerV2Utils::clearSymbolMap( symbolMap );
+  QgsSymbolLayerUtils::clearSymbolMap( symbolMap );
 
   // try to load source symbol (optional)
   QDomElement sourceSymbolElem = element.firstChildElement( "source-symbol" );
   if ( !sourceSymbolElem.isNull() )
   {
-    QgsSymbolV2Map sourceSymbolMap = QgsSymbolLayerV2Utils::loadSymbols( sourceSymbolElem );
+    QgsSymbolV2Map sourceSymbolMap = QgsSymbolLayerUtils::loadSymbols( sourceSymbolElem );
     if ( sourceSymbolMap.contains( "0" ) )
     {
       r->setSourceSymbol( sourceSymbolMap.take( "0" ) );
     }
-    QgsSymbolLayerV2Utils::clearSymbolMap( sourceSymbolMap );
+    QgsSymbolLayerUtils::clearSymbolMap( sourceSymbolMap );
   }
 
   // try to load color ramp (optional)
   QDomElement sourceColorRampElem = element.firstChildElement( "colorramp" );
   if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( "name" ) == "[source]" )
   {
-    r->setSourceColorRamp( QgsSymbolLayerV2Utils::loadColorRamp( sourceColorRampElem ) );
+    r->setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
     QDomElement invertedColorRampElem = element.firstChildElement( "invertedcolorramp" );
     if ( !invertedColorRampElem.isNull() )
       r->setInvertedColorRamp( invertedColorRampElem.attribute( "value" ) == "1" );
@@ -696,13 +696,13 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
     Q_FOREACH ( const QgsRendererCategoryV2& cat, r->mCategories )
     {
       convertSymbolSizeScale( cat.symbol(),
-                              QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                              QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
                               sizeScaleElem.attribute( "field" ) );
     }
     if ( r->mSourceSymbol.data() && r->mSourceSymbol->type() == QgsSymbolV2::Marker )
     {
       convertSymbolSizeScale( r->mSourceSymbol.data(),
-                              QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                              QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
                               sizeScaleElem.attribute( "field" ) );
     }
   }
@@ -743,7 +743,7 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
     rendererElem.appendChild( catsElem );
 
     // save symbols
-    QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( symbols, "symbols", doc );
+    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, "symbols", doc );
     rendererElem.appendChild( symbolsElem );
 
   }
@@ -753,14 +753,14 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
   {
     QgsSymbolV2Map sourceSymbols;
     sourceSymbols.insert( "0", mSourceSymbol.data() );
-    QDomElement sourceSymbolElem = QgsSymbolLayerV2Utils::saveSymbols( sourceSymbols, "source-symbol", doc );
+    QDomElement sourceSymbolElem = QgsSymbolLayerUtils::saveSymbols( sourceSymbols, "source-symbol", doc );
     rendererElem.appendChild( sourceSymbolElem );
   }
 
   // save source color ramp
   if ( mSourceColorRamp.data() )
   {
-    QDomElement colorRampElem = QgsSymbolLayerV2Utils::saveColorRamp( "[source]", mSourceColorRamp.data(), doc );
+    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( "[source]", mSourceColorRamp.data(), doc );
     rendererElem.appendChild( colorRampElem );
     QDomElement invertedElem = doc.createElement( "invertedcolorramp" );
     invertedElem.setAttribute( "value", mInvertedColorRamp );
@@ -769,13 +769,13 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
 
   QDomElement rotationElem = doc.createElement( "rotation" );
   if ( mRotation.data() )
-    rotationElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) );
+    rotationElem.setAttribute( "field", QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mRotation.data() ) );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
-    sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
-  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
+    sizeScaleElem.setAttribute( "field", QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
+  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerUtils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
@@ -800,7 +800,7 @@ QgsLegendSymbologyList QgsCategorizedSymbolRendererV2::legendSymbologyItems( QSi
   for ( int i = 0; i < count; i++ )
   {
     const QgsRendererCategoryV2& cat = categories()[i];
-    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( cat.symbol(), iconSize );
+    QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( cat.symbol(), iconSize );
     lst << qMakePair( cat.label(), pix );
   }
   return lst;
@@ -852,7 +852,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRendererV2::legendSymbolItemsV2() cons
     {
       QgsLegendSymbolItemV2 title( nullptr, exp.baseExpression(), "" );
       lst << title;
-      Q_FOREACH ( double v, QgsSymbolLayerV2Utils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
+      Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
       {
         QgsLegendSymbolItemV2 si( mSourceSymbol.data(), QString::number( v ), "" );
         QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
@@ -957,12 +957,12 @@ QString QgsCategorizedSymbolRendererV2::rotationField() const
 
 void QgsCategorizedSymbolRendererV2::setSizeScaleField( const QString& fieldOrExpression )
 {
-  mSizeScale.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+  mSizeScale.reset( QgsSymbolLayerUtils::fieldOrExpressionToExpression( fieldOrExpression ) );
 }
 
 QString QgsCategorizedSymbolRendererV2::sizeScaleField() const
 {
-  return mSizeScale.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
+  return mSizeScale.data() ? QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
 }
 
 void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )

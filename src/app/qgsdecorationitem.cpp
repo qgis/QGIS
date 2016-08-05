@@ -25,7 +25,7 @@
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-#include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
+#include "qgssymbollayerutils.h" //for pointOnLineWithDistance
 #include "qgsunittypes.h"
 
 #include <QPainter>

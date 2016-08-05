@@ -312,9 +312,9 @@
 %Include symbology-ng/qgsgeometrygeneratorsymbollayerv2.sip
 %Include symbology-ng/qgslinesymbollayerv2.sip
 %Include symbology-ng/qgsmarkersymbollayerv2.sip
-%Include symbology-ng/qgssymbollayerv2.sip
-%Include symbology-ng/qgssymbollayerv2registry.sip
-%Include symbology-ng/qgssymbollayerv2utils.sip
+%Include symbology-ng/qgssymbollayer.sip
+%Include symbology-ng/qgssymbollayerregistry.sip
+%Include symbology-ng/qgssymbollayerutils.sip
 %Include symbology-ng/qgsvectorfieldsymbollayer.sip
 %Include symbology-ng/qgsarrowsymbollayer.sip
 

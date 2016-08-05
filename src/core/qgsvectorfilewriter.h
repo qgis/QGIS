@@ -26,7 +26,7 @@
 #include <QPair>
 
 
-class QgsSymbolLayerV2;
+class QgsSymbolLayer;
 class QTextCodec;
 class QgsFeatureIterator;
 
@@ -381,7 +381,7 @@ class CORE_EXPORT QgsVectorFileWriter
     SymbologyExport mSymbologyExport;
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1700
-    QMap< QgsSymbolLayerV2*, QString > mSymbolLayerTable;
+    QMap< QgsSymbolLayer*, QString > mSymbolLayerTable;
 #endif
 
     /** Scale for symbology export (e.g. for symbols units in map units)*/

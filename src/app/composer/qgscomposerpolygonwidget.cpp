@@ -19,7 +19,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgsstylev2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon* composerPolygon ):
     QgsComposerItemBaseWidget( nullptr, composerPolygon )
@@ -88,7 +88,7 @@ void QgsComposerPolygonWidget::updatePolygonStyle()
 {
   if ( mComposerPolygon )
   {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerPolygon->polygonStyleSymbol(), mPolygonStyleButton->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mComposerPolygon->polygonStyleSymbol(), mPolygonStyleButton->iconSize() );
     mPolygonStyleButton->setIcon( icon );
   }
 }

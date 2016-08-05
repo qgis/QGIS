@@ -37,9 +37,9 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssinglesymbolrendererv2.cpp
   symbology-ng/qgsstylev2.cpp
   symbology-ng/qgssvgcache.cpp
-  symbology-ng/qgssymbollayerv2.cpp
-  symbology-ng/qgssymbollayerv2registry.cpp
-  symbology-ng/qgssymbollayerv2utils.cpp
+  symbology-ng/qgssymbollayer.cpp
+  symbology-ng/qgssymbollayerregistry.cpp
+  symbology-ng/qgssymbollayerutils.cpp
   symbology-ng/qgssymbologyv2conversion.cpp
   symbology-ng/qgssymbolv2.cpp
   symbology-ng/qgsvectorcolorrampv2.cpp
@@ -824,9 +824,9 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsheatmaprenderer.h
   symbology-ng/qgsinvertedpolygonrenderer.h
   symbology-ng/qgsnullsymbolrenderer.h
-  symbology-ng/qgssymbollayerv2.h
-  symbology-ng/qgssymbollayerv2registry.h
-  symbology-ng/qgssymbollayerv2utils.h
+  symbology-ng/qgssymbollayer.h
+  symbology-ng/qgssymbollayerregistry.h
+  symbology-ng/qgssymbollayerutils.h
   symbology-ng/qgssymbologyv2conversion.h
   symbology-ng/qgssymbolv2.h
   symbology-ng/qgsvectorcolorrampv2.h

@@ -23,7 +23,7 @@
 #include "qgsrendererv2.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsvectorlayer.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsgeometry.h"
 #include "qgscrscache.h"
 
@@ -92,7 +92,7 @@ bool QgsMapHitTest::symbolVisible( QgsSymbolV2* symbol, QgsVectorLayer* layer ) 
   if ( !symbol || !layer || !mHitTest.contains( layer ) )
     return false;
 
-  return mHitTest.value( layer ).contains( QgsSymbolLayerV2Utils::symbolProperties( symbol ) );
+  return mHitTest.value( layer ).contains( QgsSymbolLayerUtils::symbolProperties( symbol ) );
 }
 
 bool QgsMapHitTest::legendKeyVisible( const QString& ruleKey, QgsVectorLayer* layer ) const
@@ -182,14 +182,14 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
       Q_FOREACH ( QgsSymbolV2* s, r->originalSymbolsForFeature( f, context ) )
       {
         if ( s )
-          lUsedSymbols.insert( QgsSymbolLayerV2Utils::symbolProperties( s ) );
+          lUsedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
       }
     }
     else
     {
       QgsSymbolV2* s = r->originalSymbolForFeature( f, context );
       if ( s )
-        lUsedSymbols.insert( QgsSymbolLayerV2Utils::symbolProperties( s ) );
+        lUsedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
     }
   }
   r->stopRender( context );

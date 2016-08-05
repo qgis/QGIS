@@ -23,7 +23,7 @@ QgsGeometryGeneratorSymbolLayerV2::~QgsGeometryGeneratorSymbolLayerV2()
   delete mFillSymbol;
 }
 
-QgsSymbolLayerV2* QgsGeometryGeneratorSymbolLayerV2::create( const QgsStringMap& properties )
+QgsSymbolLayer* QgsGeometryGeneratorSymbolLayerV2::create( const QgsStringMap& properties )
 {
   QString expression = properties.value( "geometryModifier" );
   if ( expression.isEmpty() )
@@ -49,7 +49,7 @@ QgsSymbolLayerV2* QgsGeometryGeneratorSymbolLayerV2::create( const QgsStringMap&
 }
 
 QgsGeometryGeneratorSymbolLayerV2::QgsGeometryGeneratorSymbolLayerV2( const QString& expression )
-    : QgsSymbolLayerV2( QgsSymbolV2::Hybrid )
+    : QgsSymbolLayer( QgsSymbolV2::Hybrid )
     , mExpression( new QgsExpression( expression ) )
     , mFillSymbol( nullptr )
     , mLineSymbol( nullptr )
@@ -104,7 +104,7 @@ void QgsGeometryGeneratorSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& co
     mSymbol->stopRender( context.renderContext() );
 }
 
-QgsSymbolLayerV2* QgsGeometryGeneratorSymbolLayerV2::clone() const
+QgsSymbolLayer* QgsGeometryGeneratorSymbolLayerV2::clone() const
 {
   QgsGeometryGeneratorSymbolLayerV2* clone = new QgsGeometryGeneratorSymbolLayerV2( mExpression->expression() );
 

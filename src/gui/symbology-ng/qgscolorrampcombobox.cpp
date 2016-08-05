@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgscolorrampcombobox.h"
 
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsstylev2.h"
 #include "qgsstylev2managerdialog.h"
@@ -55,7 +55,7 @@ void QgsColorRampComboBox::populate( QgsStyleV2* style )
 
     if ( !mShowGradientOnly || ramp->type() == "gradient" )
     {
-      QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, rampIconSize );
+      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, rampIconSize );
 
       addItem( icon, *it );
     }
@@ -93,7 +93,7 @@ void QgsColorRampComboBox::setSourceColorRamp( QgsVectorColorRampV2* sourceRamp 
   delete mSourceColorRamp;
   mSourceColorRamp = sourceRamp->clone();
 
-  QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( mSourceColorRamp, rampIconSize );
+  QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( mSourceColorRamp, rampIconSize );
   if ( itemText( 0 ) == "[source]" )
     setItemIcon( 0, icon );
   else
@@ -121,7 +121,7 @@ void QgsColorRampComboBox::colorRampChanged( int index )
 
   // put newly added ramp into the combo
   QgsVectorColorRampV2* ramp = mStyle->colorRamp( rampName );
-  QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, rampIconSize );
+  QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, rampIconSize );
 
   blockSignals( true ); // avoid calling this method again!
   insertItem( index, icon, rampName );

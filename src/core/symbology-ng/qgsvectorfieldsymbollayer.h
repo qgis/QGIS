@@ -18,7 +18,7 @@
 #ifndef QGSVECTORFIELDSYMBOLLAYER_H
 #define QGSVECTORFIELDSYMBOLLAYER_H
 
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 
 /** \ingroup core
  * A symbol layer class for displaying displacement arrows based on point layer attributes*/
@@ -47,8 +47,8 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     QgsVectorFieldSymbolLayer();
     ~QgsVectorFieldSymbolLayer();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer* createFromSld( QDomElement &element );
 
     QString layerType() const override { return "VectorField"; }
 

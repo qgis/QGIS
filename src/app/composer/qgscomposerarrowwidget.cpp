@@ -334,6 +334,6 @@ void QgsComposerArrowWidget::updateLineSymbolMarker()
     return;
   }
 
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mArrow->lineSymbol(), mLineStyleButton->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mArrow->lineSymbol(), mLineStyleButton->iconSize() );
   mLineStyleButton->setIcon( icon );
 }

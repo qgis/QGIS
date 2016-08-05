@@ -16,17 +16,17 @@
 #ifndef QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
 #define QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
 
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 
 /** \ingroup core
  * \class QgsGeometryGeneratorSymbolLayerV2
  */
-class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
+class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayer
 {
   public:
     ~QgsGeometryGeneratorSymbolLayerV2();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties );
+    static QgsSymbolLayer* create( const QgsStringMap& properties );
 
     QString layerType() const override;
 
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
 
     void stopRender( QgsSymbolV2RenderContext& context ) override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsSymbolLayer* clone() const override;
 
     QgsStringMap properties() const override;
 

@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgsrulebasedrendererv2.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 #include "qgsexpression.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
@@ -399,7 +399,7 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
 
     if ( !props.value( "filter", "" ).isEmpty() )
     {
-      QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, props.value( "filter", "" ) );
+      QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, props.value( "filter", "" ) );
     }
 
     if ( !props.value( "scaleMinDenom", "" ).isEmpty() )
@@ -727,7 +727,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
 
   QString label, description, filterExp;
   int scaleMinDenom = 0, scaleMaxDenom = 0;
-  QgsSymbolLayerV2List layers;
+  QgsSymbolLayerList layers;
 
   // retrieve the Rule element child nodes
   QDomElement childElem = ruleElem.firstChildElement();
@@ -798,7 +798,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
     else if ( childElem.localName().endsWith( "Symbolizer" ) )
     {
       // create symbol layers for this symbolizer
-      QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( childElem, geomType, layers );
+      QgsSymbolLayerUtils::createSymbolLayerV2ListFromSld( childElem, geomType, layers );
     }
 
     childElem = childElem.nextSiblingElement();
@@ -1001,7 +1001,7 @@ QDomElement QgsRuleBasedRendererV2::save( QDomDocument& doc )
   rulesElem.setTagName( "rules" ); // instead of just "rule"
   rendererElem.appendChild( rulesElem );
 
-  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( symbols, "symbols", doc );
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, "symbols", doc );
   rendererElem.appendChild( symbolsElem );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
@@ -1025,7 +1025,7 @@ QgsLegendSymbologyList QgsRuleBasedRendererV2::legendSymbologyItems( QSize iconS
   for ( QgsLegendSymbolList::iterator it = items.begin(); it != items.end(); ++it )
   {
     QPair<QString, QgsSymbolV2*> pair = *it;
-    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( pair.second, iconSize );
+    QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( pair.second, iconSize );
     lst << qMakePair( pair.first, pix );
   }
   return lst;
@@ -1076,7 +1076,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
   if ( symbolsElem.isNull() )
     return nullptr;
 
-  QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
+  QgsSymbolV2Map symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
 
   QDomElement rulesElem = element.firstChildElement( "rules" );
 
@@ -1087,7 +1087,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
   QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( root );
 
   // delete symbols if there are any more
-  QgsSymbolLayerV2Utils::clearSymbolMap( symbolMap );
+  QgsSymbolLayerUtils::clearSymbolMap( symbolMap );
 
   return r;
 }

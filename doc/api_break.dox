@@ -18,6 +18,20 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 \section qgis_api_break_3_0 QGIS 3.0
 
+\subsection qgis_api_break_3_0_renamed_classes Renamed Classes
+
+<table>
+<caption id="renamed_classes">Renamed classes</caption>
+<tr><th>API 2.x<th>API 3.X   
+<tr><td>QgsColorButtonV2                 <tr><td>QgsColorButton   
+<tr><td>QgsSymbolLayerV2                 <tr><td>QgsSymbolLayer   
+<tr><td>QgsSymbolLayerV2AbstractMetadata <tr><td>QgsSymbolLayerAbstractMetadata  
+<tr><td>QgsSymbolLayerV2Metadata         <tr><td>QgsSymbolLayerMetadata   
+<tr><td>QgsSymbolLayerV2Registry         <tr><td>QgsSymbolLayerRegistry   
+<tr><td>QgsSymbolLayerV2Utils            <tr><td>QgsSymbolLayerUtils   
+<tr><td>QgsSymbolLayerV2Widget           <tr><td>QgsSymbolLayerWidget  
+</table>
+ 
 \subsection qgis_api_break_3_0_removed_classes Removed Classes
 
 <ul>
@@ -540,7 +554,7 @@ parameters or QgsSymbolV2::OutputUnitList parameters now take QgsUnitTypes::Rend
 <li>startRender() now accepts a QgsFields reference, not a pointer.</li>
 </ul>
 
-\subsection qgis_api_break_3_0_QgsSymbolLayerV2 QgsSymbolLayerV2
+\subsection qgis_api_break_3_0_QgsSymbolLayer QgsSymbolLayer (renamed from QgsSymbolLayerV2)
 
 <ul>
 <li>The deprecated prepareExpressions( const QgsFields* fields, double scale = -1.0 ) method has been removed. Use
@@ -554,7 +568,7 @@ the variant which takes QgsSymbolV2RenderContext instead.</li>
 <li>fields() now returns a QgsFields value, not a pointer.</li>
 </ul>
 
-\subsection qgis_api_break_3_0_QgsSymbolLayerV2Utils QgsSymbolLayerV2Utils
+\subsection qgis_api_break_3_0_QgsSymbolLayerUtils QgsSymbolLayerUtils (renamed from QgsSymbolLayerUtilsV2)
 
 <ul>
 <li>encodeOutputUnit() and decodeOutputUnit() were removed. QgsUnitTypes::encodeUnit() and QgsUnitTypes::decodeRenderUnit() should be used instead.</li>

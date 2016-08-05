@@ -22,7 +22,7 @@
 #include "qgssymbolv2.h"
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsscaleexpression.h"
 #include "qgsdatadefined.h"
 #include "qgsmapcanvas.h"
@@ -216,7 +216,7 @@ void QgsSizeScaleWidget::updatePreview()
   else
     exponentSpinBox->hide();
 
-  QList<double> breaks = QgsSymbolLayerV2Utils::prettyBreaks( expr->minValue(), expr->maxValue(), 4 );
+  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( expr->minValue(), expr->maxValue(), 4 );
 
   treeView->setIconSize( QSize( 512, 512 ) );
   mPreviewList.clear();

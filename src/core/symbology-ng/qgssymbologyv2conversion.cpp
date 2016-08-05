@@ -151,7 +151,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QgsWkbTypes::Geometry
         QString name = symbolName.mid( 4 );
         sl = new QgsSvgMarkerSymbolLayerV2( name, size, angle );
       }
-      QgsSymbolLayerV2List layers;
+      QgsSymbolLayerList layers;
       layers.append( sl );
       return new QgsMarkerSymbolV2( layers );
     }
@@ -163,7 +163,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QgsWkbTypes::Geometry
       Qt::PenStyle penStyle = readOutlineStyle( synode );
       QgsLineSymbolLayerV2* sl = new QgsSimpleLineSymbolLayerV2( color, width, penStyle );
 
-      QgsSymbolLayerV2List layers;
+      QgsSymbolLayerList layers;
       layers.append( sl );
       return new QgsLineSymbolV2( layers );
     }
@@ -177,7 +177,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QgsWkbTypes::Geometry
       double borderWidth = readOutlineWidth( synode );
       QgsFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, brushStyle, borderColor, borderStyle, borderWidth );
 
-      QgsSymbolLayerV2List layers;
+      QgsSymbolLayerList layers;
       layers.append( sl );
       return new QgsFillSymbolV2( layers );
     }

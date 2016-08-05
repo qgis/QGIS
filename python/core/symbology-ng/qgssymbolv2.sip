@@ -1,5 +1,5 @@
 
-typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
+typedef QList<QgsSymbolLayer*> QgsSymbolLayerList;
 
 class QgsSymbolV2
 {
@@ -60,7 +60,7 @@ class QgsSymbolV2
      * @see symbolLayer
      * @see symbolLayerCount
      */
-    QgsSymbolLayerV2List symbolLayers();
+    QgsSymbolLayerList symbolLayers();
 
     /** Returns a specific symbol layers contained in the symbol.
      * @param layer layer number
@@ -69,7 +69,7 @@ class QgsSymbolV2
      * @see symbolLayers
      * @see symbolLayerCount
      */
-    QgsSymbolLayerV2* symbolLayer( int layer );
+    QgsSymbolLayer* symbolLayer( int layer );
 
     /** Returns total number of symbol layers contained in the symbol.
      * @returns count of symbol layers
@@ -86,7 +86,7 @@ class QgsSymbolV2
      * @param layer The symbol layer to add
      * @return True if the layer is added, False if the index or the layer is bad
      */
-    bool insertSymbolLayer( int index, QgsSymbolLayerV2* layer /Transfer/ );
+    bool insertSymbolLayer( int index, QgsSymbolLayer* layer /Transfer/ );
 
     /**
      * Append symbol layer at the end of the list
@@ -94,7 +94,7 @@ class QgsSymbolV2
      * @param layer The layer to add
      * @return True if the layer is added, False if the layer is bad
      */
-    bool appendSymbolLayer( QgsSymbolLayerV2* layer /Transfer/ );
+    bool appendSymbolLayer( QgsSymbolLayer* layer /Transfer/ );
 
     //! delete symbol layer at specified index
     bool deleteSymbolLayer( int index );
@@ -105,10 +105,10 @@ class QgsSymbolV2
      * @param index The index of the layer to remove
      * @return A pointer to the removed layer
      */
-    QgsSymbolLayerV2* takeSymbolLayer( int index ) /TransferBack/;
+    QgsSymbolLayer* takeSymbolLayer( int index ) /TransferBack/;
 
     //! delete layer at specified index and set a new one
-    bool changeSymbolLayer( int index, QgsSymbolLayerV2 *layer /Transfer/ );
+    bool changeSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
 
     /** Begins the rendering process for the symbol. This must be called before renderFeature(),
      * and should be followed by a call to stopRender().
@@ -232,7 +232,7 @@ class QgsSymbolV2
     QgsSymbolV2RenderContext* symbolRenderContext();
 
   protected:
-    QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers /Transfer/ ); // can't be instantiated
+    QgsSymbolV2( SymbolType type, const QgsSymbolLayerList& layers /Transfer/ ); // can't be instantiated
 
     /**
      * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
@@ -261,7 +261,7 @@ class QgsSymbolV2
      * Retrieve a cloned list of all layers that make up this symbol.
      * Ownership is transferred to the caller.
      */
-    QgsSymbolLayerV2List cloneLayers() const /Factory/;
+    QgsSymbolLayerList cloneLayers() const /Factory/;
 
     /**
      * Renders a context using a particular symbol layer without passing in a
@@ -272,11 +272,11 @@ class QgsSymbolV2
      * This is required for layers that generate their own geometry from other
      * information in the rendering context.
      */
-    void renderUsingLayer( QgsSymbolLayerV2* layer, QgsSymbolV2RenderContext& context );
+    void renderUsingLayer( QgsSymbolLayer* layer, QgsSymbolV2RenderContext& context );
 
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
-    //! @deprecated since 2.14, use QgsSymbolLayerV2::isCompatibleWithSymbol instead
+    //! @deprecated since 2.14, use QgsSymbolLayer::isCompatibleWithSymbol instead
     bool isSymbolLayerCompatible( SymbolType layerType );
 
     //! Render editing vertex marker at specified point
@@ -412,7 +412,7 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
      */
     static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
-    QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers /Transfer/ = QgsSymbolLayerV2List() );
+    QgsMarkerSymbolV2( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
 
     /** Sets the angle for the whole symbol. Individual symbol layer sizes
      * will be rotated to maintain their current relative angle to the whole symbol angle.
@@ -555,7 +555,7 @@ class QgsLineSymbolV2 : QgsSymbolV2
      */
     static QgsLineSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
-    QgsLineSymbolV2( const QgsSymbolLayerV2List& layers /Transfer/ = QgsSymbolLayerV2List() );
+    QgsLineSymbolV2( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
 
     void setWidth( double width );
     double width() const;
@@ -594,7 +594,7 @@ class QgsFillSymbolV2 : QgsSymbolV2
      */
     static QgsFillSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
-    QgsFillSymbolV2( const QgsSymbolLayerV2List& layers /Transfer/ = QgsSymbolLayerV2List() );
+    QgsFillSymbolV2( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 

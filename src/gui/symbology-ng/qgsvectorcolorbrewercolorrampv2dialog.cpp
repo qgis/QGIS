@@ -16,7 +16,7 @@
 #include "qgsvectorcolorbrewercolorrampv2dialog.h"
 
 #include "qgsvectorcolorrampv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include <QAbstractButton>
 
 #if 0 // unused
@@ -46,7 +46,7 @@ QgsVectorColorBrewerColorRampV2Dialog::QgsVectorColorBrewerColorRampV2Dialog( Qg
   {
     // create a preview icon using five color variant
     QgsVectorColorBrewerColorRampV2* r = new QgsVectorColorBrewerColorRampV2( schemeName, 5 );
-    QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( r, iconSize );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( r, iconSize );
     delete r;
     cboSchemeName->addItem( icon, schemeName );
   }
@@ -86,7 +86,7 @@ void QgsVectorColorBrewerColorRampV2Dialog::populateVariants()
 void QgsVectorColorBrewerColorRampV2Dialog::updatePreview()
 {
   QSize size( 300, 40 );
-  lblPreview->setPixmap( QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size ) );
+  lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size ) );
 }
 
 void QgsVectorColorBrewerColorRampV2Dialog::setSchemeName()

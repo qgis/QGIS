@@ -292,7 +292,7 @@ void TestQgsSymbolV2::testParseColor()
   {
     QgsDebugMsg( "color string: " +  i.key() );
     bool hasAlpha = false;
-    QColor result = QgsSymbolLayerV2Utils::parseColorWithAlpha( i.key(), hasAlpha );
+    QColor result = QgsSymbolLayerUtils::parseColorWithAlpha( i.key(), hasAlpha );
     QVERIFY( result == i.value().first );
     QVERIFY( hasAlpha == i.value().second );
     ++i;
@@ -372,7 +372,7 @@ void TestQgsSymbolV2::testParseColorList()
   while ( i != colorTests.constEnd() )
   {
     QgsDebugMsg( "color list string: " +  i.key() );
-    QList< QColor > result = QgsSymbolLayerV2Utils::parseColorList( i.key() );
+    QList< QColor > result = QgsSymbolLayerUtils::parseColorList( i.key() );
     if ( i.value().isValid() )
     {
       QCOMPARE( result.length(), 1 );
@@ -410,7 +410,7 @@ void TestQgsSymbolV2::testParseColorList()
   while ( it != colorListTests.constEnd() )
   {
     QgsDebugMsg( "color list string: " + ( *it ).first );
-    QList< QColor > result = QgsSymbolLayerV2Utils::parseColorList(( *it ).first );
+    QList< QColor > result = QgsSymbolLayerUtils::parseColorList(( *it ).first );
     if (( *it ).second.length() > 0 )
     {
       QCOMPARE( result.length(), ( *it ).second.length() );
@@ -432,7 +432,7 @@ void TestQgsSymbolV2::testParseColorList()
 
 void TestQgsSymbolV2::symbolProperties()
 {
-  //test QgsSymbolLayerV2Utils::symbolProperties
+  //test QgsSymbolLayerUtils::symbolProperties
 
   //make a symbol
   QgsSimpleFillSymbolLayerV2* fill = new QgsSimpleFillSymbolLayerV2();
@@ -443,13 +443,13 @@ void TestQgsSymbolV2::symbolProperties()
   QgsFillSymbolV2* fillSymbol2 = static_cast< QgsFillSymbolV2* >( fillSymbol->clone() );
 
   //test that two different symbol pointers return same properties
-  QCOMPARE( QgsSymbolLayerV2Utils::symbolProperties( fillSymbol ),
-            QgsSymbolLayerV2Utils::symbolProperties( fillSymbol2 ) );
+  QCOMPARE( QgsSymbolLayerUtils::symbolProperties( fillSymbol ),
+            QgsSymbolLayerUtils::symbolProperties( fillSymbol2 ) );
 
   //modify one of the symbols
   fillSymbol2->symbolLayer( 0 )->setColor( QColor( 235, 135, 35 ) );
-  QVERIFY( QgsSymbolLayerV2Utils::symbolProperties( fillSymbol ) !=
-           QgsSymbolLayerV2Utils::symbolProperties( fillSymbol2 ) );
+  QVERIFY( QgsSymbolLayerUtils::symbolProperties( fillSymbol ) !=
+           QgsSymbolLayerUtils::symbolProperties( fillSymbol2 ) );
 
   delete fillSymbol;
   delete fillSymbol2;

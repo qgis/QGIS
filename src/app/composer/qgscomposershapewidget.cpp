@@ -21,7 +21,7 @@
 #include "qgscomposition.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2selectordialog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include <QColorDialog>
 
 QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( nullptr, composerShape ), mComposerShape( composerShape )
@@ -126,7 +126,7 @@ void QgsComposerShapeWidget::updateShapeStyle()
   if ( mComposerShape )
   {
     mComposerShape->refreshSymbol();
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerShape->shapeStyleSymbol(), mShapeStyleButton->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mComposerShape->shapeStyleSymbol(), mShapeStyleButton->iconSize() );
     mShapeStyleButton->setIcon( icon );
   }
 }
