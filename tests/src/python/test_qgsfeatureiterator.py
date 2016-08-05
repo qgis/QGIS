@@ -79,23 +79,20 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([7, 8, 12, 30]))]
         expectedIds = [7, 8, 12]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
-        assert ids == expectedIds, myMessage
+        self.assertEquals(set(ids), set(expectedIds))
 
         pointLayer.startEditing()
         self.addFeatures(pointLayer)
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([-4, 7, 8, 12, 30]))]
         expectedIds = [-4, 7, 8, 12]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
-        assert ids == expectedIds, myMessage
+        self.assertEquals(set(ids), set(expectedIds))
 
         pointLayer.rollBack()
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([-2, 7, 8, 12, 30]))]
         expectedIds = [7, 8, 12]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
-        assert ids == expectedIds, myMessage
+        self.assertEquals(set(ids), set(expectedIds))
 
     def addFeatures(self, vl):
         feat = QgsFeature()
