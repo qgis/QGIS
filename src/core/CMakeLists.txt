@@ -127,7 +127,7 @@ SET(QGIS_CORE_SRCS
   qgsinterval.cpp
   qgsjsonutils.cpp
   qgslabelfeature.cpp
-  qgslabelingenginev2.cpp
+  qgslabelingengine.cpp
   qgslabelsearchtree.cpp
   qgslayerdefinition.cpp
   qgslegacyhelpers.cpp
@@ -656,7 +656,7 @@ SET(QGIS_CORE_HDRS
   qgsjsonutils.h
   qgslayerdefinition.h
   qgslabelfeature.h
-  qgslabelingenginev2.h
+  qgslabelingengine.h
   qgslabelsearchtree.h
   qgslegacyhelpers.h
   qgslegendrenderer.h

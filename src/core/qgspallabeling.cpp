@@ -44,7 +44,7 @@
 #include "qgslabelsearchtree.h"
 #include "qgsexpression.h"
 #include "qgsdatadefined.h"
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 #include "qgsvectorlayerlabeling.h"
 
 #include <qgslogger.h>
@@ -2091,7 +2091,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 
 void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &context, QgsLabelFeature** labelFeature , QgsGeometry* obstacleGeometry )
 {
-  // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngineV2 (labelFeature is set)
+  // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngine (labelFeature is set)
   Q_ASSERT( labelFeature );
 
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
@@ -3877,7 +3877,7 @@ double QgsPalLayerSettings::scaleToPixelContext( double size, const QgsRenderCon
 // -------------
 
 QgsPalLabeling::QgsPalLabeling()
-    : mEngine( new QgsLabelingEngineV2() )
+    : mEngine( new QgsLabelingEngine() )
 {
 }
 
@@ -4176,7 +4176,7 @@ void QgsPalLabeling::init( const QgsMapSettings& mapSettings )
 void QgsPalLabeling::exit()
 {
   delete mEngine;
-  mEngine = new QgsLabelingEngineV2();
+  mEngine = new QgsLabelingEngine();
 }
 
 QgsPalLayerSettings& QgsPalLabeling::layer( const QString& layerName )
@@ -4545,62 +4545,62 @@ QgsPalLabeling::Search QgsPalLabeling::searchMethod() const
 
 bool QgsPalLabeling::isShowingCandidates() const
 {
-  return mEngine->testFlag( QgsLabelingEngineV2::DrawCandidates );
+  return mEngine->testFlag( QgsLabelingEngine::DrawCandidates );
 }
 
 void QgsPalLabeling::setShowingCandidates( bool showing )
 {
-  mEngine->setFlag( QgsLabelingEngineV2::DrawCandidates, showing );
+  mEngine->setFlag( QgsLabelingEngine::DrawCandidates, showing );
 }
 
 bool QgsPalLabeling::isShowingShadowRectangles() const
 {
-  return mEngine->testFlag( QgsLabelingEngineV2::DrawShadowRects );
+  return mEngine->testFlag( QgsLabelingEngine::DrawShadowRects );
 }
 
 void QgsPalLabeling::setShowingShadowRectangles( bool showing )
 {
-  mEngine->setFlag( QgsLabelingEngineV2::DrawShadowRects, showing );
+  mEngine->setFlag( QgsLabelingEngine::DrawShadowRects, showing );
 }
 
 bool QgsPalLabeling::isShowingAllLabels() const
 {
-  return mEngine->testFlag( QgsLabelingEngineV2::UseAllLabels );
+  return mEngine->testFlag( QgsLabelingEngine::UseAllLabels );
 }
 
 void QgsPalLabeling::setShowingAllLabels( bool showing )
 {
-  mEngine->setFlag( QgsLabelingEngineV2::UseAllLabels, showing );
+  mEngine->setFlag( QgsLabelingEngine::UseAllLabels, showing );
 }
 
 bool QgsPalLabeling::isShowingPartialsLabels() const
 {
-  return mEngine->testFlag( QgsLabelingEngineV2::UsePartialCandidates );
+  return mEngine->testFlag( QgsLabelingEngine::UsePartialCandidates );
 }
 
 void QgsPalLabeling::setShowingPartialsLabels( bool showing )
 {
-  mEngine->setFlag( QgsLabelingEngineV2::UsePartialCandidates, showing );
+  mEngine->setFlag( QgsLabelingEngine::UsePartialCandidates, showing );
 }
 
 bool QgsPalLabeling::isDrawingOutlineLabels() const
 {
-  return mEngine->testFlag( QgsLabelingEngineV2::RenderOutlineLabels );
+  return mEngine->testFlag( QgsLabelingEngine::RenderOutlineLabels );
 }
 
 void QgsPalLabeling::setDrawingOutlineLabels( bool outline )
 {
-  mEngine->setFlag( QgsLabelingEngineV2::RenderOutlineLabels, outline );
+  mEngine->setFlag( QgsLabelingEngine::RenderOutlineLabels, outline );
 }
 
 bool QgsPalLabeling::drawLabelRectOnly() const
 {
-  return mEngine->testFlag( QgsLabelingEngineV2::DrawLabelRectOnly );
+  return mEngine->testFlag( QgsLabelingEngine::DrawLabelRectOnly );
 }
 
 void QgsPalLabeling::setDrawLabelRectOnly( bool drawRect )
 {
-  mEngine->setFlag( QgsLabelingEngineV2::DrawLabelRectOnly, drawRect );
+  mEngine->setFlag( QgsLabelingEngine::DrawLabelRectOnly, drawRect );
 }
 
 void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform, QList<QgsLabelCandidate>* candidates )

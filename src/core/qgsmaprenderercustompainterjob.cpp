@@ -16,7 +16,7 @@
 #include "qgsmaprenderercustompainterjob.h"
 
 #include "qgsfeedback.h"
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerrenderer.h"
@@ -78,7 +78,7 @@ void QgsMapRendererCustomPainterJob::start()
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-    mLabelingEngineV2 = new QgsLabelingEngineV2();
+    mLabelingEngineV2 = new QgsLabelingEngine();
     mLabelingEngineV2->readSettingsFromProject();
     mLabelingEngineV2->setMapSettings( mSettings );
   }
@@ -274,7 +274,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 }
 
 
-void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsLabelingEngineV2* labelingEngine2, QPainter* painter )
+void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsLabelingEngine* labelingEngine2, QPainter* painter )
 {
   QgsDebugMsg( "Draw labeling start" );
 

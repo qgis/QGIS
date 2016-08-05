@@ -16,7 +16,7 @@
 #include "qgsmaprendererparalleljob.h"
 
 #include "qgsfeedback.h"
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
@@ -56,7 +56,7 @@ void QgsMapRendererParallelJob::start()
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-    mLabelingEngineV2 = new QgsLabelingEngineV2();
+    mLabelingEngineV2 = new QgsLabelingEngine();
     mLabelingEngineV2->readSettingsFromProject();
     mLabelingEngineV2->setMapSettings( mSettings );
   }

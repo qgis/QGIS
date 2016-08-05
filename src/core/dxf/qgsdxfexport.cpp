@@ -931,7 +931,7 @@ void QgsDxfExport::writeEntities()
   Q_NOWARN_DEPRECATED_POP
 
   // label engine
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.readSettingsFromProject();
   engine.setMapSettings( mapSettings );
 

@@ -168,7 +168,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 
 
 
-LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEngineV2* labelingEngine2 )
+LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEngine* labelingEngine2 )
 {
   LayerRenderJobs layerJobs;
 

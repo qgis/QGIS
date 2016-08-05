@@ -16,7 +16,7 @@
 #ifndef QGSVECTORLAYERLABELPROVIDER_H
 #define QGSVECTORLAYERLABELPROVIDER_H
 
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 #include "qgsrendererv2.h"
 
 class QgsAbstractFeatureSource;
@@ -29,7 +29,7 @@ class QgsSymbol;
  * custom properties or from the given settings.
  *
  * @note added in QGIS 2.12
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * @note not available in Python bindings
  */
 class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider

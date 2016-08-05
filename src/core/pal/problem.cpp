@@ -41,7 +41,7 @@
 #include <cfloat>
 #include <limits.h> //for INT_MAX
 
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 
 using namespace pal;
 

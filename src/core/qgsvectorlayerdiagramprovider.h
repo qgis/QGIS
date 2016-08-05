@@ -16,14 +16,14 @@
 #ifndef QGSVECTORLAYERDIAGRAMPROVIDER_H
 #define QGSVECTORLAYERDIAGRAMPROVIDER_H
 
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 #include "qgslabelfeature.h"
 #include "qgsdiagramrenderer.h"
 
 /** \ingroup core
  * Class that adds extra information to QgsLabelFeature for labeling of diagrams
  *
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * @note not available in Python bindings
  */
 class QgsDiagramLabelFeature : public QgsLabelFeature
@@ -51,7 +51,7 @@ class QgsAbstractFeatureSource;
  * the labeling engine. Parameters for the diagrams are taken from the layer settings.
  *
  * @note added in QGIS 2.12
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * @note not available in Python bindings
  */
 class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvider

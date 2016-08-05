@@ -19,7 +19,7 @@
 #include "qgspallabeling.h"
 #include <pal/feature.h>
 
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 
 /**
  * Class that adds extra information to QgsLabelFeature for text labels

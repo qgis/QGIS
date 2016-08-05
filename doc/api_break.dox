@@ -27,6 +27,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <tr><td>QgsDiagramRendererV2             <td>QgsDiagramRenderer
 <tr><td>QgsEllipseSymbolLayerV2          <td>QgsEllipseSymbolLayer
 <tr><td>QgsEllipseSymbolLayerV2Widget    <td>QgsEllipseSymbolLayerWidget
+<tr><td>QgsLabelingEngineV2              <td>QgsLabelingEngine
 <tr><td>QgsStyleV2                       <td>QgsStyle
 <tr><td>QgsStyleV2ExportImportDialog     <td>QgsStyleExportImportDialog
 <tr><td>QgsStyleV2GroupSelectionDialog   <td>QgsStyleGroupSelectionDialog
