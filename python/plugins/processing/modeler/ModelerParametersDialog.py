@@ -383,7 +383,10 @@ class ModelerParametersDialog(QDialog):
                 item.addItem(self.resolveValueDescription(n), n)
             item.setEditText(unicode(param.default))
         elif isinstance(param, ParameterCrs):
-            item = CrsSelectionPanel(param.default)
+            item = QComboBox()
+            values = self.getAvailableValuesOfType(ParameterCrs)
+            for v in values:
+                item.addItem(self.resolveValueDescription(v), v)
         elif isinstance(param, ParameterExtent):
             item = QComboBox()
             item.setEditable(True)
@@ -686,6 +689,15 @@ class ModelerParametersDialog(QDialog):
             alg.params[param.name] = value
         return True
 
+    def setParamCrsValue(self, alg, param, widget):
+        idx = widget.currentIndex()
+        if idx < 0:
+            return False
+        else:
+            value = widget.itemData(widget.currentIndex())
+            alg.params[param.name] = value
+            return True
+
     def setParamValue(self, alg, param, widget):
         if isinstance(param, (ParameterRaster, ParameterVector,
                               ParameterTable)):
@@ -714,11 +726,7 @@ class ModelerParametersDialog(QDialog):
             alg.params[param.name] = widget.getValue()
             return True
         elif isinstance(param, ParameterCrs):
-            authid = widget.getValue()
-            if authid is None and not param.optional:
-                return False
-            alg.params[param.name] = authid
-            return True
+            return self.setParamCrsValue(alg, param, widget)
         elif isinstance(param, ParameterFixedTable):
             table = widget.table
             if not bool(table) and not param.optional:

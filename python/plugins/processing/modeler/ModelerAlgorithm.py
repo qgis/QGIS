@@ -51,6 +51,7 @@ from processing.core.parameters import (getParameterFromString,
                                         ParameterString,
                                         ParameterNumber,
                                         ParameterExtent,
+                                        ParameterCrs,
                                         ParameterDataObject,
                                         ParameterMultipleInput)
 from processing.tools import dataobjects

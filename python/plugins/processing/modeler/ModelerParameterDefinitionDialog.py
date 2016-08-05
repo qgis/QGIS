@@ -28,7 +28,15 @@ __revision__ = '$Format:%H$'
 import math
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QCheckBox, QDialogButtonBox, QMessageBox
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QVBoxLayout,
+                                 QHBoxLayout,
+                                 QLabel,
+                                 QLineEdit,
+                                 QComboBox,
+                                 QCheckBox,
+                                 QDialogButtonBox,
+                                 QMessageBox)
 
 from processing.core.parameters import (Parameter,
                                         ParameterBoolean,
@@ -42,7 +50,9 @@ from processing.core.parameters import (Parameter,
                                         ParameterExtent,
                                         ParameterFile,
                                         ParameterPoint,
+                                        ParameterCrs,
                                         ParameterTableMultipleField)
+from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 
 
 class ModelerParameterDefinitionDialog(QDialog):
@@ -58,6 +68,7 @@ class ModelerParameterDefinitionDialog(QDialog):
     PARAMETER_EXTENT = 'Extent'
     PARAMETER_FILE = 'File'
     PARAMETER_POINT = 'Point'
+    PARAMETER_CRS = 'CRS'
 
     # To add
     PARAMETER_MULTIPLE = 'Multiple input'
@@ -74,7 +85,8 @@ class ModelerParameterDefinitionDialog(QDialog):
         PARAMETER_TABLE_FIELD,
         PARAMETER_TABLE_MULTIPLE_FIELD,
         PARAMETER_VECTOR,
-        PARAMETER_POINT
+        PARAMETER_POINT,
+        PARAMETER_CRS
     ]
 
     def __init__(self, alg, paramType=None, param=None):
@@ -234,6 +246,14 @@ class ModelerParameterDefinitionDialog(QDialog):
                 self.defaultTextBox.setText(self.param.default)
             self.horizontalLayoutParent.addWidget(self.defaultTextBox)
             self.verticalLayout.addLayout(self.horizontalLayoutParent)
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or \
+                isinstance(self.param, ParameterCrs):
+            self.horizontalLayoutParent.addWidget(QLabel(self.tr('Default value')))
+            self.defaultTextBox = CrsSelectionPanel('EPSG:4326')
+            if self.param is not None:
+                self.defaultTextBox.setAuthId(self.param.default)
+            self.horizontalLayoutParent.addWidget(self.defaultTextBox)
+            self.verticalLayout.addLayout(self.horizontalLayoutParent)
 
         self.horizontalLayoutRequired.addWidget(QLabel(self.tr('Required')))
         self.yesNoCombo = QComboBox()
@@ -355,6 +375,9 @@ class ModelerParameterDefinitionDialog(QDialog):
                 isinstance(self.param, ParameterPoint):
             self.param = ParameterPoint(name, description,
                                         unicode(self.defaultTextBox.text()))
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or \
+                isinstance(self.param, ParameterCrs):
+            self.param = ParameterCrs(name, description, self.defaultTextBox.getValue(), self.yesNoCombo.currentIndex() == 1)
         self.param.optional = self.yesNoCombo.currentIndex() == 1
         self.close()
 
