@@ -393,12 +393,13 @@ class ProviderTestCase(object):
         feature = QgsFeature()
         feature.setValid(True)
         self.assertTrue(feature_it.nextFeature(feature))
-        self.assertEqual(feature.id(), fids[1])
+        self.assertIn(feature.id(), [fids[1], fids[3], fids[4]])
+        first_feature = feature
         self.assertTrue(feature.isValid())
         # rewind
         self.assertTrue(feature_it.rewind())
         self.assertTrue(feature_it.nextFeature(feature))
-        self.assertEqual(feature.id(), fids[1])
+        self.assertEqual(feature.id(), first_feature.id())
         self.assertTrue(feature.isValid())
         # grab all features
         self.assertTrue(feature_it.nextFeature(feature))
