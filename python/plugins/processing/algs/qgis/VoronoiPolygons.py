@@ -69,7 +69,7 @@ class VoronoiPolygons(GeoAlgorithm):
         buf = self.getParameterValue(self.BUFFER)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QgsWkbTypes.Polygon, layer.crs())
+            layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs())
 
         outFeat = QgsFeature()
         extent = layer.extent()

@@ -30,7 +30,7 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes, QgsWkbTypes
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -89,7 +89,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
-                layer.pendingFields().toList(),
+                layer.fields().toList(),
                 QgsWkbTypes.Polygon,
                 layer.crs())
 

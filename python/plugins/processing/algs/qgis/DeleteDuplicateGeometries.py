@@ -49,7 +49,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      layer.wkbType(), layer.crs())

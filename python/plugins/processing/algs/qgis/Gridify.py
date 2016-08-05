@@ -65,7 +65,7 @@ class Gridify(GeoAlgorithm):
                 self.tr('Invalid grid spacing: %s/%s' % (hSpacing, vSpacing)))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields(), layer.wkbType(), layer.crs())
+            layer.fields(), layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / len(features)

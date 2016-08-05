@@ -60,9 +60,8 @@ class Polygonize(GeoAlgorithm):
     def processAlgorithm(self, progress):
         vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
-        vprovider = vlayer.dataProvider()
         if self.getParameterValue(self.FIELDS):
-            fields = vprovider.fields()
+            fields = vlayer.fields()
         else:
             fields = QgsFields()
         if self.getParameterValue(self.GEOMETRY):

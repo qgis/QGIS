@@ -60,7 +60,7 @@ class PolygonsToLines(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QgsWkbTypes.LineString, layer.crs())
+            layer.fields().toList(), QgsWkbTypes.LineString, layer.crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

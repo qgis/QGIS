@@ -55,7 +55,7 @@ class TextToFloat(GeoAlgorithm):
         fieldName = self.getParameterValue(self.FIELD)
         idx = layer.fieldNameIndex(fieldName)
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
         fields[idx] = QgsField(fieldName, QVariant.Double, '', 24, 15)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,

@@ -75,7 +75,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
         segments = int(self.getParameterValue(self.SEGMENTS))
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+            self.OUTPUT).getVectorWriter(layer.fields().toList(),
                                          QgsWkbTypes.Polygon, layer.crs())
 
         buff.buffering(progress, writer, distance, None, False, layer,

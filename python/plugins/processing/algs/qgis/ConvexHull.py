@@ -78,7 +78,7 @@ class ConvexHull(GeoAlgorithm):
         f = QgsField('value', QVariant.String, '', 255)
         if useField:
             index = layer.fieldNameIndex(fieldName)
-            fType = layer.pendingFields()[index].type()
+            fType = layer.fields()[index].type()
             if fType in [QVariant.Int, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
                 f.setType(fType)
                 f.setLength(20)
@@ -97,7 +97,7 @@ class ConvexHull(GeoAlgorithm):
                   ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Polygon, layer.dataProvider().crs())
+            fields, QgsWkbTypes.Polygon, layer.crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

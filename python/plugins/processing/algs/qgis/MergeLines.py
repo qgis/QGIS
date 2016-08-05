@@ -59,12 +59,11 @@ class MergeLines(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
-        provider = layer.dataProvider()
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
                 layer.fields().toList(),
-                provider.wkbType(),
+                layer.wkbType(),
                 layer.crs())
 
         features = vector.features(layer)

@@ -72,7 +72,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         method = self.getParameterValue(self.METHOD)
 
         geometryType = layer.geometryType()
-        fields = layer.pendingFields()
+        fields = layer.fields()
 
         if geometryType == QgsWkbTypes.PolygonGeometry:
             areaName = vector.createUniqueFieldName('area', fields)
@@ -89,7 +89,7 @@ class ExportGeometryInfo(GeoAlgorithm):
             fields.append(QgsField(yName, QVariant.Double))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), layer.dataProvider().wkbType(), layer.crs())
+            fields.toList(), layer.wkbType(), layer.crs())
 
         ellips = None
         crs = None
