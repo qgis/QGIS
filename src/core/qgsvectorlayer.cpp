@@ -79,7 +79,7 @@
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsstylev2.h"
-#include "qgssymbologyv2conversion.h"
+#include "qgssymbologyconversion.h"
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"
 #include "qgsexpressioncontext.h"
@@ -1777,7 +1777,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     }
     else
     {
-      QgsFeatureRendererV2* r = QgsSymbologyV2Conversion::readOldRenderer( node, geometryType() );
+      QgsFeatureRendererV2* r = QgsSymbologyConversion::readOldRenderer( node, geometryType() );
       if ( !r )
         r = QgsFeatureRendererV2::defaultRenderer( geometryType() );
 

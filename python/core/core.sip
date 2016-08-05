@@ -318,7 +318,7 @@
 %Include symbology-ng/qgsvectorfieldsymbollayer.sip
 %Include symbology-ng/qgsarrowsymbollayer.sip
 
-%Include symbology-ng/qgssymbologyv2conversion.sip
+%Include symbology-ng/qgssymbologyconversion.sip
 
 %Include dxf/qgsdxfexport.sip
 

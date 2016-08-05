@@ -1,7 +1,7 @@
-class QgsSymbologyV2Conversion
+class QgsSymbologyConversion
 {
 %TypeHeaderCode
-#include <qgssymbologyv2conversion.h>
+#include <qgssymbologyconversion.h>
 %End
   public:
 

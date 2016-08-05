@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssymbologyv2conversion.cpp
+    qgssymbologyconversion.cpp
     ---------------------
     begin                : December 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgssymbologyv2conversion.h"
+#include "qgssymbologyconversion.h"
 
 #include "qgslogger.h"
 
@@ -91,14 +91,14 @@ static Qt::PenStyle readOutlineStyle( const QDomNode& synode )
 {
   QDomNode outlstnode = synode.namedItem( "outlinestyle" );
   QDomElement outlstelement = outlstnode.toElement();
-  return QgsSymbologyV2Conversion::qString2PenStyle( outlstelement.text() );
+  return QgsSymbologyConversion::qString2PenStyle( outlstelement.text() );
 }
 
 static Qt::BrushStyle readBrushStyle( const QDomNode& synode )
 {
   QDomNode fillpnode = synode.namedItem( "fillpattern" );
   QDomElement fillpelement = fillpnode.toElement();
-  return QgsSymbologyV2Conversion::qString2BrushStyle( fillpelement.text() );
+  return QgsSymbologyConversion::qString2BrushStyle( fillpelement.text() );
 }
 
 static QString readMarkerSymbolName( const QDomNode& synode )
@@ -282,7 +282,7 @@ static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, 
 
 
 
-QgsFeatureRendererV2* QgsSymbologyV2Conversion::readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType )
+QgsFeatureRendererV2* QgsSymbologyConversion::readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType )
 {
   QDomNode singlenode = layerNode.namedItem( "singlesymbol" );
   QDomNode graduatednode = layerNode.namedItem( "graduatedsymbol" );
@@ -352,7 +352,7 @@ UNSUPPORTED SYMBOL PROPERTY: texture
 
 
 
-QString QgsSymbologyV2Conversion::penStyle2QString( Qt::PenStyle penstyle )
+QString QgsSymbologyConversion::penStyle2QString( Qt::PenStyle penstyle )
 {
   if ( penstyle == Qt::NoPen )
   {
@@ -388,7 +388,7 @@ QString QgsSymbologyV2Conversion::penStyle2QString( Qt::PenStyle penstyle )
   }
 }
 
-Qt::PenStyle QgsSymbologyV2Conversion::qString2PenStyle( const QString& penString )
+Qt::PenStyle QgsSymbologyConversion::qString2PenStyle( const QString& penString )
 {
   if ( penString == "NoPen" )
   {
@@ -424,7 +424,7 @@ Qt::PenStyle QgsSymbologyV2Conversion::qString2PenStyle( const QString& penStrin
   }
 }
 
-QString QgsSymbologyV2Conversion::brushStyle2QString( Qt::BrushStyle brushstyle )
+QString QgsSymbologyConversion::brushStyle2QString( Qt::BrushStyle brushstyle )
 {
   if ( brushstyle == Qt::NoBrush )
   {
@@ -497,7 +497,7 @@ QString QgsSymbologyV2Conversion::brushStyle2QString( Qt::BrushStyle brushstyle 
   }
 }
 
-Qt::BrushStyle QgsSymbologyV2Conversion::qString2BrushStyle( const QString& brushString )
+Qt::BrushStyle QgsSymbologyConversion::qString2BrushStyle( const QString& brushString )
 {
   if ( brushString == "NoBrush" )
   {
