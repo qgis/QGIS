@@ -2617,7 +2617,7 @@ static QVariant fcnRound( const QVariantList& values, const QgsExpressionContext
   if ( values.length() == 1 )
   {
     double number = getIntValue( values.at( 0 ), parent );
-    return QVariant( qRound( number ) ).toInt();
+    return QVariant( qRound( number ) );
   }
 
   return QVariant();
