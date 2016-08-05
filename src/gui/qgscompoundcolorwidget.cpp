@@ -16,7 +16,7 @@
 #include "qgscompoundcolorwidget.h"
 #include "qgscolorscheme.h"
 #include "qgscolorschemeregistry.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgscursors.h"
 #include "qgsapplication.h"
 #include <QSettings>
@@ -314,7 +314,7 @@ void QgsCompoundColorWidget::importPalette()
   QgsNamedColorList importedColors;
   bool ok = false;
   QString paletteName;
-  importedColors = QgsSymbolLayerV2Utils::importColorsFromGpl( file, ok, paletteName );
+  importedColors = QgsSymbolLayerUtils::importColorsFromGpl( file, ok, paletteName );
   if ( !ok )
   {
     QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Palette file is not readable" ) );
@@ -839,7 +839,7 @@ void QgsCompoundColorWidget::on_mBlueRadio_toggled( bool checked )
 
 void QgsCompoundColorWidget::on_mAddColorToSchemeButton_clicked()
 {
-  mSchemeList->addColor( mColorPreview->color(), QgsSymbolLayerV2Utils::colorToName( mColorPreview->color() ) );
+  mSchemeList->addColor( mColorPreview->color(), QgsSymbolLayerUtils::colorToName( mColorPreview->color() ) );
 }
 
 void QgsCompoundColorWidget::updateActionsForCurrentScheme()

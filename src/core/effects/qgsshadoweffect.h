@@ -19,7 +19,7 @@
 
 #include "qgspainteffect.h"
 #include "qgis.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include <QPainter>
 
 /** \ingroup core

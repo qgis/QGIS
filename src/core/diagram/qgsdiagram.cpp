@@ -16,7 +16,7 @@
 #include "qgsdiagramrendererv2.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 
@@ -58,18 +58,18 @@ QgsExpression *QgsDiagram::getExpression( const QString &expression, const QgsEx
 
 void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
-  pen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( c, s.penWidth, s.lineSizeUnit, s.lineSizeScale ) );
+  pen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( c, s.penWidth, s.lineSizeUnit, s.lineSizeScale ) );
 }
 
 
 QSizeF QgsDiagram::sizePainterUnits( QSizeF size, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
-  return QSizeF( QgsSymbolLayerV2Utils::convertToPainterUnits( c, size.width(), s.sizeType, s.sizeScale ), QgsSymbolLayerV2Utils::convertToPainterUnits( c, size.height(), s.sizeType, s.sizeScale ) );
+  return QSizeF( QgsSymbolLayerUtils::convertToPainterUnits( c, size.width(), s.sizeType, s.sizeScale ), QgsSymbolLayerUtils::convertToPainterUnits( c, size.height(), s.sizeType, s.sizeScale ) );
 }
 
 float QgsDiagram::sizePainterUnits( float l, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
-  return QgsSymbolLayerV2Utils::convertToPainterUnits( c, l, s.sizeType, s.sizeScale );
+  return QgsSymbolLayerUtils::convertToPainterUnits( c, l, s.sizeType, s.sizeScale );
 }
 
 QFont QgsDiagram::scaledFont( const QgsDiagramSettings& s, const QgsRenderContext& c )

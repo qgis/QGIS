@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointmarkeritem.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapsettings.h"
 #include <QPainter>

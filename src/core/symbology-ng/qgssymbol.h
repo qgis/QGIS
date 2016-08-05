@@ -1,5 +1,5 @@
 /***************************************************************************
- qgssymbolv2.h
+ qgssymbol.h
  ---------------------
  begin                : November 2009
  copyright            : (C) 2009 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSYMBOLV2_H
-#define QGSSYMBOLV2_H
+#ifndef QGSSYMBOL_H
+#define QGSSYMBOL_H
 
 #include "qgis.h"
 #include <QList>
@@ -36,7 +36,7 @@ class QDomElement;
 //class
 
 class QgsFields;
-class QgsSymbolLayerV2;
+class QgsSymbolLayer;
 class QgsRenderContext;
 class QgsVectorLayer;
 class QgsPaintEffect;
@@ -44,15 +44,15 @@ class QgsMarkerSymbolLayerV2;
 class QgsLineSymbolLayerV2;
 class QgsFillSymbolLayerV2;
 class QgsDataDefined;
-class QgsSymbolV2RenderContext;
+class QgsSymbolRenderContext;
 class QgsFeatureRendererV2;
 
-typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
+typedef QList<QgsSymbolLayer*> QgsSymbolLayerList;
 
 /** \ingroup core
- * \class QgsSymbolV2
+ * \class QgsSymbol
  */
-class CORE_EXPORT QgsSymbolV2
+class CORE_EXPORT QgsSymbol
 {
     friend class QgsFeatureRendererV2;
 
@@ -84,10 +84,10 @@ class CORE_EXPORT QgsSymbolV2
       DataDefinedRotation = 2
     };
 
-    virtual ~QgsSymbolV2();
+    virtual ~QgsSymbol();
 
     //! return new default symbol for specified geometry type
-    static QgsSymbolV2* defaultSymbol( QgsWkbTypes::GeometryType geomType );
+    static QgsSymbol* defaultSymbol( QgsWkbTypes::GeometryType geomType );
 
     SymbolType type() const { return mType; }
 
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsSymbolV2
      * @see symbolLayer
      * @see symbolLayerCount
      */
-    QgsSymbolLayerV2List symbolLayers() { return mLayers; }
+    QgsSymbolLayerList symbolLayers() { return mLayers; }
 
     /** Returns a specific symbol layers contained in the symbol.
      * @param layer layer number
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsSymbolV2
      * @see symbolLayers
      * @see symbolLayerCount
      */
-    QgsSymbolLayerV2* symbolLayer( int layer );
+    QgsSymbolLayer* symbolLayer( int layer );
 
     /** Returns total number of symbol layers contained in the symbol.
      * @returns count of symbol layers
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsSymbolV2
      * @param layer The symbol layer to add
      * @return True if the layer is added, False if the index or the layer is bad
      */
-    bool insertSymbolLayer( int index, QgsSymbolLayerV2* layer );
+    bool insertSymbolLayer( int index, QgsSymbolLayer* layer );
 
     /**
      * Append symbol layer at the end of the list
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsSymbolV2
      * @param layer The layer to add
      * @return True if the layer is added, False if the layer is bad
      */
-    bool appendSymbolLayer( QgsSymbolLayerV2* layer );
+    bool appendSymbolLayer( QgsSymbolLayer* layer );
 
     //! delete symbol layer at specified index
     bool deleteSymbolLayer( int index );
@@ -144,10 +144,10 @@ class CORE_EXPORT QgsSymbolV2
      * @param index The index of the layer to remove
      * @return A pointer to the removed layer
      */
-    QgsSymbolLayerV2* takeSymbolLayer( int index );
+    QgsSymbolLayer* takeSymbolLayer( int index );
 
     //! delete layer at specified index and set a new one
-    bool changeSymbolLayer( int index, QgsSymbolLayerV2 *layer );
+    bool changeSymbolLayer( int index, QgsSymbolLayer *layer );
 
     /** Begins the rendering process for the symbol. This must be called before renderFeature(),
      * and should be followed by a call to stopRender().
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsSymbolV2
 
     QString dump() const;
 
-    virtual QgsSymbolV2* clone() const = 0;
+    virtual QgsSymbol* clone() const = 0;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
@@ -268,10 +268,10 @@ class CORE_EXPORT QgsSymbolV2
      *
      * @return The symbol render context
      */
-    QgsSymbolV2RenderContext* symbolRenderContext();
+    QgsSymbolRenderContext* symbolRenderContext();
 
   protected:
-    QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers ); // can't be instantiated
+    QgsSymbol( SymbolType type, const QgsSymbolLayerList& layers ); // can't be instantiated
 
     /**
      * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsSymbolV2
      * Retrieve a cloned list of all layers that make up this symbol.
      * Ownership is transferred to the caller.
      */
-    QgsSymbolLayerV2List cloneLayers() const;
+    QgsSymbolLayerList cloneLayers() const;
 
     /**
      * Renders a context using a particular symbol layer without passing in a
@@ -326,11 +326,11 @@ class CORE_EXPORT QgsSymbolV2
      * This is required for layers that generate their own geometry from other
      * information in the rendering context.
      */
-    void renderUsingLayer( QgsSymbolLayerV2* layer, QgsSymbolV2RenderContext& context );
+    void renderUsingLayer( QgsSymbolLayer* layer, QgsSymbolRenderContext& context );
 
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
-    //! @deprecated since 2.14, use QgsSymbolLayerV2::isCompatibleWithSymbol instead
+    //! @deprecated since 2.14, use QgsSymbolLayer::isCompatibleWithSymbol instead
     Q_DECL_DEPRECATED bool isSymbolLayerCompatible( SymbolType layerType );
 
     //! Render editing vertex marker at specified point
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsSymbolV2
     void renderVertexMarker( QPointF pt, QgsRenderContext& context, int currentVertexMarkerType, int currentVertexMarkerSize );
 
     SymbolType mType;
-    QgsSymbolLayerV2List mLayers;
+    QgsSymbolLayerList mLayers;
 
     /** Symbol opacity (in the range 0 - 1)*/
     qreal mAlpha;
@@ -350,22 +350,22 @@ class CORE_EXPORT QgsSymbolV2
 
   private:
     //! Initialized in startRender, destroyed in stopRender
-    QgsSymbolV2RenderContext* mSymbolRenderContext;
+    QgsSymbolRenderContext* mSymbolRenderContext;
 
-    Q_DISABLE_COPY( QgsSymbolV2 )
+    Q_DISABLE_COPY( QgsSymbol )
 
 };
 
 ///////////////////////
 
 /** \ingroup core
- * \class QgsSymbolV2RenderContext
+ * \class QgsSymbolRenderContext
  */
-class CORE_EXPORT QgsSymbolV2RenderContext
+class CORE_EXPORT QgsSymbolRenderContext
 {
   public:
 
-    /** Constructor for QgsSymbolV2RenderContext
+    /** Constructor for QgsSymbolRenderContext
      * @param c
      * @param u
      * @param alpha
@@ -375,8 +375,8 @@ class CORE_EXPORT QgsSymbolV2RenderContext
      * @param fields
      * @param mapUnitScale
      */
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = nullptr, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
-    ~QgsSymbolV2RenderContext();
+    QgsSymbolRenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = nullptr, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    ~QgsSymbolRenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
     const QgsRenderContext& renderContext() const { return mRenderContext; }
@@ -440,7 +440,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     double outputPixelSize( double size ) const;
 
     // workaround for sip 4.7. Don't use assignment - will fail with assertion error
-    QgsSymbolV2RenderContext& operator=( const QgsSymbolV2RenderContext& );
+    QgsSymbolRenderContext& operator=( const QgsSymbolRenderContext& );
 
     /**
      * This scope is always available when a symbol of this type is being rendered.
@@ -471,7 +471,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     int mGeometryPartNum;
 
 
-    QgsSymbolV2RenderContext( const QgsSymbolV2RenderContext& rh );
+    QgsSymbolRenderContext( const QgsSymbolRenderContext& rh );
 };
 
 
@@ -482,7 +482,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
 /** \ingroup core
  * \class QgsMarkerSymbolV2
  */
-class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
+class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbol
 {
   public:
 
@@ -491,7 +491,7 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
      */
     static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties );
 
-    QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers = QgsSymbolLayerV2List() );
+    QgsMarkerSymbolV2( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
 
     /** Sets the angle for the whole symbol. Individual symbol layer sizes
      * will be rotated to maintain their current relative angle to the whole symbol angle.
@@ -600,7 +600,7 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
      */
     QgsDataDefined dataDefinedSize() const;
 
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
 
     void renderPoint( QPointF point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
@@ -621,7 +621,7 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 
   private:
 
-    void renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, QPointF point, QgsSymbolV2RenderContext& context );
+    void renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, QPointF point, QgsSymbolRenderContext& context );
 
 };
 
@@ -629,7 +629,7 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 /** \ingroup core
  * \class QgsLineSymbolV2
  */
-class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
+class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbol
 {
   public:
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
@@ -637,7 +637,7 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
      */
     static QgsLineSymbolV2* createSimple( const QgsStringMap& properties );
 
-    QgsLineSymbolV2( const QgsSymbolLayerV2List& layers = QgsSymbolLayerV2List() );
+    QgsLineSymbolV2( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
 
     void setWidth( double width );
     double width() const;
@@ -663,7 +663,7 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
 
   private:
 
-    void renderPolylineUsingLayer( QgsLineSymbolLayerV2* layer, const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolylineUsingLayer( QgsLineSymbolLayerV2* layer, const QPolygonF& points, QgsSymbolRenderContext& context );
 
 };
 
@@ -671,7 +671,7 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
 /** \ingroup core
  * \class QgsFillSymbolV2
  */
-class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
+class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbol
 {
   public:
     /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
@@ -679,7 +679,7 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
      */
     static QgsFillSymbolV2* createSimple( const QgsStringMap& properties );
 
-    QgsFillSymbolV2( const QgsSymbolLayerV2List& layers = QgsSymbolLayerV2List() );
+    QgsFillSymbolV2( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
@@ -687,7 +687,7 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
 
   private:
 
-    void renderPolygonUsingLayer( QgsSymbolLayerV2* layer, const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolV2RenderContext &context );
+    void renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
     /** Calculates the bounds of a polygon including rings*/
     QRectF polygonBounds( const QPolygonF &points, const QList<QPolygonF> *rings ) const;
     /** Translates the rings in a polygon by a set distance*/
@@ -699,19 +699,19 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
 
 /*
 
-QgsSymbolV2* ps = new QgsPointSymbol();
+QgsSymbol* ps = new QgsPointSymbol();
 
 // ----
 
-sl = QgsSymbolLayerV2Registry::instance()->createSymbolLayer("SimpleLine", { "color", "..." })
+sl = QgsSymbolLayerRegistry::instance()->createSymbolLayer("SimpleLine", { "color", "..." })
 
 // (or)
 
-sl = QgsSymbolLayerV2Registry::defaultSymbolLayer(QgsSymbolV2::Line)
+sl = QgsSymbolLayerRegistry::defaultSymbolLayer(QgsSymbol::Line)
 
 // (or)
 
-QgsSymbolLayerV2* sl = new QgsSimpleLineSymbolLayer(x,y,z);
+QgsSymbolLayer* sl = new QgsSimpleLineSymbolLayer(x,y,z);
 QgsLineSymbol* s = new LineSymbol( [ sl ] );
 
 // ----

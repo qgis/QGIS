@@ -1,6 +1,6 @@
 /***************************************************************************
     qgssvgselectorwidget.cpp - group and preview selector for SVG files
-                               built off of work in qgssymbollayerv2widget
+                               built off of work in qgssymbollayerwidget
 
     ---------------------
     begin                : April 2, 2013
@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgssvgcache.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QAbstractListModel>
 #include <QCheckBox>
@@ -38,14 +38,14 @@
 QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent )
     : QAbstractListModel( parent )
 {
-  mSvgFiles = QgsSymbolLayerV2Utils::listSvgFiles();
+  mSvgFiles = QgsSymbolLayerUtils::listSvgFiles();
 }
 
 // Constructor to create model for icons in a specific path
 QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent, const QString& path )
     : QAbstractListModel( parent )
 {
-  mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
+  mSvgFiles = QgsSymbolLayerUtils::listSvgFilesAt( path );
 }
 
 int QgsSvgSelectorListModel::rowCount( const QModelIndex & parent ) const
@@ -190,7 +190,7 @@ void QgsSvgSelectorWidget::setSvgPath( const QString& svgPath )
   // skip possible urls, excepting those that may locally resolve
   if ( !svgPath.contains( "://" ) || ( svgPath.contains( "file://", Qt::CaseInsensitive ) ) )
   {
-    QString resolvedPath = QgsSymbolLayerV2Utils::symbolNameToPath( svgPath.trimmed() );
+    QString resolvedPath = QgsSymbolLayerUtils::symbolNameToPath( svgPath.trimmed() );
     if ( !resolvedPath.isNull() )
     {
       updatedPath = resolvedPath;
@@ -230,7 +230,7 @@ QString QgsSvgSelectorWidget::currentSvgPath() const
 
 QString QgsSvgSelectorWidget::currentSvgPathToName() const
 {
-  return QgsSymbolLayerV2Utils::symbolPathToName( mCurrentSvgPath );
+  return QgsSymbolLayerUtils::symbolPathToName( mCurrentSvgPath );
 }
 
 void QgsSvgSelectorWidget::updateCurrentSvgPath( const QString& svgPath )
@@ -300,7 +300,7 @@ void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, const QString& tip )
 
 void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString& text )
 {
-  QString resolvedPath = QgsSymbolLayerV2Utils::symbolNameToPath( text );
+  QString resolvedPath = QgsSymbolLayerUtils::symbolNameToPath( text );
   bool validSVG = !resolvedPath.isNull();
 
   updateLineEditFeedback( validSVG, resolvedPath );

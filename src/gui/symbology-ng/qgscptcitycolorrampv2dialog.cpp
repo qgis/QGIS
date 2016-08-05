@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsdialog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPushButton>
 #include <QTextEdit>
@@ -194,7 +194,7 @@ void QgsCptCityColorRampV2Dialog::populateVariants()
       ramp.setVariantName( variant );
       if ( ramp.loadFile() )
         cboVariantName->setItemIcon( index,
-                                     QgsSymbolLayerV2Utils::colorRampPreviewIcon( &ramp, cboVariantName->iconSize() ) );
+                                     QgsSymbolLayerUtils::colorRampPreviewIcon( &ramp, cboVariantName->iconSize() ) );
       else
         cboVariantName->setItemIcon( index, blankIcon );
       cboVariantName->setItemData( index, Qt::AlignHCenter, Qt::TextAlignmentRole );
@@ -423,8 +423,8 @@ void QgsCptCityColorRampV2Dialog::updatePreview( bool clear )
 
   // update pixmap
   // TODO draw checker-board/transparent background
-  // for transparent, add  [ pixmap.fill( Qt::transparent ); ] to QgsSymbolLayerV2Utils::colorRampPreviewPixmap
-  QPixmap pixmap = QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size );
+  // for transparent, add  [ pixmap.fill( Qt::transparent ); ] to QgsSymbolLayerUtils::colorRampPreviewPixmap
+  QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size );
   lblPreview->setPixmap( pixmap );
 
   // add copyright information from COPYING.xml file
@@ -550,7 +550,7 @@ bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
   else if ( event->type() == QEvent::MouseButtonRelease )
   {
     // restore preview
-    QPixmap pixmap = QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size );
+    QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size );
     lblPreview->setPixmap( pixmap );
     return true;
   }

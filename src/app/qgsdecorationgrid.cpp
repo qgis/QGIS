@@ -26,8 +26,8 @@
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-#include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
-#include "qgssymbolv2.h" //for symbology
+#include "qgssymbollayerutils.h" //for pointOnLineWithDistance
+#include "qgssymbol.h" //for symbology
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsrendercontext.h"
 #include "qgsmapcanvas.h"
@@ -134,7 +134,7 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mLineSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsLineSymbolV2>( elem );
+    mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbolV2>( elem );
   }
   if ( ! mLineSymbol )
     mLineSymbol = new QgsLineSymbolV2();
@@ -146,12 +146,12 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mMarkerSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( elem );
+    mMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( elem );
   }
   if ( ! mMarkerSymbol )
   {
     // set default symbol : cross with width=3
-    QgsSymbolLayerV2List symbolList;
+    QgsSymbolLayerList symbolList;
     symbolList << new QgsSimpleMarkerSymbolLayerV2( QgsSimpleMarkerSymbolLayerBase::Cross, 3, 0 );
     mMarkerSymbol = new QgsMarkerSymbolV2( symbolList );
     // mMarkerSymbol = new QgsMarkerSymbolV2();
@@ -182,7 +182,7 @@ void QgsDecorationGrid::saveToProject()
   QDomElement elem;
   if ( mLineSymbol )
   {
-    elem = QgsSymbolLayerV2Utils::saveSymbol( "line symbol", mLineSymbol, doc );
+    elem = QgsSymbolLayerUtils::saveSymbol( "line symbol", mLineSymbol, doc );
     doc.appendChild( elem );
     // FIXME this works, but XML will not be valid as < is replaced by &lt;
     QgsProject::instance()->writeEntry( mNameConfig, "/LineSymbol", doc.toString() );
@@ -190,7 +190,7 @@ void QgsDecorationGrid::saveToProject()
   if ( mMarkerSymbol )
   {
     doc.setContent( QString() );
-    elem = QgsSymbolLayerV2Utils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
+    elem = QgsSymbolLayerUtils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
     doc.appendChild( elem );
     QgsProject::instance()->writeEntry( mNameConfig, "/MarkerSymbol", doc.toString() );
   }
@@ -261,7 +261,7 @@ void QgsDecorationGrid::render( QPainter * p )
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
     {
       //start mark
-      crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p1(), vIt->second.p2(), mCrossLength );
+      crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( vIt->second.p1(), vIt->second.p2(), mCrossLength );
       p->drawLine( vIt->second.p1(), crossEnd1 );
 
       //test for intersection with every horizontal line
@@ -270,13 +270,13 @@ void QgsDecorationGrid::render( QPainter * p )
       {
         if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
         {
-          crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p1(), mCrossLength );
-          crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p2(), mCrossLength );
+          crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, vIt->second.p1(), mCrossLength );
+          crossEnd2 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, vIt->second.p2(), mCrossLength );
           p->drawLine( crossEnd1, crossEnd2 );
         }
       }
       //end mark
-      QPointF crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p2(), vIt->second.p1(), mCrossLength );
+      QPointF crossEnd2 = QgsSymbolLayerUtils::pointOnLineWithDistance( vIt->second.p2(), vIt->second.p1(), mCrossLength );
       p->drawLine( vIt->second.p2(), crossEnd2 );
     }
 
@@ -284,7 +284,7 @@ void QgsDecorationGrid::render( QPainter * p )
     for ( ; hIt != horizontalLines.constEnd(); ++hIt )
     {
       //start mark
-      crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p1(), hIt->second.p2(), mCrossLength );
+      crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( hIt->second.p1(), hIt->second.p2(), mCrossLength );
       p->drawLine( hIt->second.p1(), crossEnd1 );
 
       vIt = verticalLines.constBegin();
@@ -292,13 +292,13 @@ void QgsDecorationGrid::render( QPainter * p )
       {
         if ( vIt->second.intersect( hIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
         {
-          crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, hIt->second.p1(), mCrossLength );
-          crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, hIt->second.p2(), mCrossLength );
+          crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, hIt->second.p1(), mCrossLength );
+          crossEnd2 = QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, hIt->second.p2(), mCrossLength );
           p->drawLine( crossEnd1, crossEnd2 );
         }
       }
       //end mark
-      crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p2(), hIt->second.p1(), mCrossLength );
+      crossEnd1 = QgsSymbolLayerUtils::pointOnLineWithDistance( hIt->second.p2(), hIt->second.p1(), mCrossLength );
       p->drawLine( hIt->second.p2(), crossEnd1 );
     }
   }

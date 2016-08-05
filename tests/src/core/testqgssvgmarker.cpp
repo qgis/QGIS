@@ -27,7 +27,7 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
-#include <qgssymbolv2.h>
+#include <qgssymbol.h>
 #include <qgssinglesymbolrendererv2.h>
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsdatadefined.h"

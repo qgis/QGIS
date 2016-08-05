@@ -1,5 +1,5 @@
 /***************************************************************************
- qgssymbollayerv2widget.cpp - symbol layer widgets
+ qgssymbollayerwidget.cpp - symbol layer widgets
 
  ---------------------
  begin                : November 2009
@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssymbollayerv2widget.h"
+#include "qgssymbollayerwidget.h"
 
 #include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
@@ -24,9 +24,9 @@
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgssvgcache.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsdatadefined.h"
@@ -51,7 +51,7 @@
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
-  const QgsSymbolLayerV2Widget* widget = ( const QgsSymbolLayerV2Widget* ) context;
+  const QgsSymbolLayerWidget* widget = ( const QgsSymbolLayerWidget* ) context;
 
   if ( widget->expressionContext() )
     return QgsExpressionContext( *widget->expressionContext() );
@@ -76,7 +76,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
   QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  if ( const QgsSymbolLayerV2* symbolLayer = const_cast< QgsSymbolLayerV2Widget* >( widget )->symbolLayer() )
+  if ( const QgsSymbolLayer* symbolLayer = const_cast< QgsSymbolLayerWidget* >( widget )->symbolLayer() )
   {
     //cheat a bit - set the symbol color variable to match the symbol layer's color (when we should really be using the *symbols*
     //color, but that's not accessible here). 99% of the time these will be the same anyway
@@ -97,7 +97,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-void QgsSymbolLayerV2Widget::setMapCanvas( QgsMapCanvas *canvas )
+void QgsSymbolLayerWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
   Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
@@ -111,12 +111,12 @@ void QgsSymbolLayerV2Widget::setMapCanvas( QgsMapCanvas *canvas )
   }
 }
 
-const QgsMapCanvas* QgsSymbolLayerV2Widget::mapCanvas() const
+const QgsMapCanvas* QgsSymbolLayerWidget::mapCanvas() const
 {
   return mMapCanvas;
 }
 
-void QgsSymbolLayerV2Widget::registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description )
+void QgsSymbolLayerWidget::registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description )
 {
   const QgsDataDefined* dd = symbolLayer()->getDataDefinedProperty( propertyName );
   button->init( mVectorLayer, dd, type, description );
@@ -127,7 +127,7 @@ void QgsSymbolLayerV2Widget::registerDataDefinedButton( QgsDataDefinedButton * b
   button->registerGetExpressionContextCallback( &_getExpressionContext, this );
 }
 
-void QgsSymbolLayerV2Widget::updateDataDefinedProperty()
+void QgsSymbolLayerWidget::updateDataDefinedProperty()
 {
   QgsDataDefinedButton* button = qobject_cast<QgsDataDefinedButton*>( sender() );
   const QString propertyName( button->property( "propertyName" ).toString() );
@@ -143,7 +143,7 @@ void QgsSymbolLayerV2Widget::updateDataDefinedProperty()
   emit changed();
 }
 
-QString QgsSymbolLayerV2Widget::dataDefinedPropertyLabel( const QString &entryName )
+QString QgsSymbolLayerWidget::dataDefinedPropertyLabel( const QString &entryName )
 {
   QString label = entryName;
   if ( entryName == "size" )
@@ -154,10 +154,10 @@ QString QgsSymbolLayerV2Widget::dataDefinedPropertyLabel( const QString &entryNa
     {
       switch ( layer->scaleMethod() )
       {
-        case QgsSymbolV2::ScaleArea:
+        case QgsSymbol::ScaleArea:
           label += " (" + tr( "area" ) + ')';
           break;
-        case QgsSymbolV2::ScaleDiameter:
+        case QgsSymbol::ScaleDiameter:
           label += " (" + tr( "diameter" ) + ')';
           break;
       }
@@ -167,7 +167,7 @@ QString QgsSymbolLayerV2Widget::dataDefinedPropertyLabel( const QString &entryNa
 }
 
 QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -225,7 +225,7 @@ void QgsSimpleLineSymbolLayerV2Widget::updateAssistantSymbol()
 }
 
 
-void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( !layer || layer->layerType() != "SimpleLine" )
     return;
@@ -296,7 +296,7 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   updateAssistantSymbol();
 }
 
-QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsSimpleLineSymbolLayerV2Widget::symbolLayer()
 {
   return mLayer;
 }
@@ -402,7 +402,7 @@ void QgsSimpleLineSymbolLayerV2Widget::updatePatternIcon()
     return;
   }
   layerCopy->setUseCustomDashPattern( true );
-  QIcon buttonIcon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( layerCopy, QgsUnitTypes::RenderMillimeters, mChangePatternButton->iconSize() );
+  QIcon buttonIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( layerCopy, QgsUnitTypes::RenderMillimeters, mChangePatternButton->iconSize() );
   mChangePatternButton->setIcon( buttonIcon );
   delete layerCopy;
 }
@@ -412,7 +412,7 @@ void QgsSimpleLineSymbolLayerV2Widget::updatePatternIcon()
 
 
 QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -448,7 +448,7 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const Qg
     QgsSimpleMarkerSymbolLayerV2* lyr = new QgsSimpleMarkerSymbolLayerV2( shape, markerSize );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setOutlineColor( QColor( 0, 0, 0 ) );
-    QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, size );
+    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, size );
     QListWidgetItem* item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
@@ -471,7 +471,7 @@ QgsSimpleMarkerSymbolLayerV2Widget::~QgsSimpleMarkerSymbolLayerV2Widget()
   delete mAssistantPreviewSymbol;
 }
 
-void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != "SimpleMarker" )
     return;
@@ -561,7 +561,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   updateAssistantSymbol();
 }
 
-QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsSimpleMarkerSymbolLayerV2Widget::symbolLayer()
 {
   return mLayer;
 }
@@ -693,7 +693,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::updateAssistantSymbol()
 ///////////
 
 QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -725,7 +725,7 @@ QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget( const QgsVec
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
 }
 
-void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != "SimpleFill" )
     return;
@@ -777,7 +777,7 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 
 }
 
-QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
 {
   return mLayer;
 }
@@ -842,7 +842,7 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
 ///////////
 
 QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -869,7 +869,7 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVec
     QgsSimpleMarkerSymbolLayerV2* lyr = new QgsSimpleMarkerSymbolLayerV2( shape, markerSize );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setOutlineColor( QColor( 0, 0, 0 ) );
-    QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, size );
+    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, size );
     QListWidgetItem* item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
@@ -889,7 +889,7 @@ QgsFilledMarkerSymbolLayerWidget::~QgsFilledMarkerSymbolLayerWidget()
   delete mAssistantPreviewSymbol;
 }
 
-void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != "FilledMarker" )
     return;
@@ -940,7 +940,7 @@ void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   updateAssistantSymbol();
 }
 
-QgsSymbolLayerV2* QgsFilledMarkerSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer* QgsFilledMarkerSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -1023,7 +1023,7 @@ void QgsFilledMarkerSymbolLayerWidget::updateAssistantSymbol()
 ///////////
 
 QgsGradientFillSymbolLayerV2Widget::QgsGradientFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -1066,7 +1066,7 @@ QgsGradientFillSymbolLayerV2Widget::QgsGradientFillSymbolLayerV2Widget( const Qg
   connect( checkRefPoint2Centroid, SIGNAL( toggled( bool ) ), this, SLOT( referencePointChanged() ) );
 }
 
-void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != "GradientFill" )
     return;
@@ -1205,7 +1205,7 @@ void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   registerDataDefinedButton( mRefPoint2CentroidDDBtn, "reference2_iscentroid", QgsDataDefinedButton::Int, QgsDataDefinedButton::boolDesc() );
 }
 
-QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsGradientFillSymbolLayerV2Widget::symbolLayer()
 {
   return mLayer;
 }
@@ -1354,7 +1354,7 @@ void QgsGradientFillSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
 ///////////
 
 QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -1398,7 +1398,7 @@ QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( cons
   connect( mSpinBlurRadius, SIGNAL( valueChanged( int ) ), mBlurSlider, SLOT( setValue( int ) ) );
 }
 
-void QgsShapeburstFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsShapeburstFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != "ShapeburstFill" )
     return;
@@ -1490,7 +1490,7 @@ void QgsShapeburstFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* lay
   registerDataDefinedButton( mIgnoreRingsDDBtn, "ignore_rings", QgsDataDefinedButton::Int, QgsDataDefinedButton::boolDesc() );
 }
 
-QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsShapeburstFillSymbolLayerV2Widget::symbolLayer()
 {
   return mLayer;
 }
@@ -1609,7 +1609,7 @@ void QgsShapeburstFillSymbolLayerV2Widget::on_mIgnoreRingsCheckBox_stateChanged(
 ///////////
 
 QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -1632,7 +1632,7 @@ QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( const QgsVec
   connect( radCurvePoint, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
 }
 
-void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != "MarkerLine" )
     return;
@@ -1688,7 +1688,7 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   registerDataDefinedButton( mOffsetAlongLineDDBtn, "offset_along_line", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
 }
 
-QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsMarkerLineSymbolLayerV2Widget::symbolLayer()
 {
   return mLayer;
 }
@@ -1773,7 +1773,7 @@ void QgsMarkerLineSymbolLayerV2Widget::on_mOffsetAlongLineUnitWidget_changed()
 
 
 QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -1914,7 +1914,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::updateAssistantSymbol()
 }
 
 
-void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( !layer )
   {
@@ -1994,7 +1994,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   updateAssistantSymbol();
 }
 
-QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
 {
   return mLayer;
 }
@@ -2157,7 +2157,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexCha
 
 /////////////
 
-QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl )
+QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
   setupUi( this );
@@ -2175,7 +2175,7 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* 
   connect( mSvgTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( populateIcons( const QModelIndex& ) ) );
 }
 
-void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( !layer )
   {
@@ -2226,7 +2226,7 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   registerDataDefinedButton( mBorderWidthDDBtn, "svgOutlineWidth", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
 }
 
-QgsSymbolLayerV2* QgsSVGFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer* QgsSVGFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -2437,7 +2437,7 @@ void QgsSVGFillSymbolLayerWidget::on_mSvgOutlineWidthUnitWidget_changed()
 /////////////
 
 QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ):
-    QgsSymbolLayerV2Widget( parent, vl ), mLayer( nullptr )
+    QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
@@ -2445,7 +2445,7 @@ QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const 
   mOffsetSpinBox->setClearValue( 0 );
 }
 
-void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != "LinePatternFill" )
   {
@@ -2481,7 +2481,7 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* laye
   registerDataDefinedButton( mDistanceDDBtn, "distance", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
 }
 
-QgsSymbolLayerV2* QgsLinePatternFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer* QgsLinePatternFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -2536,7 +2536,7 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOffsetUnitWidget_changed()
 /////////////
 
 QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ):
-    QgsSymbolLayerV2Widget( parent, vl ), mLayer( nullptr )
+    QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
   mHorizontalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
@@ -2546,7 +2546,7 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( cons
 }
 
 
-void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( !layer || layer->layerType() != "PointPatternFill" )
   {
@@ -2590,7 +2590,7 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* lay
   registerDataDefinedButton( mVerticalDisplacementDDBtn, "displacement_y", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
 }
 
-QgsSymbolLayerV2* QgsPointPatternFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer* QgsPointPatternFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -2674,7 +2674,7 @@ void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementUnitWidget_ch
 /////////////
 
 QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -2719,7 +2719,7 @@ QgsFontMarkerSymbolLayerV2Widget::~QgsFontMarkerSymbolLayerV2Widget()
   delete mAssistantPreviewSymbol;
 }
 
-void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != "FontMarker" )
     return;
@@ -2780,7 +2780,7 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   updateAssistantSymbol();
 }
 
-QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsFontMarkerSymbolLayerV2Widget::symbolLayer()
 {
   return mLayer;
 }
@@ -2908,14 +2908,14 @@ void QgsFontMarkerSymbolLayerV2Widget::updateAssistantSymbol()
 
 
 QgsCentroidFillSymbolLayerV2Widget::QgsCentroidFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
   setupUi( this );
 }
 
-void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != "CentroidFill" )
     return;
@@ -2928,7 +2928,7 @@ void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   whileBlocking( mDrawAllPartsCheckBox )->setChecked( mLayer->pointOnAllParts() );
 }
 
-QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
 {
   return mLayer;
 }
@@ -2948,7 +2948,7 @@ void QgsCentroidFillSymbolLayerV2Widget::on_mDrawAllPartsCheckBox_stateChanged( 
 ///////////////
 
 QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
   setupUi( this );
@@ -2964,7 +2964,7 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorL
   connect( mSpinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
 }
 
-void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2 *layer )
+void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( !layer )
   {
@@ -3034,7 +3034,7 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2 *layer )
   registerDataDefinedButton( mWidthDDBtn, "width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
 }
 
-QgsSymbolLayerV2 *QgsRasterFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsRasterFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -3226,12 +3226,12 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
 
 QgsSvgListModel::QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
 {
-  mSvgFiles = QgsSymbolLayerV2Utils::listSvgFiles();
+  mSvgFiles = QgsSymbolLayerUtils::listSvgFiles();
 }
 
 QgsSvgListModel::QgsSvgListModel( QObject* parent, const QString& path ) : QAbstractListModel( parent )
 {
-  mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
+  mSvgFiles = QgsSymbolLayerUtils::listSvgFilesAt( path );
 }
 
 int QgsSvgListModel::rowCount( const QModelIndex& parent ) const
@@ -3346,21 +3346,21 @@ void QgsSvgGroupsModel::createTree( QStandardItem*& parentGroup )
 
 
 QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
     , mLayer( nullptr )
 {
   setupUi( this );
   modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );
   modificationExpressionSelector->loadFieldNames();
   modificationExpressionSelector->setExpressionContext( _getExpressionContext( this ) );
-  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ), tr( "Polygon / MultiPolygon" ), QgsSymbolV2::Fill );
-  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ), tr( "LineString / MultiLineString" ), QgsSymbolV2::Line );
-  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPointLayer.svg" ), tr( "Point / MultiPoint" ), QgsSymbolV2::Marker );
+  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ), tr( "Polygon / MultiPolygon" ), QgsSymbol::Fill );
+  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ), tr( "LineString / MultiLineString" ), QgsSymbol::Line );
+  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPointLayer.svg" ), tr( "Point / MultiPoint" ), QgsSymbol::Marker );
   connect( modificationExpressionSelector, SIGNAL( expressionParsed( bool ) ), this, SLOT( updateExpression() ) );
   connect( cbxGeometryType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateSymbolType() ) );
 }
 
-void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* l )
+void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* l )
 {
   mLayer = static_cast<QgsGeometryGeneratorSymbolLayerV2*>( l );
 
@@ -3370,7 +3370,7 @@ void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* l 
   cbxGeometryType->setCurrentIndex( cbxGeometryType->findData( mLayer->symbolType() ) );
 }
 
-QgsSymbolLayerV2* QgsGeometryGeneratorSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer* QgsGeometryGeneratorSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -3384,7 +3384,7 @@ void QgsGeometryGeneratorSymbolLayerWidget::updateExpression()
 
 void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
 {
-  mLayer->setSymbolType( static_cast<QgsSymbolV2::SymbolType>( cbxGeometryType->itemData( cbxGeometryType->currentIndex() ).toInt() ) );
+  mLayer->setSymbolType( static_cast<QgsSymbol::SymbolType>( cbxGeometryType->itemData( cbxGeometryType->currentIndex() ).toInt() ) );
 
   emit symbolChanged();
 }

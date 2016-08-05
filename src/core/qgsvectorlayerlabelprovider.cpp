@@ -289,7 +289,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
     QScopedPointer<QgsGeometry> obstacleGeometry;
     if ( mRenderer )
     {
-      QgsSymbolV2List symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
+      QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
       if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
         //point feature, use symbol bounds as obstacle
@@ -321,7 +321,7 @@ void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRende
     mLabels << label;
 }
 
-QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolV2List& symbols )
+QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolList& symbols )
 {
   if ( !fet.hasGeometry() || fet.geometry().type() != QgsWkbTypes::PointGeometry )
     return nullptr;
@@ -348,9 +348,9 @@ QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& 
     context.mapToPixel().transformInPlace( x, y );
 
     QPointF pt( x, y );
-    Q_FOREACH ( QgsSymbolV2* symbol, symbols )
+    Q_FOREACH ( QgsSymbol* symbol, symbols )
     {
-      if ( symbol->type() == QgsSymbolV2::Marker )
+      if ( symbol->type() == QgsSymbol::Marker )
       {
         if ( bounds.isValid() )
           bounds = bounds.united( static_cast< QgsMarkerSymbolV2* >( symbol )->bounds( pt, context, fet ) );

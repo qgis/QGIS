@@ -112,7 +112,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void deleteAllCategories();
 
     void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
+    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
 
     void showSymbolLevels();
 
@@ -161,7 +161,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
     QgsVectorColorRampV2* getColorRamp();
 
-    QList<QgsSymbolV2*> selectedSymbols() override;
+    QList<QgsSymbol*> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();
     void refreshSymbolView() override;
     void keyPressEvent( QKeyEvent* event ) override;
@@ -169,7 +169,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
   protected:
     QgsCategorizedSymbolRendererV2* mRenderer;
 
-    QgsSymbolV2* mCategorizedSymbol;
+    QgsSymbol* mCategorizedSymbol;
 
     QgsCategorizedSymbolRendererV2Model* mModel;
 

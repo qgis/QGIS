@@ -21,7 +21,7 @@
 
 class QgsAbstractFeatureSource;
 class QgsFeatureRendererV2;
-class QgsSymbolV2;
+class QgsSymbol;
 
 /** \ingroup core
  * @brief The QgsVectorLayerLabelProvider class implements a label provider
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * @param symbols symbols rendered for point feature
      * @note added in QGIS 2.14
      */
-    static QgsGeometry* getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolV2List& symbols );
+    static QgsGeometry* getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolList& symbols );
 
   protected:
     //! initialization method - called from constructors

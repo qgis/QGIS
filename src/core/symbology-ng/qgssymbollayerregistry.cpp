@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssymbollayerv2registry.cpp
+    qgssymbollayerregistry.cpp
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssymbollayerv2registry.h"
+#include "qgssymbollayerregistry.h"
 
 #include "qgsarrowsymbollayer.h"
 #include "qgsellipsesymbollayerv2.h"
@@ -23,55 +23,55 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayerv2.h"
 
-QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
+QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
 {
   // init registry with known symbol layers
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleLine", QObject::tr( "Simple line" ), QgsSymbolV2::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "SimpleLine", QObject::tr( "Simple line" ), QgsSymbol::Line,
                       QgsSimpleLineSymbolLayerV2::create, QgsSimpleLineSymbolLayerV2::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "MarkerLine", QObject::tr( "Marker line" ), QgsSymbolV2::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "MarkerLine", QObject::tr( "Marker line" ), QgsSymbol::Line,
                       QgsMarkerLineSymbolLayerV2::create, QgsMarkerLineSymbolLayerV2::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "ArrowLine", QObject::tr( "Arrow" ), QgsSymbolV2::Line, QgsArrowSymbolLayer::create ) );
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "ArrowLine", QObject::tr( "Arrow" ), QgsSymbol::Line, QgsArrowSymbolLayer::create ) );
 
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleMarker", QObject::tr( "Simple marker" ), QgsSymbolV2::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "SimpleMarker", QObject::tr( "Simple marker" ), QgsSymbol::Marker,
                       QgsSimpleMarkerSymbolLayerV2::create, QgsSimpleMarkerSymbolLayerV2::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "FilledMarker", QObject::tr( "Filled marker" ), QgsSymbolV2::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "FilledMarker", QObject::tr( "Filled marker" ), QgsSymbol::Marker,
                       QgsFilledMarkerSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SvgMarker", QObject::tr( "SVG marker" ), QgsSymbolV2::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "SvgMarker", QObject::tr( "SVG marker" ), QgsSymbol::Marker,
                       QgsSvgMarkerSymbolLayerV2::create, QgsSvgMarkerSymbolLayerV2::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "FontMarker", QObject::tr( "Font marker" ), QgsSymbolV2::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "FontMarker", QObject::tr( "Font marker" ), QgsSymbol::Marker,
                       QgsFontMarkerSymbolLayerV2::create, QgsFontMarkerSymbolLayerV2::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "EllipseMarker", QObject::tr( "Ellipse marker" ), QgsSymbolV2::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "EllipseMarker", QObject::tr( "Ellipse marker" ), QgsSymbol::Marker,
                       QgsEllipseSymbolLayerV2::create, QgsEllipseSymbolLayerV2::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "VectorField", QObject::tr( "Vector field marker" ), QgsSymbolV2::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "VectorField", QObject::tr( "Vector field marker" ), QgsSymbol::Marker,
                       QgsVectorFieldSymbolLayer::create ) );
 
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleFill", QObject::tr( "Simple fill" ), QgsSymbolV2::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "SimpleFill", QObject::tr( "Simple fill" ), QgsSymbol::Fill,
                       QgsSimpleFillSymbolLayerV2::create, QgsSimpleFillSymbolLayerV2::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "GradientFill", QObject::tr( "Gradient fill" ), QgsSymbolV2::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "GradientFill", QObject::tr( "Gradient fill" ), QgsSymbol::Fill,
                       QgsGradientFillSymbolLayerV2::create ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "ShapeburstFill", QObject::tr( "Shapeburst fill" ), QgsSymbolV2::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "ShapeburstFill", QObject::tr( "Shapeburst fill" ), QgsSymbol::Fill,
                       QgsShapeburstFillSymbolLayerV2::create ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "RasterFill", QObject::tr( "Raster image fill" ), QgsSymbolV2::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "RasterFill", QObject::tr( "Raster image fill" ), QgsSymbol::Fill,
                       QgsRasterFillSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SVGFill", QObject::tr( "SVG fill" ), QgsSymbolV2::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "SVGFill", QObject::tr( "SVG fill" ), QgsSymbol::Fill,
                       QgsSVGFillSymbolLayer::create, QgsSVGFillSymbolLayer::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "CentroidFill", QObject::tr( "Centroid fill" ), QgsSymbolV2::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "CentroidFill", QObject::tr( "Centroid fill" ), QgsSymbol::Fill,
                       QgsCentroidFillSymbolLayerV2::create, QgsCentroidFillSymbolLayerV2::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "LinePatternFill", QObject::tr( "Line pattern fill" ), QgsSymbolV2::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "LinePatternFill", QObject::tr( "Line pattern fill" ), QgsSymbol::Fill,
                       QgsLinePatternFillSymbolLayer::create, QgsLinePatternFillSymbolLayer::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "PointPatternFill", QObject::tr( "Point pattern fill" ), QgsSymbolV2::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "PointPatternFill", QObject::tr( "Point pattern fill" ), QgsSymbol::Fill,
                       QgsPointPatternFillSymbolLayer::create, QgsPointPatternFillSymbolLayer::createFromSld ) );
 
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "GeometryGenerator", QObject::tr( "Geometry generator" ), QgsSymbolV2::Hybrid,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( "GeometryGenerator", QObject::tr( "Geometry generator" ), QgsSymbol::Hybrid,
                       QgsGeometryGeneratorSymbolLayerV2::create ) );
 }
 
-QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()
+QgsSymbolLayerRegistry::~QgsSymbolLayerRegistry()
 {
   qDeleteAll( mMetadata );
 }
 
-bool QgsSymbolLayerV2Registry::addSymbolLayerType( QgsSymbolLayerV2AbstractMetadata* metadata )
+bool QgsSymbolLayerRegistry::addSymbolLayerType( QgsSymbolLayerAbstractMetadata* metadata )
 {
   if ( !metadata || mMetadata.contains( metadata->name() ) )
     return false;
@@ -81,31 +81,31 @@ bool QgsSymbolLayerV2Registry::addSymbolLayerType( QgsSymbolLayerV2AbstractMetad
 }
 
 
-QgsSymbolLayerV2AbstractMetadata* QgsSymbolLayerV2Registry::symbolLayerMetadata( const QString& name ) const
+QgsSymbolLayerAbstractMetadata* QgsSymbolLayerRegistry::symbolLayerMetadata( const QString& name ) const
 {
   return mMetadata.value( name );
 }
 
-QgsSymbolLayerV2Registry* QgsSymbolLayerV2Registry::instance()
+QgsSymbolLayerRegistry* QgsSymbolLayerRegistry::instance()
 {
-  static QgsSymbolLayerV2Registry mInstance;
+  static QgsSymbolLayerRegistry mInstance;
   return &mInstance;
 }
 
-QgsSymbolLayerV2* QgsSymbolLayerV2Registry::defaultSymbolLayer( QgsSymbolV2::SymbolType type )
+QgsSymbolLayer* QgsSymbolLayerRegistry::defaultSymbolLayer( QgsSymbol::SymbolType type )
 {
   switch ( type )
   {
-    case QgsSymbolV2::Marker:
+    case QgsSymbol::Marker:
       return QgsSimpleMarkerSymbolLayerV2::create();
 
-    case QgsSymbolV2::Line:
+    case QgsSymbol::Line:
       return QgsSimpleLineSymbolLayerV2::create();
 
-    case QgsSymbolV2::Fill:
+    case QgsSymbol::Fill:
       return QgsSimpleFillSymbolLayerV2::create();
 
-    case QgsSymbolV2::Hybrid:
+    case QgsSymbol::Hybrid:
       return nullptr;
   }
 
@@ -113,7 +113,7 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Registry::defaultSymbolLayer( QgsSymbolV2::Sym
 }
 
 
-QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayer( const QString& name, const QgsStringMap& properties ) const
+QgsSymbolLayer* QgsSymbolLayerRegistry::createSymbolLayer( const QString& name, const QgsStringMap& properties ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
@@ -121,7 +121,7 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayer( const QString& na
   return mMetadata[name]->createSymbolLayer( properties );
 }
 
-QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayerFromSld( const QString& name, QDomElement& element ) const
+QgsSymbolLayer* QgsSymbolLayerRegistry::createSymbolLayerFromSld( const QString& name, QDomElement& element ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
@@ -129,13 +129,13 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayerFromSld( const QStr
   return mMetadata[name]->createSymbolLayerFromSld( element );
 }
 
-QStringList QgsSymbolLayerV2Registry::symbolLayersForType( QgsSymbolV2::SymbolType type )
+QStringList QgsSymbolLayerRegistry::symbolLayersForType( QgsSymbol::SymbolType type )
 {
   QStringList lst;
-  QMap<QString, QgsSymbolLayerV2AbstractMetadata*>::ConstIterator it = mMetadata.constBegin();
+  QMap<QString, QgsSymbolLayerAbstractMetadata*>::ConstIterator it = mMetadata.constBegin();
   for ( ; it != mMetadata.constEnd(); ++it )
   {
-    if ( it.value()->type() == type || it.value()->type() == QgsSymbolV2::Hybrid )
+    if ( it.value()->type() == type || it.value()->type() == QgsSymbol::Hybrid )
       lst.append( it.key() );
   }
   return lst;

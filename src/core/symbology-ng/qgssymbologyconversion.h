@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssymbologyv2conversion.h
+    qgssymbologyconversion.h
     ---------------------
     begin                : December 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSSYMBOLOGYV2CONVERSION_H
-#define QGSSYMBOLOGYV2CONVERSION_H
+#ifndef QGSSYMBOLOGYCONVERSION_H
+#define QGSSYMBOLOGYCONVERSION_H
 
 class QDomNode;
 
@@ -25,7 +25,7 @@ class QgsFeatureRendererV2;
 
 /** \ingroup core
  * This class is not a part of public API, it is intended only for compatibility with older versions of QGIS (1.x) */
-class CORE_EXPORT QgsSymbologyV2Conversion
+class CORE_EXPORT QgsSymbologyConversion
 {
   public:
 
@@ -38,4 +38,4 @@ class CORE_EXPORT QgsSymbologyV2Conversion
     static Qt::BrushStyle qString2BrushStyle( const QString& string );
 };
 
-#endif // QGSSYMBOLOGYV2CONVERSION_H
+#endif // QGSSYMBOLOGYCONVERSION_H

@@ -26,27 +26,27 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
     QgsVectorFieldSymbolLayer();
     ~QgsVectorFieldSymbolLayer();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer* createFromSld( QDomElement &element );
 
     QString layerType() const;
 
-    bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
-    QgsSymbolV2* subSymbol();
+    bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
+    QgsSymbol* subSymbol();
 
     void setColor( const QColor& color );
     virtual QColor color() const;
 
-    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context );
-    void startRender( QgsSymbolV2RenderContext& context );
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void renderPoint( QPointF point, QgsSymbolRenderContext& context );
+    void startRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext& context );
 
     virtual QgsVectorFieldSymbolLayer* clone() const /Factory/;
     QgsStringMap properties() const;
 
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+    void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size );
 
     QSet<QString> usedAttributes() const;
 

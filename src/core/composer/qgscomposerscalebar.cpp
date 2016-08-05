@@ -27,7 +27,7 @@
 #include "qgsticksscalebarstyle.h"
 #include "qgsrectangle.h"
 #include "qgsproject.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsfontutils.h"
 #include "qgsunittypes.h"
 #include <QDomDocument>
@@ -684,8 +684,8 @@ bool QgsComposerScaleBar::writeXml( QDomElement& elem, QDomDocument & doc ) cons
   composerScaleBarElem.setAttribute( "outlineWidth", QString::number( mPen.widthF() ) );
   composerScaleBarElem.setAttribute( "unitLabel", mUnitLabeling );
   composerScaleBarElem.setAttribute( "units", mUnits );
-  composerScaleBarElem.setAttribute( "lineJoinStyle", QgsSymbolLayerV2Utils::encodePenJoinStyle( mLineJoinStyle ) );
-  composerScaleBarElem.setAttribute( "lineCapStyle", QgsSymbolLayerV2Utils::encodePenCapStyle( mLineCapStyle ) );
+  composerScaleBarElem.setAttribute( "lineJoinStyle", QgsSymbolLayerUtils::encodePenJoinStyle( mLineJoinStyle ) );
+  composerScaleBarElem.setAttribute( "lineCapStyle", QgsSymbolLayerUtils::encodePenCapStyle( mLineCapStyle ) );
 
   //style
   if ( mStyle )
@@ -763,9 +763,9 @@ bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocume
   mNumMapUnitsPerScaleBarUnit = itemElem.attribute( "numMapUnitsPerScaleBarUnit", "1.0" ).toDouble();
   mPen.setWidthF( itemElem.attribute( "outlineWidth", "0.3" ).toDouble() );
   mUnitLabeling = itemElem.attribute( "unitLabel" );
-  mLineJoinStyle = QgsSymbolLayerV2Utils::decodePenJoinStyle( itemElem.attribute( "lineJoinStyle", "miter" ) );
+  mLineJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( "lineJoinStyle", "miter" ) );
   mPen.setJoinStyle( mLineJoinStyle );
-  mLineCapStyle = QgsSymbolLayerV2Utils::decodePenCapStyle( itemElem.attribute( "lineCapStyle", "square" ) );
+  mLineCapStyle = QgsSymbolLayerUtils::decodePenCapStyle( itemElem.attribute( "lineCapStyle", "square" ) );
   mPen.setCapStyle( mLineCapStyle );
   if ( !QgsFontUtils::setFromXmlChildNode( mFont, itemElem, "scaleBarFont" ) )
   {

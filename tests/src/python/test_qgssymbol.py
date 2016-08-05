@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    test_qgssymbolv2.py
+    test_qgssymbol.py
     ---------------------
     Date                 : January 2016
     Copyright            : (C) 2016 by Nyall Dawson
@@ -31,7 +31,7 @@ from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 
 from qgis.core import (QgsGeometry,
-                       QgsSymbolV2,
+                       QgsSymbol,
                        QgsMapUnitScale,
                        QgsMarkerSymbolV2,
                        QgsFillSymbolV2,
@@ -53,14 +53,14 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsSymbolV2(unittest.TestCase):
+class TestQgsSymbol(unittest.TestCase):
 
     def setUp(self):
         #Create some simple symbols
         self.fill_symbol = QgsFillSymbolV2.createSimple({'color': '#ffffff'})
         self.line_symbol = QgsLineSymbolV2.createSimple({'color': '#ffffff', 'line_width': '3'})
         self.marker_symbol = QgsMarkerSymbolV2.createSimple({'color': '#ffffff', 'size': '3'})
-        self.report = "<h1>Python QgsSymbolV2 Tests</h1>\n"
+        self.report = "<h1>Python QgsSymbol Tests</h1>\n"
 
     def tearDown(self):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()

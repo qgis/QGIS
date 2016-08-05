@@ -66,17 +66,17 @@ Qgs25DRenderer::Qgs25DRenderer()
 
   mSymbol->deleteSymbolLayer( 0 ); // We never asked for the default layer
 
-  QgsSymbolLayerV2* floor = QgsSimpleFillSymbolLayerV2::create();
+  QgsSymbolLayer* floor = QgsSimpleFillSymbolLayerV2::create();
 
   QgsStringMap wallProperties;
   wallProperties.insert( "geometryModifier", WALL_EXPRESSION );
   wallProperties.insert( "symbolType", "Fill" );
-  QgsSymbolLayerV2* walls = QgsGeometryGeneratorSymbolLayerV2::create( wallProperties );
+  QgsSymbolLayer* walls = QgsGeometryGeneratorSymbolLayerV2::create( wallProperties );
 
   QgsStringMap roofProperties;
   roofProperties.insert( "geometryModifier", ROOF_EXPRESSION );
   roofProperties.insert( "symbolType", "Fill" );
-  QgsSymbolLayerV2* roof = QgsGeometryGeneratorSymbolLayerV2::create( roofProperties );
+  QgsSymbolLayer* roof = QgsGeometryGeneratorSymbolLayerV2::create( roofProperties );
 
   floor->setLocked( true );
 
@@ -116,7 +116,7 @@ QDomElement Qgs25DRenderer::save( QDomDocument& doc )
 
   rendererElem.setAttribute( "type", "25dRenderer" );
 
-  QDomElement symbolElem = QgsSymbolLayerV2Utils::saveSymbol( "symbol", mSymbol.data(), doc );
+  QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( "symbol", mSymbol.data(), doc );
 
   rendererElem.appendChild( symbolElem );
 
@@ -130,7 +130,7 @@ QgsFeatureRendererV2* Qgs25DRenderer::create( QDomElement& element )
   QDomNodeList symbols = element.elementsByTagName( "symbol" );
   if ( symbols.size() )
   {
-    renderer->mSymbol.reset( QgsSymbolLayerV2Utils::loadSymbol( symbols.at( 0 ).toElement() ) );
+    renderer->mSymbol.reset( QgsSymbolLayerUtils::loadSymbol( symbols.at( 0 ).toElement() ) );
   }
 
   return renderer;
@@ -158,17 +158,17 @@ QgsFeatureRendererV2* Qgs25DRenderer::clone() const
   return c;
 }
 
-QgsSymbolV2*Qgs25DRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbol*Qgs25DRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   Q_UNUSED( feature )
   Q_UNUSED( context )
   return mSymbol.data();
 }
 
-QgsSymbolV2List Qgs25DRenderer::symbols( QgsRenderContext& context )
+QgsSymbolList Qgs25DRenderer::symbols( QgsRenderContext& context )
 {
   Q_UNUSED( context );
-  QgsSymbolV2List lst;
+  QgsSymbolList lst;
   lst.append( mSymbol.data() );
   return lst;
 }

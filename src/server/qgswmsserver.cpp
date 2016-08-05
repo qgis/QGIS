@@ -43,7 +43,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmapserviceexception.h"
 #include "qgssldconfigparser.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsrendererv2.h"
 #include "qgspaintenginehack.h"
 #include "qgsogcutils.h"
@@ -1026,7 +1026,7 @@ void QgsWmsServer::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols
     context.expressionContext().setFeature( f );
     if ( moreSymbolsPerFeature )
     {
-      Q_FOREACH ( QgsSymbolV2* s, r->originalSymbolsForFeature( f, context ) )
+      Q_FOREACH ( QgsSymbol* s, r->originalSymbolsForFeature( f, context ) )
         usedSymbols.insert( s );
     }
     else
@@ -2888,8 +2888,8 @@ void QgsWmsServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
       << QgsExpressionContextUtils::projectScope()
       << QgsExpressionContextUtils::layerScope( vl );
 
-      QgsSymbolV2List symbolList = rendererV2->symbols( context );
-      QgsSymbolV2List::iterator symbolIt = symbolList.begin();
+      QgsSymbolList symbolList = rendererV2->symbols( context );
+      QgsSymbolList::iterator symbolIt = symbolList.begin();
       for ( ; symbolIt != symbolList.end(); ++symbolIt )
       {
         ( *symbolIt )->setAlpha(( *symbolIt )->alpha() * opacityRatio );

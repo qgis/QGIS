@@ -17,7 +17,7 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgsgeometry.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include <QBrush>
 #include <QColor>
 #include <QList>
@@ -27,7 +27,7 @@
 
 class QgsMapLayer;
 class QgsVectorLayer;
-class QgsSymbolV2;
+class QgsSymbol;
 
 /** \ingroup gui
  * A class for highlight features on the map.
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 
   private:
     void init();
-    void setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
+    void setSymbol( QgsSymbol* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
     double getSymbolWidth( const QgsRenderContext & context, double width, QgsUnitTypes::RenderUnit unit );
     /** Get renderer for current color mode and colors. The renderer should be freed by caller. */
     QgsFeatureRendererV2 * getRenderer( QgsRenderContext &context, const QColor & color, const QColor & fillColor );

@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgsrulebasedrendererv2.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 #include "qgsexpression.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
@@ -35,7 +35,7 @@
 #include <QUuid>
 
 
-QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, const QString& filterExp, const QString& label, const QString& description, bool elseRule )
+QgsRuleBasedRendererV2::Rule::Rule( QgsSymbol* symbol, int scaleMinDenom, int scaleMaxDenom, const QString& filterExp, const QString& label, const QString& description, bool elseRule )
     : mParent( nullptr )
     , mSymbol( symbol )
     , mScaleMinDenom( scaleMinDenom )
@@ -211,9 +211,9 @@ bool QgsRuleBasedRendererV2::Rule::needsGeometry() const
   return false;
 }
 
-QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbols( const QgsRenderContext& context ) const
+QgsSymbolList QgsRuleBasedRendererV2::Rule::symbols( const QgsRenderContext& context ) const
 {
-  QgsSymbolV2List lst;
+  QgsSymbolList lst;
   if ( mSymbol )
     lst.append( mSymbol );
 
@@ -224,7 +224,7 @@ QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbols( const QgsRenderContext& c
   return lst;
 }
 
-void QgsRuleBasedRendererV2::Rule::setSymbol( QgsSymbolV2* sym )
+void QgsRuleBasedRendererV2::Rule::setSymbol( QgsSymbol* sym )
 {
   delete mSymbol;
   mSymbol = sym;
@@ -294,7 +294,7 @@ bool QgsRuleBasedRendererV2::Rule::isScaleOK( double scale ) const
 
 QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
 {
-  QgsSymbolV2* sym = mSymbol ? mSymbol->clone() : nullptr;
+  QgsSymbol* sym = mSymbol ? mSymbol->clone() : nullptr;
   Rule* newrule = new Rule( sym, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
   newrule->setActive( mIsActive );
   // clone children
@@ -303,7 +303,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
   return newrule;
 }
 
-QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolV2Map& symbolMap ) const
+QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolMap& symbolMap ) const
 {
   QDomElement ruleElem = doc.createElement( "rule" );
 
@@ -399,7 +399,7 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
 
     if ( !props.value( "filter", "" ).isEmpty() )
     {
-      QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, props.value( "filter", "" ) );
+      QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, props.value( "filter", "" ) );
     }
 
     if ( !props.value( "scaleMinDenom", "" ).isEmpty() )
@@ -611,9 +611,9 @@ bool QgsRuleBasedRendererV2::Rule::willRenderFeature( QgsFeature& feat, QgsRende
   return false;
 }
 
-QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbolsForFeature( QgsFeature& feat, QgsRenderContext* context )
+QgsSymbolList QgsRuleBasedRendererV2::Rule::symbolsForFeature( QgsFeature& feat, QgsRenderContext* context )
 {
-  QgsSymbolV2List lst;
+  QgsSymbolList lst;
   if ( !isFilterOK( feat, context ) )
     return lst;
   if ( mSymbol )
@@ -670,10 +670,10 @@ void QgsRuleBasedRendererV2::Rule::stopRender( QgsRenderContext& context )
   mSymbolNormZLevels.clear();
 }
 
-QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap )
+QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement& ruleElem, QgsSymbolMap& symbolMap )
 {
   QString symbolIdx = ruleElem.attribute( "symbol" );
-  QgsSymbolV2* symbol = nullptr;
+  QgsSymbol* symbol = nullptr;
   if ( !symbolIdx.isEmpty() )
   {
     if ( symbolMap.contains( symbolIdx ) )
@@ -727,7 +727,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
 
   QString label, description, filterExp;
   int scaleMinDenom = 0, scaleMaxDenom = 0;
-  QgsSymbolLayerV2List layers;
+  QgsSymbolLayerList layers;
 
   // retrieve the Rule element child nodes
   QDomElement childElem = ruleElem.firstChildElement();
@@ -798,14 +798,14 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
     else if ( childElem.localName().endsWith( "Symbolizer" ) )
     {
       // create symbol layers for this symbolizer
-      QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( childElem, geomType, layers );
+      QgsSymbolLayerUtils::createSymbolLayerV2ListFromSld( childElem, geomType, layers );
     }
 
     childElem = childElem.nextSiblingElement();
   }
 
   // now create the symbol
-  QgsSymbolV2 *symbol = nullptr;
+  QgsSymbol *symbol = nullptr;
   if ( !layers.isEmpty() )
   {
     switch ( geomType )
@@ -841,7 +841,7 @@ QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* ro
 {
 }
 
-QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
+QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbol* defaultSymbol )
     : QgsFeatureRendererV2( "RuleRenderer" )
 {
   mRootRule = new Rule( nullptr ); // root has no symbol, no filter etc - just a container
@@ -854,7 +854,7 @@ QgsRuleBasedRendererV2::~QgsRuleBasedRendererV2()
 }
 
 
-QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& , QgsRenderContext& )
+QgsSymbol* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& , QgsRenderContext& )
 {
   // not used at all
   return nullptr;
@@ -915,7 +915,7 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
       context.expressionContext().setFeature( job->ftr.feat );
       //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
       // render feature - but only with symbol layers with specified zIndex
-      QgsSymbolV2* s = job->symbol;
+      QgsSymbol* s = job->symbol;
       int count = s->symbolLayerCount();
       for ( int i = 0; i < count; i++ )
       {
@@ -983,7 +983,7 @@ void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element ) co
 }
 
 // TODO: ideally this function should be removed in favor of legendSymbol(ogy)Items
-QgsSymbolV2List QgsRuleBasedRendererV2::symbols( QgsRenderContext& context )
+QgsSymbolList QgsRuleBasedRendererV2::symbols( QgsRenderContext& context )
 {
   return mRootRule->symbols( context );
 }
@@ -995,13 +995,13 @@ QDomElement QgsRuleBasedRendererV2::save( QDomDocument& doc )
   rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
   rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
-  QgsSymbolV2Map symbols;
+  QgsSymbolMap symbols;
 
   QDomElement rulesElem = mRootRule->save( doc, symbols );
   rulesElem.setTagName( "rules" ); // instead of just "rule"
   rendererElem.appendChild( rulesElem );
 
-  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( symbols, "symbols", doc );
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, "symbols", doc );
   rendererElem.appendChild( symbolsElem );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
@@ -1024,8 +1024,8 @@ QgsLegendSymbologyList QgsRuleBasedRendererV2::legendSymbologyItems( QSize iconS
   QgsLegendSymbolList items = legendSymbolItems();
   for ( QgsLegendSymbolList::iterator it = items.begin(); it != items.end(); ++it )
   {
-    QPair<QString, QgsSymbolV2*> pair = *it;
-    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( pair.second, iconSize );
+    QPair<QString, QgsSymbol*> pair = *it;
+    QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( pair.second, iconSize );
     lst << qMakePair( pair.first, pix );
   }
   return lst;
@@ -1049,7 +1049,7 @@ void QgsRuleBasedRendererV2::checkLegendSymbolItem( const QString& key, bool sta
     rule->setActive( state );
 }
 
-void QgsRuleBasedRendererV2::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+void QgsRuleBasedRendererV2::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
 {
   Rule* rule = mRootRule->findRuleByKey( key );
   if ( rule )
@@ -1076,7 +1076,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
   if ( symbolsElem.isNull() )
     return nullptr;
 
-  QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
+  QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
 
   QDomElement rulesElem = element.firstChildElement( "rules" );
 
@@ -1087,7 +1087,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
   QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( root );
 
   // delete symbols if there are any more
-  QgsSymbolLayerV2Utils::clearSymbolMap( symbolMap );
+  QgsSymbolLayerUtils::clearSymbolMap( symbolMap );
 
   return r;
 }
@@ -1192,7 +1192,7 @@ void QgsRuleBasedRendererV2::refineRuleScales( QgsRuleBasedRendererV2::Rule* ini
   qSort( scales ); // make sure the scales are in ascending order
   int oldScale = initialRule->scaleMinDenom();
   int maxDenom = initialRule->scaleMaxDenom();
-  QgsSymbolV2* symbol = initialRule->symbol();
+  QgsSymbol* symbol = initialRule->symbol();
   Q_FOREACH ( int scale, scales )
   {
     if ( initialRule->scaleMinDenom() >= scale )
@@ -1218,12 +1218,12 @@ bool QgsRuleBasedRendererV2::willRenderFeature( QgsFeature& feat, QgsRenderConte
   return mRootRule->willRenderFeature( feat, &context );
 }
 
-QgsSymbolV2List QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
+QgsSymbolList QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   return mRootRule->symbolsForFeature( feat, &context );
 }
 
-QgsSymbolV2List QgsRuleBasedRendererV2::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
+QgsSymbolList QgsRuleBasedRendererV2::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   return mRootRule->symbolsForFeature( feat, &context );
 }
@@ -1246,7 +1246,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
     if ( !singleSymbolRenderer )
       return nullptr;
 
-    QgsSymbolV2* origSymbol = singleSymbolRenderer->symbol()->clone();
+    QgsSymbol* origSymbol = singleSymbolRenderer->symbol()->clone();
     convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField() );
     r = new QgsRuleBasedRendererV2( origSymbol );
   }
@@ -1304,7 +1304,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       //Ideally we could simply copy the symbol, but the categorized renderer allows a separate interface to specify
       //data dependent area and rotation, so we need to convert these to obtain the same rendering
 
-      QgsSymbolV2* origSymbol = category.symbol()->clone();
+      QgsSymbol* origSymbol = category.symbol()->clone();
       convertToDataDefinedSymbology( origSymbol, categorizedRenderer->sizeScaleField() );
       rule->setSymbol( origSymbol );
 
@@ -1359,7 +1359,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       //Ideally we could simply copy the symbol, but the graduated renderer allows a separate interface to specify
       //data dependent area and rotation, so we need to convert these to obtain the same rendering
 
-      QgsSymbolV2* symbol = range.symbol()->clone();
+      QgsSymbol* symbol = range.symbol()->clone();
       convertToDataDefinedSymbology( symbol, graduatedRenderer->sizeScaleField() );
 
       rule->setSymbol( symbol );
@@ -1391,12 +1391,12 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
   return r;
 }
 
-void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol, const QString& sizeScaleField, const QString& rotationField )
+void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbol* symbol, const QString& sizeScaleField, const QString& rotationField )
 {
   QString sizeExpression;
   switch ( symbol->type() )
   {
-    case QgsSymbolV2::Marker:
+    case QgsSymbol::Marker:
       for ( int j = 0; j < symbol->symbolLayerCount();++j )
       {
         QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( symbol->symbolLayer( j ) );
@@ -1411,7 +1411,7 @@ void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol,
         }
       }
       break;
-    case QgsSymbolV2::Line:
+    case QgsSymbol::Line:
       if ( ! sizeScaleField.isEmpty() )
       {
         for ( int j = 0; j < symbol->symbolLayerCount();++j )
@@ -1424,7 +1424,7 @@ void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol,
           }
           if ( symbol->symbolLayer( j )->layerType() == "MarkerLine" )
           {
-            QgsSymbolV2* marker = symbol->symbolLayer( j )->subSymbol();
+            QgsSymbol* marker = symbol->symbolLayer( j )->subSymbol();
             for ( int k = 0; k < marker->symbolLayerCount();++k )
             {
               QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( marker->symbolLayer( k ) );

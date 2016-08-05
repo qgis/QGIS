@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssymbolv2selectordialog.cpp
+    qgssymbolselectordialog.cpp
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 
 #include "qgsstylev2.h"
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgssymbollayerv2registry.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbollayerregistry.h"
 #include "qgsdatadefined.h"
 
 // the widgets
 #include "qgssymbolslistwidget.h"
 #include "qgslayerpropertieswidget.h"
-#include "qgssymbollayerv2widget.h"
+#include "qgssymbollayerwidget.h"
 #include "qgsellipsesymbollayerv2widget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 
@@ -48,15 +48,15 @@
 
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
 
-DataDefinedRestorer::DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayerV2* symbolLayer )
+DataDefinedRestorer::DataDefinedRestorer( QgsSymbol* symbol, const QgsSymbolLayer* symbolLayer )
     : mMarker( nullptr )
     , mMarkerSymbolLayer( nullptr )
     , mLine( nullptr )
     , mLineSymbolLayer( nullptr )
 {
-  if ( symbolLayer->type() == QgsSymbolV2::Marker && symbol->type() == QgsSymbolV2::Marker )
+  if ( symbolLayer->type() == QgsSymbol::Marker && symbol->type() == QgsSymbol::Marker )
   {
-    Q_ASSERT( symbol->type() == QgsSymbolV2::Marker );
+    Q_ASSERT( symbol->type() == QgsSymbol::Marker );
     mMarker = static_cast<QgsMarkerSymbolV2*>( symbol );
     mMarkerSymbolLayer = static_cast<const QgsMarkerSymbolLayerV2*>( symbolLayer );
     mDDSize = mMarker->dataDefinedSize();
@@ -65,7 +65,7 @@ DataDefinedRestorer::DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLa
     if ( mDDSize == QgsDataDefined() && mDDAngle == QgsDataDefined() )
       mMarker = nullptr;
   }
-  else if ( symbolLayer->type() == QgsSymbolV2::Line && symbol->type() == QgsSymbolV2::Line )
+  else if ( symbolLayer->type() == QgsSymbol::Line && symbol->type() == QgsSymbol::Line )
   {
     mLine = static_cast<QgsLineSymbolV2*>( symbol );
     mLineSymbolLayer = static_cast<const QgsLineSymbolLayerV2*>( symbolLayer );
@@ -117,17 +117,17 @@ void DataDefinedRestorer::restore()
 class SymbolLayerItem : public QStandardItem
 {
   public:
-    explicit SymbolLayerItem( QgsSymbolLayerV2* layer )
+    explicit SymbolLayerItem( QgsSymbolLayer* layer )
     {
       setLayer( layer );
     }
 
-    explicit SymbolLayerItem( QgsSymbolV2* symbol )
+    explicit SymbolLayerItem( QgsSymbol* symbol )
     {
       setSymbol( symbol );
     }
 
-    void setLayer( QgsSymbolLayerV2* layer )
+    void setLayer( QgsSymbolLayer* layer )
     {
       mLayer = layer;
       mIsLayer = true;
@@ -135,7 +135,7 @@ class SymbolLayerItem : public QStandardItem
       updatePreview();
     }
 
-    void setSymbol( QgsSymbolV2* symbol )
+    void setSymbol( QgsSymbol* symbol )
     {
       mSymbol = symbol;
       mIsLayer = false;
@@ -147,9 +147,9 @@ class SymbolLayerItem : public QStandardItem
     {
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) ); //todo: make unit a parameter
+        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) ); //todo: make unit a parameter
       else
-        icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mSymbol, QSize( 16, 16 ) );
+        icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, QSize( 16, 16 ) );
       setIcon( icon );
 
       if ( parent() )
@@ -160,12 +160,12 @@ class SymbolLayerItem : public QStandardItem
     bool isLayer() { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
-    QgsSymbolV2* symbol()
+    QgsSymbol* symbol()
     {
       return mSymbol;
     }
 
-    QgsSymbolLayerV2* layer()
+    QgsSymbolLayer* layer()
     {
       return mLayer;
     }
@@ -175,16 +175,16 @@ class SymbolLayerItem : public QStandardItem
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
         if ( mIsLayer )
-          return QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
+          return QgsSymbolLayerRegistry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
         else
         {
           switch ( mSymbol->type() )
           {
-            case QgsSymbolV2::Marker :
+            case QgsSymbol::Marker :
               return QCoreApplication::translate( "SymbolLayerItem", "Marker", nullptr, QCoreApplication::UnicodeUTF8 );
-            case QgsSymbolV2::Fill   :
+            case QgsSymbol::Fill   :
               return QCoreApplication::translate( "SymbolLayerItem", "Fill", nullptr, QCoreApplication::UnicodeUTF8 );
-            case QgsSymbolV2::Line   :
+            case QgsSymbol::Line   :
               return QCoreApplication::translate( "SymbolLayerItem", "Line", nullptr, QCoreApplication::UnicodeUTF8 );
             default:
               return "Symbol";
@@ -199,8 +199,8 @@ class SymbolLayerItem : public QStandardItem
     }
 
   protected:
-    QgsSymbolLayerV2* mLayer;
-    QgsSymbolV2* mSymbol;
+    QgsSymbolLayer* mLayer;
+    QgsSymbol* mSymbol;
     bool mIsLayer;
 };
 
@@ -208,7 +208,7 @@ class SymbolLayerItem : public QStandardItem
 
 //////////
 
-QgsSymbolV2SelectorWidget::QgsSymbolV2SelectorWidget( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent )
+QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent )
     : QgsPanelWidget( parent )
     , mAdvancedMenu( nullptr )
     , mVectorLayer( vl )
@@ -264,11 +264,11 @@ QgsSymbolV2SelectorWidget::QgsSymbolV2SelectorWidget( QgsSymbolV2* symbol, QgsSt
   setPanelTitle( tr( "Symbol selector" ) );
 }
 
-QgsSymbolV2SelectorWidget::~QgsSymbolV2SelectorWidget()
+QgsSymbolSelectorWidget::~QgsSymbolSelectorWidget()
 {
 }
 
-QMenu* QgsSymbolV2SelectorWidget::advancedMenu()
+QMenu* QgsSymbolSelectorWidget::advancedMenu()
 {
   if ( !mAdvancedMenu )
   {
@@ -279,14 +279,14 @@ QMenu* QgsSymbolV2SelectorWidget::advancedMenu()
   return mAdvancedMenu;
 }
 
-void QgsSymbolV2SelectorWidget::setExpressionContext( QgsExpressionContext *context )
+void QgsSymbolSelectorWidget::setExpressionContext( QgsExpressionContext *context )
 {
   mPresetExpressionContext.reset( context );
   layerChanged();
   updatePreview();
 }
 
-void QgsSymbolV2SelectorWidget::setMapCanvas( QgsMapCanvas *canvas )
+void QgsSymbolSelectorWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
 
@@ -300,7 +300,7 @@ void QgsSymbolV2SelectorWidget::setMapCanvas( QgsMapCanvas *canvas )
     listWidget->setMapCanvas( canvas );
 }
 
-void QgsSymbolV2SelectorWidget::loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent )
+void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol* symbol, SymbolLayerItem* parent )
 {
   SymbolLayerItem* symbolItem = new SymbolLayerItem( symbol );
   QFont boldFont = symbolItem->font();
@@ -324,13 +324,13 @@ void QgsSymbolV2SelectorWidget::loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem
 }
 
 
-void QgsSymbolV2SelectorWidget::loadSymbol()
+void QgsSymbolSelectorWidget::loadSymbol()
 {
   model->clear();
   loadSymbol( mSymbol, static_cast<SymbolLayerItem*>( model->invisibleRootItem() ) );
 }
 
-void QgsSymbolV2SelectorWidget::updateUi()
+void QgsSymbolSelectorWidget::updateUi()
 {
   QModelIndex currentIdx =  layersTree->currentIndex();
   if ( !currentIdx.isValid() )
@@ -357,7 +357,7 @@ void QgsSymbolV2SelectorWidget::updateUi()
   btnDuplicate->setEnabled( true );
 }
 
-void QgsSymbolV2SelectorWidget::updatePreview()
+void QgsSymbolSelectorWidget::updatePreview()
 {
   QImage preview = mSymbol->bigSymbolPreviewImage( mPresetExpressionContext.data() );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
@@ -365,7 +365,7 @@ void QgsSymbolV2SelectorWidget::updatePreview()
   emit symbolModified();
 }
 
-void QgsSymbolV2SelectorWidget::updateLayerPreview()
+void QgsSymbolSelectorWidget::updateLayerPreview()
 {
   // get current layer item and update its icon
   SymbolLayerItem* item = currentLayerItem();
@@ -375,7 +375,7 @@ void QgsSymbolV2SelectorWidget::updateLayerPreview()
   updatePreview();
 }
 
-SymbolLayerItem* QgsSymbolV2SelectorWidget::currentLayerItem()
+SymbolLayerItem* QgsSymbolSelectorWidget::currentLayerItem()
 {
   QModelIndex idx = layersTree->currentIndex();
   if ( !idx.isValid() )
@@ -388,7 +388,7 @@ SymbolLayerItem* QgsSymbolV2SelectorWidget::currentLayerItem()
   return item;
 }
 
-QgsSymbolLayerV2* QgsSymbolV2SelectorWidget::currentLayer()
+QgsSymbolLayer* QgsSymbolSelectorWidget::currentLayer()
 {
   QModelIndex idx = layersTree->currentIndex();
   if ( !idx.isValid() )
@@ -401,7 +401,7 @@ QgsSymbolLayerV2* QgsSymbolV2SelectorWidget::currentLayer()
   return nullptr;
 }
 
-void QgsSymbolV2SelectorWidget::layerChanged()
+void QgsSymbolSelectorWidget::layerChanged()
 {
   updateUi();
 
@@ -421,7 +421,7 @@ void QgsSymbolV2SelectorWidget::layerChanged()
     connect( layerProp, SIGNAL( changed() ), mDataDefineRestorer.data(), SLOT( restore() ) );
     connect( layerProp, SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
     // This connection when layer type is changed
-    connect( layerProp, SIGNAL( changeLayer( QgsSymbolLayerV2* ) ), this, SLOT( changeLayer( QgsSymbolLayerV2* ) ) );
+    connect( layerProp, SIGNAL( changeLayer( QgsSymbolLayer* ) ), this, SLOT( changeLayer( QgsSymbolLayer* ) ) );
 
     connectChildPanel( layerProp );
   }
@@ -441,7 +441,7 @@ void QgsSymbolV2SelectorWidget::layerChanged()
   updateLockButton();
 }
 
-void QgsSymbolV2SelectorWidget::symbolChanged()
+void QgsSymbolSelectorWidget::symbolChanged()
 {
   SymbolLayerItem *currentItem = static_cast<SymbolLayerItem*>( model->itemFromIndex( layersTree->currentIndex() ) );
   if ( !currentItem || currentItem->isLayer() )
@@ -451,7 +451,7 @@ void QgsSymbolV2SelectorWidget::symbolChanged()
   if ( currentItem->parent() )
   {
     // it is a sub-symbol
-    QgsSymbolV2* symbol = currentItem->symbol();
+    QgsSymbol* symbol = currentItem->symbol();
     SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( currentItem->parent() );
     parent->removeRow( 0 );
     loadSymbol( symbol, parent );
@@ -470,7 +470,7 @@ void QgsSymbolV2SelectorWidget::symbolChanged()
   connect( layersTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( layerChanged() ) );
 }
 
-void QgsSymbolV2SelectorWidget::setWidget( QWidget* widget )
+void QgsSymbolSelectorWidget::setWidget( QWidget* widget )
 {
   int index = stackedWidget->addWidget( widget );
   stackedWidget->setCurrentIndex( index );
@@ -479,15 +479,15 @@ void QgsSymbolV2SelectorWidget::setWidget( QWidget* widget )
   mPresentWidget = widget;
 }
 
-void QgsSymbolV2SelectorWidget::updateLockButton()
+void QgsSymbolSelectorWidget::updateLockButton()
 {
-  QgsSymbolLayerV2* layer = currentLayer();
+  QgsSymbolLayer* layer = currentLayer();
   if ( !layer )
     return;
   btnLock->setChecked( layer->isLocked() );
 }
 
-void QgsSymbolV2SelectorWidget::addLayer()
+void QgsSymbolSelectorWidget::addLayer()
 {
   QModelIndex idx = layersTree->currentIndex();
   if ( !idx.isValid() )
@@ -501,20 +501,20 @@ void QgsSymbolV2SelectorWidget::addLayer()
     item = static_cast<SymbolLayerItem*>( item->parent() );
   }
 
-  QgsSymbolV2* parentSymbol = item->symbol();
+  QgsSymbol* parentSymbol = item->symbol();
 
   // save data-defined values at marker level
-  QgsDataDefined ddSize = parentSymbol->type() == QgsSymbolV2::Marker
+  QgsDataDefined ddSize = parentSymbol->type() == QgsSymbol::Marker
                           ? static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->dataDefinedSize()
                           : QgsDataDefined();
-  QgsDataDefined ddAngle = parentSymbol->type() == QgsSymbolV2::Marker
+  QgsDataDefined ddAngle = parentSymbol->type() == QgsSymbol::Marker
                            ? static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->dataDefinedAngle()
                            : QgsDataDefined();
-  QgsDataDefined ddWidth = parentSymbol->type() == QgsSymbolV2::Line
+  QgsDataDefined ddWidth = parentSymbol->type() == QgsSymbol::Line
                            ? static_cast<QgsLineSymbolV2 *>( parentSymbol )->dataDefinedWidth()
                            : QgsDataDefined() ;
 
-  QgsSymbolLayerV2* newLayer = QgsSymbolLayerV2Registry::instance()->defaultSymbolLayer( parentSymbol->type() );
+  QgsSymbolLayer* newLayer = QgsSymbolLayerRegistry::instance()->defaultSymbolLayer( parentSymbol->type() );
   if ( insertIdx == -1 )
     parentSymbol->appendSymbolLayer( newLayer );
   else
@@ -537,15 +537,15 @@ void QgsSymbolV2SelectorWidget::addLayer()
   updatePreview();
 }
 
-void QgsSymbolV2SelectorWidget::removeLayer()
+void QgsSymbolSelectorWidget::removeLayer()
 {
   SymbolLayerItem *item = currentLayerItem();
   int row = item->row();
   SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( item->parent() );
 
   int layerIdx = parent->rowCount() - row - 1; // IMPORTANT
-  QgsSymbolV2* parentSymbol = parent->symbol();
-  QgsSymbolLayerV2 *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
+  QgsSymbol* parentSymbol = parent->symbol();
+  QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
 
   parent->removeRow( row );
   parent->updatePreview();
@@ -559,17 +559,17 @@ void QgsSymbolV2SelectorWidget::removeLayer()
   delete tmpLayer;
 }
 
-void QgsSymbolV2SelectorWidget::moveLayerDown()
+void QgsSymbolSelectorWidget::moveLayerDown()
 {
   moveLayerByOffset( + 1 );
 }
 
-void QgsSymbolV2SelectorWidget::moveLayerUp()
+void QgsSymbolSelectorWidget::moveLayerUp()
 {
   moveLayerByOffset( -1 );
 }
 
-void QgsSymbolV2SelectorWidget::moveLayerByOffset( int offset )
+void QgsSymbolSelectorWidget::moveLayerByOffset( int offset )
 {
   SymbolLayerItem *item = currentLayerItem();
   if ( !item )
@@ -577,11 +577,11 @@ void QgsSymbolV2SelectorWidget::moveLayerByOffset( int offset )
   int row = item->row();
 
   SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( item->parent() );
-  QgsSymbolV2* parentSymbol = parent->symbol();
+  QgsSymbol* parentSymbol = parent->symbol();
 
   int layerIdx = parent->rowCount() - row - 1;
   // switch layers
-  QgsSymbolLayerV2* tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
+  QgsSymbolLayer* tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
   parentSymbol->insertSymbolLayer( layerIdx - offset, tmpLayer );
 
   QList<QStandardItem*> rowItems = parent->takeRow( row );
@@ -595,16 +595,16 @@ void QgsSymbolV2SelectorWidget::moveLayerByOffset( int offset )
   updateUi();
 }
 
-void QgsSymbolV2SelectorWidget::lockLayer()
+void QgsSymbolSelectorWidget::lockLayer()
 {
-  QgsSymbolLayerV2* layer = currentLayer();
+  QgsSymbolLayer* layer = currentLayer();
   if ( !layer )
     return;
   layer->setLocked( btnLock->isChecked() );
   emit symbolModified();
 }
 
-void QgsSymbolV2SelectorWidget::duplicateLayer()
+void QgsSymbolSelectorWidget::duplicateLayer()
 {
   QModelIndex idx = layersTree->currentIndex();
   if ( !idx.isValid() )
@@ -614,14 +614,14 @@ void QgsSymbolV2SelectorWidget::duplicateLayer()
   if ( !item->isLayer() )
     return;
 
-  QgsSymbolLayerV2* source = item->layer();
+  QgsSymbolLayer* source = item->layer();
 
   int insertIdx = item->row();
   item = static_cast<SymbolLayerItem*>( item->parent() );
 
-  QgsSymbolV2* parentSymbol = item->symbol();
+  QgsSymbol* parentSymbol = item->symbol();
 
-  QgsSymbolLayerV2* newLayer = source->clone();
+  QgsSymbolLayer* newLayer = source->clone();
   if ( insertIdx == -1 )
     parentSymbol->appendSymbolLayer( newLayer );
   else
@@ -641,7 +641,7 @@ void QgsSymbolV2SelectorWidget::duplicateLayer()
   updatePreview();
 }
 
-void QgsSymbolV2SelectorWidget::saveSymbol()
+void QgsSymbolSelectorWidget::saveSymbol()
 {
   bool ok;
   QString name = QInputDialog::getText( this, tr( "Symbol name" ),
@@ -669,10 +669,10 @@ void QgsSymbolV2SelectorWidget::saveSymbol()
   mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
 }
 
-void QgsSymbolV2SelectorWidget::changeLayer( QgsSymbolLayerV2* newLayer )
+void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer* newLayer )
 {
   SymbolLayerItem* item = currentLayerItem();
-  QgsSymbolLayerV2* layer = item->layer();
+  QgsSymbolLayer* layer = item->layer();
 
   if ( layer->subSymbol() )
   {
@@ -688,7 +688,7 @@ void QgsSymbolV2SelectorWidget::changeLayer( QgsSymbolLayerV2* newLayer )
   }
 
   // Change the symbol at last to avoid deleting item's layer
-  QgsSymbolV2* symbol = static_cast<SymbolLayerItem*>( item->parent() )->symbol();
+  QgsSymbol* symbol = static_cast<SymbolLayerItem*>( item->parent() )->symbol();
   int layerIdx = item->parent()->rowCount() - item->row() - 1;
   symbol->changeSymbolLayer( layerIdx, newLayer );
 
@@ -698,11 +698,11 @@ void QgsSymbolV2SelectorWidget::changeLayer( QgsSymbolLayerV2* newLayer )
   layerChanged();
 }
 
-QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2 *symbol, QgsStyleV2 *style, const QgsVectorLayer *vl, QWidget *parent, bool embedded )
+QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyleV2 *style, const QgsVectorLayer *vl, QWidget *parent, bool embedded )
     : QDialog( parent )
 {
   setLayout( new QVBoxLayout() );
-  mSelectorWidget = new QgsSymbolV2SelectorWidget( symbol, style, vl, this );
+  mSelectorWidget = new QgsSymbolSelectorWidget( symbol, style, vl, this );
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
   connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
@@ -723,38 +723,38 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2 *symbol, QgsSt
   mSelectorWidget->setDockMode( embedded );
 }
 
-QgsSymbolV2SelectorDialog::~QgsSymbolV2SelectorDialog()
+QgsSymbolSelectorDialog::~QgsSymbolSelectorDialog()
 {
   QSettings settings;
   settings.setValue( "/Windows/SymbolSelectorWidget/geometry", saveGeometry() );
 }
 
-QMenu *QgsSymbolV2SelectorDialog::advancedMenu()
+QMenu *QgsSymbolSelectorDialog::advancedMenu()
 {
   return mSelectorWidget->advancedMenu();
 }
 
-void QgsSymbolV2SelectorDialog::setExpressionContext( QgsExpressionContext *context )
+void QgsSymbolSelectorDialog::setExpressionContext( QgsExpressionContext *context )
 {
   mSelectorWidget->setExpressionContext( context );
 }
 
-QgsExpressionContext *QgsSymbolV2SelectorDialog::expressionContext() const
+QgsExpressionContext *QgsSymbolSelectorDialog::expressionContext() const
 {
   return mSelectorWidget->expressionContext();
 }
 
-void QgsSymbolV2SelectorDialog::setMapCanvas( QgsMapCanvas *canvas )
+void QgsSymbolSelectorDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mSelectorWidget->setMapCanvas( canvas );
 }
 
-QgsSymbolV2 *QgsSymbolV2SelectorDialog::symbol()
+QgsSymbol *QgsSymbolSelectorDialog::symbol()
 {
   return mSelectorWidget->symbol();
 }
 
-void QgsSymbolV2SelectorDialog::keyPressEvent( QKeyEvent *e )
+void QgsSymbolSelectorDialog::keyPressEvent( QKeyEvent *e )
 {
   // Ignore the ESC key to avoid close the dialog without the properties window
   if ( !isWindow() && e->key() == Qt::Key_Escape )
@@ -767,104 +767,104 @@ void QgsSymbolV2SelectorDialog::keyPressEvent( QKeyEvent *e )
   }
 }
 
-void QgsSymbolV2SelectorDialog::loadSymbol()
+void QgsSymbolSelectorDialog::loadSymbol()
 {
   mSelectorWidget->loadSymbol();
 }
 
-void QgsSymbolV2SelectorDialog::loadSymbol( QgsSymbolV2 *symbol, SymbolLayerItem *parent )
+void QgsSymbolSelectorDialog::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
 {
   mSelectorWidget->loadSymbol( symbol, parent );
 }
 
-void QgsSymbolV2SelectorDialog::updateUi()
+void QgsSymbolSelectorDialog::updateUi()
 {
   mSelectorWidget->updateUi();
 }
 
-void QgsSymbolV2SelectorDialog::updateLockButton()
+void QgsSymbolSelectorDialog::updateLockButton()
 {
   mSelectorWidget->updateLockButton();
 }
 
-SymbolLayerItem *QgsSymbolV2SelectorDialog::currentLayerItem()
+SymbolLayerItem *QgsSymbolSelectorDialog::currentLayerItem()
 {
   return mSelectorWidget->currentLayerItem();
 }
 
-QgsSymbolLayerV2 *QgsSymbolV2SelectorDialog::currentLayer()
+QgsSymbolLayer *QgsSymbolSelectorDialog::currentLayer()
 {
   return mSelectorWidget->currentLayer();
 }
 
-void QgsSymbolV2SelectorDialog::moveLayerByOffset( int offset )
+void QgsSymbolSelectorDialog::moveLayerByOffset( int offset )
 {
   mSelectorWidget->moveLayerByOffset( offset );
 }
 
-void QgsSymbolV2SelectorDialog::setWidget( QWidget *widget )
+void QgsSymbolSelectorDialog::setWidget( QWidget *widget )
 {
   mSelectorWidget->setWidget( widget );
 }
 
-void QgsSymbolV2SelectorDialog::moveLayerDown()
+void QgsSymbolSelectorDialog::moveLayerDown()
 {
   mSelectorWidget->moveLayerDown();
 }
 
-void QgsSymbolV2SelectorDialog::moveLayerUp()
+void QgsSymbolSelectorDialog::moveLayerUp()
 {
   mSelectorWidget->moveLayerUp();
 }
 
-void QgsSymbolV2SelectorDialog::addLayer()
+void QgsSymbolSelectorDialog::addLayer()
 {
   mSelectorWidget->addLayer();
 }
 
-void QgsSymbolV2SelectorDialog::removeLayer()
+void QgsSymbolSelectorDialog::removeLayer()
 {
   mSelectorWidget->removeLayer();
 }
 
-void QgsSymbolV2SelectorDialog::lockLayer()
+void QgsSymbolSelectorDialog::lockLayer()
 {
   mSelectorWidget->lockLayer();
 }
 
-void QgsSymbolV2SelectorDialog::saveSymbol()
+void QgsSymbolSelectorDialog::saveSymbol()
 {
   Q_NOWARN_DEPRECATED_PUSH
   mSelectorWidget->saveSymbol();
   Q_NOWARN_DEPRECATED_POP
 }
 
-void QgsSymbolV2SelectorDialog::duplicateLayer()
+void QgsSymbolSelectorDialog::duplicateLayer()
 {
   mSelectorWidget->duplicateLayer();
 }
 
-void QgsSymbolV2SelectorDialog::layerChanged()
+void QgsSymbolSelectorDialog::layerChanged()
 {
   mSelectorWidget->layerChanged();
 }
 
-void QgsSymbolV2SelectorDialog::updateLayerPreview()
+void QgsSymbolSelectorDialog::updateLayerPreview()
 {
   mSelectorWidget->updateLayerPreview();
 }
 
-void QgsSymbolV2SelectorDialog::updatePreview()
+void QgsSymbolSelectorDialog::updatePreview()
 {
   mSelectorWidget->updatePreview();
 }
 
-void QgsSymbolV2SelectorDialog::symbolChanged()
+void QgsSymbolSelectorDialog::symbolChanged()
 {
   mSelectorWidget->symbolChanged();
 }
 
-void QgsSymbolV2SelectorDialog::changeLayer( QgsSymbolLayerV2 *layer )
+void QgsSymbolSelectorDialog::changeLayer( QgsSymbolLayer *layer )
 {
   mSelectorWidget->changeLayer( layer );
 }

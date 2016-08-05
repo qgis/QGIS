@@ -18,7 +18,7 @@
 #include <QList>
 #include <QColor>
 
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 /** \ingroup core
  * \class QgsColorBrewerPalette
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsColorBrewerPalette
         QStringList colors = items[2].split( QChar( ' ' ) );
         Q_FOREACH ( const QString& clr, colors )
         {
-          pal << QgsSymbolLayerV2Utils::parseColor( clr );
+          pal << QgsSymbolLayerUtils::parseColor( clr );
         }
       }
       return pal;

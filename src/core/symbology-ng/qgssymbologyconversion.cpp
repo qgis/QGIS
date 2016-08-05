@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssymbologyv2conversion.cpp
+    qgssymbologyconversion.cpp
     ---------------------
     begin                : December 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgssymbologyv2conversion.h"
+#include "qgssymbologyconversion.h"
 
 #include "qgslogger.h"
 
@@ -91,14 +91,14 @@ static Qt::PenStyle readOutlineStyle( const QDomNode& synode )
 {
   QDomNode outlstnode = synode.namedItem( "outlinestyle" );
   QDomElement outlstelement = outlstnode.toElement();
-  return QgsSymbologyV2Conversion::qString2PenStyle( outlstelement.text() );
+  return QgsSymbologyConversion::qString2PenStyle( outlstelement.text() );
 }
 
 static Qt::BrushStyle readBrushStyle( const QDomNode& synode )
 {
   QDomNode fillpnode = synode.namedItem( "fillpattern" );
   QDomElement fillpelement = fillpnode.toElement();
-  return QgsSymbologyV2Conversion::qString2BrushStyle( fillpelement.text() );
+  return QgsSymbologyConversion::qString2BrushStyle( fillpelement.text() );
 }
 
 static QString readMarkerSymbolName( const QDomNode& synode )
@@ -125,7 +125,7 @@ static float readMarkerSymbolSize( const QDomNode& synode )
 
 
 
-static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryType geomType )
+static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryType geomType )
 {
   switch ( geomType )
   {
@@ -151,7 +151,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QgsWkbTypes::Geometry
         QString name = symbolName.mid( 4 );
         sl = new QgsSvgMarkerSymbolLayerV2( name, size, angle );
       }
-      QgsSymbolLayerV2List layers;
+      QgsSymbolLayerList layers;
       layers.append( sl );
       return new QgsMarkerSymbolV2( layers );
     }
@@ -163,7 +163,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QgsWkbTypes::Geometry
       Qt::PenStyle penStyle = readOutlineStyle( synode );
       QgsLineSymbolLayerV2* sl = new QgsSimpleLineSymbolLayerV2( color, width, penStyle );
 
-      QgsSymbolLayerV2List layers;
+      QgsSymbolLayerList layers;
       layers.append( sl );
       return new QgsLineSymbolV2( layers );
     }
@@ -177,7 +177,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QgsWkbTypes::Geometry
       double borderWidth = readOutlineWidth( synode );
       QgsFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, brushStyle, borderColor, borderStyle, borderWidth );
 
-      QgsSymbolLayerV2List layers;
+      QgsSymbolLayerList layers;
       layers.append( sl );
       return new QgsFillSymbolV2( layers );
     }
@@ -195,7 +195,7 @@ static QgsFeatureRendererV2* readOldSingleSymbolRenderer( const QDomNode& rnode,
   if ( synode.isNull() )
     return nullptr;
 
-  QgsSymbolV2* sy2 = readOldSymbol( synode, geomType );
+  QgsSymbol* sy2 = readOldSymbol( synode, geomType );
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( sy2 );
   return r;
 }
@@ -227,7 +227,7 @@ static QgsFeatureRendererV2* readOldGraduatedSymbolRenderer( const QDomNode& rno
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
   {
-    QgsSymbolV2* symbolv2 = readOldSymbol( symbolnode, geomType );
+    QgsSymbol* symbolv2 = readOldSymbol( symbolnode, geomType );
     if ( symbolv2 )
     {
       QgsOldSymbolMeta meta = readSymbolMeta( symbolnode );
@@ -260,7 +260,7 @@ static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, 
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
   {
-    QgsSymbolV2* symbolv2 = readOldSymbol( symbolnode, geomType );
+    QgsSymbol* symbolv2 = readOldSymbol( symbolnode, geomType );
     if ( symbolv2 )
     {
       QgsOldSymbolMeta meta = readSymbolMeta( symbolnode );
@@ -282,7 +282,7 @@ static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, 
 
 
 
-QgsFeatureRendererV2* QgsSymbologyV2Conversion::readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType )
+QgsFeatureRendererV2* QgsSymbologyConversion::readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType )
 {
   QDomNode singlenode = layerNode.namedItem( "singlesymbol" );
   QDomNode graduatednode = layerNode.namedItem( "graduatedsymbol" );
@@ -352,7 +352,7 @@ UNSUPPORTED SYMBOL PROPERTY: texture
 
 
 
-QString QgsSymbologyV2Conversion::penStyle2QString( Qt::PenStyle penstyle )
+QString QgsSymbologyConversion::penStyle2QString( Qt::PenStyle penstyle )
 {
   if ( penstyle == Qt::NoPen )
   {
@@ -388,7 +388,7 @@ QString QgsSymbologyV2Conversion::penStyle2QString( Qt::PenStyle penstyle )
   }
 }
 
-Qt::PenStyle QgsSymbologyV2Conversion::qString2PenStyle( const QString& penString )
+Qt::PenStyle QgsSymbologyConversion::qString2PenStyle( const QString& penString )
 {
   if ( penString == "NoPen" )
   {
@@ -424,7 +424,7 @@ Qt::PenStyle QgsSymbologyV2Conversion::qString2PenStyle( const QString& penStrin
   }
 }
 
-QString QgsSymbologyV2Conversion::brushStyle2QString( Qt::BrushStyle brushstyle )
+QString QgsSymbologyConversion::brushStyle2QString( Qt::BrushStyle brushstyle )
 {
   if ( brushstyle == Qt::NoBrush )
   {
@@ -497,7 +497,7 @@ QString QgsSymbologyV2Conversion::brushStyle2QString( Qt::BrushStyle brushstyle 
   }
 }
 
-Qt::BrushStyle QgsSymbologyV2Conversion::qString2BrushStyle( const QString& brushString )
+Qt::BrushStyle QgsSymbologyConversion::qString2BrushStyle( const QString& brushString )
 {
   if ( brushString == "NoBrush" )
   {

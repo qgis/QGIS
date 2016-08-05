@@ -29,7 +29,7 @@
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgssvgcache.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgscharacterselectdialog.h"
 #include "qgssvgselectorwidget.h"
 #include "qgsvectorlayerlabeling.h"
@@ -1981,7 +1981,7 @@ void QgsLabelingGui::updateSvgWidgets( const QString& svgPath )
     mShapeSVGPathLineEdit->setText( svgPath );
   }
 
-  QString resolvedPath = QgsSymbolLayerV2Utils::symbolNameToPath( svgPath );
+  QString resolvedPath = QgsSymbolLayerUtils::symbolNameToPath( svgPath );
   bool validSVG = !resolvedPath.isNull();
 
   // draw red text for path field if invalid (path can't be resolved)

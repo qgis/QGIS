@@ -38,10 +38,10 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgsstylev2groupselectiondialog.cpp
   symbology-ng/qgsstylev2managerdialog.cpp
   symbology-ng/qgssvgselectorwidget.cpp
-  symbology-ng/qgssymbollayerv2widget.cpp
-  symbology-ng/qgssymbollevelsv2dialog.cpp
+  symbology-ng/qgssymbollayerwidget.cpp
+  symbology-ng/qgssymbollevelsdialog.cpp
   symbology-ng/qgssymbolslistwidget.cpp
-  symbology-ng/qgssymbolv2selectordialog.cpp
+  symbology-ng/qgssymbolselectordialog.cpp
   symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
   symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
   symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp
@@ -487,10 +487,10 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsstylev2groupselectiondialog.h
   symbology-ng/qgsstylev2managerdialog.h
   symbology-ng/qgssvgselectorwidget.h
-  symbology-ng/qgssymbollayerv2widget.h
-  symbology-ng/qgssymbollevelsv2dialog.h
+  symbology-ng/qgssymbollayerwidget.h
+  symbology-ng/qgssymbollevelsdialog.h
   symbology-ng/qgssymbolslistwidget.h
-  symbology-ng/qgssymbolv2selectordialog.h
+  symbology-ng/qgssymbolselectordialog.h
   symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
   symbology-ng/qgsvectorfieldsymbollayerwidget.h
   symbology-ng/qgsvectorgradientcolorrampv2dialog.h

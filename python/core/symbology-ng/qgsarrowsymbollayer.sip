@@ -20,16 +20,16 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
      *
      * @return A new QgsArrowSymbolLayer
      */
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     /** Virtual constructor */
     virtual QgsArrowSymbolLayer* clone() const /Factory/;
 
     /** Get the sub symbol used for filling */
-    virtual QgsSymbolV2* subSymbol();
+    virtual QgsSymbol* subSymbol();
 
     /** Set the sub symbol used for filling */
-    virtual bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
+    virtual bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
 
     /** Return a list of attributes required to render this feature */
     virtual QSet<QString> usedAttributes() const;
@@ -136,13 +136,13 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     QString layerType() const;
 
     /** Prepare the rendering */
-    void startRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolRenderContext& context );
 
     /** End of the rendering */
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolRenderContext& context );
 
     /** Main drawing method */
-    void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context );
 
     void setColor( const QColor& c );
     virtual QColor color() const;

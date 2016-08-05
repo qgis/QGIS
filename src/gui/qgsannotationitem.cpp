@@ -18,8 +18,8 @@
 #include "qgsannotationitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsrendercontext.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbol.h"
 #include <QPainter>
 #include <QPen>
 
@@ -433,7 +433,7 @@ void QgsAnnotationItem::_writeXml( QDomDocument& doc, QDomElement& itemElem ) co
   annotationElem.setAttribute( "visible", isVisible() );
   if ( mMarkerSymbol )
   {
-    QDomElement symbolElem = QgsSymbolLayerV2Utils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
+    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
     if ( !symbolElem.isNull() )
     {
       annotationElem.appendChild( symbolElem );
@@ -479,7 +479,7 @@ void QgsAnnotationItem::_readXml( const QDomDocument& doc, const QDomElement& an
   QDomElement symbolElem = annotationElem.firstChildElement( "symbol" );
   if ( !symbolElem.isNull() )
   {
-    QgsMarkerSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( symbolElem );
+    QgsMarkerSymbolV2* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( symbolElem );
     if ( symbol )
     {
       delete mMarkerSymbol;

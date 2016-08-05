@@ -25,8 +25,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsrendercontext.h"
-#include "qgssymbollayerv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbollayer.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsrendererv2.h"
 
@@ -137,7 +137,7 @@ QgsFeatureRendererV2 * QgsHighlight::getRenderer( QgsRenderContext & context, co
   }
   if ( renderer )
   {
-    Q_FOREACH ( QgsSymbolV2* symbol, renderer->symbols( context ) )
+    Q_FOREACH ( QgsSymbol* symbol, renderer->symbols( context ) )
     {
       if ( !symbol ) continue;
       setSymbol( symbol, context, color, fillColor );
@@ -146,14 +146,14 @@ QgsFeatureRendererV2 * QgsHighlight::getRenderer( QgsRenderContext & context, co
   return renderer;
 }
 
-void QgsHighlight::setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context,   const QColor & color, const QColor & fillColor )
+void QgsHighlight::setSymbol( QgsSymbol* symbol, const QgsRenderContext & context,   const QColor & color, const QColor & fillColor )
 {
   if ( !symbol ) return;
 
 
   for ( int i = symbol->symbolLayerCount() - 1; i >= 0;  i-- )
   {
-    QgsSymbolLayerV2* symbolLayer = symbol->symbolLayer( i );
+    QgsSymbolLayer* symbolLayer = symbol->symbolLayer( i );
     if ( !symbolLayer ) continue;
 
     if ( symbolLayer->subSymbol() )
@@ -194,7 +194,7 @@ double QgsHighlight::getSymbolWidth( const QgsRenderContext & context, double wi
   double scale = 1.;
   if ( unit == QgsUnitTypes::RenderMapUnits )
   {
-    scale = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, QgsUnitTypes::RenderMillimeters ) / QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, QgsUnitTypes::RenderMapUnits );
+    scale = QgsSymbolLayerUtils::lineWidthScaleFactor( context, QgsUnitTypes::RenderMillimeters ) / QgsSymbolLayerUtils::lineWidthScaleFactor( context, QgsUnitTypes::RenderMapUnits );
   }
   width =  qMax( width + 2 * mBuffer * scale, mMinWidth * scale );
   return width;

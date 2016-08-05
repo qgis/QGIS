@@ -16,14 +16,14 @@
 #define QGSARROWSYMBOLLAYERWIDGET_H
 
 #include "ui_qgsarrowsymbollayerwidgetbase.h"
-#include "qgssymbollayerv2widget.h"
+#include "qgssymbollayerwidget.h"
 
 class QgsArrowSymbolLayer;
 
 /** \ingroup gui
  * \class QgsArrowSymbolLayerWidget
  */
-class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerV2Widget, private Ui::QgsArrowSymbolLayerWidgetBase
+class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::QgsArrowSymbolLayerWidgetBase
 {
     Q_OBJECT
 
@@ -37,12 +37,12 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerV2Widget, priva
     /** Static creation method
      * @param layer the layer where this symbol layer is applied
      */
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
 
     /** Set the symbol layer */
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
+    virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
     /** Get the current symbol layer */
-    virtual QgsSymbolLayerV2* symbolLayer() override;
+    virtual QgsSymbolLayer* symbolLayer() override;
 
   private:
     QgsArrowSymbolLayer* mLayer;

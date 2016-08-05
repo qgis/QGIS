@@ -25,7 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsdatadefined.h"
 

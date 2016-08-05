@@ -15,13 +15,13 @@
 
 #include "qgsinvertedpolygonrenderer.h"
 
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 
 #include "qgslogger.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 #include "qgsogcutils.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
@@ -64,7 +64,7 @@ const QgsFeatureRendererV2* QgsInvertedPolygonRenderer::embeddedRenderer() const
   return mSubRenderer.data();
 }
 
-void QgsInvertedPolygonRenderer::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+void QgsInvertedPolygonRenderer::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
 {
   if ( !mSubRenderer )
     return;
@@ -186,8 +186,8 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   QByteArray catId;
   if ( capabilities() & MoreSymbolsPerFeature )
   {
-    QgsSymbolV2List syms( mSubRenderer->symbolsForFeature( feature, context ) );
-    Q_FOREACH ( QgsSymbolV2* sym, syms )
+    QgsSymbolList syms( mSubRenderer->symbolsForFeature( feature, context ) );
+    Q_FOREACH ( QgsSymbol* sym, syms )
     {
       // append the memory address
       catId.append( reinterpret_cast<const char*>( &sym ), sizeof( sym ) );
@@ -195,7 +195,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   }
   else
   {
-    QgsSymbolV2* sym = mSubRenderer->symbolForFeature( feature, context );
+    QgsSymbol* sym = mSubRenderer->symbolForFeature( feature, context );
     if ( sym )
     {
       catId.append( reinterpret_cast<const char*>( &sym ), sizeof( sym ) );
@@ -414,7 +414,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbol* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
   {
@@ -423,34 +423,34 @@ QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, 
   return mSubRenderer->symbolForFeature( feature, context );
 }
 
-QgsSymbolV2* QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
+QgsSymbol* QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
     return nullptr;
   return mSubRenderer->originalSymbolForFeature( feat, context );
 }
 
-QgsSymbolV2List QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbolList QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
   {
-    return QgsSymbolV2List();
+    return QgsSymbolList();
   }
   return mSubRenderer->symbolsForFeature( feature, context );
 }
 
-QgsSymbolV2List QgsInvertedPolygonRenderer::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
+QgsSymbolList QgsInvertedPolygonRenderer::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
-    return QgsSymbolV2List();
+    return QgsSymbolList();
   return mSubRenderer->originalSymbolsForFeature( feat, context );
 }
 
-QgsSymbolV2List QgsInvertedPolygonRenderer::symbols( QgsRenderContext& context )
+QgsSymbolList QgsInvertedPolygonRenderer::symbols( QgsRenderContext& context )
 {
   if ( !mSubRenderer )
   {
-    return QgsSymbolV2List();
+    return QgsSymbolList();
   }
   return mSubRenderer->symbols( context );
 }

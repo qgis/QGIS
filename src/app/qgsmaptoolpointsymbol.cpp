@@ -84,9 +84,9 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
   if ( renderer->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature )
   {
     //could be multiple symbols for this feature, so check them all
-    Q_FOREACH ( QgsSymbolV2* s, renderer->originalSymbolsForFeature( feature, context ) )
+    Q_FOREACH ( QgsSymbol* s, renderer->originalSymbolsForFeature( feature, context ) )
     {
-      if ( s && s->type() == QgsSymbolV2::Marker )
+      if ( s && s->type() == QgsSymbol::Marker )
       {
         hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast< QgsMarkerSymbolV2* >( s ), context );
       }
@@ -94,8 +94,8 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
   }
   else
   {
-    QgsSymbolV2* s = renderer->originalSymbolForFeature( feature, context );
-    if ( s && s->type() == QgsSymbolV2::Marker )
+    QgsSymbol* s = renderer->originalSymbolForFeature( feature, context );
+    if ( s && s->type() == QgsSymbol::Marker )
     {
       hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast< QgsMarkerSymbolV2* >( s ), context );
     }

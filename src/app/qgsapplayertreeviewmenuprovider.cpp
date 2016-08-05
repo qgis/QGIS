@@ -31,12 +31,12 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsstylev2.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslayertreeregistrybridge.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgssinglesymbolrendererv2.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )
@@ -277,7 +277,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
   }
   else if ( QgsLayerTreeModelLegendNode* node = mView->layerTreeModel()->index2legendNode( idx ) )
   {
-    if ( QgsSymbolV2LegendNode* symbolNode = dynamic_cast< QgsSymbolV2LegendNode* >( node ) )
+    if ( QgsSymbolLegendNode* symbolNode = dynamic_cast< QgsSymbolLegendNode* >( node ) )
     {
       // symbology item
       if ( symbolNode->flags() & Qt::ItemIsUserCheckable )
@@ -492,8 +492,8 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
   if ( !singleRenderer )
     return;
 
-  QScopedPointer< QgsSymbolV2 > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
-  QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), layer, mView->window() );
+  QScopedPointer< QgsSymbol > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
+  QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), layer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol selector" ) );
   dlg.setMapCanvas( mCanvas );
   if ( dlg.exec() )
@@ -516,7 +516,7 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor& color 
     return;
 
   QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< QgsSingleSymbolRendererV2* >( layer->rendererV2() );
-  QgsSymbolV2* newSymbol = nullptr;
+  QgsSymbol* newSymbol = nullptr;
 
   if ( singleRenderer && singleRenderer->symbol() )
     newSymbol = singleRenderer->symbol()->clone();
@@ -558,17 +558,17 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
   QString layerId = action->property( "layerId" ).toString();
   QString ruleKey = action->property( "ruleKey" ).toString();
 
-  QgsSymbolV2LegendNode* node = dynamic_cast<QgsSymbolV2LegendNode*>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  QgsSymbolLegendNode* node = dynamic_cast<QgsSymbolLegendNode*>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
 
-  const QgsSymbolV2* originalSymbol = node->symbol();
+  const QgsSymbol* originalSymbol = node->symbol();
   if ( !originalSymbol )
     return;
 
-  QScopedPointer< QgsSymbolV2 > symbol( originalSymbol->clone() );
+  QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-  QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, mView->window() );
+  QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol selector" ) );
   dlg.setMapCanvas( mCanvas );
   if ( dlg.exec() )
@@ -590,15 +590,15 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   QString layerId = action->property( "layerId" ).toString();
   QString ruleKey = action->property( "ruleKey" ).toString();
 
-  QgsSymbolV2LegendNode* node = dynamic_cast<QgsSymbolV2LegendNode*>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  QgsSymbolLegendNode* node = dynamic_cast<QgsSymbolLegendNode*>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
 
-  const QgsSymbolV2* originalSymbol = node->symbol();
+  const QgsSymbol* originalSymbol = node->symbol();
   if ( !originalSymbol )
     return;
 
-  QgsSymbolV2* newSymbol = originalSymbol->clone();
+  QgsSymbol* newSymbol = originalSymbol->clone();
   newSymbol->setColor( color );
   node->setSymbol( newSymbol );
   if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) ) )

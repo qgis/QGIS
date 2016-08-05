@@ -17,7 +17,7 @@
 
 #include "qgis.h"
 #include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include <QScopedPointer>
@@ -42,9 +42,9 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     virtual void stopRender( QgsRenderContext& context ) override;
     //! @note symbolForFeature2 in python bindings
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
     //! @note symbol2 in python bindings
-    virtual QgsSymbolV2List symbols( QgsRenderContext &context ) override;
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
     virtual QString dump() const override;
     virtual QList<QString> usedAttributes() override;
     static QgsFeatureRendererV2* create( QDomElement& element );

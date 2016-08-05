@@ -20,7 +20,7 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsgeometry.h"
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
@@ -571,7 +571,7 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
       for ( QStringList::iterator it = colorStrings.begin();
             it != colorStrings.end(); ++it )
       {
-        QColor color = QgsSymbolLayerV2Utils::decodeColor( *it );
+        QColor color = QgsSymbolLayerUtils::decodeColor( *it );
         QString label;
         if ( colorLabels.length() > colorIndex )
         {
@@ -768,7 +768,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   return scope;
 }
 
-QgsExpressionContextScope* QgsExpressionContextUtils::updateSymbolScope( const QgsSymbolV2* symbol, QgsExpressionContextScope* symbolScope )
+QgsExpressionContextScope* QgsExpressionContextUtils::updateSymbolScope( const QgsSymbol* symbol, QgsExpressionContextScope* symbolScope )
 {
   if ( !symbolScope )
     return nullptr;

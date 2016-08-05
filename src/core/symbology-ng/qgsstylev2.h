@@ -22,10 +22,10 @@
 
 #include <sqlite3.h>
 
-#include "qgssymbollayerv2utils.h" // QgsStringMap
+#include "qgssymbollayerutils.h" // QgsStringMap
 
-class QgsSymbolV2;
-class QgsSymbolLayerV2;
+class QgsSymbol;
+class QgsSymbolLayer;
 class QgsVectorColorRampV2;
 
 class QDomDocument;
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \return success status of the operation
      */
-    bool addSymbol( const QString& name, QgsSymbolV2* symbol, bool update = false );
+    bool addSymbol( const QString& name, QgsSymbol* symbol, bool update = false );
 
     //! adds a new tag and returns the tag's id
     /*!
@@ -183,10 +183,10 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     bool renameSymbol( const QString& oldName, const QString& newName );
 
     //! return a NEW copy of symbol
-    QgsSymbolV2* symbol( const QString& name );
+    QgsSymbol* symbol( const QString& name );
 
     //! return a const pointer to a symbol (doesn't create new instance)
-    const QgsSymbolV2* symbolRef( const QString& name ) const;
+    const QgsSymbol* symbolRef( const QString& name ) const;
 
     //! return count of symbols in style
     int symbolCount();
@@ -255,12 +255,12 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     //! add the symbol to the DB with the tags
     /*!
      *  \param name is the name of the symbol as QString
-     *  \param symbol is the pointer to the new QgsSymbolV2 being saved
+     *  \param symbol is the pointer to the new QgsSymbol being saved
      *  \param groupid is the id of the group to which the symbol belongs. Pass 0 if it doesn't belong to any group or not known.
      *  \param tags is a list of tags that are associated with the symbol as a QStringList.
      *  \return returns the success state of the save operation
      */
-    bool saveSymbol( const QString& name, QgsSymbolV2* symbol, int groupid, const QStringList& tags );
+    bool saveSymbol( const QString& name, QgsSymbol* symbol, int groupid, const QStringList& tags );
 
     //! add the colorramp to the DB
     /*!
@@ -329,11 +329,11 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     bool importXml( const QString& filename );
 
   signals:
-    void symbolSaved( const QString& name, QgsSymbolV2* symbol );
+    void symbolSaved( const QString& name, QgsSymbol* symbol );
 
   protected:
 
-    QgsSymbolV2Map mSymbols;
+    QgsSymbolMap mSymbols;
     QgsVectorColorRampV2Map mColorRamps;
 
     QString mErrorString;

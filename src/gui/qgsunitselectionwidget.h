@@ -19,7 +19,7 @@
 #define QGSUNITSELECTIONWIDGET_H
 
 #include <QWidget>
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "ui_qgsunitselectionwidget.h"
 #include "ui_qgsmapunitscaledialog.h"
 

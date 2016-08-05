@@ -51,10 +51,10 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
     /** Overridden to return shape name */
     virtual QString displayName() const override;
 
-    /** Returns the QgsSymbolV2 used to draw the shape. */
+    /** Returns the QgsSymbol used to draw the shape. */
     QgsFillSymbolV2* polygonStyleSymbol() { return mPolygonStyleSymbol.data(); }
 
-    /** Set the QgsSymbolV2 used to draw the shape. */
+    /** Set the QgsSymbol used to draw the shape. */
     void setPolygonStyleSymbol( QgsFillSymbolV2* symbol );
 
     /** Return correct graphics item type. */
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
 
   protected:
 
-    /** QgsSymbolV2 use to draw the shape. */
+    /** QgsSymbol use to draw the shape. */
     QScopedPointer<QgsFillSymbolV2> mPolygonStyleSymbol;
 
     /** Add the node newPoint at the given position according to some

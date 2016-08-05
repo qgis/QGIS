@@ -17,7 +17,7 @@
 
 #include "qgscoloreffect.h"
 #include "qgsimageoperation.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 QgsPaintEffect *QgsColorEffect::create( const QgsStringMap &map )
 {
@@ -83,7 +83,7 @@ QgsStringMap QgsColorEffect::properties() const
   props.insert( "saturation", QString::number( mSaturation ) );
   props.insert( "grayscale_mode", QString::number( int( mGrayscaleMode ) ) );
   props.insert( "colorize", mColorizeOn ? "1" : "0" );
-  props.insert( "colorize_color", QgsSymbolLayerV2Utils::encodeColor( mColorizeColor ) );
+  props.insert( "colorize_color", QgsSymbolLayerUtils::encodeColor( mColorizeColor ) );
   props.insert( "colorize_strength", QString::number( mColorizeStrength ) );
 
   return props;
@@ -112,7 +112,7 @@ void QgsColorEffect::readProperties( const QgsStringMap &props )
   mColorizeOn = props.value( "colorize", "0" ).toInt();
   if ( props.contains( "colorize_color" ) )
   {
-    setColorizeColor( QgsSymbolLayerV2Utils::decodeColor( props.value( "colorize_color" ) ) );
+    setColorizeColor( QgsSymbolLayerUtils::decodeColor( props.value( "colorize_color" ) ) );
   }
   mColorizeStrength = props.value( "colorize_strength", "100" ).toInt();
 }

@@ -1,12 +1,12 @@
-class QgsSymbolLevelsV2Dialog : QDialog
+class QgsSymbolLevelsDialog : QDialog
 {
 %TypeHeaderCode
-#include <qgssymbollevelsv2dialog.h>
+#include <qgssymbollevelsdialog.h>
 %End
 
   public:
     //! @note not available in python bindings
-    // QgsSymbolLevelsV2Dialog( const QList< QPair<QString, QgsSymbolV2*> >& list, bool usingSymbolLevels, QWidget* parent = NULL );
+    // QgsSymbolLevelsDialog( const QList< QPair<QString, QgsSymbol*> >& list, bool usingSymbolLevels, QWidget* parent = NULL );
 
     bool usingLevels() const;
 
@@ -25,5 +25,5 @@ class QgsSymbolLevelsV2Dialog : QDialog
     //void setDefaultLevels();
 
   private:
-    QgsSymbolLevelsV2Dialog();
+    QgsSymbolLevelsDialog();
 };

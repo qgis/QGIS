@@ -75,11 +75,11 @@
 #include "qgsvectorlayerundocommand.h"
 #include "qgspointv2.h"
 #include "qgsrendererv2.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsstylev2.h"
-#include "qgssymbologyv2conversion.h"
+#include "qgssymbologyconversion.h"
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"
 #include "qgsexpressioncontext.h"
@@ -635,7 +635,7 @@ bool QgsVectorLayer::diagramsEnabled() const
   return false;
 }
 
-long QgsVectorLayer::featureCount( QgsSymbolV2* symbol ) const
+long QgsVectorLayer::featureCount( QgsSymbol* symbol ) const
 {
   if ( !mSymbolFeatureCounted )
     return -1;
@@ -762,8 +762,8 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   while ( fit.nextFeature( f ) )
   {
     renderContext.expressionContext().setFeature( f );
-    QgsSymbolV2List featureSymbolList = mRendererV2->originalSymbolsForFeature( f, renderContext );
-    for ( QgsSymbolV2List::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
+    QgsSymbolList featureSymbolList = mRendererV2->originalSymbolsForFeature( f, renderContext );
+    for ( QgsSymbolList::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
     {
       mSymbolFeatureCountMap[*symbolIt] += 1;
     }
@@ -1777,7 +1777,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     }
     else
     {
-      QgsFeatureRendererV2* r = QgsSymbologyV2Conversion::readOldRenderer( node, geometryType() );
+      QgsFeatureRendererV2* r = QgsSymbologyConversion::readOldRenderer( node, geometryType() );
       if ( !r )
         r = QgsFeatureRendererV2::defaultRenderer( geometryType() );
 

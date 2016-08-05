@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssymbollevelsv2dialog.cpp
+    qgssymbollevelsdialog.cpp
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssymbollevelsv2dialog.h"
+#include "qgssymbollevelsdialog.h"
 
-#include "qgssymbollayerv2utils.h"
-#include "qgssymbollayerv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbollayer.h"
+#include "qgssymbol.h"
 
 #include <QTableWidgetItem>
 #include <QItemDelegate>
@@ -27,7 +27,7 @@
 
 ////////////////
 
-QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent )
+QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent )
     : QDialog( parent )
     , mList( list )
     , mForceOrderingEnabled( false )
@@ -53,10 +53,10 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& lis
   tableLevels->setRowCount( mList.count() );
   for ( int i = 0; i < mList.count(); i++ )
   {
-    QgsSymbolV2* sym = mList.at( i ).second;
+    QgsSymbol* sym = mList.at( i ).second;
 
     // set icons for the rows
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( sym, QSize( 16, 16 ) );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( sym, QSize( 16, 16 ) );
     tableLevels->setVerticalHeaderItem( i, new QTableWidgetItem( icon, QString() ) );
 
     // find out max. number of layers per symbol
@@ -85,17 +85,17 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& lis
   connect( tableLevels, SIGNAL( cellChanged( int, int ) ), this, SLOT( renderingPassChanged( int, int ) ) );
 }
 
-QgsSymbolLevelsV2Dialog::~QgsSymbolLevelsV2Dialog()
+QgsSymbolLevelsDialog::~QgsSymbolLevelsDialog()
 {
   QSettings settings;
   settings.setValue( "/Windows/symbolLevelsDlg/geometry", saveGeometry() );
 }
 
-void QgsSymbolLevelsV2Dialog::populateTable()
+void QgsSymbolLevelsDialog::populateTable()
 {
   for ( int row = 0; row < mList.count(); row++ )
   {
-    QgsSymbolV2* sym = mList.at( row ).second;
+    QgsSymbol* sym = mList.at( row ).second;
     QString label = mList.at( row ).first;
     QTableWidgetItem *itemLabel = new QTableWidgetItem( label );
     itemLabel->setFlags( itemLabel->flags() ^ Qt::ItemIsEditable );
@@ -110,8 +110,8 @@ void QgsSymbolLevelsV2Dialog::populateTable()
       }
       else
       {
-        QgsSymbolLayerV2* sl = sym->symbolLayer( layer );
-        QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) );
+        QgsSymbolLayer* sl = sym->symbolLayer( layer );
+        QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) );
         item = new QTableWidgetItem( icon, QString::number( sl->renderingPass() ) );
       }
       tableLevels->setItem( row, layer + 1, item );
@@ -121,16 +121,16 @@ void QgsSymbolLevelsV2Dialog::populateTable()
 
 }
 
-void QgsSymbolLevelsV2Dialog::updateUi()
+void QgsSymbolLevelsDialog::updateUi()
 {
   tableLevels->setEnabled( chkEnable->isChecked() );
 }
 
-void QgsSymbolLevelsV2Dialog::setDefaultLevels()
+void QgsSymbolLevelsDialog::setDefaultLevels()
 {
   for ( int i = 0; i < mList.count(); i++ )
   {
-    QgsSymbolV2* sym = mList.at( i ).second;
+    QgsSymbol* sym = mList.at( i ).second;
     for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
     {
       sym->symbolLayer( layer )->setRenderingPass( layer );
@@ -138,22 +138,22 @@ void QgsSymbolLevelsV2Dialog::setDefaultLevels()
   }
 }
 
-bool QgsSymbolLevelsV2Dialog::usingLevels() const
+bool QgsSymbolLevelsDialog::usingLevels() const
 {
   return chkEnable->isChecked();
 }
 
-void QgsSymbolLevelsV2Dialog::renderingPassChanged( int row, int column )
+void QgsSymbolLevelsDialog::renderingPassChanged( int row, int column )
 {
   if ( row < 0 || row >= mList.count() )
     return;
-  QgsSymbolV2* sym = mList.at( row ).second;
+  QgsSymbol* sym = mList.at( row ).second;
   if ( column < 0 || column > sym->symbolLayerCount() )
     return;
   sym->symbolLayer( column - 1 )->setRenderingPass( tableLevels->item( row, column )->text().toInt() );
 }
 
-void QgsSymbolLevelsV2Dialog::setForceOrderingEnabled( bool enabled )
+void QgsSymbolLevelsDialog::setForceOrderingEnabled( bool enabled )
 {
   mForceOrderingEnabled = enabled;
   if ( enabled )

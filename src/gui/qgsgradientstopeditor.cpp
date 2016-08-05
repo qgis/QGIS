@@ -15,7 +15,7 @@
 
 #include "qgsgradientstopeditor.h"
 #include "qgsapplication.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 #include <QStyleOptionFrameV3>
@@ -444,7 +444,7 @@ void QgsGradientStopEditor::dragEnterEvent( QDragEnterEvent *e )
 {
   //is dragged data valid color data?
   bool hasAlpha;
-  QColor mimeColor = QgsSymbolLayerV2Utils::colorFromMimeData( e->mimeData(), hasAlpha );
+  QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( e->mimeData(), hasAlpha );
 
   if ( mimeColor.isValid() )
   {
@@ -457,7 +457,7 @@ void QgsGradientStopEditor::dropEvent( QDropEvent *e )
 {
   //is dropped data valid color data?
   bool hasAlpha = false;
-  QColor mimeColor = QgsSymbolLayerV2Utils::colorFromMimeData( e->mimeData(), hasAlpha );
+  QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( e->mimeData(), hasAlpha );
 
   if ( mimeColor.isValid() )
   {

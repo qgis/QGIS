@@ -26,7 +26,7 @@
 #include "qgsmessagelog.h"
 #include "qgsdatadefined.h"
 #include "qgsnetworkcontentfetcher.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -747,8 +747,8 @@ bool QgsComposerPicture::writeXml( QDomElement& elem, QDomDocument & doc ) const
   composerPictureElem.setAttribute( "pictureHeight", QString::number( mPictureHeight ) );
   composerPictureElem.setAttribute( "resizeMode", QString::number( static_cast< int >( mResizeMode ) ) );
   composerPictureElem.setAttribute( "anchorPoint", QString::number( static_cast< int >( mPictureAnchor ) ) );
-  composerPictureElem.setAttribute( "svgFillColor", QgsSymbolLayerV2Utils::encodeColor( mSvgFillColor ) );
-  composerPictureElem.setAttribute( "svgBorderColor", QgsSymbolLayerV2Utils::encodeColor( mSvgBorderColor ) );
+  composerPictureElem.setAttribute( "svgFillColor", QgsSymbolLayerUtils::encodeColor( mSvgFillColor ) );
+  composerPictureElem.setAttribute( "svgBorderColor", QgsSymbolLayerUtils::encodeColor( mSvgBorderColor ) );
   composerPictureElem.setAttribute( "svgBorderWidth", QString::number( mSvgBorderWidth ) );
 
   //rotation
@@ -780,8 +780,8 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
   //when loading from xml, default to anchor point of middle to match pre 2.4 behaviour
   mPictureAnchor = static_cast< QgsComposerItem::ItemPositionMode >( itemElem.attribute( "anchorPoint", QString::number( QgsComposerItem::Middle ) ).toInt() );
 
-  mSvgFillColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "svgFillColor", QgsSymbolLayerV2Utils::encodeColor( QColor( 255, 255, 255 ) ) ) );
-  mSvgBorderColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "svgBorderColor", QgsSymbolLayerV2Utils::encodeColor( QColor( 0, 0, 0 ) ) ) );
+  mSvgFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "svgFillColor", QgsSymbolLayerUtils::encodeColor( QColor( 255, 255, 255 ) ) ) );
+  mSvgBorderColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "svgBorderColor", QgsSymbolLayerUtils::encodeColor( QColor( 0, 0, 0 ) ) ) );
   mSvgBorderWidth = itemElem.attribute( "svgBorderWidth", "0.2" ).toDouble();
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );

@@ -19,7 +19,7 @@
 #define QGSPOINTDISPLACEMENTRENDERER_H
 
 #include "qgsfeature.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsrendererv2.h"
 #include <QFont>
 #include <QSet>
@@ -58,23 +58,23 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as symbols2
      */
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
+    virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as symbolForFeature2
      */
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as originalSymbolForFeature2
      */
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as symbolsForFeature2
      */
-    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
+    virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as originalSymbolsForFeature2
      */
-    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
+    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as willRenderFeature2
      */
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void setEmbeddedRenderer( QgsFeatureRendererV2* r ) override;
     const QgsFeatureRendererV2* embeddedRenderer() const override;
 
-    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol ) override;
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
 
     virtual bool legendSymbolItemsCheckable() const override;
     virtual bool legendSymbolItemChecked( const QString& key ) override;
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     /** Maximum scale denominator for label display. Negative number means no scale limitation*/
     double mMaxLabelScaleDenominator;
 
-    typedef QMap<QgsFeatureId, QPair< QgsFeature, QgsSymbolV2* > > DisplacementGroup;
+    typedef QMap<QgsFeatureId, QPair< QgsFeature, QgsSymbol* > > DisplacementGroup;
     /** Groups of features that have the same position*/
     QList<DisplacementGroup> mDisplacementGroups;
     /** Mapping from feature ID to its group index*/
@@ -248,17 +248,17 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     QString getLabel( const QgsFeature& f );
 
     //rendering methods
-    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context, const QList<QgsMarkerSymbolV2*>& symbols,
+    void renderPoint( const QPointF& point, QgsSymbolRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbols,
                       const QStringList& labels );
 
     //helper functions
-    void calculateSymbolAndLabelPositions( QgsSymbolV2RenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts , double &circleRadius ) const;
+    void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts , double &circleRadius ) const;
     void drawGroup( const DisplacementGroup& group, QgsRenderContext& context );
-    void drawCircle( double radiusPainterUnits, QgsSymbolV2RenderContext& context, QPointF centerPoint, int nSymbols );
+    void drawCircle( double radiusPainterUnits, QgsSymbolRenderContext& context, QPointF centerPoint, int nSymbols );
     void drawSymbols( const QgsFeatureList& features, QgsRenderContext& context, const QList< QgsMarkerSymbolV2* >& symbolList, const QList<QPointF>& symbolPositions, bool selected = false );
-    void drawLabels( QPointF centerPoint, QgsSymbolV2RenderContext& context, const QList<QPointF>& labelShifts, const QStringList& labelList );
+    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext& context, const QList<QPointF>& labelShifts, const QStringList& labelList );
     /** Returns first symbol for feature or 0 if none*/
-    QgsSymbolV2* firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f, QgsRenderContext& context );
+    QgsSymbol* firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f, QgsRenderContext& context );
 };
 
 #endif // QGSPOINTDISPLACEMENTRENDERER_H

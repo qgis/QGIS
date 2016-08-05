@@ -19,7 +19,7 @@
 #include "qgis.h"
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsrendererv2widget.h"
@@ -32,7 +32,7 @@ class QgsGrassEditRenderer : public QgsFeatureRendererV2
 
     virtual ~QgsGrassEditRenderer();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
@@ -42,7 +42,7 @@ class QgsGrassEditRenderer : public QgsFeatureRendererV2
 
     virtual QgsFeatureRendererV2* clone() const override;
 
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
+    virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
     virtual QString dump() const override;
 

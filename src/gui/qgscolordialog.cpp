@@ -17,7 +17,7 @@
 #include "qgscolordialog.h"
 #include "qgscolorscheme.h"
 #include "qgscolorschemeregistry.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgscursors.h"
 #include "qgsapplication.h"
 #include <QSettings>

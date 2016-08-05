@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    test_qgssymbollayerv2.py
+    test_qgssymbollayer.py
     ---------------------
     Date                 : October 2012
     Copyright            : (C) 2012 by Massimo Endrighi
@@ -48,12 +48,12 @@ from qgis.core import (QgsCentroidFillSymbolLayerV2,
                        QgsSimpleMarkerSymbolLayerV2,
                        QgsSVGFillSymbolLayer,
                        QgsSvgMarkerSymbolLayerV2,
-                       QgsSymbolLayerV2,
+                       QgsSymbolLayer,
                        QgsVectorFieldSymbolLayer,
                        QgsRasterFillSymbolLayer,
                        QgsShapeburstFillSymbolLayerV2,
                        QgsArrowSymbolLayer,
-                       QgsSymbolV2,
+                       QgsSymbol,
                        QgsUnitTypes
                        )
 from qgis.testing import start_app, unittest
@@ -64,10 +64,10 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsSymbolLayerV2(unittest.TestCase):
+class TestQgsSymbolLayer(unittest.TestCase):
 
     """
-     This class test the sip binding for QgsSymbolLayerV2 descendants
+     This class test the sip binding for QgsSymbolLayer descendants
      Every class is tested using the createFromSld implementation
      An exception is done for:
      - QgsLinePatternFillSymbolLayer where createFromSld implementation
@@ -80,7 +80,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
 
     def testBinding(self):
         """Test python bindings existence."""
-        mType = type(QgsSymbolLayerV2)
+        mType = type(QgsSymbolLayer)
         mExpectedType = pyqtWrapperType
         mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
         assert mExpectedType == mType, mMessage

@@ -29,7 +29,7 @@
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
 #include "qgsproject.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgslayertreeutils.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -379,7 +379,7 @@ bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "symbolHeight", QString::number( mSettings.symbolSize().height() ) );
 
   composerLegendElem.setAttribute( "rasterBorder", mSettings.drawRasterBorder() );
-  composerLegendElem.setAttribute( "rasterBorderColor", QgsSymbolLayerV2Utils::encodeColor( mSettings.rasterBorderColor() ) );
+  composerLegendElem.setAttribute( "rasterBorderColor", QgsSymbolLayerUtils::encodeColor( mSettings.rasterBorderColor() ) );
   composerLegendElem.setAttribute( "rasterBorderWidth", QString::number( mSettings.rasterBorderWidth() ) );
 
   composerLegendElem.setAttribute( "wmsLegendWidth", QString::number( mSettings.wmsLegendSize().width() ) );
@@ -510,7 +510,7 @@ bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( "wmsLegendWidth", "50" ).toDouble(), itemElem.attribute( "wmsLegendHeight", "25" ).toDouble() ) );
 
   mSettings.setDrawRasterBorder( itemElem.attribute( "rasterBorder", "1" ) != "0" );
-  mSettings.setRasterBorderColor( QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "rasterBorderColor", "0,0,0" ) ) );
+  mSettings.setRasterBorderColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "rasterBorderColor", "0,0,0" ) ) );
   mSettings.setRasterBorderWidth( itemElem.attribute( "rasterBorderWidth", "0" ).toDouble() );
 
   mSettings.setWrapChar( itemElem.attribute( "wrapChar" ) );

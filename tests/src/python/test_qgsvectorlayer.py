@@ -31,7 +31,7 @@ from qgis.core import (Qgis,
                        QgsFields,
                        QgsMapLayerRegistry,
                        QgsVectorJoinInfo,
-                       QgsSymbolV2,
+                       QgsSymbol,
                        QgsSingleSymbolRendererV2,
                        QgsCoordinateReferenceSystem,
                        QgsProject,
@@ -1500,7 +1500,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.rendererChanged = False
         layer.rendererChanged.connect(self.onRendererChanged)
 
-        r = QgsSingleSymbolRendererV2(QgsSymbolV2.defaultSymbol(QgsWkbTypes.PointGeometry))
+        r = QgsSingleSymbolRendererV2(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry))
         layer.setRendererV2(r)
         self.assertTrue(self.rendererChanged)
         self.assertEqual(layer.rendererV2(), r)

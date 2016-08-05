@@ -18,7 +18,7 @@
 #include "qgscolorscheme.h"
 
 #include "qgsproject.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 
 #include <QSettings>
@@ -71,7 +71,7 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, con
   QgsNamedColorList colorList;
   Q_FOREACH ( const QVariant& color, recentColorVariants )
   {
-    colorList.append( qMakePair( color.value<QColor>(), QgsSymbolLayerV2Utils::colorToName( color.value<QColor>() ) ) );
+    colorList.append( qMakePair( color.value<QColor>(), QgsSymbolLayerUtils::colorToName( color.value<QColor>() ) ) );
   }
   return colorList;
 }
@@ -231,7 +231,7 @@ QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, co
   for ( QStringList::iterator it = colorStrings.begin();
         it != colorStrings.end(); ++it )
   {
-    QColor color = QgsSymbolLayerV2Utils::decodeColor( *it );
+    QColor color = QgsSymbolLayerUtils::decodeColor( *it );
     QString label;
     if ( colorLabels.length() > colorIndex )
     {
@@ -257,7 +257,7 @@ bool QgsProjectColorScheme::setColors( const QgsNamedColorList &colors, const QS
   QgsNamedColorList::const_iterator colorIt = colors.constBegin();
   for ( ; colorIt != colors.constEnd(); ++colorIt )
   {
-    QString color = QgsSymbolLayerV2Utils::encodeColor(( *colorIt ).first );
+    QString color = QgsSymbolLayerUtils::encodeColor(( *colorIt ).first );
     QString label = ( *colorIt ).second;
     customColors.append( color );
     customColorLabels.append( label );
@@ -303,7 +303,7 @@ QgsNamedColorList QgsGplColorScheme::fetchColors( const QString &context, const 
   bool ok;
   QString name;
   QFile sourceFile( sourceFilePath );
-  return QgsSymbolLayerV2Utils::importColorsFromGpl( sourceFile, ok, name );
+  return QgsSymbolLayerUtils::importColorsFromGpl( sourceFile, ok, name );
 }
 
 bool QgsGplColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
@@ -318,7 +318,7 @@ bool QgsGplColorScheme::setColors( const QgsNamedColorList &colors, const QStrin
   }
 
   QFile destFile( destFilePath );
-  return QgsSymbolLayerV2Utils::saveColorsToGpl( destFile, schemeName(), colors );
+  return QgsSymbolLayerUtils::saveColorsToGpl( destFile, schemeName(), colors );
 }
 
 

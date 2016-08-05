@@ -16,17 +16,17 @@
 #ifndef QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
 #define QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
 
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 
 /** \ingroup core
  * \class QgsGeometryGeneratorSymbolLayerV2
  */
-class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
+class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayer
 {
   public:
     ~QgsGeometryGeneratorSymbolLayerV2();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties );
+    static QgsSymbolLayer* create( const QgsStringMap& properties );
 
     QString layerType() const override;
 
@@ -36,7 +36,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
      *
      * @param symbolType The symbol type which shall be used below this symbol.
      */
-    void setSymbolType( QgsSymbolV2::SymbolType symbolType );
+    void setSymbolType( QgsSymbol::SymbolType symbolType );
 
     /**
      * Access the symbol type. This defines the type of geometry
@@ -44,17 +44,17 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
      *
      * @return Symbol type
      */
-    QgsSymbolV2::SymbolType symbolType() const { return mSymbolType; }
+    QgsSymbol::SymbolType symbolType() const { return mSymbolType; }
 
-    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
 
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsSymbolLayer* clone() const override;
 
     QgsStringMap properties() const override;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
+    void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size ) override;
 
     /**
      * Set the expression to generate this geometry.
@@ -66,16 +66,16 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
      */
     QString geometryExpression() const { return mExpression->expression(); }
 
-    virtual QgsSymbolV2* subSymbol() override { return mSymbol; }
+    virtual QgsSymbol* subSymbol() override { return mSymbol; }
 
-    virtual bool setSubSymbol( QgsSymbolV2* symbol ) override;
+    virtual bool setSubSymbol( QgsSymbol* symbol ) override;
 
     virtual QSet<QString> usedAttributes() const override;
 
     //! Will always return true.
     //! This is a hybrid layer, it constructs its own geometry so it does not
     //! care about the geometry of its parents.
-    bool isCompatibleWithSymbol( QgsSymbolV2* symbol ) const override;
+    bool isCompatibleWithSymbol( QgsSymbol* symbol ) const override;
 
     /**
      * Will render this symbol layer using the context.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
      * @param context The rendering context which will be used to render and to
      *                construct a geometry.
      */
-    virtual void render( QgsSymbolV2RenderContext& context );
+    virtual void render( QgsSymbolRenderContext& context );
 
     void setColor( const QColor& color ) override;
 
@@ -98,12 +98,12 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
     QgsFillSymbolV2* mFillSymbol;
     QgsLineSymbolV2* mLineSymbol;
     QgsMarkerSymbolV2* mMarkerSymbol;
-    QgsSymbolV2* mSymbol;
+    QgsSymbol* mSymbol;
 
     /**
      * The type of the sub symbol.
      */
-    QgsSymbolV2::SymbolType mSymbolType;
+    QgsSymbol::SymbolType mSymbolType;
 };
 
 #endif // QGSGEOMETRYGENERATORSYMBOLLAYERV2_H

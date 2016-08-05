@@ -16,8 +16,8 @@ class QgsNullSymbolRenderer : QgsFeatureRendererV2
 
     virtual ~QgsNullSymbolRenderer();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
@@ -27,7 +27,7 @@ class QgsNullSymbolRenderer : QgsFeatureRendererV2
     virtual QList<QString> usedAttributes();
     virtual QString dump() const;
     virtual QgsFeatureRendererV2* clone() const /Factory/;
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    virtual QgsSymbolList symbols( QgsRenderContext& context ) /PyName=symbols2/;
 
     /** Creates a null renderer from XML element.
      * @param element DOM element

@@ -31,7 +31,7 @@
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QVariant>
 

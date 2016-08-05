@@ -17,8 +17,8 @@
 
 #include "qgscomposershape.h"
 #include "qgscomposition.h"
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 #include "qgscomposermodel.h"
 #include "qgsmapsettings.h"
 #include <QPainter>
@@ -82,7 +82,7 @@ void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbolV2* symbol )
 
 void QgsComposerShape::refreshSymbol()
 {
-  mMaxSymbolBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
+  mMaxSymbolBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol );
   updateBoundingRect();
 
   update();
@@ -101,7 +101,7 @@ void QgsComposerShape::createDefaultShapeStyleSymbol()
   properties.insert( "joinstyle", "miter" );
   mShapeStyleSymbol = QgsFillSymbolV2::createSimple( properties );
 
-  mMaxSymbolBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
+  mMaxSymbolBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol );
   updateBoundingRect();
 
   emit frameChanged();
@@ -278,7 +278,7 @@ bool QgsComposerShape::writeXml( QDomElement& elem, QDomDocument & doc ) const
   composerShapeElem.setAttribute( "shapeType", mShape );
   composerShapeElem.setAttribute( "cornerRadius", mCornerRadius );
 
-  QDomElement shapeStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mShapeStyleSymbol, doc );
+  QDomElement shapeStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mShapeStyleSymbol, doc );
   composerShapeElem.appendChild( shapeStyleElem );
 
   elem.appendChild( composerShapeElem );
@@ -310,14 +310,14 @@ bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument&
   if ( !shapeStyleSymbolElem.isNull() )
   {
     delete mShapeStyleSymbol;
-    mShapeStyleSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( shapeStyleSymbolElem );
+    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbolV2>( shapeStyleSymbolElem );
   }
   else
   {
     //upgrade project file from 2.0 to use symbolV2 styling
     delete mShapeStyleSymbol;
     QgsStringMap properties;
-    properties.insert( "color", QgsSymbolLayerV2Utils::encodeColor( brush().color() ) );
+    properties.insert( "color", QgsSymbolLayerUtils::encodeColor( brush().color() ) );
     if ( hasBackground() )
     {
       properties.insert( "style", "solid" );
@@ -334,7 +334,7 @@ bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument&
     {
       properties.insert( "style_border", "no" );
     }
-    properties.insert( "color_border", QgsSymbolLayerV2Utils::encodeColor( pen().color() ) );
+    properties.insert( "color_border", QgsSymbolLayerUtils::encodeColor( pen().color() ) );
     properties.insert( "width_border", QString::number( pen().widthF() ) );
 
     //for pre 2.0 projects, shape color and outline were specified in a different element...
@@ -354,7 +354,7 @@ bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument&
 
       if ( redOk && greenOk && blueOk && alphaOk && widthOk )
       {
-        properties.insert( "color_border", QgsSymbolLayerV2Utils::encodeColor( QColor( penRed, penGreen, penBlue, penAlpha ) ) );
+        properties.insert( "color_border", QgsSymbolLayerUtils::encodeColor( QColor( penRed, penGreen, penBlue, penAlpha ) ) );
         properties.insert( "width_border", QString::number( penWidth ) );
       }
     }
@@ -372,7 +372,7 @@ bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument&
 
       if ( redOk && greenOk && blueOk && alphaOk )
       {
-        properties.insert( "color", QgsSymbolLayerV2Utils::encodeColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) ) );
+        properties.insert( "color", QgsSymbolLayerUtils::encodeColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) ) );
         properties.insert( "style", "solid" );
       }
     }

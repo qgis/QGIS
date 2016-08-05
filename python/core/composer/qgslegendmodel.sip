@@ -41,7 +41,7 @@ class QgsLegendModel : QStandardItemModel
     /** Updates the whole symbology of a layer*/
     void updateLayer( QStandardItem* layerItem );
     /** Tries to update a single classification item*/
-    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, const QString& itemText );
+    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbol* symbol, const QString& itemText );
 
     void updateRasterClassificationItem( QStandardItem* classificationItem );
 

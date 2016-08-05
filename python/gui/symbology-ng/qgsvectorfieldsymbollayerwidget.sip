@@ -1,4 +1,4 @@
-class QgsVectorFieldSymbolLayerWidget: QgsSymbolLayerV2Widget
+class QgsVectorFieldSymbolLayerWidget: QgsSymbolLayerWidget
 {
 %TypeHeaderCode
 #include <qgsvectorfieldsymbollayerwidget.h>
@@ -7,9 +7,9 @@ class QgsVectorFieldSymbolLayerWidget: QgsSymbolLayerV2Widget
     QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0 );
     ~QgsVectorFieldSymbolLayerWidget();
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
+    virtual QgsSymbolLayer* symbolLayer();
 };

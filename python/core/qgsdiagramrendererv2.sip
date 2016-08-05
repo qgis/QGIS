@@ -252,7 +252,7 @@ class QgsDiagramSettings
 %End
   public:
 
-    //! @deprecated use QgsSymbolV2::OutputUnit instead
+    //! @deprecated use QgsSymbol::OutputUnit instead
     enum SizeType
     {
       MM,

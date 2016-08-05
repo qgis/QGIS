@@ -27,7 +27,7 @@ class QKeyEvent;
 
 class QgsVectorLayer;
 class QgsStyleV2;
-class QgsSymbolV2;
+class QgsSymbol;
 class QgsPaintEffect;
 class QgsRendererV2Widget;
 class QgsMapCanvas;

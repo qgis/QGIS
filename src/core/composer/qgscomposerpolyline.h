@@ -50,10 +50,10 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
     /** Overridden to return shape name */
     virtual QString displayName() const override;
 
-    /** Returns the QgsSymbolV2 used to draw the shape. */
+    /** Returns the QgsSymbol used to draw the shape. */
     QgsLineSymbolV2* polylineStyleSymbol() { return mPolylineStyleSymbol.data(); }
 
-    /** Set the QgsSymbolV2 used to draw the shape. */
+    /** Set the QgsSymbol used to draw the shape. */
     void setPolylineStyleSymbol( QgsLineSymbolV2* symbol );
 
     /** Overridden to return shape type */
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
 
   protected:
 
-    /** QgsSymbolV2 use to draw the shape. */
+    /** QgsSymbol use to draw the shape. */
     QScopedPointer<QgsLineSymbolV2> mPolylineStyleSymbol;
 
     /** Add the node newPoint at the given position according to some

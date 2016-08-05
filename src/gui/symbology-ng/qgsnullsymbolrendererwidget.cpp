@@ -15,7 +15,7 @@
 #include "qgsnullsymbolrendererwidget.h"
 
 #include "qgsnullsymbolrenderer.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include <QLayout>
 #include <QLabel>
 

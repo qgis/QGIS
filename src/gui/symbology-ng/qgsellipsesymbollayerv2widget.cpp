@@ -19,7 +19,7 @@
 #include <QColorDialog>
 
 QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
     , mLayer( nullptr )
 {
   setupUi( this );
@@ -56,7 +56,7 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
     lyr->setFillColor( QColor( 200, 200, 200 ) );
     lyr->setSymbolWidth( 4 );
     lyr->setSymbolHeight( 2 );
-    QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, iconSize );
+    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, iconSize );
     QListWidgetItem* item = new QListWidgetItem( icon, "", mShapeListWidget );
     item->setToolTip( name );
     item->setData( Qt::UserRole, name );
@@ -68,7 +68,7 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
 }
 
-void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( !layer || layer->layerType() != "EllipseMarker" )
   {
@@ -123,7 +123,7 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 
 }
 
-QgsSymbolLayerV2* QgsEllipseSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsEllipseSymbolLayerV2Widget::symbolLayer()
 {
   return mLayer;
 }

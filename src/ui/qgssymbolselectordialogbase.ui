@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsSymbolV2SelectorDialogBase</class>
- <widget class="QWidget" name="QgsSymbolV2SelectorDialogBase">
+ <class>QgsSymbolSelectorDialogBase</class>
+ <widget class="QWidget" name="QgsSymbolSelectorDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>

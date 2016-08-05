@@ -25,7 +25,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrendererv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include <QApplication>
@@ -210,7 +210,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
       {
         if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
         {
-          currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+          currentSymbolItem->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
         }
         currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
       }
@@ -224,7 +224,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
       QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
       if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
       {
-        currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+        currentSymbolItem->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
       }
       currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
       layerItem->setChild( row, 0, currentSymbolItem );
@@ -362,7 +362,7 @@ void QgsLegendModel::updateSymbolV2ItemText( QStandardItem* symbolItem )
 
   QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
 
-  QPair<QString, QgsSymbolV2*> symbol = symbolList.value( symbolItem->row() );
+  QPair<QString, QgsSymbol*> symbol = symbolList.value( symbolItem->row() );
 
   QString label = sv2Item->userText().isEmpty() ? symbol.first : sv2Item->userText();
 

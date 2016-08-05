@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssymbollevelsv2dialog.h
+    qgssymbollevelsdialog.h
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSSYMBOLLEVELSV2DIALOG_H
-#define QGSSYMBOLLEVELSV2DIALOG_H
+#ifndef QGSSYMBOLLEVELSDIALOG_H
+#define QGSSYMBOLLEVELSDIALOG_H
 
 #include <QDialog>
 #include <QList>
@@ -21,19 +21,19 @@
 
 #include "qgsrendererv2.h"
 
-#include "ui_qgssymbollevelsv2dialogbase.h"
+#include "ui_qgssymbollevelsdialogbase.h"
 
 /** \ingroup gui
- * \class QgsSymbolLevelsV2Dialog
+ * \class QgsSymbolLevelsDialog
  */
-class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbolLevelsV2DialogBase
+class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLevelsDialogBase
 {
     Q_OBJECT
   public:
     //! @note not available in python bindings
-    QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent = nullptr );
+    QgsSymbolLevelsDialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent = nullptr );
 
-    ~QgsSymbolLevelsV2Dialog();
+    ~QgsSymbolLevelsDialog();
 
     bool usingLevels() const;
 
@@ -81,4 +81,4 @@ class SpinBoxDelegate : public QItemDelegate
 
 ///@endcond
 
-#endif // QGSSYMBOLLEVELSV2DIALOG_H
+#endif // QGSSYMBOLLEVELSDIALOG_H

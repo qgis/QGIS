@@ -18,7 +18,7 @@
 #define QGSGLOWEFFECT_H
 
 #include "qgspainteffect.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include <QPainter>
 
 class QgsVectorColorRampV2;

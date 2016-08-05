@@ -5,7 +5,7 @@ class QgsLayerPropertiesWidget : QgsPanelWidget
 %End
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbol* symbol, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     /** Returns the expression context used for the widget, if set. This expression context is used for
      * evaluating data defined symbol properties and for populating based expression widgets in
@@ -38,9 +38,9 @@ class QgsLayerPropertiesWidget : QgsPanelWidget
 
   signals:
     void changed();
-    void changeLayer( QgsSymbolLayerV2* );
+    void changeLayer( QgsSymbolLayer* );
 
   protected:
     void populateLayerTypes();
-    void updateSymbolLayerWidget( QgsSymbolLayerV2* layer );
+    void updateSymbolLayerWidget( QgsSymbolLayer* layer );
 };

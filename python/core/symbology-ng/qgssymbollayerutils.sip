@@ -1,52 +1,9 @@
-/***************************************************************************
- qgssymbollayerv2utils.h
- ---------------------
- begin                : November 2009
- copyright            : (C) 2009 by Martin Dobias
- email                : wonder dot sk at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-
-#ifndef QGSSYMBOLLAYERV2UTILS_H
-#define QGSSYMBOLLAYERV2UTILS_H
-
-#include <QMap>
-#include <Qt>
-#include <QtCore>
-#include <QFont>
-#include <QColor>
-#include <QPainter>
-#include "qgssymbolv2.h"
-#include "qgis.h"
-#include "qgsmapunitscale.h"
-
-class QgsExpression;
-class QgsSymbolLayerV2;
-class QgsVectorColorRampV2;
-
-typedef QMap<QString, QString> QgsStringMap;
-typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
-typedef QList< QPair< QColor, QString > > QgsNamedColorList;
-
-class QDomDocument;
-class QDomElement;
-class QIcon;
-class QPixmap;
-class QPointF;
-class QSize;
-
-/** \ingroup core
- * \class QgsSymbolLayerV2Utils
- */
-class CORE_EXPORT QgsSymbolLayerV2Utils
+class QgsSymbolLayerUtils
 {
+%TypeHeaderCode
+#include <qgssymbollayerutils.h>
+%End
+
   public:
 
     static QString encodeColor( const QColor& color );
@@ -110,12 +67,12 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      */
     static QgsUnitTypes::RenderUnit decodeSldUom( const QString& str, double *scaleFactor );
 
-    static QString encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    static QgsSymbolV2::ScaleMethod decodeScaleMethod( const QString& str );
+    static QString encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
+    static QgsSymbol::ScaleMethod decodeScaleMethod( const QString& str );
 
     static QPainter::CompositionMode decodeBlendMode( const QString& s );
 
-    static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
+    static QIcon symbolPreviewIcon( QgsSymbol* symbol, QSize size );
 
     /** Draws a symbol layer preview to a QPicture
      * @param layer symbol layer to draw
@@ -126,7 +83,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      * @note added in QGIS 2.9
      * @see symbolLayerPreviewIcon()
      */
-    static QPicture symbolLayerPreviewPicture( QgsSymbolLayerV2* layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Draws a symbol layer preview to an icon.
      * @param layer symbol layer to draw
@@ -136,24 +93,24 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      * @returns icon containing symbol layer preview
      * @see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static QIcon symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
     static void drawStippledBackground( QPainter* painter, QRect rect );
 
     //! @note customContext parameter added in 2.6
-    static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size, QgsRenderContext* customContext = nullptr );
+    static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, QgsRenderContext* customContext = 0 );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
 
     /** Returns the maximum estimated bleed for the symbol */
-    static double estimateMaxSymbolBleed( QgsSymbolV2* symbol );
+    static double estimateMaxSymbolBleed( QgsSymbol* symbol );
 
     /** Attempts to load a symbol from a DOM element
      * @param element DOM element representing symbol
      * @returns decoded symbol, if possible
      */
-    static QgsSymbolV2* loadSymbol( const QDomElement& element );
+    static QgsSymbol* loadSymbol( const QDomElement& element ) /Factory/;
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
@@ -161,39 +118,24 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      * @returns decoded symbol cast to specified type, if possible
      * @note not available in python bindings
      */
-    template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element )
-    {
-      QgsSymbolV2* tmpSymbol = QgsSymbolLayerV2Utils::loadSymbol( element );
-      SymbolType* symbolCastToType = dynamic_cast<SymbolType*>( tmpSymbol );
+    //template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element );
 
-      if ( symbolCastToType )
-      {
-        return symbolCastToType;
-      }
-      else
-      {
-        //could not cast
-        delete tmpSymbol;
-        return nullptr;
-      }
-    }
-
-    static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element );
-    static QDomElement saveSymbol( const QString& symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
+    static QgsSymbolLayer* loadSymbolLayer( QDomElement& element ) /Factory/;
+    static QDomElement saveSymbol( const QString& symbolName, QgsSymbol* symbol, QDomDocument& doc );
 
     /** Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
      * @note added in QGIS 2.12
      */
-    static QString symbolProperties( QgsSymbolV2* symbol );
+    static QString symbolProperties( QgsSymbol* symbol );
 
-    static bool createSymbolLayerV2ListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerV2List &layers );
+    static bool createSymbolLayerV2ListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
 
-    static QgsSymbolLayerV2* createFillLayerFromSld( QDomElement &element );
-    static QgsSymbolLayerV2* createLineLayerFromSld( QDomElement &element );
-    static QgsSymbolLayerV2* createMarkerLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer* createFillLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer* createLineLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer* createMarkerLayerFromSld( QDomElement &element );
 
-    static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerV2List &layerList );
+    static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList );
     static bool hasExternalGraphic( QDomElement &element );
     static bool hasWellKnownMark( QDomElement &element );
 
@@ -211,14 +153,16 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
                              Qt::BrushStyle &brushStyle, QColor &color );
 
     //! @note not available in python bindings
+/*
     static void lineToSld( QDomDocument &doc, QDomElement &element,
                            Qt::PenStyle penStyle, const QColor& color, double width = -1,
-                           const Qt::PenJoinStyle *penJoinStyle = nullptr, const Qt::PenCapStyle *penCapStyle = nullptr,
-                           const QVector<qreal> *customDashPattern = nullptr, double dashOffset = 0.0 );
+                           const Qt::PenJoinStyle *penJoinStyle = 0, const Qt::PenCapStyle *penCapStyle = 0,
+                           const QVector<qreal> *customDashPattern = 0, double dashOffset = 0.0 );
+*/
     static bool lineFromSld( QDomElement &element,
                              Qt::PenStyle &penStyle, QColor &color, double &width,
-                             Qt::PenJoinStyle *penJoinStyle = nullptr, Qt::PenCapStyle *penCapStyle = nullptr,
-                             QVector<qreal> *customDashPattern = nullptr, double *dashOffset = nullptr );
+                             Qt::PenJoinStyle *penJoinStyle = 0, Qt::PenCapStyle *penCapStyle = 0,
+                             QVector<qreal> *customDashPattern = 0, double *dashOffset = 0 );
 
     static void externalGraphicToSld( QDomDocument &doc, QDomElement &element,
                                       const QString& path, const QString& mime,
@@ -228,24 +172,24 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
                                         QColor &color, double &size );
 
     /** @deprecated Use wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element, QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth, double size ) instead */
-    Q_DECL_DEPRECATED static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
+    static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
         const QString& name, const QColor& color, const QColor& borderColor = QColor(),
-        double borderWidth = -1, double size = -1 );
+        double borderWidth = -1, double size = -1 ) /Deprecated/;
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
                                       const QString& name, const QColor& color, const QColor& borderColor, Qt::PenStyle borderStyle,
                                       double borderWidth = -1, double size = -1 );
     /** @deprecated Use wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle, double &borderWidth, double &size ) instead */
-    Q_DECL_DEPRECATED static bool wellKnownMarkerFromSld( QDomElement &element,
+    static bool wellKnownMarkerFromSld( QDomElement &element,
         QString &name, QColor &color, QColor &borderColor,
-        double &borderWidth, double &size );
+        double &borderWidth, double &size ) /Deprecated/;
 
     //! @note available in python as wellKnownMarkerFromSld2
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
-                                        double &borderWidth, double &size );
+                                        double &borderWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                     const QString& path, const QString& format, int *markIndex = nullptr,
+                                     const QString& path, const QString& format, int *markIndex = 0,
                                      const QColor& color = QColor(), double size = -1 );
     static bool externalMarkerFromSld( QDomElement &element,
                                        QString &path, QString &format, int &markIndex,
@@ -260,7 +204,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
                                        Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
                                        Qt::PenCapStyle capStyle = Qt::FlatCap,
                                        double offset = 0.0,
-                                       const QVector<qreal>* dashPattern = nullptr );
+                                       const QVector<qreal>* dashPattern = 0 );
     /** Create ogr feature style string for brush
      @param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor& fillColr );
@@ -292,12 +236,12 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QgsStringMap parseProperties( QDomElement& element );
     static void saveProperties( QgsStringMap props, QDomDocument& doc, QDomElement& element );
 
-    static QgsSymbolV2Map loadSymbols( QDomElement& element );
-    static QDomElement saveSymbols( QgsSymbolV2Map& symbols, const QString& tagName, QDomDocument& doc );
+    static QgsSymbolMap loadSymbols( QDomElement& element ) /Factory/;
+    static QDomElement saveSymbols( QgsSymbolMap& symbols, const QString& tagName, QDomDocument& doc );
 
-    static void clearSymbolMap( QgsSymbolV2Map& symbols );
+    static void clearSymbolMap( QgsSymbolMap& symbols );
 
-    static QgsVectorColorRampV2* loadColorRamp( QDomElement& element );
+    static QgsVectorColorRampV2* loadColorRamp( QDomElement& element ) /Factory/;
     static QDomElement saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
 
     /**
@@ -483,7 +427,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      * This is useful when accepting input which could be either a non-quoted field name or expression.
      * @note added in 2.2
      */
-    static QgsExpression* fieldOrExpressionToExpression( const QString& fieldOrExpression );
+    static QgsExpression* fieldOrExpressionToExpression( const QString& fieldOrExpression ) /Factory/;
 
     /** Return a field name if the whole expression is just a name of the field .
      *  Returns full expression string if the expression is more complex than just one field.
@@ -501,14 +445,3 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QList<double> prettyBreaks( double minimum, double maximum, int classes );
 
 };
-
-class QPolygonF;
-
-//! @deprecated since 2.4 - calculate line shifted by a specified distance
-QList<QPolygonF> offsetLine( const QPolygonF& polyline, double dist );
-//! calculate geometry shifted by a specified distance
-QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::GeometryType geometryType );
-
-#endif
-
-
