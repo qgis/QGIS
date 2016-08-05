@@ -53,7 +53,7 @@ from qgis.core import (QgsCentroidFillSymbolLayerV2,
                        QgsRasterFillSymbolLayer,
                        QgsShapeburstFillSymbolLayerV2,
                        QgsArrowSymbolLayer,
-                       QgsSymbolV2,
+                       QgsSymbol,
                        QgsUnitTypes
                        )
 from qgis.testing import start_app, unittest

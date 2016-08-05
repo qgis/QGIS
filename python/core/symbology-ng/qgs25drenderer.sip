@@ -36,8 +36,8 @@ class Qgs25DRenderer : QgsFeatureRendererV2
     QList<QString> usedAttributes();
     QgsFeatureRendererV2* clone() const;
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context );
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    virtual QgsSymbolList symbols( QgsRenderContext& context );
 
     /**
      * Get the roof color

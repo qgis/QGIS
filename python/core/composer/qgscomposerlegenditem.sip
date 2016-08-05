@@ -59,8 +59,8 @@ class QgsComposerSymbolV2Item: QgsComposerLegendItem
     virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true );
 
     /** Set symbol (takes ownership)*/
-    void setSymbolV2( QgsSymbolV2* s /Transfer/ );
-    QgsSymbolV2* symbolV2();
+    void setSymbolV2( QgsSymbol* s /Transfer/ );
+    QgsSymbol* symbolV2();
 
     ItemType itemType() const;
 };

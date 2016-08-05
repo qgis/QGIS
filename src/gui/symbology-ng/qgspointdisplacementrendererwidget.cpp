@@ -20,7 +20,7 @@
 #include "qgsrendererv2registry.h"
 #include "qgsfield.h"
 #include "qgsstylev2.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgisgui.h"
@@ -370,7 +370,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
     return;
   }
   QgsMarkerSymbolV2* markerSymbol = mRenderer->centerSymbol()->clone();
-  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), mLayer, this );
+  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), mLayer, this );
   dlg.setMapCanvas( mMapCanvas );
   if ( dlg.exec() == QDialog::Rejected )
   {

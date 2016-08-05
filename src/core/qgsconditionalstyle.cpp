@@ -178,7 +178,7 @@ QString QgsConditionalStyle::displayText() const
     return QString( "%1 \n%2" ).arg( name(), rule() );
 }
 
-void QgsConditionalStyle::setSymbol( QgsSymbolV2* value )
+void QgsConditionalStyle::setSymbol( QgsSymbol* value )
 {
   mValid = true;
   if ( value )
@@ -304,7 +304,7 @@ bool QgsConditionalStyle::readXml( const QDomNode &node )
   QDomElement symbolElm = styleElm.firstChildElement( "symbol" );
   if ( !symbolElm.isNull() )
   {
-    QgsSymbolV2* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( symbolElm );
+    QgsSymbol* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( symbolElm );
     setSymbol( symbol );
   }
   return true;

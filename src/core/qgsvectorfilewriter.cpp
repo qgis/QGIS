@@ -1772,11 +1772,11 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
   {
     mRenderContext.expressionContext().setFeature( feature );
     //SymbolLayerSymbology: concatenate ogr styles of all symbollayers
-    QgsSymbolV2List symbols = renderer->symbolsForFeature( feature, mRenderContext );
+    QgsSymbolList symbols = renderer->symbolsForFeature( feature, mRenderContext );
     QString styleString;
     QString currentStyle;
 
-    QgsSymbolV2List::const_iterator symbolIt = symbols.constBegin();
+    QgsSymbolList::const_iterator symbolIt = symbols.constBegin();
     for ( ; symbolIt != symbols.constEnd(); ++symbolIt )
     {
       int nSymbolLayers = ( *symbolIt )->symbolLayerCount();
@@ -2599,8 +2599,8 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
 
   //get symbols
   int nTotalLevels = 0;
-  QgsSymbolV2List symbolList = renderer->symbols( mRenderContext );
-  QgsSymbolV2List::iterator symbolIt = symbolList.begin();
+  QgsSymbolList symbolList = renderer->symbols( mRenderContext );
+  QgsSymbolList::iterator symbolIt = symbolList.begin();
   for ( ; symbolIt != symbolList.end(); ++symbolIt )
   {
     double mmsf = mmScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), mapUnits );
@@ -2634,7 +2634,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   if ( !renderer )
     return ErrInvalidLayer;
 
-  QHash< QgsSymbolV2*, QList<QgsFeature> > features;
+  QHash< QgsSymbol*, QList<QgsFeature> > features;
 
   //unit type
   QgsUnitTypes::DistanceUnit mapUnits = layer->crs().mapUnits();
@@ -2647,7 +2647,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
 
   //fetch features
   QgsFeature fet;
-  QgsSymbolV2* featureSymbol = nullptr;
+  QgsSymbol* featureSymbol = nullptr;
   while ( fit.nextFeature( fet ) )
   {
     if ( ct.isValid() )
@@ -2680,7 +2680,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
       continue;
     }
 
-    QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator it = features.find( featureSymbol );
+    QHash< QgsSymbol*, QList<QgsFeature> >::iterator it = features.find( featureSymbol );
     if ( it == features.end() )
     {
       it = features.insert( featureSymbol, QList<QgsFeature>() );
@@ -2689,19 +2689,19 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   }
 
   //find out order
-  QgsSymbolV2LevelOrder levels;
-  QgsSymbolV2List symbols = renderer->symbols( mRenderContext );
+  QgsSymbolLevelOrder levels;
+  QgsSymbolList symbols = renderer->symbols( mRenderContext );
   for ( int i = 0; i < symbols.count(); i++ )
   {
-    QgsSymbolV2* sym = symbols[i];
+    QgsSymbol* sym = symbols[i];
     for ( int j = 0; j < sym->symbolLayerCount(); j++ )
     {
       int level = sym->symbolLayer( j )->renderingPass();
       if ( level < 0 || level >= 1000 ) // ignore invalid levels
         continue;
-      QgsSymbolV2LevelItem item( sym, j );
+      QgsSymbolLevelItem item( sym, j );
       while ( level >= levels.count() ) // append new empty levels
-        levels.append( QgsSymbolV2Level() );
+        levels.append( QgsSymbolLevel() );
       levels[level].append( item );
     }
   }
@@ -2712,11 +2712,11 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   //export symbol layers and symbology
   for ( int l = 0; l < levels.count(); l++ )
   {
-    QgsSymbolV2Level& level = levels[l];
+    QgsSymbolLevel& level = levels[l];
     for ( int i = 0; i < level.count(); i++ )
     {
-      QgsSymbolV2LevelItem& item = level[i];
-      QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
+      QgsSymbolLevelItem& item = level[i];
+      QHash< QgsSymbol*, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
       if ( levelIt == features.end() )
       {
         ++nErrors;

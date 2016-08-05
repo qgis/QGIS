@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgssymbolv2.cpp
+     testqgssymbol.cpp
      --------------------------------------
     Date                 : 2015-10-07
     Copyright            : (C) 2015 Nyall Dawson
@@ -36,13 +36,13 @@
 /** \ingroup UnitTests
  * This is a unit test to verify that symbols are working correctly
  */
-class TestQgsSymbolV2 : public QObject
+class TestQgsSymbol : public QObject
 {
     Q_OBJECT
 
   public:
 
-    TestQgsSymbolV2();
+    TestQgsSymbol();
 
   private:
 
@@ -70,7 +70,7 @@ class TestQgsSymbolV2 : public QObject
     void symbolProperties();
 };
 
-TestQgsSymbolV2::TestQgsSymbolV2()
+TestQgsSymbol::TestQgsSymbol()
     : mpPointsLayer( 0 )
     , mpLinesLayer( 0 )
     , mpPolysLayer( 0 )
@@ -79,7 +79,7 @@ TestQgsSymbolV2::TestQgsSymbolV2()
 }
 
 // slots
-void TestQgsSymbolV2::initTestCase()
+void TestQgsSymbol::initTestCase()
 {
   // initialize with test settings directory so we don't mess with user's stuff
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
@@ -142,7 +142,7 @@ void TestQgsSymbolV2::initTestCase()
   mReport += "<h1>StyleV2 Tests</h1>\n";
 }
 
-void TestQgsSymbolV2::cleanupTestCase()
+void TestQgsSymbol::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 
@@ -157,7 +157,7 @@ void TestQgsSymbolV2::cleanupTestCase()
   }
 }
 
-bool TestQgsSymbolV2::imageCheck( QgsMapSettings& ms, const QString& testName )
+bool TestQgsSymbol::imageCheck( QgsMapSettings& ms, const QString& testName )
 {
   QgsMultiRenderChecker checker;
   ms.setOutputDpi( 96 );
@@ -168,7 +168,7 @@ bool TestQgsSymbolV2::imageCheck( QgsMapSettings& ms, const QString& testName )
   return result;
 }
 
-void TestQgsSymbolV2::testCanvasClip()
+void TestQgsSymbol::testCanvasClip()
 {
   //test rendering with and without clip to canvas enabled
   QgsMapSettings ms;
@@ -219,7 +219,7 @@ void TestQgsSymbolV2::testCanvasClip()
 }
 
 
-void TestQgsSymbolV2::testParseColor()
+void TestQgsSymbol::testParseColor()
 {
   // values for color tests
   QMap< QString, QPair< QColor, bool> > colorTests;
@@ -299,7 +299,7 @@ void TestQgsSymbolV2::testParseColor()
   }
 }
 
-void TestQgsSymbolV2::testParseColorList()
+void TestQgsSymbol::testParseColorList()
 {
   //ensure that majority of single parseColor tests work for lists
   //note that some are not possible, as the colors may be ambiguous when treated as a list
@@ -430,7 +430,7 @@ void TestQgsSymbolV2::testParseColorList()
 
 }
 
-void TestQgsSymbolV2::symbolProperties()
+void TestQgsSymbol::symbolProperties()
 {
   //test QgsSymbolLayerUtils::symbolProperties
 
@@ -455,5 +455,5 @@ void TestQgsSymbolV2::symbolProperties()
   delete fillSymbol2;
 }
 
-QTEST_MAIN( TestQgsSymbolV2 )
-#include "testqgssymbolv2.moc"
+QTEST_MAIN( TestQgsSymbol )
+#include "testqgssymbol.moc"

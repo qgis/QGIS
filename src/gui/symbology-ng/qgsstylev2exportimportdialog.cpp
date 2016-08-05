@@ -18,7 +18,7 @@
 #include "ui_qgsstylev2exportimportdialogbase.h"
 
 #include "qgsstylev2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgslogger.h"
@@ -189,7 +189,7 @@ bool QgsStyleV2ExportImportDialog::populateStyles( QgsStyleV2* style )
   for ( int i = 0; i < styleNames.count(); ++i )
   {
     name = styleNames[i];
-    QgsSymbolV2* symbol = style->symbol( name );
+    QgsSymbol* symbol = style->symbol( name );
     QStandardItem* item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize() );
     item->setIcon( icon );
@@ -217,7 +217,7 @@ bool QgsStyleV2ExportImportDialog::populateStyles( QgsStyleV2* style )
 void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyleV2* src, QgsStyleV2* dst )
 {
   QString symbolName;
-  QgsSymbolV2* symbol;
+  QgsSymbol* symbol;
   QgsVectorColorRampV2 *ramp = nullptr;
   QModelIndex index;
   bool isSymbol = true;

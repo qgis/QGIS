@@ -44,9 +44,9 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
   mSymbol.reset( static_cast<QgsFillSymbolV2*>( QgsFillSymbolV2::createSimple( QgsStringMap() ) ) );
 }
 
-bool QgsArrowSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
+bool QgsArrowSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 {
-  if ( symbol && symbol->type() == QgsSymbolV2::Fill )
+  if ( symbol && symbol->type() == QgsSymbol::Fill )
   {
     mSymbol.reset( static_cast<QgsFillSymbolV2*>( symbol ) );
     return true;
@@ -181,7 +181,7 @@ QSet<QString> QgsArrowSymbolLayer::usedAttributes() const
 }
 
 
-void QgsArrowSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
+void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext& context )
 {
   mExpressionScope.reset( new QgsExpressionContextScope() );
   mScaledArrowWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), arrowWidth(), arrowWidthUnit(), arrowWidthUnitScale() );
@@ -195,7 +195,7 @@ void QgsArrowSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   mSymbol->startRender( context.renderContext() );
 }
 
-void QgsArrowSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
+void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext& context )
 {
   mSymbol->stopRender( context.renderContext() );
 }
@@ -608,7 +608,7 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
   return path.toSubpathPolygons().at( 0 );
 }
 
-void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolV2RenderContext& context )
+void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext& context )
 {
   if ( !hasDataDefinedProperties() )
     return; // shortcut if case there is no data defined properties at all
@@ -681,7 +681,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolV2RenderContext& context
   }
 }
 
-void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
+void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context )
 {
   Q_UNUSED( points );
 

@@ -576,7 +576,7 @@ void QgsDxfExport::writeTables()
 
   // Iterate through all layers and get symbol layer pointers
   QgsRenderContext context = renderContext();
-  QList< QPair< QgsSymbolLayer*, QgsSymbolV2* > > slList;
+  QList< QPair< QgsSymbolLayer*, QgsSymbol* > > slList;
   if ( mSymbologyExport != NoSymbology )
   {
     slList = symbolLayers( context );
@@ -593,7 +593,7 @@ void QgsDxfExport::writeTables()
   writeDefaultLinetypes();
 
   // Add custom linestyles
-  QList< QPair< QgsSymbolLayer*, QgsSymbolV2*> >::const_iterator slIt = slList.constBegin();
+  QList< QPair< QgsSymbolLayer*, QgsSymbol*> >::const_iterator slIt = slList.constBegin();
   for ( ; slIt != slList.constEnd(); ++slIt )
   {
     writeSymbolLayerLinetype( slIt->first );
@@ -838,13 +838,13 @@ void QgsDxfExport::writeBlocks()
   QgsRenderContext ct = renderContext();
 
   // Iterate through all layers and get symbol layer pointers
-  QList< QPair< QgsSymbolLayer*, QgsSymbolV2* > > slList;
+  QList< QPair< QgsSymbolLayer*, QgsSymbol* > > slList;
   if ( mSymbologyExport != NoSymbology )
   {
     slList = symbolLayers( ct );
   }
 
-  QList< QPair< QgsSymbolLayer*, QgsSymbolV2* > >::const_iterator slIt = slList.constBegin();
+  QList< QPair< QgsSymbolLayer*, QgsSymbol* > >::const_iterator slIt = slList.constBegin();
   for ( ; slIt != slList.constEnd(); ++slIt )
   {
     QgsMarkerSymbolLayerV2 *ml = dynamic_cast< QgsMarkerSymbolLayerV2*>( slIt->first );
@@ -852,7 +852,7 @@ void QgsDxfExport::writeBlocks()
       continue;
 
     // if point symbol layer and no data defined properties: write block
-    QgsSymbolV2RenderContext ctx( ct, QgsUnitTypes::RenderMapUnits, slIt->second->alpha(), false, slIt->second->renderHints(), nullptr );
+    QgsSymbolRenderContext ctx( ct, QgsUnitTypes::RenderMapUnits, slIt->second->alpha(), false, slIt->second->renderHints(), nullptr );
     ml->startRender( ctx );
 
     // markers with data defined properties are inserted inline
@@ -945,7 +945,7 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsSymbolV2RenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
+    QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
     QgsFeatureRendererV2* renderer = vl->rendererV2();
     if ( !renderer )
     {
@@ -1017,7 +1017,7 @@ void QgsDxfExport::writeEntities()
       }
       else
       {
-        QgsSymbolV2List symbolList = renderer->symbolsForFeature( fet, ctx );
+        QgsSymbolList symbolList = renderer->symbolsForFeature( fet, ctx );
         if ( symbolList.size() < 1 )
         {
           continue;
@@ -1025,7 +1025,7 @@ void QgsDxfExport::writeEntities()
 
         if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology ) // symbol layer symbology, but layer does not use symbol levels
         {
-          QgsSymbolV2List::iterator symbolIt = symbolList.begin();
+          QgsSymbolList::iterator symbolIt = symbolList.begin();
           for ( ; symbolIt != symbolList.end(); ++symbolIt )
           {
             int nSymbolLayers = ( *symbolIt )->symbolLayerCount();
@@ -1038,7 +1038,7 @@ void QgsDxfExport::writeEntities()
         else
         {
           // take first symbollayer from first symbol
-          QgsSymbolV2* s = symbolList.first();
+          QgsSymbol* s = symbolList.first();
           if ( !s || s->symbolLayerCount() < 1 )
           {
             continue;
@@ -1078,13 +1078,13 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
     // TODO return error
     return;
   }
-  QHash< QgsSymbolV2*, QList<QgsFeature> > features;
+  QHash< QgsSymbol*, QList<QgsFeature> > features;
 
   QgsRenderContext ctx = renderContext();
   ctx.expressionContext() << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( layer );
-  QgsSymbolV2RenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
+  QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
   renderer->startRender( ctx, layer->fields() );
 
   // get iterator
@@ -1102,7 +1102,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
 
   // fetch features
   QgsFeature fet;
-  QgsSymbolV2* featureSymbol = nullptr;
+  QgsSymbol* featureSymbol = nullptr;
   while ( fit.nextFeature( fet ) )
   {
     ctx.expressionContext().setFeature( fet );
@@ -1112,7 +1112,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
       continue;
     }
 
-    QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator it = features.find( featureSymbol );
+    QHash< QgsSymbol*, QList<QgsFeature> >::iterator it = features.find( featureSymbol );
     if ( it == features.end() )
     {
       it = features.insert( featureSymbol, QList<QgsFeature>() );
@@ -1121,19 +1121,19 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
   }
 
   // find out order
-  QgsSymbolV2LevelOrder levels;
-  QgsSymbolV2List symbols = renderer->symbols( ctx );
+  QgsSymbolLevelOrder levels;
+  QgsSymbolList symbols = renderer->symbols( ctx );
   for ( int i = 0; i < symbols.count(); i++ )
   {
-    QgsSymbolV2* sym = symbols[i];
+    QgsSymbol* sym = symbols[i];
     for ( int j = 0; j < sym->symbolLayerCount(); j++ )
     {
       int level = sym->symbolLayer( j )->renderingPass();
       if ( level < 0 || level >= 1000 ) // ignore invalid levels
         continue;
-      QgsSymbolV2LevelItem item( sym, j );
+      QgsSymbolLevelItem item( sym, j );
       while ( level >= levels.count() ) // append new empty levels
-        levels.append( QgsSymbolV2Level() );
+        levels.append( QgsSymbolLevel() );
       levels[level].append( item );
     }
   }
@@ -1141,11 +1141,11 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
   // export symbol layers and symbology
   for ( int l = 0; l < levels.count(); l++ )
   {
-    QgsSymbolV2Level& level = levels[l];
+    QgsSymbolLevel& level = levels[l];
     for ( int i = 0; i < level.count(); i++ )
     {
-      QgsSymbolV2LevelItem& item = level[i];
-      QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
+      QgsSymbolLevelItem& item = level[i];
+      QHash< QgsSymbol*, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
       if ( levelIt == features.end() )
       {
         QgsDebugMsg( QString( "No feature found for symbol on %1 %2.%3" ).arg( layer->id() ).arg( l ).arg( i ) );
@@ -3342,7 +3342,7 @@ void QgsDxfExport::endSection()
   writeGroup( 0, "ENDSEC" );
 }
 
-void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const QColor& color, QgsSymbolV2RenderContext &ctx, const QgsSymbolLayer* symbolLayer, const QgsSymbolV2* symbol, double angle )
+void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const QColor& color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer* symbolLayer, const QgsSymbol* symbol, double angle )
 {
 #if 0
   // debug: draw rectangle for debugging
@@ -3710,7 +3710,7 @@ QgsRectangle QgsDxfExport::dxfExtent() const
   return extent;
 }
 
-void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& layer, const QgsSymbolLayer* symbolLayer, const QgsSymbolV2* symbol )
+void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer, const QgsSymbolLayer* symbolLayer, const QgsSymbol* symbol )
 {
   const QgsFeature* fet = ctx.feature();
   if ( !fet )
@@ -3881,7 +3881,7 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
   }
 }
 
-QColor QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayer* symbolLayer, QgsSymbolV2RenderContext &ctx )
+QColor QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayer* symbolLayer, QgsSymbolRenderContext &ctx )
 {
   if ( !symbolLayer )
     return QColor();
@@ -3971,9 +3971,9 @@ double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::
   return scaleDenominator * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits ) / 1000.0;
 }
 
-QList< QPair< QgsSymbolLayer*, QgsSymbolV2* > > QgsDxfExport::symbolLayers( QgsRenderContext &context )
+QList< QPair< QgsSymbolLayer*, QgsSymbol* > > QgsDxfExport::symbolLayers( QgsRenderContext &context )
 {
-  QList< QPair< QgsSymbolLayer*, QgsSymbolV2* > > symbolLayers;
+  QList< QPair< QgsSymbolLayer*, QgsSymbol* > > symbolLayers;
 
   QList< QPair< QgsVectorLayer*, int> >::const_iterator lIt = mLayers.constBegin();
   for ( ; lIt != mLayers.constEnd(); ++lIt )
@@ -3993,8 +3993,8 @@ QList< QPair< QgsSymbolLayer*, QgsSymbolV2* > > QgsDxfExport::symbolLayers( QgsR
     }
 
     // get all symbols
-    QgsSymbolV2List symbols = r->symbols( context );
-    QgsSymbolV2List::iterator symbolIt = symbols.begin();
+    QgsSymbolList symbols = r->symbols( context );
+    QgsSymbolList::iterator symbolIt = symbols.begin();
     for ( ; symbolIt != symbols.end(); ++symbolIt )
     {
       int maxSymbolLayers = ( *symbolIt )->symbolLayerCount();
@@ -4077,10 +4077,10 @@ void QgsDxfExport::writeSymbolLayerLinetype( const QgsSymbolLayer* symbolLayer )
   }
 }
 
-int QgsDxfExport::nLineTypes( const QList< QPair< QgsSymbolLayer*, QgsSymbolV2* > >& symbolLayers )
+int QgsDxfExport::nLineTypes( const QList< QPair< QgsSymbolLayer*, QgsSymbol* > >& symbolLayers )
 {
   int nLineTypes = 0;
-  QList< QPair< QgsSymbolLayer*, QgsSymbolV2*> >::const_iterator slIt = symbolLayers.constBegin();
+  QList< QPair< QgsSymbolLayer*, QgsSymbol*> >::const_iterator slIt = symbolLayers.constBegin();
   for ( ; slIt != symbolLayers.constEnd(); ++slIt )
   {
     const QgsSimpleLineSymbolLayerV2* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayerV2* >( slIt->first );
@@ -4129,15 +4129,15 @@ void QgsDxfExport::writeLinetype( const QString& styleName, const QVector<qreal>
   }
 }
 
-bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayer* sl, const QgsSymbolV2* symbol )
+bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayer* sl, const QgsSymbol* symbol )
 {
   if ( !sl || !symbol )
   {
     return false;
   }
 
-  if ( symbol->renderHints() & QgsSymbolV2::DataDefinedSizeScale ||
-       symbol->renderHints() & QgsSymbolV2::DataDefinedRotation )
+  if ( symbol->renderHints() & QgsSymbol::DataDefinedSizeScale ||
+       symbol->renderHints() & QgsSymbol::DataDefinedRotation )
   {
     return true;
   }

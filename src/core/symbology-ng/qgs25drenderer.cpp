@@ -158,17 +158,17 @@ QgsFeatureRendererV2* Qgs25DRenderer::clone() const
   return c;
 }
 
-QgsSymbolV2*Qgs25DRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbol*Qgs25DRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   Q_UNUSED( feature )
   Q_UNUSED( context )
   return mSymbol.data();
 }
 
-QgsSymbolV2List Qgs25DRenderer::symbols( QgsRenderContext& context )
+QgsSymbolList Qgs25DRenderer::symbols( QgsRenderContext& context )
 {
   Q_UNUSED( context );
-  QgsSymbolV2List lst;
+  QgsSymbolList lst;
   lst.append( mSymbol.data() );
   return lst;
 }

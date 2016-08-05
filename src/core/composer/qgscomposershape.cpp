@@ -17,7 +17,7 @@
 
 #include "qgscomposershape.h"
 #include "qgscomposition.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscomposermodel.h"
 #include "qgsmapsettings.h"

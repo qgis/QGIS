@@ -44,10 +44,10 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     virtual QgsArrowSymbolLayer* clone() const override;
 
     /** Get the sub symbol used for filling */
-    virtual QgsSymbolV2* subSymbol() override { return mSymbol.data(); }
+    virtual QgsSymbol* subSymbol() override { return mSymbol.data(); }
 
     /** Set the sub symbol used for filling. Takes ownership. */
-    virtual bool setSubSymbol( QgsSymbolV2* symbol ) override;
+    virtual bool setSubSymbol( QgsSymbol* symbol ) override;
 
     /** Return a list of attributes required to render this feature */
     virtual QSet<QString> usedAttributes() const override;
@@ -154,13 +154,13 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     QString layerType() const override;
 
     /** Prepare the rendering */
-    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
 
     /** End of the rendering */
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
     /** Main drawing method */
-    void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) override;
+    void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) override;
 
     void setColor( const QColor& c ) override;
     virtual QColor color() const override;
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
 
     QScopedPointer<QgsExpressionContextScope> mExpressionScope;
 
-    void _resolveDataDefined( QgsSymbolV2RenderContext& );
+    void _resolveDataDefined( QgsSymbolRenderContext& );
 };
 
 #endif

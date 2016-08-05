@@ -15,14 +15,14 @@
 #include "qgsgraduatedsymbolrendererv2widget.h"
 #include "qgspanelwidget.h"
 
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsstylev2.h"
 
 #include "qgsvectorlayer.h"
 
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgsexpressionbuilderdialog.h"
 
 #include "qgsludialog.h"
@@ -64,7 +64,7 @@ void QgsGraduatedSymbolRendererV2Model::setRenderer( QgsGraduatedSymbolRendererV
   }
 }
 
-void QgsGraduatedSymbolRendererV2Model::addClass( QgsSymbolV2* symbol )
+void QgsGraduatedSymbolRendererV2Model::addClass( QgsSymbol* symbol )
 {
   if ( !mRenderer ) return;
   int idx = mRenderer->ranges().size();
@@ -458,17 +458,17 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   viewGraduated->setStyle( new QgsGraduatedSymbolRendererV2ViewStyle( viewGraduated->style() ) );
 
-  mGraduatedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
+  mGraduatedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
   methodComboBox->blockSignals( true );
   methodComboBox->addItem( "Color" );
-  if ( mGraduatedSymbol->type() == QgsSymbolV2::Marker )
+  if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
   {
     methodComboBox->addItem( "Size" );
     minSizeSpinBox->setValue( 1 );
     maxSizeSpinBox->setValue( 8 );
   }
-  else if ( mGraduatedSymbol->type() == QgsSymbolV2::Line )
+  else if ( mGraduatedSymbol->type() == QgsSymbol::Line )
   {
     methodComboBox->addItem( "Size" );
     minSizeSpinBox->setValue( .1 );
@@ -691,14 +691,14 @@ void QgsGraduatedSymbolRendererV2Widget::cleanUpSymbolSelector( QgsPanelWidget *
 {
   if ( container )
   {
-    QgsSymbolV2SelectorWidget* dlg = qobject_cast<QgsSymbolV2SelectorWidget*>( container );
+    QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( container );
     delete dlg->symbol();
   }
 }
 
 void QgsGraduatedSymbolRendererV2Widget::updateSymbolsFromWidget()
 {
-  QgsSymbolV2SelectorWidget* dlg = qobject_cast<QgsSymbolV2SelectorWidget*>( sender() );
+  QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
   delete mGraduatedSymbol;
   mGraduatedSymbol = dlg->symbol()->clone();
 
@@ -716,7 +716,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateSymbolsFromWidget()
       if ( idx.isValid() )
       {
         int rangeIdx = idx.row();
-        QgsSymbolV2* newRangeSymbol = mGraduatedSymbol->clone();
+        QgsSymbol* newRangeSymbol = mGraduatedSymbol->clone();
         if ( selectedIndexes.count() > 1 )
         {
           //if updating multiple ranges, retain the existing range colors
@@ -830,8 +830,8 @@ void QgsGraduatedSymbolRendererV2Widget::reapplySizes()
 
 void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 {
-  QgsSymbolV2* newSymbol = mGraduatedSymbol->clone();
-  QgsSymbolV2SelectorWidget* dlg = new QgsSymbolV2SelectorWidget( newSymbol, mStyle, mLayer, nullptr );
+  QgsSymbol* newSymbol = mGraduatedSymbol->clone();
+  QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
   dlg->setMapCanvas( mMapCanvas );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
@@ -908,8 +908,8 @@ void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
 
 void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
 {
-  QgsSymbolV2* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
-  QgsSymbolV2SelectorWidget* dlg = new QgsSymbolV2SelectorWidget( newSymbol, mStyle, mLayer, nullptr );
+  QgsSymbol* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
+  QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
   dlg->setDockMode( this->dockMode() );
   dlg->setMapCanvas( mMapCanvas );
 
@@ -1034,7 +1034,7 @@ void QgsGraduatedSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& f
   mRenderer->setSizeScaleField( fldName );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod )
+void QgsGraduatedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod )
 {
   mRenderer->setScaleMethod( scaleMethod );
 }
@@ -1050,9 +1050,9 @@ void QgsGraduatedSymbolRendererV2Widget::labelFormatChanged()
 }
 
 
-QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
+QList<QgsSymbol*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
 {
-  QList<QgsSymbolV2*> selectedSymbols;
+  QList<QgsSymbol*> selectedSymbols;
 
   QItemSelectionModel* m = viewGraduated->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
@@ -1070,7 +1070,7 @@ QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
 
       double lowerBound = list.at( 0 ).toDouble();
       double upperBound = list.at( 2 ).toDouble();
-      QgsSymbolV2* s = findSymbolForRange( lowerBound, upperBound, ranges );
+      QgsSymbol* s = findSymbolForRange( lowerBound, upperBound, ranges );
       if ( s )
       {
         selectedSymbols.append( s );
@@ -1080,7 +1080,7 @@ QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
   return selectedSymbols;
 }
 
-QgsSymbolV2* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const
+QgsSymbol* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const
 {
   int decimalPlaces = mRenderer->labelFormat().precision() + 2;
   if ( decimalPlaces < 0 )

@@ -50,7 +50,7 @@ class QgsRendererV2Widget : QgsPanelWidget
   protected:
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
-    virtual QList<QgsSymbolV2*> selectedSymbols();
+    virtual QList<QgsSymbol*> selectedSymbols();
     virtual void refreshSymbolView();
 
   protected slots:
@@ -96,7 +96,7 @@ class QgsDataDefinedValueDialog : QDialog
      * @param layer must not be null
      * @param label value label
      */
-    QgsDataDefinedValueDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer, const QString & label );
+    QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label );
     virtual ~QgsDataDefinedValueDialog();
 
     /** Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
@@ -125,9 +125,9 @@ class QgsDataDefinedValueDialog : QDialog
     QgsDataDefined symbolDataDefined() const;
     void init( const QString& description ); // needed in children ctor to call virtual
 
-    virtual QgsDataDefined symbolDataDefined( const QgsSymbolV2* ) const = 0;
-    virtual double value( const QgsSymbolV2* ) const = 0;
-    virtual void setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd ) = 0;
+    virtual QgsDataDefined symbolDataDefined( const QgsSymbol* ) const = 0;
+    virtual double value( const QgsSymbol* ) const = 0;
+    virtual void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) = 0;
 };
 
 class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
@@ -137,14 +137,14 @@ class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
 %End
 
   public:
-    QgsDataDefinedSizeDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer );
+    QgsDataDefinedSizeDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer );
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbolV2 * symbol ) const;
+    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const;
 
-    double value( const QgsSymbolV2 * symbol ) const;
+    double value( const QgsSymbol * symbol ) const;
 
-    void setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd );
+    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd );
 };
 
 class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
@@ -154,14 +154,14 @@ class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
 %End
 
   public:
-    QgsDataDefinedRotationDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer );
+    QgsDataDefinedRotationDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer );
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbolV2 * symbol ) const;
+    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const;
 
-    double value( const QgsSymbolV2 * symbol ) const;
+    double value( const QgsSymbol * symbol ) const;
 
-    void setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd );
+    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd );
 };
 
 
@@ -172,12 +172,12 @@ class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
 %End
 
   public:
-    QgsDataDefinedWidthDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer );
+    QgsDataDefinedWidthDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer );
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbolV2 * symbol ) const;
+    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const;
 
-    double value( const QgsSymbolV2 * symbol ) const;
+    double value( const QgsSymbol * symbol ) const;
 
-    void setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd );
+    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd );
 };

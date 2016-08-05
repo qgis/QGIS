@@ -186,7 +186,7 @@ QString QgsSimpleLineSymbolLayerV2::layerType() const
   return "SimpleLine";
 }
 
-void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
+void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolRenderContext& context )
 {
   QColor penColor = mColor;
   penColor.setAlphaF( mColor.alphaF() * context.alpha() );
@@ -233,12 +233,12 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   prepareExpressions( context );
 }
 
-void QgsSimpleLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
+void QgsSimpleLineSymbolLayerV2::stopRender( QgsSymbolRenderContext& context )
 {
   Q_UNUSED( context );
 }
 
-void QgsSimpleLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+void QgsSimpleLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   QPainter* p = context.renderContext().painter();
   if ( !p )
@@ -285,7 +285,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, 
 
 }
 
-void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
+void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context )
 {
   QPainter* p = context.renderContext().painter();
   if ( !p )
@@ -294,7 +294,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   }
 
   //size scaling by field
-  if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
+  if ( context.renderHints() & QgsSymbol::DataDefinedSizeScale )
   {
     applySizeScale( context, mPen, mSelPen );
   }
@@ -477,14 +477,14 @@ QgsSymbolLayer* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &element 
   return l;
 }
 
-void QgsSimpleLineSymbolLayerV2::applySizeScale( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen )
+void QgsSimpleLineSymbolLayerV2::applySizeScale( QgsSymbolRenderContext& context, QPen& pen, QPen& selPen )
 {
   double scaledWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mWidth, mWidthUnit, mWidthMapUnitScale );
   pen.setWidthF( scaledWidth );
   selPen.setWidthF( scaledWidth );
 }
 
-void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen, double& offset )
+void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolRenderContext& context, QPen& pen, QPen& selPen, double& offset )
 {
   if ( !hasDataDefinedProperties() )
     return; // shortcut
@@ -605,7 +605,7 @@ Qt::PenStyle QgsSimpleLineSymbolLayerV2::dxfPenStyle() const
   return mPenStyle;
 }
 
-double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const
+double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const
 {
   double width = mWidth;
 
@@ -614,7 +614,7 @@ double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolV2R
     context.setOriginalValueVariable( mWidth );
     width = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH, context, mWidth ).toDouble() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
   }
-  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
+  else if ( context.renderHints() & QgsSymbol::DataDefinedSizeScale )
   {
     width = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mWidth, mWidthUnit, mWidthMapUnitScale );
   }
@@ -622,7 +622,7 @@ double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolV2R
   return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
 }
 
-QColor QgsSimpleLineSymbolLayerV2::dxfColor( QgsSymbolV2RenderContext& context ) const
+QColor QgsSimpleLineSymbolLayerV2::dxfColor( QgsSymbolRenderContext& context ) const
 {
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_COLOR ) )
   {
@@ -635,7 +635,7 @@ QColor QgsSimpleLineSymbolLayerV2::dxfColor( QgsSymbolV2RenderContext& context )
   return mColor;
 }
 
-double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const
+double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( e );
   double offset = mOffset;
@@ -818,16 +818,16 @@ QColor QgsMarkerLineSymbolLayerV2::color() const
   return mMarker ? mMarker->color() : mColor;
 }
 
-void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
+void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolRenderContext& context )
 {
   mMarker->setAlpha( context.alpha() );
 
   // if being rotated, it gets initialized with every line segment
   int hints = 0;
   if ( mRotateMarker )
-    hints |= QgsSymbolV2::DataDefinedRotation;
-  if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
-    hints |= QgsSymbolV2::DataDefinedSizeScale;
+    hints |= QgsSymbol::DataDefinedRotation;
+  if ( context.renderHints() & QgsSymbol::DataDefinedSizeScale )
+    hints |= QgsSymbol::DataDefinedSizeScale;
   mMarker->setRenderHints( hints );
 
   mMarker->startRender( context.renderContext(), context.fields() );
@@ -836,12 +836,12 @@ void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   prepareExpressions( context );
 }
 
-void QgsMarkerLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
+void QgsMarkerLineSymbolLayerV2::stopRender( QgsSymbolRenderContext& context )
 {
   mMarker->stopRender( context.renderContext() );
 }
 
-void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
+void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context )
 {
   double offset = mOffset;
 
@@ -914,7 +914,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   }
 }
 
-void QgsMarkerLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+void QgsMarkerLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   const QgsCurvePolygonV2* curvePolygon = dynamic_cast<const QgsCurvePolygonV2*>( context.renderContext().geometry() );
 
@@ -938,7 +938,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, 
   }
 }
 
-void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context )
+void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points, QgsSymbolRenderContext& context )
 {
   if ( points.isEmpty() )
     return;
@@ -1023,7 +1023,7 @@ static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
   return atan2( unitY, unitX );
 }
 
-void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context, Placement placement )
+void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, QgsSymbolRenderContext& context, Placement placement )
 {
   if ( points.isEmpty() )
     return;
@@ -1209,7 +1209,7 @@ double QgsMarkerLineSymbolLayerV2::markerAngle( const QPolygonF& points, bool is
   return angle;
 }
 
-void QgsMarkerLineSymbolLayerV2::renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolV2RenderContext& context )
+void QgsMarkerLineSymbolLayerV2::renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext& context )
 {
   if ( points.isEmpty() )
     return;
@@ -1268,7 +1268,7 @@ void QgsMarkerLineSymbolLayerV2::renderOffsetVertexAlongLine( const QPolygonF &p
   return;
 }
 
-void QgsMarkerLineSymbolLayerV2::renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context )
+void QgsMarkerLineSymbolLayerV2::renderPolylineCentral( const QPolygonF& points, QgsSymbolRenderContext& context )
 {
   if ( !points.isEmpty() )
   {
@@ -1347,14 +1347,14 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
   return map;
 }
 
-QgsSymbolV2* QgsMarkerLineSymbolLayerV2::subSymbol()
+QgsSymbol* QgsMarkerLineSymbolLayerV2::subSymbol()
 {
   return mMarker;
 }
 
-bool QgsMarkerLineSymbolLayerV2::setSubSymbol( QgsSymbolV2* symbol )
+bool QgsMarkerLineSymbolLayerV2::setSubSymbol( QgsSymbol* symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbolV2::Marker )
+  if ( !symbol || symbol->type() != QgsSymbol::Marker )
   {
     delete symbol;
     return false;

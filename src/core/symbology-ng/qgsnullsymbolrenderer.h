@@ -17,7 +17,7 @@
 
 #include "qgis.h"
 #include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 /** \ingroup core
  * \class QgsNullSymbolRenderer
@@ -34,8 +34,8 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRendererV2
 
     virtual ~QgsNullSymbolRenderer();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRendererV2
     virtual QList<QString> usedAttributes() override;
     virtual QString dump() const override;
     virtual QgsFeatureRendererV2* clone() const override;
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
+    virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
     /** Creates a null renderer from XML element.
      * @param element DOM element
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRendererV2
   private:
 
     //! Symbol to use for rendering selected features
-    QScopedPointer<QgsSymbolV2> mSymbol;
+    QScopedPointer<QgsSymbol> mSymbol;
 
 };
 

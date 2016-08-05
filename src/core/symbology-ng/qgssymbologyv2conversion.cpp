@@ -125,7 +125,7 @@ static float readMarkerSymbolSize( const QDomNode& synode )
 
 
 
-static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryType geomType )
+static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryType geomType )
 {
   switch ( geomType )
   {
@@ -195,7 +195,7 @@ static QgsFeatureRendererV2* readOldSingleSymbolRenderer( const QDomNode& rnode,
   if ( synode.isNull() )
     return nullptr;
 
-  QgsSymbolV2* sy2 = readOldSymbol( synode, geomType );
+  QgsSymbol* sy2 = readOldSymbol( synode, geomType );
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( sy2 );
   return r;
 }
@@ -227,7 +227,7 @@ static QgsFeatureRendererV2* readOldGraduatedSymbolRenderer( const QDomNode& rno
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
   {
-    QgsSymbolV2* symbolv2 = readOldSymbol( symbolnode, geomType );
+    QgsSymbol* symbolv2 = readOldSymbol( symbolnode, geomType );
     if ( symbolv2 )
     {
       QgsOldSymbolMeta meta = readSymbolMeta( symbolnode );
@@ -260,7 +260,7 @@ static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, 
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
   {
-    QgsSymbolV2* symbolv2 = readOldSymbol( symbolnode, geomType );
+    QgsSymbol* symbolv2 = readOldSymbol( symbolnode, geomType );
     if ( symbolv2 )
     {
       QgsOldSymbolMeta meta = readSymbolMeta( symbolnode );

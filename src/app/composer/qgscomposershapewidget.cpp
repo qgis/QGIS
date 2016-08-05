@@ -20,7 +20,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
 #include "qgsstylev2.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
 #include <QColorDialog>
 
@@ -31,7 +31,7 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
 
-  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolV2SelectorDialog
+  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorDialog
   itemPropertiesWidget->showBackgroundGroup( false );
   itemPropertiesWidget->showFrameGroup( false );
 
@@ -108,7 +108,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
   QgsFillSymbolV2* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
   d.setExpressionContext( mComposerShape->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )

@@ -26,7 +26,7 @@ class QDomDocument;
 class QDomElement;
 class QgsLayerTreeGroup;
 class QgsMapLayer;
-class QgsSymbolV2;
+class QgsSymbol;
 class QgsVectorLayer;
 
 //Information about relationship between groups and layers
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
     /** Updates the whole symbology of a layer*/
     void updateLayer( QStandardItem* layerItem );
     /** Tries to update a single classification item*/
-    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, const QString& itemText )
+    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbol* symbol, const QString& itemText )
     { Q_UNUSED( classificationItem ); Q_UNUSED( symbol ); Q_UNUSED( itemText ); }
     void updateRasterClassificationItem( QStandardItem* classificationItem )
     { Q_UNUSED( classificationItem ); }

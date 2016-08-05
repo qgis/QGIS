@@ -20,7 +20,7 @@
 #define QGSVECTORFILEWRITER_H
 
 #include "qgsfield.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include <ogr_api.h>
 
 #include <QPair>

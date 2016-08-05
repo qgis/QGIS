@@ -23,7 +23,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgssinglesymbolrendererv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include <sqlite3.h>
@@ -318,7 +318,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
   QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
   if ( userStyleElement.isNull() )//apply a default style
   {
-    QgsSymbolV2* symbol = QgsSymbolV2::defaultSymbol( theVectorLayer->geometryType() );
+    QgsSymbol* symbol = QgsSymbol::defaultSymbol( theVectorLayer->geometryType() );
     theRenderer = new QgsSingleSymbolRendererV2( symbol );
   }
   else

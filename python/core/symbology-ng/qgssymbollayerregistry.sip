@@ -6,13 +6,13 @@ class QgsSymbolLayerAbstractMetadata
 #include <qgssymbollayerregistry.h>
 %End
   public:
-    QgsSymbolLayerAbstractMetadata( const QString& name, const QString& visibleName, QgsSymbolV2::SymbolType type );
+    QgsSymbolLayerAbstractMetadata( const QString& name, const QString& visibleName, QgsSymbol::SymbolType type );
 
     virtual ~QgsSymbolLayerAbstractMetadata();
 
     QString name() const;
     QString visibleName() const;
-    QgsSymbolV2::SymbolType type() const;
+    QgsSymbol::SymbolType type() const;
 
     /** Create a symbol layer of this type given the map of properties. */
     virtual QgsSymbolLayer* createSymbolLayer( const QgsStringMap& map ) = 0 /Factory/;
@@ -70,10 +70,10 @@ class QgsSymbolLayerRegistry
     QgsSymbolLayer* createSymbolLayerFromSld( const QString& name, QDomElement &element ) const;
 
     //! return a list of available symbol layers for a specified symbol type
-    QStringList symbolLayersForType( QgsSymbolV2::SymbolType type );
+    QStringList symbolLayersForType( QgsSymbol::SymbolType type );
 
     //! create a new instance of symbol layer for specified symbol type with default settings
-    static QgsSymbolLayer* defaultSymbolLayer( QgsSymbolV2::SymbolType type ) /Factory/;
+    static QgsSymbolLayer* defaultSymbolLayer( QgsSymbol::SymbolType type ) /Factory/;
 
   protected:
     QgsSymbolLayerRegistry();

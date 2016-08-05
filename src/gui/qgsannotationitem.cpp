@@ -19,7 +19,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include <QPainter>
 #include <QPen>
 

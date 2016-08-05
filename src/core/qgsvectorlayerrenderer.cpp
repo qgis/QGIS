@@ -25,7 +25,7 @@
 #include "qgsrendercontext.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgssymbollayer.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerfeatureiterator.h"
@@ -342,7 +342,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
         if ( mContext.labelingEngineV2() )
         {
           QScopedPointer<QgsGeometry> obstacleGeometry;
-          QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
+          QgsSymbolList symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
 
           if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
           {
@@ -380,12 +380,12 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
 
 void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 {
-  QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
+  QHash< QgsSymbol*, QList<QgsFeature> > features; // key = symbol, value = array of features
 
   QgsSingleSymbolRendererV2* selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( mGeometryType ) ) ;
+    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbol::defaultSymbol( mGeometryType ) ) ;
     selRenderer->symbol()->setColor( mContext.selectionColor() );
     selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
     selRenderer->startRender( mContext, mFields );
@@ -410,7 +410,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       continue; // skip features without geometry
 
     mContext.expressionContext().setFeature( fet );
-    QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet, mContext );
+    QgsSymbol* sym = mRendererV2->symbolForFeature( fet, mContext );
     if ( !sym )
     {
       continue;
@@ -444,7 +444,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     if ( mContext.labelingEngineV2() )
     {
       QScopedPointer<QgsGeometry> obstacleGeometry;
-      QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
+      QgsSymbolList symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
 
       if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
@@ -470,19 +470,19 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
   delete mContext.expressionContext().popScope();
 
   // find out the order
-  QgsSymbolV2LevelOrder levels;
-  QgsSymbolV2List symbols = mRendererV2->symbols( mContext );
+  QgsSymbolLevelOrder levels;
+  QgsSymbolList symbols = mRendererV2->symbols( mContext );
   for ( int i = 0; i < symbols.count(); i++ )
   {
-    QgsSymbolV2* sym = symbols[i];
+    QgsSymbol* sym = symbols[i];
     for ( int j = 0; j < sym->symbolLayerCount(); j++ )
     {
       int level = sym->symbolLayer( j )->renderingPass();
       if ( level < 0 || level >= 1000 ) // ignore invalid levels
         continue;
-      QgsSymbolV2LevelItem item( sym, j );
+      QgsSymbolLevelItem item( sym, j );
       while ( level >= levels.count() ) // append new empty levels
-        levels.append( QgsSymbolV2Level() );
+        levels.append( QgsSymbolLevel() );
       levels[level].append( item );
     }
   }
@@ -490,10 +490,10 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
   // 2. draw features in correct order
   for ( int l = 0; l < levels.count(); l++ )
   {
-    QgsSymbolV2Level& level = levels[l];
+    QgsSymbolLevel& level = levels[l];
     for ( int i = 0; i < level.count(); i++ )
     {
-      QgsSymbolV2LevelItem& item = level[i];
+      QgsSymbolLevelItem& item = level[i];
       if ( !features.contains( item.symbol() ) )
       {
         QgsDebugMsg( "level item's symbol not found!" );

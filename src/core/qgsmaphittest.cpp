@@ -87,7 +87,7 @@ void QgsMapHitTest::run()
   painter.end();
 }
 
-bool QgsMapHitTest::symbolVisible( QgsSymbolV2* symbol, QgsVectorLayer* layer ) const
+bool QgsMapHitTest::symbolVisible( QgsSymbol* symbol, QgsVectorLayer* layer ) const
 {
   if ( !symbol || !layer || !mHitTest.contains( layer ) )
     return false;
@@ -179,7 +179,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
 
     if ( moreSymbolsPerFeature )
     {
-      Q_FOREACH ( QgsSymbolV2* s, r->originalSymbolsForFeature( f, context ) )
+      Q_FOREACH ( QgsSymbol* s, r->originalSymbolsForFeature( f, context ) )
       {
         if ( s )
           lUsedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
@@ -187,7 +187,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
     }
     else
     {
-      QgsSymbolV2* s = r->originalSymbolForFeature( f, context );
+      QgsSymbol* s = r->originalSymbolForFeature( f, context );
       if ( s )
         lUsedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
     }

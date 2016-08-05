@@ -16,11 +16,11 @@
 #include "qgsstylev2managerdialog.h"
 
 #include "qgsstylev2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsvectorrandomcolorrampv2dialog.h"
 #include "qgsvectorcolorbrewercolorrampv2dialog.h"
@@ -195,13 +195,13 @@ void QgsStyleV2ManagerDialog::populateTypes()
   {
     switch ( mStyle->symbolRef( symbolNames[i] )->type() )
     {
-      case QgsSymbolV2::Marker:
+      case QgsSymbol::Marker:
         markerCount++;
         break;
-      case QgsSymbolV2::Line:
+      case QgsSymbol::Line:
         lineCount++;
         break;
-      case QgsSymbolV2::Fill:
+      case QgsSymbol::Fill:
         fillCount++;
         break;
       default:
@@ -211,9 +211,9 @@ void QgsStyleV2ManagerDialog::populateTypes()
   }
 
   cboItemType->clear();
-  cboItemType->addItem( tr( "Marker symbol (%1)" ).arg( markerCount ), QVariant( QgsSymbolV2::Marker ) );
-  cboItemType->addItem( tr( "Line symbol (%1)" ).arg( lineCount ), QVariant( QgsSymbolV2::Line ) );
-  cboItemType->addItem( tr( "Fill symbol (%1)" ).arg( fillCount ), QVariant( QgsSymbolV2::Fill ) );
+  cboItemType->addItem( tr( "Marker symbol (%1)" ).arg( markerCount ), QVariant( QgsSymbol::Marker ) );
+  cboItemType->addItem( tr( "Line symbol (%1)" ).arg( lineCount ), QVariant( QgsSymbol::Line ) );
+  cboItemType->addItem( tr( "Fill symbol (%1)" ).arg( fillCount ), QVariant( QgsSymbol::Fill ) );
 
   cboItemType->addItem( tr( "Color ramp (%1)" ).arg( mStyle->colorRampCount() ), QVariant( 3 ) );
 
@@ -265,7 +265,7 @@ void QgsStyleV2ManagerDialog::populateSymbols( const QStringList& symbolNames, b
   for ( int i = 0; i < symbolNames.count(); ++i )
   {
     QString name = symbolNames[i];
-    QgsSymbolV2* symbol = mStyle->symbol( name );
+    QgsSymbol* symbol = mStyle->symbol( name );
     if ( symbol && symbol->type() == type )
     {
       QStandardItem* item = new QStandardItem( name );
@@ -312,11 +312,11 @@ int QgsStyleV2ManagerDialog::currentItemType()
   switch ( tabItemType->currentIndex() )
   {
     case 0:
-      return QgsSymbolV2::Marker;
+      return QgsSymbol::Marker;
     case 1:
-      return QgsSymbolV2::Line;
+      return QgsSymbol::Line;
     case 2:
-      return QgsSymbolV2::Fill;
+      return QgsSymbol::Fill;
     case 3:
       return 3;
     default:
@@ -358,19 +358,19 @@ void QgsStyleV2ManagerDialog::addItem()
 bool QgsStyleV2ManagerDialog::addSymbol()
 {
   // create new symbol with current type
-  QgsSymbolV2* symbol;
+  QgsSymbol* symbol;
   QString name = tr( "new symbol" );
   switch ( currentItemType() )
   {
-    case QgsSymbolV2::Marker:
+    case QgsSymbol::Marker:
       symbol = new QgsMarkerSymbolV2();
       name = tr( "new marker" );
       break;
-    case QgsSymbolV2::Line:
+    case QgsSymbol::Line:
       symbol = new QgsLineSymbolV2();
       name = tr( "new line" );
       break;
-    case QgsSymbolV2::Fill:
+    case QgsSymbol::Fill:
       symbol = new QgsFillSymbolV2();
       name = tr( "new fill symbol" );
       break;
@@ -384,7 +384,7 @@ bool QgsStyleV2ManagerDialog::addSymbol()
   //        that, it is being called by Style Manager, so recursive calling
   //        of style manager and symbol selector can be arrested
   //        See also: editSymbol()
-  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, nullptr, this );
+  QgsSymbolSelectorDialog dlg( symbol, mStyle, nullptr, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;
@@ -611,10 +611,10 @@ bool QgsStyleV2ManagerDialog::editSymbol()
   if ( symbolName.isEmpty() )
     return false;
 
-  QgsSymbolV2* symbol = mStyle->symbol( symbolName );
+  QgsSymbol* symbol = mStyle->symbol( symbolName );
 
   // let the user edit the symbol and update list when done
-  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, nullptr, this );
+  QgsSymbolSelectorDialog dlg( symbol, mStyle, nullptr, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;
@@ -811,7 +811,7 @@ void QgsStyleV2ManagerDialog::exportSelectedItemsImages( const QString& dir, con
   {
     QString name = index.data().toString();
     QString path = dir + '/' + name + '.' + format;
-    QgsSymbolV2 *sym = mStyle->symbol( name );
+    QgsSymbol *sym = mStyle->symbol( name );
     sym->exportImage( path, format, size );
   }
 }

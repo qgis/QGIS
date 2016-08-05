@@ -22,16 +22,22 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 <table>
 <caption id="renamed_classes">Renamed classes</caption>
-<tr><th>API 2.x<th>API 3.X   
-<tr><td>QgsColorButtonV2                 <tr><td>QgsColorButton   
-<tr><td>QgsSymbolLayerV2                 <tr><td>QgsSymbolLayer   
-<tr><td>QgsSymbolLayerV2AbstractMetadata <tr><td>QgsSymbolLayerAbstractMetadata  
-<tr><td>QgsSymbolLayerV2Metadata         <tr><td>QgsSymbolLayerMetadata   
-<tr><td>QgsSymbolLayerV2Registry         <tr><td>QgsSymbolLayerRegistry   
-<tr><td>QgsSymbolLayerV2Utils            <tr><td>QgsSymbolLayerUtils   
-<tr><td>QgsSymbolLayerV2Widget           <tr><td>QgsSymbolLayerWidget  
+<tr><th>API 2.x                          <th>API 3.X
+<tr><td>QgsColorButtonV2                 <td>QgsColorButton
+<tr><td>QgsSymbolLayerV2                 <td>QgsSymbolLayer
+<tr><td>QgsSymbolLayerV2AbstractMetadata <td>QgsSymbolLayerAbstractMetadata
+<tr><td>QgsSymbolLayerV2Metadata         <td>QgsSymbolLayerMetadata
+<tr><td>QgsSymbolLayerV2Registry         <td>QgsSymbolLayerRegistry
+<tr><td>QgsSymbolLayerV2Utils            <td>QgsSymbolLayerUtils
+<tr><td>QgsSymbolLayerV2Widget           <td>QgsSymbolLayerWidget
+<tr><th>QgsSymbolV2                      <th>QgsSymbol
+<tr><td>QgsSymbolV2LegendNode            <td>QgsSymbolLegendNode
+<tr><td>QgsSymbolV2LevelItem             <td>QgsSymbolLevelItem
+<tr><td>QgsSymbolV2RenderContext         <td>QgsSymbolRenderContext
+<tr><td>QgsSymbolV2SelectorDialog        <td>QgsSymbolSelectorDialog
+<tr><td>QgsSymbolV2SelectorWidget        <td>QgsSymbolSelectorWidget
 </table>
- 
+
 \subsection qgis_api_break_3_0_removed_classes Removed Classes
 
 <ul>
@@ -545,12 +551,12 @@ be returned instead of a null pointer if no transformation is required.</li>
 <li>Constructor variant with QgsMapRenderer has been removed. Use the variant with QgsMapSettings.</li>
 </ul>
 
-\subsection qgis_api_break_3_0_QgsSymbolV2 QgsSymbolV2
+\subsection qgis_api_break_3_0_QgsSymbol QgsSymbol (renamed from QgsSymbolV2)
 
 <ul>
-<li>The OutputUnit enum, including QgsSymbolV2::MM, QgsSymbolV2::MapUnit, QgsSymbolV2::Mixed, QgsSymbolV2::Pixel and QgsSymbolV2::Percentage has been moved to QgsUnitTypes
-and renamed to RenderUnit. QgsSymbolV2::OutputUnitList was renamed to QgsUnitTypes::RenderUnitList. All methods which previously accepted QgsSymbolV2::OutputUnit
-parameters or QgsSymbolV2::OutputUnitList parameters now take QgsUnitTypes::RenderUnit or QgsUnitTypes::RenderUnitList parameters respectively.</li>
+<li>The OutputUnit enum, including QgsSymbol::MM, QgsSymbol::MapUnit, QgsSymbol::Mixed, QgsSymbol::Pixel and QgsSymbol::Percentage has been moved to QgsUnitTypes
+and renamed to RenderUnit. QgsSymbol::OutputUnitList was renamed to QgsUnitTypes::RenderUnitList. All methods which previously accepted QgsSymbol::OutputUnit
+parameters or QgsSymbol::OutputUnitList parameters now take QgsUnitTypes::RenderUnit or QgsUnitTypes::RenderUnitList parameters respectively.</li>
 <li>startRender() now accepts a QgsFields reference, not a pointer.</li>
 </ul>
 
@@ -558,10 +564,10 @@ parameters or QgsSymbolV2::OutputUnitList parameters now take QgsUnitTypes::Rend
 
 <ul>
 <li>The deprecated prepareExpressions( const QgsFields* fields, double scale = -1.0 ) method has been removed. Use
-the variant which takes QgsSymbolV2RenderContext instead.</li>
+the variant which takes QgsSymbolRenderContext instead.</li>
 </ul>
 
-\subsection qgis_api_break_3_0_QgsSymbolV2RenderContext QgsSymbolV2RenderContext
+\subsection qgis_api_break_3_0_QgsSymbolRenderContext QgsSymbolRenderContext (renamed from QgsSymbolV2RenderContext)
 
 <ul>
 <li>The constructor now accepts a QgsFields reference, not a pointer.</li>

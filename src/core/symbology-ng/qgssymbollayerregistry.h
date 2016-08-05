@@ -16,7 +16,7 @@
 #ifndef QGSSYMBOLLAYERREGISTRY_H
 #define QGSSYMBOLLAYERREGISTRY_H
 
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 class QgsVectorLayer;
 class QgsSymbolLayerWidget;
@@ -30,7 +30,7 @@ class QgsSymbolLayerWidget;
 class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 {
   public:
-    QgsSymbolLayerAbstractMetadata( const QString& name, const QString& visibleName, QgsSymbolV2::SymbolType type )
+    QgsSymbolLayerAbstractMetadata( const QString& name, const QString& visibleName, QgsSymbol::SymbolType type )
         : mName( name )
         , mVisibleName( visibleName )
         , mType( type )
@@ -40,7 +40,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }
-    QgsSymbolV2::SymbolType type() const { return mType; }
+    QgsSymbol::SymbolType type() const { return mType; }
 
     /** Create a symbol layer of this type given the map of properties. */
     virtual QgsSymbolLayer* createSymbolLayer( const QgsStringMap& map ) = 0;
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
   protected:
     QString mName;
     QString mVisibleName;
-    QgsSymbolV2::SymbolType mType;
+    QgsSymbol::SymbolType mType;
 };
 
 typedef QgsSymbolLayer*( *QgsSymbolLayerCreateFunc )( const QgsStringMap& );
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
   public:
     //! @note not available in python bindings
     QgsSymbolLayerMetadata( const QString& name, const QString& visibleName,
-                              QgsSymbolV2::SymbolType type,
+                              QgsSymbol::SymbolType type,
                               QgsSymbolLayerCreateFunc pfCreate,
                               QgsSymbolLayerWidgetFunc pfWidget = nullptr )
         : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 
     //! @note not available in python bindings
     QgsSymbolLayerMetadata( const QString& name, const QString& visibleName,
-                              QgsSymbolV2::SymbolType type,
+                              QgsSymbol::SymbolType type,
                               QgsSymbolLayerCreateFunc pfCreate,
                               QgsSymbolLayerCreateFromSldFunc pfCreateFromSld,
                               QgsSymbolLayerWidgetFunc pfWidget = nullptr )
@@ -134,10 +134,10 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     QgsSymbolLayer* createSymbolLayerFromSld( const QString& name, QDomElement &element ) const;
 
     //! return a list of available symbol layers for a specified symbol type
-    QStringList symbolLayersForType( QgsSymbolV2::SymbolType type );
+    QStringList symbolLayersForType( QgsSymbol::SymbolType type );
 
     //! create a new instance of symbol layer for specified symbol type with default settings
-    static QgsSymbolLayer* defaultSymbolLayer( QgsSymbolV2::SymbolType type );
+    static QgsSymbolLayer* defaultSymbolLayer( QgsSymbol::SymbolType type );
 
   protected:
     QgsSymbolLayerRegistry();

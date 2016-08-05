@@ -1184,7 +1184,7 @@
       </widget>
     </widget>
   </widget>
-  <widget objectName="QgsSymbolV2SelectorDialogBase" class="QDialog" label="">
+  <widget objectName="QgsSymbolSelectorDialogBase" class="QDialog" label="">
     <widget objectName="lblPreview" class="QLabel" label=""/>
     <widget objectName="label_3" class="QLabel" label="Symbol layers"/>
     <widget objectName="btnAddLayer" class="QPushButton" label=""/>

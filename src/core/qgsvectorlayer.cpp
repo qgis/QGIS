@@ -635,7 +635,7 @@ bool QgsVectorLayer::diagramsEnabled() const
   return false;
 }
 
-long QgsVectorLayer::featureCount( QgsSymbolV2* symbol ) const
+long QgsVectorLayer::featureCount( QgsSymbol* symbol ) const
 {
   if ( !mSymbolFeatureCounted )
     return -1;
@@ -762,8 +762,8 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   while ( fit.nextFeature( f ) )
   {
     renderContext.expressionContext().setFeature( f );
-    QgsSymbolV2List featureSymbolList = mRendererV2->originalSymbolsForFeature( f, renderContext );
-    for ( QgsSymbolV2List::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
+    QgsSymbolList featureSymbolList = mRendererV2->originalSymbolsForFeature( f, renderContext );
+    for ( QgsSymbolList::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
     {
       mSymbolFeatureCountMap[*symbolIt] += 1;
     }

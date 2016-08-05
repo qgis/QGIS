@@ -1,18 +1,18 @@
 
 typedef QList<QgsSymbolLayer*> QgsSymbolLayerList;
 
-class QgsSymbolV2
+class QgsSymbol
 {
 %TypeHeaderCode
-#include <qgssymbolv2.h>
+#include <qgssymbol.h>
 %End
 
 %ConvertToSubClassCode
   switch (sipCpp->type())
   {
-    case QgsSymbolV2::Marker: sipType = sipType_QgsMarkerSymbolV2; break;
-    case QgsSymbolV2::Line: sipType = sipType_QgsLineSymbolV2; break;
-    case QgsSymbolV2::Fill: sipType = sipType_QgsFillSymbolV2; break;
+    case QgsSymbol::Marker: sipType = sipType_QgsMarkerSymbolV2; break;
+    case QgsSymbol::Line: sipType = sipType_QgsLineSymbolV2; break;
+    case QgsSymbol::Fill: sipType = sipType_QgsFillSymbolV2; break;
     default: sipType = 0; break;
   }
 %End
@@ -45,10 +45,10 @@ class QgsSymbolV2
       DataDefinedRotation
     };
 
-    virtual ~QgsSymbolV2();
+    virtual ~QgsSymbol();
 
     //! return new default symbol for specified geometry type
-    static QgsSymbolV2* defaultSymbol( QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsSymbol* defaultSymbol( QgsWkbTypes::GeometryType geomType ) /Factory/;
 
     SymbolType type() const;
 
@@ -149,7 +149,7 @@ class QgsSymbolV2
 
     QString dump() const;
 
-    virtual QgsSymbolV2* clone() const = 0 /Factory/;
+    virtual QgsSymbol* clone() const = 0 /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
@@ -229,10 +229,10 @@ class QgsSymbolV2
      *
      * @return The symbol render context
      */
-    QgsSymbolV2RenderContext* symbolRenderContext();
+    QgsSymbolRenderContext* symbolRenderContext();
 
   protected:
-    QgsSymbolV2( SymbolType type, const QgsSymbolLayerList& layers /Transfer/ ); // can't be instantiated
+    QgsSymbol( SymbolType type, const QgsSymbolLayerList& layers /Transfer/ ); // can't be instantiated
 
     /**
      * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
@@ -272,7 +272,7 @@ class QgsSymbolV2
      * This is required for layers that generate their own geometry from other
      * information in the rendering context.
      */
-    void renderUsingLayer( QgsSymbolLayer* layer, QgsSymbolV2RenderContext& context );
+    void renderUsingLayer( QgsSymbolLayer* layer, QgsSymbolRenderContext& context );
 
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
@@ -284,20 +284,20 @@ class QgsSymbolV2
     void renderVertexMarker( QPointF pt, QgsRenderContext& context, int currentVertexMarkerType, int currentVertexMarkerSize );
 
   private:
-    QgsSymbolV2( const QgsSymbolV2& );
+    QgsSymbol( const QgsSymbol& );
 };
 
 ///////////////////////
 
-class QgsSymbolV2RenderContext
+class QgsSymbolRenderContext
 {
 %TypeHeaderCode
-#include <qgssymbolv2.h>
+#include <qgssymbol.h>
 %End
 
   public:
 
-    /** Constructor for QgsSymbolV2RenderContext
+    /** Constructor for QgsSymbolRenderContext
      * @param c
      * @param u
      * @param alpha
@@ -307,8 +307,8 @@ class QgsSymbolV2RenderContext
      * @param fields
      * @param mapUnitScale
      */
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
-    ~QgsSymbolV2RenderContext();
+    QgsSymbolRenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    ~QgsSymbolRenderContext();
 
     QgsRenderContext& renderContext();
     // const QgsRenderContext& renderContext() const;
@@ -372,7 +372,7 @@ class QgsSymbolV2RenderContext
     double outputPixelSize( double size ) const;
 
     // workaround for sip 4.7. Don't use assignment - will fail with assertion error
-    // QgsSymbolV2RenderContext& operator=( const QgsSymbolV2RenderContext& );
+    // QgsSymbolRenderContext& operator=( const QgsSymbolRenderContext& );
 
     /**
      * This scope is always available when a symbol of this type is being rendered.
@@ -391,7 +391,7 @@ class QgsSymbolV2RenderContext
 
   private:
 
-    QgsSymbolV2RenderContext( const QgsSymbolV2RenderContext& rh );
+    QgsSymbolRenderContext( const QgsSymbolRenderContext& rh );
 };
 
 
@@ -400,10 +400,10 @@ class QgsSymbolV2RenderContext
 
 
 
-class QgsMarkerSymbolV2 : QgsSymbolV2
+class QgsMarkerSymbolV2 : QgsSymbol
 {
 %TypeHeaderCode
-#include <qgssymbolv2.h>
+#include <qgssymbol.h>
 %End
 
   public:
@@ -521,7 +521,7 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
      */
     QgsDataDefined dataDefinedSize() const;
 
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
 
     void renderPoint( QPointF point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
@@ -543,10 +543,10 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
 
 
 
-class QgsLineSymbolV2 : QgsSymbolV2
+class QgsLineSymbolV2 : QgsSymbol
 {
 %TypeHeaderCode
-#include <qgssymbolv2.h>
+#include <qgssymbol.h>
 %End
 
   public:
@@ -582,10 +582,10 @@ class QgsLineSymbolV2 : QgsSymbolV2
 
 
 
-class QgsFillSymbolV2 : QgsSymbolV2
+class QgsFillSymbolV2 : QgsSymbol
 {
 %TypeHeaderCode
-#include <qgssymbolv2.h>
+#include <qgssymbol.h>
 %End
 
   public:

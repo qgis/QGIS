@@ -53,11 +53,11 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
 
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 
@@ -135,12 +135,12 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     double estimateMaxBleed() const override;
 
-    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
-    QColor dxfColor( QgsSymbolV2RenderContext& context ) const override;
-    double dxfAngle( QgsSymbolV2RenderContext& context ) const override;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const override;
+    QColor dxfColor( QgsSymbolRenderContext& context ) const override;
+    double dxfAngle( QgsSymbolRenderContext& context ) const override;
 
     Qt::PenStyle dxfPenStyle() const override;
-    QColor dxfBrushColor( QgsSymbolV2RenderContext &context ) const override;
+    QColor dxfBrushColor( QgsSymbolRenderContext &context ) const override;
     Qt::BrushStyle dxfBrushStyle() const override;
 
   protected:
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
   private:
     //helper functions for data defined symbology
-    void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QBrush& brush, QPen& pen, QPen& selPen );
+    void applyDataDefinedSymbology( QgsSymbolRenderContext& context, QBrush& brush, QPen& pen, QPen& selPen );
 };
 
 class QgsVectorColorRampV2;
@@ -218,11 +218,11 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
 
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 
@@ -310,10 +310,10 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
   private:
 
     //helper functions for data defined symbology
-    void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, const QPolygonF& points );
+    void applyDataDefinedSymbology( QgsSymbolRenderContext& context, const QPolygonF& points );
 
     /** Applies the gradient to a brush*/
-    void applyGradient( const QgsSymbolV2RenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,
+    void applyGradient( const QgsSymbolRenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,
                         GradientColorType gradientColorType, QgsVectorColorRampV2 *gradientRamp, GradientType gradientType,
                         GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
                         QPointF referencePoint1, QPointF referencePoint2, const double angle );
@@ -349,11 +349,11 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
 
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 
@@ -554,7 +554,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
   private:
 
     //helper functions for data defined symbology
-    void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QColor& color, QColor& color2, int& blurRadius, bool& useWholeShape,
+    void applyDataDefinedSymbology( QgsSymbolRenderContext& context, QColor& color, QColor& color2, int& blurRadius, bool& useWholeShape,
                                     double& maxDistance, bool &ignoreRings );
 
     /* distance transform of a 1d function using squared distance */
@@ -576,10 +576,10 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 
     QgsImageFillSymbolLayer();
     virtual ~QgsImageFillSymbolLayer();
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
-    virtual QgsSymbolV2* subSymbol() override { return mOutline; }
-    virtual bool setSubSymbol( QgsSymbolV2* symbol ) override;
+    virtual QgsSymbol* subSymbol() override { return mOutline; }
+    virtual bool setSubSymbol( QgsSymbol* symbol ) override;
 
     /** Sets the units for the symbol's outline width.
      * @param unit symbol units
@@ -603,8 +603,8 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 
     virtual double estimateMaxBleed() const override;
 
-    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
-    QColor dxfColor( QgsSymbolV2RenderContext& context ) const override;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const override;
+    QColor dxfColor( QgsSymbolRenderContext& context ) const override;
 
     Qt::PenStyle dxfPenStyle() const override;
 
@@ -622,7 +622,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     /** Custom outline*/
     QgsLineSymbolV2* mOutline;
 
-    virtual void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) { Q_UNUSED( context ); }
+    virtual void applyDataDefinedSettings( QgsSymbolRenderContext& context ) { Q_UNUSED( context ); }
 };
 
 /** \ingroup core
@@ -647,16 +647,16 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     // implemented from base classes
     QString layerType() const override;
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
-    void startRender( QgsSymbolV2RenderContext& context ) override;
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
     QgsStringMap properties() const override;
     QgsRasterFillSymbolLayer* clone() const override;
     virtual double estimateMaxBleed() const override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
-    virtual QgsSymbolV2* subSymbol() override { return nullptr; }
-    virtual bool setSubSymbol( QgsSymbolV2* symbol ) override;
+    virtual QgsSymbol* subSymbol() override { return nullptr; }
+    virtual bool setSubSymbol( QgsSymbol* symbol ) override;
 
     /** Sets the path to the raster image used for the fill.
      * @param imagePath path to image file
@@ -800,13 +800,13 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsUnitTypes::RenderUnit mWidthUnit;
     QgsMapUnitScale mWidthMapUnitScale;
 
-    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolRenderContext& context ) override;
 
   private:
 
     /** Applies the image pattern to the brush*/
     void applyPattern( QBrush& brush, const QString& imageFilePath, const double width, const double alpha,
-                       const QgsSymbolV2RenderContext& context );
+                       const QgsSymbolRenderContext& context );
 };
 
 /** \ingroup core
@@ -826,8 +826,8 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolV2RenderContext& context ) override;
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 
@@ -905,7 +905,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsUnitTypes::RenderUnit mSvgOutlineWidthUnit;
     QgsMapUnitScale mSvgOutlineWidthMapUnitScale;
 
-    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolRenderContext& context ) override;
 
   private:
     /** Helper function that gets the view box from the byte array*/
@@ -914,7 +914,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 
     /** Applies the svg pattern to the brush*/
     void applyPattern( QBrush& brush, const QString& svgFilePath, double patternWidth, QgsUnitTypes::RenderUnit patternWidthUnit, const QColor& svgFillColor, const QColor& svgOutlineColor,
-                       double svgOutlineWidth, QgsUnitTypes::RenderUnit svgOutlineWidthUnit, const QgsSymbolV2RenderContext& context, const QgsMapUnitScale& patternWidthMapUnitScale, const QgsMapUnitScale &svgOutlineWidthMapUnitScale );
+                       double svgOutlineWidth, QgsUnitTypes::RenderUnit svgOutlineWidthUnit, const QgsSymbolRenderContext& context, const QgsMapUnitScale& patternWidthMapUnitScale, const QgsMapUnitScale &svgOutlineWidthMapUnitScale );
 };
 
 /** \ingroup core
@@ -931,9 +931,9 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
 
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 
@@ -1019,8 +1019,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    bool setSubSymbol( QgsSymbolV2* symbol ) override;
-    QgsSymbolV2* subSymbol() override;
+    bool setSubSymbol( QgsSymbol* symbol ) override;
+    QgsSymbol* subSymbol() override;
 
     QSet<QString> usedAttributes() const override;
 
@@ -1041,11 +1041,11 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsUnitTypes::RenderUnit mOffsetUnit;
     QgsMapUnitScale mOffsetMapUnitScale;
 
-    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolRenderContext& context ) override;
 
   private:
     /** Applies the svg pattern to the brush*/
-    void applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double lineAngle, double distance, double lineWidth, const QColor& color );
+    void applyPattern( const QgsSymbolRenderContext& context, QBrush& brush, double lineAngle, double distance, double lineWidth, const QColor& color );
 
     /** Fill line*/
     QgsLineSymbolV2* mFillLineSymbol;
@@ -1065,9 +1065,9 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
 
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 
@@ -1090,8 +1090,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double displacementY() const { return mDisplacementY; }
     void setDisplacementY( double d ) { mDisplacementY = d; }
 
-    bool setSubSymbol( QgsSymbolV2* symbol ) override;
-    virtual QgsSymbolV2* subSymbol() override { return mMarkerSymbol; }
+    bool setSubSymbol( QgsSymbol* symbol ) override;
+    virtual QgsSymbol* subSymbol() override { return mMarkerSymbol; }
 
     /** Sets the units for the horizontal distance between points in the pattern.
      * @param unit distance units
@@ -1182,10 +1182,10 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsUnitTypes::RenderUnit mDisplacementYUnit;
     QgsMapUnitScale mDisplacementYMapUnitScale;
 
-    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolRenderContext& context ) override;
 
   private:
-    void applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double distanceX, double distanceY,
+    void applyPattern( const QgsSymbolRenderContext& context, QBrush& brush, double distanceX, double distanceY,
                        double displacementX, double displacementY );
 };
 
@@ -1207,11 +1207,11 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
 
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 
@@ -1222,8 +1222,8 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setColor( const QColor& color ) override;
     QColor color() const override;
 
-    QgsSymbolV2* subSymbol() override;
-    bool setSubSymbol( QgsSymbolV2* symbol ) override;
+    QgsSymbol* subSymbol() override;
+    bool setSubSymbol( QgsSymbol* symbol ) override;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;

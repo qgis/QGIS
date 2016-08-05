@@ -19,7 +19,7 @@
 #define QGSDXFEXPORT_H
 
 #include "qgsgeometry.h"
-#include "qgssymbolv2.h" // for OutputUnit enum
+#include "qgssymbol.h" // for OutputUnit enum
 
 #include <QColor>
 #include <QList>
@@ -414,17 +414,17 @@ class CORE_EXPORT QgsDxfExport
     void startSection();
     void endSection();
 
-    void writePoint( const QgsPointV2 &pt, const QString &layer, const QColor& color, QgsSymbolV2RenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbolV2 *symbol, double angle );
+    void writePoint( const QgsPointV2 &pt, const QString &layer, const QColor& color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol, double angle );
     void writeDefaultLinetypes();
     void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );
 
     QgsRectangle dxfExtent() const;
 
-    void addFeature( QgsSymbolV2RenderContext &ctx, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbolV2 *symbol );
+    void addFeature( QgsSymbolRenderContext &ctx, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol );
 
     //returns dxf palette index from symbol layer color
-    static QColor colorFromSymbolLayer( const QgsSymbolLayer *symbolLayer, QgsSymbolV2RenderContext &ctx );
+    static QColor colorFromSymbolLayer( const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx );
     QString lineStyleFromSymbolLayer( const QgsSymbolLayer *symbolLayer );
 
     //functions for dxf palette
@@ -434,9 +434,9 @@ class CORE_EXPORT QgsDxfExport
     //helper functions for symbology export
     QgsRenderContext renderContext() const;
 
-    QList< QPair< QgsSymbolLayer *, QgsSymbolV2 * > > symbolLayers( QgsRenderContext& context );
-    static int nLineTypes( const QList< QPair< QgsSymbolLayer*, QgsSymbolV2*> > &symbolLayers );
-    static bool hasDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbolV2 *symbol );
+    QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers( QgsRenderContext& context );
+    static int nLineTypes( const QList< QPair< QgsSymbolLayer*, QgsSymbol*> > &symbolLayers );
+    static bool hasDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol );
     double dashSize() const;
     double dotSize() const;
     double dashSeparatorSize() const;

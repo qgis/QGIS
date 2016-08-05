@@ -17,7 +17,7 @@
 #include "qgscomposerpolylinewidget.h"
 #include "qgscomposerpolyline.h"
 #include "qgscomposeritemwidget.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgsstylev2.h"
 #include "qgssymbollayerutils.h"
 
@@ -53,7 +53,7 @@ void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
   QScopedPointer<QgsLineSymbolV2> newSymbol;
   newSymbol.reset( mComposerPolyline->polylineStyleSymbol()->clone() );
 
-  QgsSymbolV2SelectorDialog d( newSymbol.data(), QgsStyleV2::defaultStyle(),
+  QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyleV2::defaultStyle(),
                                nullptr, this );
   d.setExpressionContext( mComposerPolyline->createExpressionContext() );
 

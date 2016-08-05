@@ -92,7 +92,7 @@ class QgsRuleBasedRendererV2Widget : QgsRendererV2Widget
 
     QgsRuleBasedRendererV2::Rule* currentRule();
 
-    QList<QgsSymbolV2*> selectedSymbols();
+    QList<QgsSymbol*> selectedSymbols();
     QList<QgsRuleBasedRendererV2::Rule*> selectedRules();
     void refreshSymbolView();
     void keyPressEvent( QKeyEvent* event );

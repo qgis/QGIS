@@ -21,7 +21,7 @@
 #include "qgsstylev2managerdialog.h"
 #include "qgsdatadefined.h"
 
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsstylev2.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbollayerv2.h"
@@ -41,7 +41,7 @@
 #include <QScopedPointer>
 
 
-QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
+QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
     : QWidget( parent )
     , mSymbol( symbol )
     , mStyle( style )
@@ -83,7 +83,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   viewSymbols->setModel( model );
   connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
 
-  connect( mStyle, SIGNAL( symbolSaved( QString, QgsSymbolV2* ) ), this, SLOT( symbolAddedToStyle( QString, QgsSymbolV2* ) ) );
+  connect( mStyle, SIGNAL( symbolSaved( QString, QgsSymbol* ) ), this, SLOT( symbolAddedToStyle( QString, QgsSymbol* ) ) );
   connect( openStyleManagerButton, SIGNAL( pressed() ), this, SLOT( openStyleManager() ) );
 
   lblSymbolName->setText( "" );
@@ -109,9 +109,9 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( mWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedLineWidth() ) );
   connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedLineWidth() ) );
 
-  if ( mSymbol->type() == QgsSymbolV2::Marker && mLayer )
+  if ( mSymbol->type() == QgsSymbol::Marker && mLayer )
     mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
-  else if ( mSymbol->type() == QgsSymbolV2::Line && mLayer )
+  else if ( mSymbol->type() == QgsSymbol::Line && mLayer )
     mWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
 
   // Live color updates are not undoable to child symbol layers
@@ -193,7 +193,7 @@ void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
 
   for ( int i = 0; i < names.count(); i++ )
   {
-    QgsSymbolV2* s = mStyle->symbol( names[i] );
+    QgsSymbol* s = mStyle->symbol( names[i] );
     if ( s->type() != mSymbol->type() )
     {
       delete s;
@@ -292,7 +292,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
     || !isDefault )
   {
     markerSymbol->setDataDefinedSize( dd );
-    markerSymbol->setScaleMethod( QgsSymbolV2::ScaleDiameter );
+    markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
     emit changed();
   }
 }
@@ -325,7 +325,7 @@ void QgsSymbolsListWidget::updateDataDefinedLineWidth()
   }
 }
 
-void QgsSymbolsListWidget::symbolAddedToStyle( const QString& name, QgsSymbolV2* symbol )
+void QgsSymbolsListWidget::symbolAddedToStyle( const QString& name, QgsSymbol* symbol )
 {
   Q_UNUSED( name );
   Q_UNUSED( symbol );
@@ -464,7 +464,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     button->registerGetExpressionContextCallback( &_getExpressionContext, this );
   }
 
-  if ( mSymbol->type() == QgsSymbolV2::Marker )
+  if ( mSymbol->type() == QgsSymbol::Marker )
   {
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
     spinSize->setValue( markerSymbol->size() );
@@ -485,7 +485,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
       mRotationDDBtn->setEnabled( false );
     }
   }
-  else if ( mSymbol->type() == QgsSymbolV2::Line )
+  else if ( mSymbol->type() == QgsSymbol::Line )
   {
     QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
@@ -513,7 +513,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   displayTransparency( mSymbol->alpha() );
   mTransparencySlider->blockSignals( false );
 
-  if ( mSymbol->type() == QgsSymbolV2::Line || mSymbol->type() == QgsSymbolV2::Fill )
+  if ( mSymbol->type() == QgsSymbol::Line || mSymbol->type() == QgsSymbol::Fill )
   {
     //add clip features option for line or fill symbols
     btnAdvanced->menu()->addAction( mClipFeaturesAction );
@@ -534,7 +534,7 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
   QString symbolName = index.data( Qt::UserRole ).toString();
   lblSymbolName->setText( symbolName );
   // get new instance of symbol from style
-  QgsSymbolV2* s = mStyle->symbol( symbolName );
+  QgsSymbol* s = mStyle->symbol( symbolName );
   QgsUnitTypes::RenderUnit unit = s->outputUnit();
   // remove all symbol layers from original symbol
   while ( mSymbol->symbolLayerCount() )

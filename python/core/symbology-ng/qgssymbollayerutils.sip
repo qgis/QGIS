@@ -67,12 +67,12 @@ class QgsSymbolLayerUtils
      */
     static QgsUnitTypes::RenderUnit decodeSldUom( const QString& str, double *scaleFactor );
 
-    static QString encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    static QgsSymbolV2::ScaleMethod decodeScaleMethod( const QString& str );
+    static QString encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
+    static QgsSymbol::ScaleMethod decodeScaleMethod( const QString& str );
 
     static QPainter::CompositionMode decodeBlendMode( const QString& s );
 
-    static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
+    static QIcon symbolPreviewIcon( QgsSymbol* symbol, QSize size );
 
     /** Draws a symbol layer preview to a QPicture
      * @param layer symbol layer to draw
@@ -100,17 +100,17 @@ class QgsSymbolLayerUtils
     static void drawStippledBackground( QPainter* painter, QRect rect );
 
     //! @note customContext parameter added in 2.6
-    static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size, QgsRenderContext* customContext = 0 );
+    static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, QgsRenderContext* customContext = 0 );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
 
     /** Returns the maximum estimated bleed for the symbol */
-    static double estimateMaxSymbolBleed( QgsSymbolV2* symbol );
+    static double estimateMaxSymbolBleed( QgsSymbol* symbol );
 
     /** Attempts to load a symbol from a DOM element
      * @param element DOM element representing symbol
      * @returns decoded symbol, if possible
      */
-    static QgsSymbolV2* loadSymbol( const QDomElement& element ) /Factory/;
+    static QgsSymbol* loadSymbol( const QDomElement& element ) /Factory/;
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
@@ -121,13 +121,13 @@ class QgsSymbolLayerUtils
     //template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element );
 
     static QgsSymbolLayer* loadSymbolLayer( QDomElement& element ) /Factory/;
-    static QDomElement saveSymbol( const QString& symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
+    static QDomElement saveSymbol( const QString& symbolName, QgsSymbol* symbol, QDomDocument& doc );
 
     /** Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
      * @note added in QGIS 2.12
      */
-    static QString symbolProperties( QgsSymbolV2* symbol );
+    static QString symbolProperties( QgsSymbol* symbol );
 
     static bool createSymbolLayerV2ListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
 
@@ -236,10 +236,10 @@ class QgsSymbolLayerUtils
     static QgsStringMap parseProperties( QDomElement& element );
     static void saveProperties( QgsStringMap props, QDomDocument& doc, QDomElement& element );
 
-    static QgsSymbolV2Map loadSymbols( QDomElement& element ) /Factory/;
-    static QDomElement saveSymbols( QgsSymbolV2Map& symbols, const QString& tagName, QDomDocument& doc );
+    static QgsSymbolMap loadSymbols( QDomElement& element ) /Factory/;
+    static QDomElement saveSymbols( QgsSymbolMap& symbols, const QString& tagName, QDomDocument& doc );
 
-    static void clearSymbolMap( QgsSymbolV2Map& symbols );
+    static void clearSymbolMap( QgsSymbolMap& symbols );
 
     static QgsVectorColorRampV2* loadColorRamp( QDomElement& element ) /Factory/;
     static QDomElement saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp, QDomDocument& doc );

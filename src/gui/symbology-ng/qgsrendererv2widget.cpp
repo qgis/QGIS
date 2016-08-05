@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrendererv2widget.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgscolordialog.h"
 #include "qgssymbollevelsv2dialog.h"
@@ -62,14 +62,14 @@ void QgsRendererV2Widget::contextMenuViewCategories( QPoint )
 
 void QgsRendererV2Widget::changeSymbolColor()
 {
-  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
-  QgsSymbolV2* firstSymbol = nullptr;
-  Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
+  QgsSymbol* firstSymbol = nullptr;
+  Q_FOREACH ( QgsSymbol* symbol, symbolList )
   {
     if ( symbol )
     {
@@ -83,7 +83,7 @@ void QgsRendererV2Widget::changeSymbolColor()
   QColor color = QgsColorDialogV2::getColor( firstSymbol->color(), this, "Change Symbol Color", true );
   if ( color.isValid() )
   {
-    Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
+    Q_FOREACH ( QgsSymbol* symbol, symbolList )
     {
       if ( symbol )
         symbol->setColor( color );
@@ -94,14 +94,14 @@ void QgsRendererV2Widget::changeSymbolColor()
 
 void QgsRendererV2Widget::changeSymbolTransparency()
 {
-  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
-  QgsSymbolV2* firstSymbol = nullptr;
-  Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
+  QgsSymbol* firstSymbol = nullptr;
+  Q_FOREACH ( QgsSymbol* symbol, symbolList )
   {
     if ( symbol )
     {
@@ -117,7 +117,7 @@ void QgsRendererV2Widget::changeSymbolTransparency()
   double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change symbol transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
   if ( ok )
   {
-    Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
+    Q_FOREACH ( QgsSymbol* symbol, symbolList )
     {
       if ( symbol )
         symbol->setAlpha( 1 - transparency / 100 );
@@ -128,14 +128,14 @@ void QgsRendererV2Widget::changeSymbolTransparency()
 
 void QgsRendererV2Widget::changeSymbolUnit()
 {
-  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
-  QgsSymbolV2* firstSymbol = nullptr;
-  Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
+  QgsSymbol* firstSymbol = nullptr;
+  Q_FOREACH ( QgsSymbol* symbol, symbolList )
   {
     if ( symbol )
     {
@@ -153,7 +153,7 @@ void QgsRendererV2Widget::changeSymbolUnit()
   {
     QgsUnitTypes::RenderUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
 
-    Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
+    Q_FOREACH ( QgsSymbol* symbol, symbolList )
     {
       if ( symbol )
         symbol->setOutputUnit( unit );
@@ -164,7 +164,7 @@ void QgsRendererV2Widget::changeSymbolUnit()
 
 void QgsRendererV2Widget::changeSymbolWidth()
 {
-  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
@@ -177,12 +177,12 @@ void QgsRendererV2Widget::changeSymbolWidth()
   {
     if ( !dlg.mDDBtn->isActive() )
     {
-      Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
+      Q_FOREACH ( QgsSymbol* symbol, symbolList )
       {
         if ( !symbol )
           continue;
 
-        if ( symbol->type() == QgsSymbolV2::Line )
+        if ( symbol->type() == QgsSymbol::Line )
           static_cast<QgsLineSymbolV2*>( symbol )->setWidth( dlg.mSpinBox->value() );
       }
     }
@@ -192,7 +192,7 @@ void QgsRendererV2Widget::changeSymbolWidth()
 
 void QgsRendererV2Widget::changeSymbolSize()
 {
-  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
@@ -205,12 +205,12 @@ void QgsRendererV2Widget::changeSymbolSize()
   {
     if ( !dlg.mDDBtn->isActive() )
     {
-      Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
+      Q_FOREACH ( QgsSymbol* symbol, symbolList )
       {
         if ( !symbol )
           continue;
 
-        if ( symbol->type() == QgsSymbolV2::Marker )
+        if ( symbol->type() == QgsSymbol::Marker )
           static_cast<QgsMarkerSymbolV2*>( symbol )->setSize( dlg.mSpinBox->value() );
       }
     }
@@ -220,7 +220,7 @@ void QgsRendererV2Widget::changeSymbolSize()
 
 void QgsRendererV2Widget::changeSymbolAngle()
 {
-  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
@@ -233,12 +233,12 @@ void QgsRendererV2Widget::changeSymbolAngle()
   {
     if ( !dlg.mDDBtn->isActive() )
     {
-      Q_FOREACH ( QgsSymbolV2* symbol, symbolList )
+      Q_FOREACH ( QgsSymbol* symbol, symbolList )
       {
         if ( !symbol )
           continue;
 
-        if ( symbol->type() == QgsSymbolV2::Marker )
+        if ( symbol->type() == QgsSymbol::Marker )
           static_cast<QgsMarkerSymbolV2*>( symbol )->setAngle( dlg.mSpinBox->value() );
       }
     }
@@ -280,7 +280,7 @@ void QgsRendererV2Widget::applyChanges()
 
 #include "qgsfield.h"
 
-QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, const QString& rotationField, const QString& sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
+QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, const QString& rotationField, const QString& sizeScaleField, QgsSymbol::ScaleMethod scaleMethod )
     : QObject( menu )
     , mLayer( layer )
 {
@@ -302,7 +302,7 @@ QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVe
   aScaleByArea->setCheckable( true );
   aScaleByDiameter->setCheckable( true );
 
-  if ( scaleMethod == QgsSymbolV2::ScaleDiameter )
+  if ( scaleMethod == QgsSymbol::ScaleDiameter )
   {
     aScaleByDiameter->setChecked( true );
   }
@@ -436,11 +436,11 @@ void QgsRendererV2DataDefinedMenus::scaleMethodSelected( QAction* a )
 
   if ( a->text() == tr( "Scale area" ) )
   {
-    emit scaleMethodChanged( QgsSymbolV2::ScaleArea );
+    emit scaleMethodChanged( QgsSymbol::ScaleArea );
   }
   else if ( a->text() == tr( "Scale diameter" ) )
   {
-    emit scaleMethodChanged( QgsSymbolV2::ScaleDiameter );
+    emit scaleMethodChanged( QgsSymbol::ScaleDiameter );
   }
 }
 #if 0 // MK: is there any reason for this?
@@ -453,7 +453,7 @@ void QgsRendererV2DataDefinedMenus::updateMenu( QActionGroup* actionGroup, QStri
 }
 #endif
 
-QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer, const QString & label )
+QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label )
     : mSymbolList( symbolList )
     , mLayer( layer )
     , mMapCanvas( nullptr )
@@ -511,8 +511,8 @@ void QgsDataDefinedValueDialog::init( const QString& description )
   mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );
   mDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, this );
 
-  QgsSymbolV2* initialSymbol = nullptr;
-  Q_FOREACH ( QgsSymbolV2* symbol, mSymbolList )
+  QgsSymbol* initialSymbol = nullptr;
+  Q_FOREACH ( QgsSymbol* symbol, mSymbolList )
   {
     if ( symbol )
     {
@@ -530,7 +530,7 @@ QgsDataDefined QgsDataDefinedValueDialog::symbolDataDefined() const
 
   // check that all symbols share the same size expression
   QgsDataDefined dd = symbolDataDefined( mSymbolList.back() );
-  Q_FOREACH ( QgsSymbolV2 * it, mSymbolList )
+  Q_FOREACH ( QgsSymbol * it, mSymbolList )
   {
     if ( !it || symbolDataDefined( it ) != dd )
       return QgsDataDefined();
@@ -548,43 +548,43 @@ void QgsDataDefinedValueDialog::dataDefinedChanged()
     // shall we set the "en masse" expression for properties ?
     || dd.isActive() )
   {
-    Q_FOREACH ( QgsSymbolV2 * it, mSymbolList )
+    Q_FOREACH ( QgsSymbol * it, mSymbolList )
       setDataDefined( it, dd );
   }
 }
 
-QgsDataDefined QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbolV2 *symbol ) const
+QgsDataDefined QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsMarkerSymbolV2* marker = static_cast<const QgsMarkerSymbolV2*>( symbol );
   return marker->dataDefinedSize();
 }
 
-void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd )
+void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd )
 {
   static_cast<QgsMarkerSymbolV2*>( symbol )->setDataDefinedSize( dd );
-  static_cast<QgsMarkerSymbolV2*>( symbol )->setScaleMethod( QgsSymbolV2::ScaleDiameter );
+  static_cast<QgsMarkerSymbolV2*>( symbol )->setScaleMethod( QgsSymbol::ScaleDiameter );
 }
 
 
-QgsDataDefined QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbolV2 *symbol ) const
+QgsDataDefined QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsMarkerSymbolV2* marker = static_cast<const QgsMarkerSymbolV2*>( symbol );
   return marker->dataDefinedAngle();
 }
 
-void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbolV2 *symbol, const QgsDataDefined &dd )
+void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
 {
   static_cast<QgsMarkerSymbolV2*>( symbol )->setDataDefinedAngle( dd );
 }
 
 
-QgsDataDefined QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbolV2 *symbol ) const
+QgsDataDefined QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsLineSymbolV2* line = static_cast<const QgsLineSymbolV2*>( symbol );
   return line->dataDefinedWidth();
 }
 
-void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbolV2 *symbol, const QgsDataDefined &dd )
+void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
 {
   static_cast<QgsLineSymbolV2*>( symbol )->setDataDefinedWidth( dd );
 }

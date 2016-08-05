@@ -28,7 +28,7 @@ class QgsComposition;
 class QgsComposerItem;
 class QgsAtlasComposition;
 class QgsMapSettings;
-class QgsSymbolV2;
+class QgsSymbol;
 
 /** \ingroup core
  * \class QgsScopedExpressionFunction
@@ -597,12 +597,12 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QgsExpressionContextScope* mapSettingsScope( const QgsMapSettings &mapSettings );
 
     /**
-     * Updates a symbol scope related to a QgsSymbolV2 to an expression context.
+     * Updates a symbol scope related to a QgsSymbol to an expression context.
      * @param symbol symbol to extract properties from
      * @param symbolScope pointer to an existing scope to update
      * @note added in QGIS 2.14
      */
-    static QgsExpressionContextScope* updateSymbolScope( const QgsSymbolV2* symbol, QgsExpressionContextScope* symbolScope = nullptr );
+    static QgsExpressionContextScope* updateSymbolScope( const QgsSymbol* symbol, QgsExpressionContextScope* symbolScope = nullptr );
 
     /** Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.

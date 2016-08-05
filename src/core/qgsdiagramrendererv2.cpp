@@ -742,7 +742,7 @@ QList< QgsLayerTreeModelLegendNode* > QgsLinearlyInterpolatedDiagramRenderer::le
       s->setSize( size );
       s->setSizeUnit( mSettings.sizeType );
       s->setSizeMapUnitScale( mSettings.sizeScale );
-      nodes << new QgsSymbolV2LegendNode( nodeLayer, si );
+      nodes << new QgsSymbolLegendNode( nodeLayer, si );
     }
   }
 

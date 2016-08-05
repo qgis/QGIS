@@ -28,7 +28,7 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
-#include <qgssymbolv2.h>
+#include <qgssymbol.h>
 #include <qgssinglesymbolrendererv2.h>
 #include <qgsfillsymbollayerv2.h>
 #include <qgsvectorcolorrampv2.h>

@@ -19,7 +19,7 @@
 #include "qgspointmarkeritem.h"
 #include "qgsrendererv2.h"
 #include "qgssnappingutils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayer.h"
 #include "qgsdatadefined.h"

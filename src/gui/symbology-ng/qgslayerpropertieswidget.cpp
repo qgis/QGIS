@@ -31,7 +31,7 @@
 #include "qgsarrowsymbollayerwidget.h"
 #include "qgsellipsesymbollayerv2widget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
-#include "qgssymbolv2.h" //for the unit
+#include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
 
 static bool _initWidgetFunction( const QString& name, QgsSymbolLayerWidgetFunc f )
@@ -86,7 +86,7 @@ static void _initWidgetFunctions()
 }
 
 
-QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent )
+QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbol* symbol, const QgsVectorLayer* vl, QWidget* parent )
     : QgsPanelWidget( parent )
     , mPresetExpressionContext( nullptr )
     , mMapCanvas( nullptr )
@@ -156,13 +156,13 @@ void QgsLayerPropertiesWidget::populateLayerTypes()
   Q_FOREACH ( const QString& symbolLayerId, symbolLayerIds )
     cboLayerType->addItem( QgsSymbolLayerRegistry::instance()->symbolLayerMetadata( symbolLayerId )->visibleName(), symbolLayerId );
 
-  if ( mSymbol->type() == QgsSymbolV2::Fill )
+  if ( mSymbol->type() == QgsSymbol::Fill )
   {
-    QStringList lineLayerIds = QgsSymbolLayerRegistry::instance()->symbolLayersForType( QgsSymbolV2::Line );
+    QStringList lineLayerIds = QgsSymbolLayerRegistry::instance()->symbolLayersForType( QgsSymbol::Line );
     Q_FOREACH ( const QString& lineLayerId, lineLayerIds )
     {
       QgsSymbolLayerAbstractMetadata* layerInfo = QgsSymbolLayerRegistry::instance()->symbolLayerMetadata( lineLayerId );
-      if ( layerInfo->type() != QgsSymbolV2::Hybrid )
+      if ( layerInfo->type() != QgsSymbol::Hybrid )
       {
         QString visibleName = layerInfo->visibleName();
         QString name = QString( tr( "Outline: %1" ) ).arg( visibleName );

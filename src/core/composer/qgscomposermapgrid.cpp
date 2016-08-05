@@ -24,7 +24,7 @@
 #include "qgsmapsettings.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsfontutils.h"

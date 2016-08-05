@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssymbolv2selectordialog.h
+    qgssymbolselectordialog.h
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSYMBOLV2SELECTORDIALOG_H
-#define QGSSYMBOLV2SELECTORDIALOG_H
+#ifndef QGSSYMBOLSELECTORDIALOG_H
+#define QGSSYMBOLSELECTORDIALOG_H
 
 #include <QDialog>
 
-#include "ui_qgssymbolv2selectordialogbase.h"
+#include "ui_qgssymbolselectordialogbase.h"
 
 #include "qgsdatadefined.h"
 #include "qgspanelwidget.h"
@@ -28,7 +28,7 @@
 #include <QDialogButtonBox>
 
 class QgsStyleV2;
-class QgsSymbolV2;
+class QgsSymbol;
 class QgsSymbolLayer;
 class QgsVectorLayer;
 
@@ -49,7 +49,7 @@ class DataDefinedRestorer: public QObject
 {
     Q_OBJECT
   public:
-    DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayer* symbolLayer );
+    DataDefinedRestorer( QgsSymbol* symbol, const QgsSymbolLayer* symbolLayer );
 
   public slots:
     void restore();
@@ -73,16 +73,16 @@ class DataDefinedRestorer: public QObject
 };
 ///@endcond
 
-class QgsSymbolV2SelectorDialog;
+class QgsSymbolSelectorDialog;
 
 /** \ingroup gui
  * Symbol selector widget that cna be used to select and build a symbol
  */
-class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::QgsSymbolV2SelectorDialogBase
+class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::QgsSymbolSelectorDialogBase
 {
     Q_OBJECT
     /// Too allow for non API break access from the dialog.
-    friend class QgsSymbolV2SelectorDialog;
+    friend class QgsSymbolSelectorDialog;
 
   public:
     /**
@@ -92,8 +92,8 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
        * @param vl The vector layer for the symbol.
        * @param parent
        */
-    QgsSymbolV2SelectorWidget( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = nullptr );
-    ~QgsSymbolV2SelectorWidget();
+    QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = nullptr );
+    ~QgsSymbolSelectorWidget();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
      * @brief Return the symbol that is currently active in the widget. Can be null.
      * @return The active symbol.
      */
-    QgsSymbolV2* symbol() { return mSymbol; }
+    QgsSymbol* symbol() { return mSymbol; }
 
   protected:
 
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
      * @param symbol The symbol to load.
      * @param parent The parent symbol layer item.
      */
-    void loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent );
+    void loadSymbol( QgsSymbol* symbol, SymbolLayerItem* parent );
 
     /**
      * Update the state of the UI based on the currently set symbol layer.
@@ -240,7 +240,7 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
 
   protected: // data
     QgsStyleV2* mStyle;
-    QgsSymbolV2* mSymbol;
+    QgsSymbol* mSymbol;
     QMenu* mAdvancedMenu;
     const QgsVectorLayer* mVectorLayer;
 
@@ -255,15 +255,15 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
 };
 
 /** \ingroup gui
- * \class QgsSymbolV2SelectorDialog
+ * \class QgsSymbolSelectorDialog
  */
-class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog
+class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-    QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = nullptr, bool embedded = false );
-    ~QgsSymbolV2SelectorDialog();
+    QgsSymbolSelectorDialog( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = nullptr, bool embedded = false );
+    ~QgsSymbolSelectorDialog();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
@@ -296,7 +296,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog
      * @brief Return the symbol that is currently active in the widget. Can be null.
      * @return The active symbol.
      */
-    QgsSymbolV2* symbol();
+    QgsSymbol* symbol();
 
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
@@ -304,7 +304,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog
 
     void loadSymbol();
     //! @note not available in python bindings
-    void loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent );
+    void loadSymbol( QgsSymbol* symbol, SymbolLayerItem* parent );
 
     void updateUi();
 
@@ -348,7 +348,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog
     void changeLayer( QgsSymbolLayer* layer );
 
   private:
-    QgsSymbolV2SelectorWidget* mSelectorWidget;
+    QgsSymbolSelectorWidget* mSelectorWidget;
     QDialogButtonBox* mButtonBox;
 };
 

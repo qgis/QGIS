@@ -42,8 +42,8 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
     QList<QString> usedAttributes() override;
     QgsFeatureRendererV2* clone() const override;
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
     /**
      * Get the roof color
@@ -116,7 +116,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
     QgsFillSymbolLayerV2* wallLayer() const;
     QgsOuterGlowEffect* glowEffect() const;
 
-    QScopedPointer<QgsSymbolV2> mSymbol;
+    QScopedPointer<QgsSymbol> mSymbol;
 };
 
 #endif // QGS25DRENDERER_H

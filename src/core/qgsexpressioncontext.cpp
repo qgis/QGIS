@@ -768,7 +768,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   return scope;
 }
 
-QgsExpressionContextScope* QgsExpressionContextUtils::updateSymbolScope( const QgsSymbolV2* symbol, QgsExpressionContextScope* symbolScope )
+QgsExpressionContextScope* QgsExpressionContextUtils::updateSymbolScope( const QgsSymbol* symbol, QgsExpressionContextScope* symbolScope )
 {
   if ( !symbolScope )
     return nullptr;

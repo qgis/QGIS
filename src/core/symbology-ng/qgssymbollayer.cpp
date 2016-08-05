@@ -215,7 +215,7 @@ QVariant QgsSymbolLayer::evaluateDataDefinedProperty( const QString &property, c
   return defaultVal;
 }
 
-QVariant QgsSymbolLayer::evaluateDataDefinedProperty( const QString& property, const QgsSymbolV2RenderContext& context, const QVariant& defaultVal, bool* ok ) const
+QVariant QgsSymbolLayer::evaluateDataDefinedProperty( const QString& property, const QgsSymbolRenderContext& context, const QVariant& defaultVal, bool* ok ) const
 {
   if ( ok )
     *ok = false;
@@ -256,7 +256,7 @@ QVariant QgsSymbolLayer::evaluateDataDefinedProperty( const QString& property, c
   return defaultVal;
 }
 
-bool QgsSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolV2RenderContext &context, QPointF shift ) const
+bool QgsSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
   Q_UNUSED( e );
   Q_UNUSED( mmMapUnitScaleFactor );
@@ -266,27 +266,27 @@ bool QgsSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, con
   return false;
 }
 
-double QgsSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const
+double QgsSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const
 {
   Q_UNUSED( e );
   Q_UNUSED( context );
   return 1.0;
 }
 
-double QgsSymbolLayer::dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const
+double QgsSymbolLayer::dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( e );
   Q_UNUSED( context );
   return 0.0;
 }
 
-QColor QgsSymbolLayer::dxfColor( QgsSymbolV2RenderContext &context ) const
+QColor QgsSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( context );
   return color();
 }
 
-double QgsSymbolLayer::dxfAngle( QgsSymbolV2RenderContext &context ) const
+double QgsSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( context );
   return 0.0;
@@ -303,7 +303,7 @@ Qt::PenStyle QgsSymbolLayer::dxfPenStyle() const
   return Qt::SolidLine;
 }
 
-QColor QgsSymbolLayer::dxfBrushColor( QgsSymbolV2RenderContext &context ) const
+QColor QgsSymbolLayer::dxfBrushColor( QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( context );
   return color();
@@ -325,7 +325,7 @@ void QgsSymbolLayer::setPaintEffect( QgsPaintEffect *effect )
   mPaintEffect = effect;
 }
 
-QgsSymbolLayer::QgsSymbolLayer( QgsSymbolV2::SymbolType type, bool locked )
+QgsSymbolLayer::QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked )
     : mType( type )
     , mLocked( locked )
     , mRenderingPass( 0 )
@@ -335,7 +335,7 @@ QgsSymbolLayer::QgsSymbolLayer( QgsSymbolV2::SymbolType type, bool locked )
   mPaintEffect->setEnabled( false );
 }
 
-void QgsSymbolLayer::prepareExpressions( const QgsSymbolV2RenderContext& context )
+void QgsSymbolLayer::prepareExpressions( const QgsSymbolRenderContext& context )
 {
   QMap< QString, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constBegin();
   for ( ; it != mDataDefinedProperties.constEnd(); ++it )
@@ -365,9 +365,9 @@ QgsSymbolLayer::~QgsSymbolLayer()
   delete mPaintEffect;
 }
 
-bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbolV2* symbol ) const
+bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbol* symbol ) const
 {
-  if ( symbol->type() == QgsSymbolV2::Fill && mType == QgsSymbolV2::Line )
+  if ( symbol->type() == QgsSymbol::Fill && mType == QgsSymbol::Line )
     return true;
 
   return symbol->type() == mType;
@@ -455,13 +455,13 @@ void QgsSymbolLayer::copyPaintEffect( QgsSymbolLayer *destLayer ) const
 }
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
-    : QgsSymbolLayer( QgsSymbolV2::Marker, locked )
+    : QgsSymbolLayer( QgsSymbol::Marker, locked )
     , mAngle( 0 )
     , mLineAngle( 0 )
     , mSize( 2.0 )
     , mSizeUnit( QgsUnitTypes::RenderMillimeters )
     , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-    , mScaleMethod( QgsSymbolV2::ScaleDiameter )
+    , mScaleMethod( QgsSymbol::ScaleDiameter )
     , mHorizontalAnchorPoint( HCenter )
     , mVerticalAnchorPoint( VCenter )
 {
@@ -469,7 +469,7 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
 }
 
 QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
-    : QgsSymbolLayer( QgsSymbolV2::Line, locked )
+    : QgsSymbolLayer( QgsSymbol::Line, locked )
     , mWidth( 0 )
     , mWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mOffset( 0 )
@@ -478,34 +478,34 @@ QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
 }
 
 QgsFillSymbolLayerV2::QgsFillSymbolLayerV2( bool locked )
-    : QgsSymbolLayer( QgsSymbolV2::Fill, locked )
+    : QgsSymbolLayer( QgsSymbol::Fill, locked )
     , mAngle( 0.0 )
 {
 }
 
-void QgsMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
+void QgsMarkerSymbolLayerV2::startRender( QgsSymbolRenderContext& context )
 {
   Q_UNUSED( context );
 }
 
-void QgsMarkerSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
+void QgsMarkerSymbolLayerV2::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
 {
   startRender( context );
   renderPoint( QPointF( size.width() / 2, size.height() / 2 ), context );
   stopRender( context );
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const
+void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolRenderContext& context, double& offsetX, double& offsetY ) const
 {
   markerOffset( context, mSize, mSize, mSizeUnit, mSizeUnit, offsetX, offsetY, mSizeMapUnitScale, mSizeMapUnitScale );
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const
+void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolRenderContext& context, double width, double height, double& offsetX, double& offsetY ) const
 {
   markerOffset( context, width, height, mSizeUnit, mSizeUnit, offsetX, offsetY, mSizeMapUnitScale, mSizeMapUnitScale );
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
+void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolRenderContext& context, double width, double height,
     QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
     double& offsetX, double& offsetY, const QgsMapUnitScale& widthMapUnitScale, const QgsMapUnitScale& heightMapUnitScale ) const
 {
@@ -652,7 +652,7 @@ QgsMapUnitScale QgsLineSymbolLayerV2::mapUnitScale() const
 }
 
 
-void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
+void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
 {
   QPolygonF points;
   // we're adding 0.5 to get rid of blurred preview:
@@ -664,7 +664,7 @@ void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, Q
   stopRender( context );
 }
 
-void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   renderPolyline( points, context );
   if ( rings )
@@ -674,14 +674,14 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
   }
 }
 
-double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const
+double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( context );
   return width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
 }
 
 
-void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
+void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
 {
   QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width(), size.height() ) );
   startRender( context );
@@ -689,7 +689,7 @@ void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, Q
   stopRender( context );
 }
 
-void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   if ( !p )
   {

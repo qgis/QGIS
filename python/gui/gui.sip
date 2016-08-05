@@ -246,7 +246,7 @@
 %Include symbology-ng/qgssymbollayerwidget.sip
 %Include symbology-ng/qgssymbollevelsv2dialog.sip
 %Include symbology-ng/qgssymbolslistwidget.sip
-%Include symbology-ng/qgssymbolv2selectordialog.sip
+%Include symbology-ng/qgssymbolselectordialog.sip
 %Include symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.sip
 %Include symbology-ng/qgsvectorfieldsymbollayerwidget.sip
 %Include symbology-ng/qgsvectorgradientcolorrampv2dialog.sip

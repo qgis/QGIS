@@ -18,7 +18,7 @@
 
 #include "ui_widget_layerproperties.h"
 
-class QgsSymbolV2;
+class QgsSymbol;
 class QgsSymbolLayer;
 class QgsSymbolLayerWidget;
 class QgsVectorLayer;
@@ -39,7 +39,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
     Q_OBJECT
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent = nullptr );
+    QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbol* symbol, const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
     /** Returns the expression context used for the widget, if set. This expression context is used for
      * evaluating data defined symbol properties and for populating based expression widgets in
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
   protected: // data
     QgsSymbolLayer* mLayer;
 
-    const QgsSymbolV2* mSymbol;
+    const QgsSymbol* mSymbol;
     const QgsVectorLayer* mVectorLayer;
 
   private slots:

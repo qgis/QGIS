@@ -15,7 +15,7 @@
 
 #include "qgsheatmaprenderer.h"
 
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
 #include "qgslogger.h"
@@ -373,15 +373,15 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsSymbolV2* QgsHeatmapRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& )
+QgsSymbol* QgsHeatmapRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& )
 {
   Q_UNUSED( feature );
   return nullptr;
 }
 
-QgsSymbolV2List QgsHeatmapRenderer::symbols( QgsRenderContext& )
+QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext& )
 {
-  return QgsSymbolV2List();
+  return QgsSymbolList();
 }
 
 QList<QString> QgsHeatmapRenderer::usedAttributes()

@@ -38,10 +38,10 @@
 #include "qgsscaleutils.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsstylev2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsstylev2managerdialog.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
 #include "qgscolorschemeregistry.h"
@@ -1683,20 +1683,20 @@ void QgsProjectProperties::populateStyles()
   for ( int i = 0; i < symbolNames.count(); ++i )
   {
     QString name = symbolNames[i];
-    QgsSymbolV2* symbol = mStyle->symbol( name );
+    QgsSymbol* symbol = mStyle->symbol( name );
     QComboBox* cbo = nullptr;
     switch ( symbol->type() )
     {
-      case QgsSymbolV2::Marker :
+      case QgsSymbol::Marker :
         cbo = cboStyleMarker;
         break;
-      case QgsSymbolV2::Line :
+      case QgsSymbol::Line :
         cbo = cboStyleLine;
         break;
-      case QgsSymbolV2::Fill :
+      case QgsSymbol::Fill :
         cbo = cboStyleFill;
         break;
-      case QgsSymbolV2::Hybrid:
+      case QgsSymbol::Hybrid:
         // Shouldn't get here
         break;
     }
@@ -1786,7 +1786,7 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
     QMessageBox::information( this, "", tr( "Select a valid symbol" ) );
     return;
   }
-  QgsSymbolV2* symbol = mStyle->symbol( symbolName );
+  QgsSymbol* symbol = mStyle->symbol( symbolName );
   if ( ! symbol )
   {
     QMessageBox::warning( this, "", tr( "Invalid symbol : " ) + symbolName );
@@ -1794,7 +1794,7 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
   }
 
   // let the user edit the symbol and update list when done
-  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, nullptr, this );
+  QgsSymbolSelectorDialog dlg( symbol, mStyle, nullptr, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;

@@ -24,7 +24,7 @@
 #include "qgslegendsettings.h"
 
 class QgsLayerTreeModel;
-class QgsSymbolV2;
+class QgsSymbol;
 class QgsComposerGroupItem;
 class QgsComposerLayerItem;
 class QgsComposerMap;

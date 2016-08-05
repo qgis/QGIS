@@ -362,7 +362,7 @@ void QgsLegendModel::updateSymbolV2ItemText( QStandardItem* symbolItem )
 
   QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
 
-  QPair<QString, QgsSymbolV2*> symbol = symbolList.value( symbolItem->row() );
+  QPair<QString, QgsSymbol*> symbol = symbolList.value( symbolItem->row() );
 
   QString label = sv2Item->userText().isEmpty() ? symbol.first : sv2Item->userText();
 

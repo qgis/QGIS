@@ -83,7 +83,7 @@ QList<QgsSimpleMarkerSymbolLayerBase::Shape> QgsSimpleMarkerSymbolLayerBase::ava
   return shapes;
 }
 
-QgsSimpleMarkerSymbolLayerBase::QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
+QgsSimpleMarkerSymbolLayerBase::QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbol::ScaleMethod scaleMethod )
     : mShape( shape )
 {
   mSize = size;
@@ -128,10 +128,10 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( QgsSimpleMarkerSymbolLayerBa
   return true;
 }
 
-void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolV2RenderContext &context )
+void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &context )
 {
-  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( QgsSymbolLayer::EXPR_ANGLE );
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
+  bool hasDataDefinedRotation = context.renderHints() & QgsSymbol::DataDefinedRotation || hasDataDefinedProperty( QgsSymbolLayer::EXPR_ANGLE );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbol::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
 
   // use either QPolygonF or QPainterPath for drawing
   if ( !prepareMarkerShape( mShape ) ) // drawing as a polygon
@@ -165,12 +165,12 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolV2RenderContext &cont
   QgsMarkerSymbolLayerV2::startRender( context );
 }
 
-void QgsSimpleMarkerSymbolLayerBase::stopRender( QgsSymbolV2RenderContext &context )
+void QgsSimpleMarkerSymbolLayerBase::stopRender( QgsSymbolRenderContext &context )
 {
   Q_UNUSED( context );
 }
 
-void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolV2RenderContext &context )
+void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {
   //making changes here? Don't forget to also update ::bounds if the changes affect the bounding box
   //of the rendered point!
@@ -248,7 +248,7 @@ void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolV2Rend
   draw( context, symbol, polygon, path );
 }
 
-QRectF QgsSimpleMarkerSymbolLayerBase::bounds( QPointF point, QgsSymbolV2RenderContext &context )
+QRectF QgsSimpleMarkerSymbolLayerBase::bounds( QPointF point, QgsSymbolRenderContext &context )
 {
   bool hasDataDefinedSize = false;
   double scaledSize = calculateSize( context, hasDataDefinedSize );
@@ -608,11 +608,11 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( QgsSimpleMarkerSymbolLay
   return false;
 }
 
-double QgsSimpleMarkerSymbolLayerBase::calculateSize( QgsSymbolV2RenderContext &context, bool &hasDataDefinedSize ) const
+double QgsSimpleMarkerSymbolLayerBase::calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const
 {
   double scaledSize = mSize;
 
-  hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
+  hasDataDefinedSize = context.renderHints() & QgsSymbol::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
   bool ok = true;
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE ) )
   {
@@ -624,10 +624,10 @@ double QgsSimpleMarkerSymbolLayerBase::calculateSize( QgsSymbolV2RenderContext &
   {
     switch ( mScaleMethod )
     {
-      case QgsSymbolV2::ScaleArea:
+      case QgsSymbol::ScaleArea:
         scaledSize = sqrt( scaledSize );
         break;
-      case QgsSymbolV2::ScaleDiameter:
+      case QgsSymbol::ScaleDiameter:
         break;
     }
   }
@@ -635,7 +635,7 @@ double QgsSimpleMarkerSymbolLayerBase::calculateSize( QgsSymbolV2RenderContext &
   return scaledSize;
 }
 
-void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolV2RenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const
+void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const
 {
   //offset
   double offsetX = 0;
@@ -654,7 +654,7 @@ void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolV2Rend
     usingDataDefinedRotation = ok;
   }
 
-  hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || usingDataDefinedRotation;
+  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DataDefinedRotation || usingDataDefinedRotation;
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
@@ -682,7 +682,7 @@ void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolV2Rend
 // QgsSimpleMarkerSymbolLayerV2
 //
 
-QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( const QString& name, const QColor& color, const QColor& borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod,
+QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( const QString& name, const QColor& color, const QColor& borderColor, double size, double angle, QgsSymbol::ScaleMethod scaleMethod,
     Qt::PenJoinStyle penJoinStyle )
     : QgsSimpleMarkerSymbolLayerBase( decodeShape( name ), size, angle, scaleMethod )
     , mBorderColor( borderColor )
@@ -696,7 +696,7 @@ QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( const QString& name,
   mColor = color;
 }
 
-QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod, const QColor& color, const QColor& borderColor, Qt::PenJoinStyle penJoinStyle )
+QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbol::ScaleMethod scaleMethod, const QColor& color, const QColor& borderColor, Qt::PenJoinStyle penJoinStyle )
     : QgsSimpleMarkerSymbolLayerBase( shape, size, angle, scaleMethod )
     , mBorderColor( borderColor )
     , mOutlineStyle( Qt::SolidLine )
@@ -717,7 +717,7 @@ QgsSymbolLayer* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& props 
   Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE;
   double size = DEFAULT_SIMPLEMARKER_SIZE;
   double angle = DEFAULT_SIMPLEMARKER_ANGLE;
-  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
+  QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
 
   if ( props.contains( "name" ) )
   {
@@ -810,7 +810,7 @@ QString QgsSimpleMarkerSymbolLayerV2::layerType() const
   return "SimpleMarker";
 }
 
-void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
+void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolRenderContext& context )
 {
   QgsSimpleMarkerSymbolLayerBase::startRender( context );
 
@@ -838,8 +838,8 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   mSelPen.setStyle( mOutlineStyle );
   mSelPen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
 
-  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( QgsSymbolLayer::EXPR_ANGLE );
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
+  bool hasDataDefinedRotation = context.renderHints() & QgsSymbol::DataDefinedRotation || hasDataDefinedProperty( QgsSymbolLayer::EXPR_ANGLE );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbol::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
 
   // use caching only when:
   // - size, rotation, shape, color, border color is not data-defined
@@ -882,7 +882,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 }
 
 
-bool QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& context )
+bool QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolRenderContext& context )
 {
   double scaledSize = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mSize, mSizeUnit, mSizeMapUnitScale );
 
@@ -959,7 +959,7 @@ bool QgsSimpleMarkerSymbolLayerV2::preparePath( QString name )
   return prepareMarkerPath( decodeShape( name ) );
 }
 
-void QgsSimpleMarkerSymbolLayerV2::draw( QgsSymbolV2RenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )
+void QgsSimpleMarkerSymbolLayerV2::draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )
 {
   //making changes here? Don't forget to also update ::bounds if the changes affect the bounding box
   //of the rendered point!
@@ -1035,7 +1035,7 @@ void QgsSimpleMarkerSymbolLayerV2::draw( QgsSymbolV2RenderContext &context, QgsS
     p->drawPath( path );
 }
 
-void QgsSimpleMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderContext& context )
+void QgsSimpleMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolRenderContext& context )
 {
   //making changes here? Don't forget to also update ::bounds if the changes affect the bounding box
   //of the rendered point!
@@ -1244,7 +1244,7 @@ QgsSymbolLayer* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &elemen
   return m;
 }
 
-void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderContext& context )
+void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolRenderContext& context )
 {
   Q_UNUSED( context );
 
@@ -1258,12 +1258,12 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
   }
 }
 
-bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext &context, QPointF shift ) const
+bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
   //data defined size?
   double size = mSize;
 
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbol::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
 
   //data defined size
   bool ok = true;
@@ -1279,10 +1279,10 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     {
       switch ( mScaleMethod )
       {
-        case QgsSymbolV2::ScaleArea:
+        case QgsSymbol::ScaleArea:
           size = sqrt( size );
           break;
-        case QgsSymbolV2::ScaleDiameter:
+        case QgsSymbol::ScaleDiameter:
           break;
       }
     }
@@ -1479,7 +1479,7 @@ QgsMapUnitScale QgsSimpleMarkerSymbolLayerV2::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-QRectF QgsSimpleMarkerSymbolLayerV2::bounds( QPointF point, QgsSymbolV2RenderContext& context )
+QRectF QgsSimpleMarkerSymbolLayerV2::bounds( QPointF point, QgsSymbolRenderContext& context )
 {
   QRectF symbolBounds = QgsSimpleMarkerSymbolLayerBase::bounds( point, context );
 
@@ -1546,7 +1546,7 @@ QColor QgsSimpleMarkerSymbolLayerV2::color() const
 // QgsFilledMarkerSymbolLayer
 //
 
-QgsFilledMarkerSymbolLayer::QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
+QgsFilledMarkerSymbolLayer::QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbol::ScaleMethod scaleMethod )
     : QgsSimpleMarkerSymbolLayerBase( shape, size, angle, scaleMethod )
 {
   mFill.reset( static_cast<QgsFillSymbolV2*>( QgsFillSymbolV2::createSimple( QgsStringMap() ) ) );
@@ -1557,7 +1557,7 @@ QgsSymbolLayer *QgsFilledMarkerSymbolLayer::create( const QgsStringMap &props )
   QString name = DEFAULT_SIMPLEMARKER_NAME;
   double size = DEFAULT_SIMPLEMARKER_SIZE;
   double angle = DEFAULT_SIMPLEMARKER_ANGLE;
-  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
+  QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
 
   if ( props.contains( "name" ) )
     name = props["name"];
@@ -1600,7 +1600,7 @@ QString QgsFilledMarkerSymbolLayer::layerType() const
   return "FilledMarker";
 }
 
-void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolV2RenderContext &context )
+void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   if ( mFill.data() )
   {
@@ -1610,7 +1610,7 @@ void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolV2RenderContext &context 
   QgsSimpleMarkerSymbolLayerBase::startRender( context );
 }
 
-void QgsFilledMarkerSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
+void QgsFilledMarkerSymbolLayer::stopRender( QgsSymbolRenderContext& context )
 {
   if ( mFill.data() )
   {
@@ -1651,14 +1651,14 @@ QgsFilledMarkerSymbolLayer *QgsFilledMarkerSymbolLayer::clone() const
   return m;
 }
 
-QgsSymbolV2* QgsFilledMarkerSymbolLayer::subSymbol()
+QgsSymbol* QgsFilledMarkerSymbolLayer::subSymbol()
 {
   return mFill.data();
 }
 
-bool QgsFilledMarkerSymbolLayer::setSubSymbol( QgsSymbolV2 *symbol )
+bool QgsFilledMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( symbol && symbol->type() == QgsSymbolV2::Fill )
+  if ( symbol && symbol->type() == QgsSymbol::Fill )
   {
     mFill.reset( static_cast<QgsFillSymbolV2*>( symbol ) );
     return true;
@@ -1699,7 +1699,7 @@ QColor QgsFilledMarkerSymbolLayer::color() const
   return mFill.data() ?  mFill->color() : mColor;
 }
 
-void QgsFilledMarkerSymbolLayer::draw( QgsSymbolV2RenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )
+void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )
 {
   //making changes here? Don't forget to also update ::bounds if the changes affect the bounding box
   //of the rendered point!
@@ -1737,7 +1737,7 @@ void QgsFilledMarkerSymbolLayer::draw( QgsSymbolV2RenderContext &context, QgsSim
 //////////
 
 
-QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( const QString& name, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
+QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( const QString& name, double size, double angle, QgsSymbol::ScaleMethod scaleMethod )
 {
   mPath = QgsSymbolLayerUtils::symbolNameToPath( name );
   mSize = size;
@@ -1756,7 +1756,7 @@ QgsSymbolLayer* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   QString name = DEFAULT_SVGMARKER_NAME;
   double size = DEFAULT_SVGMARKER_SIZE;
   double angle = DEFAULT_SVGMARKER_ANGLE;
-  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
+  QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
 
   if ( props.contains( "name" ) )
     name = props["name"];
@@ -1932,19 +1932,19 @@ QString QgsSvgMarkerSymbolLayerV2::layerType() const
   return "SvgMarker";
 }
 
-void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
+void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolRenderContext& context )
 {
   QgsMarkerSymbolLayerV2::startRender( context ); // get anchor point expressions
   Q_UNUSED( context );
   prepareExpressions( context );
 }
 
-void QgsSvgMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
+void QgsSvgMarkerSymbolLayerV2::stopRender( QgsSymbolRenderContext& context )
 {
   Q_UNUSED( context );
 }
 
-void QgsSvgMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderContext& context )
+void QgsSvgMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolRenderContext& context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
@@ -2076,10 +2076,10 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderCon
 
 }
 
-double QgsSvgMarkerSymbolLayerV2::calculateSize( QgsSymbolV2RenderContext& context, bool& hasDataDefinedSize ) const
+double QgsSvgMarkerSymbolLayerV2::calculateSize( QgsSymbolRenderContext& context, bool& hasDataDefinedSize ) const
 {
   double scaledSize = mSize;
-  hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
+  hasDataDefinedSize = context.renderHints() & QgsSymbol::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
 
   bool ok = true;
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE ) )
@@ -2092,10 +2092,10 @@ double QgsSvgMarkerSymbolLayerV2::calculateSize( QgsSymbolV2RenderContext& conte
   {
     switch ( mScaleMethod )
     {
-      case QgsSymbolV2::ScaleArea:
+      case QgsSymbol::ScaleArea:
         scaledSize = sqrt( scaledSize );
         break;
-      case QgsSymbolV2::ScaleDiameter:
+      case QgsSymbol::ScaleDiameter:
         break;
     }
   }
@@ -2103,7 +2103,7 @@ double QgsSvgMarkerSymbolLayerV2::calculateSize( QgsSymbolV2RenderContext& conte
   return scaledSize;
 }
 
-void QgsSvgMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2RenderContext& context, double scaledSize, QPointF& offset, double& angle ) const
+void QgsSvgMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolRenderContext& context, double scaledSize, QPointF& offset, double& angle ) const
 {
   //offset
   double offsetX = 0;
@@ -2118,7 +2118,7 @@ void QgsSvgMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2RenderCon
     angle = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_ANGLE, context, mAngle ).toDouble() + mLineAngle;
   }
 
-  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( QgsSymbolLayer::EXPR_ANGLE );
+  bool hasDataDefinedRotation = context.renderHints() & QgsSymbol::DataDefinedRotation || hasDataDefinedProperty( QgsSymbolLayer::EXPR_ANGLE );
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
@@ -2284,7 +2284,7 @@ QgsSymbolLayer* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element )
   return m;
 }
 
-bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext &context, QPointF shift ) const
+bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
   Q_UNUSED( layerName );
   Q_UNUSED( shift ); //todo...
@@ -2292,7 +2292,7 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   //size
   double size = mSize;
 
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbol::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
 
   bool ok = true;
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE ) )
@@ -2305,10 +2305,10 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   {
     switch ( mScaleMethod )
     {
-      case QgsSymbolV2::ScaleArea:
+      case QgsSymbol::ScaleArea:
         size = sqrt( size );
         break;
-      case QgsSymbolV2::ScaleDiameter:
+      case QgsSymbol::ScaleDiameter:
         break;
     }
   }
@@ -2415,7 +2415,7 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   return true;
 }
 
-QRectF QgsSvgMarkerSymbolLayerV2::bounds( QPointF point, QgsSymbolV2RenderContext& context )
+QRectF QgsSvgMarkerSymbolLayerV2::bounds( QPointF point, QgsSymbolRenderContext& context )
 {
   bool hasDataDefinedSize = false;
   double scaledSize = calculateSize( context, hasDataDefinedSize );
@@ -2579,7 +2579,7 @@ QString QgsFontMarkerSymbolLayerV2::layerType() const
   return "FontMarker";
 }
 
-void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
+void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolRenderContext& context )
 {
   QColor brushColor = mColor;
   QColor penColor = mOutlineColor;
@@ -2602,12 +2602,12 @@ void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   prepareExpressions( context );
 }
 
-void QgsFontMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
+void QgsFontMarkerSymbolLayerV2::stopRender( QgsSymbolRenderContext& context )
 {
   Q_UNUSED( context );
 }
 
-QString QgsFontMarkerSymbolLayerV2::characterToRender( QgsSymbolV2RenderContext& context, QPointF& charOffset, double& charWidth )
+QString QgsFontMarkerSymbolLayerV2::characterToRender( QgsSymbolRenderContext& context, QPointF& charOffset, double& charWidth )
 {
   charOffset = mChrOffset;
   QString charToRender = mChr;
@@ -2624,7 +2624,7 @@ QString QgsFontMarkerSymbolLayerV2::characterToRender( QgsSymbolV2RenderContext&
   return charToRender;
 }
 
-void QgsFontMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2RenderContext& context,
+void QgsFontMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolRenderContext& context,
     double scaledSize,
     bool& hasDataDefinedRotation,
     QPointF& offset,
@@ -2647,7 +2647,7 @@ void QgsFontMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2RenderCo
     usingDataDefinedRotation = ok;
   }
 
-  hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || usingDataDefinedRotation;
+  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DataDefinedRotation || usingDataDefinedRotation;
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
@@ -2670,10 +2670,10 @@ void QgsFontMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2RenderCo
     offset = _rotatedOffset( offset, angle );
 }
 
-double QgsFontMarkerSymbolLayerV2::calculateSize( QgsSymbolV2RenderContext& context )
+double QgsFontMarkerSymbolLayerV2::calculateSize( QgsSymbolRenderContext& context )
 {
   double scaledSize = mSize;
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbol::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
 
   bool ok = true;
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE ) )
@@ -2686,17 +2686,17 @@ double QgsFontMarkerSymbolLayerV2::calculateSize( QgsSymbolV2RenderContext& cont
   {
     switch ( mScaleMethod )
     {
-      case QgsSymbolV2::ScaleArea:
+      case QgsSymbol::ScaleArea:
         scaledSize = sqrt( scaledSize );
         break;
-      case QgsSymbolV2::ScaleDiameter:
+      case QgsSymbol::ScaleDiameter:
         break;
     }
   }
   return scaledSize;
 }
 
-void QgsFontMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderContext& context )
+void QgsFontMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolRenderContext& context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
@@ -2864,7 +2864,7 @@ void QgsFontMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement 
   QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, mOffset );
 }
 
-QRectF QgsFontMarkerSymbolLayerV2::bounds( QPointF point, QgsSymbolV2RenderContext& context )
+QRectF QgsFontMarkerSymbolLayerV2::bounds( QPointF point, QgsSymbolRenderContext& context )
 {
   QPointF chrOffset = mChrOffset;
   double chrWidth = mChrWidth;

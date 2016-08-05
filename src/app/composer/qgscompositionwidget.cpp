@@ -20,7 +20,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposeritem.h"
 #include "qgsstylev2.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
@@ -583,7 +583,7 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   {
     newSymbol = new QgsFillSymbolV2();
   }
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
   d.setExpressionContext( mComposition->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )

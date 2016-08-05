@@ -19,7 +19,7 @@ class QgsSingleSymbolRendererV2Widget : QgsRendererV2Widget
     void changeSingleSymbol();
 
     void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
+    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
 
     void showSymbolLevels();
 };

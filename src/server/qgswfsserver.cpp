@@ -32,7 +32,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapserviceexception.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
 #include "qgsrequesthandler.h"

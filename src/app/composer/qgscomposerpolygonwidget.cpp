@@ -17,7 +17,7 @@
 #include "qgscomposerpolygonwidget.h"
 #include "qgscomposerpolygon.h"
 #include "qgscomposeritemwidget.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgsstylev2.h"
 #include "qgssymbollayerutils.h"
 
@@ -30,7 +30,7 @@ QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon* composer
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerPolygon );
 
-  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolV2SelectorDialog
+  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorDialog
   itemPropertiesWidget->showBackgroundGroup( false );
   itemPropertiesWidget->showFrameGroup( false );
   mainLayout->addWidget( itemPropertiesWidget );
@@ -61,7 +61,7 @@ void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
   QScopedPointer<QgsFillSymbolV2> newSymbol;
   newSymbol.reset( mComposerPolygon->polygonStyleSymbol()->clone() );
 
-  QgsSymbolV2SelectorDialog d( newSymbol.data(), QgsStyleV2::defaultStyle(),
+  QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyleV2::defaultStyle(),
                                coverageLayer, this );
   d.setExpressionContext( mComposerPolygon->createExpressionContext() );
 

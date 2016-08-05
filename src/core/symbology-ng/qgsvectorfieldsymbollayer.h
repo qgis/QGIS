@@ -52,22 +52,22 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
 
     QString layerType() const override { return "VectorField"; }
 
-    bool setSubSymbol( QgsSymbolV2* symbol ) override;
-    QgsSymbolV2* subSymbol() override { return mLineSymbol; }
+    bool setSubSymbol( QgsSymbol* symbol ) override;
+    QgsSymbol* subSymbol() override { return mLineSymbol; }
 
     void setColor( const QColor& color ) override;
     virtual QColor color() const override;
 
-    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context ) override;
-    void startRender( QgsSymbolV2RenderContext& context ) override;
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void renderPoint( QPointF point, QgsSymbolRenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
     QgsVectorFieldSymbolLayer* clone() const override;
     QgsStringMap properties() const override;
 
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
+    void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size ) override;
 
     QSet<QString> usedAttributes() const override;
 

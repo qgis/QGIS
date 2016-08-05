@@ -17,7 +17,7 @@ import qgis  # NOQA
 from qgis.testing import unittest
 from qgis.core import (
     QgsUnitTypes,
-    QgsSymbolV2
+    QgsSymbol
 )
 from qgis.PyQt.QtCore import QLocale
 

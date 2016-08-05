@@ -19,7 +19,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgssinglesymbolrendererv2.h"
@@ -103,7 +103,7 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   if ( !feature.hasGeometry() )
     return false;
 
-  QgsSymbolV2* symbol = firstSymbolForFeature( mRenderer, feature, context );
+  QgsSymbol* symbol = firstSymbolForFeature( mRenderer, feature, context );
 
   //if the feature has no symbol (eg, no matching rule in a rule-based renderer), skip it
   if ( !symbol )
@@ -188,7 +188,7 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
     }
   }
 
-  QgsSymbolV2RenderContext symbolContext( context, QgsUnitTypes::RenderMillimeters, 1.0, selected );
+  QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderMillimeters, 1.0, selected );
 
   QList<QPointF> symbolPositions;
   QList<QPointF> labelPositions;
@@ -229,7 +229,7 @@ const QgsFeatureRendererV2* QgsPointDisplacementRenderer::embeddedRenderer() con
   return mRenderer;
 }
 
-void QgsPointDisplacementRenderer::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+void QgsPointDisplacementRenderer::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
 {
   if ( !mRenderer )
     return;
@@ -284,16 +284,16 @@ QgsFeatureRendererV2::Capabilities QgsPointDisplacementRenderer::capabilities()
   return mRenderer->capabilities();
 }
 
-QgsSymbolV2List QgsPointDisplacementRenderer::symbols( QgsRenderContext& context )
+QgsSymbolList QgsPointDisplacementRenderer::symbols( QgsRenderContext& context )
 {
   if ( !mRenderer )
   {
-    return QgsSymbolV2List();
+    return QgsSymbolList();
   }
   return mRenderer->symbols( context );
 }
 
-QgsSymbolV2* QgsPointDisplacementRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbol* QgsPointDisplacementRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mRenderer )
   {
@@ -302,26 +302,26 @@ QgsSymbolV2* QgsPointDisplacementRenderer::symbolForFeature( QgsFeature& feature
   return mRenderer->symbolForFeature( feature, context );
 }
 
-QgsSymbolV2* QgsPointDisplacementRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
+QgsSymbol* QgsPointDisplacementRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mRenderer )
     return nullptr;
   return mRenderer->originalSymbolForFeature( feat, context );
 }
 
-QgsSymbolV2List QgsPointDisplacementRenderer::symbolsForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbolList QgsPointDisplacementRenderer::symbolsForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mRenderer )
   {
-    return QgsSymbolV2List();
+    return QgsSymbolList();
   }
   return mRenderer->symbolsForFeature( feature, context );
 }
 
-QgsSymbolV2List QgsPointDisplacementRenderer::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
+QgsSymbolList QgsPointDisplacementRenderer::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mRenderer )
-    return QgsSymbolV2List();
+    return QgsSymbolList();
   return mRenderer->originalSymbolsForFeature( feat, context );
 }
 
@@ -529,7 +529,7 @@ void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbolV2* symbol )
 
 
 
-void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolV2RenderContext& symbolContext, QPointF centerPoint, int nPosition,
+void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRenderContext& symbolContext, QPointF centerPoint, int nPosition,
     double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts, double& circleRadius ) const
 {
   symbolPositions.clear();
@@ -607,7 +607,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolV2
   }
 }
 
-void QgsPointDisplacementRenderer::drawCircle( double radiusPainterUnits, QgsSymbolV2RenderContext& context, QPointF centerPoint, int nSymbols )
+void QgsPointDisplacementRenderer::drawCircle( double radiusPainterUnits, QgsSymbolRenderContext& context, QPointF centerPoint, int nSymbols )
 {
   QPainter* p = context.renderContext().painter();
   if ( nSymbols < 2 || !p ) //draw circle only if multiple features
@@ -641,7 +641,7 @@ void QgsPointDisplacementRenderer::drawSymbols( const QgsFeatureList& features, 
   }
 }
 
-void QgsPointDisplacementRenderer::drawLabels( QPointF centerPoint, QgsSymbolV2RenderContext& context, const QList<QPointF>& labelShifts, const QStringList& labelList )
+void QgsPointDisplacementRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderContext& context, const QList<QPointF>& labelShifts, const QStringList& labelList )
 {
   QPainter* p = context.renderContext().painter();
   if ( !p )
@@ -686,14 +686,14 @@ void QgsPointDisplacementRenderer::drawLabels( QPointF centerPoint, QgsSymbolV2R
   }
 }
 
-QgsSymbolV2* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f, QgsRenderContext &context )
+QgsSymbol* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f, QgsRenderContext &context )
 {
   if ( !r )
   {
     return nullptr;
   }
 
-  QgsSymbolV2List symbolList = r->symbolsForFeature( f, context );
+  QgsSymbolList symbolList = r->symbolsForFeature( f, context );
   if ( symbolList.size() < 1 )
   {
     return nullptr;

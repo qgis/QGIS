@@ -19,7 +19,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
 #include "qgssymbollayerutils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsmapsettings.h"
 #include "qgspainting.h"
 

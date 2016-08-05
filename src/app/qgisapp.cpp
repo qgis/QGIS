@@ -222,7 +222,7 @@
 #include "qgsstatusbarscalewidget.h"
 #include "qgsstylev2.h"
 #include "qgssvgannotationitem.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgstextannotationitem.h"
 #include "qgstipgui.h"
 #include "qgsundowidget.h"
@@ -439,15 +439,15 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
       if ( mLayerTreeView )
       {
         // if it's a legend node, open symbol editor directly
-        if ( QgsSymbolV2LegendNode* node = dynamic_cast<QgsSymbolV2LegendNode*>( mLayerTreeView->currentLegendNode() ) )
+        if ( QgsSymbolLegendNode* node = dynamic_cast<QgsSymbolLegendNode*>( mLayerTreeView->currentLegendNode() ) )
         {
-          const QgsSymbolV2* originalSymbol = node->symbol();
+          const QgsSymbol* originalSymbol = node->symbol();
           if ( !originalSymbol )
             return;
 
-          QScopedPointer< QgsSymbolV2 > symbol( originalSymbol->clone() );
+          QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
           QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-          QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, this );
+          QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, this );
           dlg.setMapCanvas( mMapCanvas );
           if ( dlg.exec() )
           {

@@ -131,9 +131,9 @@ QgsSymbolLayer* QgsVectorFieldSymbolLayer::create( const QgsStringMap& propertie
   return symbolLayer;
 }
 
-bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
+bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 {
-  if ( symbol->type() == QgsSymbolV2::Line )
+  if ( symbol->type() == QgsSymbol::Line )
   {
     delete mLineSymbol;
     mLineSymbol = static_cast<QgsLineSymbolV2*>( symbol );
@@ -142,7 +142,7 @@ bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
   return false;
 }
 
-void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolV2RenderContext& context )
+void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext& context )
 {
   if ( !mLineSymbol )
   {
@@ -203,7 +203,7 @@ void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolV2RenderCon
   mLineSymbol->renderPolyline( line, f, context.renderContext() );
 }
 
-void QgsVectorFieldSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
+void QgsVectorFieldSymbolLayer::startRender( QgsSymbolRenderContext& context )
 {
   if ( mLineSymbol )
   {
@@ -223,7 +223,7 @@ void QgsVectorFieldSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   }
 }
 
-void QgsVectorFieldSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
+void QgsVectorFieldSymbolLayer::stopRender( QgsSymbolRenderContext& context )
 {
   if ( mLineSymbol )
   {
@@ -273,7 +273,7 @@ QgsSymbolLayer* QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )
   return nullptr;
 }
 
-void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
+void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
 {
   if ( mLineSymbol )
   {

@@ -15,7 +15,7 @@
 
 #include "qgslegendsymbolitemv2.h"
 
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 QgsLegendSymbolItemV2::QgsLegendSymbolItemV2()
     : mSymbol( nullptr )
@@ -27,7 +27,7 @@ QgsLegendSymbolItemV2::QgsLegendSymbolItemV2()
 {
 }
 
-QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom, int level, const QString& parentRuleKey )
+QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbol* symbol, const QString& label, const QString& ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom, int level, const QString& parentRuleKey )
     : mSymbol( symbol ? symbol->clone() : nullptr )
     , mLabel( label )
     , mKey( ruleKey )
@@ -83,7 +83,7 @@ bool QgsLegendSymbolItemV2::isScaleOK( double scale ) const
   return true;
 }
 
-void QgsLegendSymbolItemV2::setSymbol( QgsSymbolV2* s )
+void QgsLegendSymbolItemV2::setSymbol( QgsSymbol* s )
 {
   delete mSymbol;
   mSymbol = s ? s->clone() : nullptr;

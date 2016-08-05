@@ -31,7 +31,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgscolordialog.h"
 #include "qgisgui.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgsstylev2.h"
 #include "qgsmapcanvas.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -916,7 +916,7 @@ void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index 
 void QgsDiagramProperties::on_mButtonSizeLegendSymbol_clicked()
 {
   QgsMarkerSymbolV2* newSymbol = mSizeLegendSymbol->clone();
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {

@@ -568,7 +568,7 @@ class QgsVectorLayer : QgsMapLayer
      * @param symbol the symbol
      * @return number of features rendered by symbol or -1 if failed or counts are not available
      */
-    long featureCount( QgsSymbolV2* symbol ) const;
+    long featureCount( QgsSymbol* symbol ) const;
 
     /**
      * Update the data source of the layer. The layer's renderer and legend will be preserved only
@@ -583,7 +583,7 @@ class QgsVectorLayer : QgsMapLayer
     void setDataSource( const QString& dataSource, const QString& baseName, const QString& provider, bool loadDefaultStyleFlag = false );
 
     /**
-     * Count features for symbols. Feature counts may be get by featureCount( QgsSymbolV2*).
+     * Count features for symbols. Feature counts may be get by featureCount( QgsSymbol*).
      * @param showProgress show progress dialog
      * @return true if calculated, false if failed or was canceled by user
      */

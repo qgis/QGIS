@@ -18,14 +18,14 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QString layerType() const;
 
-    void startRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolRenderContext& context );
 
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolRenderContext& context );
 
-    void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context );
 
     //overridden so that clip path can be set when using draw inside polygon option
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 
     QgsStringMap properties() const;
 
@@ -82,9 +82,9 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
     QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const;
     Qt::PenStyle dxfPenStyle() const;
 
-    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const;
-    double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
-    QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const;
+    double dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
+    QColor dxfColor( QgsSymbolRenderContext& context ) const;
 };
 
 /////////
@@ -138,13 +138,13 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QString layerType() const;
 
-    void startRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolRenderContext& context );
 
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolRenderContext& context );
 
-    void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context );
 
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 
     QgsStringMap properties() const;
 
@@ -155,8 +155,8 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     void setColor( const QColor& color );
     virtual QColor color() const;
 
-    QgsSymbolV2* subSymbol();
-    bool setSubSymbol( QgsSymbolV2* symbol /Transfer/);
+    QgsSymbol* subSymbol();
+    bool setSubSymbol( QgsSymbol* symbol /Transfer/);
 
     virtual void setWidth( double width );
     virtual double width() const;
@@ -279,8 +279,8 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
   protected:
 
-    void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
-    void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context, Placement placement = Vertex );
-    void renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolylineInterval( const QPolygonF& points, QgsSymbolRenderContext& context );
+    void renderPolylineVertex( const QPolygonF& points, QgsSymbolRenderContext& context, Placement placement = Vertex );
+    void renderPolylineCentral( const QPolygonF& points, QgsSymbolRenderContext& context );
     double markerAngle( const QPolygonF& points, bool isRing, int vertex );
 };

@@ -28,7 +28,7 @@ class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayer
      *
      * @param symbolType The symbol type which shall be used below this symbol.
      */
-    void setSymbolType( QgsSymbolV2::SymbolType symbolType );
+    void setSymbolType( QgsSymbol::SymbolType symbolType );
 
     /**
      * Access the symbol type. This defines the type of geometry
@@ -36,17 +36,17 @@ class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayer
      *
      * @return Symbol type
      */
-    QgsSymbolV2::SymbolType symbolType() const;
+    QgsSymbol::SymbolType symbolType() const;
 
-    void startRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolRenderContext& context );
 
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolRenderContext& context );
 
     QgsSymbolLayer* clone() const;
 
     QgsStringMap properties() const;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+    void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size );
 
     /**
      * Set the expression to generate this geometry.
@@ -58,16 +58,16 @@ class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayer
      */
     QString geometryExpression() const;
 
-    virtual QgsSymbolV2* subSymbol();
+    virtual QgsSymbol* subSymbol();
 
-    virtual bool setSubSymbol( QgsSymbolV2* symbol );
+    virtual bool setSubSymbol( QgsSymbol* symbol );
 
     virtual QSet<QString> usedAttributes() const;
 
     //! Will always return true.
     //! This is a hybrid layer, it constructs its own geometry so it does not
     //! care about the geometry of its parents.
-    bool isCompatibleWithSymbol( QgsSymbolV2* symbol );
+    bool isCompatibleWithSymbol( QgsSymbol* symbol );
 
     /**
      * Will render this symbol layer using the context.
@@ -79,7 +79,7 @@ class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayer
      * @param context The rendering context which will be used to render and to
      *                construct a geometry.
      */
-    virtual void render( QgsSymbolV2RenderContext& context );
+    virtual void render( QgsSymbolRenderContext& context );
 
     void setColor( const QColor& color );
 

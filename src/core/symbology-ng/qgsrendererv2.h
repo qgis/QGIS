@@ -19,7 +19,7 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsfield.h"
 #include "qgsfeaturerequest.h"
 
@@ -37,11 +37,11 @@ class QgsPaintEffect;
 
 typedef QMap<QString, QString> QgsStringMap;
 
-typedef QList<QgsSymbolV2*> QgsSymbolV2List;
-typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
+typedef QList<QgsSymbol*> QgsSymbolList;
+typedef QMap<QString, QgsSymbol* > QgsSymbolMap;
 
 typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
-typedef QList< QPair<QString, QgsSymbolV2*> > QgsLegendSymbolList;
+typedef QList< QPair<QString, QgsSymbol*> > QgsLegendSymbolList;
 
 #include "qgslegendsymbolitemv2.h"
 
@@ -52,27 +52,27 @@ typedef QList< QPair<QString, QgsSymbolV2*> > QgsLegendSymbolList;
 // symbol levels
 
 /** \ingroup core
- * \class QgsSymbolV2LevelItem
+ * \class QgsSymbolLevelItem
  */
-class CORE_EXPORT QgsSymbolV2LevelItem
+class CORE_EXPORT QgsSymbolLevelItem
 {
   public:
-    QgsSymbolV2LevelItem( QgsSymbolV2* symbol, int layer )
+    QgsSymbolLevelItem( QgsSymbol* symbol, int layer )
         : mSymbol( symbol )
         , mLayer( layer )
     {}
-    QgsSymbolV2* symbol() { return mSymbol; }
+    QgsSymbol* symbol() { return mSymbol; }
     int layer() { return mLayer; }
   protected:
-    QgsSymbolV2* mSymbol;
+    QgsSymbol* mSymbol;
     int mLayer;
 };
 
 // every level has list of items: symbol + symbol layer num
-typedef QList< QgsSymbolV2LevelItem > QgsSymbolV2Level;
+typedef QList< QgsSymbolLevelItem > QgsSymbolLevel;
 
 // this is a list of levels
-typedef QList< QgsSymbolV2Level > QgsSymbolV2LevelOrder;
+typedef QList< QgsSymbolLevel > QgsSymbolLevelOrder;
 
 
 //////////////
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @return returns pointer to symbol or 0 if symbol was not found
      * @deprecated use symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) instead
      */
-    Q_DECL_DEPRECATED virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    Q_DECL_DEPRECATED virtual QgsSymbol* symbolForFeature( QgsFeature& feature );
 
     /** To be overridden
      *
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     // TODO - QGIS 3.0 make pure virtual when above method is removed
     // TODO - QGIS 3.0 change PyName to symbolForFeature when deprecated method is removed
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     /**
      * Return symbol for feature. The difference compared to symbolForFeature() is that it returns original
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @note added in 2.6
      * @deprecated use originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) instead
      */
-    Q_DECL_DEPRECATED virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
+    Q_DECL_DEPRECATED virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature );
 
     /**
      * Return symbol for feature. The difference compared to symbolForFeature() is that it returns original
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @note available in Python bindings as originalSymbolForFeature2
      */
     //TODO - QGIS 3.0 change PyName to originalSymbolForFeature when deprecated method is removed
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     /**
      * Return legend keys matching a specified feature.
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsFeatureRendererV2
     /** For symbol levels
      * @deprecated use symbols( QgsRenderContext& context ) instead
      */
-    Q_DECL_DEPRECATED virtual QgsSymbolV2List symbols();
+    Q_DECL_DEPRECATED virtual QgsSymbolList symbols();
 
     /** Returns list of symbols used by the renderer.
      * @param context render context
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @note available in Python bindings as symbols2
      */
     //TODO - QGIS 3.0 change PyName to symbols when deprecated method is removed
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context );
+    virtual QgsSymbolList symbols( QgsRenderContext& context );
 
     bool usingSymbolLevels() const { return mUsingSymbolLevels; }
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @param symbol new symbol for legend item. Ownership is transferred to renderer.
      * @note added in QGIS 2.14
      */
-    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol );
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol );
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * to use symbolForFeature()
      * @deprecated use symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) instead
      */
-    Q_DECL_DEPRECATED virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
+    Q_DECL_DEPRECATED virtual QgsSymbolList symbolsForFeature( QgsFeature& feat );
 
     /** Returns list of symbols used for rendering the feature.
      * For renderers that do not support MoreSymbolsPerFeature it is more efficient
@@ -357,14 +357,14 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @note available in Python bindings as symbolsForFeature2
      */
     //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
-    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
+    virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
 
     /** Equivalent of originalSymbolsForFeature() call
      * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
      * @note added in 2.6
      * @deprecated use originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) instead
      */
-    Q_DECL_DEPRECATED virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
+    Q_DECL_DEPRECATED virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat );
 
     /** Equivalent of originalSymbolsForFeature() call
      * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
@@ -372,7 +372,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @note available in Python bindings as originalSymbolsForFeature2
      */
     //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
-    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
+    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
 
     /** Allows for a renderer to modify the extent of a feature request prior to rendering
      * @param extent reference to request's filter extent. Modify extent to change the
@@ -463,7 +463,7 @@ class CORE_EXPORT QgsFeatureRendererV2
     QgsFeatureRendererV2( const QString& type );
 
     void renderFeatureWithSymbol( QgsFeature& feature,
-                                  QgsSymbolV2* symbol,
+                                  QgsSymbol* symbol,
                                   QgsRenderContext& context,
                                   int layer,
                                   bool selected,
@@ -494,7 +494,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     static QgsConstWkbPtr _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, QgsConstWkbPtr& wkb, bool clipToExtent = true );
 
-    void setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod );
+    void setScaleMethodToSymbol( QgsSymbol* symbol, int scaleMethod );
 
     /**
      * Clones generic renderer data to another renderer.
@@ -528,11 +528,11 @@ class CORE_EXPORT QgsFeatureRendererV2
     /** @note this function is used to convert old sizeScale expresssions to symbol
      * level DataDefined size
      */
-    static void convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field );
+    static void convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::ScaleMethod method, const QString & field );
     /** @note this function is used to convert old rotations expresssions to symbol
      * level DataDefined angle
      */
-    static void convertSymbolRotation( QgsSymbolV2 * symbol, const QString & field );
+    static void convertSymbolRotation( QgsSymbol * symbol, const QString & field );
 
     QgsFeatureRequest::OrderBy mOrderBy;
 

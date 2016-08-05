@@ -15,7 +15,7 @@
  ***************************************************************************/
 #include "qgsgraduatedsymbolrendererv2.h"
 
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgspointdisplacementrenderer.h"
@@ -46,7 +46,7 @@ QgsRendererRangeV2::QgsRendererRangeV2()
 {
 }
 
-QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, const QString& label, bool render )
+QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbol* symbol, const QString& label, bool render )
     : mLowerValue( lowerValue )
     , mUpperValue( upperValue )
     , mSymbol( symbol )
@@ -97,7 +97,7 @@ double QgsRendererRangeV2::upperValue() const
   return mUpperValue;
 }
 
-QgsSymbolV2* QgsRendererRangeV2::symbol() const
+QgsSymbol* QgsRendererRangeV2::symbol() const
 {
   return mSymbol.data();
 }
@@ -107,7 +107,7 @@ QString QgsRendererRangeV2::label() const
   return mLabel;
 }
 
-void QgsRendererRangeV2::setSymbol( QgsSymbolV2* s )
+void QgsRendererRangeV2::setSymbol( QgsSymbol* s )
 {
   if ( mSymbol.data() != s ) mSymbol.reset( s );
 }
@@ -312,7 +312,7 @@ QgsGraduatedSymbolRendererV2::~QgsGraduatedSymbolRendererV2()
   mRanges.clear(); // should delete all the symbols
 }
 
-QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
+QgsSymbol* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
 {
   Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
   {
@@ -346,9 +346,9 @@ QString QgsGraduatedSymbolRendererV2::legendKeyForValue( double value ) const
   return QString::null;
 }
 
-QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QgsSymbol* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
-  QgsSymbolV2* symbol = originalSymbolForFeature( feature, context );
+  QgsSymbol* symbol = originalSymbolForFeature( feature, context );
   if ( !symbol )
     return nullptr;
 
@@ -360,17 +360,17 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( &context.expressionContext() ).toDouble() : 1.;
 
   // take a temporary symbol (or create it if doesn't exist)
-  QgsSymbolV2* tempSymbol = mTempSymbols[symbol];
+  QgsSymbol* tempSymbol = mTempSymbols[symbol];
 
   // modify the temporary symbol and return it
-  if ( tempSymbol->type() == QgsSymbolV2::Marker )
+  if ( tempSymbol->type() == QgsSymbol::Marker )
   {
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( tempSymbol );
     if ( mRotation.data() ) markerSymbol->setAngle( rotation );
     markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
     markerSymbol->setScaleMethod( mScaleMethod );
   }
-  else if ( tempSymbol->type() == QgsSymbolV2::Line )
+  else if ( tempSymbol->type() == QgsSymbol::Line )
   {
     QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( tempSymbol );
     lineSymbol->setWidth( sizeScale * static_cast<QgsLineSymbolV2*>( symbol )->width() );
@@ -394,7 +394,7 @@ QVariant QgsGraduatedSymbolRendererV2::valueForFeature( QgsFeature& feature, Qgs
   return value;
 }
 
-QgsSymbolV2* QgsGraduatedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QgsSymbol* QgsGraduatedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
   QVariant value = valueForFeature( feature, context );
 
@@ -428,9 +428,9 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
 
     if ( mRotation.data() || mSizeScale.data() )
     {
-      QgsSymbolV2* tempSymbol = range.symbol()->clone();
-      tempSymbol->setRenderHints(( mRotation.data() ? QgsSymbolV2::DataDefinedRotation : 0 ) |
-                                 ( mSizeScale.data() ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
+      QgsSymbol* tempSymbol = range.symbol()->clone();
+      tempSymbol->setRenderHints(( mRotation.data() ? QgsSymbol::DataDefinedRotation : 0 ) |
+                                 ( mSizeScale.data() ? QgsSymbol::DataDefinedSizeScale : 0 ) );
       tempSymbol->startRender( context, fields );
       mTempSymbols[ range.symbol()] = tempSymbol;
     }
@@ -449,7 +449,7 @@ void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
   }
 
   // cleanup mTempSymbols
-  QHash<QgsSymbolV2*, QgsSymbolV2*>::const_iterator it2 = mTempSymbols.constBegin();
+  QHash<QgsSymbol*, QgsSymbol*>::const_iterator it2 = mTempSymbols.constBegin();
   for ( ; it2 != mTempSymbols.constEnd(); ++it2 )
   {
     it2.value()->stopRender( context );
@@ -478,7 +478,7 @@ QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
   QgsRangeList::const_iterator range_it = mRanges.constBegin();
   for ( ; range_it != mRanges.constEnd(); ++range_it )
   {
-    QgsSymbolV2* symbol = range_it->symbol();
+    QgsSymbol* symbol = range_it->symbol();
     if ( symbol )
     {
       attributes.unite( symbol->usedAttributes() );
@@ -487,7 +487,7 @@ QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
   return attributes.toList();
 }
 
-bool QgsGraduatedSymbolRendererV2::updateRangeSymbol( int rangeIndex, QgsSymbolV2* symbol )
+bool QgsGraduatedSymbolRendererV2::updateRangeSymbol( int rangeIndex, QgsSymbol* symbol )
 {
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
@@ -580,10 +580,10 @@ void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &elemen
   }
 }
 
-QgsSymbolV2List QgsGraduatedSymbolRendererV2::symbols( QgsRenderContext &context )
+QgsSymbolList QgsGraduatedSymbolRendererV2::symbols( QgsRenderContext &context )
 {
   Q_UNUSED( context );
-  QgsSymbolV2List lst;
+  QgsSymbolList lst;
   lst.reserve( mRanges.count() );
   Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
   {
@@ -842,7 +842,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   const QString& attrName,
   int classes,
   Mode mode,
-  QgsSymbolV2* symbol,
+  QgsSymbol* symbol,
   QgsVectorColorRampV2* ramp,
   bool inverted,
   const QgsRendererRangeV2LabelFormat& labelFormat
@@ -973,7 +973,7 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
     {
       label = mLabelFormat.labelForRange( lower, upper );
     }
-    QgsSymbolV2* newSymbol = mSourceSymbol ? mSourceSymbol->clone() : QgsSymbolV2::defaultSymbol( vlayer->geometryType() );
+    QgsSymbol* newSymbol = mSourceSymbol ? mSourceSymbol->clone() : QgsSymbol::defaultSymbol( vlayer->geometryType() );
     addClass( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
   }
   updateColorRamp( nullptr, mInvertedColorRamp );
@@ -989,7 +989,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
   if ( rangesElem.isNull() )
     return nullptr;
 
-  QgsSymbolV2Map symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
+  QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
   QgsRangeList ranges;
 
   QDomElement rangeElem = rangesElem.firstChildElement();
@@ -1004,7 +1004,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
       bool render = rangeElem.attribute( "render", "true" ) != "false";
       if ( symbolMap.contains( symbolName ) )
       {
-        QgsSymbolV2* symbol = symbolMap.take( symbolName );
+        QgsSymbol* symbol = symbolMap.take( symbolName );
         ranges.append( QgsRendererRangeV2( lowerValue, upperValue, symbol, label, render ) );
       }
     }
@@ -1032,7 +1032,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
   QDomElement sourceSymbolElem = element.firstChildElement( "source-symbol" );
   if ( !sourceSymbolElem.isNull() )
   {
-    QgsSymbolV2Map sourceSymbolMap = QgsSymbolLayerUtils::loadSymbols( sourceSymbolElem );
+    QgsSymbolMap sourceSymbolMap = QgsSymbolLayerUtils::loadSymbols( sourceSymbolElem );
     if ( sourceSymbolMap.contains( "0" ) )
     {
       r->setSourceSymbol( sourceSymbolMap.take( "0" ) );
@@ -1089,7 +1089,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
                               sizeScaleElem.attribute( "field" ) );
     }
-    if ( r->mSourceSymbol.data() && r->mSourceSymbol->type() == QgsSymbolV2::Marker )
+    if ( r->mSourceSymbol.data() && r->mSourceSymbol->type() == QgsSymbol::Marker )
     {
       convertSymbolSizeScale( r->mSourceSymbol.data(),
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
@@ -1119,7 +1119,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
 
   // ranges
   int i = 0;
-  QgsSymbolV2Map symbols;
+  QgsSymbolMap symbols;
   QDomElement rangesElem = doc.createElement( "ranges" );
   QgsRangeList::const_iterator it = mRanges.constBegin();
   for ( ; it != mRanges.constEnd(); ++it )
@@ -1147,7 +1147,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   // save source symbol
   if ( mSourceSymbol.data() )
   {
-    QgsSymbolV2Map sourceSymbols;
+    QgsSymbolMap sourceSymbols;
     sourceSymbols.insert( "0", mSourceSymbol.data() );
     QDomElement sourceSymbolElem = QgsSymbolLayerUtils::saveSymbols( sourceSymbols, "source-symbol", doc );
     rendererElem.appendChild( sourceSymbolElem );
@@ -1228,7 +1228,7 @@ QgsLegendSymbologyList QgsGraduatedSymbolRendererV2::legendSymbologyItems( QSize
 QgsLegendSymbolListV2 QgsGraduatedSymbolRendererV2::legendSymbolItemsV2() const
 {
   QgsLegendSymbolListV2 list;
-  if ( mSourceSymbol.data() && mSourceSymbol->type() == QgsSymbolV2::Marker )
+  if ( mSourceSymbol.data() && mSourceSymbol->type() == QgsSymbol::Marker )
   {
     // check that all symbols that have the same size expression
     QgsDataDefined ddSize;
@@ -1306,11 +1306,11 @@ QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scal
   return lst;
 }
 
-QgsSymbolV2* QgsGraduatedSymbolRendererV2::sourceSymbol()
+QgsSymbol* QgsGraduatedSymbolRendererV2::sourceSymbol()
 {
   return mSourceSymbol.data();
 }
-void QgsGraduatedSymbolRendererV2::setSourceSymbol( QgsSymbolV2* sym )
+void QgsGraduatedSymbolRendererV2::setSourceSymbol( QgsSymbol* sym )
 {
   mSourceSymbol.reset( sym );
 }
@@ -1331,9 +1331,9 @@ double QgsGraduatedSymbolRendererV2::minSymbolSize() const
   for ( int i = 0; i < mRanges.count(); i++ )
   {
     double sz = 0;
-    if ( mRanges[i].symbol()->type() == QgsSymbolV2::Marker )
+    if ( mRanges[i].symbol()->type() == QgsSymbol::Marker )
       sz = static_cast< QgsMarkerSymbolV2 * >( mRanges[i].symbol() )->size();
-    else if ( mRanges[i].symbol()->type() == QgsSymbolV2::Line )
+    else if ( mRanges[i].symbol()->type() == QgsSymbol::Line )
       sz = static_cast< QgsLineSymbolV2 * >( mRanges[i].symbol() )->width();
     min = qMin( sz, min );
   }
@@ -1346,9 +1346,9 @@ double QgsGraduatedSymbolRendererV2::maxSymbolSize() const
   for ( int i = 0; i < mRanges.count(); i++ )
   {
     double sz = 0;
-    if ( mRanges[i].symbol()->type() == QgsSymbolV2::Marker )
+    if ( mRanges[i].symbol()->type() == QgsSymbol::Marker )
       sz = static_cast< QgsMarkerSymbolV2 * >( mRanges[i].symbol() )->size();
-    else if ( mRanges[i].symbol()->type() == QgsSymbolV2::Line )
+    else if ( mRanges[i].symbol()->type() == QgsSymbol::Line )
       sz = static_cast< QgsLineSymbolV2 * >( mRanges[i].symbol() )->width();
     max = qMax( sz, max );
   }
@@ -1359,13 +1359,13 @@ void QgsGraduatedSymbolRendererV2::setSymbolSizes( double minSize, double maxSiz
 {
   for ( int i = 0; i < mRanges.count(); i++ )
   {
-    QScopedPointer<QgsSymbolV2> symbol( mRanges.at( i ).symbol() ? mRanges.at( i ).symbol()->clone() : nullptr );
+    QScopedPointer<QgsSymbol> symbol( mRanges.at( i ).symbol() ? mRanges.at( i ).symbol()->clone() : nullptr );
     const double size =  mRanges.count() > 1
                          ? minSize + i * ( maxSize - minSize ) / ( mRanges.count() - 1 )
                          : .5 * ( maxSize + minSize );
-    if ( symbol->type() == QgsSymbolV2::Marker )
+    if ( symbol->type() == QgsSymbol::Marker )
       static_cast< QgsMarkerSymbolV2 * >( symbol.data() )->setSize( size );
-    if ( symbol->type() == QgsSymbolV2::Line )
+    if ( symbol->type() == QgsSymbol::Line )
       static_cast< QgsLineSymbolV2 * >( symbol.data() )->setWidth( size );
     updateRangeSymbol( i, symbol.take() );
   }
@@ -1384,7 +1384,7 @@ void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, 
   {
     Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
     {
-      QgsSymbolV2 *symbol = range.symbol() ? range.symbol()->clone() : nullptr;
+      QgsSymbol *symbol = range.symbol() ? range.symbol()->clone() : nullptr;
       if ( symbol )
       {
         double colorValue;
@@ -1401,7 +1401,7 @@ void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, 
 
 }
 
-void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
+void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbol *sym )
 {
   if ( !sym )
     return;
@@ -1409,17 +1409,17 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
   int i = 0;
   Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
   {
-    QScopedPointer<QgsSymbolV2> symbol( sym->clone() );
+    QScopedPointer<QgsSymbol> symbol( sym->clone() );
     if ( mGraduatedMethod == GraduatedColor )
     {
       symbol->setColor( range.symbol()->color() );
     }
     else if ( mGraduatedMethod == GraduatedSize )
     {
-      if ( symbol->type() == QgsSymbolV2::Marker )
+      if ( symbol->type() == QgsSymbol::Marker )
         static_cast<QgsMarkerSymbolV2 *>( symbol.data() )->setSize(
           static_cast<QgsMarkerSymbolV2 *>( range.symbol() )->size() );
-      else if ( symbol->type() == QgsSymbolV2::Line )
+      else if ( symbol->type() == QgsSymbol::Line )
         static_cast<QgsLineSymbolV2 *>( symbol.data() )->setWidth(
           static_cast<QgsLineSymbolV2 *>( range.symbol() )->width() );
     }
@@ -1431,7 +1431,7 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
 
 void QgsGraduatedSymbolRendererV2::setRotationField( const QString& fieldOrExpression )
 {
-  if ( mSourceSymbol->type() == QgsSymbolV2::Marker )
+  if ( mSourceSymbol->type() == QgsSymbol::Marker )
   {
     QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
     s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
@@ -1441,7 +1441,7 @@ void QgsGraduatedSymbolRendererV2::setRotationField( const QString& fieldOrExpre
 
 QString QgsGraduatedSymbolRendererV2::rotationField() const
 {
-  if ( mSourceSymbol->type() == QgsSymbolV2::Marker )
+  if ( mSourceSymbol->type() == QgsSymbol::Marker )
   {
     QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
     QgsDataDefined ddAngle = s->dataDefinedAngle();
@@ -1461,7 +1461,7 @@ QString QgsGraduatedSymbolRendererV2::sizeScaleField() const
   return mSizeScale.data() ? QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
 }
 
-void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbol::ScaleMethod scaleMethod )
 {
   mScaleMethod = scaleMethod;
   Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
@@ -1494,7 +1494,7 @@ void QgsGraduatedSymbolRendererV2::checkLegendSymbolItem( const QString& key, bo
     updateRangeRenderState( index, state );
 }
 
-void QgsGraduatedSymbolRendererV2::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+void QgsGraduatedSymbolRendererV2::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
 {
   bool ok;
   int index = key.toInt( &ok );
@@ -1504,16 +1504,16 @@ void QgsGraduatedSymbolRendererV2::setLegendSymbolItem( const QString& key, QgsS
     delete symbol;
 }
 
-void QgsGraduatedSymbolRendererV2::addClass( QgsSymbolV2* symbol )
+void QgsGraduatedSymbolRendererV2::addClass( QgsSymbol* symbol )
 {
-  QgsSymbolV2* newSymbol = symbol->clone();
+  QgsSymbol* newSymbol = symbol->clone();
   QString label = "0.0 - 0.0";
   mRanges.insert( 0, QgsRendererRangeV2( 0.0, 0.0, newSymbol, label ) );
 }
 
 void QgsGraduatedSymbolRendererV2::addClass( double lower, double upper )
 {
-  QgsSymbolV2* newSymbol = mSourceSymbol->clone();
+  QgsSymbol* newSymbol = mSourceSymbol->clone();
   QString label = mLabelFormat.labelForRange( lower, upper );
   mRanges.append( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
 }
@@ -1742,7 +1742,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::convertFromRenderer(
   {
     r = new QgsGraduatedSymbolRendererV2( "", QgsRangeList() );
     QgsRenderContext context;
-    QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
+    QgsSymbolList symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )
     {
       r->setSourceSymbol( symbols.at( 0 )->clone() );

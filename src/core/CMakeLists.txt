@@ -41,7 +41,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssymbollayerregistry.cpp
   symbology-ng/qgssymbollayerutils.cpp
   symbology-ng/qgssymbologyv2conversion.cpp
-  symbology-ng/qgssymbolv2.cpp
+  symbology-ng/qgssymbol.cpp
   symbology-ng/qgsvectorcolorrampv2.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
 
@@ -828,7 +828,7 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgssymbollayerregistry.h
   symbology-ng/qgssymbollayerutils.h
   symbology-ng/qgssymbologyv2conversion.h
-  symbology-ng/qgssymbolv2.h
+  symbology-ng/qgssymbol.h
   symbology-ng/qgsvectorcolorrampv2.h
   symbology-ng/qgsvectorfieldsymbollayer.h
   symbology-ng/qgsgeometrygeneratorsymbollayerv2.h

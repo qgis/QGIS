@@ -1,11 +1,11 @@
-class QgsSymbolV2SelectorWidget : QgsPanelWidget
+class QgsSymbolSelectorWidget : QgsPanelWidget
 {
 %TypeHeaderCode
-#include <qgssymbolv2selectordialog.h>
+#include <qgssymbolselectordialog.h>
 %End
 
   public:
-    QgsSymbolV2SelectorWidget( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0);
+    QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0);
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
@@ -38,7 +38,7 @@ class QgsSymbolV2SelectorWidget : QgsPanelWidget
      * @brief Return the symbol that is currently active in the widget. Can be null.
      * @return The active symbol.
      */
-    QgsSymbolV2* symbol();
+    QgsSymbol* symbol();
 
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
@@ -46,7 +46,7 @@ class QgsSymbolV2SelectorWidget : QgsPanelWidget
 
     void loadSymbol();
     //! @note not available in python bindings
-    // void loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent );
+    // void loadSymbol( QgsSymbol* symbol, SymbolLayerItem* parent );
 
     void updateUi();
 
@@ -90,14 +90,14 @@ class QgsSymbolV2SelectorWidget : QgsPanelWidget
     void changeLayer( QgsSymbolLayer* layer );
 };
 
-class QgsSymbolV2SelectorDialog : QDialog
+class QgsSymbolSelectorDialog : QDialog
 {
 %TypeHeaderCode
-#include <qgssymbolv2selectordialog.h>
+#include <qgssymbolselectordialog.h>
 %End
 
   public:
-    QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0, bool embedded = false );
+    QgsSymbolSelectorDialog( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0, bool embedded = false );
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
@@ -126,14 +126,14 @@ class QgsSymbolV2SelectorDialog : QDialog
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
-    QgsSymbolV2* symbol();
+    QgsSymbol* symbol();
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event );
 
     void loadSymbol();
     //! @note not available in python bindings
-    // void loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent );
+    // void loadSymbol( QgsSymbol* symbol, SymbolLayerItem* parent );
 
     void updateUi();
 

@@ -33,7 +33,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerregistry.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsfillsymbollayerv2.h"
 #include "qgslinesymbollayerv2.h"

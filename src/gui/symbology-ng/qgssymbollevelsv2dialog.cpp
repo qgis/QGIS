@@ -17,7 +17,7 @@
 
 #include "qgssymbollayerutils.h"
 #include "qgssymbollayer.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 #include <QTableWidgetItem>
 #include <QItemDelegate>
@@ -53,7 +53,7 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& lis
   tableLevels->setRowCount( mList.count() );
   for ( int i = 0; i < mList.count(); i++ )
   {
-    QgsSymbolV2* sym = mList.at( i ).second;
+    QgsSymbol* sym = mList.at( i ).second;
 
     // set icons for the rows
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( sym, QSize( 16, 16 ) );
@@ -95,7 +95,7 @@ void QgsSymbolLevelsV2Dialog::populateTable()
 {
   for ( int row = 0; row < mList.count(); row++ )
   {
-    QgsSymbolV2* sym = mList.at( row ).second;
+    QgsSymbol* sym = mList.at( row ).second;
     QString label = mList.at( row ).first;
     QTableWidgetItem *itemLabel = new QTableWidgetItem( label );
     itemLabel->setFlags( itemLabel->flags() ^ Qt::ItemIsEditable );
@@ -130,7 +130,7 @@ void QgsSymbolLevelsV2Dialog::setDefaultLevels()
 {
   for ( int i = 0; i < mList.count(); i++ )
   {
-    QgsSymbolV2* sym = mList.at( i ).second;
+    QgsSymbol* sym = mList.at( i ).second;
     for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
     {
       sym->symbolLayer( layer )->setRenderingPass( layer );
@@ -147,7 +147,7 @@ void QgsSymbolLevelsV2Dialog::renderingPassChanged( int row, int column )
 {
   if ( row < 0 || row >= mList.count() )
     return;
-  QgsSymbolV2* sym = mList.at( row ).second;
+  QgsSymbol* sym = mList.at( row ).second;
   if ( column < 0 || column > sym->symbolLayerCount() )
     return;
   sym->symbolLayer( column - 1 )->setRenderingPass( tableLevels->item( row, column )->text().toInt() );

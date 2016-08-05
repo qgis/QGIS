@@ -18,11 +18,11 @@
 #include "qgsrulebasedrendererv2.h"
 #include "qgsfeatureiterator.h"
 #include "qgssymbollayerutils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsexpression.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgslogger.h"
 #include "qstring.h"
 #include "qgssinglesymbolrendererv2.h"
@@ -61,7 +61,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   if ( !mRenderer )
   {
     // some default options
-    QgsSymbolV2* symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
+    QgsSymbol* symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
     mRenderer = new QgsRuleBasedRendererV2( symbol );
   }
@@ -135,7 +135,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2Widget::renderer()
 
 void QgsRuleBasedRendererV2Widget::addRule()
 {
-  QgsSymbolV2* s = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
+  QgsSymbol* s = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   QgsRuleBasedRendererV2::Rule* newrule = new QgsRuleBasedRendererV2::Rule( s );
 
   QgsRuleBasedRendererV2::Rule* current = currentRule();
@@ -315,9 +315,9 @@ void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& i
   mModel->finishedAddingRules();
 }
 
-QList<QgsSymbolV2*> QgsRuleBasedRendererV2Widget::selectedSymbols()
+QList<QgsSymbol*> QgsRuleBasedRendererV2Widget::selectedSymbols()
 {
-  QList<QgsSymbolV2*> symbolList;
+  QList<QgsSymbol*> symbolList;
 
   if ( !mRenderer )
   {
@@ -636,10 +636,10 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::
   else
   {
     groupSymbol->setChecked( false );
-    mSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
+    mSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   }
 
-  mSymbolSelector = new QgsSymbolV2SelectorWidget( mSymbol, style, mLayer, this );
+  mSymbolSelector = new QgsSymbolSelectorWidget( mSymbol, style, mLayer, this );
   mSymbolSelector->setMapCanvas( mMapCanvas );
   connect( mSymbolSelector, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
   connect( mSymbolSelector, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
@@ -1082,7 +1082,7 @@ QMimeData *QgsRuleBasedRendererV2Model::mimeData( const QModelIndexList &indexes
     // non-unique rule keys would confuse other components using them (e.g. legend)
     QgsRuleBasedRendererV2::Rule* rule = ruleForIndex( index )->clone();
     QDomDocument doc;
-    QgsSymbolV2Map symbols;
+    QgsSymbolMap symbols;
 
     QDomElement rootElem = doc.createElement( "rule_mime" );
     rootElem.setAttribute( "type", "renderer" ); // for determining whether rules are from renderer or labeling
@@ -1159,7 +1159,7 @@ bool QgsRuleBasedRendererV2Model::dropMimeData( const QMimeData *data,
     QDomElement symbolsElem = rootElem.firstChildElement( "symbols" );
     if ( symbolsElem.isNull() )
       continue;
-    QgsSymbolV2Map symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
+    QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
     QDomElement ruleElem = rootElem.firstChildElement( "rule" );
     if ( rootElem.attribute( "type" ) == "labeling" )
       _labeling2rendererRules( ruleElem );

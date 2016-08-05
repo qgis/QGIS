@@ -291,7 +291,7 @@
 %Include symbology-ng/qgscptcityarchive.sip
 %Include symbology-ng/qgsstylev2.sip
 %Include symbology-ng/qgssvgcache.sip
-%Include symbology-ng/qgssymbolv2.sip
+%Include symbology-ng/qgssymbol.sip
 %Include symbology-ng/qgsvectorcolorrampv2.sip
 
 %Include symbology-ng/qgs25drenderer.sip

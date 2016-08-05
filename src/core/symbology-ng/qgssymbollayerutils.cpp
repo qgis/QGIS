@@ -17,7 +17,7 @@
 
 #include "qgssymbollayer.h"
 #include "qgssymbollayerregistry.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsexpression.h"
 #include "qgspainteffect.h"
@@ -508,33 +508,33 @@ QVector<qreal> QgsSymbolLayerUtils::decodeSldRealVector( const QString& s )
   return resultVector;
 }
 
-QString QgsSymbolLayerUtils::encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+QString QgsSymbolLayerUtils::encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod )
 {
   QString encodedValue;
 
   switch ( scaleMethod )
   {
-    case QgsSymbolV2::ScaleDiameter:
+    case QgsSymbol::ScaleDiameter:
       encodedValue = "diameter";
       break;
-    case QgsSymbolV2::ScaleArea:
+    case QgsSymbol::ScaleArea:
       encodedValue = "area";
       break;
   }
   return encodedValue;
 }
 
-QgsSymbolV2::ScaleMethod QgsSymbolLayerUtils::decodeScaleMethod( const QString& str )
+QgsSymbol::ScaleMethod QgsSymbolLayerUtils::decodeScaleMethod( const QString& str )
 {
-  QgsSymbolV2::ScaleMethod scaleMethod;
+  QgsSymbol::ScaleMethod scaleMethod;
 
   if ( str == "diameter" )
   {
-    scaleMethod = QgsSymbolV2::ScaleDiameter;
+    scaleMethod = QgsSymbol::ScaleDiameter;
   }
   else
   {
-    scaleMethod = QgsSymbolV2::ScaleArea;
+    scaleMethod = QgsSymbol::ScaleArea;
   }
 
   return scaleMethod;
@@ -557,12 +557,12 @@ QPainter::CompositionMode QgsSymbolLayerUtils::decodeBlendMode( const QString &s
   return QPainter::CompositionMode_SourceOver; // "Normal"
 }
 
-QIcon QgsSymbolLayerUtils::symbolPreviewIcon( QgsSymbolV2* symbol, QSize size )
+QIcon QgsSymbolLayerUtils::symbolPreviewIcon( QgsSymbol* symbol, QSize size )
 {
   return QIcon( symbolPreviewPixmap( symbol, size ) );
 }
 
-QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size, QgsRenderContext* customContext )
+QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol* symbol, QSize size, QgsRenderContext* customContext )
 {
   Q_ASSERT( symbol );
 
@@ -578,7 +578,7 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbolV2* symbol, QSize siz
   return pixmap;
 }
 
-double QgsSymbolLayerUtils::estimateMaxSymbolBleed( QgsSymbolV2* symbol )
+double QgsSymbolLayerUtils::estimateMaxSymbolBleed( QgsSymbol* symbol )
 {
   double maxBleed = 0;
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
@@ -599,7 +599,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( QgsSymbolLayer* layer, 
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = createRenderContext( &painter );
   renderContext.setForceVectorOutput( true );
-  QgsSymbolV2RenderContext symbolContext( renderContext, units, 1.0, false, 0, nullptr, QgsFields(), scale );
+  QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, 0, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return picture;
@@ -613,7 +613,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUni
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = createRenderContext( &painter );
-  QgsSymbolV2RenderContext symbolContext( renderContext, u, 1.0, false, 0, nullptr, QgsFields(), scale );
+  QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, 0, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return QIcon( pixmap );
@@ -903,7 +903,7 @@ QList<QPolygonF> offsetLine( const QPolygonF& polyline, double dist )
 /////
 
 
-QgsSymbolV2* QgsSymbolLayerUtils::loadSymbol( const QDomElement &element )
+QgsSymbol* QgsSymbolLayerUtils::loadSymbol( const QDomElement &element )
 {
   QgsSymbolLayerList layers;
   QDomNode layerNode = element.firstChild();
@@ -927,7 +927,7 @@ QgsSymbolV2* QgsSymbolLayerUtils::loadSymbol( const QDomElement &element )
           QDomElement s = e.firstChildElement( "symbol" );
           if ( !s.isNull() )
           {
-            QgsSymbolV2* subSymbol = loadSymbol( s );
+            QgsSymbol* subSymbol = loadSymbol( s );
             bool res = layer->setSubSymbol( subSymbol );
             if ( !res )
             {
@@ -949,7 +949,7 @@ QgsSymbolV2* QgsSymbolLayerUtils::loadSymbol( const QDomElement &element )
 
   QString symbolType = element.attribute( "type" );
 
-  QgsSymbolV2* symbol = nullptr;
+  QgsSymbol* symbol = nullptr;
   if ( symbolType == "line" )
     symbol = new QgsLineSymbolV2( layers );
   else if ( symbolType == "fill" )
@@ -1010,22 +1010,22 @@ QgsSymbolLayer* QgsSymbolLayerUtils::loadSymbolLayer( QDomElement& element )
   }
 }
 
-static QString _nameForSymbolType( QgsSymbolV2::SymbolType type )
+static QString _nameForSymbolType( QgsSymbol::SymbolType type )
 {
   switch ( type )
   {
-    case QgsSymbolV2::Line:
+    case QgsSymbol::Line:
       return "line";
-    case QgsSymbolV2::Marker:
+    case QgsSymbol::Marker:
       return "marker";
-    case QgsSymbolV2::Fill:
+    case QgsSymbol::Fill:
       return "fill";
     default:
       return "";
   }
 }
 
-QDomElement QgsSymbolLayerUtils::saveSymbol( const QString& name, QgsSymbolV2* symbol, QDomDocument& doc )
+QDomElement QgsSymbolLayerUtils::saveSymbol( const QString& name, QgsSymbol* symbol, QDomDocument& doc )
 {
   Q_ASSERT( symbol );
   QDomElement symEl = doc.createElement( "symbol" );
@@ -1059,7 +1059,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString& name, QgsSymbolV2* s
   return symEl;
 }
 
-QString QgsSymbolLayerUtils::symbolProperties( QgsSymbolV2* symbol )
+QString QgsSymbolLayerUtils::symbolProperties( QgsSymbol* symbol )
 {
   QDomDocument doc( "qgis-symbol-definition" );
   QDomElement symbolElem = saveSymbol( "symbol", symbol, doc );
@@ -2681,18 +2681,18 @@ void QgsSymbolLayerUtils::saveProperties( QgsStringMap props, QDomDocument& doc,
   }
 }
 
-QgsSymbolV2Map QgsSymbolLayerUtils::loadSymbols( QDomElement& element )
+QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement& element )
 {
   // go through symbols one-by-one and load them
 
-  QgsSymbolV2Map symbols;
+  QgsSymbolMap symbols;
   QDomElement e = element.firstChildElement();
 
   while ( !e.isNull() )
   {
     if ( e.tagName() == "symbol" )
     {
-      QgsSymbolV2* symbol = QgsSymbolLayerUtils::loadSymbol( e );
+      QgsSymbol* symbol = QgsSymbolLayerUtils::loadSymbol( e );
       if ( symbol )
         symbols.insert( e.attribute( "name" ), symbol );
     }
@@ -2709,7 +2709,7 @@ QgsSymbolV2Map QgsSymbolLayerUtils::loadSymbols( QDomElement& element )
   // e.g. symbol named "@foo@1" is sub-symbol of layer 1 in symbol "foo"
   QStringList subsymbols;
 
-  for ( QMap<QString, QgsSymbolV2*>::iterator it = symbols.begin(); it != symbols.end(); ++it )
+  for ( QMap<QString, QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it )
   {
     if ( it.key()[0] != '@' )
       continue;
@@ -2734,7 +2734,7 @@ QgsSymbolV2Map QgsSymbolLayerUtils::loadSymbols( QDomElement& element )
       continue;
     }
 
-    QgsSymbolV2* sym = symbols[symname];
+    QgsSymbol* sym = symbols[symname];
     if ( symlayer < 0 || symlayer >= sym->symbolLayerCount() )
     {
       QgsDebugMsg( "subsymbol references invalid symbol layer: " + QString::number( symlayer ) );
@@ -2759,12 +2759,12 @@ QgsSymbolV2Map QgsSymbolLayerUtils::loadSymbols( QDomElement& element )
   return symbols;
 }
 
-QDomElement QgsSymbolLayerUtils::saveSymbols( QgsSymbolV2Map& symbols, const QString& tagName, QDomDocument& doc )
+QDomElement QgsSymbolLayerUtils::saveSymbols( QgsSymbolMap& symbols, const QString& tagName, QDomDocument& doc )
 {
   QDomElement symbolsElem = doc.createElement( tagName );
 
   // save symbols
-  for ( QMap<QString, QgsSymbolV2*>::iterator its = symbols.begin(); its != symbols.end(); ++its )
+  for ( QMap<QString, QgsSymbol*>::iterator its = symbols.begin(); its != symbols.end(); ++its )
   {
     QDomElement symEl = saveSymbol( its.key(), its.value(), doc );
     symbolsElem.appendChild( symEl );
@@ -2773,7 +2773,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbols( QgsSymbolV2Map& symbols, const QSt
   return symbolsElem;
 }
 
-void QgsSymbolLayerUtils::clearSymbolMap( QgsSymbolV2Map& symbols )
+void QgsSymbolLayerUtils::clearSymbolMap( QgsSymbolMap& symbols )
 {
   qDeleteAll( symbols );
   symbols.clear();

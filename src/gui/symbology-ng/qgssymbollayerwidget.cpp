@@ -24,7 +24,7 @@
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
@@ -154,10 +154,10 @@ QString QgsSymbolLayerWidget::dataDefinedPropertyLabel( const QString &entryName
     {
       switch ( layer->scaleMethod() )
       {
-        case QgsSymbolV2::ScaleArea:
+        case QgsSymbol::ScaleArea:
           label += " (" + tr( "area" ) + ')';
           break;
-        case QgsSymbolV2::ScaleDiameter:
+        case QgsSymbol::ScaleDiameter:
           label += " (" + tr( "diameter" ) + ')';
           break;
       }
@@ -3353,9 +3353,9 @@ QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( co
   modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );
   modificationExpressionSelector->loadFieldNames();
   modificationExpressionSelector->setExpressionContext( _getExpressionContext( this ) );
-  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ), tr( "Polygon / MultiPolygon" ), QgsSymbolV2::Fill );
-  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ), tr( "LineString / MultiLineString" ), QgsSymbolV2::Line );
-  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPointLayer.svg" ), tr( "Point / MultiPoint" ), QgsSymbolV2::Marker );
+  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ), tr( "Polygon / MultiPolygon" ), QgsSymbol::Fill );
+  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ), tr( "LineString / MultiLineString" ), QgsSymbol::Line );
+  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPointLayer.svg" ), tr( "Point / MultiPoint" ), QgsSymbol::Marker );
   connect( modificationExpressionSelector, SIGNAL( expressionParsed( bool ) ), this, SLOT( updateExpression() ) );
   connect( cbxGeometryType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateSymbolType() ) );
 }
@@ -3384,7 +3384,7 @@ void QgsGeometryGeneratorSymbolLayerWidget::updateExpression()
 
 void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
 {
-  mLayer->setSymbolType( static_cast<QgsSymbolV2::SymbolType>( cbxGeometryType->itemData( cbxGeometryType->currentIndex() ).toInt() ) );
+  mLayer->setSymbolType( static_cast<QgsSymbol::SymbolType>( cbxGeometryType->itemData( cbxGeometryType->currentIndex() ).toInt() ) );
 
   emit symbolChanged();
 }

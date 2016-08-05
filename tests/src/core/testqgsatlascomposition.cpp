@@ -25,7 +25,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsfontutils.h"
 #include <QObject>

@@ -25,7 +25,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfield.h"
 #include "qgscoordinatetransform.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 class QgsDiagram;
 class QgsDiagramRendererV2;
