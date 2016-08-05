@@ -123,21 +123,21 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget
 
 #include "ui_widget_simpleline.h"
 
-class QgsSimpleLineSymbolLayerV2;
+class QgsSimpleLineSymbolLayer;
 
 /** \ingroup gui
- * \class QgsSimpleLineSymbolLayerV2Widget
+ * \class QgsSimpleLineSymbolLayerWidget
  */
-class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerWidget, private Ui::WidgetSimpleLine
+class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSimpleLine
 {
     Q_OBJECT
 
   public:
-    QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
+    QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    ~QgsSimpleLineSymbolLayerV2Widget();
+    ~QgsSimpleLineSymbolLayerWidget();
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsSimpleLineSymbolLayerV2Widget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsSimpleLineSymbolLayerWidget( vl ); }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerWidget,
     void on_mDrawInsideCheckBox_stateChanged( int state );
 
   protected:
-    QgsSimpleLineSymbolLayerV2* mLayer;
+    QgsSimpleLineSymbolLayer* mLayer;
 
     //creates a new icon for the 'change pattern' button
     void updatePatternIcon();
@@ -167,7 +167,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerWidget,
 
   private:
 
-    QgsLineSymbolV2* mAssistantPreviewSymbol;
+    QgsLineSymbol* mAssistantPreviewSymbol;
 
 };
 

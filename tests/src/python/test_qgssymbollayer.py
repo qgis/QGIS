@@ -39,12 +39,12 @@ from qgis.core import (QgsCentroidFillSymbolLayerV2,
                        QgsGradientFillSymbolLayerV2,
                        QgsImageFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
-                       QgsLineSymbolLayerV2,
+                       QgsLineSymbolLayer,
                        QgsMarkerLineSymbolLayerV2,
                        QgsMarkerSymbolLayerV2,
                        QgsPointPatternFillSymbolLayer,
                        QgsSimpleFillSymbolLayerV2,
-                       QgsSimpleLineSymbolLayerV2,
+                       QgsSimpleLineSymbolLayer,
                        QgsSimpleMarkerSymbolLayerV2,
                        QgsSVGFillSymbolLayer,
                        QgsSvgMarkerSymbolLayerV2,
@@ -182,7 +182,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         assert mExpectedType == mType, mMessage
 
         try:
-            mType = type(QgsLineSymbolLayerV2)
+            mType = type(QgsLineSymbolLayer)
         except:
             mType = None
         mExpectedType = pyqtWrapperType
@@ -206,7 +206,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         assert mExpectedType == mType, mMessage
 
         try:
-            mType = type(QgsSimpleLineSymbolLayerV2)
+            mType = type(QgsSimpleLineSymbolLayer)
         except:
             mType = None
         mExpectedType = pyqtWrapperType
@@ -621,11 +621,11 @@ class TestQgsSymbolLayer(unittest.TestCase):
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
 
-    def testQgsSimpleLineSymbolLayerV2(self):
+    def testQgsSimpleLineSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
         """
-        mTestName = 'QgsSimpleLineSymbolLayerV2'
+        mTestName = 'QgsSimpleLineSymbolLayer'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
@@ -633,10 +633,10 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mFile.open(QIODevice.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
-        mSymbolLayer = QgsSimpleLineSymbolLayerV2.createFromSld(
+        mSymbolLayer = QgsSimpleLineSymbolLayer.createFromSld(
             mDoc.elementsByTagName('LineSymbolizer').item(0).toElement())
 
-        mExpectedValue = type(QgsSimpleLineSymbolLayerV2())
+        mExpectedValue = type(QgsSimpleLineSymbolLayer())
         mValue = type(mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage

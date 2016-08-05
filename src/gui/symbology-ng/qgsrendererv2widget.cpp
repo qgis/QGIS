@@ -183,7 +183,7 @@ void QgsRendererV2Widget::changeSymbolWidth()
           continue;
 
         if ( symbol->type() == QgsSymbol::Line )
-          static_cast<QgsLineSymbolV2*>( symbol )->setWidth( dlg.mSpinBox->value() );
+          static_cast<QgsLineSymbol*>( symbol )->setWidth( dlg.mSpinBox->value() );
       }
     }
     refreshSymbolView();
@@ -580,13 +580,13 @@ void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsD
 
 QgsDataDefined QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
-  const QgsLineSymbolV2* line = static_cast<const QgsLineSymbolV2*>( symbol );
+  const QgsLineSymbol* line = static_cast<const QgsLineSymbol*>( symbol );
   return line->dataDefinedWidth();
 }
 
 void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
 {
-  static_cast<QgsLineSymbolV2*>( symbol )->setDataDefinedWidth( dd );
+  static_cast<QgsLineSymbol*>( symbol )->setDataDefinedWidth( dd );
 }
 
 void QgsRendererV2Widget::apply()

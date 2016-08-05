@@ -539,7 +539,7 @@ void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol
   }
   else if ( symbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbolV2 * s = static_cast<QgsLineSymbolV2 *>( symbol );
+    QgsLineSymbol * s = static_cast<QgsLineSymbol *>( symbol );
     const QgsDataDefined dd( "coalesce(" + QString::number( s->width() ) + " * (" + field + "),0)" );
     s->setDataDefinedWidth( dd );
   }

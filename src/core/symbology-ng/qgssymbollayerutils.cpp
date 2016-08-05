@@ -951,7 +951,7 @@ QgsSymbol* QgsSymbolLayerUtils::loadSymbol( const QDomElement &element )
 
   QgsSymbol* symbol = nullptr;
   if ( symbolType == "line" )
-    symbol = new QgsLineSymbolV2( layers );
+    symbol = new QgsLineSymbol( layers );
   else if ( symbolType == "fill" )
     symbol = new QgsFillSymbolV2( layers );
   else if ( symbolType == "marker" )

@@ -41,7 +41,7 @@ class QgsRenderContext;
 class QgsVectorLayer;
 class QgsPaintEffect;
 class QgsMarkerSymbolLayerV2;
-class QgsLineSymbolLayerV2;
+class QgsLineSymbolLayer;
 class QgsFillSymbolLayerV2;
 class QgsDataDefined;
 class QgsSymbolRenderContext;
@@ -627,17 +627,17 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbol
 
 
 /** \ingroup core
- * \class QgsLineSymbolV2
+ * \class QgsLineSymbol
  */
-class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbol
+class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 {
   public:
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
-    static QgsLineSymbolV2* createSimple( const QgsStringMap& properties );
+    static QgsLineSymbol* createSimple( const QgsStringMap& properties );
 
-    QgsLineSymbolV2( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
+    QgsLineSymbol( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
 
     void setWidth( double width );
     double width() const;
@@ -659,11 +659,11 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbol
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsLineSymbolV2* clone() const override;
+    virtual QgsLineSymbol* clone() const override;
 
   private:
 
-    void renderPolylineUsingLayer( QgsLineSymbolLayerV2* layer, const QPolygonF& points, QgsSymbolRenderContext& context );
+    void renderPolylineUsingLayer( QgsLineSymbolLayer* layer, const QPolygonF& points, QgsSymbolRenderContext& context );
 
 };
 

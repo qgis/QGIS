@@ -691,9 +691,9 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayer
 };
 
 /** \ingroup core
- * \class QgsLineSymbolLayerV2
+ * \class QgsLineSymbolLayer
  */
-class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayer
+class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 {
   public:
     virtual void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) = 0;
@@ -745,7 +745,7 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayer
     virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const override;
 
   protected:
-    QgsLineSymbolLayerV2( bool locked = false );
+    QgsLineSymbolLayer( bool locked = false );
 
     double mWidth;
     QgsUnitTypes::RenderUnit mWidthUnit;

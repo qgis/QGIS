@@ -309,7 +309,7 @@ void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
     return;
   }
 
-  QgsLineSymbolV2* newSymbol = mArrow->lineSymbol()->clone();
+  QgsLineSymbol* newSymbol = mArrow->lineSymbol()->clone();
   QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
   d.setExpressionContext( mArrow->createExpressionContext() );
 

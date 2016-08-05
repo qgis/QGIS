@@ -1574,7 +1574,7 @@ void QgsComposerMapWidget::updateGridLineSymbolMarker( const QgsComposerMapGrid*
 {
   if ( grid )
   {
-    QgsLineSymbolV2* nonConstSymbol = const_cast<QgsLineSymbolV2*>( grid->lineSymbol() ); //bad
+    QgsLineSymbol* nonConstSymbol = const_cast<QgsLineSymbol*>( grid->lineSymbol() ); //bad
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mGridLineStyleButton->iconSize() );
     mGridLineStyleButton->setIcon( icon );
   }
@@ -1598,7 +1598,7 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
     return;
   }
 
-  QgsLineSymbolV2* newSymbol = static_cast<QgsLineSymbolV2*>( grid->lineSymbol()->clone() );
+  QgsLineSymbol* newSymbol = static_cast<QgsLineSymbol*>( grid->lineSymbol()->clone() );
   QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )

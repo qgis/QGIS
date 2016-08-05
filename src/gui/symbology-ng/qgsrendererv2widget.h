@@ -289,7 +289,7 @@ class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
   protected:
     QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
 
-    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsLineSymbolV2*>( symbol )->width(); }
+    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsLineSymbol*>( symbol )->width(); }
 
     void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
 };

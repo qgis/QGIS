@@ -510,12 +510,12 @@ class QgsComposerMap : QgsComposerItem
     /**
      * @deprecated use grid()->setLineSymbol() or grids() instead
      */
-    void setGridLineSymbol( QgsLineSymbolV2* symbol /Transfer/) /Deprecated/;
+    void setGridLineSymbol( QgsLineSymbol* symbol /Transfer/) /Deprecated/;
 
     /**
      * @deprecated use grid()->lineSymbol() or grids() instead
      */
-    QgsLineSymbolV2* gridLineSymbol() /Deprecated/;
+    QgsLineSymbol* gridLineSymbol() /Deprecated/;
 
     /** Returns the grid's blending mode
      * @deprecated use grid()->blendMode() or grids() instead

@@ -27,7 +27,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsheatmaprenderer.cpp
   symbology-ng/qgsinvertedpolygonrenderer.cpp
   symbology-ng/qgslegendsymbolitemv2.cpp
-  symbology-ng/qgslinesymbollayerv2.cpp
+  symbology-ng/qgslinesymbollayer.cpp
   symbology-ng/qgsmarkersymbollayerv2.cpp
   symbology-ng/qgsnullsymbolrenderer.cpp
   symbology-ng/qgspointdisplacementrenderer.cpp
@@ -814,7 +814,7 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsfillsymbollayerv2.h
   symbology-ng/qgsgraduatedsymbolrendererv2.h
   symbology-ng/qgslegendsymbolitemv2.h
-  symbology-ng/qgslinesymbollayerv2.h
+  symbology-ng/qgslinesymbollayer.h
   symbology-ng/qgsmarkersymbollayerv2.h
   symbology-ng/qgspointdisplacementrenderer.h
   symbology-ng/qgsrendererv2.h

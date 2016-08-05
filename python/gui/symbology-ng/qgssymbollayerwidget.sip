@@ -81,14 +81,14 @@ class QgsSymbolLayerWidget : QWidget
 
 ///////////
 
-class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerWidget
+class QgsSimpleLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %TypeHeaderCode
 #include <qgssymbollayerwidget.h>
 %End
 
   public:
-    QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
 

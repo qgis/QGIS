@@ -37,9 +37,9 @@ class QWidget;
 
 class SymbolLayerItem;
 class QgsMarkerSymbolV2;
-class QgsLineSymbolV2;
+class QgsLineSymbol;
 class QgsMarkerSymbolLayerV2;
-class QgsLineSymbolLayerV2;
+class QgsLineSymbolLayer;
 
 class QgsMapCanvas;
 
@@ -63,8 +63,8 @@ class DataDefinedRestorer: public QObject
     QgsDataDefined mDDSize;
     QgsDataDefined mDDAngle;
 
-    QgsLineSymbolV2* mLine;
-    const QgsLineSymbolLayerV2* mLineSymbolLayer;
+    QgsLineSymbol* mLine;
+    const QgsLineSymbolLayer* mLineSymbolLayer;
     double mWidth;
     double mLineOffset;
     QgsDataDefined mDDWidth;

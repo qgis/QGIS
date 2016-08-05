@@ -149,14 +149,14 @@ class QgsComposerArrow: QgsComposerItem
      * @see lineSymbol
      * @note added in 2.5
      */
-    void setLineSymbol( QgsLineSymbolV2* symbol /Transfer/ );
+    void setLineSymbol( QgsLineSymbol* symbol /Transfer/ );
 
     /** Returns the line symbol used for drawing the line portion of the arrow
      * @returns line symbol
      * @see setLineSymbol
      * @note added in 2.5
      */
-    QgsLineSymbolV2* lineSymbol();
+    QgsLineSymbol* lineSymbol();
 
     /** Returns marker mode, which controls how the arrow endpoints are drawn
      * @returns marker mode

@@ -74,7 +74,7 @@ QgsDecorationGrid::~QgsDecorationGrid()
     delete mMarkerSymbol;
 }
 
-void QgsDecorationGrid::setLineSymbol( QgsLineSymbolV2* symbol )
+void QgsDecorationGrid::setLineSymbol( QgsLineSymbol* symbol )
 {
   if ( mLineSymbol )
     delete mLineSymbol;
@@ -134,10 +134,10 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbolV2>( elem );
+    mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem );
   }
   if ( ! mLineSymbol )
-    mLineSymbol = new QgsLineSymbolV2();
+    mLineSymbol = new QgsLineSymbol();
 
   if ( mMarkerSymbol )
     setMarkerSymbol( nullptr );

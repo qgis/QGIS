@@ -91,7 +91,7 @@ void QgsDecorationGridDialog::updateGuiElements()
     delete mLineSymbol;
   if ( mDeco.lineSymbol() )
   {
-    mLineSymbol = static_cast<QgsLineSymbolV2*>( mDeco.lineSymbol()->clone() );
+    mLineSymbol = static_cast<QgsLineSymbol*>( mDeco.lineSymbol()->clone() );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
     mLineSymbolButton->setIcon( icon );
   }
@@ -213,7 +213,7 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
   if ( ! mLineSymbol )
     return;
 
-  QgsLineSymbolV2* lineSymbol = mLineSymbol->clone();
+  QgsLineSymbol* lineSymbol = mLineSymbol->clone();
   QgsSymbolSelectorDialog dlg( lineSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {

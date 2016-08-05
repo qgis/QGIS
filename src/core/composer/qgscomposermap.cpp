@@ -1504,11 +1504,11 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     mapGrid->setFrameFillColor2( QgsSymbolLayerUtils::decodeColor( gridElem.attribute( "frameFillColor2", "0,0,0,255" ) ) );
     mapGrid->setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) ) );
     QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
-    QgsLineSymbolV2* lineSymbol = nullptr;
+    QgsLineSymbol* lineSymbol = nullptr;
     if ( gridSymbolElem.isNull() )
     {
       //old project file, read penWidth /penColorRed, penColorGreen, penColorBlue
-      lineSymbol = QgsLineSymbolV2::createSimple( QgsStringMap() );
+      lineSymbol = QgsLineSymbol::createSimple( QgsStringMap() );
       lineSymbol->setWidth( gridElem.attribute( "penWidth", "0" ).toDouble() );
       lineSymbol->setColor( QColor( gridElem.attribute( "penColorRed", "0" ).toInt(),
                                     gridElem.attribute( "penColorGreen", "0" ).toInt(),
@@ -1516,7 +1516,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     }
     else
     {
-      lineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbolV2>( gridSymbolElem );
+      lineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( gridSymbolElem );
     }
     mapGrid->setLineSymbol( lineSymbol );
 
@@ -1768,7 +1768,7 @@ QPen QgsComposerMap::gridPen() const
   QPen p;
   if ( g->lineSymbol() )
   {
-    QgsLineSymbolV2* line = g->lineSymbol()->clone();
+    QgsLineSymbol* line = g->lineSymbol()->clone();
     if ( !line )
     {
       return p;
@@ -2286,13 +2286,13 @@ void QgsComposerMap::setOverviewCentered( bool centered )
   //overviewExtentChanged();
 }
 
-void QgsComposerMap::setGridLineSymbol( QgsLineSymbolV2* symbol )
+void QgsComposerMap::setGridLineSymbol( QgsLineSymbol* symbol )
 {
   QgsComposerMapGrid* g = grid();
   g->setLineSymbol( symbol );
 }
 
-QgsLineSymbolV2* QgsComposerMap::gridLineSymbol()
+QgsLineSymbol* QgsComposerMap::gridLineSymbol()
 {
   QgsComposerMapGrid* g = grid();
   return g->lineSymbol();

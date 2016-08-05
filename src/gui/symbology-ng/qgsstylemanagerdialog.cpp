@@ -367,7 +367,7 @@ bool QgsStyleManagerDialog::addSymbol()
       name = tr( "new marker" );
       break;
     case QgsSymbol::Line:
-      symbol = new QgsLineSymbolV2();
+      symbol = new QgsLineSymbol();
       name = tr( "new line" );
       break;
     case QgsSymbol::Fill:

@@ -372,8 +372,8 @@ QgsSymbol* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature, 
   }
   else if ( tempSymbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( tempSymbol );
-    lineSymbol->setWidth( sizeScale * static_cast<QgsLineSymbolV2*>( symbol )->width() );
+    QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( tempSymbol );
+    lineSymbol->setWidth( sizeScale * static_cast<QgsLineSymbol*>( symbol )->width() );
   }
   return tempSymbol;
 }
@@ -1334,7 +1334,7 @@ double QgsGraduatedSymbolRendererV2::minSymbolSize() const
     if ( mRanges[i].symbol()->type() == QgsSymbol::Marker )
       sz = static_cast< QgsMarkerSymbolV2 * >( mRanges[i].symbol() )->size();
     else if ( mRanges[i].symbol()->type() == QgsSymbol::Line )
-      sz = static_cast< QgsLineSymbolV2 * >( mRanges[i].symbol() )->width();
+      sz = static_cast< QgsLineSymbol * >( mRanges[i].symbol() )->width();
     min = qMin( sz, min );
   }
   return min;
@@ -1349,7 +1349,7 @@ double QgsGraduatedSymbolRendererV2::maxSymbolSize() const
     if ( mRanges[i].symbol()->type() == QgsSymbol::Marker )
       sz = static_cast< QgsMarkerSymbolV2 * >( mRanges[i].symbol() )->size();
     else if ( mRanges[i].symbol()->type() == QgsSymbol::Line )
-      sz = static_cast< QgsLineSymbolV2 * >( mRanges[i].symbol() )->width();
+      sz = static_cast< QgsLineSymbol * >( mRanges[i].symbol() )->width();
     max = qMax( sz, max );
   }
   return max;
@@ -1366,7 +1366,7 @@ void QgsGraduatedSymbolRendererV2::setSymbolSizes( double minSize, double maxSiz
     if ( symbol->type() == QgsSymbol::Marker )
       static_cast< QgsMarkerSymbolV2 * >( symbol.data() )->setSize( size );
     if ( symbol->type() == QgsSymbol::Line )
-      static_cast< QgsLineSymbolV2 * >( symbol.data() )->setWidth( size );
+      static_cast< QgsLineSymbol * >( symbol.data() )->setWidth( size );
     updateRangeSymbol( i, symbol.take() );
   }
 }
@@ -1420,8 +1420,8 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbol *sym )
         static_cast<QgsMarkerSymbolV2 *>( symbol.data() )->setSize(
           static_cast<QgsMarkerSymbolV2 *>( range.symbol() )->size() );
       else if ( symbol->type() == QgsSymbol::Line )
-        static_cast<QgsLineSymbolV2 *>( symbol.data() )->setWidth(
-          static_cast<QgsLineSymbolV2 *>( range.symbol() )->width() );
+        static_cast<QgsLineSymbol *>( symbol.data() )->setWidth(
+          static_cast<QgsLineSymbol *>( range.symbol() )->width() );
     }
     updateRangeSymbol( i, symbol.take() );
     ++i;

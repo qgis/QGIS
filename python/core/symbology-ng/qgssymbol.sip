@@ -11,7 +11,7 @@ class QgsSymbol
   switch (sipCpp->type())
   {
     case QgsSymbol::Marker: sipType = sipType_QgsMarkerSymbolV2; break;
-    case QgsSymbol::Line: sipType = sipType_QgsLineSymbolV2; break;
+    case QgsSymbol::Line: sipType = sipType_QgsLineSymbol; break;
     case QgsSymbol::Fill: sipType = sipType_QgsFillSymbolV2; break;
     default: sipType = 0; break;
   }
@@ -543,7 +543,7 @@ class QgsMarkerSymbolV2 : QgsSymbol
 
 
 
-class QgsLineSymbolV2 : QgsSymbol
+class QgsLineSymbol : QgsSymbol
 {
 %TypeHeaderCode
 #include <qgssymbol.h>
@@ -553,9 +553,9 @@ class QgsLineSymbolV2 : QgsSymbol
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
-    static QgsLineSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
+    static QgsLineSymbol* createSimple( const QgsStringMap& properties ) /Factory/;
 
-    QgsLineSymbolV2( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
+    QgsLineSymbol( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
 
     void setWidth( double width );
     double width() const;
@@ -577,7 +577,7 @@ class QgsLineSymbolV2 : QgsSymbol
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsLineSymbolV2* clone() const /Factory/;
+    virtual QgsLineSymbol* clone() const /Factory/;
 };
 
 

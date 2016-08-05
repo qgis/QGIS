@@ -33,7 +33,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsSingleSymbolRendererV2,
     QgsFillSymbolV2,
-    QgsLineSymbolV2,
+    QgsLineSymbol,
     QgsMarkerSymbolV2,
     QgsMapLayerRegistry,
     QgsRectangle,
@@ -69,7 +69,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
 
         # Create style
         sym1 = QgsFillSymbolV2.createSimple({'color': '#fdbf6f'})
-        sym2 = QgsLineSymbolV2.createSimple({'color': '#fdbf6f'})
+        sym2 = QgsLineSymbol.createSimple({'color': '#fdbf6f'})
         sym3 = QgsMarkerSymbolV2.createSimple({'color': '#fdbf6f'})
 
         self.polys_layer.setRendererV2(QgsSingleSymbolRendererV2(sym1))

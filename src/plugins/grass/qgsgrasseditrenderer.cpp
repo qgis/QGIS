@@ -19,7 +19,7 @@
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgscategorizedsymbolrendererv2widget.h"
 #include "qgsfeature.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgslogger.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsrendererv2registry.h"

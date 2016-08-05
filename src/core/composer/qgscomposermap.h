@@ -34,7 +34,7 @@ class QDomDocument;
 class QGraphicsView;
 class QPainter;
 class QgsFillSymbolV2;
-class QgsLineSymbolV2;
+class QgsLineSymbol;
 class QgsVectorLayer;
 class QgsAnnotation;
 
@@ -549,12 +549,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**
      * @deprecated use grid()->setLineSymbol() or grids() instead
      */
-    Q_DECL_DEPRECATED void setGridLineSymbol( QgsLineSymbolV2* symbol );
+    Q_DECL_DEPRECATED void setGridLineSymbol( QgsLineSymbol* symbol );
 
     /**
      * @deprecated use grid()->lineSymbol() or grids() instead
      */
-    Q_DECL_DEPRECATED QgsLineSymbolV2* gridLineSymbol();
+    Q_DECL_DEPRECATED QgsLineSymbol* gridLineSymbol();
 
     /** Returns the grid's blending mode
      * @deprecated use grid()->blendMode() or grids() instead

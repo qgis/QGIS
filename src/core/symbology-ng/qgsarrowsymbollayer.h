@@ -25,7 +25,7 @@
  * \note Added in version 2.16
  */
 
-class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
+class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
 {
   public:
     /** Simple constructor */

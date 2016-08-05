@@ -13,10 +13,10 @@ class QgsComposerPolyline: QgsComposerNodesItem
     virtual QString displayName() const;
 
     /** Returns the QgsSymbol used to draw the shape. */
-    QgsLineSymbolV2* polylineStyleSymbol();
+    QgsLineSymbol* polylineStyleSymbol();
 
     /** Set the QgsSymbol used to draw the shape. */
-    void setPolylineStyleSymbol( QgsLineSymbolV2* symbol );
+    void setPolylineStyleSymbol( QgsLineSymbol* symbol );
 
     /** Overridden to return shape type */
     virtual int type() const;

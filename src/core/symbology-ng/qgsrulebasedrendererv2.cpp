@@ -811,7 +811,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
     switch ( geomType )
     {
       case QgsWkbTypes::LineGeometry:
-        symbol = new QgsLineSymbolV2( layers );
+        symbol = new QgsLineSymbol( layers );
         break;
 
       case QgsWkbTypes::PolygonGeometry:
@@ -1418,7 +1418,7 @@ void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbol* symbol, c
         {
           if ( symbol->symbolLayer( j )->layerType() == "SimpleLine" )
           {
-            QgsLineSymbolLayerV2* lsl = static_cast<QgsLineSymbolLayerV2*>( symbol->symbolLayer( j ) );
+            QgsLineSymbolLayer* lsl = static_cast<QgsLineSymbolLayer*>( symbol->symbolLayer( j ) );
             sizeExpression = QString( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField );
             lsl->setDataDefinedProperty( "width", new QgsDataDefined( sizeExpression ) );
           }

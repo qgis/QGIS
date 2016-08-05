@@ -45,9 +45,9 @@ void QgsSizeScaleWidget::setFromSymbol()
   {
     ddSize = static_cast< const QgsMarkerSymbolV2*>( mSymbol )->dataDefinedSize();
   }
-  else if ( dynamic_cast< const QgsLineSymbolV2*>( mSymbol ) )
+  else if ( dynamic_cast< const QgsLineSymbol*>( mSymbol ) )
   {
-    ddSize = dynamic_cast< const QgsLineSymbolV2*>( mSymbol )->dataDefinedWidth();
+    ddSize = dynamic_cast< const QgsLineSymbol*>( mSymbol )->dataDefinedWidth();
   }
 
   QgsScaleExpression expr( ddSize.expressionString() );
@@ -150,7 +150,7 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsS
     scaleMethodComboBox->addItem( tr( "Surface" ), int( QgsScaleExpression::Area ) );
     scaleMethodComboBox->addItem( tr( "Radius" ), int( QgsScaleExpression::Linear ) );
   }
-  else if ( dynamic_cast<const QgsLineSymbolV2*>( mSymbol ) )
+  else if ( dynamic_cast<const QgsLineSymbol*>( mSymbol ) )
   {
     scaleMethodComboBox->addItem( tr( "Exponential" ), int( QgsScaleExpression::Exponential ) );
     scaleMethodComboBox->addItem( tr( "Linear" ), int( QgsScaleExpression::Linear ) );
@@ -232,9 +232,9 @@ void QgsSizeScaleWidget::updatePreview()
       symbol->setSize( expr->size( breaks[i] ) );
       node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), QString() ) ) );
     }
-    else if ( dynamic_cast<const QgsLineSymbolV2*>( mSymbol ) )
+    else if ( dynamic_cast<const QgsLineSymbol*>( mSymbol ) )
     {
-      QScopedPointer< QgsLineSymbolV2 > symbol( static_cast<QgsLineSymbolV2*>( mSymbol->clone() ) );
+      QScopedPointer< QgsLineSymbol > symbol( static_cast<QgsLineSymbol*>( mSymbol->clone() ) );
       symbol->setDataDefinedWidth( QgsDataDefined() );
       symbol->setWidth( expr->size( breaks[i] ) );
       node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), QString() ) ) );

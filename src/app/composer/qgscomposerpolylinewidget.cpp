@@ -50,7 +50,7 @@ void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
   if ( !mComposerPolyline )
     return;
 
-  QScopedPointer<QgsLineSymbolV2> newSymbol;
+  QScopedPointer<QgsLineSymbol> newSymbol;
   newSymbol.reset( mComposerPolyline->polylineStyleSymbol()->clone() );
 
   QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyle::defaultStyle(),

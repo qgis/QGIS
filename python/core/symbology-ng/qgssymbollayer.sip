@@ -2,7 +2,7 @@ class QgsSymbolLayer
 {
 %TypeHeaderCode
 #include <qgssymbollayer.h>
-#include <qgslinesymbollayerv2.h>
+#include <qgslinesymbollayer.h>
 %End
 
 %ConvertToSubClassCode
@@ -28,12 +28,12 @@ class QgsSymbolLayer
     case QgsSymbol::Line:
       if (dynamic_cast<QgsMarkerLineSymbolLayerV2*>(sipCpp) != NULL)
 	sipType = sipType_QgsMarkerLineSymbolLayerV2;
-      else if (dynamic_cast<QgsSimpleLineSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsSimpleLineSymbolLayerV2;
+      else if (dynamic_cast<QgsSimpleLineSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsSimpleLineSymbolLayer;
       else if (dynamic_cast<QgsArrowSymbolLayer*>(sipCpp) != NULL)
 	sipType = sipType_QgsArrowSymbolLayer;
       else
-	sipType = sipType_QgsLineSymbolLayerV2;
+	sipType = sipType_QgsLineSymbolLayer;
       break;
 
     case QgsSymbol::Fill:
@@ -598,7 +598,7 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayer
     static QPointF _rotatedOffset( QPointF offset, double angle );
 };
 
-class QgsLineSymbolLayerV2 : QgsSymbolLayer
+class QgsLineSymbolLayer : QgsSymbolLayer
 {
 %TypeHeaderCode
 #include <qgssymbollayer.h>
@@ -655,7 +655,7 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayer
     virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
 
   protected:
-    QgsLineSymbolLayerV2( bool locked = false );
+    QgsLineSymbolLayer( bool locked = false );
 };
 
 class QgsFillSymbolLayerV2 : QgsSymbolLayer

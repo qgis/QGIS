@@ -63,7 +63,7 @@ QgsSymbol* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature, Qgs
   }
   else if ( mTempSymbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mTempSymbol.data() );
+    QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mTempSymbol.data() );
     lineSymbol->setWidth( sizeScale * mOrigSize );
   }
   else if ( mTempSymbol->type() == QgsSymbol::Fill )
@@ -109,7 +109,7 @@ void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const Qg
     }
     else if ( mSymbol->type() == QgsSymbol::Line )
     {
-      mOrigSize = static_cast<QgsLineSymbolV2*>( mSymbol.data() )->width();
+      mOrigSize = static_cast<QgsLineSymbol*>( mSymbol.data() )->width();
     }
     else
     {
@@ -334,7 +334,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
   switch ( geomType )
   {
     case QgsWkbTypes::LineGeometry:
-      symbol = new QgsLineSymbolV2( layers );
+      symbol = new QgsLineSymbol( layers );
       break;
 
     case QgsWkbTypes::PolygonGeometry:

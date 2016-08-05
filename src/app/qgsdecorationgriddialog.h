@@ -22,7 +22,7 @@
 #include <QDialog>
 
 class QgsDecorationGrid;
-class QgsLineSymbolV2;
+class QgsLineSymbol;
 class QgsMarkerSymbolV2;
 
 /**
@@ -53,7 +53,7 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
 
   private:
     QgsDecorationGrid& mDeco;
-    QgsLineSymbolV2* mLineSymbol;
+    QgsLineSymbol* mLineSymbol;
     QgsMarkerSymbolV2* mMarkerSymbol;
 
     void updateGuiElements();

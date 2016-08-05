@@ -299,7 +299,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 
 void QgsSymbolsListWidget::setLineWidth( double width )
 {
-  QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
+  QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
   if ( lineSymbol->width() == width )
     return;
   lineSymbol->setWidth( width );
@@ -308,7 +308,7 @@ void QgsSymbolsListWidget::setLineWidth( double width )
 
 void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 {
-  QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
+  QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
   QgsDataDefined dd = mWidthDDBtn->currentDataDefined();
 
   spinWidth->setEnabled( !mWidthDDBtn->isActive() );
@@ -487,7 +487,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   }
   else if ( mSymbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
+    QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
 
     if ( mLayer )

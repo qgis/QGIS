@@ -60,7 +60,7 @@ static void _initWidgetFunctions()
   if ( initialized )
     return;
 
-  _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerV2Widget::create );
+  _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerWidget::create );
   _initWidgetFunction( "MarkerLine", QgsMarkerLineSymbolLayerV2Widget::create );
   _initWidgetFunction( "ArrowLine", QgsArrowSymbolLayerWidget::create );
 

@@ -22,7 +22,7 @@ from qgis.core import (QgsComposerPolyline,
                        QgsComposerItem,
                        QgsComposition,
                        QgsMapSettings,
-                       QgsLineSymbolV2
+                       QgsLineSymbol
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -63,7 +63,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         props["width"] = "10.0"
         props["capstyle"] = "square"
 
-        style = QgsLineSymbolV2.createSimple(props)
+        style = QgsLineSymbol.createSimple(props)
         self.mComposerPolyline.setPolylineStyleSymbol(style)
 
     def testDisplayName(self):
