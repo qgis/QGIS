@@ -411,7 +411,7 @@ void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
 
   Qt::PenStyle penStyle = mUseCustomDashPattern ? Qt::CustomDashLine : mPenStyle;
   QgsSymbolLayerUtils::lineToSld( doc, strokeElem, penStyle, mColor, mWidth,
-                                    &mPenJoinStyle, &mPenCapStyle, &mCustomDashVector );
+                                  &mPenJoinStyle, &mPenCapStyle, &mCustomDashVector );
 
   // <se:PerpendicularOffset>
   if ( !qgsDoubleNear( mOffset, 0.0 ) )
@@ -453,9 +453,9 @@ QgsSymbolLayer* QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
   QVector<qreal> customDashVector;
 
   if ( !QgsSymbolLayerUtils::lineFromSld( strokeElem, penStyle,
-       color, width,
-       &penJoinStyle, &penCapStyle,
-       &customDashVector ) )
+                                          color, width,
+                                          &penJoinStyle, &penCapStyle,
+                                          &customDashVector ) )
     return nullptr;
 
   double offset = 0.0;

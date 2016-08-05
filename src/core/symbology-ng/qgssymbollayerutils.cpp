@@ -1839,9 +1839,9 @@ bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &bru
 }
 
 void QgsSymbolLayerUtils::lineToSld( QDomDocument &doc, QDomElement &element,
-                                       Qt::PenStyle penStyle, const QColor& color, double width,
-                                       const Qt::PenJoinStyle *penJoinStyle, const Qt::PenCapStyle *penCapStyle,
-                                       const QVector<qreal> *customDashPattern, double dashOffset )
+                                     Qt::PenStyle penStyle, const QColor& color, double width,
+                                     const Qt::PenJoinStyle *penJoinStyle, const Qt::PenCapStyle *penCapStyle,
+                                     const QVector<qreal> *customDashPattern, double dashOffset )
 {
   QVector<qreal> dashPattern;
   const QVector<qreal> *pattern = &dashPattern;
@@ -1916,9 +1916,9 @@ void QgsSymbolLayerUtils::lineToSld( QDomDocument &doc, QDomElement &element,
 
 
 bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
-    Qt::PenStyle &penStyle, QColor &color, double &width,
-    Qt::PenJoinStyle *penJoinStyle, Qt::PenCapStyle *penCapStyle,
-    QVector<qreal> *customDashPattern, double *dashOffset )
+                                       Qt::PenStyle &penStyle, QColor &color, double &width,
+                                       Qt::PenJoinStyle *penJoinStyle, Qt::PenCapStyle *penCapStyle,
+                                       QVector<qreal> *customDashPattern, double *dashOffset )
 {
   QgsDebugMsg( "Entered." );
 

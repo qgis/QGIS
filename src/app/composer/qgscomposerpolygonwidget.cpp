@@ -62,7 +62,7 @@ void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
   newSymbol.reset( mComposerPolygon->polygonStyleSymbol()->clone() );
 
   QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyle::defaultStyle(),
-                               coverageLayer, this );
+                             coverageLayer, this );
   d.setExpressionContext( mComposerPolygon->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )

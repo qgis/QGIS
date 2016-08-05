@@ -4832,7 +4832,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
       QgsSymbolLayer* symShdwL = QgsSvgMarkerSymbolLayerV2::create( shdwmap );
       QgsSvgMarkerSymbolLayerV2* svgShdwM = static_cast<QgsSvgMarkerSymbolLayerV2*>( symShdwL );
       QgsSymbolRenderContext svgShdwContext( shdwContext, QgsUnitTypes::RenderUnknownUnit,
-          ( 100.0 - static_cast< double >( tmpLyr.shapeTransparency ) ) / 100.0 );
+                                             ( 100.0 - static_cast< double >( tmpLyr.shapeTransparency ) ) / 100.0 );
 
       double svgSize = tmpLyr.scaleToPixelContext( sizeOut, context, tmpLyr.shapeSizeUnits, true, tmpLyr.shapeSizeMapUnitScale );
       svgShdwM->renderPoint( QPointF( svgSize / 2, -svgSize / 2 ), svgShdwContext );
@@ -4867,7 +4867,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     QgsSymbolLayer* symL = QgsSvgMarkerSymbolLayerV2::create( map );
     QgsSvgMarkerSymbolLayerV2* svgM = static_cast<QgsSvgMarkerSymbolLayerV2*>( symL );
     QgsSymbolRenderContext svgContext( context, QgsUnitTypes::RenderUnknownUnit,
-                                         ( 100.0 - static_cast< double >( tmpLyr.shapeTransparency ) ) / 100.0 );
+                                       ( 100.0 - static_cast< double >( tmpLyr.shapeTransparency ) ) / 100.0 );
 
     p->save();
     if ( context.useAdvancedEffects() )
