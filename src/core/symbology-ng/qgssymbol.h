@@ -696,27 +696,3 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbol
 
 #endif
 
-
-/*
-
-QgsSymbol* ps = new QgsPointSymbol();
-
-// ----
-
-sl = QgsSymbolLayerRegistry::instance()->createSymbolLayer("SimpleLine", { "color", "..." })
-
-// (or)
-
-sl = QgsSymbolLayerRegistry::defaultSymbolLayer(QgsSymbol::Line)
-
-// (or)
-
-QgsSymbolLayer* sl = new QgsSimpleLineSymbolLayer(x,y,z);
-QgsLineSymbol* s = new LineSymbol( [ sl ] );
-
-// ----
-
-rend = QgsSingleSymbolRenderer( new LineSymbol() );
-*/
-
-

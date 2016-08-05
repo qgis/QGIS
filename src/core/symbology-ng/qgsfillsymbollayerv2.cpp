@@ -458,7 +458,7 @@ Qt::BrushStyle QgsSimpleFillSymbolLayerV2::dxfBrushStyle() const
   return mBrushStyle;
 }
 
-//QgsGradientFillSymbolLayer
+//QgsGradientFillSymbolLayerV2
 
 QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( const QColor& color, const QColor& color2,
     GradientColorType colorType, GradientType gradientType,
@@ -944,7 +944,7 @@ QgsMapUnitScale QgsGradientFillSymbolLayerV2::mapUnitScale() const
   return mOffsetMapUnitScale;
 }
 
-//QgsShapeburstFillSymbolLayer
+//QgsShapeburstFillSymbolLayerV2
 
 QgsShapeburstFillSymbolLayerV2::QgsShapeburstFillSymbolLayerV2( const QColor& color, const QColor& color2, ShapeburstColorType colorType,
     int blurRadius, bool useWholeShape, double maxDistance )
