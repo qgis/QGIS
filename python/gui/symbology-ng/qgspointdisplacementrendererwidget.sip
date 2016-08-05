@@ -4,8 +4,8 @@ class QgsPointDisplacementRendererWidget: QgsRendererV2Widget
 #include <qgspointdisplacementrendererwidget.h>
 %End
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
-    QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer );
     ~QgsPointDisplacementRendererWidget();
 
     QgsFeatureRendererV2* renderer();

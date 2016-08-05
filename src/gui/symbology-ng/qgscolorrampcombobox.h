@@ -17,7 +17,7 @@
 
 #include <QComboBox>
 
-class QgsStyleV2;
+class QgsStyle;
 class QgsVectorColorRampV2;
 
 /** \ingroup gui
@@ -32,7 +32,7 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
     ~QgsColorRampComboBox();
 
     //! initialize the combo box with color ramps from the style
-    void populate( QgsStyleV2* style );
+    void populate( QgsStyle* style );
 
     //! add/select color ramp which was used previously by the renderer
     void setSourceColorRamp( QgsVectorColorRampV2* sourceRamp );
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
     void sourceRampEdited();
 
   protected:
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
     QgsVectorColorRampV2* mSourceColorRamp; // owns the copy
 
   private:

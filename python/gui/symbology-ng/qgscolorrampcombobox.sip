@@ -9,7 +9,7 @@ class QgsColorRampComboBox : QComboBox
     ~QgsColorRampComboBox();
 
     //! initialize the combo box with color ramps from the style
-    void populate( QgsStyleV2* style );
+    void populate( QgsStyle* style );
 
     //! add/select color ramp which was used previously by the renderer
     void setSourceColorRamp( QgsVectorColorRampV2* sourceRamp );

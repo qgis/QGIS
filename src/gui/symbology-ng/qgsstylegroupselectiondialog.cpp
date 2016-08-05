@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsstylev2groupselectiondialog.h
+    qgsstylegroupselectiondialog.h
     ---------------------
     begin                : Oct 2015
     copyright            : (C) 2015 by Alessandro Pasotti
@@ -15,14 +15,14 @@
  ***************************************************************************/
 
 
-#include "qgsstylev2groupselectiondialog.h"
-#include "qgsstylev2.h"
+#include "qgsstylegroupselectiondialog.h"
+#include "qgsstyle.h"
 
 #include <QStandardItemModel>
 #include <QStandardItem>
 
 
-QgsStyleV2GroupSelectionDialog::QgsStyleV2GroupSelectionDialog( QgsStyleV2 *style, QWidget *parent )
+QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWidget *parent )
     : QDialog( parent )
     , mStyle( style )
 {
@@ -79,12 +79,12 @@ QgsStyleV2GroupSelectionDialog::QgsStyleV2GroupSelectionDialog( QgsStyleV2 *styl
 }
 
 
-QgsStyleV2GroupSelectionDialog::~QgsStyleV2GroupSelectionDialog()
+QgsStyleGroupSelectionDialog::~QgsStyleGroupSelectionDialog()
 {
 }
 
 
-void QgsStyleV2GroupSelectionDialog::setBold( QStandardItem* item )
+void QgsStyleGroupSelectionDialog::setBold( QStandardItem* item )
 {
   QFont font = item->font();
   font.setBold( true );
@@ -92,7 +92,7 @@ void QgsStyleV2GroupSelectionDialog::setBold( QStandardItem* item )
 }
 
 
-void QgsStyleV2GroupSelectionDialog::groupTreeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   QModelIndex index;
   QModelIndexList selectedItems = selected.indexes();
@@ -147,7 +147,7 @@ void QgsStyleV2GroupSelectionDialog::groupTreeSelectionChanged( const QItemSelec
 }
 
 
-void QgsStyleV2GroupSelectionDialog::buildGroupTree( QStandardItem* &parent )
+void QgsStyleGroupSelectionDialog::buildGroupTree( QStandardItem* &parent )
 {
   QgsSymbolGroupMap groups = mStyle->childGroupNames( parent->text() );
   QgsSymbolGroupMap::const_iterator i = groups.constBegin();

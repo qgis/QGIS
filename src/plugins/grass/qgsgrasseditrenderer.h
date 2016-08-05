@@ -65,9 +65,9 @@ class QgsGrassEditRendererWidget : public QgsRendererV2Widget
 {
     Q_OBJECT
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer );
 
-    QgsGrassEditRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    QgsGrassEditRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer );
     ~QgsGrassEditRendererWidget();
 
     virtual QgsFeatureRendererV2* renderer() override;

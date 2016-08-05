@@ -239,9 +239,9 @@
 %Include symbology-ng/qgssinglesymbolrendererv2widget.sip
 %Include symbology-ng/qgssizescalewidget.sip
 %Include symbology-ng/qgssmartgroupeditordialog.sip
-%Include symbology-ng/qgsstylev2exportimportdialog.sip
-%Include symbology-ng/qgsstylev2groupselectiondialog.sip
-%Include symbology-ng/qgsstylev2managerdialog.sip
+%Include symbology-ng/qgsstyleexportimportdialog.sip
+%Include symbology-ng/qgsstylegroupselectiondialog.sip
+%Include symbology-ng/qgsstylemanagerdialog.sip
 %Include symbology-ng/qgssvgselectorwidget.sip
 %Include symbology-ng/qgssymbollayerwidget.sip
 %Include symbology-ng/qgssymbollevelsdialog.sip

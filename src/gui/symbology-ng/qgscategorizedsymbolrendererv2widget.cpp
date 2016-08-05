@@ -21,7 +21,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 
 #include "qgssymbolselectordialog.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -379,7 +379,7 @@ void QgsCategorizedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement el
 ///@endcond
 
 // ------------------------------ Widget ------------------------------------
-QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
 {
   return new QgsCategorizedSymbolRendererV2Widget( layer, style, renderer );
 }
@@ -409,7 +409,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( nullptr )
     , mModel( nullptr )
@@ -934,7 +934,7 @@ void QgsCategorizedSymbolRendererV2Widget::rowsMoved()
 
 void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromLibrary()
 {
-  int matched = matchToSymbols( QgsStyleV2::defaultStyle() );
+  int matched = matchToSymbols( QgsStyle::defaultStyle() );
   if ( matched > 0 )
   {
     QMessageBox::information( this, tr( "Matched symbols" ),
@@ -947,7 +947,7 @@ void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromLibrary()
   }
 }
 
-int QgsCategorizedSymbolRendererV2Widget::matchToSymbols( QgsStyleV2* style )
+int QgsCategorizedSymbolRendererV2Widget::matchToSymbols( QgsStyle* style )
 {
   if ( !mLayer || !style )
     return 0;
@@ -985,7 +985,7 @@ void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
   QFileInfo openFileInfo( fileName );
   settings.setValue( "UI/lastMatchToSymbolsDir", openFileInfo.absolutePath() );
 
-  QgsStyleV2 importedStyle;
+  QgsStyle importedStyle;
   if ( !importedStyle.importXml( fileName ) )
   {
     QMessageBox::warning( this, tr( "Matching error" ),

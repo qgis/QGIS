@@ -19,18 +19,18 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsrendererv2registry.h"
 #include "qgsfield.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgisgui.h"
 
-QgsRendererV2Widget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererV2Widget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
 {
   return new QgsPointDisplacementRendererWidget( layer, style, renderer );
 }
 
-QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( nullptr )
     , mEmbeddedRendererWidget( nullptr )
@@ -370,7 +370,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
     return;
   }
   QgsMarkerSymbolV2* markerSymbol = mRenderer->centerSymbol()->clone();
-  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), mLayer, this );
+  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
   dlg.setMapCanvas( mMapCanvas );
   if ( dlg.exec() == QDialog::Rejected )
   {

@@ -5,9 +5,9 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
 %End
 
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer ) /Factory/;
 
-    QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer );
     ~QgsCategorizedSymbolRendererV2Widget();
 
     virtual QgsFeatureRendererV2* renderer();
@@ -20,7 +20,7 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
      * @see matchToSymbolsFromXml
      * @note added in QGIS 2.9
      */
-    int matchToSymbols( QgsStyleV2* style );
+    int matchToSymbols( QgsStyle* style );
 
   public slots:
     void changeCategorizedSymbol();

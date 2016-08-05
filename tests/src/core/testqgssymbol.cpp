@@ -31,7 +31,7 @@
 #include "qgsfillsymbollayerv2.h"
 #include "qgssinglesymbolrendererv2.h"
 
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 
 /** \ingroup UnitTests
  * This is a unit test to verify that symbols are working correctly

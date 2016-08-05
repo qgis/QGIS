@@ -22,7 +22,7 @@
 #include "qgspanelwidget.h"
 
 class QgsVectorLayer;
-class QgsStyleV2;
+class QgsStyle;
 class QgsFeatureRendererV2;
 class QgsSymbolSelectorDialog;
 class QgsMapCanvas;
@@ -41,7 +41,7 @@ class GUI_EXPORT QgsRendererV2Widget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-    QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style );
+    QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyle* style );
 
     virtual ~QgsRendererV2Widget() {}
 
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsRendererV2Widget : public QgsPanelWidget
 
   protected:
     QgsVectorLayer* mLayer;
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
     QMenu* contextMenu;
     QAction* mCopyAction;
     QAction* mPasteAction;

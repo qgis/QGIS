@@ -4,7 +4,7 @@ class QgsSymbolsListWidget : QWidget
 #include <qgssymbolslistwidget.h>
 %End
   public:
-    QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent /TransferThis/ = 0, const QgsVectorLayer * layer = 0 );
+    QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent /TransferThis/ = 0, const QgsVectorLayer * layer = 0 );
 
     /** Returns the expression context used for the widget, if set. This expression context is used for
      * evaluating data defined symbol properties and for populating based expression widgets in

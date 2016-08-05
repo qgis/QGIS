@@ -19,12 +19,12 @@
 #include <QLayout>
 #include <QLabel>
 
-QgsRendererV2Widget* QgsNullSymbolRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererV2Widget* QgsNullSymbolRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
 {
   return new QgsNullSymbolRendererWidget( layer, style, renderer );
 }
 
-QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( nullptr )
 {

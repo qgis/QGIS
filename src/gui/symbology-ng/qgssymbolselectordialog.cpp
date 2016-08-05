@@ -15,7 +15,7 @@
 
 #include "qgssymbolselectordialog.h"
 
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
@@ -208,7 +208,7 @@ class SymbolLayerItem : public QStandardItem
 
 //////////
 
-QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent )
+QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* style, const QgsVectorLayer* vl, QWidget* parent )
     : QgsPanelWidget( parent )
     , mAdvancedMenu( nullptr )
     , mVectorLayer( vl )
@@ -698,7 +698,7 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer* newLayer )
   layerChanged();
 }
 
-QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyleV2 *style, const QgsVectorLayer *vl, QWidget *parent, bool embedded )
+QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent, bool embedded )
     : QDialog( parent )
 {
   setLayout( new QVBoxLayout() );

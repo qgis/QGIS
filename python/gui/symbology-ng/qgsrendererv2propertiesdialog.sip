@@ -13,7 +13,7 @@ class QgsRendererV2PropertiesDialog : QDialog
      * than shown as a dialog by itself
      * @param parent parent widget
      */
-    QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false, QWidget* parent /TransferThis/ = nullptr );
+    QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyle* style, bool embedded = false, QWidget* parent /TransferThis/ = nullptr );
 
     ~QgsRendererV2PropertiesDialog();
 

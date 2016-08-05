@@ -18,11 +18,11 @@
 
 #include "qgssizescalewidget.h"
 
-#include "qgsstylev2managerdialog.h"
+#include "qgsstylemanagerdialog.h"
 #include "qgsdatadefined.h"
 
 #include "qgssymbol.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsmapcanvas.h"
@@ -41,7 +41,7 @@
 #include <QScopedPointer>
 
 
-QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
+QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
     : QWidget( parent )
     , mSymbol( symbol )
     , mStyle( style )
@@ -219,7 +219,7 @@ void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
 
 void QgsSymbolsListWidget::openStyleManager()
 {
-  QgsStyleV2ManagerDialog dlg( mStyle, this );
+  QgsStyleManagerDialog dlg( mStyle, this );
   dlg.exec();
 
   populateSymbolView();
@@ -569,12 +569,12 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
     if ( groupsCombo->itemData( index ).toString() == "smart" )
     {
       groupid = mStyle->smartgroupId( text );
-      symbols = mStyle->symbolsOfSmartgroup( QgsStyleV2::SymbolEntity, groupid );
+      symbols = mStyle->symbolsOfSmartgroup( QgsStyle::SymbolEntity, groupid );
     }
     else
     {
       groupid = groupsCombo->itemData( index ).toInt();
-      symbols = mStyle->symbolsOfGroup( QgsStyleV2::SymbolEntity, groupid );
+      symbols = mStyle->symbolsOfGroup( QgsStyle::SymbolEntity, groupid );
     }
   }
   populateSymbols( symbols );
@@ -582,6 +582,6 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
 
 void QgsSymbolsListWidget::on_groupsCombo_editTextChanged( const QString &text )
 {
-  QStringList symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, text );
+  QStringList symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, text );
   populateSymbols( symbols );
 }

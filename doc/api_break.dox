@@ -26,6 +26,10 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <tr><td>QgsColorButtonV2                 <td>QgsColorButton
 <tr><td>QgsEllipseSymbolLayerV2          <td>QgsEllipseSymbolLayer
 <tr><td>QgsEllipseSymbolLayerV2Widget    <td>QgsEllipseSymbolLayerWidget
+<tr><td>QgsStyleV2                       <td>QgsStyle
+<tr><td>QgsStyleV2ExportImportDialog     <td>QgsStyleExportImportDialog
+<tr><td>QgsStyleV2GroupSelectionDialog   <td>QgsStyleGroupSelectionDialog
+<tr><td>QgsStyleV2ManagerDialog          <td>QgsStyleManagerDialog
 <tr><td>QgsSymbolLayerV2                 <td>QgsSymbolLayer
 <tr><td>QgsSymbolLayerV2AbstractMetadata <td>QgsSymbolLayerAbstractMetadata
 <tr><td>QgsSymbolLayerV2Metadata         <td>QgsSymbolLayerMetadata

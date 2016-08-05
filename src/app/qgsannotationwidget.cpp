@@ -17,7 +17,7 @@
 
 #include "qgsannotationwidget.h"
 #include "qgsannotationitem.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
@@ -99,7 +99,7 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
     return;
   }
   QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
-  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

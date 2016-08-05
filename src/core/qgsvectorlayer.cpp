@@ -78,7 +78,7 @@
 #include "qgssymbollayer.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsdiagramrendererv2.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbologyconversion.h"
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"

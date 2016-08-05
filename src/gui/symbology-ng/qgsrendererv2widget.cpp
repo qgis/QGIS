@@ -26,7 +26,7 @@
 #include <QInputDialog>
 #include <QMenu>
 
-QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
+QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyle* style )
     : QgsPanelWidget()
     , mLayer( layer )
     , mStyle( style )

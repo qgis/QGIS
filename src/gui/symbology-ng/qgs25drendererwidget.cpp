@@ -18,7 +18,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerstylemanager.h"
 
-Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( nullptr )
 {
@@ -107,7 +107,7 @@ void Qgs25DRendererWidget::apply()
   }
 }
 
-QgsRendererV2Widget* Qgs25DRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererV2Widget* Qgs25DRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
 {
   return new Qgs25DRendererWidget( layer, style, renderer );
 }

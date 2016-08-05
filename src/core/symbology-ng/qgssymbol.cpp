@@ -25,7 +25,7 @@
 #include "qgsrendercontext.h" // for bigSymbolPreview
 
 #include "qgsproject.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 
@@ -333,7 +333,7 @@ QgsSymbol* QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
       break;
   }
   if ( defaultSymbol != "" )
-    s = QgsStyleV2::defaultStyle()->symbol( defaultSymbol );
+    s = QgsStyle::defaultStyle()->symbol( defaultSymbol );
 
   // if no default found for this type, get global default (as previously)
   if ( ! s )

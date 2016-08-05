@@ -50,7 +50,7 @@ class QgsRendererV2AbstractMetadata
      * The old renderer does not have to be of the same type as returned by createRenderer().
      * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
      */
-    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* oldRenderer ) /Factory/;
+    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* oldRenderer ) /Factory/;
 
     /**
      * Create a renderer from the SLD provided in ele and for the specified geometry type.
@@ -71,7 +71,7 @@ class QgsRendererV2Metadata : QgsRendererV2AbstractMetadata
 %End
   public:
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) /Factory/;
-    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer ) /Factory/;
     virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
     // QgsRendererV2CreateFunc createFunction() const;

@@ -30,7 +30,7 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsdatadefined.h"
-#include "qgsstylev2.h" //for symbol selector dialog
+#include "qgsstyle.h" //for symbol selector dialog
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -1031,7 +1031,7 @@ QgsGradientFillSymbolLayerV2Widget::QgsGradientFillSymbolLayerV2Widget( const Qg
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
   cboGradientColorRamp->setShowGradientOnly( true );
-  cboGradientColorRamp->populate( QgsStyleV2::defaultStyle() );
+  cboGradientColorRamp->populate( QgsStyle::defaultStyle() );
 
   btnChangeColor->setAllowAlpha( true );
   btnChangeColor->setColorDialogTitle( tr( "Select gradient color" ) );
@@ -1382,7 +1382,7 @@ QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( cons
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
 
-  cboGradientColorRamp->populate( QgsStyleV2::defaultStyle() );
+  cboGradientColorRamp->populate( QgsStyle::defaultStyle() );
 
   connect( cboGradientColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
   connect( cboGradientColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );

@@ -22,7 +22,7 @@
 #include "qgsgloweffect.h"
 #include "qgstransformeffect.h"
 #include "qgscoloreffect.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsvectorcolorrampv2.h"
 
 //
@@ -421,7 +421,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 
   mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits );
 
-  mRampComboBox->populate( QgsStyleV2::defaultStyle() );
+  mRampComboBox->populate( QgsStyle::defaultStyle() );
   mRampComboBox->setShowGradientOnly( true );
   connect( mRampComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
   connect( mRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );

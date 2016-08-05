@@ -20,7 +20,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgsproject.h>
 #include <qgsrendererv2propertiesdialog.h>
-#include <qgsstylev2.h>
+#include <qgsstyle.h>
 
 #include <QApplication>
 #include <QToolBar>
@@ -60,7 +60,7 @@ void TestRendererV2GUI::setRenderer()
   Q_ASSERT( layer->type() == QgsMapLayer::VectorLayer );
   QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
 
-  QgsRendererV2PropertiesDialog dlg( vlayer, QgsStyleV2::defaultStyle() );
+  QgsRendererV2PropertiesDialog dlg( vlayer, QgsStyle::defaultStyle() );
   dlg.exec();
 
   mMapCanvas->refresh();

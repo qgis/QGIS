@@ -80,7 +80,7 @@ static void _initRendererWidgetFunctions()
   initialized = true;
 }
 
-QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded, QWidget* parent )
+QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyle* style, bool embedded, QWidget* parent )
     : QDialog( parent )
     , mLayer( layer )
     , mStyle( style )

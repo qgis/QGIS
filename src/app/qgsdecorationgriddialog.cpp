@@ -21,7 +21,7 @@
 
 #include "qgslogger.h"
 #include "qgscontexthelp.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
@@ -214,7 +214,7 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
     return;
 
   QgsLineSymbolV2* lineSymbol = mLineSymbol->clone();
-  QgsSymbolSelectorDialog dlg( lineSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog dlg( lineSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete lineSymbol;
@@ -237,7 +237,7 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
     return;
 
   QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
-  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;
