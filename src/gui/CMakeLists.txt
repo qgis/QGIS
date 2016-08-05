@@ -39,7 +39,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgsstylev2managerdialog.cpp
   symbology-ng/qgssvgselectorwidget.cpp
   symbology-ng/qgssymbollayerwidget.cpp
-  symbology-ng/qgssymbollevelsv2dialog.cpp
+  symbology-ng/qgssymbollevelsdialog.cpp
   symbology-ng/qgssymbolslistwidget.cpp
   symbology-ng/qgssymbolselectordialog.cpp
   symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
@@ -488,7 +488,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsstylev2managerdialog.h
   symbology-ng/qgssvgselectorwidget.h
   symbology-ng/qgssymbollayerwidget.h
-  symbology-ng/qgssymbollevelsv2dialog.h
+  symbology-ng/qgssymbollevelsdialog.h
   symbology-ng/qgssymbolslistwidget.h
   symbology-ng/qgssymbolselectordialog.h
   symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h

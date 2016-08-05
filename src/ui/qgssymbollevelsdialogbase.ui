@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsSymbolLevelsV2DialogBase</class>
- <widget class="QDialog" name="QgsSymbolLevelsV2DialogBase">
+ <class>QgsSymbolLevelsDialogBase</class>
+ <widget class="QDialog" name="QgsSymbolLevelsDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -58,7 +58,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsSymbolLevelsV2DialogBase</receiver>
+   <receiver>QgsSymbolLevelsDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -74,7 +74,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsSymbolLevelsV2DialogBase</receiver>
+   <receiver>QgsSymbolLevelsDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

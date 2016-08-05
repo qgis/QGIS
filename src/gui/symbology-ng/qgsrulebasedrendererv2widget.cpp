@@ -392,13 +392,13 @@ void QgsRuleBasedRendererV2Widget::keyPressEvent( QKeyEvent* event )
   }
 }
 
-#include "qgssymbollevelsv2dialog.h"
+#include "qgssymbollevelsdialog.h"
 
 void QgsRuleBasedRendererV2Widget::setRenderingOrder()
 {
   QgsLegendSymbolList lst = mRenderer->legendSymbolItems();
 
-  QgsSymbolLevelsV2Dialog dlg( lst, true, this );
+  QgsSymbolLevelsDialog dlg( lst, true, this );
   dlg.setForceOrderingEnabled( true );
 
   dlg.exec();

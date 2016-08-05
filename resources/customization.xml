@@ -396,7 +396,7 @@
   <widget objectName="QgsTileScaleWidget" class="QWidget" label="">
     <widget objectName="mSlider" class="QSlider" label=""/>
   </widget>
-  <widget objectName="QgsSymbolLevelsV2DialogBase" class="QDialog" label="">
+  <widget objectName="QgsSymbolLevelsDialogBase" class="QDialog" label="">
     <widget objectName="chkEnable" class="QCheckBox" label="Enable symbol levels"/>
     <widget objectName="label" class="QLabel" label="Define the order in which the symbol layers are rendered. The numbers in the cells define in which rendering pass the layer will be drawn."/>
     <widget objectName="buttonBox" class="QDialogButtonBox" label=""/>

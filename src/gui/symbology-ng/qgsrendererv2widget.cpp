@@ -16,7 +16,7 @@
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgscolordialog.h"
-#include "qgssymbollevelsv2dialog.h"
+#include "qgssymbollevelsdialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgspanelwidget.h"
@@ -250,7 +250,7 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
 {
   QgsLegendSymbolList symbols = r->legendSymbolItems();
 
-  QgsSymbolLevelsV2Dialog dlg( symbols, r->usingSymbolLevels(), this );
+  QgsSymbolLevelsDialog dlg( symbols, r->usingSymbolLevels(), this );
 
   if ( dlg.exec() )
   {

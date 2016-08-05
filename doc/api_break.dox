@@ -30,6 +30,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <tr><td>QgsSymbolLayerV2Registry         <td>QgsSymbolLayerRegistry
 <tr><td>QgsSymbolLayerV2Utils            <td>QgsSymbolLayerUtils
 <tr><td>QgsSymbolLayerV2Widget           <td>QgsSymbolLayerWidget
+<tr><td>QgsSymbolLevelsV2Dialog          <td>QgsSymbolLevelsDialog
 <tr><th>QgsSymbolV2                      <th>QgsSymbol
 <tr><td>QgsSymbolV2LegendNode            <td>QgsSymbolLegendNode
 <tr><td>QgsSymbolV2LevelItem             <td>QgsSymbolLevelItem

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssymbollevelsv2dialog.cpp
+    qgssymbollevelsdialog.cpp
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssymbollevelsv2dialog.h"
+#include "qgssymbollevelsdialog.h"
 
 #include "qgssymbollayerutils.h"
 #include "qgssymbollayer.h"
@@ -27,7 +27,7 @@
 
 ////////////////
 
-QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent )
+QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent )
     : QDialog( parent )
     , mList( list )
     , mForceOrderingEnabled( false )
@@ -85,13 +85,13 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& lis
   connect( tableLevels, SIGNAL( cellChanged( int, int ) ), this, SLOT( renderingPassChanged( int, int ) ) );
 }
 
-QgsSymbolLevelsV2Dialog::~QgsSymbolLevelsV2Dialog()
+QgsSymbolLevelsDialog::~QgsSymbolLevelsDialog()
 {
   QSettings settings;
   settings.setValue( "/Windows/symbolLevelsDlg/geometry", saveGeometry() );
 }
 
-void QgsSymbolLevelsV2Dialog::populateTable()
+void QgsSymbolLevelsDialog::populateTable()
 {
   for ( int row = 0; row < mList.count(); row++ )
   {
@@ -121,12 +121,12 @@ void QgsSymbolLevelsV2Dialog::populateTable()
 
 }
 
-void QgsSymbolLevelsV2Dialog::updateUi()
+void QgsSymbolLevelsDialog::updateUi()
 {
   tableLevels->setEnabled( chkEnable->isChecked() );
 }
 
-void QgsSymbolLevelsV2Dialog::setDefaultLevels()
+void QgsSymbolLevelsDialog::setDefaultLevels()
 {
   for ( int i = 0; i < mList.count(); i++ )
   {
@@ -138,12 +138,12 @@ void QgsSymbolLevelsV2Dialog::setDefaultLevels()
   }
 }
 
-bool QgsSymbolLevelsV2Dialog::usingLevels() const
+bool QgsSymbolLevelsDialog::usingLevels() const
 {
   return chkEnable->isChecked();
 }
 
-void QgsSymbolLevelsV2Dialog::renderingPassChanged( int row, int column )
+void QgsSymbolLevelsDialog::renderingPassChanged( int row, int column )
 {
   if ( row < 0 || row >= mList.count() )
     return;
@@ -153,7 +153,7 @@ void QgsSymbolLevelsV2Dialog::renderingPassChanged( int row, int column )
   sym->symbolLayer( column - 1 )->setRenderingPass( tableLevels->item( row, column )->text().toInt() );
 }
 
-void QgsSymbolLevelsV2Dialog::setForceOrderingEnabled( bool enabled )
+void QgsSymbolLevelsDialog::setForceOrderingEnabled( bool enabled )
 {
   mForceOrderingEnabled = enabled;
   if ( enabled )
