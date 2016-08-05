@@ -23,7 +23,7 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsdiagramproperties.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgslabelengineconfigdialog.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayerproperties.h"
@@ -194,7 +194,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
     mDataDefinedVisibilityComboBox->addItem( layerFields.at( idx ).name(), idx );
   }
 
-  const QgsDiagramRendererV2* dr = layer->diagramRenderer();
+  const QgsDiagramRenderer* dr = layer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
     mDiagramTypeComboBox->blockSignals( true );
@@ -755,7 +755,7 @@ void QgsDiagramProperties::apply()
 
   ds.barWidth = mBarWidthSpinBox->value();
 
-  QgsDiagramRendererV2* renderer = nullptr;
+  QgsDiagramRenderer* renderer = nullptr;
   if ( mFixedSizeRadio->isChecked() )
   {
     QgsSingleCategoryDiagramRenderer* dr = new QgsSingleCategoryDiagramRenderer();

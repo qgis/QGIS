@@ -21,7 +21,7 @@ class QgsRenderContext;
 class QgsVectorLayer;
 class QgsVectorLayerFeatureSource;
 
-class QgsDiagramRendererV2;
+class QgsDiagramRenderer;
 class QgsDiagramLayerSettings;
 
 class QgsGeometryCache;

@@ -34,7 +34,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "diagram/qgspiediagram.h"
 
 static QString _fileNameForTest( const QString& testName )

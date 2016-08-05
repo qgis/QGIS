@@ -105,7 +105,7 @@ SET(QGIS_CORE_SRCS
   qgsdatetimestatisticalsummary.cpp
   qgsdatumtransformstore.cpp
   qgsdbfilterproxymodel.cpp
-  qgsdiagramrendererv2.cpp
+  qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgseditformconfig.cpp
   qgserror.cpp
@@ -632,7 +632,7 @@ SET(QGIS_CORE_HDRS
   qgsdatetimestatisticalsummary.h
   qgsdatumtransformstore.h
   qgsdbfilterproxymodel.h
-  qgsdiagramrendererv2.h
+  qgsdiagramrenderer.h
   qgsdistancearea.h
   qgseditorwidgetconfig.h
   qgsfeaturefilterprovider.h

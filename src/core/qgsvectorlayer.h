@@ -48,7 +48,7 @@ class QgsConditionalLayerStyles;
 class QgsCoordinateTransform;
 class QgsCurveV2;
 class QgsDiagramLayerSettings;
-class QgsDiagramRendererV2;
+class QgsDiagramRenderer;
 class QgsEditorWidgetWrapper;
 class QgsExpressionFieldBuffer;
 class QgsFeatureRendererV2;
@@ -801,8 +801,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool diagramsEnabled() const;
 
     /** Sets diagram rendering object (takes ownership) */
-    void setDiagramRenderer( QgsDiagramRendererV2* r );
-    const QgsDiagramRendererV2* diagramRenderer() const { return mDiagramRenderer; }
+    void setDiagramRenderer( QgsDiagramRenderer* r );
+    const QgsDiagramRenderer* diagramRenderer() const { return mDiagramRenderer; }
 
     void setDiagramLayerSettings( const QgsDiagramLayerSettings& s );
     const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings; }
@@ -2257,7 +2257,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsExpressionFieldBuffer* mExpressionFieldBuffer;
 
     //diagram rendering object. 0 if diagram drawing is disabled
-    QgsDiagramRendererV2* mDiagramRenderer;
+    QgsDiagramRenderer* mDiagramRenderer;
 
     //stores infos about diagram placement (placement type, priority, position distance)
     QgsDiagramLayerSettings *mDiagramLayerSettings;

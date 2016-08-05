@@ -23,7 +23,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )

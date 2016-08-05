@@ -218,7 +218,7 @@
 %Include diagram/qgshistogramdiagram.sip
 %Include diagram/qgspiediagram.sip
 %Include diagram/qgstextdiagram.sip
-%Include qgsdiagramrendererv2.sip
+%Include qgsdiagramrenderer.sip
 
 %Include effects/qgsblureffect.sip
 %Include effects/qgscoloreffect.sip

@@ -17,7 +17,7 @@
 
 //#include "qgsfeatureiterator.h"
 #include "diagram/qgsdiagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsgeometrycache.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"

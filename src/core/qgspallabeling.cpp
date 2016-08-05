@@ -39,7 +39,7 @@
 #include <QPainter>
 
 #include "diagram/qgsdiagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsfontutils.h"
 #include "qgslabelsearchtree.h"
 #include "qgsexpression.h"

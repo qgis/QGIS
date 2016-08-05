@@ -18,7 +18,7 @@
 
 #include "qgslabelingenginev2.h"
 #include "qgslabelfeature.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 
 /** \ingroup core
  * Class that adds extra information to QgsLabelFeature for labeling of diagrams
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
 
     //! Construct diagram provider with all the necessary configuration parameters
     QgsVectorLayerDiagramProvider( const QgsDiagramLayerSettings* diagSettings,
-                                   const QgsDiagramRendererV2* diagRenderer,
+                                   const QgsDiagramRenderer* diagRenderer,
                                    const QString& layerId,
                                    const QgsFields& fields,
                                    const QgsCoordinateReferenceSystem& crs,
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! Diagram layer settings
     QgsDiagramLayerSettings mSettings;
     //! Diagram renderer instance (owned by mSettings)
-    QgsDiagramRendererV2* mDiagRenderer;
+    QgsDiagramRenderer* mDiagRenderer;
 
     // these are needed only if using own renderer loop
 

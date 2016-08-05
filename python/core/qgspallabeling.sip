@@ -157,7 +157,7 @@ class QgsPalLayerSettings
 {
 %TypeHeaderCode
 #include <qgspallabeling.h>
-#include <qgsdiagramrendererv2.h>
+#include <qgsdiagramrenderer.h>
 %End
   public:
     QgsPalLayerSettings();

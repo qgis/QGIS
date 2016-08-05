@@ -25,7 +25,7 @@
 //qgis includes...
 // #include <qgisapp.h>
 #include <diagram/qgspiediagram.h>
-#include <qgsdiagramrendererv2.h>
+#include <qgsdiagramrenderer.h>
 #include <qgsmaplayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
