@@ -801,7 +801,8 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
   if ( !orientation_forced )
     orientation = ( angle > 0.55 * M_PI || angle < -0.45 * M_PI ? -1 : 1 );
 
-  if (mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved) {
+  if (mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved)
+  {
     if (!isUprightLabel())
     {
       if (orientation != 1)
@@ -933,7 +934,7 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
   // END FOR
 
   // If we placed too many characters upside down (PerimeterCurved is ok to show upside down)
-  if ( upside_down_char_count >= li->char_num / 2.0 && mLF->layer()->arrangement() != QgsPalLayerSettings::PerimeterCurved )
+  if ( upside_down_char_count >= li->char_num / 2.0 )
   {
     // if we auto-detected the orientation then retry with the opposite orientation
     if ( !orientation_forced )
@@ -941,6 +942,16 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
       orientation = -orientation;
       delete slp;
       slp = curvedPlacementAtOffset( path_positions, path_distances, orientation, initial_index, initial_distance, flip );
+    }
+    else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
+    {
+      if ( isUprightLabel() && !flip )
+      {
+        orientation = -orientation;
+        flip = true;
+        delete slp;
+        slp = curvedPlacementAtOffset( path_positions, path_distances, orientation, initial_index, initial_distance, flip );
+      }
     }
     else
     {
