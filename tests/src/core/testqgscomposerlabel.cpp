@@ -179,16 +179,6 @@ void TestQgsComposerLabel::feature_evaluation()
     QString expected = "Bretagne_ok";
     QCOMPARE( evaluated, expected );
   }
-  {
-    // evaluation with a feature and local variables
-    QMap<QString, QVariant> locals;
-    locals.insert( "$test", "OK" );
-    mComposerLabel->setSubstitutions( locals );
-    mComposerLabel->setText( "[%\"NAME_1\"||$test%]" );
-    QString evaluated = mComposerLabel->displayText();
-    QString expected = "BretagneOK";
-    QCOMPARE( evaluated, expected );
-  }
   mComposition->atlasComposition().setEnabled( false );
 }
 

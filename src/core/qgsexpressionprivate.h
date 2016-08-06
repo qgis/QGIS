@@ -36,8 +36,6 @@ class QgsExpressionPrivate
     QgsExpressionPrivate()
         : ref( 1 )
         , mRootNode( nullptr )
-        , mRowNumber( 0 )
-        , mScale( 0 )
         , mCalc( nullptr )
         , mDistanceUnit( QgsUnitTypes::DistanceUnknownUnit )
         , mAreaUnit( QgsUnitTypes::AreaUnknownUnit )
@@ -48,8 +46,6 @@ class QgsExpressionPrivate
         , mRootNode( other.mRootNode ? other.mRootNode->clone() : nullptr )
         , mParserErrorString( other.mParserErrorString )
         , mEvalErrorString( other.mEvalErrorString )
-        , mRowNumber( 0 )
-        , mScale( other.mScale )
         , mExp( other.mExp )
         , mCalc( other.mCalc )
         , mDistanceUnit( other.mDistanceUnit )
@@ -68,8 +64,6 @@ class QgsExpressionPrivate
     QString mParserErrorString;
     QString mEvalErrorString;
 
-    int mRowNumber;
-    double mScale;
     QString mExp;
 
     QSharedPointer<QgsDistanceArea> mCalc;

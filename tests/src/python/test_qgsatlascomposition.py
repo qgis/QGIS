@@ -102,7 +102,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # feature number label
         self.mLabel2 = QgsComposerLabel(self.mComposition)
         self.mComposition.addComposerLabel(self.mLabel2)
-        self.mLabel2.setText("# [%$feature || ' / ' || $numfeatures%]")
+        self.mLabel2.setText("# [%@atlas_featurenumber || ' / ' || @atlas_totalfeatures%]")
         self.mLabel2.setFont(QgsFontUtils.getStandardTestFont())
         self.mLabel2.adjustSizeToText()
         self.mLabel2.setSceneRect(QRectF(150, 200, 60, 15))
@@ -121,7 +121,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         shutil.rmtree(tmppath, True)
 
     def filename_test(self):
-        self.mAtlas.setFilenamePattern("'output_' || $feature")
+        self.mAtlas.setFilenamePattern("'output_' || @atlas_featurenumber")
         self.mAtlas.beginRender()
         for i in range(0, self.mAtlas.numFeatures()):
             self.mAtlas.prepareForFeature(i)

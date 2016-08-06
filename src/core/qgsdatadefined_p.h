@@ -56,7 +56,6 @@ class QgsDataDefinedPrivate : public QSharedData
         , useExpression( other.useExpression )
         , expressionString( other.expressionString )
         , field( other.field )
-        , expressionParams( other.expressionParams )
         , expressionPrepared( false )
         , exprRefColumns( other.exprRefColumns )
     {
@@ -80,7 +79,6 @@ class QgsDataDefinedPrivate : public QSharedData
     QString expressionString;
     QString field;
 
-    QMap<QString, QVariant> expressionParams;
     bool expressionPrepared;
     QStringList exprRefColumns;
 };

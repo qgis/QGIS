@@ -494,13 +494,6 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
     registerItem( func->group(), func->name(), ' ' + name + ' ', func->helptext() );
   }
 
-  QList<QgsExpression::Function*> specials = QgsExpression::specialColumns();
-  for ( int i = 0; i < specials.size(); ++i )
-  {
-    QString name = specials[i]->name();
-    registerItem( specials[i]->group(), name, ' ' + name + ' ' );
-  }
-
   loadExpressionContext();
 }
 

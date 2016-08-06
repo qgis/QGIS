@@ -243,6 +243,13 @@ be returned in place of a null pointer.</li>
 <li>updateCRSCache() has been renamed to updateCrsCache</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsDataDefined QgsDataDefined
+
+<ul>
+<li>expressionParams(), setExpressionParams() and insertExpressionParam() have been removed.
+QgsExpressionContext variables should be used in their place.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsDataDefinedSymbolDialog QgsDataDefinedSymbolDialog
 
 <ul>
@@ -288,6 +295,23 @@ be returned in place of a null pointer.</li>
 <li>setCoordinateTransform() now takes a QgsCoordinateTransform object, not a pointer. Use an invalid QgsCoordinateTransform in
 place of a null pointer.</li>
 <li>The ct member has been removed. Use coordinateTransform() and setCoordinateTransform() instead.
+</ul>
+
+\subsection qgis_api_break_3_0_QgsExpression QgsExpression
+
+<ul>
+<li>prepare( const QgsFields &fields ) has been removed. Use prepare( const QgsExpressionContext *context ) instead.</li>
+<li>The evaluate methods which accept feature parameters have been removed. Use the version which takes a QgsExpressionContext
+argument instead.</li>
+<li>isValid( const QString& text, const QgsFields& fields, QString &errorMessage ) has been removed, use the QgsExpressionContext
+version instead.</li>
+<li>setCurrentRowNumber, currentRowNumber, scale, setScale, setSpecialColumn, unsetSpecialColumn, specialColumn, hasSpecialColumn have been
+removed. Use QgsExpressionContext variables instead.</li>
+<li>The replaceExpressionText version which accepts a QgsFeature argument has been removed. Use the QgsExpressionContext
+version instead.</li>
+<li>QgsExpression::Function::func has been modified to use a QgsExpressionContext argument rather than a QgsFeature.</li>
+<li>The QgsExpression::Node::eval and prepare versions which take a QgsFeature has been removed, use the QgsExpressionContext versions instead.</li>
+<li>QgsExpression::Interval has been removed. Use QgsInterval instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsFeature QgsFeature

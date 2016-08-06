@@ -342,12 +342,6 @@ void QgsSymbolLayer::prepareExpressions( const QgsSymbolRenderContext& context )
   {
     if ( it.value() )
     {
-      QMap<QString, QVariant> params;
-      if ( context.renderContext().rendererScale() > 0 )
-      {
-        params.insert( "scale", context.renderContext().rendererScale() );
-      }
-      it.value()->setExpressionParams( params );
       it.value()->prepareExpression( context.renderContext().expressionContext() );
     }
   }

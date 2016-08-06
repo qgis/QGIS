@@ -1242,99 +1242,6 @@ static QVariant fcnSubstr( const QVariantList& values, const QgsExpressionContex
   int len = getIntValue( values.at( 2 ), parent );
   return QVariant( str.mid( from -1, len ) );
 }
-
-static QVariant fcnRowNumber( const QVariantList&, const QgsExpressionContext* context, QgsExpression* parent )
-{
-  if ( context && context->hasVariable( "row_number" ) )
-    return context->variable( "row_number" );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return QVariant( parent->currentRowNumber() );
-  Q_NOWARN_DEPRECATED_POP
-  //when above is removed - return QVariant()
-}
-
-static QVariant fcnMapId( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
-{
-  if ( context && context->hasVariable( "map_id" ) )
-    return context->variable( "map_id" );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsExpression::specialColumn( "$map" );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-static QVariant fcnComposerNumPages( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
-{
-  if ( context && context->hasVariable( "layout_numpages" ) )
-    return context->variable( "layout_numpages" );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsExpression::specialColumn( "$numpages" );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-static QVariant fcnComposerPage( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
-{
-  if ( context && context->hasVariable( "layout_page" ) )
-    return context->variable( "layout_page" );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsExpression::specialColumn( "$page" );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-static QVariant fcnAtlasFeature( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
-{
-  if ( context && context->hasVariable( "atlas_featurenumber" ) )
-    return context->variable( "atlas_featurenumber" );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsExpression::specialColumn( "$feature" );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-static QVariant fcnAtlasFeatureId( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
-{
-  if ( context && context->hasVariable( "atlas_featureid" ) )
-    return context->variable( "atlas_featureid" );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsExpression::specialColumn( "$atlasfeatureid" );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-
-static QVariant fcnAtlasCurrentFeature( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
-{
-  if ( context && context->hasVariable( "atlas_feature" ) )
-    return context->variable( "atlas_feature" );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsExpression::specialColumn( "$atlasfeature" );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-static QVariant fcnAtlasCurrentGeometry( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
-{
-  if ( context && context->hasVariable( "atlas_geometry" ) )
-    return context->variable( "atlas_geometry" );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsExpression::specialColumn( "$atlasgeometry" );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-static QVariant fcnAtlasNumFeatures( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
-{
-  if ( context && context->hasVariable( "atlas_totalfeatures" ) )
-    return context->variable( "atlas_totalfeatures" );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsExpression::specialColumn( "$numfeatures" );
-  Q_NOWARN_DEPRECATED_POP
-}
-
 static QVariant fcnFeatureId( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
 {
   FEAT_FROM_CONTEXT( context, f );
@@ -2630,11 +2537,6 @@ static QVariant fcnPi( const QVariantList& values, const QgsExpressionContext *,
   return M_PI;
 }
 
-static QVariant fcnScale( const QVariantList&, const QgsExpressionContext*, QgsExpression* parent )
-{
-  return QVariant( parent->scale() );
-}
-
 static QVariant fcnFormatNumber( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   double value = getDoubleValue( values.at( 0 ), parent );
@@ -2961,14 +2863,6 @@ static QVariant fncLighter( const QVariantList &values, const QgsExpressionConte
   color = color.lighter( getIntValue( values.at( 1 ), parent ) );
 
   return QgsSymbolLayerUtils::encodeColor( color );
-}
-
-static QVariant fcnSpecialColumn( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
-{
-  QString varName = getStringValue( values.at( 0 ), parent );
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsExpression::specialColumn( varName );
-  Q_NOWARN_DEPRECATED_POP
 }
 
 static QVariant fcnGetGeometry( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -3407,18 +3301,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "order_parts", 3, fcnOrderParts, "GeometryGroup", QString() )
     << new StaticFunction( "closest_point", 2, fcnClosestPoint, "GeometryGroup" )
     << new StaticFunction( "shortest_line", 2, fcnShortestLine, "GeometryGroup" )
-    << new StaticFunction( "$rownum", 0, fcnRowNumber, "deprecated" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
-    << new StaticFunction( "$scale", 0, fcnScale, "Record" )
-    << new StaticFunction( "$map", 0, fcnMapId, "deprecated" )
-    << new StaticFunction( "$numpages", 0, fcnComposerNumPages, "deprecated" )
-    << new StaticFunction( "$page", 0, fcnComposerPage, "deprecated" )
-    << new StaticFunction( "$feature", 0, fcnAtlasFeature, "deprecated" )
-    << new StaticFunction( "$atlasfeatureid", 0, fcnAtlasFeatureId, "deprecated" )
-    << new StaticFunction( "$atlasfeature", 0, fcnAtlasCurrentFeature, "deprecated" )
-    << new StaticFunction( "$atlasgeometry", 0, fcnAtlasCurrentGeometry, "deprecated" )
-    << new StaticFunction( "$numfeatures", 0, fcnAtlasNumFeatures, "deprecated" )
     << new StaticFunction( "uuid", 0, fcnUuid, "Record", QString(), false, QStringList(), false, QStringList() << "$uuid" )
     << new StaticFunction( "get_feature", 3, fcnGetFeature, "Record", QString(), false, QStringList(), false, QStringList() << "getFeature" )
     << new StaticFunction( "layer_property", 2, fcnGetLayerProperty, "General" )
@@ -3429,8 +3313,6 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     // feature request
     << new StaticFunction( "eval", 1, fcnEval, "General", QString(), true, QStringList( QgsFeatureRequest::AllAttributes ) )
     << new StaticFunction( "attribute", 2, fcnAttribute, "Record", QString(), false, QStringList( QgsFeatureRequest::AllAttributes ) )
-
-    << new StaticFunction( "_specialcol_", 1, fcnSpecialColumn, "Special" )
     ;
 
     QgsExpressionContextUtils::registerContextFunctions();
@@ -3444,58 +3326,6 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
   return gmFunctions;
 }
 
-QMap<QString, QVariant> QgsExpression::gmSpecialColumns;
-QMap<QString, QString> QgsExpression::gmSpecialColumnGroups;
-
-void QgsExpression::setSpecialColumn( const QString& name, const QVariant& variant )
-{
-  int fnIdx = functionIndex( name );
-  if ( fnIdx != -1 )
-  {
-    // function of the same name already exists
-    return;
-  }
-  gmSpecialColumns[ name ] = variant;
-}
-
-void QgsExpression::unsetSpecialColumn( const QString& name )
-{
-  QMap<QString, QVariant>::iterator fit = gmSpecialColumns.find( name );
-  if ( fit != gmSpecialColumns.end() )
-  {
-    gmSpecialColumns.erase( fit );
-  }
-}
-
-QVariant QgsExpression::specialColumn( const QString& name )
-{
-  int fnIdx = functionIndex( name );
-  if ( fnIdx != -1 )
-  {
-    // function of the same name already exists
-    return QVariant();
-  }
-  QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.constFind( name );
-  if ( it == gmSpecialColumns.constEnd() )
-  {
-    return QVariant();
-  }
-  return it.value();
-}
-
-bool QgsExpression::hasSpecialColumn( const QString& name )
-{
-  if ( functionIndex( name ) != -1 )
-    return false;
-  return gmSpecialColumns.contains( name );
-}
-
-bool QgsExpression::isValid( const QString &text, const QgsFields &fields, QString &errorMessage )
-{
-  QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( 0, fields );
-  return isValid( text, &context, errorMessage );
-}
-
 bool QgsExpression::isValid( const QString &text, const QgsExpressionContext *context, QString &errorMessage )
 {
   QgsExpression exp( text );
@@ -3504,28 +3334,12 @@ bool QgsExpression::isValid( const QString &text, const QgsExpressionContext *co
   return !exp.hasParserError();
 }
 
-void QgsExpression::setScale( double scale ) { d->mScale = scale; }
-
-double QgsExpression::scale() { return d->mScale; }
-
 QString QgsExpression::expression() const
 {
   if ( !d->mExp.isNull() )
     return d->mExp;
   else
     return dump();
-}
-
-QList<QgsExpression::Function*> QgsExpression::specialColumns()
-{
-  QList<Function*> defs;
-  for ( QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.constBegin(); it != gmSpecialColumns.constEnd(); ++it )
-  {
-    //check for special column group name
-    QString group = gmSpecialColumnGroups.value( it.key(), "Record" );
-    defs << new StaticFunction( it.key(), 0, static_cast< FcnEvalContext >( nullptr ), group );
-  }
-  return defs;
 }
 
 QString QgsExpression::quotedColumnRef( QString name )
@@ -3691,13 +3505,6 @@ void QgsExpression::setGeomCalculator( const QgsDistanceArea &calc )
   d->mCalc = QSharedPointer<QgsDistanceArea>( new QgsDistanceArea( calc ) );
 }
 
-bool QgsExpression::prepare( const QgsFields& fields )
-{
-  detach();
-  QgsExpressionContext fc = QgsExpressionContextUtils::createFeatureBasedContext( 0, fields );
-  return prepare( &fc );
-}
-
 bool QgsExpression::prepare( const QgsExpressionContext *context )
 {
   detach();
@@ -3717,45 +3524,6 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
   }
 
   return d->mRootNode->prepare( this, context );
-}
-
-QVariant QgsExpression::evaluate( const QgsFeature* f )
-{
-  d->mEvalErrorString = QString();
-  if ( !d->mRootNode )
-  {
-    d->mEvalErrorString = tr( "No root node! Parsing failed?" );
-    return QVariant();
-  }
-
-  QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f ? *f : QgsFeature(), QgsFields() );
-  return d->mRootNode->eval( this, &context );
-}
-
-QVariant QgsExpression::evaluate( const QgsFeature &f )
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  return evaluate( &f );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields )
-{
-  // first prepare
-  QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f ? *f : QgsFeature() , fields );
-  bool res = prepare( &context );
-  if ( !res )
-    return QVariant();
-
-  // then evaluate
-  return evaluate( &context );
-}
-
-inline QVariant QgsExpression::evaluate( const QgsFeature& f, const QgsFields& fields )
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  return evaluate( &f, fields );
-  Q_NOWARN_DEPRECATED_POP
 }
 
 QVariant QgsExpression::evaluate()
@@ -3797,13 +3565,6 @@ void QgsExpression::setEvalErrorString( const QString& str )
   d->mEvalErrorString = str;
 }
 
-void QgsExpression::setCurrentRowNumber( int rowNumber )
-{
-  d->mRowNumber = rowNumber;
-}
-
-int QgsExpression::currentRowNumber() { return d->mRowNumber; }
-
 QString QgsExpression::dump() const
 {
   if ( !d->mRootNode )
@@ -3843,34 +3604,9 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
     d->mRootNode->accept( v );
 }
 
-QString QgsExpression::replaceExpressionText( const QString &action, const QgsFeature *feat,
-    QgsVectorLayer *layer,
-    const QMap<QString, QVariant> *substitutionMap, const QgsDistanceArea *distanceArea )
-{
-  QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( feat ? *feat : QgsFeature(), layer ? layer->fields() : QgsFields() );
-  return replaceExpressionText( action, &context, substitutionMap, distanceArea );
-}
-
 QString QgsExpression::replaceExpressionText( const QString &action, const QgsExpressionContext *context, const QMap<QString, QVariant> *substitutionMap, const QgsDistanceArea *distanceArea )
 {
   QString expr_action;
-
-  QMap<QString, QVariant> savedValues;
-  if ( substitutionMap )
-  {
-    // variables with a local scope (must be restored after evaluation)
-    for ( QMap<QString, QVariant>::const_iterator sit = substitutionMap->begin(); sit != substitutionMap->end(); ++sit )
-    {
-      Q_NOWARN_DEPRECATED_PUSH
-      QVariant oldValue = QgsExpression::specialColumn( sit.key() );
-      if ( !oldValue.isNull() )
-        savedValues.insert( sit.key(), oldValue );
-
-      // set the new value
-      QgsExpression::setSpecialColumn( sit.key(), sit.value() );
-      Q_NOWARN_DEPRECATED_POP
-    }
-  }
 
   int index = 0;
   while ( index < action.size() )
@@ -3914,14 +3650,6 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   }
 
   expr_action += action.midRef( index );
-
-  // restore overwritten local values
-  Q_NOWARN_DEPRECATED_PUSH
-  for ( QMap<QString, QVariant>::const_iterator sit = savedValues.begin(); sit != savedValues.end(); ++sit )
-  {
-    QgsExpression::setSpecialColumn( sit.key(), sit.value() );
-  }
-  Q_NOWARN_DEPRECATED_POP
 
   return expr_action;
 }
@@ -5129,69 +4857,6 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
   {
     return value.toString();
   }
-}
-
-QVariant QgsExpression::Function::func( const QVariantList& values, const QgsFeature* feature, QgsExpression* parent )
-{
-  //default implementation creates a QgsFeatureBasedExpressionContext
-  QgsExpressionContext c = QgsExpressionContextUtils::createFeatureBasedContext( feature ? *feature : QgsFeature(), QgsFields() );
-  return func( values, &c, parent );
-}
-
-QVariant QgsExpression::Function::func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent )
-{
-  //base implementation calls deprecated func to avoid API breakage
-  QgsFeature f;
-  if ( context && context->hasVariable( QgsExpressionContext::EXPR_FEATURE ) )
-    f = qvariant_cast<QgsFeature>( context->variable( QgsExpressionContext::EXPR_FEATURE ) );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return func( values, &f, parent );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-QVariant QgsExpression::Node::eval( QgsExpression* parent, const QgsFeature* feature )
-{
-  //default implementation creates a QgsFeatureBasedExpressionContext
-  QgsExpressionContext c = QgsExpressionContextUtils::createFeatureBasedContext( feature ? *feature : QgsFeature(), QgsFields() );
-  return eval( parent, &c );
-}
-
-QVariant QgsExpression::Node::eval( QgsExpression *parent, const QgsExpressionContext *context )
-{
-  //base implementation calls deprecated eval to avoid API breakage
-  QgsFeature f;
-  if ( context && context->hasVariable( QgsExpressionContext::EXPR_FEATURE ) )
-    f = qvariant_cast<QgsFeature>( context->variable( QgsExpressionContext::EXPR_FEATURE ) );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return eval( parent, &f );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-bool QgsExpression::Node::prepare( QgsExpression* parent, const QgsFields &fields )
-{
-  QgsExpressionContext c = QgsExpressionContextUtils::createFeatureBasedContext( 0, fields );
-  return prepare( parent, &c );
-}
-
-bool QgsExpression::Node::prepare( QgsExpression* parent, const QgsExpressionContext *context )
-{
-  //base implementation calls deprecated prepare to avoid API breakage
-  QgsFields f;
-  if ( context && context->hasVariable( QgsExpressionContext::EXPR_FIELDS ) )
-    f = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  return prepare( parent, f );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-QVariant QgsExpression::StaticFunction::func( const QVariantList &values, const QgsFeature* f, QgsExpression* parent )
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  return mFnc ? mFnc( values, f, parent ) : QVariant();
-  Q_NOWARN_DEPRECATED_POP
 }
 
 const QgsExpression::Node* QgsExpression::rootNode() const
