@@ -3500,9 +3500,13 @@ void QgsExpression::detach()
   }
 }
 
-void QgsExpression::setGeomCalculator( const QgsDistanceArea &calc )
+void QgsExpression::setGeomCalculator( const QgsDistanceArea *calc )
 {
-  d->mCalc = QSharedPointer<QgsDistanceArea>( new QgsDistanceArea( calc ) );
+  detach();
+  if ( calc )
+    d->mCalc = QSharedPointer<QgsDistanceArea>( new QgsDistanceArea( *calc ) );
+  else
+    d->mCalc.clear();
 }
 
 bool QgsExpression::prepare( const QgsExpressionContext *context )
@@ -3633,7 +3637,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( distanceArea )
     {
       //if QgsDistanceArea specified for area/distance conversion, use it
-      exp.setGeomCalculator( *distanceArea );
+      exp.setGeomCalculator( distanceArea );
     }
 
     QVariant result = exp.evaluate( context );

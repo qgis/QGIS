@@ -1685,7 +1685,7 @@ class TestQgsExpression: public QObject
 
       // test area with geomCalculator
       QgsExpression expArea2( "$area" );
-      expArea2.setGeomCalculator( da );
+      expArea2.setGeomCalculator( &da );
       vArea = expArea2.evaluate( &context );
       expected = 1009089817.0;
       QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
@@ -1716,7 +1716,7 @@ class TestQgsExpression: public QObject
 
       // test perimeter with geomCalculator
       QgsExpression expPerimeter2( "$perimeter" );
-      expPerimeter2.setGeomCalculator( da );
+      expPerimeter2.setGeomCalculator( &da );
       vPerimeter = expPerimeter2.evaluate( &context );
       expected = 128289.074;
       QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
@@ -1753,7 +1753,7 @@ class TestQgsExpression: public QObject
 
       // test length with geomCalculator
       QgsExpression expLength2( "$length" );
-      expLength2.setGeomCalculator( da );
+      expLength2.setGeomCalculator( &da );
       vLength = expLength2.evaluate( &context );
       expected = 26932.156;
       QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );

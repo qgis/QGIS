@@ -540,7 +540,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   if ( mLayer )
   {
     // Only set calculator if we have layer, else use default.
-    exp.setGeomCalculator( mDa );
+    exp.setGeomCalculator( &mDa );
 
     if ( !mFeature.isValid() )
     {

@@ -99,10 +99,11 @@ class QgsExpression
      * (used by $length, $area and $perimeter functions only). By default, no geometry
      * calculator is set and all distance and area calculations are performed using simple
      * cartesian methods (ie no ellipsoidal calculations).
+     * @param calc geometry calculator. Ownership is not transferred. Set to a nullptr to force
+     * cartesian calculations.
      * @see geomCalculator()
      */
-    //TODO QGIS 3.0 change calc to a pointer, so that calculator can be cleared by passing nullptr
-    void setGeomCalculator( const QgsDistanceArea &calc );
+    void setGeomCalculator( const QgsDistanceArea* calc );
 
     /** Returns the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
