@@ -269,7 +269,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
         assert mExpectedType == mType, mMessage
 
-    def testQgsSimpleFillSymbolLayerV2(self):
+    def testQgsSimpleFillSymbolLayer(self):
         """Create a new style from a .sld file and match test.
         """
         mTestName = 'QgsSimpleFillSymbolLayer'
@@ -308,7 +308,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-    def testQgsGradientFillSymbolLayerV2(self):
+    def testQgsGradientFillSymbolLayer(self):
         """Test setting and getting QgsGradientFillSymbolLayer properties.
         """
         mGradientLayer = QgsGradientFillSymbolLayer()
@@ -390,7 +390,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-    def testQgsCentroidFillSymbolLayerV2(self):
+    def testQgsCentroidFillSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
         """
@@ -573,7 +573,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-    def testQgsMarkerLineSymbolLayerV2(self):
+    def testQgsMarkerLineSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
         """
@@ -621,7 +621,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
 
-    def testQgsSimpleLineSymbolLayerV2(self):
+    def testQgsSimpleLineSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
         """
@@ -671,7 +671,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-    def testQgsEllipseSymbolLayerV2(self):
+    def testQgsEllipseSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
         """
@@ -716,7 +716,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-    def testQgsFontMarkerSymbolLayerV2(self):
+    def testQgsFontMarkerSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
         """
@@ -756,7 +756,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-    def testQgsSvgMarkerSymbolLayerV2(self):
+    def testQgsSvgMarkerSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
         """
