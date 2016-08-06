@@ -66,8 +66,8 @@ void QgsMapHitTest::run()
     {
       if ( !vl->isInScaleRange( mSettings.scale() ) )
       {
-        mHitTest[vl] = SymbolV2Set(); // no symbols -> will not be shown
-        mHitTestRuleKey[vl] = SymbolV2Set();
+        mHitTest[vl] = SymbolSet(); // no symbols -> will not be shown
+        mHitTestRuleKey[vl] = SymbolSet();
         continue;
       }
 
@@ -79,8 +79,8 @@ void QgsMapHitTest::run()
     }
 
     context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
-    SymbolV2Set& usedSymbols = mHitTest[vl];
-    SymbolV2Set& usedSymbolsRuleKey = mHitTestRuleKey[vl];
+    SymbolSet& usedSymbols = mHitTest[vl];
+    SymbolSet& usedSymbolsRuleKey = mHitTestRuleKey[vl];
     runHitTestLayer( vl, usedSymbols, usedSymbolsRuleKey, context );
   }
 
@@ -103,7 +103,7 @@ bool QgsMapHitTest::legendKeyVisible( const QString& ruleKey, QgsVectorLayer* la
   return mHitTestRuleKey.value( layer ).contains( ruleKey );
 }
 
-void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, SymbolV2Set& usedSymbolsRuleKey, QgsRenderContext& context )
+void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols, SymbolSet& usedSymbolsRuleKey, QgsRenderContext& context )
 {
   bool hasStyleOverride = mSettings.layerStyleOverrides().contains( vl->id() );
   if ( hasStyleOverride )
@@ -139,8 +139,8 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
   }
   QgsFeatureIterator fi = vl->getFeatures( request );
 
-  SymbolV2Set lUsedSymbols;
-  SymbolV2Set lUsedSymbolsRuleKey;
+  SymbolSet lUsedSymbols;
+  SymbolSet lUsedSymbolsRuleKey;
   bool allExpressionFalse = false;
   bool hasExpression = mLayerFilterExpression.contains( vl->id() );
   QScopedPointer<QgsExpression> expr;

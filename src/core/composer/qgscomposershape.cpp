@@ -27,7 +27,7 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mShape( Ellipse )
     , mCornerRadius( 0 )
-    , mUseSymbolV2( false ) //default to not using SymbolV2 for shapes, to preserve 2.0 api
+    , mUseSymbol( false ) //default to not using symbol for shapes, to preserve 2.0 api
     , mShapeStyleSymbol( nullptr )
     , mMaxSymbolBleed( 0 )
 {
@@ -46,7 +46,7 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
     : QgsComposerItem( x, y, width, height, composition )
     , mShape( Ellipse )
     , mCornerRadius( 0 )
-    , mUseSymbolV2( false ) //default to not using SymbolV2 for shapes, to preserve 2.0 api
+    , mUseSymbol( false ) //default to not using Symbol for shapes, to preserve 2.0 api
     , mShapeStyleSymbol( nullptr )
     , mMaxSymbolBleed( 0 )
 {
@@ -67,10 +67,10 @@ QgsComposerShape::~QgsComposerShape()
   delete mShapeStyleSymbol;
 }
 
-void QgsComposerShape::setUseSymbol( bool useSymbolV2 )
+void QgsComposerShape::setUseSymbol( bool useSymbol )
 {
-  mUseSymbolV2 = useSymbolV2;
-  setFrameEnabled( !useSymbolV2 );
+  mUseSymbol = useSymbol;
+  setFrameEnabled( !useSymbol );
 }
 
 void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbol* symbol )
@@ -132,7 +132,7 @@ void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
 void QgsComposerShape::drawShape( QPainter* p )
 {
-  if ( mUseSymbolV2 )
+  if ( mUseSymbol )
   {
     drawShapeUsingSymbol( p );
     return;
@@ -247,7 +247,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
 
 void QgsComposerShape::drawFrame( QPainter* p )
 {
-  if ( mFrame && p && !mUseSymbolV2 )
+  if ( mFrame && p && !mUseSymbol )
   {
     p->setPen( pen() );
     p->setBrush( Qt::NoBrush );
@@ -258,7 +258,7 @@ void QgsComposerShape::drawFrame( QPainter* p )
 
 void QgsComposerShape::drawBackground( QPainter* p )
 {
-  if ( p && ( mBackground || mUseSymbolV2 ) )
+  if ( p && ( mBackground || mUseSymbol ) )
   {
     p->setBrush( brush() );//this causes a problem in atlas generation
     p->setPen( Qt::NoPen );
@@ -314,7 +314,7 @@ bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument&
   }
   else
   {
-    //upgrade project file from 2.0 to use symbolV2 styling
+    //upgrade project file from 2.0 to use symbol styling
     delete mShapeStyleSymbol;
     QgsStringMap properties;
     properties.insert( "color", QgsSymbolLayerUtils::encodeColor( brush().color() ) );

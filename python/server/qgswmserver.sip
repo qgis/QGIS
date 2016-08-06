@@ -74,8 +74,8 @@ class QgsWmsServer: public QgsOWSServer
     of the image object*/
     QImage* getLegendGraphics();
 
-    typedef QSet<QgsSymbol*> SymbolV2Set;
-    typedef QMap<QgsVectorLayer*, SymbolV2Set> HitTest;
+    typedef QSet<QgsSymbol*> SymbolSet;
+    typedef QMap<QgsVectorLayer*, SymbolSet> HitTest;
 
     /** Returns the map as an image (or a null pointer in case of error). The caller takes ownership
     of the image object). If an instance to existing hit test structure is passed, instead of rendering

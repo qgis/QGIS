@@ -89,13 +89,13 @@ class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
     virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
     /** Set symbol (takes ownership)*/
-    void setSymbolV2( QgsSymbol* s );
-    QgsSymbol* symbolV2() {return mSymbolV2;}
+    void setSymbol( QgsSymbol* s );
+    QgsSymbol* symbol() {return mSymbol;}
 
     ItemType itemType() const override { return SymbologyV2Item; }
 
   private:
-    QgsSymbol* mSymbolV2;
+    QgsSymbol* mSymbol;
 };
 
 /** \ingroup core

@@ -844,7 +844,7 @@ QImage* QgsWmsServer::getLegendGraphics()
       if ( !vl || !vl->renderer() )
         continue;
 
-      const SymbolV2Set& usedSymbols = hitTest[vl];
+      const SymbolSet& usedSymbols = hitTest[vl];
       QList<int> order;
       int i = 0;
       Q_FOREACH ( const QgsLegendSymbolItem& legendItem, vl->renderer()->legendSymbolItemsV2() )
@@ -993,7 +993,7 @@ void QgsWmsServer::runHitTest( QPainter* painter, HitTest& hitTest )
 
     if ( vl->hasScaleBasedVisibility() && ( mMapRenderer->scale() < vl->minimumScale() || mMapRenderer->scale() > vl->maximumScale() ) )
     {
-      hitTest[vl] = SymbolV2Set(); // no symbols -> will not be shown
+      hitTest[vl] = SymbolSet(); // no symbols -> will not be shown
       continue;
     }
 
@@ -1007,12 +1007,12 @@ void QgsWmsServer::runHitTest( QPainter* painter, HitTest& hitTest )
       context.setExtent( r1 );
     }
 
-    SymbolV2Set& usedSymbols = hitTest[vl];
+    SymbolSet& usedSymbols = hitTest[vl];
     runHitTestLayer( vl, usedSymbols, context );
   }
 }
 
-void QgsWmsServer::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context )
+void QgsWmsServer::runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols, QgsRenderContext& context )
 {
   QgsFeatureRenderer* r = vl->renderer();
   bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
@@ -2243,9 +2243,9 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
     //check if feature is rendered at all
     r2->startRender( renderContext, layer->pendingFields() );
-    bool renderV2 = r2->willRenderFeature( feature, renderContext );
+    bool render = r2->willRenderFeature( feature, renderContext );
     r2->stopRender( renderContext );
-    if ( !renderV2 )
+    if ( !render )
     {
       continue;
     }

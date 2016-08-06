@@ -88,8 +88,8 @@ class QgsWmsServer: public QgsOWSServer
     of the image object*/
     QImage* getLegendGraphics();
 
-    typedef QSet<QgsSymbol*> SymbolV2Set;
-    typedef QMap<QgsVectorLayer*, SymbolV2Set> HitTest;
+    typedef QSet<QgsSymbol*> SymbolSet;
+    typedef QMap<QgsVectorLayer*, SymbolSet> HitTest;
 
     /** Returns the map as an image (or a null pointer in case of error). The caller takes ownership
     of the image object). If an instance to existing hit test structure is passed, instead of rendering
@@ -176,7 +176,7 @@ class QgsWmsServer: public QgsOWSServer
     /** Record which symbols would be used if the map was in the current configuration of mMapRenderer. This is useful for content-based legend*/
     void runHitTest( QPainter* painter, HitTest& hitTest );
     /** Record which symbols within one layer would be rendered with the given renderer context*/
-    void runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context );
+    void runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols, QgsRenderContext& context );
 
     /** Read legend parameter from the request or from the first print composer in the project*/
     void legendParameters( double& boxSpace, double& layerSpace, double& layerTitleSpace,

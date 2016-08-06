@@ -48,7 +48,7 @@ class TestQgsComposerShapes : public QObject
     void triangle(); //test if triange shape is functioning
     void ellipse(); //test if ellipse shape is functioning
     void roundedRectangle(); //test if rounded rectangle shape is functioning
-    void symbolV2(); //test is styling shapes via symbolv2 is working
+    void symbol(); //test is styling shapes via symbol is working
 
   private:
     QgsComposition* mComposition;
@@ -138,7 +138,7 @@ void TestQgsComposerShapes::roundedRectangle()
   mComposerShape->setCornerRadius( 0 );
 }
 
-void TestQgsComposerShapes::symbolV2()
+void TestQgsComposerShapes::symbol()
 {
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
 
@@ -154,7 +154,7 @@ void TestQgsComposerShapes::symbolV2()
   mComposerShape->setUseSymbol( true );
   delete fillSymbol;
 
-  QgsCompositionChecker checker( "composershapes_symbolv2", mComposition );
+  QgsCompositionChecker checker( "composershapes_symbol", mComposition );
   checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
 }

@@ -39,7 +39,7 @@ class QgsComposerShape: QgsComposerItem
     QgsComposerShape::Shape shapeType() const;
     void setShapeType( QgsComposerShape::Shape s );
 
-    /** Sets radius for rounded rectangle corners. Added in v2.1 */
+    /** Sets radius for rounded rectangle corners. Added in 2.1 */
     void setCornerRadius( double radius );
     /** Returns the radius for rounded rectangle corners*/
     double cornerRadius() const;
@@ -53,8 +53,8 @@ class QgsComposerShape: QgsComposerItem
     QgsFillSymbol* shapeStyleSymbol();
 
     /** Controls whether the shape should be drawn using a QgsFillSymbol.
-     * Note: Added in v2.1 */
-    void setUseSymbol( bool useSymbolV2 );
+     * Note: Added in 2.1 */
+    void setUseSymbol( bool useSymbol );
 
     /** Depending on the symbol style, the bounding rectangle can be larger than the shape
     @note this function was added in version 2.3*/

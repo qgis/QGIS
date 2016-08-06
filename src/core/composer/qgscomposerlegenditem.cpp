@@ -65,30 +65,30 @@ void QgsComposerLegendItem::writeXmlChildren( QDomElement& elem, QDomDocument& d
 ////////////////QgsComposerSymbolItem
 
 
-QgsComposerSymbolItem::QgsComposerSymbolItem(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbolV2( nullptr )
+QgsComposerSymbolItem::QgsComposerSymbolItem(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbol( nullptr )
 {
 }
 
-QgsComposerSymbolItem::QgsComposerSymbolItem( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol ), mSymbolV2( nullptr )
+QgsComposerSymbolItem::QgsComposerSymbolItem( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol ), mSymbol( nullptr )
 {
 }
 
-QgsComposerSymbolItem::QgsComposerSymbolItem( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol ), mSymbolV2( nullptr )
+QgsComposerSymbolItem::QgsComposerSymbolItem( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol ), mSymbol( nullptr )
 {
 }
 
 QgsComposerSymbolItem::~QgsComposerSymbolItem()
 {
-  delete mSymbolV2;
+  delete mSymbol;
 }
 
 QStandardItem* QgsComposerSymbolItem::clone() const
 {
   QgsComposerSymbolItem* cloneItem = new QgsComposerSymbolItem();
   *cloneItem = *this;
-  if ( mSymbolV2 )
+  if ( mSymbol )
   {
-    cloneItem->setSymbolV2( mSymbolV2->clone() );
+    cloneItem->setSymbol( mSymbol->clone() );
   }
   return cloneItem;
 }
@@ -96,10 +96,10 @@ QStandardItem* QgsComposerSymbolItem::clone() const
 void QgsComposerSymbolItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement vectorClassElem = doc.createElement( "VectorClassificationItemNg" );
-  if ( mSymbolV2 )
+  if ( mSymbol )
   {
     QgsSymbolMap saveSymbolMap;
-    saveSymbolMap.insert( "classificationSymbol", mSymbolV2 );
+    saveSymbolMap.insert( "classificationSymbol", mSymbol );
     QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( saveSymbolMap, "symbols", doc );
     vectorClassElem.appendChild( symbolsElem );
   }
@@ -128,7 +128,7 @@ void QgsComposerSymbolItem::readXml( const QDomElement& itemElem, bool xServerAv
       QgsSymbol* symbolNg = mapIt.value();
       if ( symbolNg )
       {
-        setSymbolV2( symbolNg );
+        setSymbol( symbolNg );
         if ( xServerAvailable )
         {
           setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
@@ -138,10 +138,10 @@ void QgsComposerSymbolItem::readXml( const QDomElement& itemElem, bool xServerAv
   }
 }
 
-void QgsComposerSymbolItem::setSymbolV2( QgsSymbol* s )
+void QgsComposerSymbolItem::setSymbol( QgsSymbol* s )
 {
-  delete mSymbolV2;
-  mSymbolV2 = s;
+  delete mSymbol;
+  mSymbol = s;
 }
 
 ////////////////////QgsComposerRasterSymbolItem

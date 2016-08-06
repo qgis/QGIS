@@ -67,10 +67,10 @@ class CORE_EXPORT QgsMapHitTest
   protected:
 
     //! @note not available in Python bindings
-    typedef QSet<QString> SymbolV2Set;
+    typedef QSet<QString> SymbolSet;
 
     //! @note not available in Python bindings
-    typedef QMap<QgsVectorLayer*, SymbolV2Set> HitTest;
+    typedef QMap<QgsVectorLayer*, SymbolSet> HitTest;
 
     /** Runs test for visible symbols within a layer
      * @param vl vector layer
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsMapHitTest
      * @note added in QGIS 2.12
      * @note not available in Python bindings
      */
-    void runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, SymbolV2Set& usedSymbolsRuleKey, QgsRenderContext& context );
+    void runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols, SymbolSet& usedSymbolsRuleKey, QgsRenderContext& context );
 
     //! The initial map settings
     QgsMapSettings mSettings;

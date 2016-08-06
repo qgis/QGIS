@@ -79,7 +79,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     /** Controls whether the shape should be drawn using a QgsFillSymbol.
      * Note: Added in v2.1 */
-    void setUseSymbol( bool useSymbolV2 );
+    void setUseSymbol( bool useSymbol );
 
     /** Depending on the symbol style, the bounding rectangle can be larger than the shape
     @note this function was added in version 2.3*/
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     double mCornerRadius;
 
-    bool mUseSymbolV2;
+    bool mUseSymbol;
 
     QgsFillSymbol* mShapeStyleSymbol;
     double mMaxSymbolBleed;

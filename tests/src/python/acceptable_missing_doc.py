@@ -610,7 +610,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsShadowEffectWidget": ["create()", "QgsShadowEffectWidget(QWidget *parent=nullptr)"],
     "QgsFavouritesItem": ["QgsFavouritesItem(QgsDataItem *parent, const QString &name, const QString &path=QString())", "iconFavourites()", "addDirectory(const QString &favIcon)", "removeDirectory(QgsDirectoryItem *item)"],
     "QgsRendererWidget": ["refreshSymbolView()", "QgsRendererWidget(QgsVectorLayer *layer, QgsStyle *style)", "copy()", "contextMenuViewCategories(QPoint p)", "paste()"],
-    "QgsComposerSymbolItem": ["QgsComposerSymbolItem(const QIcon &icon, const QString &text)", "QgsComposerSymbolItem(const QString &text)", "symbolV2()"],
+    "QgsComposerSymbolItem": ["QgsComposerSymbolItem(const QIcon &icon, const QString &text)", "QgsComposerSymbolItem(const QString &text)", "symbol()"],
     "QgsAspectFilter": ["QgsAspectFilter(const QString &inputFile, const QString &outputFile, const QString &outputFormat)"],
     "QgsDefaultVectorLayerLegend": ["QgsDefaultVectorLayerLegend(QgsVectorLayer *vl)"],
     "QgsDateTimeEdit": ["QgsDateTimeEdit(QWidget *parent=nullptr)", "allowNull() const "],

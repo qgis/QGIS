@@ -161,6 +161,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <tr><td>QgsVectorLayer<td>deleteVertexV2<td>deleteVertex
 <tr><td>QgsVectorLayer<td>rendererV2<td>renderer
 <tr><td>QgsVectorLayerEditUtils<td>deleteVertexV2<td>deleteVertex
+<tr><td>QgsComposerSymbolItem<td>symbolV2<td>symbol
 </table>
 
 \subsection qgis_api_break_3_0_removed_classes Removed Classes

@@ -188,7 +188,7 @@ class TestQgsSymbol(unittest.TestCase):
         return result
 
 
-class TestQgsMarkerSymbolV2(unittest.TestCase):
+class TestQgsMarkerSymbol(unittest.TestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsMarkerSymbol Tests</h1>\n"
