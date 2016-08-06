@@ -50,7 +50,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
      */
     QgsAbstractGeometryV2* geometryN( int n );
 
-    //methods inherited from QgsAbstractGeometry
+    //methods inherited from QgsAbstractGeometryV2
     virtual int dimension() const override;
     virtual QString geometryType() const override { return "GeometryCollection"; }
     virtual void clear() override;
