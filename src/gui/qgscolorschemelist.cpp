@@ -699,7 +699,7 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
       return false;
     }
     QColor color = index.model()->data( index, Qt::DisplayRole ).value<QColor>();
-    QColor newColor = QgsColorDialogV2::getColor( color, mParent, tr( "Select color" ), true );
+    QColor newColor = QgsColorDialog::getColor( color, mParent, tr( "Select color" ), true );
     if ( !newColor.isValid() )
     {
       return false;

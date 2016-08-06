@@ -43,7 +43,9 @@ This page tries to maintain a list with incompatible changes that happened in pr
 \subsection qgis_api_break_3_0_removed_classes Removed Classes
 
 <ul>
-<li>QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.
+<li>QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.</li>
+<li>QgsColorDialog was removed, and QgsColorDialogV2 was renamed to QgsColorDialog. Hence, QgsColorButtonV2 does not exist anymore.
+All the functionality from the old QgsColorDialog has been moved to the new class.</li>
 <li>QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).</li>

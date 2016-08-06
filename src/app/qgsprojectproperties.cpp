@@ -2020,7 +2020,7 @@ void QgsProjectProperties::projectionSelectorInitialized()
 
 void QgsProjectProperties::on_mButtonAddColor_clicked()
 {
-  QColor newColor = QgsColorDialogV2::getColor( QColor(), this->parentWidget(), tr( "Select Color" ), true );
+  QColor newColor = QgsColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select Color" ), true );
   if ( !newColor.isValid() )
   {
     return;

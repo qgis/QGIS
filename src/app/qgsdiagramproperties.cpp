@@ -609,7 +609,7 @@ void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QT
 {
   if ( column == 1 ) //change color
   {
-    QColor newColor = QgsColorDialogV2::getColor( item->background( 1 ).color(), nullptr );
+    QColor newColor = QgsColorDialog::getColor( item->background( 1 ).color(), nullptr );
     if ( newColor.isValid() )
     {
       item->setBackground( 1, QBrush( newColor ) );
