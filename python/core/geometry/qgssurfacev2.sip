@@ -1,4 +1,4 @@
-class QgsSurfaceV2: public QgsAbstractGeometryV2
+class QgsSurface: public QgsAbstractGeometry
 {
 %TypeHeaderCode
 #include <qgssurfacev2.h>

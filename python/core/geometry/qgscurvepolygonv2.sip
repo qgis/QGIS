@@ -1,18 +1,18 @@
-class QgsCurvePolygonV2: public QgsSurfaceV2
+class QgsCurvePolygon: public QgsSurface
 {
 %TypeHeaderCode
 #include <qgscurvepolygonv2.h>
 %End
 
   public:
-    QgsCurvePolygonV2();
-    QgsCurvePolygonV2( const QgsCurvePolygonV2& p );
-    //QgsCurvePolygonV2& operator=( const QgsCurvePolygonV2& p );
-    ~QgsCurvePolygonV2();
+    QgsCurvePolygon();
+    QgsCurvePolygon( const QgsCurvePolygon& p );
+    //QgsCurvePolygon& operator=( const QgsCurvePolygon& p );
+    ~QgsCurvePolygon();
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCurvePolygonV2* clone() const;
+    virtual QgsCurvePolygon* clone() const;
     void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
@@ -29,13 +29,13 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     virtual double area() const;
     virtual double perimeter() const;
     QgsPolygonV2* surfaceToPolygon() const;
-    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+    virtual QgsAbstractGeometry* boundary() const /Factory/;
 
 
     //curve polygon interface
     int numInteriorRings() const;
-    const QgsCurveV2* exteriorRing() const;
-    const QgsCurveV2* interiorRing( int i ) const;
+    const QgsCurve* exteriorRing() const;
+    const QgsCurve* interiorRing( int i ) const;
     /** Returns a new polygon geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance
@@ -49,12 +49,12 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
      * @see setInteriorRings()
      * @see exteriorRing()
      */
-    virtual void setExteriorRing( QgsCurveV2* ring /Transfer/ );
+    virtual void setExteriorRing( QgsCurve* ring /Transfer/ );
 
     /** Sets all interior rings (takes ownership)*/
-    void setInteriorRings( const QList<QgsCurveV2*>& rings );
+    void setInteriorRings( const QList<QgsCurve*>& rings );
     /** Adds an interior ring to the geometry (takes ownership)*/
-    virtual void addInteriorRing( QgsCurveV2* ring /Transfer/ );
+    virtual void addInteriorRing( QgsCurve* ring /Transfer/ );
     /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
 
@@ -75,7 +75,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     /** Returns a geometry without curves. Caller takes ownership
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsAbstractGeometryV2* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+    QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      *  @param vertex the vertex id

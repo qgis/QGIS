@@ -21,7 +21,7 @@
 #include <QWidget>
 
 class QgsSymbol;
-class QgsStyleV2;
+class QgsStyle;
 
 class QMenu;
 
@@ -33,7 +33,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = nullptr );
+    QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = nullptr );
 
     //! Destructor
     virtual ~QgsSymbolsListWidget();
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 
   protected:
     QgsSymbol* mSymbol;
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
     QMenu* mAdvancedMenu;
     QAction* mClipFeaturesAction;
     const QgsVectorLayer* mLayer;

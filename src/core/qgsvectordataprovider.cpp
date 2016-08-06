@@ -624,7 +624,7 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
     return nullptr;
   }
 
-  QgsAbstractGeometryV2* geometry = geom.geometry();
+  QgsAbstractGeometry* geometry = geom.geometry();
   if ( !geometry )
   {
     return nullptr;
@@ -638,17 +638,17 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
     return nullptr;
   }
 
-  QgsAbstractGeometryV2* outputGeom = nullptr;
+  QgsAbstractGeometry* outputGeom = nullptr;
 
   //convert compoundcurve to circularstring (possible if compoundcurve consists of one circular string)
   if ( QgsWkbTypes::flatType( providerGeomType ) == QgsWkbTypes::CircularString && QgsWkbTypes::flatType( geometry->wkbType() ) == QgsWkbTypes::CompoundCurve )
   {
-    QgsCompoundCurveV2* compoundCurve = static_cast<QgsCompoundCurveV2*>( geometry );
+    QgsCompoundCurve* compoundCurve = static_cast<QgsCompoundCurve*>( geometry );
     if ( compoundCurve )
     {
       if ( compoundCurve->nCurves() == 1 )
       {
-        const QgsCircularStringV2* circularString = dynamic_cast<const QgsCircularStringV2*>( compoundCurve->curveAt( 0 ) );
+        const QgsCircularString* circularString = dynamic_cast<const QgsCircularString*>( compoundCurve->curveAt( 0 ) );
         if ( circularString )
         {
           outputGeom = circularString->clone();
@@ -661,7 +661,7 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
   if ( QgsWkbTypes::isMultiType( providerGeomType ) && !QgsWkbTypes::isMultiType( geometry->wkbType() ) )
   {
     outputGeom = QgsGeometryFactory::geomFromWkbType( providerGeomType );
-    QgsGeometryCollectionV2* geomCollection = dynamic_cast<QgsGeometryCollectionV2*>( outputGeom );
+    QgsGeometryCollection* geomCollection = dynamic_cast<QgsGeometryCollection*>( outputGeom );
     if ( geomCollection )
     {
       geomCollection->addGeometry( geometry->clone() );
@@ -671,7 +671,7 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
   //convert to curved type if necessary
   if ( !QgsWkbTypes::isCurvedType( geometry->wkbType() ) && QgsWkbTypes::isCurvedType( providerGeomType ) )
   {
-    QgsAbstractGeometryV2* curveGeom = outputGeom ? outputGeom->toCurveType() : geometry->toCurveType();
+    QgsAbstractGeometry* curveGeom = outputGeom ? outputGeom->toCurveType() : geometry->toCurveType();
     if ( curveGeom )
     {
       delete outputGeom;
@@ -682,7 +682,7 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
   //convert to linear type from curved type
   if ( QgsWkbTypes::isCurvedType( geometry->wkbType() ) && !QgsWkbTypes::isCurvedType( providerGeomType ) )
   {
-    QgsAbstractGeometryV2* segmentizedGeom = nullptr;
+    QgsAbstractGeometry* segmentizedGeom = nullptr;
     segmentizedGeom = outputGeom ? outputGeom->segmentize() : geometry->segmentize();
     if ( segmentizedGeom )
     {

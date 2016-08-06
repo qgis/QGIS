@@ -24,20 +24,20 @@
 #include "ui_qgsstylev2managerdialogbase.h"
 #include "qgscontexthelp.h"
 
-class QgsStyleV2;
+class QgsStyle;
 
 /** \ingroup gui
- * \class QgsStyleV2ManagerDialog
+ * \class QgsStyleManagerDialog
  */
-class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV2ManagerDialogBase
+class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleManagerDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent = nullptr );
+    QgsStyleManagerDialog( QgsStyle* style, QWidget* parent = nullptr );
 
     //! open add color ramp dialog, return color ramp's name if the ramp has been added
-    static QString addColorRampStatic( QWidget* parent, QgsStyleV2* style,
+    static QString addColorRampStatic( QWidget* parent, QgsStyle* style,
                                        QString RampType = QString() );
 
   public slots:
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     //! sets the text of the item with bold font
     void setBold( QStandardItem* );
 
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
 
     QString mStyleFilename;
 

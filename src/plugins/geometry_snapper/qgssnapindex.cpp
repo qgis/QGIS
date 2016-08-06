@@ -316,7 +316,7 @@ void QgsSnapIndex::addSegment( const CoordIdx* idxFrom, const CoordIdx* idxTo )
   }
 }
 
-void QgsSnapIndex::addGeometry( const QgsAbstractGeometryV2* geom )
+void QgsSnapIndex::addGeometry( const QgsAbstractGeometry* geom )
 {
   for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
   {

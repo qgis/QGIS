@@ -776,7 +776,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::updateSymbolScope( const Q
   symbolScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_SYMBOL_COLOR, symbol ? symbol->color() : QColor(), true ) );
 
   double angle = 0.0;
-  const QgsMarkerSymbolV2* markerSymbol = dynamic_cast< const QgsMarkerSymbolV2* >( symbol );
+  const QgsMarkerSymbol* markerSymbol = dynamic_cast< const QgsMarkerSymbol* >( symbol );
   if ( markerSymbol )
   {
     angle = markerSymbol->angle();

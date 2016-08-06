@@ -66,7 +66,7 @@ void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
     mBrush = state.brush();
 }
 
-void QgsDxfPaintEngine::setRing( QgsPointSequenceV2 &polyline, const QPointF *points, int pointCount )
+void QgsDxfPaintEngine::setRing( QgsPointSequence &polyline, const QPointF *points, int pointCount )
 {
   polyline.clear();
   for ( int i = 0; i < pointCount; ++i )
@@ -79,8 +79,8 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, Poly
   if ( !mDxf || !mPaintDevice )
     return;
 
-  QgsRingSequenceV2 polygon;
-  polygon << QgsPointSequenceV2();
+  QgsRingSequence polygon;
+  polygon << QgsPointSequence();
   setRing( polygon.last(), points, pointCount );
 
   if ( mode == QPaintEngine::PolylineMode )
@@ -156,7 +156,7 @@ void QgsDxfPaintEngine::endPolygon()
     if ( mPen.style() != Qt::NoPen )
       drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::PolylineMode );
 
-    mPolygon << QgsPointSequenceV2();
+    mPolygon << QgsPointSequence();
     setRing( mPolygon.last(), mCurrentPolygon.constData(), mCurrentPolygon.size() );
   }
   mCurrentPolygon.clear();

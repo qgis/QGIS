@@ -86,12 +86,12 @@ void QgsPointMarkerItem::setPointLocation( const QgsPoint& p )
   mLocation = toCanvasCoordinates( p );
 }
 
-void QgsPointMarkerItem::setSymbol( QgsMarkerSymbolV2 *symbol )
+void QgsPointMarkerItem::setSymbol( QgsMarkerSymbol *symbol )
 {
   mMarkerSymbol.reset( symbol );
 }
 
-QgsMarkerSymbolV2*QgsPointMarkerItem::symbol()
+QgsMarkerSymbol*QgsPointMarkerItem::symbol()
 {
   return mMarkerSymbol.data();
 }

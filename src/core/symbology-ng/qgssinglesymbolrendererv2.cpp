@@ -33,8 +33,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbol* symbol )
-    : QgsFeatureRendererV2( "singleSymbol" )
+QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol* symbol )
+    : QgsFeatureRenderer( "singleSymbol" )
     , mSymbol( symbol )
     , mScaleMethod( DEFAULT_SCALE_METHOD )
     , mOrigSize( 0.0 )
@@ -42,11 +42,11 @@ QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbol* symbol )
   Q_ASSERT( symbol );
 }
 
-QgsSingleSymbolRendererV2::~QgsSingleSymbolRendererV2()
+QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()
 {
 }
 
-QgsSymbol* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QgsSymbol* QgsSingleSymbolRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
   context.expressionContext().setFeature( feature );
   if ( !mRotation.data() && !mSizeScale.data() ) return mSymbol.data();
@@ -56,33 +56,33 @@ QgsSymbol* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature, Qgs
 
   if ( mTempSymbol->type() == QgsSymbol::Marker )
   {
-    QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mTempSymbol.data() );
+    QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mTempSymbol.data() );
     if ( mRotation.data() ) markerSymbol->setAngle( rotation );
     markerSymbol->setSize( sizeScale * mOrigSize );
     markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( mTempSymbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mTempSymbol.data() );
+    QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mTempSymbol.data() );
     lineSymbol->setWidth( sizeScale * mOrigSize );
   }
   else if ( mTempSymbol->type() == QgsSymbol::Fill )
   {
-    QgsFillSymbolV2* fillSymbol = static_cast<QgsFillSymbolV2*>( mTempSymbol.data() );
+    QgsFillSymbol* fillSymbol = static_cast<QgsFillSymbol*>( mTempSymbol.data() );
     if ( mRotation.data() ) fillSymbol->setAngle( rotation );
   }
 
   return mTempSymbol.data();
 }
 
-QgsSymbol* QgsSingleSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QgsSymbol* QgsSingleSymbolRenderer::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
   Q_UNUSED( context );
   Q_UNUSED( feature );
   return mSymbol.data();
 }
 
-void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
+void QgsSingleSymbolRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   if ( !mSymbol.data() )
     return;
@@ -105,11 +105,11 @@ void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const Qg
 
     if ( mSymbol->type() == QgsSymbol::Marker )
     {
-      mOrigSize = static_cast<QgsMarkerSymbolV2*>( mSymbol.data() )->size();
+      mOrigSize = static_cast<QgsMarkerSymbol*>( mSymbol.data() )->size();
     }
     else if ( mSymbol->type() == QgsSymbol::Line )
     {
-      mOrigSize = static_cast<QgsLineSymbolV2*>( mSymbol.data() )->width();
+      mOrigSize = static_cast<QgsLineSymbol*>( mSymbol.data() )->width();
     }
     else
     {
@@ -120,7 +120,7 @@ void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const Qg
   return;
 }
 
-void QgsSingleSymbolRendererV2::stopRender( QgsRenderContext& context )
+void QgsSingleSymbolRenderer::stopRender( QgsRenderContext& context )
 {
   if ( !mSymbol.data() ) return;
 
@@ -134,7 +134,7 @@ void QgsSingleSymbolRendererV2::stopRender( QgsRenderContext& context )
   }
 }
 
-QList<QString> QgsSingleSymbolRendererV2::usedAttributes()
+QList<QString> QgsSingleSymbolRenderer::usedAttributes()
 {
   QSet<QString> attributes;
   if ( mSymbol.data() ) attributes.unite( mSymbol->usedAttributes() );
@@ -143,31 +143,31 @@ QList<QString> QgsSingleSymbolRendererV2::usedAttributes()
   return attributes.toList();
 }
 
-QgsSymbol* QgsSingleSymbolRendererV2::symbol() const
+QgsSymbol* QgsSingleSymbolRenderer::symbol() const
 {
   return mSymbol.data();
 }
 
-void QgsSingleSymbolRendererV2::setSymbol( QgsSymbol* s )
+void QgsSingleSymbolRenderer::setSymbol( QgsSymbol* s )
 {
   Q_ASSERT( s );
   mSymbol.reset( s );
 }
 
-void QgsSingleSymbolRendererV2::setRotationField( const QString& fieldOrExpression )
+void QgsSingleSymbolRenderer::setRotationField( const QString& fieldOrExpression )
 {
   if ( mSymbol->type() == QgsSymbol::Marker )
   {
-    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSymbol.data() );
+    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( mSymbol.data() );
     s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
   }
 }
 
-QString QgsSingleSymbolRendererV2::rotationField() const
+QString QgsSingleSymbolRenderer::rotationField() const
 {
   if ( mSymbol->type() == QgsSymbol::Marker )
   {
-    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSymbol.data() );
+    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( mSymbol.data() );
     QgsDataDefined ddAngle = s->dataDefinedAngle();
     return ddAngle.useExpression() ? ddAngle.expressionString() : ddAngle.field();
   }
@@ -175,37 +175,37 @@ QString QgsSingleSymbolRendererV2::rotationField() const
   return QString();
 }
 
-void QgsSingleSymbolRendererV2::setSizeScaleField( const QString& fieldOrExpression )
+void QgsSingleSymbolRenderer::setSizeScaleField( const QString& fieldOrExpression )
 {
   mSizeScale.reset( QgsSymbolLayerUtils::fieldOrExpressionToExpression( fieldOrExpression ) );
 }
 
-QString QgsSingleSymbolRendererV2::sizeScaleField() const
+QString QgsSingleSymbolRenderer::sizeScaleField() const
 {
   return mSizeScale.data() ? QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
 }
 
-void QgsSingleSymbolRendererV2::setScaleMethod( QgsSymbol::ScaleMethod scaleMethod )
+void QgsSingleSymbolRenderer::setScaleMethod( QgsSymbol::ScaleMethod scaleMethod )
 {
   mScaleMethod = scaleMethod;
   setScaleMethodToSymbol( mSymbol.data(), scaleMethod );
 }
 
-QString QgsSingleSymbolRendererV2::dump() const
+QString QgsSingleSymbolRenderer::dump() const
 {
   return mSymbol.data() ? QString( "SINGLE: %1" ).arg( mSymbol->dump() ) : "";
 }
 
-QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::clone() const
+QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::clone() const
 {
-  QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( mSymbol->clone() );
+  QgsSingleSymbolRenderer* r = new QgsSingleSymbolRenderer( mSymbol->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setSizeScaleField( sizeScaleField() );
   copyRendererData( r );
   return r;
 }
 
-void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
+void QgsSingleSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element ) const
 {
   QgsStringMap props;
   if ( mRotation.data() )
@@ -223,7 +223,7 @@ void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element )
   if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, props );
 }
 
-QgsSymbolList QgsSingleSymbolRendererV2::symbols( QgsRenderContext &context )
+QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context )
 {
   Q_UNUSED( context );
   QgsSymbolList lst;
@@ -232,7 +232,7 @@ QgsSymbolList QgsSingleSymbolRendererV2::symbols( QgsRenderContext &context )
 }
 
 
-QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
+QgsFeatureRenderer* QgsSingleSymbolRenderer::create( QDomElement& element )
 {
   QDomElement symbolsElem = element.firstChildElement( "symbols" );
   if ( symbolsElem.isNull() )
@@ -243,7 +243,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
   if ( !symbolMap.contains( "0" ) )
     return nullptr;
 
-  QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( symbolMap.take( "0" ) );
+  QgsSingleSymbolRenderer* r = new QgsSingleSymbolRenderer( symbolMap.take( "0" ) );
 
   // delete symbols if there are any more
   QgsSymbolLayerUtils::clearSymbolMap( symbolMap );
@@ -266,7 +266,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
   return r;
 }
 
-QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType )
+QgsFeatureRenderer* QgsSingleSymbolRenderer::createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType )
 {
   // XXX this renderer can handle only one Rule!
 
@@ -320,7 +320,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
     else if ( childElem.localName().endsWith( "Symbolizer" ) )
     {
       // create symbol layers for this symbolizer
-      QgsSymbolLayerUtils::createSymbolLayerV2ListFromSld( childElem, geomType, layers );
+      QgsSymbolLayerUtils::createSymbolLayerListFromSld( childElem, geomType, layers );
     }
 
     childElem = childElem.nextSiblingElement();
@@ -334,15 +334,15 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
   switch ( geomType )
   {
     case QgsWkbTypes::LineGeometry:
-      symbol = new QgsLineSymbolV2( layers );
+      symbol = new QgsLineSymbol( layers );
       break;
 
     case QgsWkbTypes::PolygonGeometry:
-      symbol = new QgsFillSymbolV2( layers );
+      symbol = new QgsFillSymbol( layers );
       break;
 
     case QgsWkbTypes::PointGeometry:
-      symbol = new QgsMarkerSymbolV2( layers );
+      symbol = new QgsMarkerSymbol( layers );
       break;
 
     default:
@@ -351,10 +351,10 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
   }
 
   // and finally return the new renderer
-  return new QgsSingleSymbolRendererV2( symbol );
+  return new QgsSingleSymbolRenderer( symbol );
 }
 
-QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
+QDomElement QgsSingleSymbolRenderer::save( QDomDocument& doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "singleSymbol" );
@@ -391,7 +391,7 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsLegendSymbologyList QgsSingleSymbolRendererV2::legendSymbologyItems( QSize iconSize )
+QgsLegendSymbologyList QgsSingleSymbolRenderer::legendSymbologyItems( QSize iconSize )
 {
   QgsLegendSymbologyList lst;
   if ( mSymbol.data() )
@@ -402,7 +402,7 @@ QgsLegendSymbologyList QgsSingleSymbolRendererV2::legendSymbologyItems( QSize ic
   return lst;
 }
 
-QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDenominator, const QString& rule )
+QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   Q_UNUSED( scaleDenominator );
   Q_UNUSED( rule );
@@ -411,24 +411,24 @@ QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDe
   return lst;
 }
 
-QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
+QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
 {
   QgsLegendSymbolListV2 lst;
   if ( mSymbol->type() == QgsSymbol::Marker )
   {
-    const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( mSymbol.data() );
+    const QgsMarkerSymbol * symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.data() );
     QgsDataDefined sizeDD = symbol->dataDefinedSize();
     if ( sizeDD.isActive() && sizeDD.useExpression() )
     {
       QgsScaleExpression scaleExp( sizeDD.expressionString() );
       if ( scaleExp.type() != QgsScaleExpression::Unknown )
       {
-        QgsLegendSymbolItemV2 title( nullptr, scaleExp.baseExpression(), QString() );
+        QgsLegendSymbolItem title( nullptr, scaleExp.baseExpression(), QString() );
         lst << title;
         Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
         {
-          QgsLegendSymbolItemV2 si( mSymbol.data(), QString::number( v ), QString() );
-          QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
+          QgsLegendSymbolItem si( mSymbol.data(), QString::number( v ), QString() );
+          QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
           s->setDataDefinedSize( 0 );
           s->setSize( scaleExp.size( v ) );
           lst << si;
@@ -438,29 +438,29 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
     }
   }
 
-  lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), QString() );
+  lst << QgsLegendSymbolItem( mSymbol.data(), QString(), QString() );
   return lst;
 }
 
-QSet< QString > QgsSingleSymbolRendererV2::legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context )
+QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   Q_UNUSED( feature );
   Q_UNUSED( context );
   return QSet< QString >() << QString();
 }
 
-void QgsSingleSymbolRendererV2::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
+void QgsSingleSymbolRenderer::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
 {
   Q_UNUSED( key );
   setSymbol( symbol );
 }
 
-QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
+QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  QgsSingleSymbolRendererV2* r = nullptr;
+  QgsSingleSymbolRenderer* r = nullptr;
   if ( renderer->type() == "singleSymbol" )
   {
-    r = dynamic_cast<QgsSingleSymbolRendererV2*>( renderer->clone() );
+    r = dynamic_cast<QgsSingleSymbolRenderer*>( renderer->clone() );
   }
   else if ( renderer->type() == "pointDisplacement" )
   {
@@ -478,10 +478,10 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const
   if ( !r )
   {
     QgsRenderContext context;
-    QgsSymbolList symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
+    QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )
     {
-      r = new QgsSingleSymbolRendererV2( symbols.at( 0 )->clone() );
+      r = new QgsSingleSymbolRenderer( symbols.at( 0 )->clone() );
     }
   }
 

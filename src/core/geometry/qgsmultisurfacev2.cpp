@@ -23,33 +23,33 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscurvepolygonv2.h"
 #include "qgsmulticurvev2.h"
 
-QgsMultiSurfaceV2::QgsMultiSurfaceV2()
-    : QgsGeometryCollectionV2()
+QgsMultiSurface::QgsMultiSurface()
+    : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiSurface;
 }
 
-QgsMultiSurfaceV2 *QgsMultiSurfaceV2::clone() const
+QgsMultiSurface *QgsMultiSurface::clone() const
 {
-  return new QgsMultiSurfaceV2( *this );
+  return new QgsMultiSurface( *this );
 }
 
-bool QgsMultiSurfaceV2::fromWkt( const QString& wkt )
+bool QgsMultiSurface::fromWkt( const QString& wkt )
 {
   return fromCollectionWkt( wkt,
-                            QList<QgsAbstractGeometryV2*>() << new QgsPolygonV2 << new QgsCurvePolygonV2,
+                            QList<QgsAbstractGeometry*>() << new QgsPolygonV2 << new QgsCurvePolygon,
                             "Polygon" );
 }
 
-QDomElement QgsMultiSurfaceV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
+QDomElement QgsMultiSurface::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   // GML2 does not support curves
   QDomElement elemMultiPolygon = doc.createElementNS( ns, "MultiPolygon" );
-  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsSurfaceV2*>( geom ) )
+    if ( dynamic_cast<const QgsSurface*>( geom ) )
     {
-      QgsPolygonV2* polygon = static_cast<const QgsSurfaceV2*>( geom )->surfaceToPolygon();
+      QgsPolygonV2* polygon = static_cast<const QgsSurface*>( geom )->surfaceToPolygon();
 
       QDomElement elemPolygonMember = doc.createElementNS( ns, "polygonMember" );
       elemPolygonMember.appendChild( polygon->asGML2( doc, precision, ns ) );
@@ -62,12 +62,12 @@ QDomElement QgsMultiSurfaceV2::asGML2( QDomDocument& doc, int precision, const Q
   return elemMultiPolygon;
 }
 
-QDomElement QgsMultiSurfaceV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
+QDomElement QgsMultiSurface::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiSurface = doc.createElementNS( ns, "MultiSurface" );
-  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsSurfaceV2*>( geom ) )
+    if ( dynamic_cast<const QgsSurface*>( geom ) )
     {
       QDomElement elemSurfaceMember = doc.createElementNS( ns, "surfaceMember" );
       elemSurfaceMember.appendChild( geom->asGML3( doc, precision, ns ) );
@@ -78,28 +78,28 @@ QDomElement QgsMultiSurfaceV2::asGML3( QDomDocument& doc, int precision, const Q
   return elemMultiSurface;
 }
 
-QString QgsMultiSurfaceV2::asJSON( int precision ) const
+QString QgsMultiSurface::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
   QString json = "{\"type\": \"MultiPolygon\", \"coordinates\": [";
-  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsSurfaceV2*>( geom ) )
+    if ( dynamic_cast<const QgsSurface*>( geom ) )
     {
       json += '[';
 
-      QgsPolygonV2* polygon = static_cast<const QgsSurfaceV2*>( geom )->surfaceToPolygon();
+      QgsPolygonV2* polygon = static_cast<const QgsSurface*>( geom )->surfaceToPolygon();
 
-      QgsLineStringV2* exteriorLineString = polygon->exteriorRing()->curveToLine();
-      QgsPointSequenceV2 exteriorPts;
+      QgsLineString* exteriorLineString = polygon->exteriorRing()->curveToLine();
+      QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
       json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
       delete exteriorLineString;
 
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
       {
-        QgsLineStringV2* interiorLineString = polygon->interiorRing( i )->curveToLine();
-        QgsPointSequenceV2 interiorPts;
+        QgsLineString* interiorLineString = polygon->interiorRing( i )->curveToLine();
+        QgsPointSequence interiorPts;
         interiorLineString->points( interiorPts );
         json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
         delete interiorLineString;
@@ -122,24 +122,24 @@ QString QgsMultiSurfaceV2::asJSON( int precision ) const
   return json;
 }
 
-bool QgsMultiSurfaceV2::addGeometry( QgsAbstractGeometryV2* g )
+bool QgsMultiSurface::addGeometry( QgsAbstractGeometry* g )
 {
-  if ( !dynamic_cast<QgsSurfaceV2*>( g ) )
+  if ( !dynamic_cast<QgsSurface*>( g ) )
   {
     delete g;
     return false;
   }
 
   setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiSurface );
-  return QgsGeometryCollectionV2::addGeometry( g );
+  return QgsGeometryCollection::addGeometry( g );
 }
 
-QgsAbstractGeometryV2* QgsMultiSurfaceV2::boundary() const
+QgsAbstractGeometry* QgsMultiSurface::boundary() const
 {
-  QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
+  QgsMultiCurve* multiCurve = new QgsMultiCurve();
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
-    if ( QgsSurfaceV2* surface = dynamic_cast<QgsSurfaceV2*>( mGeometries.at( i ) ) )
+    if ( QgsSurface* surface = dynamic_cast<QgsSurface*>( mGeometries.at( i ) ) )
     {
       multiCurve->addGeometry( surface->boundary() );
     }

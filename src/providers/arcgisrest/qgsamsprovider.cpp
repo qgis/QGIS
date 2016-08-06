@@ -419,7 +419,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
         featureAttributes.append( attributesMap[attribute].toString() );
       }
       QgsCoordinateReferenceSystem crs;
-      QgsAbstractGeometryV2* geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap["geometry"].toMap(), resultMap["geometryType"].toString(), false, false, &crs );
+      QgsAbstractGeometry* geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap["geometry"].toMap(), resultMap["geometryType"].toString(), false, false, &crs );
       QgsFeature feature( fields );
       feature.setGeometry( QgsGeometry( geometry ) );
       feature.setAttributes( featureAttributes );

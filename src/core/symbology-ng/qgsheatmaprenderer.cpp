@@ -32,7 +32,7 @@
 #include <QDomElement>
 
 QgsHeatmapRenderer::QgsHeatmapRenderer()
-    : QgsFeatureRendererV2( "heatmapRenderer" )
+    : QgsFeatureRenderer( "heatmapRenderer" )
     , mCalculatedMaxValue( 0 )
     , mRadius( 10 )
     , mRadiusPixels( 0 )
@@ -45,7 +45,7 @@ QgsHeatmapRenderer::QgsHeatmapRenderer()
     , mRenderQuality( 3 )
     , mFeaturesRendered( 0 )
 {
-  mGradientRamp = new QgsVectorGradientColorRampV2( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
+  mGradientRamp = new QgsVectorGradientColorRamp( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
 
 }
 
@@ -322,7 +322,7 @@ void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderCon
   extent.setYMaximum( extent.yMaximum() + extension );
 }
 
-QgsFeatureRendererV2* QgsHeatmapRenderer::create( QDomElement& element )
+QgsFeatureRenderer* QgsHeatmapRenderer::create( QDomElement& element )
 {
   QgsHeatmapRenderer* r = new QgsHeatmapRenderer();
   r->setRadius( element.attribute( "radius", "50.0" ).toFloat() );
@@ -401,7 +401,7 @@ QList<QString> QgsHeatmapRenderer::usedAttributes()
   return attributes.toList();
 }
 
-QgsHeatmapRenderer* QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
+QgsHeatmapRenderer* QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == "heatmapRenderer" )
   {
@@ -413,7 +413,7 @@ QgsHeatmapRenderer* QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRen
   }
 }
 
-void QgsHeatmapRenderer::setColorRamp( QgsVectorColorRampV2 *ramp )
+void QgsHeatmapRenderer::setColorRamp( QgsVectorColorRamp *ramp )
 {
   delete mGradientRamp;
   mGradientRamp = ramp;

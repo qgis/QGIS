@@ -1,20 +1,20 @@
 /** \ingroup core
- * \class QgsLineStringV2
+ * \class QgsLineString
  * \brief Line string geometry type, with support for z-dimension and m-values.
  * \note added in QGIS 2.10
  */
-class QgsLineStringV2: public QgsCurveV2
+class QgsLineString: public QgsCurve
 {
 %TypeHeaderCode
 #include <qgslinestringv2.h>
 %End
 
   public:
-    QgsLineStringV2();
-    ~QgsLineStringV2();
+    QgsLineString();
+    ~QgsLineString();
 
-    bool operator==( const QgsCurveV2& other ) const;
-    bool operator!=( const QgsCurveV2& other ) const;
+    bool operator==( const QgsCurve& other ) const;
+    bool operator!=( const QgsCurve& other ) const;
 
     /** Returns the specified point from inside the line string.
      * @param i index of point, starting at 0 for the first point
@@ -92,7 +92,7 @@ class QgsLineStringV2: public QgsCurveV2
     /** Appends the contents of another line string to the end of this line string.
      * @param line line to append. Ownership is not transferred.
      */
-    void append( const QgsLineStringV2* line );
+    void append( const QgsLineString* line );
 
     /** Adds a new vertex to the end of the line string.
      * @param pt vertex to add
@@ -106,15 +106,15 @@ class QgsLineStringV2: public QgsCurveV2
      */
     QPolygonF asQPolygonF() const;
 
-    /** Returns the geometry converted to the more generic curve type QgsCompoundCurveV2
+    /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
         @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometryV2* toCurveType() const /Factory/;
+    QgsAbstractGeometry* toCurveType() const /Factory/;
 
     //reimplemented methods
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsLineStringV2* clone() const /Factory/;
+    virtual QgsLineString* clone() const /Factory/;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
@@ -135,7 +135,7 @@ class QgsLineStringV2: public QgsCurveV2
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     int numPoints() const;
     void points( QList<QgsPointV2>& pt ) const;
@@ -152,7 +152,7 @@ class QgsLineStringV2: public QgsCurveV2
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos );
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual QgsLineStringV2* reversed() const /Factory/;
+    virtual QgsLineString* reversed() const /Factory/;
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const;

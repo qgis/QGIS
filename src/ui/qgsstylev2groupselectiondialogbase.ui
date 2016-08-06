@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SymbolsV2GroupSelectionDialogBase</class>
- <widget class="QDialog" name="SymbolsV2GroupSelectionDialogBase">
+ <class>SymbolsGroupSelectionDialogBase</class>
+ <widget class="QDialog" name="SymbolsGroupSelectionDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -55,7 +55,7 @@
   <connection>
    <sender>okButton</sender>
    <signal>clicked()</signal>
-   <receiver>SymbolsV2GroupSelectionDialogBase</receiver>
+   <receiver>SymbolsGroupSelectionDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -69,9 +69,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>SymbolsV2GroupSelectionDialogBase</sender>
+   <sender>SymbolsGroupSelectionDialogBase</sender>
    <signal>destroyed()</signal>
-   <receiver>SymbolsV2GroupSelectionDialogBase</receiver>
+   <receiver>SymbolsGroupSelectionDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">

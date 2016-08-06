@@ -26,7 +26,7 @@
  * \note added in QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
-class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
+class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
 {
   public:
     QgsPolygonV2();
@@ -51,15 +51,15 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
 
     QgsPolygonV2* surfaceToPolygon() const override;
 
-    /** Returns the geometry converted to the more generic curve type QgsCurvePolygonV2
+    /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
      @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometryV2* toCurveType() const override;
+    QgsAbstractGeometry* toCurveType() const override;
 
-    void addInteriorRing( QgsCurveV2* ring ) override;
+    void addInteriorRing( QgsCurve* ring ) override;
     //overridden to handle LineString25D rings
-    virtual void setExteriorRing( QgsCurveV2* ring ) override;
+    virtual void setExteriorRing( QgsCurve* ring ) override;
 
-    virtual QgsAbstractGeometryV2* boundary() const override;
+    virtual QgsAbstractGeometry* boundary() const override;
 
 };
 #endif // QGSPOLYGONV2_H

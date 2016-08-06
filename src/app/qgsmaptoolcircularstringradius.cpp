@@ -110,7 +110,7 @@ void QgsMapToolCircularStringRadius::recalculateRubberBand()
 {
   if ( mPoints.size() >= 3 )
   {
-    QgsCircularStringV2* cString = new QgsCircularStringV2();
+    QgsCircularString* cString = new QgsCircularString();
     int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
     cString->setPoints( mPoints.mid( 0, rubberBandSize ) );
     delete mRubberBand;
@@ -122,7 +122,7 @@ void QgsMapToolCircularStringRadius::recalculateRubberBand()
 
 void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPoint& mousePosition )
 {
-  QgsPointSequenceV2 rubberBandPoints;
+  QgsPointSequence rubberBandPoints;
   if ( !( mPoints.size() % 2 ) )
   {
     //recalculate midpoint on circle segment
@@ -142,7 +142,7 @@ void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPoint& 
     rubberBandPoints.append( mPoints.last() );
     rubberBandPoints.append( QgsPointV2( mousePosition ) );
   }
-  QgsCircularStringV2* cString = new QgsCircularStringV2();
+  QgsCircularString* cString = new QgsCircularString();
   cString->setPoints( rubberBandPoints );
   delete mTempRubberBand;
   mTempRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );

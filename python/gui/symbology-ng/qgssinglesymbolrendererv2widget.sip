@@ -1,15 +1,15 @@
-class QgsSingleSymbolRendererV2Widget : QgsRendererV2Widget
+class QgsSingleSymbolRendererWidget : QgsRendererWidget
 {
 %TypeHeaderCode
 #include <qgssinglesymbolrendererv2widget.h>
 %End
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
 
-    QgsSingleSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
-    ~QgsSingleSymbolRendererV2Widget();
+    QgsSingleSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    ~QgsSingleSymbolRendererWidget();
 
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRenderer* renderer();
 
     virtual void setMapCanvas( QgsMapCanvas* canvas );
 

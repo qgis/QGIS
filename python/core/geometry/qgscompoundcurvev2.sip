@@ -1,21 +1,21 @@
-class QgsCompoundCurveV2: public QgsCurveV2
+class QgsCompoundCurve: public QgsCurve
 {
 %TypeHeaderCode
 #include <qgscompoundcurvev2.h>
 %End
 
   public:
-    QgsCompoundCurveV2();
-    QgsCompoundCurveV2( const QgsCompoundCurveV2& curve );
-    //QgsCompoundCurveV2 &operator=( const QgsCompoundCurveV2 & curve );
-    ~QgsCompoundCurveV2();
+    QgsCompoundCurve();
+    QgsCompoundCurve( const QgsCompoundCurve& curve );
+    //QgsCompoundCurve &operator=( const QgsCompoundCurve & curve );
+    ~QgsCompoundCurve();
 
-    virtual bool operator==( const QgsCurveV2& other ) const;
-    virtual bool operator!=( const QgsCurveV2& other ) const;
+    virtual bool operator==( const QgsCurve& other ) const;
+    virtual bool operator!=( const QgsCurve& other ) const;
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCompoundCurveV2* clone() const;
+    virtual QgsCompoundCurve* clone() const;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
@@ -38,7 +38,7 @@ class QgsCompoundCurveV2: public QgsCurveV2
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
     /** Returns the number of curves in the geometry.
      */
@@ -46,11 +46,11 @@ class QgsCompoundCurveV2: public QgsCurveV2
 
     /** Returns the curve at the specified index.
      */
-    const QgsCurveV2* curveAt( int i ) const;
+    const QgsCurve* curveAt( int i ) const;
 
     /** Adds a curve to the geometr (takes ownership)
      */
-    void addCurve( QgsCurveV2* c /Transfer/ );
+    void addCurve( QgsCurve* c /Transfer/ );
 
     /** Removes a curve from the geometry.
      * @param i index of curve to remove
@@ -87,7 +87,7 @@ class QgsCompoundCurveV2: public QgsCurveV2
         @return rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const;
 
-    virtual QgsCompoundCurveV2* reversed() const /Factory/;
+    virtual QgsCompoundCurve* reversed() const /Factory/;
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );

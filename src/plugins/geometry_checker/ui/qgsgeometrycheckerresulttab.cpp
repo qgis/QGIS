@@ -326,7 +326,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     QgsGeometryCheckError* error = ui.tableWidgetErrors->item( item->row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError*>();
 
-    QgsAbstractGeometryV2* geometry = error->geometry();
+    QgsAbstractGeometry* geometry = error->geometry();
     if ( ui.checkBoxHighlight->isChecked() && geometry )
     {
       QgsRubberBand* featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );

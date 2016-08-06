@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-class Qgs25DRenderer : QgsFeatureRendererV2
+class Qgs25DRenderer : QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include "qgs25drenderer.h"
@@ -27,14 +27,14 @@ class Qgs25DRenderer : QgsFeatureRendererV2
      *
      * @param element XML information
      */
-    static QgsFeatureRendererV2* create( QDomElement& element );
+    static QgsFeatureRenderer* create( QDomElement& element );
     QDomElement save( QDomDocument& doc );
 
     void startRender( QgsRenderContext& context, const QgsFields& fields );
     void stopRender( QgsRenderContext& context );
 
     QList<QString> usedAttributes();
-    QgsFeatureRendererV2* clone() const;
+    QgsFeatureRenderer* clone() const;
 
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
     virtual QgsSymbolList symbols( QgsRenderContext& context );
@@ -93,7 +93,7 @@ class Qgs25DRenderer : QgsFeatureRendererV2
      * we assume that the internals are not compatible and create a new default
      * 2.5D renderer.
      */
-    static Qgs25DRenderer* convertFromRenderer( QgsFeatureRendererV2* renderer );
+    static Qgs25DRenderer* convertFromRenderer( QgsFeatureRenderer* renderer );
 
     /**
      * Is the shadow enabled

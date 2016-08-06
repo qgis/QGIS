@@ -19,7 +19,7 @@ typedef QVector< QVector< QVector<QgsPoint> > > QgsMultiPolygon;
  * for geometry objects. QgsGeometry is implicitly shared, so making copies of geometries is inexpensive. The geometry
  * container class can also be stored inside a QVariant object.
  *
- * The actual geometry representation is stored as a @link QgsAbstractGeometryV2 @endlink within the container, and
+ * The actual geometry representation is stored as a @link QgsAbstractGeometry @endlink within the container, and
  * can be accessed via the @link geometry @endlink method or set using the @link setGeometry @endlink method.
  */
 
@@ -40,7 +40,7 @@ class QgsGeometry
      * geom is transferred.
      * @note added in QGIS 2.10
      */
-    explicit QgsGeometry( QgsAbstractGeometryV2* geom /Transfer/ );
+    explicit QgsGeometry( QgsAbstractGeometry* geom /Transfer/ );
 
     //! Destructor
     ~QgsGeometry();
@@ -49,13 +49,13 @@ class QgsGeometry
      * @note added in QGIS 2.10
      * @see setGeometry
      */
-    QgsAbstractGeometryV2* geometry() const;
+    QgsAbstractGeometry* geometry() const;
 
     /** Sets the underlying geometry store. Ownership of geometry is transferred.
      * @note added in QGIS 2.10
      * @see geometry
      */
-    void setGeometry( QgsAbstractGeometryV2* geometry /Transfer/ );
+    void setGeometry( QgsAbstractGeometry* geometry /Transfer/ );
 
     /** Returns true if the geometry is empty (ie, contains no underlying geometry
      * accessible via @link geometry @endlink).
@@ -303,7 +303,7 @@ class QgsGeometry
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurveV2* ring );
+    int addRing( QgsCurve* ring );
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
@@ -330,7 +330,7 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsAbstractGeometryV2* part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    int addPart( QgsAbstractGeometry* part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
      * @param newPart part to add. Ownership is NOT transferred.
@@ -777,7 +777,7 @@ class QgsGeometry
 
     /** Creates and returns a new geometry engine
      */
-    static QgsGeometryEngine* createGeometryEngine( const QgsAbstractGeometryV2* geometry ) /Factory/;
+    static QgsGeometryEngine* createGeometryEngine( const QgsAbstractGeometry* geometry ) /Factory/;
 
     /** Upgrades a point list from QgsPoint to QgsPointV2
      * @param input list of QgsPoint objects to be upgraded

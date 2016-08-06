@@ -427,7 +427,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setSegmentationTolerance( double tolerance );
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
-    void setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType type );
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 
   public slots:
 

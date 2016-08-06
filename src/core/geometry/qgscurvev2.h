@@ -21,24 +21,24 @@
 #include "qgsabstractgeometryv2.h"
 #include "qgsrectangle.h"
 
-class QgsLineStringV2;
+class QgsLineString;
 class QPainterPath;
 
 /** \ingroup core
- * \class QgsCurveV2
+ * \class QgsCurve
  * \brief Abstract base class for curved geometry type
  * \note added in QGIS 2.10
  */
-class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
+class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 {
   public:
-    QgsCurveV2();
-    virtual ~QgsCurveV2();
+    QgsCurve();
+    virtual ~QgsCurve();
 
-    virtual bool operator==( const QgsCurveV2& other ) const = 0;
-    virtual bool operator!=( const QgsCurveV2& other ) const = 0;
+    virtual bool operator==( const QgsCurve& other ) const = 0;
+    virtual bool operator!=( const QgsCurve& other ) const = 0;
 
-    virtual QgsCurveV2* clone() const override = 0;
+    virtual QgsCurve* clone() const override = 0;
 
     /** Returns the starting point of the curve.
      * @see endPoint
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0;
 
     /** Adds a curve to a painter path.
      */
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
 
     /** Returns a list of points within the curve.
      */
-    virtual void points( QgsPointSequenceV2 &pt ) const = 0;
+    virtual void points( QgsPointSequence &pt ) const = 0;
 
     /** Returns the number of points in the curve.
      */
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual void sumUpArea( double& sum ) const = 0;
 
-    virtual QgsCoordinateSequenceV2 coordinateSequence() const override;
+    virtual QgsCoordinateSequence coordinateSequence() const override;
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
     /** Returns the point and vertex id of a point within the curve.
@@ -100,14 +100,14 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
     /** Returns a reversed copy of the curve, where the direction of the curve has been flipped.
      * @note added in QGIS 2.14
      */
-    virtual QgsCurveV2* reversed() const = 0;
+    virtual QgsCurve* reversed() const = 0;
 
-    virtual QgsAbstractGeometryV2* boundary() const override;
+    virtual QgsAbstractGeometry* boundary() const override;
 
     /** Returns a geometry without curves. Caller takes ownership
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsCurveV2* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    QgsCurve* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const override { Q_UNUSED( part );  Q_UNUSED( ring ); return numPoints(); }
     virtual int ringCount( int part = 0 ) const override { Q_UNUSED( part ); return numPoints() > 0 ? 1 : 0; }
@@ -118,12 +118,12 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
 
   protected:
 
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometryV2::clearCache(); }
+    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }
 
   private:
 
     mutable QgsRectangle mBoundingBox;
-    mutable QgsCoordinateSequenceV2 mCoordinateSequence;
+    mutable QgsCoordinateSequence mCoordinateSequence;
 };
 
 #endif // QGSCURVEV2_H

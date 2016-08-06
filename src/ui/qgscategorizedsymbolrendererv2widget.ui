@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsCategorizedSymbolRendererV2Widget</class>
- <widget class="QWidget" name="QgsCategorizedSymbolRendererV2Widget">
+ <class>QgsCategorizedSymbolRendererWidget</class>
+ <widget class="QWidget" name="QgsCategorizedSymbolRendererWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

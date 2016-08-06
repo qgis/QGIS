@@ -31,7 +31,7 @@
  ****************************************************************************/
 
 QgsPointV2::QgsPointV2( double x, double y )
-    : QgsAbstractGeometryV2()
+    : QgsAbstractGeometry()
     , mX( x )
     , mY( y )
     , mZ( 0.0 )
@@ -41,7 +41,7 @@ QgsPointV2::QgsPointV2( double x, double y )
 }
 
 QgsPointV2::QgsPointV2( const QgsPoint& p )
-    : QgsAbstractGeometryV2()
+    : QgsAbstractGeometry()
     , mX( p.x() )
     , mY( p.y() )
     , mZ( 0.0 )
@@ -51,7 +51,7 @@ QgsPointV2::QgsPointV2( const QgsPoint& p )
 }
 
 QgsPointV2::QgsPointV2( QPointF p )
-    : QgsAbstractGeometryV2()
+    : QgsAbstractGeometry()
     , mX( p.x() )
     , mY( p.y() )
     , mZ( 0.0 )
@@ -271,17 +271,17 @@ void QgsPointV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTrans
   }
 }
 
-QgsCoordinateSequenceV2 QgsPointV2::coordinateSequence() const
+QgsCoordinateSequence QgsPointV2::coordinateSequence() const
 {
-  QgsCoordinateSequenceV2 cs;
+  QgsCoordinateSequence cs;
 
-  cs.append( QgsRingSequenceV2() );
-  cs.back().append( QgsPointSequenceV2() << QgsPointV2( *this ) );
+  cs.append( QgsRingSequence() );
+  cs.back().append( QgsPointSequence() << QgsPointV2( *this ) );
 
   return cs;
 }
 
-QgsAbstractGeometryV2* QgsPointV2::boundary() const
+QgsAbstractGeometry* QgsPointV2::boundary() const
 {
   return nullptr;
 }

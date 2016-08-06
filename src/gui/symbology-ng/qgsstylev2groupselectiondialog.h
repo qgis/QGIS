@@ -22,18 +22,18 @@
 #include "ui_qgsstylev2groupselectiondialogbase.h"
 
 
-class QgsStyleV2;
+class QgsStyle;
 
 /** \ingroup gui
- * \class QgsStyleV2GroupSelectionDialog
+ * \class QgsStyleGroupSelectionDialog
  */
-class GUI_EXPORT QgsStyleV2GroupSelectionDialog : public QDialog, private Ui::SymbolsV2GroupSelectionDialogBase
+class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::SymbolsGroupSelectionDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsStyleV2GroupSelectionDialog( QgsStyleV2* style, QWidget *parent = nullptr );
-    ~QgsStyleV2GroupSelectionDialog();
+    QgsStyleGroupSelectionDialog( QgsStyle* style, QWidget *parent = nullptr );
+    ~QgsStyleGroupSelectionDialog();
     //! Set bold font for item
     void setBold( QStandardItem *item );
 
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsStyleV2GroupSelectionDialog : public QDialog, private Ui::Sy
      * @param parent
      */
     void buildGroupTree( QStandardItem *&parent );
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
 
 };
 

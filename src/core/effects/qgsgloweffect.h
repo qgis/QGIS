@@ -21,7 +21,7 @@
 #include "qgssymbol.h"
 #include <QPainter>
 
-class QgsVectorColorRampV2;
+class QgsVectorColorRamp;
 
 /** \ingroup core
  * \class QgsGlowEffect
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see ramp
      * @see setColorType
      */
-    void setRamp( QgsVectorColorRampV2* ramp );
+    void setRamp( QgsVectorColorRamp* ramp );
 
     /** Returns the color ramp used for the glow. This only applies if the @link colorType @endlink
      * is set to ColorRamp. The glow will utilise colors from the ramp.
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see setRamp
      * @see colorType
      */
-    QgsVectorColorRampV2* ramp() const { return mRamp; }
+    QgsVectorColorRamp* ramp() const { return mRamp; }
 
     /** Sets the blend mode for the effect
      * @param mode blend mode used for drawing the effect on to a destination
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
-    /** Sets the color mode to use for the glow. The glow can either be drawn using a QgsVectorColorRampV2
+    /** Sets the color mode to use for the glow. The glow can either be drawn using a QgsVectorColorRamp
      * color ramp or by simply specificing a single color. setColorType is used to specify which mode to use
      * for the glow.
      * @param colorType color type to use for glow
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setColorType( GlowColorType colorType ) { mColorType = colorType; }
 
-    /** Returns the color mode used for the glow. The glow can either be drawn using a QgsVectorColorRampV2
+    /** Returns the color mode used for the glow. The glow can either be drawn using a QgsVectorColorRamp
      * color ramp or by specificing a single color.
      * @returns current color mode used for the glow
      * @see setColorType
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     double mSpread;
     QgsUnitTypes::RenderUnit mSpreadUnit;
     QgsMapUnitScale mSpreadMapUnitScale;
-    QgsVectorColorRampV2* mRamp;
+    QgsVectorColorRamp* mRamp;
     int mBlurLevel;
     double mTransparency;
     QColor mColor;

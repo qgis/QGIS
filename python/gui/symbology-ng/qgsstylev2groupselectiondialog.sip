@@ -15,15 +15,15 @@
  ***************************************************************************/
 
 
-class QgsStyleV2GroupSelectionDialog : public QDialog, private Ui::SymbolsV2GroupSelectionDialogBase
+class QgsStyleGroupSelectionDialog : public QDialog, private Ui::SymbolsGroupSelectionDialogBase
 {
 %TypeHeaderCode
 #include <qgsstylev2groupselectiondialog.h>
 %End
 
   public:
-    QgsStyleV2GroupSelectionDialog( QgsStyleV2* style, QWidget *parent = 0 );
-    ~QgsStyleV2GroupSelectionDialog();
+    QgsStyleGroupSelectionDialog( QgsStyle* style, QWidget *parent = 0 );
+    ~QgsStyleGroupSelectionDialog();
     //! Set bold font for item
     void setBold( QStandardItem *item );
 

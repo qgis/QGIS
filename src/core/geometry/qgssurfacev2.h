@@ -24,9 +24,9 @@
 class QgsPolygonV2;
 
 /** \ingroup core
- * \class QgsSurfaceV2
+ * \class QgsSurface
  */
-class CORE_EXPORT QgsSurfaceV2: public QgsAbstractGeometryV2
+class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
 {
   public:
 
@@ -45,9 +45,9 @@ class CORE_EXPORT QgsSurfaceV2: public QgsAbstractGeometryV2
 
   protected:
 
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometryV2::clearCache(); }
+    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }
 
-    mutable QgsCoordinateSequenceV2 mCoordinateSequence;
+    mutable QgsCoordinateSequence mCoordinateSequence;
     mutable QgsRectangle mBoundingBox;
 };
 

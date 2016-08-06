@@ -23,7 +23,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
 {
   public:
     QgsGeometryGapCheckError( const QgsGeometryCheck* check,
-                              QgsAbstractGeometryV2* geometry,
+                              QgsAbstractGeometry* geometry,
                               const QgsFeatureIds& neighbors,
                               double area,
                               const QgsRectangle& gapAreaBBox )
@@ -38,7 +38,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
       delete mGeometry;
     }
 
-    QgsAbstractGeometryV2* geometry() override { return mGeometry->clone(); }
+    QgsAbstractGeometry* geometry() override { return mGeometry->clone(); }
     const QgsFeatureIds& neighbors() const { return mNeighbors; }
 
     bool isEqual( QgsGeometryCheckError* other ) const override
@@ -77,7 +77,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
   private:
     QgsFeatureIds mNeighbors;
     QgsRectangle mGapAreaBBox;
-    QgsAbstractGeometryV2* mGeometry;
+    QgsAbstractGeometry* mGeometry;
 };
 
 class QgsGeometryGapCheck : public QgsGeometryCheck

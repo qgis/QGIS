@@ -70,7 +70,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     Q_OBJECT
 
   public:
-    QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent = nullptr );
+    QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent = nullptr );
     ~QgsSmartGroupEditorDialog();
 
     //! returns the value from mNameLineEdit
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     void on_buttonBox_accepted();
 
   protected:
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
     // layout of the mConditionsBox
     QGridLayout *mLayout;
     // counter for the number of conditions

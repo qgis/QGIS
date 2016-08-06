@@ -21,20 +21,20 @@ email                : marco.hugentobler at sourcepole dot com
 #include <QVector>
 
 /** \ingroup core
- * \class QgsGeometryCollectionV2
+ * \class QgsGeometryCollection
  * \brief Geometry collection
  * \note added in QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
-class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
+class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 {
   public:
-    QgsGeometryCollectionV2();
-    QgsGeometryCollectionV2( const QgsGeometryCollectionV2& c );
-    QgsGeometryCollectionV2& operator=( const QgsGeometryCollectionV2& c );
-    virtual ~QgsGeometryCollectionV2();
+    QgsGeometryCollection();
+    QgsGeometryCollection( const QgsGeometryCollection& c );
+    QgsGeometryCollection& operator=( const QgsGeometryCollection& c );
+    virtual ~QgsGeometryCollection();
 
-    virtual QgsGeometryCollectionV2* clone() const override;
+    virtual QgsGeometryCollection* clone() const override;
 
     /** Returns the number of geometries within the collection.
      */
@@ -43,27 +43,27 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     /** Returns a const reference to a geometry from within the collection.
      * @param n index of geometry to return
      */
-    const QgsAbstractGeometryV2* geometryN( int n ) const;
+    const QgsAbstractGeometry* geometryN( int n ) const;
 
     /** Returns a geometry from within the collection.
      * @param n index of geometry to return
      */
-    QgsAbstractGeometryV2* geometryN( int n );
+    QgsAbstractGeometry* geometryN( int n );
 
-    //methods inherited from QgsAbstractGeometryV2
+    //methods inherited from QgsAbstractGeometry
     virtual int dimension() const override;
     virtual QString geometryType() const override { return "GeometryCollection"; }
     virtual void clear() override;
-    virtual QgsAbstractGeometryV2* boundary() const override;
+    virtual QgsAbstractGeometry* boundary() const override;
 
     /** Adds a geometry and takes ownership. Returns true in case of success.*/
-    virtual bool addGeometry( QgsAbstractGeometryV2* g );
+    virtual bool addGeometry( QgsAbstractGeometry* g );
 
     /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
      * @param g geometry to insert. Ownership is transferred to the collection.
      * @param index position to insert geometry before
      */
-    virtual bool insertGeometry( QgsAbstractGeometryV2* g, int index );
+    virtual bool insertGeometry( QgsAbstractGeometry* g, int index );
 
     /** Removes a geometry from the collection.
      * @param nr index of geometry to remove
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual QgsRectangle boundingBox() const override;
 
-    virtual QgsCoordinateSequenceV2 coordinateSequence() const override;
+    virtual QgsCoordinateSequence coordinateSequence() const override;
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     /** Returns a geometry without curves. Caller takes ownership
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsAbstractGeometryV2* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      * @param vertex the vertex id
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     virtual bool dropMValue() override;
 
   protected:
-    QVector< QgsAbstractGeometryV2* > mGeometries;
+    QVector< QgsAbstractGeometry* > mGeometries;
 
     /** Returns whether child type names are omitted from Wkt representations of the collection
      * @note added in QGIS 2.12
@@ -136,15 +136,15 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     /** Reads a collection from a WKT string.
      */
-    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometryV2*>& subtypes, const QString& defaultChildWkbType = QString() );
+    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry*>& subtypes, const QString& defaultChildWkbType = QString() );
 
     virtual QgsRectangle calculateBoundingBox() const override;
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometryV2::clearCache(); }
+    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }
 
   private:
 
     mutable QgsRectangle mBoundingBox;
-    mutable QgsCoordinateSequenceV2 mCoordinateSequence;
+    mutable QgsCoordinateSequence mCoordinateSequence;
 };
 
 #endif // QGSGEOMETRYCOLLECTIONV2_H

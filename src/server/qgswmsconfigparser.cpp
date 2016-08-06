@@ -321,7 +321,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
     }
 
     QString errorMsg;
-    QScopedPointer<QgsFeatureRendererV2> renderer( QgsFeatureRendererV2::loadSld( sldDoc.documentElement(), geom.type(), errorMsg ) );
+    QScopedPointer<QgsFeatureRenderer> renderer( QgsFeatureRenderer::loadSld( sldDoc.documentElement(), geom.type(), errorMsg ) );
     if ( !renderer.data() )
     {
       continue;

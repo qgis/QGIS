@@ -22,7 +22,7 @@
 
 /** \ingroup core
  * A symbol layer class for displaying displacement arrows based on point layer attributes*/
-class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
+class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 {
   public:
     enum VectorFieldType
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     AngleOrientation mAngleOrientation;
     AngleUnits mAngleUnits;
 
-    QgsLineSymbolV2* mLineSymbol;
+    QgsLineSymbol* mLineSymbol;
 
     //Attribute indices are resolved in startRender method
     int mXIndex;

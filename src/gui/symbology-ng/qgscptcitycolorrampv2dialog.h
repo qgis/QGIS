@@ -26,21 +26,21 @@
 #include <QSortFilterProxyModel>
 #include <QFileInfo>
 
-class QgsCptCityColorRampV2;
+class QgsCptCityColorRamp;
 class TreeFilterProxyModel;
 class ListFilterProxyModel;
 class UngroupProxyModel;
 
 /** \ingroup gui
- * \class QgsCptCityColorRampV2Dialog
+ * \class QgsCptCityColorRampDialog
  */
-class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCptCityColorRampV2DialogBase
+class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptCityColorRampDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent = nullptr );
-    ~QgsCptCityColorRampV2Dialog();
+    QgsCptCityColorRampDialog( QgsCptCityColorRamp* ramp, QWidget* parent = nullptr );
+    ~QgsCptCityColorRampDialog();
 
     QString selectedName() const
     { return mRamp ? QFileInfo( mRamp->schemeName() ).baseName() + mRamp->variantName() : QString(); }
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     void updateListWidget( QgsCptCityDataItem *item );
     bool eventFilter( QObject *obj, QEvent *event ) override;
 
-    QgsCptCityColorRampV2* mRamp;
+    QgsCptCityColorRamp* mRamp;
     QgsCptCityArchive* mArchive;
     QgsCptCityBrowserModel::ViewType mArchiveViewType;
 

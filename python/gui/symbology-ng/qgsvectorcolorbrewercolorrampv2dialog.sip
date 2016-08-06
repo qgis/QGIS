@@ -1,11 +1,11 @@
-class QgsVectorColorBrewerColorRampV2Dialog : QDialog
+class QgsVectorColorBrewerColorRampDialog : QDialog
 {
 %TypeHeaderCode
 #include <qgsvectorcolorbrewercolorrampv2dialog.h>
 %End
 
   public:
-    QgsVectorColorBrewerColorRampV2Dialog( QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent /TransferThis/ = NULL );
+    QgsVectorColorBrewerColorRampDialog( QgsVectorColorBrewerColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
 
   public slots:
     void setSchemeName();

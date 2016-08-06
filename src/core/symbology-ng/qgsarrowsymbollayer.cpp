@@ -16,7 +16,7 @@
 #include "qgsarrowsymbollayer.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
-    : QgsLineSymbolLayerV2()
+    : QgsLineSymbolLayer()
     , mArrowWidth( 1.0 )
     , mArrowWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mArrowStartWidth( 1.0 )
@@ -41,14 +41,14 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
   setOffset( 0.0 );
   setOffsetUnit( QgsUnitTypes::RenderMillimeters );
 
-  mSymbol.reset( static_cast<QgsFillSymbolV2*>( QgsFillSymbolV2::createSimple( QgsStringMap() ) ) );
+  mSymbol.reset( static_cast<QgsFillSymbol*>( QgsFillSymbol::createSimple( QgsStringMap() ) ) );
 }
 
 bool QgsArrowSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 {
   if ( symbol && symbol->type() == QgsSymbol::Fill )
   {
-    mSymbol.reset( static_cast<QgsFillSymbolV2*>( symbol ) );
+    mSymbol.reset( static_cast<QgsFillSymbol*>( symbol ) );
     return true;
   }
   delete symbol;
@@ -118,7 +118,7 @@ QgsSymbolLayer* QgsArrowSymbolLayer::create( const QgsStringMap& props )
 
   l->restoreDataDefinedProperties( props );
 
-  l->setSubSymbol( QgsFillSymbolV2::createSimple( props ) );
+  l->setSubSymbol( QgsFillSymbol::createSimple( props ) );
 
   return l;
 }
@@ -173,7 +173,7 @@ QgsStringMap QgsArrowSymbolLayer::properties() const
 
 QSet<QString> QgsArrowSymbolLayer::usedAttributes() const
 {
-  QSet<QString> attributes = QgsLineSymbolLayerV2::usedAttributes();
+  QSet<QString> attributes = QgsLineSymbolLayer::usedAttributes();
 
   attributes.unite( mSymbol->usedAttributes() );
 

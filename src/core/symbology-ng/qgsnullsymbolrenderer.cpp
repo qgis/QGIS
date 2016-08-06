@@ -21,7 +21,7 @@
 #include <QDomElement>
 
 QgsNullSymbolRenderer::QgsNullSymbolRenderer()
-    : QgsFeatureRendererV2( "nullSymbol" )
+    : QgsFeatureRenderer( "nullSymbol" )
 {
 }
 
@@ -94,7 +94,7 @@ QString QgsNullSymbolRenderer::dump() const
   return QString( "NULL" );
 }
 
-QgsFeatureRendererV2* QgsNullSymbolRenderer::clone() const
+QgsFeatureRenderer* QgsNullSymbolRenderer::clone() const
 {
   QgsNullSymbolRenderer* r = new QgsNullSymbolRenderer();
   return r;
@@ -105,7 +105,7 @@ QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext& )
   return QgsSymbolList();
 }
 
-QgsFeatureRendererV2* QgsNullSymbolRenderer::create( QDomElement& element )
+QgsFeatureRenderer* QgsNullSymbolRenderer::create( QDomElement& element )
 {
   Q_UNUSED( element );
   QgsNullSymbolRenderer* r = new QgsNullSymbolRenderer();
@@ -119,7 +119,7 @@ QDomElement QgsNullSymbolRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsNullSymbolRenderer* QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
+QgsNullSymbolRenderer* QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   Q_UNUSED( renderer );
   return new QgsNullSymbolRenderer();

@@ -125,10 +125,10 @@ void TestQgsLabelingEngineV2::testBasic()
   vl->setCustomProperty( "labeling/fieldName", "Class" );
   setDefaultLabelParams( vl );
 
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString() ) );
-  //engine.setFlags( QgsLabelingEngineV2::RenderOutlineLabels | QgsLabelingEngineV2::DrawLabelRectOnly );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
 
   p.end();
@@ -173,7 +173,7 @@ void TestQgsLabelingEngineV2::testDiagrams()
   vl->loadNamedStyle( QString( TEST_DATA_DIR ) + "/points_diagrams.qml", res );
   Q_ASSERT( res );
 
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerDiagramProvider( vl ) );
   engine.run( context );
@@ -264,7 +264,7 @@ void TestQgsLabelingEngineV2::testRuleBased()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
 
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsRuleBasedLabelProvider( , vl ) );
   engine.run( context );
@@ -303,10 +303,10 @@ void TestQgsLabelingEngineV2::zOrder()
   pls1.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, "case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end", QString() );
 
   QgsVectorLayerLabelProvider* provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( provider1 );
-  //engine.setFlags( QgsLabelingEngineV2::RenderOutlineLabels | QgsLabelingEngineV2::DrawLabelRectOnly );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
   p.end();
   engine.removeProvider( provider1 );

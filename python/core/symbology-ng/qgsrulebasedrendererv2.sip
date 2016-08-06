@@ -2,7 +2,7 @@
 When drawing a vector layer with rule-based renderer, it goes through
 the rules and draws features with symbols from rules that match.
  */
-class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
+class QgsRuleBasedRenderer : QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include <qgsrulebasedrendererv2.h>
@@ -24,8 +24,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     // (both f, symbol are _not_ owned by this class)
     struct RenderJob
     {
-      RenderJob( QgsRuleBasedRendererV2::FeatureToRender& _ftr, QgsSymbol* _s );
-      QgsRuleBasedRendererV2::FeatureToRender& ftr;
+      RenderJob( QgsRuleBasedRenderer::FeatureToRender& _ftr, QgsSymbol* _s );
+      QgsRuleBasedRenderer::FeatureToRender& ftr;
       QgsSymbol* symbol;
     };
 
@@ -36,14 +36,14 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
       RenderLevel( int z );
       ~RenderLevel();
       int zIndex;
-      QList<QgsRuleBasedRendererV2::RenderJob*> jobs;
+      QList<QgsRuleBasedRenderer::RenderJob*> jobs;
 
-      RenderLevel( const QgsRuleBasedRendererV2::RenderLevel& other );
+      RenderLevel( const QgsRuleBasedRenderer::RenderLevel& other );
 
     };
 
     // rendering queue: a list of rendering levels
-    typedef QList<QgsRuleBasedRendererV2::RenderLevel> RenderQueue;
+    typedef QList<QgsRuleBasedRenderer::RenderLevel> RenderQueue;
 
     /**
       This class keeps data about a rules for rule-based renderer.
@@ -201,10 +201,10 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         void setActive( bool state );
 
         //! clone this rule, return new instance
-        QgsRuleBasedRendererV2::Rule* clone() const /Factory/;
+        QgsRuleBasedRenderer::Rule* clone() const /Factory/;
 
         void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props );
-        static QgsRuleBasedRendererV2::Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
+        static QgsRuleBasedRenderer::Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
         QDomElement save( QDomDocument& doc, QgsSymbolMap& symbolMap );
 
@@ -232,7 +232,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
          * @return             The result of the rendering. In explicit if the feature is added to the queue or
          *                     the reason for not rendering the feature.
          */
-        QgsRuleBasedRendererV2::Rule::RenderResult renderFeature( QgsRuleBasedRendererV2::FeatureToRender& featToRender, QgsRenderContext& context, QgsRuleBasedRendererV2::RenderQueue& renderQueue );
+        QgsRuleBasedRenderer::Rule::RenderResult renderFeature( QgsRuleBasedRenderer::FeatureToRender& featToRender, QgsRenderContext& context, QgsRuleBasedRenderer::RenderQueue& renderQueue );
 
         //! only tell whether a feature will be rendered without actually rendering it
         bool willRenderFeature( QgsFeature& feat, QgsRenderContext* context = 0);
@@ -246,7 +246,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         QSet< QString > legendKeysForFeature( QgsFeature& feat, QgsRenderContext* context = nullptr );
 
         //! tell which rules will be used to render the feature
-        QList<QgsRuleBasedRendererV2::Rule*> rulesForFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
+        QList<QgsRuleBasedRenderer::Rule*> rulesForFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
 
         /**
          * Stop a rendering process. Used to clean up the internal state of this rule
@@ -263,50 +263,50 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
          *
          * @return A new rule
          */
-        static QgsRuleBasedRendererV2::Rule* create( QDomElement& ruleElem, QgsSymbolMap& symbolMap ) /Factory/;
+        static QgsRuleBasedRenderer::Rule* create( QDomElement& ruleElem, QgsSymbolMap& symbolMap ) /Factory/;
 
         /**
          * Return all children rules of this rule
          *
          * @return A list of rules
          */
-        QList<QgsRuleBasedRendererV2::Rule*>& children();
+        QList<QgsRuleBasedRenderer::Rule*>& children();
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
          * @return A list of descendant rules
          */
-        QList<QgsRuleBasedRendererV2::Rule*> descendants() const;
+        QList<QgsRuleBasedRenderer::Rule*> descendants() const;
 
         /**
          * The parent rule
          *
          * @return Parent rule
          */
-        QgsRuleBasedRendererV2::Rule* parent();
+        QgsRuleBasedRenderer::Rule* parent();
 
         //! add child rule, take ownership, sets this as parent
-        void appendChild( QgsRuleBasedRendererV2::Rule* rule /Transfer/ );
+        void appendChild( QgsRuleBasedRenderer::Rule* rule /Transfer/ );
 
         //! add child rule, take ownership, sets this as parent
-        void insertChild( int i, QgsRuleBasedRendererV2::Rule* rule /Transfer/ );
+        void insertChild( int i, QgsRuleBasedRenderer::Rule* rule /Transfer/ );
 
         //! delete child rule
-        void removeChild( QgsRuleBasedRendererV2::Rule* rule );
+        void removeChild( QgsRuleBasedRenderer::Rule* rule );
 
         //! delete child rule
         void removeChildAt( int i );
 
         //! take child rule out, set parent as null
-        QgsRuleBasedRendererV2::Rule* takeChild( QgsRuleBasedRendererV2::Rule* rule ) /TransferBack/;
+        QgsRuleBasedRenderer::Rule* takeChild( QgsRuleBasedRenderer::Rule* rule ) /TransferBack/;
 
         //! take child rule out, set parent as null
-        QgsRuleBasedRendererV2::Rule* takeChildAt( int i ) /TransferBack/;
+        QgsRuleBasedRenderer::Rule* takeChildAt( int i ) /TransferBack/;
 
         //! Try to find a rule given its unique key
         //! @note added in 2.6
-        QgsRuleBasedRendererV2::Rule* findRuleByKey( const QString& key );
+        QgsRuleBasedRenderer::Rule* findRuleByKey( const QString& key );
 
         /**
          * Check which child rules are else rules and update the internal list of else rules
@@ -334,20 +334,20 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
       private:
 
-        Rule( const QgsRuleBasedRendererV2::Rule& rh );
+        Rule( const QgsRuleBasedRenderer::Rule& rh );
 
     };
 
     /////
 
-    static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
 
     //! Constructs the renderer from given tree of rules (takes ownership)
-    QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root /Transfer/ );
+    QgsRuleBasedRenderer( QgsRuleBasedRenderer::Rule* root /Transfer/ );
     //! Constructor for convenience. Creates a root rule and adds a default rule with symbol (takes ownership)
-    QgsRuleBasedRendererV2( QgsSymbol* defaultSymbol /Transfer/ );
+    QgsRuleBasedRenderer( QgsSymbol* defaultSymbol /Transfer/ );
 
-    ~QgsRuleBasedRendererV2();
+    ~QgsRuleBasedRenderer();
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext &context );
@@ -364,11 +364,11 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     virtual bool filterNeedsGeometry() const;
 
-    virtual QgsRuleBasedRendererV2* clone() const /Factory/;
+    virtual QgsRuleBasedRenderer* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsFeatureRenderer* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
@@ -418,30 +418,30 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     virtual QSet<QString> legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual QgsFeatureRendererV2::Capabilities capabilities();
+    virtual QgsFeatureRenderer::Capabilities capabilities();
 
     /////
 
-    QgsRuleBasedRendererV2::Rule* rootRule();
+    QgsRuleBasedRenderer::Rule* rootRule();
 
     //////
 
     //! take a rule and create a list of new rules based on the categories from categorized symbol renderer
-    static void refineRuleCategories( QgsRuleBasedRendererV2::Rule* initialRule, QgsCategorizedSymbolRendererV2* r );
+    static void refineRuleCategories( QgsRuleBasedRenderer::Rule* initialRule, QgsCategorizedSymbolRenderer* r );
     //! take a rule and create a list of new rules based on the ranges from graduated symbol renderer
-    static void refineRuleRanges( QgsRuleBasedRendererV2::Rule* initialRule, QgsGraduatedSymbolRendererV2* r );
+    static void refineRuleRanges( QgsRuleBasedRenderer::Rule* initialRule, QgsGraduatedSymbolRenderer* r );
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
-    static void refineRuleScales( QgsRuleBasedRendererV2::Rule* initialRule, QList<int> scales );
+    static void refineRuleScales( QgsRuleBasedRenderer::Rule* initialRule, QList<int> scales );
 
-    //! creates a QgsRuleBasedRendererV2 from an existing renderer.
+    //! creates a QgsRuleBasedRenderer from an existing renderer.
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsRuleBasedRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
+    static QgsRuleBasedRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
     static void convertToDataDefinedSymbology( QgsSymbol* symbol, const QString& sizeScaleField, const QString& rotationField = QString() );
 
   private:
-    QgsRuleBasedRendererV2( const QgsRuleBasedRendererV2 & );
-    QgsRuleBasedRendererV2 & operator=( const QgsRuleBasedRendererV2 & );
+    QgsRuleBasedRenderer( const QgsRuleBasedRenderer & );
+    QgsRuleBasedRenderer & operator=( const QgsRuleBasedRenderer & );
 };

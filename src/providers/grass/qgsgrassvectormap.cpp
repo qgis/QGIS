@@ -617,7 +617,7 @@ void QgsGrassVectorMap::unlockReadWrite()
   }
 }
 
-QgsAbstractGeometryV2 * QgsGrassVectorMap::lineGeometry( int id )
+QgsAbstractGeometry * QgsGrassVectorMap::lineGeometry( int id )
 {
   QgsDebugMsgLevel( QString( "id = %1" ).arg( id ), 3 );
   if ( !Vect_line_alive( mMap, id ) ) // should not happen (update mode!)?
@@ -636,7 +636,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::lineGeometry( int id )
     return 0;
   }
 
-  QgsPointSequenceV2 pointList;
+  QgsPointSequence pointList;
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
@@ -651,14 +651,14 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::lineGeometry( int id )
   }
   else if ( type & GV_LINES )
   {
-    QgsLineStringV2 * line = new QgsLineStringV2();
+    QgsLineString * line = new QgsLineString();
     line->setPoints( pointList );
     return line;
   }
   else if ( type & GV_FACE )
   {
     QgsPolygonV2 * polygon = new QgsPolygonV2();
-    QgsLineStringV2 * ring = new QgsLineStringV2();
+    QgsLineString * ring = new QgsLineString();
     ring->setPoints( pointList );
     polygon->setExteriorRing( ring );
     return polygon;
@@ -668,7 +668,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::lineGeometry( int id )
   return 0;
 }
 
-QgsAbstractGeometryV2 * QgsGrassVectorMap::nodeGeometry( int id )
+QgsAbstractGeometry * QgsGrassVectorMap::nodeGeometry( int id )
 {
   QgsDebugMsgLevel( QString( "id = %1" ).arg( id ), 3 );
   double x, y, z;
@@ -676,7 +676,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::nodeGeometry( int id )
   return new QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, x, y, z );
 }
 
-QgsAbstractGeometryV2 * QgsGrassVectorMap::areaGeometry( int id )
+QgsAbstractGeometry * QgsGrassVectorMap::areaGeometry( int id )
 {
   QgsDebugMsgLevel( QString( "id = %1" ).arg( id ), 3 );
   QgsPolygonV2 * polygon = new QgsPolygonV2();
@@ -688,14 +688,14 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::areaGeometry( int id )
   QgsGrass::lock();
   Vect_get_area_points( mMap, id, points );
 
-  QgsPointSequenceV2 pointList;
+  QgsPointSequence pointList;
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
     pointList << QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
   }
 
-  QgsLineStringV2 * ring = new QgsLineStringV2();
+  QgsLineString * ring = new QgsLineString();
   ring->setPoints( pointList );
   polygon->setExteriorRing( ring );
 
@@ -711,7 +711,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::areaGeometry( int id )
     {
       pointList <<  QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
     }
-    ring = new QgsLineStringV2();
+    ring = new QgsLineString();
     ring->setPoints( pointList );
     polygon->addInteriorRing( ring );
   }

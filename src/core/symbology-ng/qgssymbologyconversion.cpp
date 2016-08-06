@@ -131,7 +131,7 @@ static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryTy
   {
     case QgsWkbTypes::PointGeometry:
     {
-      QgsMarkerSymbolLayerV2* sl = nullptr;
+      QgsMarkerSymbolLayer* sl = nullptr;
       double size = readMarkerSymbolSize( synode );
       double angle = 0; // rotation only from classification field
       QString symbolName = readMarkerSymbolName( synode );
@@ -141,7 +141,7 @@ static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryTy
         QColor color = readSymbolColor( synode, true );
         QColor borderColor = readSymbolColor( synode, false );
         QgsSimpleMarkerSymbolLayerBase::Shape shape = QgsSimpleMarkerSymbolLayerBase::decodeShape( symbolName.mid( 5 ) );
-        sl = new QgsSimpleMarkerSymbolLayerV2( shape, size, angle );
+        sl = new QgsSimpleMarkerSymbolLayer( shape, size, angle );
         sl->setColor( color );
         sl->setOutlineColor( borderColor );
       }
@@ -149,11 +149,11 @@ static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryTy
       {
         // svg symbol marker
         QString name = symbolName.mid( 4 );
-        sl = new QgsSvgMarkerSymbolLayerV2( name, size, angle );
+        sl = new QgsSvgMarkerSymbolLayer( name, size, angle );
       }
       QgsSymbolLayerList layers;
       layers.append( sl );
-      return new QgsMarkerSymbolV2( layers );
+      return new QgsMarkerSymbol( layers );
     }
 
     case QgsWkbTypes::LineGeometry:
@@ -161,11 +161,11 @@ static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryTy
       QColor color = readSymbolColor( synode, false );
       double width = readOutlineWidth( synode );
       Qt::PenStyle penStyle = readOutlineStyle( synode );
-      QgsLineSymbolLayerV2* sl = new QgsSimpleLineSymbolLayerV2( color, width, penStyle );
+      QgsLineSymbolLayer* sl = new QgsSimpleLineSymbolLayer( color, width, penStyle );
 
       QgsSymbolLayerList layers;
       layers.append( sl );
-      return new QgsLineSymbolV2( layers );
+      return new QgsLineSymbol( layers );
     }
 
     case QgsWkbTypes::PolygonGeometry:
@@ -175,11 +175,11 @@ static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryTy
       Qt::BrushStyle brushStyle = readBrushStyle( synode );
       Qt::PenStyle borderStyle = readOutlineStyle( synode );
       double borderWidth = readOutlineWidth( synode );
-      QgsFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, brushStyle, borderColor, borderStyle, borderWidth );
+      QgsFillSymbolLayer* sl = new QgsSimpleFillSymbolLayer( color, brushStyle, borderColor, borderStyle, borderWidth );
 
       QgsSymbolLayerList layers;
       layers.append( sl );
-      return new QgsFillSymbolV2( layers );
+      return new QgsFillSymbol( layers );
     }
 
     default:
@@ -189,37 +189,37 @@ static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryTy
 
 
 
-static QgsFeatureRendererV2* readOldSingleSymbolRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
+static QgsFeatureRenderer* readOldSingleSymbolRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
 {
   QDomNode synode = rnode.namedItem( "symbol" );
   if ( synode.isNull() )
     return nullptr;
 
   QgsSymbol* sy2 = readOldSymbol( synode, geomType );
-  QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( sy2 );
+  QgsSingleSymbolRenderer* r = new QgsSingleSymbolRenderer( sy2 );
   return r;
 }
 
 
-static QgsFeatureRendererV2* readOldGraduatedSymbolRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
+static QgsFeatureRenderer* readOldGraduatedSymbolRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
 {
   QDomNode modeNode = rnode.namedItem( "mode" );
   QString modeValue = modeNode.toElement().text();
   QDomNode classnode = rnode.namedItem( "classificationfield" );
   QString classificationField = classnode.toElement().text();
 
-  QgsGraduatedSymbolRendererV2::Mode m = QgsGraduatedSymbolRendererV2::Custom;
+  QgsGraduatedSymbolRenderer::Mode m = QgsGraduatedSymbolRenderer::Custom;
   if ( modeValue == "Empty" )
   {
-    m = QgsGraduatedSymbolRendererV2::Custom;
+    m = QgsGraduatedSymbolRenderer::Custom;
   }
   else if ( modeValue == "Quantile" )
   {
-    m = QgsGraduatedSymbolRendererV2::Quantile;
+    m = QgsGraduatedSymbolRenderer::Quantile;
   }
   else //default
   {
-    m = QgsGraduatedSymbolRendererV2::EqualInterval;
+    m = QgsGraduatedSymbolRenderer::EqualInterval;
   }
 
   // load ranges and symbols
@@ -236,21 +236,21 @@ static QgsFeatureRendererV2* readOldGraduatedSymbolRenderer( const QDomNode& rno
       QString label = meta.label;
       if ( label.isEmpty() )
         label = QString( "%1 - %2" ).arg( lowerValue, -1, 'f', 3 ).arg( upperValue, -1, 'f', 3 );
-      ranges.append( QgsRendererRangeV2( lowerValue, upperValue, symbolv2, label ) );
+      ranges.append( QgsRendererRange( lowerValue, upperValue, symbolv2, label ) );
     }
 
     symbolnode = symbolnode.nextSibling();
   }
 
   // create renderer
-  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( classificationField, ranges );
+  QgsGraduatedSymbolRenderer* r = new QgsGraduatedSymbolRenderer( classificationField, ranges );
   r->setMode( m );
   return r;
 }
 
 
 
-static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
+static QgsFeatureRenderer* readOldUniqueValueRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
 {
   QDomNode classnode = rnode.namedItem( "classificationfield" );
   QString classificationField = classnode.toElement().text();
@@ -268,13 +268,13 @@ static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, 
       QString label = meta.label;
       if ( label.isEmpty() )
         label = value.toString();
-      cats.append( QgsRendererCategoryV2( value, symbolv2, label, true ) );
+      cats.append( QgsRendererCategory( value, symbolv2, label, true ) );
     }
 
     symbolnode = symbolnode.nextSibling();
   }
 
-  QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( classificationField, cats );
+  QgsCategorizedSymbolRenderer* r = new QgsCategorizedSymbolRenderer( classificationField, cats );
   // source symbol and color ramp are not set (unknown)
   return r;
 }
@@ -282,7 +282,7 @@ static QgsFeatureRendererV2* readOldUniqueValueRenderer( const QDomNode& rnode, 
 
 
 
-QgsFeatureRendererV2* QgsSymbologyConversion::readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType )
+QgsFeatureRenderer* QgsSymbologyConversion::readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType )
 {
   QDomNode singlenode = layerNode.namedItem( "singlesymbol" );
   QDomNode graduatednode = layerNode.namedItem( "graduatedsymbol" );

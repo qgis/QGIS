@@ -73,15 +73,15 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
 class QgsSymbol;
 
 /** \ingroup core
- * \class QgsComposerSymbolV2Item
+ * \class QgsComposerSymbolItem
  */
-class CORE_EXPORT QgsComposerSymbolV2Item: public QgsComposerLegendItem
+class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
 {
   public:
-    QgsComposerSymbolV2Item();
-    QgsComposerSymbolV2Item( const QString& text );
-    QgsComposerSymbolV2Item( const QIcon& icon, const QString& text );
-    virtual ~QgsComposerSymbolV2Item();
+    QgsComposerSymbolItem();
+    QgsComposerSymbolItem( const QString& text );
+    QgsComposerSymbolItem( const QIcon& icon, const QString& text );
+    virtual ~QgsComposerSymbolItem();
 
     virtual QStandardItem* clone() const override;
 

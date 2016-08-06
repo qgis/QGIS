@@ -36,21 +36,21 @@
 /** \ingroup UnitTests
  * This is a unit test to verify that styles are working correctly
  */
-class TestStyleV2 : public QObject
+class TestStyle : public QObject
 {
     Q_OBJECT
 
   public:
-    TestStyleV2();
+    TestStyle();
 
   private:
 
     QString mReport;
 
-    QgsStyleV2 *mStyle;
+    QgsStyle *mStyle;
     QString mTestDataDir;
 
-    bool testValidColor( QgsVectorColorRampV2 *ramp, double value, const QColor& expected );
+    bool testValidColor( QgsVectorColorRamp *ramp, double value, const QColor& expected );
     bool imageCheck( QgsMapSettings &ms, const QString &testName );
 
   private slots:
@@ -69,14 +69,14 @@ class TestStyleV2 : public QObject
 
 };
 
-TestStyleV2::TestStyleV2()
+TestStyle::TestStyle()
     : mStyle( nullptr )
 {
 
 }
 
 // slots
-void TestStyleV2::initTestCase()
+void TestStyle::initTestCase()
 {
   // initialize with test settings directory so we don't mess with user's stuff
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
@@ -93,13 +93,13 @@ void TestStyleV2::initTestCase()
   QCoreApplication::setApplicationName( "QGIS-TEST" );
 
   // initialize with a clean style
-  QFile styleFile( QgsApplication::userStyleV2Path() );
+  QFile styleFile( QgsApplication::userStylePath() );
   if ( styleFile.exists() )
   {
     styleFile.remove();
     QgsDebugMsg( "removed user style file " + styleFile.fileName() );
   }
-  mStyle = QgsStyleV2::defaultStyle();
+  mStyle = QgsStyle::defaultStyle();
   // mStyle->clear();
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
@@ -108,7 +108,7 @@ void TestStyleV2::initTestCase()
   mReport += "<h1>StyleV2 Tests</h1>\n";
 }
 
-void TestStyleV2::cleanupTestCase()
+void TestStyle::cleanupTestCase()
 {
   // don't save
   // mStyle->save();
@@ -127,7 +127,7 @@ void TestStyleV2::cleanupTestCase()
   }
 }
 
-bool TestStyleV2::imageCheck( QgsMapSettings& ms, const QString& testName )
+bool TestStyle::imageCheck( QgsMapSettings& ms, const QString& testName )
 {
   QgsMultiRenderChecker checker;
   ms.setOutputDpi( 96 );
@@ -138,7 +138,7 @@ bool TestStyleV2::imageCheck( QgsMapSettings& ms, const QString& testName )
   return result;
 }
 
-bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, const QColor& expected )
+bool TestStyle::testValidColor( QgsVectorColorRamp *ramp, double value, const QColor& expected )
 {
   QColor result = ramp->color( value );
   //use int color components when testing (builds some fuzziness into test)
@@ -152,37 +152,37 @@ bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, cons
   return true;
 }
 
-void TestStyleV2::testCreateColorRamps()
+void TestStyle::testCreateColorRamps()
 {
   // gradient ramp
-  QgsVectorGradientColorRampV2* gradientRamp = new QgsVectorGradientColorRampV2( QColor( Qt::red ), QColor( Qt::blue ) );
+  QgsVectorGradientColorRamp* gradientRamp = new QgsVectorGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
   gradientRamp->setStops( stops );
   QVERIFY( mStyle->addColorRamp( "test_gradient", gradientRamp, true ) );
 
   // random ramp
-  QgsVectorRandomColorRampV2* randomRamp = new QgsVectorRandomColorRampV2();
+  QgsVectorRandomColorRamp* randomRamp = new QgsVectorRandomColorRamp();
   QVERIFY( mStyle->addColorRamp( "test_random", randomRamp, true ) );
 
   // color brewer ramp
-  QgsVectorColorBrewerColorRampV2* cb1Ramp = new QgsVectorColorBrewerColorRampV2();
+  QgsVectorColorBrewerColorRamp* cb1Ramp = new QgsVectorColorBrewerColorRamp();
   QVERIFY( mStyle->addColorRamp( "test_cb1", cb1Ramp, true ) );
-  QgsVectorColorBrewerColorRampV2* cb2Ramp = new QgsVectorColorBrewerColorRampV2( "RdYlGn", 6 );
+  QgsVectorColorBrewerColorRamp* cb2Ramp = new QgsVectorColorBrewerColorRamp( "RdYlGn", 6 );
   QVERIFY( mStyle->addColorRamp( "test_cb2", cb2Ramp, true ) );
 
   // discrete ramp with no variant
-  QgsCptCityColorRampV2* cc1Ramp = new QgsCptCityColorRampV2( "cb/seq/PuBuGn_06", "" );
+  QgsCptCityColorRamp* cc1Ramp = new QgsCptCityColorRamp( "cb/seq/PuBuGn_06", "" );
   QVERIFY( mStyle->addColorRamp( "test_cc1", cc1Ramp, true ) );
   // discrete ramp with variant
-  QgsCptCityColorRampV2* cc2Ramp = new QgsCptCityColorRampV2( "cb/div/PiYG", "_10" );
+  QgsCptCityColorRamp* cc2Ramp = new QgsCptCityColorRamp( "cb/div/PiYG", "_10" );
   QVERIFY( mStyle->addColorRamp( "test_cc2", cc2Ramp, true ) );
   // continuous ramp
-  QgsCptCityColorRampV2* cc3Ramp = new QgsCptCityColorRampV2( "grass/byr", "" );
+  QgsCptCityColorRamp* cc3Ramp = new QgsCptCityColorRamp( "grass/byr", "" );
   QVERIFY( mStyle->addColorRamp( "test_cc3", cc3Ramp, true ) );
 }
 
-void TestStyleV2::testLoadColorRamps()
+void TestStyle::testLoadColorRamps()
 {
   QStringList colorRamps = mStyle->colorRampNames();
   QStringList colorRampsTest = QStringList() << "BrBG" << "Spectral"
@@ -216,7 +216,7 @@ void TestStyleV2::testLoadColorRamps()
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
-    QgsVectorColorRampV2* ramp = mStyle->colorRamp( name );
+    QgsVectorColorRamp* ramp = mStyle->colorRamp( name );
     QVERIFY( ramp != 0 );
     // test colors
     if ( colorTests.contains( name ) )
@@ -232,12 +232,12 @@ void TestStyleV2::testLoadColorRamps()
   }
 }
 
-void TestStyleV2::testSaveLoad()
+void TestStyle::testSaveLoad()
 {
   // save not needed anymore, because used update=true in addColorRamp()
   // mStyle->save();
   mStyle->clear();
-  mStyle->load( QgsApplication::userStyleV2Path() );
+  mStyle->load( QgsApplication::userStylePath() );
 
   // basic test to see that ramp is present
   QStringList colorRamps = mStyle->colorRampNames();
@@ -249,7 +249,7 @@ void TestStyleV2::testSaveLoad()
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
-    QgsVectorColorRampV2* ramp = mStyle->colorRamp( name );
+    QgsVectorColorRamp* ramp = mStyle->colorRamp( name );
     QVERIFY( ramp != 0 );
     if ( ramp )
       delete ramp;
@@ -258,7 +258,7 @@ void TestStyleV2::testSaveLoad()
   testLoadColorRamps();
 }
 
-void TestStyleV2::testTags()
+void TestStyle::testTags()
 {
   mStyle->clear();
   //add some tags
@@ -282,90 +282,90 @@ void TestStyleV2::testTags()
   QVERIFY( tags.contains( "purple" ) );
 
   //remove tag
-  mStyle->remove( QgsStyleV2::TagEntity, mStyle->tagId( "purple" ) );
-  mStyle->remove( QgsStyleV2::TagEntity, -999 ); //bad id
+  mStyle->remove( QgsStyle::TagEntity, mStyle->tagId( "purple" ) );
+  mStyle->remove( QgsStyle::TagEntity, -999 ); //bad id
   tags = mStyle->tags();
   QCOMPARE( tags.count(), 4 );
   QVERIFY( !tags.contains( "purple" ) );
 
   //add some symbols
-  QVERIFY( mStyle->saveSymbol( "symbol1", QgsMarkerSymbolV2::createSimple( QgsStringMap() ), 0, QStringList() << "red" << "starry" ) );
-  mStyle->addSymbol( "blue starry", QgsMarkerSymbolV2::createSimple( QgsStringMap() ), true );
-  mStyle->addSymbol( "red circle", QgsMarkerSymbolV2::createSimple( QgsStringMap() ), true );
+  QVERIFY( mStyle->saveSymbol( "symbol1", QgsMarkerSymbol::createSimple( QgsStringMap() ), 0, QStringList() << "red" << "starry" ) );
+  mStyle->addSymbol( "blue starry", QgsMarkerSymbol::createSimple( QgsStringMap() ), true );
+  mStyle->addSymbol( "red circle", QgsMarkerSymbol::createSimple( QgsStringMap() ), true );
 
   //tag them
-  QVERIFY( mStyle->tagSymbol( QgsStyleV2::SymbolEntity, "blue starry", QStringList() << "blue" << "starry" ) );
-  QVERIFY( mStyle->tagSymbol( QgsStyleV2::SymbolEntity, "red circle", QStringList() << "red" << "circle" ) );
+  QVERIFY( mStyle->tagSymbol( QgsStyle::SymbolEntity, "blue starry", QStringList() << "blue" << "starry" ) );
+  QVERIFY( mStyle->tagSymbol( QgsStyle::SymbolEntity, "red circle", QStringList() << "red" << "circle" ) );
   //bad symbol name
-  QVERIFY( !mStyle->tagSymbol( QgsStyleV2::SymbolEntity, "no symbol", QStringList() << "red" << "circle" ) );
+  QVERIFY( !mStyle->tagSymbol( QgsStyle::SymbolEntity, "no symbol", QStringList() << "red" << "circle" ) );
   //tag which hasn't been added yet
-  QVERIFY( mStyle->tagSymbol( QgsStyleV2::SymbolEntity, "red circle", QStringList() << "round" ) );
+  QVERIFY( mStyle->tagSymbol( QgsStyle::SymbolEntity, "red circle", QStringList() << "round" ) );
   tags = mStyle->tags();
   QVERIFY( tags.contains( "round" ) );
 
   //check that tags have been applied
-  tags = mStyle->tagsOfSymbol( QgsStyleV2::SymbolEntity, "blue starry" );
+  tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, "blue starry" );
   QCOMPARE( tags.count(), 2 );
   QVERIFY( tags.contains( "blue" ) );
   QVERIFY( tags.contains( "starry" ) );
-  tags = mStyle->tagsOfSymbol( QgsStyleV2::SymbolEntity, "red circle" );
+  tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, "red circle" );
   QCOMPARE( tags.count(), 3 );
   QVERIFY( tags.contains( "red" ) );
   QVERIFY( tags.contains( "circle" ) );
   QVERIFY( tags.contains( "round" ) );
-  tags = mStyle->tagsOfSymbol( QgsStyleV2::SymbolEntity, "symbol1" );
+  tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, "symbol1" );
   QCOMPARE( tags.count(), 2 );
   QVERIFY( tags.contains( "red" ) );
   QVERIFY( tags.contains( "starry" ) );
 
   //remove a tag, including a non-present tag
-  QVERIFY( mStyle->detagSymbol( QgsStyleV2::SymbolEntity, "blue starry", QStringList() << "bad" << "blue" ) );
-  tags = mStyle->tagsOfSymbol( QgsStyleV2::SymbolEntity, "blue starry" );
+  QVERIFY( mStyle->detagSymbol( QgsStyle::SymbolEntity, "blue starry", QStringList() << "bad" << "blue" ) );
+  tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, "blue starry" );
   QCOMPARE( tags.count(), 1 );
   QVERIFY( tags.contains( "starry" ) );
 
   //try to remove tag from non-existing symbol
-  QVERIFY( !mStyle->detagSymbol( QgsStyleV2::SymbolEntity, "no symbol!", QStringList() << "bad" << "blue" ) );
+  QVERIFY( !mStyle->detagSymbol( QgsStyle::SymbolEntity, "no symbol!", QStringList() << "bad" << "blue" ) );
 
   //check symbols with tag
-  QStringList symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "red" ) );
+  QStringList symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( "red" ) );
   QCOMPARE( symbols.count(), 2 );
   QVERIFY( symbols.contains( "symbol1" ) );
   QVERIFY( symbols.contains( "red circle" ) );
-  symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "starry" ) );
+  symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( "starry" ) );
   QCOMPARE( symbols.count(), 2 );
   QVERIFY( symbols.contains( "symbol1" ) );
   QVERIFY( symbols.contains( "blue starry" ) );
-  symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "circle" ) );
+  symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( "circle" ) );
   QCOMPARE( symbols.count(), 1 );
   QVERIFY( symbols.contains( "red circle" ) );
-  symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "round" ) );
+  symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( "round" ) );
   QCOMPARE( symbols.count(), 1 );
   QVERIFY( symbols.contains( "red circle" ) );
-  symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "blue" ) );
+  symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( "blue" ) );
   QVERIFY( symbols.isEmpty() );
-  symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "no tag" ) );
+  symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( "no tag" ) );
   QVERIFY( symbols.isEmpty() );
 
   //searching returns symbols with matching tags
-  symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, "red" );
+  symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, "red" );
   QCOMPARE( symbols.count(), 2 );
   QVERIFY( symbols.contains( "symbol1" ) );
   QVERIFY( symbols.contains( "red circle" ) );
-  symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, "symbol1" );
+  symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, "symbol1" );
   QCOMPARE( symbols.count(), 1 );
   QVERIFY( symbols.contains( "symbol1" ) );
-  symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, "starry" );
+  symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, "starry" );
   QCOMPARE( symbols.count(), 2 );
   QVERIFY( symbols.contains( "symbol1" ) );
   QVERIFY( symbols.contains( "blue starry" ) );
-  symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, "blue" );
+  symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, "blue" );
   QCOMPARE( symbols.count(), 1 );
   QVERIFY( symbols.contains( "blue starry" ) );
-  symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, "round" );
+  symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, "round" );
   QCOMPARE( symbols.count(), 1 );
   QVERIFY( symbols.contains( "red circle" ) );
 }
 
-QTEST_MAIN( TestStyleV2 )
+QTEST_MAIN( TestStyle )
 #include "testqgsstylev2.moc"

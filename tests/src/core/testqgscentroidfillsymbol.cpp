@@ -65,9 +65,9 @@ class TestQgsCentroidFillSymbol : public QObject
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
-    QgsCentroidFillSymbolLayerV2* mCentroidFill;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsCentroidFillSymbolLayer* mCentroidFill;
+    QgsFillSymbol* mFillSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -102,10 +102,10 @@ void TestQgsCentroidFillSymbol::initTestCase()
     QList<QgsMapLayer *>() << mpPolysLayer );
 
   //setup gradient fill
-  mCentroidFill = new QgsCentroidFillSymbolLayerV2();
-  mFillSymbol = new QgsFillSymbolV2();
+  mCentroidFill = new QgsCentroidFillSymbolLayer();
+  mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mCentroidFill );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mFillSymbol );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
   mpPolysLayer->setRendererV2( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas

@@ -22,26 +22,26 @@
 #include <QHash>
 #include <QScopedPointer>
 
-class QgsVectorColorRampV2;
+class QgsVectorColorRamp;
 class QgsVectorLayer;
 
 /** \ingroup core
  * \brief categorized renderer
 */
-class CORE_EXPORT QgsRendererCategoryV2
+class CORE_EXPORT QgsRendererCategory
 {
   public:
-    QgsRendererCategoryV2();
+    QgsRendererCategory();
 
     //! takes ownership of symbol
-    QgsRendererCategoryV2( const QVariant& value, QgsSymbol* symbol, const QString& label, bool render = true );
+    QgsRendererCategory( const QVariant& value, QgsSymbol* symbol, const QString& label, bool render = true );
 
     //! copy constructor
-    QgsRendererCategoryV2( const QgsRendererCategoryV2& cat );
+    QgsRendererCategory( const QgsRendererCategory& cat );
 
-    ~QgsRendererCategoryV2() {}
+    ~QgsRendererCategory() {}
 
-    QgsRendererCategoryV2& operator=( QgsRendererCategoryV2 cat );
+    QgsRendererCategory& operator=( QgsRendererCategory cat );
 
     QVariant value() const;
     QgsSymbol* symbol() const;
@@ -66,22 +66,22 @@ class CORE_EXPORT QgsRendererCategoryV2
     QString mLabel;
     bool mRender;
 
-    void swap( QgsRendererCategoryV2 & other );
+    void swap( QgsRendererCategory & other );
 };
 
-typedef QList<QgsRendererCategoryV2> QgsCategoryList;
+typedef QList<QgsRendererCategory> QgsCategoryList;
 
 Q_NOWARN_DEPRECATED_PUSH
 /** \ingroup core
- * \class QgsCategorizedSymbolRendererV2
+ * \class QgsCategorizedSymbolRenderer
  */
-class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
+class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 {
   public:
 
-    QgsCategorizedSymbolRendererV2( const QString& attrName = QString(), const QgsCategoryList& categories = QgsCategoryList() );
+    QgsCategorizedSymbolRenderer( const QString& attrName = QString(), const QgsCategoryList& categories = QgsCategoryList() );
 
-    virtual ~QgsCategorizedSymbolRendererV2();
+    virtual ~QgsCategorizedSymbolRenderer();
 
     //! @note available in python as symbolForFeature2
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QString dump() const override;
 
-    virtual QgsCategorizedSymbolRendererV2* clone() const override;
+    virtual QgsCategorizedSymbolRenderer* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.5
     bool updateCategoryRenderState( int catIndex, bool render );
 
-    void addCategory( const QgsRendererCategoryV2 &category );
+    void addCategory( const QgsRendererCategory &category );
     bool deleteCategory( int catIndex );
     void deleteAllCategories();
 
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     void setClassAttribute( const QString& attr ) { mAttrName = attr; }
 
     //! create renderer from XML element
-    static QgsFeatureRendererV2* create( QDomElement& element );
+    static QgsFeatureRenderer* create( QDomElement& element );
 
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc ) override;
@@ -182,14 +182,14 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
      * @see setSourceColorRamp()
      * @see sourceSymbol()
      */
-    QgsVectorColorRampV2* sourceColorRamp();
+    QgsVectorColorRamp* sourceColorRamp();
 
     /** Sets the source color ramp.
       * @param ramp color ramp. Ownership is transferred to the renderer
       * @see sourceColorRamp()
       * @see setSourceSymbol()
       */
-    void setSourceColorRamp( QgsVectorColorRampV2* ramp );
+    void setSourceColorRamp( QgsVectorColorRamp* ramp );
 
     //! @note added in 2.1
     bool invertedColorRamp() { return mInvertedColorRamp; }
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
       * @param inverted set to true to invert ramp colors
       * @note added in 2.5
       */
-    void updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted = false );
+    void updateColorRamp( QgsVectorColorRamp* ramp, bool inverted = false );
 
     Q_DECL_DEPRECATED void setRotationField( const QString& fieldOrExpression ) override;
     Q_DECL_DEPRECATED QString rotationField() const override;
@@ -229,16 +229,16 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.6
     virtual QString legendClassificationAttribute() const override { return classAttribute(); }
 
-    //! creates a QgsCategorizedSymbolRendererV2 from an existing renderer.
+    //! creates a QgsCategorizedSymbolRenderer from an existing renderer.
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsCategorizedSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
+    static QgsCategorizedSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   protected:
     QString mAttrName;
     QgsCategoryList mCategories;
     QScopedPointer<QgsSymbol> mSourceSymbol;
-    QScopedPointer<QgsVectorColorRampV2> mSourceColorRamp;
+    QScopedPointer<QgsVectorColorRamp> mSourceColorRamp;
     bool mInvertedColorRamp;
     QScopedPointer<QgsExpression> mRotation;
     QScopedPointer<QgsExpression> mSizeScale;

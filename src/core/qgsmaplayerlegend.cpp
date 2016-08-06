@@ -187,7 +187,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 {
   QList<QgsLayerTreeModelLegendNode*> nodes;
 
-  QgsFeatureRendererV2* r = mLayer->rendererV2();
+  QgsFeatureRenderer* r = mLayer->rendererV2();
   if ( !r )
     return nodes;
 
@@ -200,7 +200,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
-  Q_FOREACH ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
+  Q_FOREACH ( const QgsLegendSymbolItem& i, r->legendSymbolItemsV2() )
   {
     QgsSymbolLegendNode * n = new QgsSymbolLegendNode( nodeLayer, i );
     nodes.append( n );

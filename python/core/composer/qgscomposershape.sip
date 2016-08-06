@@ -44,17 +44,17 @@ class QgsComposerShape: QgsComposerItem
     /** Returns the radius for rounded rectangle corners*/
     double cornerRadius() const;
 
-    /** Sets the QgsFillSymbolV2 used to draw the shape. Must also call setUseSymbolV2( true ) to
+    /** Sets the QgsFillSymbol used to draw the shape. Must also call setUseSymbol( true ) to
      * enable drawing with a symbol.
      * Note: added in version 2.1*/
-    void setShapeStyleSymbol( QgsFillSymbolV2* symbol );
-    /** Returns the QgsFillSymbolV2 used to draw the shape.
+    void setShapeStyleSymbol( QgsFillSymbol* symbol );
+    /** Returns the QgsFillSymbol used to draw the shape.
      * Note: added in version 2.1*/
-    QgsFillSymbolV2* shapeStyleSymbol();
+    QgsFillSymbol* shapeStyleSymbol();
 
-    /** Controls whether the shape should be drawn using a QgsFillSymbolV2.
+    /** Controls whether the shape should be drawn using a QgsFillSymbol.
      * Note: Added in v2.1 */
-    void setUseSymbolV2( bool useSymbolV2 );
+    void setUseSymbol( bool useSymbolV2 );
 
     /** Depending on the symbol style, the bounding rectangle can be larger than the shape
     @note this function was added in version 2.3*/

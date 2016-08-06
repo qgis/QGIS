@@ -62,7 +62,7 @@ void QgsFieldConditionalFormatWidget::updateIcon()
 {
   mSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
 
-  QgsSymbolSelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog dlg( mSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( !dlg.exec() )
   {
     return;

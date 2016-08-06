@@ -30,7 +30,7 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError*
     }
 
     QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometryV2* geom = featureGeom.geometry();
+    QgsAbstractGeometry* geom = featureGeom.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
@@ -61,7 +61,7 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometryV2* geom = featureGeom.geometry();
+  QgsAbstractGeometry* geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists

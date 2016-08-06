@@ -1,15 +1,15 @@
-class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
+class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 {
 %TypeHeaderCode
 #include <qgsgraduatedsymbolrendererv2widget.h>
 %End
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
 
-    QgsGraduatedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
-    ~QgsGraduatedSymbolRendererV2Widget();
+    QgsGraduatedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    ~QgsGraduatedSymbolRendererWidget();
 
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRenderer* renderer();
 
   public slots:
     void changeGraduatedSymbol();

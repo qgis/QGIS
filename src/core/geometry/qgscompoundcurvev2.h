@@ -21,25 +21,25 @@
 #include "qgscurvev2.h"
 
 /** \ingroup core
- * \class QgsCompoundCurveV2
+ * \class QgsCompoundCurve
  * \brief Compound curve geometry type
  * \note added in QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
-class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
+class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 {
   public:
-    QgsCompoundCurveV2();
-    QgsCompoundCurveV2( const QgsCompoundCurveV2& curve );
-    QgsCompoundCurveV2& operator=( const QgsCompoundCurveV2& curve );
-    ~QgsCompoundCurveV2();
+    QgsCompoundCurve();
+    QgsCompoundCurve( const QgsCompoundCurve& curve );
+    QgsCompoundCurve& operator=( const QgsCompoundCurve& curve );
+    ~QgsCompoundCurve();
 
-    virtual bool operator==( const QgsCurveV2& other ) const override;
-    virtual bool operator!=( const QgsCurveV2& other ) const override;
+    virtual bool operator==( const QgsCurve& other ) const override;
+    virtual bool operator!=( const QgsCurve& other ) const override;
 
     virtual QString geometryType() const override { return "CompoundCurve"; }
     virtual int dimension() const override { return 1; }
-    virtual QgsCompoundCurveV2* clone() const override;
+    virtual QgsCompoundCurve* clone() const override;
     virtual void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
@@ -56,13 +56,13 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     virtual double length() const override;
     virtual QgsPointV2 startPoint() const override;
     virtual QgsPointV2 endPoint() const override;
-    virtual void points( QgsPointSequenceV2 &pts ) const override;
+    virtual void points( QgsPointSequence &pts ) const override;
     virtual int numPoints() const override;
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     /** Returns the number of curves in the geometry.
      */
@@ -70,11 +70,11 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
 
     /** Returns the curve at the specified index.
      */
-    const QgsCurveV2* curveAt( int i ) const;
+    const QgsCurve* curveAt( int i ) const;
 
     /** Adds a curve to the geometr (takes ownership)
      */
-    void addCurve( QgsCurveV2* c );
+    void addCurve( QgsCurve* c );
 
     /** Removes a curve from the geometry.
      * @param i index of curve to remove
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
         @return rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual QgsCompoundCurveV2* reversed() const override;
+    virtual QgsCompoundCurve* reversed() const override;
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     virtual QgsRectangle calculateBoundingBox() const override;
 
   private:
-    QList< QgsCurveV2* > mCurves;
+    QList< QgsCurve* > mCurves;
     /** Turns a vertex id for the compound curve into one or more ids for the subcurves
         @return the index of the subcurve or -1 in case of error*/
     QList< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;

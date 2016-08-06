@@ -25,7 +25,7 @@
  * \note Added in version 2.16
  */
 
-class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
+class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
 {
   public:
     /** Simple constructor */
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
 
   private:
     /** Filling sub symbol */
-    QScopedPointer<QgsFillSymbolV2> mSymbol;
+    QScopedPointer<QgsFillSymbol> mSymbol;
 
     double mArrowWidth;
     QgsUnitTypes::RenderUnit mArrowWidthUnit;

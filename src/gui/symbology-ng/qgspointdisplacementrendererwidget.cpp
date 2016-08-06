@@ -25,13 +25,13 @@
 #include "qgsvectorlayer.h"
 #include "qgisgui.h"
 
-QgsRendererV2Widget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererWidget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
 {
   return new QgsPointDisplacementRendererWidget( layer, style, renderer );
 }
 
-QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style )
+QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+    : QgsRendererWidget( layer, style )
     , mRenderer( nullptr )
     , mEmbeddedRendererWidget( nullptr )
 {
@@ -87,13 +87,13 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   //insert possible renderer types
-  QStringList rendererList = QgsRendererV2Registry::instance()->renderersList( QgsRendererV2AbstractMetadata::PointLayer );
+  QStringList rendererList = QgsRendererRegistry::instance()->renderersList( QgsRendererAbstractMetadata::PointLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
     if ( *it != "pointDisplacement" )
     {
-      QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( *it );
+      QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), *it );
     }
   }
@@ -155,11 +155,11 @@ QgsPointDisplacementRendererWidget::~QgsPointDisplacementRendererWidget()
   delete mEmbeddedRendererWidget;
 }
 
-QgsFeatureRendererV2* QgsPointDisplacementRendererWidget::renderer()
+QgsFeatureRenderer* QgsPointDisplacementRendererWidget::renderer()
 {
   if ( mRenderer && mEmbeddedRendererWidget )
   {
-    QgsFeatureRendererV2* embeddedRenderer = mEmbeddedRendererWidget->renderer();
+    QgsFeatureRenderer* embeddedRenderer = mEmbeddedRendererWidget->renderer();
     if ( embeddedRenderer )
     {
       mRenderer->setEmbeddedRenderer( embeddedRenderer->clone() );
@@ -170,7 +170,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRendererWidget::renderer()
 
 void QgsPointDisplacementRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
-  QgsRendererV2Widget::setMapCanvas( canvas );
+  QgsRendererWidget::setMapCanvas( canvas );
   if ( mDistanceUnitWidget )
     mDistanceUnitWidget->setMapCanvas( canvas );
   if ( mEmbeddedRendererWidget )
@@ -196,7 +196,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChan
 void QgsPointDisplacementRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
-  QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererId );
+  QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( rendererId );
   if ( m )
   {
     delete mEmbeddedRendererWidget;
@@ -369,8 +369,8 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   {
     return;
   }
-  QgsMarkerSymbolV2* markerSymbol = mRenderer->centerSymbol()->clone();
-  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), mLayer, this );
+  QgsMarkerSymbol* markerSymbol = mRenderer->centerSymbol()->clone();
+  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
   dlg.setMapCanvas( mMapCanvas );
   if ( dlg.exec() == QDialog::Rejected )
   {
@@ -384,7 +384,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
 
 void QgsPointDisplacementRendererWidget::updateCenterIcon()
 {
-  QgsMarkerSymbolV2* symbol = mRenderer->centerSymbol();
+  QgsMarkerSymbol* symbol = mRenderer->centerSymbol();
   if ( !symbol )
   {
     return;

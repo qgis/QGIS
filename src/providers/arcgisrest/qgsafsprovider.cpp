@@ -234,8 +234,8 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
     if ( fetchGeometry )
     {
       QVariantMap geometryData = featureData["geometry"].toMap();
-      QgsAbstractGeometryV2* geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData["geometryType"].toString(),
-                                        QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
+      QgsAbstractGeometry* geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData["geometryType"].toString(),
+                                      QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
       // Above might return 0, which is ok since in theory empty geometries are allowed
       feature.setGeometry( QgsGeometry( geometry ) );
     }

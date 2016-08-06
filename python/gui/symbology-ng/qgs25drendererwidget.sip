@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-class Qgs25DRendererWidget : QgsRendererV2Widget
+class Qgs25DRendererWidget : QgsRendererWidget
 {
 %TypeHeaderCode
 #include "qgs25drendererwidget.h"
@@ -25,16 +25,16 @@ class Qgs25DRendererWidget : QgsRendererV2Widget
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
-    QgsFeatureRendererV2* renderer();
+    QgsFeatureRenderer* renderer();
 
   private:
     void apply();

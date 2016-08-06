@@ -20,7 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 QgsMultiPointV2::QgsMultiPointV2()
-    : QgsGeometryCollectionV2()
+    : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiPoint;
 }
@@ -42,13 +42,13 @@ bool QgsMultiPointV2::fromWkt( const QString& wkt )
     collectionWkt.replace( '(', "((" ).replace( ')', "))" ).replace( ',', "),(" );
   }
 
-  return fromCollectionWkt( collectionWkt, QList<QgsAbstractGeometryV2*>() << new QgsPointV2, "Point" );
+  return fromCollectionWkt( collectionWkt, QList<QgsAbstractGeometry*>() << new QgsPointV2, "Point" );
 }
 
 QDomElement QgsMultiPointV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, "MultiPoint" );
-  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
@@ -64,7 +64,7 @@ QDomElement QgsMultiPointV2::asGML2( QDomDocument& doc, int precision, const QSt
 QDomElement QgsMultiPointV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, "MultiPoint" );
-  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
@@ -81,8 +81,8 @@ QString QgsMultiPointV2::asJSON( int precision ) const
 {
   QString json = "{\"type\": \"MultiPoint\", \"coordinates\": ";
 
-  QgsPointSequenceV2 pts;
-  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  QgsPointSequence pts;
+  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
@@ -95,7 +95,7 @@ QString QgsMultiPointV2::asJSON( int precision ) const
   return json;
 }
 
-bool QgsMultiPointV2::addGeometry( QgsAbstractGeometryV2* g )
+bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry* g )
 {
   if ( !dynamic_cast<QgsPointV2*>( g ) )
   {
@@ -103,10 +103,10 @@ bool QgsMultiPointV2::addGeometry( QgsAbstractGeometryV2* g )
     return false;
   }
   setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPoint );
-  return QgsGeometryCollectionV2::addGeometry( g );
+  return QgsGeometryCollection::addGeometry( g );
 }
 
-QgsAbstractGeometryV2* QgsMultiPointV2::boundary() const
+QgsAbstractGeometry* QgsMultiPointV2::boundary() const
 {
   return nullptr;
 }

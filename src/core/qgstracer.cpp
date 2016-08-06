@@ -416,7 +416,7 @@ void extractLinework( const QgsGeometry& g, QgsMultiPolyline& mpl )
   // to find all intersections a bit later (so we need them segmentized anyway)
   if ( QgsWkbTypes::isCurvedType( g.geometry()->wkbType() ) )
   {
-    QgsAbstractGeometryV2* segmentizedGeomV2 = g.geometry()->segmentize();
+    QgsAbstractGeometry* segmentizedGeomV2 = g.geometry()->segmentize();
     if ( !segmentizedGeomV2 )
       return;
 

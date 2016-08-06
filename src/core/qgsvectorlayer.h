@@ -46,12 +46,12 @@ class QgsAbstractGeometrySimplifier;
 class QgsActionManager;
 class QgsConditionalLayerStyles;
 class QgsCoordinateTransform;
-class QgsCurveV2;
+class QgsCurve;
 class QgsDiagramLayerSettings;
-class QgsDiagramRendererV2;
+class QgsDiagramRenderer;
 class QgsEditorWidgetWrapper;
 class QgsExpressionFieldBuffer;
-class QgsFeatureRendererV2;
+class QgsFeatureRenderer;
 class QgsGeometry;
 class QgsGeometryCache;
 class QgsGeometryVertexIndex;
@@ -60,7 +60,7 @@ class QgsRectangle;
 class QgsRectangle;
 class QgsRelation;
 class QgsRelationManager;
-class QgsSingleSymbolRendererV2;
+class QgsSingleSymbolRenderer;
 class QgsSymbol;
 class QgsVectorDataProvider;
 class QgsVectorLayerEditBuffer;
@@ -70,7 +70,7 @@ class QgsPointV2;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
-typedef QList<QgsPointV2> QgsPointSequenceV2;
+typedef QList<QgsPointV2> QgsPointSequence;
 
 
 struct CORE_EXPORT QgsVectorJoinInfo
@@ -505,7 +505,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Photo,          /**< phote widget */
       WebView,        /**< webview widget */
       Color,          /**< color */
-      EditorWidgetV2, /**< modularized edit widgets @note added in 2.1 */
+      EditorWidget, /**< modularized edit widgets @note added in 2.1 */
     };
 
     //! Result of an edit operation
@@ -801,25 +801,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool diagramsEnabled() const;
 
     /** Sets diagram rendering object (takes ownership) */
-    void setDiagramRenderer( QgsDiagramRendererV2* r );
-    const QgsDiagramRendererV2* diagramRenderer() const { return mDiagramRenderer; }
+    void setDiagramRenderer( QgsDiagramRenderer* r );
+    const QgsDiagramRenderer* diagramRenderer() const { return mDiagramRenderer; }
 
     void setDiagramLayerSettings( const QgsDiagramLayerSettings& s );
     const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings; }
 
     /** Return renderer V2. */
-    QgsFeatureRendererV2* rendererV2() { return mRendererV2; }
+    QgsFeatureRenderer* rendererV2() { return mRendererV2; }
 
     /** Return const renderer V2.
      * @note not available in python bindings
      */
-    const QgsFeatureRendererV2* rendererV2() const { return mRendererV2; }
+    const QgsFeatureRenderer* rendererV2() const { return mRendererV2; }
 
     /**
      * Set renderer which will be invoked to represent this layer.
      * Ownership is transferred.
      */
-    void setRendererV2( QgsFeatureRendererV2* r );
+    void setRendererV2( QgsFeatureRenderer* r );
 
     /** Returns point, line or polygon */
     QgsWkbTypes::GeometryType geometryType() const;
@@ -1098,7 +1098,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note available in python as addCurvedRing
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurveV2* ring, QgsFeatureId* featureId = nullptr );
+    int addRing( QgsCurve* ring, QgsFeatureId* featureId = nullptr );
 
     /** Adds a new part polygon to a multipart feature
      * @return
@@ -1127,10 +1127,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note available in python bindings as addPartV2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequenceV2 &ring );
+    int addPart( const QgsPointSequence &ring );
 
     //! @note available in python as addCurvedPart
-    int addPart( QgsCurveV2* ring );
+    int addPart( QgsCurve* ring );
 
     /** Translates feature by dx, dy
      *  @param featureId id of the feature to translate
@@ -1383,7 +1383,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
-    Q_DECL_DEPRECATED const QgsEditorWidgetConfig editorWidgetV2Config( int fieldIdx ) const { return mEditFormConfig->widgetConfig( fieldIdx ); }
+    Q_DECL_DEPRECATED const QgsEditorWidgetConfig editorWidgetConfig( int fieldIdx ) const { return mEditFormConfig->widgetConfig( fieldIdx ); }
 
     /**
      * Get the configuration for the editor widget used to represent the field with the given name
@@ -1396,7 +1396,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
-    Q_DECL_DEPRECATED const QgsEditorWidgetConfig editorWidgetV2Config( const QString& fieldName ) const { return mEditFormConfig->widgetConfig( fieldName ); }
+    Q_DECL_DEPRECATED const QgsEditorWidgetConfig editorWidgetConfig( const QString& fieldName ) const { return mEditFormConfig->widgetConfig( fieldName ); }
 
     /**
      * Returns a list of tabs holding groups and fields
@@ -2218,7 +2218,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsWkbTypes::Type mWkbType;
 
     /** Renderer object which holds the information about how to display the features */
-    QgsFeatureRendererV2 *mRendererV2;
+    QgsFeatureRenderer *mRendererV2;
 
     /** Simplification object which holds the information about how to simplify the features for fast rendering */
     QgsVectorSimplifyMethod mSimplifyMethod;
@@ -2257,7 +2257,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsExpressionFieldBuffer* mExpressionFieldBuffer;
 
     //diagram rendering object. 0 if diagram drawing is disabled
-    QgsDiagramRendererV2* mDiagramRenderer;
+    QgsDiagramRenderer* mDiagramRenderer;
 
     //stores infos about diagram placement (placement type, priority, position distance)
     QgsDiagramLayerSettings *mDiagramLayerSettings;

@@ -56,7 +56,7 @@ void QgsMapRendererParallelJob::start()
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-    mLabelingEngineV2 = new QgsLabelingEngineV2();
+    mLabelingEngineV2 = new QgsLabelingEngine();
     mLabelingEngineV2->readSettingsFromProject();
     mLabelingEngineV2->setMapSettings( mSettings );
   }

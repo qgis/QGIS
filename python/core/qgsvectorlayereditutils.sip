@@ -72,7 +72,7 @@ class QgsVectorLayerEditUtils
      * @note available in python bindings as addCurvedRing
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr ) /PyName=addCurvedRing/;
+    int addRing( QgsCurve* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr ) /PyName=addCurvedRing/;
 
     /** Adds a new part polygon to a multipart feature
      * @return
@@ -103,7 +103,7 @@ class QgsVectorLayerEditUtils
 
     // @note available in python bindings as addCurvedPart
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsCurveV2* ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
+    int addPart( QgsCurve* ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
 
     /** Translates feature by dx, dy
      * @param featureId id of the feature to translate

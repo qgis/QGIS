@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsGraduatedSymbolRendererV2
+"""QGIS Unit tests for QgsGraduatedSymbolRenderer
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,11 +15,11 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.testing import unittest, start_app
-from qgis.core import (QgsGraduatedSymbolRendererV2,
-                       QgsRendererRangeV2,
-                       QgsRendererRangeV2LabelFormat,
-                       QgsMarkerSymbolV2,
-                       QgsVectorGradientColorRampV2,
+from qgis.core import (QgsGraduatedSymbolRenderer,
+                       QgsRendererRange,
+                       QgsRendererRangeLabelFormat,
+                       QgsMarkerSymbol,
+                       QgsVectorGradientColorRamp,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
@@ -39,7 +39,7 @@ start_app()
 
 
 def createMarkerSymbol():
-    symbol = QgsMarkerSymbolV2.createSimple({
+    symbol = QgsMarkerSymbol.createSimple({
         "color": "100,150,50",
         "name": "square",
         "size": "3.0"
@@ -67,14 +67,14 @@ def createMemoryLayer(values):
 
 
 def createColorRamp():
-    return QgsVectorGradientColorRampV2(
+    return QgsVectorGradientColorRamp(
         QColor(255, 0, 0),
         QColor(0, 0, 255)
     )
 
 
 def createLabelFormat():
-    format = QgsRendererRangeV2LabelFormat()
+    format = QgsRendererRangeLabelFormat()
     template = "%1 - %2 meters"
     precision = 5
     format.setFormat(template)
@@ -156,8 +156,8 @@ def dumpGraduatedRenderer(r):
 class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
 
     def testQgsRendererRangeV2_1(self):
-        """Test QgsRendererRangeV2 getter/setter functions"""
-        range = QgsRendererRangeV2()
+        """Test QgsRendererRange getter/setter functions"""
+        range = QgsRendererRange()
         self.assertTrue(range)
         lower = 123.45
         upper = 234.56
@@ -175,7 +175,7 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
         self.assertFalse(range.renderState(), "Render state getter/setter failed")
         range.setSymbol(symbol.clone())
         self.assertEqual(symbol.dump(), range.symbol().dump(), "Symbol getter/setter failed")
-        range2 = QgsRendererRangeV2(lower, upper, symbol.clone(), label, False)
+        range2 = QgsRendererRange(lower, upper, symbol.clone(), label, False)
         self.assertEqual(range2.lowerValue(), lower, "Lower value from constructor failed")
         self.assertEqual(range2.upperValue(), upper, "Upper value from constructor failed")
         self.assertEqual(range2.label(), label, "Label from constructor failed")
@@ -183,9 +183,9 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
         self.assertFalse(range2.renderState(), "Render state getter/setter failed")
 
     def testQgsRendererRangeV2LabelFormat_1(self):
-        """Test QgsRendererRangeV2LabelFormat getter/setter functions"""
-        format = QgsRendererRangeV2LabelFormat()
-        self.assertTrue(format, "QgsRendererRangeV2LabelFomat construction failed")
+        """Test QgsRendererRangeLabelFormat getter/setter functions"""
+        format = QgsRendererRangeLabelFormat()
+        self.assertTrue(format, "QgsRendererRangeLabelFomat construction failed")
         template = "%1 - %2 meters"
         precision = 5
         format.setFormat(template)
@@ -198,16 +198,16 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
         self.assertFalse(format.trimTrailingZeroes(), "TrimTrailingZeroes getter/setter failed")
         minprecision = -6
         maxprecision = 15
-        self.assertEqual(QgsRendererRangeV2LabelFormat.MinPrecision, minprecision, "Minimum precision != -6")
-        self.assertEqual(QgsRendererRangeV2LabelFormat.MaxPrecision, maxprecision, "Maximum precision != 15")
+        self.assertEqual(QgsRendererRangeLabelFormat.MinPrecision, minprecision, "Minimum precision != -6")
+        self.assertEqual(QgsRendererRangeLabelFormat.MaxPrecision, maxprecision, "Maximum precision != 15")
         format.setPrecision(-10)
         self.assertEqual(format.precision(), minprecision, "Minimum precision not enforced")
         format.setPrecision(20)
         self.assertEqual(format.precision(), maxprecision, "Maximum precision not enforced")
 
     def testQgsRendererRangeV2LabelFormat_2(self):
-        """Test QgsRendererRangeV2LabelFormat number format"""
-        format = QgsRendererRangeV2LabelFormat()
+        """Test QgsRendererRangeLabelFormat number format"""
+        format = QgsRendererRangeLabelFormat()
         # Tests have precision, trim, value, expected
         # (Note: Not sure what impact of locale is on these tests)
         tests = (
@@ -260,7 +260,7 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
             self.assertEqual(result, expected, "Label format error {0} => {1}".format(
                 label, result))
 
-        range = QgsRendererRangeV2()
+        range = QgsRendererRange()
         range.setLowerValue(lower)
         range.setUpperValue(upper)
         label = ltests[0][0]
@@ -270,10 +270,10 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
                          label, result))
 
     def testQgsGraduatedSymbolRendererV2_1(self):
-        """Test QgsGraduatedSymbolRendererV2: Basic get/set functions """
+        """Test QgsGraduatedSymbolRenderer: Basic get/set functions """
 
         # Create a renderer
-        renderer = QgsGraduatedSymbolRendererV2()
+        renderer = QgsGraduatedSymbolRenderer()
 
         symbol = createMarkerSymbol()
         renderer.setSourceSymbol(symbol.clone())
@@ -284,12 +284,12 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
         self.assertEqual(attr, renderer.classAttribute(), "Get/set renderer class attribute")
 
         for m in (
-            QgsGraduatedSymbolRendererV2.Custom,
-            QgsGraduatedSymbolRendererV2.EqualInterval,
-            QgsGraduatedSymbolRendererV2.Quantile,
-            QgsGraduatedSymbolRendererV2.Jenks,
-            QgsGraduatedSymbolRendererV2.Pretty,
-            QgsGraduatedSymbolRendererV2.StdDev,
+            QgsGraduatedSymbolRenderer.Custom,
+            QgsGraduatedSymbolRenderer.EqualInterval,
+            QgsGraduatedSymbolRenderer.Quantile,
+            QgsGraduatedSymbolRenderer.Jenks,
+            QgsGraduatedSymbolRenderer.Pretty,
+            QgsGraduatedSymbolRenderer.StdDev,
         ):
             renderer.setMode(m)
             self.assertEqual(m, renderer.mode(), "Get/set renderer mode")
@@ -343,7 +343,7 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
             self.assertEqual(str(sm), str(renderer.scaleMethod()),
                              "Get/set renderer scale method")
         # test for classificatio with varying size
-        renderer.setGraduatedMethod(QgsGraduatedSymbolRendererV2.GraduatedSize)
+        renderer.setGraduatedMethod(QgsGraduatedSymbolRenderer.GraduatedSize)
         renderer.setSourceColorRamp(None)
         renderer.addClassLowerUpper(0, 2)
         renderer.addClassLowerUpper(2, 4)
@@ -357,9 +357,9 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
             self.assertEqual(symbol.size(), refSizes[idx])
 
     def testQgsGraduatedSymbolRendererV2_2(self):
-        """Test QgsGraduatedSymbolRendererV2: Adding /removing/editing classes """
+        """Test QgsGraduatedSymbolRenderer: Adding /removing/editing classes """
         # Create a renderer
-        renderer = QgsGraduatedSymbolRendererV2()
+        renderer = QgsGraduatedSymbolRenderer()
         symbol = createMarkerSymbol()
         renderer.setSourceSymbol(symbol.clone())
         symbol.setColor(QColor(255, 0, 0))
@@ -377,7 +377,7 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
 
         # Add as a rangeobject
         symbol.setColor(QColor(0, 255, 0))
-        range = QgsRendererRangeV2(20.0, 25.5, symbol.clone(), 'Third range', False)
+        range = QgsRendererRange(20.0, 25.5, symbol.clone(), 'Third range', False)
         renderer.addClassRange(range)
 
         # Add class by lower and upper
@@ -407,7 +407,7 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
 
         doc = QDomDocument()
         element = renderer.save(doc)
-        renderer2 = QgsGraduatedSymbolRendererV2.create(element)
+        renderer2 = QgsGraduatedSymbolRenderer.create(element)
         self.assertEqual(
             dumpGraduatedRenderer(renderer),
             dumpGraduatedRenderer(renderer2),
@@ -446,17 +446,17 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
 
 #    void addClass( QgsSymbol* symbol );
 #    //! @note available in python bindings as addClassRange
-#    void addClass( QgsRendererRangeV2 range ) /PyName=addClassRange/;
+#    void addClass( QgsRendererRange range ) /PyName=addClassRange/;
 #    //! @note available in python bindings as addClassLowerUpper
 #    void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
 #    void deleteClass( int idx );
 #    void deleteAllClasses();
 
     def testQgsGraduatedSymbolRendererV2_3(self):
-        """Test QgsGraduatedSymbolRendererV2: Reading attribute data, calculating classes """
+        """Test QgsGraduatedSymbolRenderer: Reading attribute data, calculating classes """
 
         # Create a renderer
-        renderer = QgsGraduatedSymbolRendererV2()
+        renderer = QgsGraduatedSymbolRenderer()
         symbol = createMarkerSymbol()
         renderer.setSourceSymbol(symbol.clone())
 

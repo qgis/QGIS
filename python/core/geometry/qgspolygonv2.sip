@@ -1,4 +1,4 @@
-class QgsPolygonV2: public QgsCurvePolygonV2
+class QgsPolygonV2: public QgsCurvePolygon
 {
 %TypeHeaderCode
 #include <qgspolygonv2.h>
@@ -27,13 +27,13 @@ class QgsPolygonV2: public QgsCurvePolygonV2
 
     QgsPolygonV2* surfaceToPolygon() const;
 
-    /** Returns the geometry converted to the more generic curve type QgsCurvePolygonV2
+    /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
      @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometryV2* toCurveType() const /Factory/;
+    QgsAbstractGeometry* toCurveType() const /Factory/;
 
-    void addInteriorRing( QgsCurveV2* ring /Transfer/ );
+    void addInteriorRing( QgsCurve* ring /Transfer/ );
     //overridden to handle LineString25D rings
-    virtual void setExteriorRing( QgsCurveV2* ring /Transfer/ );
+    virtual void setExteriorRing( QgsCurve* ring /Transfer/ );
 
-    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+    virtual QgsAbstractGeometry* boundary() const /Factory/;
 };

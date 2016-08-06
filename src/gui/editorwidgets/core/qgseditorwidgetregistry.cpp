@@ -233,7 +233,7 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
     QString ewv2Type;
     QgsEditorWidgetConfig cfg;
 
-    if ( hasLegacyType && editType != QgsVectorLayer::EditorWidgetV2 )
+    if ( hasLegacyType && editType != QgsVectorLayer::EditorWidget )
     {
       Q_NOWARN_DEPRECATED_PUSH
       ewv2Type = readLegacyConfig( vectorLayer, editTypeElement, cfg );

@@ -1,16 +1,16 @@
-class QgsCurveV2: public QgsAbstractGeometryV2
+class QgsCurve: public QgsAbstractGeometry
 {
 %TypeHeaderCode
 #include <qgscurvev2.h>
 %End
     public:
-    QgsCurveV2();
-    virtual ~QgsCurveV2();
+    QgsCurve();
+    virtual ~QgsCurve();
 
-    virtual bool operator==( const QgsCurveV2& other ) const = 0;
-    virtual bool operator!=( const QgsCurveV2& other ) const = 0;
+    virtual bool operator==( const QgsCurve& other ) const = 0;
+    virtual bool operator!=( const QgsCurve& other ) const = 0;
 
-    virtual QgsCurveV2* clone() const = 0;
+    virtual QgsCurve* clone() const = 0;
 
     /** Returns the starting point of the curve.
      * @see endPoint
@@ -35,7 +35,7 @@ class QgsCurveV2: public QgsAbstractGeometryV2
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0;
 
     /** Adds a curve to a painter path.
      */
@@ -73,14 +73,14 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     /** Returns a reversed copy of the curve, where the direction of the curve has been flipped.
      * @note added in QGIS 2.14
      */
-    virtual QgsCurveV2* reversed() const = 0 /Factory/;
+    virtual QgsCurve* reversed() const = 0 /Factory/;
 
-    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+    virtual QgsAbstractGeometry* boundary() const /Factory/;
 
     /** Returns a geometry without curves. Caller takes ownership
     * @param tolerance segmentation tolerance
     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsCurveV2* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+    virtual QgsCurve* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
     virtual int ringCount( int part = 0 ) const;

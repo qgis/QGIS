@@ -27,7 +27,7 @@ class QgsSymbolLevelItem
 //////////////
 // renderers
 
-class QgsFeatureRendererV2
+class QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include <qgsrendererv2.h>
@@ -35,13 +35,13 @@ class QgsFeatureRendererV2
 
 %ConvertToSubClassCode
   if (sipCpp->type() == "singleSymbol")
-    sipType = sipType_QgsSingleSymbolRendererV2;
+    sipType = sipType_QgsSingleSymbolRenderer;
   else if (sipCpp->type() == "categorizedSymbol")
-    sipType = sipType_QgsCategorizedSymbolRendererV2;
+    sipType = sipType_QgsCategorizedSymbolRenderer;
   else if (sipCpp->type() == "graduatedSymbol")
-    sipType = sipType_QgsGraduatedSymbolRendererV2;
+    sipType = sipType_QgsGraduatedSymbolRenderer;
   else if (sipCpp->type() == "RuleRenderer")
-    sipType = sipType_QgsRuleBasedRendererV2;
+    sipType = sipType_QgsRuleBasedRenderer;
   else if (sipCpp->type() == "heatmapRenderer")
     sipType = sipType_QgsHeatmapRenderer;
   else if (sipCpp->type() == "invertedPolygonRenderer")
@@ -60,7 +60,7 @@ class QgsFeatureRendererV2
     // renderer takes ownership of its symbols!
 
     //! return a new renderer - used by default in vector layers
-    static QgsFeatureRendererV2* defaultRenderer( QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsFeatureRenderer* defaultRenderer( QgsWkbTypes::GeometryType geomType ) /Factory/;
 
     QString type() const;
 
@@ -153,9 +153,9 @@ class QgsFeatureRendererV2
      */
     virtual bool filterNeedsGeometry() const;
 
-    virtual ~QgsFeatureRendererV2();
+    virtual ~QgsFeatureRenderer();
 
-    virtual QgsFeatureRendererV2* clone() const = 0 /Factory/;
+    virtual QgsFeatureRenderer* clone() const = 0 /Factory/;
 
     /**
      * Render a feature using this renderer in the given context.
@@ -181,10 +181,10 @@ class QgsFeatureRendererV2
       ScaleDependent          // depends on scale if feature will be rendered (rule based )
     };
 
-    typedef QFlags<QgsFeatureRendererV2::Capability> Capabilities;
+    typedef QFlags<QgsFeatureRenderer::Capability> Capabilities;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual QgsFeatureRendererV2::Capabilities capabilities();
+    virtual QgsFeatureRenderer::Capabilities capabilities();
 
     /** For symbol levels
      * @deprecated use symbols( QgsRenderContext& context ) instead
@@ -203,7 +203,7 @@ class QgsFeatureRendererV2
     void setUsingSymbolLevels( bool usingSymbolLevels );
 
     //! create a renderer from XML element
-    static QgsFeatureRendererV2* load( QDomElement& symbologyElem ) /Factory/;
+    static QgsFeatureRenderer* load( QDomElement& symbologyElem ) /Factory/;
 
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc );
@@ -225,7 +225,7 @@ class QgsFeatureRendererV2
      * went wrong
      * @return the renderer
      */
-    static QgsFeatureRendererV2* loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage ) /Factory/;
+    static QgsFeatureRenderer* loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage ) /Factory/;
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
@@ -399,17 +399,17 @@ class QgsFeatureRendererV2
      * @see embeddedRenderer()
      * @note added in QGIS 2.16
      */
-    virtual void setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer /Transfer/ );
+    virtual void setEmbeddedRenderer( QgsFeatureRenderer* subRenderer /Transfer/ );
 
     /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
      * implementation does not use subrenderers and will always return null.
      * @see setEmbeddedRenderer()
      * @note added in QGIS 2.16
      */
-    virtual const QgsFeatureRendererV2* embeddedRenderer() const;
+    virtual const QgsFeatureRenderer* embeddedRenderer() const;
 
   protected:
-    QgsFeatureRendererV2( const QString& type );
+    QgsFeatureRenderer( const QString& type );
 
     void renderFeatureWithSymbol( QgsFeature& feature,
                                   QgsSymbol* symbol,
@@ -453,13 +453,13 @@ class QgsFeatureRendererV2
      *
      * @param destRenderer destination renderer for copied effect
      */
-    void copyRendererData( QgsFeatureRendererV2 *destRenderer ) const;
+    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
 
     /** Copies paint effect of this renderer to another renderer
      * @param destRenderer destination renderer for copied effect
      * @deprecated use copyRendererData instead
      */
-    void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const /Deprecated/;
+    void copyPaintEffect( QgsFeatureRenderer *destRenderer ) const /Deprecated/;
 
     /** @note this function is used to convert old sizeScale expresssions to symbol
      * level DataDefined size
@@ -471,7 +471,7 @@ class QgsFeatureRendererV2
     static void convertSymbolRotation( QgsSymbol * symbol, const QString & field );
 
   private:
-    QgsFeatureRendererV2( const QgsFeatureRendererV2 & );
-    QgsFeatureRendererV2 & operator=( const QgsFeatureRendererV2 & );
+    QgsFeatureRenderer( const QgsFeatureRenderer & );
+    QgsFeatureRenderer & operator=( const QgsFeatureRenderer & );
 
 };

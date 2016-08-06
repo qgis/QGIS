@@ -68,8 +68,8 @@ class TestQgsLineFillSymbol : public QObject
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QgsLinePatternFillSymbolLayer* mLineFill;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsFillSymbol* mFillSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -105,9 +105,9 @@ void TestQgsLineFillSymbol::initTestCase()
 
   //setup gradient fill
   mLineFill = new QgsLinePatternFillSymbolLayer();
-  mFillSymbol = new QgsFillSymbolV2();
+  mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mLineFill );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mFillSymbol );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
   mpPolysLayer->setRendererV2( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
@@ -140,7 +140,7 @@ void TestQgsLineFillSymbol::lineFillSymbol()
   properties.insert( "color", "0,0,0,255" );
   properties.insert( "width", "1" );
   properties.insert( "capstyle", "flat" );
-  QgsLineSymbolV2* lineSymbol = QgsLineSymbolV2::createSimple( properties );
+  QgsLineSymbol* lineSymbol = QgsLineSymbol::createSimple( properties );
 
   mLineFill->setSubSymbol( lineSymbol );
   QVERIFY( imageCheck( "symbol_linefill" ) );
@@ -154,7 +154,7 @@ void TestQgsLineFillSymbol::dataDefinedSubSymbol()
   properties.insert( "color", "0,0,0,255" );
   properties.insert( "width", "1" );
   properties.insert( "capstyle", "flat" );
-  QgsLineSymbolV2* lineSymbol = QgsLineSymbolV2::createSimple( properties );
+  QgsLineSymbol* lineSymbol = QgsLineSymbol::createSimple( properties );
   lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( "color", new QgsDataDefined( QString( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   mLineFill->setSubSymbol( lineSymbol );
   QVERIFY( imageCheck( "datadefined_subsymbol" ) );

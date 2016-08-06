@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayer
+class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 {
 %TypeHeaderCode
 #include "qgsgeometrygeneratorsymbollayerv2.h"
@@ -84,5 +84,5 @@ class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayer
     void setColor( const QColor& color );
 
   private:
-    QgsGeometryGeneratorSymbolLayerV2( const QgsGeometryGeneratorSymbolLayerV2& copy );
+    QgsGeometryGeneratorSymbolLayer( const QgsGeometryGeneratorSymbolLayer& copy );
 };

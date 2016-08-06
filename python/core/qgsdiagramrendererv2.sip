@@ -161,25 +161,25 @@ class QgsDiagramLayerSettings
      * @note added in QGIS 2.16
      */
     // TODO QGIS 3.0 - rename to renderer()
-    QgsDiagramRendererV2* getRenderer();
+    QgsDiagramRenderer* getRenderer();
 
     /** Returns the diagram renderer associated with the layer.
      * @see setRenderer()
      * @note added in QGIS 2.16
      */
     // TODO QGIS 3.0 - rename to renderer()
-    //const QgsDiagramRendererV2* getRenderer() const;
+    //const QgsDiagramRenderer* getRenderer() const;
 
     /** Sets the diagram renderer associated with the layer.
      * @param diagramRenderer diagram renderer. Ownership is transferred to the object.
      * @see getRenderer()
      * @note added in QGIS 2.16
      */
-    void setRenderer( QgsDiagramRendererV2* diagramRenderer /Transfer/ );
+    void setRenderer( QgsDiagramRenderer* diagramRenderer /Transfer/ );
 
     //! Associated diagram renderer. Owned by this object.
     // TODO QGIS 3.0 - make private, rename to mRenderer
-    QgsDiagramRendererV2* renderer;
+    QgsDiagramRenderer* renderer;
 
     /** Returns the coordinate transform associated with the layer, or an
      * invalid transform if no transformation is required.
@@ -350,23 +350,23 @@ class QgsDiagramInterpolationSettings
 
 
 /** \ingroup core
- * \class QgsDiagramRendererV2
+ * \class QgsDiagramRenderer
  * \brief Evaluates and returns the diagram settings relating to a diagram for a specific feature.
  */
 
-class QgsDiagramRendererV2
+class QgsDiagramRenderer
 {
 %TypeHeaderCode
 #include <qgsdiagramrendererv2.h>
 %End
   public:
 
-    QgsDiagramRendererV2();
-    virtual ~QgsDiagramRendererV2();
+    QgsDiagramRenderer();
+    virtual ~QgsDiagramRenderer();
 
     /** Returns new instance that is equivalent to this one
      * @note added in 2.4 */
-    virtual QgsDiagramRendererV2* clone() const = 0 /Factory/;
+    virtual QgsDiagramRenderer* clone() const = 0 /Factory/;
 
     /** Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
     virtual QSizeF sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c ) const;
@@ -438,7 +438,7 @@ class QgsDiagramRendererV2
      * @see setSizeLegendSymbol()
      * @see sizeLegend()
      */
-    QgsMarkerSymbolV2* sizeLegendSymbol() const;
+    QgsMarkerSymbol* sizeLegendSymbol() const;
 
     /** Sets the marker symbol used for rendering the diagram size legend.
      * @param symbol marker symbol, ownership is transferred to the renderer.
@@ -446,11 +446,11 @@ class QgsDiagramRendererV2
      * @see sizeLegendSymbol()
      * @see setSizeLegend()
      */
-    void setSizeLegendSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
+    void setSizeLegendSymbol( QgsMarkerSymbol* symbol /Transfer/ );
 
   protected:
-    QgsDiagramRendererV2( const QgsDiagramRendererV2& other );
-    //QgsDiagramRendererV2& operator=( const QgsDiagramRendererV2& other );
+    QgsDiagramRenderer( const QgsDiagramRenderer& other );
+    //QgsDiagramRenderer& operator=( const QgsDiagramRenderer& other );
 
     /** Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
      * @param feature the feature
@@ -474,7 +474,7 @@ class QgsDiagramRendererV2
 };
 
 /** Renders the diagrams for all features with the same settings*/
-class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
+class QgsSingleCategoryDiagramRenderer : QgsDiagramRenderer
 {
 %TypeHeaderCode
 #include <qgsdiagramrendererv2.h>
@@ -505,7 +505,7 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
     QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c ) const;
 };
 
-class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
+class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
 {
 %TypeHeaderCode
 #include <qgsdiagramrendererv2.h>

@@ -20,17 +20,17 @@
 
 #include "ui_qgsvectorcolorbrewercolorrampv2dialogbase.h"
 
-class QgsVectorColorBrewerColorRampV2;
+class QgsVectorColorBrewerColorRamp;
 
 /** \ingroup gui
- * \class QgsVectorColorBrewerColorRampV2Dialog
+ * \class QgsVectorColorBrewerColorRampDialog
  */
-class GUI_EXPORT QgsVectorColorBrewerColorRampV2Dialog : public QDialog, private Ui::QgsVectorColorBrewerColorRampV2DialogBase
+class GUI_EXPORT QgsVectorColorBrewerColorRampDialog : public QDialog, private Ui::QgsVectorColorBrewerColorRampDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsVectorColorBrewerColorRampV2Dialog( QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent = nullptr );
+    QgsVectorColorBrewerColorRampDialog( QgsVectorColorBrewerColorRamp* ramp, QWidget* parent = nullptr );
 
   public slots:
     void setSchemeName();
@@ -42,7 +42,7 @@ class GUI_EXPORT QgsVectorColorBrewerColorRampV2Dialog : public QDialog, private
 
     void updatePreview();
 
-    QgsVectorColorBrewerColorRampV2* mRamp;
+    QgsVectorColorBrewerColorRamp* mRamp;
 };
 
 #endif

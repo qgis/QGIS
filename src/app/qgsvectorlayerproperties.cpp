@@ -505,7 +505,7 @@ void QgsVectorLayerProperties::apply()
 
   if ( mLayer->rendererV2() )
   {
-    QgsRendererV2PropertiesDialog* dlg = static_cast<QgsRendererV2PropertiesDialog*>( widgetStackRenderers->currentWidget() );
+    QgsRendererPropertiesDialog* dlg = static_cast<QgsRendererPropertiesDialog*>( widgetStackRenderers->currentWidget() );
     dlg->apply();
   }
 
@@ -1212,7 +1212,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
   if ( mLayer->rendererV2() )
   {
-    mRendererDialog = new QgsRendererV2PropertiesDialog( mLayer, QgsStyleV2::defaultStyle(), true, this );
+    mRendererDialog = new QgsRendererPropertiesDialog( mLayer, QgsStyle::defaultStyle(), true, this );
     mRendererDialog->setDockMode( false );
     mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
     connect( mRendererDialog, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );

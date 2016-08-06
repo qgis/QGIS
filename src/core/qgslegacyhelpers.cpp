@@ -198,7 +198,7 @@ const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editTy
       break;
     }
 
-    case QgsVectorLayer::EditorWidgetV2: // Should not land here
+    case QgsVectorLayer::EditorWidget: // Should not land here
       break;
   }
 
@@ -313,6 +313,6 @@ QgsVectorLayer::EditType QgsLegacyHelpers::convertEditType( const QString& editT
     return QgsVectorLayer::Enumeration;
   }
 
-  return QgsVectorLayer::EditorWidgetV2;
+  return QgsVectorLayer::EditorWidget;
   Q_NOWARN_DEPRECATED_POP
 }

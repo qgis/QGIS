@@ -22,33 +22,33 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslinestringv2.h"
 #include "qgsmultipointv2.h"
 
-QgsMultiCurveV2::QgsMultiCurveV2()
-    : QgsGeometryCollectionV2()
+QgsMultiCurve::QgsMultiCurve()
+    : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiCurve;
 }
 
-QgsMultiCurveV2 *QgsMultiCurveV2::clone() const
+QgsMultiCurve *QgsMultiCurve::clone() const
 {
-  return new QgsMultiCurveV2( *this );
+  return new QgsMultiCurve( *this );
 }
 
-bool QgsMultiCurveV2::fromWkt( const QString& wkt )
+bool QgsMultiCurve::fromWkt( const QString& wkt )
 {
   return fromCollectionWkt( wkt,
-                            QList<QgsAbstractGeometryV2*>() << new QgsLineStringV2 << new QgsCircularStringV2 << new QgsCompoundCurveV2,
+                            QList<QgsAbstractGeometry*>() << new QgsLineString << new QgsCircularString << new QgsCompoundCurve,
                             "LineString" );
 }
 
-QDomElement QgsMultiCurveV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
+QDomElement QgsMultiCurve::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   // GML2 does not support curves
   QDomElement elemMultiLineString = doc.createElementNS( ns, "MultiLineString" );
-  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsCurveV2*>( geom ) )
+    if ( dynamic_cast<const QgsCurve*>( geom ) )
     {
-      QgsLineStringV2* lineString = static_cast<const QgsCurveV2*>( geom )->curveToLine();
+      QgsLineString* lineString = static_cast<const QgsCurve*>( geom )->curveToLine();
 
       QDomElement elemLineStringMember = doc.createElementNS( ns, "lineStringMember" );
       elemLineStringMember.appendChild( lineString->asGML2( doc, precision, ns ) );
@@ -61,14 +61,14 @@ QDomElement QgsMultiCurveV2::asGML2( QDomDocument& doc, int precision, const QSt
   return elemMultiLineString;
 }
 
-QDomElement QgsMultiCurveV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
+QDomElement QgsMultiCurve::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, "MultiCurve" );
-  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsCurveV2*>( geom ) )
+    if ( dynamic_cast<const QgsCurve*>( geom ) )
     {
-      const QgsCurveV2* curve = static_cast<const QgsCurveV2*>( geom );
+      const QgsCurve* curve = static_cast<const QgsCurve*>( geom );
 
       QDomElement elemCurveMember = doc.createElementNS( ns, "curveMember" );
       elemCurveMember.appendChild( curve->asGML3( doc, precision, ns ) );
@@ -79,16 +79,16 @@ QDomElement QgsMultiCurveV2::asGML3( QDomDocument& doc, int precision, const QSt
   return elemMultiCurve;
 }
 
-QString QgsMultiCurveV2::asJSON( int precision ) const
+QString QgsMultiCurve::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
   QString json = "{\"type\": \"MultiLineString\", \"coordinates\": [";
-  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsCurveV2*>( geom ) )
+    if ( dynamic_cast<const QgsCurve*>( geom ) )
     {
-      QgsLineStringV2* lineString = static_cast<const QgsCurveV2*>( geom )->curveToLine();
-      QgsPointSequenceV2 pts;
+      QgsLineString* lineString = static_cast<const QgsCurve*>( geom )->curveToLine();
+      QgsPointSequence pts;
       lineString->points( pts );
       json += QgsGeometryUtils::pointsToJSON( pts, precision ) + ", ";
       delete lineString;
@@ -102,37 +102,37 @@ QString QgsMultiCurveV2::asJSON( int precision ) const
   return json;
 }
 
-bool QgsMultiCurveV2::addGeometry( QgsAbstractGeometryV2* g )
+bool QgsMultiCurve::addGeometry( QgsAbstractGeometry* g )
 {
-  if ( !dynamic_cast<QgsCurveV2*>( g ) )
+  if ( !dynamic_cast<QgsCurve*>( g ) )
   {
     delete g;
     return false;
   }
 
   setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiCurve );
-  return QgsGeometryCollectionV2::addGeometry( g );
+  return QgsGeometryCollection::addGeometry( g );
 }
 
-QgsMultiCurveV2* QgsMultiCurveV2::reversed() const
+QgsMultiCurve* QgsMultiCurve::reversed() const
 {
-  QgsMultiCurveV2* reversedMultiCurve = new QgsMultiCurveV2();
-  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  QgsMultiCurve* reversedMultiCurve = new QgsMultiCurve();
+  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsCurveV2*>( geom ) )
+    if ( dynamic_cast<const QgsCurve*>( geom ) )
     {
-      reversedMultiCurve->addGeometry( static_cast<const QgsCurveV2*>( geom )->reversed() );
+      reversedMultiCurve->addGeometry( static_cast<const QgsCurve*>( geom )->reversed() );
     }
   }
   return reversedMultiCurve;
 }
 
-QgsAbstractGeometryV2* QgsMultiCurveV2::boundary() const
+QgsAbstractGeometry* QgsMultiCurve::boundary() const
 {
   QgsMultiPointV2* multiPoint = new QgsMultiPointV2();
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
-    if ( QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( mGeometries.at( i ) ) )
+    if ( QgsCurve* curve = dynamic_cast<QgsCurve*>( mGeometries.at( i ) ) )
     {
       if ( !curve->isClosed() )
       {

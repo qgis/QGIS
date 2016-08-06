@@ -235,7 +235,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
     return false; // ignore the vertex - can't find path to the end point!
 
   // transform points
-  QgsPointSequenceV2 layerPoints;
+  QgsPointSequence layerPoints;
   QgsPointV2 lp; // in layer coords
   for ( int i = 1; i < points.count(); ++i )
   {
@@ -468,7 +468,7 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point, QgsPointLocator::Match 
   return 0;
 }
 
-int QgsMapToolCapture::addCurve( QgsCurveV2* c )
+int QgsMapToolCapture::addCurve( QgsCurve* c )
 {
   if ( !c )
   {
@@ -480,11 +480,11 @@ int QgsMapToolCapture::addCurve( QgsCurveV2* c )
     mRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
   }
 
-  QgsLineStringV2* lineString = c->curveToLine();
-  QgsPointSequenceV2 linePoints;
+  QgsLineString* lineString = c->curveToLine();
+  QgsPointSequence linePoints;
   lineString->points( linePoints );
   delete lineString;
-  QgsPointSequenceV2::const_iterator ptIt = linePoints.constBegin();
+  QgsPointSequence::const_iterator ptIt = linePoints.constBegin();
   for ( ; ptIt != linePoints.constEnd(); ++ptIt )
   {
     mRubberBand->addPoint( QgsPoint( ptIt->x(), ptIt->y() ) );
@@ -667,7 +667,7 @@ void QgsMapToolCapture::validateGeometry()
     case CapturePolygon:
       if ( size() < 3 )
         return;
-      QgsLineStringV2* exteriorRing = mCaptureCurve.curveToLine();
+      QgsLineString* exteriorRing = mCaptureCurve.curveToLine();
       exteriorRing->close();
       QgsPolygonV2* polygon = new QgsPolygonV2();
       polygon->setExteriorRing( exteriorRing );
@@ -717,7 +717,7 @@ int QgsMapToolCapture::size()
 
 QList<QgsPoint> QgsMapToolCapture::points()
 {
-  QgsPointSequenceV2 pts;
+  QgsPointSequence pts;
   QList<QgsPoint> points;
   mCaptureCurve.points( pts );
   QgsGeometry::convertPointList( pts, points );
@@ -726,10 +726,10 @@ QList<QgsPoint> QgsMapToolCapture::points()
 
 void QgsMapToolCapture::setPoints( const QList<QgsPoint>& pointList )
 {
-  QgsPointSequenceV2 pts;
+  QgsPointSequence pts;
   QgsGeometry::convertPointList( pointList, pts );
 
-  QgsLineStringV2* line = new QgsLineStringV2();
+  QgsLineString* line = new QgsLineString();
   line->setPoints( pts );
 
   mCaptureCurve.clear();

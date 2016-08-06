@@ -27,12 +27,12 @@ class QgsSymbolSelectorWidget;
 #include <QAbstractItemModel>
 
 /* Features count fro rule */
-struct QgsRuleBasedRendererV2Count
+struct QgsRuleBasedRendererCount
 {
   int count; // number of features
   int duplicateCount; // number of features present also in other rule(s)
   // map of feature counts in other rules
-  QMap<QgsRuleBasedRendererV2::Rule*, int> duplicateCountMap;
+  QMap<QgsRuleBasedRenderer::Rule*, int> duplicateCountMap;
 };
 
 /** \ingroup gui
@@ -42,12 +42,12 @@ Tree model for the rules:
  +--- top level rule
  +--- top level rule
 */
-class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
+class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
-    QgsRuleBasedRendererV2Model( QgsRuleBasedRendererV2* r );
+    QgsRuleBasedRendererModel( QgsRuleBasedRenderer* r );
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -73,9 +73,9 @@ class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
 
     // new methods
 
-    QgsRuleBasedRendererV2::Rule* ruleForIndex( const QModelIndex& index ) const;
+    QgsRuleBasedRenderer::Rule* ruleForIndex( const QModelIndex& index ) const;
 
-    void insertRule( const QModelIndex& parent, int before, QgsRuleBasedRendererV2::Rule* newrule );
+    void insertRule( const QModelIndex& parent, int before, QgsRuleBasedRenderer::Rule* newrule );
     void updateRule( const QModelIndex& parent, int row );
     // update rule and all its descendants
     void updateRule( const QModelIndex& index );
@@ -85,12 +85,12 @@ class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
     void finishedAddingRules(); // call endInsertRows
 
     //! @note not available in python bindungs
-    void setFeatureCounts( const QMap<QgsRuleBasedRendererV2::Rule*, QgsRuleBasedRendererV2Count>& theCountMap );
+    void setFeatureCounts( const QMap<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount>& theCountMap );
     void clearFeatureCounts();
 
   protected:
-    QgsRuleBasedRendererV2* mR;
-    QMap<QgsRuleBasedRendererV2::Rule*, QgsRuleBasedRendererV2Count> mFeatureCountMap;
+    QgsRuleBasedRenderer* mR;
+    QMap<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount> mFeatureCountMap;
 };
 
 
@@ -99,20 +99,20 @@ class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
 #include "ui_qgsrulebasedrendererv2widget.h"
 
 /** \ingroup gui
- * \class QgsRuleBasedRendererV2Widget
+ * \class QgsRuleBasedRendererWidget
  */
-class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsRuleBasedRendererV2Widget
+class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private Ui::QgsRuleBasedRendererWidget
 {
     Q_OBJECT
 
   public:
 
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
-    QgsRuleBasedRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
-    ~QgsRuleBasedRendererV2Widget();
+    QgsRuleBasedRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    ~QgsRuleBasedRendererWidget();
 
-    virtual QgsFeatureRendererV2* renderer() override;
+    virtual QgsFeatureRenderer* renderer() override;
 
   public slots:
 
@@ -143,20 +143,20 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void refineRuleRangesGui( const QModelIndexList& index );
     void refineRuleScalesGui( const QModelIndexList& index );
 
-    QgsRuleBasedRendererV2::Rule* currentRule();
+    QgsRuleBasedRenderer::Rule* currentRule();
 
     QList<QgsSymbol*> selectedSymbols() override;
-    QgsRuleBasedRendererV2::RuleList selectedRules();
+    QgsRuleBasedRenderer::RuleList selectedRules();
     void refreshSymbolView() override;
     void keyPressEvent( QKeyEvent* event ) override;
 
-    QgsRuleBasedRendererV2* mRenderer;
-    QgsRuleBasedRendererV2Model* mModel;
+    QgsRuleBasedRenderer* mRenderer;
+    QgsRuleBasedRendererModel* mModel;
 
     QMenu* mRefineMenu;
     QAction* mDeleteAction;
 
-    QgsRuleBasedRendererV2::RuleList mCopyBuffer;
+    QgsRuleBasedRenderer::RuleList mCopyBuffer;
 
   protected slots:
     void copy() override;
@@ -191,14 +191,14 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
        * @param parent The parent widget.
        * @param mapCanvas The map canvas object.
        */
-    QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
+    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
     ~QgsRendererRulePropsWidget();
 
     /**
      * Return the current set rule.
      * @return The current rule.
      */
-    QgsRuleBasedRendererV2::Rule* rule() { return mRule; }
+    QgsRuleBasedRenderer::Rule* rule() { return mRule; }
 
   public slots:
 
@@ -223,7 +223,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     virtual void setDockMode( bool dockMode );
 
   protected:
-    QgsRuleBasedRendererV2::Rule* mRule; // borrowed
+    QgsRuleBasedRenderer::Rule* mRule; // borrowed
     QgsVectorLayer* mLayer;
 
     QgsSymbolSelectorWidget* mSymbolSelector;
@@ -240,10 +240,10 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
+    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
     ~QgsRendererRulePropsDialog();
 
-    QgsRuleBasedRendererV2::Rule* rule() { return mPropsWidget->rule(); }
+    QgsRuleBasedRenderer::Rule* rule() { return mPropsWidget->rule(); }
 
   public slots:
     void testFilter();

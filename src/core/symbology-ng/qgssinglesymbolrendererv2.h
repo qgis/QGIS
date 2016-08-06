@@ -23,15 +23,15 @@
 
 Q_NOWARN_DEPRECATED_PUSH
 /** \ingroup core
- * \class QgsSingleSymbolRendererV2
+ * \class QgsSingleSymbolRenderer
  */
-class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
+class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 {
   public:
 
-    QgsSingleSymbolRendererV2( QgsSymbol* symbol );
+    QgsSingleSymbolRenderer( QgsSymbol* symbol );
 
-    virtual ~QgsSingleSymbolRendererV2();
+    virtual ~QgsSingleSymbolRenderer();
 
     //! @note available in python as symbolForFeature2
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
@@ -59,10 +59,10 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QString dump() const override;
 
-    virtual QgsSingleSymbolRendererV2* clone() const override;
+    virtual QgsSingleSymbolRenderer* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
+    static QgsFeatureRenderer* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer
     virtual Capabilities capabilities() override { return SymbolLevels | RotationField; }
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
     //! create renderer from XML element
-    static QgsFeatureRendererV2* create( QDomElement& element );
+    static QgsFeatureRenderer* create( QDomElement& element );
 
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc ) override;
@@ -91,10 +91,10 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
 
-    //! creates a QgsSingleSymbolRendererV2 from an existing renderer.
+    //! creates a QgsSingleSymbolRenderer from an existing renderer.
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsSingleSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
+    static QgsSingleSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   protected:
     QScopedPointer<QgsSymbol> mSymbol;

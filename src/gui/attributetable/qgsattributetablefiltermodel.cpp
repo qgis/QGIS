@@ -394,7 +394,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   renderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( layer() );
-  QgsFeatureRendererV2* renderer = layer()->rendererV2();
+  QgsFeatureRenderer* renderer = layer()->rendererV2();
 
   mFilteredFeatures.clear();
 
@@ -411,7 +411,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   }
   else
   {
-    if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+    if ( renderer && renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
     {
       // setup scale
       // mapRenderer()->renderContext()->scale is not automaticaly updated when
@@ -422,7 +422,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
       renderContext.setRendererScale( ms.scale() );
     }
 
-    filter = renderer && renderer->capabilities() & QgsFeatureRendererV2::Filter;
+    filter = renderer && renderer->capabilities() & QgsFeatureRenderer::Filter;
   }
 
   renderer->startRender( renderContext, layer()->fields() );
@@ -462,7 +462,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 
   features.close();
 
-  if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+  if ( renderer && renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
   {
     renderer->stopRender( renderContext );
   }

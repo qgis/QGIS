@@ -68,9 +68,9 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
   public:
     //! @note not available in python bindings
     QgsSymbolLayerMetadata( const QString& name, const QString& visibleName,
-                              QgsSymbol::SymbolType type,
-                              QgsSymbolLayerCreateFunc pfCreate,
-                              QgsSymbolLayerWidgetFunc pfWidget = nullptr )
+                            QgsSymbol::SymbolType type,
+                            QgsSymbolLayerCreateFunc pfCreate,
+                            QgsSymbolLayerWidgetFunc pfWidget = nullptr )
         : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
         , mCreateFunc( pfCreate )
         , mWidgetFunc( pfWidget )
@@ -79,10 +79,10 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 
     //! @note not available in python bindings
     QgsSymbolLayerMetadata( const QString& name, const QString& visibleName,
-                              QgsSymbol::SymbolType type,
-                              QgsSymbolLayerCreateFunc pfCreate,
-                              QgsSymbolLayerCreateFromSldFunc pfCreateFromSld,
-                              QgsSymbolLayerWidgetFunc pfWidget = nullptr )
+                            QgsSymbol::SymbolType type,
+                            QgsSymbolLayerCreateFunc pfCreate,
+                            QgsSymbolLayerCreateFromSldFunc pfCreateFromSld,
+                            QgsSymbolLayerWidgetFunc pfWidget = nullptr )
         : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
         , mCreateFunc( pfCreate )
         , mWidgetFunc( pfWidget )

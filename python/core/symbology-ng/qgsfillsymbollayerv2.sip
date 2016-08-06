@@ -1,11 +1,11 @@
-class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
+class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 {
 %TypeHeaderCode
 #include <qgsfillsymbollayerv2.h>
 %End
 
   public:
-    QgsSimpleFillSymbolLayerV2( const QColor& color = DEFAULT_SIMPLEFILL_COLOR,
+    QgsSimpleFillSymbolLayer( const QColor& color = DEFAULT_SIMPLEFILL_COLOR,
                                 Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
                                 const QColor& borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
                                 Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
@@ -30,7 +30,7 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    virtual QgsSimpleFillSymbolLayerV2* clone() const /Factory/;
+    virtual QgsSimpleFillSymbolLayer* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
@@ -111,7 +111,7 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
     Qt::BrushStyle dxfBrushStyle() const;
 };
 
-class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
+class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 {
 %TypeHeaderCode
 #include <qgsfillsymbollayerv2.h>
@@ -144,7 +144,7 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
       Repeat
     };
 
-    QgsGradientFillSymbolLayerV2( const QColor& color = DEFAULT_SIMPLEFILL_COLOR,
+    QgsGradientFillSymbolLayer( const QColor& color = DEFAULT_SIMPLEFILL_COLOR,
                                   const QColor& color2 = Qt::white,
                                   GradientColorType gradientColorType = SimpleTwoColor,
                                   GradientType gradientType = Linear,
@@ -152,7 +152,7 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
                                   GradientSpread gradientSpread = Pad
                                 );
 
-    virtual ~QgsGradientFillSymbolLayerV2();
+    virtual ~QgsGradientFillSymbolLayer();
 
     // static stuff
 
@@ -170,7 +170,7 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    virtual QgsGradientFillSymbolLayerV2* clone() const /Factory/;
+    virtual QgsGradientFillSymbolLayer* clone() const /Factory/;
 
     double estimateMaxBleed() const;
 
@@ -183,8 +183,8 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
     void setGradientColorType( GradientColorType gradientColorType );
 
     /** Color ramp used for the gradient fill, only used if the gradient color type is set to ColorRamp*/
-    QgsVectorColorRampV2* colorRamp();
-    void setColorRamp( QgsVectorColorRampV2* ramp );
+    QgsVectorColorRamp* colorRamp();
+    void setColorRamp( QgsVectorColorRamp* ramp );
 
     /** Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
     QColor color2() const;
@@ -233,7 +233,7 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
 };
 
-class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
+class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 {
 %TypeHeaderCode
 #include <qgsfillsymbollayerv2.h>
@@ -246,11 +246,11 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
       ColorRamp
     };
 
-    QgsShapeburstFillSymbolLayerV2( const QColor& color = DEFAULT_SIMPLEFILL_COLOR, const QColor& color2 = Qt::white,
+    QgsShapeburstFillSymbolLayer( const QColor& color = DEFAULT_SIMPLEFILL_COLOR, const QColor& color2 = Qt::white,
                                     ShapeburstColorType colorType = SimpleTwoColor,
                                     int blurRadius = 0, bool useWholeShape = true, double maxDistance = 5 );
 
-    virtual ~QgsShapeburstFillSymbolLayerV2();
+    virtual ~QgsShapeburstFillSymbolLayer();
 
     // static stuff
 
@@ -268,7 +268,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    virtual QgsShapeburstFillSymbolLayerV2* clone() const /Factory/;
+    virtual QgsShapeburstFillSymbolLayer* clone() const /Factory/;
 
     double estimateMaxBleed() const;
 
@@ -336,7 +336,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale );
     const QgsMapUnitScale& distanceMapUnitScale() const;
 
-    /** Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRampV2 color ramp
+    /** Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRamp color ramp
      * or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
      * @param colorType color type to use for shapeburst fill
      * @note added in 2.3
@@ -346,7 +346,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
      * @see setColorRamp
      */
     void setColorType( ShapeburstColorType colorType );
-    /** Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRampV2 color ramp
+    /** Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRamp color ramp
      * or by simply specificing a start and end color.
      * @returns current color mode used for the shapeburst fill
      * @note added in 2.3
@@ -363,14 +363,14 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
      * @see setColorType
      * @see colorRamp
      */
-    void setColorRamp( QgsVectorColorRampV2* ramp );
+    void setColorRamp( QgsVectorColorRamp* ramp );
     /** Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
-     * @returns a QgsVectorColorRampV2 color ramp
+     * @returns a QgsVectorColorRamp color ramp
      * @note added in 2.3
      * @see setColorRamp
      * @see colorType
      */
-    QgsVectorColorRampV2* colorRamp();
+    QgsVectorColorRamp* colorRamp();
 
     /** Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
      * @param color2 QColor to use for endpoint of gradient
@@ -442,7 +442,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
 };
 
 /** Base class for polygon renderers generating texture images*/
-class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
+class QgsImageFillSymbolLayer: QgsFillSymbolLayer
 {
 %TypeHeaderCode
 #include <qgsfillsymbollayerv2.h>
@@ -947,15 +947,15 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     void applyDataDefinedSettings( QgsSymbolRenderContext& context );
 };
 
-class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
+class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 {
 %TypeHeaderCode
 #include <qgsfillsymbollayerv2.h>
 %End
 
   public:
-    QgsCentroidFillSymbolLayerV2();
-    ~QgsCentroidFillSymbolLayerV2();
+    QgsCentroidFillSymbolLayer();
+    ~QgsCentroidFillSymbolLayer();
 
     // static stuff
 
@@ -974,7 +974,7 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    virtual QgsCentroidFillSymbolLayerV2* clone() const /Factory/;
+    virtual QgsCentroidFillSymbolLayer* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 

@@ -78,7 +78,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSetti
     const QgsFields& fields,
     const QgsCoordinateReferenceSystem& crs,
     QgsAbstractFeatureSource* source,
-    bool ownsSource, QgsFeatureRendererV2* renderer )
+    bool ownsSource, QgsFeatureRenderer* renderer )
     : QgsAbstractLabelProvider( layerId )
     , mSettings( settings )
     , mLayerGeometryType( QgsWkbTypes::UnknownGeometry )
@@ -319,7 +319,7 @@ QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& 
     return nullptr;
 
   bool isMultiPoint = fet.geometry().geometry()->nCoordinates() > 1;
-  QgsAbstractGeometryV2* obstacleGeom = nullptr;
+  QgsAbstractGeometry* obstacleGeom = nullptr;
   if ( isMultiPoint )
     obstacleGeom = new QgsMultiPolygonV2();
 
@@ -345,14 +345,14 @@ QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& 
       if ( symbol->type() == QgsSymbol::Marker )
       {
         if ( bounds.isValid() )
-          bounds = bounds.united( static_cast< QgsMarkerSymbolV2* >( symbol )->bounds( pt, context, fet ) );
+          bounds = bounds.united( static_cast< QgsMarkerSymbol* >( symbol )->bounds( pt, context, fet ) );
         else
-          bounds = static_cast< QgsMarkerSymbolV2* >( symbol )->bounds( pt, context, fet );
+          bounds = static_cast< QgsMarkerSymbol* >( symbol )->bounds( pt, context, fet );
       }
     }
 
     //convert bounds to a geometry
-    QgsLineStringV2* boundLineString = new QgsLineStringV2();
+    QgsLineString* boundLineString = new QgsLineString();
     boundLineString->addVertex( QgsPointV2( bounds.topLeft() ) );
     boundLineString->addVertex( QgsPointV2( bounds.topRight() ) );
     boundLineString->addVertex( QgsPointV2( bounds.bottomRight() ) );
@@ -447,7 +447,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
   // update tmpLyr with any data defined drop shadow values
   QgsPalLabeling::dataDefinedDropShadow( tmpLyr, ddValues );
 
-  tmpLyr.showingShadowRects = mEngine->testFlag( QgsLabelingEngineV2::DrawShadowRects );
+  tmpLyr.showingShadowRects = mEngine->testFlag( QgsLabelingEngine::DrawShadowRects );
 
   // Render the components of a label in reverse order
   //   (backgrounds -> text)
@@ -511,7 +511,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
   component.setOrigin( outPt );
   component.setRotation( label->getAlpha() );
 
-  if ( mEngine->testFlag( QgsLabelingEngineV2::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
+  if ( mEngine->testFlag( QgsLabelingEngine::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
   {
     //debugging rect
     if ( drawType != QgsPalLabeling::LabelText )
@@ -747,7 +747,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         // scale for any print output or image saving @ specific dpi
         painter->scale( component.dpiRatio(), component.dpiRatio() );
 
-        if ( mEngine->testFlag( QgsLabelingEngineV2::RenderOutlineLabels ) )
+        if ( mEngine->testFlag( QgsLabelingEngine::RenderOutlineLabels ) )
         {
           // draw outlined text
           _fixQPictureDPI( painter );

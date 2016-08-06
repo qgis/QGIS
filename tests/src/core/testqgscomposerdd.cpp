@@ -96,8 +96,8 @@ void TestQgsComposerDD::initTestCase()
   // fix the renderer, fill with green
   QgsStringMap props;
   props.insert( "color", "0,127,0" );
-  QgsFillSymbolV2* fillSymbol = QgsFillSymbolV2::createSimple( props );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( fillSymbol );
+  QgsFillSymbol* fillSymbol = QgsFillSymbol::createSimple( props );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
   mVectorLayer->setRendererV2( renderer );
 
   // the atlas map

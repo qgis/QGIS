@@ -26,7 +26,7 @@
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
-class QgsStyleV2;
+class QgsStyle;
 class QgsExpressionContext;
 class QgsLayerTreeGroup;
 
@@ -193,7 +193,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     QgsRelationManagerDialog *mRelationManagerDlg;
     QgsMapCanvas* mMapCanvas;
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
 
     void populateStyles();
     void editSymbol( QComboBox* cbo );

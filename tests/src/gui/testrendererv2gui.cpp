@@ -25,7 +25,7 @@
 #include <QApplication>
 #include <QToolBar>
 
-TestRendererV2GUI::TestRendererV2GUI( QWidget *parent ) :
+TestRendererGUI::TestRendererGUI( QWidget *parent ) :
     QMainWindow( parent )
 {
   resize( 640, 480 );
@@ -40,7 +40,7 @@ TestRendererV2GUI::TestRendererV2GUI( QWidget *parent ) :
   connect( QgsProject::instance(), SIGNAL( readProject( QDomDocument ) ), mMapCanvas, SLOT( readProject( QDomDocument ) ) );
 }
 
-void TestRendererV2GUI::loadLayers()
+void TestRendererGUI::loadLayers()
 {
   // load just first vector layer
   QList<QgsMapCanvasLayer> canvasLayers;
@@ -53,14 +53,14 @@ void TestRendererV2GUI::loadLayers()
   mMapCanvas->setLayerSet( canvasLayers );
 }
 
-void TestRendererV2GUI::setRenderer()
+void TestRendererGUI::setRenderer()
 {
   QgsMapLayer* layer = mMapCanvas->layer( 0 );
   Q_ASSERT( layer );
   Q_ASSERT( layer->type() == QgsMapLayer::VectorLayer );
   QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
 
-  QgsRendererV2PropertiesDialog dlg( vlayer, QgsStyleV2::defaultStyle() );
+  QgsRendererPropertiesDialog dlg( vlayer, QgsStyle::defaultStyle() );
   dlg.exec();
 
   mMapCanvas->refresh();
@@ -79,7 +79,7 @@ int main( int argc, char* argv[] )
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  TestRendererV2GUI gui;
+  TestRendererGUI gui;
 
   QString projectFileName( argv[1] );
   QgsProject::instance()->setFileName( projectFileName );

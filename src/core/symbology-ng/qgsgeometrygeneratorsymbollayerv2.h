@@ -19,12 +19,12 @@
 #include "qgssymbollayer.h"
 
 /** \ingroup core
- * \class QgsGeometryGeneratorSymbolLayerV2
+ * \class QgsGeometryGeneratorSymbolLayer
  */
-class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayer
+class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 {
   public:
-    ~QgsGeometryGeneratorSymbolLayerV2();
+    ~QgsGeometryGeneratorSymbolLayer();
 
     static QgsSymbolLayer* create( const QgsStringMap& properties );
 
@@ -92,12 +92,12 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayer
     void setColor( const QColor& color ) override;
 
   private:
-    QgsGeometryGeneratorSymbolLayerV2( const QString& expression );
+    QgsGeometryGeneratorSymbolLayer( const QString& expression );
 
     QScopedPointer<QgsExpression> mExpression;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsLineSymbolV2* mLineSymbol;
-    QgsMarkerSymbolV2* mMarkerSymbol;
+    QgsFillSymbol* mFillSymbol;
+    QgsLineSymbol* mLineSymbol;
+    QgsMarkerSymbol* mMarkerSymbol;
     QgsSymbol* mSymbol;
 
     /**

@@ -208,7 +208,7 @@ void QgsSpatialQuery::setSpatialIndexReference( QgsFeatureIds &qsetIndexInvalidR
 
 void QgsSpatialQuery::execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &qsetIndexInvalidTarget, int relation )
 {
-  bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometryV2&, QString* ) const;
+  bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometry&, QString* ) const;
   switch ( relation )
   {
     case Disjoint:
@@ -245,7 +245,7 @@ void QgsSpatialQuery::execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &
   coordinateTransform->setCoordinateTransform( mLayerTarget, mLayerReference );
 
   // Set function for populate result
-  void ( QgsSpatialQuery::* funcPopulateIndexResult )( QgsFeatureIds&, QgsFeatureId, const QgsGeometry&, bool ( QgsGeometryEngine::* )( const QgsAbstractGeometryV2&, QString* ) const );
+  void ( QgsSpatialQuery::* funcPopulateIndexResult )( QgsFeatureIds&, QgsFeatureId, const QgsGeometry&, bool ( QgsGeometryEngine::* )( const QgsAbstractGeometry&, QString* ) const );
   funcPopulateIndexResult = ( relation == Disjoint )
                             ? &QgsSpatialQuery::populateIndexResultDisjoint
                             : &QgsSpatialQuery::populateIndexResult;
@@ -273,7 +273,7 @@ void QgsSpatialQuery::execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &
 
 void QgsSpatialQuery::populateIndexResult(
   QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
-  bool ( QgsGeometryEngine::* op )( const QgsAbstractGeometryV2&, QString* ) const )
+  bool ( QgsGeometryEngine::* op )( const QgsAbstractGeometry&, QString* ) const )
 {
   QgsFeatureIds listIdReference = mIndexReference.intersects( geomTarget.boundingBox() ).toSet();
   if ( listIdReference.isEmpty() )
@@ -305,7 +305,7 @@ void QgsSpatialQuery::populateIndexResult(
 
 void QgsSpatialQuery::populateIndexResultDisjoint(
   QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
-  bool ( QgsGeometryEngine::* op )( const QgsAbstractGeometryV2&, QString* ) const )
+  bool ( QgsGeometryEngine::* op )( const QgsAbstractGeometry&, QString* ) const )
 {
   QgsFeatureIds listIdReference = mIndexReference.intersects( geomTarget.boundingBox() ).toSet();
   if ( listIdReference.isEmpty() )

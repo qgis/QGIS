@@ -28,7 +28,7 @@
 #include "qgssymbol.h"
 
 class QgsDiagram;
-class QgsDiagramRendererV2;
+class QgsDiagramRenderer;
 class QgsFeature;
 class QgsRenderContext;
 class QDomElement;
@@ -202,25 +202,25 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * @note added in QGIS 2.16
      */
     // TODO QGIS 3.0 - rename to renderer()
-    QgsDiagramRendererV2* getRenderer() { return renderer; }
+    QgsDiagramRenderer* getRenderer() { return renderer; }
 
     /** Returns the diagram renderer associated with the layer.
      * @see setRenderer()
      * @note added in QGIS 2.16
      */
     // TODO QGIS 3.0 - rename to renderer()
-    const QgsDiagramRendererV2* getRenderer() const { return renderer; }
+    const QgsDiagramRenderer* getRenderer() const { return renderer; }
 
     /** Sets the diagram renderer associated with the layer.
      * @param diagramRenderer diagram renderer. Ownership is transferred to the object.
      * @see getRenderer()
      * @note added in QGIS 2.16
      */
-    void setRenderer( QgsDiagramRendererV2* diagramRenderer );
+    void setRenderer( QgsDiagramRenderer* diagramRenderer );
 
     //! Associated diagram renderer. Owned by this object.
     // TODO QGIS 3.0 - make private, rename to mRenderer
-    QgsDiagramRendererV2* renderer;
+    QgsDiagramRenderer* renderer;
 
     /** Returns the coordinate transform associated with the layer, or an
      * invalid transform if no transformation is required.
@@ -413,20 +413,20 @@ class CORE_EXPORT QgsDiagramInterpolationSettings
 
 
 /** \ingroup core
- * \class QgsDiagramRendererV2
+ * \class QgsDiagramRenderer
  * \brief Evaluates and returns the diagram settings relating to a diagram for a specific feature.
  */
 
-class CORE_EXPORT QgsDiagramRendererV2
+class CORE_EXPORT QgsDiagramRenderer
 {
   public:
 
-    QgsDiagramRendererV2();
-    virtual ~QgsDiagramRendererV2();
+    QgsDiagramRenderer();
+    virtual ~QgsDiagramRenderer();
 
     /** Returns new instance that is equivalent to this one
      * @note added in 2.4 */
-    virtual QgsDiagramRendererV2* clone() const = 0;
+    virtual QgsDiagramRenderer* clone() const = 0;
 
     /** Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
     virtual QSizeF sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c ) const;
@@ -498,7 +498,7 @@ class CORE_EXPORT QgsDiagramRendererV2
      * @see setSizeLegendSymbol()
      * @see sizeLegend()
      */
-    QgsMarkerSymbolV2* sizeLegendSymbol() const { return mSizeLegendSymbol.data(); }
+    QgsMarkerSymbol* sizeLegendSymbol() const { return mSizeLegendSymbol.data(); }
 
     /** Sets the marker symbol used for rendering the diagram size legend.
      * @param symbol marker symbol, ownership is transferred to the renderer.
@@ -506,11 +506,11 @@ class CORE_EXPORT QgsDiagramRendererV2
      * @see sizeLegendSymbol()
      * @see setSizeLegend()
      */
-    void setSizeLegendSymbol( QgsMarkerSymbolV2* symbol ) { mSizeLegendSymbol.reset( symbol ); }
+    void setSizeLegendSymbol( QgsMarkerSymbol* symbol ) { mSizeLegendSymbol.reset( symbol ); }
 
   protected:
-    QgsDiagramRendererV2( const QgsDiagramRendererV2& other );
-    QgsDiagramRendererV2& operator=( const QgsDiagramRendererV2& other );
+    QgsDiagramRenderer( const QgsDiagramRenderer& other );
+    QgsDiagramRenderer& operator=( const QgsDiagramRenderer& other );
 
     /** Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
      * @param feature the feature
@@ -542,13 +542,13 @@ class CORE_EXPORT QgsDiagramRendererV2
     bool mShowSizeLegend;
 
     //! Marker symbol to use in size legends
-    QScopedPointer< QgsMarkerSymbolV2 > mSizeLegendSymbol;
+    QScopedPointer< QgsMarkerSymbol > mSizeLegendSymbol;
 };
 
 /** \ingroup core
  * Renders the diagrams for all features with the same settings
 */
-class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
+class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
   public:
     QgsSingleCategoryDiagramRenderer();
@@ -581,7 +581,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
 /** \ingroup core
  * \class QgsLinearlyInterpolatedDiagramRenderer
  */
-class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRendererV2
+class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRenderer
 {
   public:
     QgsLinearlyInterpolatedDiagramRenderer();

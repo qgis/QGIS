@@ -23,7 +23,7 @@ class QgsOuterGlowEffect;
 /** \ingroup core
  * \class Qgs25DRenderer
  */
-class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
+class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
 {
   public:
     Qgs25DRenderer();
@@ -33,14 +33,14 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
      *
      * @param element XML information
      */
-    static QgsFeatureRendererV2* create( QDomElement& element );
+    static QgsFeatureRenderer* create( QDomElement& element );
     QDomElement save( QDomDocument& doc ) override;
 
     void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     void stopRender( QgsRenderContext& context ) override;
 
     QList<QString> usedAttributes() override;
-    QgsFeatureRendererV2* clone() const override;
+    QgsFeatureRenderer* clone() const override;
 
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
@@ -99,7 +99,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
      * we assume that the internals are not compatible and create a new default
      * 2.5D renderer.
      */
-    static Qgs25DRenderer* convertFromRenderer( QgsFeatureRendererV2* renderer );
+    static Qgs25DRenderer* convertFromRenderer( QgsFeatureRenderer* renderer );
 
     /**
      * Is the shadow enabled
@@ -112,8 +112,8 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
 
   private:
 
-    QgsFillSymbolLayerV2* roofLayer() const;
-    QgsFillSymbolLayerV2* wallLayer() const;
+    QgsFillSymbolLayer* roofLayer() const;
+    QgsFillSymbolLayer* wallLayer() const;
     QgsOuterGlowEffect* glowEffect() const;
 
     QScopedPointer<QgsSymbol> mSymbol;

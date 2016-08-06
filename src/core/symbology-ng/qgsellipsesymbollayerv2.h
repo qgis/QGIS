@@ -24,11 +24,11 @@ class QgsExpression;
 
 /** \ingroup core
  * A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*/
-class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
+class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 {
   public:
-    QgsEllipseSymbolLayerV2();
-    ~QgsEllipseSymbolLayerV2();
+    QgsEllipseSymbolLayer();
+    ~QgsEllipseSymbolLayer();
 
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
     static QgsSymbolLayer* createFromSld( QDomElement &element );
@@ -37,7 +37,7 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext& context ) override;
     void stopRender( QgsSymbolRenderContext& context ) override;
-    QgsEllipseSymbolLayerV2* clone() const override;
+    QgsEllipseSymbolLayer* clone() const override;
     QgsStringMap properties() const override;
 
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;

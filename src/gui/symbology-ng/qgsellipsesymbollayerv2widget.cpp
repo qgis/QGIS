@@ -18,7 +18,7 @@
 #include "qgsvectorlayer.h"
 #include <QColorDialog>
 
-QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
+QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerWidget( parent, vl )
     , mLayer( nullptr )
 {
@@ -50,7 +50,7 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
 
   Q_FOREACH ( const QString& name, names )
   {
-    QgsEllipseSymbolLayerV2* lyr = new QgsEllipseSymbolLayerV2();
+    QgsEllipseSymbolLayer* lyr = new QgsEllipseSymbolLayer();
     lyr->setSymbolName( name );
     lyr->setOutlineColor( QColor( 0, 0, 0 ) );
     lyr->setFillColor( QColor( 200, 200, 200 ) );
@@ -68,14 +68,14 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
 }
 
-void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( !layer || layer->layerType() != "EllipseMarker" )
   {
     return;
   }
 
-  mLayer = static_cast<QgsEllipseSymbolLayerV2*>( layer );
+  mLayer = static_cast<QgsEllipseSymbolLayer*>( layer );
   mWidthSpinBox->setValue( mLayer->symbolWidth() );
   mHeightSpinBox->setValue( mLayer->symbolHeight() );
   mRotationSpinBox->setValue( mLayer->angle() );
@@ -123,12 +123,12 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
 
 }
 
-QgsSymbolLayer* QgsEllipseSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsEllipseSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mShapeListWidget_itemSelectionChanged()
+void QgsEllipseSymbolLayerWidget::on_mShapeListWidget_itemSelectionChanged()
 {
   if ( mLayer )
   {
@@ -141,7 +141,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mShapeListWidget_itemSelectionChanged()
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mWidthSpinBox_valueChanged( double d )
+void QgsEllipseSymbolLayerWidget::on_mWidthSpinBox_valueChanged( double d )
 {
   if ( mLayer )
   {
@@ -150,7 +150,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mWidthSpinBox_valueChanged( double d )
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mHeightSpinBox_valueChanged( double d )
+void QgsEllipseSymbolLayerWidget::on_mHeightSpinBox_valueChanged( double d )
 {
   if ( mLayer )
   {
@@ -159,7 +159,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mHeightSpinBox_valueChanged( double d )
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mRotationSpinBox_valueChanged( double d )
+void QgsEllipseSymbolLayerWidget::on_mRotationSpinBox_valueChanged( double d )
 {
   if ( mLayer )
   {
@@ -168,7 +168,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mRotationSpinBox_valueChanged( double d )
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mOutlineStyleComboBox_currentIndexChanged( int index )
+void QgsEllipseSymbolLayerWidget::on_mOutlineStyleComboBox_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
 
@@ -179,7 +179,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mOutlineStyleComboBox_currentIndexChanged
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mOutlineWidthSpinBox_valueChanged( double d )
+void QgsEllipseSymbolLayerWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
 {
   if ( mLayer )
   {
@@ -188,7 +188,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mOutlineWidthSpinBox_valueChanged( double
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorBorder_colorChanged( const QColor& newColor )
+void QgsEllipseSymbolLayerWidget::on_btnChangeColorBorder_colorChanged( const QColor& newColor )
 {
   if ( !mLayer )
   {
@@ -199,7 +199,7 @@ void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorBorder_colorChanged( const 
   emit changed();
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorFill_colorChanged( const QColor& newColor )
+void QgsEllipseSymbolLayerWidget::on_btnChangeColorFill_colorChanged( const QColor& newColor )
 {
   if ( !mLayer )
   {
@@ -210,7 +210,7 @@ void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorFill_colorChanged( const QC
   emit changed();
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mSymbolWidthUnitWidget_changed()
+void QgsEllipseSymbolLayerWidget::on_mSymbolWidthUnitWidget_changed()
 {
   if ( mLayer )
   {
@@ -220,7 +220,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mSymbolWidthUnitWidget_changed()
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mOutlineWidthUnitWidget_changed()
+void QgsEllipseSymbolLayerWidget::on_mOutlineWidthUnitWidget_changed()
 {
   if ( mLayer )
   {
@@ -230,7 +230,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mOutlineWidthUnitWidget_changed()
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mSymbolHeightUnitWidget_changed()
+void QgsEllipseSymbolLayerWidget::on_mSymbolHeightUnitWidget_changed()
 {
   if ( mLayer )
   {
@@ -240,7 +240,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mSymbolHeightUnitWidget_changed()
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
+void QgsEllipseSymbolLayerWidget::on_mOffsetUnitWidget_changed()
 {
   if ( mLayer )
   {
@@ -250,13 +250,13 @@ void QgsEllipseSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::penJoinStyleChanged()
+void QgsEllipseSymbolLayerWidget::penJoinStyleChanged()
 {
   mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
   emit changed();
 }
 
-void QgsEllipseSymbolLayerV2Widget::blockComboSignals( bool block )
+void QgsEllipseSymbolLayerWidget::blockComboSignals( bool block )
 {
   mSymbolWidthUnitWidget->blockSignals( block );
   mOutlineWidthUnitWidget->blockSignals( block );
@@ -270,25 +270,25 @@ void QgsEllipseSymbolLayerV2Widget::blockComboSignals( bool block )
   cboJoinStyle->blockSignals( block );
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mHorizontalAnchorComboBox_currentIndexChanged( int index )
+void QgsEllipseSymbolLayerWidget::on_mHorizontalAnchorComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint(( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint ) index );
+    mLayer->setHorizontalAnchorPoint(( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
     emit changed();
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexChanged( int index )
+void QgsEllipseSymbolLayerWidget::on_mVerticalAnchorComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayerV2::VerticalAnchorPoint ) index );
+    mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
     emit changed();
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::setOffset()
+void QgsEllipseSymbolLayerWidget::setOffset()
 {
   mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();

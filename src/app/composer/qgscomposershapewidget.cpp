@@ -107,8 +107,8 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  QgsFillSymbolV2* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
+  QgsFillSymbol* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), coverageLayer, this );
   d.setExpressionContext( mComposerShape->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )

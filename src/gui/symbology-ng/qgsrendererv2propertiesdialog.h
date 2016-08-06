@@ -26,30 +26,30 @@
 class QKeyEvent;
 
 class QgsVectorLayer;
-class QgsStyleV2;
+class QgsStyle;
 class QgsSymbol;
 class QgsPaintEffect;
-class QgsRendererV2Widget;
+class QgsRendererWidget;
 class QgsMapCanvas;
 
 /** \ingroup gui
- * \class QgsRendererV2PropertiesDialog
+ * \class QgsRendererPropertiesDialog
  */
-class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::QgsRendererV2PropsDialogBase
+class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRendererPropsDialogBase
 {
     Q_OBJECT
 
   public:
 
-    /** Constructor for QgsRendererV2PropertiesDialog.
+    /** Constructor for QgsRendererPropertiesDialog.
      * @param layer associated layer
      * @param style style collection
      * @param embedded set to true to indicate that the dialog will be embedded in another widget, rather
      * than shown as a dialog by itself
      * @param parent parent widget
      */
-    QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false, QWidget* parent = nullptr );
-    ~QgsRendererV2PropertiesDialog();
+    QgsRendererPropertiesDialog( QgsVectorLayer* layer, QgsStyle* style, bool embedded = false, QWidget* parent = nullptr );
+    ~QgsRendererPropertiesDialog();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
@@ -134,9 +134,9 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
     void keyPressEvent( QKeyEvent * event ) override;
 
     QgsVectorLayer* mLayer;
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
 
-    QgsRendererV2Widget* mActiveWidget;
+    QgsRendererWidget* mActiveWidget;
 
     QgsPaintEffect* mPaintEffect;
 

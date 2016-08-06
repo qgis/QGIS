@@ -26,7 +26,7 @@ class QDomDocument;
 class QDomElement;
 class QDialog;
 class QgsVectorLayer;
-class QgsMarkerSymbolV2;
+class QgsMarkerSymbol;
 
 /** \ingroup gui
  * An annotation item can be either placed either on screen corrdinates or on map coordinates.
@@ -91,8 +91,8 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
     QPointF offsetFromReferencePoint() const { return mOffsetFromReferencePoint; }
 
     /** Set symbol that is drawn on map position. Takes ownership*/
-    void setMarkerSymbol( QgsMarkerSymbolV2* symbol );
-    const QgsMarkerSymbolV2* markerSymbol() const {return mMarkerSymbol;}
+    void setMarkerSymbol( QgsMarkerSymbol* symbol );
+    const QgsMarkerSymbol* markerSymbol() const {return mMarkerSymbol;}
 
     void setFrameBorderWidth( double w ) { mFrameBorderWidth = w; }
     double frameBorderWidth() const { return mFrameBorderWidth; }
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
     QRectF mBoundingRect;
 
     /** Point symbol that is to be drawn at the map reference location*/
-    QgsMarkerSymbolV2* mMarkerSymbol;
+    QgsMarkerSymbol* mMarkerSymbol;
     /** Width of the frame*/
     double mFrameBorderWidth;
     /** Frame / balloon color*/

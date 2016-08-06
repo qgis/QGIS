@@ -1,11 +1,11 @@
-class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
+class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
 {
 %TypeHeaderCode
 #include <qgslinesymbollayerv2.h>
 %End
 
   public:
-    QgsSimpleLineSymbolLayerV2( const QColor& color = DEFAULT_SIMPLELINE_COLOR,
+    QgsSimpleLineSymbolLayer( const QColor& color = DEFAULT_SIMPLELINE_COLOR,
                                 double width = DEFAULT_SIMPLELINE_WIDTH,
                                 Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
 
@@ -29,7 +29,7 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    virtual QgsSimpleLineSymbolLayerV2* clone() const /Factory/;
+    virtual QgsSimpleLineSymbolLayer* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
@@ -89,17 +89,17 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
 /////////
 
-class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
+class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
 {
 %TypeHeaderCode
 #include <qgslinesymbollayerv2.h>
 %End
 
   public:
-    QgsMarkerLineSymbolLayerV2( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
+    QgsMarkerLineSymbolLayer( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
                                 double interval = DEFAULT_MARKERLINE_INTERVAL );
 
-    ~QgsMarkerLineSymbolLayerV2();
+    ~QgsMarkerLineSymbolLayer();
 
     /**
      * Defines how/where the marker should be placed on the line
@@ -148,7 +148,7 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    virtual QgsMarkerLineSymbolLayerV2* clone() const;
+    virtual QgsMarkerLineSymbolLayer* clone() const;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 

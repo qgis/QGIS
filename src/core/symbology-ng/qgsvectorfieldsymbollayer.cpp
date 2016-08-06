@@ -31,7 +31,7 @@ QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
     , mXIndex( -1 )
     , mYIndex( -1 )
 {
-  setSubSymbol( new QgsLineSymbolV2() );
+  setSubSymbol( new QgsLineSymbol() );
 }
 
 QgsVectorFieldSymbolLayer::~QgsVectorFieldSymbolLayer()
@@ -41,13 +41,13 @@ QgsVectorFieldSymbolLayer::~QgsVectorFieldSymbolLayer()
 
 void QgsVectorFieldSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
-  QgsMarkerSymbolLayerV2::setOutputUnit( unit );
+  QgsMarkerSymbolLayer::setOutputUnit( unit );
   mDistanceUnit = unit;
 }
 
 QgsUnitTypes::RenderUnit QgsVectorFieldSymbolLayer::outputUnit() const
 {
-  if ( QgsMarkerSymbolLayerV2::outputUnit() == mDistanceUnit )
+  if ( QgsMarkerSymbolLayer::outputUnit() == mDistanceUnit )
   {
     return mDistanceUnit;
   }
@@ -56,13 +56,13 @@ QgsUnitTypes::RenderUnit QgsVectorFieldSymbolLayer::outputUnit() const
 
 void QgsVectorFieldSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
-  QgsMarkerSymbolLayerV2::setMapUnitScale( scale );
+  QgsMarkerSymbolLayer::setMapUnitScale( scale );
   mDistanceMapUnitScale = scale;
 }
 
 QgsMapUnitScale QgsVectorFieldSymbolLayer::mapUnitScale() const
 {
-  if ( QgsMarkerSymbolLayerV2::mapUnitScale() == mDistanceMapUnitScale )
+  if ( QgsMarkerSymbolLayer::mapUnitScale() == mDistanceMapUnitScale )
   {
     return mDistanceMapUnitScale;
   }
@@ -136,7 +136,7 @@ bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbol* symbol )
   if ( symbol->type() == QgsSymbol::Line )
   {
     delete mLineSymbol;
-    mLineSymbol = static_cast<QgsLineSymbolV2*>( symbol );
+    mLineSymbol = static_cast<QgsLineSymbol*>( symbol );
     return true;
   }
   return false;
@@ -283,7 +283,7 @@ void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context
 
 QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes() const
 {
-  QSet<QString> attributes = QgsMarkerSymbolLayerV2::usedAttributes();
+  QSet<QString> attributes = QgsMarkerSymbolLayer::usedAttributes();
   if ( !mXAttribute.isEmpty() )
   {
     attributes.insert( mXAttribute );

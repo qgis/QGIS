@@ -20,7 +20,7 @@
 #include "qgsrendererv2.h"
 
 class QgsAbstractFeatureSource;
-class QgsFeatureRendererV2;
+class QgsFeatureRenderer;
 class QgsSymbol;
 
 /** \ingroup core
@@ -29,7 +29,7 @@ class QgsSymbol;
  * custom properties or from the given settings.
  *
  * @note added in QGIS 2.12
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * @note not available in Python bindings
  */
 class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
                                  const QgsCoordinateReferenceSystem& crs,
                                  QgsAbstractFeatureSource* source,
                                  bool ownsSource,
-                                 QgsFeatureRendererV2* renderer = nullptr );
+                                 QgsFeatureRenderer* renderer = nullptr );
 
     ~QgsVectorLayerLabelProvider();
 
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Geometry type of layer
     QgsWkbTypes::GeometryType mLayerGeometryType;
 
-    QgsFeatureRendererV2* mRenderer;
+    QgsFeatureRenderer* mRenderer;
 
     // these are needed only if using own renderer loop
 

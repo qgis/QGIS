@@ -36,7 +36,7 @@
 // - fix crash on Diverging?
 
 
-QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent )
+QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( QgsCptCityColorRamp* ramp, QWidget* parent )
     : QDialog( parent )
     , mRamp( nullptr )
     , mArchiveViewType( QgsCptCityBrowserModel::Selections )
@@ -96,7 +96,7 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
   }
   else
   {
-    mRamp = new QgsCptCityColorRampV2( "", "", false );
+    mRamp = new QgsCptCityColorRamp( "", "", false );
     ramp = mRamp;
   }
   QgsDebugMsg( QString( "ramp name= %1 variant= %2 - %3 variants" ).arg( ramp->schemeName(), ramp->variantName() ).arg( ramp->variantList().count() ) );
@@ -153,11 +153,11 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
 
 }
 
-QgsCptCityColorRampV2Dialog::~QgsCptCityColorRampV2Dialog()
+QgsCptCityColorRampDialog::~QgsCptCityColorRampDialog()
 {
 }
 
-void QgsCptCityColorRampV2Dialog::populateVariants()
+void QgsCptCityColorRampDialog::populateVariants()
 {
   QStringList variantList = mRamp->variantList();
 
@@ -176,7 +176,7 @@ void QgsCptCityColorRampV2Dialog::populateVariants()
   {
     // populate variant combobox
     QString oldVariant = cboVariantName->currentText();
-    QgsCptCityColorRampV2 ramp( mRamp->schemeName(), mRamp->variantList(), QString() );
+    QgsCptCityColorRamp ramp( mRamp->schemeName(), mRamp->variantList(), QString() );
     QPixmap blankPixmap( cboVariantName->iconSize() );
     blankPixmap.fill( Qt::white );
     QIcon blankIcon( blankPixmap );
@@ -230,7 +230,7 @@ void QgsCptCityColorRampV2Dialog::populateVariants()
 
 }
 
-void QgsCptCityColorRampV2Dialog::on_mTreeView_clicked( const QModelIndex &index )
+void QgsCptCityColorRampDialog::on_mTreeView_clicked( const QModelIndex &index )
 {
   const QModelIndex &sourceIndex = mTreeFilter->mapToSource( index );
   QgsCptCityDataItem *item = mModel->dataItem( sourceIndex );
@@ -241,7 +241,7 @@ void QgsCptCityColorRampV2Dialog::on_mTreeView_clicked( const QModelIndex &index
   updateTreeView( item );
 }
 
-void QgsCptCityColorRampV2Dialog::updateTreeView( QgsCptCityDataItem *item, bool resetRamp )
+void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool resetRamp )
 {
   if ( ! item )
   {
@@ -282,7 +282,7 @@ void QgsCptCityColorRampV2Dialog::updateTreeView( QgsCptCityDataItem *item, bool
   }
 }
 
-void QgsCptCityColorRampV2Dialog::on_mListWidget_itemClicked( QListWidgetItem * item )
+void QgsCptCityColorRampDialog::on_mListWidget_itemClicked( QListWidgetItem * item )
 {
   QgsCptCityColorRampItem *rampItem = mListRamps.at( item->data( Qt::UserRole ).toInt() );
   if ( rampItem )
@@ -299,7 +299,7 @@ void QgsCptCityColorRampV2Dialog::on_mListWidget_itemClicked( QListWidgetItem * 
   }
 }
 
-void QgsCptCityColorRampV2Dialog::on_mListWidget_itemSelectionChanged()
+void QgsCptCityColorRampDialog::on_mListWidget_itemSelectionChanged()
 {
   if ( mListWidget->selectedItems().isEmpty() )
   {
@@ -307,7 +307,7 @@ void QgsCptCityColorRampV2Dialog::on_mListWidget_itemSelectionChanged()
   }
 }
 
-void QgsCptCityColorRampV2Dialog::on_tabBar_currentChanged( int index )
+void QgsCptCityColorRampDialog::on_tabBar_currentChanged( int index )
 {
   if ( index == 0 )
   {
@@ -332,7 +332,7 @@ void QgsCptCityColorRampV2Dialog::on_tabBar_currentChanged( int index )
 }
 
 
-void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
+void QgsCptCityColorRampDialog::on_pbtnLicenseDetails_pressed()
 {
   QString path, title, copyFile, descFile;
 
@@ -402,7 +402,7 @@ void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
   dlg.exec();
 }
 
-void QgsCptCityColorRampV2Dialog::updatePreview( bool clear )
+void QgsCptCityColorRampDialog::updatePreview( bool clear )
 {
   QSize size = lblPreview->size();
 
@@ -431,12 +431,12 @@ void QgsCptCityColorRampV2Dialog::updatePreview( bool clear )
   updateCopyingInfo( mRamp->copyingInfo() );
 }
 
-void QgsCptCityColorRampV2Dialog::clearCopyingInfo()
+void QgsCptCityColorRampDialog::clearCopyingInfo()
 {
   updateCopyingInfo( QMap< QString, QString >() );
 }
 
-void QgsCptCityColorRampV2Dialog::updateCopyingInfo( const QMap< QString, QString >& copyingMap )
+void QgsCptCityColorRampDialog::updateCopyingInfo( const QMap< QString, QString >& copyingMap )
 {
   QString authorStr = copyingMap.value( "authors" );
   if ( authorStr.length() > 80 )
@@ -461,7 +461,7 @@ void QgsCptCityColorRampV2Dialog::updateCopyingInfo( const QMap< QString, QStrin
     lblSrcLink->setText( "" );
 }
 
-void QgsCptCityColorRampV2Dialog::on_cboVariantName_currentIndexChanged( int index )
+void QgsCptCityColorRampDialog::on_cboVariantName_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   if ( cboVariantName->currentIndex() != -1 )
@@ -470,7 +470,7 @@ void QgsCptCityColorRampV2Dialog::on_cboVariantName_currentIndexChanged( int ind
   updatePreview();
 }
 
-void QgsCptCityColorRampV2Dialog::onFinished()
+void QgsCptCityColorRampDialog::onFinished()
 {
   // save settings
   QSettings settings;
@@ -478,7 +478,7 @@ void QgsCptCityColorRampV2Dialog::onFinished()
   settings.setValue( "/Windows/CptCityColorRampV2Dialog/splitter", mSplitter->saveState() );
 }
 
-void QgsCptCityColorRampV2Dialog::on_buttonBox_helpRequested()
+void QgsCptCityColorRampDialog::on_buttonBox_helpRequested()
 {
   // show error message to use color ramp manager to get more gradients
   QString helpText = tr( "You can download a more complete set of cpt-city gradients "
@@ -490,14 +490,14 @@ void QgsCptCityColorRampV2Dialog::on_buttonBox_helpRequested()
   msg->exec();
 }
 
-bool QgsCptCityColorRampV2Dialog::saveAsGradientRamp() const
+bool QgsCptCityColorRampDialog::saveAsGradientRamp() const
 {
   QgsDebugMsg( QString( "result: %1 checked: %2" ).arg( result() ).arg( cboConvertStandard->isChecked() ) );
-  // if "save as standard gradient" is checked, convert to QgsVectorGradientColorRampV2
+  // if "save as standard gradient" is checked, convert to QgsVectorGradientColorRamp
   return ( result() == Accepted && cboConvertStandard->isChecked() );
 }
 
-void QgsCptCityColorRampV2Dialog::updateListWidget( QgsCptCityDataItem *item )
+void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
 {
   mListWidget->blockSignals( true );
   mListWidget->clear();
@@ -535,7 +535,7 @@ void QgsCptCityColorRampV2Dialog::updateListWidget( QgsCptCityDataItem *item )
 // this function is for a svg preview, available if the svg files have been processed with svgx
 // e.g. for f in `ls */*/*/*/*.svg`; do echo $f ; svgx -p -t svg $f > tmp1.svg; mv tmp1.svg $f; done
 // perhaps a future version of the cpt-city svg gradients will have them by default
-bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
+bool QgsCptCityColorRampDialog::eventFilter( QObject *obj, QEvent *event )
 {
   QSize size = lblPreview->size();
 
@@ -561,7 +561,7 @@ bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
   }
 }
 
-bool QgsCptCityColorRampV2Dialog::updateRamp()
+bool QgsCptCityColorRampDialog::updateRamp()
 {
   mListWidget->clear();
   mListRamps.clear();
@@ -628,7 +628,7 @@ bool QgsCptCityColorRampV2Dialog::updateRamp()
   return false;
 }
 
-void QgsCptCityColorRampV2Dialog::showAll()
+void QgsCptCityColorRampDialog::showAll()
 {
   QModelIndex modelIndex = mModel->findPath( "" );
   if ( modelIndex != QModelIndex() )
@@ -641,7 +641,7 @@ void QgsCptCityColorRampV2Dialog::showAll()
   }
 }
 
-void QgsCptCityColorRampV2Dialog::setTreeModel( QgsCptCityBrowserModel* model )
+void QgsCptCityColorRampDialog::setTreeModel( QgsCptCityBrowserModel* model )
 {
   mModel = model;
 
@@ -652,14 +652,14 @@ void QgsCptCityColorRampV2Dialog::setTreeModel( QgsCptCityBrowserModel* model )
 }
 
 #if 0
-void QgsCptCityColorRampV2Dialog::refresh()
+void QgsCptCityColorRampDialog::refresh()
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
   refreshModel( QModelIndex() );
   QApplication::restoreOverrideCursor();
 }
 
-void QgsCptCityColorRampV2Dialog::refreshModel( const QModelIndex& index )
+void QgsCptCityColorRampDialog::refreshModel( const QModelIndex& index )
 {
   if ( index.isValid() )
   {

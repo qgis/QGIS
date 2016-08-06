@@ -915,7 +915,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassCommandGroup commandGroup;
   TestQgsGrassCommand command;
   TestQgsGrassFeature grassFeature;
-  QgsLineStringV2 * line;
+  QgsLineString * line;
   QgsGeometry *geometry;
   QList<QgsPointV2> pointList;
 
@@ -1019,7 +1019,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   grassFeature = TestQgsGrassFeature( GV_LINE );
   grassFeature.setFeatureId( 1 );
-  line = new QgsLineStringV2();
+  line = new QgsLineString();
   pointList.clear();
   pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
   pointList << QgsPointV2( QgsWkbTypes::Point, 20, 10, 0 );
@@ -1060,7 +1060,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   command.verify = false;
   grassFeature = TestQgsGrassFeature( GV_BOUNDARY );
   grassFeature.setFeatureId( 1 );
-  line = new QgsLineStringV2();
+  line = new QgsLineString();
   pointList.clear();
   pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
   pointList << QgsPointV2( QgsWkbTypes::Point, 20, 10, 0 );

@@ -238,9 +238,9 @@ class QgsMapSettings
     double segmentationTolerance() const;
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
-    void setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType type );
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
     /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
-    QgsAbstractGeometryV2::SegmentationToleranceType segmentationToleranceType() const;
+    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
 
 
   protected:

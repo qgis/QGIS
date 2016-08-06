@@ -23,17 +23,17 @@
 #include <QFlags>
 
 
-class QgsLabelingEngineV2;
+class QgsLabelingEngine;
 
 
 /** \ingroup core
  * @brief The QgsAbstractLabelProvider class is an interface class. Implementations
  * return list of labels and their associated geometries - these are used by
- * QgsLabelingEngineV2 to compute the final layout of labels.
+ * QgsLabelingEngine to compute the final layout of labels.
  *
  * Implementations also take care of drawing the returned final label positions.
  *
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * @note not available in Python bindings
  * @note added in QGIS 2.12
  */
@@ -46,8 +46,8 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Vritual destructor
     virtual ~QgsAbstractLabelProvider() {}
 
-    //! Associate provider with a labeling engine (should be only called internally from QgsLabelingEngineV2)
-    void setEngine( const QgsLabelingEngineV2* engine ) { mEngine = engine; }
+    //! Associate provider with a labeling engine (should be only called internally from QgsLabelingEngine)
+    void setEngine( const QgsLabelingEngine* engine ) { mEngine = engine; }
 
     enum Flag
     {
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
   protected:
     //! Associated labeling engine
-    const QgsLabelingEngineV2* mEngine;
+    const QgsLabelingEngine* mEngine;
 
     //! Name of the layer
     QString mName;
@@ -126,7 +126,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
 
 
 /** \ingroup core
- * @brief The QgsLabelingEngineV2 class provides map labeling functionality.
+ * @brief The QgsLabelingEngine class provides map labeling functionality.
  * The input for the engine is a list of label provider objects and map settings.
  * Based on the input, the engine computes layout of labels for the given map view
  * with no collisions between the labels. Drawing of resulting labels is done
@@ -139,7 +139,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
  *
  * The labeling engine may also be used independently from map rendering loop:
  * \code
- *   QgsLabelingEngineV2 engine;
+ *   QgsLabelingEngine engine;
  *   engine.setMapSettings( mapSettings );
  *   // add one or more providers
  *   engine.addProvider( ... );
@@ -157,13 +157,13 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
  * @note added in QGIS 2.12
  * @note not available in Python bindings
  */
-class CORE_EXPORT QgsLabelingEngineV2
+class CORE_EXPORT QgsLabelingEngine
 {
   public:
     //! Construct the labeling engine with default settings
-    QgsLabelingEngineV2();
+    QgsLabelingEngine();
     //! Clean up everything (especially the registered providers)
-    ~QgsLabelingEngineV2();
+    ~QgsLabelingEngine();
 
     enum Flag
     {
@@ -241,17 +241,17 @@ class CORE_EXPORT QgsLabelingEngineV2
 
   private:
 
-    QgsLabelingEngineV2( const QgsLabelingEngineV2& rh );
-    QgsLabelingEngineV2& operator=( const QgsLabelingEngineV2& rh );
+    QgsLabelingEngine( const QgsLabelingEngine& rh );
+    QgsLabelingEngine& operator=( const QgsLabelingEngine& rh );
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngineV2::Flags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngine::Flags )
 
 
 /** \ingroup core
  * @class QgsLabelingUtils
  * @brief Contains helper utilities for working with QGIS' labeling engine.
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * @note added in QGIS 2.14
  * @note not available in Python bindings
  */

@@ -19,7 +19,7 @@ struct QgsVertexId
   bool partEqual( QgsVertexId o ) const;
   bool ringEqual( QgsVertexId o ) const;
   bool vertexEqual( QgsVertexId o ) const;
-  bool isValid(const QgsAbstractGeometryV2* geom) const;
+  bool isValid(const QgsAbstractGeometry* geom) const;
 
   int part;
   int ring;
@@ -28,11 +28,11 @@ struct QgsVertexId
 };
 
 /** \ingroup core
- * \class QgsAbstractGeometryV2
+ * \class QgsAbstractGeometry
  * \brief Abstract base class for all geometries
  * \note added in QGIS 2.10
  */
-class QgsAbstractGeometryV2
+class QgsAbstractGeometry
 {
 %TypeHeaderCode
 #include <qgsabstractgeometryv2.h>
@@ -42,28 +42,28 @@ class QgsAbstractGeometryV2
 %ConvertToSubClassCode
       if (dynamic_cast<QgsPointV2*>(sipCpp) != NULL)
         sipType = sipType_QgsPointV2;
-      else if (dynamic_cast<QgsLineStringV2*>(sipCpp) != NULL )
-        sipType = sipType_QgsLineStringV2;
-      else if (dynamic_cast<QgsCircularStringV2*>(sipCpp) != NULL )
-        sipType = sipType_QgsCircularStringV2;
-      else if (dynamic_cast<QgsCompoundCurveV2*>(sipCpp) != NULL )
-        sipType = sipType_QgsCompoundCurveV2;
+      else if (dynamic_cast<QgsLineString*>(sipCpp) != NULL )
+        sipType = sipType_QgsLineString;
+      else if (dynamic_cast<QgsCircularString*>(sipCpp) != NULL )
+        sipType = sipType_QgsCircularString;
+      else if (dynamic_cast<QgsCompoundCurve*>(sipCpp) != NULL )
+        sipType = sipType_QgsCompoundCurve;
       else if (dynamic_cast<QgsPolygonV2*>(sipCpp) != NULL )
         sipType = sipType_QgsPolygonV2;
-      else if (dynamic_cast<QgsCurvePolygonV2*>(sipCpp) != NULL )
-        sipType = sipType_QgsCurvePolygonV2;
+      else if (dynamic_cast<QgsCurvePolygon*>(sipCpp) != NULL )
+        sipType = sipType_QgsCurvePolygon;
       else if (dynamic_cast<QgsMultiPointV2*>(sipCpp) != NULL )
         sipType = sipType_QgsMultiPointV2;
-      else if (dynamic_cast<QgsMultiLineStringV2*>(sipCpp) != NULL )
-        sipType = sipType_QgsMultiLineStringV2;
+      else if (dynamic_cast<QgsMultiLineString*>(sipCpp) != NULL )
+        sipType = sipType_QgsMultiLineString;
       else if (dynamic_cast<QgsMultiPolygonV2*>(sipCpp) != NULL )
         sipType = sipType_QgsMultiPolygonV2;
-      else if (dynamic_cast<QgsMultiSurfaceV2*>(sipCpp) != NULL )
-        sipType = sipType_QgsMultiSurfaceV2;
-      else if (dynamic_cast<QgsMultiCurveV2*>(sipCpp) != NULL )
-        sipType = sipType_QgsMultiCurveV2;
-      else if (dynamic_cast<QgsGeometryCollectionV2*>(sipCpp) != NULL )
-        sipType = sipType_QgsGeometryCollectionV2;
+      else if (dynamic_cast<QgsMultiSurface*>(sipCpp) != NULL )
+        sipType = sipType_QgsMultiSurface;
+      else if (dynamic_cast<QgsMultiCurve*>(sipCpp) != NULL )
+        sipType = sipType_QgsMultiCurve;
+      else if (dynamic_cast<QgsGeometryCollection*>(sipCpp) != NULL )
+        sipType = sipType_QgsGeometryCollection;
       else
         sipType = 0;
 %End
@@ -78,14 +78,14 @@ class QgsAbstractGeometryV2
     };
 
 
-    QgsAbstractGeometryV2();
-    virtual ~QgsAbstractGeometryV2();
-    QgsAbstractGeometryV2( const QgsAbstractGeometryV2& geom );
-    //virtual QgsAbstractGeometryV2& operator=( const QgsAbstractGeometryV2& geom );
+    QgsAbstractGeometry();
+    virtual ~QgsAbstractGeometry();
+    QgsAbstractGeometry( const QgsAbstractGeometry& geom );
+    //virtual QgsAbstractGeometry& operator=( const QgsAbstractGeometry& geom );
 
     /** Clones the geometry by performing a deep copy
      */
-    virtual QgsAbstractGeometryV2* clone() const = 0;
+    virtual QgsAbstractGeometry* clone() const = 0;
 
     /** Clears the geometry, ie reset it to a null geometry
      */
@@ -135,7 +135,7 @@ class QgsAbstractGeometryV2
      * @returns boundary for geometry. May be null for some geometry types.
      * @note added in QGIS 3.0
      */
-    virtual QgsAbstractGeometryV2* boundary() const = 0;
+    virtual QgsAbstractGeometry* boundary() const = 0;
 
     //import
 
@@ -327,13 +327,13 @@ class QgsAbstractGeometryV2
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsAbstractGeometryV2* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+    virtual QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     /** Returns the geometry converted to the more generic curve type.
-        E.g. QgsLineStringV2 -> QgsCompoundCurveV2, QgsPolygonV2 -> QgsCurvePolygonV2,
-        QgsMultiLineStringV2 -> QgsMultiCurveV2, QgsMultiPolygonV2 -> QgsMultiSurfaceV2
+        E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
+        QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
         @return the converted geometry. Caller takes ownership*/
-    virtual QgsAbstractGeometryV2* toCurveType() const /Factory/;
+    virtual QgsAbstractGeometry* toCurveType() const /Factory/;
 
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the
@@ -396,7 +396,7 @@ class QgsAbstractGeometryV2
 
     /** Updates the geometry type based on whether sub geometries contain z or m values.
      */
-    void setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subggeom, QgsWkbTypes::Type baseGeomType );
+    void setZMTypeFromSubGeometry( const QgsAbstractGeometry* subggeom, QgsWkbTypes::Type baseGeomType );
 
     /** Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
      * if a more efficient bounding box calculation is available.

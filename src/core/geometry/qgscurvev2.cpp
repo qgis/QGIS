@@ -20,13 +20,13 @@
 #include "qgspointv2.h"
 #include "qgsmultipointv2.h"
 
-QgsCurveV2::QgsCurveV2(): QgsAbstractGeometryV2()
+QgsCurve::QgsCurve(): QgsAbstractGeometry()
 {}
 
-QgsCurveV2::~QgsCurveV2()
+QgsCurve::~QgsCurve()
 {}
 
-bool QgsCurveV2::isClosed() const
+bool QgsCurve::isClosed() const
 {
   if ( numPoints() == 0 )
     return false;
@@ -39,24 +39,24 @@ bool QgsCurveV2::isClosed() const
            qgsDoubleNear( start.z(), end.z(), 1E-8 ) );
 }
 
-bool QgsCurveV2::isRing() const
+bool QgsCurve::isRing() const
 {
   return ( isClosed() && numPoints() >= 4 );
 }
 
-QgsCoordinateSequenceV2 QgsCurveV2::coordinateSequence() const
+QgsCoordinateSequence QgsCurve::coordinateSequence() const
 {
   if ( !mCoordinateSequence.isEmpty() )
     return mCoordinateSequence;
 
-  mCoordinateSequence.append( QgsRingSequenceV2() );
-  mCoordinateSequence.back().append( QgsPointSequenceV2() );
+  mCoordinateSequence.append( QgsRingSequence() );
+  mCoordinateSequence.back().append( QgsPointSequence() );
   points( mCoordinateSequence.back().back() );
 
   return mCoordinateSequence;
 }
 
-bool QgsCurveV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
+bool QgsCurve::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
 {
   if ( id.vertex < 0 )
   {
@@ -81,7 +81,7 @@ bool QgsCurveV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
   return pointAt( id.vertex, vertex, id.type );
 }
 
-QgsAbstractGeometryV2* QgsCurveV2::boundary() const
+QgsAbstractGeometry* QgsCurve::boundary() const
 {
   if ( isEmpty() )
     return nullptr;
@@ -95,12 +95,12 @@ QgsAbstractGeometryV2* QgsCurveV2::boundary() const
   return multiPoint;
 }
 
-QgsCurveV2* QgsCurveV2::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
+QgsCurve* QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   return curveToLine( tolerance, toleranceType );
 }
 
-QgsPointV2 QgsCurveV2::vertexAt( QgsVertexId id ) const
+QgsPointV2 QgsCurve::vertexAt( QgsVertexId id ) const
 {
   QgsPointV2 v;
   QgsVertexId::VertexType type;
@@ -108,7 +108,7 @@ QgsPointV2 QgsCurveV2::vertexAt( QgsVertexId id ) const
   return v;
 }
 
-QgsRectangle QgsCurveV2::boundingBox() const
+QgsRectangle QgsCurve::boundingBox() const
 {
   if ( mBoundingBox.isNull() )
   {

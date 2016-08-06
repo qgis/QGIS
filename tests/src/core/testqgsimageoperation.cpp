@@ -286,7 +286,7 @@ void TestQgsImageOperation::overlayColor()
 void TestQgsImageOperation::distanceTransformMaxDist()
 {
   QImage image( mTransparentSampleImage );
-  QgsVectorGradientColorRampV2 ramp;
+  QgsVectorGradientColorRamp ramp;
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = true;
   props.ramp = &ramp;
@@ -301,7 +301,7 @@ void TestQgsImageOperation::distanceTransformMaxDist()
 void TestQgsImageOperation::distanceTransformSetSpread()
 {
   QImage image( mTransparentSampleImage );
-  QgsVectorGradientColorRampV2 ramp;
+  QgsVectorGradientColorRamp ramp;
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = false;
   props.spread = 10;
@@ -317,7 +317,7 @@ void TestQgsImageOperation::distanceTransformSetSpread()
 void TestQgsImageOperation::distanceTransformInterior()
 {
   QImage image( mTransparentSampleImage );
-  QgsVectorGradientColorRampV2 ramp;
+  QgsVectorGradientColorRamp ramp;
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = true;
   props.ramp = &ramp;
@@ -344,7 +344,7 @@ void TestQgsImageOperation::distanceTransformMisc()
   //zero spread
   QImage image2( mSampleImage );
   QgsImageOperation::DistanceTransformProperties props2;
-  QgsVectorGradientColorRampV2 ramp;
+  QgsVectorGradientColorRamp ramp;
   props2.useMaxDistance = false;
   props2.spread = 0;
   props2.ramp = &ramp;

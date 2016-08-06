@@ -1,11 +1,11 @@
-class QgsVectorGradientColorRampV2Dialog : QDialog
+class QgsVectorGradientColorRampDialog : QDialog
 {
 %TypeHeaderCode
 #include <qgsvectorgradientcolorrampv2dialog.h>
 %End
 
   public:
-    QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent /TransferThis/ = NULL );
+    QgsVectorGradientColorRampDialog( QgsVectorGradientColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
 
   public slots:
     void setColor1( const QColor& color );

@@ -33,15 +33,15 @@ from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.core import (QgsGeometry,
                        QgsSymbol,
                        QgsMapUnitScale,
-                       QgsMarkerSymbolV2,
-                       QgsFillSymbolV2,
-                       QgsLineSymbolV2,
+                       QgsMarkerSymbol,
+                       QgsFillSymbol,
+                       QgsLineSymbol,
                        QgsRenderContext,
                        QgsFeature,
                        Qgis,
                        QgsMapSettings,
                        QgsRenderChecker,
-                       QgsSimpleMarkerSymbolLayerV2,
+                       QgsSimpleMarkerSymbolLayer,
                        QgsUnitTypes,
                        QgsWkbTypes
                        )
@@ -57,9 +57,9 @@ class TestQgsSymbol(unittest.TestCase):
 
     def setUp(self):
         #Create some simple symbols
-        self.fill_symbol = QgsFillSymbolV2.createSimple({'color': '#ffffff'})
-        self.line_symbol = QgsLineSymbolV2.createSimple({'color': '#ffffff', 'line_width': '3'})
-        self.marker_symbol = QgsMarkerSymbolV2.createSimple({'color': '#ffffff', 'size': '3'})
+        self.fill_symbol = QgsFillSymbol.createSimple({'color': '#ffffff'})
+        self.line_symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'line_width': '3'})
+        self.marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3'})
         self.report = "<h1>Python QgsSymbol Tests</h1>\n"
 
     def tearDown(self):
@@ -191,7 +191,7 @@ class TestQgsSymbol(unittest.TestCase):
 class TestQgsMarkerSymbolV2(unittest.TestCase):
 
     def setUp(self):
-        self.report = "<h1>Python QgsMarkerSymbolV2 Tests</h1>\n"
+        self.report = "<h1>Python QgsMarkerSymbol Tests</h1>\n"
 
     def tearDown(self):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
@@ -202,17 +202,17 @@ class TestQgsMarkerSymbolV2(unittest.TestCase):
         # test size and setSize
 
         # create a marker symbol with a single layer
-        markerSymbol = QgsMarkerSymbolV2()
+        markerSymbol = QgsMarkerSymbol()
         markerSymbol.deleteSymbolLayer(0)
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
         self.assertEqual(markerSymbol.size(), 10)
         markerSymbol.setSize(20)
         self.assertEqual(markerSymbol.size(), 20)
         self.assertEqual(markerSymbol.symbolLayer(0).size(), 20)
 
         # add additional layers
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 30))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 30))
         self.assertEqual(markerSymbol.size(), 30)
         markerSymbol.setSize(3)
         self.assertEqual(markerSymbol.size(), 3)
@@ -225,17 +225,17 @@ class TestQgsMarkerSymbolV2(unittest.TestCase):
         # test angle and setAngle
 
         # create a marker symbol with a single layer
-        markerSymbol = QgsMarkerSymbolV2()
+        markerSymbol = QgsMarkerSymbol()
         markerSymbol.deleteSymbolLayer(0)
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 10, 90))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 10, 90))
         self.assertEqual(markerSymbol.angle(), 90)
         markerSymbol.setAngle(100)
         self.assertEqual(markerSymbol.angle(), 100)
         self.assertEqual(markerSymbol.symbolLayer(0).angle(), 100)
 
         # add additional layers
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 10, 130))
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 10, 150))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 10, 130))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 10, 150))
         # should take first layer's angle
         self.assertEqual(markerSymbol.angle(), 100)
         markerSymbol.setAngle(10)
@@ -249,17 +249,17 @@ class TestQgsMarkerSymbolV2(unittest.TestCase):
         # test sizeUnit and setSizeUnit
 
         # create a marker symbol with a single layer
-        markerSymbol = QgsMarkerSymbolV2()
+        markerSymbol = QgsMarkerSymbol()
         markerSymbol.deleteSymbolLayer(0)
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
         self.assertEqual(markerSymbol.sizeUnit(), QgsUnitTypes.RenderMillimeters)
         markerSymbol.setSizeUnit(QgsUnitTypes.RenderMapUnits)
         self.assertEqual(markerSymbol.sizeUnit(), QgsUnitTypes.RenderMapUnits)
         self.assertEqual(markerSymbol.symbolLayer(0).sizeUnit(), QgsUnitTypes.RenderMapUnits)
 
         # add additional layers
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 30))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 30))
         # should now be mixed size units
         self.assertEqual(markerSymbol.sizeUnit(), QgsUnitTypes.RenderUnknownUnit)
         markerSymbol.setSizeUnit(QgsUnitTypes.RenderPixels)
@@ -273,9 +273,9 @@ class TestQgsMarkerSymbolV2(unittest.TestCase):
         # test sizeMapUnitScale and setSizeMapUnitScale
 
         # create a marker symbol with a single layer
-        markerSymbol = QgsMarkerSymbolV2()
+        markerSymbol = QgsMarkerSymbol()
         markerSymbol.deleteSymbolLayer(0)
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
         markerSymbol.symbolLayer(0).setSizeMapUnitScale(QgsMapUnitScale(10000, 20000))
         self.assertEqual(markerSymbol.sizeMapUnitScale(), QgsMapUnitScale(10000, 20000))
         markerSymbol.setSizeMapUnitScale(QgsMapUnitScale(1000, 2000))
@@ -283,8 +283,8 @@ class TestQgsMarkerSymbolV2(unittest.TestCase):
         self.assertEqual(markerSymbol.symbolLayer(0).sizeMapUnitScale(), QgsMapUnitScale(1000, 2000))
 
         # add additional layers
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
-        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayerV2('star', QColor(255, 0, 0), QColor(0, 255, 0), 30))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 10))
+        markerSymbol.appendSymbolLayer(QgsSimpleMarkerSymbolLayer('star', QColor(255, 0, 0), QColor(0, 255, 0), 30))
         # should take first layer's map unit scale
         self.assertEqual(markerSymbol.sizeMapUnitScale(), QgsMapUnitScale(1000, 2000))
         markerSymbol.setSizeMapUnitScale(QgsMapUnitScale(3000, 4000))

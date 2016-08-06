@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsStyleV2ManagerDialogBase</class>
- <widget class="QDialog" name="QgsStyleV2ManagerDialogBase">
+ <class>QgsStyleManagerDialogBase</class>
+ <widget class="QDialog" name="QgsStyleManagerDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -559,7 +559,7 @@ QMenu::item:selected {  background-color: gray; } */
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsStyleV2ManagerDialogBase</receiver>
+   <receiver>QgsStyleManagerDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

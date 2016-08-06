@@ -91,7 +91,7 @@ QgsDiagramLayerSettings::~QgsDiagramLayerSettings()
 }
 Q_NOWARN_DEPRECATED_POP
 
-void QgsDiagramLayerSettings::setRenderer( QgsDiagramRendererV2 *diagramRenderer )
+void QgsDiagramLayerSettings::setRenderer( QgsDiagramRenderer *diagramRenderer )
 {
   if ( diagramRenderer == renderer )
     return;
@@ -381,26 +381,26 @@ void QgsDiagramSettings::writeXml( QDomElement& rendererElem, QDomDocument& doc,
   rendererElem.appendChild( categoryElem );
 }
 
-QgsDiagramRendererV2::QgsDiagramRendererV2()
+QgsDiagramRenderer::QgsDiagramRenderer()
     : mDiagram( nullptr )
     , mShowAttributeLegend( true )
     , mShowSizeLegend( false )
-    , mSizeLegendSymbol( QgsMarkerSymbolV2::createSimple( QgsStringMap() ) )
+    , mSizeLegendSymbol( QgsMarkerSymbol::createSimple( QgsStringMap() ) )
 {
 }
 
-QgsDiagramRendererV2::~QgsDiagramRendererV2()
+QgsDiagramRenderer::~QgsDiagramRenderer()
 {
   delete mDiagram;
 }
 
-void QgsDiagramRendererV2::setDiagram( QgsDiagram* d )
+void QgsDiagramRenderer::setDiagram( QgsDiagram* d )
 {
   delete mDiagram;
   mDiagram = d;
 }
 
-QgsDiagramRendererV2::QgsDiagramRendererV2( const QgsDiagramRendererV2& other )
+QgsDiagramRenderer::QgsDiagramRenderer( const QgsDiagramRenderer& other )
     : mDiagram( other.mDiagram ? other.mDiagram->clone() : nullptr )
     , mShowAttributeLegend( other.mShowAttributeLegend )
     , mShowSizeLegend( other.mShowSizeLegend )
@@ -408,7 +408,7 @@ QgsDiagramRendererV2::QgsDiagramRendererV2( const QgsDiagramRendererV2& other )
 {
 }
 
-QgsDiagramRendererV2 &QgsDiagramRendererV2::operator=( const QgsDiagramRendererV2 & other )
+QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer & other )
 {
   mDiagram = other.mDiagram ? other.mDiagram->clone() : nullptr;
   mShowAttributeLegend = other.mShowAttributeLegend;
@@ -417,7 +417,7 @@ QgsDiagramRendererV2 &QgsDiagramRendererV2::operator=( const QgsDiagramRendererV
   return *this;
 }
 
-void QgsDiagramRendererV2::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos ) const
+void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos ) const
 {
   if ( !mDiagram )
   {
@@ -433,7 +433,7 @@ void QgsDiagramRendererV2::renderDiagram( const QgsFeature& feature, QgsRenderCo
   mDiagram->renderDiagram( feature, c, s, pos );
 }
 
-QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c ) const
+QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c ) const
 {
   QgsDiagramSettings s;
   if ( !diagramSettings( feature, c, s ) )
@@ -451,7 +451,7 @@ QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsFeature& feature, const QgsR
   return size;
 }
 
-QSet<QString> QgsDiagramRendererV2::referencedFields( const QgsExpressionContext &context, const QgsFields &fields ) const
+QSet<QString> QgsDiagramRenderer::referencedFields( const QgsExpressionContext &context, const QgsFields &fields ) const
 {
   Q_UNUSED( fields );
 
@@ -471,7 +471,7 @@ QSet<QString> QgsDiagramRendererV2::referencedFields( const QgsExpressionContext
   return referenced;
 }
 
-void QgsDiagramRendererV2::convertSizeToMapUnits( QSizeF& size, const QgsRenderContext& context ) const
+void QgsDiagramRenderer::convertSizeToMapUnits( QSizeF& size, const QgsRenderContext& context ) const
 {
   if ( !size.isValid() )
   {
@@ -483,7 +483,7 @@ void QgsDiagramRendererV2::convertSizeToMapUnits( QSizeF& size, const QgsRenderC
   size.rheight() *= pixelToMap;
 }
 
-int QgsDiagramRendererV2::dpiPaintDevice( const QPainter* painter )
+int QgsDiagramRenderer::dpiPaintDevice( const QPainter* painter )
 {
   if ( painter )
   {
@@ -496,7 +496,7 @@ int QgsDiagramRendererV2::dpiPaintDevice( const QPainter* painter )
   return -1;
 }
 
-void QgsDiagramRendererV2::_readXml( const QDomElement& elem, const QgsVectorLayer* layer )
+void QgsDiagramRenderer::_readXml( const QDomElement& elem, const QgsVectorLayer* layer )
 {
   Q_UNUSED( layer )
 
@@ -523,11 +523,11 @@ void QgsDiagramRendererV2::_readXml( const QDomElement& elem, const QgsVectorLay
   QDomElement sizeLegendSymbolElem = elem.firstChildElement( "symbol" );
   if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( "name" ) == "sizeSymbol" )
   {
-    mSizeLegendSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( sizeLegendSymbolElem ) );
+    mSizeLegendSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( sizeLegendSymbolElem ) );
   }
 }
 
-void QgsDiagramRendererV2::_writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
+void QgsDiagramRenderer::_writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   Q_UNUSED( doc );
   Q_UNUSED( layer )
@@ -542,7 +542,7 @@ void QgsDiagramRendererV2::_writeXml( QDomElement& rendererElem, QDomDocument& d
   rendererElem.appendChild( sizeLegendSymbolElem );
 }
 
-QgsSingleCategoryDiagramRenderer::QgsSingleCategoryDiagramRenderer(): QgsDiagramRendererV2()
+QgsSingleCategoryDiagramRenderer::QgsSingleCategoryDiagramRenderer(): QgsDiagramRenderer()
 {
 }
 
@@ -595,7 +595,7 @@ void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement& layerElem, QDomDoc
 }
 
 
-QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer(): QgsDiagramRendererV2()
+QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer(): QgsDiagramRenderer()
 {
   mInterpolationSettings.classificationAttributeIsExpression = false;
 }
@@ -630,7 +630,7 @@ QList<QString> QgsLinearlyInterpolatedDiagramRenderer::diagramAttributes() const
 
 QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const QgsExpressionContext &context, const QgsFields& fields ) const
 {
-  QSet< QString > referenced = QgsDiagramRendererV2::referencedFields( context, fields );
+  QSet< QString > referenced = QgsDiagramRenderer::referencedFields( context, fields );
   if ( mInterpolationSettings.classificationAttributeIsExpression )
   {
     QgsExpression* expression = mDiagram->getExpression( mInterpolationSettings.classificationAttributeExpression, context );
@@ -711,7 +711,7 @@ QList< QgsLayerTreeModelLegendNode* > QgsDiagramSettings::legendItems( QgsLayerT
   return list;
 }
 
-QList< QgsLayerTreeModelLegendNode* > QgsDiagramRendererV2::legendItems( QgsLayerTreeLayer* ) const
+QList< QgsLayerTreeModelLegendNode* > QgsDiagramRenderer::legendItems( QgsLayerTreeLayer* ) const
 {
   return QList< QgsLayerTreeModelLegendNode * >();
 }
@@ -737,8 +737,8 @@ QList< QgsLayerTreeModelLegendNode* > QgsLinearlyInterpolatedDiagramRenderer::le
     Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
     {
       double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
-      QgsLegendSymbolItemV2 si( mSizeLegendSymbol.data(), QString::number( v ), QString() );
-      QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
+      QgsLegendSymbolItem si( mSizeLegendSymbol.data(), QString::number( v ), QString() );
+      QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
       s->setSize( size );
       s->setSizeUnit( mSettings.sizeType );
       s->setSizeMapUnitScale( mSettings.sizeScale );

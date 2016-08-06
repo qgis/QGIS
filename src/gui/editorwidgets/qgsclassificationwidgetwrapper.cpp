@@ -45,7 +45,7 @@ void QgsClassificationWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
-    const QgsCategorizedSymbolRendererV2 *csr = dynamic_cast<const QgsCategorizedSymbolRendererV2 *>( layer()->rendererV2() );
+    const QgsCategorizedSymbolRenderer *csr = dynamic_cast<const QgsCategorizedSymbolRenderer *>( layer()->rendererV2() );
     if ( csr )
     {
       const QgsCategoryList categories = csr->categories();

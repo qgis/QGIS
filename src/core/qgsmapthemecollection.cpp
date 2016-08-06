@@ -121,7 +121,7 @@ void QgsMapThemeCollection::applyPresetCheckedLegendNodesToLayer( const QString&
 
   bool someNodesUnchecked = rec.mPerLayerCheckedLegendSymbols.contains( layerID );
 
-  Q_FOREACH ( const QgsLegendSymbolItemV2& item, vlayer->rendererV2()->legendSymbolItemsV2() )
+  Q_FOREACH ( const QgsLegendSymbolItem& item, vlayer->rendererV2()->legendSymbolItemsV2() )
   {
     bool checked = vlayer->rendererV2()->legendSymbolItemChecked( item.ruleKey() );
     bool shouldBeChecked = someNodesUnchecked ? rec.mPerLayerCheckedLegendSymbols[layerID].contains( item.ruleKey() ) : true;

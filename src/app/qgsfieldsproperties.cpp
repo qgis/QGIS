@@ -558,10 +558,10 @@ void QgsFieldsProperties::attributeTypeDialog()
   cfg.mConstraintDescription = attributeTypeDialog.expressionDescription();
   cfg.mConstraint = attributeTypeDialog.expression();
 
-  cfg.mEditorWidgetV2Type = attributeTypeDialog.editorWidgetV2Type();
-  cfg.mEditorWidgetV2Config = attributeTypeDialog.editorWidgetV2Config();
+  cfg.mEditorWidgetV2Type = attributeTypeDialog.editorWidgetType();
+  cfg.mEditorWidgetV2Config = attributeTypeDialog.editorWidgetConfig();
 
-  pb->setText( attributeTypeDialog.editorWidgetV2Text() );
+  pb->setText( attributeTypeDialog.editorWidgetText() );
 
   setConfigForRow( row, cfg );
 }
@@ -842,7 +842,7 @@ void QgsFieldsProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::Photo, tr( "Photo" ) );
   editTypeMap.insert( QgsVectorLayer::WebView, tr( "Web view" ) );
   editTypeMap.insert( QgsVectorLayer::Color, tr( "Color" ) );
-  editTypeMap.insert( QgsVectorLayer::EditorWidgetV2, tr( "Editor Widget" ) );
+  editTypeMap.insert( QgsVectorLayer::EditorWidget, tr( "Editor Widget" ) );
 }
 
 QString QgsFieldsProperties::editTypeButtonText( QgsVectorLayer::EditType type )

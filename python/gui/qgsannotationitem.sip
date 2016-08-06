@@ -85,8 +85,8 @@ class QgsAnnotationItem: QgsMapCanvasItem, QgsAnnotation
     QPointF offsetFromReferencePoint() const;
 
     /** Set symbol that is drawn on map position. Takes ownership*/
-    void setMarkerSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
-    const QgsMarkerSymbolV2* markerSymbol() const;
+    void setMarkerSymbol( QgsMarkerSymbol* symbol /Transfer/ );
+    const QgsMarkerSymbol* markerSymbol() const;
 
     void setFrameBorderWidth( double w );
     double frameBorderWidth() const;

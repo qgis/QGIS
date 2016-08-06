@@ -1,4 +1,4 @@
-class QgsMultiCurveV2: public QgsGeometryCollectionV2
+class QgsMultiCurve: public QgsGeometryCollection
 {
 %TypeHeaderCode
 #include <qgsmulticurvev2.h>
@@ -6,7 +6,7 @@ class QgsMultiCurveV2: public QgsGeometryCollectionV2
 
   public:
     virtual QString geometryType() const;
-    virtual QgsMultiCurveV2* clone() const;
+    virtual QgsMultiCurve* clone() const;
 
     bool fromWkt( const QString& wkt );
 
@@ -18,14 +18,14 @@ class QgsMultiCurveV2: public QgsGeometryCollectionV2
     QString asJSON( int precision = 17 ) const;
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometryV2* g );
+    virtual bool addGeometry( QgsAbstractGeometry* g );
     /** Returns a geometry without curves. Caller takes ownership*/
-    QgsAbstractGeometryV2* segmentize() const /Factory/;
+    QgsAbstractGeometry* segmentize() const /Factory/;
 
     /** Returns a copy of the multi curve, where each component curve has had its line direction reversed.
      * @note added in QGIS 2.14
      */
-    QgsMultiCurveV2* reversed() const /Factory/;
+    QgsMultiCurve* reversed() const /Factory/;
 
-    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+    virtual QgsAbstractGeometry* boundary() const /Factory/;
 };

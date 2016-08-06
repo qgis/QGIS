@@ -19,11 +19,11 @@
 
 class QgsMapCanvas;
 
-class TestRendererV2GUI : public QMainWindow
+class TestRendererGUI : public QMainWindow
 {
     Q_OBJECT
   public:
-    explicit TestRendererV2GUI( QWidget *parent = 0 );
+    explicit TestRendererGUI( QWidget *parent = 0 );
     void loadLayers();
 
   signals:

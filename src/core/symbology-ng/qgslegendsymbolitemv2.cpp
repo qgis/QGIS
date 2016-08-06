@@ -17,7 +17,7 @@
 
 #include "qgssymbol.h"
 
-QgsLegendSymbolItemV2::QgsLegendSymbolItemV2()
+QgsLegendSymbolItem::QgsLegendSymbolItem()
     : mSymbol( nullptr )
     , mCheckable( false )
     , mOriginalSymbolPointer( nullptr )
@@ -27,7 +27,7 @@ QgsLegendSymbolItemV2::QgsLegendSymbolItemV2()
 {
 }
 
-QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbol* symbol, const QString& label, const QString& ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom, int level, const QString& parentRuleKey )
+QgsLegendSymbolItem::QgsLegendSymbolItem( QgsSymbol* symbol, const QString& label, const QString& ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom, int level, const QString& parentRuleKey )
     : mSymbol( symbol ? symbol->clone() : nullptr )
     , mLabel( label )
     , mKey( ruleKey )
@@ -40,19 +40,19 @@ QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbol* symbol, const QString& 
 {
 }
 
-QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( const QgsLegendSymbolItemV2& other )
+QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem& other )
     : mSymbol( nullptr )
     , mOriginalSymbolPointer( nullptr )
 {
   *this = other;
 }
 
-QgsLegendSymbolItemV2::~QgsLegendSymbolItemV2()
+QgsLegendSymbolItem::~QgsLegendSymbolItem()
 {
   delete mSymbol;
 }
 
-QgsLegendSymbolItemV2& QgsLegendSymbolItemV2::operator=( const QgsLegendSymbolItemV2 & other )
+QgsLegendSymbolItem& QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem & other )
 {
   if ( this == &other )
     return *this;
@@ -70,7 +70,7 @@ QgsLegendSymbolItemV2& QgsLegendSymbolItemV2::operator=( const QgsLegendSymbolIt
   return *this;
 }
 
-bool QgsLegendSymbolItemV2::isScaleOK( double scale ) const
+bool QgsLegendSymbolItem::isScaleOK( double scale ) const
 {
   if ( scale <= 0 )
     return true;
@@ -83,7 +83,7 @@ bool QgsLegendSymbolItemV2::isScaleOK( double scale ) const
   return true;
 }
 
-void QgsLegendSymbolItemV2::setSymbol( QgsSymbol* s )
+void QgsLegendSymbolItem::setSymbol( QgsSymbol* s )
 {
   delete mSymbol;
   mSymbol = s ? s->clone() : nullptr;

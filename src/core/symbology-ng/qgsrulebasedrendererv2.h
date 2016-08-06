@@ -24,14 +24,14 @@
 
 class QgsExpression;
 
-class QgsCategorizedSymbolRendererV2;
-class QgsGraduatedSymbolRendererV2;
+class QgsCategorizedSymbolRenderer;
+class QgsGraduatedSymbolRenderer;
 
 /** \ingroup core
 When drawing a vector layer with rule-based renderer, it goes through
 the rules and draws features with symbols from rules that match.
  */
-class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
+class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 {
   public:
     // TODO: use QVarLengthArray instead of QList
@@ -415,14 +415,14 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     /////
 
-    static QgsFeatureRendererV2* create( QDomElement& element );
+    static QgsFeatureRenderer* create( QDomElement& element );
 
     //! Constructs the renderer from given tree of rules (takes ownership)
-    QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root );
+    QgsRuleBasedRenderer( QgsRuleBasedRenderer::Rule* root );
     //! Constructor for convenience. Creates a root rule and adds a default rule with symbol (takes ownership)
-    QgsRuleBasedRendererV2( QgsSymbol* defaultSymbol );
+    QgsRuleBasedRenderer( QgsSymbol* defaultSymbol );
 
-    ~QgsRuleBasedRendererV2();
+    ~QgsRuleBasedRenderer();
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
@@ -439,11 +439,11 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     virtual bool filterNeedsGeometry() const override;
 
-    virtual QgsRuleBasedRendererV2* clone() const override;
+    virtual QgsRuleBasedRenderer* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
+    static QgsFeatureRenderer* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
@@ -502,16 +502,16 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     //////
 
     //! take a rule and create a list of new rules based on the categories from categorized symbol renderer
-    static void refineRuleCategories( Rule* initialRule, QgsCategorizedSymbolRendererV2* r );
+    static void refineRuleCategories( Rule* initialRule, QgsCategorizedSymbolRenderer* r );
     //! take a rule and create a list of new rules based on the ranges from graduated symbol renderer
-    static void refineRuleRanges( Rule* initialRule, QgsGraduatedSymbolRendererV2* r );
+    static void refineRuleRanges( Rule* initialRule, QgsGraduatedSymbolRenderer* r );
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
     static void refineRuleScales( Rule* initialRule, QList<int> scales );
 
-    //! creates a QgsRuleBasedRendererV2 from an existing renderer.
+    //! creates a QgsRuleBasedRenderer from an existing renderer.
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsRuleBasedRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
+    static QgsRuleBasedRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
     static void convertToDataDefinedSymbology( QgsSymbol* symbol, const QString& sizeScaleField, const QString& rotationField = QString() );

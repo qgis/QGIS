@@ -27,13 +27,13 @@
 
 #include "ui_qgsstylev2exportimportdialogbase.h"
 
-class QgsStyleV2;
-class QgsStyleV2GroupSelectionDialog;
+class QgsStyle;
+class QgsStyleGroupSelectionDialog;
 
 /** \ingroup gui
- * \class QgsStyleV2ExportImportDialog
+ * \class QgsStyleExportImportDialog
  */
-class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsStyleV2ExportImportDialogBase
+class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsStyleExportImportDialogBase
 {
     Q_OBJECT
 
@@ -46,8 +46,8 @@ class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsS
 
     // constructor
     // mode argument must be 0 for saving and 1 for loading
-    QgsStyleV2ExportImportDialog( QgsStyleV2* style, QWidget *parent = nullptr, Mode mode = Export );
-    ~QgsStyleV2ExportImportDialog();
+    QgsStyleExportImportDialog( QgsStyle* style, QWidget *parent = nullptr, Mode mode = Export );
+    ~QgsStyleExportImportDialog();
 
     /**
      * @brief selectSymbols select symbols by name
@@ -107,11 +107,11 @@ class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsS
 
   private:
     void downloadStyleXml( const QUrl& url );
-    bool populateStyles( QgsStyleV2* style );
-    void moveStyles( QModelIndexList* selection, QgsStyleV2* src, QgsStyleV2* dst );
+    bool populateStyles( QgsStyle* style );
+    void moveStyles( QModelIndexList* selection, QgsStyle* src, QgsStyle* dst );
 
     QProgressDialog *mProgressDlg;
-    QgsStyleV2GroupSelectionDialog *mGroupSelectionDlg;
+    QgsStyleGroupSelectionDialog *mGroupSelectionDlg;
     QTemporaryFile *mTempFile;
     QNetworkAccessManager *mNetManager;
     QNetworkReply *mNetReply;
@@ -119,8 +119,8 @@ class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsS
     QString mFileName;
     Mode mDialogMode;
 
-    QgsStyleV2* mQgisStyle;
-    QgsStyleV2* mTempStyle;
+    QgsStyle* mQgisStyle;
+    QgsStyle* mTempStyle;
 };
 
 #endif // QGSSTYLEV2EXPORTIMPORTDIALOG_H

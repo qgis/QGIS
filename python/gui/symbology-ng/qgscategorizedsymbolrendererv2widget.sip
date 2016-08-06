@@ -1,16 +1,16 @@
-class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
+class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 {
 %TypeHeaderCode
 #include <qgscategorizedsymbolrendererv2widget.h>
 %End
 
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
 
-    QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
-    ~QgsCategorizedSymbolRendererV2Widget();
+    QgsCategorizedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    ~QgsCategorizedSymbolRendererWidget();
 
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRenderer* renderer();
 
     /** Replaces category symbols with the symbols from a style that have a matching
      * name.
@@ -20,7 +20,7 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
      * @see matchToSymbolsFromXml
      * @note added in QGIS 2.9
      */
-    int matchToSymbols( QgsStyleV2* style );
+    int matchToSymbols( QgsStyle* style );
 
   public slots:
     void changeCategorizedSymbol();
@@ -75,7 +75,7 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
 
     void changeCategorySymbol();
 
-    QgsVectorColorRampV2* getColorRamp();
+    QgsVectorColorRamp* getColorRamp();
 
     QList<QgsSymbol*> selectedSymbols();
     QgsCategoryList selectedCategoryList();

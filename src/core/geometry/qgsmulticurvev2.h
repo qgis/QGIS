@@ -19,17 +19,17 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometrycollectionv2.h"
 
 /** \ingroup core
- * \class QgsMultiCurveV2
+ * \class QgsMultiCurve
  * \brief Multi curve geometry collection.
  * \note added in QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
-class CORE_EXPORT QgsMultiCurveV2: public QgsGeometryCollectionV2
+class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 {
   public:
-    QgsMultiCurveV2();
+    QgsMultiCurve();
     virtual QString geometryType() const override { return "MultiCurve"; }
-    QgsMultiCurveV2* clone() const override;
+    QgsMultiCurve* clone() const override;
 
     bool fromWkt( const QString& wkt ) override;
 
@@ -41,14 +41,14 @@ class CORE_EXPORT QgsMultiCurveV2: public QgsGeometryCollectionV2
     QString asJSON( int precision = 17 ) const override;
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
+    virtual bool addGeometry( QgsAbstractGeometry* g ) override;
 
     /** Returns a copy of the multi curve, where each component curve has had its line direction reversed.
      * @note added in QGIS 2.14
      */
-    QgsMultiCurveV2* reversed() const;
+    QgsMultiCurve* reversed() const;
 
-    virtual QgsAbstractGeometryV2* boundary() const override;
+    virtual QgsAbstractGeometry* boundary() const override;
 
 };
 

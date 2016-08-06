@@ -57,8 +57,8 @@ DataDefinedRestorer::DataDefinedRestorer( QgsSymbol* symbol, const QgsSymbolLaye
   if ( symbolLayer->type() == QgsSymbol::Marker && symbol->type() == QgsSymbol::Marker )
   {
     Q_ASSERT( symbol->type() == QgsSymbol::Marker );
-    mMarker = static_cast<QgsMarkerSymbolV2*>( symbol );
-    mMarkerSymbolLayer = static_cast<const QgsMarkerSymbolLayerV2*>( symbolLayer );
+    mMarker = static_cast<QgsMarkerSymbol*>( symbol );
+    mMarkerSymbolLayer = static_cast<const QgsMarkerSymbolLayer*>( symbolLayer );
     mDDSize = mMarker->dataDefinedSize();
     mDDAngle = mMarker->dataDefinedAngle();
     // check if restore is actually needed
@@ -67,8 +67,8 @@ DataDefinedRestorer::DataDefinedRestorer( QgsSymbol* symbol, const QgsSymbolLaye
   }
   else if ( symbolLayer->type() == QgsSymbol::Line && symbol->type() == QgsSymbol::Line )
   {
-    mLine = static_cast<QgsLineSymbolV2*>( symbol );
-    mLineSymbolLayer = static_cast<const QgsLineSymbolLayerV2*>( symbolLayer );
+    mLine = static_cast<QgsLineSymbol*>( symbol );
+    mLineSymbolLayer = static_cast<const QgsLineSymbolLayer*>( symbolLayer );
     mDDWidth = mLine->dataDefinedWidth();
     // check if restore is actually needed
     if ( mDDWidth == QgsDataDefined() )
@@ -208,7 +208,7 @@ class SymbolLayerItem : public QStandardItem
 
 //////////
 
-QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent )
+QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* style, const QgsVectorLayer* vl, QWidget* parent )
     : QgsPanelWidget( parent )
     , mAdvancedMenu( nullptr )
     , mVectorLayer( vl )
@@ -505,13 +505,13 @@ void QgsSymbolSelectorWidget::addLayer()
 
   // save data-defined values at marker level
   QgsDataDefined ddSize = parentSymbol->type() == QgsSymbol::Marker
-                          ? static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->dataDefinedSize()
+                          ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize()
                           : QgsDataDefined();
   QgsDataDefined ddAngle = parentSymbol->type() == QgsSymbol::Marker
-                           ? static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->dataDefinedAngle()
+                           ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle()
                            : QgsDataDefined();
   QgsDataDefined ddWidth = parentSymbol->type() == QgsSymbol::Line
-                           ? static_cast<QgsLineSymbolV2 *>( parentSymbol )->dataDefinedWidth()
+                           ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth()
                            : QgsDataDefined() ;
 
   QgsSymbolLayer* newLayer = QgsSymbolLayerRegistry::instance()->defaultSymbolLayer( parentSymbol->type() );
@@ -522,11 +522,11 @@ void QgsSymbolSelectorWidget::addLayer()
 
   // restore data-defined values at marker level
   if ( ddSize != QgsDataDefined() )
-    static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->setDataDefinedSize( ddSize );
+    static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedSize( ddSize );
   if ( ddAngle != QgsDataDefined() )
-    static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->setDataDefinedAngle( ddAngle );
+    static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedAngle( ddAngle );
   if ( ddWidth != QgsDataDefined() )
-    static_cast<QgsLineSymbolV2 *>( parentSymbol )->setDataDefinedWidth( ddWidth );
+    static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
 
   SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer );
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
@@ -698,7 +698,7 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer* newLayer )
   layerChanged();
 }
 
-QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyleV2 *style, const QgsVectorLayer *vl, QWidget *parent, bool embedded )
+QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent, bool embedded )
     : QDialog( parent )
 {
   setLayout( new QVBoxLayout() );

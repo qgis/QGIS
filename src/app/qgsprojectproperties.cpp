@@ -659,7 +659,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   twWCSLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
 
   // Default Styles
-  mStyle = QgsStyleV2::defaultStyle();
+  mStyle = QgsStyle::defaultStyle();
   populateStyles();
 
   // Color palette
@@ -1713,7 +1713,7 @@ void QgsProjectProperties::populateStyles()
   for ( int i = 0; i < colorRamps.count(); ++i )
   {
     QString name = colorRamps[i];
-    QgsVectorColorRampV2* ramp = mStyle->colorRamp( name );
+    QgsVectorColorRamp* ramp = mStyle->colorRamp( name );
     QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, cboStyleColorRamp->iconSize() );
     cboStyleColorRamp->addItem( icon, name );
     delete ramp;
@@ -1737,7 +1737,7 @@ void QgsProjectProperties::populateStyles()
 
 void QgsProjectProperties::on_pbtnStyleManager_clicked()
 {
-  QgsStyleV2ManagerDialog dlg( mStyle, this );
+  QgsStyleManagerDialog dlg( mStyle, this );
   dlg.exec();
   populateStyles();
 }
@@ -1760,7 +1760,7 @@ void QgsProjectProperties::on_pbtnStyleFill_clicked()
 void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
 {
   // TODO for now just open style manager
-  // code in QgsStyleV2ManagerDialog::editColorRamp()
+  // code in QgsStyleManagerDialog::editColorRamp()
   on_pbtnStyleManager_clicked();
 }
 

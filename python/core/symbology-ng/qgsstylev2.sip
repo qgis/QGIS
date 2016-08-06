@@ -1,12 +1,12 @@
-class QgsStyleV2 : QObject
+class QgsStyle : QObject
 {
 %TypeHeaderCode
 #include <qgsstylev2.h>
 %End
 
   public:
-    QgsStyleV2();
-    ~QgsStyleV2();
+    QgsStyle();
+    ~QgsStyle();
 
     //! Enum for Entities involved in a style
     /*!
@@ -24,7 +24,7 @@ class QgsStyleV2 : QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \return success status of the operation
      */
-    bool addColorRamp( const QString& name, QgsVectorColorRampV2* colorRamp /Transfer/, bool update = false );
+    bool addColorRamp( const QString& name, QgsVectorColorRamp* colorRamp /Transfer/, bool update = false );
 
     //! adds a new group and returns the group's id
     /*!
@@ -72,7 +72,7 @@ class QgsStyleV2 : QObject
     void clear();
 
     //! return a NEW copy of color ramp
-    QgsVectorColorRampV2* colorRamp( const QString& name ) /Factory/;
+    QgsVectorColorRamp* colorRamp( const QString& name ) /Factory/;
 
     //! return count of color ramps
     int colorRampCount();
@@ -81,14 +81,14 @@ class QgsStyleV2 : QObject
     QStringList colorRampNames();
 
     //! return a const pointer to a symbol (doesn't create new instance)
-    const QgsVectorColorRampV2* colorRampRef( const QString& name ) const;
+    const QgsVectorColorRamp* colorRampRef( const QString& name ) const;
 
     //! return the id in the style database for the given colorramp name
     //! returns 0 if not found
     int colorrampId( const QString& name );
 
     //! return default application-wide style
-    static QgsStyleV2* defaultStyle();
+    static QgsStyle* defaultStyle();
 
     //! tags the symbol with the tags in the list
     /*!
@@ -199,12 +199,12 @@ class QgsStyleV2 : QObject
     //! add the colorramp to the DB
     /*!
      *  \param name is the name of the colorramp as QString
-     *  \param ramp is the pointer to the new QgsVectorColorRampV2 being saved
+     *  \param ramp is the pointer to the new QgsVectorColorRamp being saved
      *  \param groupid is the id of the group to which the Color Ramp belongs. Pass 0 if it doesn't belong to any group or not known.
      *  \param tags is a list of tags that are associated with the color ramp as a QStringList.
      *  \return returns the success state of the save operation
      */
-    bool saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp, int groupid, const QStringList& tags );
+    bool saveColorRamp( const QString& name, QgsVectorColorRamp* ramp, int groupid, const QStringList& tags );
 
     //! remove color ramp from style (and delete it)
     bool removeColorRamp( const QString& name );

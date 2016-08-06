@@ -1,12 +1,12 @@
-class QgsRendererV2Widget /External/;
+class QgsRendererWidget /External/;
 
 /**
  Stores metadata about one renderer class.
 
  @note It's necessary to implement createRenderer() function.
-   In C++ you can use QgsRendererV2Metadata convenience class.
+   In C++ you can use QgsRendererMetadata convenience class.
  */
-class QgsRendererV2AbstractMetadata
+class QgsRendererAbstractMetadata
 {
 %TypeHeaderCode
 #include <qgsrendererv2registry.h>
@@ -24,10 +24,10 @@ class QgsRendererV2AbstractMetadata
       PolygonLayer, //!< Compatible with polygon layers
       All, //!< Compatible with all vector layers
     };
-    typedef QFlags<QgsRendererV2AbstractMetadata::LayerType> LayerTypes;
+    typedef QFlags<QgsRendererAbstractMetadata::LayerType> LayerTypes;
 
-    QgsRendererV2AbstractMetadata( const QString& name, const QString& visibleName, const QIcon& icon = QIcon() );
-    virtual ~QgsRendererV2AbstractMetadata();
+    QgsRendererAbstractMetadata( const QString& name, const QString& visibleName, const QIcon& icon = QIcon() );
+    virtual ~QgsRendererAbstractMetadata();
 
     QString name() const;
     QString visibleName() const;
@@ -38,11 +38,11 @@ class QgsRendererV2AbstractMetadata
     /** Returns flags indicating the types of layer the renderer is compatible with.
      * @note added in QGIS 2.16
      */
-    virtual QgsRendererV2AbstractMetadata::LayerTypes compatibleLayerTypes() const;
+    virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const;
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
-    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) = 0 /Factory/;
+    virtual QgsFeatureRenderer* createRenderer( QDomElement& elem ) = 0 /Factory/;
     /** Return new instance of settings widget for the renderer. Returns NULL on error.
      *
      * The \a oldRenderer argument may refer to previously used renderer (or it is null).
@@ -50,49 +50,49 @@ class QgsRendererV2AbstractMetadata
      * The old renderer does not have to be of the same type as returned by createRenderer().
      * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
      */
-    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* oldRenderer ) /Factory/;
+    virtual QgsRendererWidget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* oldRenderer ) /Factory/;
 
     /**
      * Create a renderer from the SLD provided in ele and for the specified geometry type.
      * This is done on a best effort basis.
      */
-    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
+    virtual QgsFeatureRenderer* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
 };
 
-QFlags<QgsRendererV2AbstractMetadata::LayerType> operator|(QgsRendererV2AbstractMetadata::LayerType f1, QFlags<QgsRendererV2AbstractMetadata::LayerType> f2);
+QFlags<QgsRendererAbstractMetadata::LayerType> operator|(QgsRendererAbstractMetadata::LayerType f1, QFlags<QgsRendererAbstractMetadata::LayerType> f2);
 
 /**
  Convenience metadata class that uses static functions to create renderer and its widget.
  */
-class QgsRendererV2Metadata : QgsRendererV2AbstractMetadata
+class QgsRendererMetadata : QgsRendererAbstractMetadata
 {
 %TypeHeaderCode
 #include <qgsrendererv2registry.h>
 %End
   public:
-    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) /Factory/;
-    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
-    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
+    virtual QgsFeatureRenderer* createRenderer( QDomElement& elem ) /Factory/;
+    virtual QgsRendererWidget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
+    virtual QgsFeatureRenderer* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
-    // QgsRendererV2CreateFunc createFunction() const;
-    // QgsRendererV2WidgetFunc widgetFunction() const;
-    // QgsFeatureRendererV2* (*)( QDomElement&, QgsWkbTypes::GeometryType geomType ) createFromSldFunction() const;
-    // void setWidgetFunction( QgsRendererV2WidgetFunc f );
+    // QgsRendererCreateFunc createFunction() const;
+    // QgsRendererWidgetFunc widgetFunction() const;
+    // QgsFeatureRenderer* (*)( QDomElement&, QgsWkbTypes::GeometryType geomType ) createFromSldFunction() const;
+    // void setWidgetFunction( QgsRendererWidgetFunc f );
 
-    virtual QgsRendererV2AbstractMetadata::LayerTypes compatibleLayerTypes() const;
+    virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const;
 
   private:
-    QgsRendererV2Metadata(); // pretend this is private
+    QgsRendererMetadata(); // pretend this is private
 };
 
 /** \ingroup core
- * \class QgsRendererV2Registry
+ * \class QgsRendererRegistry
  * \brief Registry of renderers.
  *
  * This is a singleton, renderers can be added / removed at any time
  */
 
-class QgsRendererV2Registry
+class QgsRendererRegistry
 {
 %TypeHeaderCode
 #include <qgsrendererv2registry.h>
@@ -100,14 +100,14 @@ class QgsRendererV2Registry
 
   public:
 
-    //! Returns a pointer to the QgsRendererV2Registry singleton
-    static QgsRendererV2Registry* instance();
+    //! Returns a pointer to the QgsRendererRegistry singleton
+    static QgsRendererRegistry* instance();
 
     //! Adds a renderer to the registry. Takes ownership of the metadata object.
     //! @param metadata renderer metadata
     //! @returns true if renderer was added successfully, or false if renderer could not
     //! be added (eg a renderer with a duplicate name already exists)
-    bool addRenderer( QgsRendererV2AbstractMetadata* metadata /Transfer/ );
+    bool addRenderer( QgsRendererAbstractMetadata* metadata /Transfer/ );
 
     //! Removes a renderer from registry.
     //! @param rendererName name of renderer to remove from registry
@@ -117,11 +117,11 @@ class QgsRendererV2Registry
 
     //! Returns the metadata for a specified renderer. Returns NULL if a matching
     //! renderer was not found in the registry.
-    QgsRendererV2AbstractMetadata* rendererMetadata( const QString& rendererName );
+    QgsRendererAbstractMetadata* rendererMetadata( const QString& rendererName );
 
     //! Returns a list of available renderers.
     //! @param layerTypes flags to filter the renderers by compatible layer types
-    QStringList renderersList( QgsRendererV2AbstractMetadata::LayerTypes layerTypes = QgsRendererV2AbstractMetadata::All ) const;
+    QStringList renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) const;
 
     //! Returns a list of available renderers which are compatible with a specified layer.
     //! @param layer vector layer
@@ -130,11 +130,11 @@ class QgsRendererV2Registry
 
   protected:
     //! protected constructor
-    QgsRendererV2Registry();
-    ~QgsRendererV2Registry();
+    QgsRendererRegistry();
+    ~QgsRendererRegistry();
 
   private:
-    QgsRendererV2Registry( const QgsRendererV2Registry& rh );
-    //QgsRendererV2Registry& operator=( const QgsRendererV2Registry& rh );
+    QgsRendererRegistry( const QgsRendererRegistry& rh );
+    //QgsRendererRegistry& operator=( const QgsRendererRegistry& rh );
 
 };

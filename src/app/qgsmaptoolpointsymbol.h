@@ -19,7 +19,7 @@
 #include "qgsmaptooledit.h"
 #include "qgsfeature.h"
 
-class QgsMarkerSymbolV2;
+class QgsMarkerSymbol;
 
 /** \ingroup app
  * \class QgsMapToolPointSymbol
@@ -47,7 +47,7 @@ class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
 
     virtual void canvasPressOnFeature( QgsMapMouseEvent* e, const QgsFeature& feature, const QgsPoint& snappedPoint ) = 0;
 
-    virtual bool checkSymbolCompatibility( QgsMarkerSymbolV2* markerSymbol, QgsRenderContext& context ) = 0;
+    virtual bool checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext& context ) = 0;
 
     virtual void noCompatibleSymbols() {}
 

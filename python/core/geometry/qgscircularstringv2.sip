@@ -1,19 +1,19 @@
-class QgsCircularStringV2: public QgsCurveV2
+class QgsCircularString: public QgsCurve
 {
 %TypeHeaderCode
 #include <qgscircularstringv2.h>
 %End
 
   public:
-    QgsCircularStringV2();
-    ~QgsCircularStringV2();
+    QgsCircularString();
+    ~QgsCircularString();
 
-    virtual bool operator==( const QgsCurveV2& other ) const;
-    virtual bool operator!=( const QgsCurveV2& other ) const;
+    virtual bool operator==( const QgsCurve& other ) const;
+    virtual bool operator!=( const QgsCurve& other ) const;
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCircularStringV2* clone() const;
+    virtual QgsCircularString* clone() const;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
@@ -33,7 +33,7 @@ class QgsCircularStringV2: public QgsCurveV2
     QgsPointV2 pointN( int i ) const;
 
     /**
-     * @copydoc QgsCurveV2::points()
+     * @copydoc QgsCurve::points()
      */
     void points( QList<QgsPointV2>& pts ) const;
 
@@ -42,23 +42,23 @@ class QgsCircularStringV2: public QgsCurveV2
     void setPoints( const QList<QgsPointV2>& points );
 
     /**
-     * @copydoc QgsAbstractGeometryV2::length()
+     * @copydoc QgsAbstractGeometry::length()
      */
     virtual double length() const;
 
     /**
-     * @copydoc QgsCurveV2::startPoint()
+     * @copydoc QgsCurve::startPoint()
      */
     virtual QgsPointV2 startPoint() const;
     /**
-     * @copydoc QgsCurveV2::endPoint()
+     * @copydoc QgsCurve::endPoint()
      */
     virtual QgsPointV2 endPoint() const;
      /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
     void draw( QPainter& p ) const;
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
@@ -67,7 +67,7 @@ class QgsCircularStringV2: public QgsCurveV2
     void addToPainterPath( QPainterPath& path ) const;
 
     /**
-     * @copydoc QgsCurveV2::drawAsPolygon()
+     * @copydoc QgsCurve::drawAsPolygon()
      */
     void drawAsPolygon( QPainter& p ) const;
 
@@ -77,17 +77,17 @@ class QgsCircularStringV2: public QgsCurveV2
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     /**
-     * @copydoc QgsCurveV2::pointAt()
+     * @copydoc QgsCurve::pointAt()
      */
     bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const;
 
     /**
-     * @copydoc QgsCurveV2::sumUpArea()
+     * @copydoc QgsCurve::sumUpArea()
      */
     void sumUpArea( double& sum ) const;
 
     /**
-     * @copydoc QgsAbstractGeometryV2::hasCurvedSegments()
+     * @copydoc QgsAbstractGeometry::hasCurvedSegments()
      */
     bool hasCurvedSegments() const;
 
@@ -96,7 +96,7 @@ class QgsCircularStringV2: public QgsCurveV2
         @return rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const;
 
-    virtual QgsCircularStringV2* reversed() const /Factory/;
+    virtual QgsCircularString* reversed() const /Factory/;
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );

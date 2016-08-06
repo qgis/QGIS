@@ -35,7 +35,7 @@ void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
       continue;
     }
     QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometryV2* geom = featureGeom.geometry();
+    QgsAbstractGeometry* geom = featureGeom.geometry();
 
     QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
     if (( mAllowedTypes & ( 1 << type ) ) == 0 )
@@ -54,7 +54,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometryV2* geom = featureGeom.geometry();
+  QgsAbstractGeometry* geom = featureGeom.geometry();
 
   // Check if error still applies
   QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
@@ -91,7 +91,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
     // Check if corresponding multi type is allowed
     else if ( QgsWkbTypes::isSingleType( type ) && (( 1 << QgsWkbTypes::multiType( type ) ) & mAllowedTypes ) != 0 )
     {
-      QgsGeometryCollectionV2* geomCollection = nullptr;
+      QgsGeometryCollection* geomCollection = nullptr;
       switch ( QgsWkbTypes::multiType( type ) )
       {
         case QgsWkbTypes::MultiPoint:
@@ -101,7 +101,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
         }
         case QgsWkbTypes::MultiLineString:
         {
-          geomCollection = new QgsMultiLineStringV2();
+          geomCollection = new QgsMultiLineString();
           break;
         }
         case QgsWkbTypes::MultiPolygon:
@@ -111,12 +111,12 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
         }
         case QgsWkbTypes::MultiCurve:
         {
-          geomCollection = new QgsMultiCurveV2();
+          geomCollection = new QgsMultiCurve();
           break;
         }
         case QgsWkbTypes::MultiSurface:
         {
-          geomCollection = new QgsMultiSurfaceV2();
+          geomCollection = new QgsMultiSurface();
           break;
         }
         default:

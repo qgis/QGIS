@@ -73,7 +73,7 @@ QgsGraduatedHistogramWidget::~QgsGraduatedHistogramWidget()
 {
 }
 
-void QgsGraduatedHistogramWidget::setRenderer( QgsGraduatedSymbolRendererV2 *renderer )
+void QgsGraduatedHistogramWidget::setRenderer( QgsGraduatedSymbolRenderer *renderer )
 {
   mRenderer = renderer;
 }

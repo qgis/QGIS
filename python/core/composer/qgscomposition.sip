@@ -157,9 +157,9 @@ class QgsComposition : QGraphicsScene
     bool shouldExportPage( const int page ) const;
 
     /** Note: added in version 2.1*/
-    void setPageStyleSymbol( QgsFillSymbolV2* symbol );
+    void setPageStyleSymbol( QgsFillSymbol* symbol );
     /** Note: added in version 2.1*/
-    QgsFillSymbolV2* pageStyleSymbol();
+    QgsFillSymbol* pageStyleSymbol();
 
     /** Returns the position within a page of a point in the composition
       @note Added in QGIS 2.1

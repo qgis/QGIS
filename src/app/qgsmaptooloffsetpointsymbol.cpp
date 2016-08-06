@@ -83,7 +83,7 @@ void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, con
   mOffsetting = true;
 }
 
-bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbolV2* markerSymbol, QgsRenderContext &context )
+bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext &context )
 {
   bool ok = false;
 
@@ -168,7 +168,7 @@ void QgsMapToolOffsetPointSymbol::canvasReleaseEvent( QgsMapMouseEvent* e )
     mActiveLayer->triggerRepaint();
 }
 
-void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbolV2* markerSymbol )
+void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbol* markerSymbol )
 {
   delete mOffsetItem;
   mOffsetItem = nullptr;
@@ -194,7 +194,7 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
     if ( layer->getDataDefinedProperty( "offset" )->useExpression() )
       continue;
 
-    QgsMarkerSymbolLayerV2* ml = dynamic_cast< QgsMarkerSymbolLayerV2* >( layer );
+    QgsMarkerSymbolLayer* ml = dynamic_cast< QgsMarkerSymbolLayer* >( layer );
     if ( !ml )
       continue;
 

@@ -35,7 +35,7 @@ QgsRenderContext::QgsRenderContext()
     , mGeometry( nullptr )
     , mFeatureFilterProvider( nullptr )
     , mSegmentationTolerance( M_PI_2 / 90 )
-    , mSegmentationToleranceType( QgsAbstractGeometryV2::MaximumAngle )
+    , mSegmentationToleranceType( QgsAbstractGeometry::MaximumAngle )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }

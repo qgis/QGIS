@@ -23,12 +23,12 @@
 #include <QPen>
 
 
-class QgsAbstractGeometryV2;
+class QgsAbstractGeometry;
 class QgsPointV2;
 struct QgsVertexId;
 
 /** \ingroup gui
- * A rubberband class for QgsAbstractGeometryV2 (considering curved geometries)*/
+ * A rubberband class for QgsAbstractGeometry (considering curved geometries)*/
 class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 {
   public:
@@ -64,9 +64,9 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     ~QgsGeometryRubberBand();
 
     /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
-    void setGeometry( QgsAbstractGeometryV2* geom );
+    void setGeometry( QgsAbstractGeometry* geom );
     /** Returns a pointer to the geometry*/
-    const QgsAbstractGeometryV2* geometry() { return mGeometry; }
+    const QgsAbstractGeometry* geometry() { return mGeometry; }
     /** Moves vertex to new position (in map coordinates)*/
     void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
     /** Sets fill color for vertex markers*/
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     virtual void paint( QPainter* painter ) override;
 
   private:
-    QgsAbstractGeometryV2* mGeometry;
+    QgsAbstractGeometry* mGeometry;
     QBrush mBrush;
     QPen mPen;
     int mIconSize;

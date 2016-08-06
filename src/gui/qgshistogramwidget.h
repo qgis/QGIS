@@ -26,7 +26,7 @@
 #include <QBrush>
 
 class QgsVectorLayer;
-class QgsGraduatedSymbolRendererV2;
+class QgsGraduatedSymbolRenderer;
 class QwtPlotPicker;
 class QwtPlotMarker;
 class QwtPlot;

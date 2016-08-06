@@ -68,7 +68,7 @@ class QgsLabelSorter
 };
 
 
-QgsLabelingEngineV2::QgsLabelingEngineV2()
+QgsLabelingEngine::QgsLabelingEngine()
     : mFlags( RenderOutlineLabels | UsePartialCandidates )
     , mSearchMethod( QgsPalLabeling::Chain )
     , mCandPoint( 16 )
@@ -79,20 +79,20 @@ QgsLabelingEngineV2::QgsLabelingEngineV2()
   mResults = new QgsLabelingResults;
 }
 
-QgsLabelingEngineV2::~QgsLabelingEngineV2()
+QgsLabelingEngine::~QgsLabelingEngine()
 {
   delete mResults;
   qDeleteAll( mProviders );
   qDeleteAll( mSubProviders );
 }
 
-void QgsLabelingEngineV2::addProvider( QgsAbstractLabelProvider* provider )
+void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider* provider )
 {
   provider->setEngine( this );
   mProviders << provider;
 }
 
-void QgsLabelingEngineV2::removeProvider( QgsAbstractLabelProvider* provider )
+void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider* provider )
 {
   int idx = mProviders.indexOf( provider );
   if ( idx >= 0 )
@@ -101,7 +101,7 @@ void QgsLabelingEngineV2::removeProvider( QgsAbstractLabelProvider* provider )
   }
 }
 
-void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p )
+void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p )
 {
   QgsAbstractLabelProvider::Flags flags = provider->flags();
 
@@ -174,7 +174,7 @@ void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, Q
 }
 
 
-void QgsLabelingEngineV2::run( QgsRenderContext& context )
+void QgsLabelingEngine::run( QgsRenderContext& context )
 {
   pal::Pal p;
 
@@ -329,7 +329,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
 
 }
 
-QgsLabelingResults* QgsLabelingEngineV2::takeResults()
+QgsLabelingResults* QgsLabelingEngine::takeResults()
 {
   QgsLabelingResults* res = mResults;
   mResults = nullptr;
@@ -337,7 +337,7 @@ QgsLabelingResults* QgsLabelingEngineV2::takeResults()
 }
 
 
-void QgsLabelingEngineV2::readSettingsFromProject()
+void QgsLabelingEngine::readSettingsFromProject()
 {
   bool saved = false;
   QgsProject* prj = QgsProject::instance();
@@ -355,7 +355,7 @@ void QgsLabelingEngineV2::readSettingsFromProject()
   if ( prj->readBoolEntry( "PAL", "/DrawOutlineLabels", true, &saved ) ) mFlags |= RenderOutlineLabels;
 }
 
-void QgsLabelingEngineV2::writeSettingsToProject()
+void QgsLabelingEngine::writeSettingsToProject()
 {
   QgsProject::instance()->writeEntry( "PAL", "/SearchMethod", static_cast< int >( mSearchMethod ) );
   QgsProject::instance()->writeEntry( "PAL", "/CandidatesPoint", mCandPoint );

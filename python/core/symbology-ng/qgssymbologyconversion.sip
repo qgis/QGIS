@@ -6,7 +6,7 @@ class QgsSymbologyConversion
   public:
 
     /** Read old renderer definition from XML and create matching new renderer */
-    static QgsFeatureRendererV2* readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType );
+    static QgsFeatureRenderer* readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType );
 
     static QString penStyle2QString( Qt::PenStyle penstyle );
     static Qt::PenStyle qString2PenStyle( const QString& string );

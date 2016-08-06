@@ -540,7 +540,7 @@ void TestQgsPaintEffect::glow()
   effect->setSpreadMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
   QCOMPARE( effect->spreadMapUnitScale().minScale, 1.0 );
   QCOMPARE( effect->spreadMapUnitScale().maxScale, 2.0 );
-  effect->setRamp( new QgsVectorGradientColorRampV2( QColor( 255, 0, 0 ), QColor( 0, 255, 0 ) ) );
+  effect->setRamp( new QgsVectorGradientColorRamp( QColor( 255, 0, 0 ), QColor( 0, 255, 0 ) ) );
   QCOMPARE( effect->ramp()->color( 0 ), QColor( 255, 0, 0 ) );
   QCOMPARE( effect->ramp()->color( 1.0 ), QColor( 0, 255, 0 ) );
   effect->setColorType( QgsGlowEffect::ColorRamp );
@@ -705,14 +705,14 @@ void TestQgsPaintEffect::layerEffectPolygon()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
 
   QgsMapSettings ms;
-  QgsSimpleFillSymbolLayerV2* fill = new QgsSimpleFillSymbolLayerV2;
+  QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer;
   fill->setColor( QColor( 255, 0, 0 ) );
   QgsDropShadowEffect* effect = new QgsDropShadowEffect();
   fill->setPaintEffect( effect );
 
-  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, fill );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( fillSymbol );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
 
   polysLayer->setRendererV2( renderer );
   ms.setLayers( QStringList() << polysLayer->id() );
@@ -736,15 +736,15 @@ void TestQgsPaintEffect::layerEffectLine()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
-  QgsSimpleLineSymbolLayerV2* line = new QgsSimpleLineSymbolLayerV2;
+  QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
   line->setColor( QColor( 255, 0, 0 ) );
   line->setWidth( 1.0 );
   QgsDropShadowEffect* effect = new QgsDropShadowEffect();
   line->setPaintEffect( effect );
 
-  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  QgsLineSymbol* lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, line );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( lineSymbol );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( lineSymbol );
 
   lineLayer->setRendererV2( renderer );
   ms.setLayers( QStringList() << lineLayer->id() );
@@ -765,14 +765,14 @@ void TestQgsPaintEffect::layerEffectMarker()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << pointLayer );
 
   QgsMapSettings ms;
-  QgsSimpleMarkerSymbolLayerV2* marker = new QgsSimpleMarkerSymbolLayerV2;
+  QgsSimpleMarkerSymbolLayer* marker = new QgsSimpleMarkerSymbolLayer;
   marker->setColor( QColor( 255, 0, 0 ) );
   QgsDropShadowEffect* effect = new QgsDropShadowEffect();
   marker->setPaintEffect( effect );
 
-  QgsMarkerSymbolV2* markerSymbol = new QgsMarkerSymbolV2();
+  QgsMarkerSymbol* markerSymbol = new QgsMarkerSymbol();
   markerSymbol->changeSymbolLayer( 0, marker );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( markerSymbol );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( markerSymbol );
 
   pointLayer->setRendererV2( renderer );
   ms.setLayers( QStringList() << pointLayer->id() );
@@ -796,12 +796,12 @@ void TestQgsPaintEffect::vectorLayerEffect()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
 
   QgsMapSettings ms;
-  QgsSimpleFillSymbolLayerV2* fill = new QgsSimpleFillSymbolLayerV2;
+  QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer;
   fill->setColor( QColor( 255, 0, 0 ) );
 
-  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, fill );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( fillSymbol );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
 
   QgsOuterGlowEffect* effect = new QgsOuterGlowEffect();
   effect->setSpread( 30.0 );
@@ -831,13 +831,13 @@ void TestQgsPaintEffect::mapUnits()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
-  QgsSimpleLineSymbolLayerV2* line = new QgsSimpleLineSymbolLayerV2;
+  QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
   line->setColor( QColor( 255, 0, 0 ) );
   line->setWidth( 1.0 );
 
-  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  QgsLineSymbol* lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, line );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( lineSymbol );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( lineSymbol );
   QgsOuterGlowEffect* effect = new QgsOuterGlowEffect();
   effect->setColor( QColor( 255, 0, 0 ) );
   effect->setSpread( 3 );
@@ -867,13 +867,13 @@ void TestQgsPaintEffect::composer()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
-  QgsSimpleLineSymbolLayerV2* line = new QgsSimpleLineSymbolLayerV2;
+  QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
   line->setColor( QColor( 255, 0, 0 ) );
   line->setWidth( 1.0 );
 
-  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  QgsLineSymbol* lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, line );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( lineSymbol );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( lineSymbol );
   QgsEffectStack* effect = new QgsEffectStack();
   effect->appendEffect( new QgsDropShadowEffect() );
   effect->appendEffect( new QgsDrawSourceEffect() );

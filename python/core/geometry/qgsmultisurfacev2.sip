@@ -1,11 +1,11 @@
-class QgsMultiSurfaceV2: public QgsGeometryCollectionV2
+class QgsMultiSurface: public QgsGeometryCollection
 {
 %TypeHeaderCode
 #include <qgsmultisurfacev2.h>
 %End
   public:
     virtual QString geometryType() const;
-    virtual QgsMultiSurfaceV2* clone() const;
+    virtual QgsMultiSurface* clone() const;
 
     bool fromWkt( const QString& wkt );
 
@@ -18,10 +18,10 @@ class QgsMultiSurfaceV2: public QgsGeometryCollectionV2
 
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometryV2* g );
+    virtual bool addGeometry( QgsAbstractGeometry* g );
 
-    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+    virtual QgsAbstractGeometry* boundary() const /Factory/;
 
     /** Returns a geometry without curves. Caller takes ownership*/
-    QgsAbstractGeometryV2* segmentize() const /Factory/;
+    QgsAbstractGeometry* segmentize() const /Factory/;
 };

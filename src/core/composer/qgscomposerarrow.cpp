@@ -85,7 +85,7 @@ void QgsComposerArrow::createDefaultLineSymbol()
   properties.insert( "color", "0,0,0,255" );
   properties.insert( "width", "1" );
   properties.insert( "capstyle", "square" );
-  mLineSymbol = QgsLineSymbolV2::createSimple( properties );
+  mLineSymbol = QgsLineSymbol::createSimple( properties );
 }
 
 void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
@@ -397,7 +397,7 @@ void QgsComposerArrow::setArrowHeadOutlineWidth( const double width )
   adaptItemSceneRect();
 }
 
-void QgsComposerArrow::setLineSymbol( QgsLineSymbolV2 *symbol )
+void QgsComposerArrow::setLineSymbol( QgsLineSymbol *symbol )
 {
   delete mLineSymbol;
   mLineSymbol = symbol;
@@ -522,7 +522,7 @@ bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument&
     if ( !lineStyleElem.isNull() )
     {
       delete mLineSymbol;
-      mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbolV2>( lineStyleElem );
+      mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( lineStyleElem );
     }
   }
   else
@@ -559,7 +559,7 @@ bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument&
       mArrowHeadOutlineColor = QColor( red, green, blue, alpha );
     }
     properties.insert( "color", QString( "%1,%2,%3,%4" ).arg( red ).arg( green ).arg( blue ).arg( alpha ) );
-    mLineSymbol = QgsLineSymbolV2::createSimple( properties );
+    mLineSymbol = QgsLineSymbol::createSimple( properties );
   }
 
   mPen.setColor( mArrowHeadOutlineColor );

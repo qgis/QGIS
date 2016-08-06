@@ -42,13 +42,13 @@
 
 ///@cond PRIVATE
 
-QgsGraduatedSymbolRendererV2Model::QgsGraduatedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
+QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( nullptr )
     , mMimeFormat( "application/x-qgsgraduatedsymbolrendererv2model" )
 {
 }
 
-void QgsGraduatedSymbolRendererV2Model::setRenderer( QgsGraduatedSymbolRendererV2* renderer )
+void QgsGraduatedSymbolRendererModel::setRenderer( QgsGraduatedSymbolRenderer* renderer )
 {
   if ( mRenderer )
   {
@@ -64,7 +64,7 @@ void QgsGraduatedSymbolRendererV2Model::setRenderer( QgsGraduatedSymbolRendererV
   }
 }
 
-void QgsGraduatedSymbolRendererV2Model::addClass( QgsSymbol* symbol )
+void QgsGraduatedSymbolRendererModel::addClass( QgsSymbol* symbol )
 {
   if ( !mRenderer ) return;
   int idx = mRenderer->ranges().size();
@@ -73,7 +73,7 @@ void QgsGraduatedSymbolRendererV2Model::addClass( QgsSymbol* symbol )
   endInsertRows();
 }
 
-void QgsGraduatedSymbolRendererV2Model::addClass( const QgsRendererRangeV2& range )
+void QgsGraduatedSymbolRendererModel::addClass( const QgsRendererRange& range )
 {
   if ( !mRenderer )
   {
@@ -85,17 +85,17 @@ void QgsGraduatedSymbolRendererV2Model::addClass( const QgsRendererRangeV2& rang
   endInsertRows();
 }
 
-QgsRendererRangeV2 QgsGraduatedSymbolRendererV2Model::rendererRange( const QModelIndex &index )
+QgsRendererRange QgsGraduatedSymbolRendererModel::rendererRange( const QModelIndex &index )
 {
   if ( !index.isValid() || !mRenderer || mRenderer->ranges().size() <= index.row() )
   {
-    return QgsRendererRangeV2();
+    return QgsRendererRange();
   }
 
   return mRenderer->ranges().value( index.row() );
 }
 
-Qt::ItemFlags QgsGraduatedSymbolRendererV2Model::flags( const QModelIndex & index ) const
+Qt::ItemFlags QgsGraduatedSymbolRendererModel::flags( const QModelIndex & index ) const
 {
   if ( !index.isValid() )
   {
@@ -112,16 +112,16 @@ Qt::ItemFlags QgsGraduatedSymbolRendererV2Model::flags( const QModelIndex & inde
   return flags;
 }
 
-Qt::DropActions QgsGraduatedSymbolRendererV2Model::supportedDropActions() const
+Qt::DropActions QgsGraduatedSymbolRendererModel::supportedDropActions() const
 {
   return Qt::MoveAction;
 }
 
-QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int role ) const
+QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() || !mRenderer ) return QVariant();
 
-  const QgsRendererRangeV2 range = mRenderer->ranges().value( index.row() );
+  const QgsRendererRange range = mRenderer->ranges().value( index.row() );
 
   if ( role == Qt::CheckStateRole && index.column() == 0 )
   {
@@ -166,7 +166,7 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
   return QVariant();
 }
 
-bool QgsGraduatedSymbolRendererV2Model::setData( const QModelIndex & index, const QVariant & value, int role )
+bool QgsGraduatedSymbolRendererModel::setData( const QModelIndex & index, const QVariant & value, int role )
 {
   if ( !index.isValid() )
     return false;
@@ -196,7 +196,7 @@ bool QgsGraduatedSymbolRendererV2Model::setData( const QModelIndex & index, cons
   return true;
 }
 
-QVariant QgsGraduatedSymbolRendererV2Model::headerData( int section, Qt::Orientation orientation, int role ) const
+QVariant QgsGraduatedSymbolRendererModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 3 )
   {
@@ -207,7 +207,7 @@ QVariant QgsGraduatedSymbolRendererV2Model::headerData( int section, Qt::Orienta
   return QVariant();
 }
 
-int QgsGraduatedSymbolRendererV2Model::rowCount( const QModelIndex &parent ) const
+int QgsGraduatedSymbolRendererModel::rowCount( const QModelIndex &parent ) const
 {
   if ( parent.isValid() || !mRenderer )
   {
@@ -216,13 +216,13 @@ int QgsGraduatedSymbolRendererV2Model::rowCount( const QModelIndex &parent ) con
   return mRenderer->ranges().size();
 }
 
-int QgsGraduatedSymbolRendererV2Model::columnCount( const QModelIndex & index ) const
+int QgsGraduatedSymbolRendererModel::columnCount( const QModelIndex & index ) const
 {
   Q_UNUSED( index );
   return 3;
 }
 
-QModelIndex QgsGraduatedSymbolRendererV2Model::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex QgsGraduatedSymbolRendererModel::index( int row, int column, const QModelIndex &parent ) const
 {
   if ( hasIndex( row, column, parent ) )
   {
@@ -231,20 +231,20 @@ QModelIndex QgsGraduatedSymbolRendererV2Model::index( int row, int column, const
   return QModelIndex();
 }
 
-QModelIndex QgsGraduatedSymbolRendererV2Model::parent( const QModelIndex &index ) const
+QModelIndex QgsGraduatedSymbolRendererModel::parent( const QModelIndex &index ) const
 {
   Q_UNUSED( index );
   return QModelIndex();
 }
 
-QStringList QgsGraduatedSymbolRendererV2Model::mimeTypes() const
+QStringList QgsGraduatedSymbolRendererModel::mimeTypes() const
 {
   QStringList types;
   types << mMimeFormat;
   return types;
 }
 
-QMimeData *QgsGraduatedSymbolRendererV2Model::mimeData( const QModelIndexList &indexes ) const
+QMimeData *QgsGraduatedSymbolRendererModel::mimeData( const QModelIndexList &indexes ) const
 {
   QMimeData *mimeData = new QMimeData();
   QByteArray encodedData;
@@ -263,7 +263,7 @@ QMimeData *QgsGraduatedSymbolRendererV2Model::mimeData( const QModelIndexList &i
   return mimeData;
 }
 
-bool QgsGraduatedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   Q_UNUSED( row );
   Q_UNUSED( column );
@@ -306,7 +306,7 @@ bool QgsGraduatedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Qt:
   return false;
 }
 
-void QgsGraduatedSymbolRendererV2Model::deleteRows( QList<int> rows )
+void QgsGraduatedSymbolRendererModel::deleteRows( QList<int> rows )
 {
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
@@ -316,14 +316,14 @@ void QgsGraduatedSymbolRendererV2Model::deleteRows( QList<int> rows )
   }
 }
 
-void QgsGraduatedSymbolRendererV2Model::removeAllRows()
+void QgsGraduatedSymbolRendererModel::removeAllRows()
 {
   beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
   mRenderer->deleteAllClasses();
   endRemoveRows();
 }
 
-void QgsGraduatedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
+void QgsGraduatedSymbolRendererModel::sort( int column, Qt::SortOrder order )
 {
   if ( column == 0 )
   {
@@ -342,7 +342,7 @@ void QgsGraduatedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
   QgsDebugMsg( "Done" );
 }
 
-void QgsGraduatedSymbolRendererV2Model::updateSymbology( bool resetModel )
+void QgsGraduatedSymbolRendererModel::updateSymbology( bool resetModel )
 {
   if ( resetModel )
   {
@@ -354,17 +354,17 @@ void QgsGraduatedSymbolRendererV2Model::updateSymbology( bool resetModel )
   }
 }
 
-void QgsGraduatedSymbolRendererV2Model::updateLabels()
+void QgsGraduatedSymbolRendererModel::updateLabels()
 {
   emit dataChanged( createIndex( 0, 2 ), createIndex( mRenderer->ranges().size(), 2 ) );
 }
 
 // ------------------------------ View style --------------------------------
-QgsGraduatedSymbolRendererV2ViewStyle::QgsGraduatedSymbolRendererV2ViewStyle( QStyle* style )
+QgsGraduatedSymbolRendererViewStyle::QgsGraduatedSymbolRendererViewStyle( QStyle* style )
     : QProxyStyle( style )
 {}
 
-void QgsGraduatedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget ) const
+void QgsGraduatedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget ) const
 {
   if ( element == QStyle::PE_IndicatorItemViewItemDrop && !option->rect.isNull() )
   {
@@ -383,14 +383,14 @@ void QgsGraduatedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement elem
 
 // ------------------------------ Widget ------------------------------------
 
-QgsRendererV2Widget* QgsGraduatedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererWidget* QgsGraduatedSymbolRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
 {
-  return new QgsGraduatedSymbolRendererV2Widget( layer, style, renderer );
+  return new QgsGraduatedSymbolRendererWidget( layer, style, renderer );
 }
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
-  const QgsGraduatedSymbolRendererV2Widget* widget = ( const QgsGraduatedSymbolRendererV2Widget* ) context;
+  const QgsGraduatedSymbolRendererWidget* widget = ( const QgsGraduatedSymbolRendererWidget* ) context;
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
@@ -413,8 +413,8 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style )
+QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+    : QgsRendererWidget( layer, style )
     , mRenderer( nullptr )
     , mModel( nullptr )
 {
@@ -424,17 +424,17 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   // (null renderer means "no previous renderer")
   if ( renderer )
   {
-    mRenderer = QgsGraduatedSymbolRendererV2::convertFromRenderer( renderer );
+    mRenderer = QgsGraduatedSymbolRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsGraduatedSymbolRendererV2( "", QgsRangeList() );
+    mRenderer = new QgsGraduatedSymbolRenderer( "", QgsRangeList() );
   }
 
   // setup user interface
   setupUi( this );
 
-  mModel = new QgsGraduatedSymbolRendererV2Model( this );
+  mModel = new QgsGraduatedSymbolRendererModel( this );
 
   mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
   mExpressionWidget->setLayer( mLayer );
@@ -443,8 +443,8 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   cboGraduatedColorRamp->populate( mStyle );
 
-  spinPrecision->setMinimum( QgsRendererRangeV2LabelFormat::MinPrecision );
-  spinPrecision->setMaximum( QgsRendererRangeV2LabelFormat::MaxPrecision );
+  spinPrecision->setMinimum( QgsRendererRangeLabelFormat::MinPrecision );
+  spinPrecision->setMaximum( QgsRendererRangeLabelFormat::MaxPrecision );
 
   // set project default color ramp
   QString defaultColorRamp = QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
@@ -456,7 +456,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   }
 
 
-  viewGraduated->setStyle( new QgsGraduatedSymbolRendererV2ViewStyle( viewGraduated->style() ) );
+  viewGraduated->setStyle( new QgsGraduatedSymbolRendererViewStyle( viewGraduated->style() ) );
 
   mGraduatedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
@@ -510,7 +510,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::on_mSizeUnitWidget_changed()
+void QgsGraduatedSymbolRendererWidget::on_mSizeUnitWidget_changed()
 {
   if ( !mGraduatedSymbol ) return;
   mGraduatedSymbol->setOutputUnit( mSizeUnitWidget->unit() );
@@ -520,21 +520,21 @@ void QgsGraduatedSymbolRendererV2Widget::on_mSizeUnitWidget_changed()
   refreshSymbolView();
 }
 
-QgsGraduatedSymbolRendererV2Widget::~QgsGraduatedSymbolRendererV2Widget()
+QgsGraduatedSymbolRendererWidget::~QgsGraduatedSymbolRendererWidget()
 {
   delete mRenderer;
   delete mModel;
   delete mGraduatedSymbol;
 }
 
-QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2Widget::renderer()
+QgsFeatureRenderer* QgsGraduatedSymbolRendererWidget::renderer()
 {
   return mRenderer;
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
 
-void QgsGraduatedSymbolRendererV2Widget::connectUpdateHandlers()
+void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
 {
   connect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ), this, SLOT( classifyGraduated() ) );
   connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classifyGraduated() ) );
@@ -554,7 +554,7 @@ void QgsGraduatedSymbolRendererV2Widget::connectUpdateHandlers()
 
 // Connect/disconnect event handlers which trigger updating renderer
 
-void QgsGraduatedSymbolRendererV2Widget::disconnectUpdateHandlers()
+void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 {
   disconnect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ), this, SLOT( classifyGraduated() ) );
   disconnect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classifyGraduated() ) );
@@ -572,7 +572,7 @@ void QgsGraduatedSymbolRendererV2Widget::disconnectUpdateHandlers()
   disconnect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged() ) );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount )
+void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 {
   disconnectUpdateHandlers();
 
@@ -613,7 +613,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
 
   // set source color ramp
   methodComboBox->blockSignals( true );
-  if ( mRenderer->graduatedMethod() == QgsGraduatedSymbolRendererV2::GraduatedColor )
+  if ( mRenderer->graduatedMethod() == QgsGraduatedSymbolRenderer::GraduatedColor )
   {
     methodComboBox->setCurrentIndex( 0 );
     if ( mRenderer->sourceColorRamp() )
@@ -632,7 +632,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   mMethodStackedWidget->setCurrentIndex( methodComboBox->currentIndex() );
   methodComboBox->blockSignals( false );
 
-  QgsRendererRangeV2LabelFormat labelFormat = mRenderer->labelFormat();
+  QgsRendererRangeLabelFormat labelFormat = mRenderer->labelFormat();
   txtLegendFormat->setText( labelFormat.format() );
   spinPrecision->setValue( labelFormat.precision() );
   cbxTrimTrailingZeroes->setChecked( labelFormat.trimTrailingZeroes() );
@@ -647,18 +647,18 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   emit widgetChanged();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged( const QString& field )
+void QgsGraduatedSymbolRendererWidget::graduatedColumnChanged( const QString& field )
 {
   mRenderer->setClassAttribute( field );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::on_methodComboBox_currentIndexChanged( int idx )
+void QgsGraduatedSymbolRendererWidget::on_methodComboBox_currentIndexChanged( int idx )
 {
   mMethodStackedWidget->setCurrentIndex( idx );
   if ( idx == 0 )
   {
-    mRenderer->setGraduatedMethod( QgsGraduatedSymbolRendererV2::GraduatedColor );
-    QgsVectorColorRampV2* ramp = cboGraduatedColorRamp->currentColorRamp();
+    mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedColor );
+    QgsVectorColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
 
     if ( !ramp )
     {
@@ -673,12 +673,12 @@ void QgsGraduatedSymbolRendererV2Widget::on_methodComboBox_currentIndexChanged( 
   }
   else
   {
-    mRenderer->setGraduatedMethod( QgsGraduatedSymbolRendererV2::GraduatedSize );
+    mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedSize );
     reapplySizes();
   }
 }
 
-void QgsGraduatedSymbolRendererV2Widget::refreshRanges( bool reset )
+void QgsGraduatedSymbolRendererWidget::refreshRanges( bool reset )
 {
   if ( !mModel )
     return;
@@ -687,7 +687,7 @@ void QgsGraduatedSymbolRendererV2Widget::refreshRanges( bool reset )
   emit widgetChanged();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::cleanUpSymbolSelector( QgsPanelWidget *container )
+void QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
 {
   if ( container )
   {
@@ -696,7 +696,7 @@ void QgsGraduatedSymbolRendererV2Widget::cleanUpSymbolSelector( QgsPanelWidget *
   }
 }
 
-void QgsGraduatedSymbolRendererV2Widget::updateSymbolsFromWidget()
+void QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget()
 {
   QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
   delete mGraduatedSymbol;
@@ -737,13 +737,13 @@ void QgsGraduatedSymbolRendererV2Widget::updateSymbolsFromWidget()
 }
 
 
-void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
+void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 {
   QString attrName = mExpressionWidget->currentField();
 
   int nclasses = spinGraduatedClasses->value();
 
-  QSharedPointer<QgsVectorColorRampV2> ramp( cboGraduatedColorRamp->currentColorRamp() );
+  QSharedPointer<QgsVectorColorRamp> ramp( cboGraduatedColorRamp->currentColorRamp() );
   if ( !ramp )
   {
     if ( cboGraduatedColorRamp->count() == 0 )
@@ -753,21 +753,21 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
     return;
   }
 
-  QgsGraduatedSymbolRendererV2::Mode mode;
+  QgsGraduatedSymbolRenderer::Mode mode;
   if ( cboGraduatedMode->currentIndex() == 0 )
-    mode = QgsGraduatedSymbolRendererV2::EqualInterval;
+    mode = QgsGraduatedSymbolRenderer::EqualInterval;
   else if ( cboGraduatedMode->currentIndex() == 2 )
-    mode = QgsGraduatedSymbolRendererV2::Jenks;
+    mode = QgsGraduatedSymbolRenderer::Jenks;
   else if ( cboGraduatedMode->currentIndex() == 3 )
-    mode = QgsGraduatedSymbolRendererV2::StdDev;
+    mode = QgsGraduatedSymbolRenderer::StdDev;
   else if ( cboGraduatedMode->currentIndex() == 4 )
-    mode = QgsGraduatedSymbolRendererV2::Pretty;
+    mode = QgsGraduatedSymbolRenderer::Pretty;
   else // default should be quantile for now
-    mode = QgsGraduatedSymbolRendererV2::Quantile;
+    mode = QgsGraduatedSymbolRenderer::Quantile;
 
   // Jenks is n^2 complexity, warn for big dataset (more than 50k records)
   // and give the user the chance to cancel
-  if ( QgsGraduatedSymbolRendererV2::Jenks == mode && mLayer->featureCount() > 50000 )
+  if ( QgsGraduatedSymbolRenderer::Jenks == mode && mLayer->featureCount() > 50000 )
   {
     if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Warning" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
       return;
@@ -780,7 +780,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 
   if ( methodComboBox->currentIndex() == 0 )
   {
-    QgsVectorColorRampV2* ramp = cboGraduatedColorRamp->currentColorRamp();
+    QgsVectorColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
 
     if ( !ramp )
     {
@@ -810,9 +810,9 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   updateUiFromRenderer( false );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()
+void QgsGraduatedSymbolRendererWidget::reapplyColorRamp()
 {
-  QgsVectorColorRampV2* ramp = cboGraduatedColorRamp->currentColorRamp();
+  QgsVectorColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
   if ( !ramp )
     return;
 
@@ -821,14 +821,14 @@ void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()
   refreshSymbolView();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::reapplySizes()
+void QgsGraduatedSymbolRendererWidget::reapplySizes()
 {
   mRenderer->setSymbolSizes( minSizeSpinBox->value(), maxSizeSpinBox->value() );
   mRenderer->updateSymbols( mGraduatedSymbol );
   refreshSymbolView();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
+void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
 {
   QgsSymbol* newSymbol = mGraduatedSymbol->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
@@ -839,7 +839,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
   openPanel( dlg );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::updateGraduatedSymbolIcon()
+void QgsGraduatedSymbolRendererWidget::updateGraduatedSymbolIcon()
 {
   if ( !mGraduatedSymbol )
     return;
@@ -849,7 +849,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateGraduatedSymbolIcon()
 }
 
 #if 0
-int QgsRendererV2PropertiesDialog::currentRangeRow()
+int QgsRendererPropertiesDialog::currentRangeRow()
 {
   QModelIndex idx = viewGraduated->selectionModel()->currentIndex();
   if ( !idx.isValid() )
@@ -858,7 +858,7 @@ int QgsRendererV2PropertiesDialog::currentRangeRow()
 }
 #endif
 
-QList<int> QgsGraduatedSymbolRendererV2Widget::selectedClasses()
+QList<int> QgsGraduatedSymbolRendererWidget::selectedClasses()
 {
   QList<int> rows;
   QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
@@ -873,7 +873,7 @@ QList<int> QgsGraduatedSymbolRendererV2Widget::selectedClasses()
   return rows;
 }
 
-QgsRangeList QgsGraduatedSymbolRendererV2Widget::selectedRanges()
+QgsRangeList QgsGraduatedSymbolRendererWidget::selectedRanges()
 {
   QgsRangeList selectedRanges;
   QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
@@ -886,7 +886,7 @@ QgsRangeList QgsGraduatedSymbolRendererV2Widget::selectedRanges()
   return selectedRanges;
 }
 
-void QgsGraduatedSymbolRendererV2Widget::rangesDoubleClicked( const QModelIndex & idx )
+void QgsGraduatedSymbolRendererWidget::rangesDoubleClicked( const QModelIndex & idx )
 {
   if ( idx.isValid() && idx.column() == 0 )
     changeRangeSymbol( idx.row() );
@@ -894,7 +894,7 @@ void QgsGraduatedSymbolRendererV2Widget::rangesDoubleClicked( const QModelIndex 
     changeRange( idx.row() );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::rangesClicked( const QModelIndex & idx )
+void QgsGraduatedSymbolRendererWidget::rangesClicked( const QModelIndex & idx )
 {
   if ( !idx.isValid() )
     mRowSelected = -1;
@@ -902,11 +902,11 @@ void QgsGraduatedSymbolRendererV2Widget::rangesClicked( const QModelIndex & idx 
     mRowSelected = idx.row();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
+void QgsGraduatedSymbolRendererWidget::changeSelectedSymbols()
 {
 }
 
-void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
+void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
 {
   QgsSymbol* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
@@ -918,11 +918,11 @@ void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
   openPanel( dlg );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
+void QgsGraduatedSymbolRendererWidget::changeRange( int rangeIdx )
 {
   QgsLUDialog dialog( this );
 
-  const QgsRendererRangeV2& range = mRenderer->ranges()[rangeIdx];
+  const QgsRendererRange& range = mRenderer->ranges()[rangeIdx];
   // Add arbitrary 2 to number of decimal places to retain a bit extra.
   // Ensures users can see if legend is not completely honest!
   int decimalPlaces = mRenderer->labelFormat().precision() + 2;
@@ -955,26 +955,26 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   emit widgetChanged();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::addClass()
+void QgsGraduatedSymbolRendererWidget::addClass()
 {
   mModel->addClass( mGraduatedSymbol );
   mHistogramWidget->refresh();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::deleteClasses()
+void QgsGraduatedSymbolRendererWidget::deleteClasses()
 {
   QList<int> classIndexes = selectedClasses();
   mModel->deleteRows( classIndexes );
   mHistogramWidget->refresh();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::deleteAllClasses()
+void QgsGraduatedSymbolRendererWidget::deleteAllClasses()
 {
   mModel->removeAllRows();
   mHistogramWidget->refresh();
 }
 
-bool QgsGraduatedSymbolRendererV2Widget::rowsOrdered()
+bool QgsGraduatedSymbolRendererWidget::rowsOrdered()
 {
   const QgsRangeList &ranges = mRenderer->ranges();
   bool ordered = true;
@@ -989,7 +989,7 @@ bool QgsGraduatedSymbolRendererV2Widget::rowsOrdered()
   return ordered;
 }
 
-void QgsGraduatedSymbolRendererV2Widget::toggleBoundariesLink( bool linked )
+void QgsGraduatedSymbolRendererWidget::toggleBoundariesLink( bool linked )
 {
   //If the checkbox controlling the link between boundaries was unchecked and we check it, we have to link the boundaries
   //This is done by updating all lower ranges to the upper value of the range above
@@ -1019,7 +1019,7 @@ void QgsGraduatedSymbolRendererV2Widget::toggleBoundariesLink( bool linked )
   }
 }
 
-void QgsGraduatedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * item )
+void QgsGraduatedSymbolRendererWidget::changeCurrentValue( QStandardItem * item )
 {
   if ( item->column() == 2 )
   {
@@ -1029,19 +1029,19 @@ void QgsGraduatedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * ite
   }
 }
 
-void QgsGraduatedSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
+void QgsGraduatedSymbolRendererWidget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod )
+void QgsGraduatedSymbolRendererWidget::scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod )
 {
   mRenderer->setScaleMethod( scaleMethod );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::labelFormatChanged()
+void QgsGraduatedSymbolRendererWidget::labelFormatChanged()
 {
-  QgsRendererRangeV2LabelFormat labelFormat = QgsRendererRangeV2LabelFormat(
+  QgsRendererRangeLabelFormat labelFormat = QgsRendererRangeLabelFormat(
         txtLegendFormat->text(),
         spinPrecision->value(),
         cbxTrimTrailingZeroes->isChecked() );
@@ -1050,7 +1050,7 @@ void QgsGraduatedSymbolRendererV2Widget::labelFormatChanged()
 }
 
 
-QList<QgsSymbol*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
+QList<QgsSymbol*> QgsGraduatedSymbolRendererWidget::selectedSymbols()
 {
   QList<QgsSymbol*> selectedSymbols;
 
@@ -1080,7 +1080,7 @@ QList<QgsSymbol*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
   return selectedSymbols;
 }
 
-QgsSymbol* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const
+QgsSymbol* QgsGraduatedSymbolRendererWidget::findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const
 {
   int decimalPlaces = mRenderer->labelFormat().precision() + 2;
   if ( decimalPlaces < 0 )
@@ -1097,7 +1097,7 @@ QgsSymbol* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowerB
   return nullptr;
 }
 
-void QgsGraduatedSymbolRendererV2Widget::refreshSymbolView()
+void QgsGraduatedSymbolRendererWidget::refreshSymbolView()
 {
   if ( mModel )
   {
@@ -1107,12 +1107,12 @@ void QgsGraduatedSymbolRendererV2Widget::refreshSymbolView()
   emit widgetChanged();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::showSymbolLevels()
+void QgsGraduatedSymbolRendererWidget::showSymbolLevels()
 {
   showSymbolLevelsDialog( mRenderer );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::rowsMoved()
+void QgsGraduatedSymbolRendererWidget::rowsMoved()
 {
   viewGraduated->selectionModel()->clear();
   if ( ! rowsOrdered() )
@@ -1122,12 +1122,12 @@ void QgsGraduatedSymbolRendererV2Widget::rowsMoved()
   emit widgetChanged();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::modelDataChanged()
+void QgsGraduatedSymbolRendererWidget::modelDataChanged()
 {
   emit widgetChanged();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )
+void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent* event )
 {
   if ( !event )
   {

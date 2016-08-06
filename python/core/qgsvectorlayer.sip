@@ -137,7 +137,7 @@ class QgsVectorLayer : QgsMapLayer
       Photo,          /**< phote widget */
       WebView,        /**< webview widget */
       Color,          /**< color */
-      EditorWidgetV2, /**< modularized edit widgets @note added in 2.1 */
+      EditorWidget, /**< modularized edit widgets @note added in 2.1 */
     };
 
     //! Result of an edit operation
@@ -427,25 +427,25 @@ class QgsVectorLayer : QgsMapLayer
     bool diagramsEnabled() const;
 
     /** Sets diagram rendering object (takes ownership) */
-    void setDiagramRenderer( QgsDiagramRendererV2* r /Transfer/ );
-    const QgsDiagramRendererV2* diagramRenderer() const;
+    void setDiagramRenderer( QgsDiagramRenderer* r /Transfer/ );
+    const QgsDiagramRenderer* diagramRenderer() const;
 
     void setDiagramLayerSettings( const QgsDiagramLayerSettings& s );
     const QgsDiagramLayerSettings *diagramLayerSettings() const;
 
     /** Return renderer V2. */
-    QgsFeatureRendererV2* rendererV2();
+    QgsFeatureRenderer* rendererV2();
 
     /** Return const renderer V2.
      * @note not available in python bindings
      */
-    // const QgsFeatureRendererV2* rendererV2() const { return mRendererV2; }
+    // const QgsFeatureRenderer* rendererV2() const { return mRendererV2; }
 
     /**
      * Set renderer which will be invoked to represent this layer.
      * Ownership is transferred.
      */
-    void setRendererV2( QgsFeatureRendererV2* r /Transfer/ );
+    void setRendererV2( QgsFeatureRenderer* r /Transfer/ );
 
     /** Returns point, line or polygon */
     QgsWkbTypes::GeometryType geometryType() const;
@@ -708,7 +708,7 @@ class QgsVectorLayer : QgsMapLayer
      *  6 layer not editable
      * @note available in python as addCurvedRing
      */
-    int addRing( QgsCurveV2* ring /Transfer/, QgsFeatureId* featureId = 0 ) /PyName=addCurvedRing/;
+    int addRing( QgsCurve* ring /Transfer/, QgsFeatureId* featureId = 0 ) /PyName=addCurvedRing/;
 
     /** Adds a new part polygon to a multipart feature
      * @return
@@ -738,7 +738,7 @@ class QgsVectorLayer : QgsMapLayer
     int addPart( const QList<QgsPointV2>& ring ) /PyName=addPartV2/;
 
     //! @note available in python as addCurvedPart
-    int addPart( QgsCurveV2* ring /Transfer/ ) /PyName=addCurvedPart/;
+    int addPart( QgsCurve* ring /Transfer/ ) /PyName=addCurvedPart/;
 
     /** Translates feature by dx, dy
      *  @param featureId id of the feature to translate
@@ -984,7 +984,7 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
-    const QgsEditorWidgetConfig editorWidgetV2Config( int fieldIdx ) const /Deprecated/;
+    const QgsEditorWidgetConfig editorWidgetConfig( int fieldIdx ) const /Deprecated/;
 
     /**
      * Get the configuration for the editor widget used to represent the field with the given name
@@ -997,7 +997,7 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
-    const QgsEditorWidgetConfig editorWidgetV2Config( const QString& fieldName ) const /PyName=editorWidgetV2ConfigByName, Deprecated/;
+    const QgsEditorWidgetConfig editorWidgetConfig( const QString& fieldName ) const /PyName=editorWidgetV2ConfigByName, Deprecated/;
 
     /**
      * Returns a list of tabs holding groups and fields

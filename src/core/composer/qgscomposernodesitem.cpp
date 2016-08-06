@@ -136,8 +136,8 @@ void QgsComposerNodesItem::drawNodes( QPainter *painter ) const
   properties.insert( "name", "cross" );
   properties.insert( "color_border", "red" );
 
-  QScopedPointer<QgsMarkerSymbolV2> symbol;
-  symbol.reset( QgsMarkerSymbolV2::createSimple( properties ) );
+  QScopedPointer<QgsMarkerSymbol> symbol;
+  symbol.reset( QgsMarkerSymbol::createSimple( properties ) );
   symbol.data()->setSize( rectSize );
   symbol.data()->setAngle( 45 );
 
@@ -173,8 +173,8 @@ void QgsComposerNodesItem::drawSelectedNode( QPainter *painter ) const
   properties.insert( "color_border", "blue" );
   properties.insert( "width_border", "4" );
 
-  QScopedPointer<QgsMarkerSymbolV2> symbol;
-  symbol.reset( QgsMarkerSymbolV2::createSimple( properties ) );
+  QScopedPointer<QgsMarkerSymbol> symbol;
+  symbol.reset( QgsMarkerSymbol::createSimple( properties ) );
   symbol.data()->setSize( rectSize );
 
   QgsMapSettings ms = mComposition->mapSettings();

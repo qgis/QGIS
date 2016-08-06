@@ -49,7 +49,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     enum LegendNodeRoles
     {
       RuleKeyRole = Qt::UserRole,     //!< rule key of the node (QString)
-      SymbolV2LegacyRuleKeyRole,      //!< for QgsSymbolLegendNode only - legacy rule key (void ptr, to be cast to QgsSymbol ptr)
+      SymbolLegacyRuleKeyRole,      //!< for QgsSymbolLegendNode only - legacy rule key (void ptr, to be cast to QgsSymbol ptr)
       ParentRuleKeyRole               //!< rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
     };
 
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
-    QgsSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item, QObject* parent = nullptr );
+    QgsSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItem& item, QObject* parent = nullptr );
     ~QgsSymbolLegendNode();
 
     virtual Qt::ItemFlags flags() const override;
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     void updateLabel();
 
   private:
-    QgsLegendSymbolItemV2 mItem;
+    QgsLegendSymbolItem mItem;
     mutable QPixmap mPixmap; // cached symbol preview
     QString mLabel;
     bool mSymbolUsesMapUnits;

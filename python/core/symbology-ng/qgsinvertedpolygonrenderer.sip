@@ -1,4 +1,4 @@
-class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
+class QgsInvertedPolygonRenderer : QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include <qgsinvertedpolygonrenderer.h>
@@ -9,7 +9,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
      * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
      * Ownership will be transferred.
      */
-    QgsInvertedPolygonRenderer( QgsFeatureRendererV2* embeddedRenderer /Transfer/ = 0 );
+    QgsInvertedPolygonRenderer( QgsFeatureRenderer* embeddedRenderer /Transfer/ = 0 );
 
     virtual ~QgsInvertedPolygonRenderer();
 
@@ -41,7 +41,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     /** Proxy that will call this method on the embedded renderer. */
     virtual QList<QString> usedAttributes();
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsFeatureRendererV2::Capabilities capabilities();
+    virtual QgsFeatureRenderer::Capabilities capabilities();
     /** Proxy that will call this method on the embedded renderer.
      * @note available in python bindings as symbol2
      */
@@ -74,7 +74,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=willRenderFeature2/;
 
     /** Creates a renderer out of an XML, for loading*/
-    static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
 
     /** Creates an XML representation of the renderer. Used for saving purpose
      * @param doc the XML document where to create the XML subtree
@@ -82,8 +82,8 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
      */
     virtual QDomElement save( QDomDocument& doc );
 
-    void setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer /Transfer/ );
-    const QgsFeatureRendererV2* embeddedRenderer() const;
+    void setEmbeddedRenderer( QgsFeatureRenderer* subRenderer /Transfer/ );
+    const QgsFeatureRenderer* embeddedRenderer() const;
 
     virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol );
 
@@ -101,5 +101,5 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
      * @note added in 2.5
      * @returns a new renderer if the conversion was possible, otherwise 0.
      */
-    static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer ) /Factory/;
 };

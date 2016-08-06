@@ -1,4 +1,4 @@
-class QgsMultiPolygonV2: public QgsMultiSurfaceV2
+class QgsMultiPolygonV2: public QgsMultiSurface
 {
 %TypeHeaderCode
 #include <qgsmultipolygonv2.h>
@@ -18,13 +18,13 @@ class QgsMultiPolygonV2: public QgsMultiSurfaceV2
 
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometryV2* g );
+    virtual bool addGeometry( QgsAbstractGeometry* g );
 
-    /** Returns the geometry converted to the more generic curve type QgsMultiSurfaceV2
+    /** Returns the geometry converted to the more generic curve type QgsMultiSurface
     @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometryV2* toCurveType() const /Factory/;
+    QgsAbstractGeometry* toCurveType() const /Factory/;
 
-    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+    virtual QgsAbstractGeometry* boundary() const /Factory/;
 
   protected:
 

@@ -22,8 +22,8 @@
 #include <QDialog>
 
 class QgsDecorationGrid;
-class QgsLineSymbolV2;
-class QgsMarkerSymbolV2;
+class QgsLineSymbol;
+class QgsMarkerSymbol;
 
 /**
 @author Etienne Tourigny
@@ -53,8 +53,8 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
 
   private:
     QgsDecorationGrid& mDeco;
-    QgsLineSymbolV2* mLineSymbol;
-    QgsMarkerSymbolV2* mMarkerSymbol;
+    QgsLineSymbol* mLineSymbol;
+    QgsMarkerSymbol* mMarkerSymbol;
 
     void updateGuiElements();
     void updateDecoFromGui();

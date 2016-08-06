@@ -60,23 +60,23 @@
   ")"
 
 Qgs25DRenderer::Qgs25DRenderer()
-    : QgsFeatureRendererV2( "25dRenderer" )
+    : QgsFeatureRenderer( "25dRenderer" )
 {
-  mSymbol.reset( new QgsFillSymbolV2() );
+  mSymbol.reset( new QgsFillSymbol() );
 
   mSymbol->deleteSymbolLayer( 0 ); // We never asked for the default layer
 
-  QgsSymbolLayer* floor = QgsSimpleFillSymbolLayerV2::create();
+  QgsSymbolLayer* floor = QgsSimpleFillSymbolLayer::create();
 
   QgsStringMap wallProperties;
   wallProperties.insert( "geometryModifier", WALL_EXPRESSION );
   wallProperties.insert( "symbolType", "Fill" );
-  QgsSymbolLayer* walls = QgsGeometryGeneratorSymbolLayerV2::create( wallProperties );
+  QgsSymbolLayer* walls = QgsGeometryGeneratorSymbolLayer::create( wallProperties );
 
   QgsStringMap roofProperties;
   roofProperties.insert( "geometryModifier", ROOF_EXPRESSION );
   roofProperties.insert( "symbolType", "Fill" );
-  QgsSymbolLayer* roof = QgsGeometryGeneratorSymbolLayerV2::create( roofProperties );
+  QgsSymbolLayer* roof = QgsGeometryGeneratorSymbolLayer::create( roofProperties );
 
   floor->setLocked( true );
 
@@ -123,7 +123,7 @@ QDomElement Qgs25DRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsFeatureRendererV2* Qgs25DRenderer::create( QDomElement& element )
+QgsFeatureRenderer* Qgs25DRenderer::create( QDomElement& element )
 {
   Qgs25DRenderer* renderer = new Qgs25DRenderer();
 
@@ -151,7 +151,7 @@ QList<QString> Qgs25DRenderer::usedAttributes()
   return mSymbol->usedAttributes().toList();
 }
 
-QgsFeatureRendererV2* Qgs25DRenderer::clone() const
+QgsFeatureRenderer* Qgs25DRenderer::clone() const
 {
   Qgs25DRenderer* c = new Qgs25DRenderer();
   c->mSymbol.reset( mSymbol->clone() );
@@ -173,14 +173,14 @@ QgsSymbolList Qgs25DRenderer::symbols( QgsRenderContext& context )
   return lst;
 }
 
-QgsFillSymbolLayerV2* Qgs25DRenderer::roofLayer() const
+QgsFillSymbolLayer* Qgs25DRenderer::roofLayer() const
 {
-  return static_cast<QgsFillSymbolLayerV2*>( mSymbol->symbolLayer( 2 )->subSymbol()->symbolLayer( 0 ) );
+  return static_cast<QgsFillSymbolLayer*>( mSymbol->symbolLayer( 2 )->subSymbol()->symbolLayer( 0 ) );
 }
 
-QgsFillSymbolLayerV2* Qgs25DRenderer::wallLayer() const
+QgsFillSymbolLayer* Qgs25DRenderer::wallLayer() const
 {
-  return static_cast<QgsFillSymbolLayerV2*>( mSymbol->symbolLayer( 1 )->subSymbol()->symbolLayer( 0 ) );
+  return static_cast<QgsFillSymbolLayer*>( mSymbol->symbolLayer( 1 )->subSymbol()->symbolLayer( 0 ) );
 }
 
 QgsOuterGlowEffect* Qgs25DRenderer::glowEffect() const
@@ -251,7 +251,7 @@ void Qgs25DRenderer::setRoofColor( const QColor& roofColor )
   roofLayer()->setOutlineColor( roofColor );
 }
 
-Qgs25DRenderer* Qgs25DRenderer::convertFromRenderer( QgsFeatureRendererV2* renderer )
+Qgs25DRenderer* Qgs25DRenderer::convertFromRenderer( QgsFeatureRenderer* renderer )
 {
   if ( renderer->type() == "25dRenderer" )
   {

@@ -122,8 +122,8 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertexV2( QgsFeatureId
 
 int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
 {
-  QgsLineStringV2* ringLine = new QgsLineStringV2();
-  QgsPointSequenceV2 ringPoints;
+  QgsLineString* ringLine = new QgsLineString();
+  QgsPointSequence ringPoints;
   QList<QgsPoint>::const_iterator ringIt = ring.constBegin();
   for ( ; ringIt != ring.constEnd(); ++ringIt )
   {
@@ -133,7 +133,7 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeat
   return addRing( ringLine, targetFeatureIds,  modifiedFeatureId );
 }
 
-int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
+int QgsVectorLayerEditUtils::addRing( QgsCurve* ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
 {
   if ( !L->hasGeometryType() )
   {
@@ -166,7 +166,7 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& tar
     //add ring takes ownership of ring, and deletes it if there's an error
     QgsGeometry g = f.geometry();
 
-    addRingReturnCode = g.addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
+    addRingReturnCode = g.addRing( static_cast< QgsCurve* >( ring->clone() ) );
     if ( addRingReturnCode == 0 )
     {
       L->editBuffer()->changeGeometry( f.id(), g );
@@ -184,7 +184,7 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& tar
 
 int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureId featureId )
 {
-  QgsPointSequenceV2 l;
+  QgsPointSequence l;
   for ( QList<QgsPoint>::const_iterator it = points.constBegin(); it != points.constEnd(); ++it )
   {
     l <<  QgsPointV2( *it );
@@ -192,7 +192,7 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
   return addPart( l, featureId );
 }
 
-int QgsVectorLayerEditUtils::addPart( const QgsPointSequenceV2 &points, QgsFeatureId featureId )
+int QgsVectorLayerEditUtils::addPart( const QgsPointSequence &points, QgsFeatureId featureId )
 {
   if ( !L->hasGeometryType() )
     return 6;
@@ -231,7 +231,7 @@ int QgsVectorLayerEditUtils::addPart( const QgsPointSequenceV2 &points, QgsFeatu
   return errorCode;
 }
 
-int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
+int QgsVectorLayerEditUtils::addPart( QgsCurve* ring, QgsFeatureId featureId )
 {
   if ( !L->hasGeometryType() )
     return 6;

@@ -26,74 +26,74 @@
 #include "qgsnullsymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
-QgsRendererV2Registry::QgsRendererV2Registry()
+QgsRendererRegistry::QgsRendererRegistry()
 {
   // add default renderers
-  addRenderer( new QgsRendererV2Metadata( "nullSymbol",
-                                          QObject::tr( "No symbols" ),
-                                          QgsNullSymbolRenderer::create ) );
+  addRenderer( new QgsRendererMetadata( "nullSymbol",
+                                        QObject::tr( "No symbols" ),
+                                        QgsNullSymbolRenderer::create ) );
 
-  addRenderer( new QgsRendererV2Metadata( "singleSymbol",
-                                          QObject::tr( "Single symbol" ),
-                                          QgsSingleSymbolRendererV2::create,
-                                          QgsSingleSymbolRendererV2::createFromSld ) );
+  addRenderer( new QgsRendererMetadata( "singleSymbol",
+                                        QObject::tr( "Single symbol" ),
+                                        QgsSingleSymbolRenderer::create,
+                                        QgsSingleSymbolRenderer::createFromSld ) );
 
-  addRenderer( new QgsRendererV2Metadata( "categorizedSymbol",
-                                          QObject::tr( "Categorized" ),
-                                          QgsCategorizedSymbolRendererV2::create ) );
+  addRenderer( new QgsRendererMetadata( "categorizedSymbol",
+                                        QObject::tr( "Categorized" ),
+                                        QgsCategorizedSymbolRenderer::create ) );
 
-  addRenderer( new QgsRendererV2Metadata( "graduatedSymbol",
-                                          QObject::tr( "Graduated" ),
-                                          QgsGraduatedSymbolRendererV2::create ) );
+  addRenderer( new QgsRendererMetadata( "graduatedSymbol",
+                                        QObject::tr( "Graduated" ),
+                                        QgsGraduatedSymbolRenderer::create ) );
 
-  addRenderer( new QgsRendererV2Metadata( "RuleRenderer",
-                                          QObject::tr( "Rule-based" ),
-                                          QgsRuleBasedRendererV2::create,
-                                          QgsRuleBasedRendererV2::createFromSld ) );
+  addRenderer( new QgsRendererMetadata( "RuleRenderer",
+                                        QObject::tr( "Rule-based" ),
+                                        QgsRuleBasedRenderer::create,
+                                        QgsRuleBasedRenderer::createFromSld ) );
 
-  addRenderer( new QgsRendererV2Metadata( "pointDisplacement",
-                                          QObject::tr( "Point displacement" ),
-                                          QgsPointDisplacementRenderer::create,
-                                          QIcon(),
-                                          nullptr,
-                                          QgsRendererV2AbstractMetadata::PointLayer ) );
+  addRenderer( new QgsRendererMetadata( "pointDisplacement",
+                                        QObject::tr( "Point displacement" ),
+                                        QgsPointDisplacementRenderer::create,
+                                        QIcon(),
+                                        nullptr,
+                                        QgsRendererAbstractMetadata::PointLayer ) );
 
-  addRenderer( new QgsRendererV2Metadata( "invertedPolygonRenderer",
-                                          QObject::tr( "Inverted polygons" ),
-                                          QgsInvertedPolygonRenderer::create,
-                                          QIcon(),
-                                          nullptr,
-                                          QgsRendererV2AbstractMetadata::PolygonLayer ) );
+  addRenderer( new QgsRendererMetadata( "invertedPolygonRenderer",
+                                        QObject::tr( "Inverted polygons" ),
+                                        QgsInvertedPolygonRenderer::create,
+                                        QIcon(),
+                                        nullptr,
+                                        QgsRendererAbstractMetadata::PolygonLayer ) );
 
-  addRenderer( new QgsRendererV2Metadata( "heatmapRenderer",
-                                          QObject::tr( "Heatmap" ),
-                                          QgsHeatmapRenderer::create,
-                                          QIcon(),
-                                          nullptr,
-                                          QgsRendererV2AbstractMetadata::PointLayer ) );
+  addRenderer( new QgsRendererMetadata( "heatmapRenderer",
+                                        QObject::tr( "Heatmap" ),
+                                        QgsHeatmapRenderer::create,
+                                        QIcon(),
+                                        nullptr,
+                                        QgsRendererAbstractMetadata::PointLayer ) );
 
 
-  addRenderer( new QgsRendererV2Metadata( "25dRenderer",
-                                          QObject::tr( "2.5 D" ),
-                                          Qgs25DRenderer::create,
-                                          QIcon(),
-                                          nullptr,
-                                          QgsRendererV2AbstractMetadata::PolygonLayer ) );
+  addRenderer( new QgsRendererMetadata( "25dRenderer",
+                                        QObject::tr( "2.5 D" ),
+                                        Qgs25DRenderer::create,
+                                        QIcon(),
+                                        nullptr,
+                                        QgsRendererAbstractMetadata::PolygonLayer ) );
 }
 
-QgsRendererV2Registry::~QgsRendererV2Registry()
+QgsRendererRegistry::~QgsRendererRegistry()
 {
   qDeleteAll( mRenderers );
 }
 
-QgsRendererV2Registry* QgsRendererV2Registry::instance()
+QgsRendererRegistry* QgsRendererRegistry::instance()
 {
-  static QgsRendererV2Registry mInstance;
+  static QgsRendererRegistry mInstance;
   return &mInstance;
 }
 
 
-bool QgsRendererV2Registry::addRenderer( QgsRendererV2AbstractMetadata* metadata )
+bool QgsRendererRegistry::addRenderer( QgsRendererAbstractMetadata* metadata )
 {
   if ( !metadata || mRenderers.contains( metadata->name() ) )
     return false;
@@ -103,7 +103,7 @@ bool QgsRendererV2Registry::addRenderer( QgsRendererV2AbstractMetadata* metadata
   return true;
 }
 
-bool QgsRendererV2Registry::removeRenderer( const QString& rendererName )
+bool QgsRendererRegistry::removeRenderer( const QString& rendererName )
 {
   if ( !mRenderers.contains( rendererName ) )
     return false;
@@ -114,14 +114,14 @@ bool QgsRendererV2Registry::removeRenderer( const QString& rendererName )
   return true;
 }
 
-QgsRendererV2AbstractMetadata* QgsRendererV2Registry::rendererMetadata( const QString& rendererName )
+QgsRendererAbstractMetadata* QgsRendererRegistry::rendererMetadata( const QString& rendererName )
 {
   return mRenderers.value( rendererName );
 }
 
-QgsRendererV2Metadata::~QgsRendererV2Metadata() {}
+QgsRendererMetadata::~QgsRendererMetadata() {}
 
-QStringList QgsRendererV2Registry::renderersList( QgsRendererV2AbstractMetadata::LayerTypes layerTypes ) const
+QStringList QgsRendererRegistry::renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes ) const
 {
   QStringList renderers;
   Q_FOREACH ( const QString& renderer, mRenderersOrder )
@@ -132,22 +132,22 @@ QStringList QgsRendererV2Registry::renderersList( QgsRendererV2AbstractMetadata:
   return renderers;
 }
 
-QStringList QgsRendererV2Registry::renderersList( const QgsVectorLayer* layer ) const
+QStringList QgsRendererRegistry::renderersList( const QgsVectorLayer* layer ) const
 {
-  QgsRendererV2AbstractMetadata::LayerType layerType = QgsRendererV2AbstractMetadata::All;
+  QgsRendererAbstractMetadata::LayerType layerType = QgsRendererAbstractMetadata::All;
 
   switch ( layer->geometryType() )
   {
     case QgsWkbTypes::PointGeometry:
-      layerType = QgsRendererV2AbstractMetadata::PointLayer;
+      layerType = QgsRendererAbstractMetadata::PointLayer;
       break;
 
     case QgsWkbTypes::LineGeometry:
-      layerType = QgsRendererV2AbstractMetadata::LineLayer;
+      layerType = QgsRendererAbstractMetadata::LineLayer;
       break;
 
     case QgsWkbTypes::PolygonGeometry:
-      layerType = QgsRendererV2AbstractMetadata::PolygonLayer;
+      layerType = QgsRendererAbstractMetadata::PolygonLayer;
       break;
 
     case QgsWkbTypes::UnknownGeometry:

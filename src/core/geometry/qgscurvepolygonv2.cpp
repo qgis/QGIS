@@ -27,57 +27,57 @@
 #include <QPainter>
 #include <QPainterPath>
 
-QgsCurvePolygonV2::QgsCurvePolygonV2(): QgsSurfaceV2(), mExteriorRing( nullptr )
+QgsCurvePolygon::QgsCurvePolygon(): QgsSurface(), mExteriorRing( nullptr )
 {
   mWkbType = QgsWkbTypes::CurvePolygon;
 }
 
-QgsCurvePolygonV2::~QgsCurvePolygonV2()
+QgsCurvePolygon::~QgsCurvePolygon()
 {
   clear();
 }
 
-QgsCurvePolygonV2::QgsCurvePolygonV2( const QgsCurvePolygonV2& p )
-    : QgsSurfaceV2( p )
+QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon& p )
+    : QgsSurface( p )
     , mExteriorRing( nullptr )
 {
   mWkbType = p.mWkbType;
   if ( p.mExteriorRing )
   {
-    mExteriorRing = static_cast<QgsCurveV2*>( p.mExteriorRing->clone() );
+    mExteriorRing = static_cast<QgsCurve*>( p.mExteriorRing->clone() );
   }
 
-  Q_FOREACH ( const QgsCurveV2* ring, p.mInteriorRings )
+  Q_FOREACH ( const QgsCurve* ring, p.mInteriorRings )
   {
-    mInteriorRings.push_back( static_cast<QgsCurveV2*>( ring->clone() ) );
+    mInteriorRings.push_back( static_cast<QgsCurve*>( ring->clone() ) );
   }
 }
 
-QgsCurvePolygonV2& QgsCurvePolygonV2::operator=( const QgsCurvePolygonV2 & p )
+QgsCurvePolygon& QgsCurvePolygon::operator=( const QgsCurvePolygon & p )
 {
   if ( &p != this )
   {
     clearCache();
-    QgsSurfaceV2::operator=( p );
+    QgsSurface::operator=( p );
     if ( p.mExteriorRing )
     {
-      mExteriorRing = static_cast<QgsCurveV2*>( p.mExteriorRing->clone() );
+      mExteriorRing = static_cast<QgsCurve*>( p.mExteriorRing->clone() );
     }
 
-    Q_FOREACH ( const QgsCurveV2* ring, p.mInteriorRings )
+    Q_FOREACH ( const QgsCurve* ring, p.mInteriorRings )
     {
-      mInteriorRings.push_back( static_cast<QgsCurveV2*>( ring->clone() ) );
+      mInteriorRings.push_back( static_cast<QgsCurve*>( ring->clone() ) );
     }
   }
   return *this;
 }
 
-QgsCurvePolygonV2* QgsCurvePolygonV2::clone() const
+QgsCurvePolygon* QgsCurvePolygon::clone() const
 {
-  return new QgsCurvePolygonV2( *this );
+  return new QgsCurvePolygon( *this );
 }
 
-void QgsCurvePolygonV2::clear()
+void QgsCurvePolygon::clear()
 {
   mWkbType = QgsWkbTypes::CurvePolygon;
   delete mExteriorRing;
@@ -88,7 +88,7 @@ void QgsCurvePolygonV2::clear()
 }
 
 
-bool QgsCurvePolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
+bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr wkbPtr )
 {
   clear();
   if ( !wkbPtr )
@@ -105,7 +105,7 @@ bool QgsCurvePolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
 
   int nRings;
   wkbPtr >> nRings;
-  QgsCurveV2* currentCurve = nullptr;
+  QgsCurve* currentCurve = nullptr;
   int currentCurveSize = 0;
   for ( int i = 0; i < nRings; ++i )
   {
@@ -114,15 +114,15 @@ bool QgsCurvePolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
     QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( curveType );
     if ( flatCurveType == QgsWkbTypes::LineString )
     {
-      currentCurve = new QgsLineStringV2();
+      currentCurve = new QgsLineString();
     }
     else if ( flatCurveType == QgsWkbTypes::CircularString )
     {
-      currentCurve = new QgsCircularStringV2();
+      currentCurve = new QgsCircularString();
     }
     else if ( flatCurveType == QgsWkbTypes::CompoundCurve )
     {
-      currentCurve = new QgsCompoundCurveV2();
+      currentCurve = new QgsCompoundCurve();
     }
     else
     {
@@ -144,7 +144,7 @@ bool QgsCurvePolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
   return true;
 }
 
-bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
+bool QgsCurvePolygon::fromWkt( const QString& wkt )
 {
   clear();
 
@@ -163,11 +163,11 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
 
     QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( childParts.first );
     if ( flatCurveType == QgsWkbTypes::LineString )
-      mInteriorRings.append( new QgsLineStringV2() );
+      mInteriorRings.append( new QgsLineString() );
     else if ( flatCurveType == QgsWkbTypes::CircularString )
-      mInteriorRings.append( new QgsCircularStringV2() );
+      mInteriorRings.append( new QgsCircularString() );
     else if ( flatCurveType == QgsWkbTypes::CompoundCurve )
-      mInteriorRings.append( new QgsCompoundCurveV2() );
+      mInteriorRings.append( new QgsCompoundCurve() );
     else
     {
       clear();
@@ -198,7 +198,7 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
     hasZ = hasZ || mExteriorRing->is3D();
     hasM = hasM || mExteriorRing->isMeasure();
   }
-  Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH ( const QgsCurve* curve, mInteriorRings )
   {
     hasZ = hasZ || curve->is3D();
     hasM = hasM || curve->isMeasure();
@@ -213,7 +213,7 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
   return true;
 }
 
-QgsRectangle QgsCurvePolygonV2::calculateBoundingBox() const
+QgsRectangle QgsCurvePolygon::calculateBoundingBox() const
 {
   if ( mExteriorRing )
   {
@@ -222,21 +222,21 @@ QgsRectangle QgsCurvePolygonV2::calculateBoundingBox() const
   return QgsRectangle();
 }
 
-int QgsCurvePolygonV2::wkbSize() const
+int QgsCurvePolygon::wkbSize() const
 {
   int size = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   if ( mExteriorRing )
   {
     size += mExteriorRing->wkbSize();
   }
-  Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH ( const QgsCurve* curve, mInteriorRings )
   {
     size += curve->wkbSize();
   }
   return size;
 }
 
-unsigned char* QgsCurvePolygonV2::asWkb( int& binarySize ) const
+unsigned char* QgsCurvePolygon::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
@@ -251,7 +251,7 @@ unsigned char* QgsCurvePolygonV2::asWkb( int& binarySize ) const
     memcpy( wkbPtr, ringWkb, curveWkbLen );
     wkbPtr += curveWkbLen;
   }
-  Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH ( const QgsCurve* curve, mInteriorRings )
   {
     int curveWkbLen = 0;
     unsigned char *ringWkb = curve->asWkb( curveWkbLen );
@@ -261,23 +261,23 @@ unsigned char* QgsCurvePolygonV2::asWkb( int& binarySize ) const
   return geomPtr;
 }
 
-QString QgsCurvePolygonV2::asWkt( int precision ) const
+QString QgsCurvePolygon::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + " (";
   if ( mExteriorRing )
   {
     QString childWkt = mExteriorRing->asWkt( precision );
-    if ( dynamic_cast<QgsLineStringV2*>( mExteriorRing ) )
+    if ( dynamic_cast<QgsLineString*>( mExteriorRing ) )
     {
       // Type names of linear geometries are omitted
       childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
     }
     wkt += childWkt + ',';
   }
-  Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH ( const QgsCurve* curve, mInteriorRings )
   {
     QString childWkt = curve->asWkt( precision );
-    if ( dynamic_cast<const QgsLineStringV2*>( curve ) )
+    if ( dynamic_cast<const QgsLineString*>( curve ) )
     {
       // Type names of linear geometries are omitted
       childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
@@ -292,12 +292,12 @@ QString QgsCurvePolygonV2::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsCurvePolygonV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
+QDomElement QgsCurvePolygon::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   // GML2 does not support curves
   QDomElement elemPolygon = doc.createElementNS( ns, "Polygon" );
   QDomElement elemOuterBoundaryIs = doc.createElementNS( ns, "outerBoundaryIs" );
-  QgsLineStringV2* exteriorLineString = exteriorRing()->curveToLine();
+  QgsLineString* exteriorLineString = exteriorRing()->curveToLine();
   QDomElement outerRing = exteriorLineString->asGML2( doc, precision, ns );
   outerRing.toElement().setTagName( "LinearRing" );
   elemOuterBoundaryIs.appendChild( outerRing );
@@ -306,7 +306,7 @@ QDomElement QgsCurvePolygonV2::asGML2( QDomDocument& doc, int precision, const Q
   QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, "innerBoundaryIs" );
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
-    QgsLineStringV2* interiorLineString = interiorRing( i )->curveToLine();
+    QgsLineString* interiorLineString = interiorRing( i )->curveToLine();
     QDomElement innerRing = interiorLineString->asGML2( doc, precision, ns );
     innerRing.toElement().setTagName( "LinearRing" );
     elemInnerBoundaryIs.appendChild( innerRing );
@@ -316,7 +316,7 @@ QDomElement QgsCurvePolygonV2::asGML2( QDomDocument& doc, int precision, const Q
   return elemPolygon;
 }
 
-QDomElement QgsCurvePolygonV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
+QDomElement QgsCurvePolygon::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemCurvePolygon = doc.createElementNS( ns, "Polygon" );
   QDomElement elemExterior = doc.createElementNS( ns, "exterior" );
@@ -335,21 +335,21 @@ QDomElement QgsCurvePolygonV2::asGML3( QDomDocument& doc, int precision, const Q
   return elemCurvePolygon;
 }
 
-QString QgsCurvePolygonV2::asJSON( int precision ) const
+QString QgsCurvePolygon::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
   QString json = "{\"type\": \"Polygon\", \"coordinates\": [";
 
-  QgsLineStringV2* exteriorLineString = exteriorRing()->curveToLine();
-  QgsPointSequenceV2 exteriorPts;
+  QgsLineString* exteriorLineString = exteriorRing()->curveToLine();
+  QgsPointSequence exteriorPts;
   exteriorLineString->points( exteriorPts );
   json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
   delete exteriorLineString;
 
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
-    QgsLineStringV2* interiorLineString = interiorRing( i )->curveToLine();
-    QgsPointSequenceV2 interiorPts;
+    QgsLineString* interiorLineString = interiorRing( i )->curveToLine();
+    QgsPointSequence interiorPts;
     interiorLineString->points( interiorPts );
     json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
     delete interiorLineString;
@@ -362,7 +362,7 @@ QString QgsCurvePolygonV2::asJSON( int precision ) const
   return json;
 }
 
-double QgsCurvePolygonV2::area() const
+double QgsCurvePolygon::area() const
 {
   if ( !mExteriorRing )
   {
@@ -378,7 +378,7 @@ double QgsCurvePolygonV2::area() const
     totalArea += qAbs( area );
   }
 
-  QList<QgsCurveV2*>::const_iterator ringIt = mInteriorRings.constBegin();
+  QList<QgsCurve*>::const_iterator ringIt = mInteriorRings.constBegin();
   for ( ; ringIt != mInteriorRings.constEnd(); ++ringIt )
   {
     double area = 0.0;
@@ -391,14 +391,14 @@ double QgsCurvePolygonV2::area() const
   return totalArea;
 }
 
-double QgsCurvePolygonV2::perimeter() const
+double QgsCurvePolygon::perimeter() const
 {
   if ( !mExteriorRing )
     return 0.0;
 
   //sum perimeter of rings
   double perimeter = mExteriorRing->length();
-  QList<QgsCurveV2*>::const_iterator ringIt = mInteriorRings.constBegin();
+  QList<QgsCurve*>::const_iterator ringIt = mInteriorRings.constBegin();
   for ( ; ringIt != mInteriorRings.constEnd(); ++ringIt )
   {
     perimeter += ( *ringIt )->length();
@@ -406,11 +406,11 @@ double QgsCurvePolygonV2::perimeter() const
   return perimeter;
 }
 
-QgsPolygonV2* QgsCurvePolygonV2::surfaceToPolygon() const
+QgsPolygonV2* QgsCurvePolygon::surfaceToPolygon() const
 {
   QgsPolygonV2* polygon = new QgsPolygonV2();
   polygon->setExteriorRing( exteriorRing()->curveToLine() );
-  QList<QgsCurveV2*> interiors;
+  QList<QgsCurve*> interiors;
   int n = numInteriorRings();
   interiors.reserve( n );
   for ( int i = 0; i < n; ++i )
@@ -421,7 +421,7 @@ QgsPolygonV2* QgsCurvePolygonV2::surfaceToPolygon() const
   return polygon;
 }
 
-QgsAbstractGeometryV2* QgsCurvePolygonV2::boundary() const
+QgsAbstractGeometry* QgsCurvePolygon::boundary() const
 {
   if ( mInteriorRings.isEmpty() )
   {
@@ -429,7 +429,7 @@ QgsAbstractGeometryV2* QgsCurvePolygonV2::boundary() const
   }
   else
   {
-    QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
+    QgsMultiCurve* multiCurve = new QgsMultiCurve();
     multiCurve->addGeometry( mExteriorRing->clone() );
     int nInteriorRings = mInteriorRings.size();
     for ( int i = 0; i < nInteriorRings; ++i )
@@ -440,7 +440,7 @@ QgsAbstractGeometryV2* QgsCurvePolygonV2::boundary() const
   }
 }
 
-QgsPolygonV2* QgsCurvePolygonV2::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const
+QgsPolygonV2* QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   if ( !mExteriorRing )
   {
@@ -450,8 +450,8 @@ QgsPolygonV2* QgsCurvePolygonV2::toPolygon( double tolerance, SegmentationTolera
   QgsPolygonV2* poly = new QgsPolygonV2();
   poly->setExteriorRing( mExteriorRing->curveToLine( tolerance, toleranceType ) );
 
-  QList<QgsCurveV2*> rings;
-  QList<QgsCurveV2*>::const_iterator it = mInteriorRings.constBegin();
+  QList<QgsCurve*> rings;
+  QList<QgsCurve*>::const_iterator it = mInteriorRings.constBegin();
   for ( ; it != mInteriorRings.constEnd(); ++it )
   {
     rings.push_back(( *it )->curveToLine( tolerance, toleranceType ) );
@@ -460,17 +460,17 @@ QgsPolygonV2* QgsCurvePolygonV2::toPolygon( double tolerance, SegmentationTolera
   return poly;
 }
 
-int QgsCurvePolygonV2::numInteriorRings() const
+int QgsCurvePolygon::numInteriorRings() const
 {
   return mInteriorRings.size();
 }
 
-const QgsCurveV2* QgsCurvePolygonV2::exteriorRing() const
+const QgsCurve* QgsCurvePolygon::exteriorRing() const
 {
   return mExteriorRing;
 }
 
-const QgsCurveV2* QgsCurvePolygonV2::interiorRing( int i ) const
+const QgsCurve* QgsCurvePolygon::interiorRing( int i ) const
 {
   if ( i < 0 || i >= mInteriorRings.size() )
   {
@@ -479,7 +479,7 @@ const QgsCurveV2* QgsCurvePolygonV2::interiorRing( int i ) const
   return mInteriorRings.at( i );
 }
 
-void QgsCurvePolygonV2::setExteriorRing( QgsCurveV2* ring )
+void QgsCurvePolygon::setExteriorRing( QgsCurve* ring )
 {
   if ( !ring )
   {
@@ -499,7 +499,7 @@ void QgsCurvePolygonV2::setExteriorRing( QgsCurveV2* ring )
   }
 
   //match dimensionality for rings
-  Q_FOREACH ( QgsCurveV2* ring, mInteriorRings )
+  Q_FOREACH ( QgsCurve* ring, mInteriorRings )
   {
     if ( is3D() )
       ring->addZValue();
@@ -514,20 +514,20 @@ void QgsCurvePolygonV2::setExteriorRing( QgsCurveV2* ring )
   clearCache();
 }
 
-void QgsCurvePolygonV2::setInteriorRings( const QList<QgsCurveV2*>& rings )
+void QgsCurvePolygon::setInteriorRings( const QList<QgsCurve*>& rings )
 {
   qDeleteAll( mInteriorRings );
   mInteriorRings.clear();
 
   //add rings one-by-one, so that they can each be converted to the correct type for the CurvePolygon
-  Q_FOREACH ( QgsCurveV2* ring, rings )
+  Q_FOREACH ( QgsCurve* ring, rings )
   {
     addInteriorRing( ring );
   }
   clearCache();
 }
 
-void QgsCurvePolygonV2::addInteriorRing( QgsCurveV2* ring )
+void QgsCurvePolygon::addInteriorRing( QgsCurve* ring )
 {
   if ( !ring )
     return;
@@ -547,7 +547,7 @@ void QgsCurvePolygonV2::addInteriorRing( QgsCurveV2* ring )
   clearCache();
 }
 
-bool QgsCurvePolygonV2::removeInteriorRing( int nr )
+bool QgsCurvePolygon::removeInteriorRing( int nr )
 {
   if ( nr < 0 || nr >= mInteriorRings.size() )
   {
@@ -558,7 +558,7 @@ bool QgsCurvePolygonV2::removeInteriorRing( int nr )
   return true;
 }
 
-void QgsCurvePolygonV2::draw( QPainter& p ) const
+void QgsCurvePolygon::draw( QPainter& p ) const
 {
   if ( mInteriorRings.size() < 1 )
   {
@@ -572,7 +572,7 @@ void QgsCurvePolygonV2::draw( QPainter& p ) const
     QPainterPath path;
     mExteriorRing->addToPainterPath( path );
 
-    QList<QgsCurveV2*>::const_iterator it = mInteriorRings.constBegin();
+    QList<QgsCurve*>::const_iterator it = mInteriorRings.constBegin();
     for ( ; it != mInteriorRings.constEnd(); ++it )
     {
       ( *it )->addToPainterPath( path );
@@ -581,70 +581,70 @@ void QgsCurvePolygonV2::draw( QPainter& p ) const
   }
 }
 
-void QgsCurvePolygonV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsCurvePolygon::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   if ( mExteriorRing )
   {
     mExteriorRing->transform( ct, d, transformZ );
   }
 
-  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH ( QgsCurve* curve, mInteriorRings )
   {
     curve->transform( ct, d, transformZ );
   }
   clearCache();
 }
 
-void QgsCurvePolygonV2::transform( const QTransform& t )
+void QgsCurvePolygon::transform( const QTransform& t )
 {
   if ( mExteriorRing )
   {
     mExteriorRing->transform( t );
   }
 
-  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH ( QgsCurve* curve, mInteriorRings )
   {
     curve->transform( t );
   }
   clearCache();
 }
 
-QgsCoordinateSequenceV2 QgsCurvePolygonV2::coordinateSequence() const
+QgsCoordinateSequence QgsCurvePolygon::coordinateSequence() const
 {
   if ( !mCoordinateSequence.isEmpty() )
     return mCoordinateSequence;
 
-  mCoordinateSequence.append( QgsRingSequenceV2() );
+  mCoordinateSequence.append( QgsRingSequence() );
 
   if ( mExteriorRing )
   {
-    mCoordinateSequence.back().append( QgsPointSequenceV2() );
+    mCoordinateSequence.back().append( QgsPointSequence() );
     mExteriorRing->points( mCoordinateSequence.back().back() );
   }
 
-  QList<QgsCurveV2*>::const_iterator it = mInteriorRings.constBegin();
+  QList<QgsCurve*>::const_iterator it = mInteriorRings.constBegin();
   for ( ; it != mInteriorRings.constEnd(); ++it )
   {
-    mCoordinateSequence.back().append( QgsPointSequenceV2() );
+    mCoordinateSequence.back().append( QgsPointSequence() );
     ( *it )->points( mCoordinateSequence.back().back() );
   }
 
   return mCoordinateSequence;
 }
 
-double QgsCurvePolygonV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt, QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
+double QgsCurvePolygon::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt, QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
   if ( !mExteriorRing )
   {
     return 0.0;
   }
-  QList<QgsCurveV2*> segmentList;
+  QList<QgsCurve*> segmentList;
   segmentList.append( mExteriorRing );
   segmentList.append( mInteriorRings );
   return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::RING, pt, segmentPt,  vertexAfter, leftOf, epsilon );
 }
 
-bool QgsCurvePolygonV2::nextVertex( QgsVertexId& vId, QgsPointV2& vertex ) const
+bool QgsCurvePolygon::nextVertex( QgsVertexId& vId, QgsPointV2& vertex ) const
 {
   if ( !mExteriorRing || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -663,7 +663,7 @@ bool QgsCurvePolygonV2::nextVertex( QgsVertexId& vId, QgsPointV2& vertex ) const
   }
   else
   {
-    QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings[vId.ring - 1];
+    QgsCurve* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings[vId.ring - 1];
 
     if ( ring->nextVertex( vId, vertex ) )
     {
@@ -680,14 +680,14 @@ bool QgsCurvePolygonV2::nextVertex( QgsVertexId& vId, QgsPointV2& vertex ) const
   }
 }
 
-bool QgsCurvePolygonV2::insertVertex( QgsVertexId vId, const QgsPointV2& vertex )
+bool QgsCurvePolygon::insertVertex( QgsVertexId vId, const QgsPointV2& vertex )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
     return false;
   }
 
-  QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
+  QgsCurve* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
   int n = ring->numPoints();
   bool success = ring->insertVertex( QgsVertexId( 0, 0, vId.vertex ), vertex );
   if ( !success )
@@ -706,14 +706,14 @@ bool QgsCurvePolygonV2::insertVertex( QgsVertexId vId, const QgsPointV2& vertex 
   return true;
 }
 
-bool QgsCurvePolygonV2::moveVertex( QgsVertexId vId, const QgsPointV2& newPos )
+bool QgsCurvePolygon::moveVertex( QgsVertexId vId, const QgsPointV2& newPos )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
     return false;
   }
 
-  QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
+  QgsCurve* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
   int n = ring->numPoints();
   bool success = ring->moveVertex( vId, newPos );
   if ( success )
@@ -728,14 +728,14 @@ bool QgsCurvePolygonV2::moveVertex( QgsVertexId vId, const QgsPointV2& newPos )
   return success;
 }
 
-bool QgsCurvePolygonV2::deleteVertex( QgsVertexId vId )
+bool QgsCurvePolygon::deleteVertex( QgsVertexId vId )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
     return false;
   }
 
-  QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
+  QgsCurve* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
   int n = ring->numPoints();
   if ( n <= 4 )
   {
@@ -772,14 +772,14 @@ bool QgsCurvePolygonV2::deleteVertex( QgsVertexId vId )
   return success;
 }
 
-bool QgsCurvePolygonV2::hasCurvedSegments() const
+bool QgsCurvePolygon::hasCurvedSegments() const
 {
   if ( mExteriorRing && mExteriorRing->hasCurvedSegments() )
   {
     return true;
   }
 
-  QList<QgsCurveV2*>::const_iterator it = mInteriorRings.constBegin();
+  QList<QgsCurve*>::const_iterator it = mInteriorRings.constBegin();
   for ( ; it != mInteriorRings.constEnd(); ++it )
   {
     if (( *it )->hasCurvedSegments() )
@@ -790,12 +790,12 @@ bool QgsCurvePolygonV2::hasCurvedSegments() const
   return false;
 }
 
-QgsAbstractGeometryV2* QgsCurvePolygonV2::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
+QgsAbstractGeometry* QgsCurvePolygon::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   return toPolygon( tolerance, toleranceType );
 }
 
-double QgsCurvePolygonV2::vertexAngle( QgsVertexId vertex ) const
+double QgsCurvePolygon::vertexAngle( QgsVertexId vertex ) const
 {
   if ( !mExteriorRing || vertex.ring < 0 || vertex.ring >= 1 + mInteriorRings.size() )
   {
@@ -803,21 +803,21 @@ double QgsCurvePolygonV2::vertexAngle( QgsVertexId vertex ) const
     return false;
   }
 
-  QgsCurveV2* ring = vertex.ring == 0 ? mExteriorRing : mInteriorRings[vertex.ring - 1];
+  QgsCurve* ring = vertex.ring == 0 ? mExteriorRing : mInteriorRings[vertex.ring - 1];
   return ring->vertexAngle( vertex );
 }
 
-int QgsCurvePolygonV2::vertexCount( int /*part*/, int ring ) const
+int QgsCurvePolygon::vertexCount( int /*part*/, int ring ) const
 {
   return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount();
 }
 
-QgsPointV2 QgsCurvePolygonV2::vertexAt( QgsVertexId id ) const
+QgsPointV2 QgsCurvePolygon::vertexAt( QgsVertexId id ) const
 {
   return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
 }
 
-bool QgsCurvePolygonV2::addZValue( double zValue )
+bool QgsCurvePolygon::addZValue( double zValue )
 {
   if ( QgsWkbTypes::hasZ( mWkbType ) )
     return false;
@@ -826,7 +826,7 @@ bool QgsCurvePolygonV2::addZValue( double zValue )
 
   if ( mExteriorRing )
     mExteriorRing->addZValue( zValue );
-  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH ( QgsCurve* curve, mInteriorRings )
   {
     curve->addZValue( zValue );
   }
@@ -834,7 +834,7 @@ bool QgsCurvePolygonV2::addZValue( double zValue )
   return true;
 }
 
-bool QgsCurvePolygonV2::addMValue( double mValue )
+bool QgsCurvePolygon::addMValue( double mValue )
 {
   if ( QgsWkbTypes::hasM( mWkbType ) )
     return false;
@@ -843,7 +843,7 @@ bool QgsCurvePolygonV2::addMValue( double mValue )
 
   if ( mExteriorRing )
     mExteriorRing->addMValue( mValue );
-  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH ( QgsCurve* curve, mInteriorRings )
   {
     curve->addMValue( mValue );
   }
@@ -851,7 +851,7 @@ bool QgsCurvePolygonV2::addMValue( double mValue )
   return true;
 }
 
-bool QgsCurvePolygonV2::dropZValue()
+bool QgsCurvePolygon::dropZValue()
 {
   if ( !is3D() )
     return false;
@@ -859,7 +859,7 @@ bool QgsCurvePolygonV2::dropZValue()
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
   if ( mExteriorRing )
     mExteriorRing->dropZValue();
-  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH ( QgsCurve* curve, mInteriorRings )
   {
     curve->dropZValue();
   }
@@ -867,7 +867,7 @@ bool QgsCurvePolygonV2::dropZValue()
   return true;
 }
 
-bool QgsCurvePolygonV2::dropMValue()
+bool QgsCurvePolygon::dropMValue()
 {
   if ( !isMeasure() )
     return false;
@@ -875,7 +875,7 @@ bool QgsCurvePolygonV2::dropMValue()
   mWkbType = QgsWkbTypes::dropM( mWkbType );
   if ( mExteriorRing )
     mExteriorRing->dropMValue();
-  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH ( QgsCurve* curve, mInteriorRings )
   {
     curve->dropMValue();
   }

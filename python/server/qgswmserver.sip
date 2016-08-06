@@ -30,7 +30,7 @@ class QgsComposerLegendItem;
 class QgsComposition;
 class QgsConfigParser;
 class QgsFeature;
-class QgsFeatureRendererV2;
+class QgsFeatureRenderer;
 class QgsMapLayer;
 class QgsMapRenderer;
 class QgsPoint;

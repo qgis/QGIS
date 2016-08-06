@@ -22,8 +22,8 @@
 #include <qgis.h>
 
 class QPainter;
-class QgsLineSymbolV2;
-class QgsMarkerSymbolV2;
+class QgsLineSymbol;
+class QgsMarkerSymbol;
 
 #include <QColor>
 #include <QPen>
@@ -116,12 +116,12 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     /* double crossLength() {return mCrossLength;} */
 
     /** Set symbol that is used to draw grid lines. Takes ownership*/
-    void setLineSymbol( QgsLineSymbolV2* symbol );
-    const QgsLineSymbolV2* lineSymbol() const { return mLineSymbol; }
+    void setLineSymbol( QgsLineSymbol* symbol );
+    const QgsLineSymbol* lineSymbol() const { return mLineSymbol; }
 
     /** Set symbol that is used to draw markers. Takes ownership*/
-    void setMarkerSymbol( QgsMarkerSymbolV2* symbol );
-    const QgsMarkerSymbolV2* markerSymbol() const { return mMarkerSymbol; }
+    void setMarkerSymbol( QgsMarkerSymbol* symbol );
+    const QgsMarkerSymbol* markerSymbol() const { return mMarkerSymbol; }
 
     /** Sets map unit type */
     void setMapUnits( QgsUnitTypes::DistanceUnit t ) { mMapUnits = t; }
@@ -190,8 +190,8 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     /** The length of the cross sides for mGridStyle Cross*/
     /* double mCrossLength; */
 
-    QgsLineSymbolV2* mLineSymbol;
-    QgsMarkerSymbolV2* mMarkerSymbol;
+    QgsLineSymbol* mLineSymbol;
+    QgsMarkerSymbol* mMarkerSymbol;
 
     QgsUnitTypes::DistanceUnit mMapUnits;
 

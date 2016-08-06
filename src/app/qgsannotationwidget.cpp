@@ -56,7 +56,7 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
 
     connect( mBackgroundColorButton, SIGNAL( colorChanged( QColor ) ), this, SIGNAL( backgroundColorChanged( QColor ) ) );
 
-    const QgsMarkerSymbolV2* symbol = mItem->markerSymbol();
+    const QgsMarkerSymbol* symbol = mItem->markerSymbol();
     if ( symbol )
     {
       mMarkerSymbol.reset( symbol->clone() );
@@ -98,8 +98,8 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
   {
     return;
   }
-  QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
-  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsMarkerSymbol* markerSymbol = mMarkerSymbol->clone();
+  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

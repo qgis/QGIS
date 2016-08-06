@@ -26,12 +26,12 @@
 
 class QgsSymbol;
 class QgsSymbolLayer;
-class QgsVectorColorRampV2;
+class QgsVectorColorRamp;
 
 class QDomDocument;
 class QDomElement;
 
-typedef QMap<QString, QgsVectorColorRampV2* > QgsVectorColorRampV2Map;
+typedef QMap<QString, QgsVectorColorRamp* > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
 
 /** \ingroup core
@@ -64,15 +64,15 @@ enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampGroupId
 enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
 
 /** \ingroup core
- * \class QgsStyleV2
+ * \class QgsStyle
  */
-class CORE_EXPORT QgsStyleV2 : public QObject
+class CORE_EXPORT QgsStyle : public QObject
 {
     Q_OBJECT
 
   public:
-    QgsStyleV2();
-    ~QgsStyleV2();
+    QgsStyle();
+    ~QgsStyle();
 
     //! Enum for Entities involved in a style
     /*!
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \return success status of the operation
      */
-    bool addColorRamp( const QString& name, QgsVectorColorRampV2* colorRamp, bool update = false );
+    bool addColorRamp( const QString& name, QgsVectorColorRamp* colorRamp, bool update = false );
 
     //! adds a new group and returns the group's id
     /*!
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     void clear();
 
     //! return a NEW copy of color ramp
-    QgsVectorColorRampV2* colorRamp( const QString& name );
+    QgsVectorColorRamp* colorRamp( const QString& name );
 
     //! return count of color ramps
     int colorRampCount();
@@ -147,14 +147,14 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     QStringList colorRampNames();
 
     //! return a const pointer to a symbol (doesn't create new instance)
-    const QgsVectorColorRampV2* colorRampRef( const QString& name ) const;
+    const QgsVectorColorRamp* colorRampRef( const QString& name ) const;
 
     //! return the id in the style database for the given colorramp name
     //! returns 0 if not found
     int colorrampId( const QString& name );
 
     //! return default application-wide style
-    static QgsStyleV2* defaultStyle();
+    static QgsStyle* defaultStyle();
 
     //! tags the symbol with the tags in the list
     /*!
@@ -265,12 +265,12 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     //! add the colorramp to the DB
     /*!
      *  \param name is the name of the colorramp as QString
-     *  \param ramp is the pointer to the new QgsVectorColorRampV2 being saved
+     *  \param ramp is the pointer to the new QgsVectorColorRamp being saved
      *  \param groupid is the id of the group to which the Color Ramp belongs. Pass 0 if it doesn't belong to any group or not known.
      *  \param tags is a list of tags that are associated with the color ramp as a QStringList.
      *  \return returns the success state of the save operation
      */
-    bool saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp, int groupid, const QStringList& tags );
+    bool saveColorRamp( const QString& name, QgsVectorColorRamp* ramp, int groupid, const QStringList& tags );
 
     //! remove color ramp from style (and delete it)
     bool removeColorRamp( const QString& name );
@@ -334,14 +334,14 @@ class CORE_EXPORT QgsStyleV2 : public QObject
   protected:
 
     QgsSymbolMap mSymbols;
-    QgsVectorColorRampV2Map mColorRamps;
+    QgsVectorColorRampMap mColorRamps;
 
     QString mErrorString;
     QString mFileName;
 
     sqlite3* mCurrentDB;
 
-    static QgsStyleV2* mDefaultStyle;
+    static QgsStyle* mDefaultStyle;
 
     //! convenience function to open the DB and return a sqlite3 object
     bool openDB( const QString& filename );
@@ -371,7 +371,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     bool updateSymbol( StyleEntity type, const QString& name );
 
   private:
-    Q_DISABLE_COPY( QgsStyleV2 )
+    Q_DISABLE_COPY( QgsStyle )
 };
 
 

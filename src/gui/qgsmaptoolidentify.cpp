@@ -254,12 +254,12 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
-  QgsFeatureRendererV2* renderer = layer->rendererV2();
-  if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+  QgsFeatureRenderer* renderer = layer->rendererV2();
+  if ( renderer && renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
   {
     // setup scale for scale dependent visibility (rule based)
     renderer->startRender( context, layer->fields() );
-    filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
+    filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
   }
 
   for ( ; f_it != featureList.end(); ++f_it )
@@ -281,7 +281,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), *f_it, derivedAttributes ) );
   }
 
-  if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+  if ( renderer && renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
   {
     renderer->stopRender( context );
   }
@@ -292,7 +292,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
   return featureCount > 0;
 }
 
-void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometryV2& geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString >& derivedAttributes )
+void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry& geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString >& derivedAttributes )
 {
   QString str = QLocale::system().toString( vId.vertex + 1 );
   derivedAttributes.insert( tr( "Closest vertex number" ), str );
@@ -373,7 +373,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
 
   if ( QgsWkbTypes::isMultiType( wkbType ) )
   {
-    QString str = QLocale::system().toString( static_cast<const QgsGeometryCollectionV2*>( feature->geometry().geometry() )->numGeometries() );
+    QString str = QLocale::system().toString( static_cast<const QgsGeometryCollection*>( feature->geometry().geometry() )->numGeometries() );
     derivedAttributes.insert( tr( "Parts" ), str );
     str = QLocale::system().toString( vId.part + 1 );
     derivedAttributes.insert( tr( "Part number" ), str );
@@ -386,7 +386,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     QString str = formatDistance( dist );
     derivedAttributes.insert( tr( "Length" ), str );
 
-    const QgsCurveV2* curve = dynamic_cast< const QgsCurveV2* >( feature->geometry().geometry() );
+    const QgsCurve* curve = dynamic_cast< const QgsCurve* >( feature->geometry().geometry() );
     if ( curve )
     {
       str = QLocale::system().toString( curve->nCoordinates() );

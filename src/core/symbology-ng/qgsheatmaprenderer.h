@@ -22,14 +22,14 @@
 #include "qgsgeometry.h"
 #include <QScopedPointer>
 
-class QgsVectorColorRampV2;
+class QgsVectorColorRamp;
 
 /** \ingroup core
  * \class QgsHeatmapRenderer
  * \brief A renderer which draws points as a live heatmap
  * \note Added in version 2.7
  */
-class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
+class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
 {
   public:
 
@@ -47,9 +47,9 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
     virtual QString dump() const override;
     virtual QList<QString> usedAttributes() override;
-    static QgsFeatureRendererV2* create( QDomElement& element );
+    static QgsFeatureRenderer* create( QDomElement& element );
     virtual QDomElement save( QDomDocument& doc ) override;
-    static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRendererV2* renderer );
+    static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included
@@ -61,12 +61,12 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
      * @returns color ramp for heatmap
      * @see setColorRamp
      */
-    QgsVectorColorRampV2* colorRamp() const { return mGradientRamp; }
+    QgsVectorColorRamp* colorRamp() const { return mGradientRamp; }
     /** Sets the color ramp to use for shading the heatmap.
      * @param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
      * @see colorRamp
      */
-    void setColorRamp( QgsVectorColorRampV2* ramp );
+    void setColorRamp( QgsVectorColorRamp* ramp );
 
     /** Returns whether the ramp is inverted
      * @returns true if color ramp is inverted
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     int mWeightAttrNum;
     QScopedPointer<QgsExpression> mWeightExpression;
 
-    QgsVectorColorRampV2* mGradientRamp;
+    QgsVectorColorRamp* mGradientRamp;
     bool mInvertRamp;
 
     double mExplicitMax;

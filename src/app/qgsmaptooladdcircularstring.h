@@ -45,7 +45,7 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
      * */
     QgsMapToolCapture* mParentTool;
     /** Circular string points (in map coordinates)*/
-    QgsPointSequenceV2 mPoints;
+    QgsPointSequence mPoints;
     //! The rubberband to show the already completed circular strings
     QgsGeometryRubberBand* mRubberBand;
     //! The rubberband to show the circular string currently working on

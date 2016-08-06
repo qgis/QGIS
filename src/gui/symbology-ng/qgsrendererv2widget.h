@@ -22,8 +22,8 @@
 #include "qgspanelwidget.h"
 
 class QgsVectorLayer;
-class QgsStyleV2;
-class QgsFeatureRendererV2;
+class QgsStyle;
+class QgsFeatureRenderer;
 class QgsSymbolSelectorDialog;
 class QgsMapCanvas;
 
@@ -37,19 +37,19 @@ WORKFLOW:
 - on any change of renderer type, create some default (dummy?) version and change the stacked widget
 - when clicked ok/apply, get the renderer from active widget and clone it for the layer
 */
-class GUI_EXPORT QgsRendererV2Widget : public QgsPanelWidget
+class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-    QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style );
+    QgsRendererWidget( QgsVectorLayer* layer, QgsStyle* style );
 
-    virtual ~QgsRendererV2Widget() {}
+    virtual ~QgsRendererWidget() {}
 
     //! return pointer to the renderer (no transfer of ownership)
-    virtual QgsFeatureRendererV2* renderer() = 0;
+    virtual QgsFeatureRenderer* renderer() = 0;
 
     //! show a dialog with renderer's symbol level settings
-    void showSymbolLevelsDialog( QgsFeatureRendererV2* r );
+    void showSymbolLevelsDialog( QgsFeatureRenderer* r );
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsRendererV2Widget : public QgsPanelWidget
 
   protected:
     QgsVectorLayer* mLayer;
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
     QMenu* contextMenu;
     QAction* mCopyAction;
     QAction* mPasteAction;
@@ -198,13 +198,13 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
     {
       init( tr( "Symbol size" ) );
       if ( !symbolList.isEmpty() && symbolList.at( 0 ) && mLayer )
-        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( symbolList.at( 0 ) ) ) );
+        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbol*>( symbolList.at( 0 ) ) ) );
     }
 
   protected:
     QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
 
-    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbolV2*>( symbol )->size(); }
+    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbol*>( symbol )->size(); }
 
     void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
 };
@@ -225,7 +225,7 @@ class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
   protected:
     QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
 
-    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbolV2*>( symbol )->angle(); }
+    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbol*>( symbol )->angle(); }
 
     void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
 };
@@ -246,7 +246,7 @@ class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
   protected:
     QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
 
-    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsLineSymbolV2*>( symbol )->width(); }
+    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsLineSymbol*>( symbol )->width(); }
 
     void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
 };

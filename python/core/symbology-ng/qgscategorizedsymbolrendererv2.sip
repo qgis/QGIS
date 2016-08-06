@@ -1,4 +1,4 @@
-class QgsRendererCategoryV2
+class QgsRendererCategory
 {
 %TypeHeaderCode
 #include <qgscategorizedsymbolrendererv2.h>
@@ -6,12 +6,12 @@ class QgsRendererCategoryV2
   public:
 
     //! takes ownership of symbol
-    QgsRendererCategoryV2( const QVariant& value, QgsSymbol* symbol /Transfer/, const QString& label, bool render = true );
+    QgsRendererCategory( const QVariant& value, QgsSymbol* symbol /Transfer/, const QString& label, bool render = true );
 
     //! copy constructor
-    QgsRendererCategoryV2( const QgsRendererCategoryV2& cat );
+    QgsRendererCategory( const QgsRendererCategory& cat );
 
-    ~QgsRendererCategoryV2();
+    ~QgsRendererCategory();
 
     QVariant value() const;
     QgsSymbol* symbol() const;
@@ -32,12 +32,12 @@ class QgsRendererCategoryV2
 
   protected:
 
-    void swap( QgsRendererCategoryV2 & other );
+    void swap( QgsRendererCategory & other );
 };
 
-typedef QList<QgsRendererCategoryV2> QgsCategoryList;
+typedef QList<QgsRendererCategory> QgsCategoryList;
 
-class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
+class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include <qgscategorizedsymbolrendererv2.h>
@@ -45,9 +45,9 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
   public:
 
-    QgsCategorizedSymbolRendererV2( const QString& attrName = QString(), const QgsCategoryList& categories = QgsCategoryList() );
+    QgsCategorizedSymbolRenderer( const QString& attrName = QString(), const QgsCategoryList& categories = QgsCategoryList() );
 
-    virtual ~QgsCategorizedSymbolRendererV2();
+    virtual ~QgsCategorizedSymbolRenderer();
 
     //! @note available in python as symbolForFeature2
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
@@ -63,12 +63,12 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QString dump() const;
 
-    virtual QgsCategorizedSymbolRendererV2* clone() const /Factory/;
+    virtual QgsCategorizedSymbolRenderer* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual QgsFeatureRendererV2::Capabilities capabilities();
+    virtual QgsFeatureRenderer::Capabilities capabilities();
 
     virtual QString filter( const QgsFields& fields = QgsFields() );
 
@@ -98,7 +98,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.5
     bool updateCategoryRenderState( int catIndex, bool render );
 
-    void addCategory( const QgsRendererCategoryV2 &category );
+    void addCategory( const QgsRendererCategory &category );
     bool deleteCategory( int catIndex );
     void deleteAllCategories();
 
@@ -112,7 +112,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     void setClassAttribute( const QString& attr );
 
     //! create renderer from XML element
-    static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
 
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc );
@@ -148,14 +148,14 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
      * @see setSourceColorRamp()
      * @see sourceSymbol()
      */
-    QgsVectorColorRampV2* sourceColorRamp();
+    QgsVectorColorRamp* sourceColorRamp();
 
     /** Sets the source color ramp.
       * @param ramp color ramp. Ownership is transferred to the renderer
       * @see sourceColorRamp()
       * @see setSourceSymbol()
       */
-    void setSourceColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
+    void setSourceColorRamp( QgsVectorColorRamp* ramp /Transfer/ );
 
     //! @note added in 2.1
     bool invertedColorRamp();
@@ -166,7 +166,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
       * @param inverted set to true to invert ramp colors
       * @note added in 2.5
       */
-    void updateColorRamp( QgsVectorColorRampV2* ramp /Transfer/, bool inverted = false );
+    void updateColorRamp( QgsVectorColorRamp* ramp /Transfer/, bool inverted = false );
 
     void setRotationField( const QString& fieldOrExpression ) /Deprecated/;
     QString rotationField() const /Deprecated/;
@@ -195,10 +195,10 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.6
     virtual QString legendClassificationAttribute() const;
 
-    //! creates a QgsCategorizedSymbolRendererV2 from an existing renderer.
+    //! creates a QgsCategorizedSymbolRenderer from an existing renderer.
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsCategorizedSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
+    static QgsCategorizedSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 
   protected:
     void rebuildHash();
@@ -208,7 +208,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     QgsSymbol* symbolForValue( const QVariant& value );
 
   private:
-    QgsCategorizedSymbolRendererV2( const QgsCategorizedSymbolRendererV2 & );
-    QgsCategorizedSymbolRendererV2 & operator=( const QgsCategorizedSymbolRendererV2 & );
+    QgsCategorizedSymbolRenderer( const QgsCategorizedSymbolRenderer & );
+    QgsCategorizedSymbolRenderer & operator=( const QgsCategorizedSymbolRenderer & );
 };
 

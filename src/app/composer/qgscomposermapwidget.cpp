@@ -1574,7 +1574,7 @@ void QgsComposerMapWidget::updateGridLineSymbolMarker( const QgsComposerMapGrid*
 {
   if ( grid )
   {
-    QgsLineSymbolV2* nonConstSymbol = const_cast<QgsLineSymbolV2*>( grid->lineSymbol() ); //bad
+    QgsLineSymbol* nonConstSymbol = const_cast<QgsLineSymbol*>( grid->lineSymbol() ); //bad
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mGridLineStyleButton->iconSize() );
     mGridLineStyleButton->setIcon( icon );
   }
@@ -1584,7 +1584,7 @@ void QgsComposerMapWidget::updateGridMarkerSymbolMarker( const QgsComposerMapGri
 {
   if ( grid )
   {
-    QgsMarkerSymbolV2* nonConstSymbol = const_cast<QgsMarkerSymbolV2*>( grid->markerSymbol() ); //bad
+    QgsMarkerSymbol* nonConstSymbol = const_cast<QgsMarkerSymbol*>( grid->markerSymbol() ); //bad
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mGridMarkerStyleButton->iconSize() );
     mGridMarkerStyleButton->setIcon( icon );
   }
@@ -1598,8 +1598,8 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
     return;
   }
 
-  QgsLineSymbolV2* newSymbol = static_cast<QgsLineSymbolV2*>( grid->lineSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsLineSymbol* newSymbol = static_cast<QgsLineSymbol*>( grid->lineSymbol()->clone() );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -1623,8 +1623,8 @@ void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
     return;
   }
 
-  QgsMarkerSymbolV2* newSymbol = static_cast<QgsMarkerSymbolV2*>( grid->markerSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsMarkerSymbol* newSymbol = static_cast<QgsMarkerSymbol*>( grid->markerSymbol()->clone() );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -2463,7 +2463,7 @@ void QgsComposerMapWidget::updateOverviewFrameSymbolMarker( const QgsComposerMap
 {
   if ( overview )
   {
-    QgsFillSymbolV2* nonConstSymbol = const_cast<QgsFillSymbolV2*>( overview->frameSymbol() ); //bad
+    QgsFillSymbol* nonConstSymbol = const_cast<QgsFillSymbol*>( overview->frameSymbol() ); //bad
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mOverviewFrameStyleButton->iconSize() );
     mOverviewFrameStyleButton->setIcon( icon );
   }
@@ -2565,8 +2565,8 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
     return;
   }
 
-  QgsFillSymbolV2* newSymbol = static_cast<QgsFillSymbolV2*>( overview->frameSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsFillSymbol* newSymbol = static_cast<QgsFillSymbol*>( overview->frameSymbol()->clone() );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {

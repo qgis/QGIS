@@ -24,7 +24,7 @@ email                : marco.hugentobler at sourcepole dot com
  * \note added in QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
-class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollectionV2
+class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
 {
   public:
     QgsMultiPointV2();
@@ -42,9 +42,9 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollectionV2
 
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
+    virtual bool addGeometry( QgsAbstractGeometry* g ) override;
 
-    virtual QgsAbstractGeometryV2* boundary() const override;
+    virtual QgsAbstractGeometry* boundary() const override;
 
   protected:
 

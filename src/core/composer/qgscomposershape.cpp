@@ -67,16 +67,16 @@ QgsComposerShape::~QgsComposerShape()
   delete mShapeStyleSymbol;
 }
 
-void QgsComposerShape::setUseSymbolV2( bool useSymbolV2 )
+void QgsComposerShape::setUseSymbol( bool useSymbolV2 )
 {
   mUseSymbolV2 = useSymbolV2;
   setFrameEnabled( !useSymbolV2 );
 }
 
-void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbolV2* symbol )
+void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbol* symbol )
 {
   delete mShapeStyleSymbol;
-  mShapeStyleSymbol = static_cast<QgsFillSymbolV2*>( symbol->clone() );
+  mShapeStyleSymbol = static_cast<QgsFillSymbol*>( symbol->clone() );
   refreshSymbol();
 }
 
@@ -99,7 +99,7 @@ void QgsComposerShape::createDefaultShapeStyleSymbol()
   properties.insert( "color_border", "black" );
   properties.insert( "width_border", "0.3" );
   properties.insert( "joinstyle", "miter" );
-  mShapeStyleSymbol = QgsFillSymbolV2::createSimple( properties );
+  mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
 
   mMaxSymbolBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol );
   updateBoundingRect();
@@ -310,7 +310,7 @@ bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument&
   if ( !shapeStyleSymbolElem.isNull() )
   {
     delete mShapeStyleSymbol;
-    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbolV2>( shapeStyleSymbolElem );
+    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem );
   }
   else
   {
@@ -386,7 +386,7 @@ bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument&
       }
     }
 
-    mShapeStyleSymbol = QgsFillSymbolV2::createSimple( properties );
+    mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
   }
   emit itemChanged();
   return true;

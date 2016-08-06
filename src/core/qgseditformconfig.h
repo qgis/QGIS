@@ -32,7 +32,7 @@ class QgsRelationManager;
  *
  * This can either be a container which will be represented on the screen
  * as a tab widget or ca collapsible group box. Or it can be a field which will
- * then be represented based on the QgsEditorWidgetV2 type and configuration.
+ * then be represented based on the QgsEditorWidget type and configuration.
  * Or it can be a relation and embed the form of several children of another
  * layer.
  */

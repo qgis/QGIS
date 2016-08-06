@@ -41,7 +41,7 @@
 #endif
 
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& labelAttributeName )
-    : QgsFeatureRendererV2( "pointDisplacement" )
+    : QgsFeatureRenderer( "pointDisplacement" )
     , mLabelAttributeName( labelAttributeName )
     , mLabelIndex( -1 )
     , mTolerance( 3 )
@@ -53,8 +53,8 @@ QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& label
     , mMaxLabelScaleDenominator( -1 )
     , mSpatialIndex( nullptr )
 {
-  mRenderer = QgsFeatureRendererV2::defaultRenderer( QgsWkbTypes::PointGeometry );
-  mCenterSymbol = new QgsMarkerSymbolV2(); //the symbol for the center of a displacement group
+  mRenderer = QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::PointGeometry );
+  mCenterSymbol = new QgsMarkerSymbol(); //the symbol for the center of a displacement group
   mDrawLabels = true;
 }
 
@@ -157,14 +157,14 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
 
   //get list of labels and symbols
   QStringList labelAttributeList;
-  QList< QgsMarkerSymbolV2* > symbolList;
+  QList< QgsMarkerSymbol* > symbolList;
   QgsFeatureList featureList;
 
   QgsMultiPointV2* groupMultiPoint = new QgsMultiPointV2();
   for ( DisplacementGroup::const_iterator attIt = group.constBegin(); attIt != group.constEnd(); ++attIt )
   {
     labelAttributeList << ( mDrawLabels ? getLabel( attIt.value().first ) : QString() );
-    symbolList << dynamic_cast<QgsMarkerSymbolV2*>( attIt.value().second );
+    symbolList << dynamic_cast<QgsMarkerSymbol*>( attIt.value().second );
     featureList << attIt.value().first;
     groupMultiPoint->addGeometry( attIt.value().first.geometry().geometry()->clone() );
   }
@@ -178,7 +178,7 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
 
   //calculate max diagonal size from all symbols in group
   double diagonal = 0;
-  Q_FOREACH ( QgsMarkerSymbolV2* symbol, symbolList )
+  Q_FOREACH ( QgsMarkerSymbol* symbol, symbolList )
   {
     if ( symbol )
     {
@@ -218,13 +218,13 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
   drawLabels( pt, symbolContext, labelPositions, labelAttributeList );
 }
 
-void QgsPointDisplacementRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* r )
+void QgsPointDisplacementRenderer::setEmbeddedRenderer( QgsFeatureRenderer* r )
 {
   delete mRenderer;
   mRenderer = r;
 }
 
-const QgsFeatureRendererV2* QgsPointDisplacementRenderer::embeddedRenderer() const
+const QgsFeatureRenderer* QgsPointDisplacementRenderer::embeddedRenderer() const
 {
   return mRenderer;
 }
@@ -275,7 +275,7 @@ QList<QString> QgsPointDisplacementRenderer::usedAttributes()
   return attributeList;
 }
 
-QgsFeatureRendererV2::Capabilities QgsPointDisplacementRenderer::capabilities()
+QgsFeatureRenderer::Capabilities QgsPointDisplacementRenderer::capabilities()
 {
   if ( !mRenderer )
   {
@@ -393,7 +393,7 @@ void QgsPointDisplacementRenderer::stopRender( QgsRenderContext& context )
   }
 }
 
-QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbologyElem )
+QgsFeatureRenderer* QgsPointDisplacementRenderer::create( QDomElement& symbologyElem )
 {
   QgsPointDisplacementRenderer* r = new QgsPointDisplacementRenderer();
   r->setLabelAttributeName( symbologyElem.attribute( "labelAttributeName" ) );
@@ -417,14 +417,14 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
   QDomElement embeddedRendererElem = symbologyElem.firstChildElement( "renderer-v2" );
   if ( !embeddedRendererElem.isNull() )
   {
-    r->setEmbeddedRenderer( QgsFeatureRendererV2::load( embeddedRendererElem ) );
+    r->setEmbeddedRenderer( QgsFeatureRenderer::load( embeddedRendererElem ) );
   }
 
   //center symbol
   QDomElement centerSymbolElem = symbologyElem.firstChildElement( "symbol" );
   if ( !centerSymbolElem.isNull() )
   {
-    r->setCenterSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( centerSymbolElem ) );
+    r->setCenterSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( centerSymbolElem ) );
   }
   return r;
 }
@@ -521,7 +521,7 @@ QString QgsPointDisplacementRenderer::getLabel( const QgsFeature& f )
   return attribute;
 }
 
-void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbolV2* symbol )
+void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbol* symbol )
 {
   delete mCenterSymbol;
   mCenterSymbol = symbol;
@@ -623,10 +623,10 @@ void QgsPointDisplacementRenderer::drawCircle( double radiusPainterUnits, QgsSym
 }
 
 void QgsPointDisplacementRenderer::drawSymbols( const QgsFeatureList& features, QgsRenderContext& context,
-    const QList< QgsMarkerSymbolV2* >& symbolList, const QList<QPointF>& symbolPositions, bool selected )
+    const QList< QgsMarkerSymbol* >& symbolList, const QList<QPointF>& symbolPositions, bool selected )
 {
   QList<QPointF>::const_iterator symbolPosIt = symbolPositions.constBegin();
-  QList<QgsMarkerSymbolV2*>::const_iterator symbolIt = symbolList.constBegin();
+  QList<QgsMarkerSymbol*>::const_iterator symbolIt = symbolList.constBegin();
   QgsFeatureList::const_iterator featIt = features.constBegin();
   for ( ; symbolPosIt != symbolPositions.constEnd() && symbolIt != symbolList.constEnd() && featIt != features.constEnd();
         ++symbolPosIt, ++symbolIt, ++featIt )
@@ -686,7 +686,7 @@ void QgsPointDisplacementRenderer::drawLabels( QPointF centerPoint, QgsSymbolRen
   }
 }
 
-QgsSymbol* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f, QgsRenderContext &context )
+QgsSymbol* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRenderer* r, QgsFeature& f, QgsRenderContext &context )
 {
   if ( !r )
   {
@@ -702,7 +702,7 @@ QgsSymbol* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRender
   return symbolList.at( 0 );
 }
 
-QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::convertFromRenderer( const QgsFeatureRendererV2* renderer )
+QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::convertFromRenderer( const QgsFeatureRenderer* renderer )
 {
   if ( renderer->type() == "pointDisplacement" )
   {

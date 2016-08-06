@@ -578,12 +578,12 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     coverageLayer = mComposition->atlasComposition().coverageLayer();
   }
 
-  QgsFillSymbolV2* newSymbol = mComposition->pageStyleSymbol()->clone();
+  QgsFillSymbol* newSymbol = mComposition->pageStyleSymbol()->clone();
   if ( !newSymbol )
   {
-    newSymbol = new QgsFillSymbolV2();
+    newSymbol = new QgsFillSymbol();
   }
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), coverageLayer, this );
   d.setExpressionContext( mComposition->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )

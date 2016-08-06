@@ -1,16 +1,16 @@
-class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
+class QgsGeometryCollection: public QgsAbstractGeometry
 {
 %TypeHeaderCode
 #include <qgsgeometrycollectionv2.h>
 %End
 
   public:
-    QgsGeometryCollectionV2();
-    QgsGeometryCollectionV2( const QgsGeometryCollectionV2& c );
-    //QgsGeometryCollectionV2& operator=( const QgsGeometryCollectionV2& c );
-    virtual ~QgsGeometryCollectionV2();
+    QgsGeometryCollection();
+    QgsGeometryCollection( const QgsGeometryCollection& c );
+    //QgsGeometryCollection& operator=( const QgsGeometryCollection& c );
+    virtual ~QgsGeometryCollection();
 
-    virtual QgsGeometryCollectionV2* clone() const;
+    virtual QgsGeometryCollection* clone() const;
 
     /** Returns the number of geometries within the collection.
      */
@@ -19,27 +19,27 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     /** Returns a const reference to a geometry from within the collection.
      * @param n index of geometry to return
      */
-    //const QgsAbstractGeometryV2* geometryN( int n ) const;
+    //const QgsAbstractGeometry* geometryN( int n ) const;
 
     /** Returns a geometry from within the collection.
      * @param n index of geometry to return
      */
-    QgsAbstractGeometryV2* geometryN( int n );
+    QgsAbstractGeometry* geometryN( int n );
 
-    //methods inherited from QgsAbstractGeometryV2
+    //methods inherited from QgsAbstractGeometry
     virtual int dimension() const;
     virtual QString geometryType() const;
     virtual void clear();
-    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+    virtual QgsAbstractGeometry* boundary() const /Factory/;
 
     /** Adds a geometry and takes ownership. Returns true in case of success.*/
-    virtual bool addGeometry( QgsAbstractGeometryV2* g /Transfer/ );
+    virtual bool addGeometry( QgsAbstractGeometry* g /Transfer/ );
 
     /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
      * @param g geometry to insert. Ownership is transferred to the collection.
      * @param index position to insert geometry before
      */
-    virtual bool insertGeometry( QgsAbstractGeometryV2* g /Transfer/, int index );
+    virtual bool insertGeometry( QgsAbstractGeometry* g /Transfer/, int index );
 
     /** Removes a geometry from the collection.
      * @param nr index of geometry to remove
@@ -84,7 +84,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     /** Returns a geometry without curves. Caller takes ownership
     * @param tolerance segmentation tolerance
     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsAbstractGeometryV2* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      * @param vertex the vertex id
@@ -111,7 +111,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     /** Reads a collection from a WKT string.
      */
-    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometryV2*>& subtypes, const QString& defaultChildWkbType = QString() );
+    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry*>& subtypes, const QString& defaultChildWkbType = QString() );
 
     virtual QgsRectangle calculateBoundingBox() const;
     virtual void clearCache() const;

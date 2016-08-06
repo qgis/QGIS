@@ -33,7 +33,7 @@
 class QgsLabelingWidget;
 class QgsMapLayer;
 class QgsMapCanvas;
-class QgsRendererV2PropertiesDialog;
+class QgsRendererPropertiesDialog;
 class QgsRendererRasterPropertiesWidget;
 class QgsUndoWidget;
 class QgsRasterHistogramWidget;

@@ -131,7 +131,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
 // -------------------------------------------------------------------------
 
 
-QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item, QObject* parent )
+QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItem& item, QObject* parent )
     : QgsLayerTreeModelLegendNode( nodeLayer, parent )
     , mItem( item )
     , mSymbolUsesMapUnits( false )
@@ -242,7 +242,7 @@ void QgsSymbolLegendNode::checkAll( bool state )
     return;
 
   QgsLegendSymbolListV2 symbolList = vlayer->rendererV2()->legendSymbolItemsV2();
-  Q_FOREACH ( const QgsLegendSymbolItemV2& item, symbolList )
+  Q_FOREACH ( const QgsLegendSymbolItem& item, symbolList )
   {
     vlayer->rendererV2()->checkLegendSymbolItem( item.ruleKey(), state );
   }
@@ -307,7 +307,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
   {
     return mItem.ruleKey();
   }
-  else if ( role == SymbolV2LegacyRuleKeyRole )
+  else if ( role == SymbolLegacyRuleKeyRole )
   {
     return QVariant::fromValue<void*>( mItem.legacyRuleKey() );
   }
@@ -366,7 +366,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemC
   double widthOffset = 0;
   double heightOffset = 0;
 
-  if ( QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( s ) )
+  if ( QgsMarkerSymbol* markerSymbol = dynamic_cast<QgsMarkerSymbol*>( s ) )
   {
     // allow marker symbol to occupy bigger area if necessary
     double size = QgsSymbolLayerUtils::convertToPainterUnits( context, markerSymbol->size(), markerSymbol->sizeUnit(), markerSymbol->sizeMapUnitScale() ) / context.scaleFactor();

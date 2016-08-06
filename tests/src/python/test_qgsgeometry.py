@@ -21,16 +21,16 @@ from qgis.core import (
     QgsFeature,
     QgsPoint,
     QgsPointV2,
-    QgsCircularStringV2,
-    QgsCompoundCurveV2,
-    QgsCurvePolygonV2,
-    QgsGeometryCollectionV2,
-    QgsLineStringV2,
-    QgsMultiCurveV2,
-    QgsMultiLineStringV2,
+    QgsCircularString,
+    QgsCompoundCurve,
+    QgsCurvePolygon,
+    QgsGeometryCollection,
+    QgsLineString,
+    QgsMultiCurve,
+    QgsMultiLineString,
     QgsMultiPointV2,
     QgsMultiPolygonV2,
-    QgsMultiSurfaceV2,
+    QgsMultiSurface,
     QgsPolygonV2,
     QgsCoordinateTransform,
     QgsRectangle,
@@ -1877,16 +1877,16 @@ class TestQgsGeometry(unittest.TestCase):
     def testTypeInformation(self):
         """ Test type information """
         types = [
-            (QgsCircularStringV2, "CircularString", QgsWkbTypes.CircularString),
-            (QgsCompoundCurveV2, "CompoundCurve", QgsWkbTypes.CompoundCurve),
-            (QgsCurvePolygonV2, "CurvePolygon", QgsWkbTypes.CurvePolygon),
-            (QgsGeometryCollectionV2, "GeometryCollection", QgsWkbTypes.GeometryCollection),
-            (QgsLineStringV2, "LineString", QgsWkbTypes.LineString),
-            (QgsMultiCurveV2, "MultiCurve", QgsWkbTypes.MultiCurve),
-            (QgsMultiLineStringV2, "MultiLineString", QgsWkbTypes.MultiLineString),
+            (QgsCircularString, "CircularString", QgsWkbTypes.CircularString),
+            (QgsCompoundCurve, "CompoundCurve", QgsWkbTypes.CompoundCurve),
+            (QgsCurvePolygon, "CurvePolygon", QgsWkbTypes.CurvePolygon),
+            (QgsGeometryCollection, "GeometryCollection", QgsWkbTypes.GeometryCollection),
+            (QgsLineString, "LineString", QgsWkbTypes.LineString),
+            (QgsMultiCurve, "MultiCurve", QgsWkbTypes.MultiCurve),
+            (QgsMultiLineString, "MultiLineString", QgsWkbTypes.MultiLineString),
             (QgsMultiPointV2, "MultiPoint", QgsWkbTypes.MultiPoint),
             (QgsMultiPolygonV2, "MultiPolygon", QgsWkbTypes.MultiPolygon),
-            (QgsMultiSurfaceV2, "MultiSurface", QgsWkbTypes.MultiSurface),
+            (QgsMultiSurface, "MultiSurface", QgsWkbTypes.MultiSurface),
             (QgsPointV2, "Point", QgsWkbTypes.Point),
             (QgsPolygonV2, "Polygon", QgsWkbTypes.Polygon),
         ]
@@ -3161,7 +3161,7 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = "CircularString ((0 0,1 1,2 0))"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(0)
-        self.assertEqual(geom.exportToWkt(), QgsCircularStringV2().asWkt())
+        self.assertEqual(geom.exportToWkt(), QgsCircularString().asWkt())
 
         wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
         geom = QgsGeometry.fromWkt(wkt)
@@ -3205,12 +3205,12 @@ class TestQgsGeometry(unittest.TestCase):
         assert not geom.deleteVertex(-1)
         assert not geom.deleteVertex(2)
         assert geom.deleteVertex(0)
-        self.assertEqual(geom.exportToWkt(), QgsCompoundCurveV2().asWkt())
+        self.assertEqual(geom.exportToWkt(), QgsCompoundCurve().asWkt())
 
         wkt = "CompoundCurve ((0 0,1 1))"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(1)
-        self.assertEqual(geom.exportToWkt(), QgsCompoundCurveV2().asWkt())
+        self.assertEqual(geom.exportToWkt(), QgsCompoundCurve().asWkt())
 
         wkt = "CompoundCurve ((0 0,1 1),(1 1,2 2))"
         geom = QgsGeometry.fromWkt(wkt)
@@ -3267,22 +3267,22 @@ class TestQgsGeometry(unittest.TestCase):
         assert not geom.deleteVertex(-1)
         assert not geom.deleteVertex(4)
         assert geom.deleteVertex(0)
-        self.assertEqual(geom.exportToWkt(), QgsCurvePolygonV2().asWkt())
+        self.assertEqual(geom.exportToWkt(), QgsCurvePolygon().asWkt())
 
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0),(2 0,0 0)))"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(1)
-        self.assertEqual(geom.exportToWkt(), QgsCurvePolygonV2().asWkt())
+        self.assertEqual(geom.exportToWkt(), QgsCurvePolygon().asWkt())
 
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0),(2 0,0 0)))"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(2)
-        self.assertEqual(geom.exportToWkt(), QgsCurvePolygonV2().asWkt())
+        self.assertEqual(geom.exportToWkt(), QgsCurvePolygon().asWkt())
 
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0),(2 0,0 0)))"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(3)
-        self.assertEqual(geom.exportToWkt(), QgsCurvePolygonV2().asWkt())
+        self.assertEqual(geom.exportToWkt(), QgsCurvePolygon().asWkt())
 
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0,1.5 -0.5,1 -1),(1 -1,0 0)))"
         geom = QgsGeometry.fromWkt(wkt)
@@ -3318,7 +3318,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # Test that we cannot add a CurvePolygon in a MultiPolygon
         multipolygon = QgsMultiPolygonV2()
-        cp = QgsCurvePolygonV2()
+        cp = QgsCurvePolygon()
         cp.fromWkt("CurvePolygon ((0 0,0 1,1 1,0 0))")
         assert not multipolygon.addGeometry(cp)
 

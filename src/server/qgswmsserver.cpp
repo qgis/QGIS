@@ -847,7 +847,7 @@ QImage* QgsWmsServer::getLegendGraphics()
       const SymbolV2Set& usedSymbols = hitTest[vl];
       QList<int> order;
       int i = 0;
-      Q_FOREACH ( const QgsLegendSymbolItemV2& legendItem, vl->rendererV2()->legendSymbolItemsV2() )
+      Q_FOREACH ( const QgsLegendSymbolItem& legendItem, vl->rendererV2()->legendSymbolItemsV2() )
       {
         if ( usedSymbols.contains( legendItem.legacyRuleKey() ) )
           order.append( i );
@@ -1014,8 +1014,8 @@ void QgsWmsServer::runHitTest( QPainter* painter, HitTest& hitTest )
 
 void QgsWmsServer::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context )
 {
-  QgsFeatureRendererV2* r = vl->rendererV2();
-  bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature;
+  QgsFeatureRenderer* r = vl->rendererV2();
+  bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, vl->pendingFields() );
   QgsFeature f;
   QgsFeatureRequest request( context.extent() );
@@ -1278,7 +1278,7 @@ QByteArray* QgsWmsServer::getPrint( const QString& formatString )
     throw QgsMapServiceException( "ParameterMissing", "The TEMPLATE parameter is required for the GetPrint request" );
   }
 
-  QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> > bkVectorRenderers;
+  QList< QPair< QgsVectorLayer*, QgsFeatureRenderer*> > bkVectorRenderers;
   QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > > bkRasterRenderers;
   QList< QPair< QgsVectorLayer*, double > > labelTransparencies;
   QList< QPair< QgsVectorLayer*, double > > labelBufferTransparencies;
@@ -1419,7 +1419,7 @@ QImage* QgsWmsServer::getMap( HitTest* hitTest )
 
   QStringList selectedLayerIdList = applyFeatureSelections( layersList );
 
-  QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> > bkVectorRenderers;
+  QList< QPair< QgsVectorLayer*, QgsFeatureRenderer*> > bkVectorRenderers;
   QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > > bkRasterRenderers;
   QList< QPair< QgsVectorLayer*, double > > labelTransparencies;
   QList< QPair< QgsVectorLayer*, double > > labelBufferTransparencies;
@@ -2233,7 +2233,7 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       break;
     }
 
-    QgsFeatureRendererV2* r2 = layer->rendererV2();
+    QgsFeatureRenderer* r2 = layer->rendererV2();
     if ( !r2 )
     {
       continue;
@@ -2829,7 +2829,7 @@ void QgsWmsServer::clearFeatureSelections( const QStringList& layerIds ) const
   return;
 }
 
-void QgsWmsServer::applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+void QgsWmsServer::applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRenderer*> >& vectorRenderers,
                                    QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
                                    QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
                                    QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies )
@@ -2879,7 +2879,7 @@ void QgsWmsServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
 
-      QgsFeatureRendererV2* rendererV2 = vl->rendererV2();
+      QgsFeatureRenderer* rendererV2 = vl->rendererV2();
       //backup old renderer
       vectorRenderers.push_back( qMakePair( vl, rendererV2->clone() ) );
       //modify symbols of current renderer
@@ -2922,7 +2922,7 @@ void QgsWmsServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
   }
 }
 
-void QgsWmsServer::restoreOpacities( QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+void QgsWmsServer::restoreOpacities( QList< QPair< QgsVectorLayer*, QgsFeatureRenderer*> >& vectorRenderers,
                                      QList < QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
                                      QList< QPair< QgsVectorLayer*, double > >& labelOpacities,
                                      QList< QPair< QgsVectorLayer*, double > >& labelBufferOpacities )
@@ -2932,7 +2932,7 @@ void QgsWmsServer::restoreOpacities( QList< QPair< QgsVectorLayer*, QgsFeatureRe
     return;
   }
 
-  QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >::iterator vIt = vectorRenderers.begin();
+  QList< QPair< QgsVectorLayer*, QgsFeatureRenderer*> >::iterator vIt = vectorRenderers.begin();
   for ( ; vIt != vectorRenderers.end(); ++vIt )
   {
     ( *vIt ).first->setRendererV2(( *vIt ).second );

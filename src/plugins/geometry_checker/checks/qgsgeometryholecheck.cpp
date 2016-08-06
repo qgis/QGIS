@@ -29,7 +29,7 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
     }
 
     QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometryV2* geom = featureGeom.geometry();
+    QgsAbstractGeometry* geom = featureGeom.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       // Rings after the first one are interiors
@@ -50,7 +50,7 @@ void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError* error, int method, i
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometryV2* geom = featureGeom.geometry();
+  QgsAbstractGeometry* geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists

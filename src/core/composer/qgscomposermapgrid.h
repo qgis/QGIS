@@ -25,8 +25,8 @@
 #include <QPainter>
 
 class QgsCoordinateTransform;
-class QgsLineSymbolV2;
-class QgsMarkerSymbolV2;
+class QgsLineSymbol;
+class QgsMarkerSymbol;
 class QgsComposerMapGrid;
 class QgsComposerMap;
 class QDomDocument;
@@ -482,7 +482,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setMarkerSymbol
      * @see setStyle
      */
-    void setLineSymbol( QgsLineSymbolV2* symbol );
+    void setLineSymbol( QgsLineSymbol* symbol );
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -492,7 +492,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see style
      * @note not available in python bindings
      */
-    const QgsLineSymbolV2* lineSymbol() const { return mGridLineSymbol; }
+    const QgsLineSymbol* lineSymbol() const { return mGridLineSymbol; }
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -501,7 +501,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see markerSymbol
      * @see style
      */
-    QgsLineSymbolV2* lineSymbol() { return mGridLineSymbol; }
+    QgsLineSymbol* lineSymbol() { return mGridLineSymbol; }
 
     /** Sets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -510,7 +510,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setLineSymbol
      * @see setStyle
      */
-    void setMarkerSymbol( QgsMarkerSymbolV2* symbol );
+    void setMarkerSymbol( QgsMarkerSymbol* symbol );
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -520,7 +520,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see style
      * @note not available in python bindings
      */
-    const QgsMarkerSymbolV2* markerSymbol() const { return mGridMarkerSymbol; }
+    const QgsMarkerSymbol* markerSymbol() const { return mGridMarkerSymbol; }
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -529,7 +529,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see lineSymbol
      * @see style
      */
-    QgsMarkerSymbolV2* markerSymbol() { return mGridMarkerSymbol; }
+    QgsMarkerSymbol* markerSymbol() { return mGridMarkerSymbol; }
 
     //
     // ANNOTATIONS
@@ -921,8 +921,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Divisions for frame on bottom map side*/
     DisplayMode mBottomFrameDivisions;
 
-    QgsLineSymbolV2* mGridLineSymbol;
-    QgsMarkerSymbolV2* mGridMarkerSymbol;
+    QgsLineSymbol* mGridLineSymbol;
+    QgsMarkerSymbol* mGridMarkerSymbol;
 
     QgsCoordinateReferenceSystem mCRS;
 

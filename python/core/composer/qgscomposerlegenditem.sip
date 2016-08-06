@@ -41,17 +41,17 @@ class QgsComposerLegendItem : QStandardItem
 };
 
 
-class QgsComposerSymbolV2Item: QgsComposerLegendItem
+class QgsComposerSymbolItem: QgsComposerLegendItem
 {
 %TypeHeaderCode
 #include <qgscomposerlegenditem.h>
 %End
 
   public:
-    QgsComposerSymbolV2Item();
-    QgsComposerSymbolV2Item( const QString& text );
-    QgsComposerSymbolV2Item( const QIcon& icon, const QString& text );
-    virtual ~QgsComposerSymbolV2Item();
+    QgsComposerSymbolItem();
+    QgsComposerSymbolItem( const QString& text );
+    QgsComposerSymbolItem( const QIcon& icon, const QString& text );
+    virtual ~QgsComposerSymbolItem();
 
     virtual QStandardItem* clone() const /Factory/;
 

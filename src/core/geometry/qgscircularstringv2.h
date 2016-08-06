@@ -22,23 +22,23 @@
 #include <QVector>
 
 /** \ingroup core
- * \class QgsCircularStringV2
+ * \class QgsCircularString
  * \brief Circular string geometry type
  * \note added in QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
-class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
+class CORE_EXPORT QgsCircularString: public QgsCurve
 {
   public:
-    QgsCircularStringV2();
-    ~QgsCircularStringV2();
+    QgsCircularString();
+    ~QgsCircularString();
 
-    virtual bool operator==( const QgsCurveV2& other ) const override;
-    virtual bool operator!=( const QgsCurveV2& other ) const override;
+    virtual bool operator==( const QgsCurve& other ) const override;
+    virtual bool operator!=( const QgsCurve& other ) const override;
 
     virtual QString geometryType() const override { return "CircularString"; }
     virtual int dimension() const override { return 1; }
-    virtual QgsCircularStringV2* clone() const override;
+    virtual QgsCircularString* clone() const override;
     virtual void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
@@ -58,32 +58,32 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     QgsPointV2 pointN( int i ) const;
 
     /**
-     * @copydoc QgsCurveV2::points()
+     * @copydoc QgsCurve::points()
      */
-    void points( QgsPointSequenceV2 &pts ) const override;
+    void points( QgsPointSequence &pts ) const override;
 
     /** Sets the circular string's points
      */
-    void setPoints( const QgsPointSequenceV2 &points );
+    void setPoints( const QgsPointSequence &points );
 
     /**
-     * @copydoc QgsAbstractGeometryV2::length()
+     * @copydoc QgsAbstractGeometry::length()
      */
     virtual double length() const override;
 
     /**
-     * @copydoc QgsCurveV2::startPoint()
+     * @copydoc QgsCurve::startPoint()
      */
     virtual QgsPointV2 startPoint() const override;
     /**
-     * @copydoc QgsCurveV2::endPoint()
+     * @copydoc QgsCurve::endPoint()
      */
     virtual QgsPointV2 endPoint() const override;
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     void draw( QPainter& p ) const override;
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     void addToPainterPath( QPainterPath& path ) const override;
 
     /**
-     * @copydoc QgsCurveV2::drawAsPolygon()
+     * @copydoc QgsCurve::drawAsPolygon()
      */
     void drawAsPolygon( QPainter& p ) const override;
 
@@ -102,17 +102,17 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     /**
-     * @copydoc QgsCurveV2::pointAt()
+     * @copydoc QgsCurve::pointAt()
      */
     bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const override;
 
     /**
-     * @copydoc QgsCurveV2::sumUpArea()
+     * @copydoc QgsCurve::sumUpArea()
      */
     void sumUpArea( double& sum ) const override;
 
     /**
-     * @copydoc QgsAbstractGeometryV2::hasCurvedSegments()
+     * @copydoc QgsAbstractGeometry::hasCurvedSegments()
      */
     bool hasCurvedSegments() const override { return true; }
 
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
         @return rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual QgsCircularStringV2* reversed() const override;
+    virtual QgsCircularString* reversed() const override;
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;
@@ -140,13 +140,13 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     QVector<double> mM;
 
     //helper methods for curveToLine
-    void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequenceV2 &points, double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequence &points, double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
     int segmentSide( const QgsPointV2& pt1, const QgsPointV2& pt3, const QgsPointV2& pt2 ) const;
     double interpolateArc( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) const;
     static void arcTo( QPainterPath& path, QPointF pt1, QPointF pt2, QPointF pt3 );
     //bounding box of a single segment
     static QgsRectangle segmentBoundingBox( const QgsPointV2& pt1, const QgsPointV2& pt2, const QgsPointV2& pt3 );
-    static QgsPointSequenceV2 compassPointsOnSegment( double p1Angle, double p2Angle, double p3Angle, double centerX, double centerY, double radius );
+    static QgsPointSequence compassPointsOnSegment( double p1Angle, double p2Angle, double p3Angle, double centerX, double centerY, double radius );
     static double closestPointOnArc( double x1, double y1, double x2, double y2, double x3, double y3,
                                      const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon );
     void insertVertexBetween( int after, int before, int pointOnCircle );

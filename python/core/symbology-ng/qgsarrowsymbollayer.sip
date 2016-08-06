@@ -4,7 +4,7 @@
  * \note Added in version 2.16
  */
 
-class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
+class QgsArrowSymbolLayer : public QgsLineSymbolLayer
 {
 %TypeHeaderCode
 #include <qgsarrowsymbollayer.h>

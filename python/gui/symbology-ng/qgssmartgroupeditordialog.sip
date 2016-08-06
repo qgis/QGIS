@@ -36,7 +36,7 @@ class QgsSmartGroupEditorDialog : QDialog
 %End
 
   public:
-    QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent /TransferThis/ = NULL );
+    QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent /TransferThis/ = NULL );
     ~QgsSmartGroupEditorDialog();
 
     //! returns the value from mNameLineEdit

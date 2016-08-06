@@ -70,9 +70,9 @@ class TestQgsEllipseMarkerSymbol : public QObject
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPointsLayer;
-    QgsEllipseSymbolLayerV2* mEllipseMarkerLayer;
-    QgsMarkerSymbolV2* mMarkerSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsEllipseSymbolLayer* mEllipseMarkerLayer;
+    QgsMarkerSymbol* mMarkerSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -103,10 +103,10 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //setup symbol
-  mEllipseMarkerLayer = new QgsEllipseSymbolLayerV2();
-  mMarkerSymbol = new QgsMarkerSymbolV2();
+  mEllipseMarkerLayer = new QgsEllipseSymbolLayer();
+  mMarkerSymbol = new QgsMarkerSymbol();
   mMarkerSymbol->changeSymbolLayer( 0, mEllipseMarkerLayer );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mMarkerSymbol );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mMarkerSymbol );
   mpPointsLayer->setRendererV2( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas

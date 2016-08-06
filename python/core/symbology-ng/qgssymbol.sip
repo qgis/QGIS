@@ -10,9 +10,9 @@ class QgsSymbol
 %ConvertToSubClassCode
   switch (sipCpp->type())
   {
-    case QgsSymbol::Marker: sipType = sipType_QgsMarkerSymbolV2; break;
-    case QgsSymbol::Line: sipType = sipType_QgsLineSymbolV2; break;
-    case QgsSymbol::Fill: sipType = sipType_QgsFillSymbolV2; break;
+    case QgsSymbol::Marker: sipType = sipType_QgsMarkerSymbol; break;
+    case QgsSymbol::Line: sipType = sipType_QgsLineSymbol; break;
+    case QgsSymbol::Fill: sipType = sipType_QgsFillSymbol; break;
     default: sipType = 0; break;
   }
 %End
@@ -400,7 +400,7 @@ class QgsSymbolRenderContext
 
 
 
-class QgsMarkerSymbolV2 : QgsSymbol
+class QgsMarkerSymbol : QgsSymbol
 {
 %TypeHeaderCode
 #include <qgssymbol.h>
@@ -410,9 +410,9 @@ class QgsMarkerSymbolV2 : QgsSymbol
     /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
       This is a convenience method for easier creation of marker symbols.
      */
-    static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
+    static QgsMarkerSymbol* createSimple( const QgsStringMap& properties ) /Factory/;
 
-    QgsMarkerSymbolV2( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
+    QgsMarkerSymbol( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
 
     /** Sets the angle for the whole symbol. Individual symbol layer sizes
      * will be rotated to maintain their current relative angle to the whole symbol angle.
@@ -538,12 +538,12 @@ class QgsMarkerSymbolV2 : QgsSymbol
     */
     QRectF bounds(QPointF point, QgsRenderContext& context, const QgsFeature &feature = QgsFeature() ) const;
 
-    virtual QgsMarkerSymbolV2* clone() const /Factory/;
+    virtual QgsMarkerSymbol* clone() const /Factory/;
 };
 
 
 
-class QgsLineSymbolV2 : QgsSymbol
+class QgsLineSymbol : QgsSymbol
 {
 %TypeHeaderCode
 #include <qgssymbol.h>
@@ -553,9 +553,9 @@ class QgsLineSymbolV2 : QgsSymbol
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
-    static QgsLineSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
+    static QgsLineSymbol* createSimple( const QgsStringMap& properties ) /Factory/;
 
-    QgsLineSymbolV2( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
+    QgsLineSymbol( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
 
     void setWidth( double width );
     double width() const;
@@ -577,12 +577,12 @@ class QgsLineSymbolV2 : QgsSymbol
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsLineSymbolV2* clone() const /Factory/;
+    virtual QgsLineSymbol* clone() const /Factory/;
 };
 
 
 
-class QgsFillSymbolV2 : QgsSymbol
+class QgsFillSymbol : QgsSymbol
 {
 %TypeHeaderCode
 #include <qgssymbol.h>
@@ -592,11 +592,11 @@ class QgsFillSymbolV2 : QgsSymbol
     /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
      * This is a convenience method for easier creation of fill symbols.
      */
-    static QgsFillSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
+    static QgsFillSymbol* createSimple( const QgsStringMap& properties ) /Factory/;
 
-    QgsFillSymbolV2( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
+    QgsFillSymbol( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsFillSymbolV2* clone() const /Factory/;
+    virtual QgsFillSymbol* clone() const /Factory/;
 };

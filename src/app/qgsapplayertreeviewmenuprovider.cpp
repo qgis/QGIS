@@ -147,10 +147,10 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( vlayer )
         {
-          const QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( vlayer->rendererV2() );
+          const QgsSingleSymbolRenderer* singleRenderer = dynamic_cast< const QgsSingleSymbolRenderer* >( vlayer->rendererV2() );
           if ( !singleRenderer && vlayer->rendererV2() && vlayer->rendererV2()->embeddedRenderer() )
           {
-            singleRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( vlayer->rendererV2()->embeddedRenderer() );
+            singleRenderer = dynamic_cast< const QgsSingleSymbolRenderer* >( vlayer->rendererV2()->embeddedRenderer() );
           }
           if ( singleRenderer && singleRenderer->symbol() )
           {
@@ -488,12 +488,12 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
   if ( !layer )
     return;
 
-  QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< QgsSingleSymbolRendererV2* >( layer->rendererV2() );
+  QgsSingleSymbolRenderer* singleRenderer = dynamic_cast< QgsSingleSymbolRenderer* >( layer->rendererV2() );
   if ( !singleRenderer )
     return;
 
   QScopedPointer< QgsSymbol > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
-  QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), layer, mView->window() );
+  QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), layer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol selector" ) );
   dlg.setMapCanvas( mCanvas );
   if ( dlg.exec() )
@@ -515,16 +515,16 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor& color 
   if ( !layer )
     return;
 
-  QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< QgsSingleSymbolRendererV2* >( layer->rendererV2() );
+  QgsSingleSymbolRenderer* singleRenderer = dynamic_cast< QgsSingleSymbolRenderer* >( layer->rendererV2() );
   QgsSymbol* newSymbol = nullptr;
 
   if ( singleRenderer && singleRenderer->symbol() )
     newSymbol = singleRenderer->symbol()->clone();
 
-  const QgsSingleSymbolRendererV2* embeddedRenderer = nullptr;
+  const QgsSingleSymbolRenderer* embeddedRenderer = nullptr;
   if ( !newSymbol && layer->rendererV2()->embeddedRenderer() )
   {
-    embeddedRenderer = dynamic_cast< const QgsSingleSymbolRendererV2* >( layer->rendererV2()->embeddedRenderer() );
+    embeddedRenderer = dynamic_cast< const QgsSingleSymbolRenderer* >( layer->rendererV2()->embeddedRenderer() );
     if ( embeddedRenderer && embeddedRenderer->symbol() )
       newSymbol = embeddedRenderer->symbol()->clone();
   }
@@ -539,7 +539,7 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor& color 
   }
   else if ( embeddedRenderer )
   {
-    QgsSingleSymbolRendererV2* newRenderer = embeddedRenderer->clone();
+    QgsSingleSymbolRenderer* newRenderer = embeddedRenderer->clone();
     newRenderer->setSymbol( newSymbol );
     layer->rendererV2()->setEmbeddedRenderer( newRenderer );
   }
@@ -568,7 +568,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
 
   QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-  QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, mView->window() );
+  QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), vlayer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol selector" ) );
   dlg.setMapCanvas( mCanvas );
   if ( dlg.exec() )

@@ -24,13 +24,13 @@
 
 #include <QMenu>
 
-QgsRendererV2Widget* QgsSingleSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererWidget* QgsSingleSymbolRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
 {
-  return new QgsSingleSymbolRendererV2Widget( layer, style, renderer );
+  return new QgsSingleSymbolRendererWidget( layer, style, renderer );
 }
 
-QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style )
+QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+    : QgsRendererWidget( layer, style )
     , mRenderer( nullptr )
 {
   // try to recognize the previous renderer
@@ -38,13 +38,13 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
 
   if ( renderer )
   {
-    mRenderer = QgsSingleSymbolRendererV2::convertFromRenderer( renderer );
+    mRenderer = QgsSingleSymbolRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {
     QgsSymbol* symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
-    mRenderer = new QgsSingleSymbolRendererV2( symbol );
+    mRenderer = new QgsSingleSymbolRenderer( symbol );
   }
 
   // load symbol from it
@@ -65,7 +65,7 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 }
 
-QgsSingleSymbolRendererV2Widget::~QgsSingleSymbolRendererV2Widget()
+QgsSingleSymbolRendererWidget::~QgsSingleSymbolRendererWidget()
 {
   delete mSingleSymbol;
 
@@ -75,49 +75,49 @@ QgsSingleSymbolRendererV2Widget::~QgsSingleSymbolRendererV2Widget()
 }
 
 
-QgsFeatureRendererV2* QgsSingleSymbolRendererV2Widget::renderer()
+QgsFeatureRenderer* QgsSingleSymbolRendererWidget::renderer()
 {
   return mRenderer;
 }
 
-void QgsSingleSymbolRendererV2Widget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsSingleSymbolRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
-  QgsRendererV2Widget::setMapCanvas( canvas );
+  QgsRendererWidget::setMapCanvas( canvas );
   if ( mSelector )
     mSelector->setMapCanvas( canvas );
 }
 
-void QgsSingleSymbolRendererV2Widget::setDockMode( bool dockMode )
+void QgsSingleSymbolRendererWidget::setDockMode( bool dockMode )
 {
-  QgsRendererV2Widget::setDockMode( dockMode );
+  QgsRendererWidget::setDockMode( dockMode );
   if ( mSelector )
     mSelector->setDockMode( dockMode );
 }
 
-void QgsSingleSymbolRendererV2Widget::changeSingleSymbol()
+void QgsSingleSymbolRendererWidget::changeSingleSymbol()
 {
   // update symbol from the GUI
   mRenderer->setSymbol( mSingleSymbol->clone() );
   emit widgetChanged();
 }
 
-void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
+void QgsSingleSymbolRendererWidget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
 }
 
-void QgsSingleSymbolRendererV2Widget::scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod )
+void QgsSingleSymbolRendererWidget::scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod )
 {
   mRenderer->setScaleMethod( scaleMethod );
   // Set also on the symbol clone
-  QgsMarkerSymbolV2 *markerSymbol = dynamic_cast<QgsMarkerSymbolV2 *>( mSingleSymbol );
+  QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( mSingleSymbol );
   if ( markerSymbol )
   {
     markerSymbol->setScaleMethod( scaleMethod );
   }
 }
 
-void QgsSingleSymbolRendererV2Widget::showSymbolLevels()
+void QgsSingleSymbolRendererWidget::showSymbolLevels()
 {
   showSymbolLevelsDialog( mRenderer );
 }

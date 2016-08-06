@@ -32,7 +32,7 @@
  * \brief Point geometry type, with support for z-dimension and m-values.
  * \note added in QGIS 2.10
  */
-class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
+class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 {
   public:
 
@@ -169,8 +169,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
     void transform( const QTransform& t ) override;
-    virtual QgsCoordinateSequenceV2 coordinateSequence() const override;
-    virtual QgsAbstractGeometryV2* boundary() const override;
+    virtual QgsCoordinateSequence coordinateSequence() const override;
+    virtual QgsAbstractGeometry* boundary() const override;
 
     //low-level editing
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }

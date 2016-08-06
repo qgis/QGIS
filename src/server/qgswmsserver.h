@@ -33,7 +33,7 @@ class QgsComposerLegendItem;
 class QgsComposition;
 class QgsConfigParser;
 class QgsFeature;
-class QgsFeatureRendererV2;
+class QgsFeatureRenderer;
 class QgsMapLayer;
 class QgsMapRenderer;
 class QgsPoint;
@@ -216,14 +216,14 @@ class QgsWmsServer: public QgsOWSServer
     void clearFeatureSelections( const QStringList& layerIds ) const;
 
     /** Applies opacity on layer/group level*/
-    void applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+    void applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRenderer*> >& vectorRenderers,
                          QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
                          QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
                          QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies
                        );
 
     /** Restore original opacities*/
-    void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+    void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRenderer*> >& vectorRenderers,
                            QList< QPair < QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
                            QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
                            QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies );

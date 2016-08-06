@@ -23,22 +23,22 @@
 class QgsPolygonV2;
 
 /** \ingroup core
- * \class QgsCurvePolygonV2
+ * \class QgsCurvePolygon
  * \brief Curve polygon geometry type
  * \note added in QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
-class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
+class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 {
   public:
-    QgsCurvePolygonV2();
-    QgsCurvePolygonV2( const QgsCurvePolygonV2& p );
-    QgsCurvePolygonV2& operator=( const QgsCurvePolygonV2& p );
-    ~QgsCurvePolygonV2();
+    QgsCurvePolygon();
+    QgsCurvePolygon( const QgsCurvePolygon& p );
+    QgsCurvePolygon& operator=( const QgsCurvePolygon& p );
+    ~QgsCurvePolygon();
 
     virtual QString geometryType() const override { return "CurvePolygon"; }
     virtual int dimension() const override { return 2; }
-    virtual QgsCurvePolygonV2* clone() const override;
+    virtual QgsCurvePolygon* clone() const override;
     void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
@@ -55,12 +55,12 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     virtual double area() const override;
     virtual double perimeter() const override;
     QgsPolygonV2* surfaceToPolygon() const override;
-    virtual QgsAbstractGeometryV2* boundary() const override;
+    virtual QgsAbstractGeometry* boundary() const override;
 
     //curve polygon interface
     int numInteriorRings() const;
-    const QgsCurveV2* exteriorRing() const;
-    const QgsCurveV2* interiorRing( int i ) const;
+    const QgsCurve* exteriorRing() const;
+    const QgsCurve* interiorRing( int i ) const;
     /** Returns a new polygon geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance
@@ -74,12 +74,12 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
      * @see setInteriorRings()
      * @see exteriorRing()
      */
-    virtual void setExteriorRing( QgsCurveV2* ring );
+    virtual void setExteriorRing( QgsCurve* ring );
 
     /** Sets all interior rings (takes ownership)*/
-    void setInteriorRings( const QList<QgsCurveV2*>& rings );
+    void setInteriorRings( const QList<QgsCurve*>& rings );
     /** Adds an interior ring to the geometry (takes ownership)*/
-    virtual void addInteriorRing( QgsCurveV2* ring );
+    virtual void addInteriorRing( QgsCurve* ring );
     /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
 
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
-    virtual QgsCoordinateSequenceV2 coordinateSequence() const override;
+    virtual QgsCoordinateSequence coordinateSequence() const override;
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     /** Returns a geometry without curves. Caller takes ownership
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsAbstractGeometryV2* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      *  @param vertex the vertex id
@@ -120,8 +120,8 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
 
   protected:
 
-    QgsCurveV2* mExteriorRing;
-    QList<QgsCurveV2*> mInteriorRings;
+    QgsCurve* mExteriorRing;
+    QList<QgsCurve*> mInteriorRings;
 
     virtual QgsRectangle calculateBoundingBox() const override;
 };

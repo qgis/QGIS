@@ -28,21 +28,21 @@ class QMenu;
  * \note Added in version 2.16
  */
 
-class GUI_EXPORT QgsNullSymbolRendererWidget : public QgsRendererV2Widget
+class GUI_EXPORT QgsNullSymbolRendererWidget : public QgsRendererWidget
 {
     Q_OBJECT
 
   public:
 
     //! Creates a new QgsNullSymbolRendererWidget object
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
     //! Constructor for QgsNullSymbolRendererWidget
-    QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
     ~QgsNullSymbolRendererWidget();
 
     //! Returns a pointer to the configured renderer
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRenderer* renderer();
 
   protected:
 

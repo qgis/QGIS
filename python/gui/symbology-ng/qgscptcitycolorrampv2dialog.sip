@@ -1,12 +1,12 @@
-class QgsCptCityColorRampV2Dialog : QDialog
+class QgsCptCityColorRampDialog : QDialog
 {
 %TypeHeaderCode
 #include <qgscptcitycolorrampv2dialog.h>
 %End
 
   public:
-    QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent /TransferThis/ = NULL );
-    ~QgsCptCityColorRampV2Dialog();
+    QgsCptCityColorRampDialog( QgsCptCityColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
+    ~QgsCptCityColorRampDialog();
 
     QString selectedName() const;
 

@@ -1,19 +1,19 @@
-class QgsRendererV2Widget : QgsPanelWidget
+class QgsRendererWidget : QgsPanelWidget
 {
 %TypeHeaderCode
 #include <qgsrendererv2widget.h>
 %End
 
   public:
-    QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style );
+    QgsRendererWidget( QgsVectorLayer* layer, QgsStyle* style );
 
-    virtual ~QgsRendererV2Widget();
+    virtual ~QgsRendererWidget();
 
     //! return pointer to the renderer (no transfer of ownership)
-    virtual QgsFeatureRendererV2* renderer() = 0;
+    virtual QgsFeatureRenderer* renderer() = 0;
 
     //! show a dialog with renderer's symbol level settings
-    void showSymbolLevelsDialog( QgsFeatureRendererV2* r );
+    void showSymbolLevelsDialog( QgsFeatureRenderer* r );
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.

@@ -26,20 +26,20 @@ class QgsPointDisplacementRenderer;
 /** \ingroup gui
  * \class QgsPointDisplacementRendererWidget
  */
-class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererV2Widget, private Ui::QgsPointDisplacementRendererWidgetBase
+class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, private Ui::QgsPointDisplacementRendererWidgetBase
 {
     Q_OBJECT
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
-    QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
     ~QgsPointDisplacementRendererWidget();
 
-    QgsFeatureRendererV2* renderer() override;
+    QgsFeatureRenderer* renderer() override;
     void setMapCanvas( QgsMapCanvas* canvas ) override;
 
   private:
     QgsPointDisplacementRenderer* mRenderer;
-    QgsRendererV2Widget* mEmbeddedRendererWidget;
+    QgsRendererWidget* mEmbeddedRendererWidget;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();

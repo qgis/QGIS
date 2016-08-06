@@ -25,11 +25,11 @@
 
 /// @cond PRIVATE
 
-class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
+class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    QgsGraduatedSymbolRendererV2Model( QObject * parent = nullptr );
+    QgsGraduatedSymbolRendererModel( QObject * parent = nullptr );
     Qt::ItemFlags flags( const QModelIndex & index ) const override;
     Qt::DropActions supportedDropActions() const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -43,11 +43,11 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
-    void setRenderer( QgsGraduatedSymbolRendererV2* renderer );
+    void setRenderer( QgsGraduatedSymbolRenderer* renderer );
 
-    QgsRendererRangeV2 rendererRange( const QModelIndex &index );
+    QgsRendererRange rendererRange( const QModelIndex &index );
     void addClass( QgsSymbol* symbol );
-    void addClass( const QgsRendererRangeV2& range );
+    void addClass( const QgsRendererRange& range );
     void deleteRows( QList<int> rows );
     void removeAllRows();
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
@@ -58,17 +58,17 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
     void rowsMoved();
 
   private:
-    QgsGraduatedSymbolRendererV2* mRenderer;
+    QgsGraduatedSymbolRenderer* mRenderer;
     QString mMimeFormat;
 };
 
 // View style which shows drop indicator line between items
-class QgsGraduatedSymbolRendererV2ViewStyle: public QProxyStyle
+class QgsGraduatedSymbolRendererViewStyle: public QProxyStyle
 {
     Q_OBJECT
 
   public:
-    explicit QgsGraduatedSymbolRendererV2ViewStyle( QStyle* style = nullptr );
+    explicit QgsGraduatedSymbolRendererViewStyle( QStyle* style = nullptr );
 
     void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = nullptr ) const override;
 };
@@ -76,19 +76,19 @@ class QgsGraduatedSymbolRendererV2ViewStyle: public QProxyStyle
 ///@endcond
 
 /** \ingroup gui
- * \class QgsGraduatedSymbolRendererV2Widget
+ * \class QgsGraduatedSymbolRendererWidget
  */
-class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsGraduatedSymbolRendererV2Widget
+class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsGraduatedSymbolRendererWidget
 {
     Q_OBJECT
 
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
-    QgsGraduatedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
-    ~QgsGraduatedSymbolRendererV2Widget();
+    QgsGraduatedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    ~QgsGraduatedSymbolRendererWidget();
 
-    virtual QgsFeatureRendererV2* renderer() override;
+    virtual QgsFeatureRenderer* renderer() override;
 
   public slots:
     void changeGraduatedSymbol();
@@ -149,13 +149,13 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void keyPressEvent( QKeyEvent* event ) override;
 
   protected:
-    QgsGraduatedSymbolRendererV2* mRenderer;
+    QgsGraduatedSymbolRenderer* mRenderer;
 
     QgsSymbol* mGraduatedSymbol;
 
     int mRowSelected;
 
-    QgsGraduatedSymbolRendererV2Model* mModel;
+    QgsGraduatedSymbolRendererModel* mModel;
 
     QgsRangeList mCopyBuffer;
 };

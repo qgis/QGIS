@@ -79,15 +79,15 @@ typedef QList< QgsSymbolLevel > QgsSymbolLevelOrder;
 // renderers
 
 /** \ingroup core
- * \class QgsFeatureRendererV2
+ * \class QgsFeatureRenderer
  */
-class CORE_EXPORT QgsFeatureRendererV2
+class CORE_EXPORT QgsFeatureRenderer
 {
   public:
     // renderer takes ownership of its symbols!
 
     //! return a new renderer - used by default in vector layers
-    static QgsFeatureRendererV2* defaultRenderer( QgsWkbTypes::GeometryType geomType );
+    static QgsFeatureRenderer* defaultRenderer( QgsWkbTypes::GeometryType geomType );
 
     QString type() const { return mType; }
 
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     virtual bool filterNeedsGeometry() const;
 
-    virtual ~QgsFeatureRendererV2();
+    virtual ~QgsFeatureRenderer();
 
     /**
      * Create a deep copy of this renderer. Should be implemented by all subclasses
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      *
      * @return A copy of this renderer
      */
-    virtual QgsFeatureRendererV2* clone() const = 0;
+    virtual QgsFeatureRenderer* clone() const = 0;
 
     /**
      * Render a feature using this renderer in the given context.
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * E.g. if you only want to deal with visible features:
      *
      * ~~~{.py}
-     * if not renderer.capabilities().testFlag(QgsFeatureRendererV2.Filter) or renderer.willRenderFeature(feature, context):
+     * if not renderer.capabilities().testFlag(QgsFeatureRenderer.Filter) or renderer.willRenderFeature(feature, context):
      *     deal_with_my_feature()
      * else:
      *     skip_the_curren_feature()
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsFeatureRendererV2
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }
 
     //! create a renderer from XML element
-    static QgsFeatureRendererV2* load( QDomElement& symbologyElem );
+    static QgsFeatureRenderer* load( QDomElement& symbologyElem );
 
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc );
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * went wrong
      * @return the renderer
      */
-    static QgsFeatureRendererV2* loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage );
+    static QgsFeatureRenderer* loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage );
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const
@@ -450,17 +450,17 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @see embeddedRenderer()
      * @note added in QGIS 2.16
      */
-    virtual void setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer ) { delete subRenderer; }
+    virtual void setEmbeddedRenderer( QgsFeatureRenderer* subRenderer ) { delete subRenderer; }
 
     /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
      * implementation does not use subrenderers and will always return null.
      * @see setEmbeddedRenderer()
      * @note added in QGIS 2.16
      */
-    virtual const QgsFeatureRendererV2* embeddedRenderer() const { return nullptr; }
+    virtual const QgsFeatureRenderer* embeddedRenderer() const { return nullptr; }
 
   protected:
-    QgsFeatureRendererV2( const QString& type );
+    QgsFeatureRenderer( const QString& type );
 
     void renderFeatureWithSymbol( QgsFeature& feature,
                                   QgsSymbol* symbol,
@@ -504,13 +504,13 @@ class CORE_EXPORT QgsFeatureRendererV2
      *
      * @param destRenderer destination renderer for copied effect
      */
-    void copyRendererData( QgsFeatureRendererV2 *destRenderer ) const;
+    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
 
     /** Copies paint effect of this renderer to another renderer
      * @param destRenderer destination renderer for copied effect
      * @deprecated use copyRendererData instead
      */
-    Q_DECL_DEPRECATED void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const;
+    Q_DECL_DEPRECATED void copyPaintEffect( QgsFeatureRenderer *destRenderer ) const;
 
     QString mType;
 
@@ -539,13 +539,13 @@ class CORE_EXPORT QgsFeatureRendererV2
     bool mOrderByEnabled;
 
   private:
-    Q_DISABLE_COPY( QgsFeatureRendererV2 )
+    Q_DISABLE_COPY( QgsFeatureRenderer )
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRendererV2::Capabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRenderer::Capabilities )
 
 // for some reason SIP compilation fails if these lines are not included:
-class QgsRendererV2Widget;
+class QgsRendererWidget;
 class QgsPaintEffectWidget;
 
 #endif // QGSRENDERERV2_H

@@ -69,8 +69,8 @@ class TestQgsRasterFill : public QObject
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QgsRasterFillSymbolLayer* mRasterFill;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsFillSymbol* mFillSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -106,9 +106,9 @@ void TestQgsRasterFill::initTestCase()
 
   //setup raster fill
   mRasterFill = new QgsRasterFillSymbolLayer();
-  mFillSymbol = new QgsFillSymbolV2();
+  mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mRasterFill );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mFillSymbol );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
   mpPolysLayer->setRendererV2( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas

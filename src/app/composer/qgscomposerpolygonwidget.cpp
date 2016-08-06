@@ -58,11 +58,11 @@ void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  QScopedPointer<QgsFillSymbolV2> newSymbol;
+  QScopedPointer<QgsFillSymbol> newSymbol;
   newSymbol.reset( mComposerPolygon->polygonStyleSymbol()->clone() );
 
-  QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyleV2::defaultStyle(),
-                               coverageLayer, this );
+  QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyle::defaultStyle(),
+                             coverageLayer, this );
   d.setExpressionContext( mComposerPolygon->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )

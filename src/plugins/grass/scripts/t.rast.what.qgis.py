@@ -446,7 +446,7 @@ def one_point_per_timerow_output(separator, output_files, output_time_list,
                 start, end = map.get_temporal_extent_as_tuple()
                 time_string = "%(sep)s%(start)s;%(end)s"\
                               % ({"start": str(start), "end": str(end),
-                                 "sep": separator})
+                                  "sep": separator})
                 header += time_string
 
         lines = in_file.readlines()

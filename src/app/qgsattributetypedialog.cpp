@@ -83,7 +83,7 @@ QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
   qDeleteAll( mEditorConfigWidgets );
 }
 
-const QString QgsAttributeTypeDialog::editorWidgetV2Type()
+const QString QgsAttributeTypeDialog::editorWidgetType()
 {
   QListWidgetItem* item = selectionListWidget->currentItem();
   if ( item )
@@ -96,7 +96,7 @@ const QString QgsAttributeTypeDialog::editorWidgetV2Type()
   }
 }
 
-const QString QgsAttributeTypeDialog::editorWidgetV2Text()
+const QString QgsAttributeTypeDialog::editorWidgetText()
 {
   QListWidgetItem* item = selectionListWidget->currentItem();
   if ( item )
@@ -109,7 +109,7 @@ const QString QgsAttributeTypeDialog::editorWidgetV2Text()
   }
 }
 
-const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetV2Config()
+const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetConfig()
 {
   QListWidgetItem* item = selectionListWidget->currentItem();
   if ( item )

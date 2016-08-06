@@ -1,4 +1,4 @@
-class QgsPointDisplacementRenderer : QgsFeatureRendererV2
+class QgsPointDisplacementRenderer : QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include <qgspointdisplacementrenderer.h>
@@ -20,13 +20,13 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
-    /** Reimplemented from QgsFeatureRendererV2*/
+    /** Reimplemented from QgsFeatureRenderer*/
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     /** Partial proxy that will call this method on the embedded renderer. */
     virtual QList<QString> usedAttributes();
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsFeatureRendererV2::Capabilities capabilities();
+    virtual QgsFeatureRenderer::Capabilities capabilities();
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as symbols2
      */
@@ -57,7 +57,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void stopRender( QgsRenderContext& context );
 
     //! create a renderer from XML element
-    static QgsFeatureRendererV2* create( QDomElement& symbologyElem ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& symbologyElem ) /Factory/;
     QDomElement save( QDomDocument& doc );
 
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
@@ -68,8 +68,8 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setLabelAttributeName( const QString& name );
     QString labelAttributeName() const;
 
-    void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
-    const QgsFeatureRendererV2* embeddedRenderer() const;
+    void setEmbeddedRenderer( QgsFeatureRenderer* r /Transfer/ );
+    const QgsFeatureRenderer* embeddedRenderer() const;
 
     virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol );
 
@@ -113,9 +113,9 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setPlacement( Placement placement );
 
     /** Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
-    QgsMarkerSymbolV2* centerSymbol();
+    QgsMarkerSymbol* centerSymbol();
     /** Sets the center symbol (takes ownership)*/
-    void setCenterSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
+    void setCenterSymbol( QgsMarkerSymbol* symbol /Transfer/ );
 
     /** Sets the tolerance distance for grouping points. Units are specified using
      * setToleranceUnit().
@@ -165,7 +165,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     //! creates a QgsPointDisplacementRenderer from an existing renderer.
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsPointDisplacementRenderer* convertFromRenderer(const QgsFeatureRendererV2 *renderer ) /Factory/;
+    static QgsPointDisplacementRenderer* convertFromRenderer(const QgsFeatureRenderer *renderer ) /Factory/;
 
   private:
     QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );

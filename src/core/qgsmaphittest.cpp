@@ -109,8 +109,8 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
   if ( hasStyleOverride )
     vl->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
 
-  QgsFeatureRendererV2* r = vl->rendererV2();
-  bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature;
+  QgsFeatureRenderer* r = vl->rendererV2();
+  bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, vl->fields() );
 
   QgsGeometry transformedPolygon = mPolygon;

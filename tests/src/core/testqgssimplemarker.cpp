@@ -73,9 +73,9 @@ class TestQgsSimpleMarkerSymbol : public QObject
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPointsLayer;
-    QgsSimpleMarkerSymbolLayerV2* mSimpleMarkerLayer;
-    QgsMarkerSymbolV2* mMarkerSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsSimpleMarkerSymbolLayer* mSimpleMarkerLayer;
+    QgsMarkerSymbol* mMarkerSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -106,10 +106,10 @@ void TestQgsSimpleMarkerSymbol::initTestCase()
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //setup symbol
-  mSimpleMarkerLayer = new QgsSimpleMarkerSymbolLayerV2();
-  mMarkerSymbol = new QgsMarkerSymbolV2();
+  mSimpleMarkerLayer = new QgsSimpleMarkerSymbolLayer();
+  mMarkerSymbol = new QgsMarkerSymbol();
   mMarkerSymbol->changeSymbolLayer( 0, mSimpleMarkerLayer );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mMarkerSymbol );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mMarkerSymbol );
   mpPointsLayer->setRendererV2( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
@@ -255,7 +255,7 @@ void TestQgsSimpleMarkerSymbol::colors()
 {
   //test logic for setting/retrieving symbol color
 
-  QgsSimpleMarkerSymbolLayerV2 marker;
+  QgsSimpleMarkerSymbolLayer marker;
   marker.setOutlineColor( QColor( 200, 200, 200 ) );
   marker.setFillColor( QColor( 100, 100, 100 ) );
 

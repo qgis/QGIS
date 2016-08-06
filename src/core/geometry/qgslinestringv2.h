@@ -28,18 +28,18 @@
  ****************************************************************************/
 
 /** \ingroup core
- * \class QgsLineStringV2
+ * \class QgsLineString
  * \brief Line string geometry type, with support for z-dimension and m-values.
  * \note added in QGIS 2.10
  */
-class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
+class CORE_EXPORT QgsLineString: public QgsCurve
 {
   public:
-    QgsLineStringV2();
-    ~QgsLineStringV2();
+    QgsLineString();
+    ~QgsLineString();
 
-    bool operator==( const QgsCurveV2& other ) const override;
-    bool operator!=( const QgsCurveV2& other ) const override;
+    bool operator==( const QgsCurve& other ) const override;
+    bool operator!=( const QgsCurve& other ) const override;
 
     /** Returns the specified point from inside the line string.
      * @param i index of point, starting at 0 for the first point
@@ -112,12 +112,12 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
      * inherit the dimensionality of the first point in the list.
      * @param points new points for line string. If empty, line string will be cleared.
      */
-    void setPoints( const QgsPointSequenceV2 &points );
+    void setPoints( const QgsPointSequence &points );
 
     /** Appends the contents of another line string to the end of this line string.
      * @param line line to append. Ownership is not transferred.
      */
-    void append( const QgsLineStringV2* line );
+    void append( const QgsLineString* line );
 
     /** Adds a new vertex to the end of the line string.
      * @param pt vertex to add
@@ -131,15 +131,15 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
      */
     QPolygonF asQPolygonF() const;
 
-    /** Returns the geometry converted to the more generic curve type QgsCompoundCurveV2
+    /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
         @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometryV2* toCurveType() const override;
+    QgsAbstractGeometry* toCurveType() const override;
 
     //reimplemented methods
 
     virtual QString geometryType() const override { return "LineString"; }
     virtual int dimension() const override { return 1; }
-    virtual QgsLineStringV2* clone() const override;
+    virtual QgsLineString* clone() const override;
     virtual void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
@@ -160,10 +160,10 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     int numPoints() const override;
-    void points( QgsPointSequenceV2 &pt ) const override;
+    void points( QgsPointSequence &pt ) const override;
 
     void draw( QPainter& p ) const override;
 
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
-    virtual QgsLineStringV2* reversed() const override;
+    virtual QgsLineString* reversed() const override;
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const override;

@@ -6,20 +6,20 @@
  * @see QgsSymbolLegendNode
  * @note added in 2.6
  */
-class QgsLegendSymbolItemV2
+class QgsLegendSymbolItem
 {
 %TypeHeaderCode
 #include <qgslegendsymbolitemv2.h>
 %End
 
   public:
-    QgsLegendSymbolItemV2();
+    QgsLegendSymbolItem();
     //! Construct item. Does not take ownership of symbol (makes internal clone)
     //! @note parentRuleKey added in 2.8
-    QgsLegendSymbolItemV2( QgsSymbol* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString& parentRuleKey = QString() );
-    ~QgsLegendSymbolItemV2();
-    QgsLegendSymbolItemV2( const QgsLegendSymbolItemV2& other );
-    //QgsLegendSymbolItemV2& operator=( const QgsLegendSymbolItemV2& other );
+    QgsLegendSymbolItem( QgsSymbol* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString& parentRuleKey = QString() );
+    ~QgsLegendSymbolItem();
+    QgsLegendSymbolItem( const QgsLegendSymbolItem& other );
+    //QgsLegendSymbolItem& operator=( const QgsLegendSymbolItem& other );
 
     //! Return associated symbol. May be null.
     QgsSymbol* symbol() const;
@@ -54,4 +54,4 @@ class QgsLegendSymbolItemV2
 };
 
 
-typedef QList< QgsLegendSymbolItemV2 > QgsLegendSymbolListV2;
+typedef QList< QgsLegendSymbolItem > QgsLegendSymbolListV2;

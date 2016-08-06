@@ -65,7 +65,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
 
   QImage im = sourceAsImage( context )->copy();
 
-  QgsVectorColorRampV2* ramp = nullptr;
+  QgsVectorColorRamp* ramp = nullptr;
   if ( mColorType == ColorRamp && mRamp )
   {
     ramp = mRamp;
@@ -75,7 +75,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     //create a temporary ramp
     QColor transparentColor = mColor;
     transparentColor.setAlpha( 0 );
-    ramp = new QgsVectorGradientColorRampV2( mColor, transparentColor );
+    ramp = new QgsVectorGradientColorRamp( mColor, transparentColor );
   }
 
   QgsImageOperation::DistanceTransformProperties dtProps;
@@ -176,10 +176,10 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
 
   //attempt to create color ramp from props
   delete mRamp;
-  mRamp = QgsVectorGradientColorRampV2::create( props );
+  mRamp = QgsVectorGradientColorRamp::create( props );
 }
 
-void QgsGlowEffect::setRamp( QgsVectorColorRampV2 *ramp )
+void QgsGlowEffect::setRamp( QgsVectorColorRamp *ramp )
 {
   delete mRamp;
   mRamp = ramp;

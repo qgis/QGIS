@@ -29,8 +29,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRendererV2* subRenderer )
-    : QgsFeatureRendererV2( "invertedPolygonRenderer" )
+QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer* subRenderer )
+    : QgsFeatureRenderer( "invertedPolygonRenderer" )
     , mPreprocessingEnabled( false )
 {
   if ( subRenderer )
@@ -39,7 +39,7 @@ QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRendererV2* su
   }
   else
   {
-    mSubRenderer.reset( QgsFeatureRendererV2::defaultRenderer( QgsWkbTypes::PolygonGeometry ) );
+    mSubRenderer.reset( QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::PolygonGeometry ) );
   }
 }
 
@@ -47,7 +47,7 @@ QgsInvertedPolygonRenderer::~QgsInvertedPolygonRenderer()
 {
 }
 
-void QgsInvertedPolygonRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer )
+void QgsInvertedPolygonRenderer::setEmbeddedRenderer( QgsFeatureRenderer* subRenderer )
 {
   if ( subRenderer )
   {
@@ -59,7 +59,7 @@ void QgsInvertedPolygonRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* subR
   }
 }
 
-const QgsFeatureRendererV2* QgsInvertedPolygonRenderer::embeddedRenderer() const
+const QgsFeatureRenderer* QgsInvertedPolygonRenderer::embeddedRenderer() const
 {
   return mSubRenderer.data();
 }
@@ -373,14 +373,14 @@ QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
   return newRenderer;
 }
 
-QgsFeatureRendererV2* QgsInvertedPolygonRenderer::create( QDomElement& element )
+QgsFeatureRenderer* QgsInvertedPolygonRenderer::create( QDomElement& element )
 {
   QgsInvertedPolygonRenderer* r = new QgsInvertedPolygonRenderer();
   //look for an embedded renderer <renderer-v2>
   QDomElement embeddedRendererElem = element.firstChildElement( "renderer-v2" );
   if ( !embeddedRendererElem.isNull() )
   {
-    QgsFeatureRendererV2* renderer = QgsFeatureRendererV2::load( embeddedRendererElem );
+    QgsFeatureRenderer* renderer = QgsFeatureRenderer::load( embeddedRendererElem );
     r->setEmbeddedRenderer( renderer );
   }
   r->setPreprocessingEnabled( element.attribute( "preprocessing", "0" ).toInt() == 1 );
@@ -455,7 +455,7 @@ QgsSymbolList QgsInvertedPolygonRenderer::symbols( QgsRenderContext& context )
   return mSubRenderer->symbols( context );
 }
 
-QgsFeatureRendererV2::Capabilities QgsInvertedPolygonRenderer::capabilities()
+QgsFeatureRenderer::Capabilities QgsInvertedPolygonRenderer::capabilities()
 {
   if ( !mSubRenderer )
   {
@@ -500,7 +500,7 @@ bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature& feat, QgsRenderC
   return mSubRenderer->willRenderFeature( feat, context );
 }
 
-QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
+QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == "invertedPolygonRenderer" )
   {

@@ -23,8 +23,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include <QString>
 
 class QgsMapToPixel;
-class QgsCurveV2;
-class QgsMultiCurveV2;
+class QgsCurve;
+class QgsMultiCurve;
 class QgsMultiPointV2;
 class QgsPointV2;
 struct QgsVertexId;
@@ -32,16 +32,16 @@ class QPainter;
 class QDomDocument;
 class QDomElement;
 
-typedef QList< QgsPointV2 > QgsPointSequenceV2;
-typedef QList< QgsPointSequenceV2 > QgsRingSequenceV2;
-typedef QList< QgsRingSequenceV2 > QgsCoordinateSequenceV2;
+typedef QList< QgsPointV2 > QgsPointSequence;
+typedef QList< QgsPointSequence > QgsRingSequence;
+typedef QList< QgsRingSequence > QgsCoordinateSequence;
 
 /** \ingroup core
- * \class QgsAbstractGeometryV2
+ * \class QgsAbstractGeometry
  * \brief Abstract base class for all geometries
  * \note added in QGIS 2.10
  */
-class CORE_EXPORT QgsAbstractGeometryV2
+class CORE_EXPORT QgsAbstractGeometry
 {
   public:
 
@@ -52,14 +52,14 @@ class CORE_EXPORT QgsAbstractGeometryV2
       MaximumDifference
     };
 
-    QgsAbstractGeometryV2();
-    virtual ~QgsAbstractGeometryV2();
-    QgsAbstractGeometryV2( const QgsAbstractGeometryV2& geom );
-    virtual QgsAbstractGeometryV2& operator=( const QgsAbstractGeometryV2& geom );
+    QgsAbstractGeometry();
+    virtual ~QgsAbstractGeometry();
+    QgsAbstractGeometry( const QgsAbstractGeometry& geom );
+    virtual QgsAbstractGeometry& operator=( const QgsAbstractGeometry& geom );
 
     /** Clones the geometry by performing a deep copy
      */
-    virtual QgsAbstractGeometryV2* clone() const = 0;
+    virtual QgsAbstractGeometry* clone() const = 0;
 
     /** Clears the geometry, ie reset it to a null geometry
      */
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
     virtual bool isSimple() const = 0;
     virtual bool isValid() const = 0;
     virtual QgsMultiPointV2* locateAlong() const = 0;
-    virtual QgsMultiCurveV2* locateBetween() const = 0;
+    virtual QgsMultiCurve* locateBetween() const = 0;
     virtual QgsRectangle envelope() const = 0;
 #endif
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
      * @returns boundary for geometry. May be null for some geometry types.
      * @note added in QGIS 3.0
      */
-    virtual QgsAbstractGeometryV2* boundary() const = 0;
+    virtual QgsAbstractGeometry* boundary() const = 0;
 
     //import
 
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
     /** Retrieves the sequence of geometries, rings and nodes.
      * @return coordinate sequence
      */
-    virtual QgsCoordinateSequenceV2 coordinateSequence() const = 0;
+    virtual QgsCoordinateSequence coordinateSequence() const = 0;
 
     /** Returns the number of nodes contained in the geometry
      */
@@ -312,13 +312,13 @@ class CORE_EXPORT QgsAbstractGeometryV2
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsAbstractGeometryV2* segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsAbstractGeometry* segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
     /** Returns the geometry converted to the more generic curve type.
-        E.g. QgsLineStringV2 -> QgsCompoundCurveV2, QgsPolygonV2 -> QgsCurvePolygonV2,
-        QgsMultiLineStringV2 -> QgsMultiCurveV2, QgsMultiPolygonV2 -> QgsMultiSurfaceV2
+        E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
+        QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
         @return the converted geometry. Caller takes ownership*/
-    virtual QgsAbstractGeometryV2* toCurveType() const { return 0; }
+    virtual QgsAbstractGeometry* toCurveType() const { return 0; }
 
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
 
     /** Updates the geometry type based on whether sub geometries contain z or m values.
      */
-    void setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subggeom, QgsWkbTypes::Type baseGeomType );
+    void setZMTypeFromSubGeometry( const QgsAbstractGeometry* subggeom, QgsWkbTypes::Type baseGeomType );
 
     /** Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
      * if a more efficient bounding box calculation is available.
@@ -440,7 +440,7 @@ struct CORE_EXPORT QgsVertexId
   {
     return ringEqual( o ) && ( vertex >= 0 && o.ring == ring );
   }
-  bool isValid( const QgsAbstractGeometryV2* geom ) const
+  bool isValid( const QgsAbstractGeometry* geom ) const
   {
     return ( part >= 0 && part < geom->partCount() ) &&
            ( ring < geom->ringCount( part ) ) &&

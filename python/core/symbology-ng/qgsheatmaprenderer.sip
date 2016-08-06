@@ -1,4 +1,4 @@
-class QgsHeatmapRenderer : QgsFeatureRendererV2
+class QgsHeatmapRenderer : QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include <qgsheatmaprenderer.h>
@@ -19,9 +19,9 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
     virtual QgsSymbolList symbols( QgsRenderContext& context ) /PyName=symbols2/;
     virtual QString dump() const;
     virtual QList<QString> usedAttributes();
-    static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
     virtual QDomElement save( QDomDocument& doc );
-    static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer ) /Factory/;
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included
@@ -33,12 +33,12 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
      * @returns color ramp for heatmap
      * @see setColorRamp
      */
-    QgsVectorColorRampV2* colorRamp() const;
+    QgsVectorColorRamp* colorRamp() const;
     /** Sets the color ramp to use for shading the heatmap.
      * @param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
      * @see colorRamp
      */
-    void setColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
+    void setColorRamp( QgsVectorColorRamp* ramp /Transfer/ );
 
     /** Returns whether the ramp is inverted
      * @returns true if color ramp is inverted

@@ -241,7 +241,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-      QgsCurveV2* curveToAdd = nullptr;
+      QgsCurve* curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
         curveToAdd = captureCurve()->clone();
@@ -259,10 +259,10 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       }
       else
       {
-        QgsCurvePolygonV2* poly = nullptr;
+        QgsCurvePolygon* poly = nullptr;
         if ( hasCurvedSegments && providerSupportsCurvedSegments )
         {
-          poly = new QgsCurvePolygonV2();
+          poly = new QgsCurvePolygon();
         }
         else
         {

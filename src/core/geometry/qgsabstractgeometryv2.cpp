@@ -23,20 +23,20 @@ email                : marco.hugentobler at sourcepole dot com
 #include <limits>
 #include <QTransform>
 
-QgsAbstractGeometryV2::QgsAbstractGeometryV2(): mWkbType( QgsWkbTypes::Unknown )
+QgsAbstractGeometry::QgsAbstractGeometry(): mWkbType( QgsWkbTypes::Unknown )
 {
 }
 
-QgsAbstractGeometryV2::~QgsAbstractGeometryV2()
+QgsAbstractGeometry::~QgsAbstractGeometry()
 {
 }
 
-QgsAbstractGeometryV2::QgsAbstractGeometryV2( const QgsAbstractGeometryV2& geom )
+QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry& geom )
 {
   mWkbType = geom.mWkbType;
 }
 
-QgsAbstractGeometryV2& QgsAbstractGeometryV2::operator=( const QgsAbstractGeometryV2 & geom )
+QgsAbstractGeometry& QgsAbstractGeometry::operator=( const QgsAbstractGeometry & geom )
 {
   if ( &geom != this )
   {
@@ -46,18 +46,18 @@ QgsAbstractGeometryV2& QgsAbstractGeometryV2::operator=( const QgsAbstractGeomet
   return *this;
 }
 
-bool QgsAbstractGeometryV2::is3D() const
+bool QgsAbstractGeometry::is3D() const
 {
   return QgsWkbTypes::hasZ( mWkbType );
 }
 
-bool QgsAbstractGeometryV2::isMeasure() const
+bool QgsAbstractGeometry::isMeasure() const
 {
   return QgsWkbTypes::hasM( mWkbType );
 }
 
 #if 0
-void QgsAbstractGeometryV2::clip( const QgsRectangle& rect )
+void QgsAbstractGeometry::clip( const QgsRectangle& rect )
 {
   // TODO
   // - Implementation
@@ -67,7 +67,7 @@ void QgsAbstractGeometryV2::clip( const QgsRectangle& rect )
 }
 #endif
 
-void QgsAbstractGeometryV2::setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subgeom, QgsWkbTypes::Type baseGeomType )
+void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry* subgeom, QgsWkbTypes::Type baseGeomType )
 {
   if ( !subgeom )
   {
@@ -109,7 +109,7 @@ void QgsAbstractGeometryV2::setZMTypeFromSubGeometry( const QgsAbstractGeometryV
   }
 }
 
-QgsRectangle QgsAbstractGeometryV2::calculateBoundingBox() const
+QgsRectangle QgsAbstractGeometry::calculateBoundingBox() const
 {
   double xmin = std::numeric_limits<double>::max();
   double ymin = std::numeric_limits<double>::max();
@@ -136,13 +136,13 @@ QgsRectangle QgsAbstractGeometryV2::calculateBoundingBox() const
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
-int QgsAbstractGeometryV2::nCoordinates() const
+int QgsAbstractGeometry::nCoordinates() const
 {
   int nCoords = 0;
 
-  Q_FOREACH ( const QgsRingSequenceV2 &r, coordinateSequence() )
+  Q_FOREACH ( const QgsRingSequence &r, coordinateSequence() )
   {
-    Q_FOREACH ( const QgsPointSequenceV2 &p, r )
+    Q_FOREACH ( const QgsPointSequence &p, r )
     {
       nCoords += p.size();
     }
@@ -151,7 +151,7 @@ int QgsAbstractGeometryV2::nCoordinates() const
   return nCoords;
 }
 
-QString QgsAbstractGeometryV2::wktTypeStr() const
+QString QgsAbstractGeometry::wktTypeStr() const
 {
   QString wkt = geometryType();
   if ( is3D() )
@@ -161,7 +161,7 @@ QString QgsAbstractGeometryV2::wktTypeStr() const
   return wkt;
 }
 
-QgsPointV2 QgsAbstractGeometryV2::centroid() const
+QgsPointV2 QgsAbstractGeometry::centroid() const
 {
   // http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
   // Pick the first ring of first part for the moment
@@ -213,7 +213,7 @@ QgsPointV2 QgsAbstractGeometryV2::centroid() const
   }
 }
 
-bool QgsAbstractGeometryV2::convertTo( QgsWkbTypes::Type type )
+bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
 {
   if ( type == mWkbType )
     return true;
@@ -244,7 +244,7 @@ bool QgsAbstractGeometryV2::convertTo( QgsWkbTypes::Type type )
   return true;
 }
 
-bool QgsAbstractGeometryV2::isEmpty() const
+bool QgsAbstractGeometry::isEmpty() const
 {
   QgsVertexId vId;
   QgsPointV2 vertex;
@@ -252,7 +252,7 @@ bool QgsAbstractGeometryV2::isEmpty() const
 }
 
 
-QgsAbstractGeometryV2* QgsAbstractGeometryV2::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
+QgsAbstractGeometry* QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( toleranceType );

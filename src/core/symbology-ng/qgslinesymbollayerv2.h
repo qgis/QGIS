@@ -30,14 +30,14 @@ class QgsExpression;
 #define DEFAULT_SIMPLELINE_CAPSTYLE  Qt::SquareCap
 
 /** \ingroup core
- * \class QgsSimpleLineSymbolLayerV2
+ * \class QgsSimpleLineSymbolLayer
  */
-class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
+class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
-    QgsSimpleLineSymbolLayerV2( const QColor& color = DEFAULT_SIMPLELINE_COLOR,
-                                double width = DEFAULT_SIMPLELINE_WIDTH,
-                                Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
+    QgsSimpleLineSymbolLayer( const QColor& color = DEFAULT_SIMPLELINE_COLOR,
+                              double width = DEFAULT_SIMPLELINE_WIDTH,
+                              Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
 
     // static stuff
 
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSimpleLineSymbolLayerV2* clone() const override;
+    QgsSimpleLineSymbolLayer* clone() const override;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
@@ -145,15 +145,15 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 #define DEFAULT_MARKERLINE_INTERVAL   3
 
 /** \ingroup core
- * \class QgsMarkerLineSymbolLayerV2
+ * \class QgsMarkerLineSymbolLayer
  */
-class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
+class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
-    QgsMarkerLineSymbolLayerV2( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
-                                double interval = DEFAULT_MARKERLINE_INTERVAL );
+    QgsMarkerLineSymbolLayer( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
+                              double interval = DEFAULT_MARKERLINE_INTERVAL );
 
-    ~QgsMarkerLineSymbolLayerV2();
+    ~QgsMarkerLineSymbolLayer();
 
     /**
      * Defines how/where the marker should be placed on the line
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsMarkerLineSymbolLayerV2* clone() const override;
+    QgsMarkerLineSymbolLayer* clone() const override;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     double mInterval;
     QgsUnitTypes::RenderUnit mIntervalUnit;
     QgsMapUnitScale mIntervalMapUnitScale;
-    QgsMarkerSymbolV2* mMarker;
+    QgsMarkerSymbol* mMarker;
     Placement mPlacement;
     double mOffsetAlongLine; //distance to offset along line before marker is drawn
     QgsUnitTypes::RenderUnit mOffsetAlongLineUnit; //unit for offset along line

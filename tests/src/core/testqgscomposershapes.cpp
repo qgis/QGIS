@@ -143,15 +143,15 @@ void TestQgsComposerShapes::symbolV2()
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
 
   //setup simple fill
-  QgsSimpleFillSymbolLayerV2* simpleFill = new QgsSimpleFillSymbolLayerV2();
-  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::green );
   simpleFill->setBorderColor( Qt::yellow );
   simpleFill->setBorderWidth( 6 );
 
   mComposerShape->setShapeStyleSymbol( fillSymbol );
-  mComposerShape->setUseSymbolV2( true );
+  mComposerShape->setUseSymbol( true );
   delete fillSymbol;
 
   QgsCompositionChecker checker( "composershapes_symbolv2", mComposition );

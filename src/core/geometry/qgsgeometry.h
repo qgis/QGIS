@@ -70,7 +70,7 @@ struct QgsGeometryPrivate;
  * for geometry objects. QgsGeometry is implicitly shared, so making copies of geometries is inexpensive. The geometry
  * container class can also be stored inside a QVariant object.
  *
- * The actual geometry representation is stored as a @link QgsAbstractGeometryV2 @endlink within the container, and
+ * The actual geometry representation is stored as a @link QgsAbstractGeometry @endlink within the container, and
  * can be accessed via the @link geometry @endlink method or set using the @link setGeometry @endlink method.
  */
 
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsGeometry
      * geom is transferred.
      * @note added in QGIS 2.10
      */
-    explicit QgsGeometry( QgsAbstractGeometryV2* geom );
+    explicit QgsGeometry( QgsAbstractGeometry* geom );
 
     //! Destructor
     ~QgsGeometry();
@@ -101,13 +101,13 @@ class CORE_EXPORT QgsGeometry
      * @note added in QGIS 2.10
      * @see setGeometry
      */
-    QgsAbstractGeometryV2* geometry() const;
+    QgsAbstractGeometry* geometry() const;
 
     /** Sets the underlying geometry store. Ownership of geometry is transferred.
      * @note added in QGIS 2.10
      * @see geometry
      */
-    void setGeometry( QgsAbstractGeometryV2* geometry );
+    void setGeometry( QgsAbstractGeometry* geometry );
 
     /** Returns true if the geometry is empty (ie, contains no underlying geometry
      * accessible via @link geometry @endlink).
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsGeometry
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurveV2* ring );
+    int addRing( QgsCurve* ring );
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
@@ -364,7 +364,7 @@ class CORE_EXPORT QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequenceV2 &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    int addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsAbstractGeometryV2* part, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    int addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
      * @param newPart part to add. Ownership is NOT transferred.
@@ -825,19 +825,19 @@ class CORE_EXPORT QgsGeometry
 
     /** Creates and returns a new geometry engine
      */
-    static QgsGeometryEngine* createGeometryEngine( const QgsAbstractGeometryV2* geometry );
+    static QgsGeometryEngine* createGeometryEngine( const QgsAbstractGeometry* geometry );
 
     /** Upgrades a point list from QgsPoint to QgsPointV2
      * @param input list of QgsPoint objects to be upgraded
      * @param output destination for list of points converted to QgsPointV2
      */
-    static void convertPointList( const QList<QgsPoint> &input, QgsPointSequenceV2 &output );
+    static void convertPointList( const QList<QgsPoint> &input, QgsPointSequence &output );
 
     /** Downgrades a point list from QgsPointV2 to QgsPoint
      * @param input list of QgsPointV2 objects to be downgraded
      * @param output destination for list of points converted to QgsPoint
      */
-    static void convertPointList( const QgsPointSequenceV2 &input, QList<QgsPoint> &output );
+    static void convertPointList( const QgsPointSequence &input, QList<QgsPoint> &output );
 
     //! Allows direct construction of QVariants from geometry.
     operator QVariant() const
@@ -858,7 +858,7 @@ class CORE_EXPORT QgsGeometry
     void detach( bool cloneGeom = true ); //make sure mGeometry only referenced from this instance
     void removeWkbGeos();
 
-    static void convertToPolyline( const QgsPointSequenceV2 &input, QgsPolyline& output );
+    static void convertToPolyline( const QgsPointSequence &input, QgsPolyline& output );
     static void convertPolygon( const QgsPolygonV2& input, QgsPolygon& output );
 
     /** Try to convert the geometry to a point */

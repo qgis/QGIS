@@ -20,7 +20,7 @@
 
 #include "qgswmsconfigparser.h"
 
-class QgsFeatureRendererV2;
+class QgsFeatureRenderer;
 class QgsVectorLayer;
 class QgsRasterLayer;
 class QTemporaryFile;
@@ -171,7 +171,7 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     QDomElement findNamedStyleElement( const QDomElement& layerElement, const QString& styleName ) const;
 
     /** Creates a Renderer from a UserStyle SLD node. Returns 0 in case of error*/
-    QgsFeatureRendererV2* rendererFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const;
+    QgsFeatureRenderer* rendererFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const;
 
     /** Searches for a <TextSymbolizer> element and applies the settings to the vector layer
      @return true if settings have been applied, false in case of <TextSymbolizer> element not present or error*/

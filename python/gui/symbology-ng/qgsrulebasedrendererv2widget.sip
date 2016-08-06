@@ -1,11 +1,11 @@
-class QgsRuleBasedRendererV2Model : QAbstractItemModel
+class QgsRuleBasedRendererModel : QAbstractItemModel
 {
 %TypeHeaderCode
 #include <qgsrulebasedrendererv2widget.h>
 %End
 
   public:
-    QgsRuleBasedRendererV2Model( QgsRuleBasedRendererV2* r );
+    QgsRuleBasedRendererModel( QgsRuleBasedRenderer* r );
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
@@ -31,9 +31,9 @@ class QgsRuleBasedRendererV2Model : QAbstractItemModel
 
     // new methods
 
-    QgsRuleBasedRendererV2::Rule* ruleForIndex( const QModelIndex& index ) const;
+    QgsRuleBasedRenderer::Rule* ruleForIndex( const QModelIndex& index ) const;
 
-    void insertRule( const QModelIndex& parent, int before, QgsRuleBasedRendererV2::Rule* newrule );
+    void insertRule( const QModelIndex& parent, int before, QgsRuleBasedRenderer::Rule* newrule );
     void updateRule( const QModelIndex& parent, int row );
     // update rule and all its descendants
     void updateRule( const QModelIndex& index );
@@ -43,12 +43,12 @@ class QgsRuleBasedRendererV2Model : QAbstractItemModel
     void finishedAddingRules(); // call endInsertRows
 
     //! @note not available in python bindungs
-    // void setFeatureCounts( QMap<QgsRuleBasedRendererV2::Rule*, QgsRuleBasedRendererV2Count> theCountMap );
+    // void setFeatureCounts( QMap<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount> theCountMap );
     void clearFeatureCounts();
 
 };
 
-class QgsRuleBasedRendererV2Widget : QgsRendererV2Widget
+class QgsRuleBasedRendererWidget : QgsRendererWidget
 {
 %TypeHeaderCode
 #include <qgsrulebasedrendererv2widget.h>
@@ -56,12 +56,12 @@ class QgsRuleBasedRendererV2Widget : QgsRendererV2Widget
 
   public:
 
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
 
-    QgsRuleBasedRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
-    ~QgsRuleBasedRendererV2Widget();
+    QgsRuleBasedRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    ~QgsRuleBasedRendererWidget();
 
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRenderer* renderer();
 
   public slots:
 
@@ -90,10 +90,10 @@ class QgsRuleBasedRendererV2Widget : QgsRendererV2Widget
     void refineRuleRangesGui( const QModelIndexList& index );
     void refineRuleScalesGui( const QModelIndexList& index );
 
-    QgsRuleBasedRendererV2::Rule* currentRule();
+    QgsRuleBasedRenderer::Rule* currentRule();
 
     QList<QgsSymbol*> selectedSymbols();
-    QList<QgsRuleBasedRendererV2::Rule*> selectedRules();
+    QList<QgsRuleBasedRenderer::Rule*> selectedRules();
     void refreshSymbolView();
     void keyPressEvent( QKeyEvent* event );
 };
@@ -107,10 +107,10 @@ class QgsRendererRulePropsWidget: QgsPanelWidget
 %End
 
   public:
-    QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
+    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
     ~QgsRendererRulePropsWidget();
 
-    QgsRuleBasedRendererV2::Rule* rule();
+    QgsRuleBasedRenderer::Rule* rule();
 
   public slots:
     void testFilter();
@@ -127,10 +127,10 @@ class QgsRendererRulePropsDialog : QDialog
 %End
 
   public:
-    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
+    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
     ~QgsRendererRulePropsDialog();
 
-    QgsRuleBasedRendererV2::Rule* rule();
+    QgsRuleBasedRenderer::Rule* rule();
 
   public slots:
     void testFilter();

@@ -37,7 +37,7 @@
  * leaves the actual drawing of the symbols to subclasses.
  * \note Added in version 2.16
  */
-class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayerV2
+class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 {
   public:
 
@@ -179,14 +179,14 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayerV2
 };
 
 /** \ingroup core
- * \class QgsSimpleMarkerSymbolLayerV2
+ * \class QgsSimpleMarkerSymbolLayer
  * \brief Simple marker symbol layer, consisting of a rendered shape with solid fill color and an outline.
  */
-class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsSimpleMarkerSymbolLayerBase
+class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayerBase
 {
   public:
 
-    /** Constructor for QgsSimpleMarkerSymbolLayerV2.
+    /** Constructor for QgsSimpleMarkerSymbolLayer.
     * @param name symbol name, should be one of "square", "rectangle", "diamond",
     * "pentagon", "hexagon", "triangle", "equilateral_triangle", "star", "arrow",
     * "circle", "cross", "cross_fill", "cross2", "line", "x", "arrowhead", "filled_arrowhead",
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsSimpleMarkerSymbolLay
     * @param penJoinStyle join style for outline pen
     * @deprecated use variant which accepts QgsSimpleMarkerSymbolLayerBase::Shape instead
     */
-    Q_DECL_DEPRECATED QgsSimpleMarkerSymbolLayerV2( const QString& name,
+    Q_DECL_DEPRECATED QgsSimpleMarkerSymbolLayer( const QString& name,
         const QColor& color = DEFAULT_SIMPLEMARKER_COLOR,
         const QColor& borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
         double size = DEFAULT_SIMPLEMARKER_SIZE,
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsSimpleMarkerSymbolLay
         QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
         Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
 
-    /** Constructor for QgsSimpleMarkerSymbolLayerV2.
+    /** Constructor for QgsSimpleMarkerSymbolLayer.
     * @param shape symbol shape
     * @param size symbol size (in mm)
     * @param angle symbol rotation angle
@@ -217,25 +217,25 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsSimpleMarkerSymbolLay
     * @param borderColor border color for symbol
     * @param penJoinStyle join style for outline pen
     */
-    QgsSimpleMarkerSymbolLayerV2( Shape shape = Circle,
-                                  double size = DEFAULT_SIMPLEMARKER_SIZE,
-                                  double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                  QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
-                                  const QColor& color = DEFAULT_SIMPLEMARKER_COLOR,
-                                  const QColor& borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
-                                  Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
+    QgsSimpleMarkerSymbolLayer( Shape shape = Circle,
+                                double size = DEFAULT_SIMPLEMARKER_SIZE,
+                                double angle = DEFAULT_SIMPLEMARKER_ANGLE,
+                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+                                const QColor& color = DEFAULT_SIMPLEMARKER_COLOR,
+                                const QColor& borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
+                                Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
 
     // static methods
 
-    /** Creates a new QgsSimpleMarkerSymbolLayerV2.
+    /** Creates a new QgsSimpleMarkerSymbolLayer.
      * @param properties a property map containing symbol properties (see properties())
-     * @returns new QgsSimpleMarkerSymbolLayerV2
+     * @returns new QgsSimpleMarkerSymbolLayer
      */
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
 
-    /** Creates a new QgsSimpleMarkerSymbolLayerV2 from an SLD XML element.
+    /** Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
      * @param element XML element containing SLD definition of symbol
-     * @returns new QgsSimpleMarkerSymbolLayerV2
+     * @returns new QgsSimpleMarkerSymbolLayer
      */
     static QgsSymbolLayer* createFromSld( QDomElement &element );
 
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsSimpleMarkerSymbolLay
     void startRender( QgsSymbolRenderContext& context ) override;
     void renderPoint( QPointF point, QgsSymbolRenderContext& context ) override;
     QgsStringMap properties() const override;
-    QgsSimpleMarkerSymbolLayerV2* clone() const override;
+    QgsSimpleMarkerSymbolLayer* clone() const override;
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
     bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsSimpleMarkerSymbolLay
 
 /** \ingroup core
  * \class QgsFilledMarkerSymbolLayer
- * \brief Filled marker symbol layer, consisting of a shape which is rendered using a QgsFillSymbolV2. This allows
+ * \brief Filled marker symbol layer, consisting of a shape which is rendered using a QgsFillSymbol. This allows
  * the symbol to support advanced styling of the interior and outline of the shape.
  * \note Added in version 2.16
  */
@@ -467,7 +467,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     virtual void draw( QgsSymbolRenderContext& context, Shape shape, const QPolygonF& polygon, const QPainterPath& path ) override;
 
     //! Fill subsymbol
-    QScopedPointer< QgsFillSymbolV2 > mFill;
+    QScopedPointer< QgsFillSymbol > mFill;
 };
 
 //////////
@@ -477,15 +477,15 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 #define DEFAULT_SVGMARKER_ANGLE        0
 
 /** \ingroup core
- * \class QgsSvgMarkerSymbolLayerV2
+ * \class QgsSvgMarkerSymbolLayer
  */
-class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
+class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
-    QgsSvgMarkerSymbolLayerV2( const QString& name = DEFAULT_SVGMARKER_NAME,
-                               double size = DEFAULT_SVGMARKER_SIZE,
-                               double angle = DEFAULT_SVGMARKER_ANGLE,
-                               QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsSvgMarkerSymbolLayer( const QString& name = DEFAULT_SVGMARKER_NAME,
+                             double size = DEFAULT_SVGMARKER_SIZE,
+                             double angle = DEFAULT_SVGMARKER_ANGLE,
+                             QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     // static stuff
 
@@ -504,7 +504,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSvgMarkerSymbolLayerV2* clone() const override;
+    QgsSvgMarkerSymbolLayer* clone() const override;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
@@ -575,18 +575,18 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 #define DEFAULT_FONTMARKER_ANGLE  0
 
 /** \ingroup core
- * \class QgsFontMarkerSymbolLayerV2
+ * \class QgsFontMarkerSymbolLayer
  */
-class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
+class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
-    QgsFontMarkerSymbolLayerV2( const QString& fontFamily = DEFAULT_FONTMARKER_FONT,
-                                QChar chr = DEFAULT_FONTMARKER_CHR,
-                                double pointSize = DEFAULT_FONTMARKER_SIZE,
-                                const QColor& color = DEFAULT_FONTMARKER_COLOR,
-                                double angle = DEFAULT_FONTMARKER_ANGLE );
+    QgsFontMarkerSymbolLayer( const QString& fontFamily = DEFAULT_FONTMARKER_FONT,
+                              QChar chr = DEFAULT_FONTMARKER_CHR,
+                              double pointSize = DEFAULT_FONTMARKER_SIZE,
+                              const QColor& color = DEFAULT_FONTMARKER_COLOR,
+                              double angle = DEFAULT_FONTMARKER_ANGLE );
 
-    ~QgsFontMarkerSymbolLayerV2();
+    ~QgsFontMarkerSymbolLayer();
 
     // static stuff
 
@@ -605,7 +605,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsFontMarkerSymbolLayerV2* clone() const override;
+    QgsFontMarkerSymbolLayer* clone() const override;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 

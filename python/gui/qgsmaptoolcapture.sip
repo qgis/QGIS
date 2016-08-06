@@ -32,14 +32,14 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     virtual void deactivate();
 
     /** Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS*/
-    int addCurve( QgsCurveV2* c );
+    int addCurve( QgsCurve* c );
 
     /**
      * Get the capture curve
      *
      * @return Capture curve
      */
-    const QgsCompoundCurveV2* captureCurve() const;
+    const QgsCompoundCurve* captureCurve() const;
 
 
     /**

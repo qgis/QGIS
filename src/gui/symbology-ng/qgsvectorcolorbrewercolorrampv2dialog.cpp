@@ -31,7 +31,7 @@ static void updateColorButton( QAbstractButton* button, QColor color )
 /////////
 
 
-QgsVectorColorBrewerColorRampV2Dialog::QgsVectorColorBrewerColorRampV2Dialog( QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent )
+QgsVectorColorBrewerColorRampDialog::QgsVectorColorBrewerColorRampDialog( QgsVectorColorBrewerColorRamp* ramp, QWidget* parent )
     : QDialog( parent )
     , mRamp( ramp )
 {
@@ -41,11 +41,11 @@ QgsVectorColorBrewerColorRampV2Dialog::QgsVectorColorBrewerColorRampV2Dialog( Qg
   QSize iconSize( 50, 16 );
   cboSchemeName->setIconSize( iconSize );
 
-  QStringList schemes = QgsVectorColorBrewerColorRampV2::listSchemeNames();
+  QStringList schemes = QgsVectorColorBrewerColorRamp::listSchemeNames();
   Q_FOREACH ( const QString& schemeName, schemes )
   {
     // create a preview icon using five color variant
-    QgsVectorColorBrewerColorRampV2* r = new QgsVectorColorBrewerColorRampV2( schemeName, 5 );
+    QgsVectorColorBrewerColorRamp* r = new QgsVectorColorBrewerColorRamp( schemeName, 5 );
     QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( r, iconSize );
     delete r;
     cboSchemeName->addItem( icon, schemeName );
@@ -61,13 +61,13 @@ QgsVectorColorBrewerColorRampV2Dialog::QgsVectorColorBrewerColorRampV2Dialog( Qg
   updatePreview();
 }
 
-void QgsVectorColorBrewerColorRampV2Dialog::populateVariants()
+void QgsVectorColorBrewerColorRampDialog::populateVariants()
 {
   QString oldVariant = cboColors->currentText();
 
   cboColors->clear();
   QString schemeName = cboSchemeName->currentText();
-  QList<int> variants = QgsVectorColorBrewerColorRampV2::listSchemeVariants( schemeName );
+  QList<int> variants = QgsVectorColorBrewerColorRamp::listSchemeVariants( schemeName );
   Q_FOREACH ( int variant, variants )
   {
     cboColors->addItem( QString::number( variant ) );
@@ -83,13 +83,13 @@ void QgsVectorColorBrewerColorRampV2Dialog::populateVariants()
   cboColors->setCurrentIndex( idx );
 }
 
-void QgsVectorColorBrewerColorRampV2Dialog::updatePreview()
+void QgsVectorColorBrewerColorRampDialog::updatePreview()
 {
   QSize size( 300, 40 );
   lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size ) );
 }
 
-void QgsVectorColorBrewerColorRampV2Dialog::setSchemeName()
+void QgsVectorColorBrewerColorRampDialog::setSchemeName()
 {
   // populate list of variants
   populateVariants();
@@ -98,7 +98,7 @@ void QgsVectorColorBrewerColorRampV2Dialog::setSchemeName()
   updatePreview();
 }
 
-void QgsVectorColorBrewerColorRampV2Dialog::setColors()
+void QgsVectorColorBrewerColorRampDialog::setColors()
 {
   int num = cboColors->currentText().toInt();
   mRamp->setColors( num );

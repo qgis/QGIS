@@ -1,4 +1,4 @@
-class QgsMultiLineStringV2: public QgsMultiCurveV2
+class QgsMultiLineString: public QgsMultiCurve
 {
 %TypeHeaderCode
 #include <qgsmultilinestringv2.h>
@@ -6,7 +6,7 @@ class QgsMultiLineStringV2: public QgsMultiCurveV2
 
   public:
     virtual QString geometryType() const;
-    virtual QgsMultiLineStringV2* clone() const;
+    virtual QgsMultiLineString* clone() const;
 
     bool fromWkt( const QString& wkt );
 
@@ -18,11 +18,11 @@ class QgsMultiLineStringV2: public QgsMultiCurveV2
     QString asJSON( int precision = 17 ) const;
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometryV2* g );
+    virtual bool addGeometry( QgsAbstractGeometry* g );
 
-    /** Returns the geometry converted to the more generic curve type QgsMultiCurveV2
+    /** Returns the geometry converted to the more generic curve type QgsMultiCurve
     @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometryV2* toCurveType() const /Factory/;
+    QgsAbstractGeometry* toCurveType() const /Factory/;
 
   protected:
 

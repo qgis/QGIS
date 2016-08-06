@@ -52,13 +52,13 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      */
     QgsVectorLayer::EditType type();
 
-    const QString editorWidgetV2Type();
+    const QString editorWidgetType();
 
-    const QString editorWidgetV2Text();
+    const QString editorWidgetText();
 
     void setWidgetV2Type( const QString& type );
 
-    const QgsEditorWidgetConfig editorWidgetV2Config();
+    const QgsEditorWidgetConfig editorWidgetConfig();
 
     void setWidgetV2Config( const QgsEditorWidgetConfig& config );
 

@@ -18,7 +18,7 @@
 
 #include "qgsgeometrycheck.h"
 
-class QgsSurfaceV2;
+class QgsSurface;
 
 class QgsGeometryAreaCheck : public QgsGeometryCheck
 {
@@ -38,7 +38,7 @@ class QgsGeometryAreaCheck : public QgsGeometryCheck
     enum ResolutionMethod { MergeLongestEdge, MergeLargestArea, MergeIdenticalAttribute, Delete, NoChange };
 
     bool mergeWithNeighbor( QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes , QString &errMsg ) const;
-    virtual bool checkThreshold( const QgsAbstractGeometryV2* geom, double& value ) const { value = geom->area(); return value < mThreshold; }
+    virtual bool checkThreshold( const QgsAbstractGeometry* geom, double& value ) const { value = geom->area(); return value < mThreshold; }
 
   protected:
     double mThreshold;

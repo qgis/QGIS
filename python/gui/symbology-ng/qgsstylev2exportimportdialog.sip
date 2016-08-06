@@ -1,4 +1,4 @@
-class QgsStyleV2ExportImportDialog : QDialog
+class QgsStyleExportImportDialog : QDialog
 {
 %TypeHeaderCode
 #include <qgsstylev2exportimportdialog.h>
@@ -12,8 +12,8 @@ class QgsStyleV2ExportImportDialog : QDialog
 
     // constructor
     // mode argument must be 0 for saving and 1 for loading
-    QgsStyleV2ExportImportDialog( QgsStyleV2* style, QWidget *parent /TransferThis/ = NULL, Mode mode = Export );
-    ~QgsStyleV2ExportImportDialog();
+    QgsStyleExportImportDialog( QgsStyle* style, QWidget *parent /TransferThis/ = NULL, Mode mode = Export );
+    ~QgsStyleExportImportDialog();
 
     /**
      * @brief selectSymbols select symbols by name

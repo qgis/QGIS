@@ -31,13 +31,13 @@ from qgis.PyQt.QtCore import QSize
 
 from qgis.core import (
     QgsVectorLayer,
-    QgsSingleSymbolRendererV2,
-    QgsFillSymbolV2,
-    QgsLineSymbolV2,
-    QgsMarkerSymbolV2,
+    QgsSingleSymbolRenderer,
+    QgsFillSymbol,
+    QgsLineSymbol,
+    QgsMarkerSymbol,
     QgsMapLayerRegistry,
     QgsRectangle,
-    QgsGeometryGeneratorSymbolLayerV2,
+    QgsGeometryGeneratorSymbolLayer,
     QgsSymbol,
     QgsMultiRenderChecker
 )
@@ -68,13 +68,13 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         QgsMapLayerRegistry.instance().addMapLayer(self.points_layer)
 
         # Create style
-        sym1 = QgsFillSymbolV2.createSimple({'color': '#fdbf6f'})
-        sym2 = QgsLineSymbolV2.createSimple({'color': '#fdbf6f'})
-        sym3 = QgsMarkerSymbolV2.createSimple({'color': '#fdbf6f'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
+        sym2 = QgsLineSymbol.createSimple({'color': '#fdbf6f'})
+        sym3 = QgsMarkerSymbol.createSimple({'color': '#fdbf6f'})
 
-        self.polys_layer.setRendererV2(QgsSingleSymbolRendererV2(sym1))
-        self.lines_layer.setRendererV2(QgsSingleSymbolRendererV2(sym2))
-        self.points_layer.setRendererV2(QgsSingleSymbolRendererV2(sym3))
+        self.polys_layer.setRendererV2(QgsSingleSymbolRenderer(sym1))
+        self.lines_layer.setRendererV2(QgsSingleSymbolRenderer(sym2))
+        self.points_layer.setRendererV2(QgsSingleSymbolRenderer(sym3))
 
         self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
@@ -86,7 +86,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
 
     def test_marker(self):
         sym = self.polys_layer.rendererV2().symbol()
-        sym_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'centroid($geometry)'})
+        sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
         sym_layer.setSymbolType(QgsSymbol.Marker)
         sym.changeSymbolLayer(0, sym_layer)
 
@@ -101,11 +101,11 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
     def test_mixed(self):
         sym = self.polys_layer.rendererV2().symbol()
 
-        buffer_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'buffer($geometry, "value"/15)'})
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "value"/15)'})
         buffer_layer.setSymbolType(QgsSymbol.Fill)
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
-        marker_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'centroid($geometry)'})
+        marker_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
         marker_layer.setSymbolType(QgsSymbol.Marker)
         sym.appendSymbolLayer(marker_layer)
 
@@ -120,7 +120,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
     def test_buffer_lines(self):
         sym = self.lines_layer.rendererV2().symbol()
 
-        buffer_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'buffer($geometry, "value"/15)'})
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "value"/15)'})
         buffer_layer.setSymbolType(QgsSymbol.Fill)
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
@@ -136,7 +136,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
     def test_buffer_points(self):
         sym = self.points_layer.rendererV2().symbol()
 
-        buffer_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'buffer($geometry, "staff"/15)'})
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "staff"/15)'})
         buffer_layer.setSymbolType(QgsSymbol.Fill)
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)

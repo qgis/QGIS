@@ -26,7 +26,7 @@
 #include <QInputDialog>
 #include <QMenu>
 
-QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
+QgsRendererWidget::QgsRendererWidget( QgsVectorLayer* layer, QgsStyle* style )
     : QgsPanelWidget()
     , mLayer( layer )
     , mStyle( style )
@@ -55,12 +55,12 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
   }
 }
 
-void QgsRendererV2Widget::contextMenuViewCategories( QPoint )
+void QgsRendererWidget::contextMenuViewCategories( QPoint )
 {
   contextMenu->exec( QCursor::pos() );
 }
 
-void QgsRendererV2Widget::changeSymbolColor()
+void QgsRendererWidget::changeSymbolColor()
 {
   QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
@@ -92,7 +92,7 @@ void QgsRendererV2Widget::changeSymbolColor()
   }
 }
 
-void QgsRendererV2Widget::changeSymbolTransparency()
+void QgsRendererWidget::changeSymbolTransparency()
 {
   QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
@@ -126,7 +126,7 @@ void QgsRendererV2Widget::changeSymbolTransparency()
   }
 }
 
-void QgsRendererV2Widget::changeSymbolUnit()
+void QgsRendererWidget::changeSymbolUnit()
 {
   QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
@@ -162,7 +162,7 @@ void QgsRendererV2Widget::changeSymbolUnit()
   }
 }
 
-void QgsRendererV2Widget::changeSymbolWidth()
+void QgsRendererWidget::changeSymbolWidth()
 {
   QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
@@ -183,14 +183,14 @@ void QgsRendererV2Widget::changeSymbolWidth()
           continue;
 
         if ( symbol->type() == QgsSymbol::Line )
-          static_cast<QgsLineSymbolV2*>( symbol )->setWidth( dlg.mSpinBox->value() );
+          static_cast<QgsLineSymbol*>( symbol )->setWidth( dlg.mSpinBox->value() );
       }
     }
     refreshSymbolView();
   }
 }
 
-void QgsRendererV2Widget::changeSymbolSize()
+void QgsRendererWidget::changeSymbolSize()
 {
   QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
@@ -211,14 +211,14 @@ void QgsRendererV2Widget::changeSymbolSize()
           continue;
 
         if ( symbol->type() == QgsSymbol::Marker )
-          static_cast<QgsMarkerSymbolV2*>( symbol )->setSize( dlg.mSpinBox->value() );
+          static_cast<QgsMarkerSymbol*>( symbol )->setSize( dlg.mSpinBox->value() );
       }
     }
     refreshSymbolView();
   }
 }
 
-void QgsRendererV2Widget::changeSymbolAngle()
+void QgsRendererWidget::changeSymbolAngle()
 {
   QList<QgsSymbol*> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
@@ -239,14 +239,14 @@ void QgsRendererV2Widget::changeSymbolAngle()
           continue;
 
         if ( symbol->type() == QgsSymbol::Marker )
-          static_cast<QgsMarkerSymbolV2*>( symbol )->setAngle( dlg.mSpinBox->value() );
+          static_cast<QgsMarkerSymbol*>( symbol )->setAngle( dlg.mSpinBox->value() );
       }
     }
     refreshSymbolView();
   }
 }
 
-void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
+void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer* r )
 {
   QgsLegendSymbolList symbols = r->legendSymbolItems();
 
@@ -259,17 +259,17 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
   }
 }
 
-void QgsRendererV2Widget::setMapCanvas( QgsMapCanvas *canvas )
+void QgsRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
 }
 
-const QgsMapCanvas* QgsRendererV2Widget::mapCanvas() const
+const QgsMapCanvas* QgsRendererWidget::mapCanvas() const
 {
   return mMapCanvas;
 }
 
-void QgsRendererV2Widget::applyChanges()
+void QgsRendererWidget::applyChanges()
 {
   apply();
 }
@@ -380,41 +380,41 @@ void QgsDataDefinedValueDialog::dataDefinedChanged()
 
 QgsDataDefined QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
-  const QgsMarkerSymbolV2* marker = static_cast<const QgsMarkerSymbolV2*>( symbol );
+  const QgsMarkerSymbol* marker = static_cast<const QgsMarkerSymbol*>( symbol );
   return marker->dataDefinedSize();
 }
 
 void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd )
 {
-  static_cast<QgsMarkerSymbolV2*>( symbol )->setDataDefinedSize( dd );
-  static_cast<QgsMarkerSymbolV2*>( symbol )->setScaleMethod( QgsSymbol::ScaleDiameter );
+  static_cast<QgsMarkerSymbol*>( symbol )->setDataDefinedSize( dd );
+  static_cast<QgsMarkerSymbol*>( symbol )->setScaleMethod( QgsSymbol::ScaleDiameter );
 }
 
 
 QgsDataDefined QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
-  const QgsMarkerSymbolV2* marker = static_cast<const QgsMarkerSymbolV2*>( symbol );
+  const QgsMarkerSymbol* marker = static_cast<const QgsMarkerSymbol*>( symbol );
   return marker->dataDefinedAngle();
 }
 
 void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
 {
-  static_cast<QgsMarkerSymbolV2*>( symbol )->setDataDefinedAngle( dd );
+  static_cast<QgsMarkerSymbol*>( symbol )->setDataDefinedAngle( dd );
 }
 
 
 QgsDataDefined QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
-  const QgsLineSymbolV2* line = static_cast<const QgsLineSymbolV2*>( symbol );
+  const QgsLineSymbol* line = static_cast<const QgsLineSymbol*>( symbol );
   return line->dataDefinedWidth();
 }
 
 void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
 {
-  static_cast<QgsLineSymbolV2*>( symbol )->setDataDefinedWidth( dd );
+  static_cast<QgsLineSymbol*>( symbol )->setDataDefinedWidth( dd );
 }
 
-void QgsRendererV2Widget::apply()
+void QgsRendererWidget::apply()
 {
 
 }

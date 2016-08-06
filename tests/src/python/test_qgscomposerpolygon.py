@@ -22,7 +22,7 @@ from qgis.core import (QgsComposerPolygon,
                        QgsComposerItem,
                        QgsComposition,
                        QgsMapSettings,
-                       QgsFillSymbolV2
+                       QgsFillSymbol
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -65,7 +65,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         props["width_border"] = "10.0"
         props["joinstyle"] = "miter"
 
-        style = QgsFillSymbolV2.createSimple(props)
+        style = QgsFillSymbol.createSimple(props)
         self.mComposerPolygon.setPolygonStyleSymbol(style)
 
     def testDisplayName(self):

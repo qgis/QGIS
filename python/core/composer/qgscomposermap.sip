@@ -510,12 +510,12 @@ class QgsComposerMap : QgsComposerItem
     /**
      * @deprecated use grid()->setLineSymbol() or grids() instead
      */
-    void setGridLineSymbol( QgsLineSymbolV2* symbol /Transfer/) /Deprecated/;
+    void setGridLineSymbol( QgsLineSymbol* symbol /Transfer/) /Deprecated/;
 
     /**
      * @deprecated use grid()->lineSymbol() or grids() instead
      */
-    QgsLineSymbolV2* gridLineSymbol() /Deprecated/;
+    QgsLineSymbol* gridLineSymbol() /Deprecated/;
 
     /** Returns the grid's blending mode
      * @deprecated use grid()->blendMode() or grids() instead
@@ -612,12 +612,12 @@ class QgsComposerMap : QgsComposerItem
     /**
      * @deprecated use overview()->setFrameSymbol() or overviews() instead
      */
-    void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol /Transfer/ ) /Deprecated/;
+    void setOverviewFrameMapSymbol( QgsFillSymbol* symbol /Transfer/ ) /Deprecated/;
 
     /**
      * @deprecated use overview()->frameSymbol() or overviews() instead
      */
-    QgsFillSymbolV2* overviewFrameMapSymbol() /Deprecated/;
+    QgsFillSymbol* overviewFrameMapSymbol() /Deprecated/;
 
     /** Returns the overview's blending mode
      * @deprecated use overview()->blendMode() or overviews() instead

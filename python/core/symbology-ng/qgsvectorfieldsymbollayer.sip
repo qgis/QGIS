@@ -1,4 +1,4 @@
-class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
+class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayer
 {
 %TypeHeaderCode
 #include <qgsvectorfieldsymbollayer.h>

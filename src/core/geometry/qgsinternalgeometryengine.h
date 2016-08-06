@@ -17,7 +17,7 @@
 #define QGSINTERNALGEOMETRYENGINE_H
 
 class QgsGeometry;
-class QgsAbstractGeometryV2;
+class QgsAbstractGeometry;
 
 /**
  * \ingroup core
@@ -50,7 +50,7 @@ class QgsInternalGeometryEngine
     QgsGeometry extrude( double x, double y );
 
   private:
-    const QgsAbstractGeometryV2* mGeometry;
+    const QgsAbstractGeometry* mGeometry;
 };
 
 #endif // QGSINTERNALGEOMETRYENGINE_H

@@ -88,7 +88,7 @@ class QgsGeometryCheck : public QObject
     const CheckType mCheckType;
     QgsFeaturePool* mFeaturePool;
 
-    void replaceFeatureGeometryPart( QgsFeature& feature, int partIdx, QgsAbstractGeometryV2* newPartGeom, Changes& changes ) const;
+    void replaceFeatureGeometryPart( QgsFeature& feature, int partIdx, QgsAbstractGeometry* newPartGeom, Changes& changes ) const;
     void deleteFeatureGeometryPart( QgsFeature& feature, int partIdx, Changes& changes ) const;
     void deleteFeatureGeometryRing( QgsFeature& feature, int partIdx, int ringIdx, Changes& changes ) const;
 };
@@ -109,7 +109,7 @@ class QgsGeometryCheckError
     virtual ~QgsGeometryCheckError();
     const QgsGeometryCheck* check() const { return mCheck; }
     QgsFeatureId featureId() const { return mFeatureId; }
-    virtual QgsAbstractGeometryV2* geometry();
+    virtual QgsAbstractGeometry* geometry();
     virtual QgsRectangle affectedAreaBBox() { return geometry() ? geometry()->boundingBox() : QgsRectangle(); }
     virtual QString description() const { return mCheck->errorDescription(); }
     const QgsPointV2& location() const { return mErrorLocation; }

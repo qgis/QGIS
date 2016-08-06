@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsCategorizedSymbolRendererV2
+"""QGIS Unit tests for QgsCategorizedSymbolRenderer
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,9 +15,9 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.testing import unittest, start_app
-from qgis.core import (QgsCategorizedSymbolRendererV2,
-                       QgsRendererCategoryV2,
-                       QgsMarkerSymbolV2,
+from qgis.core import (QgsCategorizedSymbolRenderer,
+                       QgsRendererCategory,
+                       QgsMarkerSymbol,
                        QgsField,
                        QgsFields
                        )
@@ -27,7 +27,7 @@ start_app()
 
 
 def createMarkerSymbol():
-    symbol = QgsMarkerSymbolV2.createSimple({
+    symbol = QgsMarkerSymbol.createSimple({
         "color": "100,150,50",
         "name": "square",
         "size": "3.0"
@@ -39,14 +39,14 @@ class TestQgsCategorizedSymbolRendererV2(unittest.TestCase):
 
     def testFilter(self):
         """Test filter creation"""
-        renderer = QgsCategorizedSymbolRendererV2()
+        renderer = QgsCategorizedSymbolRenderer()
         renderer.setClassAttribute('field')
 
-        renderer.addCategory(QgsRendererCategoryV2('a', createMarkerSymbol(), 'a'))
-        renderer.addCategory(QgsRendererCategoryV2('b', createMarkerSymbol(), 'b'))
-        renderer.addCategory(QgsRendererCategoryV2('c', createMarkerSymbol(), 'c'))
+        renderer.addCategory(QgsRendererCategory('a', createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategory('b', createMarkerSymbol(), 'b'))
+        renderer.addCategory(QgsRendererCategory('c', createMarkerSymbol(), 'c'))
         # add default category
-        renderer.addCategory(QgsRendererCategoryV2('', createMarkerSymbol(), 'default'))
+        renderer.addCategory(QgsRendererCategory('', createMarkerSymbol(), 'default'))
 
         fields = QgsFields()
         fields.append(QgsField('field', QVariant.String))
@@ -73,16 +73,16 @@ class TestQgsCategorizedSymbolRendererV2(unittest.TestCase):
 
         renderer.deleteAllCategories()
         # just default category
-        renderer.addCategory(QgsRendererCategoryV2('', createMarkerSymbol(), 'default'))
+        renderer.addCategory(QgsRendererCategory('', createMarkerSymbol(), 'default'))
         self.assertEqual(renderer.filter(fields), '')
         assert renderer.updateCategoryRenderState(0, False)
         self.assertEqual(renderer.filter(fields), 'FALSE')
 
         renderer.deleteAllCategories()
         # no default category
-        renderer.addCategory(QgsRendererCategoryV2('a', createMarkerSymbol(), 'a'))
-        renderer.addCategory(QgsRendererCategoryV2('b', createMarkerSymbol(), 'b'))
-        renderer.addCategory(QgsRendererCategoryV2('c', createMarkerSymbol(), 'c'))
+        renderer.addCategory(QgsRendererCategory('a', createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategory('b', createMarkerSymbol(), 'b'))
+        renderer.addCategory(QgsRendererCategory('c', createMarkerSymbol(), 'c'))
         self.assertEqual(renderer.filter(fields), "(\"field\") IN ('a','b','c')")
         assert renderer.updateCategoryRenderState(0, False)
         self.assertEqual(renderer.filter(fields), "(\"field\") IN ('b','c')")
@@ -94,9 +94,9 @@ class TestQgsCategorizedSymbolRendererV2(unittest.TestCase):
         renderer.deleteAllCategories()
         renderer.setClassAttribute('num')
         # numeric categories
-        renderer.addCategory(QgsRendererCategoryV2(1, createMarkerSymbol(), 'a'))
-        renderer.addCategory(QgsRendererCategoryV2(2, createMarkerSymbol(), 'b'))
-        renderer.addCategory(QgsRendererCategoryV2(3, createMarkerSymbol(), 'c'))
+        renderer.addCategory(QgsRendererCategory(1, createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategory(2, createMarkerSymbol(), 'b'))
+        renderer.addCategory(QgsRendererCategory(3, createMarkerSymbol(), 'c'))
         self.assertEqual(renderer.filter(fields), '(\"num\") IN (1,2,3)')
         assert renderer.updateCategoryRenderState(0, False)
         self.assertEqual(renderer.filter(fields), "(\"num\") IN (2,3)")
@@ -107,14 +107,14 @@ class TestQgsCategorizedSymbolRendererV2(unittest.TestCase):
 
     def testFilterExpression(self):
         """Test filter creation with expression"""
-        renderer = QgsCategorizedSymbolRendererV2()
+        renderer = QgsCategorizedSymbolRenderer()
         renderer.setClassAttribute('field + field2')
 
-        renderer.addCategory(QgsRendererCategoryV2('a', createMarkerSymbol(), 'a'))
-        renderer.addCategory(QgsRendererCategoryV2('b', createMarkerSymbol(), 'b'))
-        renderer.addCategory(QgsRendererCategoryV2('c', createMarkerSymbol(), 'c'))
+        renderer.addCategory(QgsRendererCategory('a', createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategory('b', createMarkerSymbol(), 'b'))
+        renderer.addCategory(QgsRendererCategory('c', createMarkerSymbol(), 'c'))
         # add default category
-        renderer.addCategory(QgsRendererCategoryV2('', createMarkerSymbol(), 'default'))
+        renderer.addCategory(QgsRendererCategory('', createMarkerSymbol(), 'default'))
 
         fields = QgsFields()
         fields.append(QgsField('field', QVariant.String))
@@ -140,16 +140,16 @@ class TestQgsCategorizedSymbolRendererV2(unittest.TestCase):
 
         renderer.deleteAllCategories()
         # just default category
-        renderer.addCategory(QgsRendererCategoryV2('', createMarkerSymbol(), 'default'))
+        renderer.addCategory(QgsRendererCategory('', createMarkerSymbol(), 'default'))
         self.assertEqual(renderer.filter(fields), '')
         assert renderer.updateCategoryRenderState(0, False)
         self.assertEqual(renderer.filter(fields), 'FALSE')
 
         renderer.deleteAllCategories()
         # no default category
-        renderer.addCategory(QgsRendererCategoryV2('a', createMarkerSymbol(), 'a'))
-        renderer.addCategory(QgsRendererCategoryV2('b', createMarkerSymbol(), 'b'))
-        renderer.addCategory(QgsRendererCategoryV2('c', createMarkerSymbol(), 'c'))
+        renderer.addCategory(QgsRendererCategory('a', createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategory('b', createMarkerSymbol(), 'b'))
+        renderer.addCategory(QgsRendererCategory('c', createMarkerSymbol(), 'c'))
         self.assertEqual(renderer.filter(fields), "(field + field2) IN ('a','b','c')")
         assert renderer.updateCategoryRenderState(0, False)
         self.assertEqual(renderer.filter(fields), "(field + field2) IN ('b','c')")
@@ -160,9 +160,9 @@ class TestQgsCategorizedSymbolRendererV2(unittest.TestCase):
 
         renderer.deleteAllCategories()
         # numeric categories
-        renderer.addCategory(QgsRendererCategoryV2(1, createMarkerSymbol(), 'a'))
-        renderer.addCategory(QgsRendererCategoryV2(2, createMarkerSymbol(), 'b'))
-        renderer.addCategory(QgsRendererCategoryV2(3, createMarkerSymbol(), 'c'))
+        renderer.addCategory(QgsRendererCategory(1, createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategory(2, createMarkerSymbol(), 'b'))
+        renderer.addCategory(QgsRendererCategory(3, createMarkerSymbol(), 'c'))
         self.assertEqual(renderer.filter(fields), '(field + field2) IN (1,2,3)')
         assert renderer.updateCategoryRenderState(0, False)
         self.assertEqual(renderer.filter(fields), "(field + field2) IN (2,3)")
