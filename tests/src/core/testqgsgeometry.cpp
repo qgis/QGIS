@@ -66,9 +66,9 @@ class TestQgsGeometry : public QObject
     void operatorBool();
 
     // geometry types
-    void pointV2(); //test QgsPointV2
-    void lineStringV2(); //test QgsLineString
-    void polygonV2(); //test QgsPolygonV2
+    void point(); //test QgsPointV2
+    void lineString(); //test QgsLineString
+    void polygon(); //test QgsPolygonV2
     void multiPoint();
     void multiLineString();
     void multiPolygon();
@@ -390,7 +390,7 @@ void TestQgsGeometry::operatorBool()
   QVERIFY( !geom );
 }
 
-void TestQgsGeometry::pointV2()
+void TestQgsGeometry::point()
 {
   //test QgsPointV2
 
@@ -795,7 +795,7 @@ void TestQgsGeometry::pointV2()
   QVERIFY( !p30.boundary() );
 }
 
-void TestQgsGeometry::lineStringV2()
+void TestQgsGeometry::lineString()
 {
   //test constructors
   QgsLineString l1;
@@ -2211,7 +2211,7 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );
 }
 
-void TestQgsGeometry::polygonV2()
+void TestQgsGeometry::polygon()
 {
   //test constructor
   QgsPolygonV2 p1;
