@@ -179,7 +179,7 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
   //evaluate expressions
   if ( mEvaluateExpressions )
   {
-    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, nullptr, mDistanceArea );
+    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, mDistanceArea );
   }
 
   mLoaded = false;

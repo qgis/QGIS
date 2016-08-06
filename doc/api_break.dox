@@ -128,6 +128,15 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 <li>fileMenu() has been removed, use projectMenu() instead.
 </ul>
 
+\subsection qgis_api_break_3_0_QgsActionManager QgsActionManager
+
+<ul>
+<li>doAction() no longer accepts a substitution map. Use expression context variables instead.</li>
+<li>The doAction() variant which takes a QgsFeature along has been removed. Use the expression context
+variant instead.</li>
+<li>expandAction() has been removed. Use QgsExpression::replaceExpressionText() instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsAtlasComposition QgsAtlasComposition
 
 <ul>
@@ -144,6 +153,15 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 <ul>
 <li>DataSourceURI has been renamed to DataSourceUri</li>
 <li>GenericDataSourceURI has been renamed to GenericDataSourceUri</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsComposerLabel QgsComposerLabel
+
+<ul>
+<li>setExpressionContext() has been removed. Setup the composition using an atlas and with
+expression variables in the composer label item instead.</li>
+<li>setSubstitutions has been removed. Use expression context variables in the composer
+label item instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsComposerLegend QgsComposerLegend
@@ -313,6 +331,7 @@ version instead.</li>
 <li>QgsExpression::Function::func has been modified to use a QgsExpressionContext argument rather than a QgsFeature.</li>
 <li>The QgsExpression::Node::eval and prepare versions which take a QgsFeature has been removed, use the QgsExpressionContext versions instead.</li>
 <li>QgsExpression::Interval has been removed. Use QgsInterval instead.</li>
+<li>replaceExpressionText() no longer accepts a substitution map parameter. Use expression context variables instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsFeature QgsFeature

@@ -140,13 +140,11 @@ class QgsExpression
      * Additional substitutions can be passed through the substitutionMap parameter
      * @param action
      * @param context expression context
-     * @param substitutionMap
      * @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
      * and area conversion
      * @note added in QGIS 2.12
      */
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext* context,
-                                          const QMap<QString, QVariant> *substitutionMap = 0,
                                           const QgsDistanceArea* distanceArea = 0 );
 
     /** Attempts to evaluate a text string as an expression to a resultant double

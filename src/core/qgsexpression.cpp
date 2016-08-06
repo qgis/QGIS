@@ -3604,7 +3604,7 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
     d->mRootNode->accept( v );
 }
 
-QString QgsExpression::replaceExpressionText( const QString &action, const QgsExpressionContext *context, const QMap<QString, QVariant> *substitutionMap, const QgsDistanceArea *distanceArea )
+QString QgsExpression::replaceExpressionText( const QString &action, const QgsExpressionContext *context, const QgsDistanceArea *distanceArea )
 {
   QString expr_action;
 

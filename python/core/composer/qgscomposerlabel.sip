@@ -28,16 +28,6 @@ class QgsComposerLabel : QgsComposerItem
     /** Returns the text as it appears on screen (with replaced data field) */
     QString displayText() const;
 
-    /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions.
-      * @deprecated use atlas features and setSubstitutions() instead
-      */
-    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions = QMap<QString, QVariant>() ) /Deprecated/;
-
-    /** Sets the list of local variable substitutions for evaluating expressions in label text.
-     * @note added in QGIS 2.12
-     */
-    void setSubstitutions( const QMap<QString, QVariant>& substitutions = QMap<QString, QVariant>() );
-
     QFont font() const;
     void setFont( const QFont& f );
     /** Accessor for the vertical alignment of the label

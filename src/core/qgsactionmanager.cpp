@@ -72,7 +72,7 @@ void QgsActionManager::doAction( int index, const QgsFeature& feat, int defaultV
   doAction( index, feat, context );
 }
 
-void QgsActionManager::doAction( int index, const QgsFeature& feat, const QgsExpressionContext& context, const QMap<QString, QVariant> *substitutionMap )
+void QgsActionManager::doAction( int index, const QgsFeature& feat, const QgsExpressionContext& context )
 {
   if ( index < 0 || index >= size() )
     return;
@@ -87,27 +87,7 @@ void QgsActionManager::doAction( int index, const QgsFeature& feat, const QgsExp
     actionContext << QgsExpressionContextUtils::layerScope( mLayer );
   actionContext.setFeature( feat );
 
-  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &actionContext, substitutionMap );
-  if ( expandedAction.isEmpty() )
-    return;
-
-  QgsAction newAction( action.type(), action.name(), expandedAction, action.capture() );
-  runAction( newAction );
-}
-
-void QgsActionManager::doAction( int index, const QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
-{
-  if ( index < 0 || index >= size() )
-    return;
-
-  const QgsAction &action = at( index );
-  if ( !action.runable() )
-    return;
-
-  // search for expressions while expanding actions
-  QgsExpressionContext context = createExpressionContext();
-  context.setFeature( feat );
-  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &context, substitutionMap );
+  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &actionContext );
   if ( expandedAction.isEmpty() )
     return;
 
@@ -171,124 +151,6 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 
   return context;
 }
-
-QString QgsActionManager::expandAction( QString action, const QgsAttributeMap &attributes,
-                                        uint clickedOnValue )
-{
-  // This function currently replaces all %% characters in the action
-  // with the value from values[clickedOnValue].second, and then
-  // searches for all strings that go %attribute_name, where
-  // attribute_name is found in values[x].first, and replaces any that
-  // it finds by values[s].second.
-
-  // Additional substitutions could include symbols for $CWD, $HOME,
-  // etc (and their OSX and Windows equivalents)
-
-  // This function will potentially fall apart if any of the
-  // substitutions produce text that could match another
-  // substitution. May be better to adopt a two pass approach - identify
-  // all matches and their substitutions and then do a second pass
-  // for the actual substitutions.
-
-  QString expanded_action;
-  if ( attributes.contains( clickedOnValue ) )
-    expanded_action = action.replace( "%%", attributes[clickedOnValue].toString() );
-  else
-    expanded_action = action;
-
-  const QgsFields &fields = mLayer->fields();
-
-  for ( int i = 0; i < 4; i++ )
-  {
-    for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
-    {
-      int attrIdx = it.key();
-      if ( attrIdx < 0 || attrIdx >= fields.count() )
-        continue;
-
-      QString to_replace;
-      switch ( i )
-      {
-        case 0:
-          to_replace = "[%" + fields.at( attrIdx ).name() + ']';
-          break;
-        case 1:
-          to_replace = "[%" + mLayer->attributeDisplayName( attrIdx ) + ']';
-          break;
-        case 2:
-          to_replace = '%' + fields.at( attrIdx ).name();
-          break;
-        case 3:
-          to_replace = '%' + mLayer->attributeDisplayName( attrIdx );
-          break;
-      }
-
-      expanded_action = expanded_action.replace( to_replace, it.value().toString() );
-    }
-  }
-
-  return expanded_action;
-}
-
-QString QgsActionManager::expandAction( const QString& action, QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
-{
-  // This function currently replaces each expression between [% and %]
-  // in the action with the result of its evaluation on the feature
-  // passed as argument.
-
-  // Additional substitutions can be passed through the substitutionMap
-  // parameter
-
-  QString expr_action;
-
-  int index = 0;
-  while ( index < action.size() )
-  {
-    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
-
-    int pos = rx.indexIn( action, index );
-    if ( pos < 0 )
-      break;
-
-    int start = index;
-    index = pos + rx.matchedLength();
-
-    QString to_replace = rx.cap( 1 ).trimmed();
-    QgsDebugMsg( "Found expression: " + to_replace );
-
-    if ( substitutionMap && substitutionMap->contains( to_replace ) )
-    {
-      expr_action += action.mid( start, pos - start ) + substitutionMap->value( to_replace ).toString();
-      continue;
-    }
-
-    QgsExpression exp( to_replace );
-    if ( exp.hasParserError() )
-    {
-      QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
-      expr_action += action.midRef( start, index - start );
-      continue;
-    }
-
-    QgsExpressionContext context = createExpressionContext();
-    context.setFeature( feat );
-
-    QVariant result = exp.evaluate( &context );
-    if ( exp.hasEvalError() )
-    {
-      QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
-      expr_action += action.midRef( start, index - start );
-      continue;
-    }
-
-    QgsDebugMsg( "Expression result is: " + result.toString() );
-    expr_action += action.mid( start, pos - start ) + result.toString();
-  }
-
-  expr_action += action.midRef( index );
-  return expr_action;
-}
-
 
 bool QgsActionManager::writeXml( QDomNode& layer_node, QDomDocument& doc ) const
 {
