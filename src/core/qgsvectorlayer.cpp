@@ -1060,7 +1060,7 @@ QgsVectorLayer::EditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId,
     return QgsVectorLayer::InvalidLayer;
 
   QgsVectorLayerEditUtils utils( this );
-  EditResult result = utils.deleteVertexV2( featureId, vertex );
+  EditResult result = utils.deleteVertex( featureId, vertex );
 
   if ( result == Success )
     updateExtents();
