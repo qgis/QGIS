@@ -4712,6 +4712,7 @@ void QgsExpression::initVariableHelp()
 
   //composition variables
   gVariableHelpTexts.insert( "layout_numpages", QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
+  gVariableHelpTexts.insert( "layout_page", QCoreApplication::translate( "variable_help", "Current page number in composition." ) );
   gVariableHelpTexts.insert( "layout_pageheight", QCoreApplication::translate( "variable_help", "Composition page height in mm." ) );
   gVariableHelpTexts.insert( "layout_pagewidth", QCoreApplication::translate( "variable_help", "Composition page width in mm." ) );
   gVariableHelpTexts.insert( "layout_dpi", QCoreApplication::translate( "variable_help", "Composition resolution (DPI)." ) );
