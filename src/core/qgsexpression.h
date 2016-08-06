@@ -477,8 +477,7 @@ class CORE_EXPORT QgsExpression
         const ParameterList& parameters() const { return mParameterList; }
 
         /** Does this function use a geometry object. */
-        //TODO QGIS 3.0 - rename to usesGeometry()
-        bool usesgeometry() const { return mUsesGeometry; }
+        bool usesGeometry() const { return mUsesGeometry; }
 
         /** Returns a list of possible aliases for the function. These include
          * other permissible names for the function, eg deprecated names.
@@ -501,9 +500,9 @@ class CORE_EXPORT QgsExpression
 
         /** The group the function belongs to. */
         QString group() const { return mGroup; }
+
         /** The help text for the function. */
-        //TODO QGIS 3.0 - rename to helpText()
-        const QString helptext() const { return mHelpText.isEmpty() ? QgsExpression::helptext( mName ) : mHelpText; }
+        const QString helpText() const { return mHelpText.isEmpty() ? QgsExpression::helpText( mName ) : mHelpText; }
 
         /** Returns result of evaluating the function.
          * @param values list of values passed to the function
@@ -998,7 +997,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const override;
 
         virtual QStringList referencedColumns() const override;
-        virtual bool needsGeometry() const override { bool needs = Functions()[mFnIndex]->usesgeometry(); if ( mArgs ) { Q_FOREACH ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
+        virtual bool needsGeometry() const override { bool needs = Functions()[mFnIndex]->usesGeometry(); if ( mArgs ) { Q_FOREACH ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
@@ -1213,13 +1212,13 @@ class CORE_EXPORT QgsExpression
      * @param name function name
      * @see variableHelpText()
      */
-    static QString helptext( QString name );
+    static QString helpText( QString name );
 
     /** Returns the help text for a specified variable.
      * @param variableName name of variable
      * @param showValue set to true to include current value of variable in help text
      * @param value current value of variable to show in help text
-     * @see helptext()
+     * @see helpText()
      * @note added in QGIS 2.12
      */
     static QString variableHelpText( const QString& variableName, bool showValue = true, const QVariant& value = QVariant() );

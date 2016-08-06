@@ -4566,7 +4566,7 @@ QgsExpression::Node* QgsExpression::NodeCondition::clone() const
 }
 
 
-QString QgsExpression::helptext( QString name )
+QString QgsExpression::helpText( QString name )
 {
   QgsExpression::initFunctionHelp();
 

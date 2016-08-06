@@ -305,7 +305,7 @@ class QgsExpression
         const QgsExpression::ParameterList& parameters() const;
 
         /** Does this function use a geometry object. */
-        bool usesgeometry() const;
+        bool usesGeometry() const;
 
         /** Returns a list of possible aliases for the function. These include
          * other permissible names for the function, eg deprecated names.
@@ -330,7 +330,7 @@ class QgsExpression
         /** The group the function belongs to. */
         QString group() const;
         /** The help text for the function. */
-        const QString helptext() const;
+        const QString helpText() const;
 
         /** Returns result of evaluating the function.
          * @param values list of values passed to the function
@@ -764,13 +764,13 @@ class QgsExpression
      * @param name function name
      * @see variableHelpText()
      */
-    static QString helptext( QString name );
+    static QString helpText( QString name );
 
     /** Returns the help text for a specified variable.
      * @param variableName name of variable
      * @param showValue set to true to include current value of variable in help text
      * @param value current value of variable to show in help text
-     * @see helptext()
+     * @see helpText()
      * @note added in QGIS 2.12
      */
     static QString variableHelpText( const QString& variableName, bool showValue = true, const QVariant& value = QVariant() );

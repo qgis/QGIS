@@ -491,7 +491,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       name += '(';
     else if ( !name.startsWith( '$' ) )
       name += "()";
-    registerItem( func->group(), func->name(), ' ' + name + ' ', func->helptext() );
+    registerItem( func->group(), func->name(), ' ' + name + ' ', func->helpText() );
   }
 
   loadExpressionContext();
@@ -614,7 +614,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
       continue;
     if ( func->params() != 0 )
       name += '(';
-    registerItem( func->group(), func->name(), ' ' + name + ' ', func->helptext() );
+    registerItem( func->group(), func->name(), ' ' + name + ' ', func->helpText() );
   }
 }
 
@@ -780,9 +780,9 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* express
     QString name = expressionItem->data( Qt::UserRole ).toString();
 
     if ( expressionItem->getItemType() == QgsExpressionItem::Field )
-      helpContents = QgsExpression::helptext( "Field" );
+      helpContents = QgsExpression::helpText( "Field" );
     else
-      helpContents = QgsExpression::helptext( name );
+      helpContents = QgsExpression::helpText( name );
   }
 
   return "<head><style>" + helpStylesheet() + "</style></head><body>" + helpContents + "</body>";
