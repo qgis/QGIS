@@ -22,23 +22,142 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 <table>
 <caption id="renamed_classes">Renamed classes</caption>
-<tr><th>API 2.x                          <th>API 3.X
-<tr><td>QgsAttributeAction               <td>QgsActionManager
-<tr><td>QgsColorButtonV2                 <td>QgsColorButton
-<tr><td>QgsSymbolLayerV2                 <td>QgsSymbolLayer
-<tr><td>QgsSymbolLayerV2AbstractMetadata <td>QgsSymbolLayerAbstractMetadata
-<tr><td>QgsSymbolLayerV2Metadata         <td>QgsSymbolLayerMetadata
-<tr><td>QgsSymbolLayerV2Registry         <td>QgsSymbolLayerRegistry
-<tr><td>QgsSymbolLayerV2Utils            <td>QgsSymbolLayerUtils
-<tr><td>QgsSymbolLayerV2Widget           <td>QgsSymbolLayerWidget
-<tr><td>QgsSymbolLevelsV2Dialog          <td>QgsSymbolLevelsDialog
-<tr><td>QgsSymbologyV2Conversion         <td>QgsSymbologyConversion
-<tr><th>QgsSymbolV2                      <th>QgsSymbol
-<tr><td>QgsSymbolV2LegendNode            <td>QgsSymbolLegendNode
-<tr><td>QgsSymbolV2LevelItem             <td>QgsSymbolLevelItem
-<tr><td>QgsSymbolV2RenderContext         <td>QgsSymbolRenderContext
-<tr><td>QgsSymbolV2SelectorDialog        <td>QgsSymbolSelectorDialog
-<tr><td>QgsSymbolV2SelectorWidget        <td>QgsSymbolSelectorWidget
+<tr><th>API 2.x<th>API 3.X
+<tr><td>QgsAttributeAction<td>QgsActionManager
+<tr><td>QgsAbstractGeometryV2<td>QgsAbstractGeometry
+<tr><td>QgsCategorizedSymbolRendererV2<td>QgsCategorizedSymbolRenderer
+<tr><td>QgsCategorizedSymbolRendererV2Model<td>QgsCategorizedSymbolRendererModel
+<tr><td>QgsCategorizedSymbolRendererV2ViewStyle<td>QgsCategorizedSymbolRendererViewStyle
+<tr><td>QgsCategorizedSymbolRendererV2Widget<td>QgsCategorizedSymbolRendererWidget
+<tr><td>QgsCentroidFillSymbolLayerV2<td>QgsCentroidFillSymbolLayer
+<tr><td>QgsCentroidFillSymbolLayerV2Widget<td>QgsCentroidFillSymbolLayerWidget
+<tr><td>QgsCircularStringV2<td>QgsCircularString
+<tr><td>QgsColorButtonV2<td>QgsColorButton
+<tr><td>QgsComposerSymbolV2Item<td>QgsComposerSymbolItem
+<tr><td>QgsComposerTableAvailableSortProxyModelV2<td>QgsComposerTableAvailableSortProxyModel
+<tr><td>QgsCompoundCurveV2<td>QgsCompoundCurve
+<tr><td>QgsCoordinateSequenceV2<td>QgsCoordinateSequence
+<tr><td>QgsCptCityColorRampV2<td>QgsCptCityColorRamp
+<tr><td>QgsCptCityColorRampV2Dialog<td>QgsCptCityColorRampDialog
+<tr><td>QgsCptCityColorRampV2DialogBase<td>QgsCptCityColorRampDialogBase
+<tr><td>QgsCurvePolygonV2<td>QgsCurvePolygon
+<tr><td>QgsCurveV2<td>QgsCurve
+<tr><td>QgsDiagramRendererV2<td>QgsDiagramRenderer
+<tr><td>QgsEditorWidgetV2<td>QgsEditorWidget
+<tr><td>QgsEllipseSymbolLayerV2<td>QgsEllipseSymbolLayer
+<tr><td>QgsEllipseSymbolLayerV2Widget<td>QgsEllipseSymbolLayerWidget
+<tr><td>QgsFeatureRendererV2<td>QgsFeatureRenderer
+<tr><td>QgsFillSymbolLayerV2<td>QgsFillSymbolLayer
+<tr><td>QgsFillSymbolV2<td>QgsFillSymbol
+<tr><td>QgsFontMarkerSymbolLayerV2<td>QgsFontMarkerSymbolLayer
+<tr><td>QgsFontMarkerSymbolLayerV2Widget<td>QgsFontMarkerSymbolLayerWidget
+<tr><td>QgsGeometryCollectionV2<td>QgsGeometryCollection
+<tr><td>QgsGeometryGeneratorSymbolLayerV2<td>QgsGeometryGeneratorSymbolLayer
+<tr><td>QgsGradientFillSymbolLayerV2<td>QgsGradientFillSymbolLayer
+<tr><td>QgsGradientFillSymbolLayerV2Widget<td>QgsGradientFillSymbolLayerWidget
+<tr><td>QgsGraduatedSymbolRendererV2<td>QgsGraduatedSymbolRenderer
+<tr><td>QgsGraduatedSymbolRendererV2Model<td>QgsGraduatedSymbolRendererModel
+<tr><td>QgsGraduatedSymbolRendererV2ViewStyle<td>QgsGraduatedSymbolRendererViewStyle
+<tr><td>QgsGraduatedSymbolRendererV2Widget<td>QgsGraduatedSymbolRendererWidget
+<tr><td>QgsLabelingEngineV2<td>QgsLabelingEngine
+<tr><td>QgsLegendSymbolItemV2<td>QgsLegendSymbolItem
+<tr><td>QgsLineStringV2<td>QgsLineString
+<tr><td>QgsLineSymbolLayerV2<td>QgsLineSymbolLayer
+<tr><td>QgsLineSymbolV2<td>QgsLineSymbol
+<tr><td>QgsMarkerLineSymbolLayerV2<td>QgsMarkerLineSymbolLayer
+<tr><td>QgsMarkerLineSymbolLayerV2Widget<td>QgsMarkerLineSymbolLayerWidget
+<tr><td>QgsMarkerSymbolLayerV2<td>QgsMarkerSymbolLayer
+<tr><td>QgsMarkerSymbolV2<td>QgsMarkerSymbol
+<tr><td>QgsMultiCurveV2<td>QgsMultiCurve
+<tr><td>QgsMultiLineStringV2<td>QgsMultiLineString
+<tr><td>QgsMultiSurfaceV2<td>QgsMultiSurface
+<tr><td>QgsPointSequenceV2<td>QgsPointSequence
+<tr><td>QgsRandomColorsV2<td>QgsRandomColors
+<tr><td>QgsRendererCategoryV2<td>QgsRendererCategory
+<tr><td>QgsRendererRangeV2<td>QgsRendererRange
+<tr><td>QgsRendererRangeV2LabelFomat<td>QgsRendererRangeLabelFomat
+<tr><td>QgsRendererRangeV2LabelFormat<td>QgsRendererRangeLabelFormat
+<tr><td>QgsRendererV2<td>QgsRenderer
+<tr><td>QgsRendererV2AbstractMetadata<td>QgsRendererAbstractMetadata
+<tr><td>QgsRendererV2CreateFromSldFunc<td>QgsRendererCreateFromSldFunc
+<tr><td>QgsRendererV2CreateFunc<td>QgsRendererCreateFunc
+<tr><td>QgsRendererV2DataDefinedMenus<td>QgsRendererDataDefinedMenus
+<tr><td>QgsRendererV2Metadata<td>QgsRendererMetadata
+<tr><td>QgsRendererV2PropertiesDialog<td>QgsRendererPropertiesDialog
+<tr><td>QgsRendererV2PropsDialogBase<td>QgsRendererPropsDialogBase
+<tr><td>QgsRendererV2Registry<td>QgsRendererRegistry
+<tr><td>QgsRendererV2Widget<td>QgsRendererWidget
+<tr><td>QgsRendererV2WidgetFunc<td>QgsRendererWidgetFunc
+<tr><td>QgsRingSequenceV2<td>QgsRingSequence
+<tr><td>QgsRuleBasedRendererV2<td>QgsRuleBasedRenderer
+<tr><td>QgsRuleBasedRendererV2Count<td>QgsRuleBasedRendererCount
+<tr><td>QgsRuleBasedRendererV2Model<td>QgsRuleBasedRendererModel
+<tr><td>QgsRuleBasedRendererV2Widget<td>QgsRuleBasedRendererWidget
+<tr><td>QgsShapeburstFillSymbolLayerV2<td>QgsShapeburstFillSymbolLayer
+<tr><td>QgsShapeburstFillSymbolLayerV2Widget<td>QgsShapeburstFillSymbolLayerWidget
+<tr><td>QgsSimpleFillSymbolLayerV2<td>QgsSimpleFillSymbolLayer
+<tr><td>QgsSimpleFillSymbolLayerV2Widget<td>QgsSimpleFillSymbolLayerWidget
+<tr><td>QgsSimpleLineSymbolLayerV2<td>QgsSimpleLineSymbolLayer
+<tr><td>QgsSimpleLineSymbolLayerV2Widget<td>QgsSimpleLineSymbolLayerWidget
+<tr><td>QgsSimpleMarkerSymbolLayerV2<td>QgsSimpleMarkerSymbolLayer
+<tr><td>QgsSimpleMarkerSymbolLayerV2Widget<td>QgsSimpleMarkerSymbolLayerWidget
+<tr><td>QgsSingleSymbolRendererV2<td>QgsSingleSymbolRenderer
+<tr><td>QgsSingleSymbolRendererV2Widget<td>QgsSingleSymbolRendererWidget
+<tr><td>QgsStyleV2<td>QgsStyle
+<tr><td>QgsStyleV2ExportImportDialog<td>QgsStyleExportImportDialog
+<tr><td>QgsStyleV2ExportImportDialogBase<td>QgsStyleExportImportDialogBase
+<tr><td>QgsStyleV2GroupSelectionDialog<td>QgsStyleGroupSelectionDialog
+<tr><td>QgsStyleV2ManagerDialog<td>QgsStyleManagerDialog
+<tr><td>QgsStyleV2ManagerDialogBase<td>QgsStyleManagerDialogBase
+<tr><td>QgsSurfaceV2<td>QgsSurface
+<tr><td>QgsSvgMarkerSymbolLayerV2<td>QgsSvgMarkerSymbolLayer
+<tr><td>QgsSvgMarkerSymbolLayerV2Widget<td>QgsSvgMarkerSymbolLayerWidget
+<tr><td>QgsSymbolLayerV2<td>QgsSymbolLayer
+<tr><td>QgsSymbolLayerV2AbstractMetadata<td>QgsSymbolLayerAbstractMetadata
+<tr><td>QgsSymbolLayerV2Metadata<td>QgsSymbolLayerMetadata
+<tr><td>QgsSymbolLayerV2Registry<td>QgsSymbolLayerRegistry
+<tr><td>QgsSymbolLayerV2Utils<td>QgsSymbolLayerUtils
+<tr><td>QgsSymbolLayerV2Widget<td>QgsSymbolLayerWidget
+<tr><td>QgsSymbolLevelsV2Dialog<td>QgsSymbolLevelsDialog
+<tr><td>QgsSymbolV2LegendNode<td>QgsSymbolLegendNode
+<tr><td>QgsSymbolV2LevelItem<td>QgsSymbolLevelItem
+<tr><td>QgsSymbolV2RenderContext<td>QgsSymbolRenderContext
+<tr><td>QgsSymbolV2SelectorDialog<td>QgsSymbolSelectorDialog
+<tr><td>QgsSymbolV2SelectorWidget<td>QgsSymbolSelectorWidget
+<tr><td>QgsSymbologyV2Conversion<td>QgsSymbologyConversion
+<tr><td>QgsVectorColorBrewerColorRampV2<td>QgsVectorColorBrewerColorRamp
+<tr><td>QgsVectorColorBrewerColorRampV2Dialog<td>QgsVectorColorBrewerColorRampDialog
+<tr><td>QgsVectorColorBrewerColorRampV2DialogBase<td>QgsVectorColorBrewerColorRampDialogBase
+<tr><td>QgsVectorColorRampV2<td>QgsVectorColorRamp
+<tr><td>QgsVectorColorRampV2Map<td>QgsVectorColorRampMap
+<tr><td>QgsVectorGradientColorRampV2<td>QgsVectorGradientColorRamp
+<tr><td>QgsVectorGradientColorRampV2Dialog<td>QgsVectorGradientColorRampDialog
+<tr><td>QgsVectorGradientColorRampV2DialogBase<td>QgsVectorGradientColorRampDialogBase
+<tr><td>QgsVectorGradientRampV2<td>QgsVectorGradientRamp
+<tr><td>QgsVectorLayersetRendererV2<td>QgsVectorLayersetRenderer
+<tr><td>QgsVectorRandomColorRampV2<td>QgsVectorRandomColorRamp
+<tr><td>QgsVectorRandomColorRampV2Dialog<td>QgsVectorRandomColorRampDialog
+<tr><td>QgsVectorRandomColorRampV2DialogBase<td>QgsVectorRandomColorRampDialogBase
+<tr><th>QgsSymbolV2<th>QgsSymbol
+</table>
+
+<table>
+<caption id="renamed_enum_values">Renamed enum values</caption>
+<tr><th>class</th><th>API 2.x<th>API 3.X
+<tr><td>QgsLayerTreeModelLegendNode<td>SymbolV2LegacyRuleKeyRole<td>SymbolLegacyRuleKeyRole
+<tr><td>QgsVectorLayer<td>EditorWidgetV2<td>EditorWidget
+</table>
+
+<table>
+<caption id="renamed_methods">Renamed method names</caption>
+<tr><th>class</th><th>API 2.x<th>API 3.X
+<tr><td>QgsApplication<td>defaultStyleV2Path<td>defaultStylePath
+<tr><td>QgsApplication<td>userStyleV2Path<td>userStylePath
+<tr><td>QgsComposerShape<td>setUseSymbolV2<td>setUseSymbol
+<tr><td>QgsSymbolLayerUtils<td>createSymbolLayerV2ListFromSld<td>createSymbolLayerListFromSld
+<tr><td>QgsVectorLayer<td>editorWidgetV2Config<td>editorWidgetConfig
+<tr><td>QgsVectorLayer<td>editorWidgetV2Text<td>editorWidgetText
+<tr><td>QgsVectorLayer<td>editorWidgetV2Type<td>editorWidgetType
 </table>
 
 \subsection qgis_api_break_3_0_removed_classes Removed Classes
