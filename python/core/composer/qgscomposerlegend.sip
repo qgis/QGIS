@@ -5,14 +5,14 @@
  *
  * @note added in 2.6
  */
-class QgsLegendModelV2 : QgsLayerTreeModel
+class QgsLegendModel : QgsLayerTreeModel
 {
 %TypeHeaderCode
 #include <qgscomposerlegend.h>
 %End
 
   public:
-    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent /TransferThis/ = 0 );
+    QgsLegendModel( QgsLayerTreeGroup* rootNode, QObject *parent /TransferThis/ = 0 );
 
     QVariant data( const QModelIndex& index,  int role ) const;
 
@@ -61,7 +61,7 @@ class QgsComposerLegend : QgsComposerItem
     bool resizeToContents() const;
 
     //! @note added in 2.6
-    QgsLegendModelV2* modelV2();
+    QgsLegendModel* model();
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );
