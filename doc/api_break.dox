@@ -23,6 +23,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <table>
 <caption id="renamed_classes">Renamed classes</caption>
 <tr><th>API 2.x                          <th>API 3.X
+<tr><td>QgsAttributeAction               <td>QgsActionManager
 <tr><td>QgsColorButtonV2                 <td>QgsColorButton
 <tr><td>QgsSymbolLayerV2                 <td>QgsSymbolLayer
 <tr><td>QgsSymbolLayerV2AbstractMetadata <td>QgsSymbolLayerAbstractMetadata

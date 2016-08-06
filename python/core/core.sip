@@ -23,7 +23,6 @@
 %Include qgsaction.sip
 %Include qgsactionmanager.sip
 %Include qgsaggregatecalculator.sip
-%Include qgsattributeaction.sip
 %Include qgsattributetableconfig.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip
