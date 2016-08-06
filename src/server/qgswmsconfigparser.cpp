@@ -341,7 +341,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
       continue;
     }
 
-    layer->setRendererV2( renderer.take() );
+    layer->setRenderer( renderer.take() );
     layerSet.prepend( layer.data()->id() );
     highlightLayers.append( layer.data()->id() );
     QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.take() );

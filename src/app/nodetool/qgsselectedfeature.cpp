@@ -268,7 +268,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
         endGeometryChange();
 
       if ( res != QgsVectorLayer::EmptyGeometry )
-        res = mVlayer->deleteVertexV2( mFeatureId, i );
+        res = mVlayer->deleteVertex( mFeatureId, i );
 
       if ( res != QgsVectorLayer::Success && res != QgsVectorLayer::EmptyGeometry )
       {
@@ -287,7 +287,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
         {
           // move all other
           if ( mFeatureId !=  resultIt.value().snappedAtGeometry )
-            mVlayer->deleteVertexV2( resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
+            mVlayer->deleteVertex( resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
         }
       }
 

@@ -112,7 +112,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsVectorLayerFeatureSource* mSource;
 
-    QgsFeatureRenderer *mRendererV2;
+    QgsFeatureRenderer *mRenderer;
 
     QgsGeometryCache* mCache;
 

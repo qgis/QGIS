@@ -163,14 +163,14 @@ void TestQgsLegendRenderer::init()
 
   QgsLineSymbol* sym1 = new QgsLineSymbol();
   sym1->setColor( Qt::magenta );
-  mVL1->setRendererV2( new QgsSingleSymbolRenderer( sym1 ) );
+  mVL1->setRenderer( new QgsSingleSymbolRenderer( sym1 ) );
 
   mVL2 = new QgsVectorLayer( "Polygon", "Polygon Layer", "memory" );
   QgsMapLayerRegistry::instance()->addMapLayer( mVL2 );
 
   QgsFillSymbol* sym2 = new QgsFillSymbol();
   sym2->setColor( Qt::cyan );
-  mVL2->setRendererV2( new QgsSingleSymbolRenderer( sym2 ) );
+  mVL2->setRenderer( new QgsSingleSymbolRenderer( sym2 ) );
 
   mVL3 = new QgsVectorLayer( "Point", "Point Layer", "memory" );
   {
@@ -217,7 +217,7 @@ void TestQgsLegendRenderer::init()
   sym3_3->setColor( Qt::blue );
   cats << QgsRendererCategory( 3, sym3_3, "Blue" );
   QgsCategorizedSymbolRenderer* r3 = new QgsCategorizedSymbolRenderer( "test_attr", cats );
-  mVL3->setRendererV2( r3 );
+  mVL3->setRenderer( r3 );
 
   mRoot = new QgsLayerTreeGroup();
   QgsLayerTreeGroup* grp1 = mRoot->addGroup( "Line + Polygon" );
@@ -285,11 +285,11 @@ void TestQgsLegendRenderer::testBigMarker()
   QgsMarkerSymbol* sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer* catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer*>( mVL3->rendererV2() );
+  QgsCategorizedSymbolRenderer* catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer*>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
-  //dynamic_cast<QgsCategorizedSymbolRenderer*>( mVL3->rendererV2() )->updateCategoryLabel( 2, "This is a long symbol label" );
+  //dynamic_cast<QgsCategorizedSymbolRenderer*>( mVL3->renderer() )->updateCategoryLabel( 2, "This is a long symbol label" );
 
   QgsLayerTreeModel legendModel( mRoot );
 
@@ -307,7 +307,7 @@ void TestQgsLegendRenderer::testMapUnits()
   sym->setColor( Qt::red );
   sym->setSize( 100 );
   sym->setSizeUnit( QgsUnitTypes::RenderMapUnits );
-  QgsCategorizedSymbolRenderer* catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer*>( mVL3->rendererV2() );
+  QgsCategorizedSymbolRenderer* catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer*>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -339,7 +339,7 @@ void TestQgsLegendRenderer::testLongSymbolText()
 {
   QString testName = "legend_long_symbol_text";
 
-  QgsCategorizedSymbolRenderer* catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer*>( mVL3->rendererV2() );
+  QgsCategorizedSymbolRenderer* catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer*>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
 
@@ -434,7 +434,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
   sym4_3->setColor( Qt::red );
   cats << QgsRendererCategory( 3, sym4_3, "Red3" );
   QgsCategorizedSymbolRenderer* r4 = new QgsCategorizedSymbolRenderer( "test_attr", cats );
-  vl4->setRendererV2( r4 );
+  vl4->setRenderer( r4 );
 
   QString testName = "legend_filter_by_map_dupe";
 

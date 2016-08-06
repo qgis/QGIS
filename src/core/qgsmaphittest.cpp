@@ -59,7 +59,7 @@ void QgsMapHitTest::run()
   Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
-    if ( !vl || !vl->rendererV2() )
+    if ( !vl || !vl->renderer() )
       continue;
 
     if ( !mOnlyExpressions )
@@ -109,7 +109,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
   if ( hasStyleOverride )
     vl->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
 
-  QgsFeatureRenderer* r = vl->rendererV2();
+  QgsFeatureRenderer* r = vl->renderer();
   bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, vl->fields() );
 

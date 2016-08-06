@@ -229,7 +229,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
         if ( v )
         {
           QgsFeatureRenderer* r = rendererFromUserStyle( userStyleElement, v );
-          v->setRendererV2( r );
+          v->setRenderer( r );
           labelSettingsFromUserStyle( userStyleElement, v );
 
           resultList.push_back( v );
@@ -335,7 +335,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
     delete theVectorLayer;
     return resultList;
   }
-  theVectorLayer->setRendererV2( theRenderer );
+  theVectorLayer->setRenderer( theRenderer );
   QgsDebugMsg( "Returning the vectorlayer" );
   resultList.push_back( theVectorLayer );
   return resultList;
@@ -1159,7 +1159,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
 
   //create renderer
   QgsFeatureRenderer* theRenderer = rendererFromUserStyle( userStyleElem, contourLayer );
-  contourLayer->setRendererV2( theRenderer );
+  contourLayer->setRenderer( theRenderer );
 
   //add labelling if requested
   labelSettingsFromUserStyle( userStyleElem, contourLayer );

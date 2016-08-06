@@ -232,7 +232,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
-  QgsFeatureRenderer* r = vlayer->rendererV2();
+  QgsFeatureRenderer* r = vlayer->renderer();
   if ( r )
     r->startRender( context, vlayer->fields() );
 

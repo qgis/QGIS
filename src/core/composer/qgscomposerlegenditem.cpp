@@ -291,7 +291,7 @@ void QgsComposerLayerItem::setDefaultStyle( double scaleDenominator, const QStri
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId() ) );
   if ( vLayer )
   {
-    QgsFeatureRenderer* renderer = vLayer->rendererV2();
+    QgsFeatureRenderer* renderer = vLayer->renderer();
     if ( renderer )
     {
       QPair<QString, QgsSymbol*> symbolItem = renderer->legendSymbolItems( scaleDenominator, rule ).value( 0 );

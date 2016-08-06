@@ -71,7 +71,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
   }
 
   //check whether selected feature has a modifiable symbol
-  QgsFeatureRenderer* renderer = mActiveLayer->rendererV2();
+  QgsFeatureRenderer* renderer = mActiveLayer->renderer();
   if ( !renderer )
     return;
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );

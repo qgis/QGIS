@@ -272,9 +272,9 @@ void TestQgsVectorLayer::QgsVectorLayersetRenderer()
   QgsSingleSymbolRenderer* symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   QCOMPARE( receiver.rendererChanged, false );
-  vLayer->setRendererV2( symbolRenderer );
+  vLayer->setRenderer( symbolRenderer );
   QCOMPARE( receiver.rendererChanged, true );
-  QCOMPARE( vLayer->rendererV2(), symbolRenderer );
+  QCOMPARE( vLayer->renderer(), symbolRenderer );
 }
 
 void TestQgsVectorLayer::QgsVectorLayersetFeatureBlendMode()

@@ -195,11 +195,11 @@ void QgsSymbolLegendNode::setSymbol( QgsSymbol* symbol )
     return;
 
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
-  if ( !vlayer || !vlayer->rendererV2() )
+  if ( !vlayer || !vlayer->renderer() )
     return;
 
   mItem.setSymbol( symbol );
-  vlayer->rendererV2()->setLegendSymbolItem( mItem.ruleKey(), symbol->clone() );
+  vlayer->renderer()->setLegendSymbolItem( mItem.ruleKey(), symbol->clone() );
 
   mPixmap = QPixmap();
 
@@ -238,13 +238,13 @@ QgsRenderContext * QgsSymbolLegendNode::createTemporaryRenderContext() const
 void QgsSymbolLegendNode::checkAll( bool state )
 {
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
-  if ( !vlayer || !vlayer->rendererV2() )
+  if ( !vlayer || !vlayer->renderer() )
     return;
 
-  QgsLegendSymbolListV2 symbolList = vlayer->rendererV2()->legendSymbolItemsV2();
+  QgsLegendSymbolListV2 symbolList = vlayer->renderer()->legendSymbolItemsV2();
   Q_FOREACH ( const QgsLegendSymbolItem& item, symbolList )
   {
-    vlayer->rendererV2()->checkLegendSymbolItem( item.ruleKey(), state );
+    vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), state );
   }
 
   emit dataChanged();
@@ -298,10 +298,10 @@ QVariant QgsSymbolLegendNode::data( int role ) const
       return QVariant();
 
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
-    if ( !vlayer || !vlayer->rendererV2() )
+    if ( !vlayer || !vlayer->renderer() )
       return QVariant();
 
-    return vlayer->rendererV2()->legendSymbolItemChecked( mItem.ruleKey() ) ? Qt::Checked : Qt::Unchecked;
+    return vlayer->renderer()->legendSymbolItemChecked( mItem.ruleKey() ) ? Qt::Checked : Qt::Unchecked;
   }
   else if ( role == RuleKeyRole )
   {
@@ -328,10 +328,10 @@ bool QgsSymbolLegendNode::setData( const QVariant& value, int role )
     return false;
 
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
-  if ( !vlayer || !vlayer->rendererV2() )
+  if ( !vlayer || !vlayer->renderer() )
     return false;
 
-  vlayer->rendererV2()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
+  vlayer->renderer()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
 
   emit dataChanged();
 

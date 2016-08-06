@@ -241,7 +241,7 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), "a" ) );
   renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), "b" ) );
   renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), "c" ) );
-  vl->setRendererV2( renderer );
+  vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
   QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
@@ -291,7 +291,7 @@ void TestQgsLayerTree::testFindLegendNode()
   renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), "a" ) );
   renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), "b" ) );
   renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), "c" ) );
-  vl->setRendererV2( renderer );
+  vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
   QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
@@ -377,7 +377,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer* renderer )
   QVERIFY( vl->isValid() );
 
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << vl );
-  vl->setRendererV2( renderer );
+  vl->setRenderer( renderer );
 
   //create legend with symbology nodes for renderer
   QgsLayerTreeGroup* root = new QgsLayerTreeGroup();

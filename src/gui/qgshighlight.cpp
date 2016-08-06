@@ -131,9 +131,9 @@ QgsFeatureRenderer * QgsHighlight::getRenderer( QgsRenderContext & context, cons
 {
   QgsFeatureRenderer *renderer = nullptr;
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
-  if ( layer && layer->rendererV2() )
+  if ( layer && layer->renderer() )
   {
-    renderer = layer->rendererV2()->clone();
+    renderer = layer->renderer()->clone();
   }
   if ( renderer )
   {

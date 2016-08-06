@@ -419,7 +419,7 @@ void QgsGrassPlugin::onEditingStarted()
 
     QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
 
-    vectorLayer->setRendererV2( renderer );
+    vectorLayer->setRenderer( renderer );
   }
 
   grassProvider->startEditing( vectorLayer );

@@ -117,7 +117,7 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const
   QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( layer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
+  connect( layer, SIGNAL( destroyed() ), this, SLOT( close() ) );
 
   QgsActionMenu* menu = new QgsActionMenu( layer, &mAttributeForm->feature(), this );
   if ( !menu->actions().isEmpty() )

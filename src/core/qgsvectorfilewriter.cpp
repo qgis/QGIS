@@ -2296,7 +2296,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 
   if ( writer->symbologyExport() == SymbolLayerSymbology )
   {
-    QgsFeatureRenderer* r = layer->rendererV2();
+    QgsFeatureRenderer* r = layer->renderer();
     if ( r->capabilities() & QgsFeatureRenderer::SymbolLevels
          && r->usingSymbolLevels() )
     {
@@ -2366,7 +2366,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
       fet.initAttributes( 0 );
     }
 
-    if ( !writer->addFeature( fet, layer->rendererV2(), mapUnits ) )
+    if ( !writer->addFeature( fet, layer->renderer(), mapUnits ) )
     {
       WriterError err = writer->hasError();
       if ( err != NoError && errorMessage )
@@ -2586,7 +2586,7 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
     return;
   }
 
-  QgsFeatureRenderer* renderer = vl->rendererV2();
+  QgsFeatureRenderer* renderer = vl->renderer();
   if ( !renderer )
   {
     return;
@@ -2637,7 +2637,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( layer );
 
-  QgsFeatureRenderer *renderer = layer->rendererV2();
+  QgsFeatureRenderer *renderer = layer->renderer();
   if ( !renderer )
     return ErrInvalidLayer;
 
@@ -2837,7 +2837,7 @@ QgsFeatureRenderer* QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer* vl )
     return nullptr;
   }
 
-  return vl->rendererV2();
+  return vl->renderer();
 }
 
 void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList )

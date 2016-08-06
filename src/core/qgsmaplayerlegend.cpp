@@ -187,7 +187,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 {
   QList<QgsLayerTreeModelLegendNode*> nodes;
 
-  QgsFeatureRenderer* r = mLayer->rendererV2();
+  QgsFeatureRenderer* r = mLayer->renderer();
   if ( !r )
     return nodes;
 

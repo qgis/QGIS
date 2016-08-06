@@ -62,7 +62,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         props = {"color": "0,127,0"}
         fillSymbol = QgsFillSymbol.createSimple(props)
         renderer = QgsSingleSymbolRenderer(fillSymbol)
-        mVectorLayer.setRendererV2(renderer)
+        mVectorLayer.setRenderer(renderer)
 
         # the atlas map
         self.mAtlasMap = QgsComposerMap(self.mComposition, 20, 20, 130, 130)
@@ -304,7 +304,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # categorized symbology
         r = QgsCategorizedSymbolRenderer("attr", [QgsRendererCategory(1, QgsMarkerSymbol.createSimple({"color": "255,0,0"}), "red"),
                                                   QgsRendererCategory(2, QgsMarkerSymbol.createSimple({"color": "0,0,255"}), "blue")])
-        ptLayer.setRendererV2(r)
+        ptLayer.setRenderer(r)
 
         QgsMapLayerRegistry.instance().addMapLayer(ptLayer)
 

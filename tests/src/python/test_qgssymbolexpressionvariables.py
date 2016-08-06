@@ -70,7 +70,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
         renderer = QgsSingleSymbolRenderer(sym1)
         renderer.symbols()[0].symbolLayers()[0].setDataDefinedProperty('color', 'color_rgb( (@geometry_part_num - 1) * 200, 0, 0 )')
-        self.layer.setRendererV2(renderer)
+        self.layer.setRenderer(renderer)
 
         # Setup rendering check
         renderchecker = QgsMultiRenderChecker()
@@ -86,7 +86,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
         renderer = QgsSingleSymbolRenderer(sym1)
         renderer.symbols()[0].symbolLayers()[0].setDataDefinedProperty('color', 'color_rgb( (@geometry_part_count - 1) * 200, 0, 0 )')
-        self.layer.setRendererV2(renderer)
+        self.layer.setRenderer(renderer)
 
         # Setup rendering check
         renderchecker = QgsMultiRenderChecker()
@@ -102,7 +102,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
         renderer = QgsSingleSymbolRenderer(sym1)
         renderer.symbols()[0].symbolLayers()[0].setDataDefinedProperty('color', 'set_color_part( @symbol_color, \'value\', "Value" * 4)')
-        self.layer.setRendererV2(renderer)
+        self.layer.setRenderer(renderer)
 
         # Setup rendering check
         renderchecker = QgsMultiRenderChecker()

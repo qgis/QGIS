@@ -171,15 +171,21 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature& feature ) const
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
     QgsField referencingField = referencingLayer()->fields().at( referencingIdx );
 
-    if ( referencingField.type() == QVariant::String )
+    QVariant val( feature.attribute( fieldPair.referencedField() ) );
+
+    if ( val.isNull() )
+    {
+      conditions << QString( "\"%1\" IS NULL" ).arg( fieldPair.referencingField() );
+    }
+    else if ( referencingField.type() == QVariant::String )
     {
       // Use quotes
-      conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencingField(), feature.attribute( fieldPair.referencedField() ).toString() );
+      conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencingField(), val.toString() );
     }
     else
     {
       // No quotes
-      conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencingField(), feature.attribute( fieldPair.referencedField() ).toString() );
+      conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencingField(), val.toString() );
     }
   }
 

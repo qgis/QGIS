@@ -219,7 +219,7 @@ void QgsRendererPropertiesDialog::rendererChanged()
   }
   else
   {
-    oldRenderer = mLayer->rendererV2()->clone();
+    oldRenderer = mLayer->renderer()->clone();
   }
 
   // get rid of old active widget (if any)
@@ -278,7 +278,7 @@ void QgsRendererPropertiesDialog::apply()
     renderer->setOrderBy( mOrderBy );
     renderer->setOrderByEnabled( checkboxEnableOrderBy->isChecked() );
 
-    mLayer->setRendererV2( renderer->clone() );
+    mLayer->setRenderer( renderer->clone() );
   }
 
   // set the blend modes for the layer
@@ -336,21 +336,21 @@ void QgsRendererPropertiesDialog::syncToLayer()
   mLayerTransparencySpnBx->setValue( mLayer->layerTransparency() );
 
   //paint effect widget
-  if ( mLayer->rendererV2() )
+  if ( mLayer->renderer() )
   {
-    if ( mLayer->rendererV2()->paintEffect() )
+    if ( mLayer->renderer()->paintEffect() )
     {
-      mPaintEffect = mLayer->rendererV2()->paintEffect()->clone();
+      mPaintEffect = mLayer->renderer()->paintEffect()->clone();
       mEffectWidget->setPaintEffect( mPaintEffect );
     }
 
-    mOrderBy = mLayer->rendererV2()->orderBy();
+    mOrderBy = mLayer->renderer()->orderBy();
   }
 
   // setup slot rendererChanged()
   //setup order by
-  if ( mLayer->rendererV2() &&
-       mLayer->rendererV2()->orderByEnabled() )
+  if ( mLayer->renderer() &&
+       mLayer->renderer()->orderByEnabled() )
   {
     checkboxEnableOrderBy->setChecked( true );
   }
@@ -360,10 +360,10 @@ void QgsRendererPropertiesDialog::syncToLayer()
     checkboxEnableOrderBy->setChecked( false );
   }
 
-  if ( mLayer->rendererV2() )
+  if ( mLayer->renderer() )
   {
     // set current renderer from layer
-    QString rendererName = mLayer->rendererV2()->type();
+    QString rendererName = mLayer->renderer()->type();
 
     int rendererIdx = cboRenderers->findData( rendererName );
     cboRenderers->setCurrentIndex( rendererIdx );

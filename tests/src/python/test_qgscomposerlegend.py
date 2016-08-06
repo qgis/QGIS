@@ -47,7 +47,7 @@ class TestQgsComposerLegend(unittest.TestCase):
 
         marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
 
-        point_layer.setRendererV2(QgsSingleSymbolRenderer(marker_symbol))
+        point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
 
         s = QgsMapSettings()
         s.setLayers([point_layer.id()])

@@ -1494,16 +1494,16 @@ class TestQgsVectorLayer(unittest.TestCase):
     def onRendererChanged(self):
         self.rendererChanged = True
 
-    def test_setRendererV2(self):
+    def test_setRenderer(self):
         layer = createLayerWithOnePoint()
 
         self.rendererChanged = False
         layer.rendererChanged.connect(self.onRendererChanged)
 
         r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry))
-        layer.setRendererV2(r)
+        layer.setRenderer(r)
         self.assertTrue(self.rendererChanged)
-        self.assertEqual(layer.rendererV2(), r)
+        self.assertEqual(layer.renderer(), r)
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

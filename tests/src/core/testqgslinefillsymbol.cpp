@@ -108,7 +108,7 @@ void TestQgsLineFillSymbol::initTestCase()
   mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mLineFill );
   mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
-  mpPolysLayer->setRendererV2( mSymbolRenderer );
+  mpPolysLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui

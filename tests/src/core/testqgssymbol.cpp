@@ -185,7 +185,7 @@ void TestQgsSymbol::testCanvasClip()
   QgsLineSymbol* lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, markerLine );
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( lineSymbol );
-  mpLinesLayer->setRendererV2( renderer );
+  mpLinesLayer->setRenderer( renderer );
   bool result;
 
   lineSymbol->setClipFeaturesToExtent( true );
@@ -204,7 +204,7 @@ void TestQgsSymbol::testCanvasClip()
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, centroidFill );
   renderer = new QgsSingleSymbolRenderer( fillSymbol );
-  mpPolysLayer->setRendererV2( renderer );
+  mpPolysLayer->setRenderer( renderer );
 
   extent = QgsRectangle( -106.0, 29.0, -94, 36.0 );
   ms.setExtent( extent );

@@ -413,7 +413,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / simplifyMethod.maximumScale() );
 
-  mForceRasterCheckBox->setChecked( mLayer->rendererV2() && mLayer->rendererV2()->forceRasterRender() );
+  mForceRasterCheckBox->setChecked( mLayer->renderer() && mLayer->renderer()->forceRasterRender() );
 
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
@@ -503,7 +503,7 @@ void QgsVectorLayerProperties::apply()
   // Apply fields settings
   mFieldsPropertiesDialog->apply();
 
-  if ( mLayer->rendererV2() )
+  if ( mLayer->renderer() )
   {
     QgsRendererPropertiesDialog* dlg = static_cast<QgsRendererPropertiesDialog*>( widgetStackRenderers->currentWidget() );
     dlg->apply();
@@ -549,8 +549,8 @@ void QgsVectorLayerProperties::apply()
   simplifyMethod.setMaximumScale( 1.0 / mSimplifyMaximumScaleComboBox->scale() );
   mLayer->setSimplifyMethod( simplifyMethod );
 
-  if ( mLayer->rendererV2() )
-    mLayer->rendererV2()->setForceRasterRender( mForceRasterCheckBox->isChecked() );
+  if ( mLayer->renderer() )
+    mLayer->renderer()->setForceRasterRender( mForceRasterCheckBox->isChecked() );
 
   mOldJoins = mLayer->vectorJoins();
 
@@ -991,8 +991,11 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
       QMessageBox::warning( this, tr( "Error occurred retrieving styles from database" ), errorMsg );
       return;
     }
-    Q_NOWARN_DEPRECATED_PUSH
-    if ( mLayer->applyNamedStyle( qmlStyle, errorMsg ) )
+
+    QDomDocument myDocument( "qgis" );
+    myDocument.setContent( qmlStyle );
+
+    if ( mLayer->importNamedStyle( myDocument, errorMsg ) )
     {
       syncToLayer();
     }
@@ -1002,7 +1005,6 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
                             tr( "The retrieved style is not a valid named style. Error message: %1" )
                             .arg( errorMsg ) );
     }
-    Q_NOWARN_DEPRECATED_POP
   }
 }
 
@@ -1210,7 +1212,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   delete mRendererDialog;
   mRendererDialog = nullptr;
 
-  if ( mLayer->rendererV2() )
+  if ( mLayer->renderer() )
   {
     mRendererDialog = new QgsRendererPropertiesDialog( mLayer, QgsStyle::defaultStyle(), true, this );
     mRendererDialog->setDockMode( false );

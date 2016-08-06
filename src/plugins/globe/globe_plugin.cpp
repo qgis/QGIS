@@ -777,9 +777,9 @@ void GlobePlugin::addModelLayer( QgsVectorLayer* vLayer, QgsGlobeVectorLayerConf
   featureOpt.setLayer( vLayer );
   osgEarth::Style style;
 
-  if ( !vLayer->rendererV2()->symbols().isEmpty() )
+  if ( !vLayer->renderer()->symbols().isEmpty() )
   {
-    Q_FOREACH ( QgsSymbol* sym, vLayer->rendererV2()->symbols() )
+    Q_FOREACH ( QgsSymbol* sym, vLayer->renderer()->symbols() )
     {
       if ( sym->type() == QgsSymbol::Line )
       {

@@ -20,6 +20,7 @@ struct QgsVectorJoinInfo
   bool memoryCache;
   /** True if the cached join attributes need to be updated*/
   bool cacheDirty;
+
   /** Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
    * @note not available in python bindings
    */
@@ -39,6 +40,280 @@ struct QgsVectorJoinInfo
     @note added in 2.6 */
   QStringList* joinFieldNamesSubset() const;
 };
+
+
+
+/** \ingroup core
+ * Represents a vector layer which manages a vector based data sets.
+ *
+ * The QgsVectorLayer is instantiated by specifying the name of a data provider,
+ * such as postgres or wfs, and url defining the specific data set to connect to.
+ * The vector layer constructor in turn instantiates a QgsVectorDataProvider subclass
+ * corresponding to the provider type, and passes it the url.  The data provider
+ * connects to the data source.
+ *
+ * The QgsVectorLayer provides a common interface to the different data types.  It also
+ * manages editing transactions.
+ *
+ *  Sample usage of the QgsVectorLayer class:
+ *
+ * \code
+ *     QString uri = "point?crs=epsg:4326&field=id:integer";
+ *     QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
+ * \endcode
+ *
+ * The main data providers supported by QGIS are listed below.
+ *
+ * \section providers Vector data providers
+ *
+ * \subsection memory Memory data providerType (memory)
+ *
+ * The memory data provider is used to construct in memory data, for example scratch
+ * data or data generated from spatial operations such as contouring.  There is no
+ * inherent persistent storage of the data.  The data source uri is constructed.  The
+ * url specifies the geometry type ("point", "linestring", "polygon",
+ * "multipoint","multilinestring","multipolygon"), optionally followed by url parameters
+ * as follows:
+ *
+ * - crs=definition
+ *   Defines the coordinate reference system to use for the layer.
+ *   definition is any string accepted by QgsCoordinateReferenceSystem::createFromString()
+ *
+ * - index=yes
+ *   Specifies that the layer will be constructed with a spatial index
+ *
+ * - field=name:type(length,precision)
+ *   Defines an attribute of the layer.  Multiple field parameters can be added
+ *   to the data provider definition.  type is one of "integer", "double", "string".
+ *
+ * An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
+ *
+ * \subsection ogr OGR data provider (ogr)
+ *
+ * Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
+ * is the OGR connection string.  A wide variety of data formats can be accessed using this
+ * driver, including file based formats used by many GIS systems, database formats, and
+ * web services.  Some of these formats are also supported by custom data providers listed
+ * below.
+ *
+ * \subsection spatialite Spatialite data provider (spatialite)
+ *
+ * Access data in a spatialite database. The url defines the connection parameters, table,
+ * geometry column, and other attributes.  The url can be constructed using the
+ * QgsDataSourceUri class.
+ *
+ * \subsection postgres Postgresql data provider (postgres)
+ *
+ * Connects to a postgresql database.  The url defines the connection parameters, table,
+ * geometry column, and other attributes.  The url can be constructed using the
+ * QgsDataSourceUri class.
+ *
+ * \subsection mssql Microsoft SQL server data provider (mssql)
+ *
+ * Connects to a Microsoft SQL server database.  The url defines the connection parameters, table,
+ * geometry column, and other attributes.  The url can be constructed using the
+ * QgsDataSourceUri class.
+ *
+ * \subsection wfs WFS (web feature service) data provider (wfs)
+ *
+ * Used to access data provided by a web feature service.
+ *
+ * The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
+ * starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with the following parameters :
+ * - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
+ * - typename=string (mandatory): WFS typename
+ * - srsname=string (recommended): SRS like 'EPSG:XXXX'
+ * - username=string
+ * - password=string
+ * - authcfg=string
+ * - version=auto/1.0.0/1.1.0/2.0.0
+ *  -sql=string: full SELECT SQL statement with optional WHERE, ORDER BY and possibly with JOIN if supported on server
+ * - filter=string: QGIS expression or OGC/FES filter
+ * - retrictToRequestBBOX=1: to download only features in the view extent (or more generally
+ *   in the bounding box of the feature iterator)
+ * - maxNumFeatures=number
+ * - IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
+ * - InvertAxisOrientation=1: to invert axis order
+ * - hideDownloadProgressDialog=1: to hide the download progress dialog
+ *
+ * The ‘FILTER’ query string parameter can be used to filter
+ * the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
+ * or an OGC XML filter. If the value is set to a QGIS expression the driver will
+ * turn it into OGC XML filter before passing it to the WFS server. Beware the
+ * QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE, IS NULL”
+ * attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
+ * spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
+ * geometry constructor functions.
+ *
+ * Also note:
+ *
+ * - You can use various functions available in the QGIS Expression list,
+ *   however the function must exist server side and have the same name and arguments to work.
+ *
+ * - Use the special $geometry parameter to provide the layer geometry column as input
+ *   into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
+ *
+ * \subsection delimitedtext Delimited text file data provider (delimitedtext)
+ *
+ * Accesses data in a delimited text file, for example CSV files generated by
+ * spreadsheets. The contents of the file are split into columns based on specified
+ * delimiter characters.  Each record may be represented spatially either by an
+ * X and Y coordinate column, or by a WKT (well known text) formatted columns.
+ *
+ * The url defines the filename, the formatting options (how the
+ * text in the file is divided into data fields, and which fields contain the
+ * X,Y coordinates or WKT text definition.  The options are specified as url query
+ * items.
+ *
+ * At its simplest the url can just be the filename, in which case it will be loaded
+ * as a CSV formatted file.
+ *
+ * The url may include the following items:
+ *
+ * - encoding=UTF-8
+ *
+ *   Defines the character encoding in the file.  The default is UTF-8.  To use
+ *   the default encoding for the operating system use "System".
+ *
+ * - type=(csv|regexp|whitespace|plain)
+ *
+ *   Defines the algorithm used to split records into columns. Records are
+ *   defined by new lines, except for csv format files for which quoted fields
+ *   may span multiple records.  The default type is csv.
+ *
+ *   -  "csv" splits the file based on three sets of characters:
+ *      delimiter characters, quote characters,
+ *      and escape characters.  Delimiter characters mark the end
+ *      of a field. Quote characters enclose a field which can contain
+ *      delimiter characters, and newlines.  Escape characters cause the
+ *      following character to be treated literally (including delimiter,
+ *      quote, and newline characters).  Escape and quote characters must
+ *      be different from delimiter characters. Escape characters that are
+ *      also quote characters are treated specially - they can only
+ *      escape themselves within quotes.  Elsewhere they are treated as
+ *      quote characters.  The defaults for delimiter, quote, and escape
+ *      are ',', '"', '"'.
+ *   -  "regexp" splits each record using a regular expression (see QRegExp
+ *      documentation for details).
+ *   -  "whitespace" splits each record based on whitespace (on or more whitespace
+ *      characters.  Leading whitespace in the record is ignored.
+ *   -  "plain" is provided for backwards compatibility.  It is equivalent to
+ *      CSV except that the default quote characters are single and double quotes,
+ *      and there is no escape characters.
+ *
+ * - delimiter=characters
+ *
+ *   Defines the delimiter characters used for csv and plain type files, or the
+ *   regular expression for regexp type files.  It is a literal string of characters
+ *   except that "\t" may be used to represent a tab character.
+ *
+ * - quote=characters
+ *
+ *   Defines the characters that are used as quote characters for csv and plain type
+ *   files.
+ *
+ * - escape=characters
+ *
+ *   Defines the characters used to escape delimiter, quote, and newline characters.
+ *
+ * - skipLines=n
+ *
+ *   Defines the number of lines to ignore at the beginning of the file (default 0)
+ *
+ * - useHeader=(yes|no)
+ *
+ *   Defines whether the first record in the file (after skipped lines) contains
+ *   column names (default yes)
+ *
+ * - trimFields=(yes|no)
+ *
+ *   If yes then leading and trailing whitespace will be removed from fields
+ *
+ * - skipEmptyFields=(yes|no)
+ *
+ *   If yes then empty fields will be discarded (eqivalent to concatenating consecutive
+ *   delimiters)
+ *
+ * - maxFields=#
+ *
+ *   Specifies the maximum number of fields to load for each record.  Additional
+ *   fields will be discarded.  Default is 0 - load all fields.
+ *
+ * - decimalPoint=c
+ *
+ *   Defines a character that is used as a decimal point in the numeric columns
+ *   The default is '.'.
+ *
+ * - xField=column yField=column
+ *
+ *   Defines the name of the columns holding the x and y coordinates for XY point geometries.
+ *   If the useHeader is no (ie there are no column names), then this is the column
+ *   number (with the first column as 1).
+ *
+ * - xyDms=(yes|no)
+ *
+ *   If yes then the X and Y coordinates are interpreted as
+ *   degrees/minutes/seconds format (fairly permissively),
+ *   or degree/minutes format.
+ *
+ * - wktField=column
+ *
+ *   Defines the name of the columns holding the WKT geometry definition for WKT geometries.
+ *   If the useHeader is no (ie there are no column names), then this is the column
+ *   number (with the first column as 1).
+ *
+ * - geomType=(point|line|polygon|none)
+ *
+ *   Defines the geometry type for WKT type geometries.  QGIS will only display one
+ *   type of geometry for the layer - any others will be ignored when the file is
+ *   loaded.  By default the provider uses the type of the first geometry in the file.
+ *   Use geomType to override this type.
+ *
+ *   geomType can also be set to none, in which case the layer is loaded without
+ *   geometries.
+ *
+ * - subset=expression
+ *
+ *   Defines an expression that will identify a subset of records to display
+ *
+ * - crs=crsstring
+ *
+ *   Defines the coordinate reference system used for the layer.  This can be
+ *   any string accepted by QgsCoordinateReferenceSystem::createFromString()
+ *
+ * -subsetIndex=(yes|no)
+ *
+ *   Determines whether the provider generates an index to improve the efficiency
+ *   of subsets.  The default is yes
+ *
+ * -spatialIndex=(yes|no)
+ *
+ *   Determines whether the provider generates a spatial index.  The default is no.
+ *
+ * -watchFile=(yes|no)
+ *
+ *   Defines whether the file will be monitored for changes. The default is
+ *   to monitor for changes.
+ *
+ * - quiet
+ *
+ *   Errors encountered loading the file will not be reported in a user dialog if
+ *   quiet is included (They will still be shown in the output log).
+ *
+ * \subsection gpx GPX data provider (gpx)
+ *
+ * Provider reads tracks, routes, and waypoints from a GPX file.  The url
+ * defines the name of the file, and the type of data to retrieve from it
+ * ("track", "route", or "waypoint").
+ *
+ * An example url is "/home/user/data/holiday.gpx?type=route"
+ *
+ * \subsection grass Grass data provider (grass)
+ *
+ * Provider to display vector data in a GRASS GIS layer.
+ *
+ * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
+ */
 
 
 class QgsVectorLayer : QgsMapLayer
@@ -72,18 +347,6 @@ class QgsVectorLayer : QgsMapLayer
       UiFileLayout
     };
 
-    struct RangeData
-    {
-      //! @deprecated Use the editorWidgetV2() system instead
-      RangeData() /Deprecated/;
-      //! @deprecated Use the editorWidgetV2() system instead
-      RangeData( const QVariant& theMin, const QVariant& theMax, const QVariant& theStep ) /Deprecated/;
-
-      QVariant mMin;
-      QVariant mMax;
-      QVariant mStep;
-    };
-
     struct ValueRelationData
     {
       ValueRelationData();
@@ -98,46 +361,6 @@ class QgsVectorLayer : QgsMapLayer
       bool mAllowNull;
       bool mOrderByValue;
       bool mAllowMulti;  /* allow selection of multiple keys */
-    };
-
-    /**
-     * Types of feature form suppression after feature creation
-     * @note added in 2.1
-     * @deprecated in 2.14, Use QgsEditFormConfig instead
-     */
-    enum FeatureFormSuppress
-    {
-      SuppressDefault, // use the application-wide setting
-      SuppressOn,
-      SuppressOff,
-    };
-
-    /**
-     * @deprecated Use the editorWidgetV2() system instead
-     */
-    enum EditType
-    {
-      LineEdit,
-      UniqueValues,
-      UniqueValuesEditable,
-      ValueMap,
-      Classification,
-      EditRange,
-      SliderRange,
-      CheckBox,
-      FileName,
-      Enumeration,
-      Immutable,      /**< The attribute value should not be changed in the attribute form */
-      Hidden,         /**< The attribute value should not be shown in the attribute form */
-      TextEdit,       /**< multiline edit */
-      Calendar,       /**< calendar widget */
-      DialRange,      /**< dial range */
-      ValueRelation,  /**< value map from an table */
-      UuidGenerator,  /**< uuid generator - readonly and automatically intialized */
-      Photo,          /**< phote widget */
-      WebView,        /**< webview widget */
-      Color,          /**< color */
-      EditorWidget, /**< modularized edit widgets @note added in 2.1 */
     };
 
     //! Result of an edit operation
@@ -202,7 +425,7 @@ class QgsVectorLayer : QgsMapLayer
      *  @param displayExpression The expression which will be used to preview features
      *                           for this layer
      */
-    void setDisplayExpression( const QString &displayExpression );
+    void setDisplayExpression( const QString& displayExpression );
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
@@ -264,7 +487,7 @@ class QgsVectorLayer : QgsMapLayer
     void removeExpressionField( int index );
 
     /**
-     * Returns the expressoin used for a given expression field
+     * Returns the expression used for a given expression field
      *
      * @param index An index of an epxression based (virtual) field
      *
@@ -285,7 +508,13 @@ class QgsVectorLayer : QgsMapLayer
      */
     void updateExpressionField( int index, const QString& exp );
 
-    QgsActionManager *actions();
+    /**
+     * Get all layer actions defined on this layer.
+     *
+     * The pointer which is returned directly points to the actions object
+     * which is used by the layer, so any changes are immediately applied.
+     */
+    QgsActionManager* actions();
 
     /**
      * The number of features that are selected in this layer
@@ -293,18 +522,6 @@ class QgsVectorLayer : QgsMapLayer
      * @return See description
      */
     int selectedFeatureCount() const;
-
-    /**
-     * Select features found within the search rectangle (in layer's coordinates)
-     *
-     * @param rect            The search rectangle
-     * @param addToSelection  If set to true will not clear before selecting
-     *
-     * @see   invertSelectionInRectangle(QgsRectangle & rect)
-     * @see selectByExpression()
-     * @deprecated use selectByRect() instead
-     */
-    void select( QgsRectangle & rect, bool addToSelection ) /Deprecated/;
 
     /**
      * Select features found within the search rectangle (in layer's coordinates)
@@ -401,16 +618,6 @@ class QgsVectorLayer : QgsMapLayer
      */
     const QgsFeatureIds &selectedFeaturesIds() const;
 
-    /**
-     * Change selection to the new set of features. Dismisses the current selection.
-     * Will emit the { @link selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&qt_check_for_QOBJECT_macro, bool ) } signal with the
-     * clearAndSelect flag set.
-     *
-     * @param ids   The ids which will be the new selection
-     * @deprecated use selectByIds() instead
-     */
-    void setSelectedFeatures( const QgsFeatureIds &ids ) /Deprecated/;
-
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected() const;
 
@@ -433,19 +640,19 @@ class QgsVectorLayer : QgsMapLayer
     void setDiagramLayerSettings( const QgsDiagramLayerSettings& s );
     const QgsDiagramLayerSettings *diagramLayerSettings() const;
 
-    /** Return renderer V2. */
-    QgsFeatureRenderer* rendererV2();
+    /** Return renderer. */
+    QgsFeatureRenderer* renderer();
 
-    /** Return const renderer V2.
+    /** Return const renderer.
      * @note not available in python bindings
      */
-    // const QgsFeatureRenderer* rendererV2() const { return mRendererV2; }
+    // const QgsFeatureRenderer* renderer() const { return mRendererV2; }
 
     /**
      * Set renderer which will be invoked to represent this layer.
      * Ownership is transferred.
      */
-    void setRendererV2( QgsFeatureRenderer* r /Transfer/ );
+    void setRenderer( QgsFeatureRenderer* r /Transfer/ );
 
     /** Returns point, line or polygon */
     QgsWkbTypes::GeometryType geometryType() const;
@@ -460,12 +667,12 @@ class QgsVectorLayer : QgsMapLayer
     QString providerType() const;
 
     /** Reads vector layer specific state from project file Dom node.
-     * @note Called by QgsMapLayer::readXML().
+     * @note Called by QgsMapLayer::readXml().
      */
     virtual bool readXml( const QDomNode& layer_node );
 
     /** Write vector layer specific state to project file Dom node.
-     * @note Called by QgsMapLayer::writeXML().
+     * @note Called by QgsMapLayer::writeXml().
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const;
 
@@ -510,18 +717,6 @@ class QgsVectorLayer : QgsMapLayer
      * Retained for backward compatibility
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag );
-
-    /**
-     * Will load a named style from a provided QML string.
-     *
-     * @param namedStyle  A QML string
-     * @param errorMsg    An error message indicating problems if any
-     *
-     * @return true on success
-     *
-     * @deprecated Will be removed for QGIS 3 in favor of importNamedStyle
-     */
-    virtual bool applyNamedStyle( const QString& namedStyle, QString &errorMsg /Out/ ) /Deprecated/;
 
     /** Convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element
@@ -605,9 +800,9 @@ class QgsVectorLayer : QgsMapLayer
     virtual QString subsetString() const;
 
     /**
-      * Query the layer for features specified in request.
-      * @param request feature request describing parameters of features to return
-      * @returns iterator for matching features from provider
+     * Query the layer for features specified in request.
+     * @param request feature request describing parameters of features to return
+     * @returns iterator for matching features from provider
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const;
 
@@ -633,11 +828,11 @@ class QgsVectorLayer : QgsMapLayer
     QgsFeatureIterator getFeatures( const QgsRectangle& rectangle );
 
     /** Adds a feature
-        @param f feature to add
+        @param feature feature to add
         @param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
         @return                    True in case of success and False in case of error
      */
-    bool addFeature( QgsFeature& f, bool alsoUpdateExtent = true );
+    bool addFeature( QgsFeature& feature, bool alsoUpdateExtent = true );
 
     /** Updates an existing feature. This method needs to query the datasource
         on every call. Consider using {@link changeAttributeValue()} or
@@ -666,18 +861,12 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
 
-    /** Deletes a vertex from a feature
-     * @deprecated use deleteVertexV2() instead
-     */
-    bool deleteVertex( QgsFeatureId atFeatureId, int atVertex ) /Deprecated/;
-
     /** Deletes a vertex from a feature.
      * @param featureId ID of feature to remove vertex from
      * @param vertex index of vertex to delete
      * @note added in QGIS 2.14
      */
-    //TODO QGIS 3.0 - rename back to deleteVertex
-    EditResult deleteVertexV2( QgsFeatureId featureId, int vertex );
+    EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
     /** Deletes the selected features
      *  @return true in case of success and false otherwise
@@ -806,9 +995,6 @@ class QgsVectorLayer : QgsMapLayer
 
     virtual bool isSpatial() const;
 
-    /** Returns true if the provider is in read-only mode */
-    virtual bool isReadOnly() const;
-
     /** Returns true if the provider has been modified since the last commit */
     virtual bool isModified() const;
 
@@ -909,14 +1095,6 @@ class QgsVectorLayer : QgsMapLayer
     /**
      * Changes an attribute value (but does not commit it)
      *
-     * @deprecated The emitSignal parameter is obsolete and not considered at the moment. It will
-     *             be removed in future releases. Remove it to be prepared for the future. (Since 2.1)
-     */
-    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant& value, bool emitSignal ) /Deprecated/;
-
-    /**
-     * Changes an attribute value (but does not commit it)
-     *
      * @param fid   The feature id of the feature to be changed
      * @param field The index of the field to be updated
      * @param newValue The value which will be assigned to the field
@@ -945,72 +1123,12 @@ class QgsVectorLayer : QgsMapLayer
     bool renameAttribute( int attIndex, const QString& newName );
 
     /**
-     * Adds a tab (for the attribute editor form) holding groups and fields
-     *
-     * @deprecated Use `editFormConfig()->addTab()` instead
-     */
-    void addAttributeEditorWidget( QgsAttributeEditorElement* data ) /Deprecated/;
-
-    /**
-     * Get the id for the editor widget used to represent the field at the given index
-     *
-     * @param fieldIdx  The index of the field
-     *
-     * @return The id for the editor widget or a NULL string if not applicable
-     *
-     * @deprecated Use `editFormConfig()->widgetType()` instead
-     */
-    const QString editorWidgetV2( int fieldIdx ) const /Deprecated/;
-
-    /**
-     * Get the id for the editor widget used to represent the field at the given index
-     *
-     * @param fieldName  The name of the field
-     *
-     * @return The id for the editor widget or a NULL string if not applicable
-     *
-     * @note python method name editorWidgetV2ByName
-     *
-     * @deprecated Use `editFormConfig()->widgetType()` instead
-     */
-    const QString editorWidgetV2( const QString& fieldName ) const /PyName=editorWidgetV2ByName, Deprecated/;
-
-    /**
-     * Get the configuration for the editor widget used to represent the field at the given index
-     *
-     * @param fieldIdx  The index of the field
-     *
-     * @return The configuration for the editor widget or an empty config if the field does not exist
-     *
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    const QgsEditorWidgetConfig editorWidgetConfig( int fieldIdx ) const /Deprecated/;
-
-    /**
-     * Get the configuration for the editor widget used to represent the field with the given name
-     *
-     * @param fieldName The name of the field
-     *
-     * @return The configuration for the editor widget or an empty config if the field does not exist
-     *
-     * @note python method name is editorWidgetV2ConfigByName
-     *
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    const QgsEditorWidgetConfig editorWidgetConfig( const QString& fieldName ) const /PyName=editorWidgetV2ConfigByName, Deprecated/;
-
-    /**
-     * Returns a list of tabs holding groups and fields
-     *
-     * @deprecated Use `editFormConfig()->tabs()` instead
-     */
-    QList< QgsAttributeEditorElement* > attributeEditorElements() /Deprecated/;
-
-    /**
      * Get the configuration of the form used to represent this vector layer.
      * This is a writable configuration that can directly be changed in place.
      *
      * @return The configuration of this layers' form
+     *
+     * @note Added in QGIS 2.14
      */
     QgsEditFormConfig* editFormConfig() const;
 
@@ -1019,7 +1137,12 @@ class QgsVectorLayer : QgsMapLayer
      */
     void clearAttributeEditorWidgets();
 
-    /** Returns the alias of an attribute name or an empty string if there is no alias */
+    /**
+     * Returns the alias of an attribute name or a null string if there is no alias.
+     *
+     * @see {attributeDisplayName( int attributeIndex )} which returns the field name
+     *      if no alias is defined.
+     */
     QString attributeAlias( int attributeIndex ) const;
 
     /** Convenience function that returns the attribute alias if defined or the field name else */
@@ -1089,147 +1212,11 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool rollBack( bool deleteBuffer = true );
 
-    /**
-     * Get edit type
-     *
-     * @deprecated Use `editFormConfig()->widgetType()` instead
-     */
-    EditType editType( int idx ) /Deprecated/;
-
-    /**
-     * Set edit type
-     *
-     * @deprecated Use `editFormConfig()->setWidgetType()` instead
-     */
-    void setEditType( int idx, EditType edit ) /Deprecated/;
-
-    /**
-     * Get the active layout for the attribute editor for this layer
-     * @deprecated Use `editFormConfig()->layout()` instead
-     */
-    EditorLayout editorLayout() /Deprecated/;
-
-    /**
-     * Set the active layout for the attribute editor for this layer
-     * @deprecated Use `editFormConfig()->setLayout()` instead
-     */
-    void setEditorLayout( EditorLayout editorLayout ) /Deprecated/;
-
-    /**
-     * Set the editor widget type for a field
-     *
-     * QGIS ships the following widget types, additional types may be available depending
-     * on plugins.
-     *
-     * <ul>
-     * <li>CheckBox (QgsCheckboxWidgetWrapper)</li>
-     * <li>Classification (QgsClassificationWidgetWrapper)</li>
-     * <li>Color (QgsColorWidgetWrapper)</li>
-     * <li>DateTime (QgsDateTimeEditWrapper)</li>
-     * <li>Enumeration (QgsEnumerationWidgetWrapper)</li>
-     * <li>FileName (QgsFileNameWidgetWrapper)</li>
-     * <li>Hidden (QgsHiddenWidgetWrapper)</li>
-     * <li>Photo (QgsPhotoWidgetWrapper)</li>
-     * <li>Range (QgsRangeWidgetWrapper)</li>
-     * <li>RelationReference (QgsRelationReferenceWidgetWrapper)</li>
-     * <li>TextEdit (QgsTextEditWrapper)</li>
-     * <li>UniqueValues (QgsUniqueValuesWidgetWrapper)</li>
-     * <li>UuidGenerator (QgsUuidWidgetWrapper)</li>
-     * <li>ValueMap (QgsValueMapWidgetWrapper)</li>
-     * <li>ValueRelation (QgsValueRelationWidgetWrapper)</li>
-     * <li>WebView (QgsWebViewWidgetWrapper)</li>
-     * </ul>
-     *
-     * @param attrIdx     Index of the field
-     * @param widgetType  Type id of the editor widget to use
-     *
-     * @deprecated Use `editFormConfig()->setWidgetType()` instead
-     */
-    void setEditorWidgetV2( int attrIdx, const QString& widgetType ) /Deprecated/;
-
-    /**
-     * Set the editor widget config for a field.
-     *
-     * Python: Will accept a map.
-     *
-     * Example:
-     * \code{.py}
-     *   layer.setEditorWidgetV2Config( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField' } )
-     * \endcode
-     *
-     * @param attrIdx     Index of the field
-     * @param config      The config to set for this field
-     *
-     * @see setEditorWidgetV2() for a list of widgets and choose the widget to see the available options.
-     *
-     * @deprecated Use `editFormConfig()->setWidgetConfig()` instead
-     */
-    void setEditorWidgetV2Config( int attrIdx, const QMap<QString, QVariant>& config ) /Deprecated/;
-
-    /**
-     * Set string representing 'true' for a checkbox
-     *
-     * @deprecated Use @deprecated Use `editFormConfig()->setWidgetConfig()` instead
-     */
-    void setCheckedState( int idx, const QString& checked, const QString& notChecked ) /Deprecated/;
-
-    /**
-     * Get edit form
-     *
-     * @deprecated Use `editFormConfig()->uiForm()` instead
-     */
-    QString editForm() /Deprecated/;
-
-    /**
-     * Set edit form
-     * @deprecated Use `editFormConfig()->setUiForm()` instead
-     */
-    void setEditForm( const QString& ui ) /Deprecated/;
-
-    /** Type of feature form pop-up suppression after feature creation (overrides app setting)
-     * @note added in 2.1
-     * @deprecated Use `editFormConfig()->suppress()` instead
-     */
-    QgsVectorLayer::FeatureFormSuppress featureFormSuppress() const /Deprecated/;
-
-    /** Set type of feature form pop-up suppression after feature creation (overrides app setting)
-     * @note added in 2.1
-     * @deprecated Use `editFormConfig()->setSuppress()` instead
-     */
-    void setFeatureFormSuppress( QgsVectorLayer::FeatureFormSuppress s ) /Deprecated/;
-
     /** Get annotation form */
     QString annotationForm() const;
 
     /** Set annotation form for layer */
     void setAnnotationForm( const QString& ui );
-
-    /**
-     * Get python function for edit form initialization
-     *
-     * @deprecated Use `editFormConfig()->initFunction()` instead
-     */
-    QString editFormInit() /Deprecated/;
-
-    /**
-     * Set python function for edit form initialization
-     *
-     * @deprecated Use `editFormConfig()->setInitFunction()` instead
-     */
-    void setEditFormInit( const QString& function ) /Deprecated/;
-
-    /**
-     * Access value map
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    QMap<QString, QVariant> valueMap( int idx ) /Deprecated/;
-
-    /**
-     * Access range widget config data
-     *
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    RangeData range( int idx ) /Deprecated/;
 
     /** Access value relation widget data */
     ValueRelationData valueRelation( int idx ) const;
@@ -1241,45 +1228,6 @@ class QgsVectorLayer : QgsMapLayer
      * @return A list of relations
      */
     QList<QgsRelation> referencingRelations( int idx ) const;
-
-    /**
-     * Access date format
-     *
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    QString dateFormat( int idx ) /Deprecated/;
-
-    /**
-     * Access widget size for photo and webview widget
-     *
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    QSize widgetSize( int idx ) /Deprecated/;
-
-    /**
-     * Is edit widget editable
-     *
-     * @deprecated Use `editFormConfig()->fieldEditable()` instead
-     */
-    bool fieldEditable( int idx );
-
-    /**
-     * Label widget on top
-     * @deprecated Use `editFormConfig()->labelOnTop()` instead
-     */
-    bool labelOnTop( int idx );
-
-    /**
-     * Set edit widget editable
-     * @deprecated Use `editFormConfig()->setFieldEditable()` instead
-     */
-    void setFieldEditable( int idx, bool editable );
-
-    /**
-     * Label widget on top
-     * @deprecated Use `editFormConfig()->setLabelOnTop()` instead
-     */
-    void setLabelOnTop( int idx, bool onTop );
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     QgsVectorLayerEditBuffer* editBuffer();
@@ -1314,6 +1262,7 @@ class QgsVectorLayer : QgsMapLayer
     void updateFields();
 
     /** Caches joined attributes if required (and not already done) */
+    // marked as const as these are just caches, and need to be created from const accessors
     void createJoinCaches() const;
 
     /** Returns unique values for column
@@ -1385,6 +1334,7 @@ class QgsVectorLayer : QgsMapLayer
      *  @note added in 2.2
      */
     void setSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod );
+
     /** Returns the simplification settings for fast rendering of features
      *  @note added in 2.2
      */
@@ -1475,7 +1425,7 @@ class QgsVectorLayer : QgsMapLayer
     /**
      * Clear selection
      *
-     * @see setSelectedFeatures(const QgsFeatureIds&)
+     * @see selectByIds()
      */
     void removeSelection();
 
@@ -1604,10 +1554,6 @@ class QgsVectorLayer : QgsMapLayer
      */
     void updatedFields();
 
-    /**
-     * @deprecated use QObject::destroyed instead
-     */
-    void layerDeleted() /Deprecated/;
 
     /**
      * Is emitted whenever an attribute value change is done in the edit buffer.
@@ -1640,9 +1586,6 @@ class QgsVectorLayer : QgsMapLayer
     void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
     /** This signal is emitted, when geometry changes are saved to the provider */
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
-
-    /** Deprecated: This signal has never been emitted */
-    void saveLayerToProject() /Deprecated/;
 
     /** Emitted when the font family defined for labeling layer is not found on system */
     void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );

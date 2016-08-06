@@ -20,10 +20,8 @@
 #include "ui_qgsattributetypeedit.h"
 
 #include "qgseditorconfigwidget.h"
-#include "qgsvectorlayer.h"
+
 class QDialog;
-class QLayout;
-class QgsField;
 
 class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
 {
@@ -34,23 +32,10 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     ~QgsAttributeTypeDialog();
 
     /**
-     * Setting index, which page should be selected
-     * @param index of page to be selected
-     * @param editTypeInt type of edit type which was selected before save
-     */
-    void setIndex( int index, QgsVectorLayer::EditType type );
-
-    /**
      * Setting page which is to be selected
      * @param index index of page which was selected
      */
     void setPage( int index );
-
-    /**
-     * Getter to get selected edit type
-     * @return selected edit type
-     */
-    QgsVectorLayer::EditType type();
 
     const QString editorWidgetType();
 

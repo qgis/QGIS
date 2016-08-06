@@ -74,7 +74,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.rootrule.appendChild(self.r3)
 
         self.renderer = QgsRuleBasedRenderer(self.rootrule)
-        layer.setRendererV2(self.renderer)
+        layer.setRenderer(self.renderer)
         self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)

@@ -54,7 +54,7 @@ bool QgsTransactionGroup::addLayer( QgsVectorLayer* layer )
   mLayers.insert( layer );
 
   connect( layer, SIGNAL( beforeEditingStarted() ), this, SLOT( onEditingStarted() ) );
-  connect( layer, SIGNAL( layerDeleted() ), this, SLOT( onLayerDeleted() ) );
+  connect( layer, SIGNAL( destroyed() ), this, SLOT( onLayerDeleted() ) );
 
   return true;
 }
@@ -95,7 +95,7 @@ void QgsTransactionGroup::onEditingStarted()
 
 void QgsTransactionGroup::onLayerDeleted()
 {
-  mLayers.remove( qobject_cast<QgsVectorLayer*>( sender() ) );
+  mLayers.remove( static_cast<QgsVectorLayer*>( sender() ) );
 }
 
 void QgsTransactionGroup::onCommitChanges()

@@ -52,7 +52,6 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
     return;
 
   setupUi( this );
-  setupEditTypes();
 
   mSplitter->restoreState( QSettings().value( "/Windows/VectorLayerProperties/FieldsProperties/SplitState" ).toByteArray() );
 
@@ -814,41 +813,6 @@ void QgsFieldsProperties::on_mCalculateFieldButton_clicked()
 //
 // methods reimplemented from qt designer base class
 //
-
-QMap< QgsVectorLayer::EditType, QString > QgsFieldsProperties::editTypeMap;
-
-void QgsFieldsProperties::setupEditTypes()
-{
-  if ( !editTypeMap.isEmpty() )
-    return;
-
-  editTypeMap.insert( QgsVectorLayer::LineEdit, tr( "Line edit" ) );
-  editTypeMap.insert( QgsVectorLayer::UniqueValues, tr( "Unique values" ) );
-  editTypeMap.insert( QgsVectorLayer::UniqueValuesEditable, tr( "Unique values editable" ) );
-  editTypeMap.insert( QgsVectorLayer::Classification, tr( "Classification" ) );
-  editTypeMap.insert( QgsVectorLayer::ValueMap, tr( "Value map" ) );
-  editTypeMap.insert( QgsVectorLayer::EditRange, tr( "Edit range" ) );
-  editTypeMap.insert( QgsVectorLayer::SliderRange, tr( "Slider range" ) );
-  editTypeMap.insert( QgsVectorLayer::DialRange, tr( "Dial range" ) );
-  editTypeMap.insert( QgsVectorLayer::FileName, tr( "File name" ) );
-  editTypeMap.insert( QgsVectorLayer::Enumeration, tr( "Enumeration" ) );
-  editTypeMap.insert( QgsVectorLayer::Immutable, tr( "Immutable" ) );
-  editTypeMap.insert( QgsVectorLayer::Hidden, tr( "Hidden" ) );
-  editTypeMap.insert( QgsVectorLayer::CheckBox, tr( "Checkbox" ) );
-  editTypeMap.insert( QgsVectorLayer::TextEdit, tr( "Text edit" ) );
-  editTypeMap.insert( QgsVectorLayer::Calendar, tr( "Calendar" ) );
-  editTypeMap.insert( QgsVectorLayer::ValueRelation, tr( "Value relation" ) );
-  editTypeMap.insert( QgsVectorLayer::UuidGenerator, tr( "UUID generator" ) );
-  editTypeMap.insert( QgsVectorLayer::Photo, tr( "Photo" ) );
-  editTypeMap.insert( QgsVectorLayer::WebView, tr( "Web view" ) );
-  editTypeMap.insert( QgsVectorLayer::Color, tr( "Color" ) );
-  editTypeMap.insert( QgsVectorLayer::EditorWidget, tr( "Editor Widget" ) );
-}
-
-QString QgsFieldsProperties::editTypeButtonText( QgsVectorLayer::EditType type )
-{
-  return editTypeMap[ type ];
-}
 
 void QgsFieldsProperties::updateFieldRenamingStatus()
 {

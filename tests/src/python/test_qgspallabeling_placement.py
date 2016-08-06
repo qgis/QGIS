@@ -263,7 +263,7 @@ class TestPointPlacement(TestPlacementBase):
                                                u'name': u'rectangle',
                                                u'size_unit': u'MM'})
         renderer = QgsSingleSymbolRenderer(symbol)
-        self.layer.setRendererV2(renderer)
+        self.layer.setRenderer(renderer)
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
         self.lyr.dist = 2

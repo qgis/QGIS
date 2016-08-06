@@ -158,6 +158,8 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <tr><td>QgsVectorLayer<td>editorWidgetV2Config<td>editorWidgetConfig
 <tr><td>QgsVectorLayer<td>editorWidgetV2Text<td>editorWidgetText
 <tr><td>QgsVectorLayer<td>editorWidgetV2Type<td>editorWidgetType
+<tr><td>QgsVectorLayer<td>deleteVertexV2<td>deleteVertex
+<tr><td>QgsVectorLayer<td>rendererV2<td>renderer
 </table>
 
 \subsection qgis_api_break_3_0_removed_classes Removed Classes
@@ -175,6 +177,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 <li>QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.</li>
 <li>QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.</li>
 <li>QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.</li>
+<li>QgsLegacyHelpers.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_global General changes
@@ -832,6 +835,13 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.</li>
 <li>commitErrors() now returns an object, rather than a reference. This has no effect on PyQGIS code.</li>
 <li>subsetString() was made const. This has no effect on PyQGIS code, but c++ code implementing derived layer classes will need to update the signature of this method to match.</li>
 <li>label(), enableLabels(), hasLabelsEnabled(), drawLabels() have been removed. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.</li>
+<li>Signal layerDeleted() has been removed. Replaced by Qt signal destroyed().</li>
+<li>Deprecated editor widget methods and enums and structs: struct RangeData, enum FeatureFormSuppress, enum EditType, addAttributeEditorWidget(), editorWidgetV2(), editorWidgetConfig(), attributeEditorElements(), editType(), setEditType(), editorLayout(), setEditorLayout, setEditorWidgetV2Config(), setCheckedState(), editForm(), setEditForm(), featureFormSuppress(), setFeatureFormSuppress(), editFormInit(), setEditFormInit(), valueMap(), range(), dateFormat(), fieldEditable(), labelOnTop(), setFieldEditable() and setLabelOnTop().  Use editFormConfig()</li>
+<li>select() replaced by selectByRect()
+<li>setSelectedFeatures() replaced by selectByIds()
+<li>applyNamedStyle() replaced by applyNamedStyle()
+<li>isReadOnly() use readOnly()
+<li>Signal changeAttributeValue()
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayerEditBuffer QgsVectorLayerEditBuffer

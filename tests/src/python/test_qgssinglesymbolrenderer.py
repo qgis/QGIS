@@ -56,7 +56,7 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
 
         self.renderer = QgsSingleSymbolRenderer(sym1)
-        layer.setRendererV2(self.renderer)
+        layer.setRenderer(self.renderer)
 
         rendered_layers = [layer.id()]
         self.mapsettings = self.iface.mapCanvas().mapSettings()

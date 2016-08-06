@@ -841,13 +841,13 @@ QImage* QgsWmsServer::getLegendGraphics()
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
 
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
-      if ( !vl || !vl->rendererV2() )
+      if ( !vl || !vl->renderer() )
         continue;
 
       const SymbolV2Set& usedSymbols = hitTest[vl];
       QList<int> order;
       int i = 0;
-      Q_FOREACH ( const QgsLegendSymbolItem& legendItem, vl->rendererV2()->legendSymbolItemsV2() )
+      Q_FOREACH ( const QgsLegendSymbolItem& legendItem, vl->renderer()->legendSymbolItemsV2() )
       {
         if ( usedSymbols.contains( legendItem.legacyRuleKey() ) )
           order.append( i );
@@ -988,7 +988,7 @@ void QgsWmsServer::runHitTest( QPainter* painter, HitTest& hitTest )
   Q_FOREACH ( const QString& layerID, mMapRenderer->layerSet() )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
-    if ( !vl || !vl->rendererV2() )
+    if ( !vl || !vl->renderer() )
       continue;
 
     if ( vl->hasScaleBasedVisibility() && ( mMapRenderer->scale() < vl->minimumScale() || mMapRenderer->scale() > vl->maximumScale() ) )
@@ -1014,7 +1014,7 @@ void QgsWmsServer::runHitTest( QPainter* painter, HitTest& hitTest )
 
 void QgsWmsServer::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context )
 {
-  QgsFeatureRenderer* r = vl->rendererV2();
+  QgsFeatureRenderer* r = vl->renderer();
   bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, vl->pendingFields() );
   QgsFeature f;
@@ -2233,7 +2233,7 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       break;
     }
 
-    QgsFeatureRenderer* r2 = layer->rendererV2();
+    QgsFeatureRenderer* r2 = layer->renderer();
     if ( !r2 )
     {
       continue;
@@ -2879,16 +2879,16 @@ void QgsWmsServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
 
-      QgsFeatureRenderer* rendererV2 = vl->rendererV2();
+      QgsFeatureRenderer* renderer = vl->renderer();
       //backup old renderer
-      vectorRenderers.push_back( qMakePair( vl, rendererV2->clone() ) );
+      vectorRenderers.push_back( qMakePair( vl, renderer->clone() ) );
       //modify symbols of current renderer
       QgsRenderContext context;
       context.expressionContext() << QgsExpressionContextUtils::globalScope()
       << QgsExpressionContextUtils::projectScope()
       << QgsExpressionContextUtils::layerScope( vl );
 
-      QgsSymbolList symbolList = rendererV2->symbols( context );
+      QgsSymbolList symbolList = renderer->symbols( context );
       QgsSymbolList::iterator symbolIt = symbolList.begin();
       for ( ; symbolIt != symbolList.end(); ++symbolIt )
       {
@@ -2935,7 +2935,7 @@ void QgsWmsServer::restoreOpacities( QList< QPair< QgsVectorLayer*, QgsFeatureRe
   QList< QPair< QgsVectorLayer*, QgsFeatureRenderer*> >::iterator vIt = vectorRenderers.begin();
   for ( ; vIt != vectorRenderers.end(); ++vIt )
   {
-    ( *vIt ).first->setRendererV2(( *vIt ).second );
+    ( *vIt ).first->setRenderer(( *vIt ).second );
   }
 
   QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >::iterator rIt = rasterRenderers.begin();

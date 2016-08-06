@@ -160,7 +160,7 @@ void TestQgsAtlasComposition::init()
   props.insert( "color", "0,127,0" );
   QgsFillSymbol* fillSymbol = QgsFillSymbol::createSimple( props );
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
-  mVectorLayer->setRendererV2( renderer );
+  mVectorLayer->setRenderer( renderer );
 
   // the atlas map
   mAtlasMap = new QgsComposerMap( mComposition, 20, 20, 130, 130 );

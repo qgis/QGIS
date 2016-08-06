@@ -95,7 +95,7 @@ class ConcaveHull(GeoAlgorithm):
             i += 1
 
         # Remove features
-        delaunay_layer.setSelectedFeatures(ids)
+        delaunay_layer.selectByIds(ids)
         delaunay_layer.startEditing()
         delaunay_layer.deleteSelectedFeatures()
         delaunay_layer.commitChanges()

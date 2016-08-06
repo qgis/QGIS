@@ -116,5 +116,5 @@ class SelectByAttribute(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(qExp.parserErrorString())
         selected = [f.id() for f in layer.getFeatures(qReq)]
 
-        layer.setSelectedFeatures(selected)
+        layer.selectByIds(selected)
         self.setOutputValue(self.OUTPUT, fileName)

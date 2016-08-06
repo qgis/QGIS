@@ -1863,7 +1863,7 @@ QDomDocument QgsWmsProjectParser::getStyles( QStringList& layerList ) const
           layer->styleManager()->setCurrentStyle( styleName );
           if ( styleName.isEmpty() )
             styleName = EMPTY_STYLE_NAME;
-          QDomElement styleElem = layer->rendererV2()->writeSld( myDocument, styleName );
+          QDomElement styleElem = layer->renderer()->writeSld( myDocument, styleName );
           namedLayerNode.appendChild( styleElem );
         }
       }

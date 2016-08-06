@@ -714,7 +714,7 @@ void TestQgsPaintEffect::layerEffectPolygon()
   fillSymbol->changeSymbolLayer( 0, fill );
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
 
-  polysLayer->setRendererV2( renderer );
+  polysLayer->setRenderer( renderer );
   ms.setLayers( QStringList() << polysLayer->id() );
   ms.setExtent( polysLayer->extent() );
 
@@ -746,7 +746,7 @@ void TestQgsPaintEffect::layerEffectLine()
   lineSymbol->changeSymbolLayer( 0, line );
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( lineSymbol );
 
-  lineLayer->setRendererV2( renderer );
+  lineLayer->setRenderer( renderer );
   ms.setLayers( QStringList() << lineLayer->id() );
   ms.setExtent( lineLayer->extent() );
 
@@ -774,7 +774,7 @@ void TestQgsPaintEffect::layerEffectMarker()
   markerSymbol->changeSymbolLayer( 0, marker );
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( markerSymbol );
 
-  pointLayer->setRendererV2( renderer );
+  pointLayer->setRenderer( renderer );
   ms.setLayers( QStringList() << pointLayer->id() );
   ms.setExtent( pointLayer->extent() );
 
@@ -808,7 +808,7 @@ void TestQgsPaintEffect::vectorLayerEffect()
   effect->setColor( QColor( 255, 0, 0 ) );
   renderer->setPaintEffect( effect );
 
-  polysLayer->setRendererV2( renderer );
+  polysLayer->setRenderer( renderer );
 
   ms.setLayers( QStringList() << polysLayer->id() );
   ms.setExtent( polysLayer->extent() );
@@ -844,7 +844,7 @@ void TestQgsPaintEffect::mapUnits()
   effect->setSpreadUnit( QgsUnitTypes::RenderMapUnits );
   renderer->setPaintEffect( effect );
 
-  lineLayer->setRendererV2( renderer );
+  lineLayer->setRenderer( renderer );
   ms.setLayers( QStringList() << lineLayer->id() );
   ms.setExtent( lineLayer->extent() );
 
@@ -879,7 +879,7 @@ void TestQgsPaintEffect::composer()
   effect->appendEffect( new QgsDrawSourceEffect() );
   renderer->setPaintEffect( effect );
 
-  lineLayer->setRendererV2( renderer );
+  lineLayer->setRenderer( renderer );
   ms.setLayers( QStringList() << lineLayer->id() );
   ms.setCrsTransformEnabled( false );
 

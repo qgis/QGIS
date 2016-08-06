@@ -91,5 +91,5 @@ class RandomSelection(GeoAlgorithm):
 
         selran = random.sample(xrange(featureCount), value)
 
-        layer.setSelectedFeatures(selran)
+        layer.selectByIds(selran)
         self.setOutputValue(self.OUTPUT, filename)

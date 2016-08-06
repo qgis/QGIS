@@ -946,7 +946,7 @@ void QgsDxfExport::writeEntities()
     }
 
     QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
-    QgsFeatureRenderer* renderer = vl->rendererV2();
+    QgsFeatureRenderer* renderer = vl->renderer();
     if ( !renderer )
     {
       continue;
@@ -1072,7 +1072,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
     return;
   }
 
-  QgsFeatureRenderer* renderer = layer->rendererV2();
+  QgsFeatureRenderer* renderer = layer->renderer();
   if ( !renderer )
   {
     // TODO return error
@@ -3986,7 +3986,7 @@ QList< QPair< QgsSymbolLayer*, QgsSymbol* > > QgsDxfExport::symbolLayers( QgsRen
     }
 
     // get rendererv2
-    QgsFeatureRenderer* r = vl->rendererV2();
+    QgsFeatureRenderer* r = vl->renderer();
     if ( !r )
     {
       continue;

@@ -394,7 +394,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   renderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( layer() );
-  QgsFeatureRenderer* renderer = layer()->rendererV2();
+  QgsFeatureRenderer* renderer = layer()->renderer();
 
   mFilteredFeatures.clear();
 

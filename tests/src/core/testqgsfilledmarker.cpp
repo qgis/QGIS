@@ -118,7 +118,7 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   mMarkerSymbol = new QgsMarkerSymbol();
   mMarkerSymbol->changeSymbolLayer( 0, mFilledMarkerLayer );
   mSymbolRenderer = new QgsSingleSymbolRenderer( mMarkerSymbol );
-  mpPointsLayer->setRendererV2( mSymbolRenderer );
+  mpPointsLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui

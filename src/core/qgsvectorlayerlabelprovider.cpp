@@ -53,7 +53,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer,
     : QgsAbstractLabelProvider( layer->id(), providerId )
     , mSettings( settings ? *settings : QgsPalLayerSettings::fromLayer( layer ) )
     , mLayerGeometryType( layer->geometryType() )
-    , mRenderer( layer->rendererV2() )
+    , mRenderer( layer->renderer() )
     , mFields( layer->fields() )
     , mCrs( layer->crs() )
 {
