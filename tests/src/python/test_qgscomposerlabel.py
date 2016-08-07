@@ -69,18 +69,17 @@ class TestQgsComposerLabel(unittest.TestCase):
         assert mLabel.displayText() == "__[NAME_1]42__"
 
     def feature_evaluation_test(self, mComposition, mLabel, mVectorLayer):
-        provider = mVectorLayer.dataProvider()
+        atlas = mComposition.atlasComposition()
+        atlas.setCoverageLayer(mVectorLayer)
+        atlas.setEnabled(True)
+        mComposition.setAtlasMode(QgsComposition.ExportAtlas)
 
-        fi = provider.getFeatures(QgsFeatureRequest())
-        feat = QgsFeature()
-
-        fi.nextFeature(feat)
-        mLabel.setExpressionContext(feat, mVectorLayer)
         mLabel.setText("[%\"NAME_1\"||'_ok'%]")
+        atlas.beginRender()
+        atlas.prepareForFeature(0)
         assert mLabel.displayText() == "Basse-Normandie_ok"
 
-        fi.nextFeature(feat)
-        mLabel.setExpressionContext(feat, mVectorLayer)
+        atlas.prepareForFeature(1)
         assert mLabel.displayText() == "Bretagne_ok"
 
     def page_evaluation_test(self, mComposition, mLabel, mVectorLayer):
