@@ -323,7 +323,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
 
   FieldConfig cfg( mLayer, idx );
   QPushButton *pb;
-  pb = new QPushButton( QgsEditorWidgetRegistry::instance()->name( cfg.mEditorWidgetV2Type ) );
+  pb = new QPushButton( QgsEditorWidgetRegistry::instance()->name( cfg.mEditorWidgetType ) );
   cfg.mButton = pb;
   mFieldsList->setCellWidget( row, attrEditTypeCol, pb );
 
@@ -545,8 +545,8 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setExpression( cfg.mConstraint );
   attributeTypeDialog.setExpressionDescription( cfg.mConstraintDescription );
 
-  attributeTypeDialog.setWidgetV2Config( cfg.mEditorWidgetV2Config );
-  attributeTypeDialog.setWidgetV2Type( cfg.mEditorWidgetV2Type );
+  attributeTypeDialog.setWidgetConfig( cfg.mEditorWidgetConfig );
+  attributeTypeDialog.setWidgetType( cfg.mEditorWidgetType );
 
   if ( !attributeTypeDialog.exec() )
     return;
@@ -557,8 +557,8 @@ void QgsFieldsProperties::attributeTypeDialog()
   cfg.mConstraintDescription = attributeTypeDialog.expressionDescription();
   cfg.mConstraint = attributeTypeDialog.expression();
 
-  cfg.mEditorWidgetV2Type = attributeTypeDialog.editorWidgetType();
-  cfg.mEditorWidgetV2Config = attributeTypeDialog.editorWidgetConfig();
+  cfg.mEditorWidgetType = attributeTypeDialog.editorWidgetType();
+  cfg.mEditorWidgetConfig = attributeTypeDialog.editorWidgetConfig();
 
   pb->setText( attributeTypeDialog.editorWidgetText() );
 
@@ -932,8 +932,8 @@ void QgsFieldsProperties::apply()
     mLayer->editFormConfig()->setExpressionDescription( i, cfg.mConstraintDescription );
     mLayer->editFormConfig()->setExpression( i, cfg.mConstraint );
 
-    mLayer->editFormConfig()->setWidgetType( idx, cfg.mEditorWidgetV2Type );
-    mLayer->editFormConfig()->setWidgetConfig( idx, cfg.mEditorWidgetV2Config );
+    mLayer->editFormConfig()->setWidgetType( idx, cfg.mEditorWidgetType );
+    mLayer->editFormConfig()->setWidgetConfig( idx, cfg.mEditorWidgetConfig );
 
     if ( mFieldsList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
     {
@@ -1013,9 +1013,8 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
   mNotNull = layer->editFormConfig()->notNull( idx );
   mConstraint = layer->editFormConfig()->expression( idx );
   mConstraintDescription = layer->editFormConfig()->expressionDescription( idx );
-  mEditorWidgetV2Type = layer->editFormConfig()->widgetType( idx );
-  mEditorWidgetV2Config = layer->editFormConfig()->widgetConfig( idx );
-
+  mEditorWidgetType = layer->editFormConfig()->widgetType( idx );
+  mEditorWidgetConfig = layer->editFormConfig()->widgetConfig( idx );
 }
 
 /*

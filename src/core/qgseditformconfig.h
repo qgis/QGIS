@@ -685,7 +685,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     QMap< QString, bool> mLabelOnTop;
     QMap< QString, bool> mNotNull;
 
-    QMap<QString, QString> mEditorWidgetV2Types;
+    QMap<QString, QString> mEditorWidgetTypes;
     QMap<QString, QgsEditorWidgetConfig > mWidgetConfigs;
 
     /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
