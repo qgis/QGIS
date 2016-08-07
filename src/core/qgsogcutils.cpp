@@ -2045,6 +2045,12 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression& exp, QDomDo
                                 "geometry", QString(), false, false, errorMessage );
 }
 
+QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage )
+{
+  return expressionToOgcExpression( exp, doc, GML_2_1_2, FILTER_OGC_1_0,
+                                    "geometry", QString(), false, false, errorMessage );
+}
+
 QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression& exp,
     QDomDocument& doc,
     GMLVersion gmlVersion,
@@ -2080,6 +2086,45 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression& exp,
   }
   filterElem.appendChild( exprRootElem );
   return filterElem;
+}
+
+QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression& exp,
+    QDomDocument& doc,
+    GMLVersion gmlVersion,
+    FilterVersion filterVersion,
+    const QString& geometryName,
+    const QString& srsName,
+    bool honourAxisOrientation,
+    bool invertAxisOrientation,
+    QString* errorMessage )
+{
+  const QgsExpression::Node* node = exp.rootNode();
+  if ( !node )
+    return QDomElement();
+
+  switch ( node->nodeType() )
+  {
+    case QgsExpression::ntFunction:
+    case QgsExpression::ntLiteral:
+    case QgsExpression::ntColumnRef:
+    {
+      QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
+      QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node );
+
+      if ( errorMessage )
+        *errorMessage = utils.errorMessage();
+
+      if ( !exprRootElem.isNull() )
+      {
+        return exprRootElem;
+      }
+      break;
+    }
+    default:
+      *errorMessage = QObject::tr( "Node type not supported in expression translation: %1" ).arg( node->nodeType() );
+  }
+  // got an error
+  return QDomElement();
 }
 
 QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement& statement,

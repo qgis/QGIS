@@ -59,5 +59,11 @@ class QgsOgcUtils
      */
     static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage /Out/ );
 
+    /** Creates an OGC expression XML element.
+     * @return valid OGC expression QDomElement on success,
+     * otherwise null QDomElement
+     */
+    static QDomElement expressionToOgcExpression( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = nullptr );
+
 };
 
