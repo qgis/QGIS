@@ -132,49 +132,6 @@ class QMenu;
 class QgsField;
 class QgsFields;
 
-
-/** \ingroup gui
-Utility class for providing GUI for data-defined rendering.
-@deprecated unused, will be removed in QGIS 3.0
-@note not available in Python bindings
-*/
-class QgsRendererV2DataDefinedMenus : public QObject
-{
-    Q_OBJECT
-
-  public:
-
-    //! @deprecated will be removed in QGIS 3.0
-    Q_DECL_DEPRECATED QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, const QString& rotationField, const QString& sizeScaleField, QgsSymbol::ScaleMethod scaleMethod );
-    ~QgsRendererV2DataDefinedMenus();
-
-    void populateMenu( QMenu* menu, const QString& fieldName, QActionGroup *actionGroup );
-#if 0
-    void updateMenu( QActionGroup* actionGroup, QString fieldName );
-#endif
-  public slots:
-
-    void rotationFieldSelected( QAction *a );
-    void sizeScaleFieldSelected( QAction *a );
-    void scaleMethodSelected( QAction *a );
-
-  signals:
-
-    void rotationFieldChanged( const QString& fldName );
-    void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
-
-  protected:
-    QMenu* mRotationMenu;
-    QMenu* mSizeScaleMenu;
-    QActionGroup *mSizeMethodActionGroup;
-    QActionGroup *mRotationAttributeActionGroup;
-    QActionGroup *mSizeAttributeActionGroup;
-    QgsVectorLayer* mLayer;
-};
-
-////////////
-
 #include "ui_widget_set_dd_value.h"
 #include "qgssizescalewidget.h"
 

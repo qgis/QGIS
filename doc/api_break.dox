@@ -52,6 +52,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 <li>QgsMapCanvasMap. It is an internal class used by map canvas.</li>
 <li>QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.</li>
 <li>QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.</li>
+<li>QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_global General changes
