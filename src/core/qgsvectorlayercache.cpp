@@ -65,7 +65,7 @@ void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
   }
   else
   {
-    disconnect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( geometryChanged( QgsFeatureId, connect QgsGeometry& ) ) );
+    disconnect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
   }
 }
 
