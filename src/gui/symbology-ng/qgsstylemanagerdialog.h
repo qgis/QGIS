@@ -21,7 +21,7 @@
 #include <QAction>
 #include <QMenu>
 
-#include "ui_qgsstylev2managerdialogbase.h"
+#include "ui_qgsstylemanagerdialogbase.h"
 #include "qgscontexthelp.h"
 
 class QgsStyle;

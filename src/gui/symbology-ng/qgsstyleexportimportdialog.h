@@ -25,7 +25,7 @@
 #include <QNetworkReply>
 #include <QStandardItem>
 
-#include "ui_qgsstylev2exportimportdialogbase.h"
+#include "ui_qgsstyleexportimportdialogbase.h"
 
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;

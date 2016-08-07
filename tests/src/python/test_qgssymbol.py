@@ -178,7 +178,7 @@ class TestQgsSymbol(unittest.TestCase):
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
         checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbolv2")
+        checker.setControlPathPrefix("symbol")
         checker.setControlName("expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)

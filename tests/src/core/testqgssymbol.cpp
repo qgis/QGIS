@@ -189,11 +189,11 @@ void TestQgsSymbol::testCanvasClip()
   bool result;
 
   lineSymbol->setClipFeaturesToExtent( true );
-  result = imageCheck( ms, "stylev2_linecanvasclip" );
+  result = imageCheck( ms, "style_linecanvasclip" );
   QVERIFY( result );
 
   lineSymbol->setClipFeaturesToExtent( false );
-  result = imageCheck( ms, "stylev2_linecanvasclip_off" );
+  result = imageCheck( ms, "style_linecanvasclip_off" );
   QVERIFY( result );
 
   //poly
@@ -210,11 +210,11 @@ void TestQgsSymbol::testCanvasClip()
   ms.setExtent( extent );
 
   fillSymbol->setClipFeaturesToExtent( true );
-  result = imageCheck( ms, "stylev2_polycanvasclip" );
+  result = imageCheck( ms, "style_polycanvasclip" );
   QVERIFY( result );
 
   fillSymbol->setClipFeaturesToExtent( false );
-  result = imageCheck( ms, "stylev2_polycanvasclip_off" );
+  result = imageCheck( ms, "style_polycanvasclip_off" );
   QVERIFY( result );
 }
 

@@ -19,7 +19,7 @@
 
 #include <QDialog>
 #include <QStandardItem>
-#include "ui_qgsstylev2groupselectiondialogbase.h"
+#include "ui_qgsstylegroupselectiondialogbase.h"
 
 
 class QgsStyle;

@@ -15,7 +15,7 @@
  ***************************************************************************/
 
 #include "qgsstyleexportimportdialog.h"
-#include "ui_qgsstylev2exportimportdialogbase.h"
+#include "ui_qgsstyleexportimportdialogbase.h"
 
 #include "qgsstyle.h"
 #include "qgssymbol.h"

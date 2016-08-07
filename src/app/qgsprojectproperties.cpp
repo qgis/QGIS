@@ -1659,7 +1659,7 @@ void QgsProjectProperties::on_pbnExportScales_clicked()
 
 void QgsProjectProperties::populateStyles()
 {
-  // Styles - taken from qgsstylev2managerdialog
+  // Styles - taken from qgsstylemanagerdialog
 
   // use QComboBox and QString lists for shorter code
   QStringList prefList;

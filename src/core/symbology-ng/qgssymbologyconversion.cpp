@@ -227,8 +227,8 @@ static QgsFeatureRenderer* readOldGraduatedSymbolRenderer( const QDomNode& rnode
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
   {
-    QgsSymbol* symbolv2 = readOldSymbol( symbolnode, geomType );
-    if ( symbolv2 )
+    QgsSymbol* symbol = readOldSymbol( symbolnode, geomType );
+    if ( symbol )
     {
       QgsOldSymbolMeta meta = readSymbolMeta( symbolnode );
       double lowerValue = meta.lowerValue.toDouble();
@@ -236,7 +236,7 @@ static QgsFeatureRenderer* readOldGraduatedSymbolRenderer( const QDomNode& rnode
       QString label = meta.label;
       if ( label.isEmpty() )
         label = QString( "%1 - %2" ).arg( lowerValue, -1, 'f', 3 ).arg( upperValue, -1, 'f', 3 );
-      ranges.append( QgsRendererRange( lowerValue, upperValue, symbolv2, label ) );
+      ranges.append( QgsRendererRange( lowerValue, upperValue, symbol, label ) );
     }
 
     symbolnode = symbolnode.nextSibling();
@@ -260,15 +260,15 @@ static QgsFeatureRenderer* readOldUniqueValueRenderer( const QDomNode& rnode, Qg
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
   {
-    QgsSymbol* symbolv2 = readOldSymbol( symbolnode, geomType );
-    if ( symbolv2 )
+    QgsSymbol* symbol = readOldSymbol( symbolnode, geomType );
+    if ( symbol )
     {
       QgsOldSymbolMeta meta = readSymbolMeta( symbolnode );
       QVariant value = QVariant( meta.lowerValue );
       QString label = meta.label;
       if ( label.isEmpty() )
         label = value.toString();
-      cats.append( QgsRendererCategory( value, symbolv2, label, true ) );
+      cats.append( QgsRendererCategory( value, symbol, label, true ) );
     }
 
     symbolnode = symbolnode.nextSibling();
