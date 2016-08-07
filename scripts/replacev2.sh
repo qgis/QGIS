@@ -38,6 +38,29 @@ do
 	fi
 done
 
+find $codepaths \( -name "*v2*.h" -o -name "*v2*.cpp" -o -name "*v2*.sip" \) -type f | while read f; do
+	s=${f##*/}
+	d=${s/v2/}
+	echo "FIND $d"
+	if [ $(find $codepaths -name "$d" -print | wc -l) -gt 0 ]; then
+		echo "$f vs $b"
+		continue
+	fi
+
+	echo "MV $f ${f/v2/}"
+	git mv "$f" "${f/v2/}"
+
+	case "$s" in
+	*.sip)
+		echo "s#\b$s\b#$d#g;" >>$r
+		;;
+
+	*)
+		echo "s#\b$s\b#$d#g;" >>$r
+		;;
+	esac
+done
+
 echo "API breaks logged to: $d"
 echo "Skipped V2 symbols: $s"
 echo "Replacing from $r"
