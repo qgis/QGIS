@@ -159,6 +159,25 @@ class CORE_EXPORT QgsOgcUtils
         bool invertAxisOrientation,
         QString* errorMessage = nullptr );
 
+    /** Creates an OGC expression XML element.
+     * @return valid OGC expression QDomElement on success,
+     * otherwise null QDomElement
+     */
+    static QDomElement expressionToOgcExpression( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = nullptr );
+
+    /** Creates an OGC expression XML element.
+     * @return valid OGC expression QDomElement on success,
+     * otherwise null QDomElement
+     */
+    static QDomElement expressionToOgcExpression( const QgsExpression& exp,
+        QDomDocument& doc,
+        GMLVersion gmlVersion,
+        FilterVersion filterVersion,
+        const QString& geometryName,
+        const QString& srsName,
+        bool honourAxisOrientation,
+        bool invertAxisOrientation,
+        QString* errorMessage = nullptr );
   private:
 
     /** Static method that creates geometry from GML Point */
