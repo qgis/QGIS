@@ -162,7 +162,7 @@ namespace pal
       int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
-                                              int orientation, int index, double distance, bool& flip );
+                                              int& orientation, int index, double distance, bool& flip );
 
       /** Generate curved candidates for line features.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates

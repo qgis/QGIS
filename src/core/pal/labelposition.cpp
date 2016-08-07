@@ -60,6 +60,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
     , quadrant( quadrant )
     , mCost( cost )
     , mHasObstacleConflict( false )
+    , mUpsideDownCharCount( 0 )
 {
   type = GEOS_POLYGON;
   nbPoints = 4;
@@ -165,6 +166,7 @@ LabelPosition::LabelPosition( const LabelPosition& other )
   reversed = other.reversed;
   quadrant = other.quadrant;
   mHasObstacleConflict = other.mHasObstacleConflict;
+  mUpsideDownCharCount = other.mUpsideDownCharCount;
 }
 
 bool LabelPosition::isIn( double *bbox )
