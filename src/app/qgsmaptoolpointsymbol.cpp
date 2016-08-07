@@ -15,7 +15,7 @@
 
 #include "qgsmaptoolpointsymbol.h"
 #include "qgsfeatureiterator.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgssnappingutils.h"

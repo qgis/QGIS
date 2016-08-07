@@ -36,10 +36,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsgeometryutils.h"
-#include "qgsgeometrycollectionv2.h"
-#include "qgscurvev2.h"
+#include "qgsgeometrycollection.h"
+#include "qgscurve.h"
 #include "qgscoordinateutils.h"
 #include "qgscsexception.h"
 

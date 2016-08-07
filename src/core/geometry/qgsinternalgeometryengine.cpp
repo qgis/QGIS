@@ -16,10 +16,10 @@
 
 #include "qgsinternalgeometryengine.h"
 
-#include "qgslinestringv2.h"
-#include "qgsmultipolygonv2.h"
-#include "qgspolygonv2.h"
-#include "qgsmulticurvev2.h"
+#include "qgslinestring.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgsmulticurve.h"
 #include "qgsgeometry.h"
 
 #include <QTransform>

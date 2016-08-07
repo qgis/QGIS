@@ -19,7 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
 

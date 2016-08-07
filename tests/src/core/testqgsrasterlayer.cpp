@@ -36,7 +36,7 @@
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
 #include <qgsmultibandcolorrenderer.h>
-#include <qgsvectorcolorrampv2.h>
+#include <qgsvectorcolorramp.h>
 #include <qgscptcityarchive.h>
 #include "qgscolorrampshader.h"
 #include "qgsrasterdataprovider.h"

@@ -15,11 +15,11 @@
 
 #include <QImage>
 
-#include "qgsmarkersymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgslinesymbollayer.h"
 
 #include "qgscoordinatetransform.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
@@ -28,7 +28,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 
 /* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer

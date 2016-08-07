@@ -28,9 +28,9 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgssymbol.h>
-#include <qgssinglesymbolrendererv2.h>
-#include "qgsmarkersymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
+#include <qgssinglesymbolrenderer.h>
+#include "qgsmarkersymbollayer.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsdatadefined.h"
 
 //qgis test includes

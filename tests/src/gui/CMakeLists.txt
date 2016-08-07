@@ -120,8 +120,8 @@ ADD_QGIS_TEST(zoomtest testqgsmaptoolzoom.cpp)
 
 # a simple app for testing GUI of renderers
 # These tests are old and are never run so removed for now.
-#SET(rendererv2gui_SRCS testrendererv2gui.cpp)
-#SET(rendererv2gui_HDRS testrendererv2gui.h)
+#SET(rendererv2gui_SRCS testrenderergui.cpp)
+#SET(rendererv2gui_HDRS testrenderergui.h)
 #QT4_WRAP_CPP(rendererv2gui_MOC_SRCS ${rendererv2gui_HDRS})
 #ADD_EXECUTABLE(qgis_rendererv2gui ${rendererv2gui_SRCS} ${rendererv2gui_MOC_SRCS})
 

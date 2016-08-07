@@ -16,7 +16,7 @@
 #define QGSHEATMAPRENDERERWIDGET_H
 
 #include "ui_qgsheatmaprendererwidgetbase.h"
-#include "qgsrendererv2widget.h"
+#include "qgsrendererwidget.h"
 
 class QMenu;
 class QgsHeatmapRenderer;

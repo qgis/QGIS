@@ -14,17 +14,17 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsgeos.h"
-#include "qgsabstractgeometryv2.h"
-#include "qgsgeometrycollectionv2.h"
+#include "qgsabstractgeometry.h"
+#include "qgsgeometrycollection.h"
 #include "qgsgeometryfactory.h"
-#include "qgslinestringv2.h"
+#include "qgslinestring.h"
 #include "qgsmessagelog.h"
-#include "qgsmulticurvev2.h"
-#include "qgsmultilinestringv2.h"
-#include "qgsmultipointv2.h"
-#include "qgsmultipolygonv2.h"
+#include "qgsmulticurve.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
 #include "qgslogger.h"
-#include "qgspolygonv2.h"
+#include "qgspolygon.h"
 #include "qgsgeometry.h"
 #include <limits>
 #include <cstdio>

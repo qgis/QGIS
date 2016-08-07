@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgs25drenderer.h"
-#include "qgsgeometrygeneratorsymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsfillsymbollayer.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"

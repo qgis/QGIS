@@ -29,9 +29,9 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgssymbol.h>
-#include <qgssinglesymbolrendererv2.h>
-#include <qgsfillsymbollayerv2.h>
-#include <qgsvectorcolorrampv2.h>
+#include <qgssinglesymbolrenderer.h>
+#include <qgsfillsymbollayer.h>
+#include <qgsvectorcolorramp.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 

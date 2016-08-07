@@ -21,7 +21,7 @@
 #include <QSize>
 #include <QStringList>
 
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransformstore.h"
 #include "qgsmaptopixel.h"

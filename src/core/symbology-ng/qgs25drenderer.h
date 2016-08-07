@@ -16,7 +16,7 @@
 #ifndef QGS25DRENDERER_H
 #define QGS25DRENDERER_H
 
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 
 class QgsOuterGlowEffect;
 

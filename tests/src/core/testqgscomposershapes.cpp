@@ -21,8 +21,8 @@
 #include "qgscomposershape.h"
 #include "qgsmapsettings.h"
 #include "qgssymbol.h"
-#include "qgssinglesymbolrendererv2.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsfillsymbollayer.h"
 #include <QObject>
 #include <QtTest/QtTest>
 #include <QColor>

@@ -23,7 +23,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsrubberband.h"
 #include "qgscsexception.h"
 #include "qgslogger.h"

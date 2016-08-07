@@ -28,7 +28,7 @@
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdiagramproperties.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfieldsproperties.h"
@@ -50,7 +50,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsexpressioncontext.h"
 
 #include <QMessageBox>
@@ -65,8 +65,8 @@
 #include <QHeaderView>
 #include <QColorDialog>
 
-#include "qgsrendererv2propertiesdialog.h"
-#include "qgsstylev2.h"
+#include "qgsrendererpropertiesdialog.h"
+#include "qgsstyle.h"
 #include "qgssymbologyconversion.h"
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(

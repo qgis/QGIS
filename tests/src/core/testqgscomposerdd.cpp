@@ -26,7 +26,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
 #include "qgssymbol.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsdatadefined.h"
 
 #include <QObject>

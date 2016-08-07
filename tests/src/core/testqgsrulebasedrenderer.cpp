@@ -16,7 +16,7 @@
 #include <QDomDocument>
 #include <QFile>
 //header for class being tested
-#include <qgsrulebasedrendererv2.h>
+#include <qgsrulebasedrenderer.h>
 
 #include <qgsapplication.h>
 #include <qgssymbol.h>

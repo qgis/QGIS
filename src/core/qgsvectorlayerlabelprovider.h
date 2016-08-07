@@ -16,8 +16,8 @@
 #ifndef QGSVECTORLAYERLABELPROVIDER_H
 #define QGSVECTORLAYERLABELPROVIDER_H
 
-#include "qgslabelingenginev2.h"
-#include "qgsrendererv2.h"
+#include "qgslabelingengine.h"
+#include "qgsrenderer.h"
 
 class QgsAbstractFeatureSource;
 class QgsFeatureRenderer;

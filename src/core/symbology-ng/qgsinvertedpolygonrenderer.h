@@ -16,7 +16,7 @@
 #define QGSINVERTEDPOLYGONRENDERER_H
 
 #include "qgis.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"

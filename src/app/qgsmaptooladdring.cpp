@@ -17,7 +17,7 @@
 
 #include "qgsmaptooladdring.h"
 #include "qgsgeometry.h"
-#include "qgslinestringv2.h"
+#include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"

@@ -18,13 +18,13 @@
 
 #include "qgssizescalewidget.h"
 
-#include "qgsstylev2managerdialog.h"
+#include "qgsstylemanagerdialog.h"
 #include "qgsdatadefined.h"
 
 #include "qgssymbol.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
-#include "qgsmarkersymbollayerv2.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"

@@ -17,12 +17,12 @@
 #define QGSGRASSEDITRENDERER_H
 
 #include "qgis.h"
-#include "qgscategorizedsymbolrendererv2.h"
-#include "qgsrendererv2.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgsrenderer.h"
 #include "qgssymbol.h"
 
-#include "qgscategorizedsymbolrendererv2.h"
-#include "qgsrendererv2widget.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgsrendererwidget.h"
 
 class QgsGrassEditRenderer : public QgsFeatureRenderer
 {

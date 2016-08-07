@@ -18,7 +18,7 @@
 #include "qgsexpression.h"
 #include "qgsfontutils.h"
 #include "qgssymbollayerutils.h"
-#include "qgsmarkersymbollayerv2.h"
+#include "qgsmarkersymbollayer.h"
 
 QgsConditionalLayerStyles::QgsConditionalLayerStyles()
     : mRowStyles( QList<QgsConditionalStyle>() )

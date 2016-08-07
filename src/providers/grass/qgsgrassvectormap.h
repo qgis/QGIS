@@ -20,7 +20,7 @@
 #include <QDateTime>
 #include <QObject>
 
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 
 #include "qgsgrass.h"
 #include "qgsgrassvectormaplayer.h"

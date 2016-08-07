@@ -20,7 +20,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"

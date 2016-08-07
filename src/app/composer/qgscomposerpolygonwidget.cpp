@@ -18,7 +18,7 @@
 #include "qgscomposerpolygon.h"
 #include "qgscomposeritemwidget.h"
 #include "qgssymbolselectordialog.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 
 QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon* composerPolygon ):

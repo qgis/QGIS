@@ -15,14 +15,14 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometryeditutils.h"
 #include "qgsfeatureiterator.h"
-#include "qgscurvev2.h"
-#include "qgscurvepolygonv2.h"
-#include "qgspolygonv2.h"
+#include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgspolygon.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmultisurfacev2.h"
+#include "qgsmultisurface.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include <limits>

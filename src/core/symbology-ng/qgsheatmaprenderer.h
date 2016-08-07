@@ -16,7 +16,7 @@
 #define QGSHEATMAPRENDERER_H
 
 #include "qgis.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"

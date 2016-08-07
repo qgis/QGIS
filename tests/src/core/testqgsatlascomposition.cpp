@@ -26,7 +26,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgssymbol.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsfontutils.h"
 #include <QObject>
 #include <QtTest/QSignalSpy>

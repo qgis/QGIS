@@ -22,8 +22,8 @@
 #include "qgsgloweffect.h"
 #include "qgstransformeffect.h"
 #include "qgscoloreffect.h"
-#include "qgsstylev2.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsstyle.h"
+#include "qgsvectorcolorramp.h"
 
 //
 // draw source

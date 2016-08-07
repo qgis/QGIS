@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgsinvertedpolygonrendererwidget.h"
 #include "qgsinvertedpolygonrenderer.h"
-#include "qgsrendererv2registry.h"
+#include "qgsrendererregistry.h"
 
 #include "qgssymbol.h"
 

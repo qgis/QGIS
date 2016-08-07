@@ -17,9 +17,9 @@
 
 #include "qgspointdisplacementrendererwidget.h"
 #include "qgspointdisplacementrenderer.h"
-#include "qgsrendererv2registry.h"
+#include "qgsrendererregistry.h"
 #include "qgsfield.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"

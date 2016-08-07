@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptoolcircularstringcurvepoint.h"
-#include "qgscircularstringv2.h"
-#include "qgscompoundcurvev2.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgspointv2.h"

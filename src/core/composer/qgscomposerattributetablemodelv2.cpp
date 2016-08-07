@@ -21,7 +21,7 @@
 #include "qgscomposertablecolumn.h"
 
 
-//QgsComposerAttributeTableColumnModelV2V2
+//QgsComposerAttributeTableColumnModelV2
 
 QgsComposerAttributeTableColumnModelV2::QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent ) : QAbstractTableModel( parent )
     , mComposerTable( composerTable )
@@ -441,7 +441,7 @@ bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTa
 
 
 
-//QgsComposerTableSortColumnsProxyModelV2V2
+//QgsComposerTableSortColumnsProxyModelV2
 
 QgsComposerTableSortColumnsProxyModelV2::QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent )
     : QSortFilterProxyModel( parent )

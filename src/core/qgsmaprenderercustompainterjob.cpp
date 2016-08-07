@@ -16,13 +16,13 @@
 #include "qgsmaprenderercustompainterjob.h"
 
 #include "qgsfeedback.h"
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 
 
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )

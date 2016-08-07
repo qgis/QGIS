@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsimageoperation.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsvectorcolorramp.h"
 #include <QObject>
 #include <QtTest/QtTest>
 #include "qgsrenderchecker.h"

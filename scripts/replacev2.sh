@@ -43,11 +43,10 @@ find $codepaths \( -name "*v2*.h" -o -name "*v2*.cpp" -o -name "*v2*.sip" \) -ty
 	d=${s/v2/}
 	echo "FIND $d"
 	if [ $(find $codepaths -name "$d" -print | wc -l) -gt 0 ]; then
-		echo "$f vs $b"
+		echo "$f vs $b" >>$s
 		continue
 	fi
 
-	echo "MV $f ${f/v2/}"
 	git mv "$f" "${f/v2/}"
 
 	case "$s" in

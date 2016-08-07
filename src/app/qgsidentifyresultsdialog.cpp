@@ -65,7 +65,7 @@
 #include <qwt_plot_curve.h>
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
-#include "qgsvectorcolorrampv2.h" // for random colors
+#include "qgsvectorcolorramp.h" // for random colors
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {

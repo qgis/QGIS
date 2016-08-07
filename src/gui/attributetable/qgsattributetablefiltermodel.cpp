@@ -23,7 +23,7 @@
 #include "qgsfeature.h"
 #include "qgsmapcanvas.h"
 #include "qgslogger.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayereditbuffer.h"
 //////////////////
 // Filter Model //

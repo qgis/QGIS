@@ -135,7 +135,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     QString mUserLabel;
 };
 
-#include "qgslegendsymbolitemv2.h"
+#include "qgslegendsymbolitem.h"
 
 /** \ingroup core
  * Implementation of legend node interface for displaying preview of vector symbols and their labels

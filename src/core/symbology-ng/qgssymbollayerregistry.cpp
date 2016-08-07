@@ -16,12 +16,12 @@
 #include "qgssymbollayerregistry.h"
 
 #include "qgsarrowsymbollayer.h"
-#include "qgsellipsesymbollayerv2.h"
-#include "qgsmarkersymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgsellipsesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgslinesymbollayer.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsvectorfieldsymbollayer.h"
-#include "qgsgeometrygeneratorsymbollayerv2.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 
 QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
 {

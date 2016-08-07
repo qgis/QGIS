@@ -19,7 +19,7 @@
 #define QGSPOINTDISPLACEMENTRENDERERWIDGET_H
 
 #include "ui_qgspointdisplacementrendererwidgetbase.h"
-#include "qgsrendererv2widget.h"
+#include "qgsrendererwidget.h"
 
 class QgsPointDisplacementRenderer;
 

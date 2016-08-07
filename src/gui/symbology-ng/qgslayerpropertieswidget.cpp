@@ -29,7 +29,7 @@
 
 #include "qgssymbollayerwidget.h"
 #include "qgsarrowsymbollayerwidget.h"
-#include "qgsellipsesymbollayerv2widget.h"
+#include "qgsellipsesymbollayerwidget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"

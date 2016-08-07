@@ -23,7 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayer.h"
 #include "qgsogcutils.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsvectorcolorramp.h"
 #include "qgsrendercontext.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"

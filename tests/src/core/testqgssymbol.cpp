@@ -23,15 +23,15 @@
 #include <qgsapplication.h>
 #include "qgsconfig.h"
 #include "qgslogger.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsvectorcolorramp.h"
 #include "qgscptcityarchive.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgslinesymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgslinesymbollayer.h"
+#include "qgsfillsymbollayer.h"
+#include "qgssinglesymbolrenderer.h"
 
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 
 /** \ingroup UnitTests
  * This is a unit test to verify that symbols are working correctly

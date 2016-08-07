@@ -21,7 +21,7 @@
 
 #include "qgshistogram.h"
 #include "qgsstatisticalsummary.h"
-#include "qgsgraduatedsymbolrendererv2.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include <QPen>
 #include <QBrush>
 

@@ -16,7 +16,7 @@
 #include "qgsmaprendererparalleljob.h"
 
 #include "qgsfeedback.h"
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"

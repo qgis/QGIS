@@ -19,7 +19,7 @@
 #include "qgscomposershape.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
 #include <QColorDialog>

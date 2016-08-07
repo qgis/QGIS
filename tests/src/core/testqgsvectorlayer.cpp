@@ -30,7 +30,7 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgssymbol.h>
-#include <qgssinglesymbolrendererv2.h>
+#include <qgssinglesymbolrenderer.h>
 //qgis test includes
 #include "qgsrenderchecker.h"
 

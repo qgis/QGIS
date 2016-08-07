@@ -30,14 +30,14 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssymbol.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgssymbolselectordialog.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgssinglesymbolrenderer.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )
     : mView( view )

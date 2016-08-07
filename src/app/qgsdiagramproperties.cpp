@@ -23,7 +23,7 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsdiagramproperties.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgslabelengineconfigdialog.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayerproperties.h"
@@ -32,7 +32,7 @@
 #include "qgscolordialog.h"
 #include "qgisgui.h"
 #include "qgssymbolselectordialog.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsmapcanvas.h"
 #include "qgsexpressionbuilderdialog.h"
 

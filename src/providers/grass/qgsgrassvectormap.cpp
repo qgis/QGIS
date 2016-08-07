@@ -17,8 +17,8 @@
 #include <QFileInfo>
 #include <QMessageBox>
 
-#include "qgslinestringv2.h"
-#include "qgspolygonv2.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 #include "qgspointv2.h"
 
 #include "qgslogger.h"

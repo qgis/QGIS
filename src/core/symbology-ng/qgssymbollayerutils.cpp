@@ -18,7 +18,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbol.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsvectorcolorramp.h"
 #include "qgsexpression.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"

@@ -15,7 +15,7 @@
 
 #include "qgsclassificationwidgetwrapper.h"
 
-#include "qgscategorizedsymbolrendererv2.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
 QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )

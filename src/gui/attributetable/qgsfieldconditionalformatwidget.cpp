@@ -18,7 +18,7 @@
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsvectorlayer.h"
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )

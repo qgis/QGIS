@@ -60,7 +60,7 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 #include "ui_qgssmartgroupeditordialogbase.h"
 //#include "qgscontexthelp.h"
 
-#include "qgsstylev2.h" //for QgsSmartConditionMap
+#include "qgsstyle.h" //for QgsSmartConditionMap
 
 /** \ingroup gui
  * \class QgsSmartGroupEditorDialog

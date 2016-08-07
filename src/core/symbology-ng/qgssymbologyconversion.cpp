@@ -16,12 +16,12 @@
 
 #include "qgslogger.h"
 
-#include "qgsmarkersymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
-#include "qgssinglesymbolrendererv2.h"
-#include "qgsgraduatedsymbolrendererv2.h"
-#include "qgscategorizedsymbolrendererv2.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgslinesymbollayer.h"
+#include "qgsfillsymbollayer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsgraduatedsymbolrenderer.h"
+#include "qgscategorizedsymbolrenderer.h"
 
 
 

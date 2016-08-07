@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgeometryrubberband.h"
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgspointv2.h"
 #include <QPainter>

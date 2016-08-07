@@ -28,7 +28,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 

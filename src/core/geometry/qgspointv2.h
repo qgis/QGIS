@@ -18,7 +18,7 @@
 #ifndef QGSPOINTV2_H
 #define QGSPOINTV2_H
 
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 
 /***************************************************************************

@@ -16,7 +16,7 @@
 #ifndef QGSGRADIENTSTOPEDITOR_H
 #define QGSGRADIENTSTOPEDITOR_H
 
-#include "qgsvectorcolorrampv2.h"
+#include "qgsvectorcolorramp.h"
 #include <QWidget>
 
 

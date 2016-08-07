@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 #include "qgsgeometrytypecheck.h"
-#include "qgsgeometrycollectionv2.h"
-#include "qgsmulticurvev2.h"
-#include "qgsmultilinestringv2.h"
-#include "qgsmultipointv2.h"
-#include "qgsmultipolygonv2.h"
+#include "qgsgeometrycollection.h"
+#include "qgsmulticurve.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
 #include "qgsmultirenderchecker.h"
 #include "../utils/qgsfeaturepool.h"
 

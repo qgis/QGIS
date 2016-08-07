@@ -16,9 +16,9 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include "qgsgeometryutils.h"
-#include "qgslinestringv2.h"
-#include "qgspolygonv2.h"
-#include "qgsmultipolygonv2.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
+#include "qgsmultipolygon.h"
 #include "qgstestutils.h"
 
 class TestQgsGeometryUtils: public QObject

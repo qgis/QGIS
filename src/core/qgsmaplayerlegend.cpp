@@ -21,9 +21,9 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )

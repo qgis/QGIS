@@ -44,7 +44,7 @@
 #include "qgsmapserviceexception.h"
 #include "qgssldconfigparser.h"
 #include "qgssymbol.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgspaintenginehack.h"
 #include "qgsogcutils.h"
 #include "qgsfeature.h"

@@ -37,14 +37,14 @@ email                : morb at ozemail dot com dot au
 #include "qgsproject.h"
 #include "qgsgeometryvalidator.h"
 
-#include "qgsmulticurvev2.h"
-#include "qgsmultilinestringv2.h"
-#include "qgsmultipointv2.h"
-#include "qgsmultipolygonv2.h"
-#include "qgsmultisurfacev2.h"
+#include "qgsmulticurve.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgsmultisurface.h"
 #include "qgspointv2.h"
-#include "qgspolygonv2.h"
-#include "qgslinestringv2.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 
 #ifndef Q_WS_WIN
 #include <netinet/in.h>

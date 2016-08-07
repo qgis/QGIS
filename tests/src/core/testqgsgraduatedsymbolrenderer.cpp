@@ -19,7 +19,7 @@
 #include <QSettings>
 #include <QSharedPointer>
 
-#include "qgsgraduatedsymbolrendererv2.h"
+#include "qgsgraduatedsymbolrenderer.h"
 
 class TestQgsGraduatedSymbolRenderer: public QObject
 {

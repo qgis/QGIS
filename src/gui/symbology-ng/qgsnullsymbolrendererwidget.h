@@ -15,7 +15,7 @@
 #ifndef QGSNULLSYMBOLRENDERERWIDGET_H
 #define QGSNULLSYMBOLRENDERERWIDGET_H
 
-#include "qgsrendererv2widget.h"
+#include "qgsrendererwidget.h"
 
 class QgsNullSymbolRenderer;
 class QgsSymbolSelectorDialog;

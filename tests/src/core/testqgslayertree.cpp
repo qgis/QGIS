@@ -21,9 +21,9 @@
 #include <qgsvectorlayer.h>
 #include <qgsvectorlayerdiagramprovider.h>
 #include <qgsvectorlayerlabelprovider.h>
-#include <qgscategorizedsymbolrendererv2.h>
-#include <qgsgraduatedsymbolrendererv2.h>
-#include <qgsrulebasedrendererv2.h>
+#include <qgscategorizedsymbolrenderer.h>
+#include <qgsgraduatedsymbolrenderer.h>
+#include <qgsrulebasedrenderer.h>
 #include <qgslayertreemodel.h>
 #include <qgslayertreemodellegendnode.h>
 

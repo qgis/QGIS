@@ -15,8 +15,8 @@
 
 #include "qgsmaptoolcircularstringradius.h"
 #include "qgisapp.h"
-#include "qgscircularstringv2.h"
-#include "qgscompoundcurvev2.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"

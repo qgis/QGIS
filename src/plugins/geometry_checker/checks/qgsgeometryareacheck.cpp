@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometryengine.h"
-#include "qgsgeometrycollectionv2.h"
+#include "qgsgeometrycollection.h"
 #include "qgsgeometryareacheck.h"
 #include "../utils/qgsfeaturepool.h"
 

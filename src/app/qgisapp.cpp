@@ -221,7 +221,7 @@
 #include "qgsstatusbarcoordinateswidget.h"
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsstatusbarscalewidget.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssvgannotationitem.h"
 #include "qgssymbolselectordialog.h"
 #include "qgstextannotationitem.h"
@@ -1744,8 +1744,8 @@ void QgisApp::createActions()
 
 }
 
-#include "qgsstylev2.h"
-#include "qgsstylev2managerdialog.h"
+#include "qgsstyle.h"
+#include "qgsstylemanagerdialog.h"
 
 void QgisApp::showStyleManager()
 {

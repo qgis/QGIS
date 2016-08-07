@@ -17,7 +17,7 @@
 #include <QObject>
 
 #include "qgsapplication.h"
-#include "qgscategorizedsymbolrendererv2.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgscomposerlegenditem.h"
 #include "qgsfontutils.h"
 #include "qgslayertree.h"
@@ -29,11 +29,11 @@
 #include "qgslegendrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderchecker.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "diagram/qgspiediagram.h"
 
 static QString _fileNameForTest( const QString& testName )

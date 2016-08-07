@@ -16,16 +16,16 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 
-#include "qgslinesymbollayerv2.h"
-#include "qgsmarkersymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
-#include "qgsgeometrygeneratorsymbollayerv2.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 
 #include "qgslogger.h"
 #include "qgsrendercontext.h" // for bigSymbolPreview
 
 #include "qgsproject.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 
@@ -33,10 +33,10 @@
 #include "qgsvectorlayer.h"
 
 #include "qgsgeometry.h"
-#include "qgsmultipointv2.h"
+#include "qgsmultipoint.h"
 #include "qgswkbptr.h"
 #include "qgswkbsimplifierptr.h"
-#include "qgsgeometrycollectionv2.h"
+#include "qgsgeometrycollection.h"
 #include "qgsclipper.h"
 
 #include <QColor>

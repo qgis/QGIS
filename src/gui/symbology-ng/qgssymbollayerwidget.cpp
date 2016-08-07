@@ -16,10 +16,10 @@
 
 #include "qgssymbollayerwidget.h"
 
-#include "qgslinesymbollayerv2.h"
-#include "qgsmarkersymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
-#include "qgsgeometrygeneratorsymbollayerv2.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgssymbolslistwidget.h"
 
 #include "characterwidget.h"
@@ -27,10 +27,10 @@
 #include "qgssymbolselectordialog.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorrampv2.h"
-#include "qgsvectorgradientcolorrampv2dialog.h"
+#include "qgsvectorcolorramp.h"
+#include "qgsvectorgradientcolorrampdialog.h"
 #include "qgsdatadefined.h"
-#include "qgsstylev2.h" //for symbol selector dialog
+#include "qgsstyle.h" //for symbol selector dialog
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"

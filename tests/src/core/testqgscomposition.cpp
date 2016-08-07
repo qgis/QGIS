@@ -25,7 +25,7 @@
 #include "qgscomposermap.h"
 #include "qgsmapsettings.h"
 #include "qgsmultirenderchecker.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgsfillsymbollayer.h"
 
 #include <QObject>
 #include <QtTest/QtTest>

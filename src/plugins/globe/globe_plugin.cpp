@@ -40,7 +40,7 @@
 #include <qgsproject.h>
 #include <qgspoint.h>
 #include <qgsdistancearea.h>
-#include <symbology-ng/qgsrendererv2.h>
+#include <symbology-ng/qgsrenderer.h>
 #include <symbology-ng/qgssymbol.h>
 #include <qgspallabeling.h>
 

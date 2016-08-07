@@ -39,12 +39,12 @@
 #include <QPainter>
 
 #include "diagram/qgsdiagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsfontutils.h"
 #include "qgslabelsearchtree.h"
 #include "qgsexpression.h"
 #include "qgsdatadefined.h"
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 #include "qgsvectorlayerlabeling.h"
 
 #include <qgslogger.h>
@@ -54,7 +54,7 @@
 #include <qgsvectorlayerdiagramprovider.h>
 #include <qgsvectorlayerlabelprovider.h>
 #include <qgsgeometry.h>
-#include <qgsmarkersymbollayerv2.h>
+#include <qgsmarkersymbollayer.h>
 #include <qgspainting.h>
 #include <qgsproject.h>
 #include "qgssymbollayerutils.h"

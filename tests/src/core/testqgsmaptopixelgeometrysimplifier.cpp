@@ -33,9 +33,9 @@
 #include <qgspoint.h>
 #include "qgsgeometryutils.h"
 #include "qgspointv2.h"
-#include "qgslinestringv2.h"
-#include "qgspolygonv2.h"
-#include "qgscircularstringv2.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
+#include "qgscircularstring.h"
 #endif
 
 //qgs unit test utility class

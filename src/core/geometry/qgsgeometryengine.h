@@ -16,7 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYENGINE_H
 #define QGSGEOMETRYENGINE_H
 
-#include "qgslinestringv2.h"
+#include "qgslinestring.h"
 
 #include <QList>
 

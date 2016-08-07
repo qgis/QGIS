@@ -28,7 +28,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h" //for pointOnLineWithDistance
 #include "qgssymbol.h" //for symbology
-#include "qgsmarkersymbollayerv2.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsrendercontext.h"
 #include "qgsmapcanvas.h"
 

@@ -18,7 +18,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgspointv2.h"
-#include "qgslinestringv2.h"
+#include "qgslinestring.h"
 #include "qgsvectorlayer.h"
 #include <QEventLoop>
 #include <QObject>

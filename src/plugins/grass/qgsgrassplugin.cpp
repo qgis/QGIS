@@ -37,7 +37,7 @@
 #include "qgsrubberband.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
-#include "qgsrendererv2registry.h"
+#include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 

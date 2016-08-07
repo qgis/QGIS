@@ -15,10 +15,10 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometryutils.h"
 
-#include "qgscurvev2.h"
-#include "qgscurvepolygonv2.h"
-#include "qgsgeometrycollectionv2.h"
-#include "qgslinestringv2.h"
+#include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
 #include "qgswkbptr.h"
 
 #include <QStringList>

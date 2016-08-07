@@ -21,14 +21,14 @@
 #include <limits>
 
 #include "qgsvectordataprovider.h"
-#include "qgscircularstringv2.h"
-#include "qgscompoundcurvev2.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgsgeometrycollectionv2.h"
+#include "qgsgeometrycollection.h"
 #include "qgsgeometryfactory.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"

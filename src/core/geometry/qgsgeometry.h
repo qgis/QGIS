@@ -30,7 +30,7 @@ email                : morb at ozemail dot com dot au
 #define GEOSCoordSequence struct GEOSCoordSeq_t
 #endif
 
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 #include "qgspoint.h"
 #include "qgspointv2.h"
 

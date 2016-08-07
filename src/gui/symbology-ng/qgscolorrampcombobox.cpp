@@ -15,14 +15,14 @@
 #include "qgscolorrampcombobox.h"
 
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorrampv2.h"
-#include "qgsstylev2.h"
-#include "qgsstylev2managerdialog.h"
+#include "qgsvectorcolorramp.h"
+#include "qgsstyle.h"
+#include "qgsstylemanagerdialog.h"
 
-#include "qgsvectorgradientcolorrampv2dialog.h"
-#include "qgsvectorrandomcolorrampv2dialog.h"
-#include "qgsvectorcolorbrewercolorrampv2dialog.h"
-#include "qgscptcitycolorrampv2dialog.h"
+#include "qgsvectorgradientcolorrampdialog.h"
+#include "qgsvectorrandomcolorrampdialog.h"
+#include "qgsvectorcolorbrewercolorrampdialog.h"
+#include "qgscptcitycolorrampdialog.h"
 
 QSize QgsColorRampComboBox::rampIconSize( 50, 16 );
 

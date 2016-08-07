@@ -17,8 +17,8 @@
 #include "qgsgeometryutils.h"
 #include <qmath.h>
 #include "qgsgeos.h"
-#include "qgsgeometrycollectionv2.h"
-#include "qgssurfacev2.h"
+#include "qgsgeometrycollection.h"
+#include "qgssurface.h"
 
 namespace QgsGeometryCheckerUtils
 {

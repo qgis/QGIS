@@ -17,7 +17,7 @@
 
 #include "qgsannotationwidget.h"
 #include "qgsannotationitem.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"

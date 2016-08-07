@@ -21,7 +21,7 @@
 
 #include "qgslogger.h"
 #include "qgscontexthelp.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgisapp.h"

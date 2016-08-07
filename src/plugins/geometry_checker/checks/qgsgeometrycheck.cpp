@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycollectionv2.h"
-#include "qgscurvepolygonv2.h"
+#include "qgsgeometrycollection.h"
+#include "qgscurvepolygon.h"
 #include "qgsgeometrycheck.h"
 #include "../utils/qgsfeaturepool.h"
 

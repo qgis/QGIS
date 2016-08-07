@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 #include "qgsgeometryselfintersectioncheck.h"
-#include "qgspolygonv2.h"
-#include "qgslinestringv2.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 #include "qgsgeometryengine.h"
-#include "qgsmultipolygonv2.h"
-#include "qgsmultilinestringv2.h"
+#include "qgsmultipolygon.h"
+#include "qgsmultilinestring.h"
 #include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"
 

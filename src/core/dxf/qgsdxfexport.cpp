@@ -30,11 +30,11 @@
 #include "qgsdxfpallabeling.h"
 #include "qgsvectordataprovider.h"
 #include "qgspoint.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssymbollayer.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsfeatureiterator.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsunittypes.h"
@@ -3985,7 +3985,7 @@ QList< QPair< QgsSymbolLayer*, QgsSymbol* > > QgsDxfExport::symbolLayers( QgsRen
       continue;
     }
 
-    // get rendererv2
+    // get renderer
     QgsFeatureRenderer* r = vl->renderer();
     if ( !r )
     {

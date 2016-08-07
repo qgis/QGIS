@@ -31,7 +31,7 @@
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 

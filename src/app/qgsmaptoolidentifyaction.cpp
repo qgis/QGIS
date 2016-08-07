@@ -35,7 +35,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsunittypes.h"
 
 #include <QSettings>

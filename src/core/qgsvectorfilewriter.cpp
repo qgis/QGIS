@@ -25,7 +25,7 @@
 #include "qgsmessagelog.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssymbollayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"

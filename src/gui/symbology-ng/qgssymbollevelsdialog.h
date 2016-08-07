@@ -19,7 +19,7 @@
 #include <QList>
 #include <QItemDelegate>
 
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 
 #include "ui_qgssymbollevelsdialogbase.h"
 

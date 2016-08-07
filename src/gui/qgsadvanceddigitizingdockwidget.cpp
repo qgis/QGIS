@@ -28,7 +28,7 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmessagebaritem.h"
 #include "qgspoint.h"
-#include "qgslinestringv2.h"
+#include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter

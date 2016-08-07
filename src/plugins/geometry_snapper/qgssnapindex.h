@@ -18,7 +18,7 @@
 #define QGSSNAPINDEX_H
 
 #include "qgspointv2.h"
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 
 class QgsSnapIndex
 {

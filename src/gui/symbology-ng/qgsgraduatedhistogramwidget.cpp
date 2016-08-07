@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 #include "qgsgraduatedhistogramwidget.h"
-#include "qgsgraduatedsymbolrendererv2.h"
-#include "qgsgraduatedsymbolrendererv2widget.h"
+#include "qgsgraduatedsymbolrenderer.h"
+#include "qgsgraduatedsymbolrendererwidget.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsstatisticalsummary.h"

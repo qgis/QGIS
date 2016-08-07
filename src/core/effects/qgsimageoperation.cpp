@@ -17,7 +17,7 @@
 
 #include "qgsimageoperation.h"
 #include "qgis.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsvectorcolorramp.h"
 #include "qgslogger.h"
 #include <QtConcurrentMap>
 #include <QColor>

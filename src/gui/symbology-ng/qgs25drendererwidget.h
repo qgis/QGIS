@@ -17,7 +17,7 @@
 #define QGS25DRENDERERWIDGET_H
 
 #include "ui_qgs25drendererwidgetbase.h"
-#include "qgsrendererv2widget.h"
+#include "qgsrendererwidget.h"
 
 class Qgs25DRenderer;
 

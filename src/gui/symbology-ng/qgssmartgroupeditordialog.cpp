@@ -15,7 +15,7 @@
 
 #include "qgssmartgroupeditordialog.h"
 
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsapplication.h"
 
 #include <QVariant>

@@ -14,14 +14,14 @@
  ***************************************************************************/
 #include "qgsheatmaprendererwidget.h"
 #include "qgsheatmaprenderer.h"
-#include "qgsrendererv2registry.h"
+#include "qgsrendererregistry.h"
 
 #include "qgssymbol.h"
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorcolorrampv2.h"
-#include "qgsstylev2.h"
+#include "qgsvectorcolorramp.h"
+#include "qgsstyle.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include <QGridLayout>

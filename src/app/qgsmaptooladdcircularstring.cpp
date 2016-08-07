@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdcircularstring.h"
-#include "qgscircularstringv2.h"
-#include "qgscompoundcurvev2.h"
-#include "qgscurvepolygonv2.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
+#include "qgscurvepolygon.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
-#include "qgslinestringv2.h"
+#include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgspointv2.h"
 #include "qgisapp.h"

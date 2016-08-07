@@ -18,7 +18,7 @@
 
 
 #include "qgsmaptooladvanceddigitizing.h"
-#include "qgscompoundcurvev2.h"
+#include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
 
 #include <QPoint>

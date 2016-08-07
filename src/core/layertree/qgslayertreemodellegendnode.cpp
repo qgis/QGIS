@@ -22,7 +22,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsimageoperation.h"
 #include "qgsvectorlayer.h"

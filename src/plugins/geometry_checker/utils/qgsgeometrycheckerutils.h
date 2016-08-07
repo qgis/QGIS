@@ -17,7 +17,7 @@
 #ifndef QGS_GEOMETRYCHECKERUTILS_H
 #define QGS_GEOMETRYCHECKERUTILS_H
 
-#include "geometry/qgsabstractgeometryv2.h"
+#include "geometry/qgsabstractgeometry.h"
 #include "geometry/qgspointv2.h"
 #include <qmath.h>
 

@@ -20,7 +20,7 @@
 
 #include <QColor>
 
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"

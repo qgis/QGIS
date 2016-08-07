@@ -24,8 +24,8 @@
 #include "qgstreewidgetitem.h"
 
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
-#include "qgsstylev2.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsstyle.h"
+#include "qgsvectorcolorramp.h"
 #include "qgscolordialog.h"
 
 #include <QFileDialog>
