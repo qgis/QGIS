@@ -434,6 +434,12 @@ be returned instead of a null pointer if no transformation is required.</li>
 plugins calling this method will need to be updated.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsMimeDataUtils QgsMimeDataUtils
+
+<ul>
+<li>Constructor taking QgsLayerItem argument has been removed. Use QgsDataItem::mimeUri() instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsOSMElement QgsOSMElement
 
 <ul>

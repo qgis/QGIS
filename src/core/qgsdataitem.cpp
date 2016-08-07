@@ -670,7 +670,7 @@ QgsLayerItem::QgsLayerItem( QgsDataItem* parent, const QString& name, const QStr
   }
 }
 
-QgsMapLayer::LayerType QgsLayerItem::mapLayerType()
+QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
 {
   if ( mLayerType == QgsLayerItem::Raster )
     return QgsMapLayer::RasterLayer;
@@ -692,6 +692,33 @@ bool QgsLayerItem::equal( const QgsDataItem *other )
     return false;
 
   return ( mPath == o->mPath && mName == o->mName && mUri == o->mUri && mProviderKey == o->mProviderKey );
+}
+
+QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+
+  switch ( mapLayerType() )
+  {
+    case QgsMapLayer::VectorLayer:
+      u.layerType = "vector";
+      break;
+    case QgsMapLayer::RasterLayer:
+      u.layerType = "raster";
+      break;
+    case QgsMapLayer::PluginLayer:
+      u.layerType = "plugin";
+      break;
+    default:
+      return u;  // invalid URI
+  }
+
+  u.providerKey = providerKey();
+  u.name = layerName();
+  u.uri = uri();
+  u.supportedCrs = supportedCrs();
+  u.supportedFormats = supportedFormats();
+  return u;
 }
 
 // ---------------------------------------------------------------------

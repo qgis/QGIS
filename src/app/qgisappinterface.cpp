@@ -485,6 +485,16 @@ void QgisAppInterface::unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigW
   qgis->unregisterMapLayerPropertiesFactory( factory );
 }
 
+void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
+{
+  qgis->registerCustomDropHandler( handler );
+}
+
+void QgisAppInterface::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
+{
+  qgis->unregisterCustomDropHandler( handler );
+}
+
 //! Menus
 Q_DECL_DEPRECATED QMenu *QgisAppInterface::fileMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
