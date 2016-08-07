@@ -80,7 +80,7 @@ void QgsRendererV2Widget::changeSymbolColor()
   if ( !firstSymbol )
     return;
 
-  QColor color = QgsColorDialogV2::getColor( firstSymbol->color(), this, "Change Symbol Color", true );
+  QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, "Change Symbol Color", true );
   if ( color.isValid() )
   {
     Q_FOREACH ( QgsSymbol* symbol, symbolList )

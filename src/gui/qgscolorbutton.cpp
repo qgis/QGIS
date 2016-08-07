@@ -97,35 +97,25 @@ void QgsColorButton::showColorDialog()
   QColor newColor;
   QSettings settings;
 
-  //using native color dialogs?
-  bool useNative = settings.value( "/qgis/native_color_dialogs", false ).toBool();
-
-  if ( useNative )
+  if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
   {
-    // use native o/s dialogs
-    if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
-    {
-      newColor = QgsColorDialog::getLiveColor(
-                   color(), this, SLOT( setValidColor( const QColor& ) ),
-                   this->parentWidget(), mColorDialogTitle, mAllowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
-    }
-    else
-    {
-      newColor = QColorDialog::getColor( color(), this->parentWidget(), mColorDialogTitle, mAllowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
-    }
+    // live updating dialog - QgsColorDialog will automatically use native dialog if option is set
+    newColor = QgsColorDialog::getLiveColor(
+                 color(), this, SLOT( setValidColor( const QColor& ) ),
+                 this, mColorDialogTitle, mAllowAlpha );
   }
   else
   {
-    //use QGIS style color dialogs
-    if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
+    // not using live updating dialog - first check if we need to use the limited native dialogs
+    bool useNative = settings.value( "/qgis/native_color_dialogs", false ).toBool();
+    if ( useNative )
     {
-      newColor = QgsColorDialogV2::getLiveColor(
-                   color(), this, SLOT( setValidColor( const QColor& ) ),
-                   this->parentWidget(), mColorDialogTitle, mAllowAlpha );
+      // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
+      newColor = QColorDialog::getColor( color(), this, mColorDialogTitle, mAllowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
     }
     else
     {
-      QgsColorDialogV2 dialog( this, 0, color() );
+      QgsColorDialog dialog( this, 0, color() );
       dialog.setTitle( mColorDialogTitle );
       dialog.setAllowAlpha( mAllowAlpha );
 
