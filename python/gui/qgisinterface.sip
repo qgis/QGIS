@@ -308,7 +308,6 @@ class QgisInterface : QObject
      */
 
     // Menus
-    virtual QMenu *fileMenu() = 0 /Deprecated/;
     virtual QMenu *projectMenu() = 0;
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;

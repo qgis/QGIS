@@ -362,10 +362,6 @@ class GUI_EXPORT QgisInterface : public QObject
      */
 
     // Menus
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QMenu *fileMenu() = 0;
     virtual QMenu *projectMenu() = 0;
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;

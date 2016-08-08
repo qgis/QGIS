@@ -120,6 +120,13 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 <li>featureType() has been removed. Use the equivalent QgsWkbTypes::displayString() instead.
 </ul>
 
+
+\subsection qgis_api_break_3_0_QgisInterface QgisInterface
+
+<ul>
+<li>fileMenu() has been removed, use projectMenu() instead.
+</ul>
+
 \subsection qgis_api_break_3_0_QgsAtlasComposition QgsAtlasComposition
 
 <ul>

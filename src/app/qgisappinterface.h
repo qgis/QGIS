@@ -306,7 +306,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
 
     //! Menus
-    Q_DECL_DEPRECATED virtual QMenu *fileMenu() override;
     virtual QMenu *projectMenu() override;
     virtual QMenu *editMenu() override;
     virtual QMenu *viewMenu() override;
