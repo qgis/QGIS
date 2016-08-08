@@ -414,7 +414,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionCancelEdits() override;
     virtual QAction *actionCancelAllEdits() override;
     virtual QAction *actionLayerSaveAs() override;
-    virtual QAction *actionLayerSelectionSaveAs() override;
     virtual QAction *actionRemoveLayer() override;
     virtual QAction *actionDuplicateLayer() override;
     virtual QAction *actionLayerProperties() override;
