@@ -86,8 +86,11 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     bool resizeToContents() const;
 
-    //! @note added in 2.6
-    QgsLegendModelV2* modelV2() { return mLegendModel2; }
+
+    /**
+     * Returns the legend model
+     */
+    QgsLegendModelV2* model() { return mLegendModel; }
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -279,7 +282,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
     void setCustomLayerTree( QgsLayerTreeGroup* rootGroup );
 
-    QgsLegendModelV2* mLegendModel2;
+    QgsLegendModelV2* mLegendModel;
     QgsLayerTreeGroup* mCustomLayerTree;
 
     QgsLegendSettings mSettings;

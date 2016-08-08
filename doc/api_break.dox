@@ -145,6 +145,13 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 <li>GenericDataSourceURI has been renamed to GenericDataSourceUri</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsComposerLegend QgsComposerLegend
+
+<ul>
+<li>model() now returns the new QgsLegendModel (previousyl QgsLegendModelV2, see \ref qgis_api_break_3_0_renamed_classes).</li>
+<li>modelV2() has been renamed to model().</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsComposerLegendItem QgsComposerLegendItem
 
 <ul>
