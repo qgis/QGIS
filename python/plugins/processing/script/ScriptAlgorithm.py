@@ -313,8 +313,14 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         if token.lower().strip().startswith('raster'):
             out = OutputRaster()
-        elif token.lower().strip().startswith('vector'):
+        elif token.lower().strip() == 'vector':
             out = OutputVector()
+        elif token.lower().strip() == 'vector point':
+            out = OutputVector(datatype=[OutputVector.VECTOR_TYPE_POINT])
+        elif token.lower().strip() == 'vector line':
+            out = OutputVector(datatype=[OutputVector.VECTOR_TYPE_LINE])
+        elif token.lower().strip() == 'vector polygon':
+            out = OutputVector(datatype=[OutputVector.VECTOR_TYPE_POLYGON])
         elif token.lower().strip().startswith('table'):
             out = OutputTable()
         elif token.lower().strip().startswith('html'):
