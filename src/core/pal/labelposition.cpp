@@ -77,8 +77,6 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
 
   double dx1, dx2, dy1, dy2;
 
-  double tx, ty;
-
   dx1 = cos( this->alpha ) * w;
   dy1 = sin( this->alpha ) * w;
 
@@ -102,28 +100,11 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
        feature->layer()->arrangement() != QgsPalLayerSettings::PerimeterCurved &&
        this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
   {
-    bool uprightLabel = false;
-
-    switch ( feature->layer()->upsidedownLabels() )
+    if ( feature->isUprightLabel() )
     {
-      case Layer::Upright:
-        uprightLabel = true;
-        break;
-      case Layer::ShowDefined:
-        // upright only dynamic labels
-        if ( !feature->getFixedRotation() || ( !feature->getFixedPosition() && feature->getLabelAngle() == 0.0 ) )
-        {
-          uprightLabel = true;
-        }
-        break;
-      case Layer::ShowAll:
-        break;
-      default:
-        uprightLabel = true;
-    }
+      // Turn label upsidedown by inverting boundary points 
+      double tx, ty;
 
-    if ( uprightLabel )
-    {
       tx = x[0];
       ty = y[0];
 

@@ -744,7 +744,7 @@ int FeaturePart::createCandidatesAlongLine( QList< LabelPosition* >& lPos, Point
 }
 
 
-LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, double* path_distances, int orientation, int index, double distance )
+LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, double* path_distances, int orientation, int index, double distance, bool& flip )
 {
   // Check that the given distance is on the given index and find the correct index and distance if not
   while ( distance < 0 && index > 1 )
@@ -801,7 +801,16 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
   if ( !orientation_forced )
     orientation = ( angle > 0.55 * M_PI || angle < -0.45 * M_PI ? -1 : 1 );
 
-  int upside_down_char_count = 0; // Count of characters that are placed upside down.
+  if (mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved)
+  {
+    if (!isUprightLabel())
+    {
+      if (orientation != 1)
+        flip = true;   // Report to the caller, that the orientation is flipped
+      orientation = 1;
+    }
+  }
+  int upside_down_char_count = 0; // Count of characters that are placed upside down
 
   for ( int i = 0; i < li->char_num; i++ )
   {
@@ -916,15 +925,15 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
     //current_placement.add_node(ci.character,render_x - current_placement.starting_x, render_y - current_placement.starting_y, render_angle)
 
     // Normalise to 0 <= angle < 2PI
-    while ( render_angle >= 2*M_PI ) render_angle -= 2 * M_PI;
-    while ( render_angle < 0 ) render_angle += 2 * M_PI;
+    while ( render_angle >= 2 * M_PI ) render_angle -= 2 * M_PI;
+    while ( render_angle < 0 )         render_angle += 2 * M_PI;
 
-    if ( render_angle > M_PI / 2 && render_angle < 1.5*M_PI )
+    if ( render_angle > M_PI / 2 && render_angle < 1.5 * M_PI )
       upside_down_char_count++;
   }
   // END FOR
 
-  // If we placed too many characters upside down
+  // If we placed too many characters upside down (PerimeterCurved is ok to show upside down)
   if ( upside_down_char_count >= li->char_num / 2.0 )
   {
     // if we auto-detected the orientation then retry with the opposite orientation
@@ -932,7 +941,17 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
     {
       orientation = -orientation;
       delete slp;
-      slp = curvedPlacementAtOffset( path_positions, path_distances, orientation, initial_index, initial_distance );
+      slp = curvedPlacementAtOffset( path_positions, path_distances, orientation, initial_index, initial_distance, flip );
+    }
+    else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
+    {
+      if ( isUprightLabel() && !flip )
+      {
+        orientation = -orientation;
+        flip = true;
+        delete slp;
+        slp = curvedPlacementAtOffset( path_positions, path_distances, orientation, initial_index, initial_distance, flip );
+      }
     }
     else
     {
@@ -1022,53 +1041,54 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
   // generate curved labels
   for ( int i = 0; i*delta < total_distance; i++ )
   {
-    LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i * delta );
+    bool flip = false;
+    LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i * delta, flip );
+    if ( slp == nullptr )
+        continue;
 
-    if ( slp )
+    // evaluate cost
+    double angle_diff = 0.0, angle_last = 0.0, diff;
+    LabelPosition* tmp = slp;
+    double sin_avg = 0, cos_avg = 0;
+    while ( tmp )
     {
-      // evaluate cost
-      double angle_diff = 0.0, angle_last = 0.0, diff;
-      LabelPosition* tmp = slp;
-      double sin_avg = 0, cos_avg = 0;
-      while ( tmp )
+      if ( tmp != slp ) // not first?
       {
-        if ( tmp != slp ) // not first?
-        {
-          diff = fabs( tmp->getAlpha() - angle_last );
-          if ( diff > 2*M_PI ) diff -= 2 * M_PI;
-          diff = qMin( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
-          angle_diff += diff;
-        }
-
-        sin_avg += sin( tmp->getAlpha() );
-        cos_avg += cos( tmp->getAlpha() );
-        angle_last = tmp->getAlpha();
-        tmp = tmp->getNextPart();
+        diff = fabs( tmp->getAlpha() - angle_last );
+        if ( diff > 2*M_PI ) diff -= 2 * M_PI;
+        diff = qMin( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
+        angle_diff += diff;
       }
 
-      double angle_diff_avg = li->char_num > 1 ? ( angle_diff / ( li->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
-      double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
-      if ( cost < 0.0001 ) cost = 0.0001;
-
-      // penalize positions which are further from the line's midpoint
-      double labelCenter = ( i * delta ) + getLabelWidth() / 2;
-      double costCenter = qAbs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
-      cost += costCenter / 1000;  // < 0, 0.0005 >
-      slp->setCost( cost );
-
-      // average angle is calculated with respect to periodicity of angles
-      double angle_avg = atan2( sin_avg / li->char_num, cos_avg / li->char_num );
-      // displacement
-      if (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) )
-        positions.append( _createCurvedCandidate( slp, angle_avg, mLF->distLabel() + li->label_height / 2 ) );
-      if ( flags & FLAG_ON_LINE )
-        positions.append( _createCurvedCandidate( slp, angle_avg, 0 ) );
-      if (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) )
-        positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 - mLF->distLabel() ) );
-
-      // delete original candidate
-      delete slp;
+      sin_avg += sin( tmp->getAlpha() );
+      cos_avg += cos( tmp->getAlpha() );
+      angle_last = tmp->getAlpha();
+      tmp = tmp->getNextPart();
     }
+
+    double angle_diff_avg = li->char_num > 1 ? ( angle_diff / ( li->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
+    double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
+    if ( cost < 0.0001 ) cost = 0.0001;
+
+    // penalize positions which are further from the line's midpoint
+    double labelCenter = ( i * delta ) + getLabelWidth() / 2;
+    double costCenter = qAbs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
+    cost += costCenter / 1000;  // < 0, 0.0005 >
+    slp->setCost( cost );
+
+    // average angle is calculated with respect to periodicity of angles
+    double angle_avg = atan2( sin_avg / li->char_num, cos_avg / li->char_num );
+    bool localreversed = flip ? !reversed : reversed;
+    // displacement
+    if (( !localreversed && ( flags & FLAG_ABOVE_LINE ) ) || ( localreversed && ( flags & FLAG_BELOW_LINE ) ) )
+      positions.append( _createCurvedCandidate( slp, angle_avg, mLF->distLabel() + li->label_height / 2 ) );
+    if ( flags & FLAG_ON_LINE )
+      positions.append( _createCurvedCandidate( slp, angle_avg, 0 ) );
+    if (( !localreversed && ( flags & FLAG_BELOW_LINE ) ) || ( localreversed && ( flags & FLAG_ABOVE_LINE ) ) )
+      positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 - mLF->distLabel() ) );
+
+    // delete original candidate
+    delete slp;
   }
 
 
@@ -1520,3 +1540,29 @@ double FeaturePart::calculatePriority() const
 
   return mLF->priority() >= 0 ? mLF->priority() : mLF->layer()->priority();
 }
+
+// Returns whether a label must be displayed upright 
+bool FeaturePart::isUprightLabel() const
+{
+  bool uprightLabel = false;
+
+  switch ( mLF->layer()->upsidedownLabels() )
+  {
+    case Layer::Upright:
+      uprightLabel = true;
+      break;
+    case Layer::ShowDefined:
+      // upright only dynamic labels
+      if ( !getFixedRotation() || ( !getFixedPosition() && getLabelAngle() == 0.0 ) )
+      {
+        uprightLabel = true;
+      }
+      break;
+    case Layer::ShowAll:
+      break;
+    default:
+      uprightLabel = true;
+  }
+  return uprightLabel;
+}
+
