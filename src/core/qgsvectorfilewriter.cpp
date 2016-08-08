@@ -48,6 +48,7 @@
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
 #include <cpl_conv.h>
+#include <gdal.h>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x)  (x).toUtf8().constData()
@@ -422,10 +423,16 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         break;
 #else
       case QVariant::LongLong:
-        ogrType = OFTInteger64;
+      {
+        const char* pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, NULL );
+        if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
+          ogrType = OFTInteger64;
+        else
+          ogrType = OFTReal;
         ogrWidth = ogrWidth > 0 && ogrWidth <= 20 ? ogrWidth : 20;
         ogrPrecision = 0;
         break;
+      }
 #endif
       case QVariant::String:
         ogrType = OFTString;
