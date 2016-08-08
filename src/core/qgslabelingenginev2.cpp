@@ -129,9 +129,6 @@ void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, Q
   // set whether location of centroid must be inside of polygons
   l->setCentroidInside( flags.testFlag( QgsAbstractLabelProvider::CentroidMustBeInside ) );
 
-  // set whether labels must fall completely within the polygon
-  l->setFitInPolygonOnly( flags.testFlag( QgsAbstractLabelProvider::FitInPolygonOnly ) );
-
   // set how to show upside-down labels
   pal::Layer::UpsideDownLabels upsdnlabels;
   switch ( provider->upsidedownLabels() )

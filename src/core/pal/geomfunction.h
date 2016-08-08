@@ -31,6 +31,7 @@
 #define PAL_GEOM_FUNCTION
 
 #include "math.h"
+#include "qgsgeos.h"
 
 namespace pal
 {
@@ -98,6 +99,17 @@ namespace pal
 
       //! Reorder points to have cross prod ((x,y)[i], (x,y)[i+1), point) > 0 when point is outside
       static int reorderPolygon( int nbPoints, double *x, double *y );
+
+      /** Returns true if a GEOS prepared geometry totally contains a label candidate.
+       * @param geom GEOS prepared geometry
+       * @param x candidate x
+       * @param y candidate y
+       * @param width candidate width
+       * @param height candidate height
+       * @param alpha candidate angle
+       * @returns true if candidate is totally contained
+       */
+      static bool containsCandidate( const GEOSPreparedGeometry* geom, double x, double y, double width, double height, double alpha );
 
   };
 } //namespace

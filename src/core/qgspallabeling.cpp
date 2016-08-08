@@ -2433,14 +2433,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
 
-  // if using perimeter based labeling for polygons, get the polygon's
-  // linear boundary and use that for the label geometry
-  if (( geom.type() == QgsWkbTypes::PolygonGeometry )
-      && ( placement == Line || placement == PerimeterCurved ) )
-  {
-    geom = QgsGeometry( geom.geometry()->boundary() );
-  }
-
   // whether we're going to create a centroid for polygon
   bool centroidPoly = (( placement == QgsPalLayerSettings::AroundPoint
                          || placement == QgsPalLayerSettings::OverPoint )
@@ -2452,6 +2444,26 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   if ( !centroidPoly || !wholeCentroid )
   {
     doClip = true;
+  }
+
+  // if using fitInPolygonOnly option, generate the permissible zone (must happen before geometry is modified - eg
+  // as a result of using perimeter based labeling and the geometry is converted to a boundary)
+  QgsGeometry permissibleZone;
+  if ( geom.type() == QgsWkbTypes::PolygonGeometry && fitInPolygonOnly )
+  {
+    permissibleZone = geom;
+    if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? &extentGeom : nullptr ) )
+    {
+      permissibleZone = QgsPalLabeling::prepareGeometry( permissibleZone, context, ct, doClip ? &extentGeom : nullptr );
+    }
+  }
+
+  // if using perimeter based labeling for polygons, get the polygon's
+  // linear boundary and use that for the label geometry
+  if (( geom.type() == QgsWkbTypes::PolygonGeometry )
+      && ( placement == Line || placement == PerimeterCurved ) )
+  {
+    geom = QgsGeometry( geom.geometry()->boundary() );
   }
 
   const GEOSGeometry* geos_geom = nullptr;
@@ -2838,6 +2850,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   ( *labelFeature )->setAlwaysShow( alwaysShow );
   ( *labelFeature )->setRepeatDistance( repeatDist );
   ( *labelFeature )->setLabelText( labelText );
+  ( *labelFeature )->setPermissibleZone( permissibleZone );
   if ( geosObstacleGeomClone )
   {
     ( *labelFeature )->setObstacleGeometry( geosObstacleGeomClone );
@@ -4832,7 +4845,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
       QgsSymbolLayer* symShdwL = QgsSvgMarkerSymbolLayerV2::create( shdwmap );
       QgsSvgMarkerSymbolLayerV2* svgShdwM = static_cast<QgsSvgMarkerSymbolLayerV2*>( symShdwL );
       QgsSymbolRenderContext svgShdwContext( shdwContext, QgsUnitTypes::RenderUnknownUnit,
-          ( 100.0 - static_cast< double >( tmpLyr.shapeTransparency ) ) / 100.0 );
+                                             ( 100.0 - static_cast< double >( tmpLyr.shapeTransparency ) ) / 100.0 );
 
       double svgSize = tmpLyr.scaleToPixelContext( sizeOut, context, tmpLyr.shapeSizeUnits, true, tmpLyr.shapeSizeMapUnitScale );
       svgShdwM->renderPoint( QPointF( svgSize / 2, -svgSize / 2 ), svgShdwContext );
@@ -4867,7 +4880,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     QgsSymbolLayer* symL = QgsSvgMarkerSymbolLayerV2::create( map );
     QgsSvgMarkerSymbolLayerV2* svgM = static_cast<QgsSvgMarkerSymbolLayerV2*>( symL );
     QgsSymbolRenderContext svgContext( context, QgsUnitTypes::RenderUnknownUnit,
-                                         ( 100.0 - static_cast< double >( tmpLyr.shapeTransparency ) ) / 100.0 );
+                                       ( 100.0 - static_cast< double >( tmpLyr.shapeTransparency ) ) / 100.0 );
 
     p->save();
     if ( context.useAdvancedEffects() )

@@ -289,50 +289,7 @@ bool PointSet::containsPoint( double x, double y ) const
 
 bool PointSet::containsLabelCandidate( double x, double y, double width, double height, double alpha ) const
 {
-  GEOSContextHandle_t geosctxt = geosContext();
-  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 5, 2 );
-
-  GEOSCoordSeq_setX_r( geosctxt, coord, 0, x );
-  GEOSCoordSeq_setY_r( geosctxt, coord, 0, y );
-  if ( !qgsDoubleNear( alpha, 0.0 ) )
-  {
-    double beta = alpha + ( M_PI / 2 );
-    double dx1 = cos( alpha ) * width;
-    double dy1 = sin( alpha ) * width;
-    double dx2 = cos( beta ) * height;
-    double dy2 = sin( beta ) * height;
-    GEOSCoordSeq_setX_r( geosctxt, coord, 1, x  + dx1 );
-    GEOSCoordSeq_setY_r( geosctxt, coord, 1, y + dy1 );
-    GEOSCoordSeq_setX_r( geosctxt, coord, 2, x + dx1 + dx2 );
-    GEOSCoordSeq_setY_r( geosctxt, coord, 2, y + dy1 + dy2 );
-    GEOSCoordSeq_setX_r( geosctxt, coord, 3, x + dx2 );
-    GEOSCoordSeq_setY_r( geosctxt, coord, 3, y + dy2 );
-  }
-  else
-  {
-    GEOSCoordSeq_setX_r( geosctxt, coord, 1, x + width );
-    GEOSCoordSeq_setY_r( geosctxt, coord, 1, y );
-    GEOSCoordSeq_setX_r( geosctxt, coord, 2, x + width );
-    GEOSCoordSeq_setY_r( geosctxt, coord, 2, y + height );
-    GEOSCoordSeq_setX_r( geosctxt, coord, 3, x );
-    GEOSCoordSeq_setY_r( geosctxt, coord, 3, y + height );
-  }
-  //close ring
-  GEOSCoordSeq_setX_r( geosctxt, coord, 4, x );
-  GEOSCoordSeq_setY_r( geosctxt, coord, 4, y );
-
-  try
-  {
-    GEOSGeometry* bboxGeos = GEOSGeom_createLinearRing_r( geosctxt, coord );
-    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), bboxGeos ) == 1 );
-    GEOSGeom_destroy_r( geosctxt, bboxGeos );
-    return result;
-  }
-  catch ( GEOSException &e )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
-    return false;
-  }
+  return GeomFunction::containsCandidate( preparedGeom(), x, y, width, height, alpha );
 }
 
 void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
