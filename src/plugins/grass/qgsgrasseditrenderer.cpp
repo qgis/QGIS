@@ -19,7 +19,7 @@
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgscategorizedsymbolrendererv2widget.h"
 #include "qgsfeature.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgslogger.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsrendererv2registry.h"
@@ -256,12 +256,12 @@ QgsFeatureRendererV2* QgsGrassEditRenderer::create( QDomElement& element )
 
 //--------------------------------------- QgsGrassEditRendererWidget --------------------------------------------
 
-QgsRendererV2Widget* QgsGrassEditRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererV2Widget* QgsGrassEditRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
 {
   return new QgsGrassEditRendererWidget( layer, style, renderer );
 }
 
-QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( 0 )
     , mLineRendererWidget( 0 )

@@ -31,7 +31,7 @@ QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
     , mXIndex( -1 )
     , mYIndex( -1 )
 {
-  setSubSymbol( new QgsLineSymbolV2() );
+  setSubSymbol( new QgsLineSymbol() );
 }
 
 QgsVectorFieldSymbolLayer::~QgsVectorFieldSymbolLayer()
@@ -136,7 +136,7 @@ bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbol* symbol )
   if ( symbol->type() == QgsSymbol::Line )
   {
     delete mLineSymbol;
-    mLineSymbol = static_cast<QgsLineSymbolV2*>( symbol );
+    mLineSymbol = static_cast<QgsLineSymbol*>( symbol );
     return true;
   }
   return false;

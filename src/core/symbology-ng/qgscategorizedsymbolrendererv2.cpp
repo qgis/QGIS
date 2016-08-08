@@ -237,8 +237,8 @@ QgsSymbol* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   }
   else if ( tempSymbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( tempSymbol );
-    lineSymbol->setWidth( sizeScale * static_cast<QgsLineSymbolV2*>( symbol )->width() );
+    QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( tempSymbol );
+    lineSymbol->setWidth( sizeScale * static_cast<QgsLineSymbol*>( symbol )->width() );
   }
 
   return tempSymbol;

@@ -84,9 +84,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 {
     Q_OBJECT
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer );
 
-    QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer );
     ~QgsCategorizedSymbolRendererV2Widget();
 
     virtual QgsFeatureRendererV2* renderer() override;
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
      * @see matchToSymbolsFromXml
      * @note added in QGIS 2.9
      */
-    int matchToSymbols( QgsStyleV2* style );
+    int matchToSymbols( QgsStyle* style );
 
   public slots:
     void changeCategorizedSymbol();

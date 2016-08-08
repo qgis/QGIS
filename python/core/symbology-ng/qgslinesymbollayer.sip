@@ -1,11 +1,11 @@
-class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
+class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
 {
 %TypeHeaderCode
-#include <qgslinesymbollayerv2.h>
+#include <qgslinesymbollayer.h>
 %End
 
   public:
-    QgsSimpleLineSymbolLayerV2( const QColor& color = DEFAULT_SIMPLELINE_COLOR,
+    QgsSimpleLineSymbolLayer( const QColor& color = DEFAULT_SIMPLELINE_COLOR,
                                 double width = DEFAULT_SIMPLELINE_WIDTH,
                                 Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
 
@@ -29,7 +29,7 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    virtual QgsSimpleLineSymbolLayerV2* clone() const /Factory/;
+    virtual QgsSimpleLineSymbolLayer* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
@@ -89,10 +89,10 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
 /////////
 
-class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
+class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayer
 {
 %TypeHeaderCode
-#include <qgslinesymbollayerv2.h>
+#include <qgslinesymbollayer.h>
 %End
 
   public:

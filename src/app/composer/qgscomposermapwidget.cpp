@@ -25,7 +25,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
@@ -1574,7 +1574,7 @@ void QgsComposerMapWidget::updateGridLineSymbolMarker( const QgsComposerMapGrid*
 {
   if ( grid )
   {
-    QgsLineSymbolV2* nonConstSymbol = const_cast<QgsLineSymbolV2*>( grid->lineSymbol() ); //bad
+    QgsLineSymbol* nonConstSymbol = const_cast<QgsLineSymbol*>( grid->lineSymbol() ); //bad
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mGridLineStyleButton->iconSize() );
     mGridLineStyleButton->setIcon( icon );
   }
@@ -1598,8 +1598,8 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
     return;
   }
 
-  QgsLineSymbolV2* newSymbol = static_cast<QgsLineSymbolV2*>( grid->lineSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsLineSymbol* newSymbol = static_cast<QgsLineSymbol*>( grid->lineSymbol()->clone() );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -1624,7 +1624,7 @@ void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
   }
 
   QgsMarkerSymbolV2* newSymbol = static_cast<QgsMarkerSymbolV2*>( grid->markerSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -2566,7 +2566,7 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   }
 
   QgsFillSymbolV2* newSymbol = static_cast<QgsFillSymbolV2*>( overview->frameSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {

@@ -36,7 +36,7 @@
 #include "qgssymbol.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsfillsymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
@@ -736,13 +736,13 @@ void TestQgsPaintEffect::layerEffectLine()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
-  QgsSimpleLineSymbolLayerV2* line = new QgsSimpleLineSymbolLayerV2;
+  QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
   line->setColor( QColor( 255, 0, 0 ) );
   line->setWidth( 1.0 );
   QgsDropShadowEffect* effect = new QgsDropShadowEffect();
   line->setPaintEffect( effect );
 
-  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  QgsLineSymbol* lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, line );
   QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( lineSymbol );
 
@@ -831,11 +831,11 @@ void TestQgsPaintEffect::mapUnits()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
-  QgsSimpleLineSymbolLayerV2* line = new QgsSimpleLineSymbolLayerV2;
+  QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
   line->setColor( QColor( 255, 0, 0 ) );
   line->setWidth( 1.0 );
 
-  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  QgsLineSymbol* lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, line );
   QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( lineSymbol );
   QgsOuterGlowEffect* effect = new QgsOuterGlowEffect();
@@ -867,11 +867,11 @@ void TestQgsPaintEffect::composer()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
-  QgsSimpleLineSymbolLayerV2* line = new QgsSimpleLineSymbolLayerV2;
+  QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
   line->setColor( QColor( 255, 0, 0 ) );
   line->setWidth( 1.0 );
 
-  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  QgsLineSymbol* lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, line );
   QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( lineSymbol );
   QgsEffectStack* effect = new QgsEffectStack();

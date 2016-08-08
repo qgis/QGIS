@@ -26,7 +26,7 @@
 class QKeyEvent;
 
 class QgsVectorLayer;
-class QgsStyleV2;
+class QgsStyle;
 class QgsSymbol;
 class QgsPaintEffect;
 class QgsRendererV2Widget;
@@ -48,7 +48,7 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
      * than shown as a dialog by itself
      * @param parent parent widget
      */
-    QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false, QWidget* parent = nullptr );
+    QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyle* style, bool embedded = false, QWidget* parent = nullptr );
     ~QgsRendererV2PropertiesDialog();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
     void keyPressEvent( QKeyEvent * event ) override;
 
     QgsVectorLayer* mLayer;
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
 
     QgsRendererV2Widget* mActiveWidget;
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-  testqgslabelingenginev2.cpp
+  testqgslabelingengine.cpp
   --------------------------------------
   Date                 : September 2015
   Copyright            : (C) 2015 by Martin Dobias
@@ -16,7 +16,7 @@
 #include <QtTest/QtTest>
 
 #include <qgsapplication.h>
-#include <qgslabelingenginev2.h>
+#include <qgslabelingengine.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsmaprenderersequentialjob.h>
 #include <qgsrulebasedlabeling.h>
@@ -27,11 +27,11 @@
 #include "qgsrenderchecker.h"
 #include "qgsfontutils.h"
 
-class TestQgsLabelingEngineV2 : public QObject
+class TestQgsLabelingEngine : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsLabelingEngineV2() : vl( 0 ) {}
+    TestQgsLabelingEngine() : vl( 0 ) {}
 
   private slots:
     void initTestCase();
@@ -53,7 +53,7 @@ class TestQgsLabelingEngineV2 : public QObject
     bool imageCheck( const QString& testName, QImage &image, int mismatchCount );
 };
 
-void TestQgsLabelingEngineV2::initTestCase()
+void TestQgsLabelingEngine::initTestCase()
 {
   mReport += "<h1>Labeling Engine V2 Tests</h1>\n";
 
@@ -63,7 +63,7 @@ void TestQgsLabelingEngineV2::initTestCase()
   QgsFontUtils::loadStandardTestFonts( QStringList() << "Bold" );
 }
 
-void TestQgsLabelingEngineV2::cleanupTestCase()
+void TestQgsLabelingEngine::cleanupTestCase()
 {
   QgsApplication::exitQgis();
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
@@ -76,7 +76,7 @@ void TestQgsLabelingEngineV2::cleanupTestCase()
   }
 }
 
-void TestQgsLabelingEngineV2::init()
+void TestQgsLabelingEngine::init()
 {
   QString filename = QString( TEST_DATA_DIR ) + "/points.shp";
   vl = new QgsVectorLayer( filename, "points", "ogr" );
@@ -84,13 +84,13 @@ void TestQgsLabelingEngineV2::init()
   QgsMapLayerRegistry::instance()->addMapLayer( vl );
 }
 
-void TestQgsLabelingEngineV2::cleanup()
+void TestQgsLabelingEngine::cleanup()
 {
   QgsMapLayerRegistry::instance()->removeMapLayer( vl->id() );
   vl = 0;
 }
 
-void TestQgsLabelingEngineV2::setDefaultLabelParams( QgsVectorLayer* layer )
+void TestQgsLabelingEngine::setDefaultLabelParams( QgsVectorLayer* layer )
 {
   layer->setCustomProperty( "labeling/fontFamily", QgsFontUtils::getStandardTestFont( "Bold" ).family() );
   layer->setCustomProperty( "labeling/namedStyle", "Bold" );
@@ -99,7 +99,7 @@ void TestQgsLabelingEngineV2::setDefaultLabelParams( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/textColorB", "200" );
 }
 
-void TestQgsLabelingEngineV2::testBasic()
+void TestQgsLabelingEngine::testBasic()
 {
   QSize size( 640, 480 );
   QgsMapSettings mapSettings;
@@ -125,10 +125,10 @@ void TestQgsLabelingEngineV2::testBasic()
   vl->setCustomProperty( "labeling/fieldName", "Class" );
   setDefaultLabelParams( vl );
 
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString() ) );
-  //engine.setFlags( QgsLabelingEngineV2::RenderOutlineLabels | QgsLabelingEngineV2::DrawLabelRectOnly );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
 
   p.end();
@@ -148,7 +148,7 @@ void TestQgsLabelingEngineV2::testBasic()
 }
 
 
-void TestQgsLabelingEngineV2::testDiagrams()
+void TestQgsLabelingEngine::testDiagrams()
 {
   QSize size( 640, 480 );
   QgsMapSettings mapSettings;
@@ -173,7 +173,7 @@ void TestQgsLabelingEngineV2::testDiagrams()
   vl->loadNamedStyle( QString( TEST_DATA_DIR ) + "/points_diagrams.qml", res );
   Q_ASSERT( res );
 
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerDiagramProvider( vl ) );
   engine.run( context );
@@ -192,7 +192,7 @@ void TestQgsLabelingEngineV2::testDiagrams()
 }
 
 
-void TestQgsLabelingEngineV2::testRuleBased()
+void TestQgsLabelingEngine::testRuleBased()
 {
   QSize size( 640, 480 );
   QgsMapSettings mapSettings;
@@ -264,14 +264,14 @@ void TestQgsLabelingEngineV2::testRuleBased()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
 
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsRuleBasedLabelProvider( , vl ) );
   engine.run( context );
 #endif
 }
 
-void TestQgsLabelingEngineV2::zOrder()
+void TestQgsLabelingEngine::zOrder()
 {
   QSize size( 640, 480 );
   QgsMapSettings mapSettings;
@@ -303,10 +303,10 @@ void TestQgsLabelingEngineV2::zOrder()
   pls1.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, "case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end", QString() );
 
   QgsVectorLayerLabelProvider* provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( provider1 );
-  //engine.setFlags( QgsLabelingEngineV2::RenderOutlineLabels | QgsLabelingEngineV2::DrawLabelRectOnly );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
   p.end();
   engine.removeProvider( provider1 );
@@ -386,7 +386,7 @@ void TestQgsLabelingEngineV2::zOrder()
   QgsMapLayerRegistry::instance()->removeMapLayer( vl2 );
 }
 
-void TestQgsLabelingEngineV2::testEncodeDecodePositionOrder()
+void TestQgsLabelingEngine::testEncodeDecodePositionOrder()
 {
   //create an ordered position list
   QVector< QgsPalLayerSettings::PredefinedPointPosition > original;
@@ -413,7 +413,7 @@ void TestQgsLabelingEngineV2::testEncodeDecodePositionOrder()
   QCOMPARE( decoded, expected );
 }
 
-bool TestQgsLabelingEngineV2::imageCheck( const QString& testName, QImage &image, int mismatchCount )
+bool TestQgsLabelingEngine::imageCheck( const QString& testName, QImage &image, int mismatchCount )
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
@@ -436,5 +436,5 @@ bool TestQgsLabelingEngineV2::imageCheck( const QString& testName, QImage &image
   return resultFlag;
 }
 
-QTEST_MAIN( TestQgsLabelingEngineV2 )
-#include "testqgslabelingenginev2.moc"
+QTEST_MAIN( TestQgsLabelingEngine )
+#include "testqgslabelingengine.moc"

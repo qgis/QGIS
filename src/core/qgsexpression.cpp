@@ -39,7 +39,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
 #include "qgsstringutils.h"
@@ -2710,7 +2710,7 @@ static QVariant fncColorRgba( const QVariantList &values, const QgsExpressionCon
 QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QString rampName = getStringValue( values.at( 0 ), parent );
-  const QgsVectorColorRampV2 *mRamp = QgsStyleV2::defaultStyle()->colorRampRef( rampName );
+  const QgsVectorColorRampV2 *mRamp = QgsStyle::defaultStyle()->colorRampRef( rampName );
   if ( ! mRamp )
   {
     parent->setEvalErrorString( QObject::tr( "\"%1\" is not a valid color ramp" ).arg( rampName ) );

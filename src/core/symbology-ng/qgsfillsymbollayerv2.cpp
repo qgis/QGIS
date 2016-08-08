@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfillsymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgssymbollayerutils.h"
 #include "qgsdxfexport.h"
@@ -1565,7 +1565,7 @@ QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
     , mOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mOutline( nullptr )
 {
-  setSubSymbol( new QgsLineSymbolV2() );
+  setSubSymbol( new QgsLineSymbol() );
 }
 
 QgsImageFillSymbolLayer::~QgsImageFillSymbolLayer()
@@ -1644,7 +1644,7 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol* symbol )
     return false;
   }
 
-  QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( symbol );
+  QgsLineSymbol* lineSymbol = dynamic_cast<QgsLineSymbol*>( symbol );
   if ( lineSymbol )
   {
     delete mOutline;
@@ -1762,7 +1762,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double 
   mColor = QColor( 255, 255, 255 );
   mSvgOutlineColor = QColor( 0, 0, 0 );
   mSvgOutlineWidth = 0.2;
-  setSubSymbol( new QgsLineSymbolV2() );
+  setSubSymbol( new QgsLineSymbol() );
   setDefaultSvgParams();
   mSvgPattern = nullptr;
 }
@@ -2178,7 +2178,7 @@ QgsSymbolLayer* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
     {
       QgsSymbolLayerList layers;
       layers.append( l );
-      sl->setSubSymbol( new QgsLineSymbolV2( layers ) );
+      sl->setSubSymbol( new QgsLineSymbol( layers ) );
     }
   }
 
@@ -2315,7 +2315,7 @@ QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
     , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
     , mFillLineSymbol( nullptr )
 {
-  setSubSymbol( new QgsLineSymbolV2() );
+  setSubSymbol( new QgsLineSymbol() );
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no outline
 }
 
@@ -2350,7 +2350,7 @@ bool QgsLinePatternFillSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 
   if ( symbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( symbol );
+    QgsLineSymbol* lineSymbol = dynamic_cast<QgsLineSymbol*>( symbol );
     if ( lineSymbol )
     {
       delete mFillLineSymbol;
@@ -2542,7 +2542,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext& 
     return;
   }
   // We have to make a copy because marker intervals will have to be adjusted
-  QgsLineSymbolV2* fillLineSymbol = mFillLineSymbol->clone();
+  QgsLineSymbol* fillLineSymbol = mFillLineSymbol->clone();
   if ( !fillLineSymbol )
   {
     return;
@@ -3022,7 +3022,7 @@ QgsSymbolLayer* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
     {
       QgsSymbolLayerList layers;
       layers.append( l );
-      sl->setSubSymbol( new QgsLineSymbolV2( layers ) );
+      sl->setSubSymbol( new QgsLineSymbol( layers ) );
     }
   }
 

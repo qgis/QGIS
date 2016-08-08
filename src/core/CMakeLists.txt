@@ -20,14 +20,14 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgscategorizedsymbolrendererv2.cpp
   symbology-ng/qgscolorbrewerpalette.cpp
   symbology-ng/qgscptcityarchive.cpp
-  symbology-ng/qgsellipsesymbollayerv2.cpp
+  symbology-ng/qgsellipsesymbollayer.cpp
   symbology-ng/qgsfillsymbollayerv2.cpp
   symbology-ng/qgsgeometrygeneratorsymbollayerv2.cpp
   symbology-ng/qgsgraduatedsymbolrendererv2.cpp
   symbology-ng/qgsheatmaprenderer.cpp
   symbology-ng/qgsinvertedpolygonrenderer.cpp
   symbology-ng/qgslegendsymbolitemv2.cpp
-  symbology-ng/qgslinesymbollayerv2.cpp
+  symbology-ng/qgslinesymbollayer.cpp
   symbology-ng/qgsmarkersymbollayerv2.cpp
   symbology-ng/qgsnullsymbolrenderer.cpp
   symbology-ng/qgspointdisplacementrenderer.cpp
@@ -35,7 +35,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsrendererv2registry.cpp
   symbology-ng/qgsrulebasedrendererv2.cpp
   symbology-ng/qgssinglesymbolrendererv2.cpp
-  symbology-ng/qgsstylev2.cpp
+  symbology-ng/qgsstyle.cpp
   symbology-ng/qgssvgcache.cpp
   symbology-ng/qgssymbollayer.cpp
   symbology-ng/qgssymbollayerregistry.cpp
@@ -105,7 +105,7 @@ SET(QGIS_CORE_SRCS
   qgsdatetimestatisticalsummary.cpp
   qgsdatumtransformstore.cpp
   qgsdbfilterproxymodel.cpp
-  qgsdiagramrendererv2.cpp
+  qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgseditformconfig.cpp
   qgserror.cpp
@@ -127,7 +127,7 @@ SET(QGIS_CORE_SRCS
   qgsinterval.cpp
   qgsjsonutils.cpp
   qgslabelfeature.cpp
-  qgslabelingenginev2.cpp
+  qgslabelingengine.cpp
   qgslabelsearchtree.cpp
   qgslayerdefinition.cpp
   qgslegacyhelpers.cpp
@@ -544,7 +544,7 @@ SET(QGIS_CORE_MOC_HDRS
 
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgssvgcache.h
-  symbology-ng/qgsstylev2.h
+  symbology-ng/qgsstyle.h
 
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
@@ -630,7 +630,7 @@ SET(QGIS_CORE_HDRS
   qgsdatetimestatisticalsummary.h
   qgsdatumtransformstore.h
   qgsdbfilterproxymodel.h
-  qgsdiagramrendererv2.h
+  qgsdiagramrenderer.h
   qgsdistancearea.h
   qgseditorwidgetconfig.h
   qgsfeaturefilterprovider.h
@@ -654,7 +654,7 @@ SET(QGIS_CORE_HDRS
   qgsjsonutils.h
   qgslayerdefinition.h
   qgslabelfeature.h
-  qgslabelingenginev2.h
+  qgslabelingengine.h
   qgslabelsearchtree.h
   qgslegacyhelpers.h
   qgslegendrenderer.h
@@ -808,11 +808,11 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgs25drenderer.h
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h
-  symbology-ng/qgsellipsesymbollayerv2.h
+  symbology-ng/qgsellipsesymbollayer.h
   symbology-ng/qgsfillsymbollayerv2.h
   symbology-ng/qgsgraduatedsymbolrendererv2.h
   symbology-ng/qgslegendsymbolitemv2.h
-  symbology-ng/qgslinesymbollayerv2.h
+  symbology-ng/qgslinesymbollayer.h
   symbology-ng/qgsmarkersymbollayerv2.h
   symbology-ng/qgspointdisplacementrenderer.h
   symbology-ng/qgsrendererv2.h

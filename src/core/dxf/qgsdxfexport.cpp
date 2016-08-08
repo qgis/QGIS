@@ -34,7 +34,7 @@
 #include "qgssymbollayer.h"
 #include "qgsfillsymbollayerv2.h"
 #include "qgsfeatureiterator.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsunittypes.h"
@@ -931,7 +931,7 @@ void QgsDxfExport::writeEntities()
   Q_NOWARN_DEPRECATED_POP
 
   // label engine
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.readSettingsFromProject();
   engine.setMapSettings( mapSettings );
 
@@ -4083,7 +4083,7 @@ int QgsDxfExport::nLineTypes( const QList< QPair< QgsSymbolLayer*, QgsSymbol* > 
   QList< QPair< QgsSymbolLayer*, QgsSymbol*> >::const_iterator slIt = symbolLayers.constBegin();
   for ( ; slIt != symbolLayers.constEnd(); ++slIt )
   {
-    const QgsSimpleLineSymbolLayerV2* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayerV2* >( slIt->first );
+    const QgsSimpleLineSymbolLayer* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayer* >( slIt->first );
     if ( simpleLine )
     {
       if ( simpleLine->useCustomDashPattern() )

@@ -33,7 +33,7 @@ from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsVectorLayer,
     QgsSingleSymbolRendererV2,
-    QgsLineSymbolV2,
+    QgsLineSymbol,
     QgsFillSymbolV2,
     QgsMapLayerRegistry,
     QgsRectangle,
@@ -63,7 +63,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         QgsMapLayerRegistry.instance().addMapLayer(self.lines_layer)
 
         # Create style
-        sym2 = QgsLineSymbolV2.createSimple({'color': '#fdbf6f'})
+        sym2 = QgsLineSymbol.createSimple({'color': '#fdbf6f'})
         self.lines_layer.setRendererV2(QgsSingleSymbolRendererV2(sym2))
 
         self.mapsettings = self.iface.mapCanvas().mapSettings()

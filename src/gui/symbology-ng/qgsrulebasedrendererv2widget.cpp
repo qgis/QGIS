@@ -41,12 +41,12 @@
 #include "modeltest.h"
 #endif
 
-QgsRendererV2Widget* QgsRuleBasedRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererV2Widget* QgsRuleBasedRendererV2Widget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
 {
   return new QgsRuleBasedRendererV2Widget( layer, style, renderer );
 }
 
-QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
 {
   mRenderer = nullptr;
@@ -601,7 +601,7 @@ void QgsRuleBasedRendererV2Widget::selectedRulesChanged()
 
 ///////////
 
-QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent , QgsMapCanvas* mapCanvas )
+QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent , QgsMapCanvas* mapCanvas )
     : QgsPanelWidget( parent )
     , mRule( rule )
     , mLayer( layer )
@@ -663,7 +663,7 @@ QgsRendererRulePropsWidget::~QgsRendererRulePropsWidget()
 
 }
 
-QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule *rule, QgsVectorLayer *layer, QgsStyleV2 *style, QWidget *parent, QgsMapCanvas *mapCanvas )
+QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent, QgsMapCanvas *mapCanvas )
     : QDialog( parent )
 {
 

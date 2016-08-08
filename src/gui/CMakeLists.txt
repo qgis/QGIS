@@ -19,7 +19,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgscolorrampcombobox.cpp
   symbology-ng/qgscptcitycolorrampv2dialog.cpp
   symbology-ng/qgsdashspacedialog.cpp
-  symbology-ng/qgsellipsesymbollayerv2widget.cpp
+  symbology-ng/qgsellipsesymbollayerwidget.cpp
   symbology-ng/qgsgraduatedhistogramwidget.cpp
   symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp
   symbology-ng/qgsheatmaprendererwidget.cpp
@@ -34,9 +34,9 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgssinglesymbolrendererv2widget.cpp
   symbology-ng/qgssizescalewidget.cpp
   symbology-ng/qgssmartgroupeditordialog.cpp
-  symbology-ng/qgsstylev2exportimportdialog.cpp
-  symbology-ng/qgsstylev2groupselectiondialog.cpp
-  symbology-ng/qgsstylev2managerdialog.cpp
+  symbology-ng/qgsstyleexportimportdialog.cpp
+  symbology-ng/qgsstylegroupselectiondialog.cpp
+  symbology-ng/qgsstylemanagerdialog.cpp
   symbology-ng/qgssvgselectorwidget.cpp
   symbology-ng/qgssymbollayerwidget.cpp
   symbology-ng/qgssymbollevelsdialog.cpp
@@ -468,7 +468,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgscolorrampcombobox.h
   symbology-ng/qgscptcitycolorrampv2dialog.h
   symbology-ng/qgsdashspacedialog.h
-  symbology-ng/qgsellipsesymbollayerv2widget.h
+  symbology-ng/qgsellipsesymbollayerwidget.h
   symbology-ng/qgsgraduatedhistogramwidget.h
   symbology-ng/qgsgraduatedsymbolrendererv2widget.h
   symbology-ng/qgsheatmaprendererwidget.h
@@ -483,9 +483,9 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgssinglesymbolrendererv2widget.h
   symbology-ng/qgssizescalewidget.h
   symbology-ng/qgssmartgroupeditordialog.h
-  symbology-ng/qgsstylev2exportimportdialog.h
-  symbology-ng/qgsstylev2groupselectiondialog.h
-  symbology-ng/qgsstylev2managerdialog.h
+  symbology-ng/qgsstyleexportimportdialog.h
+  symbology-ng/qgsstylegroupselectiondialog.h
+  symbology-ng/qgsstylemanagerdialog.h
   symbology-ng/qgssvgselectorwidget.h
   symbology-ng/qgssymbollayerwidget.h
   symbology-ng/qgssymbollevelsdialog.h

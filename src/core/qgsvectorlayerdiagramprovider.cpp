@@ -27,7 +27,7 @@
 
 QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider(
   const QgsDiagramLayerSettings* diagSettings,
-  const QgsDiagramRendererV2* diagRenderer,
+  const QgsDiagramRenderer* diagRenderer,
   const QString& layerId,
   const QgsFields& fields,
   const QgsCoordinateReferenceSystem& crs,
@@ -199,7 +199,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 {
   const QgsMapSettings& mapSettings = mEngine->mapSettings();
 
-  const QgsDiagramRendererV2* dr = mSettings.getRenderer();
+  const QgsDiagramRenderer* dr = mSettings.getRenderer();
   if ( dr )
   {
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();

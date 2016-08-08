@@ -37,9 +37,9 @@
 #include "qgsvectordataprovider.h"
 #include "qgsscaleutils.h"
 #include "qgsgenericprojectionselector.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbol.h"
-#include "qgsstylev2managerdialog.h"
+#include "qgsstylemanagerdialog.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsrelationmanagerdialog.h"
@@ -659,7 +659,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   twWCSLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
 
   // Default Styles
-  mStyle = QgsStyleV2::defaultStyle();
+  mStyle = QgsStyle::defaultStyle();
   populateStyles();
 
   // Color palette
@@ -1659,7 +1659,7 @@ void QgsProjectProperties::on_pbnExportScales_clicked()
 
 void QgsProjectProperties::populateStyles()
 {
-  // Styles - taken from qgsstylev2managerdialog
+  // Styles - taken from qgsstylemanagerdialog
 
   // use QComboBox and QString lists for shorter code
   QStringList prefList;
@@ -1737,7 +1737,7 @@ void QgsProjectProperties::populateStyles()
 
 void QgsProjectProperties::on_pbtnStyleManager_clicked()
 {
-  QgsStyleV2ManagerDialog dlg( mStyle, this );
+  QgsStyleManagerDialog dlg( mStyle, this );
   dlg.exec();
   populateStyles();
 }
@@ -1760,7 +1760,7 @@ void QgsProjectProperties::on_pbtnStyleFill_clicked()
 void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
 {
   // TODO for now just open style manager
-  // code in QgsStyleV2ManagerDialog::editColorRamp()
+  // code in QgsStyleManagerDialog::editColorRamp()
   on_pbtnStyleManager_clicked();
 }
 

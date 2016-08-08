@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsstylev2groupselectiondialog.h
+    qgsstylegroupselectiondialog.h
     ---------------------
     begin                : Oct 2015
     copyright            : (C) 2015 by Alessandro Pasotti
@@ -14,26 +14,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSTYLEV2GROUPSELECTIONDIALOG_H
-#define QGSSTYLEV2GROUPSELECTIONDIALOG_H
+#ifndef QGSSTYLEGROUPSELECTIONDIALOG_H
+#define QGSSTYLEGROUPSELECTIONDIALOG_H
 
 #include <QDialog>
 #include <QStandardItem>
-#include "ui_qgsstylev2groupselectiondialogbase.h"
+#include "ui_qgsstylegroupselectiondialogbase.h"
 
 
-class QgsStyleV2;
+class QgsStyle;
 
 /** \ingroup gui
- * \class QgsStyleV2GroupSelectionDialog
+ * \class QgsStyleGroupSelectionDialog
  */
-class GUI_EXPORT QgsStyleV2GroupSelectionDialog : public QDialog, private Ui::SymbolsV2GroupSelectionDialogBase
+class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::SymbolsV2GroupSelectionDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsStyleV2GroupSelectionDialog( QgsStyleV2* style, QWidget *parent = nullptr );
-    ~QgsStyleV2GroupSelectionDialog();
+    QgsStyleGroupSelectionDialog( QgsStyle* style, QWidget *parent = nullptr );
+    ~QgsStyleGroupSelectionDialog();
     //! Set bold font for item
     void setBold( QStandardItem *item );
 
@@ -60,8 +60,8 @@ class GUI_EXPORT QgsStyleV2GroupSelectionDialog : public QDialog, private Ui::Sy
      * @param parent
      */
     void buildGroupTree( QStandardItem *&parent );
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
 
 };
 
-#endif // QGSSTYLEV2GROUPSELECTIONDIALOG_H
+#endif // QGSSTYLEGROUPSELECTIONDIALOG_H

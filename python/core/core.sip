@@ -217,7 +217,7 @@
 %Include diagram/qgshistogramdiagram.sip
 %Include diagram/qgspiediagram.sip
 %Include diagram/qgstextdiagram.sip
-%Include qgsdiagramrendererv2.sip
+%Include qgsdiagramrenderer.sip
 
 %Include effects/qgsblureffect.sip
 %Include effects/qgscoloreffect.sip
@@ -288,7 +288,7 @@
 
 %Include symbology-ng/qgscolorbrewerpalette.sip
 %Include symbology-ng/qgscptcityarchive.sip
-%Include symbology-ng/qgsstylev2.sip
+%Include symbology-ng/qgsstyle.sip
 %Include symbology-ng/qgssvgcache.sip
 %Include symbology-ng/qgssymbol.sip
 %Include symbology-ng/qgsvectorcolorrampv2.sip
@@ -306,10 +306,10 @@
 %Include symbology-ng/qgsrulebasedrendererv2.sip
 %Include symbology-ng/qgssinglesymbolrendererv2.sip
 
-%Include symbology-ng/qgsellipsesymbollayerv2.sip
+%Include symbology-ng/qgsellipsesymbollayer.sip
 %Include symbology-ng/qgsfillsymbollayerv2.sip
 %Include symbology-ng/qgsgeometrygeneratorsymbollayerv2.sip
-%Include symbology-ng/qgslinesymbollayerv2.sip
+%Include symbology-ng/qgslinesymbollayer.sip
 %Include symbology-ng/qgsmarkersymbollayerv2.sip
 %Include symbology-ng/qgssymbollayer.sip
 %Include symbology-ng/qgssymbollayerregistry.sip

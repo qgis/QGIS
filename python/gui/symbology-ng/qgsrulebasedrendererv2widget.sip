@@ -56,9 +56,9 @@ class QgsRuleBasedRendererV2Widget : QgsRendererV2Widget
 
   public:
 
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer ) /Factory/;
 
-    QgsRuleBasedRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    QgsRuleBasedRendererV2Widget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer );
     ~QgsRuleBasedRendererV2Widget();
 
     virtual QgsFeatureRendererV2* renderer();
@@ -107,7 +107,7 @@ class QgsRendererRulePropsWidget: QgsPanelWidget
 %End
 
   public:
-    QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
+    QgsRendererRulePropsWidget( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
     ~QgsRendererRulePropsWidget();
 
     QgsRuleBasedRendererV2::Rule* rule();
@@ -127,7 +127,7 @@ class QgsRendererRulePropsDialog : QDialog
 %End
 
   public:
-    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
+    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
     ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRendererV2::Rule* rule();

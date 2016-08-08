@@ -28,7 +28,7 @@
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdiagramproperties.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfieldsproperties.h"
@@ -66,7 +66,7 @@
 #include <QColorDialog>
 
 #include "qgsrendererv2propertiesdialog.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbologyconversion.h"
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
@@ -1212,7 +1212,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
   if ( mLayer->rendererV2() )
   {
-    mRendererDialog = new QgsRendererV2PropertiesDialog( mLayer, QgsStyleV2::defaultStyle(), true, this );
+    mRendererDialog = new QgsRendererV2PropertiesDialog( mLayer, QgsStyle::defaultStyle(), true, this );
     mRendererDialog->setDockMode( false );
     mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
     connect( mRendererDialog, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );

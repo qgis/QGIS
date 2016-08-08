@@ -17,7 +17,7 @@
 
 #include "qgspaperitem.h"
 #include "qgscomposition.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
 #include <QGraphicsRectItem>

@@ -96,7 +96,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayer
 
     QScopedPointer<QgsExpression> mExpression;
     QgsFillSymbolV2* mFillSymbol;
-    QgsLineSymbolV2* mLineSymbol;
+    QgsLineSymbol* mLineSymbol;
     QgsMarkerSymbolV2* mMarkerSymbol;
     QgsSymbol* mSymbol;
 

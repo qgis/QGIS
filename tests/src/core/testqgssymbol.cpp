@@ -27,11 +27,11 @@
 #include "qgscptcityarchive.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayerv2.h"
 #include "qgssinglesymbolrendererv2.h"
 
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 
 /** \ingroup UnitTests
  * This is a unit test to verify that symbols are working correctly
@@ -182,7 +182,7 @@ void TestQgsSymbol::testCanvasClip()
 
   QgsMarkerLineSymbolLayerV2* markerLine = new QgsMarkerLineSymbolLayerV2();
   markerLine->setPlacement( QgsMarkerLineSymbolLayerV2:: CentralPoint );
-  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  QgsLineSymbol* lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, markerLine );
   QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( lineSymbol );
   mpLinesLayer->setRendererV2( renderer );

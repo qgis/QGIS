@@ -16,8 +16,8 @@
 
 #include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgsstylev2.h"
-#include "qgsstylev2managerdialog.h"
+#include "qgsstyle.h"
+#include "qgsstylemanagerdialog.h"
 
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsvectorrandomcolorrampv2dialog.h"
@@ -39,7 +39,7 @@ QgsColorRampComboBox::~QgsColorRampComboBox()
   delete mSourceColorRamp;
 }
 
-void QgsColorRampComboBox::populate( QgsStyleV2* style )
+void QgsColorRampComboBox::populate( QgsStyle* style )
 {
   if ( count() != 0 )
     return; // already populated!
@@ -110,11 +110,11 @@ void QgsColorRampComboBox::colorRampChanged( int index )
   QString rampName;
   if ( !mShowGradientOnly )
   {
-    rampName = QgsStyleV2ManagerDialog::addColorRampStatic( this, mStyle );
+    rampName = QgsStyleManagerDialog::addColorRampStatic( this, mStyle );
   }
   else
   {
-    rampName = QgsStyleV2ManagerDialog::addColorRampStatic( this, mStyle, "Gradient" );
+    rampName = QgsStyleManagerDialog::addColorRampStatic( this, mStyle, "Gradient" );
   }
   if ( rampName.isEmpty() )
     return;

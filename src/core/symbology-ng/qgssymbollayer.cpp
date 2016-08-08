@@ -468,7 +468,7 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
 
 }
 
-QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
+QgsLineSymbolLayer::QgsLineSymbolLayer( bool locked )
     : QgsSymbolLayer( QgsSymbol::Line, locked )
     , mWidth( 0 )
     , mWidthUnit( QgsUnitTypes::RenderMillimeters )
@@ -631,28 +631,28 @@ QgsMapUnitScale QgsMarkerSymbolLayerV2::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-void QgsLineSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+void QgsLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mWidthUnit = unit;
 }
 
-QgsUnitTypes::RenderUnit QgsLineSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsLineSymbolLayer::outputUnit() const
 {
   return mWidthUnit;
 }
 
-void QgsLineSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale& scale )
+void QgsLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale& scale )
 {
   mWidthMapUnitScale = scale;
 }
 
-QgsMapUnitScale QgsLineSymbolLayerV2::mapUnitScale() const
+QgsMapUnitScale QgsLineSymbolLayer::mapUnitScale() const
 {
   return mWidthMapUnitScale;
 }
 
 
-void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
+void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
 {
   QPolygonF points;
   // we're adding 0.5 to get rid of blurred preview:
@@ -664,7 +664,7 @@ void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolRenderContext& context, QSi
   stopRender( context );
 }
 
-void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
+void QgsLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   renderPolyline( points, context );
   if ( rings )
@@ -674,7 +674,7 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
   }
 }
 
-double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
+double QgsLineSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( context );
   return width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );

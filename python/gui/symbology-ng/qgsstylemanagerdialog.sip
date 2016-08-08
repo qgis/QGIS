@@ -1,14 +1,14 @@
-class QgsStyleV2ManagerDialog : QDialog
+class QgsStyleManagerDialog : QDialog
 {
 %TypeHeaderCode
-#include <qgsstylev2managerdialog.h>
+#include <qgsstylemanagerdialog.h>
 %End
 
   public:
-    QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent /TransferThis/ = NULL );
+    QgsStyleManagerDialog( QgsStyle* style, QWidget* parent /TransferThis/ = NULL );
 
     //! open add color ramp dialog, return color ramp's name if the ramp has been added
-    static QString addColorRampStatic( QWidget* parent, QgsStyleV2* style,
+    static QString addColorRampStatic( QWidget* parent, QgsStyle* style,
                                        QString RampType = QString() );
 
   public slots:

@@ -22,7 +22,7 @@
 #include <qgis.h>
 
 class QPainter;
-class QgsLineSymbolV2;
+class QgsLineSymbol;
 class QgsMarkerSymbolV2;
 
 #include <QColor>
@@ -116,8 +116,8 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     /* double crossLength() {return mCrossLength;} */
 
     /** Set symbol that is used to draw grid lines. Takes ownership*/
-    void setLineSymbol( QgsLineSymbolV2* symbol );
-    const QgsLineSymbolV2* lineSymbol() const { return mLineSymbol; }
+    void setLineSymbol( QgsLineSymbol* symbol );
+    const QgsLineSymbol* lineSymbol() const { return mLineSymbol; }
 
     /** Set symbol that is used to draw markers. Takes ownership*/
     void setMarkerSymbol( QgsMarkerSymbolV2* symbol );
@@ -190,7 +190,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     /** The length of the cross sides for mGridStyle Cross*/
     /* double mCrossLength; */
 
-    QgsLineSymbolV2* mLineSymbol;
+    QgsLineSymbol* mLineSymbol;
     QgsMarkerSymbolV2* mMarkerSymbol;
 
     QgsUnitTypes::DistanceUnit mMapUnits;

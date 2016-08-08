@@ -27,7 +27,7 @@
 #include <QScopedPointer>
 #include <QDialogButtonBox>
 
-class QgsStyleV2;
+class QgsStyle;
 class QgsSymbol;
 class QgsSymbolLayer;
 class QgsVectorLayer;
@@ -37,9 +37,9 @@ class QWidget;
 
 class SymbolLayerItem;
 class QgsMarkerSymbolV2;
-class QgsLineSymbolV2;
+class QgsLineSymbol;
 class QgsMarkerSymbolLayerV2;
-class QgsLineSymbolLayerV2;
+class QgsLineSymbolLayer;
 
 class QgsMapCanvas;
 
@@ -63,8 +63,8 @@ class DataDefinedRestorer: public QObject
     QgsDataDefined mDDSize;
     QgsDataDefined mDDAngle;
 
-    QgsLineSymbolV2* mLine;
-    const QgsLineSymbolLayerV2* mLineSymbolLayer;
+    QgsLineSymbol* mLine;
+    const QgsLineSymbolLayer* mLineSymbolLayer;
     double mWidth;
     double mLineOffset;
     QgsDataDefined mDDWidth;
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
        * @param vl The vector layer for the symbol.
        * @param parent
        */
-    QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = nullptr );
+    QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* style, const QgsVectorLayer* vl, QWidget* parent = nullptr );
     ~QgsSymbolSelectorWidget();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
@@ -239,7 +239,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
 
   protected: // data
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
     QgsSymbol* mSymbol;
     QMenu* mAdvancedMenu;
     const QgsVectorLayer* mVectorLayer;
@@ -262,7 +262,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsSymbolSelectorDialog( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = nullptr, bool embedded = false );
+    QgsSymbolSelectorDialog( QgsSymbol* symbol, QgsStyle* style, const QgsVectorLayer* vl, QWidget* parent = nullptr, bool embedded = false );
     ~QgsSymbolSelectorDialog();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button

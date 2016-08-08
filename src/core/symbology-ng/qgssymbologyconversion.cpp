@@ -17,7 +17,7 @@
 #include "qgslogger.h"
 
 #include "qgsmarkersymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayerv2.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsgraduatedsymbolrendererv2.h"
@@ -161,11 +161,11 @@ static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryTy
       QColor color = readSymbolColor( synode, false );
       double width = readOutlineWidth( synode );
       Qt::PenStyle penStyle = readOutlineStyle( synode );
-      QgsLineSymbolLayerV2* sl = new QgsSimpleLineSymbolLayerV2( color, width, penStyle );
+      QgsLineSymbolLayer* sl = new QgsSimpleLineSymbolLayer( color, width, penStyle );
 
       QgsSymbolLayerList layers;
       layers.append( sl );
-      return new QgsLineSymbolV2( layers );
+      return new QgsLineSymbol( layers );
     }
 
     case QgsWkbTypes::PolygonGeometry:

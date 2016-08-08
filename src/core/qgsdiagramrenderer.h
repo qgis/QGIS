@@ -1,3 +1,44 @@
+/***************************************************************************
+    qgsdiagramrenderer.h
+    ---------------------
+    begin                : March 2011
+    copyright            : (C) 2011 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef QGSDIAGRAMRENDERER_H
+#define QGSDIAGRAMRENDERER_H
+
+#include <QColor>
+#include <QFont>
+#include <QList>
+#include <QPointF>
+#include <QSizeF>
+#include <QDomDocument>
+
+#include "qgsexpressioncontext.h"
+#include "qgsfield.h"
+#include "qgscoordinatetransform.h"
+#include "qgssymbol.h"
+
+class QgsDiagram;
+class QgsDiagramRenderer;
+class QgsFeature;
+class QgsRenderContext;
+class QDomElement;
+class QgsMapToPixel;
+class QgsVectorLayer;
+class QgsLayerTreeModelLegendNode;
+class QgsLayerTreeLayer;
+
+namespace pal { class Layer; }
+
 /** \ingroup core
  * \class QgsDiagramLayerSettings
  * \brief Stores the settings for rendering of all diagrams for a layer.
@@ -6,17 +47,14 @@
  * QgsDiagramLayerSettings stores settings which control how ALL diagrams within a layer are rendered.
  */
 
-class QgsDiagramLayerSettings
+class CORE_EXPORT QgsDiagramLayerSettings
 {
-%TypeHeaderCode
-#include <qgsdiagramrendererv2.h>
-%End
-
   public:
+
     //avoid inclusion of QgsPalLabeling
     enum Placement
     {
-      AroundPoint, // Point / Polygon
+      AroundPoint = 0, // Point / Polygon
       OverPoint, // Point / Polygon
       Line, // Line / Polygon
       Curved, // Line
@@ -27,16 +65,18 @@ class QgsDiagramLayerSettings
     //! Line placement flags for controlling line based placements
     enum LinePlacementFlags
     {
-      OnLine,
-      AboveLine,
-      BelowLine,
-      MapOrientation,
+      OnLine    = 1,
+      AboveLine = 2,
+      BelowLine = 4,
+      MapOrientation = 8
     };
 
     QgsDiagramLayerSettings();
 
     //! Copy constructor
     QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh );
+
+    QgsDiagramLayerSettings& operator=( const QgsDiagramLayerSettings& rh );
 
     ~QgsDiagramLayerSettings();
 
@@ -45,14 +85,14 @@ class QgsDiagramLayerSettings
      * @note added in QGIS 2.16
      */
     //TODO QGIS 3.0 - rename getter to placement()
-    Placement getPlacement() const;
+    Placement getPlacement() const { return placement; }
 
     /** Sets the diagram placement.
      * @param value placement value
      * @see getPlacement()
      * @note added in QGIS 2.16
      */
-    void setPlacement( Placement value );
+    void setPlacement( Placement value ) { placement = value; }
 
     //! Diagram placement
     //TODO QGIS 3.0 - make private, rename to mPlacement
@@ -63,7 +103,7 @@ class QgsDiagramLayerSettings
      * @see setLinePlacementFlags()
      * @note added in QGIS 2.16
      */
-    unsigned int linePlacementFlags() const;
+    unsigned int linePlacementFlags() const { return placementFlags; }
 
     /** Sets the the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
@@ -71,7 +111,7 @@ class QgsDiagramLayerSettings
      * @see getPlacement()
      * @note added in QGIS 2.16
      */
-    void setLinePlacementFlags( unsigned int flags );
+    void setLinePlacementFlags( unsigned int flags ) { placementFlags = flags; }
 
     //! Diagram placement flags
     // TODO QGIS 3.0 - make private, rename to mPlacementFlags, use QFlags
@@ -85,14 +125,14 @@ class QgsDiagramLayerSettings
      * @note added in QGIS 2.16
      */
     //TODO QGIS 3.0 - rename getter to priority()
-    int getPriority() const;
+    int getPriority() const { return priority; }
 
     /** Sets the diagram priority.
      * @param value priority, where 0 = low and 10 = high
      * @see getPriority()
      * @note added in QGIS 2.16
      */
-    void setPriority( int value );
+    void setPriority( int value ) { priority = value; }
 
     //! Placement priority, where 0 = low and 10 = high
     //! @note placement priority is shared with labeling, so diagrams with a high priority may displace labels
@@ -108,7 +148,7 @@ class QgsDiagramLayerSettings
      * @note added in QGIS 2.16
      */
     //TODO QGIS 3.0 - rename getter to zIndex()
-    double getZIndex() const;
+    double getZIndex() const { return zIndex; }
 
     /** Sets the diagram z-index. Diagrams (or labels) with a higher z-index are drawn over diagrams
      * with a lower z-index.
@@ -116,24 +156,25 @@ class QgsDiagramLayerSettings
      * @see getZIndex()
      * @note added in QGIS 2.16
      */
-    void setZIndex( double index );
+    void setZIndex( double index ) { zIndex = index; }
 
     //! Z-index of diagrams, where diagrams with a higher z-index are drawn on top of diagrams with a lower z-index
     // TODO QGIS 3.0 - rename to mZIndex, make private
     double zIndex;
 
+
     /** Returns whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
      * @see setIsObstacle()
      * @note added in QGIS 2.16
      */
-    bool isObstacle() const;
+    bool isObstacle() const { return obstacle; }
 
     /** Sets whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
      * @param isObstacle set to true for feature to act as obstacle
      * @see isObstacle()
      * @note added in QGIS 2.16
      */
-    void setIsObstacle( bool isObstacle );
+    void setIsObstacle( bool isObstacle ) { obstacle = isObstacle; }
 
     //! Whether associated feature acts as an obstacle for other labels or diagrams
     // TODO QGIS 3.0 - rename to mObstacle, make private
@@ -143,14 +184,14 @@ class QgsDiagramLayerSettings
      * @see setDistance()
      * @note added in QGIS 2.16
      */
-    double distance() const;
+    double distance() const { return dist; }
 
     /** Sets the distance between the diagram and the feature.
      * @param distance distance in mm
      * @see distance()
      * @note added in QGIS 2.16
      */
-    void setDistance( double distance );
+    void setDistance( double distance ) { dist = distance; }
 
     //! Distance between diagram and the feature (in mm)
     // TODO QGIS 3.0 - make private, rename to mDistance
@@ -161,32 +202,32 @@ class QgsDiagramLayerSettings
      * @note added in QGIS 2.16
      */
     // TODO QGIS 3.0 - rename to renderer()
-    QgsDiagramRendererV2* getRenderer();
+    QgsDiagramRenderer* getRenderer() { return renderer; }
 
     /** Returns the diagram renderer associated with the layer.
      * @see setRenderer()
      * @note added in QGIS 2.16
      */
     // TODO QGIS 3.0 - rename to renderer()
-    //const QgsDiagramRendererV2* getRenderer() const;
+    const QgsDiagramRenderer* getRenderer() const { return renderer; }
 
     /** Sets the diagram renderer associated with the layer.
      * @param diagramRenderer diagram renderer. Ownership is transferred to the object.
      * @see getRenderer()
      * @note added in QGIS 2.16
      */
-    void setRenderer( QgsDiagramRendererV2* diagramRenderer /Transfer/ );
+    void setRenderer( QgsDiagramRenderer* diagramRenderer );
 
     //! Associated diagram renderer. Owned by this object.
     // TODO QGIS 3.0 - make private, rename to mRenderer
-    QgsDiagramRendererV2* renderer;
+    QgsDiagramRenderer* renderer;
 
     /** Returns the coordinate transform associated with the layer, or an
      * invalid transform if no transformation is required.
      * @see setCoordinateTransform()
      * @note added in QGIS 2.16
      */
-    QgsCoordinateTransform coordinateTransform() const;
+    QgsCoordinateTransform coordinateTransform() const { return mCt; }
 
     /** Sets the coordinate transform associated with the layer.
      * @param transform coordinate transform. Ownership is transferred to the object.
@@ -196,10 +237,10 @@ class QgsDiagramLayerSettings
     void setCoordinateTransform( const QgsCoordinateTransform& transform );
 
     //! @deprecated will be removed in QGIS 3.0
-    const QgsMapToPixel* xform;
+    Q_DECL_DEPRECATED const QgsMapToPixel* xform;
 
     //! @deprecated will be removed in QGIS 3.0
-    QgsFields fields;
+    Q_DECL_DEPRECATED QgsFields fields;
 
     //! Attribute index for x coordinate (or -1 if position not data defined)
     int xPosColumn;
@@ -207,18 +248,21 @@ class QgsDiagramLayerSettings
     //! Attribute index for y coordinate (or -1 if position not data defined)
     int yPosColumn;
 
+    //! Attribute index for visibility (or -1 if visibility not data defined)
+    int showColumn;
+
     /** Returns whether the layer should show all diagrams, including overlapping diagrams
      * @see setShowAllDiagrams()
      * @note added in QGIS 2.16
      */
-    bool showAllDiagrams() const;
+    bool showAllDiagrams() const { return showAll; }
 
     /** Sets whether the layer should show all diagrams, including overlapping diagrams
      * @param showAllDiagrams set to true to show all diagrams
      * @see showAllDiagrams()
      * @note added in QGIS 2.16
      */
-    void setShowAllDiagrams( bool showAllDiagrams );
+    void setShowAllDiagrams( bool showAllDiagrams ) { showAll = showAllDiagrams; }
 
     //! Whether to show all diagrams, including overlapping diagrams
     // TODO QGIS 3.0 - make private, rename to mShowAll
@@ -235,6 +279,10 @@ class QgsDiagramLayerSettings
     //TODO QGIS 3.0 - remove need for fields parameter
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
 
+  private:
+
+    //! Associated coordinate transform, or invalid transform for no transformation
+    QgsCoordinateTransform mCt;
 };
 
 /** \ingroup core
@@ -245,14 +293,11 @@ class QgsDiagramLayerSettings
  * QgsDiagramLayerSettings stores settings which control how ALL diagrams within a layer are rendered.
  */
 
-class QgsDiagramSettings
+class CORE_EXPORT QgsDiagramSettings
 {
-%TypeHeaderCode
-#include <qgsdiagramrendererv2.h>
-%End
   public:
 
-    //! @deprecated use QgsSymbol::OutputUnit instead
+    //! @deprecated use QgsUnitTypes::RenderUnit instead
     enum SizeType
     {
       MM,
@@ -274,7 +319,22 @@ class QgsDiagramSettings
       Right
     };
 
-    QgsDiagramSettings();
+    QgsDiagramSettings()
+        : enabled( true )
+        , sizeType( QgsUnitTypes::RenderMillimeters )
+        , lineSizeUnit( QgsUnitTypes::RenderMillimeters )
+        , penWidth( 0.0 )
+        , labelPlacementMethod( QgsDiagramSettings::Height )
+        , diagramOrientation( QgsDiagramSettings::Up )
+        , barWidth( 5.0 )
+        , transparency( 0 )
+        , scaleByArea( true )
+        , angleOffset( 90 * 16 ) //top
+        , scaleBasedVisibility( false )
+        , minScaleDenominator( -1 )
+        , maxScaleDenominator( -1 )
+        , minimumSize( 0.0 )
+    {}
     bool enabled;
     QFont font;
     QList< QColor > categoryColors;
@@ -327,46 +387,46 @@ class QgsDiagramSettings
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
      * @note added in 2.10
      */
-    QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
+    QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const;
 
 };
 
-//additional diagram settings for interpolated size rendering
-class QgsDiagramInterpolationSettings
+/** \ingroup core
+ * \class QgsDiagramInterpolationSettings
+ * Additional diagram settings for interpolated size rendering.
+ */
+class CORE_EXPORT QgsDiagramInterpolationSettings
 {
-%TypeHeaderCode
-#include <qgsdiagramrendererv2.h>
-%End
   public:
     QSizeF lowerSize;
     QSizeF upperSize;
     double lowerValue;
     double upperValue;
+
     /** Index of the classification attribute*/
+    //TODO QGIS 3.0 - don't store index, store field name
     int classificationAttribute;
+
     QString classificationAttributeExpression;
     bool classificationAttributeIsExpression;
 };
 
 
 /** \ingroup core
- * \class QgsDiagramRendererV2
+ * \class QgsDiagramRenderer
  * \brief Evaluates and returns the diagram settings relating to a diagram for a specific feature.
  */
 
-class QgsDiagramRendererV2
+class CORE_EXPORT QgsDiagramRenderer
 {
-%TypeHeaderCode
-#include <qgsdiagramrendererv2.h>
-%End
   public:
 
-    QgsDiagramRendererV2();
-    virtual ~QgsDiagramRendererV2();
+    QgsDiagramRenderer();
+    virtual ~QgsDiagramRenderer();
 
     /** Returns new instance that is equivalent to this one
      * @note added in 2.4 */
-    virtual QgsDiagramRendererV2* clone() const = 0 /Factory/;
+    virtual QgsDiagramRenderer* clone() const = 0;
 
     /** Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
     virtual QSizeF sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c ) const;
@@ -384,10 +444,10 @@ class QgsDiagramRendererV2
     //TODO QGIS 3.0 - remove need for fields parameter
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos );
+    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos ) const;
 
-    void setDiagram( QgsDiagram* d /Transfer/ );
-    QgsDiagram* diagram() const;
+    void setDiagram( QgsDiagram* d );
+    QgsDiagram* diagram() const { return mDiagram; }
 
     /** Returns list with all diagram settings in the renderer*/
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
@@ -399,14 +459,14 @@ class QgsDiagramRendererV2
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
      * @note added in 2.10
      */
-    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
+    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const;
 
     /** Returns true if renderer will show legend items for diagram attributes.
      * @note added in QGIS 2.16
      * @see setAttributeLegend()
      * @see sizeLegend()
      */
-    bool attributeLegend() const;
+    bool attributeLegend() const { return mShowAttributeLegend; }
 
     /** Sets whether the renderer will show legend items for diagram attributes.
      * @param enabled set to true to show diagram attribute legend
@@ -414,7 +474,7 @@ class QgsDiagramRendererV2
      * @see attributeLegend()
      * @see setSizeLegend()
      */
-    void setAttributeLegend( bool enabled );
+    void setAttributeLegend( bool enabled ) { mShowAttributeLegend = enabled; }
 
     /** Returns true if renderer will show legend items for diagram sizes.
      * @note added in QGIS 2.16
@@ -422,7 +482,7 @@ class QgsDiagramRendererV2
      * @see attributeLegend()
      * @see sizeLegendSymbol()
      */
-    bool sizeLegend() const;
+    bool sizeLegend() const { return mShowSizeLegend; }
 
     /** Sets whether the renderer will show legend items for diagram sizes.
      * @param enabled set to true to show diagram size legend
@@ -431,14 +491,14 @@ class QgsDiagramRendererV2
      * @see setAttributeLegend()
      * @see setSizeLegendSymbol()
      */
-    void setSizeLegend( bool enabled );
+    void setSizeLegend( bool enabled ) { mShowSizeLegend = enabled; }
 
     /** Returns the marker symbol used for rendering the diagram size legend.
      * @note added in QGIS 2.16
      * @see setSizeLegendSymbol()
      * @see sizeLegend()
      */
-    QgsMarkerSymbolV2* sizeLegendSymbol() const;
+    QgsMarkerSymbolV2* sizeLegendSymbol() const { return mSizeLegendSymbol.data(); }
 
     /** Sets the marker symbol used for rendering the diagram size legend.
      * @param symbol marker symbol, ownership is transferred to the renderer.
@@ -446,11 +506,11 @@ class QgsDiagramRendererV2
      * @see sizeLegendSymbol()
      * @see setSizeLegend()
      */
-    void setSizeLegendSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
+    void setSizeLegendSymbol( QgsMarkerSymbolV2* symbol ) { mSizeLegendSymbol.reset( symbol ); }
 
   protected:
-    QgsDiagramRendererV2( const QgsDiagramRendererV2& other );
-    //QgsDiagramRendererV2& operator=( const QgsDiagramRendererV2& other );
+    QgsDiagramRenderer( const QgsDiagramRenderer& other );
+    QgsDiagramRenderer& operator=( const QgsDiagramRenderer& other );
 
     /** Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
      * @param feature the feature
@@ -471,91 +531,109 @@ class QgsDiagramRendererV2
     //read / write diagram
     void _readXml( const QDomElement& elem, const QgsVectorLayer* layer );
     void _writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+
+    /** Reference to the object that does the real diagram rendering*/
+    QgsDiagram* mDiagram;
+
+    //! Whether to show an attribute legend for the diagrams
+    bool mShowAttributeLegend;
+
+    //! Whether to show a size legend for the diagrams
+    bool mShowSizeLegend;
+
+    //! Marker symbol to use in size legends
+    QScopedPointer< QgsMarkerSymbolV2 > mSizeLegendSymbol;
 };
 
-/** Renders the diagrams for all features with the same settings*/
-class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
+/** \ingroup core
+ * Renders the diagrams for all features with the same settings
+*/
+class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
-%TypeHeaderCode
-#include <qgsdiagramrendererv2.h>
-%End
-
   public:
     QgsSingleCategoryDiagramRenderer();
     ~QgsSingleCategoryDiagramRenderer();
 
-    virtual QgsSingleCategoryDiagramRenderer* clone() const /Factory/;
+    QgsSingleCategoryDiagramRenderer* clone() const override;
 
-    QString rendererName() const;
+    QString rendererName() const override { return "SingleCategory"; }
 
-    QList<QString> diagramAttributes() const;
+    QList<QString> diagramAttributes() const override { return mSettings.categoryAttributes; }
 
-    void setDiagramSettings( const QgsDiagramSettings& s );
+    void setDiagramSettings( const QgsDiagramSettings& s ) { mSettings = s; }
 
-    QList<QgsDiagramSettings> diagramSettings() const;
+    QList<QgsDiagramSettings> diagramSettings() const override;
 
-    void readXml( const QDomElement& elem, const QgsVectorLayer* layer );
-    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+    void readXml( const QDomElement& elem, const QgsVectorLayer* layer ) override;
+    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const override;
 
-    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
+    QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const override;
 
   protected:
-    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) const;
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) const override;
 
-    QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c ) const;
+    QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c ) const override;
+
+  private:
+    QgsDiagramSettings mSettings;
 };
 
-class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
+/** \ingroup core
+ * \class QgsLinearlyInterpolatedDiagramRenderer
+ */
+class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRenderer
 {
-%TypeHeaderCode
-#include <qgsdiagramrendererv2.h>
-%End
-
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
 
-    virtual QgsLinearlyInterpolatedDiagramRenderer* clone() const /Factory/;
+    QgsLinearlyInterpolatedDiagramRenderer* clone() const override;
 
     /** Returns list with all diagram settings in the renderer*/
-    QList<QgsDiagramSettings> diagramSettings() const;
+    QList<QgsDiagramSettings> diagramSettings() const override;
 
-    void setDiagramSettings( const QgsDiagramSettings& s );
+    void setDiagramSettings( const QgsDiagramSettings& s ) { mSettings = s; }
 
-    QList<QString> diagramAttributes() const;
+    QList<QString> diagramAttributes() const override;
 
-    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const override;
 
-    QString rendererName() const;
+    QString rendererName() const override { return "LinearlyInterpolated"; }
 
-    void setLowerValue( double val );
-    double lowerValue() const;
+    void setLowerValue( double val ) { mInterpolationSettings.lowerValue = val; }
+    double lowerValue() const { return mInterpolationSettings.lowerValue; }
 
-    void setUpperValue( double val );
-    double upperValue() const;
+    void setUpperValue( double val ) { mInterpolationSettings.upperValue = val; }
+    double upperValue() const { return mInterpolationSettings.upperValue; }
 
-    void setLowerSize( QSizeF s );
-    QSizeF lowerSize() const;
+    void setLowerSize( QSizeF s ) { mInterpolationSettings.lowerSize = s; }
+    QSizeF lowerSize() const { return mInterpolationSettings.lowerSize; }
 
-    void setUpperSize( QSizeF s );
-    QSizeF upperSize() const;
+    void setUpperSize( QSizeF s ) { mInterpolationSettings.upperSize = s; }
+    QSizeF upperSize() const { return mInterpolationSettings.upperSize; }
 
-    int classificationAttribute() const;
-    void setClassificationAttribute( int index );
+    int classificationAttribute() const { return mInterpolationSettings.classificationAttribute; }
+    void setClassificationAttribute( int index ) { mInterpolationSettings.classificationAttribute = index; }
 
-    QString classificationAttributeExpression() const;
-    void setClassificationAttributeExpression( const QString& expression );
+    QString classificationAttributeExpression() const { return mInterpolationSettings.classificationAttributeExpression; }
+    void setClassificationAttributeExpression( const QString& expression ) { mInterpolationSettings.classificationAttributeExpression = expression; }
 
-    bool classificationAttributeIsExpression() const;
-    void setClassificationAttributeIsExpression( bool isExpression );
+    bool classificationAttributeIsExpression() const { return mInterpolationSettings.classificationAttributeIsExpression; }
+    void setClassificationAttributeIsExpression( bool isExpression ) { mInterpolationSettings.classificationAttributeIsExpression = isExpression; }
 
-    void readXml( const QDomElement& elem, const QgsVectorLayer* layer );
-    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+    void readXml( const QDomElement& elem, const QgsVectorLayer* layer ) override;
+    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const override;
 
-    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
+    QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const override;
 
   protected:
-    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) const;
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) const override;
 
-    QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c ) const;
+    QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c ) const override;
+
+  private:
+    QgsDiagramSettings mSettings;
+    QgsDiagramInterpolationSettings mInterpolationSettings;
 };
+
+#endif // QGSDIAGRAMRENDERER_H

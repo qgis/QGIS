@@ -24,7 +24,7 @@
 
 class QgsFeatureRendererV2;
 class QgsVectorLayer;
-class QgsStyleV2;
+class QgsStyle;
 class QgsRendererV2Widget;
 
 /** \ingroup core
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
      * The old renderer does not have to be of the same type as returned by createRenderer().
      * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
      */
-    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* oldRenderer )
+    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* oldRenderer )
     { Q_UNUSED( layer ); Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }
 
     virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType )
@@ -96,7 +96,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRendererV2AbstractMetadata::LayerTypes )
 
 
 typedef QgsFeatureRendererV2*( *QgsRendererV2CreateFunc )( QDomElement& );
-typedef QgsRendererV2Widget*( *QgsRendererV2WidgetFunc )( QgsVectorLayer*, QgsStyleV2*, QgsFeatureRendererV2* );
+typedef QgsRendererV2Widget*( *QgsRendererV2WidgetFunc )( QgsVectorLayer*, QgsStyle*, QgsFeatureRendererV2* );
 typedef QgsFeatureRendererV2*( *QgsRendererV2CreateFromSldFunc )( QDomElement&, QgsWkbTypes::GeometryType geomType );
 
 /** \ingroup core
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
     virtual ~QgsRendererV2Metadata();
 
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) override { return mCreateFunc ? mCreateFunc( elem ) : nullptr; }
-    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) override
+    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer ) override
       { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
     virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) override
       { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }

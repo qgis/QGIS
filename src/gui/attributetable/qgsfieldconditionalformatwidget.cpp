@@ -18,7 +18,7 @@
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsvectorlayer.h"
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
@@ -62,7 +62,7 @@ void QgsFieldConditionalFormatWidget::updateIcon()
 {
   mSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
 
-  QgsSymbolSelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog dlg( mSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( !dlg.exec() )
   {
     return;

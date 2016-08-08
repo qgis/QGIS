@@ -33,7 +33,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "diagram/qgspiediagram.h"
 
 static QString _fileNameForTest( const QString& testName )
@@ -161,7 +161,7 @@ void TestQgsLegendRenderer::init()
   mVL1 = new QgsVectorLayer( "LineString", "Line Layer", "memory" );
   QgsMapLayerRegistry::instance()->addMapLayer( mVL1 );
 
-  QgsLineSymbolV2* sym1 = new QgsLineSymbolV2();
+  QgsLineSymbol* sym1 = new QgsLineSymbol();
   sym1->setColor( Qt::magenta );
   mVL1->setRendererV2( new QgsSingleSymbolRendererV2( sym1 ) );
 

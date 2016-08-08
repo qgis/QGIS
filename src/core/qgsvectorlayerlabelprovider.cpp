@@ -455,7 +455,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
   // update tmpLyr with any data defined drop shadow values
   QgsPalLabeling::dataDefinedDropShadow( tmpLyr, ddValues );
 
-  tmpLyr.showingShadowRects = mEngine->testFlag( QgsLabelingEngineV2::DrawShadowRects );
+  tmpLyr.showingShadowRects = mEngine->testFlag( QgsLabelingEngine::DrawShadowRects );
 
   // Render the components of a label in reverse order
   //   (backgrounds -> text)
@@ -519,7 +519,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
   component.setOrigin( outPt );
   component.setRotation( label->getAlpha() );
 
-  if ( mEngine->testFlag( QgsLabelingEngineV2::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
+  if ( mEngine->testFlag( QgsLabelingEngine::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
   {
     //debugging rect
     if ( drawType != QgsPalLabeling::LabelText )
@@ -755,7 +755,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         // scale for any print output or image saving @ specific dpi
         painter->scale( component.dpiRatio(), component.dpiRatio() );
 
-        if ( mEngine->testFlag( QgsLabelingEngineV2::RenderOutlineLabels ) )
+        if ( mEngine->testFlag( QgsLabelingEngine::RenderOutlineLabels ) )
         {
           // draw outlined text
           _fixQPictureDPI( painter );

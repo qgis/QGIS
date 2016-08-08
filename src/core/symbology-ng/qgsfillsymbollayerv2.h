@@ -620,7 +620,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     QgsMapUnitScale mOutlineWidthMapUnitScale;
 
     /** Custom outline*/
-    QgsLineSymbolV2* mOutline;
+    QgsLineSymbol* mOutline;
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext& context ) { Q_UNUSED( context ); }
 };
@@ -1048,7 +1048,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void applyPattern( const QgsSymbolRenderContext& context, QBrush& brush, double lineAngle, double distance, double lineWidth, const QColor& color );
 
     /** Fill line*/
-    QgsLineSymbolV2* mFillLineSymbol;
+    QgsLineSymbol* mFillLineSymbol;
 };
 
 /** \ingroup core

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsstylev2groupselectiondialog.h
+    qgsstylegroupselectiondialog.h
     ---------------------
     begin                : Oct 2015
     copyright            : (C) 2015 by Alessandro Pasotti
@@ -15,15 +15,15 @@
  ***************************************************************************/
 
 
-class QgsStyleV2GroupSelectionDialog : public QDialog, private Ui::SymbolsV2GroupSelectionDialogBase
+class QgsStyleGroupSelectionDialog : public QDialog, private Ui::SymbolsV2GroupSelectionDialogBase
 {
 %TypeHeaderCode
-#include <qgsstylev2groupselectiondialog.h>
+#include <qgsstylegroupselectiondialog.h>
 %End
 
   public:
-    QgsStyleV2GroupSelectionDialog( QgsStyleV2* style, QWidget *parent = 0 );
-    ~QgsStyleV2GroupSelectionDialog();
+    QgsStyleGroupSelectionDialog( QgsStyle* style, QWidget *parent = 0 );
+    ~QgsStyleGroupSelectionDialog();
     //! Set bold font for item
     void setBold( QStandardItem *item );
 

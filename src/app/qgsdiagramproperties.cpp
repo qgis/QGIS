@@ -23,7 +23,7 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsdiagramproperties.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgslabelengineconfigdialog.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayerproperties.h"
@@ -32,7 +32,7 @@
 #include "qgscolordialog.h"
 #include "qgisgui.h"
 #include "qgssymbolselectordialog.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsmapcanvas.h"
 #include "qgsexpressionbuilderdialog.h"
 
@@ -194,7 +194,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
     mDataDefinedVisibilityComboBox->addItem( layerFields.at( idx ).name(), idx );
   }
 
-  const QgsDiagramRendererV2* dr = layer->diagramRenderer();
+  const QgsDiagramRenderer* dr = layer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
     mDiagramTypeComboBox->blockSignals( true );
@@ -755,7 +755,7 @@ void QgsDiagramProperties::apply()
 
   ds.barWidth = mBarWidthSpinBox->value();
 
-  QgsDiagramRendererV2* renderer = nullptr;
+  QgsDiagramRenderer* renderer = nullptr;
   if ( mFixedSizeRadio->isChecked() )
   {
     QgsSingleCategoryDiagramRenderer* dr = new QgsSingleCategoryDiagramRenderer();
@@ -916,7 +916,7 @@ void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index 
 void QgsDiagramProperties::on_mButtonSizeLegendSymbol_clicked()
 {
   QgsMarkerSymbolV2* newSymbol = mSizeLegendSymbol->clone();
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {

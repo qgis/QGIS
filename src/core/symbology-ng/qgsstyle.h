@@ -1,12 +1,78 @@
-class QgsStyleV2 : QObject
+/***************************************************************************
+    qgsstyle.h
+    ---------------------
+    begin                : November 2009
+    copyright            : (C) 2009 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSSTYLE_H
+#define QGSSTYLE_H
+
+#include <QMap>
+#include <QMultiMap>
+#include <QString>
+
+#include <sqlite3.h>
+
+#include "qgssymbollayerutils.h" // QgsStringMap
+
+class QgsSymbol;
+class QgsSymbolLayer;
+class QgsVectorColorRampV2;
+
+class QDomDocument;
+class QDomElement;
+
+typedef QMap<QString, QgsVectorColorRampV2* > QgsVectorColorRampV2Map;
+typedef QMap<int, QString> QgsSymbolGroupMap;
+
+/** \ingroup core
+ *  A multimap to hold the smart group conditions as constraint and parameter pairs.
+ *  Both the key and the value of the map are QString. The key is the constraint of the condition and the value is the parameter which is applied for the constraint.
+ *
+ *  The supported constraints are:
+ *  tag -> symbol has the tag matching the parameter
+ *  !tag -> symbol doesnot have the tag matching the parameter
+ *  group -> symbol belongs to group specified by the parameter
+ *  !group -> symbol doesn't belong to the group specified by the parameter
+ *  name -> symbol has a part of its name matching the parameter
+ *  !name -> symbol doesn't have any part of the name matching the parameter
+ *
+ *  Example Usage:
+ *  QgsSmartConditionMap conditions;
+ *  conditions.insert( "tag", "red" ); // adds the condition: Symbol has the tag red
+ *  conditions.insert( "!name", "way" ); // add the condition: Symbol doesn't have any part of its name matching `way`
+ *
+ *  \note This is a Multimap, which means it will contain multiple values for the same key.
+ */
+typedef QMultiMap<QString, QString> QgsSmartConditionMap;
+
+// enumerators representing sqlite DB columns
+enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolGroupId };
+enum SymgroupTable { SymgroupId, SymgroupName, SymgroupParent };
+enum TagTable { TagId, TagName };
+enum TagmapTable { TagmapTagId, TagmapSymbolId };
+enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampGroupId };
+enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
+
+/** \ingroup core
+ * \class QgsStyle
+ */
+class CORE_EXPORT QgsStyle : public QObject
 {
-%TypeHeaderCode
-#include <qgsstylev2.h>
-%End
+    Q_OBJECT
 
   public:
-    QgsStyleV2();
-    ~QgsStyleV2();
+    QgsStyle();
+    ~QgsStyle();
 
     //! Enum for Entities involved in a style
     /*!
@@ -24,7 +90,7 @@ class QgsStyleV2 : QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \return success status of the operation
      */
-    bool addColorRamp( const QString& name, QgsVectorColorRampV2* colorRamp /Transfer/, bool update = false );
+    bool addColorRamp( const QString& name, QgsVectorColorRampV2* colorRamp, bool update = false );
 
     //! adds a new group and returns the group's id
     /*!
@@ -40,7 +106,7 @@ class QgsStyleV2 : QObject
      *  \param op is the operator between the conditions; AND/OR as QString
      *  \param conditions are the smart group conditions
      */
-    int addSmartgroup( const QString& name, const QString& op, QMultiMap<QString, QString> conditions );
+    int addSmartgroup( const QString& name, const QString& op, const QgsSmartConditionMap& conditions );
 
     //! add symbol to style. takes symbol's ownership
     /*!
@@ -50,7 +116,7 @@ class QgsStyleV2 : QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \return success status of the operation
      */
-    bool addSymbol( const QString& name, QgsSymbol* symbol /Transfer/, bool update = false );
+    bool addSymbol( const QString& name, QgsSymbol* symbol, bool update = false );
 
     //! adds a new tag and returns the tag's id
     /*!
@@ -66,13 +132,13 @@ class QgsStyleV2 : QObject
     QStringList tags() const;
 
     //! return a map of groupid and names for the given parent group
-    QMap<int, QString> childGroupNames( const QString& parent = "" );
+    QgsSymbolGroupMap childGroupNames( const QString& parent = "" );
 
     //! remove all contents of the style
     void clear();
 
     //! return a NEW copy of color ramp
-    QgsVectorColorRampV2* colorRamp( const QString& name ) /Factory/;
+    QgsVectorColorRampV2* colorRamp( const QString& name );
 
     //! return count of color ramps
     int colorRampCount();
@@ -88,7 +154,7 @@ class QgsStyleV2 : QObject
     int colorrampId( const QString& name );
 
     //! return default application-wide style
-    static QgsStyleV2* defaultStyle();
+    static QgsStyle* defaultStyle();
 
     //! tags the symbol with the tags in the list
     /*!
@@ -108,7 +174,7 @@ class QgsStyleV2 : QObject
      *  \param tags is the list of tags that are to be removed as QStringList
      *  \return returns the success state of the operation
      */
-    bool detagSymbol( StyleEntity type, QString symbol, QStringList tags );
+    bool detagSymbol( StyleEntity type, const QString& symbol, const QStringList& tags );
 
     //! remove symbol from style (and delete it)
     bool removeSymbol( const QString& name );
@@ -117,7 +183,7 @@ class QgsStyleV2 : QObject
     bool renameSymbol( const QString& oldName, const QString& newName );
 
     //! return a NEW copy of symbol
-    QgsSymbol* symbol( const QString& name ) /Factory/;
+    QgsSymbol* symbol( const QString& name );
 
     //! return a const pointer to a symbol (doesn't create new instance)
     const QgsSymbol* symbolRef( const QString& name ) const;
@@ -194,7 +260,7 @@ class QgsStyleV2 : QObject
      *  \param tags is a list of tags that are associated with the symbol as a QStringList.
      *  \return returns the success state of the save operation
      */
-    bool saveSymbol( const QString& name, QgsSymbol* symbol /Transfer/, int groupid, const QStringList& tags );
+    bool saveSymbol( const QString& name, QgsSymbol* symbol, int groupid, const QStringList& tags );
 
     //! add the colorramp to the DB
     /*!
@@ -219,10 +285,10 @@ class QgsStyleV2 : QObject
     bool save( QString filename = QString() );
 
     //! return last error from load/save operation
-    QString errorString();
+    QString errorString() { return mErrorString; }
 
     //! return current file name of the style
-    QString fileName();
+    QString fileName() { return mFileName; }
 
     //! return the names of the symbols which have a matching 'substring' in its defintion
     /*!
@@ -241,13 +307,13 @@ class QgsStyleV2 : QObject
     QStringList tagsOfSymbol( StyleEntity type, const QString& symbol );
 
     //! returns the smart groups map with id as key and name as value
-    QMap<int, QString> smartgroupsListMap();
+    QgsSymbolGroupMap smartgroupsListMap();
 
     //! returns the smart groups list
     QStringList smartgroupNames();
 
     //! returns the QgsSmartConditionMap for the given id
-    QMultiMap<QString, QString> smartgroup( int id );
+    QgsSmartConditionMap smartgroup( int id );
 
     //! returns the operator for the smartgroup
     //clumsy implementation TODO create a class for smartgroups
@@ -266,6 +332,17 @@ class QgsStyleV2 : QObject
     void symbolSaved( const QString& name, QgsSymbol* symbol );
 
   protected:
+
+    QgsSymbolMap mSymbols;
+    QgsVectorColorRampV2Map mColorRamps;
+
+    QString mErrorString;
+    QString mFileName;
+
+    sqlite3* mCurrentDB;
+
+    static QgsStyle* mDefaultStyle;
+
     //! convenience function to open the DB and return a sqlite3 object
     bool openDB( const QString& filename );
 
@@ -292,4 +369,10 @@ class QgsStyleV2 : QObject
      *  \return Success state of the update operation
      */
     bool updateSymbol( StyleEntity type, const QString& name );
+
+  private:
+    Q_DISABLE_COPY( QgsStyle )
 };
+
+
+#endif

@@ -19,7 +19,7 @@
 #include "qgscomposerarrow.h"
 #include "qgscomposeritemwidget.h"
 #include "qgssymbolselectordialog.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbol.h"
 #include <QColorDialog>
 #include <QFileDialog>
@@ -309,8 +309,8 @@ void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
     return;
   }
 
-  QgsLineSymbolV2* newSymbol = mArrow->lineSymbol()->clone();
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsLineSymbol* newSymbol = mArrow->lineSymbol()->clone();
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
   d.setExpressionContext( mArrow->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )

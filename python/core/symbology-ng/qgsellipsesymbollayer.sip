@@ -1,12 +1,12 @@
-class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
+class QgsEllipseSymbolLayer : QgsMarkerSymbolLayerV2
 {
 %TypeHeaderCode
-#include <qgsellipsesymbollayerv2.h>
+#include <qgsellipsesymbollayer.h>
 %End
 
   public:
-    QgsEllipseSymbolLayerV2();
-    ~QgsEllipseSymbolLayerV2();
+    QgsEllipseSymbolLayer();
+    ~QgsEllipseSymbolLayer();
 
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
     static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
@@ -15,7 +15,7 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     QString layerType() const;
     void startRender( QgsSymbolRenderContext& context );
     void stopRender( QgsSymbolRenderContext& context );
-    virtual QgsEllipseSymbolLayerV2* clone() const /Factory/;
+    virtual QgsEllipseSymbolLayer* clone() const /Factory/;
     QgsStringMap properties() const;
 
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;

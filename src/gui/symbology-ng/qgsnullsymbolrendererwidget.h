@@ -35,10 +35,10 @@ class GUI_EXPORT QgsNullSymbolRendererWidget : public QgsRendererV2Widget
   public:
 
     //! Creates a new QgsNullSymbolRendererWidget object
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer );
 
     //! Constructor for QgsNullSymbolRendererWidget
-    QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer );
     ~QgsNullSymbolRendererWidget();
 
     //! Returns a pointer to the configured renderer

@@ -18,7 +18,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 
 #include "qgsvectorlayer.h"
 
@@ -383,7 +383,7 @@ void QgsGraduatedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement elem
 
 // ------------------------------ Widget ------------------------------------
 
-QgsRendererV2Widget* QgsGraduatedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererV2Widget* QgsGraduatedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
 {
   return new QgsGraduatedSymbolRendererV2Widget( layer, style, renderer );
 }
@@ -413,7 +413,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( nullptr )
     , mModel( nullptr )

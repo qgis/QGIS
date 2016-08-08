@@ -60,7 +60,7 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 #include "ui_qgssmartgroupeditordialogbase.h"
 //#include "qgscontexthelp.h"
 
-#include "qgsstylev2.h" //for QgsSmartConditionMap
+#include "qgsstyle.h" //for QgsSmartConditionMap
 
 /** \ingroup gui
  * \class QgsSmartGroupEditorDialog
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     Q_OBJECT
 
   public:
-    QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent = nullptr );
+    QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent = nullptr );
     ~QgsSmartGroupEditorDialog();
 
     //! returns the value from mNameLineEdit
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     void on_buttonBox_accepted();
 
   protected:
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
     // layout of the mConditionsBox
     QGridLayout *mLayout;
     // counter for the number of conditions

@@ -25,7 +25,7 @@
 #include <QPainter>
 
 class QgsCoordinateTransform;
-class QgsLineSymbolV2;
+class QgsLineSymbol;
 class QgsMarkerSymbolV2;
 class QgsComposerMapGrid;
 class QgsComposerMap;
@@ -482,7 +482,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setMarkerSymbol
      * @see setStyle
      */
-    void setLineSymbol( QgsLineSymbolV2* symbol );
+    void setLineSymbol( QgsLineSymbol* symbol );
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -492,7 +492,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see style
      * @note not available in python bindings
      */
-    const QgsLineSymbolV2* lineSymbol() const { return mGridLineSymbol; }
+    const QgsLineSymbol* lineSymbol() const { return mGridLineSymbol; }
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -501,7 +501,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see markerSymbol
      * @see style
      */
-    QgsLineSymbolV2* lineSymbol() { return mGridLineSymbol; }
+    QgsLineSymbol* lineSymbol() { return mGridLineSymbol; }
 
     /** Sets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -921,7 +921,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Divisions for frame on bottom map side*/
     DisplayMode mBottomFrameDivisions;
 
-    QgsLineSymbolV2* mGridLineSymbol;
+    QgsLineSymbol* mGridLineSymbol;
     QgsMarkerSymbolV2* mGridMarkerSymbol;
 
     QgsCoordinateReferenceSystem mCRS;

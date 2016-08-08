@@ -5,7 +5,7 @@ class QgsRendererV2Widget : QgsPanelWidget
 %End
 
   public:
-    QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style );
+    QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyle* style );
 
     virtual ~QgsRendererV2Widget();
 

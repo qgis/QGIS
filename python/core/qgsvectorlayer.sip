@@ -427,8 +427,8 @@ class QgsVectorLayer : QgsMapLayer
     bool diagramsEnabled() const;
 
     /** Sets diagram rendering object (takes ownership) */
-    void setDiagramRenderer( QgsDiagramRendererV2* r /Transfer/ );
-    const QgsDiagramRendererV2* diagramRenderer() const;
+    void setDiagramRenderer( QgsDiagramRenderer* r /Transfer/ );
+    const QgsDiagramRenderer* diagramRenderer() const;
 
     void setDiagramLayerSettings( const QgsDiagramLayerSettings& s );
     const QgsDiagramLayerSettings *diagramLayerSettings() const;

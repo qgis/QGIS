@@ -17,7 +17,7 @@
 
 //#include "qgsfeatureiterator.h"
 #include "diagram/qgsdiagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsgeometrycache.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
@@ -551,7 +551,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList
 {
   if ( !mContext.labelingEngine() )
   {
-    if ( QgsLabelingEngineV2* engine2 = mContext.labelingEngineV2() )
+    if ( QgsLabelingEngine* engine2 = mContext.labelingEngineV2() )
     {
       if ( layer->labeling() )
       {
@@ -608,7 +608,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
 {
   if ( !mContext.labelingEngine() )
   {
-    if ( QgsLabelingEngineV2* engine2 = mContext.labelingEngineV2() )
+    if ( QgsLabelingEngine* engine2 = mContext.labelingEngineV2() )
     {
       if ( layer->diagramsEnabled() )
       {

@@ -31,7 +31,7 @@
 #include "qgsrasterrendererwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsundowidget.h"
@@ -346,7 +346,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       case 0: // Style
       {
-        QgsRendererV2PropertiesDialog* styleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyleV2::defaultStyle(), true, mStackedWidget );
+        QgsRendererV2PropertiesDialog* styleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyle::defaultStyle(), true, mStackedWidget );
         styleWidget->setMapCanvas( mMapCanvas );
         styleWidget->setDockMode( true );
         connect( styleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );

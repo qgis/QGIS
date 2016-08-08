@@ -220,7 +220,7 @@
 #include "qgsstatusbarcoordinateswidget.h"
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsstatusbarscalewidget.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssvgannotationitem.h"
 #include "qgssymbolselectordialog.h"
 #include "qgstextannotationitem.h"
@@ -447,7 +447,7 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
 
           QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
           QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-          QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, this );
+          QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), vlayer, this );
           dlg.setMapCanvas( mMapCanvas );
           if ( dlg.exec() )
           {
@@ -1714,12 +1714,12 @@ void QgisApp::createActions()
 
 }
 
-#include "qgsstylev2.h"
-#include "qgsstylev2managerdialog.h"
+#include "qgsstyle.h"
+#include "qgsstylemanagerdialog.h"
 
 void QgisApp::showStyleManagerV2()
 {
-  QgsStyleV2ManagerDialog dlg( QgsStyleV2::defaultStyle(), this );
+  QgsStyleManagerDialog dlg( QgsStyle::defaultStyle(), this );
   dlg.exec();
 }
 

@@ -16,9 +16,9 @@
 #include "qgssymbollayerregistry.h"
 
 #include "qgsarrowsymbollayer.h"
-#include "qgsellipsesymbollayerv2.h"
+#include "qgsellipsesymbollayer.h"
 #include "qgsmarkersymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayerv2.h"
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayerv2.h"
@@ -27,7 +27,7 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
 {
   // init registry with known symbol layers
   addSymbolLayerType( new QgsSymbolLayerMetadata( "SimpleLine", QObject::tr( "Simple line" ), QgsSymbol::Line,
-                      QgsSimpleLineSymbolLayerV2::create, QgsSimpleLineSymbolLayerV2::createFromSld ) );
+                      QgsSimpleLineSymbolLayer::create, QgsSimpleLineSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( "MarkerLine", QObject::tr( "Marker line" ), QgsSymbol::Line,
                       QgsMarkerLineSymbolLayerV2::create, QgsMarkerLineSymbolLayerV2::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( "ArrowLine", QObject::tr( "Arrow" ), QgsSymbol::Line, QgsArrowSymbolLayer::create ) );
@@ -41,7 +41,7 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
   addSymbolLayerType( new QgsSymbolLayerMetadata( "FontMarker", QObject::tr( "Font marker" ), QgsSymbol::Marker,
                       QgsFontMarkerSymbolLayerV2::create, QgsFontMarkerSymbolLayerV2::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( "EllipseMarker", QObject::tr( "Ellipse marker" ), QgsSymbol::Marker,
-                      QgsEllipseSymbolLayerV2::create, QgsEllipseSymbolLayerV2::createFromSld ) );
+                      QgsEllipseSymbolLayer::create, QgsEllipseSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( "VectorField", QObject::tr( "Vector field marker" ), QgsSymbol::Marker,
                       QgsVectorFieldSymbolLayer::create ) );
 
@@ -100,7 +100,7 @@ QgsSymbolLayer* QgsSymbolLayerRegistry::defaultSymbolLayer( QgsSymbol::SymbolTyp
       return QgsSimpleMarkerSymbolLayerV2::create();
 
     case QgsSymbol::Line:
-      return QgsSimpleLineSymbolLayerV2::create();
+      return QgsSimpleLineSymbolLayer::create();
 
     case QgsSymbol::Fill:
       return QgsSimpleFillSymbolLayerV2::create();

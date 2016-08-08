@@ -21,7 +21,7 @@
 #include <QBrush>
 #include <QPen>
 
-class QgsLineSymbolV2;
+class QgsLineSymbol;
 
 /** \ingroup core
  * Composer item for polylines.
@@ -51,10 +51,10 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
     virtual QString displayName() const override;
 
     /** Returns the QgsSymbol used to draw the shape. */
-    QgsLineSymbolV2* polylineStyleSymbol() { return mPolylineStyleSymbol.data(); }
+    QgsLineSymbol* polylineStyleSymbol() { return mPolylineStyleSymbol.data(); }
 
     /** Set the QgsSymbol used to draw the shape. */
-    void setPolylineStyleSymbol( QgsLineSymbolV2* symbol );
+    void setPolylineStyleSymbol( QgsLineSymbol* symbol );
 
     /** Overridden to return shape type */
     virtual int type() const override { return ComposerPolyline; }
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
   protected:
 
     /** QgsSymbol use to draw the shape. */
-    QScopedPointer<QgsLineSymbolV2> mPolylineStyleSymbol;
+    QScopedPointer<QgsLineSymbol> mPolylineStyleSymbol;
 
     /** Add the node newPoint at the given position according to some
      * criteres. */

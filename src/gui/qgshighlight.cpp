@@ -16,7 +16,7 @@
 #include <QImage>
 
 #include "qgsmarkersymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 
 #include "qgscoordinatetransform.h"
 #include "qgsfillsymbollayerv2.h"
@@ -172,7 +172,7 @@ void QgsHighlight::setSymbol( QgsSymbol* symbol, const QgsRenderContext & contex
       {
         simpleMarker->setOutlineWidth( getSymbolWidth( context, simpleMarker->outlineWidth(), simpleMarker->outlineWidthUnit() ) );
       }
-      QgsSimpleLineSymbolLayerV2 * simpleLine = dynamic_cast<QgsSimpleLineSymbolLayerV2*>( symbolLayer );
+      QgsSimpleLineSymbolLayer * simpleLine = dynamic_cast<QgsSimpleLineSymbolLayer*>( symbolLayer );
       if ( simpleLine )
       {
         simpleLine->setWidth( getSymbolWidth( context, simpleLine->width(), simpleLine->widthUnit() ) );

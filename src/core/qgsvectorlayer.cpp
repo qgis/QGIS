@@ -77,8 +77,8 @@
 #include "qgsrendererv2.h"
 #include "qgssymbollayer.h"
 #include "qgssinglesymbolrendererv2.h"
-#include "qgsdiagramrendererv2.h"
-#include "qgsstylev2.h"
+#include "qgsdiagramrenderer.h"
+#include "qgsstyle.h"
 #include "qgssymbologyconversion.h"
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"
@@ -509,7 +509,7 @@ void QgsVectorLayer::setProviderEncoding( const QString& encoding )
   }
 }
 
-void QgsVectorLayer::setDiagramRenderer( QgsDiagramRendererV2* r )
+void QgsVectorLayer::setDiagramRenderer( QgsDiagramRenderer* r )
 {
   delete mDiagramRenderer;
   mDiagramRenderer = r;

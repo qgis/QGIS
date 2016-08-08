@@ -16,7 +16,7 @@
 
 #include "qgssymbollayerwidget.h"
 
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
 #include "qgsgeometrygeneratorsymbollayerv2.h"
@@ -30,7 +30,7 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsdatadefined.h"
-#include "qgsstylev2.h" //for symbol selector dialog
+#include "qgsstyle.h" //for symbol selector dialog
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -166,7 +166,7 @@ QString QgsSymbolLayerWidget::dataDefinedPropertyLabel( const QString &entryName
   return label;
 }
 
-QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
+QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -189,7 +189,7 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVec
   }
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol = new QgsLineSymbolV2();
+  mAssistantPreviewSymbol = new QgsLineSymbol();
 
   if ( mVectorLayer )
     mPenWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
@@ -207,12 +207,12 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVec
   connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
 }
 
-QgsSimpleLineSymbolLayerV2Widget::~QgsSimpleLineSymbolLayerV2Widget()
+QgsSimpleLineSymbolLayerWidget::~QgsSimpleLineSymbolLayerWidget()
 {
   delete mAssistantPreviewSymbol;
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::updateAssistantSymbol()
+void QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol()
 {
   for ( int i = mAssistantPreviewSymbol->symbolLayerCount() - 1 ; i >= 0; --i )
   {
@@ -225,13 +225,13 @@ void QgsSimpleLineSymbolLayerV2Widget::updateAssistantSymbol()
 }
 
 
-void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( !layer || layer->layerType() != "SimpleLine" )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsSimpleLineSymbolLayerV2*>( layer );
+  mLayer = static_cast<QgsSimpleLineSymbolLayer*>( layer );
 
   // set units
   mPenWidthUnitWidget->blockSignals( true );
@@ -296,26 +296,26 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayer* layer )
   updateAssistantSymbol();
 }
 
-QgsSymbolLayer* QgsSimpleLineSymbolLayerV2Widget::symbolLayer()
+QgsSymbolLayer* QgsSimpleLineSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::penWidthChanged()
+void QgsSimpleLineSymbolLayerWidget::penWidthChanged()
 {
   mLayer->setWidth( spinWidth->value() );
   updatePatternIcon();
   emit changed();
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::colorChanged( const QColor& color )
+void QgsSimpleLineSymbolLayerWidget::colorChanged( const QColor& color )
 {
   mLayer->setColor( color );
   updatePatternIcon();
   emit changed();
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::penStyleChanged()
+void QgsSimpleLineSymbolLayerWidget::penStyleChanged()
 {
   mLayer->setPenStyle( cboPenStyle->penStyle() );
   mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
@@ -323,14 +323,14 @@ void QgsSimpleLineSymbolLayerV2Widget::penStyleChanged()
   emit changed();
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::offsetChanged()
+void QgsSimpleLineSymbolLayerWidget::offsetChanged()
 {
   mLayer->setOffset( spinOffset->value() );
   updatePatternIcon();
   emit changed();
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::on_mCustomCheckBox_stateChanged( int state )
+void QgsSimpleLineSymbolLayerWidget::on_mCustomCheckBox_stateChanged( int state )
 {
   bool checked = ( state == Qt::Checked );
   mChangePatternButton->setEnabled( checked );
@@ -341,7 +341,7 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mCustomCheckBox_stateChanged( int stat
   emit changed();
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::on_mChangePatternButton_clicked()
+void QgsSimpleLineSymbolLayerWidget::on_mChangePatternButton_clicked()
 {
   QgsDashSpaceDialog d( mLayer->customDashVector() );
   if ( d.exec() == QDialog::Accepted )
@@ -352,7 +352,7 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mChangePatternButton_clicked()
   }
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::on_mPenWidthUnitWidget_changed()
+void QgsSimpleLineSymbolLayerWidget::on_mPenWidthUnitWidget_changed()
 {
   if ( mLayer )
   {
@@ -362,7 +362,7 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mPenWidthUnitWidget_changed()
   }
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
+void QgsSimpleLineSymbolLayerWidget::on_mOffsetUnitWidget_changed()
 {
   if ( mLayer )
   {
@@ -372,7 +372,7 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
   }
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::on_mDashPatternUnitWidget_changed()
+void QgsSimpleLineSymbolLayerWidget::on_mDashPatternUnitWidget_changed()
 {
   if ( mLayer )
   {
@@ -382,7 +382,7 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mDashPatternUnitWidget_changed()
   }
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::on_mDrawInsideCheckBox_stateChanged( int state )
+void QgsSimpleLineSymbolLayerWidget::on_mDrawInsideCheckBox_stateChanged( int state )
 {
   bool checked = ( state == Qt::Checked );
   mLayer->setDrawInsidePolygon( checked );
@@ -390,13 +390,13 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mDrawInsideCheckBox_stateChanged( int 
 }
 
 
-void QgsSimpleLineSymbolLayerV2Widget::updatePatternIcon()
+void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
 {
   if ( !mLayer )
   {
     return;
   }
-  QgsSimpleLineSymbolLayerV2* layerCopy = mLayer->clone();
+  QgsSimpleLineSymbolLayer* layerCopy = mLayer->clone();
   if ( !layerCopy )
   {
     return;
@@ -1031,7 +1031,7 @@ QgsGradientFillSymbolLayerV2Widget::QgsGradientFillSymbolLayerV2Widget( const Qg
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
   cboGradientColorRamp->setShowGradientOnly( true );
-  cboGradientColorRamp->populate( QgsStyleV2::defaultStyle() );
+  cboGradientColorRamp->populate( QgsStyle::defaultStyle() );
 
   btnChangeColor->setAllowAlpha( true );
   btnChangeColor->setColorDialogTitle( tr( "Select gradient color" ) );
@@ -1382,7 +1382,7 @@ QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( cons
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
 
-  cboGradientColorRamp->populate( QgsStyleV2::defaultStyle() );
+  cboGradientColorRamp->populate( QgsStyle::defaultStyle() );
 
   connect( cboGradientColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
   connect( cboGradientColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );

@@ -35,7 +35,7 @@ from qgis.core import (QgsGeometry,
                        QgsMapUnitScale,
                        QgsMarkerSymbolV2,
                        QgsFillSymbolV2,
-                       QgsLineSymbolV2,
+                       QgsLineSymbol,
                        QgsRenderContext,
                        QgsFeature,
                        Qgis,
@@ -58,7 +58,7 @@ class TestQgsSymbol(unittest.TestCase):
     def setUp(self):
         #Create some simple symbols
         self.fill_symbol = QgsFillSymbolV2.createSimple({'color': '#ffffff'})
-        self.line_symbol = QgsLineSymbolV2.createSimple({'color': '#ffffff', 'line_width': '3'})
+        self.line_symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'line_width': '3'})
         self.marker_symbol = QgsMarkerSymbolV2.createSimple({'color': '#ffffff', 'size': '3'})
         self.report = "<h1>Python QgsSymbol Tests</h1>\n"
 

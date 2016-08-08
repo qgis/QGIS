@@ -24,7 +24,7 @@
 #include "qgstreewidgetitem.h"
 
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgscolordialog.h"
 
@@ -46,7 +46,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
 
   QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
 
-  mColorRampComboBox->populate( QgsStyleV2::defaultStyle() );
+  mColorRampComboBox->populate( QgsStyle::defaultStyle() );
 
   QgsDebugMsg( "defaultPalette = " + defaultPalette );
   mColorRampComboBox->setCurrentIndex( mColorRampComboBox->findText( defaultPalette ) );

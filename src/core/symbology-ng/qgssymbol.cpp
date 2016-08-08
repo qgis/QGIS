@@ -16,7 +16,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
 #include "qgsgeometrygeneratorsymbollayerv2.h"
@@ -25,7 +25,7 @@
 #include "qgsrendercontext.h" // for bigSymbolPreview
 
 #include "qgsproject.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 
@@ -333,7 +333,7 @@ QgsSymbol* QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
       break;
   }
   if ( defaultSymbol != "" )
-    s = QgsStyleV2::defaultStyle()->symbol( defaultSymbol );
+    s = QgsStyle::defaultStyle()->symbol( defaultSymbol );
 
   // if no default found for this type, get global default (as previously)
   if ( ! s )
@@ -344,7 +344,7 @@ QgsSymbol* QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
         s = new QgsMarkerSymbolV2();
         break;
       case QgsWkbTypes::LineGeometry:
-        s = new QgsLineSymbolV2();
+        s = new QgsLineSymbol();
         break;
       case QgsWkbTypes::PolygonGeometry:
         s = new QgsFillSymbolV2();
@@ -505,7 +505,7 @@ void QgsSymbol::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext
     {
       // line symbol layer would normally draw just a line
       // so we override this case to force it to draw a polygon outline
-      QgsLineSymbolLayerV2* lsl = dynamic_cast<QgsLineSymbolLayerV2*>( layer );
+      QgsLineSymbolLayer* lsl = dynamic_cast<QgsLineSymbolLayer*>( layer );
 
       if ( lsl )
       {
@@ -581,7 +581,7 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext* expressionContext
   {
     QPolygonF poly;
     poly << QPointF( 0, 50 ) << QPointF( 99, 50 );
-    static_cast<QgsLineSymbolV2*>( this )->renderPolyline( poly, nullptr, context );
+    static_cast<QgsLineSymbol*>( this )->renderPolyline( poly, nullptr, context );
   }
   else if ( mType == QgsSymbol::Fill )
   {
@@ -778,7 +778,7 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
       }
       QgsConstWkbSimplifierPtr wkbPtr( segmentizedGeometry.asWkb(), segmentizedGeometry.wkbSize(), context.vectorSimplifyMethod() );
       _getLineString( pts, context, wkbPtr, !tileMapRendering && clipFeaturesToExtent() );
-      static_cast<QgsLineSymbolV2*>( this )->renderPolyline( pts, &feature, context, layer, selected );
+      static_cast<QgsLineSymbol*>( this )->renderPolyline( pts, &feature, context, layer, selected );
 
       if ( drawVertexMarker && !usingSegmentizedGeometry )
       {
@@ -877,7 +877,7 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
         {
           break;
         }
-        static_cast<QgsLineSymbolV2*>( this )->renderPolyline( pts, &feature, context, layer, selected );
+        static_cast<QgsLineSymbol*>( this )->renderPolyline( pts, &feature, context, layer, selected );
 
         if ( drawVertexMarker && !usingSegmentizedGeometry )
         {
@@ -1092,15 +1092,15 @@ QgsMarkerSymbolV2* QgsMarkerSymbolV2::createSimple( const QgsStringMap& properti
   return new QgsMarkerSymbolV2( layers );
 }
 
-QgsLineSymbolV2* QgsLineSymbolV2::createSimple( const QgsStringMap& properties )
+QgsLineSymbol* QgsLineSymbol::createSimple( const QgsStringMap& properties )
 {
-  QgsSymbolLayer* sl = QgsSimpleLineSymbolLayerV2::create( properties );
+  QgsSymbolLayer* sl = QgsSimpleLineSymbolLayer::create( properties );
   if ( !sl )
     return nullptr;
 
   QgsSymbolLayerList layers;
   layers.append( sl );
-  return new QgsLineSymbolV2( layers );
+  return new QgsLineSymbol( layers );
 }
 
 QgsFillSymbolV2* QgsFillSymbolV2::createSimple( const QgsStringMap& properties )
@@ -1536,20 +1536,20 @@ QgsMarkerSymbolV2* QgsMarkerSymbolV2::clone() const
 ///////////////////
 // LINE
 
-QgsLineSymbolV2::QgsLineSymbolV2( const QgsSymbolLayerList& layers )
+QgsLineSymbol::QgsLineSymbol( const QgsSymbolLayerList& layers )
     : QgsSymbol( Line, layers )
 {
   if ( mLayers.isEmpty() )
-    mLayers.append( new QgsSimpleLineSymbolLayerV2() );
+    mLayers.append( new QgsSimpleLineSymbolLayer() );
 }
 
-void QgsLineSymbolV2::setWidth( double w )
+void QgsLineSymbol::setWidth( double w )
 {
   double origWidth = width();
 
   Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
-    QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( layer );
+    QgsLineSymbolLayer* lineLayer = dynamic_cast<QgsLineSymbolLayer*>( layer );
 
     if ( lineLayer )
     {
@@ -1569,7 +1569,7 @@ void QgsLineSymbolV2::setWidth( double w )
   }
 }
 
-double QgsLineSymbolV2::width() const
+double QgsLineSymbol::width() const
 {
   double maxWidth = 0;
   if ( mLayers.isEmpty() )
@@ -1577,7 +1577,7 @@ double QgsLineSymbolV2::width() const
 
   Q_FOREACH ( QgsSymbolLayer* symbolLayer, mLayers )
   {
-    const QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( symbolLayer );
+    const QgsLineSymbolLayer* lineLayer = dynamic_cast<QgsLineSymbolLayer*>( symbolLayer );
     if ( lineLayer )
     {
       double width = lineLayer->width();
@@ -1588,13 +1588,13 @@ double QgsLineSymbolV2::width() const
   return maxWidth;
 }
 
-void QgsLineSymbolV2::setDataDefinedWidth( const QgsDataDefined& dd )
+void QgsLineSymbol::setDataDefinedWidth( const QgsDataDefined& dd )
 {
   const double symbolWidth = width();
 
   Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
-    QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( layer );
+    QgsLineSymbolLayer* lineLayer = dynamic_cast<QgsLineSymbolLayer*>( layer );
 
     if ( lineLayer )
     {
@@ -1623,7 +1623,7 @@ void QgsLineSymbolV2::setDataDefinedWidth( const QgsDataDefined& dd )
   }
 }
 
-QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
+QgsDataDefined QgsLineSymbol::dataDefinedWidth() const
 {
   const double symbolWidth = width();
 
@@ -1632,7 +1632,7 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
   // find the base of the "en masse" pattern
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    const QgsLineSymbolLayerV2* layer = dynamic_cast<const QgsLineSymbolLayerV2*>( *it );
+    const QgsLineSymbolLayer* layer = dynamic_cast<const QgsLineSymbolLayer*>( *it );
     if ( layer && qgsDoubleNear( layer->width(), symbolWidth ) && layer->getDataDefinedProperty( "width" ) )
     {
       symbolDD = layer->getDataDefinedProperty( "width" );
@@ -1648,7 +1648,7 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
   {
     if ( layer->type() !=  QgsSymbol::Line )
       continue;
-    const QgsLineSymbolLayerV2* lineLayer = static_cast<const QgsLineSymbolLayerV2*>( layer );
+    const QgsLineSymbolLayer* lineLayer = static_cast<const QgsLineSymbolLayer*>( layer );
 
     QgsDataDefined* layerWidthDD = lineLayer->getDataDefinedProperty( "width" );
     QgsDataDefined* layerOffsetDD = lineLayer->getDataDefinedProperty( "offset" );
@@ -1676,7 +1676,7 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
   return QgsDataDefined( *symbolDD );
 }
 
-void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
+void QgsLineSymbol::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
 {
   //save old painter
   QPainter* renderPainter = context.painter();
@@ -1691,7 +1691,7 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
     {
       if ( symbolLayer->type() == QgsSymbol::Line )
       {
-        QgsLineSymbolLayerV2* lineLayer = static_cast<QgsLineSymbolLayerV2*>( symbolLayer );
+        QgsLineSymbolLayer* lineLayer = static_cast<QgsLineSymbolLayer*>( symbolLayer );
         renderPolylineUsingLayer( lineLayer, points, symbolContext );
       }
       else
@@ -1704,7 +1704,7 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
   {
     if ( symbolLayer->type() == QgsSymbol::Line )
     {
-      QgsLineSymbolLayerV2* lineLayer = static_cast<QgsLineSymbolLayerV2*>( symbolLayer );
+      QgsLineSymbolLayer* lineLayer = static_cast<QgsLineSymbolLayer*>( symbolLayer );
       renderPolylineUsingLayer( lineLayer, points, symbolContext );
     }
     else
@@ -1716,7 +1716,7 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
   context.setPainter( renderPainter );
 }
 
-void QgsLineSymbolV2::renderPolylineUsingLayer( QgsLineSymbolLayerV2 *layer, const QPolygonF &points, QgsSymbolRenderContext &context )
+void QgsLineSymbol::renderPolylineUsingLayer( QgsLineSymbolLayer *layer, const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   QgsPaintEffect* effect = layer->paintEffect();
   if ( effect && effect->enabled() )
@@ -1738,9 +1738,9 @@ void QgsLineSymbolV2::renderPolylineUsingLayer( QgsLineSymbolLayerV2 *layer, con
 }
 
 
-QgsLineSymbolV2* QgsLineSymbolV2::clone() const
+QgsLineSymbol* QgsLineSymbol::clone() const
 {
-  QgsLineSymbolV2* cloneSymbol = new QgsLineSymbolV2( cloneLayers() );
+  QgsLineSymbol* cloneSymbol = new QgsLineSymbol( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
   cloneSymbol->setLayer( mLayer );
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
@@ -1806,7 +1806,7 @@ void QgsFillSymbolV2::renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPol
     }
     else if ( layertype == QgsSymbol::Line )
     {
-      ( static_cast<QgsLineSymbolLayerV2*>( layer ) )->renderPolygonOutline( points.translated( -bounds.topLeft() ), translatedRings, context );
+      ( static_cast<QgsLineSymbolLayer*>( layer ) )->renderPolygonOutline( points.translated( -bounds.topLeft() ), translatedRings, context );
     }
     delete translatedRings;
 
@@ -1821,7 +1821,7 @@ void QgsFillSymbolV2::renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPol
     }
     else if ( layertype == QgsSymbol::Line )
     {
-      ( static_cast<QgsLineSymbolLayerV2*>( layer ) )->renderPolygonOutline( points, rings, context );
+      ( static_cast<QgsLineSymbolLayer*>( layer ) )->renderPolygonOutline( points, rings, context );
     }
   }
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- qgsellipsesymbollayerv2.h
+ qgsellipsesymbollayer.h
  ---------------------
  begin                : June 2011
  copyright            : (C) 2011 by Marco Hugentobler
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSELLIPSESYMBOLLAYERV2_H
-#define QGSELLIPSESYMBOLLAYERV2_H
+#ifndef QGSELLIPSESYMBOLLAYER_H
+#define QGSELLIPSESYMBOLLAYER_H
 
 #define DEFAULT_ELLIPSE_JOINSTYLE    Qt::MiterJoin
 
@@ -24,11 +24,11 @@ class QgsExpression;
 
 /** \ingroup core
  * A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*/
-class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
+class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayerV2
 {
   public:
-    QgsEllipseSymbolLayerV2();
-    ~QgsEllipseSymbolLayerV2();
+    QgsEllipseSymbolLayer();
+    ~QgsEllipseSymbolLayer();
 
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
     static QgsSymbolLayer* createFromSld( QDomElement &element );
@@ -37,7 +37,7 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext& context ) override;
     void stopRender( QgsSymbolRenderContext& context ) override;
-    QgsEllipseSymbolLayerV2* clone() const override;
+    QgsEllipseSymbolLayer* clone() const override;
     QgsStringMap properties() const override;
 
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
@@ -159,6 +159,6 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void calculateOffsetAndRotation( QgsSymbolRenderContext& context, double scaledWidth, double scaledHeight, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
 };
 
-#endif // QGSELLIPSESYMBOLLAYERV2_H
+#endif // QGSELLIPSESYMBOLLAYER_H
 
 

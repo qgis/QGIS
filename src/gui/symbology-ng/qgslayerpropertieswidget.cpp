@@ -29,7 +29,7 @@
 
 #include "qgssymbollayerwidget.h"
 #include "qgsarrowsymbollayerwidget.h"
-#include "qgsellipsesymbollayerv2widget.h"
+#include "qgsellipsesymbollayerwidget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
@@ -60,7 +60,7 @@ static void _initWidgetFunctions()
   if ( initialized )
     return;
 
-  _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerV2Widget::create );
+  _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerWidget::create );
   _initWidgetFunction( "MarkerLine", QgsMarkerLineSymbolLayerV2Widget::create );
   _initWidgetFunction( "ArrowLine", QgsArrowSymbolLayerWidget::create );
 
@@ -68,7 +68,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( "FilledMarker", QgsFilledMarkerSymbolLayerWidget::create );
   _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "FontMarker", QgsFontMarkerSymbolLayerV2Widget::create );
-  _initWidgetFunction( "EllipseMarker", QgsEllipseSymbolLayerV2Widget::create );
+  _initWidgetFunction( "EllipseMarker", QgsEllipseSymbolLayerWidget::create );
   _initWidgetFunction( "VectorField", QgsVectorFieldSymbolLayerWidget::create );
 
   _initWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerV2Widget::create );

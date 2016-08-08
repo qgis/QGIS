@@ -38,7 +38,7 @@ QgsSymbolLayer* QgsGeometryGeneratorSymbolLayerV2::create( const QgsStringMap& p
   }
   else if ( properties.value( "SymbolType" ) == "Line" )
   {
-    symbolLayer->setSubSymbol( QgsLineSymbolV2::createSimple( properties ) );
+    symbolLayer->setSubSymbol( QgsLineSymbol::createSimple( properties ) );
   }
   else
   {
@@ -76,7 +76,7 @@ void QgsGeometryGeneratorSymbolLayerV2::setSymbolType( QgsSymbol::SymbolType sym
   else if ( symbolType == QgsSymbol::Line )
   {
     if ( !mLineSymbol )
-      mLineSymbol = QgsLineSymbolV2::createSimple( QgsStringMap() );
+      mLineSymbol = QgsLineSymbol::createSimple( QgsStringMap() );
     mSymbol = mLineSymbol;
   }
   else if ( symbolType == QgsSymbol::Marker )
@@ -160,7 +160,7 @@ bool QgsGeometryGeneratorSymbolLayerV2::setSubSymbol( QgsSymbol* symbol )
       break;
 
     case QgsSymbol::Line:
-      mLineSymbol = static_cast<QgsLineSymbolV2*>( symbol );
+      mLineSymbol = static_cast<QgsLineSymbol*>( symbol );
       break;
 
     case QgsSymbol::Fill:

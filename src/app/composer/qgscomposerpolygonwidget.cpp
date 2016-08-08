@@ -18,7 +18,7 @@
 #include "qgscomposerpolygon.h"
 #include "qgscomposeritemwidget.h"
 #include "qgssymbolselectordialog.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 
 QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon* composerPolygon ):
@@ -61,8 +61,8 @@ void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
   QScopedPointer<QgsFillSymbolV2> newSymbol;
   newSymbol.reset( mComposerPolygon->polygonStyleSymbol()->clone() );
 
-  QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyleV2::defaultStyle(),
-                               coverageLayer, this );
+  QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyle::defaultStyle(),
+                             coverageLayer, this );
   d.setExpressionContext( mComposerPolygon->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )

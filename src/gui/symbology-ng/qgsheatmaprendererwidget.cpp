@@ -21,13 +21,13 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include <QGridLayout>
 #include <QLabel>
 
-QgsRendererV2Widget* QgsHeatmapRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererV2Widget* QgsHeatmapRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
 {
   return new QgsHeatmapRendererWidget( layer, style, renderer );
 }
@@ -57,7 +57,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( nullptr )
 {
@@ -92,7 +92,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   }
 
   mRampComboBox->setShowGradientOnly( true );
-  mRampComboBox->populate( QgsStyleV2::defaultStyle() );
+  mRampComboBox->populate( QgsStyle::defaultStyle() );
   connect( mRampComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
   connect( mRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
   connect( mButtonEditRamp, SIGNAL( clicked() ), mRampComboBox, SLOT( editSourceRamp() ) );

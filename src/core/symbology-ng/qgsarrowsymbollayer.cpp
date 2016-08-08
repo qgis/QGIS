@@ -16,7 +16,7 @@
 #include "qgsarrowsymbollayer.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
-    : QgsLineSymbolLayerV2()
+    : QgsLineSymbolLayer()
     , mArrowWidth( 1.0 )
     , mArrowWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mArrowStartWidth( 1.0 )
@@ -173,7 +173,7 @@ QgsStringMap QgsArrowSymbolLayer::properties() const
 
 QSet<QString> QgsArrowSymbolLayer::usedAttributes() const
 {
-  QSet<QString> attributes = QgsLineSymbolLayerV2::usedAttributes();
+  QSet<QString> attributes = QgsLineSymbolLayer::usedAttributes();
 
   attributes.unite( mSymbol->usedAttributes() );
 

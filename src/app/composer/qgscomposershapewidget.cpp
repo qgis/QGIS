@@ -19,7 +19,7 @@
 #include "qgscomposershape.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
 #include <QColorDialog>
@@ -108,7 +108,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
   QgsFillSymbolV2* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), coverageLayer, this );
   d.setExpressionContext( mComposerShape->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )

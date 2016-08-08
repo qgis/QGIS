@@ -15,7 +15,7 @@
 
 #include "qgssmartgroupeditordialog.h"
 
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsapplication.h"
 
 #include <QVariant>
@@ -76,7 +76,7 @@ void QgsSmartGroupCondition::hideRemoveButton( bool hide )
 // ------------------------ //
 // Editor Dialog Functions  //
 // ------------------------ //
-QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent )
+QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent )
     : QDialog( parent )
     , mStyle( style )
 {
