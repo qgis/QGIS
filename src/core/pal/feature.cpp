@@ -1539,7 +1539,7 @@ double FeaturePart::calculatePriority() const
   return mLF->priority() >= 0 ? mLF->priority() : mLF->layer()->priority();
 }
 
-// Returns whether a label must be displayed upright 
+// Returns whether a label must be displayed upright
 bool FeaturePart::isUprightLabel() const
 {
   bool uprightLabel = false;

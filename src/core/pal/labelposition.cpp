@@ -103,7 +103,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   {
     if ( feature->isUprightLabel() )
     {
-      // Turn label upsidedown by inverting boundary points 
+      // Turn label upsidedown by inverting boundary points
       double tx, ty;
 
       tx = x[0];
