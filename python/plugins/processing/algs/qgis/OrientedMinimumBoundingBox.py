@@ -52,7 +52,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
                                            self.tr('Calculate OMBB for each feature separately'), True))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

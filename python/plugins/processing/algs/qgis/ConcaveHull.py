@@ -56,7 +56,7 @@ class ConcaveHull(GeoAlgorithm):
                                            self.tr('Allow holes'), True))
         self.addParameter(ParameterBoolean(self.NO_MULTIGEOMETRY,
                                            self.tr('Split multipart geometry into singleparts geometries'), False))
-        self.addOutput(OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull')))
+        self.addOutput(OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull'),datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(ConcaveHull.INPUT))

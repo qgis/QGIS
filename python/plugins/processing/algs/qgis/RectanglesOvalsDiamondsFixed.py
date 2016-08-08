@@ -76,7 +76,8 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                                           36))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-                                    self.tr('Output')))
+                                    self.tr('Output'),
+                                    datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

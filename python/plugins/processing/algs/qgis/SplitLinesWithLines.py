@@ -50,7 +50,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_B,
                                           self.tr('Split layer'), [ParameterVector.VECTOR_TYPE_LINE]))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Splitted')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Splitted'), datatype=[OutputVector.VECTOR_TYPE_LINE]))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))

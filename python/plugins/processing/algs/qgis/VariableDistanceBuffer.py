@@ -67,7 +67,7 @@ class VariableDistanceBuffer(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.DISSOLVE,
                                            self.tr('Dissolve result'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

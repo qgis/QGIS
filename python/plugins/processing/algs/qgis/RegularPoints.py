@@ -70,7 +70,7 @@ class RegularPoints(GeoAlgorithm):
                                            self.tr('Apply random offset to point spacing'), False))
         self.addParameter(ParameterBoolean(self.IS_SPACING,
                                            self.tr('Use point spacing'), True))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points'), datatype=[OutputVector.VECTOR_TYPE_POINT]))
 
     def processAlgorithm(self, progress):
         extent = unicode(self.getParameterValue(self.EXTENT)).split(',')

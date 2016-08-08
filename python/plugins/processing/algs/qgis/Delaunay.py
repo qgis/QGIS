@@ -58,7 +58,8 @@ class Delaunay(GeoAlgorithm):
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
 
         self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Delaunay triangulation')))
+                                    self.tr('Delaunay triangulation'),
+                                    datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

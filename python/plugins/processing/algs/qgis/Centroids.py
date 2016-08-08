@@ -55,7 +55,7 @@ class Centroids(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Centroids')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Centroids'), datatype=[OutputVector.VECTOR_TYPE_POINT]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

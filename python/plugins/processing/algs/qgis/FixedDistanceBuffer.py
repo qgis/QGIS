@@ -87,7 +87,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.MITRE_LIMIT,
                                           self.tr('Mitre limit'), 1, default=2))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

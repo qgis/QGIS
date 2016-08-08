@@ -63,7 +63,7 @@ class VectorGridPolygons(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.STEP_Y,
                                           self.tr('Y spacing'), 0.0, 1000000000.0, 0.0001))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         extent = self.getParameterValue(self.EXTENT).split(',')

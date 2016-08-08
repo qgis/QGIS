@@ -61,7 +61,7 @@ class PointsInPolygon(GeoAlgorithm):
         self.addParameter(ParameterString(self.FIELD,
                                           self.tr('Count field name'), 'NUMPOINTS'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Count')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Count'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))

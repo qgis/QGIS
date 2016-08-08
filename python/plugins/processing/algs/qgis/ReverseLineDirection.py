@@ -44,7 +44,7 @@ class ReverseLineDirection(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Reversed')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Reversed'), datatype=[OutputVector.VECTOR_TYPE_LINE]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

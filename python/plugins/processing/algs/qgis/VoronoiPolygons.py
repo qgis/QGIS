@@ -61,7 +61,7 @@ class VoronoiPolygons(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.BUFFER,
                                           self.tr('Buffer region'), 0.0, 100.0, 0.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

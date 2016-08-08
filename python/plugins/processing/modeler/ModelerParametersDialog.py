@@ -277,7 +277,7 @@ class ModelerParametersDialog(QDialog):
         for i in inputs.values():
             param = i.param
             if isinstance(param, paramType):
-                if subType is not None and param.datatype in dataType:
+                if dataType is not None and param.datatype in dataType:
                     values.append(ValueFromInput(param.name))
                 else:
                     values.append(ValueFromInput(param.name))
@@ -291,7 +291,7 @@ class ModelerParametersDialog(QDialog):
             if alg.name not in dependent:
                 for out in alg.algorithm.outputs:
                     if isinstance(out, outType):
-                        if subType is not None and out.datatype in dataType:
+                        if dataType is not None and out.datatype in dataType:
                             values.append(ValueFromOutput(alg.name, out.name))
                         else:
                             values.append(ValueFromOutput(alg.name, out.name))

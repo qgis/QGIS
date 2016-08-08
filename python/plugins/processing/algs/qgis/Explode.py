@@ -42,7 +42,7 @@ class Explode(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded'), datatype=[OutputVector.VECTOR_TYPE_LINE]))
 
     def processAlgorithm(self, progress):
         vlayer = dataobjects.getObjectFromUri(

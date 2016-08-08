@@ -42,7 +42,7 @@ class DeleteHoles(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

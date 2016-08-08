@@ -70,7 +70,7 @@ class GridPolygon(GeoAlgorithm):
                                           self.tr('Vertical spacing'), default=10.0))
         self.addParameter(ParameterCrs(self.CRS, 'Grid CRS'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         idx = self.getParameterValue(self.TYPE)

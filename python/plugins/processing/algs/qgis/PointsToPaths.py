@@ -64,7 +64,7 @@ class PointsToPaths(GeoAlgorithm):
         #self.addParameter(ParameterNumber(
         #    self.GAP_PERIOD,
         #    'Gap period (if order field is DateTime)', 0, 60, 0))
-        self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths')))
+        self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths'), datatype=[OutputVector.VECTOR_TYPE_LINE]))
         self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
     def processAlgorithm(self, progress):

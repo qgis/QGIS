@@ -60,7 +60,7 @@ class ExtentFromLayer(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
                                            self.tr('Calculate extent for each feature separately'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

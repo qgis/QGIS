@@ -53,7 +53,7 @@ class LinesToPolygons(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

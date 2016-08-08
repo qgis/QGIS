@@ -94,7 +94,7 @@ class Eliminate(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.MODE,
                                              self.tr('Merge selection with the neighbouring polygon with the'),
                                              self.modes))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
 
     def processAlgorithm(self, progress):
         inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
