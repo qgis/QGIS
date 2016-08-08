@@ -101,7 +101,7 @@ class QgsGlobeFeatureUtils
           return pointSet;
         }
 
-        case Qgis::WKBMultiPoint:
+        case QgsWkbTypes::MultiPoint:
         {
           osgEarth::Features::PointSet* pointSet = new osgEarth::Features::PointSet();
           QgsMultiPointV2* multiPoint = static_cast<QgsMultiPointV2*>( geom.geometry() );
