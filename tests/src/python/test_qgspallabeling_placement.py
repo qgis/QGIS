@@ -271,6 +271,121 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(self.layer)
         self.layer = None
 
+    def test_polygon_placement_perimeter(self):
+        # Default polygon perimeter placement
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_perimeter')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_placement_perimeter(self):
+        # Default polygon perimeter placement for small polygon
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_perimeter_only_fit(self):
+        # Polygon perimeter placement for small polygon when set to only show labels which fit in polygon
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.fitInPolygonOnly = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_curvedperimeter_only_fit(self):
+        # Polygon perimeter placement for small polygon when set to only show labels which fit in polygon
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.PerimeterCurved
+        self.lyr.fitInPolygonOnly = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_over_point_only_fit(self):
+        # Polygon over point placement for small polygon when set to only show labels which fit in polygon
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OverPoint
+        self.lyr.fitInPolygonOnly = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_prefer_line_curved_above_instead_of_below(self):
+        # Test that labeling a line using curved labels when both above and below placement are allowed that above
+        # is preferred
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_prefer_line_curved_above_instead_of_online(self):
+        # Test that labeling a line using curved labels when both above and online placement are allowed that above
+        # is preferred
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_prefer_line_curved_below_instead_of_online(self):
+        # Test that labeling a line using curved labels when both below and online placement are allowed that below
+        # is preferred
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_prefer_line_above_instead_of_below(self):
+        # Test that labeling a line using parallel labels when both above and below placement are allowed that above
+        # is preferred
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_prefer_line_above_instead_of_online(self):
+        # Test that labeling a line using parallel labels when both above and online placement are allowed that above
+        # is preferred
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
+        #self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_prefer_line_below_instead_of_online(self):
+        # Test that labeling a line using parallel labels when both below and online placement are allowed that below
+        # is preferred
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
+        #self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # SEE: test_qgspallabeling_tests.suiteTests() to define suite
