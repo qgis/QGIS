@@ -462,7 +462,7 @@ QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 
       QgsMimeDataUtils::Uri uri = ptr->mimeUri();
       if ( uri.isValid() )
-          lst.append( uri );
+        lst.append( uri );
     }
   }
   return QgsMimeDataUtils::encodeUriList( lst );
