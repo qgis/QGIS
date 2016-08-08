@@ -972,14 +972,14 @@ class ParameterVector(ParameterDataObject):
     VECTOR_TYPE_POLYGON = 2
     VECTOR_TYPE_ANY = -1
 
-    def __init__(self, name='', description='', shapetype=[-1],
+    def __init__(self, name='', description='', datatype=[-1],
                  optional=False):
         ParameterDataObject.__init__(self, name, description, None, optional)
-        if isinstance(shapetype, int):
-            shapetype = [shapetype]
-        elif isinstance(shapetype, basestring):
-            shapetype = [int(t) for t in shapetype.split(',')]
-        self.shapetype = shapetype
+        if isinstance(datatype, int):
+            datatype = [datatype]
+        elif isinstance(datatype, basestring):
+            datatype = [int(t) for t in datatype.split(',')]
+        self.datatype = datatype
         self.exported = None
 
     def setValue(self, obj):
@@ -1037,12 +1037,12 @@ class ParameterVector(ParameterDataObject):
 
     def dataType(self):
         types = ''
-        for shp in self.shapetype:
-            if shp == self.VECTOR_TYPE_POINT:
+        for t in self.datatype:
+            if t == self.VECTOR_TYPE_POINT:
                 types += 'point, '
-            elif shp == self.VECTOR_TYPE_LINE:
+            elif t == self.VECTOR_TYPE_LINE:
                 types += 'line, '
-            elif shp == self.VECTOR_TYPE_POLYGON:
+            elif t == self.VECTOR_TYPE_POLYGON:
                 types += 'polygon, '
             else:
                 types += 'any, '

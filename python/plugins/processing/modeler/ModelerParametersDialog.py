@@ -271,13 +271,16 @@ class ModelerParametersDialog(QDialog):
                 self.labels[param.name].setVisible(self.showAdvanced)
                 self.widgets[param.name].setVisible(self.showAdvanced)
 
-    def getAvailableValuesOfType(self, paramType, outType=None):
+    def getAvailableValuesOfType(self, paramType, outType=None, dataType=None):
         values = []
         inputs = self.model.inputs
         for i in inputs.values():
             param = i.param
             if isinstance(param, paramType):
-                values.append(ValueFromInput(param.name))
+                if subType is not None and param.datatype in dataType:
+                    values.append(ValueFromInput(param.name))
+                else:
+                    values.append(ValueFromInput(param.name))
         if outType is None:
             return values
         if self._algName is None:
@@ -346,7 +349,13 @@ class ModelerParametersDialog(QDialog):
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-            elif aram.datatype == ParameterMultipleInput.TYPE_RASTER:
+            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_POINT:
+                options = self.getAvailableValuesOfType(ParameterVector, None, [ParameterVector.TYPE_VECTOR_POINT])
+            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_LINE:
+                options = self.getAvailableValuesOfType(ParameterVector, None, [ParameterVector.TYPE_VECTOR_LINE])
+            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_POLYGON:
+                options = self.getAvailableValuesOfType(ParameterVector, None, [ParameterVector.TYPE_VECTOR_POLYGON])
+            elif param.datatype == ParameterMultipleInput.TYPE_RASTER:
                 options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
             else:
                 options = self.getAvailableValuesOfType(ParameterFile, OutputFile)

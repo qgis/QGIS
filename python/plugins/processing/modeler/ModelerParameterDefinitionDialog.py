@@ -182,7 +182,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.shapetypeCombo.addItem(self.tr('Line'))
             self.shapetypeCombo.addItem(self.tr('Polygon'))
             if self.param is not None:
-                self.shapetypeCombo.setCurrentIndex(self.param.shapetype[0] + 1)
+                self.shapetypeCombo.setCurrentIndex(self.param.datatype[0] + 1)
             self.horizontalLayoutParent.addWidget(self.shapetypeCombo)
             self.verticalLayout.addLayout(self.horizontalLayoutParent)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE or \

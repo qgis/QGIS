@@ -91,7 +91,7 @@ class BatchInputSelectionPanel(QWidget):
             layers = dataobjects.getTables()
         else:
             if isinstance(self.param, ParameterVector):
-                datatype = self.param.shapetype
+                datatype = self.param.datatype
             else:
                 datatype = [self.param.datatype]
             layers = dataobjects.getVectorLayers(datatype)

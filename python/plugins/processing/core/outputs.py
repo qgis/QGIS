@@ -256,13 +256,23 @@ class OutputTable(Output):
 
 class OutputVector(Output):
 
+    VECTOR_TYPE_POINT = 0
+    VECTOR_TYPE_LINE = 1
+    VECTOR_TYPE_POLYGON = 2
+    VECTOR_TYPE_ANY = -1
+
     encoding = None
     compatible = None
 
-    def __init__(self, name='', description='', hidden=False, base_input=None):
+    def __init__(self, name='', description='', hidden=False, base_input=None, datatype=[-1]):
         Output.__init__(self, name, description, hidden)
         self.base_input = base_input
         self.base_layer = None
+        if isinstance(datatype, int):
+            datatype = [datatype]
+        elif isinstance(datatype, basestring):
+            datatype = [int(t) for t in datatype.split(',')]
+        self.datatype = datatype
 
     def hasGeometry(self):
         if self.base_layer is None:
@@ -336,3 +346,17 @@ class OutputVector(Output):
         self.layer = w.layer
         self.value = w.destination
         return w
+
+    def dataType(self):
+        types = ''
+        for t in self.datatype:
+            if t == self.VECTOR_TYPE_POINT:
+                types += 'point, '
+            elif t == self.VECTOR_TYPE_LINE:
+                types += 'line, '
+            elif t == self.VECTOR_TYPE_POLYGON:
+                types += 'polygon, '
+            else:
+                types += 'any, '
+
+        return types[:-2]
