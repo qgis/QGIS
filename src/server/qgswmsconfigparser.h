@@ -26,7 +26,7 @@ class QgsComposerLegend;
 class QgsComposerMap;
 class QgsComposition;
 class QgsMapLayer;
-class QgsLegendModelV2;
+class QgsLegendModel;
 
 
 class SERVER_EXPORT QgsWmsConfigParser
@@ -156,7 +156,7 @@ class SERVER_EXPORT QgsWmsConfigParser
         const QStringList& labelWeightSplit, const QStringList& labelFontSplit, const QStringList& labelBufferSizeSplit,
         const QStringList& labelBufferColorSplit );
 
-    static void setLayerIdsToLegendModel( QgsLegendModelV2* model, const QStringList& layerIds, double scale );
+    static void setLayerIdsToLegendModel( QgsLegendModel* model, const QStringList& layerIds, double scale );
 };
 
 #endif // QGSWMSCONFIGPARSER_H

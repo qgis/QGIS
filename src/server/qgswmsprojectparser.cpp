@@ -518,7 +518,7 @@ QgsComposition* QgsWmsProjectParser::initComposition( const QString& composerTem
     QgsComposerLegend* legend = dynamic_cast< QgsComposerLegend *>( *itemIt );
     if ( legend )
     {
-      QgsLegendModelV2* model = legend->modelV2();
+      QgsLegendModel* model = legend->model();
 #if 0
       QgsLayerTreeGroup* root = model->rootGroup();
       QStringList layerIds = root->findLayerIds();

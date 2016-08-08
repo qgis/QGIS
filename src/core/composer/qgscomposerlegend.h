@@ -36,12 +36,12 @@ class QgsLegendRenderer;
  *
  * @note added in 2.6
  */
-class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
+class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 {
     Q_OBJECT
 
   public:
-    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
+    QgsLegendModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
 
     QVariant data( const QModelIndex& index, int role ) const override;
 
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     bool resizeToContents() const;
 
     //! @note added in 2.6
-    QgsLegendModelV2* modelV2() { return mLegendModel2; }
+    QgsLegendModel* model() { return mLegendModel; }
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
     void setCustomLayerTree( QgsLayerTreeGroup* rootGroup );
 
-    QgsLegendModelV2* mLegendModel2;
+    QgsLegendModel* mLegendModel;
     QgsLayerTreeGroup* mCustomLayerTree;
 
     QgsLegendSettings mSettings;
