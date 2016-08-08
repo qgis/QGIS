@@ -202,7 +202,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
     {
       if (( *legendIt )->autoUpdateModel() )
       {
-        setLayerIdsToLegendModel(( *legendIt )->modelV2(), bkLayerSet, currentMap->scale() );
+        setLayerIdsToLegendModel(( *legendIt )->model(), bkLayerSet, currentMap->scale() );
       }
     }
 
@@ -231,7 +231,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
       }
 
       // get model and layer tree root of the legend
-      QgsLegendModelV2* model = currentLegend->modelV2();
+      QgsLegendModelV2* model = currentLegend->model();
       QStringList layerSet = map->layerSet();
       setLayerIdsToLegendModel( model, layerSet, map->scale() );
     }
