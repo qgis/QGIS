@@ -148,7 +148,7 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 \subsection qgis_api_break_3_0_QgsComposerLegend QgsComposerLegend
 
 <ul>
-<li>model() now returns the new QgsLegendModel (previousyl QgsLegendModelV2, see \ref qgis_api_break_3_0_renamed_classes).</li>
+<li>model() now returns the new QgsLegendModel (previously QgsLegendModelV2, see \ref qgis_api_break_3_0_renamed_classes).</li>
 <li>modelV2() has been renamed to model().</li>
 </ul>
 
