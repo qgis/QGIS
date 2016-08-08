@@ -346,8 +346,10 @@ class ModelerParametersDialog(QDialog):
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-            else:
+            elif aram.datatype == ParameterMultipleInput.TYPE_RASTER:
                 options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
+            else:
+                options = self.getAvailableValuesOfType(ParameterFile, OutputFile)
             opts = []
             for opt in options:
                 opts.append(self.resolveValueDescription(opt))
