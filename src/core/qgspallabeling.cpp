@@ -204,8 +204,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   offsetType = FromPoint;
   angleOffset = 0;
   preserveRotation = true;
-  maxCurvedCharAngleIn = 20.0;
-  maxCurvedCharAngleOut = -20.0;
+  maxCurvedCharAngleIn = 25.0;
+  maxCurvedCharAngleOut = -25.0;
   priority = 5;
   repeatDistance = 0;
   repeatDistanceUnit = MM;
@@ -1040,8 +1040,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   }
   angleOffset = layer->customProperty( "labeling/angleOffset", QVariant( 0.0 ) ).toDouble();
   preserveRotation = layer->customProperty( "labeling/preserveRotation", QVariant( true ) ).toBool();
-  maxCurvedCharAngleIn = layer->customProperty( "labeling/maxCurvedCharAngleIn", QVariant( 20.0 ) ).toDouble();
-  maxCurvedCharAngleOut = layer->customProperty( "labeling/maxCurvedCharAngleOut", QVariant( -20.0 ) ).toDouble();
+  maxCurvedCharAngleIn = layer->customProperty( "labeling/maxCurvedCharAngleIn", QVariant( 25.0 ) ).toDouble();
+  maxCurvedCharAngleOut = layer->customProperty( "labeling/maxCurvedCharAngleOut", QVariant( -25.0 ) ).toDouble();
   priority = layer->customProperty( "labeling/priority" ).toInt();
   repeatDistance = layer->customProperty( "labeling/repeatDistance", 0.0 ).toDouble();
   repeatDistanceUnit = static_cast< SizeUnit >( layer->customProperty( "labeling/repeatDistanceUnit", QVariant( MM ) ).toUInt() );
@@ -1496,8 +1496,8 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   }
   angleOffset = placementElem.attribute( "angleOffset", "0" ).toDouble();
   preserveRotation = placementElem.attribute( "preserveRotation", "1" ).toInt();
-  maxCurvedCharAngleIn = placementElem.attribute( "maxCurvedCharAngleIn", "20" ).toDouble();
-  maxCurvedCharAngleOut = placementElem.attribute( "maxCurvedCharAngleOut", "-20" ).toDouble();
+  maxCurvedCharAngleIn = placementElem.attribute( "maxCurvedCharAngleIn", "25" ).toDouble();
+  maxCurvedCharAngleOut = placementElem.attribute( "maxCurvedCharAngleOut", "-25" ).toDouble();
   priority = placementElem.attribute( "priority" ).toInt();
   repeatDistance = placementElem.attribute( "repeatDistance", "0" ).toDouble();
   repeatDistanceUnit = static_cast< SizeUnit >( placementElem.attribute( "repeatDistanceUnit", QString::number( MM ) ).toUInt() );
