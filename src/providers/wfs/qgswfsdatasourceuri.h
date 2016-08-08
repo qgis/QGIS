@@ -66,7 +66,7 @@ class QgsWFSDataSourceURI
     explicit QgsWFSDataSourceURI( const QString& uri );
 
     /** Return the URI */
-    QString uri();
+    const QString uri( bool expandAuthConfig = true ) const;
 
     /** Return base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true) */
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
@@ -91,6 +91,9 @@ class QgsWFSDataSourceURI
 
     /** Set SRS name (in the normalized form EPSG:xxxx) */
     void setSRSName( const QString& crsString );
+
+    /** Set version */
+    void setVersion( const QString& versionString );
 
     /** Get OGC filter xml or a QGIS expression */
     QString filter() const;
