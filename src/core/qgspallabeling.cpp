@@ -2907,16 +2907,24 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
 
+  if ( distinmapunit ) //convert distance from mm/map units to pixels
+  {
+    distance /= distMapUnitScale.computeMapUnitsPerPixel( context );
+  }
+  else //mm
+  {
+    distance *= vectorScaleFactor;
+  }
+
+  // when using certain placement modes, we force a tiny minimum distance. This ensures that
+  // candidates are created just offset from a border and avoids candidates being incorrectly flagged as colliding with neighbours
+  if ( placement == QgsPalLayerSettings::Line || placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved )
+  {
+    distance = qMax( distance, 1.0 );
+  }
+
   if ( !qgsDoubleNear( distance, 0.0 ) )
   {
-    if ( distinmapunit ) //convert distance from mm/map units to pixels
-    {
-      distance /= distMapUnitScale.computeMapUnitsPerPixel( context );
-    }
-    else //mm
-    {
-      distance *= vectorScaleFactor;
-    }
     double d = ptOne.distance( ptZero ) * distance;
     ( *labelFeature )->setDistLabel( d );
   }
