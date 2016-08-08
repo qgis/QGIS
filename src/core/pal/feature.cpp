@@ -1067,9 +1067,15 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
         if ( i == 0 && (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) ) )
           p = _createCurvedCandidate( slp, angle_avg, mLF->distLabel() + li->label_height / 2 );
         if ( i == 1 && flags & FLAG_ON_LINE )
+        {
           p = _createCurvedCandidate( slp, angle_avg, 0 );
+          p->setCost( p->cost() + 0.002 );
+        }
         if ( i == 2 && (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) ) )
+        {
           p = _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 - mLF->distLabel() );
+          p->setCost( p->cost() + 0.001 );
+        }
 
         if ( p && mLF->permissibleZonePrepared() )
         {
