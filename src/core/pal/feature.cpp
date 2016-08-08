@@ -641,9 +641,8 @@ int FeaturePart::createCandidatesAlongLine( QList< LabelPosition* >& lPos, Point
 
   if ( nbls > 0 )
   {
-    //dist /= nbls;
     l = 0;
-    dist = qMin( yrm, xrm );
+    dist = qMin( qMin( yrm, xrm ), dist / mLF->layer()->pal->line_p );
   }
   else   // line length < label with => centering label position
   {
@@ -1002,7 +1001,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
   bool isRightToLeft = ( lineAngle > M_PI / 2 || lineAngle <= -M_PI / 2 );
 
   QLinkedList<LabelPosition*> positions;
-  double delta = qMax( li->label_height, total_distance / 10.0 );
+  double delta = qMax( li->label_height, total_distance / mLF->layer()->pal->line_p );
 
   unsigned long flags = mLF->layer()->arrangementFlags();
   if ( flags == 0 )
