@@ -69,9 +69,9 @@ class ModelerParameterDefinitionDialog(QDialog):
     PARAMETER_FILE = 'File'
     PARAMETER_POINT = 'Point'
     PARAMETER_CRS = 'CRS'
+    PARAMETER_MULTIPLE = 'Multiple input'
 
     # To add
-    PARAMETER_MULTIPLE = 'Multiple input'
     PARAMETER_FIXED_TABLE = 'Fixed table'
 
     paramTypes = [
@@ -86,7 +86,8 @@ class ModelerParameterDefinitionDialog(QDialog):
         PARAMETER_TABLE_MULTIPLE_FIELD,
         PARAMETER_VECTOR,
         PARAMETER_POINT,
-        PARAMETER_CRS
+        PARAMETER_CRS,
+        PARAMETER_MULTIPLE
     ]
 
     def __init__(self, alg, paramType=None, param=None):
@@ -193,7 +194,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.datatypeCombo.addItem(self.tr('Vector (line)'))
             self.datatypeCombo.addItem(self.tr('Vector (polygon)'))
             self.datatypeCombo.addItem(self.tr('Raster'))
-            self.datatypeCombo.addItem(self.tr('Table'))
+            self.datatypeCombo.addItem(self.tr('File'))
             if self.param is not None:
                 self.datatypeCombo.setCurrentIndex(self.param.datatype + 1)
             self.horizontalLayoutParent.addWidget(self.datatypeCombo)
