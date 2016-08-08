@@ -1276,6 +1276,8 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 
   bool returnvalue = true;
 
+  QMap< QString, QVariant::Type > mapFieldTypesToPatch;
+
   for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
   {
     OGRFieldType type;
@@ -1287,8 +1289,17 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case QVariant::LongLong:
-        type = OFTInteger64;
+      {
+        const char* pszDataTypes = GDALGetMetadataItem( ogrDriver, GDAL_DMD_CREATIONFIELDDATATYPES, NULL );
+        if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
+          type = OFTInteger64;
+        else
+        {
+          mapFieldTypesToPatch[ iter->name()] = iter->type();
+          type = OFTReal;
+        }
         break;
+      }
 #endif
       case QVariant::Double:
         type = OFTReal;
@@ -1326,6 +1337,16 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     OGR_Fld_Destroy( fielddefn );
   }
   loadFields();
+
+  // Patch field type in case of Integer64->Real mapping so that QVariant::LongLong
+  // is still returned to the caller
+  for ( QMap< QString, QVariant::Type >::const_iterator it = mapFieldTypesToPatch.begin(); it != mapFieldTypesToPatch.end(); ++it )
+  {
+    int idx = mAttributeFields.fieldNameIndex( it.key() );
+    if ( idx >= 0 )
+      mAttributeFields[ idx ].setType( *it );
+  }
+
   return returnvalue;
 }
 
