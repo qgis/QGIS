@@ -660,25 +660,6 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   return true;
 }
 
-void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &measure, QgsUnitTypes::DistanceUnit &u, bool isArea )
-{
-  // Helper for converting between units
-  // The parameter &u is out only...
-
-  // Get the canvas units
-  QgsUnitTypes::DistanceUnit myUnits = mCanvas->mapUnits();
-
-  Q_NOWARN_DEPRECATED_PUSH
-  calc.convertMeasurement( measure, myUnits, displayUnits(), isArea );
-  u = displayUnits();
-  Q_NOWARN_DEPRECATED_POP
-}
-
-QgsUnitTypes::DistanceUnit QgsMapToolIdentify::displayUnits()
-{
-  return mCanvas->mapUnits();
-}
-
 QgsUnitTypes::DistanceUnit QgsMapToolIdentify::displayDistanceUnits() const
 {
   return mCanvas->mapUnits();

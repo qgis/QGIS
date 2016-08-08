@@ -112,15 +112,6 @@ class QgsMapToolIdentify : QgsMapTool
 
   private:
 
-    //! Private helper
-    //! @deprecated use displayDistanceUnits() and displayAreaUnits() instead
-    virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QgsUnitTypes::DistanceUnit &u, bool isArea ) /Deprecated/;
-
-    /** Transforms the measurements of derived attributes in the desired units
-     * @deprecated use displayDistanceUnits() and displayAreaUnits() instead
-    */
-    virtual QgsUnitTypes::DistanceUnit displayUnits() /Deprecated/;
-
     /** Desired units for distance display.
      * @note added in QGIS 2.14
      * @see displayAreaUnits()
