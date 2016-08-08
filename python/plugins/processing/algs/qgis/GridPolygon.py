@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    Grid.py
+    GridPolygon.py
     ---------------------
     Date                 : May 2010
     Copyright            : (C) 2010 by Michael Minn
@@ -41,7 +41,7 @@ from processing.core.outputs import OutputVector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Grid(GeoAlgorithm):
+class GridPolygon(GeoAlgorithm):
     TYPE = 'TYPE'
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'
@@ -53,11 +53,10 @@ class Grid(GeoAlgorithm):
     #    return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create grid')
+        self.name, self.i18n_name = self.trAlgorithm('Create grid (polygon)')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
-        self.types = [self.tr('Rectangle (line)'),
-                      self.tr('Rectangle (polygon)'),
+        self.types = [self.tr('Rectangle (polygon)'),
                       self.tr('Diamond (polygon)'),
                       self.tr('Hexagon (polygon)')]
 
@@ -100,12 +99,6 @@ class Grid(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Vertical spacing is too small for the covered area'))
 
-        #if self.types[idx].find(self.tr('polygon')) >= 0:
-        if idx != 0:
-            geometryType = QgsWkbTypes.Polygon
-        else:
-            geometryType = QgsWkbTypes.LineString
-
         fields = [QgsField('left', QVariant.Double, '', 24, 16),
                   QgsField('top', QVariant.Double, '', 24, 16),
                   QgsField('right', QVariant.Double, '', 24, 16),
@@ -113,55 +106,21 @@ class Grid(GeoAlgorithm):
                   ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     geometryType, crs)
+                                                                     QgsWkbTypes.Polygon, crs)
 
         if idx == 0:
-            self._rectangleGridLine(
+            self._rectangleGrid(
                 writer, width, height, originX, originY, hSpacing, vSpacing)
         elif idx == 1:
-            self._rectangleGridPoly(
-                writer, width, height, originX, originY, hSpacing, vSpacing)
-        elif idx == 2:
             self._diamondGrid(
                 writer, width, height, originX, originY, hSpacing, vSpacing)
-        elif idx == 3:
+        elif idx == 2:
             self._hexagonGrid(
                 writer, width, height, originX, originY, hSpacing, vSpacing)
 
         del writer
 
-    def _rectangleGridLine(self, writer, width, height, originX, originY,
-                           hSpacing, vSpacing):
-        ft = QgsFeature()
-
-        columns = int(math.ceil(float(width) / hSpacing))
-        rows = int(math.ceil(float(height) / vSpacing))
-
-        # Longitude lines
-        for col in xrange(columns + 1):
-            polyline = []
-            x = originX + (col * hSpacing)
-            for row in xrange(rows + 1):
-                y = originY - (row * vSpacing)
-                polyline.append(QgsPoint(x, y))
-
-            ft.setGeometry(QgsGeometry.fromPolyline(polyline))
-            ft.setAttributes([x, originY, x, originY + (rows * vSpacing)])
-            writer.addFeature(ft)
-
-        # Latitude lines
-        for row in xrange(rows + 1):
-            polyline = []
-            y = originY - (row * vSpacing)
-            for col in xrange(columns + 1):
-                x = originX + (col * hSpacing)
-                polyline.append(QgsPoint(x, y))
-
-            ft.setGeometry(QgsGeometry.fromPolyline(polyline))
-            ft.setAttributes([originX, y, originX + (col * hSpacing), y])
-            writer.addFeature(ft)
-
-    def _rectangleGridPoly(self, writer, width, height, originX, originY,
+    def _rectangleGrid(self, writer, width, height, originX, originY,
                            hSpacing, vSpacing):
         ft = QgsFeature()
 
