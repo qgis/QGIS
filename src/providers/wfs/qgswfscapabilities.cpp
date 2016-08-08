@@ -26,7 +26,7 @@
 #include <QSettings>
 #include <QStringList>
 
-QgsWFSCapabilities::QgsWFSCapabilities( const QString& theUri )
+QgsWFSCapabilities::QgsWFSCapabilities( const QString &theUri )
     : QgsWFSRequest( theUri )
 {
   connect( this, SIGNAL( downloadFinished() ), this, SLOT( capabilitiesReplyFinished() ) );
