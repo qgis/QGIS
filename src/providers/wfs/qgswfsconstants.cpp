@@ -23,11 +23,13 @@ const QString QgsWFSConstants::XMLSCHEMA_NAMESPACE( "http://www.w3.org/2001/XMLS
 
 const QString QgsWFSConstants::URI_PARAM_URL( "url" );
 const QString QgsWFSConstants::URI_PARAM_USERNAME( "username" );
+const QString QgsWFSConstants::URI_PARAM_USER( "user" );
 const QString QgsWFSConstants::URI_PARAM_PASSWORD( "password" );
 const QString QgsWFSConstants::URI_PARAM_AUTHCFG( "authcfg" );
 const QString QgsWFSConstants::URI_PARAM_VERSION( "version" );
 const QString QgsWFSConstants::URI_PARAM_TYPENAME( "typename" );
 const QString QgsWFSConstants::URI_PARAM_SRSNAME( "srsname" );
+const QString QgsWFSConstants::URI_PARAM_BBOX( "bbox" );
 const QString QgsWFSConstants::URI_PARAM_FILTER( "filter" );
 const QString QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX( "retrictToRequestBBOX" );
 const QString QgsWFSConstants::URI_PARAM_MAXNUMFEATURES( "maxNumFeatures" );
