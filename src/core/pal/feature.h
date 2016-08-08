@@ -159,6 +159,22 @@ namespace pal
        */
       int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
+      /** Generate candidates for line feature, by trying to place candidates towards the middle of the longest
+       * straightish segments of the line. Segments closer to horizontal are preferred over vertical segments.
+       * @param lPos pointer to an array of candidates, will be filled by generated candidates
+       * @param mapShape a pointer to the line
+       * @returns the number of generated candidates
+       */
+      int createCandidatesAlongLineNearStraightSegments( QList<LabelPosition *> &lPos, PointSet *mapShape );
+
+      /** Generate candidates for line feature, by trying to place candidates as close as possible to the line's midpoint.
+       * Candidates can "cut corners" if it helps them place near this mid point.
+       * @param lPos pointer to an array of candidates, will be filled by generated candidates
+       * @param mapShape a pointer to the line
+       * @returns the number of generated candidates
+       */
+      int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape , double initialCost = 0.0 );
+
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                               int orientation, int index, double distance );
 
