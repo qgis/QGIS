@@ -49,7 +49,6 @@ Layer::Layer( QgsAbstractLabelProvider* provider, const QString& name, QgsPalLay
     , mLabelLayer( toLabel )
     , mDisplayAll( displayAll )
     , mCentroidInside( false )
-    , mFitInPolygon( false )
     , mArrangement( arrangement )
     , mArrangementFlags( nullptr )
     , mMode( LabelPerFeature )

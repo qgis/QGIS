@@ -227,7 +227,7 @@ LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
   }
 }
 
-int FeaturePart::createCandidatesOverPoint( double x, double y, QList< LabelPosition*>& lPos, double angle, PointSet *mapShape )
+int FeaturePart::createCandidatesOverPoint( double x, double y, QList< LabelPosition*>& lPos, double angle )
 {
   int nbp = 1;
 
@@ -294,9 +294,9 @@ int FeaturePart::createCandidatesOverPoint( double x, double y, QList< LabelPosi
   double lx = x + xdiff;
   double ly = y + ydiff;
 
-  if ( mapShape && type == GEOS_POLYGON && mLF->layer()->fitInPolygonOnly() )
+  if ( mLF->permissibleZonePrepared() )
   {
-    if ( !mapShape->containsLabelCandidate( lx, ly, labelW, labelH, angle ) )
+    if ( !GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), lx, ly, labelW, labelH, angle ) )
     {
       return 0;
     }
@@ -419,10 +419,12 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
     double labelX = referenceX + deltaX;
     double labelY = referenceY + deltaY;
 
-    lPos << new LabelPosition( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant );
-
-    //TODO - tweak
-    cost += 0.001;
+    if ( ! mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), labelX, labelY, labelWidth, labelHeight, angle ) )
+    {
+      lPos << new LabelPosition( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant );
+      //TODO - tweak
+      cost += 0.001;
+    }
 
     ++i;
   }
@@ -430,7 +432,7 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
   return lPos.count();
 }
 
-int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPosition* >& lPos, double angle, PointSet *mapShape )
+int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPosition* >& lPos, double angle )
 {
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
@@ -547,9 +549,9 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
       cost = 0.0001 + 0.0020 * double( icost ) / double( numberCandidates - 1 );
 
 
-    if ( mapShape && type == GEOS_POLYGON && mLF->layer()->fitInPolygonOnly() )
+    if ( mLF->permissibleZonePrepared() )
     {
-      if ( !mapShape->containsLabelCandidate( labelX, labelY, labelWidth, labelHeight, angle ) )
+      if ( !GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), labelX, labelY, labelWidth, labelHeight, angle ) )
       {
         continue;
       }
@@ -698,17 +700,17 @@ int FeaturePart::createCandidatesAlongLine( QList< LabelPosition* >& lPos, Point
 
       if ( aboveLine )
       {
-        if ( !mLF->layer()->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha ) )
+        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha ) )
           positions.append( new LabelPosition( i, bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
       }
       if ( belowLine )
       {
-        if ( !mLF->layer()->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha ) )
+        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha ) )
           positions.append( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
       }
       if ( flags & FLAG_ON_LINE )
       {
-        if ( !mLF->layer()->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha ) )
+        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha ) )
           positions.append( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
       }
     }
@@ -879,6 +881,7 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
       delete slp;
       return nullptr;
     }
+
     // Shift the character downwards since the draw position is specified at the baseline
     // and we're calculating the mean line here
     double dist = 0.9 * li->label_height / 2;
@@ -1047,14 +1050,36 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
 
       // average angle is calculated with respect to periodicity of angles
       double angle_avg = atan2( sin_avg / li->char_num, cos_avg / li->char_num );
-      // displacement
-      if (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) )
-        positions.append( _createCurvedCandidate( slp, angle_avg, mLF->distLabel() + li->label_height / 2 ) );
-      if ( flags & FLAG_ON_LINE )
-        positions.append( _createCurvedCandidate( slp, angle_avg, 0 ) );
-      if (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) )
-        positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 - mLF->distLabel() ) );
+      // displacement - we loop through 3 times, generating above, online then below line placements successively
+      for ( int i = 0; i <= 2; ++i )
+      {
+        LabelPosition* p = nullptr;
+        if ( i == 0 && (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) ) )
+          p = _createCurvedCandidate( slp, angle_avg, mLF->distLabel() + li->label_height / 2 );
+        if ( i == 1 && flags & FLAG_ON_LINE )
+          p = _createCurvedCandidate( slp, angle_avg, 0 );
+        if ( i == 2 && (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) ) )
+          p = _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 - mLF->distLabel() );
 
+        if ( p && mLF->permissibleZonePrepared() )
+        {
+          bool within = true;
+          LabelPosition* currentPos = p;
+          while ( within && currentPos )
+          {
+            within = GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), currentPos->getX(), currentPos->getY(), currentPos->getWidth(), currentPos->getHeight(), currentPos->getAlpha() );
+            currentPos = currentPos->getNextPart();
+          }
+          if ( !within )
+          {
+            delete p;
+            p = nullptr;
+          }
+        }
+
+        if ( p )
+          positions.append( p );
+      }
       // delete original candidate
       delete slp;
     }
@@ -1144,7 +1169,7 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition*>& lPos, Point
 
     //fit in polygon only mode slows down calculation a lot, so if it's enabled
     //then use a smaller limit for number of iterations
-    int maxTry = mLF->layer()->fitInPolygonOnly() ? 7 : 10;
+    int maxTry = mLF->permissibleZonePrepared() ? 7 : 10;
 
     do
     {
@@ -1158,10 +1183,11 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition*>& lPos, Point
           continue;
         }
 
-        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal && mLF->layer()->fitInPolygonOnly() )
+        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal && mLF->permissibleZonePrepared() )
         {
           //check width/height of bbox is sufficient for label
-          if ( box->length < labelWidth || box->width < labelHeight )
+          if ( mLF->permissibleZone().boundingBox().width() < labelWidth ||
+               mLF->permissibleZone().boundingBox().height() < labelHeight )
           {
             //no way label can fit in this box, skip it
             continue;
@@ -1249,8 +1275,8 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition*>& lPos, Point
             rx += box->x[0];
             ry += box->y[0];
 
-            bool candidateAcceptable = ( mLF->layer()->fitInPolygonOnly()
-                                         ? mapShape->containsLabelCandidate( rx - dlx, ry - dly, labelWidth, labelHeight, alpha )
+            bool candidateAcceptable = ( mLF->permissibleZonePrepared()
+                                         ? GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), rx - dlx, ry - dly, labelWidth, labelHeight, alpha )
                                          : mapShape->containsPoint( rx, ry ) );
             if ( candidateAcceptable )
             {
@@ -1337,9 +1363,9 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
             double cx, cy;
             mapShape->getCentroid( cx, cy, mLF->layer()->centroidInside() );
             if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint )
-              createCandidatesOverPoint( cx, cy, lPos, angle, mapShape );
+              createCandidatesOverPoint( cx, cy, lPos, angle );
             else
-              createCandidatesAroundPoint( cx, cy, lPos, angle, mapShape );
+              createCandidatesAroundPoint( cx, cy, lPos, angle );
             break;
           case QgsPalLayerSettings::Line:
             createCandidatesAlongLine( lPos, mapShape );
