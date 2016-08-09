@@ -25,9 +25,10 @@ MACRO (PLUGIN_INSTALL plugin subdir )
   MATH(EXPR n "${n}+1")
   FILE(WRITE ${CMAKE_BINARY_DIR}/stagecount ${n})
 
-  # regular project build's install command and target
-  INSTALL(FILES ${ARGN} DESTINATION ${QGIS_DATA_DIR}/python/plugins/${plugin}/${subdir})
-
+  # regular project build's install command and target from output directory
+  STRING(REPLACE ${CMAKE_SOURCE_DIR} ${QGIS_OUTPUT_DIRECTORY} OUTPUTFILES "${ARGN}")
+  INSTALL(FILES ${OUTPUTFILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/${plugin}/${subdir})
+  
   SET(_cmake ${CMAKE_BINARY_DIR}/python/plugins/${plugin}/stageinstall.cmake)
 
   IF(NOT TARGET zzz-${plugin}-stageinstall)
