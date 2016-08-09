@@ -54,6 +54,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     virtual int dimension() const override;
     virtual QString geometryType() const override { return "GeometryCollection"; }
     virtual void clear() override;
+    virtual QgsAbstractGeometryV2* boundary() const override;
 
     /** Adds a geometry and takes ownership. Returns true in case of success.*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );

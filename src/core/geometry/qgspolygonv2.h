@@ -59,5 +59,7 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
     //overridden to handle LineString25D rings
     virtual void setExteriorRing( QgsCurveV2* ring ) override;
 
+    virtual QgsAbstractGeometryV2* boundary() const override;
+
 };
 #endif // QGSPOLYGONV2_H

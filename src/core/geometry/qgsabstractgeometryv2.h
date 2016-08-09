@@ -110,9 +110,15 @@ class CORE_EXPORT QgsAbstractGeometryV2
     virtual bool isValid() const = 0;
     virtual QgsMultiPointV2* locateAlong() const = 0;
     virtual QgsMultiCurveV2* locateBetween() const = 0;
-    virtual QgsCurveV2* boundary() const = 0;
     virtual QgsRectangle envelope() const = 0;
 #endif
+
+    /** Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
+     * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
+     * @returns boundary for geometry. May be null for some geometry types.
+     * @note added in QGIS 3.0
+     */
+    virtual QgsAbstractGeometryV2* boundary() const = 0;
 
     //import
 

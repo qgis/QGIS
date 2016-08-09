@@ -35,4 +35,5 @@ class QgsPolygonV2: public QgsCurvePolygonV2
     //overridden to handle LineString25D rings
     virtual void setExteriorRing( QgsCurveV2* ring /Transfer/ );
 
+    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
 };

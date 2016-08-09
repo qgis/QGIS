@@ -17,6 +17,8 @@
 
 #include "qgscurvev2.h"
 #include "qgslinestringv2.h"
+#include "qgspointv2.h"
+#include "qgsmultipointv2.h"
 
 QgsCurveV2::QgsCurveV2(): QgsAbstractGeometryV2()
 {}
@@ -77,6 +79,20 @@ bool QgsCurveV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
     ++id.vertex;
   }
   return pointAt( id.vertex, vertex, id.type );
+}
+
+QgsAbstractGeometryV2* QgsCurveV2::boundary() const
+{
+  if ( isEmpty() )
+    return nullptr;
+
+  if ( isClosed() )
+    return nullptr;
+
+  QgsMultiPointV2* multiPoint = new QgsMultiPointV2();
+  multiPoint->addGeometry( new QgsPointV2( startPoint() ) );
+  multiPoint->addGeometry( new QgsPointV2( endPoint() ) );
+  return multiPoint;
 }
 
 QgsCurveV2* QgsCurveV2::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const

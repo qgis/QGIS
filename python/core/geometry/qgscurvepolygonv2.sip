@@ -29,6 +29,8 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     virtual double area() const;
     virtual double perimeter() const;
     QgsPolygonV2* surfaceToPolygon() const;
+    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+
 
     //curve polygon interface
     int numInteriorRings() const;
