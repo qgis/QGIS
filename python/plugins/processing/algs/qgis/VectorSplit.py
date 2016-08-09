@@ -71,7 +71,7 @@ class VectorSplit(GeoAlgorithm):
         baseName = os.path.join(directory, '{0}_{1}'.format(layer.name(), fieldName))
 
         fields = layer.pendingFields()
-        crs = layer.dataProvider().crs()
+        crs = layer.crs()
         geomType = layer.wkbType()
 
         total = 100.0 / len(uniqueValues)

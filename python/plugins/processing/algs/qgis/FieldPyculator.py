@@ -88,11 +88,10 @@ class FieldsPyculator(GeoAlgorithm):
 
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
-        provider = layer.dataProvider()
-        fields = provider.fields()
+        fields = layer.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
                                fieldLength, fieldPrecision))
-        writer = output.getVectorWriter(fields, provider.geometryType(),
+        writer = output.getVectorWriter(fields, layer.wkbType(),
                                         layer.crs())
         outFeat = QgsFeature()
         new_ns = {}
@@ -107,7 +106,7 @@ class FieldsPyculator(GeoAlgorithm):
                     self.tr("FieldPyculator code execute error.Global code block can't be executed!\n%s\n%s") % (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
 
         # Replace all fields tags
-        fields = provider.fields()
+        fields = layer.fields()
         num = 0
         for field in fields:
             field_name = unicode(field.name())

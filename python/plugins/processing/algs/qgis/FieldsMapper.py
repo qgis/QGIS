@@ -68,7 +68,6 @@ class FieldsMapper(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
         layer = dataobjects.getObjectFromUri(layer)
-        provider = layer.dataProvider()
         fields = []
         expressions = []
 
@@ -109,7 +108,7 @@ class FieldsMapper(GeoAlgorithm):
             expressions.append(expression)
 
         writer = output.getVectorWriter(fields,
-                                        provider.geometryType(),
+                                        layer.wkbType(),
                                         layer.crs())
 
         # Create output vector layer with new attributes

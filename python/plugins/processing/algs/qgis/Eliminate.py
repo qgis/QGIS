@@ -315,10 +315,9 @@ class Eliminate(GeoAlgorithm):
         # End while
 
         # Create output
-        provider = processLayer.dataProvider()
         output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(provider.fields(),
-                                        provider.geometryType(), processLayer.crs())
+        writer = output.getVectorWriter(processLayer.fields(),
+                                        processLayer.wkbType(), processLayer.crs())
 
         # Write all features that are left over to output layer
         iterator = processLayer.getFeatures()

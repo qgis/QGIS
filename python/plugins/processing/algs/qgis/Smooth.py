@@ -55,14 +55,13 @@ class Smooth(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
-        provider = layer.dataProvider()
         iterations = self.getParameterValue(self.ITERATIONS)
         offset = self.getParameterValue(self.OFFSET)
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
                 layer.fields().toList(),
-                provider.geometryType(),
+                layer.wkbType(),
                 layer.crs())
 
         outFeat = QgsFeature()

@@ -72,9 +72,7 @@ class Union(GeoAlgorithm):
         vlayerA = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT))
         vlayerB = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT2))
 
-        vproviderA = vlayerA.dataProvider()
-
-        geomType = vproviderA.geometryType()
+        geomType = vlayerA.wkbType()
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(Union.OUTPUT).getVectorWriter(fields,
                                                                       geomType, vproviderA.crs())
@@ -175,7 +173,7 @@ class Union(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
                                            self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
 
-        length = len(vproviderA.fields())
+        length = len(vlayerA.fields())
         atMapA = [None] * length
 
         featuresA = vector.features(vlayerB)

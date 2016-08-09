@@ -89,7 +89,7 @@ class ExportGeometryInfo(GeoAlgorithm):
             fields.append(QgsField(yName, QVariant.Double))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
+            fields.toList(), layer.wkbType(), layer.crs())
 
         ellips = None
         crs = None

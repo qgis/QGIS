@@ -72,15 +72,13 @@ class SumLines(GeoAlgorithm):
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
         countFieldName = self.getParameterValue(self.COUNT_FIELD)
 
-        polyProvider = polyLayer.dataProvider()
-
         (idxLength, fieldList) = vector.findOrCreateField(polyLayer,
-                                                          polyLayer.pendingFields(), lengthFieldName)
+                                                          polyLayer.fields(), lengthFieldName)
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer, fieldList,
                                                          countFieldName)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fieldList.toList(), polyProvider.geometryType(), polyProvider.crs())
+            fieldList.toList(), polyLayer.wkbType(), polyLayer.crs())
 
         spatialIndex = vector.spatialindex(lineLayer)
 

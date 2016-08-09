@@ -69,14 +69,13 @@ class JoinAttributes(GeoAlgorithm):
         field2 = self.getParameterValue(self.TABLE_FIELD_2)
 
         layer = dataobjects.getObjectFromUri(input)
-        provider = layer.dataProvider()
         joinField1Index = layer.fieldNameIndex(field)
 
         layer2 = dataobjects.getObjectFromUri(input2)
         joinField2Index = layer2.fieldNameIndex(field2)
 
         outFields = vector.combineVectorFields(layer, layer2)
-        writer = output.getVectorWriter(outFields, provider.geometryType(),
+        writer = output.getVectorWriter(outFields, layer.wkbType(),
                                         layer.crs())
 
         # Cache attributes of Layer 2

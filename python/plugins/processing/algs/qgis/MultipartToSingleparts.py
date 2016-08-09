@@ -58,7 +58,7 @@ class MultipartToSingleparts(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        geomType = self.multiToSingleGeom(layer.dataProvider().geometryType())
+        geomType = self.multiToSingleGeom(layer.wkbType())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.pendingFields().toList(), geomType, layer.crs())
