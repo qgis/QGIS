@@ -173,9 +173,11 @@ namespace pal
        * Candidates can "cut corners" if it helps them place near this mid point.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param mapShape a pointer to the line
+       * @param initialCost initial cost for candidates generated using this method. If set, cost can be increased
+       * by a preset amount.
        * @returns the number of generated candidates
        */
-      int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape , double initialCost = 0.0 );
+      int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape, double initialCost = 0.0 );
 
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                               int orientation, int index, double distance );
