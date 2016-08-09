@@ -111,7 +111,7 @@ class ConcaveHull(GeoAlgorithm):
         feat = QgsFeature()
         dissolved_layer.getFeatures(QgsFeatureRequest().setFilterFid(0)).nextFeature(feat)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs())
+            layer.fields().toList(), QGis.WKBPolygon, layer.crs())
         geom = feat.geometry()
         if no_multigeom and geom.isMultipart():
             # Only singlepart geometries are allowed

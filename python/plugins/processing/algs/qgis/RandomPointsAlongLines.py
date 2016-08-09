@@ -68,7 +68,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QGis.WKBPoint, layer.dataProvider().crs())
+            fields, QGis.WKBPoint, layer.crs())
 
         nPoints = 0
         nIterations = 0

@@ -97,11 +97,8 @@ class SpatialJoin(GeoAlgorithm):
 
         sumList = self.getParameterValue(self.STATS).lower().split(',')
 
-        targetProvider = target.dataProvider()
-        joinProvider = join.dataProvider()
-
-        targetFields = targetProvider.fields()
-        joinFields = joinProvider.fields()
+        targetFields = target.fields()
+        joinFields = join.fields()
 
         fieldList = QgsFields()
 
@@ -130,7 +127,7 @@ class SpatialJoin(GeoAlgorithm):
             fields.append(f)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, targetProvider.geometryType(), targetProvider.crs())
+            fields, target.wkbType(), target.crs())
 
         outFeat = QgsFeature()
         inFeatB = QgsFeature()

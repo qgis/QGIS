@@ -49,12 +49,11 @@ class ReverseLineDirection(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
-        provider = layer.dataProvider()
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
                 layer.fields().toList(),
-                provider.geometryType(),
+                layer.wkbType(),
                 layer.crs())
 
         outFeat = QgsFeature()

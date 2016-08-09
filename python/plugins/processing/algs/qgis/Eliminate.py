@@ -98,8 +98,8 @@ class Eliminate(GeoAlgorithm):
             comparison = self.comparisons[self.getParameterValue(self.COMPARISON)]
             comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
 
-            selectindex = inLayer.dataProvider().fieldNameIndex(attribute)
-            selectType = inLayer.dataProvider().fields()[selectindex].type()
+            selectindex = inLayer.fieldNameIndex(attribute)
+            selectType = inLayer.fields()[selectindex].type()
             selectionError = False
 
             if selectType == 2:
@@ -304,10 +304,9 @@ class Eliminate(GeoAlgorithm):
         # End while
 
         # Create output
-        provider = inLayer.dataProvider()
         output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(provider.fields(),
-                                        provider.geometryType(), inLayer.crs())
+        writer = output.getVectorWriter(inLayer.fields(),
+                                        inLayer.wkbType(), inLayer.crs())
 
         # Write all features that are left over to output layer
         iterator = inLayer.getFeatures()

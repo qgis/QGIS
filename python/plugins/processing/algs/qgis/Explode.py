@@ -48,8 +48,7 @@ class Explode(GeoAlgorithm):
         vlayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
-        vprovider = vlayer.dataProvider()
-        fields = vprovider.fields()
+        fields = vlayer.fields()
         writer = output.getVectorWriter(fields, QGis.WKBLineString,
                                         vlayer.crs())
         outFeat = QgsFeature()
