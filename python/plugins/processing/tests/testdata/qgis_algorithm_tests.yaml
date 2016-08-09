@@ -306,3 +306,15 @@ tests:
         compare:
           geometry:
             precision: 7
+
+  - algorithm: qgis:mergelines
+    name: Merge lines algorithm
+    params:
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/merge_lines.gml
+        type: vector
+
