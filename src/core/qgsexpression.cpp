@@ -1824,6 +1824,20 @@ static QVariant fcnGeometryN( const QVariantList& values, const QgsExpressionCon
   return result;
 }
 
+static QVariant fcnBoundary( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  QgsAbstractGeometryV2* boundary = geom.geometry()->boundary();
+  if ( !boundary )
+    return QVariant();
+
+  return QVariant::fromValue( QgsGeometry( boundary ) );
+}
+
 static QVariant fcnLineMerge( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
@@ -3186,7 +3200,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "disjoint" << "intersects" << "touches" << "crosses" << "contains"
     << "relate"
     << "overlaps" << "within" << "buffer" << "centroid" << "bounds" << "reverse" << "exterior_ring"
-    << "line_merge"
+    << "boundary" << "line_merge"
     << "bounds_width" << "bounds_height" << "is_closed" << "convex_hull" << "difference"
     << "distance" << "intersection" << "sym_difference" << "combine"
     << "extrude" << "azimuth" <<  "project" << "closest_point" << "shortest_line"
@@ -3378,6 +3392,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "exterior_ring", 1, fcnExteriorRing, "GeometryGroup" )
     << new StaticFunction( "interior_ring_n", 2, fcnInteriorRingN, "GeometryGroup" )
     << new StaticFunction( "geometry_n", 2, fcnGeometryN, "GeometryGroup" )
+    << new StaticFunction( "boundary", ParameterList() << Parameter( "geometry" ), fcnBoundary, "GeometryGroup" )
     << new StaticFunction( "line_merge", ParameterList() << Parameter( "geometry" ), fcnLineMerge, "GeometryGroup" )
     << new StaticFunction( "bounds", 1, fcnBounds, "GeometryGroup" )
     << new StaticFunction( "num_points", 1, fcnGeomNumPoints, "GeometryGroup" )
