@@ -170,13 +170,13 @@ void QgsMapTip::clear( QgsMapCanvas * )
   mMapTipVisible = false;
 }
 
-QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsMapCanvas *mpMapCanvas )
+QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsMapCanvas *mapCanvas )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
     return QString();
 
-  double searchRadius = QgsMapTool::searchRadiusMU( mpMapCanvas );
+  double searchRadius = QgsMapTool::searchRadiusMU( mapCanvas );
 
   QgsRectangle r;
   r.setXMinimum( mapPosition.x() - searchRadius );
@@ -184,29 +184,31 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
   r.setXMaximum( mapPosition.x() + searchRadius );
   r.setYMaximum( mapPosition.y() + searchRadius );
 
-  r = mpMapCanvas->mapSettings().mapToLayerCoordinates( layer, r );
+  r = mapCanvas->mapSettings().mapToLayerCoordinates( layer, r );
 
   QgsFeature feature;
 
   if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) ).nextFeature( feature ) )
     return QString();
 
-  int idx = vlayer->fieldNameIndex( vlayer->displayField() );
-  if ( idx < 0 )
-  {
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( vlayer );
-    if ( mpMapCanvas )
-      context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mpMapCanvas->mapSettings() ) );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( vlayer );
+  if ( mapCanvas )
+    context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
 
-    context.setFeature( feature );
-    return QgsExpression::replaceExpressionText( vlayer->displayField(), &context );
+  context.setFeature( feature );
+
+  QString mapTip = vlayer->mapTipTemplate();
+  if ( !mapTip.isEmpty() )
+  {
+    return QgsExpression::replaceExpressionText( mapTip, &context );
   }
   else
   {
-    return feature.attribute( idx ).toString();
+    QgsExpression exp( vlayer->displayExpression() );
+    return exp.evaluate( &context ).toString();
   }
 }
 

@@ -20,7 +20,6 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgiscustomwidgets.cpp
   qgscollapsiblegroupboxplugin.cpp
   qgscolorbuttonplugin.cpp
-  qgscolorbuttonv2plugin.cpp
   qgsdatetimeeditplugin.cpp
   qgsdatadefinedbuttonplugin.cpp
   qgsdockwidgetplugin.cpp
@@ -45,7 +44,6 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgiscustomwidgets.h
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
-  qgscolorbuttonv2plugin.h
   qgsdatetimeeditplugin.h
   qgsdatadefinedbuttonplugin.h
   qgsdockwidgetplugin.h
@@ -76,7 +74,6 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgiscustomwidgets.h
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
-  qgscolorbuttonv2plugin.h
   qgsdatetimeeditplugin.h
   qgsdatadefinedbuttonplugin.h
   qgsdockwidgetplugin.h

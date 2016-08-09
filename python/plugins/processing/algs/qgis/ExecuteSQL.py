@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
                        QgsVirtualLayerDefinition, QgsVectorLayer,
-                       QgsCoordinateReferenceSystem, QgsWKBTypes)
+                       QgsCoordinateReferenceSystem, QgsWkbTypes)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -115,7 +115,7 @@ class ExecuteSQL(GeoAlgorithm):
             df.setUid(uid_field)
 
         if geometry_type == 1:  # no geometry
-            df.setGeometryWkbType(QgsWKBTypes.NoGeometry)
+            df.setGeometryWkbType(QgsWkbTypes.NullGeometry)
         else:
             if geometry_field:
                 df.setGeometryField(geometry_field)
@@ -131,7 +131,7 @@ class ExecuteSQL(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(vLayer.dataProvider().error().message())
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            vLayer.pendingFields().toList(),
+            vLayer.fields().toList(),
             # Create a point layer (without any points) if 'no geometry' is chosen
             vLayer.wkbType() if geometry_type != 1 else 1,
             vLayer.crs())

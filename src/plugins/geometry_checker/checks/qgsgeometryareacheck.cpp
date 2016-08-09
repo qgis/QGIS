@@ -30,7 +30,8 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
       continue;
     }
 
-    QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+    QgsGeometry g = feature.geometry();
+    QgsAbstractGeometryV2* geom = g.geometry();
     if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
     {
       QgsGeometryCollectionV2* multiGeom = static_cast<QgsGeometryCollectionV2*>( geom );
@@ -62,7 +63,8 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, i
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry g = feature.geometry();
+  QgsAbstractGeometryV2* geom = g.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if polygon still exists
@@ -126,17 +128,19 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
   QgsFeature mergeFeature;
   int mergePartIdx = -1;
   bool matchFound = false;
-  QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
+  QgsGeometry g = feature.geometry();;
+  QgsAbstractGeometryV2* geom = g.geometry();
 
   // Search for touching neighboring geometries
-  Q_FOREACH ( QgsFeatureId testId, mFeaturePool->getIntersects( feature.geometry()->boundingBox() ) )
+  Q_FOREACH ( QgsFeatureId testId, mFeaturePool->getIntersects( g.boundingBox() ) )
   {
     QgsFeature testFeature;
     if ( !mFeaturePool->get( testId, testFeature ) )
     {
       continue;
     }
-    QgsAbstractGeometryV2* testGeom = testFeature.geometry()->geometry();
+    QgsGeometry testFeatureGeom = testFeature.geometry();
+    QgsAbstractGeometryV2* testGeom = testFeatureGeom.geometry();
     for ( int testPartIdx = 0, nTestParts = testGeom->partCount(); testPartIdx < nTestParts; ++testPartIdx )
     {
       if ( testId == feature.id() && testPartIdx == partIdx )
@@ -191,7 +195,8 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
   }
 
   // Merge geometries
-  QgsAbstractGeometryV2* mergeGeom = mergeFeature.geometry()->geometry();
+  QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
+  QgsAbstractGeometryV2* mergeGeom = mergeFeatureGeom.geometry();
   QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
   QgsAbstractGeometryV2* combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
   delete geomEngine;

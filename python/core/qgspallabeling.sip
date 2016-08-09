@@ -179,6 +179,7 @@ class QgsPalLayerSettings
       Horizontal, /**< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.*/
       Free, /**< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.*/
       OrderedPositionsAroundPoint, /**< Candidates are placed in predefined positions around a point. Peference is given to positions with greatest cartographic appeal, eg top right, bottom right, etc. Applies to point layers only.*/
+      PerimeterCurved, /** Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.*/
     };
 
     //! Positions for labels when using the QgsPalLabeling::OrderedPositionsAroundPoint placement mode
@@ -742,7 +743,7 @@ class QgsPalLayerSettings
 
     QgsPoint ptZero;
     QgsPoint ptOne;
-    QgsGeometry* extentGeom;
+    QgsGeometry extentGeom;
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
@@ -991,10 +992,10 @@ class QgsPalLabeling : QgsLabelingEngineInterface
      * @param context render context
      * @param ct coordinate transform, or invalid transform if no transformation required
      * @param clipGeometry geometry to clip features to, if applicable
-     * @returns prepared geometry, the caller takes ownership
+     * @returns prepared geometry
      * @note added in QGIS 2.9
      */
-    static QgsGeometry* prepareGeometry( const QgsGeometry *geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = 0 ) /Factory/;
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = 0 ) /Factory/;
 
     /** Checks whether a geometry requires preparation before registration with PAL
      * @param geometry geometry to prepare
@@ -1004,7 +1005,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
      * @returns true if geometry requires preparation
      * @note added in QGIS 2.9
      */
-    static bool geometryRequiresPreparation( const QgsGeometry *geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = 0 );
+    static bool geometryRequiresPreparation( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = 0 );
 
     /** Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.
@@ -1054,5 +1055,5 @@ class QgsPalLabeling : QgsLabelingEngineInterface
      * @returns true if geometry exceeds minimum size
      * @note added in QGIS 2.9
      */
-    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
+    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry* geom, double minSize );
 };

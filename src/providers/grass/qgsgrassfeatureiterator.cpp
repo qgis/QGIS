@@ -494,7 +494,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   {
     if ( oldGeometry )
     {
-      feature.setGeometry( new QgsGeometry( oldGeometry->clone() ) );
+      feature.setGeometry( QgsGeometry( oldGeometry->clone() ) );
     }
     else
     {
@@ -618,7 +618,7 @@ void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature& feature, int id, i
   {
     QgsDebugMsg( QString( "unknown type = %1" ).arg( type ) );
   }
-  feature.setGeometry( new QgsGeometry( geometry ) );
+  feature.setGeometry( QgsGeometry( geometry ) );
 }
 
 QgsFeatureId QgsGrassFeatureIterator::makeFeatureId( int grassId, int cat, int layer )

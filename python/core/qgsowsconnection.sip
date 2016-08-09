@@ -28,7 +28,7 @@ class QgsOwsConnection : QObject
 
     QString mConnName;
     /** Returns the connection uri */
-    QgsDataSourceURI uri() const;
+    QgsDataSourceUri uri() const;
     QString mConnectionInfo;
 
     //! @deprecated use mConnectionInfo instead

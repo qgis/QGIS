@@ -43,7 +43,7 @@ namespace QgsMapToolSelectUtils
    * @returns list of features which match search geometry and parameters
    * @note added in QGIS 2.16
    */
-  QgsFeatureIds getMatchingFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, bool doContains, bool singleSelect );
+  QgsFeatureIds getMatchingFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, bool doContains, bool singleSelect );
 
   /**
     Selects the features within currently selected layer.
@@ -58,7 +58,7 @@ namespace QgsMapToolSelectUtils
     @note added in QGIS 2.16
   */
   void setSelectedFeatures( QgsMapCanvas* canvas,
-                            QgsGeometry* selectGeometry,
+                            const QgsGeometry& selectGeometry,
                             QgsVectorLayer::SelectBehaviour selectBehaviour = QgsVectorLayer::SetSelection,
                             bool doContains = true,
                             bool singleSelect = false );
@@ -74,7 +74,7 @@ namespace QgsMapToolSelectUtils
     @note added in QGIS 2.16
     @see selectSingleFeature()
   */
-  void selectMultipleFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e );
+  void selectMultipleFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent * e );
 
   /**
     Selects a single feature from within currently selected layer.
@@ -86,7 +86,7 @@ namespace QgsMapToolSelectUtils
     operations (add, subtract, contains)
     @see selectMultipleFeatures()
   */
-  void selectSingleFeature( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e );
+  void selectSingleFeature( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent * e );
 
   /**
     Get the current selected canvas map layer. Returns nullptr if it is not a vector layer

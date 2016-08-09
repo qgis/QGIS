@@ -104,7 +104,7 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
   // We need to get at least server version, which is not set in of URI (if not part of url)
   // and probably also rangeSet
 
-  QgsDataSourceURI capabilitiesUri;
+  QgsDataSourceUri capabilitiesUri;
   capabilitiesUri.setEncodedUri( uri );
   // remove non relevant params
   capabilitiesUri.removeParam( "identifier" );
@@ -380,7 +380,7 @@ bool QgsWcsProvider::parseUri( const QString& uriString )
 {
 
   QgsDebugMsg( "uriString = " + uriString );
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   uri.setEncodedUri( uriString );
 
   mMaxWidth = 0;
@@ -496,9 +496,8 @@ void QgsWcsProvider::setQueryItem( QUrl &url, const QString& item, const QString
   url.addQueryItem( item, value );
 }
 
-void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
+void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback* feedback )
 {
-
   // TODO: set block to null values, move that to function and call only if fails
   memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( dataType( bandNo ) ) );
 
@@ -516,7 +515,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
        mCachedViewWidth != pixelWidth ||
        mCachedViewHeight != pixelHeight )
   {
-    getCache( bandNo, viewExtent, pixelWidth, pixelHeight );
+    getCache( bandNo, viewExtent, pixelWidth, pixelHeight, QString(), feedback );
   }
 
   if ( mCachedGdalDataset )
@@ -615,7 +614,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   }
 }
 
-void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QString crs ) const
+void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QString crs, QgsRasterBlockFeedback* feedback ) const
 {
   Q_UNUSED( bandNo );
   // delete cached data
@@ -768,7 +767,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
 
   emit statusChanged( tr( "Getting map via WCS." ) );
 
-  QgsWcsDownloadHandler handler( url, mAuth, mCacheLoadControl, mCachedData, mCapabilities.version(), mCachedError );
+  QgsWcsDownloadHandler handler( url, mAuth, mCacheLoadControl, mCachedData, mCapabilities.version(), mCachedError, feedback );
   handler.blockingDownload();
 
   QgsDebugMsg( QString( "%1 bytes received" ).arg( mCachedData.size() ) );
@@ -836,7 +835,7 @@ void QgsWcsProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *blo
 
   QgsRectangle extent( xMin, yMin, xMax, yMax );
 
-  readBlock( theBandNo, extent, mXBlockSize, mYBlockSize, block );
+  readBlock( theBandNo, extent, mXBlockSize, mYBlockSize, block, nullptr );
 }
 
 
@@ -1645,7 +1644,7 @@ QGISEXTERN bool isProvider()
 
 int QgsWcsDownloadHandler::sErrors = 0;
 
-QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError )
+QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError, QgsRasterBlockFeedback* feedback )
     : mAuth( auth )
     , mEventLoop( new QEventLoop )
     , mCacheReply( nullptr )
@@ -1666,6 +1665,9 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorizati
   mCacheReply = QgsNetworkAccessManager::instance()->get( request );
   connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
   connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+
+  if ( feedback )
+    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
 }
 
 QgsWcsDownloadHandler::~QgsWcsDownloadHandler()
@@ -1853,30 +1855,34 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
   }
   else
   {
-    // Resend request if AlwaysCache
-    QNetworkRequest request = mCacheReply->request();
-    if ( request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() == QNetworkRequest::AlwaysCache )
+    // report any errors except for the one we have caused by cancelling the request
+    if ( mCacheReply->error() != QNetworkReply::OperationCanceledError )
     {
-      QgsDebugMsg( "Resend request with PreferCache" );
-      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+      // Resend request if AlwaysCache
+      QNetworkRequest request = mCacheReply->request();
+      if ( request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() == QNetworkRequest::AlwaysCache )
+      {
+        QgsDebugMsg( "Resend request with PreferCache" );
+        request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
 
-      mCacheReply->deleteLater();
+        mCacheReply->deleteLater();
 
-      mCacheReply = QgsNetworkAccessManager::instance()->get( request );
-      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ), Qt::DirectConnection );
-      connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+        mCacheReply = QgsNetworkAccessManager::instance()->get( request );
+        connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ), Qt::DirectConnection );
+        connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
 
-      return;
-    }
+        return;
+      }
 
-    sErrors++;
-    if ( sErrors < 100 )
-    {
-      QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WCS" ) );
-    }
-    else if ( sErrors == 100 )
-    {
-      QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WCS" ) );
+      sErrors++;
+      if ( sErrors < 100 )
+      {
+        QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WCS" ) );
+      }
+      else if ( sErrors == 100 )
+      {
+        QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WCS" ) );
+      }
     }
 
     mCacheReply->deleteLater();
@@ -1891,4 +1897,14 @@ void QgsWcsDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint64 byt
   Q_UNUSED( bytesReceived );
   Q_UNUSED( bytesTotal );
   QgsDebugMsgLevel( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ), 3 );
+}
+
+void QgsWcsDownloadHandler::cancelled()
+{
+  QgsDebugMsg( "Caught cancelled() signal" );
+  if ( mCacheReply )
+  {
+    QgsDebugMsg( "Aborting WCS network request" );
+    mCacheReply->abort();
+  }
 }

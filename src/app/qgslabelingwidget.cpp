@@ -182,4 +182,5 @@ void QgsLabelingWidget::showEngineConfigDialog()
 {
   QgsLabelEngineConfigDialog dlg( this );
   dlg.exec();
+  emit widgetChanged();
 }

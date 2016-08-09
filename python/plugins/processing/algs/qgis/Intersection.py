@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWKBTypes
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -41,9 +41,9 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 wkbTypeGroups = {
-    'Point': (Qgis.WKBPoint, Qgis.WKBMultiPoint, Qgis.WKBPoint25D, Qgis.WKBMultiPoint25D,),
-    'LineString': (Qgis.WKBLineString, Qgis.WKBMultiLineString, Qgis.WKBLineString25D, Qgis.WKBMultiLineString25D,),
-    'Polygon': (Qgis.WKBPolygon, Qgis.WKBMultiPolygon, Qgis.WKBPolygon25D, Qgis.WKBMultiPolygon25D,),
+    'Point': (QgsWkbTypes.Point, QgsWkbTypes.MultiPoint, QgsWkbTypes.Point25D, QgsWkbTypes.MultiPoint25D,),
+    'LineString': (QgsWkbTypes.LineString, QgsWkbTypes.MultiLineString, QgsWkbTypes.LineString25D, QgsWkbTypes.MultiLineString25D,),
+    'Polygon': (QgsWkbTypes.Polygon, QgsWkbTypes.MultiPolygon, QgsWkbTypes.Polygon25D, QgsWkbTypes.MultiPolygon25D,),
 }
 for key, value in wkbTypeGroups.items():
     for const in value:
@@ -73,29 +73,28 @@ class Intersection(GeoAlgorithm):
             self.getParameterValue(self.INPUT))
         vlayerB = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT2))
-        vproviderA = vlayerA.dataProvider()
 
-        geomType = vproviderA.geometryType()
+        geomType = vlayerA.wkbType()
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     geomType, vproviderA.crs())
+                                                                     geomType, vlayerA.crs())
         outFeat = QgsFeature()
         index = vector.spatialindex(vlayerB)
         selectionA = vector.features(vlayerA)
         total = 100.0 / len(selectionA)
         for current, inFeatA in enumerate(selectionA):
             progress.setPercentage(int(current * total))
-            geom = QgsGeometry(inFeatA.geometry())
+            geom = inFeatA.geometry()
             atMapA = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
             for i in intersects:
                 request = QgsFeatureRequest().setFilterFid(i)
                 inFeatB = vlayerB.getFeatures(request).next()
-                tmpGeom = QgsGeometry(inFeatB.geometry())
+                tmpGeom = inFeatB.geometry()
                 if geom.intersects(tmpGeom):
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
-                    if int_geom.wkbType() == Qgis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                    if int_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(int_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                         int_com = geom.combine(tmpGeom)
                         int_sym = geom.symDifference(tmpGeom)
                         int_geom = QgsGeometry(int_com.difference(int_sym))

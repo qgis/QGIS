@@ -24,8 +24,8 @@ from qgis.core import (QgsGraduatedSymbolRendererV2,
                        QgsFeature,
                        QgsGeometry,
                        QgsPoint,
-                       QgsSymbolV2,
-                       QgsSymbolLayerV2Utils,
+                       QgsSymbol,
+                       QgsSymbolLayerUtils,
                        QgsRenderContext
                        )
 from qgis.PyQt.QtCore import Qt
@@ -316,15 +316,15 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
                          "Get/set renderer inverted color ramp")
 
         value = '"value"*2'
-        exp = QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(value)
-        valuestr = QgsSymbolLayerV2Utils.fieldOrExpressionFromExpression(exp)
+        exp = QgsSymbolLayerUtils.fieldOrExpressionToExpression(value)
+        valuestr = QgsSymbolLayerUtils.fieldOrExpressionFromExpression(exp)
         renderer.setRotationField(value)
         self.assertEqual(valuestr, renderer.rotationField(),
                          "Get/set renderer rotation field")
 
         value = '"value"*3'
-        exp = QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(value)
-        valuestr = QgsSymbolLayerV2Utils.fieldOrExpressionFromExpression(exp)
+        exp = QgsSymbolLayerUtils.fieldOrExpressionToExpression(value)
+        valuestr = QgsSymbolLayerUtils.fieldOrExpressionFromExpression(exp)
         renderer.setSizeScaleField(value)
         self.assertEqual(valuestr, renderer.sizeScaleField(),
                          "Get/set renderer size scale field")
@@ -336,8 +336,8 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
             "Get/set renderer color ramp")
 
         for sm in (
-            QgsSymbolV2.ScaleArea,
-            QgsSymbolV2.ScaleDiameter,
+            QgsSymbol.ScaleArea,
+            QgsSymbol.ScaleDiameter,
         ):
             renderer.setScaleMethod(sm)
             self.assertEqual(str(sm), str(renderer.scaleMethod()),
@@ -444,7 +444,7 @@ class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
         self.assertEqual(len(renderer.ranges()), 0, "deleteAllClasses didn't delete all")
 
 
-#    void addClass( QgsSymbolV2* symbol );
+#    void addClass( QgsSymbol* symbol );
 #    //! @note available in python bindings as addClassRange
 #    void addClass( QgsRendererRangeV2 range ) /PyName=addClassRange/;
 #    //! @note available in python bindings as addClassLowerUpper

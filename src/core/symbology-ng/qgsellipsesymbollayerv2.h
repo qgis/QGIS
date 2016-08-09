@@ -30,20 +30,20 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QgsEllipseSymbolLayerV2();
     ~QgsEllipseSymbolLayerV2();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer* createFromSld( QDomElement &element );
 
-    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context ) override;
+    void renderPoint( QPointF point, QgsSymbolRenderContext& context ) override;
     QString layerType() const override;
-    void startRender( QgsSymbolV2RenderContext& context ) override;
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
     QgsEllipseSymbolLayerV2* clone() const override;
     QgsStringMap properties() const override;
 
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
     void writeSldMarker( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
 
-    bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolV2RenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
+    bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
 
     void setSymbolName( const QString& name ) { mSymbolName = name; }
     QString symbolName() const { return mSymbolName; }
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context ) override;
+    QRectF bounds( QPointF point, QgsSymbolRenderContext& context ) override;
 
   private:
     QString mSymbolName;
@@ -154,9 +154,9 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
       @param scaledHeight optional height
       @param f optional feature to render (0 if no data defined rendering)
      */
-    void preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, double* scaledWidth = nullptr, double* scaledHeight = nullptr, const QgsFeature* f = nullptr );
-    QSizeF calculateSize( QgsSymbolV2RenderContext& context, double* scaledWidth = nullptr, double* scaledHeight = nullptr );
-    void calculateOffsetAndRotation( QgsSymbolV2RenderContext& context, double scaledWidth, double scaledHeight, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
+    void preparePath( const QString& symbolName, QgsSymbolRenderContext& context, double* scaledWidth = nullptr, double* scaledHeight = nullptr, const QgsFeature* f = nullptr );
+    QSizeF calculateSize( QgsSymbolRenderContext& context, double* scaledWidth = nullptr, double* scaledHeight = nullptr );
+    void calculateOffsetAndRotation( QgsSymbolRenderContext& context, double scaledWidth, double scaledHeight, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
 };
 
 #endif // QGSELLIPSESYMBOLLAYERV2_H

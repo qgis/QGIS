@@ -81,7 +81,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSetti
     bool ownsSource, QgsFeatureRendererV2* renderer )
     : QgsAbstractLabelProvider( layerId )
     , mSettings( settings )
-    , mLayerGeometryType( Qgis::UnknownGeometry )
+    , mLayerGeometryType( QgsWkbTypes::UnknownGeometry )
     , mRenderer( renderer )
     , mFields( fields )
     , mCrs( crs )
@@ -101,11 +101,10 @@ void QgsVectorLayerLabelProvider::init()
   if ( mSettings.displayAll ) mFlags |= DrawAllLabels;
   if ( mSettings.mergeLines ) mFlags |= MergeConnectedLines;
   if ( mSettings.centroidInside ) mFlags |= CentroidMustBeInside;
-  if ( mSettings.fitInPolygonOnly ) mFlags |= FitInPolygonOnly;
   if ( mSettings.labelPerPart ) mFlags |= LabelPerFeaturePart;
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
-  if ( mLayerGeometryType == Qgis::Point && mRenderer )
+  if ( mLayerGeometryType == QgsWkbTypes::PointGeometry && mRenderer )
   {
     //override obstacle type to treat any intersection of a label with the point symbol as a high cost conflict
     mObstacleType = QgsPalLayerSettings::PolygonWhole;
@@ -246,7 +245,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
-    lyr.extentGeom->rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
+    lyr.extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
   lyr.mFeatsSendingToPal = 0;
@@ -289,8 +288,8 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
     QScopedPointer<QgsGeometry> obstacleGeometry;
     if ( mRenderer )
     {
-      QgsSymbolV2List symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
-      if ( !symbols.isEmpty() && fet.constGeometry()->type() == Qgis::Point )
+      QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
+      if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
         //point feature, use symbol bounds as obstacle
         obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols ) );
@@ -321,21 +320,21 @@ void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRende
     mLabels << label;
 }
 
-QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolV2List& symbols )
+QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolList& symbols )
 {
-  if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() || fet.constGeometry()->type() != Qgis::Point )
+  if ( !fet.hasGeometry() || fet.geometry().type() != QgsWkbTypes::PointGeometry )
     return nullptr;
 
-  bool isMultiPoint = fet.constGeometry()->geometry()->nCoordinates() > 1;
+  bool isMultiPoint = fet.geometry().geometry()->nCoordinates() > 1;
   QgsAbstractGeometryV2* obstacleGeom = nullptr;
   if ( isMultiPoint )
     obstacleGeom = new QgsMultiPolygonV2();
 
   // for each point
-  for ( int i = 0; i < fet.constGeometry()->geometry()->nCoordinates(); ++i )
+  for ( int i = 0; i < fet.geometry().geometry()->nCoordinates(); ++i )
   {
     QRectF bounds;
-    QgsPointV2 p =  fet.constGeometry()->geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
+    QgsPointV2 p =  fet.geometry().geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
     double x = p.x();
     double y = p.y();
     double z = 0; // dummy variable for coordinate transforms
@@ -348,9 +347,9 @@ QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& 
     context.mapToPixel().transformInPlace( x, y );
 
     QPointF pt( x, y );
-    Q_FOREACH ( QgsSymbolV2* symbol, symbols )
+    Q_FOREACH ( QgsSymbol* symbol, symbols )
     {
-      if ( symbol->type() == QgsSymbolV2::Marker )
+      if ( symbol->type() == QgsSymbol::Marker )
       {
         if ( bounds.isValid() )
           bounds = bounds.united( static_cast< QgsMarkerSymbolV2* >( symbol )->bounds( pt, context, fet ) );

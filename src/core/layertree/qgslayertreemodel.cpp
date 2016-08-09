@@ -29,7 +29,7 @@
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
@@ -238,13 +238,13 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       }
       else if ( vlayer && layer->type() == QgsMapLayer::VectorLayer )
       {
-        if ( vlayer->geometryType() == Qgis::Point )
+        if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
           icon = QgsLayerItem::iconPoint();
-        else if ( vlayer->geometryType() == Qgis::Line )
+        else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
           icon = QgsLayerItem::iconLine();
-        else if ( vlayer->geometryType() == Qgis::Polygon )
+        else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
           icon = QgsLayerItem::iconPolygon();
-        else if ( vlayer->geometryType() == Qgis::NoGeometry )
+        else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
           icon = QgsLayerItem::iconTable();
         else
           icon = QgsLayerItem::iconDefault();
@@ -274,7 +274,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
       if ( nodeLayer->layer() && nodeLayer->layer()->type() == QgsMapLayer::VectorLayer )
       {
-        if ( qobject_cast<QgsVectorLayer*>( nodeLayer->layer() )->geometryType() == Qgis::NoGeometry )
+        if ( qobject_cast<QgsVectorLayer*>( nodeLayer->layer() )->geometryType() == QgsWkbTypes::NullGeometry )
           return QVariant(); // do not show checkbox for non-spatial tables
       }
       return nodeLayer->isVisible();
@@ -627,7 +627,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings* settings, bool us
         }
       }
     }
-    bool polygonValid = !polygon.isEmpty() && polygon.type() == Qgis::Polygon;
+    bool polygonValid = !polygon.isEmpty() && polygon.type() == QgsWkbTypes::PolygonGeometry;
     if ( useExpressions && !useExtent && !polygonValid ) // only expressions
     {
       mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );
@@ -1122,11 +1122,11 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
   {
     Q_FOREACH ( QgsLayerTreeModelLegendNode* node, nodes )
     {
-      QgsSymbolV2* ruleKey = reinterpret_cast< QgsSymbolV2* >( node->data( QgsSymbolV2LegendNode::SymbolV2LegacyRuleKeyRole ).value<void*>() );
+      QgsSymbol* ruleKey = reinterpret_cast< QgsSymbol* >( node->data( QgsSymbolLegendNode::SymbolV2LegacyRuleKeyRole ).value<void*>() );
       bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
       if ( ruleKey && checked )
       {
-        QString ruleKey = node->data( QgsSymbolV2LegendNode::RuleKeyRole ).toString();
+        QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
         if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() ) )
         {
           if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
@@ -1480,11 +1480,11 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
 
   Q_FOREACH ( const LayerLegendData& data, mLegend )
   {
-    QList<QgsSymbolV2LegendNode*> symbolNodes;
+    QList<QgsSymbolLegendNode*> symbolNodes;
     QMap<QString, int> widthMax;
     Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, data.originalNodes )
     {
-      QgsSymbolV2LegendNode* n = dynamic_cast<QgsSymbolV2LegendNode*>( legendNode );
+      QgsSymbolLegendNode* n = dynamic_cast<QgsSymbolLegendNode*>( legendNode );
       if ( n )
       {
         const QSize sz( n->minimumIconSize() );
@@ -1494,7 +1494,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
         symbolNodes.append( n );
       }
     }
-    Q_FOREACH ( QgsSymbolV2LegendNode* n, symbolNodes )
+    Q_FOREACH ( QgsSymbolLegendNode* n, symbolNodes )
     {
       const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
       Q_ASSERT( widthMax[parentKey] > 0 );

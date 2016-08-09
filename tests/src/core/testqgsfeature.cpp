@@ -49,8 +49,8 @@ class TestQgsFeature: public QObject
 
     QgsFields mFields;
     QgsAttributes mAttrs;
-    QScopedPointer<QgsGeometry> mGeometry;
-    QScopedPointer<QgsGeometry> mGeometry2;
+    QgsGeometry mGeometry;
+    QgsGeometry mGeometry2;
 };
 
 void TestQgsFeature::initTestCase()
@@ -66,8 +66,8 @@ void TestQgsFeature::initTestCase()
   //test attributes
   mAttrs << QVariant( 5 ) << QVariant( 7 ) << QVariant( "val" );
 
-  mGeometry.reset( QgsGeometry::fromWkt( "MULTILINESTRING((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))" ) );
-  mGeometry2.reset( QgsGeometry::fromWkt( "MULTILINESTRING((0 5, 15 0, 15 10, 25 10))" ) );
+  mGeometry = QgsGeometry::fromWkt( "MULTILINESTRING((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))" );
+  mGeometry2 = QgsGeometry::fromWkt( "MULTILINESTRING((0 5, 15 0, 15 10, 25 10))" );
 }
 
 void TestQgsFeature::cleanupTestCase()
@@ -130,7 +130,7 @@ void TestQgsFeature::create()
 
   QgsFeature featureFromFieldsId( mFields, 1001LL );
   QCOMPARE( featureFromFieldsId.id(), 1001LL );
-  QCOMPARE( *featureFromFieldsId.fields(), mFields );
+  QCOMPARE( featureFromFieldsId.fields(), mFields );
   QCOMPARE( featureFromFieldsId.isValid(), false );
   //should be 3 invalid attributes
   QCOMPARE( featureFromFieldsId.attributes().count(), 3 );
@@ -245,70 +245,51 @@ void TestQgsFeature::attributes()
 void TestQgsFeature::geometry()
 {
   QgsFeature feature;
+  QVERIFY( !feature.hasGeometry() );
+
   //test no double delete of geometry when setting:
-  feature.setGeometry( new QgsGeometry( *mGeometry2.data() ) );
-  feature.setGeometry( new QgsGeometry( *mGeometry.data() ) );
-  QCOMPARE( *feature.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
+  feature.setGeometry( QgsGeometry( mGeometry2 ) );
+  QVERIFY( feature.hasGeometry() );
+  feature.setGeometry( QgsGeometry( mGeometry ) );
+  QCOMPARE( *feature.geometry().asWkb(), *mGeometry.asWkb() );
 
   //test implicit sharing detachment
   QgsFeature copy( feature );
-  QCOMPARE( *copy.constGeometry()->asWkb(), *feature.constGeometry()->asWkb() );
-  copy.setGeometry( 0 );
-  QVERIFY( ! copy.constGeometry() );
-  QCOMPARE( *feature.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
+  QCOMPARE( *copy.geometry().asWkb(), *feature.geometry().asWkb() );
+  copy.clearGeometry();
+  QVERIFY( ! copy.hasGeometry() );
+  QCOMPARE( *feature.geometry().asWkb(), *mGeometry.asWkb() );
 
   //test no crash when setting an empty geometry and triggering a detach
   QgsFeature emptyGeomFeature;
-  emptyGeomFeature.setGeometry( 0 );
+  emptyGeomFeature.setGeometry( QgsGeometry() );
+  QVERIFY( !emptyGeomFeature.hasGeometry() );
   copy = emptyGeomFeature;
   copy.setFeatureId( 5 ); //force detach
 
   //setGeometry
   //always start with a copy so that we can test implicit sharing detachment is working
   copy = feature;
-  QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
-  copy.setGeometry( new QgsGeometry( *mGeometry2.data() ) );
-  QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry2.data()->asWkb() );
-  QCOMPARE( *feature.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
-
-  //test that non-const geometry triggers a detach
-  copy = feature;
-  QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
-  copy.geometry()->convertToType( Qgis::Line );
-  QScopedPointer<QgsGeometry> expected( new QgsGeometry( *mGeometry.data() ) );
-  expected->convertToType( Qgis::Line );
-  QCOMPARE( *copy.constGeometry()->asWkb(), *expected->asWkb() );
-  QCOMPARE( *feature.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
+  QCOMPARE( *copy.geometry().asWkb(), *mGeometry.asWkb() );
+  copy.setGeometry( QgsGeometry( mGeometry2 ) );
+  QCOMPARE( *copy.geometry().asWkb(), *mGeometry2.asWkb() );
+  QCOMPARE( *feature.geometry().asWkb(), *mGeometry.asWkb() );
 
   //setGeometry using reference
   copy = feature;
-  QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
-  QgsGeometry geomByRef( *mGeometry2.data() );
+  QCOMPARE( *copy.geometry().asWkb(), *mGeometry.asWkb() );
+  QgsGeometry geomByRef( mGeometry2 );
   copy.setGeometry( geomByRef );
-  QCOMPARE( *copy.constGeometry()->asWkb(), *geomByRef.asWkb() );
-  QCOMPARE( *feature.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
+  QCOMPARE( *copy.geometry().asWkb(), *geomByRef.asWkb() );
+  QCOMPARE( *feature.geometry().asWkb(), *mGeometry.asWkb() );
 
-  //setGeometryAndOwnership
-  Q_NOWARN_DEPRECATED_PUSH
-  copy = feature;
-  QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
-  int wkbSize = mGeometry2->wkbSize();
-  unsigned char* wkb = new unsigned char[wkbSize];
-  memcpy( wkb, mGeometry2->asWkb(), wkbSize );
-  copy.setGeometryAndOwnership( wkb, wkbSize );
-  QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry2->asWkb() );
-  QCOMPARE( *feature.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
-
-  //geometryAndOwnership
-  copy = feature;
-  QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
-  QgsGeometry* geom1 = copy.geometryAndOwnership();
-  QCOMPARE( *geom1->asWkb(), *mGeometry->asWkb() );
-  QgsGeometry* geom2 = feature.geometryAndOwnership();
-  QCOMPARE( *geom2->asWkb(), *mGeometry->asWkb() );
-  Q_NOWARN_DEPRECATED_POP
-  delete geom1;
-  delete geom2;
+  //clearGeometry
+  QgsFeature geomFeature;
+  geomFeature.setGeometry( QgsGeometry( mGeometry2 ) );
+  QVERIFY( geomFeature.hasGeometry() );
+  geomFeature.clearGeometry();
+  QVERIFY( !geomFeature.hasGeometry() );
+  QVERIFY( geomFeature.geometry().isEmpty() );
 }
 
 void TestQgsFeature::asVariant()
@@ -322,31 +303,24 @@ void TestQgsFeature::asVariant()
   QgsFeature fromVar = qvariant_cast<QgsFeature>( var );
   //QCOMPARE( fromVar, original );
   QCOMPARE( fromVar.id(), original.id() );
-  QCOMPARE( *fromVar.fields(), *original.fields() );
+  QCOMPARE( fromVar.fields(), original.fields() );
 }
 
 void TestQgsFeature::fields()
 {
   QgsFeature original;
-  QVERIFY( original.fields()->isEmpty() );
+  QVERIFY( original.fields().isEmpty() );
   original.setFields( mFields );
-  QCOMPARE( *original.fields(), mFields );
+  QCOMPARE( original.fields(), mFields );
   QgsFeature copy( original );
-  QCOMPARE( *copy.fields(), *original.fields() );
-
-  Q_NOWARN_DEPRECATED_PUSH
-  //test deprecated setFields( QgsFields* ) method
-  QgsFeature feature2;
-  feature2.setFields( &mFields );
-  QCOMPARE( *feature2.fields(), mFields );
-  Q_NOWARN_DEPRECATED_POP
+  QCOMPARE( copy.fields(), original.fields() );
 
   //test detach
   QgsFields newFields( mFields );
   newFields.remove( 2 );
   copy.setFields( newFields );
-  QCOMPARE( *copy.fields(), newFields );
-  QCOMPARE( *original.fields(), mFields );
+  QCOMPARE( copy.fields(), newFields );
+  QCOMPARE( original.fields(), mFields );
 
   //test that no init leaves attributes
   copy = original;
@@ -355,7 +329,7 @@ void TestQgsFeature::fields()
   copy.setAttribute( 1, 2 );
   copy.setAttribute( 2, 3 );
   copy.setFields( mFields, false );
-  QCOMPARE( *copy.fields(), mFields );
+  QCOMPARE( copy.fields(), mFields );
   //should be 3 invalid attributes
   QCOMPARE( copy.attributes().count(), 3 );
   QCOMPARE( copy.attributes().at( 0 ).toInt(), 1 );
@@ -369,7 +343,7 @@ void TestQgsFeature::fields()
   copy.setAttribute( 1, 2 );
   copy.setAttribute( 2, 3 );
   copy.setFields( mFields, true );
-  QCOMPARE( *copy.fields(), mFields );
+  QCOMPARE( copy.fields(), mFields );
   //should be 3 invalid attributes
   QCOMPARE( copy.attributes().count(), 3 );
   Q_FOREACH ( const QVariant& a, copy.attributes() )
@@ -416,7 +390,7 @@ void TestQgsFeature::attributeUsingField()
 void TestQgsFeature::dataStream()
 {
   QgsFeature originalFeature;
-  originalFeature.setGeometry( new QgsGeometry( *mGeometry.data() ) );
+  originalFeature.setGeometry( QgsGeometry( mGeometry ) );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );
@@ -428,11 +402,11 @@ void TestQgsFeature::dataStream()
 
   QCOMPARE( resultFeature.id(), originalFeature.id() );
   QCOMPARE( resultFeature.attributes(), originalFeature.attributes() );
-  QCOMPARE( *resultFeature.constGeometry()->asWkb(), *originalFeature.constGeometry()->asWkb() );
+  QCOMPARE( *resultFeature.geometry().asWkb(), *originalFeature.geometry().asWkb() );
   QCOMPARE( resultFeature.isValid(), originalFeature.isValid() );
 
   //also test with feature empty geometry
-  originalFeature.setGeometry( new QgsGeometry() );
+  originalFeature.setGeometry( QgsGeometry() );
   QByteArray ba2;
   QDataStream ds2( &ba2, QIODevice::ReadWrite );
   ds2 << originalFeature;
@@ -442,21 +416,7 @@ void TestQgsFeature::dataStream()
 
   QCOMPARE( resultFeature.id(), originalFeature.id() );
   QCOMPARE( resultFeature.attributes(), originalFeature.attributes() );
-  QVERIFY( resultFeature.constGeometry()->isEmpty() );
-  QCOMPARE( resultFeature.isValid(), originalFeature.isValid() );
-
-  //test with feature with null geometry
-  originalFeature.setGeometry( 0 );
-  QByteArray ba3;
-  QDataStream ds3( &ba3, QIODevice::ReadWrite );
-  ds3 << originalFeature;
-
-  ds3.device()->seek( 0 );
-  ds3 >> resultFeature;
-
-  QCOMPARE( resultFeature.id(), originalFeature.id() );
-  QCOMPARE( resultFeature.attributes(), originalFeature.attributes() );
-  QVERIFY( resultFeature.constGeometry()->isEmpty() );
+  QVERIFY( !resultFeature.hasGeometry() );
   QCOMPARE( resultFeature.isValid(), originalFeature.isValid() );
 }
 

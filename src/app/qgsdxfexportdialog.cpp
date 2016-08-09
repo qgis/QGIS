@@ -26,7 +26,7 @@
 #include "qgsfieldcombobox.h"
 #include "qgisapp.h"
 #include "qgslayertreemapcanvasbridge.h"
-#include "qgsvisibilitypresetcollection.h"
+#include "qgsmapthemecollection.h"
 #include "qgsmapcanvas.h"
 
 #include <QFileDialog>
@@ -344,7 +344,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
   }
   else
   {
-    visibleLayers = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( name ).toSet();
+    visibleLayers = QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( name ).toSet();
   }
 
   if ( visibleLayers.isEmpty() )
@@ -450,7 +450,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mLayerTitleAsName->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfLayerTitleAsName", s.value( "qgis/lastDxfLayerTitleAsName", "false" ).toString() ) != "false" );
   mMapExtentCheckBox->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfMapRectangle", s.value( "qgis/lastDxfMapRectangle", "false" ).toString() ) != "false" );
 
-  QStringList ids = QgsProject::instance()->visibilityPresetCollection()->presets();
+  QStringList ids = QgsProject::instance()->mapThemeCollection()->presets();
   ids.prepend( "" );
   mVisibilityPresets->addItems( ids );
   mVisibilityPresets->setCurrentIndex( mVisibilityPresets->findText( QgsProject::instance()->readEntry( "dxf", "/lastVisibilityPreset", "" ) ) );

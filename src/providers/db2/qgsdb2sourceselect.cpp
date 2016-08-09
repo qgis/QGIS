@@ -55,17 +55,17 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
   if ( index.column() == QgsDb2TableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    Q_FOREACH ( Qgis::WkbType type,
-                QList<Qgis::WkbType>()
-                << Qgis::WKBPoint
-                << Qgis::WKBLineString
-                << Qgis::WKBPolygon
-                << Qgis::WKBMultiPoint
-                << Qgis::WKBMultiLineString
-                << Qgis::WKBMultiPolygon
-                << Qgis::WKBNoGeometry )
+    Q_FOREACH ( QgsWkbTypes::Type type,
+                QList<QgsWkbTypes::Type>()
+                << QgsWkbTypes::Point
+                << QgsWkbTypes::LineString
+                << QgsWkbTypes::Polygon
+                << QgsWkbTypes::MultiPoint
+                << QgsWkbTypes::MultiLineString
+                << QgsWkbTypes::MultiPolygon
+                << QgsWkbTypes::NoGeometry )
     {
-      cb->addItem( QgsDb2TableModel::iconForWkbType( type ), QgsDb2TableModel::displayStringForWkbType( type ), type );
+      cb->addItem( QgsDb2TableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), type );
     }
     cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
@@ -102,10 +102,10 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
   {
     if ( index.column() == QgsDb2TableModel::dbtmType )
     {
-      Qgis::WkbType type = ( Qgis::WkbType ) cb->itemData( cb->currentIndex() ).toInt();
+      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->itemData( cb->currentIndex() ).toInt();
 
       model->setData( index, QgsDb2TableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != Qgis::WKBUnknown ? QgsDb2TableModel::displayStringForWkbType( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsDb2TableModel::dbtmPkCol )

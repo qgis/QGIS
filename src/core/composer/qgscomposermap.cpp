@@ -34,10 +34,10 @@
 #include "qgsvectorlayer.h"
 #include "qgspallabeling.h"
 #include "qgsexpression.h"
-#include "qgsvisibilitypresetcollection.h"
+#include "qgsmapthemecollection.h"
 #include "qgsannotation.h"
 
-#include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
+#include "qgssymbollayerutils.h" //for pointOnLineWithDistance
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -543,8 +543,8 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
-      renderLayerSet = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
+    if ( QgsProject::instance()->mapThemeCollection()->hasPreset( presetName ) )
+      renderLayerSet = QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( presetName );
     else  // fallback to using map canvas layers
       renderLayerSet = mComposition->mapSettings().layers();
   }
@@ -604,8 +604,8 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
-      return QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName );
+    if ( QgsProject::instance()->mapThemeCollection()->hasPreset( presetName ) )
+      return QgsProject::instance()->mapThemeCollection()->presetStyleOverrides( presetName );
     else
       return QMap<QString, QString>();
   }
@@ -1306,7 +1306,7 @@ bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
   extentElem.setAttribute( "ymax", qgsDoubleToString( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
 
-  // follow visibility preset
+  // follow map theme
   composerMapElem.setAttribute( "followPreset", mFollowVisibilityPreset ? "true" : "false" );
   composerMapElem.setAttribute( "followPresetName", mFollowVisibilityPresetName );
 
@@ -1411,7 +1411,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     mMapRotation = itemElem.attribute( "mapRotation", "0" ).toDouble();
   }
 
-  // follow visibility preset
+  // follow map theme
   mFollowVisibilityPreset = itemElem.attribute( "followPreset" ).compare( "true" ) == 0;
   mFollowVisibilityPresetName = itemElem.attribute( "followPresetName" );
 
@@ -1499,9 +1499,9 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     mapGrid->setFrameStyle( static_cast< QgsComposerMapGrid::FrameStyle >( gridElem.attribute( "gridFrameStyle", "0" ).toInt() ) );
     mapGrid->setFrameWidth( gridElem.attribute( "gridFrameWidth", "2.0" ).toDouble() );
     mapGrid->setFramePenSize( gridElem.attribute( "gridFramePenThickness", "0.5" ).toDouble() );
-    mapGrid->setFramePenColor( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "framePenColor", "0,0,0" ) ) );
-    mapGrid->setFrameFillColor1( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor1", "255,255,255,255" ) ) );
-    mapGrid->setFrameFillColor2( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor2", "0,0,0,255" ) ) );
+    mapGrid->setFramePenColor( QgsSymbolLayerUtils::decodeColor( gridElem.attribute( "framePenColor", "0,0,0" ) ) );
+    mapGrid->setFrameFillColor1( QgsSymbolLayerUtils::decodeColor( gridElem.attribute( "frameFillColor1", "255,255,255,255" ) ) );
+    mapGrid->setFrameFillColor2( QgsSymbolLayerUtils::decodeColor( gridElem.attribute( "frameFillColor2", "0,0,0,255" ) ) );
     mapGrid->setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) ) );
     QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
     QgsLineSymbolV2* lineSymbol = nullptr;
@@ -1516,7 +1516,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     }
     else
     {
-      lineSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsLineSymbolV2>( gridSymbolElem );
+      lineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbolV2>( gridSymbolElem );
     }
     mapGrid->setLineSymbol( lineSymbol );
 
@@ -1539,7 +1539,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
       QFont annotationFont;
       annotationFont.fromString( annotationElem.attribute( "font", "" ) );
       mapGrid->setAnnotationFont( annotationFont );
-      mapGrid->setAnnotationFontColor( QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "fontColor", "0,0,0,255" ) ) );
+      mapGrid->setAnnotationFontColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "fontColor", "0,0,0,255" ) ) );
 
       mapGrid->setAnnotationPrecision( annotationElem.attribute( "precision", "3" ).toInt() );
     }
@@ -1561,7 +1561,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
     if ( !overviewFrameSymbolElem.isNull() )
     {
-      fillSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( overviewFrameSymbolElem );
+      fillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbolV2>( overviewFrameSymbolElem );
       mapOverview->setFrameSymbol( fillSymbol );
     }
     mOverviewStack->addOverview( mapOverview );
@@ -2175,9 +2175,8 @@ QgsExpressionContext* QgsComposerMap::createExpressionContext() const
   QgsRectangle extent( *currentMapExtent() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_width", extent.width(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_height", extent.height(), true ) );
-  QgsGeometry* centerPoint = QgsGeometry::fromPoint( extent.center() );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( *centerPoint ), true ) );
-  delete centerPoint;
+  QgsGeometry centerPoint = QgsGeometry::fromPoint( extent.center() );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( centerPoint ), true ) );
 
   context->appendScope( scope );
 

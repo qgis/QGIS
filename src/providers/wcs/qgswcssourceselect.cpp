@@ -51,7 +51,7 @@ void QgsWCSSourceSelect::populateLayerList()
   mLayersTreeWidget->clear();
 
 
-  QgsDataSourceURI uri = mUri;
+  QgsDataSourceUri uri = mUri;
   QString cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
   uri.setParam( "cache", cache );
 
@@ -114,7 +114,7 @@ QString QgsWCSSourceSelect::selectedIdentifier()
 
 void QgsWCSSourceSelect::addClicked()
 {
-  QgsDataSourceURI uri = mUri;
+  QgsDataSourceUri uri = mUri;
 
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return; }

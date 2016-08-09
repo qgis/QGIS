@@ -173,9 +173,9 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
     return 1;
   }
 
-  const QgsGeometry* g = f->constGeometry();
+  QgsGeometry g = f->geometry();
   {
-    if ( !g )
+    if ( g.isEmpty() )
     {
       return 2;
     }
@@ -201,18 +201,18 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   //parse WKB. It is ugly, but we cannot use the methods with QgsPoint because they don't contain z-values for 25D types
   bool hasZValue = false;
   double x, y, z;
-  QgsConstWkbPtr currentWkbPtr( g->asWkb(), g->wkbSize() );
+  QgsConstWkbPtr currentWkbPtr( g.asWkb(), g.wkbSize() );
   currentWkbPtr.readHeader();
   //maybe a structure or break line
   Line3D* line = nullptr;
 
-  Qgis::WkbType wkbType = g->wkbType();
+  QgsWkbTypes::Type wkbType = g.wkbType();
   switch ( wkbType )
   {
-    case Qgis::WKBPoint25D:
+    case QgsWkbTypes::Point25D:
       hasZValue = true;
       FALLTHROUGH;
-    case Qgis::WKBPoint:
+    case QgsWkbTypes::Point:
     {
       currentWkbPtr >> x >> y;
       if ( zCoord && hasZValue )
@@ -230,10 +230,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case Qgis::WKBMultiPoint25D:
+    case QgsWkbTypes::MultiPoint25D:
       hasZValue = true;
       FALLTHROUGH;
-    case Qgis::WKBMultiPoint:
+    case QgsWkbTypes::MultiPoint:
     {
       int nPoints;
       currentWkbPtr >> nPoints;
@@ -252,10 +252,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case Qgis::WKBLineString25D:
+    case QgsWkbTypes::LineString25D:
       hasZValue = true;
       FALLTHROUGH;
-    case Qgis::WKBLineString:
+    case QgsWkbTypes::LineString:
     {
       if ( type != POINTS )
       {
@@ -292,10 +292,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case Qgis::WKBMultiLineString25D:
+    case QgsWkbTypes::MultiLineString25D:
       hasZValue = true;
       FALLTHROUGH;
-    case Qgis::WKBMultiLineString:
+    case QgsWkbTypes::MultiLineString:
     {
       int nLines;
       currentWkbPtr >> nLines;
@@ -336,10 +336,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case Qgis::WKBPolygon25D:
+    case QgsWkbTypes::Polygon25D:
       hasZValue = true;
       FALLTHROUGH;
-    case Qgis::WKBPolygon:
+    case QgsWkbTypes::Polygon:
     {
       int nRings;
       currentWkbPtr >> nRings;
@@ -382,10 +382,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       break;
     }
 
-    case Qgis::WKBMultiPolygon25D:
+    case QgsWkbTypes::MultiPolygon25D:
       hasZValue = true;
       FALLTHROUGH;
-    case Qgis::WKBMultiPolygon:
+    case QgsWkbTypes::MultiPolygon:
     {
       int nPolys;
       currentWkbPtr >> nPolys;

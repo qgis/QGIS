@@ -119,8 +119,8 @@ QString QgsClipboard::generateClipboardText() const
         // TODO: Set up Paste Transformations to specify the order in which fields are added.
         if ( format == AttributesWithWKT )
         {
-          if ( it->constGeometry() )
-            textFields += it->constGeometry()->exportToWkt();
+          if ( it->hasGeometry() )
+            textFields += it->geometry().exportToWkt();
           else
           {
             textFields += settings.value( "qgis/nullValue", "NULL" ).toString();
@@ -188,8 +188,8 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const Q
   Q_FOREACH ( const QString& row, values )
   {
     // Assume that it's just WKT for now.
-    QgsGeometry* geometry = QgsGeometry::fromWkt( row );
-    if ( !geometry )
+    QgsGeometry geometry = QgsGeometry::fromWkt( row );
+    if ( geometry.isEmpty() )
       continue;
 
     QgsFeature feature;
@@ -245,7 +245,7 @@ void QgsClipboard::insert( const QgsFeature& feature )
 {
   mFeatureClipboard.push_back( feature );
 
-  QgsDebugMsgLevel( "inserted " + feature.constGeometry()->exportToWkt(), 4 );
+  QgsDebugMsgLevel( "inserted " + feature.geometry().exportToWkt(), 4 );
   mUseSystemClipboard = false;
   emit changed();
 }
@@ -269,7 +269,9 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
   QgsDebugMsg( "transforming clipboard." );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )
   {
-    iter->geometry()->transform( ct );
+    QgsGeometry g = iter->geometry();
+    g.transform( ct );
+    iter->setGeometry( g );
   }
 
   return featureList;

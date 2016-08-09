@@ -19,7 +19,7 @@
 #include <qgsrulebasedrendererv2.h>
 
 #include <qgsapplication.h>
-#include <qgssymbolv2.h>
+#include <qgssymbol.h>
 #include <qgsvectorlayer.h>
 
 typedef QgsRuleBasedRendererV2::Rule RRule;
@@ -80,8 +80,8 @@ class TestQgsRuleBasedRenderer: public QObject
       f3.setAttribute( idx, QVariant( 100 ) );
 
       // prepare renderer
-      QgsSymbolV2* s1 = QgsSymbolV2::defaultSymbol( Qgis::Point );
-      QgsSymbolV2* s2 = QgsSymbolV2::defaultSymbol( Qgis::Point );
+      QgsSymbol* s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+      QgsSymbol* s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
       RRule* rootRule = new RRule( nullptr );
       rootRule->appendChild( new RRule( s1, 0, 0, "fld >= 5 and fld <= 20" ) );
       rootRule->appendChild( new RRule( s2, 0, 0, "fld <= 10" ) );
@@ -103,13 +103,13 @@ class TestQgsRuleBasedRenderer: public QObject
 
       // test symbolsForFeature
       ctx.expressionContext().setFeature( f1 );
-      QgsSymbolV2List lst1 = r.symbolsForFeature( f1, ctx );
+      QgsSymbolList lst1 = r.symbolsForFeature( f1, ctx );
       QVERIFY( lst1.count() == 1 );
       ctx.expressionContext().setFeature( f2 );
-      QgsSymbolV2List lst2 = r.symbolsForFeature( f2, ctx );
+      QgsSymbolList lst2 = r.symbolsForFeature( f2, ctx );
       QVERIFY( lst2.count() == 2 );
       ctx.expressionContext().setFeature( f3 );
-      QgsSymbolV2List lst3 = r.symbolsForFeature( f3, ctx );
+      QgsSymbolList lst3 = r.symbolsForFeature( f3, ctx );
       QVERIFY( lst3.isEmpty() );
 
       r.stopRender( ctx );

@@ -292,6 +292,18 @@ class QgisInterface : QObject
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
 
+    /** Register a new custom drop handler.
+     * @note added in QGIS 3.0
+     * @note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * @see unregisterCustomDropHandler() */
+    virtual void registerCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
+
+    /** Unregister a previously registered custom drop handler.
+     * @note added in QGIS 3.0
+     * @see registerCustomDropHandler() */
+    virtual void unregisterCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
+
     // @todo is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
@@ -308,7 +320,6 @@ class QgisInterface : QObject
      */
 
     // Menus
-    virtual QMenu *fileMenu() = 0 /Deprecated/;
     virtual QMenu *projectMenu() = 0;
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;
@@ -441,8 +452,6 @@ class QgisInterface : QObject
     virtual QAction *actionCancelEdits() = 0;
     virtual QAction *actionCancelAllEdits() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
-    /** @deprecated in 2.4 - returns null pointer */
-    virtual QAction *actionLayerSelectionSaveAs() = 0 /Deprecated/;
     virtual QAction *actionRemoveLayer() = 0;
     virtual QAction *actionDuplicateLayer() = 0;
     virtual QAction *actionLayerProperties() = 0;

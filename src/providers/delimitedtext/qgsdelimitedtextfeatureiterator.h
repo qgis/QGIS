@@ -46,7 +46,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     int mYFieldIndex;
     int mWktFieldIndex;
     bool mWktHasPrefix;
-    Qgis::GeometryType mGeometryType;
+    QgsWkbTypes::GeometryType mGeometryType;
     QString mDecimalPoint;
     bool mXyDms;
     QList<int> attributeColumns;
@@ -76,7 +76,7 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
 
     // Tests whether the geometry is required, given that testGeometry is true.
     bool wantGeometry( const QgsPoint & point ) const;
-    bool wantGeometry( QgsGeometry *geom ) const;
+    bool wantGeometry( const QgsGeometry& geom ) const;
 
   protected:
     //! fetch next feature, return true on success
@@ -85,8 +85,8 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     bool setNextFeatureId( qint64 fid );
 
     bool nextFeatureInternal( QgsFeature& feature );
-    QgsGeometry* loadGeometryWkt( const QStringList& tokens, bool &isNull );
-    QgsGeometry* loadGeometryXY( const QStringList& tokens, bool &isNull );
+    QgsGeometry loadGeometryWkt( const QStringList& tokens, bool &isNull );
+    QgsGeometry loadGeometryXY( const QStringList& tokens, bool &isNull );
     void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
 
     QList<QgsFeatureId> mFeatureIds;

@@ -31,7 +31,7 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import Qgis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -93,12 +93,12 @@ class VectorGrid(GeoAlgorithm):
             fields.append(QgsField('ymax', QVariant.Double, '', 24, 15))
             fieldCount = 5
             writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-                fields, Qgis.WKBPolygon, mapCRS)
+                fields, QgsWkbTypes.Polygon, mapCRS)
         else:
             fields.append(QgsField('coord', QVariant.Double, '', 24, 15))
             fieldCount = 2
             writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-                fields, Qgis.WKBLineString, mapCRS)
+                fields, QgsWkbTypes.LineString, mapCRS)
 
         feat = QgsFeature()
         feat.initAttributes(fieldCount)

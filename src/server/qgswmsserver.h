@@ -43,7 +43,7 @@ class QgsRectangle;
 class QgsRenderContext;
 class QgsVectorLayer;
 class QgsSymbol;
-class QgsSymbolV2;
+class QgsSymbol;
 class QgsAccessControl;
 
 class QColor;
@@ -88,7 +88,7 @@ class QgsWmsServer: public QgsOWSServer
     of the image object*/
     QImage* getLegendGraphics();
 
-    typedef QSet<QgsSymbolV2*> SymbolV2Set;
+    typedef QSet<QgsSymbol*> SymbolV2Set;
     typedef QMap<QgsVectorLayer*, SymbolV2Set> HitTest;
 
     /** Returns the map as an image (or a null pointer in case of error). The caller takes ownership

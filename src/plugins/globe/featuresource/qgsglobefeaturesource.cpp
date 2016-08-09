@@ -40,7 +40,7 @@ void QgsGlobeFeatureSource::initialize( const osgDB::Options* dbOptions )
   mLayer = mOptions.layer();
 
   connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
-  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
 
   // create the profile
   osgEarth::SpatialReference* ref = osgEarth::SpatialReference::create( mLayer->crs().toWkt().toStdString() );
@@ -95,13 +95,13 @@ osgEarth::Features::Geometry::Type QgsGlobeFeatureSource::getGeometryType() cons
 {
   switch ( mLayer->geometryType() )
   {
-    case Qgis::Point:
+    case  QgsWkbTypes::PointGeometry:
       return osgEarth::Features::Geometry::TYPE_POINTSET;
 
-    case Qgis::Line:
+    case QgsWkbTypes::LineGeometry:
       return osgEarth::Features::Geometry::TYPE_LINESTRING;
 
-    case Qgis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
       return osgEarth::Features::Geometry::TYPE_POLYGON;
 
     default:
@@ -126,7 +126,7 @@ void QgsGlobeFeatureSource::attributeValueChanged( const QgsFeatureId& featureId
   }
 }
 
-void QgsGlobeFeatureSource::geometryChanged( const QgsFeatureId& featureId, QgsGeometry& geometry )
+void QgsGlobeFeatureSource::geometryChanged( const QgsFeatureId& featureId, const QgsGeometry& geometry )
 {
   FeatureMap_t::iterator it = mFeatures.find( featureId );
   if ( it != mFeatures.end() )

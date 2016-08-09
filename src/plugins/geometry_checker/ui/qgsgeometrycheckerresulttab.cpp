@@ -245,13 +245,13 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
   {
     return false;
   }
-  typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, Qgis::WkbType, const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem& );
+  typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QgsWkbTypes::Type, const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem& );
   createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( ogrLib.resolve( "createEmptyDataSource" ) );
   if ( !createEmptyDataSource )
   {
     return false;
   }
-  if ( !createEmptyDataSource( file, "ESRI Shapefile", mFeaturePool->getLayer()->dataProvider()->encoding(), Qgis::WKBPoint, attributes, mFeaturePool->getLayer()->crs() ) )
+  if ( !createEmptyDataSource( file, "ESRI Shapefile", mFeaturePool->getLayer()->dataProvider()->encoding(), QgsWkbTypes::Point, attributes, mFeaturePool->getLayer()->crs() ) )
   {
     return false;
   }
@@ -271,7 +271,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
     QgsFeature f( layer->fields() );
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
-    f.setGeometry( new QgsGeometry( error->location().clone() ) );
+    f.setGeometry( QgsGeometry( error->location().clone() ) );
     layer->dataProvider()->addFeatures( QgsFeatureList() << f );
   }
 
@@ -331,7 +331,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     {
       QgsRubberBand* featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );
       QgsGeometry geom( geometry->clone() );
-      featureRubberBand->addGeometry( &geom, mFeaturePool->getLayer() );
+      featureRubberBand->addGeometry( geom, mFeaturePool->getLayer() );
       featureRubberBand->setWidth( 5 );
       featureRubberBand->setColor( Qt::yellow );
       mCurrentRubberBands.append( featureRubberBand );
@@ -345,7 +345,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
 
     if ( ui.radioButtonError->isChecked() || current || error->status() == QgsGeometryCheckError::StatusFixed )
     {
-      QgsRubberBand* pointRubberBand = new QgsRubberBand( mIface->mapCanvas(), Qgis::Point );
+      QgsRubberBand* pointRubberBand = new QgsRubberBand( mIface->mapCanvas(), QgsWkbTypes::PointGeometry );
       QgsPoint pos = mIface->mapCanvas()->mapSettings().layerToMapCoordinates( mFeaturePool->getLayer(), QgsPoint( error->location().x(), error->location().y() ) );
       pointRubberBand->addPoint( pos );
       pointRubberBand->setWidth( 20 );

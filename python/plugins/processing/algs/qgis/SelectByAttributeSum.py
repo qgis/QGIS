@@ -67,7 +67,7 @@ class SelectByAttributeSum(GeoAlgorithm):
                         'Select one feature and try again.'))
 
         ft = layer.selectedFeatures()[0]
-        geom = QgsGeometry(ft.geometry())
+        geom = ft.geometry()
         attrSum = ft[fieldName]
 
         idx = QgsSpatialIndex(layer.getFeatures())
@@ -81,7 +81,7 @@ class SelectByAttributeSum(GeoAlgorithm):
 
             for i in intersected:
                 ft = layer.getFeatures(req.setFilterFid(i)).next()
-                tmpGeom = QgsGeometry(ft.geometry())
+                tmpGeom = ft.geometry()
                 if tmpGeom.touches(geom):
                     geom = tmpGeom.combine(geom)
                     selected.append(i)

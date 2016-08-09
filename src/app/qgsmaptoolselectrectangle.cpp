@@ -47,7 +47,7 @@ void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent* e )
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
   delete mRubberBand;
-  mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
+  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
   mRubberBand->setFillColor( mFillColor );
   mRubberBand->setBorderColor( mBorderColour );
 }
@@ -103,15 +103,13 @@ void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent* e )
   {
     QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
 
-    QgsGeometry* selectGeom = mRubberBand->asGeometry();
+    QgsGeometry selectGeom = mRubberBand->asGeometry();
     if ( !mDragging )
     {
       QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e );
     }
     else
       QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, selectGeom, e );
-
-    delete selectGeom;
 
     delete mRubberBand;
     mRubberBand = nullptr;

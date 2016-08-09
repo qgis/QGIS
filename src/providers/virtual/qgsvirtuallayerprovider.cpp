@@ -120,7 +120,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
       // connect to modification signals to invalidate statistics
       connect( vl, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( invalidateStatistics() ) );
       connect( vl, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( invalidateStatistics() ) );
-      connect( vl, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( invalidateStatistics() ) );
+      connect( vl, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( invalidateStatistics() ) );
     }
     else
     {
@@ -276,7 +276,7 @@ bool QgsVirtualLayerProvider::createIt()
   resetSqlite();
   initVirtualLayerMetadata( mSqlite.get() );
 
-  bool noGeometry = mDefinition.geometryWkbType() == QgsWKBTypes::NoGeometry;
+  bool noGeometry = mDefinition.geometryWkbType() == QgsWkbTypes::NoGeometry;
 
   // load source layers (and populate mLayers)
   if ( !loadSourceLayers() )
@@ -500,9 +500,9 @@ bool QgsVirtualLayerProvider::setSubsetString( const QString& subset, bool updat
 }
 
 
-Qgis::WkbType QgsVirtualLayerProvider::geometryType() const
+QgsWkbTypes::Type QgsVirtualLayerProvider::wkbType() const
 {
-  return static_cast<Qgis::WkbType>( mDefinition.geometryWkbType() );
+  return static_cast<QgsWkbTypes::Type>( mDefinition.geometryWkbType() );
 }
 
 long QgsVirtualLayerProvider::featureCount() const
@@ -525,7 +525,7 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 
 void QgsVirtualLayerProvider::updateStatistics() const
 {
-  bool hasGeometry = mDefinition.geometryWkbType() != QgsWKBTypes::NoGeometry;
+  bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
   QString subset = mSubset.isEmpty() ? "" : " WHERE " + mSubset;
   QString sql = QString( "SELECT Count(*)%1 FROM %2%3" )
                 .arg( hasGeometry ? QString( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : "",

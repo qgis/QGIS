@@ -29,7 +29,7 @@
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
 #include "qgsproject.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgslayertreeutils.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -47,9 +47,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mForceResize( false )
     , mSizeToContents( true )
 {
-  mLegendModel2 = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
-
-  connect( &mLegendModel, SIGNAL( layersChanged() ), this, SLOT( synchronizeWithModel() ) );
+  mLegendModel = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
 
   connect( &composition->atlasComposition(), SIGNAL( renderEnded() ), this, SLOT( onAtlasEnded() ) );
   connect( &composition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( onAtlasFeature( QgsFeature* ) ) );
@@ -61,7 +59,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
 
 QgsComposerLegend::QgsComposerLegend()
     : QgsComposerItem( nullptr )
-    , mLegendModel2( nullptr )
+    , mLegendModel( nullptr )
     , mCustomLayerTree( nullptr )
     , mComposerMap( nullptr )
     , mLegendFilterByMap( false )
@@ -78,7 +76,7 @@ QgsComposerLegend::QgsComposerLegend()
 
 QgsComposerLegend::~QgsComposerLegend()
 {
-  delete mLegendModel2;
+  delete mLegendModel;
   delete mCustomLayerTree;
 }
 
@@ -122,7 +120,7 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
   }
   mInitialMapScaleCalculated = true;
 
-  QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
   legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
 
   //adjust box if width or height is too small
@@ -183,7 +181,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     doUpdateFilterByMap();
   }
 
-  QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
   QSizeF size = legendRenderer.minimumSize();
   if ( painter )
     legendRenderer.drawLegend( painter );
@@ -205,7 +203,7 @@ void QgsComposerLegend::adjustBoxSize()
     return;
   }
 
-  QgsLegendRenderer legendRenderer( mLegendModel2, mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
   QSizeF size = legendRenderer.minimumSize();
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
@@ -228,7 +226,7 @@ bool QgsComposerLegend::resizeToContents() const
 
 void QgsComposerLegend::setCustomLayerTree( QgsLayerTreeGroup* rootGroup )
 {
-  mLegendModel2->setRootGroup( rootGroup ? rootGroup : QgsProject::instance()->layerTreeRoot() );
+  mLegendModel->setRootGroup( rootGroup ? rootGroup : QgsProject::instance()->layerTreeRoot() );
 
   delete mCustomLayerTree;
   mCustomLayerTree = rootGroup;
@@ -341,10 +339,6 @@ void QgsComposerLegend::synchronizeWithModel()
 
 void QgsComposerLegend::updateLegend()
 {
-  // take layer list from map renderer (to have legend order)
-  mLegendModel.blockSignals( true );
-  mLegendModel.setLayerSet( mComposition ? mComposition->mapSettings().layers() : QStringList() );
-  mLegendModel.blockSignals( false );
   adjustBoxSize();
   updateItem();
 }
@@ -379,7 +373,7 @@ bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "symbolHeight", QString::number( mSettings.symbolSize().height() ) );
 
   composerLegendElem.setAttribute( "rasterBorder", mSettings.drawRasterBorder() );
-  composerLegendElem.setAttribute( "rasterBorderColor", QgsSymbolLayerV2Utils::encodeColor( mSettings.rasterBorderColor() ) );
+  composerLegendElem.setAttribute( "rasterBorderColor", QgsSymbolLayerUtils::encodeColor( mSettings.rasterBorderColor() ) );
   composerLegendElem.setAttribute( "rasterBorderWidth", QString::number( mSettings.rasterBorderWidth() ) );
 
   composerLegendElem.setAttribute( "wmsLegendWidth", QString::number( mSettings.wmsLegendSize().width() ) );
@@ -510,7 +504,7 @@ bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( "wmsLegendWidth", "50" ).toDouble(), itemElem.attribute( "wmsLegendHeight", "25" ).toDouble() ) );
 
   mSettings.setDrawRasterBorder( itemElem.attribute( "rasterBorder", "1" ) != "0" );
-  mSettings.setRasterBorderColor( QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "rasterBorderColor", "0,0,0" ) ) );
+  mSettings.setRasterBorderColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "rasterBorderColor", "0,0,0" ) ) );
   mSettings.setRasterBorderWidth( itemElem.attribute( "rasterBorderWidth", "0" ).toDouble() );
 
   mSettings.setWrapChar( itemElem.attribute( "wrapChar" ) );
@@ -658,10 +652,10 @@ void QgsComposerLegend::mapLayerStyleOverridesChanged()
   }
   else
   {
-    mLegendModel2->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
+    mLegendModel->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
 
-    Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLegendModel2->rootGroup()->findLayers() )
-      mLegendModel2->refreshLayerLegend( nodeLayer );
+    Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLegendModel->rootGroup()->findLayers() )
+      mLegendModel->refreshLayerLegend( nodeLayer );
   }
 
   adjustBoxSize();
@@ -684,9 +678,9 @@ void QgsComposerLegend::updateFilterByMap( bool redraw )
 void QgsComposerLegend::doUpdateFilterByMap()
 {
   if ( mComposerMap )
-    mLegendModel2->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
+    mLegendModel->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
   else
-    mLegendModel2->setLayerStyleOverrides( QMap<QString, QString>() );
+    mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
 
 
   bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree : QgsProject::instance()->layerTreeRoot() ) );
@@ -708,10 +702,10 @@ void QgsComposerLegend::doUpdateFilterByMap()
     {
       filterPolygon = composition()->atlasComposition().currentGeometry( composition()->mapSettings().destinationCrs() );
     }
-    mLegendModel2->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
+    mLegendModel->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
   }
   else
-    mLegendModel2->setLegendFilterByMap( nullptr );
+    mLegendModel->setLegendFilterByMap( nullptr );
 
   mForceResize = true;
 }

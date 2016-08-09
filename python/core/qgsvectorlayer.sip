@@ -187,11 +187,14 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns a comment for the data in the layer */
     QString dataComment() const;
 
-    /** Set the primary display field to be used in the identify results dialog */
-    void setDisplayField( const QString& fldName = "" );
-
-    /** Returns the primary display field name used in the identify results dialog */
-    const QString displayField() const;
+    /**
+     * This is a shorthand for accessing the displayExpression if it is a simple field.
+     * If the displayExpression is more complex than a simple field, a null string will
+     * be returned.
+     *
+     * @see displayExpression
+     */
+    QString displayField() const;
 
     /** Set the preview expression, used to create a human readable preview string.
      *  Used e.g. in the attribute table feature list. Uses { @link QgsExpression }.
@@ -445,13 +448,13 @@ class QgsVectorLayer : QgsMapLayer
     void setRendererV2( QgsFeatureRendererV2* r /Transfer/ );
 
     /** Returns point, line or polygon */
-    Qgis::GeometryType geometryType() const;
+    QgsWkbTypes::GeometryType geometryType() const;
 
     /** Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry */
     bool hasGeometryType() const;
 
     /** Returns the WKBType or WKBUnknown in case of error*/
-    Qgis::WkbType wkbType() const;
+    QgsWkbTypes::Type wkbType() const;
 
     /** Return the provider type for this layer */
     QString providerType() const;
@@ -565,7 +568,7 @@ class QgsVectorLayer : QgsMapLayer
      * @param symbol the symbol
      * @return number of features rendered by symbol or -1 if failed or counts are not available
      */
-    long featureCount( QgsSymbolV2* symbol ) const;
+    long featureCount( QgsSymbol* symbol ) const;
 
     /**
      * Update the data source of the layer. The layer's renderer and legend will be preserved only
@@ -580,7 +583,7 @@ class QgsVectorLayer : QgsMapLayer
     void setDataSource( const QString& dataSource, const QString& baseName, const QString& provider, bool loadDefaultStyleFlag = false );
 
     /**
-     * Count features for symbols. Feature counts may be get by featureCount( QgsSymbolV2*).
+     * Count features for symbols. Feature counts may be get by featureCount( QgsSymbol*).
      * @param showProgress show progress dialog
      * @return true if calculated, false if failed or was canceled by user
      */
@@ -763,22 +766,12 @@ class QgsVectorLayer : QgsMapLayer
      */
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
-    /** Changes the specified geometry such that it has no intersections with other
-     *  polygon (or multipolygon) geometries in this vector layer
-     *  @param geom geometry to modify
-     *  @param ignoreFeatures list of feature ids where intersections should be ignored
-     *  @return 0 in case of success
-     *
-     *  @deprecated since 2.2 - not being used for "avoid intersections" functionality anymore
-     */
-    int removePolygonIntersections( QgsGeometry* geom, const QgsFeatureIds& ignoreFeatures = QgsFeatureIds() ) /Deprecated/;
-
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
      * @note geom is not going to be modified by the function
      * @return 0 in case of success
      */
-    int addTopologicalPoints( const QgsGeometry* geom );
+    int addTopologicalPoints( const QgsGeometry& geom );
 
     /** Adds a vertex to segments which intersect point p but don't
      * already have a vertex there. If a feature already has a vertex at position p,
@@ -911,7 +904,7 @@ class QgsVectorLayer : QgsMapLayer
     bool setReadOnly( bool readonly = true );
 
     /** Change feature's geometry */
-    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry& geom );
 
     /**
      * Changes an attribute value (but does not commit it)
@@ -1424,6 +1417,24 @@ class QgsVectorLayer : QgsMapLayer
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig );
 
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * @note added in 3.0
+     */
+    QString mapTipTemplate() const;
+
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * @note added in 3.0
+     */
+    void setMapTipTemplate( const QString& mapTipTemplate );
+
   public slots:
     /**
      * Select feature by its ID
@@ -1615,7 +1626,7 @@ class QgsVectorLayer : QgsMapLayer
      * @param fid The id of the changed feature
      * @param geometry The new geometry
      */
-    void geometryChanged( QgsFeatureId fid, QgsGeometry& geometry );
+    void geometryChanged( QgsFeatureId fid, const QgsGeometry& geometry );
 
     /** This signal is emitted, when attributes are deleted from the provider */
     void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributes );
@@ -1684,6 +1695,20 @@ class QgsVectorLayer : QgsMapLayer
      * @param errorMessage Write error messages into this string.
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
+
+    /**
+     * Emitted when the map tip changes
+     *
+     * @note added in 3.0
+     */
+    void mapTipTemplateChanged();
+
+    /**
+     * Emitted when the display expression changes
+     *
+     * @note added in 3.0
+     */
+    void displayExpressionChanged();
 
     /**
      * Signals an error related to this vector layer.

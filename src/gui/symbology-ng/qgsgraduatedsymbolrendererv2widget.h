@@ -46,7 +46,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
     void setRenderer( QgsGraduatedSymbolRendererV2* renderer );
 
     QgsRendererRangeV2 rendererRange( const QModelIndex &index );
-    void addClass( QgsSymbolV2* symbol );
+    void addClass( QgsSymbol* symbol );
     void addClass( const QgsRendererRangeV2& range );
     void deleteRows( QList<int> rows );
     void removeAllRows();
@@ -110,7 +110,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void toggleBoundariesLink( bool linked );
 
     void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
+    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
     void labelFormatChanged();
 
     void showSymbolLevels();
@@ -142,8 +142,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     void changeSelectedSymbols();
 
-    QList<QgsSymbolV2*> selectedSymbols() override;
-    QgsSymbolV2* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
+    QList<QgsSymbol*> selectedSymbols() override;
+    QgsSymbol* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
     void refreshSymbolView() override;
 
     void keyPressEvent( QKeyEvent* event ) override;
@@ -151,7 +151,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
   protected:
     QgsGraduatedSymbolRendererV2* mRenderer;
 
-    QgsSymbolV2* mGraduatedSymbol;
+    QgsSymbol* mGraduatedSymbol;
 
     int mRowSelected;
 

@@ -3107,7 +3107,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
     }
   }
 
-  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, Qgis::WKBLineString );
+  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QgsWkbTypes::LineString );
   if ( writer.hasError() != QgsVectorFileWriter::NoError )
   {
     return false;
@@ -3138,8 +3138,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
       QgsPolyline lineGeom;
       lineGeom.push_back( QgsPoint( p1->getX(), p1->getY() ) );
       lineGeom.push_back( QgsPoint( p2->getX(), p2->getY() ) );
-      QgsGeometry* geom = QgsGeometry::fromPolyline( lineGeom );
-      edgeLineFeature.setGeometry( geom );
+      edgeLineFeature.setGeometry( QgsGeometry::fromPolyline( lineGeom ) );
       edgeLineFeature.initAttributes( 1 );
 
       //attributes

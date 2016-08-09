@@ -17,7 +17,7 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgsgeometry.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include <QBrush>
 #include <QColor>
 #include <QList>
@@ -27,7 +27,7 @@
 
 class QgsMapLayer;
 class QgsVectorLayer;
-class QgsSymbolV2;
+class QgsSymbol;
 
 /** \ingroup gui
  * A class for highlight features on the map.
@@ -35,8 +35,21 @@ class QgsSymbolV2;
 class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {
   public:
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsMapLayer *layer );
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsVectorLayer *layer );
+
+    /** Constructor for QgsHighlight
+     * @param mapCanvas associated map canvas
+     * @param geom initial geometry of highlight
+     * @param layer associated map layer
+     */
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsMapLayer *layer );
+
+    /** Constructor for QgsHighlight
+     * @param mapCanvas associated map canvas
+     * @param geom initial geometry of highlight
+     * @param layer associated vector layer
+     */
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsVectorLayer *layer );
+
     /** Constructor for highlighting true feature shape using feature attributes
      * and renderer.
      * @param mapCanvas map canvas
@@ -77,7 +90,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 
   private:
     void init();
-    void setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
+    void setSymbol( QgsSymbol* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
     double getSymbolWidth( const QgsRenderContext & context, double width, QgsUnitTypes::RenderUnit unit );
     /** Get renderer for current color mode and colors. The renderer should be freed by caller. */
     QgsFeatureRendererV2 * getRenderer( QgsRenderContext &context, const QColor & color, const QColor & fillColor );

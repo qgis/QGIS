@@ -60,12 +60,8 @@ class QgsComposerLegend : QgsComposerItem
      */
     bool resizeToContents() const;
 
-    /** Returns pointer to the legend model*/
-    //! @deprecated in 2.6 - use modelV2()
-    QgsLegendModel* model() /Deprecated/;
-
     //! @note added in 2.6
-    QgsLegendModelV2* modelV2();
+    QgsLegendModelV2* model();
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );

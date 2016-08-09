@@ -16,7 +16,7 @@
 #include "qgscompoundcolorwidget.h"
 #include "qgscolorscheme.h"
 #include "qgscolorschemeregistry.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgscursors.h"
 #include "qgsapplication.h"
 #include <QSettings>
@@ -101,37 +101,37 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   mAlphaSlider->setComponent( QgsColorWidget::Alpha );
 
   mSwatchButton1->setShowMenu( false );
-  mSwatchButton1->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton1->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton2->setShowMenu( false );
-  mSwatchButton2->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton2->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton3->setShowMenu( false );
-  mSwatchButton3->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton3->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton4->setShowMenu( false );
-  mSwatchButton4->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton4->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton5->setShowMenu( false );
-  mSwatchButton5->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton5->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton6->setShowMenu( false );
-  mSwatchButton6->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton6->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton7->setShowMenu( false );
-  mSwatchButton7->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton7->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton8->setShowMenu( false );
-  mSwatchButton8->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton8->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton9->setShowMenu( false );
-  mSwatchButton9->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton9->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton10->setShowMenu( false );
-  mSwatchButton10->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton10->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton11->setShowMenu( false );
-  mSwatchButton11->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton11->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton12->setShowMenu( false );
-  mSwatchButton12->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton12->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton13->setShowMenu( false );
-  mSwatchButton13->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton13->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton14->setShowMenu( false );
-  mSwatchButton14->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton14->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton15->setShowMenu( false );
-  mSwatchButton15->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton15->setBehaviour( QgsColorButton::SignalOnly );
   mSwatchButton16->setShowMenu( false );
-  mSwatchButton16->setBehaviour( QgsColorButtonV2::SignalOnly );
+  mSwatchButton16->setBehaviour( QgsColorButton::SignalOnly );
   //restore custom colors
   mSwatchButton1->setColor( settings.value( "/Windows/ColorDialog/customColor1", QVariant( QColor() ) ).value<QColor>() );
   mSwatchButton2->setColor( settings.value( "/Windows/ColorDialog/customColor2", QVariant( QColor() ) ).value<QColor>() );
@@ -314,7 +314,7 @@ void QgsCompoundColorWidget::importPalette()
   QgsNamedColorList importedColors;
   bool ok = false;
   QString paletteName;
-  importedColors = QgsSymbolLayerV2Utils::importColorsFromGpl( file, ok, paletteName );
+  importedColors = QgsSymbolLayerUtils::importColorsFromGpl( file, ok, paletteName );
   if ( !ok )
   {
     QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Palette file is not readable" ) );
@@ -839,7 +839,7 @@ void QgsCompoundColorWidget::on_mBlueRadio_toggled( bool checked )
 
 void QgsCompoundColorWidget::on_mAddColorToSchemeButton_clicked()
 {
-  mSchemeList->addColor( mColorPreview->color(), QgsSymbolLayerV2Utils::colorToName( mColorPreview->color() ) );
+  mSchemeList->addColor( mColorPreview->color(), QgsSymbolLayerUtils::colorToName( mColorPreview->color() ) );
 }
 
 void QgsCompoundColorWidget::updateActionsForCurrentScheme()

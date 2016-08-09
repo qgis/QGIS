@@ -16,7 +16,7 @@
 #ifndef QGSLINESYMBOLLAYERV2_H
 #define QGSLINESYMBOLLAYERV2_H
 
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 
 #include <QPen>
 #include <QVector>
@@ -41,21 +41,21 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     // static stuff
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
 
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
-    void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) override;
+    void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) override;
 
     //overridden so that clip path can be set when using draw inside polygon option
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
+    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 
@@ -112,9 +112,9 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const override;
     Qt::PenStyle dxfPenStyle() const override;
 
-    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const override;
-    double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
-    QColor dxfColor( QgsSymbolV2RenderContext &context ) const override;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const override;
+    double dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const override;
+    QColor dxfColor( QgsSymbolRenderContext &context ) const override;
 
   protected:
     Qt::PenStyle mPenStyle;
@@ -135,8 +135,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
   private:
     //helper functions for data defined symbology
-    void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen, double& offset );
-    void applySizeScale( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen );
+    void applyDataDefinedSymbology( QgsSymbolRenderContext& context, QPen& pen, QPen& selPen, double& offset );
+    void applySizeScale( QgsSymbolRenderContext& context, QPen& pen, QPen& selPen );
 };
 
 /////////
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
      *
      * @return A new MarkerLineSymbolLayerV2
      */
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
 
     /**
      * Create a new MarkerLineSymbolLayerV2 from SLD
@@ -186,19 +186,19 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
      *
      * @return A new MarkerLineSymbolLayerV2
      */
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
+    static QgsSymbolLayer* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext& context ) override;
 
-    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext& context ) override;
 
-    void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) override;
+    void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) override;
 
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
+    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 
@@ -209,8 +209,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void setColor( const QColor& color ) override;
     virtual QColor color() const override;
 
-    QgsSymbolV2* subSymbol() override;
-    bool setSubSymbol( QgsSymbolV2* symbol ) override;
+    QgsSymbol* subSymbol() override;
+    bool setSubSymbol( QgsSymbol* symbol ) override;
 
     virtual void setWidth( double width ) override;
     virtual double width() const override;
@@ -334,9 +334,9 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
   protected:
 
-    void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
-    void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context, Placement placement = Vertex );
-    void renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolylineInterval( const QPolygonF& points, QgsSymbolRenderContext& context );
+    void renderPolylineVertex( const QPolygonF& points, QgsSymbolRenderContext& context, Placement placement = Vertex );
+    void renderPolylineCentral( const QPolygonF& points, QgsSymbolRenderContext& context );
     double markerAngle( const QPolygonF& points, bool isRing, int vertex );
 
     bool mRotateMarker;
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
      * @see setoffsetAlongLine
      * @see setOffsetAlongLineUnit
      */
-    void renderOffsetVertexAlongLine( const QPolygonF& points, int vertex, double distance, QgsSymbolV2RenderContext &context );
+    void renderOffsetVertexAlongLine( const QPolygonF& points, int vertex, double distance, QgsSymbolRenderContext &context );
 };
 
 #endif

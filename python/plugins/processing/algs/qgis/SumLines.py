@@ -72,15 +72,13 @@ class SumLines(GeoAlgorithm):
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
         countFieldName = self.getParameterValue(self.COUNT_FIELD)
 
-        polyProvider = polyLayer.dataProvider()
-
         (idxLength, fieldList) = vector.findOrCreateField(polyLayer,
-                                                          polyLayer.pendingFields(), lengthFieldName)
+                                                          polyLayer.fields(), lengthFieldName)
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer, fieldList,
                                                          countFieldName)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fieldList.toList(), polyProvider.geometryType(), polyProvider.crs())
+            fieldList.toList(), polyLayer.wkbType(), polyLayer.crs())
 
         spatialIndex = vector.spatialindex(lineLayer)
 
@@ -95,7 +93,7 @@ class SumLines(GeoAlgorithm):
         total = 100.0 / len(features)
         hasIntersections = False
         for current, ftPoly in enumerate(features):
-            inGeom = QgsGeometry(ftPoly.geometry())
+            inGeom = ftPoly.geometry()
             attrs = ftPoly.attributes()
             count = 0
             length = 0
@@ -108,7 +106,7 @@ class SumLines(GeoAlgorithm):
                 for i in lines:
                     request = QgsFeatureRequest().setFilterFid(i)
                     ftLine = lineLayer.getFeatures(request).next()
-                    tmpGeom = QgsGeometry(ftLine.geometry())
+                    tmpGeom = ftLine.geometry()
                     if inGeom.intersects(tmpGeom):
                         outGeom = inGeom.intersection(tmpGeom)
                         length += distArea.measure(outGeom)

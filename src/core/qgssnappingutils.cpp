@@ -91,7 +91,7 @@ QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl,
 
 bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer* vl, const QgsRectangle& areaOfInterest )
 {
-  if ( vl->geometryType() == Qgis::NoGeometry || mStrategy == IndexNeverFull )
+  if ( vl->geometryType() == QgsWkbTypes::NullGeometry || mStrategy == IndexNeverFull )
     return false;
 
   QgsPointLocator* loc = locatorForLayer( vl );
@@ -114,7 +114,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& p
   QSet<QgsPoint> endpoints;
 
   // make a geometry
-  QList<QgsGeometry*> geoms;
+  QList<QgsGeometry> geoms;
   Q_FOREACH ( const QgsPointLocator::Match& m, segments )
   {
     if ( m.hasEdge() )
@@ -126,22 +126,21 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& p
     }
   }
 
-  QgsGeometry* g = QgsGeometry::unaryUnion( geoms );
-  qDeleteAll( geoms );
+  QgsGeometry g = QgsGeometry::unaryUnion( geoms );
 
   // get intersection points
   QList<QgsPoint> newPoints;
-  if ( g->wkbType() == Qgis::WKBLineString )
+  if ( g.wkbType() == QgsWkbTypes::LineString )
   {
-    Q_FOREACH ( const QgsPoint& p, g->asPolyline() )
+    Q_FOREACH ( const QgsPoint& p, g.asPolyline() )
     {
       if ( !endpoints.contains( p ) )
         newPoints << p;
     }
   }
-  if ( g->wkbType() == Qgis::WKBMultiLineString )
+  if ( g.wkbType() == QgsWkbTypes::MultiLineString )
   {
-    Q_FOREACH ( const QgsPolyline& pl, g->asMultiPolyline() )
+    Q_FOREACH ( const QgsPolyline& pl, g.asMultiPolyline() )
     {
       Q_FOREACH ( const QgsPoint& p, pl )
       {
@@ -150,7 +149,6 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& p
       }
     }
   }
-  delete g;
 
   if ( newPoints.isEmpty() )
     return QgsPointLocator::Match();
@@ -330,7 +328,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest>& layers
   Q_FOREACH ( const LayerAndAreaOfInterest& entry, layers )
   {
     QgsVectorLayer* vl = entry.first;
-    if ( vl->geometryType() == Qgis::NoGeometry || mStrategy == IndexNeverFull )
+    if ( vl->geometryType() == QgsWkbTypes::NullGeometry || mStrategy == IndexNeverFull )
       continue;
 
     if ( !isIndexPrepared( vl, entry.second ) )

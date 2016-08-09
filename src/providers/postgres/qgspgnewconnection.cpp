@@ -32,12 +32,12 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
 {
   setupUi( this );
 
-  cbxSSLmode->addItem( tr( "disable" ), QgsDataSourceURI::SSLdisable );
-  cbxSSLmode->addItem( tr( "allow" ), QgsDataSourceURI::SSLallow );
-  cbxSSLmode->addItem( tr( "prefer" ), QgsDataSourceURI::SSLprefer );
-  cbxSSLmode->addItem( tr( "require" ), QgsDataSourceURI::SSLrequire );
-  cbxSSLmode->addItem( tr( "verify-ca" ), QgsDataSourceURI::SSLverifyCA );
-  cbxSSLmode->addItem( tr( "verify-full" ), QgsDataSourceURI::SSLverifyFull );
+  cbxSSLmode->addItem( tr( "disable" ), QgsDataSourceUri::SslDisable );
+  cbxSSLmode->addItem( tr( "allow" ), QgsDataSourceUri::SslAllow );
+  cbxSSLmode->addItem( tr( "prefer" ), QgsDataSourceUri::SslPrefer );
+  cbxSSLmode->addItem( tr( "require" ), QgsDataSourceUri::SslRequire );
+  cbxSSLmode->addItem( tr( "verify-ca" ), QgsDataSourceUri::SslVerifyCa );
+  cbxSSLmode->addItem( tr( "verify-full" ), QgsDataSourceUri::SslVerifyFull );
 
   mAuthConfigSelect = new QgsAuthConfigSelect( this, "postgres" );
   tabAuthentication->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
@@ -67,7 +67,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
 
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
 
-    cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() ) );
+    cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.value( key + "/sslmode", QgsDataSourceUri::SslPrefer ).toInt() ) );
 
     if ( settings.value( key + "/saveUsername" ).toString() == "true" )
     {
@@ -184,19 +184,19 @@ QgsPgNewConnection::~QgsPgNewConnection()
 
 void QgsPgNewConnection::testConnection()
 {
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   if ( !txtService->text().isEmpty() )
   {
     uri.setConnection( txtService->text(), txtDatabase->text(),
                        txtUsername->text(), txtPassword->text(),
-                       ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt(),
+                       ( QgsDataSourceUri::SslMode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt(),
                        mAuthConfigSelect->configId() );
   }
   else
   {
     uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(),
                        txtUsername->text(), txtPassword->text(),
-                       ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt(),
+                       ( QgsDataSourceUri::SslMode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt(),
                        mAuthConfigSelect->configId() );
   }
 

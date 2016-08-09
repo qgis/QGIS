@@ -316,8 +316,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
                              const QString &dataprovider = QString() );
 
     /**
-     * Provider call to update a QgsDataSourceURI with an authentication config
-     * @param connectionItems The connection items, e.g. username=myname, of QgsDataSourceURI
+     * Provider call to update a QgsDataSourceUri with an authentication config
+     * @param connectionItems The connection items, e.g. username=myname, of QgsDataSourceUri
      * @param authcfg Associated authentication config id
      * @param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded

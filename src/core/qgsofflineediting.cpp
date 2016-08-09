@@ -314,7 +314,7 @@ void QgsOfflineEditing::synchronize()
       }
       // Invalidate the connection to force a reload if the project is put offline
       // again with the same path
-      offlineLayer->dataProvider()->invalidateConnections( QgsDataSourceURI( offlineLayer->source() ).database() );
+      offlineLayer->dataProvider()->invalidateConnections( QgsDataSourceUri( offlineLayer->source() ).database() );
       // remove offline layer
       QgsMapLayerRegistry::instance()->removeMapLayers(
         ( QStringList() << qgisLayerId ) );
@@ -530,22 +530,22 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
     QString geomType = "";
     switch ( layer->wkbType() )
     {
-      case Qgis::WKBPoint:
+      case QgsWkbTypes::Point:
         geomType = "POINT";
         break;
-      case Qgis::WKBMultiPoint:
+      case QgsWkbTypes::MultiPoint:
         geomType = "MULTIPOINT";
         break;
-      case Qgis::WKBLineString:
+      case QgsWkbTypes::LineString:
         geomType = "LINESTRING";
         break;
-      case Qgis::WKBMultiLineString:
+      case QgsWkbTypes::MultiLineString:
         geomType = "MULTILINESTRING";
         break;
-      case Qgis::WKBPolygon:
+      case QgsWkbTypes::Polygon:
         geomType = "POLYGON";
         break;
-      case Qgis::WKBMultiPolygon:
+      case QgsWkbTypes::MultiPolygon:
         geomType = "MULTIPOLYGON";
         break;
       default:
@@ -835,7 +835,8 @@ void QgsOfflineEditing::applyGeometryChanges( QgsVectorLayer* remoteLayer, sqlit
   for ( int i = 0; i < values.size(); i++ )
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
-    remoteLayer->changeGeometry( fid, QgsGeometry::fromWkt( values.at( i ).geom_wkt ) );
+    QgsGeometry newGeom = QgsGeometry::fromWkt( values.at( i ).geom_wkt );
+    remoteLayer->changeGeometry( fid, newGeom );
 
     emit progressUpdated( i + 1 );
   }
@@ -1206,7 +1207,7 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString& qgisLayerId, cons
 
   // get new feature ids from db
   QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( qgisLayerId );
-  QgsDataSourceURI uri = QgsDataSourceURI( layer->source() );
+  QgsDataSourceUri uri = QgsDataSourceUri( layer->source() );
 
   // only store feature ids
   QString sql = QString( "SELECT ROWID FROM '%1' ORDER BY ROWID DESC LIMIT %2" ).arg( uri.table() ).arg( addedFeatures.size() );

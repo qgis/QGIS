@@ -98,7 +98,7 @@ void QgsFeaturePool::addFeature( QgsFeature& feature )
 void QgsFeaturePool::updateFeature( QgsFeature& feature )
 {
   QgsGeometryMap geometryMap;
-  geometryMap.insert( feature.id(), QgsGeometry( feature.geometry()->geometry()->clone() ) );
+  geometryMap.insert( feature.id(), QgsGeometry( feature.geometry().geometry()->clone() ) );
   QgsChangedAttributesMap changedAttributesMap;
   QgsAttributeMap attribMap;
   for ( int i = 0, n = feature.attributes().size(); i < n; ++i )

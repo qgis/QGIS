@@ -44,6 +44,7 @@ class QgsClipboard;
 class QgsComposer;
 class QgsComposerManager;
 class QgsComposerView;
+class QgsCustomDropHandler;
 class QgsStatusBarCoordinatesWidget;
 class QgsStatusBarMagnifierWidget;
 class QgsStatusBarScaleWidget;
@@ -120,6 +121,7 @@ class QgsDiagramProperties;
 #include "qgsfeature.h"
 #include "qgspoint.h"
 #include "qgsmessagebar.h"
+#include "qgsmimedatautils.h"
 #include "qgswelcomepageitemsmodel.h"
 #include "qgsraster.h"
 
@@ -423,7 +425,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowPinnedLabels() { return mActionShowPinnedLabels; }
 
     //! Menus
-    Q_DECL_DEPRECATED QMenu *fileMenu() { return mProjectMenu; }
     QMenu *projectMenu() { return mProjectMenu; }
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
@@ -513,6 +514,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Unregister a previously registered tab in the layer properties dialog */
     void unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactory* factory );
+
+    /** Register a new custom drop handler. */
+    void registerCustomDropHandler( QgsCustomDropHandler* handler );
+
+    /** Unregister a previously registered custom drop handler. */
+    void unregisterCustomDropHandler( QgsCustomDropHandler* handler );
+
+    /** Process the list of URIs that have been dropped in QGIS */
+    void handleDropUriList( const QgsMimeDataUtils::UriList& lst );
 
   public slots:
     void layerTreeViewDoubleClicked( const QModelIndex& index );
@@ -1415,8 +1425,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
-      @return 0 in case of error or if canceled */
-    QgsGeometry* unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool &canceled );
+      @return empty geometry in case of error or if canceled */
+    QgsGeometry unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool &canceled );
 
     /** Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
@@ -1772,6 +1782,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsSnappingUtils* mSnappingUtils;
 
     QList<QgsMapLayerConfigWidgetFactory*> mMapLayerPanelFactories;
+
+    QList<QgsCustomDropHandler*> mCustomDropHandlers;
 
     QDateTime mProjectLastModified;
 

@@ -16,25 +16,25 @@
 #define QGSELLIPSESYMBOLLAYERV2WIDGET_H
 
 #include "ui_widget_ellipse.h"
-#include "qgssymbollayerv2widget.h"
+#include "qgssymbollayerwidget.h"
 
 class QgsEllipseSymbolLayerV2;
 
 /** \ingroup gui
  * \class QgsEllipseSymbolLayerV2Widget
  */
-class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, private Ui::WidgetEllipseBase
+class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerWidget, private Ui::WidgetEllipseBase
 {
     Q_OBJECT
 
   public:
     QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsEllipseSymbolLayerV2Widget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsEllipseSymbolLayerV2Widget( vl ); }
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
-    virtual QgsSymbolLayerV2* symbolLayer() override;
+    virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
+    virtual QgsSymbolLayer* symbolLayer() override;
 
   protected:
     QgsEllipseSymbolLayerV2* mLayer;

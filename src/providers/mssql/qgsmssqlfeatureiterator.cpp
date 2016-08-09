@@ -300,7 +300,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
     for ( int i = 0; i < mAttributesToFetch.count(); i++ )
     {
       QVariant v = mQuery->value( i );
-      const QgsField &fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
+      QgsField fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
       if ( v.type() != fld.type() )
         v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
       feature.setAttribute( mAttributesToFetch.at( i ), v );
@@ -314,18 +314,18 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
       unsigned char* wkb = mParser.ParseSqlGeometry(( unsigned char* )ar.data(), ar.size() );
       if ( wkb )
       {
-        QgsGeometry *g = new QgsGeometry();
-        g->fromWkb( wkb, mParser.GetWkbLen() );
+        QgsGeometry g;
+        g.fromWkb( wkb, mParser.GetWkbLen() );
         feature.setGeometry( g );
       }
       else
       {
-        feature.setGeometry( nullptr );
+        feature.clearGeometry();
       }
     }
     else
     {
-      feature.setGeometry( nullptr );
+      feature.clearGeometry();
     }
 
     feature.setValid( true );

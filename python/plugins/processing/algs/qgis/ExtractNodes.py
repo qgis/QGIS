@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -62,7 +62,7 @@ class ExtractNodes(GeoAlgorithm):
             self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), Qgis.WKBPoint, layer.crs())
+            layer.fields().toList(), QgsWkbTypes.Point, layer.crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

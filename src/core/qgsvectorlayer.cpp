@@ -75,11 +75,11 @@
 #include "qgsvectorlayerundocommand.h"
 #include "qgspointv2.h"
 #include "qgsrendererv2.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsstylev2.h"
-#include "qgssymbologyv2conversion.h"
+#include "qgssymbologyconversion.h"
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"
 #include "qgsexpressioncontext.h"
@@ -129,7 +129,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mProviderKey( providerKey )
     , mReadOnly( false )
     , mEditFormConfig( new QgsEditFormConfig( this ) )
-    , mWkbType( Qgis::WKBUnknown )
+    , mWkbType( QgsWkbTypes::Unknown )
     , mRendererV2( nullptr )
     , mLabeling( new QgsVectorLayerSimpleLabeling )
     , mLabelFontNotFoundNotified( false )
@@ -226,86 +226,6 @@ QString QgsVectorLayer::providerType() const
 {
   return mProviderKey;
 }
-
-/**
- * sets the preferred display field based on some fuzzy logic
- */
-void QgsVectorLayer::setDisplayField( const QString& fldName )
-{
-  if ( !hasGeometryType() )
-    return;
-
-  // If fldName is provided, use it as the display field, otherwise
-  // determine the field index for the feature column of the identify
-  // dialog. We look for fields containing "name" first and second for
-  // fields containing "id". If neither are found, the first field
-  // is used as the node.
-  QString idxName = "";
-  QString idxId = "";
-
-  if ( !fldName.isEmpty() )
-  {
-    mDisplayField = fldName;
-  }
-  else
-  {
-    int fieldsSize = mUpdatedFields.size();
-
-    Q_FOREACH ( const QgsField& field, mUpdatedFields )
-    {
-      QString fldName = field.name();
-      QgsDebugMsg( "Checking field " + fldName + " of " + QString::number( fieldsSize ) + " total" );
-
-      // Check the fields and keep the first one that matches.
-      // We assume that the user has organized the data with the
-      // more "interesting" field names first. As such, name should
-      // be selected before oldname, othername, etc.
-      if ( fldName.indexOf( "name", 0, Qt::CaseInsensitive ) > -1 )
-      {
-        if ( idxName.isEmpty() )
-        {
-          idxName = fldName;
-        }
-      }
-      if ( fldName.indexOf( "descrip", 0, Qt::CaseInsensitive ) > -1 )
-      {
-        if ( idxName.isEmpty() )
-        {
-          idxName = fldName;
-        }
-      }
-      if ( fldName.indexOf( "id", 0, Qt::CaseInsensitive ) > -1 )
-      {
-        if ( idxId.isEmpty() )
-        {
-          idxId = fldName;
-        }
-      }
-    }
-
-    //if there were no fields in the dbf just return - otherwise qgis segfaults!
-    if ( fieldsSize == 0 )
-      return;
-
-    if ( idxName.length() > 0 )
-    {
-      mDisplayField = idxName;
-    }
-    else
-    {
-      if ( idxId.length() > 0 )
-      {
-        mDisplayField = idxId;
-      }
-      else
-      {
-        mDisplayField = mUpdatedFields.at( 0 ).name();
-      }
-    }
-
-  }
-}
-
 
 void QgsVectorLayer::reload()
 {
@@ -597,12 +517,11 @@ void QgsVectorLayer::setDiagramRenderer( QgsDiagramRendererV2* r )
   emit styleChanged();
 }
 
-Qgis::GeometryType QgsVectorLayer::geometryType() const
+QgsWkbTypes::GeometryType QgsVectorLayer::geometryType() const
 {
   if ( mValid && mDataProvider )
   {
-    Qgis::WkbType type = mDataProvider->geometryType();
-    return static_cast< Qgis::GeometryType >( QgsWKBTypes::geometryType( static_cast< QgsWKBTypes::Type >( type ) ) );
+    return QgsWkbTypes::geometryType( mDataProvider->wkbType() );
   }
   else
   {
@@ -616,16 +535,16 @@ Qgis::GeometryType QgsVectorLayer::geometryType() const
   // here.
   QgsDebugMsg( "WARNING: This code should never be reached. Problems may occur..." );
 
-  return Qgis::UnknownGeometry;
+  return QgsWkbTypes::UnknownGeometry;
 }
 
 bool QgsVectorLayer::hasGeometryType() const
 {
-  Qgis::GeometryType t = geometryType();
-  return t != Qgis::NoGeometry && t != Qgis::UnknownGeometry;
+  QgsWkbTypes::GeometryType t = geometryType();
+  return t != QgsWkbTypes::NullGeometry && t != QgsWkbTypes::UnknownGeometry;
 }
 
-Qgis::WkbType QgsVectorLayer::wkbType() const
+QgsWkbTypes::Type QgsVectorLayer::wkbType() const
 {
   return mWkbType;
 }
@@ -649,9 +568,9 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
 
     while ( fit.nextFeature( fet ) )
     {
-      if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() )
+      if ( !fet.hasGeometry() )
         continue;
-      r = fet.constGeometry()->boundingBox();
+      r = fet.geometry().boundingBox();
       retval.combineExtentWith( r );
     }
   }
@@ -664,9 +583,9 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
     {
       if ( mSelectedFeatureIds.contains( fet.id() ) )
       {
-        if ( fet.constGeometry() )
+        if ( fet.hasGeometry() )
         {
-          r = fet.constGeometry()->boundingBox();
+          r = fet.geometry().boundingBox();
           retval.combineExtentWith( r );
         }
       }
@@ -716,7 +635,7 @@ bool QgsVectorLayer::diagramsEnabled() const
   return false;
 }
 
-long QgsVectorLayer::featureCount( QgsSymbolV2* symbol ) const
+long QgsVectorLayer::featureCount( QgsSymbol* symbol ) const
 {
   if ( !mSymbolFeatureCounted )
     return -1;
@@ -843,8 +762,8 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   while ( fit.nextFeature( f ) )
   {
     renderContext.expressionContext().setFeature( f );
-    QgsSymbolV2List featureSymbolList = mRendererV2->originalSymbolsForFeature( f, renderContext );
-    for ( QgsSymbolV2List::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
+    QgsSymbolList featureSymbolList = mRendererV2->originalSymbolsForFeature( f, renderContext );
+    for ( QgsSymbolList::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
     {
       mSymbolFeatureCountMap[*symbolIt] += 1;
     }
@@ -932,7 +851,7 @@ QgsRectangle QgsVectorLayer::extent() const
 
   if ( !mEditBuffer ||
        ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mChangedGeometries.isEmpty() ) ||
-       QgsDataSourceURI( mDataProvider->dataSourceUri() ).useEstimatedMetadata() )
+       QgsDataSourceUri( mDataProvider->dataSourceUri() ).useEstimatedMetadata() )
   {
     mDataProvider->updateExtents();
 
@@ -948,9 +867,9 @@ QgsRectangle QgsVectorLayer::extent() const
     {
       for ( QgsFeatureMap::const_iterator it = mEditBuffer->mAddedFeatures.constBegin(); it != mEditBuffer->mAddedFeatures.constEnd(); ++it )
       {
-        if ( it->constGeometry() )
+        if ( it->hasGeometry() )
         {
-          QgsRectangle r = it->constGeometry()->boundingBox();
+          QgsRectangle r = it->geometry().boundingBox();
           rect.combineExtentWith( r );
         }
       }
@@ -964,9 +883,9 @@ QgsRectangle QgsVectorLayer::extent() const
     QgsFeature fet;
     while ( fit.nextFeature( fet ) )
     {
-      if ( fet.constGeometry() && fet.constGeometry()->type() != Qgis::UnknownGeometry )
+      if ( fet.hasGeometry() && fet.geometry().type() != QgsWkbTypes::UnknownGeometry )
       {
-        QgsRectangle bb = fet.constGeometry()->boundingBox();
+        QgsRectangle bb = fet.geometry().boundingBox();
         rect.combineExtentWith( bb );
       }
     }
@@ -1020,7 +939,7 @@ bool QgsVectorLayer::setSubsetString( const QString& subset )
 
 bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const
 {
-  if ( mValid && mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != Qgis::Point ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
+  if ( mValid && mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != QgsWkbTypes::PointGeometry ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
   {
     double maximumSimplificationScale = mSimplifyMethod.maximumScale();
 
@@ -1064,7 +983,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
 {
   QgsFeatureRequest req;
   req.setFilterFid( f.id() );
-  if ( !f.constGeometry() )
+  if ( !f.hasGeometry() )
     req.setFlags( QgsFeatureRequest::NoGeometry );
   if ( f.attributes().isEmpty() )
     req.setSubsetOfAttributes( QgsAttributeList() );
@@ -1076,7 +995,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
     return false;
   }
 
-  if ( f.constGeometry() && current.constGeometry() && f.constGeometry() != current.constGeometry() && !f.constGeometry()->isGeosEqual( *current.constGeometry() ) )
+  if ( f.hasGeometry() && current.hasGeometry() && !f.geometry().isGeosEqual( current.geometry() ) )
   {
     if ( !changeGeometry( f.id(), f.geometry() ) )
     {
@@ -1369,51 +1288,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
   return utils.splitFeatures( splitLine, topologicalEditing );
 }
 
-int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, const QgsFeatureIds& ignoreFeatures )
-{
-  if ( !hasGeometryType() )
-    return 1;
-
-  int returnValue = 0;
-
-  //first test if geom really has type polygon or multipolygon
-  if ( geom->type() != Qgis::Polygon )
-  {
-    return 1;
-  }
-
-  //get bounding box of geom
-  QgsRectangle geomBBox = geom->boundingBox();
-
-  //get list of features that intersect this bounding box
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFilterRect( geomBBox )
-                                        .setFlags( QgsFeatureRequest::ExactIntersect )
-                                        .setSubsetOfAttributes( QgsAttributeList() ) );
-
-  QgsFeature f;
-  while ( fit.nextFeature( f ) )
-  {
-    if ( ignoreFeatures.contains( f.id() ) )
-    {
-      continue;
-    }
-
-    //call geometry->makeDifference for each feature
-    const QgsGeometry *currentGeom = f.constGeometry();
-    if ( currentGeom )
-    {
-      if ( geom->makeDifference( currentGeom ) != 0 )
-      {
-        returnValue = 2;
-      }
-    }
-  }
-
-  return returnValue;
-}
-
-int QgsVectorLayer::addTopologicalPoints( const QgsGeometry *geom )
+int QgsVectorLayer::addTopologicalPoints( const QgsGeometry& geom )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return -1;
@@ -1482,7 +1357,7 @@ bool QgsVectorLayer::startEditing()
   //connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( triggerRepaint() ) ); // TODO[MD]: works well?
   connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( featureAdded( QgsFeatureId ) ) );
   connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
   connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
   connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), this, SIGNAL( attributeAdded( int ) ) );
   connect( mEditBuffer, SIGNAL( attributeDeleted( int ) ), this, SIGNAL( attributeDeleted( int ) ) );
@@ -1575,16 +1450,22 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   updateFields();
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
-  QDomNode prevExpNode = layer_node.namedItem( "previewExpression" );
+  mDisplayExpression = layer_node.namedItem( "previewExpression" ).toElement().text();
+  mMapTipTemplate = layer_node.namedItem( "mapTip" ).toElement().text();
 
-  if ( prevExpNode.isNull() )
+  QString displayField = layer_node.namedItem( "displayfield" ).toElement().text();
+
+  // Try to migrate pre QGIS 3.0 display field property
+  if ( mUpdatedFields.fieldNameIndex( displayField ) < 0 )
   {
-    mDisplayExpression = "";
+    // if it's not a field, it's a maptip
+    if ( mMapTipTemplate.isEmpty() )
+      mMapTipTemplate = displayField;
   }
   else
   {
-    QDomElement prevExpElem = prevExpNode.toElement();
-    mDisplayExpression = prevExpElem.text();
+    if ( mDisplayExpression.isEmpty() )
+      mDisplayExpression = QgsExpression::quotedColumnRef( displayField );
   }
 
   QString errorMsg;
@@ -1605,7 +1486,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
 void QgsVectorLayer::setDataSource( const QString& dataSource, const QString& baseName, const QString& provider, bool loadDefaultStyleFlag )
 {
-  Qgis::GeometryType oldGeomType = mValid && mDataProvider ? geometryType() : Qgis::UnknownGeometry;
+  QgsWkbTypes::GeometryType geomType = mValid && mDataProvider ? geometryType() : QgsWkbTypes::UnknownGeometry;
 
   mDataSource = dataSource;
   mLayerName = capitaliseLayerName( baseName );
@@ -1619,7 +1500,7 @@ void QgsVectorLayer::setDataSource( const QString& dataSource, const QString& ba
   setCoordinateSystem();
 
   // reset style if loading default style, style is missing, or geometry type has changed
-  if ( !rendererV2() || !legend() || oldGeomType != geometryType() || loadDefaultStyleFlag )
+  if ( !rendererV2() || !legend() || geomType != geometryType() || loadDefaultStyleFlag )
   {
     // check if there is a default style / propertysheet defined
     // for this layer and if so apply it
@@ -1674,16 +1555,12 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   connect( mDataProvider, SIGNAL( fullExtentCalculated() ), this, SLOT( updateExtents() ) );
 
   // get and store the feature type
-  mWkbType = mDataProvider->geometryType();
+  mWkbType = mDataProvider->wkbType();
 
   mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
   connect( mJoinBuffer, SIGNAL( joinedFieldsChanged() ), this, SLOT( onJoinedFieldsChanged() ) );
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   updateFields();
-
-  // look at the fields in the layer and set the primary
-  // display field using some real fuzzy logic
-  setDisplayField();
 
   if ( mProviderKey == "postgres" )
   {
@@ -1755,7 +1632,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   mapLayerNode.setAttribute( "type", "vector" );
 
   // set the geometry type
-  mapLayerNode.setAttribute( "geometry", Qgis::vectorGeometryType( geometryType() ) );
+  mapLayerNode.setAttribute( "geometry", QgsWkbTypes::geometryDisplayString( geometryType() ) );
 
   // add provider node
   if ( mDataProvider )
@@ -1775,6 +1652,12 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   QDomText prevExpText = document.createTextNode( mDisplayExpression );
   prevExpElem.appendChild( prevExpText );
   layer_node.appendChild( prevExpElem );
+
+  // save map tip
+  QDomElement mapTipElem = document.createElement( "mapTip" );
+  QDomText mapTipText = document.createTextNode( mMapTipTemplate );
+  mapTipElem.appendChild( mapTipText );
+  layer_node.appendChild( mapTipElem );
 
   //save joins
   mJoinBuffer->writeXml( layer_node, document );
@@ -1894,7 +1777,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     }
     else
     {
-      QgsFeatureRendererV2* r = QgsSymbologyV2Conversion::readOldRenderer( node, geometryType() );
+      QgsFeatureRendererV2* r = QgsSymbologyConversion::readOldRenderer( node, geometryType() );
       if ( !r )
         r = QgsFeatureRendererV2::defaultRenderer( geometryType() );
 
@@ -1906,14 +1789,6 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     {
       QgsAbstractVectorLayerLabeling* l = QgsAbstractVectorLayerLabeling::create( labelingElement );
       setLabeling( l ? l : new QgsVectorLayerSimpleLabeling );
-    }
-
-    // get and set the display field if it exists.
-    QDomNode displayFieldNode = node.namedItem( "displayfield" );
-    if ( !displayFieldNode.isNull() )
-    {
-      QDomElement e = displayFieldNode.toElement();
-      setDisplayField( e.text() );
     }
 
     // get and set the blend mode if it exists
@@ -2096,12 +1971,6 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     layerTransparencyElem.appendChild( layerTransparencyText );
     node.appendChild( layerTransparencyElem );
 
-    // add the display field
-    QDomElement dField  = doc.createElement( "displayfield" );
-    QDomText dFieldText = doc.createTextNode( displayField() );
-    dField.appendChild( dFieldText );
-    node.appendChild( dField );
-
     if ( mDiagramRenderer )
     {
       mDiagramRenderer->writeXml( mapLayerNode, doc, this );
@@ -2153,7 +2022,7 @@ bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& error
 }
 
 
-bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
+bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, const QgsGeometry& geom )
 {
   if ( !mEditBuffer || !mDataProvider )
   {
@@ -2482,7 +2351,7 @@ QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest r
   if ( mSelectedFeatureIds.isEmpty() )
     return QgsFeatureIterator();
 
-  if ( geometryType() == Qgis::NoGeometry )
+  if ( geometryType() == QgsWkbTypes::NullGeometry )
     request.setFlags( QgsFeatureRequest::NoGeometry );
 
   if ( mSelectedFeatureIds.count() == 1 )
@@ -2565,8 +2434,8 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
     QgsGeometryMap& cachedGeometries = mCache->cachedGeometries();
     for ( QgsGeometryMap::iterator it = cachedGeometries.begin(); it != cachedGeometries.end() ; ++it )
     {
-      QgsGeometry* g = &( it.value() );
-      if ( g->boundingBox().intersects( searchRect ) )
+      QgsGeometry g = it.value();
+      if ( g.boundingBox().intersects( searchRect ) )
       {
         snapToGeometry( startPoint, it.key(), g, sqrSnappingTolerance, snappingResults, snap_to );
         ++n;
@@ -2584,7 +2453,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
     while ( fit.nextFeature( f ) )
     {
-      snapToGeometry( startPoint, f.id(), f.constGeometry(), sqrSnappingTolerance, snappingResults, snap_to );
+      snapToGeometry( startPoint, f.id(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );
       ++n;
     }
   }
@@ -2594,12 +2463,12 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
 void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
                                      QgsFeatureId featureId,
-                                     const QgsGeometry* geom,
+                                     const QgsGeometry& geom,
                                      double sqrSnappingTolerance,
                                      QMultiMap<double, QgsSnappingResult>& snappingResults,
                                      QgsSnapper::SnappingType snap_to ) const
 {
-  if ( !geom )
+  if ( geom.isEmpty() )
   {
     return;
   }
@@ -2612,7 +2481,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
 
   if ( snap_to == QgsSnapper::SnapToVertex || snap_to == QgsSnapper::SnapToVertexAndSegment )
   {
-    snappedPoint = geom->closestVertex( startPoint, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
+    snappedPoint = geom.closestVertex( startPoint, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
     if ( sqrDistVertexSnap < sqrSnappingTolerance )
     {
       snappingResultVertex.snappedVertex = snappedPoint;
@@ -2620,12 +2489,12 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
       snappingResultVertex.beforeVertexNr = beforeVertex;
       if ( beforeVertex != -1 ) // make sure the vertex is valid
       {
-        snappingResultVertex.beforeVertex = geom->vertexAt( beforeVertex );
+        snappingResultVertex.beforeVertex = geom.vertexAt( beforeVertex );
       }
       snappingResultVertex.afterVertexNr = afterVertex;
       if ( afterVertex != -1 ) // make sure the vertex is valid
       {
-        snappingResultVertex.afterVertex = geom->vertexAt( afterVertex );
+        snappingResultVertex.afterVertex = geom.vertexAt( afterVertex );
       }
       snappingResultVertex.snappedAtGeometry = featureId;
       snappingResultVertex.layer = this;
@@ -2635,9 +2504,9 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
   }
   if ( snap_to == QgsSnapper::SnapToSegment || snap_to == QgsSnapper::SnapToVertexAndSegment ) // snap to segment
   {
-    if ( geometryType() != Qgis::Point ) // cannot snap to segment for points/multipoints
+    if ( geometryType() != QgsWkbTypes::PointGeometry ) // cannot snap to segment for points/multipoints
     {
-      sqrDistSegmentSnap = geom->closestSegmentWithContext( startPoint, snappedPoint, afterVertex, nullptr, crs().isGeographic() ? 1e-12 : 1e-8 );
+      sqrDistSegmentSnap = geom.closestSegmentWithContext( startPoint, snappedPoint, afterVertex, nullptr, crs().isGeographic() ? 1e-12 : 1e-8 );
 
       if ( sqrDistSegmentSnap < sqrSnappingTolerance )
       {
@@ -2646,8 +2515,8 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
         snappingResultSegment.beforeVertexNr = afterVertex - 1;
         snappingResultSegment.afterVertexNr = afterVertex;
         snappingResultSegment.snappedAtGeometry = featureId;
-        snappingResultSegment.beforeVertex = geom->vertexAt( afterVertex - 1 );
-        snappingResultSegment.afterVertex = geom->vertexAt( afterVertex );
+        snappingResultSegment.beforeVertex = geom.vertexAt( afterVertex - 1 );
+        snappingResultSegment.afterVertex = geom.vertexAt( afterVertex );
         snappingResultSegment.layer = this;
         snappingResults.insert( sqrt( sqrDistSegmentSnap ), snappingResultSegment );
       }
@@ -2683,19 +2552,70 @@ void QgsVectorLayer::setCoordinateSystem()
 }
 
 
-const QString QgsVectorLayer::displayField() const
+QString QgsVectorLayer::displayField() const
 {
-  return mDisplayField;
+  QgsExpression exp( mDisplayExpression );
+  if ( exp.isField() )
+  {
+    return static_cast<const QgsExpression::NodeColumnRef*>( exp.rootNode() )->name();
+  }
+
+  return QString();
 }
 
-void QgsVectorLayer::setDisplayExpression( const QString &displayExpression )
+void QgsVectorLayer::setDisplayExpression( const QString& displayExpression )
 {
+  if ( mDisplayExpression == displayExpression )
+    return;
+
   mDisplayExpression = displayExpression;
+  emit displayExpressionChanged();
 }
 
 QString QgsVectorLayer::displayExpression() const
 {
-  return mDisplayExpression;
+  if ( !mDisplayExpression.isEmpty() || mUpdatedFields.isEmpty() )
+  {
+    return mDisplayExpression;
+  }
+  else
+  {
+    QString idxName;
+
+    Q_FOREACH ( const QgsField& field, mUpdatedFields )
+    {
+      QString fldName = field.name();
+
+      // Check the fields and keep the first one that matches.
+      // We assume that the user has organized the data with the
+      // more "interesting" field names first. As such, name should
+      // be selected before oldname, othername, etc.
+      if ( fldName.indexOf( "name", 0, Qt::CaseInsensitive ) > -1 )
+      {
+        idxName = fldName;
+        break;
+      }
+      if ( fldName.indexOf( "descrip", 0, Qt::CaseInsensitive ) > -1 )
+      {
+        idxName = fldName;
+        break;
+      }
+      if ( fldName.indexOf( "id", 0, Qt::CaseInsensitive ) > -1 )
+      {
+        idxName = fldName;
+        break;
+      }
+    }
+
+    if ( !idxName.isNull() )
+    {
+      return QgsExpression::quotedColumnRef( idxName );
+    }
+    else
+    {
+      return QgsExpression::quotedColumnRef( mUpdatedFields.at( 0 ).name() );
+    }
+  }
 }
 
 bool QgsVectorLayer::isEditable() const
@@ -2705,7 +2625,7 @@ bool QgsVectorLayer::isEditable() const
 
 bool QgsVectorLayer::isSpatial() const
 {
-  return geometryType() != Qgis::NoGeometry;
+  return geometryType() != QgsWkbTypes::NullGeometry;
 }
 
 bool QgsVectorLayer::isReadOnly() const
@@ -3572,6 +3492,20 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
   }
 }
 
+QString QgsVectorLayer::mapTipTemplate() const
+{
+  return mMapTipTemplate;
+}
+
+void QgsVectorLayer::setMapTipTemplate( const QString& mapTip )
+{
+  if ( mMapTipTemplate == mapTip )
+    return;
+
+  mMapTipTemplate = mapTip;
+  emit mapTipTemplateChanged();
+}
+
 QgsAttributeTableConfig QgsVectorLayer::attributeTableConfig() const
 {
   QgsAttributeTableConfig config = mAttributeTableConfig;
@@ -3640,19 +3574,18 @@ QString QgsVectorLayer::metadata() const
 
   //geom type
 
-  Qgis::GeometryType type = geometryType();
+  QgsWkbTypes::GeometryType type =  geometryType();
 
-  if ( type < 0 || type > Qgis::NoGeometry )
+  if ( type < 0 || type > QgsWkbTypes::NullGeometry )
   {
     QgsDebugMsg( "Invalid vector type" );
   }
   else
   {
-    QString typeString( Qgis::vectorGeometryType( geometryType() ) );
-    QString wkbTypeString = QgsWKBTypes::displayString( Qgis::fromOldWkbType( mWkbType ) );
+    QString typeString( QgsWkbTypes::geometryDisplayString( geometryType() ) );
 
     myMetadata += "<p class=\"glossy\">" + tr( "Geometry type of the features in this layer" ) + "</p>\n";
-    myMetadata += QString( "<p>%1 (WKB type: \"%2\")</p>\n" ).arg( typeString, wkbTypeString );
+    myMetadata += QString( "<p>%1</p>\n" ).arg( typeString );
   }
 
   QgsAttributeList pkAttrList = pkAttributeList();
@@ -3824,7 +3757,7 @@ QString QgsVectorLayer::metadata() const
   const QgsFields& myFields = pendingFields();
   for ( int i = 0, n = myFields.size(); i < n; ++i )
   {
-    const QgsField& myField = fields[i];
+    QgsField myField = fields.at( i );
 
     myMetadata += "<tr><td>";
     myMetadata += myField.name();
@@ -4044,7 +3977,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
 
 QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDB )
 {
-  QgsDataSourceURI dsUri( theURI );
+  QgsDataSourceUri dsUri( theURI );
   if ( !loadFromLocalDB && !dsUri.database().isEmpty() )
   {
     QgsProviderRegistry * pReg = QgsProviderRegistry::instance();

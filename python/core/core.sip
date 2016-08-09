@@ -54,6 +54,7 @@
 %Include qgsfeaturefilterprovider.sip
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip
+%Include qgsfeedback.sip
 %Include qgsfield.sip
 %Include qgsgeometrysimplifier.sip
 %Include qgsgeometryvalidator.sip
@@ -157,7 +158,7 @@
 %Include qgsvectorlayerfeatureiterator.sip
 %Include qgsvirtuallayerdefinition.sip
 %Include qgsvirtuallayerdefinitionutils.sip
-%Include qgsvisibilitypresetcollection.sip
+%Include qgsmapthemecollection.sip
 %Include qgsxmlutils.sip
 
 %Include auth/qgsauthcertutils.sip
@@ -206,7 +207,6 @@
 %Include composer/qgscomposerutils.sip
 %Include composer/qgscomposition.sip
 %Include composer/qgsdoubleboxscalebarstyle.sip
-%Include composer/qgslegendmodel.sip
 %Include composer/qgsnumericscalebarstyle.sip
 %Include composer/qgspaperitem.sip
 %Include composer/qgsscalebarstyle.sip
@@ -290,7 +290,7 @@
 %Include symbology-ng/qgscptcityarchive.sip
 %Include symbology-ng/qgsstylev2.sip
 %Include symbology-ng/qgssvgcache.sip
-%Include symbology-ng/qgssymbolv2.sip
+%Include symbology-ng/qgssymbol.sip
 %Include symbology-ng/qgsvectorcolorrampv2.sip
 
 %Include symbology-ng/qgs25drenderer.sip
@@ -311,13 +311,13 @@
 %Include symbology-ng/qgsgeometrygeneratorsymbollayerv2.sip
 %Include symbology-ng/qgslinesymbollayerv2.sip
 %Include symbology-ng/qgsmarkersymbollayerv2.sip
-%Include symbology-ng/qgssymbollayerv2.sip
-%Include symbology-ng/qgssymbollayerv2registry.sip
-%Include symbology-ng/qgssymbollayerv2utils.sip
+%Include symbology-ng/qgssymbollayer.sip
+%Include symbology-ng/qgssymbollayerregistry.sip
+%Include symbology-ng/qgssymbollayerutils.sip
 %Include symbology-ng/qgsvectorfieldsymbollayer.sip
 %Include symbology-ng/qgsarrowsymbollayer.sip
 
-%Include symbology-ng/qgssymbologyv2conversion.sip
+%Include symbology-ng/qgssymbologyconversion.sip
 
 %Include dxf/qgsdxfexport.sip
 

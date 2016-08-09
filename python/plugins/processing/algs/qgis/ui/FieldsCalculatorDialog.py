@@ -172,7 +172,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         if self.layer is None:
             return
 
-        fields = self.layer.pendingFields()
+        fields = self.layer.fields()
         for f in fields:
             self.mExistingFieldComboBox.addItem(f.name())
 

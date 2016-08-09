@@ -146,10 +146,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const = 0;
 
     /**
-     * Get feature type.
-     * @return int representing the feature type
+     * Returns the geometry type which is returned by this layer
      */
-    virtual Qgis::WkbType geometryType() const = 0;
+    virtual QgsWkbTypes::Type wkbType() const = 0;
 
     /**
      * Number of features in the layer
@@ -460,7 +459,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /** Converts the geometry to the provider type if possible / necessary
     @return the converted geometry or nullptr if no conversion was necessary or possible*/
-    QgsGeometry* convertToProviderType( const QgsGeometry* geom ) const;
+    QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const;
 
   private:
     /** Old notation **/

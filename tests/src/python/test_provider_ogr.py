@@ -17,7 +17,7 @@ import shutil
 import sys
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWKBTypes
+from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWkbTypes
 from qgis.testing import (
     start_app,
     unittest
@@ -97,7 +97,7 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
     @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testMixOfPolygonCurvePolygon(self):
@@ -138,17 +138,17 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer(u'{}|layername=routes'.format(datasource), u'test', u'ogr')
         self.assertTrue(vl.isValid())
         f = next(vl.getFeatures())
-        self.assertEqual(f.constGeometry().geometry().wkbType(), QgsWKBTypes.LineString)
+        self.assertEqual(f.geometry().geometry().wkbType(), QgsWkbTypes.LineString)
 
         # GPX with elevation data
         datasource = os.path.join(TEST_DATA_DIR, 'elev.gpx')
         vl = QgsVectorLayer(u'{}|layername=routes'.format(datasource), u'test', u'ogr')
         self.assertTrue(vl.isValid())
         f = next(vl.getFeatures())
-        self.assertEqual(f.constGeometry().geometry().wkbType(), QgsWKBTypes.LineString25D)
-        self.assertEqual(f.constGeometry().geometry().pointN(0).z(), 1)
-        self.assertEqual(f.constGeometry().geometry().pointN(1).z(), 2)
-        self.assertEqual(f.constGeometry().geometry().pointN(2).z(), 3)
+        self.assertEqual(f.geometry().geometry().wkbType(), QgsWkbTypes.LineString25D)
+        self.assertEqual(f.geometry().geometry().pointN(0).z(), 1)
+        self.assertEqual(f.geometry().geometry().pointN(1).z(), 2)
+        self.assertEqual(f.geometry().geometry().pointN(2).z(), 3)
 
     def testNoDanglingFileDescriptorAfterCloseVariant1(self):
         ''' Test that when closing the provider all file handles are released '''

@@ -50,7 +50,7 @@ class QgsStyleV2 : QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \return success status of the operation
      */
-    bool addSymbol( const QString& name, QgsSymbolV2* symbol /Transfer/, bool update = false );
+    bool addSymbol( const QString& name, QgsSymbol* symbol /Transfer/, bool update = false );
 
     //! adds a new tag and returns the tag's id
     /*!
@@ -117,10 +117,10 @@ class QgsStyleV2 : QObject
     bool renameSymbol( const QString& oldName, const QString& newName );
 
     //! return a NEW copy of symbol
-    QgsSymbolV2* symbol( const QString& name ) /Factory/;
+    QgsSymbol* symbol( const QString& name ) /Factory/;
 
     //! return a const pointer to a symbol (doesn't create new instance)
-    const QgsSymbolV2* symbolRef( const QString& name ) const;
+    const QgsSymbol* symbolRef( const QString& name ) const;
 
     //! return count of symbols in style
     int symbolCount();
@@ -189,12 +189,12 @@ class QgsStyleV2 : QObject
     //! add the symbol to the DB with the tags
     /*!
      *  \param name is the name of the symbol as QString
-     *  \param symbol is the pointer to the new QgsSymbolV2 being saved
+     *  \param symbol is the pointer to the new QgsSymbol being saved
      *  \param groupid is the id of the group to which the symbol belongs. Pass 0 if it doesn't belong to any group or not known.
      *  \param tags is a list of tags that are associated with the symbol as a QStringList.
      *  \return returns the success state of the save operation
      */
-    bool saveSymbol( const QString& name, QgsSymbolV2* symbol /Transfer/, int groupid, const QStringList& tags );
+    bool saveSymbol( const QString& name, QgsSymbol* symbol /Transfer/, int groupid, const QStringList& tags );
 
     //! add the colorramp to the DB
     /*!
@@ -263,7 +263,7 @@ class QgsStyleV2 : QObject
     bool importXml( const QString& filename );
 
   signals:
-    void symbolSaved( const QString& name, QgsSymbolV2* symbol );
+    void symbolSaved( const QString& name, QgsSymbol* symbol );
 
   protected:
     //! convenience function to open the DB and return a sqlite3 object

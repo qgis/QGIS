@@ -19,9 +19,9 @@
 #include "qgspointmarkeritem.h"
 #include "qgsrendererv2.h"
 #include "qgssnappingutils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 #include "qgsdatadefined.h"
 #include "qgisapp.h"
 
@@ -55,7 +55,7 @@ bool QgsMapToolOffsetPointSymbol::layerIsOffsetable( QgsMapLayer* ml )
   }
 
   //does it have point or multipoint type?
-  if ( vLayer->geometryType() != Qgis::Point )
+  if ( vLayer->geometryType() != QgsWkbTypes::PointGeometry )
   {
     return false;
   }
@@ -87,7 +87,7 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbolV2* m
 {
   bool ok = false;
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, markerSymbol->symbolLayers() )
+  Q_FOREACH ( QgsSymbolLayer* layer, markerSymbol->symbolLayers() )
   {
     if ( !layer->hasDataDefinedProperty( "offset" ) )
       continue;
@@ -186,7 +186,7 @@ void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbolV2* markerSy
 QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( const QgsPoint& startPoint, const QgsPoint& endPoint ) const
 {
   QMap<int, QVariant> newAttrValues;
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mMarkerSymbol->symbolLayers() )
+  Q_FOREACH ( QgsSymbolLayer* layer, mMarkerSymbol->symbolLayers() )
   {
     if ( !layer->hasDataDefinedProperty( "offset" ) )
       continue;
@@ -201,7 +201,7 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
     QPointF offset = calculateOffset( startPoint, endPoint, ml->offsetUnit() );
     int fieldIdx = mActiveLayer->fields().indexFromName( layer->getDataDefinedProperty( "offset" )->field() );
     if ( fieldIdx >= 0 )
-      newAttrValues[ fieldIdx ] = QgsSymbolLayerV2Utils::encodePoint( offset );
+      newAttrValues[ fieldIdx ] = QgsSymbolLayerUtils::encodePoint( offset );
   }
   return newAttrValues;
 }

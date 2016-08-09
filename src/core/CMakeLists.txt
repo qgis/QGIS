@@ -37,11 +37,11 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssinglesymbolrendererv2.cpp
   symbology-ng/qgsstylev2.cpp
   symbology-ng/qgssvgcache.cpp
-  symbology-ng/qgssymbollayerv2.cpp
-  symbology-ng/qgssymbollayerv2registry.cpp
-  symbology-ng/qgssymbollayerv2utils.cpp
-  symbology-ng/qgssymbologyv2conversion.cpp
-  symbology-ng/qgssymbolv2.cpp
+  symbology-ng/qgssymbollayer.cpp
+  symbology-ng/qgssymbollayerregistry.cpp
+  symbology-ng/qgssymbollayerutils.cpp
+  symbology-ng/qgssymbologyconversion.cpp
+  symbology-ng/qgssymbol.cpp
   symbology-ng/qgsvectorcolorrampv2.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
 
@@ -223,7 +223,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorsimplifymethod.cpp
   qgsvirtuallayerdefinition.cpp
   qgsvirtuallayerdefinitionutils.cpp
-  qgsvisibilitypresetcollection.cpp
+  qgsmapthemecollection.cpp
   qgsxmlutils.cpp
 
   composer/qgsaddremoveitemcommand.cpp
@@ -267,7 +267,6 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposition.cpp
   composer/qgsdoubleboxscalebarstyle.cpp
   composer/qgsgroupungroupitemscommand.cpp
-  composer/qgslegendmodel.cpp
   composer/qgsnumericscalebarstyle.cpp
   composer/qgspaperitem.cpp
   composer/qgsscalebarstyle.cpp
@@ -456,6 +455,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsdataprovider.h
   qgsdbfilterproxymodel.h
   qgseditformconfig.h
+  qgsfeedback.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
@@ -491,7 +491,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditpassthrough.h
   qgsvectorlayer.h
   qgsvectorlayerjoinbuffer.h
-  qgsvisibilitypresetcollection.h
+  qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h
 
@@ -532,7 +532,6 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposertexttable.h
   composer/qgscomposition.h
   composer/qgsgroupungroupitemscommand.h
-  composer/qgslegendmodel.h
   composer/qgspaperitem.h
 
   raster/qgsrasterlayer.h
@@ -721,7 +720,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
   qgsvectorsimplifymethod.h
-  qgsvisibilitypresetcollection.h
+  qgsmapthemecollection.h
   qgsxmlutils.h
   qgswebpage.h
   qgswebframe.h
@@ -823,11 +822,11 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsheatmaprenderer.h
   symbology-ng/qgsinvertedpolygonrenderer.h
   symbology-ng/qgsnullsymbolrenderer.h
-  symbology-ng/qgssymbollayerv2.h
-  symbology-ng/qgssymbollayerv2registry.h
-  symbology-ng/qgssymbollayerv2utils.h
-  symbology-ng/qgssymbologyv2conversion.h
-  symbology-ng/qgssymbolv2.h
+  symbology-ng/qgssymbollayer.h
+  symbology-ng/qgssymbollayerregistry.h
+  symbology-ng/qgssymbollayerutils.h
+  symbology-ng/qgssymbologyconversion.h
+  symbology-ng/qgssymbol.h
   symbology-ng/qgsvectorcolorrampv2.h
   symbology-ng/qgsvectorfieldsymbollayer.h
   symbology-ng/qgsgeometrygeneratorsymbollayerv2.h

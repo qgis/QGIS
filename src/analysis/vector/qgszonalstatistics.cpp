@@ -54,7 +54,7 @@ QgsZonalStatistics::QgsZonalStatistics()
 
 int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 {
-  if ( !mPolygonLayer || mPolygonLayer->geometryType() != Qgis::Polygon )
+  if ( !mPolygonLayer || mPolygonLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     return 1;
   }
@@ -255,14 +255,14 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
       break;
     }
 
-    if ( !f.constGeometry() )
+    if ( !f.hasGeometry() )
     {
       ++featureCounter;
       continue;
     }
-    const QgsGeometry* featureGeometry = f.constGeometry();
+    QgsGeometry featureGeometry = f.geometry();
 
-    QgsRectangle featureRect = featureGeometry->boundingBox().intersect( &rasterBBox );
+    QgsRectangle featureRect = featureGeometry.boundingBox().intersect( &rasterBBox );
     if ( featureRect.isEmpty() )
     {
       ++featureCounter;
@@ -408,7 +408,7 @@ int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const Q
   return 0;
 }
 
-void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeometry* poly, int pixelOffsetX,
+void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeometry& poly, int pixelOffsetX,
     int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats &stats )
 {
   double cellCenterX, cellCenterY;
@@ -417,14 +417,14 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeo
   cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   stats.reset();
 
-  const GEOSGeometry* polyGeos = poly->asGeos();
+  const GEOSGeometry* polyGeos = poly.asGeos();
   if ( !polyGeos )
   {
     return;
   }
 
   GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
-  const GEOSPreparedGeometry* polyGeosPrepared = GEOSPrepare_r( geosctxt, poly->asGeos() );
+  const GEOSPreparedGeometry* polyGeosPrepared = GEOSPrepare_r( geosctxt, poly.asGeos() );
   if ( !polyGeosPrepared )
   {
     return;
@@ -464,14 +464,14 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeo
   GEOSPreparedGeom_destroy_r( geosctxt, polyGeosPrepared );
 }
 
-void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const QgsGeometry* poly, int pixelOffsetX,
+void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const QgsGeometry& poly, int pixelOffsetX,
     int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats &stats )
 {
   stats.reset();
 
   double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   float* pixelData = ( float * ) CPLMalloc( sizeof( float ) );
-  QgsGeometry* pixelRectGeometry = nullptr;
+  QgsGeometry pixelRectGeometry;
 
   double hCellSizeX = cellSizeX / 2.0;
   double hCellSizeY = cellSizeY / 2.0;
@@ -492,22 +492,20 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
         continue;
 
       pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
-      if ( pixelRectGeometry )
+      if ( !pixelRectGeometry.isEmpty() )
       {
         //intersection
-        QgsGeometry *intersectGeometry = pixelRectGeometry->intersection( poly );
-        if ( intersectGeometry )
+        QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
+        if ( !intersectGeometry.isEmpty() )
         {
-          double intersectionArea = intersectGeometry->area();
+          double intersectionArea = intersectGeometry.area();
           if ( intersectionArea >= 0.0 )
           {
             weight = intersectionArea / pixelArea;
             stats.addValue( *pixelData, weight );
           }
-          delete intersectGeometry;
         }
-        delete pixelRectGeometry;
-        pixelRectGeometry = nullptr;
+        pixelRectGeometry = QgsGeometry();
       }
       currentX += cellSizeX;
     }

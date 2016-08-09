@@ -70,8 +70,8 @@ class ExtractByLocation(GeoAlgorithm):
         index = vector.spatialindex(layer)
 
         output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(layer.pendingFields(),
-                                        layer.dataProvider().geometryType(), layer.crs())
+        writer = output.getVectorWriter(layer.fields(),
+                                        layer.wkbType(), layer.crs())
 
         if 'disjoint' in predicates:
             disjoinSet = []

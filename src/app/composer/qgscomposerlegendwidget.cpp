@@ -75,7 +75,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
 
   if ( legend )
   {
-    mItemTreeView->setModel( legend->modelV2() );
+    mItemTreeView->setModel( legend->model() );
     mItemTreeView->setMenuProvider( new QgsComposerLegendMenuProvider( mItemTreeView, this ) );
     connect( legend, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
     mWrapCharLineEdit->setText( legend->wrapChar() );
@@ -654,7 +654,7 @@ void QgsComposerLegendWidget::on_mAddToolButton_clicked()
       if ( layer )
       {
         mLegend->beginCommand( "Legend item added" );
-        mLegend->modelV2()->rootGroup()->addLayer( layer );
+        mLegend->model()->rootGroup()->addLayer( layer );
         mLegend->endCommand();
       }
     }
@@ -710,7 +710,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   Q_FOREACH ( const QPersistentModelIndex& index, indexes )
   {
     if ( index.isValid() && mItemTreeView->layerTreeModel()->index2node( index ) )
-      mLegend->modelV2()->removeRow( index.row(), index.parent() );
+      mLegend->model()->removeRow( index.row(), index.parent() );
   }
 
   mLegend->adjustBoxSize();
@@ -844,7 +844,7 @@ void QgsComposerLegendWidget::on_mAddGroupToolButton_clicked()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Legend group added" ) );
-    mLegend->modelV2()->rootGroup()->addGroup( tr( "Group" ) );
+    mLegend->model()->rootGroup()->addGroup( tr( "Group" ) );
     mLegend->updateItem();
     mLegend->endCommand();
   }
@@ -957,7 +957,7 @@ void QgsComposerLegendWidget::setCurrentNodeStyleFromAction()
 void QgsComposerLegendWidget::updateFilterLegendByAtlasButton()
 {
   const QgsAtlasComposition& atlas = mLegend->composition()->atlasComposition();
-  mFilterLegendByAtlasCheckBox->setEnabled( atlas.enabled() && atlas.coverageLayer() && atlas.coverageLayer()->geometryType() == Qgis::Polygon );
+  mFilterLegendByAtlasCheckBox->setEnabled( atlas.enabled() && atlas.coverageLayer() && atlas.coverageLayer()->geometryType() == QgsWkbTypes::PolygonGeometry );
 }
 
 void QgsComposerLegendWidget::on_mItemTreeView_doubleClicked( const QModelIndex &idx )

@@ -46,7 +46,7 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
     return false;
   }
 
-  Qgis::WkbType outputType = dpA->geometryType();
+  QgsWkbTypes::Type outputType = dpA->wkbType();
   QgsCoordinateReferenceSystem crs = layerA->crs();
   QgsFields fieldsA = layerA->fields();
   QgsFields fieldsB = layerB->fields();
@@ -145,17 +145,17 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
 void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* vfw,
     QgsVectorLayer* vl, QgsSpatialIndex* index )
 {
-  if ( !f.constGeometry() )
+  if ( !f.hasGeometry() )
   {
     return;
   }
 
-  const QgsGeometry* featureGeometry = f.constGeometry();
-  QgsGeometry* intersectGeometry = nullptr;
+  QgsGeometry featureGeometry = f.geometry();
+  QgsGeometry intersectGeometry;
   QgsFeature overlayFeature;
 
   QList<QgsFeatureId> intersects;
-  intersects = index->intersects( featureGeometry->boundingBox() );
+  intersects = index->intersects( featureGeometry.boundingBox() );
   QList<QgsFeatureId>::const_iterator it = intersects.constBegin();
   QgsFeature outFeature;
   for ( ; it != intersects.constEnd(); ++it )
@@ -165,9 +165,9 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
       continue;
     }
 
-    if ( featureGeometry->intersects( overlayFeature.constGeometry() ) )
+    if ( featureGeometry.intersects( overlayFeature.geometry() ) )
     {
-      intersectGeometry = featureGeometry->intersection( overlayFeature.constGeometry() );
+      intersectGeometry = featureGeometry.intersection( overlayFeature.geometry() );
 
       outFeature.setGeometry( intersectGeometry );
       QgsAttributes attributesA = f.attributes();
@@ -192,7 +192,7 @@ void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFiel
 
   for ( int idx = 0; idx < fieldListB.count(); ++idx )
   {
-    QgsField field = fieldListB[idx];
+    QgsField field = fieldListB.at( idx );
     int count = 0;
     while ( names.contains( field.name() ) )
     {

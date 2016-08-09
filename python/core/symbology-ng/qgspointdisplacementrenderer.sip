@@ -26,27 +26,27 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     /** Partial proxy that will call this method on the embedded renderer. */
     virtual QList<QString> usedAttributes();
     /** Proxy that will call this method on the embedded renderer. */
-    virtual int capabilities();
+    virtual QgsFeatureRendererV2::Capabilities capabilities();
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as symbols2
      */
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    virtual QgsSymbolList symbols( QgsRenderContext& context ) /PyName=symbols2/;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as symbolForFeature2
      */
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as originalSymbolForFeature2
      */
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as symbolsForFeature2
      */
-    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=symbolsForFeature2/;
+    virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=symbolsForFeature2/;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as originalSymbolsForFeature2
      */
-    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolsForFeature2/;
+    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolsForFeature2/;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as willRenderFeature2
      */
@@ -71,7 +71,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
     const QgsFeatureRendererV2* embeddedRenderer() const;
 
-    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol );
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol );
 
     virtual bool legendSymbolItemsCheckable() const;
     virtual bool legendSymbolItemChecked( const QString& key );
@@ -148,7 +148,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     QgsUnitTypes::RenderUnit toleranceUnit() const;
 
     /** Sets the map unit scale object for the distance tolerance. This is only used if the
-     * toleranceUnit() is set to QgsSymbolV2::MapUnit.
+     * toleranceUnit() is set to QgsSymbol::MapUnit.
      * @param scale scale for distance tolerance
      * @see toleranceMapUnitScale()
      * @see setToleranceUnit()
@@ -156,7 +156,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setToleranceMapUnitScale( const QgsMapUnitScale& scale );
 
     /** Returns the map unit scale object for the distance tolerance. This is only used if the
-     * toleranceUnit() is set to QgsSymbolV2::MapUnit.
+     * toleranceUnit() is set to QgsSymbol::MapUnit.
      * @see setToleranceMapUnitScale()
      * @see toleranceUnit()
      */

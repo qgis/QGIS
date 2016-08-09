@@ -25,7 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import Qgis, QgsGeometry, QgsFeature, QgsPoint
+from qgis.core import Qgis, QgsGeometry, QgsFeature, QgsPoint, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
@@ -65,7 +65,7 @@ class Gridify(GeoAlgorithm):
                 self.tr('Invalid grid spacing: %s/%s' % (hSpacing, vSpacing)))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields(), layer.wkbType(), layer.crs())
+            layer.fields(), layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / len(features)
@@ -74,13 +74,13 @@ class Gridify(GeoAlgorithm):
             geom = f.geometry()
             geomType = geom.wkbType()
 
-            if geomType == Qgis.WKBPoint:
+            if geomType == QgsWkbTypes.Point:
                 points = self._gridify([geom.asPoint()], hSpacing, vSpacing)
                 newGeom = QgsGeometry.fromPoint(points[0])
-            elif geomType == Qgis.WKBMultiPoint:
+            elif geomType == QgsWkbTypes.MultiPoint:
                 points = self._gridify(geom.aMultiPoint(), hSpacing, vSpacing)
                 newGeom = QgsGeometry.fromMultiPoint(points)
-            elif geomType == Qgis.WKBLineString:
+            elif geomType == QgsWkbTypes.LineString:
                 points = self._gridify(geom.asPolyline(), hSpacing, vSpacing)
                 if len(points) < 2:
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
@@ -88,7 +88,7 @@ class Gridify(GeoAlgorithm):
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromPolyline(points)
-            elif geomType == Qgis.WKBMultiLineString:
+            elif geomType == QgsWkbTypes.MultiLineString:
                 polyline = []
                 for line in geom.asMultiPolyline():
                     points = self._gridify(line, hSpacing, vSpacing)
@@ -101,7 +101,7 @@ class Gridify(GeoAlgorithm):
                 else:
                     newGeom = QgsGeometry.fromMultiPolyline(polyline)
 
-            elif geomType == Qgis.WKBPolygon:
+            elif geomType == QgsWkbTypes.Polygon:
                 polygon = []
                 for line in geom.asPolygon():
                     points = self._gridify(line, hSpacing, vSpacing)
@@ -113,7 +113,7 @@ class Gridify(GeoAlgorithm):
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromPolygon(polygon)
-            elif geomType == Qgis.WKBMultiPolygon:
+            elif geomType == QgsWkbTypes.MultiPolygon:
                 multipolygon = []
                 for polygon in geom.asMultiPolygon():
                     newPolygon = []

@@ -45,15 +45,15 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
     void deleteRing( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer );
 
     //! return ring number in polygon
-    int ringNumInPolygon( const QgsGeometry* g, int vertexNr );
+    int ringNumInPolygon( const QgsGeometry& g, int vertexNr );
 
     //! return ring number in multipolygon and set parNum to index of the part
-    int ringNumInMultiPolygon( const QgsGeometry* g, int vertexNr, int& partNum );
+    int ringNumInMultiPolygon( const QgsGeometry& g, int vertexNr, int& partNum );
 
     /** Return the geometry of the ring under the point p and sets fid to the feature id,
      * partNum to the part number in the feature and ringNum to the ring number in the part
      */
-    QgsGeometry* ringUnderPoint( const QgsPoint& p, QgsFeatureId& fid, int& partNum, int& ringNum );
+    QgsGeometry ringUnderPoint( const QgsPoint& p, QgsFeatureId& fid, int& partNum, int& ringNum );
 
     /* Rubberband that shows the ring being deleted*/
     QgsRubberBand* mRubberBand;

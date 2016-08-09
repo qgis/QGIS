@@ -132,7 +132,7 @@ void TestQgsWcsProvider::read()
         continue;
       }
 
-      QgsDataSourceURI uri;
+      QgsDataSourceUri uri;
       uri.setParam( "url", mUrl );
       uri.setParam( "identifier", identifier );
       uri.setParam( "crs", "epsg:4326" );

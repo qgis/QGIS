@@ -85,11 +85,11 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     void prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames );
     void prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames );
 
-    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
+    /** Draw layer with renderer V2. QgsFeatureRendererV2::startRender() needs to be called before using this method
      */
     void drawRendererV2( QgsFeatureIterator& fit );
 
-    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
+    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRendererV2::startRender() needs to be called before using this method
      */
     void drawRendererV2Levels( QgsFeatureIterator& fit );
 
@@ -120,7 +120,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     bool mVertexMarkerOnlyForSelection;
     int mVertexMarkerStyle, mVertexMarkerSize;
 
-    Qgis::GeometryType mGeometryType;
+    QgsWkbTypes::GeometryType mGeometryType;
 
     QStringList mAttrNames;
 

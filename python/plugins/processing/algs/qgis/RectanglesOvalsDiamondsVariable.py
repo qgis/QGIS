@@ -30,7 +30,7 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import QgsWkbTypes, QgsFeature, QgsGeometry, QgsPoint
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -97,8 +97,8 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
-                layer.pendingFields().toList(),
-                Qgis.WKBPolygon,
+                layer.fields().toList(),
+                QgsWkbTypes.Polygon,
                 layer.crs())
 
         outFeat = QgsFeature()
@@ -134,7 +134,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 yOffset = h / 2.0
                 phi = angle * math.pi / 180
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
@@ -158,7 +158,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 xOffset = w / 2.0
                 yOffset = h / 2.0
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
@@ -187,7 +187,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 yOffset = h / 2.0
                 phi = angle * math.pi / 180
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
@@ -211,7 +211,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 xOffset = w / 2.0
                 yOffset = h / 2.0
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
@@ -240,7 +240,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 yOffset = h / 2.0
                 phi = angle * math.pi / 180
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = []
@@ -266,7 +266,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 xOffset = w / 2.0
                 yOffset = h / 2.0
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = []

@@ -128,6 +128,7 @@
 #include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
 #include "qgscursors.h"
+#include "qgscustomdrophandler.h"
 #include "qgscustomization.h"
 #include "qgscustomlayerorderwidget.h"
 #include "qgscustomprojectiondialog.h"
@@ -222,7 +223,7 @@
 #include "qgsstatusbarscalewidget.h"
 #include "qgsstylev2.h"
 #include "qgssvgannotationitem.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 #include "qgstextannotationitem.h"
 #include "qgstipgui.h"
 #include "qgsundowidget.h"
@@ -231,7 +232,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
-#include "qgsvisibilitypresets.h"
+#include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
 #include "qgsmaplayeractionregistry.h"
@@ -439,15 +440,15 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
       if ( mLayerTreeView )
       {
         // if it's a legend node, open symbol editor directly
-        if ( QgsSymbolV2LegendNode* node = dynamic_cast<QgsSymbolV2LegendNode*>( mLayerTreeView->currentLegendNode() ) )
+        if ( QgsSymbolLegendNode* node = dynamic_cast<QgsSymbolLegendNode*>( mLayerTreeView->currentLegendNode() ) )
         {
-          const QgsSymbolV2* originalSymbol = node->symbol();
+          const QgsSymbol* originalSymbol = node->symbol();
           if ( !originalSymbol )
             return;
 
-          QScopedPointer< QgsSymbolV2 > symbol( originalSymbol->clone() );
+          QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
           QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-          QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, this );
+          QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, this );
           dlg.setMapCanvas( mMapCanvas );
           if ( dlg.exec() )
           {
@@ -1341,28 +1342,57 @@ void QgisApp::dropEvent( QDropEvent *event )
   if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
   {
     QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
-    Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
-    {
-      QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
-
-      if ( u.layerType == "vector" )
-      {
-        addVectorLayer( uri, u.name, u.providerKey );
-      }
-      else if ( u.layerType == "raster" )
-      {
-        addRasterLayer( uri, u.name, u.providerKey );
-      }
-      else if ( u.layerType == "plugin" )
-      {
-        addPluginLayer( uri, u.name, u.providerKey );
-      }
-    }
+    handleDropUriList( lst );
   }
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
   event->acceptProposedAction();
 }
+
+
+void QgisApp::registerCustomDropHandler( QgsCustomDropHandler* handler )
+{
+  if ( !mCustomDropHandlers.contains( handler ) )
+    mCustomDropHandlers << handler;
+}
+
+void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler* handler )
+{
+  mCustomDropHandlers.removeOne( handler );
+}
+
+void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList& lst )
+{
+  Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
+  {
+    QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
+
+    if ( u.layerType == "vector" )
+    {
+      addVectorLayer( uri, u.name, u.providerKey );
+    }
+    else if ( u.layerType == "raster" )
+    {
+      addRasterLayer( uri, u.name, u.providerKey );
+    }
+    else if ( u.layerType == "plugin" )
+    {
+      addPluginLayer( uri, u.name, u.providerKey );
+    }
+    else if ( u.layerType == "custom" )
+    {
+      Q_FOREACH ( QgsCustomDropHandler* handler, mCustomDropHandlers )
+      {
+        if ( handler->key() == u.providerKey )
+        {
+          handler->handleDrop( u );
+          break;
+        }
+      }
+    }
+  }
+}
+
 
 bool QgisApp::event( QEvent * event )
 {
@@ -3002,10 +3032,10 @@ void QgisApp::initLayerTreeView()
   // visibility groups tool button
   QToolButton* btnVisibilityPresets = new QToolButton;
   btnVisibilityPresets->setAutoRaise( true );
-  btnVisibilityPresets->setToolTip( tr( "Manage Layer Visibility" ) );
+  btnVisibilityPresets->setToolTip( tr( "Manage Map Themes" ) );
   btnVisibilityPresets->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ) );
   btnVisibilityPresets->setPopupMode( QToolButton::InstantPopup );
-  btnVisibilityPresets->setMenu( QgsVisibilityPresets::instance()->menu() );
+  btnVisibilityPresets->setMenu( QgsMapThemes::instance()->menu() );
 
   // filter legend action
   mActionFilterLegend = new QAction( tr( "Filter Legend By Map Content" ), this );
@@ -3150,6 +3180,8 @@ void QgisApp::createMapTips()
   connect( mpMapTipsTimer, SIGNAL( timeout() ), this, SLOT( showMapTip() ) );
   // set the interval to 0.850 seconds - timer will be started next time the mouse moves
   mpMapTipsTimer->setInterval( 850 );
+  mpMapTipsTimer->setSingleShot( true );
+
   // Create the maptips object
   mpMaptip = new QgsMapTip();
 }
@@ -4026,7 +4058,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
   Q_FOREACH ( const QString& layerPath, layerPathList )
   {
     // create the layer
-    QgsDataSourceURI uri( layerPath );
+    QgsDataSourceUri uri( layerPath );
 
     QgsVectorLayer *layer = new QgsVectorLayer( uri.uri( false ), uri.table(), providerKey, false );
     Q_CHECK_PTR( layer );
@@ -6158,7 +6190,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
   QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer, options, this );
 
   dialog->setCanvasExtent( mMapCanvas->mapSettings().visibleExtent(), mMapCanvas->mapSettings().destinationCrs() );
-  dialog->setIncludeZ( QgsWKBTypes::hasZ( Qgis::fromOldWkbType( vlayer->wkbType() ) ) );
+  dialog->setIncludeZ( QgsWkbTypes::hasZ( vlayer->wkbType() ) );
 
   if ( dialog->exec() == QDialog::Accepted )
   {
@@ -6167,7 +6199,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     QString format = dialog->format();
     QStringList datasourceOptions = dialog->datasourceOptions();
     bool autoGeometryType = dialog->automaticGeometryType();
-    QgsWKBTypes::Type forcedGeometryType = dialog->geometryType();
+    QgsWkbTypes::Type forcedGeometryType = dialog->geometryType();
 
     QgsCoordinateTransform ct;
     destCRS = QgsCoordinateReferenceSystem::fromSrsId( dialog->crs() );
@@ -6220,7 +6252,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
               static_cast< QgsVectorFileWriter::SymbologyExport >( dialog->symbologyExport() ),
               dialog->scaleDenominator(),
               dialog->hasFilterExtent() ? &filterExtent : nullptr,
-              autoGeometryType ? QgsWKBTypes::Unknown : forcedGeometryType,
+              autoGeometryType ? QgsWkbTypes::Unknown : forcedGeometryType,
               dialog->forceMulti(),
               dialog->includeZ(),
               dialog->selectedAttributes(),
@@ -6358,20 +6390,18 @@ void QgisApp::deletePart()
   mMapCanvas->setMapTool( mMapTools.mDeletePart );
 }
 
-QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool& canceled )
+QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool& canceled )
 {
   canceled = false;
   if ( !vl || featureList.size() < 2 )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
-  QgsGeometry* unionGeom = featureList[0].geometry();
-  QgsGeometry* backupPtr = nullptr; //pointer to delete intermediate results
-  if ( !unionGeom )
-  {
-    return nullptr;
-  }
+  if ( !featureList.at( 0 ).hasGeometry() )
+    return QgsGeometry();
+
+  QgsGeometry unionGeom = featureList.at( 0 ).geometry();
 
   QProgressDialog progress( tr( "Merging features..." ), tr( "Abort" ), 0, featureList.size(), this );
   progress.setWindowModality( Qt::WindowModal );
@@ -6382,34 +6412,27 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
   {
     if ( progress.wasCanceled() )
     {
-      delete unionGeom;
       QApplication::restoreOverrideCursor();
       canceled = true;
-      return nullptr;
+      return QgsGeometry();
     }
     progress.setValue( i );
-    QgsGeometry* currentGeom = featureList[i].geometry();
-    if ( currentGeom )
+    QgsGeometry currentGeom = featureList.at( i ).geometry();
+    if ( !currentGeom.isEmpty() )
     {
-      backupPtr = unionGeom;
-      unionGeom = unionGeom->combine( currentGeom );
-      if ( i > 1 ) //delete previous intermediate results
-      {
-        delete backupPtr;
-        backupPtr = nullptr;
-      }
-      if ( !unionGeom )
+      unionGeom = unionGeom.combine( currentGeom );
+      if ( unionGeom.isEmpty() )
       {
         QApplication::restoreOverrideCursor();
-        return nullptr;
+        return QgsGeometry();
       }
     }
   }
 
   //convert unionGeom to a multipart geometry in case it is necessary to match the layer type
-  if ( Qgis::isMultiType( vl->wkbType() ) && !unionGeom->isMultipart() )
+  if ( QgsWkbTypes::isMultiType( vl->wkbType() ) && !unionGeom.isMultipart() )
   {
-    unionGeom->convertToMultiType();
+    unionGeom.convertToMultiType();
   }
 
   QApplication::restoreOverrideCursor();
@@ -6855,7 +6878,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
         continue;
 
       QVariant val = merged.at( i );
-      const QgsField &fld( vl->fields().at( i ) );
+      QgsField fld( vl->fields().at( i ) );
       bool isDefaultValue = vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
                             vl->dataProvider() &&
                             vl->dataProvider()->defaultValue( vl->fields().fieldOriginIndex( i ) ) == val;
@@ -6975,8 +6998,8 @@ void QgisApp::mergeSelectedFeatures()
   QgsFeatureIds featureIds = vl->selectedFeaturesIds();
   QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
   bool canceled;
-  QgsGeometry* unionGeom = unionGeometries( vl, featureList, canceled );
-  if ( !unionGeom )
+  QgsGeometry unionGeom = unionGeometries( vl, featureList, canceled );
+  if ( unionGeom.isEmpty() )
   {
     if ( !canceled )
     {
@@ -6992,7 +7015,6 @@ void QgisApp::mergeSelectedFeatures()
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
   if ( d.exec() == QDialog::Rejected )
   {
-    delete unionGeom;
     return;
   }
 
@@ -7004,18 +7026,16 @@ void QgisApp::mergeSelectedFeatures()
       tr( "Not enough features selected" ),
       tr( "The merge tool requires at least two selected features" ),
       QgsMessageBar::WARNING );
-    delete unionGeom;
     return;
   }
 
   //if the user changed the feature selection in the merge dialog, we need to repeat the union and check the type
   if ( featureIds.size() != featureIdsAfter.size() )
   {
-    delete unionGeom;
     bool canceled;
     QgsFeatureList featureListAfter = vl->selectedFeatures();
     unionGeom = unionGeometries( vl, featureListAfter, canceled );
-    if ( !unionGeom )
+    if ( unionGeom.isEmpty() )
     {
       if ( !canceled )
       {
@@ -7373,11 +7393,11 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
     featureIt->setAttributes( dstAttr );
 
-    if ( featureIt->constGeometry() )
+    if ( featureIt->hasGeometry() )
     {
       // convert geometry to match destination layer
-      Qgis::GeometryType destType = pasteVectorLayer->geometryType();
-      bool destIsMulti = Qgis::isMultiType( pasteVectorLayer->wkbType() );
+      QgsWkbTypes::GeometryType destType = pasteVectorLayer->geometryType();
+      bool destIsMulti = QgsWkbTypes::isMultiType( pasteVectorLayer->wkbType() );
       if ( pasteVectorLayer->dataProvider() &&
            !pasteVectorLayer->dataProvider()->doesStrictFeatureTypeCheck() )
       {
@@ -7385,10 +7405,10 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
         destIsMulti = true;
       }
 
-      if ( destType != Qgis::UnknownGeometry )
+      if ( destType != QgsWkbTypes::UnknownGeometry )
       {
-        QgsGeometry* newGeometry = featureIt->constGeometry()->convertToType( destType, destIsMulti );
-        if ( !newGeometry )
+        QgsGeometry newGeometry = featureIt->geometry().convertToType( destType, destIsMulti );
+        if ( newGeometry.isEmpty() )
         {
           featureIt = features.erase( featureIt );
           continue;
@@ -7396,7 +7416,9 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
         featureIt->setGeometry( newGeometry );
       }
       // avoid intersection if enabled in digitize settings
-      featureIt->geometry()->avoidIntersections();
+      QgsGeometry g = featureIt->geometry();
+      g.avoidIntersections();
+      featureIt->setGeometry( g );
     }
 
     ++featureIt;
@@ -7483,45 +7505,45 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   QgsFields fields = clipboard()->fields();
 
   // Decide geometry type from features, switch to multi type if at least one multi is found
-  QMap<Qgis::WkbType, int> typeCounts;
+  QMap<QgsWkbTypes::Type, int> typeCounts;
   QgsFeatureList features = clipboard()->copyOf( fields );
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &feature = features[i];
-    if ( !feature.constGeometry() )
+    if ( !feature.hasGeometry() )
       continue;
 
-    Qgis::WkbType type = Qgis::flatType( feature.constGeometry()->wkbType() );
+    QgsWkbTypes::Type type = QgsWkbTypes::flatType( feature.geometry().wkbType() );
 
-    if ( type == Qgis::WKBUnknown || type == Qgis::WKBNoGeometry )
+    if ( type == QgsWkbTypes::Unknown || type == QgsWkbTypes::NoGeometry )
       continue;
 
-    if ( Qgis::isSingleType( type ) )
+    if ( QgsWkbTypes::isSingleType( type ) )
     {
-      if ( typeCounts.contains( Qgis::multiType( type ) ) )
+      if ( typeCounts.contains( QgsWkbTypes::multiType( type ) ) )
       {
-        typeCounts[ Qgis::multiType( type )] = typeCounts[ Qgis::multiType( type )] + 1;
+        typeCounts[ QgsWkbTypes::multiType( type )] = typeCounts[ QgsWkbTypes::multiType( type )] + 1;
       }
       else
       {
         typeCounts[ type ] = typeCounts[ type ] + 1;
       }
     }
-    else if ( Qgis::isMultiType( type ) )
+    else if ( QgsWkbTypes::isMultiType( type ) )
     {
-      if ( typeCounts.contains( Qgis::singleType( type ) ) )
+      if ( typeCounts.contains( QgsWkbTypes::singleType( type ) ) )
       {
         // switch to multi type
-        typeCounts[type] = typeCounts[ Qgis::singleType( type )];
-        typeCounts.remove( Qgis::singleType( type ) );
+        typeCounts[type] = typeCounts[ QgsWkbTypes::singleType( type )];
+        typeCounts.remove( QgsWkbTypes::singleType( type ) );
       }
       typeCounts[type] = typeCounts[type] + 1;
     }
   }
 
-  Qgis::WkbType wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : Qgis::WKBNoGeometry;
+  QgsWkbTypes::Type wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QgsWkbTypes::NoGeometry;
 
-  QString typeName = wkbType != Qgis::WKBNoGeometry ? QString( Qgis::featureType( wkbType ) ).remove( "WKB" ) : "none";
+  QString typeName = wkbType != QgsWkbTypes::NoGeometry ? QString( QgsWkbTypes::displayString( wkbType ) ).remove( "WKB" ) : "none";
 
   if ( features.isEmpty() )
   {
@@ -7553,7 +7575,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   }
 
   layer->startEditing();
-  if ( wkbType != Qgis::WKBNoGeometry )
+  if ( wkbType != QgsWkbTypes::NoGeometry )
     layer->setCrs( clipboard()->crs(), false );
 
   Q_FOREACH ( QgsField f, clipboard()->fields().toList() )
@@ -7573,21 +7595,23 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &feature = features[i];
-    if ( !feature.constGeometry() )
+    if ( !feature.hasGeometry() )
       continue;
 
-    Qgis::WkbType type = Qgis::flatType( feature.constGeometry()->wkbType() );
-    if ( type == Qgis::WKBUnknown || type == Qgis::WKBNoGeometry )
+    QgsWkbTypes::Type type = QgsWkbTypes::flatType( feature.geometry().wkbType() );
+    if ( type == QgsWkbTypes::Unknown || type == QgsWkbTypes::NoGeometry )
       continue;
 
-    if ( Qgis::singleType( wkbType ) != Qgis::singleType( type ) )
+    if ( QgsWkbTypes::singleType( wkbType ) != QgsWkbTypes::singleType( type ) )
     {
-      feature.setGeometry( nullptr );
+      feature.clearGeometry();
     }
 
-    if ( Qgis::isMultiType( wkbType ) &&  Qgis::isSingleType( type ) )
+    if ( QgsWkbTypes::isMultiType( wkbType ) &&  QgsWkbTypes::isSingleType( type ) )
     {
-      feature.geometry()->convertToMultiType();
+      QgsGeometry g = feature.geometry();
+      g.convertToMultiType();
+      feature.setGeometry( g );
     }
   }
   if ( ! layer->addFeatures( features, false ) || !layer->commitChanges() )
@@ -7734,7 +7758,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   bool res = true;
 
-  QString connString = QgsDataSourceURI( vlayer->source() ).connectionInfo();
+  QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
   QString key = vlayer->providerType();
 
   QMap< QPair< QString, QString>, QgsTransactionGroup*> transactionGroups = QgsProject::instance()->transactionGroups();
@@ -10166,32 +10190,21 @@ void QgisApp::removeMapToolMessage()
 // Show the maptip using tooltip
 void QgisApp::showMapTip()
 {
-  // Stop the timer while we look for a maptip
-  mpMapTipsTimer->stop();
+  QPoint myPointerPos = mMapCanvas->mouseLastXY();
 
-  // Only show tooltip if the mouse is over the canvas
-  if ( mMapCanvas->underMouse() )
+  //  Make sure there is an active layer before proceeding
+  QgsMapLayer* mypLayer = mMapCanvas->currentLayer();
+  if ( mypLayer )
   {
-    QPoint myPointerPos = mMapCanvas->mouseLastXY();
-
-    //  Make sure there is an active layer before proceeding
-    QgsMapLayer* mypLayer = mMapCanvas->currentLayer();
-    if ( mypLayer )
+    //QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
+    // only process vector layers
+    if ( mypLayer->type() == QgsMapLayer::VectorLayer )
     {
-      //QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
-      // only process vector layers
-      if ( mypLayer->type() == QgsMapLayer::VectorLayer )
+      // Show the maptip if the maptips button is depressed
+      if ( mMapTipsVisible )
       {
-        // Show the maptip if the maptips button is depressed
-        if ( mMapTipsVisible )
-        {
-          mpMaptip->showMapTip( mypLayer, mLastMapPosition, myPointerPos, mMapCanvas );
-        }
+        mpMaptip->showMapTip( mypLayer, mLastMapPosition, myPointerPos, mMapCanvas );
       }
-    }
-    else
-    {
-      showStatusMessage( tr( "Maptips require an active layer" ) );
     }
   }
 }
@@ -10519,7 +10532,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->isEmpty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
-      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != Qgis::Point );
+      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != QgsWkbTypes::PointGeometry );
       mActionCircularStringRadius->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) );
 
       //does provider allow deleting of features?
@@ -10540,7 +10553,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionMultiEditAttributes->setEnabled( false );
       }
 
-      bool isMultiPart = Qgis::isMultiType( vlayer->wkbType() ) || !dprovider->doesStrictFeatureTypeCheck();
+      bool isMultiPart = QgsWkbTypes::isMultiType( vlayer->wkbType() ) || !dprovider->doesStrictFeatureTypeCheck();
 
       // moving enabled if geometry changes are supported
       mActionAddPart->setEnabled( isEditable && canChangeGeometry );
@@ -10550,9 +10563,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
 
       mActionEnableTracing->setEnabled( isEditable && canAddFeatures &&
-                                        ( vlayer->geometryType() == Qgis::Line || vlayer->geometryType() == Qgis::Polygon ) );
+                                        ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
 
-      if ( vlayer->geometryType() == Qgis::Point )
+      if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePoint.svg" ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeaturePoint.svg" ) );
@@ -10580,7 +10593,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           }
         }
       }
-      else if ( vlayer->geometryType() == Qgis::Line )
+      else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCaptureLine.svg" ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeatureLine.svg" ) );
@@ -10595,7 +10608,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionFillRing->setEnabled( false );
         mActionDeleteRing->setEnabled( false );
       }
-      else if ( vlayer->geometryType() == Qgis::Polygon )
+      else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePolygon.svg" ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeature.svg" ) );
@@ -10609,7 +10622,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionDeleteRing->setEnabled( isEditable && canChangeGeometry );
         mActionOffsetCurve->setEnabled( false );
       }
-      else if ( vlayer->geometryType() == Qgis::NoGeometry )
+      else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.svg" ) );
       }

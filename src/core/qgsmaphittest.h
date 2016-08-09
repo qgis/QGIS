@@ -21,7 +21,7 @@
 #include <QSet>
 
 class QgsRenderContext;
-class QgsSymbolV2;
+class QgsSymbol;
 class QgsVectorLayer;
 class QgsExpression;
 
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsMapHitTest
      * @note added in QGIS 2.12
      * @see legendKeyVisible()
      */
-    bool symbolVisible( QgsSymbolV2* symbol, QgsVectorLayer* layer ) const;
+    bool symbolVisible( QgsSymbol* symbol, QgsVectorLayer* layer ) const;
 
     /** Tests whether a given legend key is visible for a specified layer.
      * @param ruleKey legend rule key

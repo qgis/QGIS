@@ -51,14 +51,14 @@ class QgsWMSLayerItem : public QgsLayerItem
   public:
     QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path,
                      const QgsWmsCapabilitiesProperty& capabilitiesProperty,
-                     const QgsDataSourceURI& dataSourceUri,
+                     const QgsDataSourceUri& dataSourceUri,
                      const QgsWmsLayerProperty &layerProperty );
     ~QgsWMSLayerItem();
 
     QString createUri();
 
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
-    QgsDataSourceURI mDataSourceUri;
+    QgsDataSourceUri mDataSourceUri;
     QgsWmsLayerProperty mLayerProperty;
 };
 
@@ -69,7 +69,7 @@ class QgsWMTSLayerItem : public QgsLayerItem
     QgsWMTSLayerItem( QgsDataItem* parent,
                       const QString &name,
                       const QString &path,
-                      const QgsDataSourceURI &dataSourceUri,
+                      const QgsDataSourceUri &dataSourceUri,
                       const QString &id,
                       const QString &format,
                       const QString &style,
@@ -82,7 +82,7 @@ class QgsWMTSLayerItem : public QgsLayerItem
     QString layerName() const override { return mTitle; }
 
   private:
-    QgsDataSourceURI mDataSourceUri;
+    QgsDataSourceUri mDataSourceUri;
     QString mId, mFormat, mStyle, mTileMatrixSet, mCrs, mTitle;
 };
 

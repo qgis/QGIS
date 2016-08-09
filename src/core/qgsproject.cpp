@@ -34,7 +34,7 @@
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
-#include "qgsvisibilitypresetcollection.h"
+#include "qgsmapthemecollection.h"
 #include "qgslayerdefinition.h"
 #include "qgsunittypes.h"
 #include "qgstransaction.h"
@@ -450,7 +450,7 @@ void QgsProject::clear()
   mEmbeddedLayers.clear();
   mRelationManager->clear();
 
-  mVisibilityPresetCollection.reset( new QgsVisibilityPresetCollection() );
+  mVisibilityPresetCollection.reset( new QgsMapThemeCollection() );
 
   mRootGroup->removeAllChildren();
 
@@ -886,7 +886,7 @@ bool QgsProject::read()
 
   mRootGroup->removeCustomProperty( "loading" );
 
-  mVisibilityPresetCollection.reset( new QgsVisibilityPresetCollection() );
+  mVisibilityPresetCollection.reset( new QgsMapThemeCollection() );
   mVisibilityPresetCollection->readXml( *doc );
 
 
@@ -956,7 +956,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
       {
         if ( QgsTransaction::supportsTransaction( vlayer ) )
         {
-          QString connString = QgsDataSourceURI( vlayer->source() ).connectionInfo();
+          QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
           QString key = vlayer->providerType();
 
           QgsTransactionGroup* tg = mTransactionGroups.value( qMakePair( key, connString ) );
@@ -1739,7 +1739,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         QString datasource( dsElem.text() );
         if ( provider == "spatialite" )
         {
-          QgsDataSourceURI uri( datasource );
+          QgsDataSourceUri uri( datasource );
           QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + uri.database() );
           if ( absoluteDs.exists() )
           {
@@ -2126,7 +2126,7 @@ QgsLayerTreeGroup *QgsProject::layerTreeRoot() const
   return mRootGroup;
 }
 
-QgsVisibilityPresetCollection* QgsProject::visibilityPresetCollection()
+QgsMapThemeCollection* QgsProject::mapThemeCollection()
 {
   return mVisibilityPresetCollection.data();
 }

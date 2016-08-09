@@ -107,13 +107,13 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
     {
       if ( mFilters.testFlag( HasGeometry ) && vl->hasGeometryType() )
         return true;
-      if ( mFilters.testFlag( NoGeometry ) && vl->geometryType() == Qgis::NoGeometry )
+      if ( mFilters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::NullGeometry )
         return true;
-      if ( mFilters.testFlag( PointLayer ) && vl->geometryType() == Qgis::Point )
+      if ( mFilters.testFlag( PointLayer ) && vl->geometryType() == QgsWkbTypes::PointGeometry )
         return true;
-      if ( mFilters.testFlag( LineLayer ) && vl->geometryType() == Qgis::Line )
+      if ( mFilters.testFlag( LineLayer ) && vl->geometryType() == QgsWkbTypes::LineGeometry )
         return true;
-      if ( mFilters.testFlag( PolygonLayer ) && vl->geometryType() == Qgis::Polygon )
+      if ( mFilters.testFlag( PolygonLayer ) && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
         return true;
     }
   }

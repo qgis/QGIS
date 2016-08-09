@@ -102,7 +102,7 @@ QString QgsOwsConnection::connectionInfo()
   return mConnectionInfo;
 }
 
-QgsDataSourceURI QgsOwsConnection::uri() const
+QgsDataSourceUri QgsOwsConnection::uri() const
 {
   return mUri;
 }

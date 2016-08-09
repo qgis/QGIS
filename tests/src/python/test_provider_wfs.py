@@ -23,7 +23,7 @@ os.environ['QT_HASH_SEED'] = '1'
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QSettings
 
 from qgis.core import (
-    QgsWKBTypes,
+    QgsWkbTypes,
     QgsVectorLayer,
     QgsFeature,
     QgsGeometry,
@@ -401,7 +401,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         self.assertEqual(len(vl.fields()), 5)
         self.assertEqual(vl.featureCount(), 0)
         reference = QgsGeometry.fromRect(QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0))
@@ -784,7 +784,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Create test layer
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename'", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
@@ -894,7 +894,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Create test layer
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' retrictToRequestBBOX=1", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
         last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=2&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=60,-70,80,-60,urn:ogc:def:crs:EPSG::4326')
         with open(last_url, 'wb') as f:
@@ -1124,7 +1124,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.NoGeometry)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
         self.assertEqual(len(vl.fields()), 1)
 
         # Failed download: test that error is propagated to the data provider, so as to get application notification
@@ -1214,7 +1214,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.NoGeometry)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
         self.assertEqual(len(vl.fields()), 1)
 
         source = vl.dataProvider().featureSource()
@@ -1368,7 +1368,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # * syntax
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM \"my:typename\" JOIN \"my:othertypename\" o ON \"my:typename\".id = o.main_id WHERE \"my:typename\".id > 0 ORDER BY \"my:typename\".id DESC", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'typename.id')
@@ -1381,7 +1381,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # * syntax with unprefixed typenames
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM typename JOIN othertypename o ON typename.id = o.main_id WHERE typename.id > 0 ORDER BY typename.id DESC", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'typename.id')
@@ -1398,7 +1398,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM othertypename o, typename WHERE typename.id = o.main_id AND typename.id > 0 ORDER BY typename.id DESC", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'o.main_id')
@@ -1408,7 +1408,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # main table not appearing in first, not in FROM but in JOIN
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM othertypename o JOIN typename ON typename.id = o.main_id WHERE typename.id > 0 ORDER BY typename.id DESC", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'o.main_id')
@@ -2006,7 +2006,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0'", u'test', u'WFS')
         assert vl.isValid()
-        self.assertEqual(vl.wkbType(), QgsWKBTypes.MultiPolygon)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiPolygon)
 
         # Extent before downloading features
         reference = QgsGeometry.fromRect(QgsRectangle(243900.3520259926444851, 4427769.1559739429503679, 1525592.3040170343592763, 5607994.6020106188952923))
@@ -2069,6 +2069,94 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
       </extension>
     </complexContent>
   </complexType>
+</schema>
+""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+   xmlns:my="http://my"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:wfs="http://www.opengis.net/wfs"
+   xmlns:ogc="http://www.opengis.net/ogc">
+      <gml:boundedBy>
+        <gml:Envelope srsName="EPSG:4326">
+            <gml:lowerCorner>49.000000 2.000000</gml:lowerCorner>
+            <gml:upperCorner>49.000000 2.000000</gml:upperCorner>
+        </gml:Envelope>
+      </gml:boundedBy>
+    <gml:featureMember>
+      <my:typename gml:id="typename.1">
+        <gml:boundedBy>
+            <gml:Envelope srsName="EPSG:4326">
+                <gml:lowerCorner>49.000000 2.000000</gml:lowerCorner>
+                <gml:upperCorner>49.000000 2.000000</gml:upperCorner>
+            </gml:Envelope>
+        </gml:boundedBy>
+        <my:geometryProperty>
+          <gml:Point srsName="EPSG:4326">
+            <gml:pos>49.000000 2.000000</gml:pos>
+          </gml:Point>
+        </my:geometryProperty>
+      </my:typename>
+    </gml:featureMember>
+</wfs:FeatureCollection>
+
+""".encode('UTF-8'))
+
+        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.1.0'", u'test', u'WFS')
+        assert vl.isValid()
+
+        got_f = [f for f in vl.getFeatures()]
+        got = got_f[0].geometry().geometry()
+        self.assertEqual((got.x(), got.y()), (2.0, 49.0))
+
+    def testDescribeFeatureTypeWithInlineType(self):
+        """Test a DescribeFeatureType response with a inline ComplexType (#15395)."""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testDescribeFeatureTypeWithInlineType'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=1.1.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="1.1.0" xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://schemas.opengis.net/gml">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>2 49</ows:LowerCorner>
+        <ows:UpperCorner>2 49</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<schema
+   targetNamespace="http://my"
+   xmlns:my="http://my"
+   xmlns:ogc="http://www.opengis.net/ogc"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns="http://www.w3.org/2001/XMLSchema"
+   xmlns:gml="http://www.opengis.net/gml"
+   elementFormDefault="qualified" version="0.1" >
+  <import namespace="http://www.opengis.net/gml"
+          schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" />
+  <element name="typename"
+           substitutionGroup="gml:_Feature">
+    <complexType>
+      <complexContent>
+        <extension base="gml:AbstractFeatureType">
+          <sequence>
+            <element name="geometryProperty" type="gml:GeometryPropertyType" minOccurs="0" maxOccurs="1"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+  </element>
 </schema>
 """.encode('UTF-8'))
 

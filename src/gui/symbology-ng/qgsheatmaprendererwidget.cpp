@@ -16,7 +16,7 @@
 #include "qgsheatmaprenderer.h"
 #include "qgsrendererv2registry.h"
 
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
@@ -66,7 +66,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
     return;
   }
   // the renderer only applies to point vector layers
-  if ( layer->geometryType() != Qgis::Point )
+  if ( layer->geometryType() != QgsWkbTypes::PointGeometry )
   {
     //setup blank dialog
     mRenderer = nullptr;

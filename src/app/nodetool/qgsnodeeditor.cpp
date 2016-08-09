@@ -225,7 +225,7 @@ bool QgsNodeEditorModel::setData( const QModelIndex& index, const QVariant& valu
   }
   double z = ( index.column() == mZCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().z() );
   double m = ( index.column() == mMCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().m() );
-  QgsPointV2 p( QgsWKBTypes::PointZM, x, y, z, m );
+  QgsPointV2 p( QgsWkbTypes::PointZM, x, y, z, m );
 
   mLayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
   mLayer->moveVertex( p, mSelectedFeature->featureId(), index.row() );
@@ -373,9 +373,9 @@ void QgsNodeEditor::zoomToNode( int idx )
   QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
   //close polygon
   ext.append( ext.first() );
-  QScopedPointer< QgsGeometry > extGeom( QgsGeometry::fromQPolygonF( ext ) );
-  QScopedPointer< QgsGeometry > nodeGeom( QgsGeometry::fromPoint( tCenter ) );
-  if ( !nodeGeom->within( extGeom.data() ) )
+  QgsGeometry extGeom( QgsGeometry::fromQPolygonF( ext ) );
+  QgsGeometry nodeGeom( QgsGeometry::fromPoint( tCenter ) );
+  if ( !nodeGeom.within( extGeom ) )
   {
     mCanvas->setCenter( tCenter );
     mCanvas->refresh();

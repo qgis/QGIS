@@ -39,7 +39,7 @@
 #include "qgsapplication.h"
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
-#include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
+#include "qgssymbollayerutils.h" //for pointOnLineWithDistance
 #include "qgspainting.h"
 #include "qgsexpressioncontext.h"
 
@@ -205,7 +205,7 @@ bool QgsComposerItem::_writeXml( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "positionMode", QString::number( static_cast< int >( mLastUsedPositionMode ) ) );
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
-  composerItemElem.setAttribute( "frameJoinStyle", QgsSymbolLayerV2Utils::encodePenJoinStyle( mFrameJoinStyle ) );
+  composerItemElem.setAttribute( "frameJoinStyle", QgsSymbolLayerUtils::encodePenJoinStyle( mFrameJoinStyle ) );
   composerItemElem.setAttribute( "itemRotation", QString::number( mItemRotation ) );
   composerItemElem.setAttribute( "uuid", mUuid );
   composerItemElem.setAttribute( "id", mId );
@@ -361,7 +361,7 @@ bool QgsComposerItem::_readXml( const QDomElement& itemElem, const QDomDocument&
     penGreen = frameColorElem.attribute( "green" ).toDouble( &greenOk );
     penBlue = frameColorElem.attribute( "blue" ).toDouble( &blueOk );
     penAlpha = frameColorElem.attribute( "alpha" ).toDouble( &alphaOk );
-    mFrameJoinStyle = QgsSymbolLayerV2Utils::decodePenJoinStyle( itemElem.attribute( "frameJoinStyle", "miter" ) );
+    mFrameJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( "frameJoinStyle", "miter" ) );
 
     if ( redOk && greenOk && blueOk && alphaOk && widthOk )
     {
@@ -904,7 +904,7 @@ void QgsComposerItem::refreshBlendMode( const QgsExpressionContext& context )
   if ( dataDefinedEvaluate( QgsComposerObject::BlendMode, exprVal, context ) && !exprVal.isNull() )
   {
     QString blendstr = exprVal.toString().trimmed();
-    QPainter::CompositionMode blendModeD = QgsSymbolLayerV2Utils::decodeBlendMode( blendstr );
+    QPainter::CompositionMode blendModeD = QgsSymbolLayerUtils::decodeBlendMode( blendstr );
 
     QgsDebugMsg( QString( "exprVal BlendMode:%1" ).arg( blendModeD ) );
     blendMode = blendModeD;
@@ -1179,7 +1179,7 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
 
   //assume points 1 and 3 are on the rectangle boundaries. Calculate 2 and 4.
   double distM1 = sqrt(( x1 - midX ) * ( x1 - midX ) + ( y1 - midY ) * ( y1 - midY ) );
-  QPointF p2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x2, y2 ), distM1 );
+  QPointF p2 = QgsSymbolLayerUtils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x2, y2 ), distM1 );
 
   if ( p2.x() < width && p2.x() > 0 && p2.y() < height && p2.y() > 0 )
   {
@@ -1190,8 +1190,8 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
 
   //else assume that points 2 and 4 are on the rectangle boundaries. Calculate 1 and 3
   double distM2 = sqrt(( x2 - midX ) * ( x2 - midX ) + ( y2 - midY ) * ( y2 - midY ) );
-  QPointF p1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x1, y1 ), distM2 );
-  QPointF p3 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x3, y3 ), distM2 );
+  QPointF p1 = QgsSymbolLayerUtils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x1, y1 ), distM2 );
+  QPointF p3 = QgsSymbolLayerUtils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x3, y3 ), distM2 );
   width = sqrt(( x2 - p1.x() ) * ( x2 - p1.x() ) + ( y2 - p1.y() ) * ( y2 - p1.y() ) );
   height = sqrt(( p3.x() - x2 ) * ( p3.x() - x2 ) + ( p3.y() - y2 ) * ( p3.y() - y2 ) );
   return true;

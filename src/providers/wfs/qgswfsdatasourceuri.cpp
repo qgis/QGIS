@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "QtGlobal"
+
 #include "qgswfsconstants.h"
 #include "qgswfsdatasourceuri.h"
 #include "qgsmessagelog.h"
@@ -25,11 +27,26 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
   {
     QUrl url( uri );
-    QString srsname = url.queryItemValue( "SRSNAME" );
-    QString bbox = url.queryItemValue( "BBOX" );
-    QString typeName = url.queryItemValue( "TYPENAME" );
-    QString filter = url.queryItemValue( "FILTER" );
+    // Transform all param keys to lowercase
+    typedef QPair<QString, QString> queryItem;
+    QList<queryItem> items( url.queryItems() );
+    foreach ( queryItem item, items )
+    {
+      url.removeQueryItem( item.first );
+      url.addQueryItem( item.first.toLower(), item.second );
+    }
+
+    QString srsname = url.queryItemValue( QgsWFSConstants::URI_PARAM_SRSNAME );
+    QString bbox = url.queryItemValue( QgsWFSConstants::URI_PARAM_BBOX );
+    QString typeName = url.queryItemValue( QgsWFSConstants::URI_PARAM_TYPENAME );
+    QString version = url.queryItemValue( QgsWFSConstants::URI_PARAM_VERSION );
+    QString filter = url.queryItemValue( QgsWFSConstants::URI_PARAM_FILTER );
     mAuth.mUserName = url.queryItemValue( QgsWFSConstants::URI_PARAM_USERNAME );
+    // In QgsDataSourceURI, the "username" param is named "user", check it
+    if ( mAuth.mUserName.isEmpty() )
+    {
+      mAuth.mUserName = url.queryItemValue( QgsWFSConstants::URI_PARAM_USER );
+    }
     mAuth.mPassword = url.queryItemValue( QgsWFSConstants::URI_PARAM_PASSWORD );
     mAuth.mAuthCfg = url.queryItemValue( QgsWFSConstants::URI_PARAM_AUTHCFG );
 
@@ -45,10 +62,11 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
     url.removeQueryItem( QgsWFSConstants::URI_PARAM_PASSWORD );
     url.removeQueryItem( QgsWFSConstants::URI_PARAM_AUTHCFG );
 
-    mURI = QgsDataSourceURI();
+    mURI = QgsDataSourceUri();
     mURI.setParam( QgsWFSConstants::URI_PARAM_URL, url.toEncoded() );
     setTypeName( typeName );
     setSRSName( srsname );
+    setVersion( version );
 
     //if the xml comes from the dialog, it needs to be a string to pass the validity test
     if ( filter.startsWith( '\'' ) && filter.endsWith( '\'' ) && filter.size() > 1 )
@@ -63,16 +81,31 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
   }
   else
   {
-    mAuth.mUserName = mURI.param( QgsWFSConstants::URI_PARAM_USERNAME );
-    mAuth.mPassword = mURI.param( QgsWFSConstants::URI_PARAM_PASSWORD );
-    mAuth.mAuthCfg = mURI.param( QgsWFSConstants::URI_PARAM_AUTHCFG );
+    mAuth.mUserName = mURI.username();
+    mAuth.mPassword = mURI.password();
+    mAuth.mAuthCfg = mURI.authConfigId();
   }
 }
 
-QString QgsWFSDataSourceURI::uri()
+const QString QgsWFSDataSourceURI::uri( bool expandAuthConfig ) const
 {
-  return mURI.uri();
+  QgsDataSourceUri theURI( mURI );
+  // Add auth params back into the uri
+  if ( ! mAuth.mAuthCfg.isEmpty() )
+  {
+    theURI.setAuthConfigId( mAuth.mAuthCfg );
+  }
+  if ( ! mAuth.mUserName.isEmpty() )
+  {
+    theURI.setUsername( mAuth.mUserName );
+  }
+  if ( ! mAuth.mPassword.isEmpty() )
+  {
+    theURI.setPassword( mAuth.mPassword );
+  }
+  return theURI.uri( expandAuthConfig );
 }
+
 
 QUrl QgsWFSDataSourceURI::baseURL( bool bIncludeServiceWFS ) const
 {
@@ -120,6 +153,13 @@ void QgsWFSDataSourceURI::setSRSName( const QString& crsString )
   mURI.removeParam( QgsWFSConstants::URI_PARAM_SRSNAME );
   if ( !crsString.isEmpty() )
     mURI.setParam( QgsWFSConstants::URI_PARAM_SRSNAME, crsString );
+}
+
+void QgsWFSDataSourceURI::setVersion( const QString& versionString )
+{
+  mURI.removeParam( QgsWFSConstants::URI_PARAM_VERSION );
+  if ( !versionString.isEmpty() )
+    mURI.setParam( QgsWFSConstants::URI_PARAM_VERSION, versionString );
 }
 
 QString QgsWFSDataSourceURI::SRSName() const

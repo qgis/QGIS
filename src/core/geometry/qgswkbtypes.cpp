@@ -23,18 +23,18 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>* QgsWKBTypes::entries()
+QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry>* QgsWkbTypes::entries()
 {
-  static QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry> entries = registerTypes();
+  static QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry> entries = registerTypes();
   return &entries;
 }
 
-QgsWKBTypes::Type QgsWKBTypes::parseType( const QString &wktStr )
+QgsWkbTypes::Type QgsWkbTypes::parseType( const QString &wktStr )
 {
   QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().remove( ' ' );
 
-  QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>* knownTypes = entries();
-  QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>::const_iterator it = knownTypes->constBegin();
+  QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry>* knownTypes = entries();
+  QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry>::const_iterator it = knownTypes->constBegin();
   for ( ; it != knownTypes->constEnd(); ++it )
   {
     if ( it.value().mName.compare( typestr, Qt::CaseInsensitive ) == 0 )
@@ -45,7 +45,7 @@ QgsWKBTypes::Type QgsWKBTypes::parseType( const QString &wktStr )
   return Unknown;
 }
 
-QString QgsWKBTypes::displayString( Type type )
+QString QgsWkbTypes::displayString( Type type )
 {
   QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
   if ( it == entries()->constEnd() )
@@ -55,15 +55,37 @@ QString QgsWKBTypes::displayString( Type type )
   return it->mName;
 }
 
+QString QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType type )
+{
+
+  switch ( type )
+  {
+    case PointGeometry:
+      return "Point";
+    case LineGeometry:
+      return "Line";
+    case PolygonGeometry:
+      return "Polygon";
+    case UnknownGeometry:
+      return "Unknown geometry";
+    case NullGeometry:
+      return "No geometry";
+    default:
+      return "Invalid type";
+  }
+
+
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
  * See details in QEP #17
  ****************************************************************************/
 
-QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry> QgsWKBTypes::registerTypes()
+QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry> QgsWkbTypes::registerTypes()
 {
-  QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry> entries;
+  QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry> entries;
   //register the known wkb types
   entries.insert( Unknown, wkbEntry( "Unknown", false, Unknown, Unknown, Unknown, UnknownGeometry, false, false ) );
   entries.insert( NoGeometry, wkbEntry( "NoGeometry", false, NoGeometry, NoGeometry, NoGeometry, NullGeometry, false, false ) );

@@ -595,8 +595,8 @@ bool QgsGrassVectorImport::import()
   QDataStream outStream( mProcess );
   mProcess->setReadChannel( QProcess::StandardOutput );
 
-  Qgis::WkbType wkbType = mProvider->geometryType();
-  bool isPolygon = Qgis::singleType( Qgis::flatType( wkbType ) ) == Qgis::WKBPolygon;
+  QgsWkbTypes::Type wkbType = mProvider->wkbType();
+  bool isPolygon = QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) == QgsWkbTypes::Polygon;
   outStream << ( qint32 )wkbType;
 
   outStream << mProvider->fields();
@@ -638,9 +638,11 @@ bool QgsGrassVectorImport::import()
       {
         continue;
       }
-      if ( doTransform && feature.geometry() )
+      if ( doTransform && feature.hasGeometry() )
       {
-        feature.geometry()->transform( coordinateTransform );
+        QgsGeometry g = feature.geometry();
+        g.transform( coordinateTransform );
+        feature.setGeometry( g );
       }
       if ( isCanceled() )
       {

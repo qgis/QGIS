@@ -15,6 +15,7 @@
 
 #include "qgsmaprenderercustompainterjob.h"
 
+#include "qgsfeedback.h"
 #include "qgslabelingenginev2.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -124,6 +125,8 @@ void QgsMapRendererCustomPainterJob::cancel()
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
     it->context.setRenderingStopped( true );
+    if ( it->renderer && it->renderer->feedback() )
+      it->renderer->feedback()->cancel();
   }
 
   QTime t;

@@ -24,7 +24,7 @@ class QgsGml: QObject
      *  @note available in python as getFeaturesUri
      */
     int getFeatures( const QString& uri,
-                     Qgis::WkbType* wkbType,
+                     QgsWkbTypes::Type* wkbType,
                      QgsRectangle* extent = 0,
                      const QString& userName = QString(),
                      const QString& password = QString(),
@@ -33,7 +33,7 @@ class QgsGml: QObject
     /** Read from GML data. Constructor uri param is ignored
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
      */
-    int getFeatures( const QByteArray &data, Qgis::WkbType* wkbType, QgsRectangle* extent = 0 );
+    int getFeatures( const QByteArray &data, QgsWkbTypes::Type* wkbType, QgsRectangle* extent = 0 );
 
     /** Get parsed features for given type name */
     QMap<qint64, QgsFeature* > featuresMap() const;

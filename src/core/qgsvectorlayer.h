@@ -61,7 +61,7 @@ class QgsRectangle;
 class QgsRelation;
 class QgsRelationManager;
 class QgsSingleSymbolRendererV2;
-class QgsSymbolV2;
+class QgsSymbol;
 class QgsVectorDataProvider;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
@@ -189,26 +189,26 @@ protected:
  *
  * Access data in a spatialite database. The url defines the connection parameters, table,
  * geometry column, and other attributes.  The url can be constructed using the
- * QgsDataSourceURI class.
+ * QgsDataSourceUri class.
  *
  * \subsection postgres Postgresql data provider (postgres)
  *
  * Connects to a postgresql database.  The url defines the connection parameters, table,
  * geometry column, and other attributes.  The url can be constructed using the
- * QgsDataSourceURI class.
+ * QgsDataSourceUri class.
  *
  * \subsection mssql Microsoft SQL server data provider (mssql)
  *
  * Connects to a Microsoft SQL server database.  The url defines the connection parameters, table,
  * geometry column, and other attributes.  The url can be constructed using the
- * QgsDataSourceURI class.
+ * QgsDataSourceUri class.
  *
  * \subsection wfs WFS (web feature service) data provider (wfs)
  *
  * Used to access data provided by a web feature service.
  *
  * The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
- * starting with QGIS 2.16, a URI constructed using the QgsDataSourceURI class with the following parameters :
+ * starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with the following parameters :
  * - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
  * - typename=string (mandatory): WFS typename
  * - srsname=string (recommended): SRS like 'EPSG:XXXX'
@@ -409,6 +409,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString displayExpression READ displayExpression WRITE setDisplayExpression NOTIFY displayExpressionChanged )
+    Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
+
   public:
 
     typedef QgsEditFormConfig::GroupData GroupData;
@@ -552,11 +555,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns a comment for the data in the layer */
     QString dataComment() const;
 
-    /** Set the primary display field to be used in the identify results dialog */
-    void setDisplayField( const QString& fldName = "" );
-
-    /** Returns the primary display field name used in the identify results dialog */
-    const QString displayField() const;
+    /**
+     * This is a shorthand for accessing the displayExpression if it is a simple field.
+     * If the displayExpression is more complex than a simple field, a null string will
+     * be returned.
+     *
+     * @see displayExpression
+     */
+    QString displayField() const;
 
     /** Set the preview expression, used to create a human readable preview string.
      *  Used e.g. in the attribute table feature list. Uses { @link QgsExpression }.
@@ -564,7 +570,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  @param displayExpression The expression which will be used to preview features
      *                           for this layer
      */
-    void setDisplayExpression( const QString &displayExpression );
+    void setDisplayExpression( const QString& displayExpression );
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
@@ -626,7 +632,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void removeExpressionField( int index );
 
     /**
-     * Returns the expressoin used for a given expression field
+     * Returns the expression used for a given expression field
      *
      * @param index An index of an epxression based (virtual) field
      *
@@ -816,13 +822,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void setRendererV2( QgsFeatureRendererV2* r );
 
     /** Returns point, line or polygon */
-    Qgis::GeometryType geometryType() const;
+    QgsWkbTypes::GeometryType geometryType() const;
 
     /** Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry */
     bool hasGeometryType() const;
 
     /** Returns the WKBType or WKBUnknown in case of error*/
-    Qgis::WkbType wkbType() const;
+    QgsWkbTypes::Type wkbType() const;
 
     /** Return the provider type for this layer */
     QString providerType() const;
@@ -936,7 +942,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param symbol the symbol
      * @return number of features rendered by symbol or -1 if failed or counts are not available
      */
-    long featureCount( QgsSymbolV2* symbol ) const;
+    long featureCount( QgsSymbol* symbol ) const;
 
     /**
      * Update the data source of the layer. The layer's renderer and legend will be preserved only
@@ -951,7 +957,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void setDataSource( const QString& dataSource, const QString& baseName, const QString& provider, bool loadDefaultStyleFlag = false );
 
     /**
-     * Count features for symbols. Feature counts may be get by featureCount( QgsSymbolV2*).
+     * Count features for symbols. Feature counts may be get by featureCount( QgsSymbol*).
      * @param showProgress show progress dialog
      * @return true if calculated, false if failed or was canceled by user
      */
@@ -1154,22 +1160,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
-    /** Changes the specified geometry such that it has no intersections with other
-     *  polygon (or multipolygon) geometries in this vector layer
-     *  @param geom geometry to modify
-     *  @param ignoreFeatures list of feature ids where intersections should be ignored
-     *  @return 0 in case of success
-     *
-     *  @deprecated since 2.2 - not being used for "avoid intersections" functionality anymore
-     */
-    Q_DECL_DEPRECATED int removePolygonIntersections( QgsGeometry* geom, const QgsFeatureIds& ignoreFeatures = QgsFeatureIds() );
-
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
      * @note geom is not going to be modified by the function
      * @return 0 in case of success
      */
-    int addTopologicalPoints( const QgsGeometry* geom );
+    int addTopologicalPoints( const QgsGeometry& geom );
 
     /** Adds a vertex to segments which intersect point p but don't
      * already have a vertex there. If a feature already has a vertex at position p,
@@ -1307,7 +1303,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool setReadOnly( bool readonly = true );
 
     /** Change feature's geometry */
-    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry& geom );
 
     /**
      * Changes an attribute value (but does not commit it)
@@ -1831,6 +1827,24 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig );
 
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * @note added in 3.0
+     */
+    QString mapTipTemplate() const;
+
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * @note added in 3.0
+     */
+    void setMapTipTemplate( const QString& mapTipTemplate );
+
   public slots:
     /**
      * Select feature by its ID
@@ -2022,7 +2036,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fid The id of the changed feature
      * @param geometry The new geometry
      */
-    void geometryChanged( QgsFeatureId fid, QgsGeometry& geometry );
+    void geometryChanged( QgsFeatureId fid, const QgsGeometry& geometry );
 
     /** This signal is emitted, when attributes are deleted from the provider */
     void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributes );
@@ -2093,6 +2107,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
 
     /**
+     * Emitted when the map tip changes
+     *
+     * @note added in 3.0
+     */
+    void mapTipTemplateChanged();
+
+    /**
+     * Emitted when the display expression changes
+     *
+     * @note added in 3.0
+     */
+    void displayExpressionChanged();
+
+    /**
      * Signals an error related to this vector layer.
      */
     void raiseError( const QString& msg );
@@ -2133,7 +2161,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void snapToGeometry( const QgsPoint& startPoint,
                          QgsFeatureId featureId,
-                         const QgsGeometry *geom,
+                         const QgsGeometry& geom,
                          double sqrSnappingTolerance,
                          QMultiMap<double, QgsSnappingResult>& snappingResults,
                          QgsSnapper::SnappingType snap_to ) const;
@@ -2151,11 +2179,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Pointer to data provider derived from the abastract base class QgsDataProvider */
     QgsVectorDataProvider *mDataProvider;
 
-    /** Index of the primary label field */
-    QString mDisplayField;
-
     /** The preview expression used to generate a human readable preview string for features */
     QString mDisplayExpression;
+
+    QString mMapTipTemplate;
 
     /** Data provider key */
     QString mProviderKey;
@@ -2188,7 +2215,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QSet<QString> mExcludeAttributesWFS;
 
     /** Geometry type as defined in enum WkbType (qgis.h) */
-    Qgis::WkbType mWkbType;
+    QgsWkbTypes::Type mWkbType;
 
     /** Renderer object which holds the information about how to display the features */
     QgsFeatureRendererV2 *mRendererV2;
@@ -2242,7 +2269,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool mSymbolFeatureCounted;
 
     // Feature counts for each renderer symbol
-    QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
+    QMap<QgsSymbol*, long> mSymbolFeatureCountMap;
 
     //! True while an undo command is active
     bool mEditCommandActive;

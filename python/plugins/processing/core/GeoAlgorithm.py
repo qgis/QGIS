@@ -255,7 +255,7 @@ class GeoAlgorithm:
             for line in lines:
                 script += line
             exec(script, ns)
-        except Exception, e:
+        except Exception as e:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                    "Error in hook script: " + str(e))
             # A wrong script should not cause problems, so we swallow
@@ -273,10 +273,9 @@ class GeoAlgorithm:
                         # For the case of memory layer, if the
                         # getCompatible method has been called
                         continue
-                    provider = layer.dataProvider()
                     writer = out.getVectorWriter(
-                        provider.fields(),
-                        provider.geometryType(), layer.crs()
+                        layer.fields(),
+                        layer.wkbType(), layer.crs()
                     )
                     features = vector.features(layer)
                     for feature in features:
@@ -312,8 +311,7 @@ class GeoAlgorithm:
             elif isinstance(out, OutputTable):
                 if out.compatible is not None:
                     layer = dataobjects.getObjectFromUri(out.compatible)
-                    provider = layer.dataProvider()
-                    writer = out.getTableWriter(provider.fields())
+                    writer = out.getTableWriter(layer.fields())
                     features = vector.features(layer)
                     for feature in features:
                         writer.addRecord(feature)

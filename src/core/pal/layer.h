@@ -214,21 +214,6 @@ namespace pal
        */
       bool centroidInside() const { return mCentroidInside; }
 
-      /** Sets whether labels which do not fit completely within a polygon feature
-       * are discarded.
-       * @param fitInPolygon set to true to discard labels which do not fit within
-       * polygon features. Set to false to allow labels which partially fall outside
-       * the polygon.
-       * @see fitInPolygonOnly
-       */
-      void setFitInPolygonOnly( bool fitInPolygon ) { mFitInPolygon = fitInPolygon; }
-
-      /** Returns whether labels which do not fit completely within a polygon feature
-       * are discarded.
-       * @see setFitInPolygonOnly
-       */
-      bool fitInPolygonOnly() const { return mFitInPolygon; }
-
       /** Register a feature in the layer.
        *
        * Does not take ownership of the label feature (it is owned by its provider).
@@ -270,7 +255,6 @@ namespace pal
       bool mLabelLayer;
       bool mDisplayAll;
       bool mCentroidInside;
-      bool mFitInPolygon;
 
       /** Optional flags used for some placement methods */
       QgsPalLayerSettings::Placement mArrangement;

@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsFeatureRequest, NULL
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsFeatureRequest, NULL, QgsWkbTypes
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -65,13 +65,10 @@ class SymmetricalDifference(GeoAlgorithm):
         layerB = dataobjects.getObjectFromUri(
             self.getParameterValue(self.OVERLAY))
 
-        providerA = layerA.dataProvider()
-        providerB = layerB.dataProvider()
-
-        geomType = providerA.geometryType()
+        geomType = layerA.wkbType()
         fields = vector.combineVectorFields(layerA, layerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, geomType, providerA.crs())
+            fields, geomType, layerA.crs())
 
         featB = QgsFeature()
         outFeat = QgsFeature()
@@ -87,13 +84,13 @@ class SymmetricalDifference(GeoAlgorithm):
 
         for featA in featuresA:
             add = True
-            geom = QgsGeometry(featA.geometry())
+            geom = featA.geometry()
             diffGeom = QgsGeometry(geom)
             attrs = featA.attributes()
             intersects = indexA.intersects(geom.boundingBox())
             for i in intersects:
-                providerB.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
-                tmpGeom = QgsGeometry(featB.geometry())
+                layerB.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
+                tmpGeom = featB.geometry()
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
                     if not diffGeom.isGeosValid():
@@ -117,18 +114,18 @@ class SymmetricalDifference(GeoAlgorithm):
             count += 1
             progress.setPercentage(int(count * total))
 
-        length = len(providerA.fields())
+        length = len(layerA.fields())
 
         for featA in featuresB:
             add = True
-            geom = QgsGeometry(featA.geometry())
+            geom = featA.geometry()
             diffGeom = QgsGeometry(geom)
             attrs = featA.attributes()
             attrs = [NULL] * length + attrs
             intersects = indexB.intersects(geom.boundingBox())
             for i in intersects:
-                providerA.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
-                tmpGeom = QgsGeometry(featB.geometry())
+                layerA.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
+                tmpGeom = featB.geometry()
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
                     if not diffGeom.isGeosValid():

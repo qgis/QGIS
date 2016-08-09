@@ -838,12 +838,12 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
     cacheValues << QVariant();
   }
 
-  if ( feature.fields() )
+  if ( !feature.fields().isEmpty() )
   {
     // append feature attributes if not null
-    for ( int i = 0; i < feature.fields()->size(); i++ )
+    for ( int i = 0; i < feature.fields().size(); i++ )
     {
-      QString name = feature.fields()->at( i ).name();
+      QString name = feature.fields().at( i ).name();
       QVariant valueVariant = feature.attributes().value( i );
 
       if ( name != QgsGrassVectorMap::topoSymbolFieldName() )
@@ -940,7 +940,7 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QSt
     error = tr( "Table does not exist" );
     return;
   }
-  if ( !feature.isValid() || !feature.fields() )
+  if ( !feature.isValid() || feature.fields().isEmpty() )
   {
     error = tr( "Feature invalid" );
     return;
@@ -949,9 +949,9 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QSt
   QStringList updates;
   QMap<int, QVariant> cacheUpdates;
   // append feature attributes if not null
-  for ( int i = 0; i < feature.fields()->size(); i++ )
+  for ( int i = 0; i < feature.fields().size(); i++ )
   {
-    QString name = feature.fields()->at( i ).name();
+    QString name = feature.fields().at( i ).name();
     if ( name == mFieldInfo->key )
     {
       continue;

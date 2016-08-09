@@ -33,7 +33,7 @@ class QgsRuntimeProfiler
     /**
      * @brief Start a profile event with the given name.
      * @param name The name of the profile event. Will have the name of
-     * the active group appened after ending.
+     * the active group appended after ending.
      */
     void start( const QString& name );
 

@@ -32,13 +32,13 @@ QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, int size )
   mP = const_cast< unsigned char * >( p );
   mEnd = mP + size;
   mEndianSwap = false;
-  mWkbType = QgsWKBTypes::Unknown;
+  mWkbType = QgsWkbTypes::Unknown;
 }
 
-QgsWKBTypes::Type QgsConstWkbPtr::readHeader() const
+QgsWkbTypes::Type QgsConstWkbPtr::readHeader() const
 {
   if ( !mP )
-    return QgsWKBTypes::Unknown;
+    return QgsWkbTypes::Unknown;
 
   char wkbEndian;
   *this >> wkbEndian;
@@ -46,7 +46,7 @@ QgsWKBTypes::Type QgsConstWkbPtr::readHeader() const
 
   int wkbType;
   *this >> wkbType;
-  mWkbType = static_cast<QgsWKBTypes::Type>( wkbType );
+  mWkbType = static_cast<QgsWkbTypes::Type>( wkbType );
 
   return mWkbType;
 }
@@ -66,7 +66,7 @@ const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPointF &point ) const
 
 const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPolygonF &points ) const
 {
-  int skipZM = ( QgsWKBTypes::coordDimensions( mWkbType ) - 2 ) * sizeof( double );
+  int skipZM = ( QgsWkbTypes::coordDimensions( mWkbType ) - 2 ) * sizeof( double );
   Q_ASSERT( skipZM >= 0 );
 
   unsigned int nPoints;

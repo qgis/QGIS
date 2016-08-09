@@ -154,9 +154,9 @@ int main( int argc, char **argv )
   qint32 typeQint32;
   stdinStream >> typeQint32;
   checkStream( stdinStream );
-  Qgis::WkbType wkbType = ( Qgis::WkbType )typeQint32;
-  Qgis::WkbType wkbFlatType = Qgis::flatType( wkbType );
-  bool isPolygon = Qgis::singleType( wkbFlatType ) == Qgis::WKBPolygon;
+  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type )typeQint32;
+  QgsWkbTypes::Type wkbFlatType = QgsWkbTypes::flatType( wkbType );
+  bool isPolygon = QgsWkbTypes::singleType( wkbFlatType ) == QgsWkbTypes::Polygon;
 
   finalMap = QgsGrass::vectNewMapStruct();
   Vect_open_new( finalMap, mapOption->answer, 0 );
@@ -245,54 +245,54 @@ int main( int argc, char **argv )
       break;
     }
 
-    const QgsGeometry* geometry = feature.constGeometry();
-    if ( geometry )
+    QgsGeometry geometry = feature.geometry();
+    if ( !geometry.isEmpty() )
     {
       // geometry type may be probably different from provider type (e.g. multi x single)
-      Qgis::WkbType geometryType = Qgis::flatType( geometry->wkbType() );
+      QgsWkbTypes::Type geometryType = QgsWkbTypes::flatType( geometry.wkbType() );
       if ( !isPolygon )
       {
         Vect_reset_cats( cats );
         Vect_cat_set( cats, 1, ( int )feature.id() + fidToCatPlus );
       }
 
-      if ( geometryType == Qgis::WKBPoint )
+      if ( geometryType == QgsWkbTypes::Point )
       {
-        QgsPoint point = geometry->asPoint();
+        QgsPoint point = geometry.asPoint();
         writePoint( map, GV_POINT, point, cats );
       }
-      else if ( geometryType == Qgis::WKBMultiPoint )
+      else if ( geometryType == QgsWkbTypes::MultiPoint )
       {
-        QgsMultiPoint multiPoint = geometry->asMultiPoint();
+        QgsMultiPoint multiPoint = geometry.asMultiPoint();
         Q_FOREACH ( const QgsPoint& point, multiPoint )
         {
           writePoint( map, GV_POINT, point, cats );
         }
       }
-      else if ( geometryType == Qgis::WKBLineString )
+      else if ( geometryType == QgsWkbTypes::LineString )
       {
-        QgsPolyline polyline = geometry->asPolyline();
+        QgsPolyline polyline = geometry.asPolyline();
         writePolyline( map, GV_LINE, polyline, cats );
       }
-      else if ( geometryType == Qgis::WKBMultiLineString )
+      else if ( geometryType == QgsWkbTypes::MultiLineString )
       {
-        QgsMultiPolyline multiPolyline = geometry->asMultiPolyline();
+        QgsMultiPolyline multiPolyline = geometry.asMultiPolyline();
         Q_FOREACH ( const QgsPolyline& polyline, multiPolyline )
         {
           writePolyline( map, GV_LINE, polyline, cats );
         }
       }
-      else if ( geometryType == Qgis::WKBPolygon )
+      else if ( geometryType == QgsWkbTypes::Polygon )
       {
-        QgsPolygon polygon = geometry->asPolygon();
+        QgsPolygon polygon = geometry.asPolygon();
         Q_FOREACH ( const QgsPolyline& polyline, polygon )
         {
           writePolyline( map, GV_BOUNDARY, polyline, cats );
         }
       }
-      else if ( geometryType == Qgis::WKBMultiPolygon )
+      else if ( geometryType == QgsWkbTypes::MultiPolygon )
       {
-        QgsMultiPolygon multiPolygon = geometry->asMultiPolygon();
+        QgsMultiPolygon multiPolygon = geometry.asMultiPolygon();
         Q_FOREACH ( const QgsPolygon& polygon, multiPolygon )
         {
           Q_FOREACH ( const QgsPolyline& polyline, polygon )
@@ -426,16 +426,16 @@ int main( int argc, char **argv )
       {
         break;
       }
-      if ( !feature.constGeometry() )
+      if ( !feature.hasGeometry() )
       {
         continue;
       }
 
-      QList<QgsFeatureId> idList = spatialIndex.intersects( feature.constGeometry()->boundingBox() );
+      QList<QgsFeatureId> idList = spatialIndex.intersects( feature.geometry().boundingBox() );
       Q_FOREACH ( QgsFeatureId id, idList )
       {
         QgsFeature& centroid = centroids[id];
-        if ( feature.constGeometry()->contains( centroid.constGeometry() ) )
+        if ( feature.geometry().contains( centroid.geometry() ) )
         {
           QgsAttributes attr = centroid.attributes();
           attr.append(( int )feature.id() + fidToCatPlus );
@@ -455,7 +455,7 @@ int main( int argc, char **argv )
     count = 0;
     Q_FOREACH ( const QgsFeature& centroid, centroids.values() )
     {
-      QgsPoint point = centroid.constGeometry()->asPoint();
+      QgsPoint point = centroid.geometry().asPoint();
 
       if ( centroid.attributes().size() > 0 )
       {

@@ -301,12 +301,23 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) override;
 
+    /** Register a new custom drop handler.
+     * @note added in QGIS 3.0
+     * @note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * @see unregisterCustomDropHandler() */
+    virtual void registerCustomDropHandler( QgsCustomDropHandler* handler ) override;
+
+    /** Unregister a previously registered custom drop handler.
+     * @note added in QGIS 3.0
+     * @see registerCustomDropHandler() */
+    virtual void unregisterCustomDropHandler( QgsCustomDropHandler* handler ) override;
+
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
      */
 
     //! Menus
-    Q_DECL_DEPRECATED virtual QMenu *fileMenu() override;
     virtual QMenu *projectMenu() override;
     virtual QMenu *editMenu() override;
     virtual QMenu *viewMenu() override;
@@ -415,7 +426,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionCancelEdits() override;
     virtual QAction *actionCancelAllEdits() override;
     virtual QAction *actionLayerSaveAs() override;
-    virtual QAction *actionLayerSelectionSaveAs() override;
     virtual QAction *actionRemoveLayer() override;
     virtual QAction *actionDuplicateLayer() override;
     virtual QAction *actionLayerProperties() override;

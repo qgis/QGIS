@@ -94,12 +94,11 @@ class FieldsCalculator(GeoAlgorithm):
             output.value = system.getTempFilenameInTempFolder(
                 output.name + '.' + ext)
 
-        provider = layer.dataProvider()
-        fields = layer.pendingFields()
+        fields = layer.fields()
         if newField:
             fields.append(QgsField(fieldName, fieldType, '', width, precision))
 
-        writer = output.getVectorWriter(fields, provider.geometryType(),
+        writer = output.getVectorWriter(fields, layer.wkbType(),
                                         layer.crs())
 
         exp = QgsExpression(formula)

@@ -168,7 +168,7 @@ class QgsLineStringV2: public QgsCurveV2
     virtual bool dropZValue();
     virtual bool dropMValue();
 
-    virtual bool convertTo( QgsWKBTypes::Type type );
+    virtual bool convertTo( QgsWkbTypes::Type type );
 
   protected:
 

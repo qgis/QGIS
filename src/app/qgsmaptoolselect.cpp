@@ -44,13 +44,13 @@ void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( !vlayer )
     return;
 
-  QgsRubberBand rubberBand( mCanvas, Qgis::Polygon );
+  QgsRubberBand rubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
   rubberBand.setFillColor( mFillColor );
   rubberBand.setBorderColor( mBorderColour );
   QRect selectRect( 0, 0, 0, 0 );
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
-  QScopedPointer< QgsGeometry > selectGeom( rubberBand.asGeometry() );
-  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom.data(), e );
-  rubberBand.reset( Qgis::Polygon );
+  QgsGeometry selectGeom( rubberBand.asGeometry() );
+  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e );
+  rubberBand.reset( QgsWkbTypes::PolygonGeometry );
 }

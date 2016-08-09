@@ -20,7 +20,7 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsgeometry.h"
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
@@ -571,7 +571,7 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
       for ( QStringList::iterator it = colorStrings.begin();
             it != colorStrings.end(); ++it )
       {
-        QColor color = QgsSymbolLayerV2Utils::decodeColor( *it );
+        QColor color = QgsSymbolLayerUtils::decodeColor( *it );
         QString label;
         if ( colorLabels.length() > colorIndex )
         {
@@ -762,14 +762,13 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_scale", mapSettings.scale(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_width", mapSettings.extent().width(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_height", mapSettings.extent().height(), true ) );
-  QgsGeometry* centerPoint = QgsGeometry::fromPoint( mapSettings.visibleExtent().center() );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( *centerPoint ), true ) );
-  delete centerPoint;
+  QgsGeometry centerPoint = QgsGeometry::fromPoint( mapSettings.visibleExtent().center() );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( centerPoint ), true ) );
 
   return scope;
 }
 
-QgsExpressionContextScope* QgsExpressionContextUtils::updateSymbolScope( const QgsSymbolV2* symbol, QgsExpressionContextScope* symbolScope )
+QgsExpressionContextScope* QgsExpressionContextUtils::updateSymbolScope( const QgsSymbol* symbol, QgsExpressionContextScope* symbolScope )
 {
   if ( !symbolScope )
     return nullptr;
@@ -885,7 +884,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::atlasScope( const QgsAtlas
     scope->setFeature( atlasFeature );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_feature", QVariant::fromValue( atlasFeature ), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featureid", atlasFeature.id(), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( *atlasFeature.constGeometry() ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( atlasFeature.geometry() ), true ) );
   }
 
   return scope;

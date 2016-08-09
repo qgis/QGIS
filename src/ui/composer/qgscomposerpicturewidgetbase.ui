@@ -362,7 +362,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QgsColorButtonV2" name="mOutlineColorButton">
+           <widget class="QgsColorButton" name="mOutlineColorButton">
             <property name="minimumSize">
              <size>
               <width>120</width>
@@ -381,7 +381,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QgsColorButtonV2" name="mFillColorButton">
+           <widget class="QgsColorButton" name="mFillColorButton">
             <property name="minimumSize">
              <size>
               <width>120</width>
@@ -501,9 +501,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

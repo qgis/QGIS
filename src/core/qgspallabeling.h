@@ -30,6 +30,7 @@
 #include <QPainter>
 #include <QRectF>
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include "qgsfield.h"
 #include "qgspoint.h"
 #include "qgsmapunitscale.h"
@@ -758,7 +759,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsPoint ptZero;
     QgsPoint ptOne;
-    QgsGeometry* extentGeom;
+    QgsGeometry extentGeom;
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
@@ -817,7 +818,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Checks if a feature is larger than a minimum size (in mm)
     @return true if above size, false if below*/
-    bool checkMinimumSizeMM( const QgsRenderContext& ct, const QgsGeometry* geom, double minSize ) const;
+    bool checkMinimumSizeMM( const QgsRenderContext& ct, const QgsGeometry& geom, double minSize ) const;
 
     /** Registers a feature as an obstacle only (no label rendered)
      */
@@ -1112,10 +1113,10 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @param context render context
      * @param ct coordinate transform, or invalid transform if no transformation required
      * @param clipGeometry geometry to clip features to, if applicable
-     * @returns prepared geometry, the caller takes ownership
+     * @returns prepared geometry
      * @note added in QGIS 2.9
      */
-    static QgsGeometry* prepareGeometry( const QgsGeometry *geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = nullptr );
+    static QgsGeometry prepareGeometry( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = nullptr );
 
     /** Checks whether a geometry requires preparation before registration with PAL
      * @param geometry geometry to prepare
@@ -1125,7 +1126,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @returns true if geometry requires preparation
      * @note added in QGIS 2.9
      */
-    static bool geometryRequiresPreparation( const QgsGeometry *geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = nullptr );
+    static bool geometryRequiresPreparation( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = nullptr );
 
     /** Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.

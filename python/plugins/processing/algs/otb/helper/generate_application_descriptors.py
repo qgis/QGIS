@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -55,7 +56,8 @@ def generate_all_app_descriptors():
 
 
 def generate_app_descriptor(appliname):
-    print appliname
+    # fix_print_with_import
+    print(appliname)
 
     appInstance = otbApplication.Registry.CreateApplication(appliname)
     appInstance.UpdateParameters()  # TODO need this ?

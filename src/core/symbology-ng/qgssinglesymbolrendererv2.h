@@ -17,7 +17,7 @@
 
 #include "qgis.h"
 #include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsexpression.h"
 #include <QScopedPointer>
 
@@ -29,15 +29,15 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:
 
-    QgsSingleSymbolRendererV2( QgsSymbolV2* symbol );
+    QgsSingleSymbolRendererV2( QgsSymbol* symbol );
 
     virtual ~QgsSingleSymbolRendererV2();
 
     //! @note available in python as symbolForFeature2
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     //! @note available in python as originalSymbolForFeature2
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
@@ -45,8 +45,8 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes() override;
 
-    QgsSymbolV2* symbol() const;
-    void setSymbol( QgsSymbolV2* s );
+    QgsSymbol* symbol() const;
+    void setSymbol( QgsSymbol* s );
 
     Q_DECL_DEPRECATED void setRotationField( const QString& fieldOrExpression ) override;
     Q_DECL_DEPRECATED QString rotationField() const override;
@@ -54,21 +54,21 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     void setSizeScaleField( const QString& fieldOrExpression );
     QString sizeScaleField() const;
 
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
+    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
+    QgsSymbol::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
     virtual QString dump() const override;
 
     virtual QgsSingleSymbolRendererV2* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, Qgis::GeometryType geomType );
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() override { return SymbolLevels | RotationField; }
+    virtual Capabilities capabilities() override { return SymbolLevels | RotationField; }
 
     //! @note available in python as symbol2
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
+    virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element );
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
-    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol ) override;
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
 
     //! creates a QgsSingleSymbolRendererV2 from an existing renderer.
     //! @note added in 2.5
@@ -97,13 +97,13 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     static QgsSingleSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
 
   protected:
-    QScopedPointer<QgsSymbolV2> mSymbol;
+    QScopedPointer<QgsSymbol> mSymbol;
     QScopedPointer<QgsExpression> mRotation;
     QScopedPointer<QgsExpression> mSizeScale;
-    QgsSymbolV2::ScaleMethod mScaleMethod;
+    QgsSymbol::ScaleMethod mScaleMethod;
 
     // temporary stuff for rendering
-    QScopedPointer<QgsSymbolV2> mTempSymbol;
+    QScopedPointer<QgsSymbol> mTempSymbol;
     double mOrigSize;
 };
 Q_NOWARN_DEPRECATED_POP

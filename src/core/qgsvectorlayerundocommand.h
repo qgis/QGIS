@@ -121,7 +121,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLaye
      * @param fid feature ID of feature to modify geometry of
      * @param newGeom new geometry for feature
      */
-    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, QgsGeometry* newGeom );
+    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, QgsGeometry newGeom );
     ~QgsVectorLayerUndoCommandChangeGeometry();
 
     virtual void undo() override;
@@ -131,8 +131,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLaye
 
   private:
     QgsFeatureId mFid;
-    QgsGeometry* mOldGeom;
-    mutable QgsGeometry* mNewGeom;
+    QgsGeometry mOldGeom;
+    mutable QgsGeometry mNewGeom;
 };
 
 

@@ -115,6 +115,15 @@ class OutputExtent(Output):
             return False
 
 
+class OutputCrs(Output):
+
+    def __init__(self, name='', description=''):
+        self.name = name
+        self.description = description
+        self.value = None
+        self.hidden = True
+
+
 class OutputFile(Output):
 
     def __init__(self, name='', description='', ext=None):

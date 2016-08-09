@@ -15,13 +15,13 @@
 
 #include "qgsheatmaprenderer.h"
 
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 
 #include "qgslogger.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 #include "qgsogcutils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsrendercontext.h"
@@ -60,7 +60,7 @@ void QgsHeatmapRenderer::initializeValues( QgsRenderContext& context )
   mValues.fill( 0 );
   mCalculatedMaxValue = 0;
   mFeaturesRendered = 0;
-  mRadiusPixels = qRound( mRadius * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mRadiusUnit, mRadiusMapUnitScale ) / mRenderQuality );
+  mRadiusPixels = qRound( mRadius * QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mRadiusUnit, mRadiusMapUnitScale ) / mRenderQuality );
   mRadiusSquared = mRadiusPixels * mRadiusPixels;
 }
 
@@ -110,7 +110,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
     return false;
   }
 
-  if ( !feature.constGeometry() || feature.constGeometry()->type() != Qgis::Point )
+  if ( !feature.hasGeometry() || feature.geometry().type() != QgsWkbTypes::PointGeometry )
   {
     //can only render point type
     return false;
@@ -142,19 +142,15 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
   int height = context.painter()->device()->height() / mRenderQuality;
 
   //transform geometry if required
-  QgsGeometry* transformedGeom = nullptr;
+  QgsGeometry geom = feature.geometry();
   QgsCoordinateTransform xform = context.coordinateTransform();
   if ( xform.isValid() )
   {
-    transformedGeom = new QgsGeometry( *feature.constGeometry() );
-    transformedGeom->transform( xform );
+    geom.transform( xform );
   }
 
   //convert point to multipoint
-  QgsMultiPoint multiPoint = convertToMultipoint( transformedGeom ? transformedGeom : feature.constGeometry() );
-
-  delete transformedGeom;
-  transformedGeom = nullptr;
+  QgsMultiPoint multiPoint = convertToMultipoint( &geom );
 
   //loop through all points in multipoint
   for ( QgsMultiPoint::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )
@@ -309,12 +305,12 @@ void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderCon
   double extension = 0.0;
   if ( mRadiusUnit == QgsUnitTypes::RenderPixels )
   {
-    extension = mRadius / QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
+    extension = mRadius / QgsSymbolLayerUtils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
   }
   else if ( mRadiusUnit == QgsUnitTypes::RenderMillimeters )
   {
-    double pixelSize = mRadius * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMillimeters, QgsMapUnitScale() );
-    extension = pixelSize / QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
+    double pixelSize = mRadius * QgsSymbolLayerUtils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMillimeters, QgsMapUnitScale() );
+    extension = pixelSize / QgsSymbolLayerUtils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
   }
   else
   {
@@ -331,7 +327,7 @@ QgsFeatureRendererV2* QgsHeatmapRenderer::create( QDomElement& element )
   QgsHeatmapRenderer* r = new QgsHeatmapRenderer();
   r->setRadius( element.attribute( "radius", "50.0" ).toFloat() );
   r->setRadiusUnit( static_cast< QgsUnitTypes::RenderUnit >( element.attribute( "radius_unit", "0" ).toInt() ) );
-  r->setRadiusMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( element.attribute( "radius_map_unit_scale", QString() ) ) );
+  r->setRadiusMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( "radius_map_unit_scale", QString() ) ) );
   r->setMaximumValue( element.attribute( "max_value", "0.0" ).toFloat() );
   r->setRenderQuality( element.attribute( "quality", "0" ).toInt() );
   r->setWeightExpression( element.attribute( "weight_expression" ) );
@@ -339,7 +335,7 @@ QgsFeatureRendererV2* QgsHeatmapRenderer::create( QDomElement& element )
   QDomElement sourceColorRampElem = element.firstChildElement( "colorramp" );
   if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( "name" ) == "[source]" )
   {
-    r->setColorRamp( QgsSymbolLayerV2Utils::loadColorRamp( sourceColorRampElem ) );
+    r->setColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
   }
   r->setInvertRamp( element.attribute( "invert_ramp", "0" ).toInt() );
   return r;
@@ -351,13 +347,13 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
   rendererElem.setAttribute( "type", "heatmapRenderer" );
   rendererElem.setAttribute( "radius", QString::number( mRadius ) );
   rendererElem.setAttribute( "radius_unit", QString::number( mRadiusUnit ) );
-  rendererElem.setAttribute( "radius_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mRadiusMapUnitScale ) );
+  rendererElem.setAttribute( "radius_map_unit_scale", QgsSymbolLayerUtils::encodeMapUnitScale( mRadiusMapUnitScale ) );
   rendererElem.setAttribute( "max_value", QString::number( mExplicitMax ) );
   rendererElem.setAttribute( "quality", QString::number( mRenderQuality ) );
   rendererElem.setAttribute( "weight_expression", mWeightExpressionString );
   if ( mGradientRamp )
   {
-    QDomElement colorRampElem = QgsSymbolLayerV2Utils::saveColorRamp( "[source]", mGradientRamp, doc );
+    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( "[source]", mGradientRamp, doc );
     rendererElem.appendChild( colorRampElem );
   }
   rendererElem.setAttribute( "invert_ramp", QString::number( mInvertRamp ) );
@@ -377,15 +373,15 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsSymbolV2* QgsHeatmapRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& )
+QgsSymbol* QgsHeatmapRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& )
 {
   Q_UNUSED( feature );
   return nullptr;
 }
 
-QgsSymbolV2List QgsHeatmapRenderer::symbols( QgsRenderContext& )
+QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext& )
 {
-  return QgsSymbolV2List();
+  return QgsSymbolList();
 }
 
 QList<QString> QgsHeatmapRenderer::usedAttributes()

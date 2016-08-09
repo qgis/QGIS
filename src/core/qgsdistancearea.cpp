@@ -361,6 +361,15 @@ double QgsDistanceArea::measureArea( const QgsGeometry* geometry ) const
   return measure( geomV2, Area );
 }
 
+double QgsDistanceArea::measureArea( const QgsGeometry& geometry ) const
+{
+  if ( geometry.isEmpty() )
+    return 0.0;
+
+  const QgsAbstractGeometryV2* geomV2 = geometry.geometry();
+  return measure( geomV2, Area );
+}
+
 double QgsDistanceArea::measureLength( const QgsGeometry* geometry ) const
 {
   if ( !geometry )
@@ -370,12 +379,29 @@ double QgsDistanceArea::measureLength( const QgsGeometry* geometry ) const
   return measure( geomV2, Length );
 }
 
+double QgsDistanceArea::measureLength( const QgsGeometry& geometry ) const
+{
+  if ( geometry.isEmpty() )
+    return 0.0;
+
+  const QgsAbstractGeometryV2* geomV2 = geometry.geometry();
+  return measure( geomV2, Length );
+}
+
 double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
 {
   if ( !geometry )
     return 0.0;
 
-  const QgsAbstractGeometryV2* geomV2 = geometry->geometry();
+  return measurePerimeter( *geometry );
+}
+
+double QgsDistanceArea::measurePerimeter( const QgsGeometry& geometry ) const
+{
+  if ( geometry.isEmpty() )
+    return 0.0;
+
+  const QgsAbstractGeometryV2* geomV2 = geometry.geometry();
   if ( !geomV2 || geomV2->dimension() < 2 )
   {
     return 0.0;

@@ -43,8 +43,6 @@ class QgsFeaturePrivate : public QSharedData
 
     explicit QgsFeaturePrivate( QgsFeatureId id )
         : fid( id )
-        , geometry( nullptr )
-        , ownsGeometry( false )
         , valid( false )
     {
     }
@@ -53,8 +51,7 @@ class QgsFeaturePrivate : public QSharedData
         : QSharedData( other )
         , fid( other.fid )
         , attributes( other.attributes )
-        , geometry( other.ownsGeometry && other.geometry ? new QgsGeometry( *other.geometry ) : other.geometry )
-        , ownsGeometry( other.ownsGeometry )
+        , geometry( other.geometry )
         , valid( other.valid )
         , fields( other.fields )
     {
@@ -62,26 +59,16 @@ class QgsFeaturePrivate : public QSharedData
 
     ~QgsFeaturePrivate()
     {
-      if ( ownsGeometry )
-        delete geometry;
     }
 
-    //! feature id
+    //! Feature ID
     QgsFeatureId fid;
 
-    /** Attributes accessed by field index */
+    ///! Attributes accessed by field index
     QgsAttributes attributes;
 
-    /** Pointer to geometry in binary WKB format
-
-       This is usually set by a call to OGRGeometry::exportToWkb()
-     */
-    QgsGeometry *geometry;
-
-    /** Indicator if the mGeometry is owned by this QgsFeature.
-        If so, this QgsFeature takes responsibility for the mGeometry's destruction.
-     */
-    bool ownsGeometry;
+    //! Geometry, may be empty if feature has no geometry
+    QgsGeometry geometry;
 
     //! Flag to indicate if this feature is valid
     bool valid;

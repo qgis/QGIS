@@ -56,7 +56,7 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRe
 
   if ( rubberBand )
   {
-    rubberBand->reset( Qgis::Polygon );
+    rubberBand->reset( QgsWkbTypes::PolygonGeometry );
     rubberBand->addPoint( ll, false );
     rubberBand->addPoint( lr, false );
     rubberBand->addPoint( ur, false );
@@ -69,7 +69,7 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
     QPoint point )
 {
   int boxSize = 0;
-  if ( vlayer->geometryType() != Qgis::Polygon )
+  if ( vlayer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     //if point or line use an artificial bounding box of 10x10 pixels
     //to aid the user to click on a feature accurately
@@ -86,7 +86,7 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
   selectRect.setBottom( point.y() + boxSize );
 }
 
-void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent* e )
+void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent* e )
 {
   QgsVectorLayer::SelectBehaviour behaviour = QgsVectorLayer::SetSelection;
   if ( e->modifiers() & Qt::ShiftModifier && e->modifiers() & Qt::ControlModifier )
@@ -100,7 +100,7 @@ void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas* canvas, QgsGeo
   setSelectedFeatures( canvas, selectGeometry, behaviour, doContains );
 }
 
-void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent* e )
+void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent* e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
@@ -141,7 +141,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, QgsGeomet
   QApplication::restoreOverrideCursor();
 }
 
-void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry,
+void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry,
     QgsVectorLayer::SelectBehaviour selectBehaviour, bool doContains, bool singleSelect )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
@@ -157,11 +157,11 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas* canvas, QgsGeomet
 }
 
 
-QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, bool doContains, bool singleSelect )
+QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, bool doContains, bool singleSelect )
 {
   QgsFeatureIds newSelectedFeatures;
 
-  if ( selectGeometry->type() != Qgis::Polygon )
+  if ( selectGeometry.type() != QgsWkbTypes::PolygonGeometry )
     return newSelectedFeatures;
 
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
@@ -172,7 +172,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
   // the rubber band.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.
-  QScopedPointer<QgsGeometry> selectGeomTrans( new QgsGeometry( *selectGeometry ) );
+  QgsGeometry selectGeomTrans = selectGeometry;
 
   if ( canvas->mapSettings().hasCrsTransformEnabled() )
   {
@@ -180,11 +180,11 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
     {
       QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs() );
 
-      if ( !ct.isShortCircuited() && selectGeomTrans->type() == Qgis::Polygon )
+      if ( !ct.isShortCircuited() && selectGeomTrans.type() == QgsWkbTypes::PolygonGeometry )
       {
         // convert add more points to the edges of the rectangle
         // improve transformation result
-        QgsPolygon poly( selectGeomTrans->asPolygon() );
+        QgsPolygon poly( selectGeomTrans.asPolygon() );
         if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
         {
           const QgsPolyline &ringIn = poly.at( 0 );
@@ -206,11 +206,11 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
             }
             ringOut[ i++ ] = ringIn.at( j );
           }
-          selectGeomTrans.reset( QgsGeometry::fromPolygon( newpoly ) );
+          selectGeomTrans = QgsGeometry::fromPolygon( newpoly );
         }
       }
 
-      selectGeomTrans->transform( ct );
+      selectGeomTrans.transform( ct );
     }
     catch ( QgsCsException &cse )
     {
@@ -227,7 +227,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
   }
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
-  QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans->exportToWkt(), 3 );
+  QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.exportToWkt(), 3 );
   QgsDebugMsgLevel( "doContains: " + QString( doContains ? "T" : "F" ), 3 );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
@@ -237,7 +237,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
     r->startRender( context, vlayer->fields() );
 
   QgsFeatureRequest request;
-  request.setFilterRect( selectGeomTrans->boundingBox() );
+  request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
   if ( r )
     request.setSubsetOfAttributes( r->usedAttributes(), vlayer->fields() );
@@ -257,21 +257,21 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
     if ( r && !r->willRenderFeature( f, context ) )
       continue;
 
-    const QgsGeometry* g = f.constGeometry();
+    QgsGeometry g = f.geometry();
     if ( doContains )
     {
-      if ( !selectGeomTrans->contains( g ) )
+      if ( !selectGeomTrans.contains( g ) )
         continue;
     }
     else
     {
-      if ( !selectGeomTrans->intersects( g ) )
+      if ( !selectGeomTrans.intersects( g ) )
         continue;
     }
     if ( singleSelect )
     {
       foundSingleFeature = true;
-      double distance = g->distance( *selectGeomTrans );
+      double distance = g.distance( selectGeomTrans );
       if ( distance <= closestFeatureDist )
       {
         closestFeatureDist = distance;

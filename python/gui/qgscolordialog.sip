@@ -1,42 +1,12 @@
 
 /** \ingroup gui
  * \class QgsColorDialog
- * A dialog for selecting a color
- */
-
-class QgsColorDialog : QObject
-{
-%TypeHeaderCode
-#include <qgscolordialog.h>
-%End
-  public:
-    QgsColorDialog();
-    ~QgsColorDialog();
-
-    /** Return a color selection from a QColorDialog, with live updating of interim selections.
-     * @param initialColor The initial color of the selection dialog.
-     * @param updateObject The receiver object of the live updating.
-     * @param updateSlot The receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
-     * @param parent Parent widget. Usually 0 is best for native system color dialogs.
-     * @param title The title of the QColorDialog.
-     * @param options ColorDialogOptions passed to QColorDialog.
-     * @return Selected color on accepted() or initialColor on rejected().
-     */
-    static QColor getLiveColor( const QColor& initialColor, QObject* updateObject, const char* updateSlot,
-                                QWidget* parent = 0,
-                                const QString& title = "",
-                                const QColorDialog::ColorDialogOptions& options = 0 );
-};
-
-
-/** \ingroup gui
- * \class QgsColorDialogV2
  * A custom QGIS dialog for selecting a color. Has many improvements over the standard Qt color picker dialog, including
  * hue wheel supports, color swatches, and a color sampler.
  * \note Added in version 2.5
  */
 
-class QgsColorDialogV2 : QDialog
+class QgsColorDialog : QDialog
 {
 %TypeHeaderCode
 #include <qgscolordialog.h>
@@ -49,10 +19,10 @@ class QgsColorDialogV2 : QDialog
      * @param fl window flags
      * @param color initial color for dialog
      */
-    QgsColorDialogV2( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
+    QgsColorDialog( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
                       const QColor& color = QColor() );
 
-    ~QgsColorDialogV2();
+    ~QgsColorDialog();
 
     /** Returns the current color for the dialog
      * @returns dialog color

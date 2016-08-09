@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
@@ -26,7 +27,10 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import ConfigParser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 from processing.core.Processing import Processing
 from processing.core.alglist import algList
@@ -42,7 +46,7 @@ def alglist(text=None):
             if text is None or text.lower() in alg.name.lower():
                 s += alg.name.ljust(50, '-') + '--->' + alg.commandLineName() \
                     + '\n'
-    print s
+    print(s)
 
 
 def algoptions(name):
@@ -56,19 +60,19 @@ def algoptions(name):
                 for option in param.options:
                     s += '\t' + unicode(i) + ' - ' + unicode(option) + '\n'
                     i += 1
-        print s
+        print(s)
     else:
-        print 'Algorithm not found'
+        print('Algorithm not found')
 
 
 def alghelp(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
         alg = alg.getCopy()
-        print unicode(alg)
+        print(unicode(alg))
         algoptions(name)
     else:
-        print 'Algorithm not found'
+        print('Algorithm not found')
 
 
 def runalg(algOrName, *args, **kwargs):
@@ -83,7 +87,7 @@ def runandload(name, *args, **kwargs):
 
 def version():
     pluginPath = os.path.split(os.path.dirname(__file__))[0]
-    cfg = ConfigParser.SafeConfigParser()
+    cfg = configparser.SafeConfigParser()
     cfg.read(os.path.join(pluginPath, 'metadata.txt'))
     ver = cfg.get('general', 'version').split('.')
     return 10000 * int(ver[0]) + 100 * int(ver[1]) + int(ver[2])

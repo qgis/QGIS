@@ -138,7 +138,7 @@ void Heatmap::run()
   OutputValues valueType = d.outputValues();
 
   //is input layer multipoint?
-  bool isMultiPoint = inputLayer->wkbType() == Qgis::WKBMultiPoint || inputLayer->wkbType() == Qgis::WKBMultiPoint25D;
+  bool isMultiPoint = inputLayer->wkbType() == QgsWkbTypes::MultiPoint || inputLayer->wkbType() == QgsWkbTypes::MultiPoint25D;
 
   // Getting the rasterdataset in place
   GDALAllRegister();
@@ -242,8 +242,8 @@ void Heatmap::run()
       break;
     }
 
-    const QgsGeometry* featureGeometry = myFeature.constGeometry();
-    if ( !featureGeometry )
+    QgsGeometry featureGeometry = myFeature.geometry();
+    if ( featureGeometry.isEmpty() )
     {
       continue;
     }
@@ -252,7 +252,7 @@ void Heatmap::run()
     QgsMultiPoint multiPoints;
     if ( !isMultiPoint )
     {
-      QgsPoint myPoint = featureGeometry->asPoint();
+      QgsPoint myPoint = featureGeometry.asPoint();
       // avoiding any empty points or out of extent points
       if (( myPoint.x() < myBBox.xMinimum() ) || ( myPoint.y() < myBBox.yMinimum() )
           || ( myPoint.x() > myBBox.xMaximum() ) || ( myPoint.y() > myBBox.yMaximum() ) )
@@ -263,7 +263,7 @@ void Heatmap::run()
     }
     else
     {
-      multiPoints = featureGeometry->asMultiPoint();
+      multiPoints = featureGeometry.asMultiPoint();
     }
 
     // If radius is variable then fetch it and calculate new pixel buffer size

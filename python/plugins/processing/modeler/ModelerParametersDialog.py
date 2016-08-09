@@ -69,7 +69,8 @@ from processing.core.outputs import (OutputRaster,
                                      OutputDirectory,
                                      OutputNumber,
                                      OutputString,
-                                     OutputExtent)
+                                     OutputExtent,
+                                     OutputCrs)
 
 from processing.modeler.ModelerAlgorithm import (ValueFromInput,
                                                  ValueFromOutput,
@@ -345,8 +346,10 @@ class ModelerParametersDialog(QDialog):
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-            else:
+            elif aram.datatype == ParameterMultipleInput.TYPE_RASTER:
                 options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
+            else:
+                options = self.getAvailableValuesOfType(ParameterFile, OutputFile)
             opts = []
             for opt in options:
                 opts.append(self.resolveValueDescription(opt))
@@ -383,7 +386,10 @@ class ModelerParametersDialog(QDialog):
                 item.addItem(self.resolveValueDescription(n), n)
             item.setEditText(unicode(param.default))
         elif isinstance(param, ParameterCrs):
-            item = CrsSelectionPanel(param.default)
+            item = QComboBox()
+            values = self.getAvailableValuesOfType(ParameterCrs, OutputCrs)
+            for v in values:
+                item.addItem(self.resolveValueDescription(v), v)
         elif isinstance(param, ParameterExtent):
             item = QComboBox()
             item.setEditable(True)
@@ -686,6 +692,15 @@ class ModelerParametersDialog(QDialog):
             alg.params[param.name] = value
         return True
 
+    def setParamCrsValue(self, alg, param, widget):
+        idx = widget.currentIndex()
+        if idx < 0:
+            return False
+        else:
+            value = widget.itemData(widget.currentIndex())
+            alg.params[param.name] = value
+            return True
+
     def setParamValue(self, alg, param, widget):
         if isinstance(param, (ParameterRaster, ParameterVector,
                               ParameterTable)):
@@ -714,11 +729,7 @@ class ModelerParametersDialog(QDialog):
             alg.params[param.name] = widget.getValue()
             return True
         elif isinstance(param, ParameterCrs):
-            authid = widget.getValue()
-            if authid is None and not param.optional:
-                return False
-            alg.params[param.name] = authid
-            return True
+            return self.setParamCrsValue(alg, param, widget)
         elif isinstance(param, ParameterFixedTable):
             table = widget.table
             if not bool(table) and not param.optional:

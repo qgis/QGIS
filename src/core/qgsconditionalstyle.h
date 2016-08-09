@@ -7,7 +7,7 @@
 #include <QDomNode>
 #include <QDomDocument>
 
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 class QgsConditionalStyle;
 
@@ -120,9 +120,9 @@ class CORE_EXPORT QgsConditionalStyle
 
     /**
      * @brief Set the icon for the style. Icons are generated from symbols
-     * @param value QgsSymbolV2 to be used when generating the icon
+     * @param value QgsSymbol to be used when generating the icon
      */
-    void setSymbol( QgsSymbolV2* value );
+    void setSymbol( QgsSymbol* value );
 
     /**
      * @brief The name of the style.
@@ -144,9 +144,9 @@ class CORE_EXPORT QgsConditionalStyle
 
     /**
      * @brief The symbol used to generate the icon for the style
-     * @return The QgsSymbolV2 used for the icon
+     * @return The QgsSymbol used for the icon
      */
-    QgsSymbolV2* symbol() const { return mSymbol.data(); }
+    QgsSymbol* symbol() const { return mSymbol.data(); }
 
     /**
      * @brief The text color set for style
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsConditionalStyle
     bool mValid;
     QString mName;
     QString mRule;
-    QScopedPointer<QgsSymbolV2> mSymbol;
+    QScopedPointer<QgsSymbol> mSymbol;
     QFont mFont;
     QColor mBackColor;
     QColor mTextColor;

@@ -73,29 +73,25 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
   // ID
   s += QString( "   \"id\":%1,\n" ).arg( !id.isValid() ? QString::number( feature.id() ) : QgsJSONUtils::encodeValue( id ) );
 
-  const QgsGeometry* geom = feature.constGeometry();
-  if ( geom && !geom->isEmpty() && mIncludeGeometry )
+  QgsGeometry geom = feature.geometry();
+  if ( !geom.isEmpty() && mIncludeGeometry )
   {
-    const QgsGeometry* exportGeom = geom;
     if ( mCrs.isValid() )
     {
-      QgsGeometry* clone = new QgsGeometry( *geom );
       try
       {
-        if ( clone->transform( mTransform ) == 0 )
-          exportGeom = clone;
-        else
-          delete clone;
+        QgsGeometry transformed = geom;
+        if ( transformed.transform( mTransform ) == 0 )
+          geom = transformed;
       }
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse );
-        delete clone;
       }
     }
-    QgsRectangle box = exportGeom->boundingBox();
+    QgsRectangle box = geom.boundingBox();
 
-    if ( QgsWKBTypes::flatType( exportGeom->geometry()->wkbType() ) != QgsWKBTypes::Point )
+    if ( QgsWkbTypes::flatType( geom.geometry()->wkbType() ) != QgsWkbTypes::Point )
     {
       s += QString( "   \"bbox\":[%1, %2, %3, %4],\n" ).arg( qgsDoubleToString( box.xMinimum(), mPrecision ),
            qgsDoubleToString( box.yMinimum(), mPrecision ),
@@ -103,11 +99,8 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
            qgsDoubleToString( box.yMaximum(), mPrecision ) );
     }
     s += "   \"geometry\":\n   ";
-    s += exportGeom->exportToGeoJSON( mPrecision );
+    s += geom.exportToGeoJSON( mPrecision );
     s += ",\n";
-
-    if ( exportGeom != geom )
-      delete exportGeom;
   }
   else
   {
@@ -123,9 +116,9 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
 
     if ( mIncludeAttributes )
     {
-      const QgsFields* fields = feature.fields();
+      QgsFields fields = feature.fields();
 
-      for ( int i = 0; i < fields->count(); ++i )
+      for ( int i = 0; i < fields.count(); ++i )
       {
         if (( !mAttributeIndexes.isEmpty() && !mAttributeIndexes.contains( i ) ) || mExcludedAttributeIndexes.contains( i ) )
           continue;
@@ -134,7 +127,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
           properties += ",\n";
         QVariant val =  feature.attributes().at( i );
 
-        properties += QString( "      \"%1\":%2" ).arg( fields->at( i ).name(), QgsJSONUtils::encodeValue( val ) );
+        properties += QString( "      \"%1\":%2" ).arg( fields.at( i ).name(), QgsJSONUtils::encodeValue( val ) );
 
         ++attributeCounter;
       }
@@ -303,15 +296,15 @@ QString QgsJSONUtils::encodeValue( const QVariant &value )
 
 QString QgsJSONUtils::exportAttributes( const QgsFeature& feature )
 {
-  const QgsFields* fields = feature.fields();
+  QgsFields fields = feature.fields();
   QString attrs;
-  for ( int i = 0; i < fields->count(); ++i )
+  for ( int i = 0; i < fields.count(); ++i )
   {
     if ( i > 0 )
       attrs += ",\n";
 
     QVariant val = feature.attributes().at( i );
-    attrs += encodeValue( fields->at( i ).name() ) + ':' + encodeValue( val );
+    attrs += encodeValue( fields.at( i ).name() ) + ':' + encodeValue( val );
   }
   return attrs.prepend( '{' ).append( '}' );
 }

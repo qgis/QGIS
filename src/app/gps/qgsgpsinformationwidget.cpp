@@ -787,13 +787,13 @@ void QgsGPSInformationWidget::on_mBtnResetFeature_clicked()
 void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mpCanvas->currentLayer() );
-  Qgis::WkbType layerWKBType = vlayer->wkbType();
+  QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
 
   // -------------- preconditions ------------------------
   // most of these preconditions are already handled due to the button being enabled/disabled based on layer geom type and editing capabilities, but not on valid GPS data
 
   //lines: bail out if there are not at least two vertices
-  if ( layerWKBType == Qgis::WKBLineString  && mCaptureList.size() < 2 )
+  if ( layerWKBType == QgsWkbTypes::LineString  && mCaptureList.size() < 2 )
   {
     QMessageBox::information( nullptr, tr( "Not enough vertices" ),
                               tr( "Cannot close a line feature until it has at least two vertices." ) );
@@ -801,7 +801,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
   }
 
   //polygons: bail out if there are not at least three vertices
-  if ( layerWKBType == Qgis::WKBPolygon && mCaptureList.size() < 3 )
+  if ( layerWKBType == QgsWkbTypes::Polygon && mCaptureList.size() < 3 )
   {
     QMessageBox::information( nullptr, tr( "Not enough vertices" ),
                               tr( "Cannot close a polygon feature until it has at least three vertices." ) );
@@ -812,7 +812,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
   //
   // POINT CAPTURING
   //
-  if ( layerWKBType == Qgis::WKBPoint )
+  if ( layerWKBType == QgsWkbTypes::Point )
   {
     QgsFeature* f = new QgsFeature( 0 );
 
@@ -825,10 +825,10 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     unsigned char *buf = new unsigned char[size];
 
     QgsWkbPtr wkbPtr( buf, size );
-    wkbPtr << ( char ) QgsApplication::endian() << Qgis::WKBPoint << x << y;
+    wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::Point << x << y;
 
-    QgsGeometry *g = new QgsGeometry();
-    g->fromWkb( buf, size );
+    QgsGeometry g;
+    g.fromWkb( buf, size );
     f->setGeometry( g );
 
     QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
@@ -851,7 +851,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     }
 
     delete f;
-  } // layerWKBType == Qgis::WKBPoint
+  } // layerWKBType == QgsWkbTypes::Point
   else // Line or poly
   {
     mNmea->disconnect( this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
@@ -859,13 +859,13 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     //create QgsFeature with wkb representation
     QgsFeature* f = new QgsFeature( 0 );
 
-    if ( layerWKBType == Qgis::WKBLineString )
+    if ( layerWKBType == QgsWkbTypes::LineString )
     {
       int size = 1 + 2 * sizeof( int ) + 2 * mCaptureList.size() * sizeof( double );
       unsigned char *buf = new unsigned char[size];
 
       QgsWkbPtr wkbPtr( buf, size );
-      wkbPtr << ( char ) QgsApplication::endian() << Qgis::WKBLineString << mCaptureList.size();
+      wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::LineString << mCaptureList.size();
 
       for ( QList<QgsPoint>::const_iterator it = mCaptureList.constBegin(); it != mCaptureList.constEnd(); ++it )
       {
@@ -877,17 +877,17 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
         wkbPtr << myPoint.x() << myPoint.y();
       }
 
-      QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( buf, size );
+      QgsGeometry g;
+      g.fromWkb( buf, size );
       f->setGeometry( g );
     }
-    else if ( layerWKBType == Qgis::WKBPolygon )
+    else if ( layerWKBType == QgsWkbTypes::Polygon )
     {
       int size = 1 + 3 * sizeof( int ) + 2 * ( mCaptureList.size() + 1 ) * sizeof( double );
       unsigned char *buf = new unsigned char[size];
 
       QgsWkbPtr wkbPtr( buf, size );
-      wkbPtr << ( char ) QgsApplication::endian() << Qgis::WKBPolygon << 1 << mCaptureList.size() + 1;
+      wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::Polygon << 1 << mCaptureList.size() + 1;
 
       QList<QgsPoint>::iterator it;
       for ( it = mCaptureList.begin(); it != mCaptureList.end(); ++it )
@@ -904,11 +904,13 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
 
       wkbPtr << savePoint.x() << savePoint.y();
 
-      QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( buf, size );
+      QgsGeometry g;
+      g.fromWkb( buf, size );
       f->setGeometry( g );
 
-      int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
+      QgsGeometry featGeom = f->geometry();
+      int avoidIntersectionsReturn = featGeom.avoidIntersections();
+      f->setGeometry( featGeom );
       if ( avoidIntersectionsReturn == 1 )
       {
         //not a polygon type. Impossible to get there
@@ -930,14 +932,14 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       }
     }
     // Should never get here, as preconditions should have removed any that aren't handled
-    else // layerWKBType == Qgis::WKBPolygon  -  unknown type
+    else // layerWKBType == QgsWkbTypes::Polygon  -  unknown type
     {
       QMessageBox::critical( nullptr, tr( "Error" ), tr( "Cannot add feature. "
                              "Unknown WKB type. Choose a different layer and try again." ) );
       connectGpsSlot();
       delete f;
       return; //unknown wkbtype
-    } // layerWKBType == Qgis::WKBPolygon
+    } // layerWKBType == QgsWkbTypes::Polygon
 
     QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
     if ( action.addFeature() )
@@ -964,7 +966,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
 
     delete f;
     connectGpsSlot();
-  } // layerWKBType == Qgis::WKBPoint
+  } // layerWKBType == QgsWkbTypes::Point
   mpCanvas->refresh();  // NOTE: cancelling feature add refreshes canvas, OK does not; this may change, however, so do it anyway
 
   // force focus back to GPS window/ Add Feature button for ease of use by keyboard
@@ -1010,7 +1012,7 @@ void QgsGPSInformationWidget::createRubberBand()
   {
     delete mpRubberBand;
   }
-  mpRubberBand = new QgsRubberBand( mpCanvas, Qgis::Line );
+  mpRubberBand = new QgsRubberBand( mpCanvas, QgsWkbTypes::LineGeometry );
   mpRubberBand->setColor( mTrackColor );
   mpRubberBand->setWidth( mSpinTrackWidth->value() );
   mpRubberBand->show();
@@ -1078,43 +1080,29 @@ void QgsGPSInformationWidget::updateCloseFeatureButton( QgsMapLayer * lyr )
   if ( vlayer ) // must be vector layer
   {
     QgsVectorDataProvider* provider = vlayer->dataProvider();
-    Qgis::WkbType layerWKBType = vlayer->wkbType();
+    QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
+
+    QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( layerWKBType );
 
     bool enable =
       ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) &&  // layer can add features
       vlayer->isEditable() && // layer is editing
       ( // layer has geometry type that can be handled
-        layerWKBType == Qgis::WKBPoint ||
-        layerWKBType == Qgis::WKBLineString ||
-        layerWKBType == Qgis::WKBPolygon
+        flatType == QgsWkbTypes::Point ||
+        flatType == QgsWkbTypes::LineString ||
+        flatType == QgsWkbTypes::Polygon
         // add more types here as they are handled
       )
       ;
-    switch ( layerWKBType )
-    {
-      case Qgis::WKBPoint:
-        buttonLabel = tr( "&Add Point" );
-        break;
-      case Qgis::WKBLineString:
-        buttonLabel = tr( "&Add Line" );
-        break;
-      case Qgis::WKBPolygon:
-        buttonLabel = tr( "&Add Polygon" );
-        break;
-        // for the future (also prevent compiler warnings)
-      case Qgis::WKBMultiPoint:
-      case Qgis::WKBMultiLineString:
-      case Qgis::WKBMultiPolygon:
-      case Qgis::WKBPoint25D:
-      case Qgis::WKBLineString25D:
-      case Qgis::WKBPolygon25D:
-      case Qgis::WKBMultiPoint25D:
-      case Qgis::WKBMultiLineString25D:
-      case Qgis::WKBMultiPolygon25D:
-      case Qgis::WKBUnknown:
-      case Qgis::WKBNoGeometry:
-        ;
-    }
+
+    if ( flatType == QgsWkbTypes::Point )
+      buttonLabel = tr( "&Add Point" );
+    else if ( flatType == QgsWkbTypes::LineString )
+      buttonLabel = tr( "&Add Line" );
+    else if ( flatType == QgsWkbTypes::Polygon )
+      buttonLabel = tr( "&Add Polygon" );
+    // TODO: Add multi types
+
     mBtnCloseFeature->setEnabled( enable );
   }
   else

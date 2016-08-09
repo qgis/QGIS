@@ -38,7 +38,7 @@ from qgis.core import (
     QgsMapLayerRegistry,
     QgsRectangle,
     QgsGeometryGeneratorSymbolLayerV2,
-    QgsSymbolV2,
+    QgsSymbol,
     QgsMultiRenderChecker
 )
 
@@ -87,7 +87,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
     def test_marker(self):
         sym = self.polys_layer.rendererV2().symbol()
         sym_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'centroid($geometry)'})
-        sym_layer.setSymbolType(QgsSymbolV2.Marker)
+        sym_layer.setSymbolType(QgsSymbol.Marker)
         sym.changeSymbolLayer(0, sym_layer)
 
         rendered_layers = [self.polys_layer.id()]
@@ -102,11 +102,11 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         sym = self.polys_layer.rendererV2().symbol()
 
         buffer_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'buffer($geometry, "value"/15)'})
-        buffer_layer.setSymbolType(QgsSymbolV2.Fill)
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
         marker_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'centroid($geometry)'})
-        marker_layer.setSymbolType(QgsSymbolV2.Marker)
+        marker_layer.setSymbolType(QgsSymbol.Marker)
         sym.appendSymbolLayer(marker_layer)
 
         rendered_layers = [self.polys_layer.id()]
@@ -121,7 +121,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         sym = self.lines_layer.rendererV2().symbol()
 
         buffer_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'buffer($geometry, "value"/15)'})
-        buffer_layer.setSymbolType(QgsSymbolV2.Fill)
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
 
@@ -137,7 +137,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         sym = self.points_layer.rendererV2().symbol()
 
         buffer_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'buffer($geometry, "staff"/15)'})
-        buffer_layer.setSymbolType(QgsSymbolV2.Fill)
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
 

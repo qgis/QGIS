@@ -17,7 +17,7 @@
 #define QGSMAPTOOLOFFSETPOINTSYMBOL_H
 
 #include "qgsmaptoolpointsymbol.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 class QgsMarkerSymbolV2;
 class QgsPointMarkerItem;

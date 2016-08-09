@@ -10,7 +10,7 @@ class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
     bool addFeatures( QgsFeatureList& features );
     bool deleteFeature( QgsFeatureId fid );
     bool deleteFeatures( const QgsFeatureIds& fids );
-    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
+    bool changeGeometry( QgsFeatureId fid, QgsGeometry geom );
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
     bool addAttribute( const QgsField &field );
     bool deleteAttribute( int attr );

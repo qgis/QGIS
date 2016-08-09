@@ -31,7 +31,7 @@
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QVariant>
 
@@ -49,7 +49,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( layerCache->layer() );
 
-  if ( layerCache->layer()->geometryType() == Qgis::NoGeometry )
+  if ( layerCache->layer()->geometryType() == QgsWkbTypes::NullGeometry )
   {
     mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
   }
@@ -829,7 +829,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
     }
     else
     {
-      QVariant sortValue = widgetFactory->representValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, f.attribute( mSortFieldIndex ) );
+      QVariant sortValue = widgetFactory->sortValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, f.attribute( mSortFieldIndex ) );
       mSortCache.insert( f.id(), sortValue );
     }
   }

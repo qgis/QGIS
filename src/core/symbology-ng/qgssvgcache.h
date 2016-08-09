@@ -208,7 +208,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
     QgsSvgCache( QObject * parent = nullptr );
 
     /** Creates new cache entry and returns pointer to it
-     * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerV2Utils::symbolNameToPath() in SVG paths.
+     * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerUtils::symbolNameToPath() in SVG paths.
      * in settings svg/searchPathsForSVG
      * @param size size of cached image
      * @param fill color of fill

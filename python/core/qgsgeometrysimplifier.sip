@@ -12,7 +12,7 @@ class QgsAbstractGeometrySimplifier
     virtual ~QgsAbstractGeometrySimplifier();
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const = 0;
+    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const = 0;
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry ) const = 0;
 
@@ -41,7 +41,7 @@ class QgsTopologyPreservingSimplifier : QgsAbstractGeometrySimplifier
     virtual ~QgsTopologyPreservingSimplifier();
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const;
+    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const;
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry ) const;
 };

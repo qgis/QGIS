@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputNumber
-from processing.tools import dataobjects
 from processing.core.outputs import OutputExtent
+from processing.tools import dataobjects
 
 
 class RasterLayerBoundsAlgorithm(GeoAlgorithm):

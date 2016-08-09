@@ -28,7 +28,7 @@ from PyQt4.QtGui import QDialog, QWidget, QAction, QKeySequence, \
 from PyQt4.Qsci import QsciAPIs
 from PyQt4.QtXml import QDomDocument
 
-from qgis.core import QgsProject, QgsDataSourceURI
+from qgis.core import QgsProject, QgsDataSourceUri
 
 from .db_plugins import createDbPlugin
 from .db_plugins.plugin import BaseError
@@ -57,7 +57,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.iface = iface
         self.layer = layer
 
-        uri = QgsDataSourceURI(layer.source())
+        uri = QgsDataSourceUri(layer.source())
         dbplugin = None
         db = None
         if layer.dataProvider().name() == 'postgres':
@@ -135,7 +135,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.presetName.textChanged.connect(self.nameChanged)
 
         # Update from layer
-        # Fisrtly the SQL from QgsDataSourceURI table
+        # Fisrtly the SQL from QgsDataSourceUri table
         sql = uri.table()
         if uri.keyColumn() == '_uid_':
             match = re.search('^\(SELECT .+ AS _uid_,\* FROM \((.*)\) AS _subq_.+_\s*\)$', sql, re.S)

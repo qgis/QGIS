@@ -338,7 +338,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
         {
           v = QVariant( v.toString() );
         }
-        const QgsField &fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
+        QgsField fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
 //        QgsDebugMsg( QString( "v.type: %1; fld.type: %2" ).arg( v.type() ).arg( fld.type() ) );
         if ( v.type() != fld.type() )
         {
@@ -358,19 +358,19 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       {
         unsigned char* db2data = new unsigned char[wkb_size + 1]; // allocate persistent storage
         memcpy( db2data, ( unsigned char* )ar.data(), wkb_size + 1 );
-        QgsGeometry *g = new QgsGeometry();
-        g->fromWkb( db2data, wkb_size );
+        QgsGeometry g;
+        g.fromWkb( db2data, wkb_size );
         feature.setGeometry( g );
       }
       else
       {
         QgsDebugMsg( "Geometry is empty" );
-        feature.setGeometry( nullptr );
+        feature.clearGeometry();
       }
     }
     else
     {
-      feature.setGeometry( nullptr );
+      feature.clearGeometry();
     }
     feature.setValid( true );
     mFetchCount++;

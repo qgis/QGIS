@@ -202,7 +202,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 
   Q_FOREACH ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
   {
-    QgsSymbolV2LegendNode * n = new QgsSymbolV2LegendNode( nodeLayer, i );
+    QgsSymbolLegendNode * n = new QgsSymbolLegendNode( nodeLayer, i );
     nodes.append( n );
   }
 

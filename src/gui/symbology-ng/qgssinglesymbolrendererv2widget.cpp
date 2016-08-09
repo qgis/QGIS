@@ -15,12 +15,12 @@
 #include "qgssinglesymbolrendererv2widget.h"
 
 #include "qgssinglesymbolrendererv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
-#include "qgssymbolv2selectordialog.h"
+#include "qgssymbolselectordialog.h"
 
 #include <QMenu>
 
@@ -42,7 +42,7 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   }
   if ( !mRenderer )
   {
-    QgsSymbolV2* symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
+    QgsSymbol* symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
     mRenderer = new QgsSingleSymbolRendererV2( symbol );
   }
@@ -51,7 +51,7 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   mSingleSymbol = mRenderer->symbol()->clone();
 
   // setup ui
-  mSelector = new QgsSymbolV2SelectorWidget( mSingleSymbol, mStyle, mLayer, nullptr );
+  mSelector = new QgsSymbolSelectorWidget( mSingleSymbol, mStyle, mLayer, nullptr );
   connect( mSelector, SIGNAL( symbolModified() ), this, SLOT( changeSingleSymbol() ) );
   connect( mSelector, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
 
@@ -106,7 +106,7 @@ void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldN
   mRenderer->setSizeScaleField( fldName );
 }
 
-void QgsSingleSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod )
+void QgsSingleSymbolRendererV2Widget::scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod )
 {
   mRenderer->setScaleMethod( scaleMethod );
   // Set also on the symbol clone

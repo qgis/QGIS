@@ -26,7 +26,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsField, QgsGeometry, QgsDistanceArea, QgsFeature, QgsFeatureRequest
+from qgis.core import Qgis, QgsField, QgsGeometry, QgsDistanceArea, QgsFeature, QgsFeatureRequest, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -95,11 +95,11 @@ class HubDistance(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Same layer given for both hubs and spokes'))
 
-        geomType = Qgis.WKBPoint
+        geomType = QgsWkbTypes.Point
         if addLines:
-            geomType = Qgis.WKBLineString
+            geomType = QgsWkbTypes.LineString
 
-        fields = layerPoints.pendingFields()
+        fields = layerPoints.fields()
         fields.append(QgsField('HubName', QVariant.String))
         fields.append(QgsField('HubDist', QVariant.Double))
 
@@ -141,7 +141,7 @@ class HubDistance(GeoAlgorithm):
             feat = QgsFeature()
             feat.setAttributes(attributes)
 
-            if geomType == Qgis.WKBPoint:
+            if geomType == QgsWkbTypes.Point:
                 feat.setGeometry(QgsGeometry.fromPoint(src))
             else:
                 feat.setGeometry(QgsGeometry.fromPolyline([src, closest]))

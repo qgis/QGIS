@@ -26,7 +26,7 @@ from .connector import SpatiaLiteDBConnector
 from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QApplication, QAction, QFileDialog
-from qgis.core import QgsDataSourceURI
+from qgis.core import QgsDataSourceUri
 from qgis.gui import QgsMessageBar
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
@@ -74,7 +74,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
         database = settings.value("sqlitepath")
 
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         uri.setDatabase(database)
         return self.connectToUri(uri)
 
@@ -96,7 +96,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
             QApplication.setOverrideCursor(Qt.WaitCursor)
 
         conn_name = QFileInfo(filename).fileName()
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         uri.setDatabase(filename)
         self.addConnection(conn_name, uri)
         index.internalPointer().itemChanged.emit()

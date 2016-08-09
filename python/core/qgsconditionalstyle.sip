@@ -107,9 +107,9 @@ class QgsConditionalStyle
 
     /**
      * @brief Set the icon for the style. Icons are generated from symbols
-     * @param value QgsSymbolV2 to be used when generating the icon
+     * @param value QgsSymbol to be used when generating the icon
      */
-    void setSymbol( QgsSymbolV2* value );
+    void setSymbol( QgsSymbol* value );
 
     /**
      * @brief The name of the style.
@@ -131,9 +131,9 @@ class QgsConditionalStyle
 
     /**
      * @brief The symbol used to generate the icon for the style
-     * @return The QgsSymbolV2 used for the icon
+     * @return The QgsSymbol used for the icon
      */
-    QgsSymbolV2* symbol() const;
+    QgsSymbol* symbol() const;
 
     /**
      * @brief The text color set for style

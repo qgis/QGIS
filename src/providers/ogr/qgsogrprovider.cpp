@@ -197,7 +197,7 @@ void QgsOgrProvider::repack()
 
 QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QString& uri,
     const QgsFields &fields,
-    Qgis::WkbType wkbType,
+    QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem& srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
@@ -1019,9 +1019,9 @@ size_t QgsOgrProvider::layerCount() const
 /**
  * Return the feature type
  */
-Qgis::WkbType QgsOgrProvider::geometryType() const
+QgsWkbTypes::Type QgsOgrProvider::wkbType() const
 {
-  return static_cast<Qgis::WkbType>( mOGRGeomType );
+  return static_cast<QgsWkbTypes::Type>( mOGRGeomType );
 }
 
 /**
@@ -1083,14 +1083,14 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   OGRFeatureH feature = OGR_F_Create( fdef );
 
-  if ( f.constGeometry() && f.constGeometry()->wkbSize() > 0 )
+  if ( f.hasGeometry() && f.geometry().wkbSize() > 0 )
   {
-    const unsigned char* wkb = f.constGeometry()->asWkb();
+    const unsigned char* wkb = f.geometry().asWkb();
     OGRGeometryH geom = nullptr;
 
     if ( wkb )
     {
-      if ( OGR_G_CreateFromWkb( const_cast<unsigned char *>( wkb ), nullptr, &geom, f.constGeometry()->wkbSize() ) != OGRERR_NONE )
+      if ( OGR_G_CreateFromWkb( const_cast<unsigned char *>( wkb ), nullptr, &geom, f.geometry().wkbSize() ) != OGRERR_NONE )
       {
         pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
         return false;
@@ -1274,6 +1274,8 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 
   bool returnvalue = true;
 
+  QMap< QString, QVariant::Type > mapFieldTypesToPatch;
+
   for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
   {
     OGRFieldType type;
@@ -1285,8 +1287,17 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case QVariant::LongLong:
-        type = OFTInteger64;
+      {
+        const char* pszDataTypes = GDALGetMetadataItem( ogrDriver, GDAL_DMD_CREATIONFIELDDATATYPES, NULL );
+        if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
+          type = OFTInteger64;
+        else
+        {
+          mapFieldTypesToPatch[ iter->name()] = iter->type();
+          type = OFTReal;
+        }
         break;
+      }
 #endif
       case QVariant::Double:
         type = OFTReal;
@@ -1324,6 +1335,16 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     OGR_Fld_Destroy( fielddefn );
   }
   loadFields();
+
+  // Patch field type in case of Integer64->Real mapping so that QVariant::LongLong
+  // is still returned to the caller
+  for ( QMap< QString, QVariant::Type >::const_iterator it = mapFieldTypesToPatch.begin(); it != mapFieldTypesToPatch.end(); ++it )
+  {
+    int idx = mAttributeFields.fieldNameIndex( it.key() );
+    if ( idx >= 0 )
+      mAttributeFields[ idx ].setType( *it );
+  }
+
   return returnvalue;
 }
 
@@ -2434,7 +2455,7 @@ QGISEXTERN bool isProvider()
 QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QString &format,
                                        const QString &encoding,
-                                       Qgis::WkbType vectortype,
+                                       QgsWkbTypes::Type vectortype,
                                        const QList< QPair<QString, QString> > &attributes,
                                        const QgsCoordinateReferenceSystem& srs = QgsCoordinateReferenceSystem() )
 {
@@ -2511,22 +2532,22 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   OGRwkbGeometryType OGRvectortype = wkbUnknown;
   switch ( vectortype )
   {
-    case Qgis::WKBPoint:
+    case QgsWkbTypes::Point:
       OGRvectortype = wkbPoint;
       break;
-    case Qgis::WKBLineString:
+    case QgsWkbTypes::LineString:
       OGRvectortype = wkbLineString;
       break;
-    case Qgis::WKBPolygon:
+    case QgsWkbTypes::Polygon:
       OGRvectortype = wkbPolygon;
       break;
-    case Qgis::WKBMultiPoint:
+    case QgsWkbTypes::MultiPoint:
       OGRvectortype = wkbMultiPoint;
       break;
-    case Qgis::WKBMultiLineString:
+    case QgsWkbTypes::MultiLineString:
       OGRvectortype = wkbMultiLineString;
       break;
-    case Qgis::WKBMultiPolygon:
+    case QgsWkbTypes::MultiPolygon:
       OGRvectortype = wkbMultiPolygon;
       break;
     default:
@@ -2726,7 +2747,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
     return;
 
-  const QgsField& fld = mAttributeFields.at( index );
+  QgsField fld = mAttributeFields.at( index );
   if ( fld.name().isNull() )
   {
     return; //not a provider field
@@ -2774,7 +2795,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   {
     return QVariant();
   }
-  const QgsField& fld = mAttributeFields.at( index );
+  QgsField fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MIN(" + mEncoding->fromUnicode( fld.name() );
@@ -2813,7 +2834,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   {
     return QVariant();
   }
-  const QgsField& fld = mAttributeFields.at( index );
+  QgsField fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MAX(" + mEncoding->fromUnicode( fld.name() );
@@ -3332,7 +3353,7 @@ bool QgsOgrProvider::leaveUpdateMode()
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
   const QgsFields &fields,
-  Qgis::WkbType wkbType,
+  QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,

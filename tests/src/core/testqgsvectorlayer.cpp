@@ -29,7 +29,7 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
-#include <qgssymbolv2.h>
+#include <qgssymbol.h>
 #include <qgssinglesymbolrendererv2.h>
 //qgis test includes
 #include "qgsrenderchecker.h"
@@ -269,7 +269,7 @@ void TestQgsVectorLayer::QgsVectorLayersetRendererV2()
   TestSignalReceiver receiver;
   QObject::connect( vLayer, SIGNAL( rendererChanged() ),
                     &receiver, SLOT( onRendererChanged() ) );
-  QgsSingleSymbolRendererV2* symbolRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( Qgis::Point ) );
+  QgsSingleSymbolRendererV2* symbolRenderer = new QgsSingleSymbolRendererV2( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   QCOMPARE( receiver.rendererChanged, false );
   vLayer->setRendererV2( symbolRenderer );

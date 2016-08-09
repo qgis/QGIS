@@ -190,7 +190,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
         , mGeomPt( QgsGeometry::fromPoint( origPt ) )
     {}
 
-    ~QgsPointLocator_VisitorArea() { delete mGeomPt; }
+    ~QgsPointLocator_VisitorArea() {}
 
     void visitNode( const INode& n ) override { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }
@@ -205,7 +205,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
   private:
     QgsPointLocator* mLocator;
     QgsPointLocator::MatchList& mList;
-    QgsGeometry* mGeomPt;
+    QgsGeometry mGeomPt;
 };
 
 
@@ -331,25 +331,25 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   QgsConstWkbPtr wkbPtr( wkb, geom->wkbSize() );
   wkbPtr.readHeader();
 
-  Qgis::WkbType wkbType = geom->wkbType();
+  QgsWkbTypes::Type wkbType = geom->wkbType();
 
   bool hasZValue = false;
   switch ( wkbType )
   {
-    case Qgis::WKBPoint25D:
-    case Qgis::WKBPoint:
-    case Qgis::WKBMultiPoint25D:
-    case Qgis::WKBMultiPoint:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::MultiPoint25D:
+    case QgsWkbTypes::MultiPoint:
     {
       // Points have no lines
       return lst;
     }
 
-    case Qgis::WKBLineString25D:
+    case QgsWkbTypes::LineString25D:
       hasZValue = true;
       //intentional fall-through
       FALLTHROUGH;
-    case Qgis::WKBLineString:
+    case QgsWkbTypes::LineString:
     {
       int nPoints;
       wkbPtr >> nPoints;
@@ -379,11 +379,11 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       break;
     }
 
-    case Qgis::WKBMultiLineString25D:
+    case QgsWkbTypes::MultiLineString25D:
       hasZValue = true;
       //intentional fall-through
       FALLTHROUGH;
-    case Qgis::WKBMultiLineString:
+    case QgsWkbTypes::MultiLineString:
     {
       int nLines;
       wkbPtr >> nLines;
@@ -420,11 +420,11 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       break;
     }
 
-    case Qgis::WKBPolygon25D:
+    case QgsWkbTypes::Polygon25D:
       hasZValue = true;
       //intentional fall-through
       FALLTHROUGH;
-    case Qgis::WKBPolygon:
+    case QgsWkbTypes::Polygon:
     {
       int nRings;
       wkbPtr >> nRings;
@@ -461,11 +461,11 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       break;
     }
 
-    case Qgis::WKBMultiPolygon25D:
+    case QgsWkbTypes::MultiPolygon25D:
       hasZValue = true;
       //intentional fall-through
       FALLTHROUGH;
-    case Qgis::WKBMultiPolygon:
+    case QgsWkbTypes::MultiPolygon:
     {
       int nPolygons;
       wkbPtr >> nPolygons;
@@ -507,7 +507,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       break;
     }
 
-    case Qgis::WKBUnknown:
+    case QgsWkbTypes::Unknown:
     default:
       return lst;
   } // switch (wkbType)
@@ -627,7 +627,7 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateRefe
 
   connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
   connect( mLayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
 }
 
 
@@ -672,8 +672,8 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
   QLinkedList<RTree::Data*> dataList;
   QgsFeature f;
-  Qgis::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == Qgis::NoGeometry )
+  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QgsWkbTypes::NullGeometry )
     return true; // nothing to index
 
   QgsFeatureRequest request;
@@ -700,14 +700,16 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   int indexedCount = 0;
   while ( fi.nextFeature( f ) )
   {
-    if ( !f.constGeometry() )
+    if ( !f.hasGeometry() )
       continue;
 
     if ( mTransform.isValid() )
     {
       try
       {
-        f.geometry()->transform( mTransform );
+        QgsGeometry transformedGeometry = f.geometry();
+        transformedGeometry.transform( mTransform );
+        f.setGeometry( transformedGeometry );
       }
       catch ( const QgsException& e )
       {
@@ -718,12 +720,12 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
     }
 
-    SpatialIndex::Region r( rect2region( f.constGeometry()->boundingBox() ) );
+    SpatialIndex::Region r( rect2region( f.geometry().boundingBox() ) );
     dataList << new RTree::Data( 0, nullptr, r, f.id() );
 
     if ( mGeoms.contains( f.id() ) )
       delete mGeoms.take( f.id() );
-    mGeoms[f.id()] = new QgsGeometry( *f.constGeometry() );
+    mGeoms[f.id()] = new QgsGeometry( f.geometry() );
     ++indexedCount;
 
     if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
@@ -779,14 +781,16 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
   QgsFeature f;
   if ( mLayer->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f ) )
   {
-    if ( !f.constGeometry() )
+    if ( !f.hasGeometry() )
       return;
 
     if ( mTransform.isValid() )
     {
       try
       {
-        f.geometry()->transform( mTransform );
+        QgsGeometry transformedGeom = f.geometry();
+        transformedGeom.transform( mTransform );
+        f.setGeometry( transformedGeom );
       }
       catch ( const QgsException& e )
       {
@@ -797,7 +801,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       }
     }
 
-    QgsRectangle bbox = f.constGeometry()->boundingBox();
+    QgsRectangle bbox = f.geometry().boundingBox();
     if ( !bbox.isNull() )
     {
       SpatialIndex::Region r( rect2region( bbox ) );
@@ -805,7 +809,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 
       if ( mGeoms.contains( f.id() ) )
         delete mGeoms.take( f.id() );
-      mGeoms[fid] = new QgsGeometry( *f.constGeometry() );
+      mGeoms[fid] = new QgsGeometry( f.geometry() );
     }
   }
 }
@@ -822,7 +826,7 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
   }
 }
 
-void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
+void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom )
 {
   Q_UNUSED( geom );
   onFeatureDeleted( fid );

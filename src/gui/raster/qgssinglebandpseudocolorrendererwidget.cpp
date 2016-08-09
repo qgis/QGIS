@@ -733,7 +733,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
   if ( column == ColorColumn )
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    QColor newColor = QgsColorDialogV2::getColor( item->background( column ).color(), this, "Change color", true );
+    QColor newColor = QgsColorDialog::getColor( item->background( column ).color(), this, "Change color", true );
     if ( newColor.isValid() )
     {
       item->setBackground( ColorColumn, QBrush( newColor ) );

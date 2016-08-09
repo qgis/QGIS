@@ -48,7 +48,7 @@ void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent* e )
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );
-  mRubberBand = new QgsRubberBand( mCanvas, Qgis::Polygon );
+  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
 }
 
 void QgsMapToolShowHideLabels::canvasMoveEvent( QgsMapMouseEvent* e )
@@ -96,7 +96,7 @@ void QgsMapToolShowHideLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
 
     showHideLabels( e );
 
-    mRubberBand->reset( Qgis::Polygon );
+    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
     delete mRubberBand;
     mRubberBand = nullptr;
   }
@@ -194,13 +194,13 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
 {
   // culled from QgsMapToolSelectUtils::setSelectFeatures()
 
-  QgsGeometry* selectGeometry = mRubberBand->asGeometry();
+  QgsGeometry selectGeometry = mRubberBand->asGeometry();
 
   // toLayerCoordinates will throw an exception for any 'invalid' points in
   // the rubber band.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.
-  QgsGeometry selectGeomTrans( *selectGeometry );
+  QgsGeometry selectGeomTrans( selectGeometry );
 
   if ( mCanvas->hasCrsTransformEnabled() )
   {
@@ -255,7 +255,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsRectangle ext = mRubberBand->asGeometry()->boundingBox();
+  QgsRectangle ext = mRubberBand->asGeometry().boundingBox();
   QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
   QList<QgsLabelPosition>::const_iterator it;

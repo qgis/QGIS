@@ -55,7 +55,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
-    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height ) override;
+    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     QList<int> usesBands() const override;
 

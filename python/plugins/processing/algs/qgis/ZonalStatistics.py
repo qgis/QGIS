@@ -132,7 +132,7 @@ class ZonalStatistics(GeoAlgorithm):
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
         (idxMin, fields) = vector.findOrCreateField(layer, fields,
                                                     columnPrefix + 'min', 21, 6)
         (idxMax, fields) = vector.findOrCreateField(layer, fields,
@@ -158,7 +158,7 @@ class ZonalStatistics(GeoAlgorithm):
                                                          columnPrefix + 'mode', 21, 6)
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
+            fields.toList(), layer.wkbType(), layer.crs())
 
         outFeat = QgsFeature()
 

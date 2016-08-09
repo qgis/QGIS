@@ -31,7 +31,7 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
     void toggleBoundariesLink( bool linked );
 
     void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
+    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
     void labelFormatChanged();
 
     void showSymbolLevels();
@@ -60,8 +60,8 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 
     void changeSelectedSymbols();
 
-    QList<QgsSymbolV2*> selectedSymbols();
-    QgsSymbolV2* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
+    QList<QgsSymbol*> selectedSymbols();
+    QgsSymbol* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
     void refreshSymbolView();
 
     void keyPressEvent( QKeyEvent* event );

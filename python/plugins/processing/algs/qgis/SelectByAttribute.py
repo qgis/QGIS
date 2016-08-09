@@ -84,7 +84,7 @@ class SelectByAttribute(GeoAlgorithm):
         operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]
         value = self.getParameterValue(self.VALUE)
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
 
         idx = layer.fieldNameIndex(fieldName)
         fieldType = fields[idx].type()

@@ -516,26 +516,9 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
   if ( !layerItem )
     return;
 
-  QString uri = QgisApp::instance()->crsAndFormatAdjustedLayerUri( layerItem->uri(), layerItem->supportedCrs(), layerItem->supportedFormats() );
-  if ( uri.isEmpty() )
-    return;
-
-  QgsMapLayer::LayerType type = layerItem->mapLayerType();
-  QString providerKey = layerItem->providerKey();
-
-  QgsDebugMsg( providerKey + " : " + uri );
-  if ( type == QgsMapLayer::VectorLayer )
-  {
-    QgisApp::instance()->addVectorLayer( uri, layerItem->layerName(), providerKey );
-  }
-  if ( type == QgsMapLayer::RasterLayer )
-  {
-    QgisApp::instance()->addRasterLayer( uri, layerItem->layerName(), providerKey );
-  }
-  if ( type == QgsMapLayer::PluginLayer )
-  {
-    QgisApp::instance()->addPluginLayer( uri, layerItem->layerName(), providerKey );
-  }
+  QgsMimeDataUtils::UriList list;
+  list << layerItem->mimeUri();
+  QgisApp::instance()->handleDropUriList( list );
 }
 
 void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )

@@ -19,7 +19,7 @@
 #include "qgspointrotationitem.h"
 #include "qgsrendererv2.h"
 #include "qgssnappingutils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsdatadefined.h"
 #include "qgisapp.h"
@@ -56,7 +56,7 @@ bool QgsMapToolRotatePointSymbols::layerIsRotatable( QgsMapLayer* ml )
   }
 
   //does it have point or multipoint type?
-  if ( vLayer->geometryType() != Qgis::Point )
+  if ( vLayer->geometryType() != QgsWkbTypes::PointGeometry )
   {
     return false;
   }
@@ -222,7 +222,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbolV2* markerSy
 
   if ( markerSymbol )
   {
-    QgsSymbolV2* clone = markerSymbol->clone();
+    QgsSymbol* clone = markerSymbol->clone();
     QgsMarkerSymbolV2* markerClone = static_cast<QgsMarkerSymbolV2*>( clone );
     markerClone->setDataDefinedAngle( QgsDataDefined() );
     pointImage = markerClone->bigSymbolPreviewImage();

@@ -56,7 +56,7 @@ struct QgsWFSAuthorization
   QString mAuthCfg;
 };
 
-/** Utility class that wraps a QgsDataSourceURI with conveniency
+/** Utility class that wraps a QgsDataSourceUri with conveniency
  * methods with the parameters used for a WFS URI.
  */
 class QgsWFSDataSourceURI
@@ -66,7 +66,7 @@ class QgsWFSDataSourceURI
     explicit QgsWFSDataSourceURI( const QString& uri );
 
     /** Return the URI */
-    QString uri();
+    const QString uri( bool expandAuthConfig = true ) const;
 
     /** Return base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true) */
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
@@ -91,6 +91,9 @@ class QgsWFSDataSourceURI
 
     /** Set SRS name (in the normalized form EPSG:xxxx) */
     void setSRSName( const QString& crsString );
+
+    /** Set version */
+    void setVersion( const QString& versionString );
 
     /** Get OGC filter xml or a QGIS expression */
     QString filter() const;
@@ -130,7 +133,7 @@ class QgsWFSDataSourceURI
                           bool restrictToCurrentViewExtent = false );
 
   private:
-    QgsDataSourceURI    mURI;
+    QgsDataSourceUri    mURI;
     QgsWFSAuthorization mAuth;
 };
 

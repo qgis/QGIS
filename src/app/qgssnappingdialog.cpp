@@ -303,7 +303,7 @@ void QgsSnappingDialog::addLayers( const QList<QgsMapLayer *>& layers )
 void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
 {
   QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( theMapLayer );
-  if ( !currentVectorLayer || currentVectorLayer->geometryType() == Qgis::NoGeometry )
+  if ( !currentVectorLayer || currentVectorLayer->geometryType()  == QgsWkbTypes::NullGeometry )
     return;
 
   QSettings myQsettings;
@@ -368,7 +368,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
   mLayerTreeWidget->setItemWidget( item, 4, cbxUnits );
 
   QCheckBox *cbxAvoidIntersection = nullptr;
-  if ( currentVectorLayer->geometryType() == Qgis::Polygon )
+  if ( currentVectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry )
   {
     cbxAvoidIntersection = new QCheckBox( mLayerTreeWidget );
     mLayerTreeWidget->setItemWidget( item, 5, cbxAvoidIntersection );

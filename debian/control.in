@@ -382,6 +382,7 @@ Depends:
  python-jinja2,
  python-markupsafe,
  python-pygments,
+ python-requests,
  python-dateutil,
  python-tz,
  python-six,

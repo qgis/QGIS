@@ -49,7 +49,7 @@ class DeleteHoles(GeoAlgorithm):
             self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields(),
+            layer.fields(),
             layer.wkbType(),
             layer.crs())
 
@@ -59,7 +59,7 @@ class DeleteHoles(GeoAlgorithm):
         feat = QgsFeature()
         for current, f in enumerate(features):
             geometry = f.geometry()
-            if geometry:
+            if not geometry.isEmpty():
                 if geometry.isMultipart():
                     multi_polygon = geometry.asMultiPolygon()
                     for polygon in multi_polygon:

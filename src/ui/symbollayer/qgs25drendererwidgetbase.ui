@@ -42,7 +42,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QgsColorButtonV2" name="mRoofColorButton">
+       <widget class="QgsColorButton" name="mRoofColorButton">
         <property name="text">
          <string>...</string>
         </property>
@@ -56,7 +56,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QgsColorButtonV2" name="mWallColorButton">
+       <widget class="QgsColorButton" name="mWallColorButton">
         <property name="text">
          <string>...</string>
         </property>
@@ -89,7 +89,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QgsColorButtonV2" name="mShadowColorButton">
+          <widget class="QgsColorButton" name="mShadowColorButton">
            <property name="text">
             <string>...</string>
            </property>
@@ -144,9 +144,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

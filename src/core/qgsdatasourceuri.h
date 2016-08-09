@@ -30,21 +30,21 @@
  *
  * Extended to support generic params so that it may be used by any provider.
  * The 2 modes (the old - RDMS specific and the new generic) may not yet be mixed.
- * (Radim Blazek 4/2012)
  */
-class CORE_EXPORT QgsDataSourceURI
+// (Radim Blazek 4/2012)
+class CORE_EXPORT QgsDataSourceUri
 {
   public:
-    enum SSLmode { SSLprefer, SSLdisable, SSLallow, SSLrequire, SSLverifyCA, SSLverifyFull };
+    enum SslMode { SslPrefer, SslDisable, SslAllow, SslRequire, SslVerifyCa, SslVerifyFull };
 
     //! default constructor
-    QgsDataSourceURI();
+    QgsDataSourceUri();
 
     //! constructor which parses input URI
-    QgsDataSourceURI( QString uri );
+    QgsDataSourceUri( QString uri );
 
     //! constructor which parses input encoded URI (generic mode)
-    QgsDataSourceURI( const QByteArray & uri );
+    QgsDataSourceUri( const QByteArray & uri );
 
     //! return connection part of URI
     QString connectionInfo( bool expandAuthConfig = true ) const;
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aDatabase,
                         const QString& aUsername,
                         const QString& aPassword,
-                        SSLmode sslmode = SSLprefer,
+                        SslMode sslmode = SslPrefer,
                         const QString& authConfigId = QString() );
 
     //! Set all connection related members at once (for the service case)
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aDatabase,
                         const QString& aUsername,
                         const QString& aPassword,
-                        SSLmode sslmode = SSLprefer,
+                        SslMode sslmode = SslPrefer,
                         const QString& authConfigId = QString() );
 
     //! Set database
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsDataSourceURI
     //! Returns the password
     QString password() const;
     //! Returns the SSL mode
-    enum SSLmode sslMode() const;
+    enum SslMode sslMode() const;
 
     //! Returns the service name
     QString service() const;
@@ -187,19 +187,12 @@ class CORE_EXPORT QgsDataSourceURI
     //! Sets the name of the (primary) key column
     void setKeyColumn( const QString& column );
 
-    /** The (old) wkb type.
-        @deprecated Will return QgsWKBTypes::Type in 3.0. Prefer newWkbType() in the meantime */
-    Q_DECL_DEPRECATED Qgis::WkbType wkbType() const;
-
     /** The wkb type.
-        @note Will be removed in 3.0 */
-    QgsWKBTypes::Type newWkbType() const;
-
-    //! @deprecated See setWkbType( QgsWKBTypes::Type )
-    Q_DECL_DEPRECATED void setWkbType( Qgis::WkbType type );
+     */
+    QgsWkbTypes::Type wkbType() const;
 
     //! Sets the wkb type
-    void setWkbType( QgsWKBTypes::Type type );
+    void setWkbType( QgsWkbTypes::Type type );
 
     //! Returns the srid
     QString srid() const;
@@ -238,15 +231,15 @@ class CORE_EXPORT QgsDataSourceURI
     //! password
     QString mPassword;
     //! ssl mode
-    enum SSLmode mSSLmode;
+    enum SslMode mSSLmode;
     //! key column
     QString mKeyColumn;
     //! Use estimated metadata flag
     bool mUseEstimatedMetadata;
     //! Disable SelectAtId capability (eg. to trigger the attribute table memory model for expensive views)
     bool mSelectAtIdDisabled;
-    //! geometry type (or Qgis::WKBUnknown if not specified)
-    QgsWKBTypes::Type mWkbType;
+    //! geometry type (or QGis::WKBUnknown if not specified)
+    QgsWkbTypes::Type mWkbType;
     //! SRID or a null string if not specified
     QString mSrid;
     //! Generic params store

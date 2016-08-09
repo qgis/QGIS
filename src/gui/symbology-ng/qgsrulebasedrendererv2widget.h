@@ -20,7 +20,7 @@
 
 #include "qgsrulebasedrendererv2.h"
 class QMenu;
-class QgsSymbolV2SelectorWidget;
+class QgsSymbolSelectorWidget;
 
 ///////
 
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
 
     QgsRuleBasedRendererV2::Rule* currentRule();
 
-    QList<QgsSymbolV2*> selectedSymbols() override;
+    QList<QgsSymbol*> selectedSymbols() override;
     QgsRuleBasedRendererV2::RuleList selectedRules();
     void refreshSymbolView() override;
     void keyPressEvent( QKeyEvent* event ) override;
@@ -226,8 +226,8 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     QgsRuleBasedRendererV2::Rule* mRule; // borrowed
     QgsVectorLayer* mLayer;
 
-    QgsSymbolV2SelectorWidget* mSymbolSelector;
-    QgsSymbolV2* mSymbol; // a clone of original symbol
+    QgsSymbolSelectorWidget* mSymbolSelector;
+    QgsSymbol* mSymbol; // a clone of original symbol
 
     QgsMapCanvas* mMapCanvas;
 };

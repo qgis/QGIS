@@ -23,10 +23,22 @@
 #include <QCoreApplication> // for tr()
 #include <QImage>
 
+#include "qgsfeedback.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
+
+/** \ingroup core
+ * Feedback object tailored for raster block reading.
+ *
+ * @note added in QGIS 3.0
+ */
+class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
+{
+    // TODO: extend with preview functionality??
+};
+
 
 /** \ingroup core
  * Base class for processing filters like renderers, reprojector, resampler etc.
@@ -108,8 +120,9 @@ class CORE_EXPORT QgsRasterInterface
      * @param extent extent of block
      * @param width pixel width of block
      * @param height pixel height of block
+     * @param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */

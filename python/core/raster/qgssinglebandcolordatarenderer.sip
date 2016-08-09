@@ -12,7 +12,7 @@ class QgsSingleBandColorDataRenderer: QgsRasterRenderer
 
     bool setInput( QgsRasterInterface* input );
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
+    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 

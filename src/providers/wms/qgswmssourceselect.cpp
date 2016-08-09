@@ -487,7 +487,7 @@ void QgsWMSSourceSelect::addClicked()
   QString format;
   QString crs;
 
-  QgsDataSourceURI uri = mUri;
+  QgsDataSourceUri uri = mUri;
 
   if ( mTileWidth->text().toInt() > 0 && mTileHeight->text().toInt() > 0 )
   {

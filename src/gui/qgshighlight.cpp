@@ -25,8 +25,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsrendercontext.h"
-#include "qgssymbollayerv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbollayer.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsrendererv2.h"
 
@@ -50,23 +50,23 @@
   \brief The QgsHighlight class provides a transparent overlay widget
   for highlighting features on the map.
 */
-QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry *geom, QgsMapLayer *layer )
+QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry& geom, QgsMapLayer *layer )
     : QgsMapCanvasItem( mapCanvas )
     , mLayer( layer )
     , mBuffer( 0 )
     , mMinWidth( 0 )
 {
-  mGeometry = geom ? new QgsGeometry( *geom ) : nullptr;
+  mGeometry = !geom.isEmpty() ? new QgsGeometry( geom ) : nullptr;
   init();
 }
 
-QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry *geom, QgsVectorLayer *layer )
+QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry& geom, QgsVectorLayer *layer )
     : QgsMapCanvasItem( mapCanvas )
     , mLayer( static_cast<QgsMapLayer *>( layer ) )
     , mBuffer( 0 )
     , mMinWidth( 0 )
 {
-  mGeometry = geom ? new QgsGeometry( *geom ) : nullptr;
+  mGeometry = !geom.isEmpty() ? new QgsGeometry( geom ) : nullptr;
   init();
 }
 
@@ -92,9 +92,11 @@ void QgsHighlight::init()
       {
         mGeometry->transform( ct );
       }
-      else if ( mFeature.constGeometry() )
+      else if ( mFeature.hasGeometry() )
       {
-        mFeature.geometry()->transform( ct );
+        QgsGeometry g = mFeature.geometry();
+        g.transform( ct );
+        mFeature.setGeometry( g );
       }
     }
   }
@@ -135,7 +137,7 @@ QgsFeatureRendererV2 * QgsHighlight::getRenderer( QgsRenderContext & context, co
   }
   if ( renderer )
   {
-    Q_FOREACH ( QgsSymbolV2* symbol, renderer->symbols( context ) )
+    Q_FOREACH ( QgsSymbol* symbol, renderer->symbols( context ) )
     {
       if ( !symbol ) continue;
       setSymbol( symbol, context, color, fillColor );
@@ -144,14 +146,14 @@ QgsFeatureRendererV2 * QgsHighlight::getRenderer( QgsRenderContext & context, co
   return renderer;
 }
 
-void QgsHighlight::setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context,   const QColor & color, const QColor & fillColor )
+void QgsHighlight::setSymbol( QgsSymbol* symbol, const QgsRenderContext & context,   const QColor & color, const QColor & fillColor )
 {
   if ( !symbol ) return;
 
 
   for ( int i = symbol->symbolLayerCount() - 1; i >= 0;  i-- )
   {
-    QgsSymbolLayerV2* symbolLayer = symbol->symbolLayer( i );
+    QgsSymbolLayer* symbolLayer = symbol->symbolLayer( i );
     if ( !symbolLayer ) continue;
 
     if ( symbolLayer->subSymbol() )
@@ -192,7 +194,7 @@ double QgsHighlight::getSymbolWidth( const QgsRenderContext & context, double wi
   double scale = 1.;
   if ( unit == QgsUnitTypes::RenderMapUnits )
   {
-    scale = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, QgsUnitTypes::RenderMillimeters ) / QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, QgsUnitTypes::RenderMapUnits );
+    scale = QgsSymbolLayerUtils::lineWidthScaleFactor( context, QgsUnitTypes::RenderMillimeters ) / QgsSymbolLayerUtils::lineWidthScaleFactor( context, QgsUnitTypes::RenderMapUnits );
   }
   width =  qMax( width + 2 * mBuffer * scale, mMinWidth * scale );
   return width;
@@ -282,15 +284,15 @@ void QgsHighlight::paint( QPainter* p )
 
     switch ( mGeometry->wkbType() )
     {
-      case Qgis::WKBPoint:
-      case Qgis::WKBPoint25D:
+      case QgsWkbTypes::Point:
+      case QgsWkbTypes::Point25D:
       {
         paintPoint( p, mGeometry->asPoint() );
       }
       break;
 
-      case Qgis::WKBMultiPoint:
-      case Qgis::WKBMultiPoint25D:
+      case QgsWkbTypes::MultiPoint:
+      case QgsWkbTypes::MultiPoint25D:
       {
         QgsMultiPoint m = mGeometry->asMultiPoint();
         for ( int i = 0; i < m.size(); i++ )
@@ -300,15 +302,15 @@ void QgsHighlight::paint( QPainter* p )
       }
       break;
 
-      case Qgis::WKBLineString:
-      case Qgis::WKBLineString25D:
+      case QgsWkbTypes::LineString:
+      case QgsWkbTypes::LineString25D:
       {
         paintLine( p, mGeometry->asPolyline() );
       }
       break;
 
-      case Qgis::WKBMultiLineString:
-      case Qgis::WKBMultiLineString25D:
+      case QgsWkbTypes::MultiLineString:
+      case QgsWkbTypes::MultiLineString25D:
       {
         QgsMultiPolyline m = mGeometry->asMultiPolyline();
 
@@ -319,15 +321,15 @@ void QgsHighlight::paint( QPainter* p )
       }
       break;
 
-      case Qgis::WKBPolygon:
-      case Qgis::WKBPolygon25D:
+      case QgsWkbTypes::Polygon:
+      case QgsWkbTypes::Polygon25D:
       {
         paintPolygon( p, mGeometry->asPolygon() );
       }
       break;
 
-      case Qgis::WKBMultiPolygon:
-      case Qgis::WKBMultiPolygon25D:
+      case QgsWkbTypes::MultiPolygon:
+      case QgsWkbTypes::MultiPolygon25D:
       {
         QgsMultiPolygon m = mGeometry->asMultiPolygon();
         for ( int i = 0; i < m.size(); i++ )
@@ -337,12 +339,12 @@ void QgsHighlight::paint( QPainter* p )
       }
       break;
 
-      case Qgis::WKBUnknown:
+      case QgsWkbTypes::Unknown:
       default:
         return;
     }
   }
-  else if ( mFeature.constGeometry() )
+  else if ( mFeature.hasGeometry() )
   {
     QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
     if ( !layer )
@@ -419,7 +421,7 @@ void QgsHighlight::updateRect()
     setRect( r );
     setVisible( mGeometry );
   }
-  else if ( mFeature.constGeometry() )
+  else if ( mFeature.hasGeometry() )
   {
     // We are currently using full map canvas extent for two reasons:
     // 1) currently there is no method in QgsFeatureRendererV2 to get rendered feature

@@ -83,7 +83,7 @@ class ExtractByAttribute(GeoAlgorithm):
         operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]
         value = self.getParameterValue(self.VALUE)
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      layer.wkbType(), layer.crs())
 

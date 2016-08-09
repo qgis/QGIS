@@ -312,7 +312,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
     vertexPoints.append( oSegIt->beforeVertex );
     vertexPoints.append( oSegIt->afterVertex );
 
-    QgsGeometry* lineA = QgsGeometry::fromPolyline( vertexPoints );
+    QgsGeometry lineA = QgsGeometry::fromPolyline( vertexPoints );
 
     for ( QVector<QgsSnappingResult>::iterator iSegIt = segments.begin();
           iSegIt != segments.end();
@@ -322,11 +322,10 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
       vertexPoints.append( iSegIt->beforeVertex );
       vertexPoints.append( iSegIt->afterVertex );
 
-      QgsGeometry* lineB = QgsGeometry::fromPolyline( vertexPoints );
-      QgsGeometry* intersectionPoint = lineA->intersection( lineB );
-      delete lineB;
+      QgsGeometry lineB = QgsGeometry::fromPolyline( vertexPoints );
+      QgsGeometry intersectionPoint = lineA.intersection( lineB );
 
-      if ( intersectionPoint && intersectionPoint->type() == Qgis::Point )
+      if ( !intersectionPoint.isEmpty() && intersectionPoint.type() == QgsWkbTypes::PointGeometry )
       {
         //We have to check the intersection point is inside the tolerance distance for both layers
         double toleranceA = 0;
@@ -342,20 +341,15 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
             toleranceB = QgsTolerance::toleranceInMapUnits( snapLayers[i].mTolerance, snapLayers[i].mLayer, mMapCanvas->mapSettings(), snapLayers[i].mUnitType );
           }
         }
-        QgsGeometry* cursorPoint = QgsGeometry::fromPoint( point );
-        double distance = intersectionPoint->distance( *cursorPoint );
+        QgsGeometry cursorPoint = QgsGeometry::fromPoint( point );
+        double distance = intersectionPoint.distance( cursorPoint );
         if ( distance < toleranceA && distance < toleranceB )
         {
-          iSegIt->snappedVertex = intersectionPoint->asPoint();
+          iSegIt->snappedVertex = intersectionPoint.asPoint();
           myResults.append( *iSegIt );
         }
-        delete cursorPoint;
       }
-      delete intersectionPoint;
-
     }
-
-    delete lineA;
   }
 
   if ( myResults.length() > 0 )

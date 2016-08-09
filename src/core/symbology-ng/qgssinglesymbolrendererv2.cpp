@@ -15,13 +15,13 @@
 
 #include "qgssinglesymbolrendererv2.h"
 
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 
 #include "qgslogger.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 #include "qgsogcutils.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
@@ -33,7 +33,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbolV2* symbol )
+QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbol* symbol )
     : QgsFeatureRendererV2( "singleSymbol" )
     , mSymbol( symbol )
     , mScaleMethod( DEFAULT_SCALE_METHOD )
@@ -46,7 +46,7 @@ QgsSingleSymbolRendererV2::~QgsSingleSymbolRendererV2()
 {
 }
 
-QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QgsSymbol* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
   context.expressionContext().setFeature( feature );
   if ( !mRotation.data() && !mSizeScale.data() ) return mSymbol.data();
@@ -54,19 +54,19 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature, Q
   const double rotation = mRotation.data() ? mRotation->evaluate( &context.expressionContext() ).toDouble() : 0;
   const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( &context.expressionContext() ).toDouble() : 1.;
 
-  if ( mTempSymbol->type() == QgsSymbolV2::Marker )
+  if ( mTempSymbol->type() == QgsSymbol::Marker )
   {
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mTempSymbol.data() );
     if ( mRotation.data() ) markerSymbol->setAngle( rotation );
     markerSymbol->setSize( sizeScale * mOrigSize );
     markerSymbol->setScaleMethod( mScaleMethod );
   }
-  else if ( mTempSymbol->type() == QgsSymbolV2::Line )
+  else if ( mTempSymbol->type() == QgsSymbol::Line )
   {
     QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mTempSymbol.data() );
     lineSymbol->setWidth( sizeScale * mOrigSize );
   }
-  else if ( mTempSymbol->type() == QgsSymbolV2::Fill )
+  else if ( mTempSymbol->type() == QgsSymbol::Fill )
   {
     QgsFillSymbolV2* fillSymbol = static_cast<QgsFillSymbolV2*>( mTempSymbol.data() );
     if ( mRotation.data() ) fillSymbol->setAngle( rotation );
@@ -75,7 +75,7 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature, Q
   return mTempSymbol.data();
 }
 
-QgsSymbolV2* QgsSingleSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QgsSymbol* QgsSingleSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
   Q_UNUSED( context );
   Q_UNUSED( feature );
@@ -87,7 +87,7 @@ void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const Qg
   if ( !mSymbol.data() )
     return;
 
-  mSymbol->startRender( context, &fields );
+  mSymbol->startRender( context, fields );
 
   if ( mRotation.data() || mSizeScale.data() )
   {
@@ -96,18 +96,18 @@ void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const Qg
 
     int hints = 0;
     if ( mRotation.data() )
-      hints |= QgsSymbolV2::DataDefinedRotation;
+      hints |= QgsSymbol::DataDefinedRotation;
     if ( mSizeScale.data() )
-      hints |= QgsSymbolV2::DataDefinedSizeScale;
+      hints |= QgsSymbol::DataDefinedSizeScale;
     mTempSymbol->setRenderHints( hints );
 
-    mTempSymbol->startRender( context, &fields );
+    mTempSymbol->startRender( context, fields );
 
-    if ( mSymbol->type() == QgsSymbolV2::Marker )
+    if ( mSymbol->type() == QgsSymbol::Marker )
     {
       mOrigSize = static_cast<QgsMarkerSymbolV2*>( mSymbol.data() )->size();
     }
-    else if ( mSymbol->type() == QgsSymbolV2::Line )
+    else if ( mSymbol->type() == QgsSymbol::Line )
     {
       mOrigSize = static_cast<QgsLineSymbolV2*>( mSymbol.data() )->width();
     }
@@ -143,12 +143,12 @@ QList<QString> QgsSingleSymbolRendererV2::usedAttributes()
   return attributes.toList();
 }
 
-QgsSymbolV2* QgsSingleSymbolRendererV2::symbol() const
+QgsSymbol* QgsSingleSymbolRendererV2::symbol() const
 {
   return mSymbol.data();
 }
 
-void QgsSingleSymbolRendererV2::setSymbol( QgsSymbolV2* s )
+void QgsSingleSymbolRendererV2::setSymbol( QgsSymbol* s )
 {
   Q_ASSERT( s );
   mSymbol.reset( s );
@@ -156,7 +156,7 @@ void QgsSingleSymbolRendererV2::setSymbol( QgsSymbolV2* s )
 
 void QgsSingleSymbolRendererV2::setRotationField( const QString& fieldOrExpression )
 {
-  if ( mSymbol->type() == QgsSymbolV2::Marker )
+  if ( mSymbol->type() == QgsSymbol::Marker )
   {
     QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSymbol.data() );
     s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
@@ -165,7 +165,7 @@ void QgsSingleSymbolRendererV2::setRotationField( const QString& fieldOrExpressi
 
 QString QgsSingleSymbolRendererV2::rotationField() const
 {
-  if ( mSymbol->type() == QgsSymbolV2::Marker )
+  if ( mSymbol->type() == QgsSymbol::Marker )
   {
     QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSymbol.data() );
     QgsDataDefined ddAngle = s->dataDefinedAngle();
@@ -177,15 +177,15 @@ QString QgsSingleSymbolRendererV2::rotationField() const
 
 void QgsSingleSymbolRendererV2::setSizeScaleField( const QString& fieldOrExpression )
 {
-  mSizeScale.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+  mSizeScale.reset( QgsSymbolLayerUtils::fieldOrExpressionToExpression( fieldOrExpression ) );
 }
 
 QString QgsSingleSymbolRendererV2::sizeScaleField() const
 {
-  return mSizeScale.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
+  return mSizeScale.data() ? QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
 }
 
-void QgsSingleSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+void QgsSingleSymbolRendererV2::setScaleMethod( QgsSymbol::ScaleMethod scaleMethod )
 {
   mScaleMethod = scaleMethod;
   setScaleMethodToSymbol( mSymbol.data(), scaleMethod );
@@ -223,10 +223,10 @@ void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element )
   if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, props );
 }
 
-QgsSymbolV2List QgsSingleSymbolRendererV2::symbols( QgsRenderContext &context )
+QgsSymbolList QgsSingleSymbolRendererV2::symbols( QgsRenderContext &context )
 {
   Q_UNUSED( context );
-  QgsSymbolV2List lst;
+  QgsSymbolList lst;
   lst.append( mSymbol.data() );
   return lst;
 }
@@ -238,7 +238,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
   if ( symbolsElem.isNull() )
     return nullptr;
 
-  QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
+  QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
 
   if ( !symbolMap.contains( "0" ) )
     return nullptr;
@@ -246,7 +246,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( symbolMap.take( "0" ) );
 
   // delete symbols if there are any more
-  QgsSymbolLayerV2Utils::clearSymbolMap( symbolMap );
+  QgsSymbolLayerUtils::clearSymbolMap( symbolMap );
 
   QDomElement rotationElem = element.firstChildElement( "rotation" );
   if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
@@ -258,7 +258,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( "field" ).isEmpty() )
   {
     convertSymbolSizeScale( r->mSymbol.data(),
-                            QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                            QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
                             sizeScaleElem.attribute( "field" ) );
   }
 
@@ -266,7 +266,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
   return r;
 }
 
-QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& element, Qgis::GeometryType geomType )
+QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType )
 {
   // XXX this renderer can handle only one Rule!
 
@@ -279,7 +279,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
   }
 
   QString label, description;
-  QgsSymbolLayerV2List layers;
+  QgsSymbolLayerList layers;
 
   // retrieve the Rule element child nodes
   QDomElement childElem = ruleElem.firstChildElement();
@@ -320,7 +320,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
     else if ( childElem.localName().endsWith( "Symbolizer" ) )
     {
       // create symbol layers for this symbolizer
-      QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( childElem, geomType, layers );
+      QgsSymbolLayerUtils::createSymbolLayerV2ListFromSld( childElem, geomType, layers );
     }
 
     childElem = childElem.nextSiblingElement();
@@ -330,18 +330,18 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
     return nullptr;
 
   // now create the symbol
-  QgsSymbolV2 *symbol;
+  QgsSymbol *symbol;
   switch ( geomType )
   {
-    case Qgis::Line:
+    case QgsWkbTypes::LineGeometry:
       symbol = new QgsLineSymbolV2( layers );
       break;
 
-    case Qgis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
       symbol = new QgsFillSymbolV2( layers );
       break;
 
-    case Qgis::Point:
+    case QgsWkbTypes::PointGeometry:
       symbol = new QgsMarkerSymbolV2( layers );
       break;
 
@@ -361,20 +361,20 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
   rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
   rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
-  QgsSymbolV2Map symbols;
+  QgsSymbolMap symbols;
   symbols["0"] = mSymbol.data();
-  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( symbols, "symbols", doc );
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, "symbols", doc );
   rendererElem.appendChild( symbolsElem );
 
   QDomElement rotationElem = doc.createElement( "rotation" );
   if ( mRotation.data() )
-    rotationElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) );
+    rotationElem.setAttribute( "field", QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mRotation.data() ) );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
-    sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
-  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
+    sizeScaleElem.setAttribute( "field", QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
+  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerUtils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
@@ -396,7 +396,7 @@ QgsLegendSymbologyList QgsSingleSymbolRendererV2::legendSymbologyItems( QSize ic
   QgsLegendSymbologyList lst;
   if ( mSymbol.data() )
   {
-    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mSymbol.data(), iconSize );
+    QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol.data(), iconSize );
     lst << qMakePair( QString(), pix );
   }
   return lst;
@@ -414,7 +414,7 @@ QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDe
 QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
 {
   QgsLegendSymbolListV2 lst;
-  if ( mSymbol->type() == QgsSymbolV2::Marker )
+  if ( mSymbol->type() == QgsSymbol::Marker )
   {
     const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( mSymbol.data() );
     QgsDataDefined sizeDD = symbol->dataDefinedSize();
@@ -425,7 +425,7 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
       {
         QgsLegendSymbolItemV2 title( nullptr, scaleExp.baseExpression(), QString() );
         lst << title;
-        Q_FOREACH ( double v, QgsSymbolLayerV2Utils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
+        Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
         {
           QgsLegendSymbolItemV2 si( mSymbol.data(), QString::number( v ), QString() );
           QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
@@ -449,7 +449,7 @@ QSet< QString > QgsSingleSymbolRendererV2::legendKeysForFeature( QgsFeature& fea
   return QSet< QString >() << QString();
 }
 
-void QgsSingleSymbolRendererV2::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+void QgsSingleSymbolRendererV2::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
 {
   Q_UNUSED( key );
   setSymbol( symbol );
@@ -478,7 +478,7 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const
   if ( !r )
   {
     QgsRenderContext context;
-    QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
+    QgsSymbolList symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )
     {
       r = new QgsSingleSymbolRendererV2( symbols.at( 0 )->clone() );

@@ -96,10 +96,11 @@ class ExampleAlgorithm(GeoAlgorithm):
         # directly
         settings = QSettings()
         systemEncoding = settings.value('/UI/encoding', 'System')
-        provider = vectorLayer.dataProvider()
-        writer = QgsVectorFileWriter(output, systemEncoding,
-                                     provider.fields(),
-                                     provider.geometryType(), provider.crs())
+        writer = QgsVectorFileWriter(output,
+                                     systemEncoding,
+                                     vectorLayer.fields(),
+                                     vectorLayer.wkbType(),
+                                     vectorLayer.crs())
 
         # Now we take the features from input layer and add them to the
         # output. Method features() returns an iterator, considering the

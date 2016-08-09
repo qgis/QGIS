@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -64,10 +64,10 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
 
-        geomType = self.singleToMultiGeom(layer.dataProvider().geometryType())
+        geomType = self.singleToMultiGeom(layer.wkbType())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), geomType, layer.crs())
+            layer.fields().toList(), geomType, layer.crs())
 
         inFeat = QgsFeature()
         outFeat = QgsFeature()
@@ -92,7 +92,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                         if first:
                             attrs = atMap
                             first = False
-                        inGeom = QgsGeometry(inFeat.geometry())
+                        inGeom = inFeat.geometry()
                         vType = inGeom.type()
                         feature_list = self.extractAsMulti(inGeom)
                         multi_feature.extend(feature_list)
@@ -112,30 +112,30 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
     def singleToMultiGeom(self, wkbType):
         try:
-            if wkbType in (Qgis.WKBPoint, Qgis.WKBMultiPoint,
-                           Qgis.WKBPoint25D, Qgis.WKBMultiPoint25D):
-                return Qgis.WKBMultiPoint
-            elif wkbType in (Qgis.WKBLineString, Qgis.WKBMultiLineString,
-                             Qgis.WKBMultiLineString25D,
-                             Qgis.WKBLineString25D):
+            if wkbType in (QgsWkbTypes.Point, QgsWkbTypes.MultiPoint,
+                           QgsWkbTypes.Point25D, QgsWkbTypes.MultiPoint25D):
+                return QgsWkbTypes.MultiPoint
+            elif wkbType in (QgsWkbTypes.LineString, QgsWkbTypes.MultiLineString,
+                             QgsWkbTypes.MultiLineString25D,
+                             QgsWkbTypes.LineString25D):
 
-                return Qgis.WKBMultiLineString
-            elif wkbType in (Qgis.WKBPolygon, Qgis.WKBMultiPolygon,
-                             Qgis.WKBMultiPolygon25D, Qgis.WKBPolygon25D):
+                return QgsWkbTypes.MultiLineString
+            elif wkbType in (QgsWkbTypes.Polygon, QgsWkbTypes.MultiPolygon,
+                             QgsWkbTypes.MultiPolygon25D, QgsWkbTypes.Polygon25D):
 
-                return Qgis.WKBMultiPolygon
+                return QgsWkbTypes.MultiPolygon
             else:
-                return Qgis.WKBUnknown
+                return QgsWkbTypes.Unknown
         except Exception:
             pass
 
     def extractAsMulti(self, geom):
-        if geom.type() == Qgis.Point:
+        if geom.type() == QgsWkbTypes.PointGeometry:
             if geom.isMultipart():
                 return geom.asMultiPoint()
             else:
                 return [geom.asPoint()]
-        elif geom.type() == Qgis.Line:
+        elif geom.type() == QgsWkbTypes.LineGeometry:
             if geom.isMultipart():
                 return geom.asMultiPolyline()
             else:
@@ -147,9 +147,9 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 return [geom.asPolygon()]
 
     def convertGeometry(self, geom_list, vType):
-        if vType == Qgis.Point:
+        if vType == QgsWkbTypes.PointGeometry:
             return QgsGeometry().fromMultiPoint(geom_list)
-        elif vType == Qgis.Line:
+        elif vType == QgsWkbTypes.LineGeometry:
             return QgsGeometry().fromMultiPolyline(geom_list)
         else:
             return QgsGeometry().fromMultiPolygon(geom_list)

@@ -61,11 +61,11 @@ void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
   mCacheGeometry = cacheGeometry && mLayer->hasGeometryType();
   if ( cacheGeometry )
   {
-    connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), SLOT( geometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+    connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), SLOT( geometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
   }
   else
   {
-    disconnect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+    disconnect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
   }
 }
 
@@ -244,7 +244,7 @@ void QgsVectorLayerCache::attributeDeleted( int field )
   }
 }
 
-void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, QgsGeometry& geom )
+void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, const QgsGeometry& geom )
 {
   QgsCachedFeature* cachedFeat = mCache[ fid ];
 

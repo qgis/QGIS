@@ -67,7 +67,7 @@ class QgsWfsLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsWfsLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceURI &uri, QString featureType, QString title, QString crsString );
+    QgsWfsLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
     ~QgsWfsLayerItem();
 
 };

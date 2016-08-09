@@ -213,25 +213,25 @@ bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature& featur
 
   OGRGeometryH geom = OGR_F_GetGeometryRef( ogrFet );
   if ( !geom )
-    feature.setGeometry( nullptr );
+    feature.clearGeometry();
   else
     feature.setGeometry( ogrGeometryToQgsGeometry( geom ) );
 
   return true;
 }
 
-QgsGeometry* QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
+QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 {
   if ( !geom )
-    return nullptr;
+    return QgsGeometry();
 
   // get the wkb representation
   int memorySize = OGR_G_WkbSize( geom );
   unsigned char *wkb = new unsigned char[memorySize];
   OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
 
-  QgsGeometry *g = new QgsGeometry();
-  g->fromWkb( wkb, memorySize );
+  QgsGeometry g;
+  g.fromWkb( wkb, memorySize );
   return g;
 }
 

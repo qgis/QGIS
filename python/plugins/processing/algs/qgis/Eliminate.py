@@ -241,7 +241,7 @@ class Eliminate(GeoAlgorithm):
             # Iterate over the polygons to eliminate
             for i in range(len(featToEliminate)):
                 feat = featToEliminate.pop()
-                geom2Eliminate = QgsGeometry(feat.geometry())
+                geom2Eliminate = feat.geometry()
                 bbox = geom2Eliminate.boundingBox()
                 fit = processLayer.getFeatures(
                     QgsFeatureRequest().setFilterRect(bbox))
@@ -252,13 +252,13 @@ class Eliminate(GeoAlgorithm):
                 selFeat = QgsFeature()
 
                 while fit.nextFeature(selFeat):
-                    selGeom = QgsGeometry(selFeat.geometry())
+                    selGeom = selFeat.geometry()
 
                     if geom2Eliminate.intersects(selGeom):
                         # We have a candidate
                         iGeom = geom2Eliminate.intersection(selGeom)
 
-                        if iGeom is None:
+                        if not iGeom:
                             continue
 
                         if boundary:
@@ -315,10 +315,9 @@ class Eliminate(GeoAlgorithm):
         # End while
 
         # Create output
-        provider = processLayer.dataProvider()
         output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(provider.fields(),
-                                        provider.geometryType(), processLayer.crs())
+        writer = output.getVectorWriter(processLayer.fields(),
+                                        processLayer.wkbType(), processLayer.crs())
 
         # Write all features that are left over to output layer
         iterator = processLayer.getFeatures()

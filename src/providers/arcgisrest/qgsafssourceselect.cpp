@@ -97,7 +97,7 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   QString id = index.sibling( index.row(), 0 ).data().toString();
 
   // Query available fields
-  QgsDataSourceURI ds = connection.uri();
+  QgsDataSourceUri ds = connection.uri();
   QString url = ds.param( "url" ) + "/" + id;
   ds.removeParam( "url" );
   ds.setParam( "url", url );
@@ -127,7 +127,7 @@ QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection& connection,
     const QString& filter,
     const QgsRectangle& bBox ) const
 {
-  QgsDataSourceURI ds = connection.uri();
+  QgsDataSourceUri ds = connection.uri();
   QString url = ds.param( "url" ) + "/" + layerTitle;
   ds.removeParam( "url" );
   ds.setParam( "url", url );

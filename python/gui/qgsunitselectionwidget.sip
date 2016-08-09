@@ -49,7 +49,7 @@ class QgsUnitSelectionWidget : QWidget
     int getUnit() const;
 
     /** Returns the current predefined selected unit (if applicable).
-     * @returns selected output unit, or QgsSymbolV2::Mixed if the widget was populated with custom unit types
+     * @returns selected output unit, or QgsSymbol::Mixed if the widget was populated with custom unit types
      * @note added in QGIS 2.9
      */
     QgsUnitTypes::RenderUnit unit() const;

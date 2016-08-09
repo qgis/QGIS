@@ -38,10 +38,10 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgsstylev2groupselectiondialog.cpp
   symbology-ng/qgsstylev2managerdialog.cpp
   symbology-ng/qgssvgselectorwidget.cpp
-  symbology-ng/qgssymbollayerv2widget.cpp
-  symbology-ng/qgssymbollevelsv2dialog.cpp
+  symbology-ng/qgssymbollayerwidget.cpp
+  symbology-ng/qgssymbollevelsdialog.cpp
   symbology-ng/qgssymbolslistwidget.cpp
-  symbology-ng/qgssymbolv2selectordialog.cpp
+  symbology-ng/qgssymbolselectordialog.cpp
   symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
   symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
   symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp
@@ -183,7 +183,6 @@ SET(QGIS_GUI_SRCS
   qgscodeeditorsql.cpp
   qgscollapsiblegroupbox.cpp
   qgscolorbutton.cpp
-  qgscolorbuttonv2.cpp
   qgscolordialog.cpp
   qgscolorschemelist.cpp
   qgscolorswatchgrid.cpp
@@ -195,6 +194,7 @@ SET(QGIS_GUI_SRCS
   qgsconfigureshortcutsdialog.cpp
   qgscredentialdialog.cpp
   qgscursors.cpp
+  qgscustomdrophandler.cpp
   qgsdatadefinedbutton.cpp
   qgsdatumtransformdialog.cpp
   qgsdetaileditemdata.cpp
@@ -343,7 +343,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgscodeeditorsql.h
   qgscollapsiblegroupbox.h
   qgscolorbutton.h
-  qgscolorbuttonv2.h
   qgscolordialog.h
   qgscolorschemelist.h
   qgscolorswatchgrid.h
@@ -489,10 +488,10 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsstylev2groupselectiondialog.h
   symbology-ng/qgsstylev2managerdialog.h
   symbology-ng/qgssvgselectorwidget.h
-  symbology-ng/qgssymbollayerv2widget.h
-  symbology-ng/qgssymbollevelsv2dialog.h
+  symbology-ng/qgssymbollayerwidget.h
+  symbology-ng/qgssymbollevelsdialog.h
   symbology-ng/qgssymbolslistwidget.h
-  symbology-ng/qgssymbolv2selectordialog.h
+  symbology-ng/qgssymbolselectordialog.h
   symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
   symbology-ng/qgsvectorfieldsymbollayerwidget.h
   symbology-ng/qgsvectorgradientcolorrampv2dialog.h
@@ -621,6 +620,7 @@ SET(QGIS_GUI_HDRS
   qgsattributeforminterface.h
   qgsattributeformlegacyinterface.h
   qgscursors.h
+  qgscustomdrophandler.h
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsfiledropedit.h

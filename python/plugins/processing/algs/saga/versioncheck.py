@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2014'
@@ -92,14 +93,21 @@ def testDescriptionFile(f):
             usage = line
 
     if usage and not lines[0].startswith("_"):
-        print "-" * 50
-        print f + " [ERROR]"
-        print lines
-        print usage
-        print "Name in description:" + cmdname
-        print "Parameters in description:" + unicode(params)
-        print "-" * 50
-        print
+        # fix_print_with_import
+        print("-" * 50)
+        # fix_print_with_import
+        print(f + " [ERROR]")
+        # fix_print_with_import
+        print(lines)
+        # fix_print_with_import
+        print(usage)
+        # fix_print_with_import
+        print("Name in description:" + cmdname)
+        # fix_print_with_import
+        print("Parameters in description:" + unicode(params))
+        # fix_print_with_import
+        print("-" * 50)
+        print()
 
 
 if __name__ == '__main__':

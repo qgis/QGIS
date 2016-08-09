@@ -413,31 +413,31 @@ void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
           }
           else
           {
-            Qgis::WkbType wkbType = layer->wkbType();
+            QgsWkbTypes::Type wkbType = layer->wkbType();
             switch ( wkbType )
             {
-              case Qgis::WKBPoint25D:
-              case Qgis::WKBPoint:
+              case QgsWkbTypes::Point25D:
+              case QgsWkbTypes::Point:
                 geomElem.setAttribute( "type", "gml:PointPropertyType" );
                 break;
-              case Qgis::WKBLineString25D:
-              case Qgis::WKBLineString:
+              case QgsWkbTypes::LineString25D:
+              case QgsWkbTypes::LineString:
                 geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
                 break;
-              case Qgis::WKBPolygon25D:
-              case Qgis::WKBPolygon:
+              case QgsWkbTypes::Polygon25D:
+              case QgsWkbTypes::Polygon:
                 geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
                 break;
-              case Qgis::WKBMultiPoint25D:
-              case Qgis::WKBMultiPoint:
+              case QgsWkbTypes::MultiPoint25D:
+              case QgsWkbTypes::MultiPoint:
                 geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
                 break;
-              case Qgis::WKBMultiLineString25D:
-              case Qgis::WKBMultiLineString:
+              case QgsWkbTypes::MultiLineString25D:
+              case QgsWkbTypes::MultiLineString:
                 geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
                 break;
-              case Qgis::WKBMultiPolygon25D:
-              case Qgis::WKBMultiPolygon:
+              case QgsWkbTypes::MultiPolygon25D:
+              case QgsWkbTypes::MultiPolygon:
                 geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
                 break;
               default:
@@ -465,7 +465,7 @@ void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
           //xsd:element
           QDomElement attElem = doc.createElement( "element"/*xsd:element*/ );
           attElem.setAttribute( "name", attributeName );
-          QVariant::Type attributeType = fields[idx].type();
+          QVariant::Type attributeType = fields.at( idx ).type();
           if ( attributeType == QVariant::Int )
             attElem.setAttribute( "type", "integer" );
           else if ( attributeType == QVariant::LongLong )

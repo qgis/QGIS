@@ -19,9 +19,5 @@ export LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib
 export CTEST_PARALLEL_LEVEL=1
 export CCACHE_CPP2=yes
 export CCACHE_TEMPDIR=/tmp
-if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
-  export CCACHE_READONLY=yes
-  chmod -R ugo-w ~/.ccache
-fi
 
 xvfb-run ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest' -S ./qgis-test-travis.ctest --output-on-failure

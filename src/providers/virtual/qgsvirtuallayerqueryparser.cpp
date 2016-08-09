@@ -83,8 +83,8 @@ namespace QgsVirtualLayerQueryParser
       else
       {
         // there should be 2 more captures
-        def.setGeometry( QgsWKBTypes::parseType( rx.cap( 3 ) ) );
-        def.setSrid( static_cast<QgsWKBTypes::Type>( rx.cap( 4 ).toLong() ) );
+        def.setGeometry( QgsWkbTypes::parseType( rx.cap( 3 ) ) );
+        def.setSrid( static_cast<QgsWkbTypes::Type>( rx.cap( 4 ).toLong() ) );
       }
       defs[column] = def;
 
@@ -116,7 +116,7 @@ namespace QgsVirtualLayerQueryParser
       int pos = geometryTypeRx.indexIn( columnType, 0 );
       if ( pos != -1 )
       {
-        QgsWKBTypes::Type type = static_cast<QgsWKBTypes::Type>( geometryTypeRx.cap( 1 ).toInt() );
+        QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( geometryTypeRx.cap( 1 ).toInt() );
         long srid = geometryTypeRx.cap( 2 ).toLong();
         d.setGeometry( type );
         d.setSrid( srid );
@@ -226,8 +226,8 @@ namespace QgsVirtualLayerQueryParser
             {
               // might be a geometry, parse the type
               QByteArray ba( q.columnBlob( i ) );
-              QPair<QgsWKBTypes::Type, long> p( spatialiteBlobGeometryType( ba.constData(), ba.size() ) );
-              if ( p.first != QgsWKBTypes::NoGeometry )
+              QPair<QgsWkbTypes::Type, long> p( spatialiteBlobGeometryType( ba.constData(), ba.size() ) );
+              if ( p.first != QgsWkbTypes::NoGeometry )
               {
                 tableDef[colIdx].setGeometry( p.first );
                 tableDef[colIdx].setSrid( p.second );

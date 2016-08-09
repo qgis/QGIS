@@ -78,7 +78,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      * Get the feature type as defined in WkbType (qgis.h).
      * @return int representing the feature type
      */
-    Qgis::WkbType geometryType() const override;
+    QgsWkbTypes::Type wkbType() const override;
 
 
     /**
@@ -374,7 +374,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
   public slots:
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
-    void onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom );
+    void onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
     void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
@@ -412,7 +412,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA, ( GV_BOUNDARY, GV_CENTROID )
     int mGrassType;
     // WKBPoint, WKBLineString, ...
-    Qgis::WkbType mQgisType;
+    QgsWkbTypes::Type mQgisType;
     QString mLayerName;
     QgsGrassVectorMapLayer *mLayer;
     // The version of the map for which the instance was last time updated

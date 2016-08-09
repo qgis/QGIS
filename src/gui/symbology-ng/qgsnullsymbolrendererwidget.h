@@ -18,7 +18,7 @@
 #include "qgsrendererv2widget.h"
 
 class QgsNullSymbolRenderer;
-class QgsSymbolV2SelectorDialog;
+class QgsSymbolSelectorDialog;
 
 class QMenu;
 

@@ -179,7 +179,7 @@
             <item>
              <widget class="QCheckBox" name="mFollowVisibilityPresetCheckBox">
               <property name="text">
-               <string>Follow visibility preset</string>
+               <string>Follow map theme</string>
               </property>
              </widget>
             </item>
@@ -841,7 +841,7 @@
                  </widget>
                 </item>
                 <item row="2" column="2">
-                 <widget class="QgsColorButtonV2" name="mGridFramePenColorButton">
+                 <widget class="QgsColorButton" name="mGridFramePenColorButton">
                   <property name="minimumSize">
                    <size>
                     <width>100</width>
@@ -867,7 +867,7 @@
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QgsColorButtonV2" name="mGridFrameFill1ColorButton">
+                 <widget class="QgsColorButton" name="mGridFrameFill1ColorButton">
                   <property name="minimumSize">
                    <size>
                     <width>100</width>
@@ -886,7 +886,7 @@
                  </widget>
                 </item>
                 <item row="3" column="2">
-                 <widget class="QgsColorButtonV2" name="mGridFrameFill2ColorButton">
+                 <widget class="QgsColorButton" name="mGridFrameFill2ColorButton">
                   <property name="minimumSize">
                    <size>
                     <width>100</width>
@@ -1132,7 +1132,7 @@
                  </widget>
                 </item>
                 <item row="14" column="1">
-                 <widget class="QgsColorButtonV2" name="mAnnotationFontColorButton">
+                 <widget class="QgsColorButton" name="mAnnotationFontColorButton">
                   <property name="minimumSize">
                    <size>
                     <width>120</width>
@@ -1430,9 +1430,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

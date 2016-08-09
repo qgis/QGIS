@@ -20,8 +20,8 @@
 #include "qgsrendererv2registry.h"
 #include "qgsfield.h"
 #include "qgsstylev2.h"
-#include "qgssymbolv2selectordialog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgisgui.h"
 
@@ -41,7 +41,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   //the renderer only applies to point vector layers
-  if ( layer->wkbType() != Qgis::WKBPoint && layer->wkbType()  != Qgis::WKBPoint25D )
+  if ( layer->wkbType() != QgsWkbTypes::Point && layer->wkbType()  != QgsWkbTypes::Point25D )
   {
     //setup blank dialog
     mRenderer = nullptr;
@@ -370,7 +370,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
     return;
   }
   QgsMarkerSymbolV2* markerSymbol = mRenderer->centerSymbol()->clone();
-  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), mLayer, this );
+  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), mLayer, this );
   dlg.setMapCanvas( mMapCanvas );
   if ( dlg.exec() == QDialog::Rejected )
   {
@@ -389,7 +389,7 @@ void QgsPointDisplacementRendererWidget::updateCenterIcon()
   {
     return;
   }
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, mCenterSymbolPushButton->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, mCenterSymbolPushButton->iconSize() );
   mCenterSymbolPushButton->setIcon( icon );
 }
 

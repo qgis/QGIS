@@ -130,20 +130,18 @@ namespace pal
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param angle orientation of the label
-       * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates
        */
-      int createCandidatesAroundPoint( double x, double y, QList<LabelPosition *> &lPos, double angle, PointSet *mapShape = nullptr );
+      int createCandidatesAroundPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
       /** Generate one candidate over or offset the specified point.
        * @param x x coordinate of the point
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidate
        * @param angle orientation of the label
-       * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates (always 1)
        */
-      int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle, PointSet *mapShape = nullptr );
+      int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
       /** Generates candidates following a prioritised list of predefined positions around a point.
        * @param x x coordinate of the point
@@ -160,6 +158,24 @@ namespace pal
        * @returns the number of generated candidates
        */
       int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
+
+      /** Generate candidates for line feature, by trying to place candidates towards the middle of the longest
+       * straightish segments of the line. Segments closer to horizontal are preferred over vertical segments.
+       * @param lPos pointer to an array of candidates, will be filled by generated candidates
+       * @param mapShape a pointer to the line
+       * @returns the number of generated candidates
+       */
+      int createCandidatesAlongLineNearStraightSegments( QList<LabelPosition *> &lPos, PointSet *mapShape );
+
+      /** Generate candidates for line feature, by trying to place candidates as close as possible to the line's midpoint.
+       * Candidates can "cut corners" if it helps them place near this mid point.
+       * @param lPos pointer to an array of candidates, will be filled by generated candidates
+       * @param mapShape a pointer to the line
+       * @param initialCost initial cost for candidates generated using this method. If set, cost can be increased
+       * by a preset amount.
+       * @returns the number of generated candidates
+       */
+      int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape, double initialCost = 0.0 );
 
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                               int& orientation, int index, double distance, bool& flip );

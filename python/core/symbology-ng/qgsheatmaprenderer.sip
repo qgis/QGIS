@@ -14,9 +14,9 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
     virtual void stopRender( QgsRenderContext& context );
     //! @note symbolForFeature2 in python bindings
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
     //! @note symbol2 in python bindings
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    virtual QgsSymbolList symbols( QgsRenderContext& context ) /PyName=symbols2/;
     virtual QString dump() const;
     virtual QList<QString> usedAttributes();
     static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;

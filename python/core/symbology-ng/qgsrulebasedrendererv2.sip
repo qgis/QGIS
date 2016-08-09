@@ -24,9 +24,9 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     // (both f, symbol are _not_ owned by this class)
     struct RenderJob
     {
-      RenderJob( QgsRuleBasedRendererV2::FeatureToRender& _ftr, QgsSymbolV2* _s );
+      RenderJob( QgsRuleBasedRendererV2::FeatureToRender& _ftr, QgsSymbol* _s );
       QgsRuleBasedRendererV2::FeatureToRender& ftr;
-      QgsSymbolV2* symbol;
+      QgsSymbol* symbol;
     };
 
     // render level: a list of jobs to be drawn at particular level
@@ -65,7 +65,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         };
 
         //! Constructor takes ownership of the symbol
-        Rule( QgsSymbolV2* symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(),
+        Rule( QgsSymbol* symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(),
               const QString& label = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
 
@@ -88,7 +88,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         bool needsGeometry() const;
 
 	//! @note available in python bindings as symbol2
-        QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() ) /PyName=symbols2/;
+        QgsSymbolList symbols( const QgsRenderContext& context = QgsRenderContext() ) /PyName=symbols2/;
 
         //! @note not available in python bindings
         // QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) const;
@@ -113,7 +113,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
          */
         bool isScaleOK( double scale ) const;
 
-        QgsSymbolV2* symbol();
+        QgsSymbol* symbol();
         QString label() const;
         bool dependsOnScale() const;
         int scaleMinDenom() const;
@@ -157,7 +157,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         void setRuleKey( const QString& key );
 
         //! set a new symbol (or NULL). Deletes old symbol.
-        void setSymbol( QgsSymbolV2* sym /Transfer/ );
+        void setSymbol( QgsSymbol* sym /Transfer/ );
         void setLabel( const QString& label );
 
         /**
@@ -204,9 +204,9 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         QgsRuleBasedRendererV2::Rule* clone() const /Factory/;
 
         void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props );
-        static QgsRuleBasedRendererV2::Rule* createFromSld( QDomElement& element, Qgis::GeometryType geomType ) /Factory/;
+        static QgsRuleBasedRendererV2::Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
-        QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
+        QDomElement save( QDomDocument& doc, QgsSymbolMap& symbolMap );
 
         /** Prepare the rule for rendering and its children (build active children array)
          * @deprecated use startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter ) instead
@@ -238,7 +238,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         bool willRenderFeature( QgsFeature& feat, QgsRenderContext* context = 0);
 
         //! tell which symbols will be used to render the feature
-        QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
+        QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
 
         /** Returns which legend keys match the feature
          * @note added in QGIS 2.14
@@ -263,7 +263,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
          *
          * @return A new rule
          */
-        static QgsRuleBasedRendererV2::Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap ) /Factory/;
+        static QgsRuleBasedRendererV2::Rule* create( QDomElement& ruleElem, QgsSymbolMap& symbolMap ) /Factory/;
 
         /**
          * Return all children rules of this rule
@@ -345,12 +345,12 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     //! Constructs the renderer from given tree of rules (takes ownership)
     QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root /Transfer/ );
     //! Constructor for convenience. Creates a root rule and adds a default rule with symbol (takes ownership)
-    QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol /Transfer/ );
+    QgsRuleBasedRendererV2( QgsSymbol* defaultSymbol /Transfer/ );
 
     ~QgsRuleBasedRendererV2();
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext &context );
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext &context );
 
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
@@ -368,9 +368,9 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, Qgis::GeometryType geomType ) /Factory/;
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
-    virtual QgsSymbolV2List symbols( QgsRenderContext &context );
+    virtual QgsSymbolList symbols( QgsRenderContext &context );
 
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc );
@@ -390,7 +390,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.5
     virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
-    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol /Transfer/ );
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol /Transfer/ );
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
@@ -411,14 +411,14 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     //! return list of symbols used for rendering the feature.
     //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
     //! to use symbolForFeature()
-    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext &context );
+    virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext &context );
 
-    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext &context );
+    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext &context );
 
     virtual QSet<QString> legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities();
+    virtual QgsFeatureRendererV2::Capabilities capabilities();
 
     /////
 
@@ -439,7 +439,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     static QgsRuleBasedRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
-    static void convertToDataDefinedSymbology( QgsSymbolV2* symbol, const QString& sizeScaleField, const QString& rotationField = QString() );
+    static void convertToDataDefinedSymbology( QgsSymbol* symbol, const QString& sizeScaleField, const QString& rotationField = QString() );
 
   private:
     QgsRuleBasedRendererV2( const QgsRuleBasedRendererV2 & );

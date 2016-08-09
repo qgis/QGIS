@@ -26,7 +26,7 @@ from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from qgis.PyQt.QtGui import QCursor
 
-from qgis.core import QgsDataSourceURI, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport
+from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport
 from qgis.gui import QgsMessageViewer
 from qgis.utils import iface
 
@@ -185,7 +185,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         # update the output table name, pk and geom column
         self.cboTable.setEditText(self.inLayer.name())
 
-        srcUri = QgsDataSourceURI(self.inLayer.source())
+        srcUri = QgsDataSourceUri(self.inLayer.source())
         pk = srcUri.keyColumn() if srcUri.keyColumn() else self.default_pk
         self.editPrimaryKey.setText(pk)
         geom = srcUri.geometryColumn() if srcUri.geometryColumn() else self.default_geom
@@ -287,7 +287,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             # get pk and geom field names from the source layer or use the
             # ones defined by the user
-            srcUri = QgsDataSourceURI(self.inLayer.source())
+            srcUri = QgsDataSourceUri(self.inLayer.source())
 
             pk = srcUri.keyColumn() if not self.chkPrimaryKey.isChecked() else self.editPrimaryKey.text()
             if not pk:

@@ -234,7 +234,7 @@ void QgsFieldCalculator::accept()
 
       for ( int idx = 0; idx < fields.count(); ++idx )
       {
-        if ( fields[idx].name() == mOutputFieldNameLineEdit->text() )
+        if ( fields.at( idx ).name() == mOutputFieldNameLineEdit->text() )
         {
           mAttributeId = idx;
           break;
@@ -296,7 +296,7 @@ void QgsFieldCalculator::accept()
         if ( value.canConvert< QgsGeometry >() )
         {
           QgsGeometry geom = value.value< QgsGeometry >();
-          mVectorLayer->changeGeometry( feature.id(), &geom );
+          mVectorLayer->changeGeometry( feature.id(), geom );
         }
       }
       else
@@ -446,7 +446,7 @@ void QgsFieldCalculator::populateFields()
     }
   }
 
-  if ( mVectorLayer->geometryType() != Qgis::NoGeometry )
+  if ( mVectorLayer->geometryType() != QgsWkbTypes::NullGeometry )
   {
     mExistingFieldComboBox->addItem( tr( "<geometry>" ), "geom" );
 

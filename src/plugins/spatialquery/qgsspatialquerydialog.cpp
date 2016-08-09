@@ -403,14 +403,14 @@ QgsVectorLayer * QgsSpatialQueryDialog::getLayerFromCombobox( bool isTarget, int
   return lyr;
 } // QgsVectorLayer * QgsSpatialQueryDialog::getLayerFromCombobox(bool isTarget, int index)
 
-QIcon QgsSpatialQueryDialog::getIconTypeGeometry( Qgis::GeometryType geomType )
+QIcon QgsSpatialQueryDialog::getIconTypeGeometry( QgsWkbTypes::GeometryType geomType )
 {
   QString theName;
-  if ( geomType == Qgis::Point )
+  if ( geomType == QgsWkbTypes::PointGeometry )
   {
     theName = "/mIconPointLayer.svg";
   }
-  else if ( geomType == Qgis::Line )
+  else if ( geomType == QgsWkbTypes::LineGeometry )
   {
     theName = "/mIconLineLayer.svg";
   }
@@ -676,7 +676,7 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   {
     return;
   }
-  if ( !feat.constGeometry() )
+  if ( !feat.hasGeometry() )
   {
     return;
   }
@@ -696,16 +696,16 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
       QMessageBox::warning( this, tr( "Zoom to feature" ), msg, QMessageBox::Ok );
     }
-    mIface->mapCanvas()->setExtent( feat.constGeometry()->boundingBox() );
+    mIface->mapCanvas()->setExtent( feat.geometry().boundingBox() );
   }
   else if ( srsSource == srcMapcanvas )
   {
-    mIface->mapCanvas()->setExtent( feat.constGeometry()->boundingBox() );
+    mIface->mapCanvas()->setExtent( feat.geometry().boundingBox() );
   }
   else
   {
     QgsCoordinateTransform coordTransform( srsSource, srcMapcanvas );
-    QgsRectangle rectExtent = coordTransform.transform( feat.constGeometry()->boundingBox() );
+    QgsRectangle rectExtent = coordTransform.transform( feat.geometry().boundingBox() );
     mIface->mapCanvas()->setExtent( rectExtent );
   }
   mIface->mapCanvas()->refresh();

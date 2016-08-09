@@ -18,7 +18,7 @@
 #include "qgsrendererv2widget.h"
 
 class QgsSingleSymbolRendererV2;
-class QgsSymbolV2SelectorWidget;
+class QgsSymbolSelectorWidget;
 
 class QMenu;
 
@@ -50,15 +50,15 @@ class GUI_EXPORT QgsSingleSymbolRendererV2Widget : public QgsRendererV2Widget
     void changeSingleSymbol();
 
     void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
+    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
 
     void showSymbolLevels();
 
   protected:
 
     QgsSingleSymbolRendererV2* mRenderer;
-    QgsSymbolV2SelectorWidget* mSelector;
-    QgsSymbolV2* mSingleSymbol;
+    QgsSymbolSelectorWidget* mSelector;
+    QgsSymbol* mSingleSymbol;
 };
 
 

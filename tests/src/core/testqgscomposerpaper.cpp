@@ -19,7 +19,7 @@
 #include "qgscomposition.h"
 #include "qgsmultirenderchecker.h"
 #include "qgscomposershape.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsfillsymbollayerv2.h"
 #include "qgslinesymbollayerv2.h"

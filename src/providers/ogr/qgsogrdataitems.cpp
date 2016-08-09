@@ -59,12 +59,6 @@ QgsOgrLayerItem::~QgsOgrLayerItem()
 {
 }
 
-Q_NOWARN_DEPRECATED_PUSH
-QgsLayerItem::Capability QgsOgrLayerItem::capabilities()
-{
-  return mCapabilities & SetCrs ? SetCrs : NoCapabilities;
-}
-Q_NOWARN_DEPRECATED_POP
 
 bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 {

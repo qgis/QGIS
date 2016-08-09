@@ -100,7 +100,7 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 #include "qgsdxfexport.h"
-#include "qgsvisibilitypresets.h"
+#include "qgsmapthemes.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
@@ -134,7 +134,7 @@ void usage( std::string const & appName )
             << "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n"
             << "\t[--dxf-scale-denom scale]\tscale for dxf output\n"
             << "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n"
-            << "\t[--dxf-preset visiblity-preset]\tlayer visibility preset to use for dxf output\n"
+            << "\t[--dxf-preset visiblity-preset]\tlayer map theme to use for dxf output\n"
             << "\t[--help]\t\tthis text\n"
             << "\t[--]\t\ttreat all following arguments as FILEs\n\n"
             << "  FILE:\n"
@@ -194,6 +194,14 @@ static void dumpBacktrace( unsigned int depth )
     depth = 20;
 
 #if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
+  // Below there is a bunch of operations that are not safe in multi-threaded
+  // environment (dup()+close() combo, wait(), juggling with file descriptors).
+  // Maybe some problems could be resolved with dup2() and waitpid(), but it seems
+  // that if the operations on descriptors are not serialized, things will get nasty.
+  // That's why there's this lovely mutex here...
+  static QMutex mutex;
+  QMutexLocker locker( &mutex );
+
   int stderr_fd = -1;
   if ( access( "/usr/bin/c++filt", X_OK ) < 0 )
   {
@@ -1187,7 +1195,7 @@ int main( int argc, char *argv[] )
     QList< QPair<QgsVectorLayer *, int > > layers;
     if ( !dxfPreset.isEmpty() )
     {
-      Q_FOREACH ( const QString& layer, QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( const QString& layer, QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( dxfPreset ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer ) );
         if ( !vl )

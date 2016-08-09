@@ -53,7 +53,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
-      Qgis::WkbType wkbType,
+      QgsWkbTypes::Type wkbType,
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
@@ -102,7 +102,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual Qgis::WkbType geometryType() const override;
+    virtual QgsWkbTypes::Type wkbType() const override;
 
     /** Return the number of layers for the current data source
      *

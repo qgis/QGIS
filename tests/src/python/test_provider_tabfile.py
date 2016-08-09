@@ -14,8 +14,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import tempfile
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
+from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider, QgsField
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 from qgis.testing import (
     start_app,
     unittest
@@ -89,6 +89,20 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
         self.assertTrue(vl.commitChanges())
         self.assertEquals(vl.dataProvider().property("_debug_open_mode"), "read-only")
         self.assertTrue(vl.dataProvider().isValid())
+
+    @unittest.expectedFailure(int(osgeo.gdal.VersionInfo()[:1]) < 2)
+    def testInteger64WriteTabfile(self):
+        """Check writing Integer64 fields to an MapInfo tabfile (which does not support that type)."""
+
+        base_dest_file_name = os.path.join(str(QDir.tempPath()), 'integer64')
+        dest_file_name = base_dest_file_name + '.tab'
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'tab_file.tab'), base_dest_file_name + '.tab')
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'tab_file.dat'), base_dest_file_name + '.dat')
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'tab_file.map'), base_dest_file_name + '.map')
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'tab_file.id'), base_dest_file_name + '.id')
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().addAttributes([QgsField("int8", QVariant.LongLong, "integer64")]))
 
 
 if __name__ == '__main__':

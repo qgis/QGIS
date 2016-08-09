@@ -23,7 +23,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_lines_by_multipolygon fid="lines.3">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>3,1 4,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>4,1 3,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
     </ogr:clip_lines_by_multipolygon>
   </gml:featureMember>
   <gml:featureMember>

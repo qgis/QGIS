@@ -84,11 +84,11 @@ void QgsVectorLayerSaveAsDialog::setup()
 
   //add geometry types to combobox
   mGeometryTypeComboBox->addItem( tr( "Automatic" ), -1 );
-  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::Point ), QgsWKBTypes::Point );
-  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::LineString ), QgsWKBTypes::LineString );
-  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::Polygon ), QgsWKBTypes::Polygon );
-  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::GeometryCollection ), QgsWKBTypes::GeometryCollection );
-  mGeometryTypeComboBox->addItem( tr( "No geometry" ), QgsWKBTypes::NoGeometry );
+  mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::Point ), QgsWkbTypes::Point );
+  mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::LineString ), QgsWkbTypes::LineString );
+  mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::Polygon ), QgsWkbTypes::Polygon );
+  mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::GeometryCollection ), QgsWkbTypes::GeometryCollection );
+  mGeometryTypeComboBox->addItem( tr( "No geometry" ), QgsWkbTypes::NoGeometry );
   mGeometryTypeComboBox->setCurrentIndex( mGeometryTypeComboBox->findData( -1 ) );
 
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
@@ -271,7 +271,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
     for ( int i = 0; i < mLayer->fields().size(); ++i )
     {
-      const QgsField &fld = mLayer->fields().at( i );
+      QgsField fld = mLayer->fields().at( i );
       Qt::ItemFlags flags = mLayer->providerType() != "oracle" || !fld.typeName().contains( "SDO_GEOMETRY" ) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
       QTableWidgetItem *item;
       item = new QTableWidgetItem( fld.name() );
@@ -700,16 +700,16 @@ bool QgsVectorLayerSaveAsDialog::onlySelected() const
   return mSelectedOnly->isChecked();
 }
 
-QgsWKBTypes::Type QgsVectorLayerSaveAsDialog::geometryType() const
+QgsWkbTypes::Type QgsVectorLayerSaveAsDialog::geometryType() const
 {
   int currentIndexData = mGeometryTypeComboBox->itemData( mGeometryTypeComboBox->currentIndex() ).toInt();
   if ( currentIndexData == -1 )
   {
     //automatic
-    return QgsWKBTypes::Unknown;
+    return QgsWkbTypes::Unknown;
   }
 
-  return ( QgsWKBTypes::Type )currentIndexData;
+  return ( QgsWkbTypes::Type )currentIndexData;
 }
 
 bool QgsVectorLayerSaveAsDialog::automaticGeometryType() const

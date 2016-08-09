@@ -126,7 +126,7 @@ Content-Type: text/xml; charset=utf-8
    <BoundingBox CRS="EPSG:3857" maxx="913283" minx="913171" maxy="5.60604e+06" miny="5.60599e+06"/>
    <BoundingBox CRS="EPSG:4326" maxx="44.9016" minx="44.9012" maxy="8.20416" miny="8.20315"/>
    <TreeName>QGIS Test Project</TreeName>
-   <Layer displayField="name" geometryType="WKBPoint" queryable="1" visible="1">
+   <Layer displayField="name" geometryType="Point" queryable="1" visible="1">
     <Name>testlayer èé</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>

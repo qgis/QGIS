@@ -44,8 +44,8 @@ class QgsWMSConnection : public QObject
 
   public:
     QString mConnName;
-    QgsDataSourceURI uri();
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri uri();
+    QgsDataSourceUri mUri;
 };
 
 #endif // QGSWMSCONNECTION_H

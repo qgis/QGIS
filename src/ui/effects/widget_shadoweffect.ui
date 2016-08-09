@@ -77,7 +77,7 @@
          </widget>
         </item>
         <item row="4" column="1">
-         <widget class="QgsColorButtonV2" name="mShadowColorBtn">
+         <widget class="QgsColorButton" name="mShadowColorBtn">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -276,9 +276,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

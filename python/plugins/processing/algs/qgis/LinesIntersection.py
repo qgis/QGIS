@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -82,11 +82,11 @@ class LinesIntersection(GeoAlgorithm):
         idxA = layerA.fieldNameIndex(fieldA)
         idxB = layerB.fieldNameIndex(fieldB)
 
-        fieldList = [layerA.pendingFields()[idxA],
-                     layerB.pendingFields()[idxB]]
+        fieldList = [layerA.fields()[idxA],
+                     layerB.fields()[idxB]]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                                                                     Qgis.WKBPoint, layerA.dataProvider().crs())
+                                                                     QgsWkbTypes.Point, layerA.crs())
 
         spatialIndex = vector.spatialindex(layerB)
 
@@ -107,7 +107,7 @@ class LinesIntersection(GeoAlgorithm):
                 for i in lines:
                     request = QgsFeatureRequest().setFilterFid(i)
                     inFeatB = layerB.getFeatures(request).next()
-                    tmpGeom = QgsGeometry(inFeatB.geometry())
+                    tmpGeom = inFeatB.geometry()
 
                     points = []
                     attrsA = inFeatA.attributes()
@@ -115,7 +115,7 @@ class LinesIntersection(GeoAlgorithm):
 
                     if inGeom.intersects(tmpGeom):
                         tempGeom = inGeom.intersection(tmpGeom)
-                        if tempGeom.type() == Qgis.Point:
+                        if tempGeom.type() == QgsWkbTypes.PointGeometry:
                             if tempGeom.isMultipart():
                                 points = tempGeom.asMultiPoint()
                             else:

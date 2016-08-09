@@ -471,7 +471,7 @@ class ParametersPanel(BASE, WIDGET):
                           QVariant.UInt, QVariant.ULongLong]
 
         fieldNames = set()
-        for field in layer.pendingFields():
+        for field in layer.fields():
             if not fieldTypes or field.type() in fieldTypes:
                 fieldNames.add(unicode(field.name()))
         return sorted(list(fieldNames), cmp=locale.strcoll)

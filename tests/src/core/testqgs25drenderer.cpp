@@ -28,7 +28,7 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
-#include <qgssymbolv2.h>
+#include <qgssymbol.h>
 #include <qgs25drenderer.h>
 #include "qgscomposition.h"
 #include "qgscomposermap.h"

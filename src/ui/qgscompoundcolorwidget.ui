@@ -205,7 +205,7 @@
         <number>1</number>
        </property>
        <item row="1" column="0">
-        <widget class="QgsColorButtonV2" name="mSwatchButton9">
+        <widget class="QgsColorButton" name="mSwatchButton9">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -224,7 +224,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QgsColorButtonV2" name="mSwatchButton11">
+        <widget class="QgsColorButton" name="mSwatchButton11">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -243,7 +243,7 @@
         </widget>
        </item>
        <item row="1" column="3">
-        <widget class="QgsColorButtonV2" name="mSwatchButton12">
+        <widget class="QgsColorButton" name="mSwatchButton12">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -262,7 +262,7 @@
         </widget>
        </item>
        <item row="0" column="4">
-        <widget class="QgsColorButtonV2" name="mSwatchButton5">
+        <widget class="QgsColorButton" name="mSwatchButton5">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -281,7 +281,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QgsColorButtonV2" name="mSwatchButton2">
+        <widget class="QgsColorButton" name="mSwatchButton2">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -300,7 +300,7 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QgsColorButtonV2" name="mSwatchButton3">
+        <widget class="QgsColorButton" name="mSwatchButton3">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -319,7 +319,7 @@
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="QgsColorButtonV2" name="mSwatchButton1">
+        <widget class="QgsColorButton" name="mSwatchButton1">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -338,7 +338,7 @@
         </widget>
        </item>
        <item row="1" column="4">
-        <widget class="QgsColorButtonV2" name="mSwatchButton13">
+        <widget class="QgsColorButton" name="mSwatchButton13">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -357,7 +357,7 @@
         </widget>
        </item>
        <item row="0" column="5">
-        <widget class="QgsColorButtonV2" name="mSwatchButton6">
+        <widget class="QgsColorButton" name="mSwatchButton6">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -376,7 +376,7 @@
         </widget>
        </item>
        <item row="0" column="6">
-        <widget class="QgsColorButtonV2" name="mSwatchButton7">
+        <widget class="QgsColorButton" name="mSwatchButton7">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -395,7 +395,7 @@
         </widget>
        </item>
        <item row="1" column="5">
-        <widget class="QgsColorButtonV2" name="mSwatchButton14">
+        <widget class="QgsColorButton" name="mSwatchButton14">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -414,7 +414,7 @@
         </widget>
        </item>
        <item row="1" column="6">
-        <widget class="QgsColorButtonV2" name="mSwatchButton15">
+        <widget class="QgsColorButton" name="mSwatchButton15">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -433,7 +433,7 @@
         </widget>
        </item>
        <item row="0" column="7">
-        <widget class="QgsColorButtonV2" name="mSwatchButton8">
+        <widget class="QgsColorButton" name="mSwatchButton8">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -452,7 +452,7 @@
         </widget>
        </item>
        <item row="1" column="7">
-        <widget class="QgsColorButtonV2" name="mSwatchButton16">
+        <widget class="QgsColorButton" name="mSwatchButton16">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -471,7 +471,7 @@
         </widget>
        </item>
        <item row="0" column="3">
-        <widget class="QgsColorButtonV2" name="mSwatchButton4">
+        <widget class="QgsColorButton" name="mSwatchButton4">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -490,7 +490,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QgsColorButtonV2" name="mSwatchButton10">
+        <widget class="QgsColorButton" name="mSwatchButton10">
          <property name="minimumSize">
           <size>
            <width>38</width>
@@ -910,9 +910,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

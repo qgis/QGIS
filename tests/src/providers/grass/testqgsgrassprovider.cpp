@@ -132,15 +132,15 @@ QString TestQgsGrassCommand::toString() const
     string += "AddFeature ";
     Q_FOREACH ( const TestQgsGrassFeature & grassFeature, grassFeatures )
     {
-      if ( grassFeature.constGeometry() )
+      if ( grassFeature.hasGeometry() )
       {
-        string += "<br>grass: " + grassFeature.constGeometry()->exportToWkt( 1 );
+        string += "<br>grass: " + grassFeature.geometry().exportToWkt( 1 );
       }
     }
 
-    if ( expectedFeature.constGeometry() )
+    if ( expectedFeature.hasGeometry() )
     {
-      string += "<br>expected: " + expectedFeature.constGeometry()->exportToWkt( 1 );
+      string += "<br>expected: " + expectedFeature.geometry().exportToWkt( 1 );
     }
   }
   else if ( command == DeleteFeature )
@@ -929,8 +929,9 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   grassFeature = TestQgsGrassFeature( GV_POINT );
   grassFeature.setFeatureId( 1 );
-  geometry = new QgsGeometry( new QgsPointV2( QgsWKBTypes::Point, 10, 10, 0 ) );
-  grassFeature.setGeometry( geometry );
+  geometry = new QgsGeometry( new QgsPointV2( QgsWkbTypes::Point, 10, 10, 0 ) );
+  grassFeature.setGeometry( *geometry );
+  delete geometry;
   command.grassFeatures << grassFeature;
   command.expectedFeature = grassFeature;
   commandGroup.commands << command;
@@ -938,7 +939,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   // Change geometry
   command = TestQgsGrassCommand( TestQgsGrassCommand::ChangeGeometry );
   command.fid = 1;
-  command.geometry = new QgsGeometry( new QgsPointV2( QgsWKBTypes::Point, 20, 20, 0 ) );
+  command.geometry = new QgsGeometry( new QgsPointV2( QgsWkbTypes::Point, 20, 20, 0 ) );
   commandGroup.commands << command;
 
   // Add field
@@ -1020,12 +1021,13 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   grassFeature.setFeatureId( 1 );
   line = new QgsLineStringV2();
   pointList.clear();
-  pointList << QgsPointV2( QgsWKBTypes::Point, 0, 0, 0 );
-  pointList << QgsPointV2( QgsWKBTypes::Point, 20, 10, 0 );
+  pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
+  pointList << QgsPointV2( QgsWkbTypes::Point, 20, 10, 0 );
   line->setPoints( pointList );
   pointList.clear();
   geometry = new QgsGeometry( line );
-  grassFeature.setGeometry( geometry );
+  grassFeature.setGeometry( *geometry );
+  delete geometry;
   command.grassFeatures << grassFeature;
   command.expectedFeature = grassFeature;
   command.attributes["field_int"] = 456;
@@ -1060,8 +1062,8 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   grassFeature.setFeatureId( 1 );
   line = new QgsLineStringV2();
   pointList.clear();
-  pointList << QgsPointV2( QgsWKBTypes::Point, 0, 0, 0 );
-  pointList << QgsPointV2( QgsWKBTypes::Point, 20, 10, 0 );
+  pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
+  pointList << QgsPointV2( QgsWkbTypes::Point, 20, 10, 0 );
   line->setPoints( pointList );
   pointList.clear();
   geometry = new QgsGeometry( line );
@@ -1110,7 +1112,7 @@ bool TestQgsGrassProvider::setAttributes( QgsFeature & feature, const QMap<QStri
   bool attributesSet = true;
   Q_FOREACH ( const QString fieldName, attributes.keys() )
   {
-    int index = feature.fields()->indexFromName( fieldName );
+    int index = feature.fields().indexFromName( fieldName );
     if ( index < 0 )
     {
       attributesSet = false;
@@ -1307,7 +1309,7 @@ void TestQgsGrassProvider::edit()
         {
           fid = commandGroup.fids.value( fid );
         }
-        if ( !grassLayer->changeGeometry( fid, command.geometry ) )
+        if ( !grassLayer->changeGeometry( fid, *command.geometry ) )
         {
           reportRow( "cannot change feature geometry" );
           commandOk = false;
@@ -1317,7 +1319,7 @@ void TestQgsGrassProvider::edit()
         {
           expectedFid = commandGroup.expectedFids.value( expectedFid );
         }
-        if ( !expectedLayer->changeGeometry( expectedFid, command.geometry ) )
+        if ( !expectedLayer->changeGeometry( expectedFid, *command.geometry ) )
         {
           reportRow( "cannot change expected feature geometry" );
           commandOk = false;
@@ -1492,32 +1494,33 @@ QList<QgsFeature> TestQgsGrassProvider::getFeatures( QgsVectorLayer *layer )
 
 bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature )
 {
-  if ( !feature.constGeometry()->equals( expectedFeature.constGeometry() ) )
+  QgsGeometry expectedGeom = expectedFeature.geometry();
+  if ( !feature.geometry().equals( expectedGeom ) )
   {
     return false;
   }
   // GRASS feature has always additional cat field
   QSet<int> indexes;
-  for ( int i = 0; i < feature.fields()->size(); i++ )
+  for ( int i = 0; i < feature.fields().size(); i++ )
   {
-    QString name = feature.fields()->at( i ).name();
+    QString name = feature.fields().at( i ).name();
     if ( name == "cat" ) // skip cat
     {
       continue;
     }
     indexes << i;
   }
-  for ( int i = 0; i < expectedFeature.fields()->size(); i++ )
+  for ( int i = 0; i < expectedFeature.fields().size(); i++ )
   {
-    QString name = expectedFeature.fields()->at( i ).name();
-    int index = feature.fields()->indexFromName( name );
+    QString name = expectedFeature.fields().at( i ).name();
+    int index = feature.fields().indexFromName( name );
     if ( index < 0 )
     {
       // not found
       QStringList names;
-      for ( int j = 0; j < feature.fields()->size(); j++ )
+      for ( int j = 0; j < feature.fields().size(); j++ )
       {
-        names << feature.fields()->at( j ).name();
+        names << feature.fields().at( j ).name();
       }
       reportRow( QString( "Attribute %1 not found, feature attributes: %2" ).arg( name, names.join( "," ) ) );
       return false;
@@ -1536,7 +1539,7 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
     QStringList names;
     Q_FOREACH ( int i, indexes )
     {
-      names << feature.fields()->at( i ).name();
+      names << feature.fields().at( i ).name();
     }
     reportRow( QString( "feature has %1 unexpected attributes: %2" ).arg( indexes.size() ).arg( names.join( "," ) ) );
     return false;

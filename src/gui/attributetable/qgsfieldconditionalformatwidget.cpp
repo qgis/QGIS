@@ -15,9 +15,9 @@
 #include "qgsfieldconditionalformatwidget.h"
 
 #include "qgsexpressionbuilderdialog.h"
-#include "qgssymbolv2.h"
-#include "qgssymbolv2selectordialog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbol.h"
+#include "qgssymbolselectordialog.h"
+#include "qgssymbollayerutils.h"
 #include "qgsstylev2.h"
 #include "qgsvectorlayer.h"
 
@@ -60,15 +60,15 @@ QgsFieldConditionalFormatWidget::~QgsFieldConditionalFormatWidget()
 
 void QgsFieldConditionalFormatWidget::updateIcon()
 {
-  mSymbol = QgsSymbolV2::defaultSymbol( Qgis::Point );
+  mSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
 
-  QgsSymbolV2SelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( !dlg.exec() )
   {
     return;
   }
 
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mSymbol, btnChangeIcon->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, btnChangeIcon->iconSize() );
   btnChangeIcon->setIcon( icon );
 }
 

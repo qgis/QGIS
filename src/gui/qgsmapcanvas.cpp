@@ -1061,12 +1061,12 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds& ids, QgsVectorL
 
   while ( it.nextFeature( fet ) )
   {
-    const QgsGeometry* geom = fet.constGeometry();
-    if ( !geom || geom->isEmpty() )
+    QgsGeometry geom = fet.geometry();
+    if ( geom.isEmpty() )
     {
       errorMsg = tr( "Feature does not have a geometry" );
     }
-    else if ( geom->geometry()->isEmpty() )
+    else if ( geom.geometry()->isEmpty() )
     {
       errorMsg = tr( "Feature geometry is empty" );
     }
@@ -1074,7 +1074,7 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds& ids, QgsVectorL
     {
       return false;
     }
-    QgsRectangle r = mapSettings().layerExtentToOutputExtent( layer, geom->boundingBox() );
+    QgsRectangle r = mapSettings().layerExtentToOutputExtent( layer, geom.boundingBox() );
     bbox.combineExtentWith( r );
     featureCount++;
   }
@@ -1253,7 +1253,7 @@ void QgsMapCanvas::beginZoomRect( QPoint pos )
   mZoomRect.setRect( 0, 0, 0, 0 );
   QApplication::setOverrideCursor( mZoomCursor );
   mZoomDragging = true;
-  mZoomRubberBand.reset( new QgsRubberBand( this, Qgis::Polygon ) );
+  mZoomRubberBand.reset( new QgsRubberBand( this, QgsWkbTypes::PolygonGeometry ) );
   QColor color( Qt::blue );
   color.setAlpha( 63 );
   mZoomRubberBand->setColor( color );
@@ -1297,7 +1297,6 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
-    QApplication::setOverrideCursor( Qt::ClosedHandCursor );
     mCanvasProperties->panSelectorDown = true;
     mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
   }
@@ -1336,7 +1335,6 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
-    QApplication::restoreOverrideCursor();
     mCanvasProperties->panSelectorDown = false;
     panActionEnd( mCanvasProperties->mouseLastXY );
   }
@@ -1750,7 +1748,7 @@ void QgsMapCanvas::updateDatumTransformEntries()
       continue;
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vl && vl->geometryType() == Qgis::NoGeometry )
+    if ( vl && vl->geometryType() == QgsWkbTypes::NullGeometry )
       continue;
 
     // if there are more options, ask the user which datum transform to use

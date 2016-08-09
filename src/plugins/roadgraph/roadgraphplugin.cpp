@@ -205,8 +205,8 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
   if ( !layer )
     return nullptr;
 
-  if ( layer->wkbType() == Qgis::WKBLineString
-       || layer->wkbType() == Qgis::WKBMultiLineString )
+  if ( layer->wkbType() == QgsWkbTypes::LineString
+       || layer->wkbType() == QgsWkbTypes::MultiLineString )
   {
     SpeedUnit speedUnit = SpeedUnit::byName( mSettings->mSpeedUnitName );
 

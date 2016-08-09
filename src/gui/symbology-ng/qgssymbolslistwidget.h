@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-class QgsSymbolV2;
+class QgsSymbol;
 class QgsStyleV2;
 
 class QMenu;
@@ -33,7 +33,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = nullptr );
+    QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = nullptr );
 
     //! Destructor
     virtual ~QgsSymbolsListWidget();
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void setLineWidth( double width );
     void addSymbolToStyle();
     void saveSymbol();
-    void symbolAddedToStyle( const QString& name, QgsSymbolV2* symbol );
+    void symbolAddedToStyle( const QString& name, QgsSymbol* symbol );
     void on_mSymbolUnitWidget_changed();
     void on_mTransparencySlider_valueChanged( int value );
 
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void changed();
 
   protected:
-    QgsSymbolV2* mSymbol;
+    QgsSymbol* mSymbol;
     QgsStyleV2* mStyle;
     QMenu* mAdvancedMenu;
     QAction* mClipFeaturesAction;

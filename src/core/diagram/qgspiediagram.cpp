@@ -43,8 +43,8 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   if ( is.classificationAttributeIsExpression )
   {
     QgsExpressionContext expressionContext = c.expressionContext();
-    if ( feature.fields() )
-      expressionContext.setFields( *feature.fields() );
+    if ( !feature.fields().isEmpty() )
+      expressionContext.setFields( feature.fields() );
     expressionContext.setFeature( feature );
 
     QgsExpression* expression = getExpression( is.classificationAttributeExpression, expressionContext );
@@ -94,8 +94,8 @@ void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& 
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
-  if ( feature.fields() )
-    expressionContext.setFields( *feature.fields() );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
 
   QList<QString>::const_iterator catIt = s.categoryAttributes.constBegin();
   for ( ; catIt != s.categoryAttributes.constEnd(); ++catIt )

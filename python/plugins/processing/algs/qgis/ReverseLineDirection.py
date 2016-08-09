@@ -49,12 +49,11 @@ class ReverseLineDirection(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
-        provider = layer.dataProvider()
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
                 layer.fields().toList(),
-                provider.geometryType(),
+                layer.wkbType(),
                 layer.crs())
 
         outFeat = QgsFeature()
@@ -62,13 +61,13 @@ class ReverseLineDirection(GeoAlgorithm):
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
-            inGeom = inFeat.constGeometry()
+            inGeom = inFeat.geometry()
             attrs = inFeat.attributes()
 
             outGeom = None
-            if inGeom and not inGeom.isEmpty():
+            if not inGeom.isEmpty():
                 reversedLine = inGeom.geometry().reversed()
-                if reversedLine is None:
+                if not reversedLine:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Error reversing line'))
                 outGeom = QgsGeometry(reversedLine)

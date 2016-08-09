@@ -29,9 +29,10 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError*>& er
       continue;
     }
 
-    QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( feature.geometry()->geometry(), QgsGeometryCheckPrecision::tolerance() );
+    QgsGeometry featureGeom = feature.geometry();
+    QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
 
-    QgsFeatureIds ids = mFeaturePool->getIntersects( feature.geometry()->geometry()->boundingBox() );
+    QgsFeatureIds ids = mFeaturePool->getIntersects( featureGeom.geometry()->boundingBox() );
     Q_FOREACH ( QgsFeatureId otherid, ids )
     {
       if ( otherid == featureid )
@@ -45,9 +46,9 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError*>& er
       }
 
       QString errMsg;
-      if ( geomEngine->within( *otherFeature.geometry()->geometry(), &errMsg ) )
+      if ( geomEngine->within( *otherFeature.geometry().geometry(), &errMsg ) )
       {
-        errors.append( new QgsGeometryContainedCheckError( this, featureid, feature.geometry()->geometry()->centroid(), otherid ) );
+        errors.append( new QgsGeometryContainedCheckError( this, featureid, feature.geometry().geometry()->centroid(), otherid ) );
       }
       else if ( !errMsg.isEmpty() )
       {
@@ -72,9 +73,10 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError* error, int meth
   }
 
   // Check if error still applies
-  QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( feature.geometry()->geometry(), QgsGeometryCheckPrecision::tolerance() );
+  QgsGeometry featureGeom = feature.geometry();
+  QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
 
-  if ( !geomEngine->within( *otherFeature.geometry()->geometry() ) )
+  if ( !geomEngine->within( *otherFeature.geometry().geometry() ) )
   {
     delete geomEngine;
     error->setObsolete();

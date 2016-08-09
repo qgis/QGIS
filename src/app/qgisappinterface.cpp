@@ -485,8 +485,17 @@ void QgisAppInterface::unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigW
   qgis->unregisterMapLayerPropertiesFactory( factory );
 }
 
+void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
+{
+  qgis->registerCustomDropHandler( handler );
+}
+
+void QgisAppInterface::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
+{
+  qgis->unregisterCustomDropHandler( handler );
+}
+
 //! Menus
-Q_DECL_DEPRECATED QMenu *QgisAppInterface::fileMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
@@ -592,7 +601,6 @@ QAction *QgisAppInterface::actionRollbackAllEdits() { return qgis->actionRollbac
 QAction *QgisAppInterface::actionCancelEdits() { return qgis->actionCancelEdits(); }
 QAction *QgisAppInterface::actionCancelAllEdits() { return qgis->actionCancelAllEdits(); }
 QAction *QgisAppInterface::actionLayerSaveAs() { return qgis->actionLayerSaveAs(); }
-QAction *QgisAppInterface::actionLayerSelectionSaveAs() { return nullptr; }
 QAction *QgisAppInterface::actionRemoveLayer() { return qgis->actionRemoveLayer(); }
 QAction *QgisAppInterface::actionDuplicateLayer() { return qgis->actionDuplicateLayer(); }
 QAction *QgisAppInterface::actionLayerProperties() { return qgis->actionLayerProperties(); }

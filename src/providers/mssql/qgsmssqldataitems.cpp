@@ -303,8 +303,8 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
 
   for ( int i = 0 ; i < typeList.size(); i++ )
   {
-    Qgis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList[i] );
-    if ( wkbType == Qgis::WKBUnknown )
+    QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList[i] );
+    if ( wkbType == QgsWkbTypes::Unknown )
     {
       QgsDebugMsg( QString( "unsupported geometry type:%1" ).arg( typeList[i] ) );
       continue;
@@ -422,7 +422,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& t
       }
 
       QString uri = connInfo() + " table=" + tableName;
-      if ( srcLayer->geometryType() != Qgis::NoGeometry )
+      if ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry )
         uri += " (geom)";
 
       QgsVectorLayerImport::ImportError err;
@@ -502,10 +502,10 @@ QString QgsMssqlLayerItem::createUri()
     return QString::null;
   }
 
-  QgsDataSourceURI uri = QgsDataSourceURI( connItem->connInfo() );
+  QgsDataSourceUri uri = QgsDataSourceUri( connItem->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
   uri.setSrid( mLayerProperty.srid );
-  uri.setWkbType( Qgis::fromOldWkbType( QgsMssqlTableModel::wkbTypeFromMssql( mLayerProperty.type ) ) );
+  uri.setWkbType( QgsMssqlTableModel::wkbTypeFromMssql( mLayerProperty.type ) );
   QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri() ) );
   return uri.uri();
 }
@@ -555,28 +555,28 @@ bool QgsMssqlSchemaItem::handleDrop( const QMimeData* data, Qt::DropAction )
 
 QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty& layerProperty, bool refresh )
 {
-  Qgis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
-  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsMssqlTableModel::displayStringForWkbType( wkbType ), layerProperty.srid );
+  QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
+  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::displayString( wkbType ), layerProperty.srid );
 
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )
   {
-    case Qgis::WKBPoint:
-    case Qgis::WKBPoint25D:
-    case Qgis::WKBMultiPoint:
-    case Qgis::WKBMultiPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
-    case Qgis::WKBLineString:
-    case Qgis::WKBLineString25D:
-    case Qgis::WKBMultiLineString:
-    case Qgis::WKBMultiLineString25D:
+    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::LineString25D:
+    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::MultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
-    case Qgis::WKBPolygon:
-    case Qgis::WKBPolygon25D:
-    case Qgis::WKBMultiPolygon:
-    case Qgis::WKBMultiPolygon25D:
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Polygon25D:
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:

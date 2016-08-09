@@ -225,6 +225,11 @@ qgis:meancoordinates: >
 
   If an attribute is selected in the  <Unique ID  field> parameters, features will be grouped according to values in this field. Instead of a single point with the center of mass of the whole layer, the  output layer will contain a center of mass for the features in each category.
 
+qgis:mergelines: >
+  This algorithm joins all connected parts of MultiLineString geometries into single LineString geometries.
+
+  If any parts of the input MultiLineString geometries are not connected, the resultant geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts.
+
 qgis:mergevectorlayers: >
   This algorithm combines two vector layer of the same geometry type into a single one.
 

@@ -38,7 +38,7 @@
 #include "qgsdialog.h"
 #include "qgscomposer.h"
 #include "qgscolorschemeregistry.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"
 #include "qgsexpressioncontext.h"
 #include "qgsunittypes.h"
@@ -2152,14 +2152,14 @@ void QgsOptions::saveDefaultDatumTransformations()
 
 void QgsOptions::on_mButtonAddColor_clicked()
 {
-  QColor newColor = QgsColorDialogV2::getColor( QColor(), this->parentWidget(), tr( "Select color" ), true );
+  QColor newColor = QgsColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select color" ), true );
   if ( !newColor.isValid() )
   {
     return;
   }
   activateWindow();
 
-  mTreeCustomColors->addColor( newColor, QgsSymbolLayerV2Utils::colorToName( newColor ) );
+  mTreeCustomColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
 }
 
 void QgsOptions::on_mButtonImportColors_clicked()

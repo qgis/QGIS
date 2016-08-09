@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry, QgsField
+from qgis.core import Qgis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry, QgsField, QgsWkbTypes
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -72,14 +72,14 @@ class ExportGeometryInfo(GeoAlgorithm):
         method = self.getParameterValue(self.METHOD)
 
         geometryType = layer.geometryType()
-        fields = layer.pendingFields()
+        fields = layer.fields()
 
-        if geometryType == Qgis.Polygon:
+        if geometryType == QgsWkbTypes.PolygonGeometry:
             areaName = vector.createUniqueFieldName('area', fields)
             fields.append(QgsField(areaName, QVariant.Double))
             perimeterName = vector.createUniqueFieldName('perimeter', fields)
             fields.append(QgsField(perimeterName, QVariant.Double))
-        elif geometryType == Qgis.Line:
+        elif geometryType == QgsWkbTypes.LineGeometry:
             lengthName = vector.createUniqueFieldName('length', fields)
             fields.append(QgsField(lengthName, QVariant.Double))
         else:
@@ -89,7 +89,7 @@ class ExportGeometryInfo(GeoAlgorithm):
             fields.append(QgsField(yName, QVariant.Double))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
+            fields.toList(), layer.wkbType(), layer.crs())
 
         ellips = None
         crs = None

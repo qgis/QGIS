@@ -21,8 +21,8 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include <QDomDocument>
@@ -98,9 +98,9 @@ void QgsComposerSymbolV2Item::writeXml( QDomElement& elem, QDomDocument& doc ) c
   QDomElement vectorClassElem = doc.createElement( "VectorClassificationItemNg" );
   if ( mSymbolV2 )
   {
-    QgsSymbolV2Map saveSymbolMap;
+    QgsSymbolMap saveSymbolMap;
     saveSymbolMap.insert( "classificationSymbol", mSymbolV2 );
-    QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( saveSymbolMap, "symbols", doc );
+    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( saveSymbolMap, "symbols", doc );
     vectorClassElem.appendChild( symbolsElem );
   }
   vectorClassElem.setAttribute( "text", text() );
@@ -120,25 +120,25 @@ void QgsComposerSymbolV2Item::readXml( const QDomElement& itemElem, bool xServer
   QDomElement symbolsElem = itemElem.firstChildElement( "symbols" );
   if ( !symbolsElem.isNull() )
   {
-    QgsSymbolV2Map loadSymbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
+    QgsSymbolMap loadSymbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
     //we assume there is only one symbol in the map...
-    QgsSymbolV2Map::iterator mapIt = loadSymbolMap.begin();
+    QgsSymbolMap::iterator mapIt = loadSymbolMap.begin();
     if ( mapIt != loadSymbolMap.end() )
     {
-      QgsSymbolV2* symbolNg = mapIt.value();
+      QgsSymbol* symbolNg = mapIt.value();
       if ( symbolNg )
       {
         setSymbolV2( symbolNg );
         if ( xServerAvailable )
         {
-          setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
+          setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
         }
       }
     }
   }
 }
 
-void QgsComposerSymbolV2Item::setSymbolV2( QgsSymbolV2* s )
+void QgsComposerSymbolV2Item::setSymbolV2( QgsSymbol* s )
 {
   delete mSymbolV2;
   mSymbolV2 = s;
@@ -294,7 +294,7 @@ void QgsComposerLayerItem::setDefaultStyle( double scaleDenominator, const QStri
     QgsFeatureRendererV2* renderer = vLayer->rendererV2();
     if ( renderer )
     {
-      QPair<QString, QgsSymbolV2*> symbolItem = renderer->legendSymbolItems( scaleDenominator, rule ).value( 0 );
+      QPair<QString, QgsSymbol*> symbolItem = renderer->legendSymbolItems( scaleDenominator, rule ).value( 0 );
       if ( renderer->legendSymbolItems( scaleDenominator, rule ).size() > 1 || !symbolItem.first.isEmpty() )
       {
         setStyle( QgsComposerLegendStyle::Subgroup );

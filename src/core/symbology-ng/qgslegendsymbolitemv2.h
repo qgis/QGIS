@@ -18,13 +18,13 @@
 
 #include <QString>
 
-class QgsSymbolV2;
+class QgsSymbol;
 
 /** \ingroup core
  * The class stores information about one class/rule of a vector layer renderer in a unified way
  * that can be used by legend model for rendering of legend.
  *
- * @see QgsSymbolV2LegendNode
+ * @see QgsSymbolLegendNode
  * @note added in 2.6
  */
 class CORE_EXPORT QgsLegendSymbolItemV2
@@ -33,13 +33,13 @@ class CORE_EXPORT QgsLegendSymbolItemV2
     QgsLegendSymbolItemV2();
     //! Construct item. Does not take ownership of symbol (makes internal clone)
     //! @note parentRuleKey added in 2.8
-    QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString& parentRuleKey = QString() );
+    QgsLegendSymbolItemV2( QgsSymbol* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString& parentRuleKey = QString() );
     ~QgsLegendSymbolItemV2();
     QgsLegendSymbolItemV2( const QgsLegendSymbolItemV2& other );
     QgsLegendSymbolItemV2& operator=( const QgsLegendSymbolItemV2& other );
 
     //! Return associated symbol. May be null.
-    QgsSymbolV2* symbol() const { return mSymbol; }
+    QgsSymbol* symbol() const { return mSymbol; }
     //! Return text label
     QString label() const { return mLabel; }
     //! Return unique identifier of the rule for identification of the item within renderer
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsLegendSymbolItemV2
     bool isCheckable() const { return mCheckable; }
 
     //! Used for older code that identifies legend entries from symbol pointer within renderer
-    QgsSymbolV2* legacyRuleKey() const { return mOriginalSymbolPointer; }
+    QgsSymbol* legacyRuleKey() const { return mOriginalSymbolPointer; }
 
     //! Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
     bool isScaleOK( double scale ) const;
@@ -67,11 +67,11 @@ class CORE_EXPORT QgsLegendSymbolItemV2
     QString parentRuleKey() const { return mParentKey; }
 
     //! Set symbol of the item. Takes ownership of symbol.
-    void setSymbol( QgsSymbolV2* s );
+    void setSymbol( QgsSymbol* s );
 
   private:
     //! symbol. owned by the struct. can be null.
-    QgsSymbolV2* mSymbol;
+    QgsSymbol* mSymbol;
     //! label of the item (may be empty or non-unique)
     QString mLabel;
     //! unique identifier of the symbol item (within renderer)
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsLegendSymbolItemV2
     //! whether it can be enabled/disabled
     bool mCheckable;
 
-    QgsSymbolV2* mOriginalSymbolPointer;
+    QgsSymbol* mOriginalSymbolPointer;
 
     // additional data that may be used for filtering
 

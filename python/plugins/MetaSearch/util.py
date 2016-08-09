@@ -44,7 +44,7 @@ from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.uic import loadUiType
 
-from qgis.core import Qgis
+from qgis.core import Qgis, QgsWkbTypes
 
 
 LOGGER = logging.getLogger('MetaSearch')

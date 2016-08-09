@@ -58,7 +58,7 @@ class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayerV2
     QgsSimpleMarkerSymbolLayerBase( Shape shape = Circle,
                                     double size = DEFAULT_SIMPLEMARKER_SIZE,
                                     double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                    QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                    QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     /** Returns the shape for the rendered marker symbol.
      * @see setShape()
@@ -87,10 +87,10 @@ class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayerV2
      */
     static QString encodeShape( Shape shape );
 
-    void startRender( QgsSymbolV2RenderContext& context );
-    void stopRender( QgsSymbolV2RenderContext& context );
-    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context );
-    QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext& context );
+    void renderPoint( QPointF point, QgsSymbolRenderContext& context );
+    QRectF bounds( QPointF point, QgsSymbolRenderContext& context );
 
   protected:
 
@@ -112,7 +112,7 @@ class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayerV2
      * @param hasDataDefinedSize will be set to true if marker uses data defined sizes
      * @returns marker size, in original size units
      */
-    double calculateSize( QgsSymbolV2RenderContext& context, bool& hasDataDefinedSize ) const;
+    double calculateSize( QgsSymbolRenderContext& context, bool& hasDataDefinedSize ) const;
 
     /** Calculates the marker offset and rotation.
      * @param context symbol render context
@@ -121,7 +121,7 @@ class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayerV2
      * @param offset will be set to calculated marker offset (in painter units)
      * @param angle will be set to calculated marker angle
      */
-    void calculateOffsetAndRotation( QgsSymbolV2RenderContext& context, double scaledSize, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
+    void calculateOffsetAndRotation( QgsSymbolRenderContext& context, double scaledSize, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
 
   private:
 
@@ -132,7 +132,7 @@ class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayerV2
      * in the path argument.
      * @param path transformed painter path representing shape to draw
      */
-    virtual void draw( QgsSymbolV2RenderContext& context, Shape shape, const QPolygonF& polygon, const QPainterPath& path ) = 0;
+    virtual void draw( QgsSymbolRenderContext& context, Shape shape, const QPolygonF& polygon, const QPainterPath& path ) = 0;
 
 };
 
@@ -167,7 +167,7 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsSimpleMarkerSymbolLayerBase
         const QColor& borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
         double size = DEFAULT_SIMPLEMARKER_SIZE,
         double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-        QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+        QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
         Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE ) /Deprecated/;
 
     /** Constructor for QgsSimpleMarkerSymbolLayerV2.
@@ -182,7 +182,7 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsSimpleMarkerSymbolLayerBase
     QgsSimpleMarkerSymbolLayerV2( Shape shape = Circle,
                                   double size = DEFAULT_SIMPLEMARKER_SIZE,
                                   double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+                                  QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
                                   const QColor& color = DEFAULT_SIMPLEMARKER_COLOR,
                                   const QColor& borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                   Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
@@ -193,29 +193,29 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsSimpleMarkerSymbolLayerBase
      * @param properties a property map containing symbol properties (see properties())
      * @returns new QgsSimpleMarkerSymbolLayerV2
      */
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     /** Creates a new QgsSimpleMarkerSymbolLayerV2 from an SLD XML element.
      * @param element XML element containing SLD definition of symbol
      * @returns new QgsSimpleMarkerSymbolLayerV2
      */
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // reimplemented from base classes
 
     QString layerType() const;
-    void startRender( QgsSymbolV2RenderContext& context );
-    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolRenderContext& context );
+    void renderPoint( QPointF point, QgsSymbolRenderContext& context );
     QgsStringMap properties() const;
     virtual QgsSimpleMarkerSymbolLayerV2* clone() const /Factory/;
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
-    bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolV2RenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
+    bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
-    QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context );
+    QRectF bounds( QPointF point, QgsSymbolRenderContext& context );
     QColor outlineColor() const;
     void setOutlineColor( const QColor& color );
     QColor fillColor() const;
@@ -332,7 +332,7 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsSimpleMarkerSymbolLayerBase
      * @param context symbol context
      * @note this method does not handle setting the painter pen or brush to match the symbol's fill or outline
      */
-    void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
+    void drawMarker( QPainter* p, QgsSymbolRenderContext& context );
 
     //! @deprecated will be removed in QGIS 3.0
     bool prepareShape( const QString& name = QString() ) /Deprecated/;
@@ -344,11 +344,11 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsSimpleMarkerSymbolLayerBase
     /** Prepares cache image
      * @returns true in case of success, false if cache image size too large
     */
-    bool prepareCache( QgsSymbolV2RenderContext& context );
+    bool prepareCache( QgsSymbolRenderContext& context );
 
   private:
 
-    virtual void draw( QgsSymbolV2RenderContext& context, Shape shape, const QPolygonF& polygon, const QPainterPath& path );
+    virtual void draw( QgsSymbolRenderContext& context, Shape shape, const QPolygonF& polygon, const QPainterPath& path );
 };
 
 
@@ -375,21 +375,21 @@ class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
     QgsFilledMarkerSymbolLayer( Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     /** Creates a new QgsFilledMarkerSymbolLayer.
      * @param properties a property map containing symbol properties (see properties())
      * @returns new QgsFilledMarkerSymbolLayer
      */
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     QString layerType() const;
-    void startRender( QgsSymbolV2RenderContext& context );
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext& context );
     QgsStringMap properties() const;
     virtual QgsFilledMarkerSymbolLayer* clone() const /Factory/;
-    virtual QgsSymbolV2* subSymbol();
-    virtual bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
+    virtual QgsSymbol* subSymbol();
+    virtual bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
     virtual double estimateMaxBleed() const;
     QSet<QString> usedAttributes() const;
     void setColor( const QColor& c );
@@ -397,7 +397,7 @@ class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 
   private:
 
-    virtual void draw( QgsSymbolV2RenderContext& context, Shape shape, const QPolygonF& polygon, const QPainterPath& path );
+    virtual void draw( QgsSymbolRenderContext& context, Shape shape, const QPolygonF& polygon, const QPainterPath& path );
 
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer& );
 };
@@ -413,22 +413,22 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     QgsSvgMarkerSymbolLayerV2( const QString& name = DEFAULT_SVGMARKER_NAME,
                                double size = DEFAULT_SVGMARKER_SIZE,
                                double angle = DEFAULT_SVGMARKER_ANGLE,
-                               QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                               QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     // static stuff
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 
     QString layerType() const;
 
-    void startRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolRenderContext& context );
 
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolRenderContext& context );
 
-    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context );
+    void renderPoint( QPointF point, QgsSymbolRenderContext& context );
 
     QgsStringMap properties() const;
 
@@ -468,9 +468,9 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
-    QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context );
+    QRectF bounds( QPointF point, QgsSymbolRenderContext& context );
 };
 
 class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
@@ -490,18 +490,18 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     // static stuff
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 
     QString layerType() const;
 
-    void startRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolRenderContext& context );
 
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolRenderContext& context );
 
-    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context );
+    void renderPoint( QPointF point, QgsSymbolRenderContext& context );
 
     QgsStringMap properties() const;
 
@@ -552,6 +552,6 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
      * @note added in 2.16 */
     void setPenJoinStyle( Qt::PenJoinStyle style );
 
-    QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context );
+    QRectF bounds( QPointF point, QgsSymbolRenderContext& context );
 
 };

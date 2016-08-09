@@ -19,10 +19,9 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgslegendmodel.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 
 #include <QPainter>

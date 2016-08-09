@@ -220,26 +220,26 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   }
 
   //convert geom to geos
-  const QgsGeometry* geom = feat.constGeometry();
-  QScopedPointer<QgsGeometry> extentGeom( QgsGeometry::fromRect( mapSettings.visibleExtent() ) );
+  QgsGeometry geom = feat.geometry();
+  QgsGeometry extentGeom = QgsGeometry::fromRect( mapSettings.visibleExtent() );
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
-    extentGeom->rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
+    extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
   const GEOSGeometry* geos_geom = nullptr;
   QScopedPointer<QgsGeometry> preparedGeom;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), extentGeom.data() ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
-    preparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), extentGeom.data() ) );
-    if ( !preparedGeom.data() )
+    QgsGeometry preparedGeom = QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom );
+    if ( preparedGeom.isEmpty() )
       return nullptr;
-    geos_geom = preparedGeom.data()->asGeos();
+    geos_geom = preparedGeom.asGeos();
   }
   else
   {
-    geos_geom = geom->asGeos();
+    geos_geom = geom.asGeos();
   }
 
   if ( !geos_geom )
@@ -249,10 +249,10 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 
   const GEOSGeometry* geosObstacleGeom = nullptr;
   QScopedPointer<QgsGeometry> scopedObstacleGeom;
-  if ( mSettings.isObstacle() && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom.data() ) )
+  if ( mSettings.isObstacle() && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
-    scopedObstacleGeom.reset( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom.data() ) );
-    geosObstacleGeom = scopedObstacleGeom.data()->asGeos();
+    QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom );
+    geosObstacleGeom = preparedObstacleGeom.asGeos();
   }
   else if ( mSettings.isObstacle() && obstacleGeometry )
   {

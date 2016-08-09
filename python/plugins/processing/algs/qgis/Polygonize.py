@@ -30,7 +30,7 @@ from shapely.ops import unary_union
 from shapely.geometry import MultiLineString
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -60,9 +60,8 @@ class Polygonize(GeoAlgorithm):
     def processAlgorithm(self, progress):
         vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
-        vprovider = vlayer.dataProvider()
         if self.getParameterValue(self.FIELDS):
-            fields = vprovider.fields()
+            fields = vlayer.fields()
         else:
             fields = QgsFields()
         if self.getParameterValue(self.GEOMETRY):
@@ -96,7 +95,7 @@ class Polygonize(GeoAlgorithm):
         progress.setPercentage(50)
 
         progress.setInfo('Saving polygons...')
-        writer = output.getVectorWriter(fields, Qgis.WKBPolygon, vlayer.crs())
+        writer = output.getVectorWriter(fields, QgsWkbTypes.Polygon, vlayer.crs())
         outFeat = QgsFeature()
         total = 50.0 / len(polygons)
         for current, polygon in enumerate(polygons):

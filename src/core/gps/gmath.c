@@ -31,6 +31,8 @@
 #include <math.h>
 #include <float.h>
 
+double remainder(double X, double Y) { return fmod(X, Y); }
+
 /**
  * \fn nmea_degree2radian
  * \brief Convert degree to radian

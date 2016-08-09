@@ -9,10 +9,9 @@ from qgis.core import QgsFeature, QgsField
 from processing.tools.vector import VectorWriter
 
 layer = processing.getObject(input)
-provider = layer.dataProvider()
-fields = provider.fields()
+fields = layer.fields()
 fields.append(QgsField('UNIQ_COUNT', QVariant.Int))
-writer = VectorWriter(N_unique_values, None, fields, provider.geometryType(),
+writer = VectorWriter(N_unique_values, None, fields, layer.wkbType(),
                       layer.crs())
 
 class_field_index = layer.fieldNameIndex(class_field)

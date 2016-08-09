@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsnullsymbolrenderer.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsgeometry.h"
 
 #include <QDomDocument>
@@ -29,12 +29,12 @@ QgsNullSymbolRenderer::~QgsNullSymbolRenderer()
 {
 }
 
-QgsSymbolV2* QgsNullSymbolRenderer::symbolForFeature( QgsFeature& , QgsRenderContext& )
+QgsSymbol* QgsNullSymbolRenderer::symbolForFeature( QgsFeature& , QgsRenderContext& )
 {
   return nullptr;
 }
 
-QgsSymbolV2* QgsNullSymbolRenderer::originalSymbolForFeature( QgsFeature&, QgsRenderContext& )
+QgsSymbol* QgsNullSymbolRenderer::originalSymbolForFeature( QgsFeature&, QgsRenderContext& )
 {
   return nullptr;
 }
@@ -47,15 +47,15 @@ bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext
     return true;
   }
 
-  if ( !feature.constGeometry() ||
-       feature.constGeometry()->type() == Qgis::NoGeometry ||
-       feature.constGeometry()->type() == Qgis::UnknownGeometry )
+  if ( !feature.hasGeometry() ||
+       feature.geometry().type() == QgsWkbTypes::NullGeometry ||
+       feature.geometry().type() == QgsWkbTypes::UnknownGeometry )
     return true;
 
   if ( mSymbol.isNull() )
   {
     //create default symbol
-    mSymbol.reset( QgsSymbolV2::defaultSymbol( feature.constGeometry()->type() ) );
+    mSymbol.reset( QgsSymbol::defaultSymbol( feature.geometry().type() ) );
     mSymbol->startRender( context );
   }
 
@@ -100,9 +100,9 @@ QgsFeatureRendererV2* QgsNullSymbolRenderer::clone() const
   return r;
 }
 
-QgsSymbolV2List QgsNullSymbolRenderer::symbols( QgsRenderContext& )
+QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext& )
 {
-  return QgsSymbolV2List();
+  return QgsSymbolList();
 }
 
 QgsFeatureRendererV2* QgsNullSymbolRenderer::create( QDomElement& element )

@@ -19,10 +19,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmaplayerregistry.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsscaleexpression.h"
 #include "qgsdatadefined.h"
 #include "qgsmapcanvas.h"
@@ -103,7 +103,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsSymbolV2 * symbol )
+QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsSymbol * symbol )
     : mSymbol( symbol )
     // we just use the minimumValue and maximumValue from the layer, unfortunately they are
     // non const, so we get the layer from the registry instead
@@ -216,28 +216,28 @@ void QgsSizeScaleWidget::updatePreview()
   else
     exponentSpinBox->hide();
 
-  QList<double> breaks = QgsSymbolLayerV2Utils::prettyBreaks( expr->minValue(), expr->maxValue(), 4 );
+  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( expr->minValue(), expr->maxValue(), 4 );
 
   treeView->setIconSize( QSize( 512, 512 ) );
   mPreviewList.clear();
   int widthMax = 0;
   for ( int i = 0; i < breaks.length(); i++ )
   {
-    QScopedPointer< QgsSymbolV2LegendNode > node;
+    QScopedPointer< QgsSymbolLegendNode > node;
     if ( dynamic_cast<const QgsMarkerSymbolV2*>( mSymbol ) )
     {
       QScopedPointer< QgsMarkerSymbolV2 > symbol( static_cast<QgsMarkerSymbolV2*>( mSymbol->clone() ) );
       symbol->setDataDefinedSize( QgsDataDefined() );
       symbol->setDataDefinedAngle( QgsDataDefined() ); // to avoid symbol not beeing drawn
       symbol->setSize( expr->size( breaks[i] ) );
-      node.reset( new QgsSymbolV2LegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), QString() ) ) );
+      node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), QString() ) ) );
     }
     else if ( dynamic_cast<const QgsLineSymbolV2*>( mSymbol ) )
     {
       QScopedPointer< QgsLineSymbolV2 > symbol( static_cast<QgsLineSymbolV2*>( mSymbol->clone() ) );
       symbol->setDataDefinedWidth( QgsDataDefined() );
       symbol->setWidth( expr->size( breaks[i] ) );
-      node.reset( new QgsSymbolV2LegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), QString() ) ) );
+      node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), QString() ) ) );
 
     }
 

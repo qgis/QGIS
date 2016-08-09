@@ -347,7 +347,7 @@
    <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QgsColorButtonV2" name="mChangeColorButton">
+      <widget class="QgsColorButton" name="mChangeColorButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -406,7 +406,7 @@
    <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
-      <widget class="QgsColorButtonV2" name="mChangeBorderColorButton">
+      <widget class="QgsColorButton" name="mChangeBorderColorButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -536,9 +536,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

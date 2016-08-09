@@ -24,7 +24,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
                        QgsVectorFileWriter,
                        QgsFeatureRequest,
-                       QgsWKBTypes
+                       QgsWkbTypes
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
@@ -34,6 +34,10 @@ from qgis.testing import start_app, unittest
 from utilities import writeShape, compareWkt
 
 start_app()
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
 class TestFieldValueConverter(QgsVectorFileWriter.FieldValueConverter):
@@ -213,8 +217,8 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertTrue(features)
 
         # check with both a standard PointZ and 25d style Point25D type
-        for t in [QgsWKBTypes.PointZ, QgsWKBTypes.Point25D]:
-            dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}.shp'.format(QgsWKBTypes.displayString(t)))
+        for t in [QgsWkbTypes.PointZ, QgsWkbTypes.Point25D]:
+            dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}.shp'.format(QgsWkbTypes.displayString(t)))
             crs = QgsCoordinateReferenceSystem()
             crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             write_result = QgsVectorFileWriter.writeAsVectorFormat(
@@ -237,7 +241,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             #also try saving out the shapefile version again, as an extra test
             #this tests that saving a layer with z WITHOUT explicitly telling the writer to keep z values,
             #will stay retain the z values
-            dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}_copy.shp'.format(QgsWKBTypes.displayString(t)))
+            dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}_copy.shp'.format(QgsWkbTypes.displayString(t)))
             crs = QgsCoordinateReferenceSystem()
             crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             write_result = QgsVectorFileWriter.writeAsVectorFormat(
@@ -415,6 +419,48 @@ class TestQgsVectorLayer(unittest.TestCase):
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         self.assertEqual(f['nonconv'], 1)
         self.assertEqual(f['conv_attr'], 'converted_val')
+
+    @unittest.expectedFailure(int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
+    def testInteger64WriteTabfile(self):
+        """Check writing Integer64 fields to an MapInfo tabfile (which does not support that type)."""
+        ml = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=int8:int8'),
+            'test',
+            'memory')
+
+        self.assertIsNotNone(ml, 'Provider not initialized')
+        self.assertTrue(ml.isValid(), 'Source layer not valid')
+        provider = ml.dataProvider()
+        self.assertIsNotNone(provider)
+
+        ft = QgsFeature()
+        ft.setAttributes([2123456789])
+        res, features = provider.addFeatures([ft])
+        self.assertTrue(res)
+        self.assertTrue(features)
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'integer64.tab')
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            dest_file_name,
+            'utf-8',
+            crs,
+            'MapInfo File')
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+
+        fields = created_layer.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('int8')).type(), QVariant.Double)
+
+        f = next(created_layer.getFeatures(QgsFeatureRequest()))
+
+        int8_idx = created_layer.fieldNameIndex('int8')
+        self.assertEqual(f.attributes()[int8_idx], 2123456789)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterdrawer.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
@@ -30,7 +31,7 @@ QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iter
 {
 }
 
-void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, const QgsRenderContext* ctx )
+void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, QgsRasterBlockFeedback* feedback )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
@@ -40,7 +41,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
   // last pipe filter has only 1 band
   int bandNumber = 1;
-  mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent );
+  mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent, feedback );
 
   //number of cols/rows in output pixels
   int nCols = 0;
@@ -90,7 +91,10 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
     drawImage( p, viewPort, img, topLeftCol, topLeftRow, theQgsMapToPixel );
 
     delete block;
-    if ( ctx && ctx->renderingStopped() )
+
+    // ok this does not matter much anyway as the tile size quite big so most of the time
+    // there would be just one tile for the whole display area, but it won't hurt...
+    if ( feedback && feedback->isCancelled() )
       break;
   }
 }

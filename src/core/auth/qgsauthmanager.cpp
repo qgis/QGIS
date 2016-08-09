@@ -1415,7 +1415,7 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
   QgsAuthMethod* authmethod = configAuthMethod( authcfg );
   if ( authmethod )
   {
-    if ( !( authmethod->supportedExpansions() & QgsAuthMethod::DataSourceURI ) )
+    if ( !( authmethod->supportedExpansions() & QgsAuthMethod::DataSourceUri ) )
     {
       QgsDebugMsg( QString( "Data source URI updating not supported by authcfg: %1" ).arg( authcfg ) );
       return false;

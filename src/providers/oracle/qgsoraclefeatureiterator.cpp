@@ -147,7 +147,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
       break;
   }
 
-  if ( mSource->mRequestedGeomType != Qgis::WKBUnknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
+  if ( mSource->mRequestedGeomType != QgsWkbTypes::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
   {
     if ( !whereClause.isEmpty() )
       whereClause += " AND ";
@@ -244,7 +244,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
   for ( ;; )
   {
     feature.initAttributes( mSource->mFields.count() );
-    feature.setGeometry( 0 );
+    feature.clearGeometry();
 
     if ( mRewind )
     {
@@ -273,18 +273,18 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
         unsigned char *copy = new unsigned char[ba->size()];
         memcpy( copy, ba->constData(), ba->size() );
 
-        QgsGeometry *g = new QgsGeometry();
-        g->fromWkb( copy, ba->size() );
+        QgsGeometry g;
+        g.fromWkb( copy, ba->size() );
         feature.setGeometry( g );
       }
       else
       {
-        feature.setGeometry( 0 );
+        feature.clearGeometry();
       }
 
       if ( !mRequest.filterRect().isNull() )
       {
-        if ( !feature.geometry() )
+        if ( !feature.hasGeometry() )
         {
           QgsDebugMsg( "no geometry to intersect" );
           continue;
@@ -296,7 +296,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
           if ( !mSource->mHasSpatialIndex )
           {
             // only intersect with bbox
-            if ( !feature.geometry()->boundingBox().intersects( mRequest.filterRect() ) )
+            if ( !feature.geometry().boundingBox().intersects( mRequest.filterRect() ) )
             {
               // skip feature that don't intersect with our rectangle
               QgsDebugMsg( "no bbox intersect" );
@@ -307,7 +307,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
         else if ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex )
         {
           // couldn't use sdo_relate earlier
-          if ( !feature.geometry()->intersects( mRequest.filterRect() ) )
+          if ( !feature.geometry().intersects( mRequest.filterRect() ) )
           {
             // skip feature that don't intersect with our rectangle
             QgsDebugMsg( "no exact intersect" );
@@ -337,7 +337,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
         {
           Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
           {
-            const QgsField &fld = mSource->mFields[idx];
+            QgsField fld = mSource->mFields.at( idx );
 
             QVariant v = mQry.value( col );
             if ( v.type() != fld.type() )
@@ -373,7 +373,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
       if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
         continue;
 
-      const QgsField &fld = mSource->mFields[idx];
+      QgsField fld = mSource->mFields.at( idx );
 
       QVariant v = mQry.value( col );
       if ( fld.type() == QVariant::ByteArray && fld.typeName().endsWith( ".SDO_GEOMETRY" ) )
@@ -452,14 +452,14 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, bool showLog )
         break;
 
       case pktInt:
-        query += delim + QgsOracleProvider::quotedIdentifier( mSource->mFields[ mSource->mPrimaryKeyAttrs[0] ].name() );
+        query += delim + QgsOracleProvider::quotedIdentifier( mSource->mFields.at( mSource->mPrimaryKeyAttrs[0] ).name() );
         delim = ",";
         break;
 
       case pktFidMap:
         Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
         {
-          query += delim + mConnection->fieldExpression( mSource->mFields[idx] );
+          query += delim + mConnection->fieldExpression( mSource->mFields.at( idx ) );
           delim = ",";
         }
         break;
@@ -475,7 +475,7 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, bool showLog )
       if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
         continue;
 
-      query += delim + mConnection->fieldExpression( mSource->mFields[idx] );
+      query += delim + mConnection->fieldExpression( mSource->mFields.at( idx ) );
     }
 
     query += QString( " FROM %1 \"FEATUREREQUEST\"" ).arg( mSource->mQuery );

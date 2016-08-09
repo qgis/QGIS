@@ -312,13 +312,13 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     // icons
     switch ( layer->geometryType() )
     {
-      case Qgis::Point:
+      case QgsWkbTypes::PointGeometry:
         layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.png" ) );
         break;
-      case Qgis::Line:
+      case QgsWkbTypes::LineGeometry:
         layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.png" ) );
         break;
-      case Qgis::Polygon:
+      case QgsWkbTypes::PolygonGeometry:
         layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
         break;
       default:
@@ -599,7 +599,7 @@ void QgsIdentifyMenu::handleMenuHover()
     if ( !vl )
       continue;
 
-    QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.constGeometry(), vl );
+    QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.geometry(), vl );
     QSettings settings;
     QColor color = QColor( settings.value( "/Map/highlight/color", Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
     int alpha = settings.value( "/Map/highlight/colorAlpha", Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();

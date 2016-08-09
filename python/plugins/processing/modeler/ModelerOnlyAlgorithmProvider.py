@@ -31,6 +31,8 @@ from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.modeler.CalculatorModelerAlgorithm import CalculatorModelerAlgorithm
 from processing.modeler.RasterLayerBoundsAlgorithm import RasterLayerBoundsAlgorithm
 from processing.modeler.VectorLayerBoundsAlgorithm import VectorLayerBoundsAlgorithm
+from processing.modeler.RasterLayerCrsAlgorithm import RasterLayerCrsAlgorithm
+from processing.modeler.VectorLayerCrsAlgorithm import VectorLayerCrsAlgorithm
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -52,6 +54,8 @@ class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
     def _loadAlgorithms(self):
         self.algs = [CalculatorModelerAlgorithm(),
                      RasterLayerBoundsAlgorithm(),
-                     VectorLayerBoundsAlgorithm()]
+                     VectorLayerBoundsAlgorithm(),
+                     RasterLayerCrsAlgorithm(),
+                     VectorLayerCrsAlgorithm()]
         for alg in self.algs:
             alg.provider = self

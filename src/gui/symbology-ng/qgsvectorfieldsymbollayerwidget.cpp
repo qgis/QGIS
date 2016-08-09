@@ -16,7 +16,7 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
-QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl ), mLayer( nullptr )
+QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
 
@@ -41,7 +41,7 @@ QgsVectorFieldSymbolLayerWidget::~QgsVectorFieldSymbolLayerWidget()
 {
 }
 
-void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != "VectorField" )
   {
@@ -99,7 +99,7 @@ void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   emit changed();
 }
 
-QgsSymbolLayerV2* QgsVectorFieldSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer* QgsVectorFieldSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }

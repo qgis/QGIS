@@ -18,9 +18,9 @@
 
 #include "ui_widget_layerproperties.h"
 
-class QgsSymbolV2;
-class QgsSymbolLayerV2;
-class QgsSymbolLayerV2Widget;
+class QgsSymbol;
+class QgsSymbolLayer;
+class QgsSymbolLayerWidget;
 class QgsVectorLayer;
 class QgsMapCanvas;
 class QgsPanelWidget;
@@ -39,7 +39,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
     Q_OBJECT
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent = nullptr );
+    QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbol* symbol, const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
     /** Returns the expression context used for the widget, if set. This expression context is used for
      * evaluating data defined symbol properties and for populating based expression widgets in
@@ -79,16 +79,16 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
 
   signals:
     void changed();
-    void changeLayer( QgsSymbolLayerV2* );
+    void changeLayer( QgsSymbolLayer* );
 
   protected:
     void populateLayerTypes();
-    void updateSymbolLayerWidget( QgsSymbolLayerV2* layer );
+    void updateSymbolLayerWidget( QgsSymbolLayer* layer );
 
   protected: // data
-    QgsSymbolLayerV2* mLayer;
+    QgsSymbolLayer* mLayer;
 
-    const QgsSymbolV2* mSymbol;
+    const QgsSymbol* mSymbol;
     const QgsVectorLayer* mVectorLayer;
 
   private slots:

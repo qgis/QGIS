@@ -59,11 +59,11 @@ class CORE_EXPORT QgsOgcUtils
        in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
        "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
      */
-    static QgsGeometry* geometryFromGML( const QString& xmlString );
+    static QgsGeometry geometryFromGML( const QString& xmlString );
 
     /** Static method that creates geometry from GML
       */
-    static QgsGeometry* geometryFromGML( const QDomNode& geometryNode );
+    static QgsGeometry geometryFromGML( const QDomNode& geometryNode );
 
     /** Read rectangle from GML2 Box */
     static QgsRectangle rectangleFromGMLBox( const QDomNode& boxNode );
@@ -210,17 +210,17 @@ class CORE_EXPORT QgsOgcUtils
   private:
 
     /** Static method that creates geometry from GML Point */
-    static QgsGeometry* geometryFromGMLPoint( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLPoint( const QDomElement& geometryElement );
     /** Static method that creates geometry from GML LineString */
-    static QgsGeometry* geometryFromGMLLineString( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLLineString( const QDomElement& geometryElement );
     /** Static method that creates geometry from GML Polygon */
-    static QgsGeometry* geometryFromGMLPolygon( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLPolygon( const QDomElement& geometryElement );
     /** Static method that creates geometry from GML MultiPoint */
-    static QgsGeometry* geometryFromGMLMultiPoint( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLMultiPoint( const QDomElement& geometryElement );
     /** Static method that creates geometry from GML MultiLineString */
-    static QgsGeometry* geometryFromGMLMultiLineString( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLMultiLineString( const QDomElement& geometryElement );
     /** Static method that creates geometry from GML MultiPolygon */
-    static QgsGeometry* geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
+    static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
     /** Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        @param coords list where the found coordinates are appended
        @param elem the \verbatim <gml:coordinates> \endverbatim element

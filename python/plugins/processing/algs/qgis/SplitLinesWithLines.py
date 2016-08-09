@@ -26,7 +26,7 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -57,10 +57,10 @@ class SplitLinesWithLines(GeoAlgorithm):
         layerB = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_B))
 
         sameLayer = self.getParameterValue(self.INPUT_A) == self.getParameterValue(self.INPUT_B)
-        fieldList = layerA.pendingFields()
+        fieldList = layerA.fields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                                                                     Qgis.WKBLineString, layerA.dataProvider().crs())
+                                                                     QgsWkbTypes.LineString, layerA.crs())
 
         spatialIndex = vector.spatialindex(layerB)
 
@@ -69,7 +69,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         total = 100.0 / float(len(features))
 
         for current, inFeatA in enumerate(features):
-            inGeom = QgsGeometry(inFeatA.geometry())
+            inGeom = inFeatA.geometry()
             attrsA = inFeatA.attributes()
             outFeat.setAttributes(attrsA)
             inLines = [inGeom]
@@ -86,7 +86,7 @@ class SplitLinesWithLines(GeoAlgorithm):
                         if inFeatA.id() == inFeatB.id():
                             continue
 
-                    splitGeom = QgsGeometry(inFeatB.geometry())
+                    splitGeom = inFeatB.geometry()
 
                     if inGeom.intersects(splitGeom):
                         splittingLines.append(splitGeom)

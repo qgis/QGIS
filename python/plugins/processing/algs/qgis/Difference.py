@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -68,11 +68,11 @@ class Difference(GeoAlgorithm):
             self.getParameterValue(Difference.OVERLAY))
         ignoreInvalid = self.getParameterValue(Difference.IGNORE_INVALID)
 
-        geomType = layerA.dataProvider().geometryType()
+        geomType = layerA.wkbType()
         writer = self.getOutputFromName(
-            Difference.OUTPUT).getVectorWriter(layerA.pendingFields(),
+            Difference.OUTPUT).getVectorWriter(layerA.fields(),
                                                geomType,
-                                               layerA.dataProvider().crs())
+                                               layerA.crs())
 
         outFeat = QgsFeature()
         index = vector.spatialindex(layerB)
@@ -80,14 +80,14 @@ class Difference(GeoAlgorithm):
         total = 100.0 / len(selectionA)
         for current, inFeatA in enumerate(selectionA):
             add = True
-            geom = QgsGeometry(inFeatA.geometry())
+            geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)
             attrs = inFeatA.attributes()
             intersections = index.intersects(geom.boundingBox())
             for i in intersections:
                 request = QgsFeatureRequest().setFilterFid(i)
                 inFeatB = layerB.getFeatures(request).next()
-                tmpGeom = QgsGeometry(inFeatB.geometry())
+                tmpGeom = inFeatB.geometry()
                 if diff_geom.intersects(tmpGeom):
                     diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
                     if diff_geom.isGeosEmpty():

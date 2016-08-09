@@ -15,13 +15,13 @@
 
 #include "qgsinvertedpolygonrenderer.h"
 
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 
 #include "qgslogger.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "qgssymbollayerv2.h"
+#include "qgssymbollayer.h"
 #include "qgsogcutils.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
@@ -39,7 +39,7 @@ QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRendererV2* su
   }
   else
   {
-    mSubRenderer.reset( QgsFeatureRendererV2::defaultRenderer( Qgis::Polygon ) );
+    mSubRenderer.reset( QgsFeatureRendererV2::defaultRenderer( QgsWkbTypes::PolygonGeometry ) );
   }
 }
 
@@ -64,7 +64,7 @@ const QgsFeatureRendererV2* QgsInvertedPolygonRenderer::embeddedRenderer() const
   return mSubRenderer.data();
 }
 
-void QgsInvertedPolygonRenderer::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+void QgsInvertedPolygonRenderer::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
 {
   if ( !mSubRenderer )
     return;
@@ -186,8 +186,8 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   QByteArray catId;
   if ( capabilities() & MoreSymbolsPerFeature )
   {
-    QgsSymbolV2List syms( mSubRenderer->symbolsForFeature( feature, context ) );
-    Q_FOREACH ( QgsSymbolV2* sym, syms )
+    QgsSymbolList syms( mSubRenderer->symbolsForFeature( feature, context ) );
+    Q_FOREACH ( QgsSymbol* sym, syms )
     {
       // append the memory address
       catId.append( reinterpret_cast<const char*>( &sym ), sizeof( sym ) );
@@ -195,7 +195,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   }
   else
   {
-    QgsSymbolV2* sym = mSubRenderer->symbolForFeature( feature, context );
+    QgsSymbol* sym = mSubRenderer->symbolForFeature( feature, context );
     if ( sym )
     {
       catId.append( reinterpret_cast<const char*>( &sym ), sizeof( sym ) );
@@ -218,32 +218,32 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 
   // update the geometry
   CombinedFeature& cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
-  if ( !feature.constGeometry() )
+  if ( !feature.hasGeometry() )
   {
     return false;
   }
-  QScopedPointer<QgsGeometry> geom( new QgsGeometry( *feature.constGeometry() ) );
+  QgsGeometry geom = feature.geometry();
 
   QgsCoordinateTransform xform = context.coordinateTransform();
   if ( xform.isValid() )
   {
-    geom->transform( xform );
+    geom.transform( xform );
   }
 
   if ( mPreprocessingEnabled )
   {
     // fix the polygon if it is not valid
-    if ( ! geom->isGeosValid() )
+    if ( ! geom.isGeosValid() )
     {
-      geom.reset( geom->buffer( 0, 0 ) );
+      geom = geom.buffer( 0, 0 );
     }
   }
 
-  if ( !geom )
+  if ( geom.isEmpty() )
     return false; // do not let invalid geometries sneak in!
 
   // add the geometry to the list of geometries for this feature
-  cFeat.geometries.append( geom.take() );
+  cFeat.geometries.append( geom );
 
   return true;
 }
@@ -265,10 +265,10 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
     if ( mPreprocessingEnabled )
     {
       // compute the unary union on the polygons
-      QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit.geometries ) );
+      QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries ) );
       // compute the difference with the extent
-      QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
-      QgsGeometry *final = rect->difference( const_cast<QgsGeometry*>( unioned.data() ) );
+      QgsGeometry rect = QgsGeometry::fromPolygon( mExtentPolygon );
+      QgsGeometry final = rect.difference( unioned );
       feat.setGeometry( final );
     }
     else
@@ -285,18 +285,18 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       // operations do not need geometries to be valid
       QgsMultiPolygon finalMulti;
       finalMulti.append( mExtentPolygon );
-      Q_FOREACH ( QgsGeometry* geom, cit.geometries )
+      Q_FOREACH ( const QgsGeometry& geom, cit.geometries )
       {
         QgsMultiPolygon multi;
-        QgsWKBTypes::Type type = QgsWKBTypes::flatType( geom->geometry()->wkbType() );
+        QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.geometry()->wkbType() );
 
-        if (( type == QgsWKBTypes::Polygon ) || ( type == QgsWKBTypes::CurvePolygon ) )
+        if (( type == QgsWkbTypes::Polygon ) || ( type == QgsWkbTypes::CurvePolygon ) )
         {
-          multi.append( geom->asPolygon() );
+          multi.append( geom.asPolygon() );
         }
-        else if (( type == QgsWKBTypes::MultiPolygon ) || ( type == QgsWKBTypes::MultiSurface ) )
+        else if (( type == QgsWkbTypes::MultiPolygon ) || ( type == QgsWkbTypes::MultiSurface ) )
         {
-          multi = geom->asMultiPolygon();
+          multi = geom.asMultiPolygon();
         }
 
         for ( int i = 0; i < multi.size(); i++ )
@@ -320,17 +320,10 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       }
       feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
     }
-    if ( feat.constGeometry() )
+    if ( feat.hasGeometry() )
     {
       mContext.expressionContext().setFeature( feat );
       mSubRenderer->renderFeature( feat, mContext );
-    }
-  }
-  Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
-  {
-    Q_FOREACH ( QgsGeometry* g, cit.geometries )
-    {
-      delete g;
     }
   }
 
@@ -421,7 +414,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbol* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
   {
@@ -430,39 +423,39 @@ QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, 
   return mSubRenderer->symbolForFeature( feature, context );
 }
 
-QgsSymbolV2* QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
+QgsSymbol* QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
     return nullptr;
   return mSubRenderer->originalSymbolForFeature( feat, context );
 }
 
-QgsSymbolV2List QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbolList QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
   {
-    return QgsSymbolV2List();
+    return QgsSymbolList();
   }
   return mSubRenderer->symbolsForFeature( feature, context );
 }
 
-QgsSymbolV2List QgsInvertedPolygonRenderer::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
+QgsSymbolList QgsInvertedPolygonRenderer::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
-    return QgsSymbolV2List();
+    return QgsSymbolList();
   return mSubRenderer->originalSymbolsForFeature( feat, context );
 }
 
-QgsSymbolV2List QgsInvertedPolygonRenderer::symbols( QgsRenderContext& context )
+QgsSymbolList QgsInvertedPolygonRenderer::symbols( QgsRenderContext& context )
 {
   if ( !mSubRenderer )
   {
-    return QgsSymbolV2List();
+    return QgsSymbolList();
   }
   return mSubRenderer->symbols( context );
 }
 
-int QgsInvertedPolygonRenderer::capabilities()
+QgsFeatureRendererV2::Capabilities QgsInvertedPolygonRenderer::capabilities()
 {
   if ( !mSubRenderer )
   {

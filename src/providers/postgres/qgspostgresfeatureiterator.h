@@ -46,8 +46,8 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
     QString mRequestedSrid;
     QString mDetectedSrid;
     bool mForce2d;
-    Qgis::WkbType mRequestedGeomType; //! geometry type requested in the uri
-    Qgis::WkbType mDetectedGeomType;  //! geometry type detected in the database
+    QgsWkbTypes::Type mRequestedGeomType; //! geometry type requested in the uri
+    QgsWkbTypes::Type mDetectedGeomType;  //! geometry type detected in the database
     QgsPostgresPrimaryKeyType mPrimaryKeyType;
     QList<int> mPrimaryKeyAttrs;
     QString mQuery;

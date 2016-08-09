@@ -17,7 +17,7 @@
 #include "qgsconditionalstyle.h"
 #include "qgsexpression.h"
 #include "qgsfontutils.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsmarkersymbollayerv2.h"
 
 QgsConditionalLayerStyles::QgsConditionalLayerStyles()
@@ -178,13 +178,13 @@ QString QgsConditionalStyle::displayText() const
     return QString( "%1 \n%2" ).arg( name(), rule() );
 }
 
-void QgsConditionalStyle::setSymbol( QgsSymbolV2* value )
+void QgsConditionalStyle::setSymbol( QgsSymbol* value )
 {
   mValid = true;
   if ( value )
   {
     mSymbol.reset( value->clone() );
-    mIcon = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mSymbol.data(), QSize( 16, 16 ) );
+    mIcon = QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol.data(), QSize( 16, 16 ) );
   }
   else
   {
@@ -286,7 +286,7 @@ bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc ) const
   stylesel.appendChild( labelFontElem );
   if ( ! mSymbol.isNull() )
   {
-    QDomElement symbolElm = QgsSymbolLayerV2Utils::saveSymbol( "icon", mSymbol.data(), doc );
+    QDomElement symbolElm = QgsSymbolLayerUtils::saveSymbol( "icon", mSymbol.data(), doc );
     stylesel.appendChild( symbolElm );
   }
   node.appendChild( stylesel );
@@ -304,7 +304,7 @@ bool QgsConditionalStyle::readXml( const QDomNode &node )
   QDomElement symbolElm = styleElm.firstChildElement( "symbol" );
   if ( !symbolElm.isNull() )
   {
-    QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( symbolElm );
+    QgsSymbol* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( symbolElm );
     setSymbol( symbol );
   }
   return true;

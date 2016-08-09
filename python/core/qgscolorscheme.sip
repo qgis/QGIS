@@ -5,7 +5,7 @@ typedef QList< QPair< QColor, QString > > QgsNamedColorList;
  * \class QgsColorScheme
  * \brief Abstract base class for color schemes
  *
- * A color scheme for display in QgsColorButtonV2. Color schemes return lists
+ * A color scheme for display in QgsColorButton. Color schemes return lists
  * of colors with an optional associated color name. The colors returned
  * can be generated using an optional base color.
  * \note Added in version 2.5

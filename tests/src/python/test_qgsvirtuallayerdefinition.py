@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.core import (QgsField,
-                       QgsWKBTypes,
+                       QgsWkbTypes,
                        QgsFields,
                        QgsVirtualLayerDefinition
                        )
@@ -69,9 +69,9 @@ class TestQgsVirtualLayerDefinition(unittest.TestCase):
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).geometryField(), "geom")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).geometryField(), "geom")
 
-        d.setGeometryWkbType(QgsWKBTypes.Point)
-        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).geometryWkbType(), QgsWKBTypes.Point)
-        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).geometryWkbType(), QgsWKBTypes.Point)
+        d.setGeometryWkbType(QgsWkbTypes.Point)
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).geometryWkbType(), QgsWkbTypes.Point)
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).geometryWkbType(), QgsWkbTypes.Point)
 
         f = QgsFields()
         f.append(QgsField("a", QVariant.Int))

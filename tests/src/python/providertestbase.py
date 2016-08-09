@@ -57,7 +57,7 @@ class ProviderTestCase(object):
             # field
             attrs[4] = str(attrs[4])
             attributes[f['pk']] = attrs
-            geometries[f['pk']] = f.constGeometry() and f.constGeometry().exportToWkt()
+            geometries[f['pk']] = f.hasGeometry() and f.geometry().exportToWkt()
 
         expected_attributes = {5: [5, -200, NULL, 'NuLl', '5'],
                                3: [3, 300, 'Pear', 'PEaR', '3'],
@@ -383,9 +383,35 @@ class ProviderTestCase(object):
         expected = set([fids[1], fids[3], fids[4]])
         assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
 
+        #providers should ignore non-existant fids
+        result = set([f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFids([-101, fids[1], -102, fids[3], -103, fids[4], -104]))])
+        expected = set([fids[1], fids[3], fids[4]])
+        assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
+
         result = set([f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFids([]))])
         expected = set([])
         assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
+
+        # Rewind mid-way
+        request = QgsFeatureRequest().setFilterFids([fids[1], fids[3], fids[4]])
+        feature_it = self.provider.getFeatures(request)
+        feature = QgsFeature()
+        feature.setValid(True)
+        self.assertTrue(feature_it.nextFeature(feature))
+        self.assertIn(feature.id(), [fids[1], fids[3], fids[4]])
+        first_feature = feature
+        self.assertTrue(feature.isValid())
+        # rewind
+        self.assertTrue(feature_it.rewind())
+        self.assertTrue(feature_it.nextFeature(feature))
+        self.assertEqual(feature.id(), first_feature.id())
+        self.assertTrue(feature.isValid())
+        # grab all features
+        self.assertTrue(feature_it.nextFeature(feature))
+        self.assertTrue(feature_it.nextFeature(feature))
+        # none left
+        self.assertFalse(feature_it.nextFeature(feature))
+        self.assertFalse(feature.isValid())
 
     def testGetFeaturesFilterRectTests(self):
         extent = QgsRectangle(-70, 67, -60, 80)
@@ -571,7 +597,7 @@ class ProviderTestCase(object):
         """ Test that no geometry is present when fetching features without geometry"""
 
         for f in self.provider.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)):
-            self.assertFalse(f.constGeometry(), 'Expected no geometry, got one')
+            self.assertFalse(f.hasGeometry(), 'Expected no geometry, got one')
             self.assertTrue(f.isValid())
 
     def testGetFeaturesWithGeometry(self):
@@ -581,5 +607,5 @@ class ProviderTestCase(object):
                 # no geometry for this feature
                 continue
 
-            assert f.constGeometry(), 'Expected geometry, got none'
+            assert f.hasGeometry(), 'Expected geometry, got none'
             self.assertTrue(f.isValid())

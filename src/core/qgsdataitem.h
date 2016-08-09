@@ -30,6 +30,7 @@
 
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsmimedatautils.h"
 
 class QgsDataProvider;
 class QgsDataItem;
@@ -119,9 +120,6 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual void setState( State state );
 
-    //! @deprecated in 2.8, use state()
-    Q_DECL_DEPRECATED bool isPopulated() { return state() == Populated; }
-
     /** Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
      * @param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
      * @param refresh - set to true to refresh populated item, emitting relevant signals to the model
@@ -164,6 +162,21 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
 
+    /** Returns true if the item may be dragged.
+     * Default implementation returns false.
+     * A draggable item has to implement mimeUri() that will be used to pass data.
+     * @see mimeUri()
+     * @note added in 3.0
+     */
+    virtual bool hasDragEnabled() const { return false; }
+
+    /** Return mime URI for the data item.
+     * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
+     * @see hasDragEnabled()
+     * @note added in 3.0
+     */
+    virtual QgsMimeDataUtils::Uri mimeUri() const { return QgsMimeDataUtils::Uri(); }
+
     enum Capability
     {
       NoCapabilities = 0,
@@ -177,9 +190,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual bool setCrs( QgsCoordinateReferenceSystem crs )
     { Q_UNUSED( crs ); return false; }
 
-    //! @deprecated since 2.8, returned type this will changed to Capabilities
-    Q_DECL_DEPRECATED virtual Capability capabilities() { return NoCapabilities; }
-
+    // ### QGIS 3 - rename to capabilities()
     virtual Capabilities capabilities2() const { return mCapabilities; }
 
     virtual void setCapabilities( const Capabilities& capabilities ) { mCapabilities = capabilities; }
@@ -239,8 +250,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     QgsDataItem* mParent;
     QVector<QgsDataItem*> mChildren; // easier to have it always
     State mState;
-    //! @deprecated since 2.8, use mState
-    bool mPopulated;
     QString mName;
     // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be differen if it is
     // necessary to distinguish paths of two providers to the same source (e.g GRASS location and standard directory have the same
@@ -271,13 +280,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual void refresh();
 
-    void emitBeginInsertItems( QgsDataItem* parent, int first, int last );
-    void emitEndInsertItems();
-    void emitBeginRemoveItems( QgsDataItem* parent, int first, int last );
-    void emitEndRemoveItems();
-    void emitDataChanged( QgsDataItem* item );
     void emitDataChanged();
-    void emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState );
     virtual void childrenCreated();
 
   signals:
@@ -327,26 +330,30 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     virtual bool equal( const QgsDataItem *other ) override;
 
+    virtual bool hasDragEnabled() const override { return true; }
+
+    virtual QgsMimeDataUtils::Uri mimeUri() const override;
+
     // --- New virtual methods for layer item derived classes ---
 
     /** Returns QgsMapLayer::LayerType */
-    QgsMapLayer::LayerType mapLayerType();
+    QgsMapLayer::LayerType mapLayerType() const;
 
     /** Returns layer uri or empty string if layer cannot be created */
-    QString uri() { return mUri; }
+    QString uri() const { return mUri; }
 
     /** Returns provider key */
-    QString providerKey() { return mProviderKey; }
+    QString providerKey() const { return mProviderKey; }
 
     /** Returns the supported CRS
      *  @note Added in 2.8
      */
-    QStringList supportedCrs() { return mSupportedCRS; }
+    QStringList supportedCrs() const { return mSupportedCRS; }
 
     /** Returns the supported formats
      *  @note Added in 2.8
      */
-    QStringList supportedFormats() { return mSupportFormats; }
+    QStringList supportedFormats() const { return mSupportFormats; }
 
     /** Returns comments of the layer
      * @note added in 2.12
@@ -432,11 +439,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     virtual QIcon icon() override;
     virtual QWidget *paramWidget() override;
 
-    /* static QVector<QgsDataProvider*> mProviders; */
-    //! @note not available via python bindings
-    //! @note deprecated since 2.10 - use QgsDataItemProviderRegistry
-    Q_DECL_DEPRECATED static QVector<QLibrary*> mLibraries;
-
     /** Check if the given path is hidden from the browser model */
     static bool hiddenPath( QString path );
 
@@ -469,6 +471,8 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
      */
     QgsProjectItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsProjectItem();
+
+    virtual bool hasDragEnabled() const override { return true; }
 
 };
 

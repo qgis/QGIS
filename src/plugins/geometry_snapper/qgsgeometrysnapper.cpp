@@ -70,24 +70,24 @@ void QgsGeometrySnapper::processFeature( QgsFeatureId id )
     mErrorMutex.unlock();
     return;
   }
-  QgsPointV2 center = QgsPointV2( feature.geometry()->geometry()->boundingBox().center() );
+  QgsPointV2 center = QgsPointV2( feature.geometry().geometry()->boundingBox().center() );
 
   // Compute snap tolerance
-  double layerToMapUnits = mMapSettings->layerToMapUnits( mAdjustLayer, feature.geometry()->boundingBox() );
+  double layerToMapUnits = mMapSettings->layerToMapUnits( mAdjustLayer, feature.geometry().boundingBox() );
   double snapTolerance = mSnapToleranceMapUnits / layerToMapUnits;
 
 
   // Get potential reference features and construct snap index
   QList<QgsAbstractGeometryV2*> refGeometries;
   mIndexMutex.lock();
-  QList<QgsFeatureId> refFeatureIds = mIndex.intersects( feature.geometry()->boundingBox() );
+  QList<QgsFeatureId> refFeatureIds = mIndex.intersects( feature.geometry().boundingBox() );
   mIndexMutex.unlock();
   Q_FOREACH ( QgsFeatureId refId, refFeatureIds )
   {
     QgsFeature refFeature;
     if ( getFeature( mReferenceLayer, mReferenceLayerMutex, refId, refFeature ) )
     {
-      refGeometries.append( refFeature.geometry()->geometry()->clone() );
+      refGeometries.append( refFeature.geometry().geometry()->clone() );
     }
     else
     {
@@ -103,7 +103,8 @@ void QgsGeometrySnapper::processFeature( QgsFeatureId id )
   }
 
   // Snap geometries
-  QgsAbstractGeometryV2* subjGeom = feature.geometry()->geometry();
+  QgsGeometry featureGeom = feature.geometry();
+  QgsAbstractGeometryV2* subjGeom = featureGeom.geometry();
   QList < QList< QList<PointFlag> > > subjPointFlags;
 
   // Pass 1: snap vertices of subject geometry to reference vertices
@@ -239,9 +240,9 @@ void QgsGeometrySnapper::processFeature( QgsFeatureId id )
     }
   }
 
-  feature.setGeometry( new QgsGeometry( feature.geometry()->geometry()->clone() ) ); // force refresh
+  feature.setGeometry( QgsGeometry( featureGeom.geometry()->clone() ) ); // force refresh
   QgsGeometryMap geometryMap;
-  geometryMap.insert( id, *feature.geometry() );
+  geometryMap.insert( id, feature.geometry() );
   qDeleteAll( refGeometries );
   mAdjustLayerMutex.lock();
   mAdjustLayer->dataProvider()->changeGeometryValues( geometryMap );

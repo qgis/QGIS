@@ -37,7 +37,7 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 bool QgsWmsSettings::parseUri( const QString& uriString )
 {
   QgsDebugMsg( "uriString = " + uriString );
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   uri.setEncodedUri( uriString );
 
   mTiled = false;

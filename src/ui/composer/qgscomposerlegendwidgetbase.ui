@@ -500,7 +500,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsColorButtonV2" name="mFontColorButton">
+             <widget class="QgsColorButton" name="mFontColorButton">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -683,7 +683,7 @@
              <item row="0" column="1">
               <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
-                <widget class="QgsColorButtonV2" name="mRasterBorderColorButton">
+                <widget class="QgsColorButton" name="mRasterBorderColorButton">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1003,9 +1003,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

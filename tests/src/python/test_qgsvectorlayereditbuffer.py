@@ -20,6 +20,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QPainter
 
 from qgis.core import (Qgis,
+                       QgsWkbTypes,
                        QgsVectorLayer,
                        QgsRectangle,
                        QgsFeature,
@@ -30,7 +31,7 @@ from qgis.core import (Qgis,
                        QgsFields,
                        QgsMapLayerRegistry,
                        QgsVectorJoinInfo,
-                       QgsSymbolV2,
+                       QgsSymbol,
                        QgsSingleSymbolRendererV2,
                        QgsCoordinateReferenceSystem,
                        QgsProject,

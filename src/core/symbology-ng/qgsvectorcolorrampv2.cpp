@@ -17,7 +17,7 @@
 #include "qgscolorbrewerpalette.h"
 #include "qgscptcityarchive.h"
 
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
@@ -57,9 +57,9 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
   QColor color1 = DEFAULT_GRADIENT_COLOR1;
   QColor color2 = DEFAULT_GRADIENT_COLOR2;
   if ( props.contains( "color1" ) )
-    color1 = QgsSymbolLayerV2Utils::decodeColor( props["color1"] );
+    color1 = QgsSymbolLayerUtils::decodeColor( props["color1"] );
   if ( props.contains( "color2" ) )
-    color2 = QgsSymbolLayerV2Utils::decodeColor( props["color2"] );
+    color2 = QgsSymbolLayerUtils::decodeColor( props["color2"] );
 
   //stops
   QgsGradientStopsList stops;
@@ -71,7 +71,7 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
       if ( i == -1 )
         continue;
 
-      QColor c = QgsSymbolLayerV2Utils::decodeColor( stop.mid( i + 1 ) );
+      QColor c = QgsSymbolLayerUtils::decodeColor( stop.mid( i + 1 ) );
       stops.append( QgsGradientStop( stop.left( i ).toDouble(), c ) );
     }
   }
@@ -171,14 +171,14 @@ QgsVectorGradientColorRampV2* QgsVectorGradientColorRampV2::clone() const
 QgsStringMap QgsVectorGradientColorRampV2::properties() const
 {
   QgsStringMap map;
-  map["color1"] = QgsSymbolLayerV2Utils::encodeColor( mColor1 );
-  map["color2"] = QgsSymbolLayerV2Utils::encodeColor( mColor2 );
+  map["color1"] = QgsSymbolLayerUtils::encodeColor( mColor1 );
+  map["color2"] = QgsSymbolLayerUtils::encodeColor( mColor2 );
   if ( !mStops.isEmpty() )
   {
     QStringList lst;
     for ( QgsGradientStopsList::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
     {
-      lst.append( QString( "%1;%2" ).arg( it->offset ).arg( QgsSymbolLayerV2Utils::encodeColor( it->color ) ) );
+      lst.append( QString( "%1;%2" ).arg( it->offset ).arg( QgsSymbolLayerUtils::encodeColor( it->color ) ) );
     }
     map["stops"] = lst.join( ":" );
   }

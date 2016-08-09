@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
@@ -50,6 +51,7 @@ class ParameterFieldsMapping(Parameter):
                 self.value = eval(value)
                 return True
             except Exception as e:
-                print unicode(e)  # display error in console
+                # fix_print_with_import
+                print(unicode(e))  # display error in console
                 return False
         return False

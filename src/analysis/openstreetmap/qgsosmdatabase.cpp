@@ -410,7 +410,7 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
     if ( skipNull )
       continue;
 
-    QgsGeometry* geom = QgsGeometry::fromPoint( n.point() );
+    QgsGeometry geom = QgsGeometry::fromPoint( n.point() );
     int col = 0;
     sqlite3_bind_int64( stmtInsert, ++col, n.id() );
 
@@ -423,19 +423,17 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
         sqlite3_bind_null( stmtInsert, ++col );
     }
 
-    sqlite3_bind_blob( stmtInsert, ++col, geom->asWkb(), ( int ) geom->wkbSize(), SQLITE_STATIC );
+    sqlite3_bind_blob( stmtInsert, ++col, geom.asWkb(), ( int ) geom.wkbSize(), SQLITE_STATIC );
 
     int insertRes = sqlite3_step( stmtInsert );
     if ( insertRes != SQLITE_DONE )
     {
       mError = QString( "Error inserting node %1 [%2]" ).arg( n.id() ).arg( insertRes );
-      delete geom;
       break;
     }
 
     sqlite3_reset( stmtInsert );
     sqlite3_clear_bindings( stmtInsert );
-    delete geom;
   }
 
   sqlite3_finalize( stmtInsert );
@@ -492,7 +490,7 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
     if ( skipNull )
       continue;
 
-    QgsGeometry* geom = closed ? QgsGeometry::fromPolygon( QgsPolygon() << polyline ) : QgsGeometry::fromPolyline( polyline );
+    QgsGeometry geom = closed ? QgsGeometry::fromPolygon( QgsPolygon() << polyline ) : QgsGeometry::fromPolyline( polyline );
     int col = 0;
     sqlite3_bind_int64( stmtInsert, ++col, w.id() );
 
@@ -505,8 +503,8 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
         sqlite3_bind_null( stmtInsert, ++col );
     }
 
-    if ( geom )
-      sqlite3_bind_blob( stmtInsert, ++col, geom->asWkb(), ( int ) geom->wkbSize(), SQLITE_STATIC );
+    if ( !geom.isEmpty() )
+      sqlite3_bind_blob( stmtInsert, ++col, geom.asWkb(), ( int ) geom.wkbSize(), SQLITE_STATIC );
     else
       sqlite3_bind_null( stmtInsert, ++col );
 
@@ -514,13 +512,11 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
     if ( insertRes != SQLITE_DONE )
     {
       mError = QString( "Error inserting way %1 [%2]" ).arg( w.id() ).arg( insertRes );
-      delete geom;
       break;
     }
 
     sqlite3_reset( stmtInsert );
     sqlite3_clear_bindings( stmtInsert );
-    delete geom;
   }
 
   sqlite3_finalize( stmtInsert );
