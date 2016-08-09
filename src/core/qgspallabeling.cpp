@@ -2455,6 +2455,20 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     doClip = true;
   }
 
+  // if using fitInPolygonOnly option, generate the permissible zone (must happen before geometry is modified - eg
+  // as a result of using perimeter based labeling and the geometry is converted to a boundary)
+  QgsGeometry permissibleZone;
+  if ( geom->type() == QGis::Polygon && fitInPolygonOnly )
+  {
+    permissibleZone = *geom;
+    if ( QgsPalLabeling::geometryRequiresPreparation( &permissibleZone, context, ct, doClip ? extentGeom : nullptr ) )
+    {
+      QgsGeometry* preparedZone = QgsPalLabeling::prepareGeometry( &permissibleZone, context, ct, doClip ? extentGeom : nullptr );
+      permissibleZone = *preparedZone;
+      delete preparedZone;
+    }
+  }
+
   const GEOSGeometry* geos_geom = nullptr;
   const QgsGeometry* preparedGeom = geom;
   QScopedPointer<QgsGeometry> scopedPreparedGeom;
@@ -2853,6 +2867,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   ( *labelFeature )->setAlwaysShow( alwaysShow );
   ( *labelFeature )->setRepeatDistance( repeatDist );
   ( *labelFeature )->setLabelText( labelText );
+  ( *labelFeature )->setPermissibleZone( permissibleZone );
   if ( geosObstacleGeomClone )
   {
     ( *labelFeature )->setObstacleGeometry( geosObstacleGeomClone );
