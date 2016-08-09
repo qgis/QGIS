@@ -48,6 +48,7 @@ class TestPlacementBase(TestQgsPalLabeling):
     def setUp(self):
         """Run before each test."""
         super(TestPlacementBase, self).setUp()
+        self.removeAllLayers()
         self.configTest('pal_placement', 'sp')
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
