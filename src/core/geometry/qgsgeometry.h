@@ -527,6 +527,15 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry* combine( const QgsGeometry* geometry ) const;
 
+    /** Merges any connected lines in a LineString/MultiLineString geometry and
+     * converts them to single line strings.
+     * @returns a LineString or MultiLineString geometry, with any connected lines
+     * joined. An empty geometry will be returned if the input geometry was not a
+     * MultiLineString geometry.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry mergeLines() const;
+
     /** Returns a geometry representing the points making up this geometry that do not make up other. */
     QgsGeometry* difference( const QgsGeometry* geometry ) const;
 

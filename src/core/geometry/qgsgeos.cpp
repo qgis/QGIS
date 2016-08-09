@@ -1794,6 +1794,25 @@ QgsAbstractGeometryV2* QgsGeos::reshapeGeometry( const QgsLineStringV2& reshapeW
   }
 }
 
+QgsGeometry QgsGeos::mergeLines( QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return QgsGeometry();
+  }
+
+  if ( GEOSGeomTypeId_r( geosinit.ctxt, mGeos ) != GEOS_MULTILINESTRING )
+    return QgsGeometry();
+
+  GEOSGeomScopedPtr geos;
+  try
+  {
+    geos.reset( GEOSLineMerge_r( geosinit.ctxt, mGeos ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
+  return QgsGeometry( fromGeos( geos.get() ) );
+}
+
 QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg ) const
 {
   if ( !mGeos || other.isEmpty() )
