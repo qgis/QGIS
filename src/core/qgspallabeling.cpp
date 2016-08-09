@@ -133,7 +133,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   // text formatting
   wrapChar = "";
   multilineHeight = 1.0;
-  multilineAlign = MultiLeft;
+  multilineAlign = MultiFollowPlacement;
   addDirectionSymbol = false;
   leftDirectionSymbol = QString( "<" );
   rightDirectionSymbol = QString( ">" );
@@ -856,7 +856,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   // text formatting
   wrapChar = layer->customProperty( "labeling/wrapChar" ).toString();
   multilineHeight = layer->customProperty( "labeling/multilineHeight", QVariant( 1.0 ) ).toDouble();
-  multilineAlign = static_cast< MultiLineAlign >( layer->customProperty( "labeling/multilineAlign", QVariant( MultiLeft ) ).toUInt() );
+  multilineAlign = static_cast< MultiLineAlign >( layer->customProperty( "labeling/multilineAlign", QVariant( MultiFollowPlacement ) ).toUInt() );
   addDirectionSymbol = layer->customProperty( "labeling/addDirectionSymbol" ).toBool();
   leftDirectionSymbol = layer->customProperty( "labeling/leftDirectionSymbol", QVariant( "<" ) ).toString();
   rightDirectionSymbol = layer->customProperty( "labeling/rightDirectionSymbol", QVariant( ">" ) ).toString();
@@ -1308,7 +1308,7 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   QDomElement textFormatElem = elem.firstChildElement( "text-format" );
   wrapChar = textFormatElem.attribute( "wrapChar" );
   multilineHeight = textFormatElem.attribute( "multilineHeight", "1" ).toDouble();
-  multilineAlign = static_cast< MultiLineAlign >( textFormatElem.attribute( "multilineAlign", QString::number( MultiLeft ) ).toUInt() );
+  multilineAlign = static_cast< MultiLineAlign >( textFormatElem.attribute( "multilineAlign", QString::number( MultiFollowPlacement ) ).toUInt() );
   addDirectionSymbol = textFormatElem.attribute( "addDirectionSymbol" ).toInt();
   leftDirectionSymbol = textFormatElem.attribute( "leftDirectionSymbol", "<" );
   rightDirectionSymbol = textFormatElem.attribute( "rightDirectionSymbol", ">" );
