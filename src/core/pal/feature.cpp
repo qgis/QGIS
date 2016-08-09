@@ -748,9 +748,14 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
       double costCenter = 2 * qAbs( labelCenter - distanceToCenterOfSegment ) / ( distanceToEndOfSegment - distanceToStartOfSegment ); // 0 -> 1
       cost += costCenter * 0.0005;  // < 0, 0.0005 >
 
-      // penalize positions which are further from absolute center of whole linestring
-      double costLineCenter = 2 * qAbs( labelCenter - middleOfLine ) / totalLineLength; // 0 -> 1
-      cost += costLineCenter * 0.0005;  // < 0, 0.0005 >
+      if ( !closedLine )
+      {
+        // penalize positions which are further from absolute center of whole linestring
+        // this only applies to non closed linestrings, since the middle of a closed linestring is effectively arbitrary
+        // and irrelevant to labeling
+        double costLineCenter = 2 * qAbs( labelCenter - middleOfLine ) / totalLineLength; // 0 -> 1
+        cost += costLineCenter * 0.0005;  // < 0, 0.0005 >
+      }
 
       cost += segmentCost * 0.0005; // prefer labels on longer straight segments
       cost += segmentAngleCost * 0.0001; // prefer more horizontal segments, but this is less important than length considerations
