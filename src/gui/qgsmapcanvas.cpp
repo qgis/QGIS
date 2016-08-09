@@ -1858,6 +1858,11 @@ QgsSnappingUtils* QgsMapCanvas::snappingUtils() const
 
 void QgsMapCanvas::setSnappingUtils( QgsSnappingUtils* utils )
 {
+  if ( mSnappingUtils && mSnappingUtils != utils )
+  {
+    delete mSnappingUtils;
+    mSnappingUtils = nullptr;
+  }
   mSnappingUtils = utils;
 }
 
