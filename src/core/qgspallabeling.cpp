@@ -2442,16 +2442,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
 
-  // if using perimeter based labeling for polygons, get the polygon's
-  // linear boundary and use that for the label geometry
-  if (( geom->type() == QGis::Polygon )
-      && ( placement == Line || placement == PerimeterCurved ) )
-  {
-    QgsGeometry* boundaryGeom = new QgsGeometry( geom->geometry()->boundary() );
-    geom = boundaryGeom;
-    scopedClonedGeom.reset( boundaryGeom );
-  }
-
   // whether we're going to create a centroid for polygon
   bool centroidPoly = (( placement == QgsPalLayerSettings::AroundPoint
                          || placement == QgsPalLayerSettings::OverPoint )
@@ -2463,6 +2453,30 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   if ( !centroidPoly || !wholeCentroid )
   {
     doClip = true;
+  }
+
+  // if using fitInPolygonOnly option, generate the permissible zone (must happen before geometry is modified - eg
+  // as a result of using perimeter based labeling and the geometry is converted to a boundary)
+  QgsGeometry permissibleZone;
+  if ( geom->type() == QGis::Polygon && fitInPolygonOnly )
+  {
+    permissibleZone = *geom;
+    if ( QgsPalLabeling::geometryRequiresPreparation( &permissibleZone, context, ct, doClip ? extentGeom : nullptr ) )
+    {
+      QgsGeometry* preparedZone = QgsPalLabeling::prepareGeometry( &permissibleZone, context, ct, doClip ? extentGeom : nullptr );
+      permissibleZone = *preparedZone;
+      delete preparedZone;
+    }
+  }
+
+  // if using perimeter based labeling for polygons, get the polygon's
+  // linear boundary and use that for the label geometry
+  if (( geom->type() == QGis::Polygon )
+      && ( placement == Line || placement == PerimeterCurved ) )
+  {
+    QgsGeometry* boundaryGeom = new QgsGeometry( geom->geometry()->boundary() );
+    geom = boundaryGeom;
+    scopedClonedGeom.reset( boundaryGeom );
   }
 
   const GEOSGeometry* geos_geom = nullptr;
@@ -2855,6 +2869,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   ( *labelFeature )->setAlwaysShow( alwaysShow );
   ( *labelFeature )->setRepeatDistance( repeatDist );
   ( *labelFeature )->setLabelText( labelText );
+  ( *labelFeature )->setPermissibleZone( permissibleZone );
   if ( geosObstacleGeomClone )
   {
     ( *labelFeature )->setObstacleGeometry( geosObstacleGeomClone );

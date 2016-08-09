@@ -132,20 +132,18 @@ namespace pal
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param angle orientation of the label
-       * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates
        */
-      int createCandidatesAroundPoint( double x, double y, QList<LabelPosition *> &lPos, double angle, PointSet *mapShape = nullptr );
+      int createCandidatesAroundPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
       /** Generate one candidate over or offset the specified point.
        * @param x x coordinate of the point
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidate
        * @param angle orientation of the label
-       * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates (always 1)
        */
-      int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle, PointSet *mapShape = nullptr );
+      int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
       /** Generates candidates following a prioritised list of predefined positions around a point.
        * @param x x coordinate of the point
