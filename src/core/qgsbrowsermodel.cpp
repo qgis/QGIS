@@ -186,10 +186,9 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   QgsDataItem* ptr = reinterpret_cast< QgsDataItem* >( index.internalPointer() );
-  if ( ptr->type() == QgsDataItem::Layer || ptr->type() == QgsDataItem::Project )
-  {
+  if ( ptr->hasDragEnabled() )
     flags |= Qt::ItemIsDragEnabled;
-  }
+
   if ( ptr->acceptDrop() )
     flags |= Qt::ItemIsDropEnabled;
   return flags;
@@ -461,9 +460,9 @@ QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
         return mimeData;
       }
 
-      if ( ptr->type() != QgsDataItem::Layer ) continue;
-      QgsLayerItem *layer = static_cast< QgsLayerItem* >( ptr );
-      lst.append( QgsMimeDataUtils::Uri( layer ) );
+      QgsMimeDataUtils::Uri uri = ptr->mimeUri();
+      if ( uri.isValid() )
+        lst.append( uri );
     }
   }
   return QgsMimeDataUtils::encodeUriList( lst );

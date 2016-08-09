@@ -28,6 +28,7 @@ class QWidget;
 class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
 class QgsComposerView;
+class QgsCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
@@ -341,6 +342,18 @@ class GUI_EXPORT QgisInterface : public QObject
      * @see registerMapLayerPropertiesFactory()
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
+
+    /** Register a new custom drop handler.
+     * @note added in QGIS 3.0
+     * @note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * @see unregisterCustomDropHandler() */
+    virtual void registerCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
+
+    /** Unregister a previously registered custom drop handler.
+     * @note added in QGIS 3.0
+     * @see registerCustomDropHandler() */
+    virtual void unregisterCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used

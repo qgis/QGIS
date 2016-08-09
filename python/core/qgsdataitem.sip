@@ -135,6 +135,21 @@ class QgsDataItem : QObject
      */
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ );
 
+    /** Returns true if the item may be dragged.
+     * Default implementation returns false.
+     * A draggable item has to implement mimeUri() that will be used to pass data.
+     * @see mimeUri()
+     * @note added in 3.0
+     */
+    virtual bool hasDragEnabled() const;
+
+    /** Return mime URI for the data item.
+     * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
+     * @see hasDragEnabled()
+     * @note added in 3.0
+     */
+    virtual QgsMimeDataUtils::Uri mimeUri() const;
+
     enum Capability
     {
       NoCapabilities,
@@ -262,26 +277,30 @@ class QgsLayerItem : QgsDataItem
 
     virtual bool equal( const QgsDataItem *other );
 
+    virtual bool hasDragEnabled() const;
+
+    virtual QgsMimeDataUtils::Uri mimeUri() const;
+
     // --- New virtual methods for layer item derived classes ---
 
     // Returns QgsMapLayer::LayerType
-    QgsMapLayer::LayerType mapLayerType();
+    QgsMapLayer::LayerType mapLayerType() const;
 
     // Returns layer uri or empty string if layer cannot be created
-    QString uri();
+    QString uri() const;
 
     // Returns provider key
-    QString providerKey();
+    QString providerKey() const;
 
     /** Returns the supported CRS
      *  @note Added in 2.8
      */
-    QStringList supportedCrs();
+    QStringList supportedCrs() const;
 
     /** Returns the supported formats
      *  @note Added in 2.8
      */
-    QStringList supportedFormats();
+    QStringList supportedFormats() const;
 
     /** Returns comments of the layer
      * @note added in 2.12
@@ -389,6 +408,7 @@ class QgsProjectItem : QgsDataItem
     QgsProjectItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsProjectItem();
 
+    virtual bool hasDragEnabled() const;
 };
 
 /**

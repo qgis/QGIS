@@ -30,6 +30,7 @@
 
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsmimedatautils.h"
 
 class QgsDataProvider;
 class QgsDataItem;
@@ -160,6 +161,21 @@ class CORE_EXPORT QgsDataItem : public QObject
      * @see acceptDrop()
      */
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
+
+    /** Returns true if the item may be dragged.
+     * Default implementation returns false.
+     * A draggable item has to implement mimeUri() that will be used to pass data.
+     * @see mimeUri()
+     * @note added in 3.0
+     */
+    virtual bool hasDragEnabled() const { return false; }
+
+    /** Return mime URI for the data item.
+     * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
+     * @see hasDragEnabled()
+     * @note added in 3.0
+     */
+    virtual QgsMimeDataUtils::Uri mimeUri() const { return QgsMimeDataUtils::Uri(); }
 
     enum Capability
     {
@@ -314,26 +330,30 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     virtual bool equal( const QgsDataItem *other ) override;
 
+    virtual bool hasDragEnabled() const override { return true; }
+
+    virtual QgsMimeDataUtils::Uri mimeUri() const override;
+
     // --- New virtual methods for layer item derived classes ---
 
     /** Returns QgsMapLayer::LayerType */
-    QgsMapLayer::LayerType mapLayerType();
+    QgsMapLayer::LayerType mapLayerType() const;
 
     /** Returns layer uri or empty string if layer cannot be created */
-    QString uri() { return mUri; }
+    QString uri() const { return mUri; }
 
     /** Returns provider key */
-    QString providerKey() { return mProviderKey; }
+    QString providerKey() const { return mProviderKey; }
 
     /** Returns the supported CRS
      *  @note Added in 2.8
      */
-    QStringList supportedCrs() { return mSupportedCRS; }
+    QStringList supportedCrs() const { return mSupportedCRS; }
 
     /** Returns the supported formats
      *  @note Added in 2.8
      */
-    QStringList supportedFormats() { return mSupportFormats; }
+    QStringList supportedFormats() const { return mSupportFormats; }
 
     /** Returns comments of the layer
      * @note added in 2.12
@@ -451,6 +471,8 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
      */
     QgsProjectItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsProjectItem();
+
+    virtual bool hasDragEnabled() const override { return true; }
 
 };
 

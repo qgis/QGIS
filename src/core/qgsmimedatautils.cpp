@@ -21,25 +21,9 @@
 
 static const char* QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
-QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
-    : providerKey( layerItem->providerKey() )
-    , name( layerItem->layerName() )
-    , uri( layerItem->uri() )
-    , supportedCrs( layerItem->supportedCrs() )
-    , supportedFormats( layerItem->supportedFormats() )
+
+QgsMimeDataUtils::Uri::Uri()
 {
-  switch ( layerItem->mapLayerType() )
-  {
-    case QgsMapLayer::VectorLayer:
-      layerType = "vector";
-      break;
-    case QgsMapLayer::RasterLayer:
-      layerType = "raster";
-      break;
-    case QgsMapLayer::PluginLayer:
-      layerType = "plugin";
-      break;
-  }
 }
 
 QgsMimeDataUtils::Uri::Uri( QString& encData )

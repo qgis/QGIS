@@ -128,6 +128,7 @@
 #include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
 #include "qgscursors.h"
+#include "qgscustomdrophandler.h"
 #include "qgscustomization.h"
 #include "qgscustomlayerorderwidget.h"
 #include "qgscustomprojectiondialog.h"
@@ -1341,28 +1342,57 @@ void QgisApp::dropEvent( QDropEvent *event )
   if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
   {
     QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
-    Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
-    {
-      QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
-
-      if ( u.layerType == "vector" )
-      {
-        addVectorLayer( uri, u.name, u.providerKey );
-      }
-      else if ( u.layerType == "raster" )
-      {
-        addRasterLayer( uri, u.name, u.providerKey );
-      }
-      else if ( u.layerType == "plugin" )
-      {
-        addPluginLayer( uri, u.name, u.providerKey );
-      }
-    }
+    handleDropUriList( lst );
   }
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
   event->acceptProposedAction();
 }
+
+
+void QgisApp::registerCustomDropHandler( QgsCustomDropHandler* handler )
+{
+  if ( !mCustomDropHandlers.contains( handler ) )
+    mCustomDropHandlers << handler;
+}
+
+void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler* handler )
+{
+  mCustomDropHandlers.removeOne( handler );
+}
+
+void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList& lst )
+{
+  Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
+  {
+    QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
+
+    if ( u.layerType == "vector" )
+    {
+      addVectorLayer( uri, u.name, u.providerKey );
+    }
+    else if ( u.layerType == "raster" )
+    {
+      addRasterLayer( uri, u.name, u.providerKey );
+    }
+    else if ( u.layerType == "plugin" )
+    {
+      addPluginLayer( uri, u.name, u.providerKey );
+    }
+    else if ( u.layerType == "custom" )
+    {
+      Q_FOREACH ( QgsCustomDropHandler* handler, mCustomDropHandlers )
+      {
+        if ( handler->key() == u.providerKey )
+        {
+          handler->handleDrop( u );
+          break;
+        }
+      }
+    }
+  }
+}
+
 
 bool QgisApp::event( QEvent * event )
 {
