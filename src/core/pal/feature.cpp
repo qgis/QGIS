@@ -616,7 +616,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
   double *y = line->y;
 
   // closed line? if so, we need to handle the final node angle
-  bool closedLine = qgsDoubleNear( x[0], x[ numberNodes - 1]) && qgsDoubleNear( y[0], y[numberNodes - 1 ]);
+  bool closedLine = qgsDoubleNear( x[0], x[ numberNodes - 1] ) && qgsDoubleNear( y[0], y[numberNodes - 1 ] );
   for ( int i = 1; i <= numberNodes - ( closedLine ? 1 : 2 ); ++i )
   {
     double x1 = x[i-1];
@@ -625,16 +625,16 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
     double y1 = y[i-1];
     double y2 = y[i];
     double y3 = y[ i == numberNodes - 1 ? 1 : i+1]; // wraparound for closed linestrings
-    if ( qgsDoubleNear( y2, y3 ) && qgsDoubleNear( x2, x3))
+    if ( qgsDoubleNear( y2, y3 ) && qgsDoubleNear( x2, x3 ) )
       continue;
-    if ( qgsDoubleNear( y1, y2 ) && qgsDoubleNear( x1, x2))
+    if ( qgsDoubleNear( y1, y2 ) && qgsDoubleNear( x1, x2 ) )
       continue;
-     double vertexAngle = M_PI - ( atan2(y3 - y2, x3-x2) - atan2(y2 - y1, x2-x1) );
-     vertexAngle = QgsGeometryUtils::normalizedAngle( vertexAngle  );
+    double vertexAngle = M_PI - ( atan2( y3 - y2, x3 - x2 ) - atan2( y2 - y1, x2 - x1 ) );
+    vertexAngle = QgsGeometryUtils::normalizedAngle( vertexAngle );
 
-     // extreme angles form more than 45 degree angle at a node - these are the ones we don't want labels to cross
-     if ( vertexAngle < M_PI * 135.0 / 180.0 || vertexAngle > M_PI * 225.0 / 180.0 )
-       extremeAngleNodes << i;
+    // extreme angles form more than 45 degree angle at a node - these are the ones we don't want labels to cross
+    if ( vertexAngle < M_PI * 135.0 / 180.0 || vertexAngle > M_PI * 225.0 / 180.0 )
+      extremeAngleNodes << i;
   }
   extremeAngleNodes << numberNodes - 1;
 
@@ -719,7 +719,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
 
     //calculate some cost penalties
     double segmentCost = 1.0 - ( distanceToEndOfSegment - distanceToStartOfSegment ) / longestSegmentLength; // 0 -> 1 (lower for longer segments)
-    double segmentAngleCost = 1-qAbs(fmod( currentSegmentAngle, M_PI )-M_PI_2)/M_PI_2; // 0 -> 1, lower for more horizontal segments
+    double segmentAngleCost = 1 - qAbs( fmod( currentSegmentAngle, M_PI ) - M_PI_2 ) / M_PI_2; // 0 -> 1, lower for more horizontal segments
 
     while ( currentDistanceAlongLine + labelWidth < distanceToEndOfSegment )
     {
@@ -764,20 +764,27 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
         bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
         bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
 
-        if ( aboveLine )
-        {
-          if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX + cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle ) )
-            lPos.append( new LabelPosition( i, candidateStartX + cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
-        }
+        double placementCost = 0.0;
         if ( belowLine )
         {
           if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - cos( beta ) *( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) *( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle ) )
-            lPos.append( new LabelPosition( i, candidateStartX - cos( beta ) *( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) *( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, cost, this, isRightToLeft ) );   // Line
+          {
+            lPos.append( new LabelPosition( i, candidateStartX - cos( beta ) *( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) *( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) );   // Line
+            placementCost += 0.001;
+          }
+        }
+        if ( aboveLine )
+        {
+          if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX + cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle ) )
+          {
+            lPos.append( new LabelPosition( i, candidateStartX + cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
+            placementCost += 0.001;
+          }
         }
         if ( flags & FLAG_ON_LINE )
         {
           if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight*cos( beta ) / 2, candidateStartY - labelHeight*sin( beta ) / 2, labelWidth, labelHeight, angle ) )
-            lPos.append( new LabelPosition( i, candidateStartX - labelHeight*cos( beta ) / 2, candidateStartY - labelHeight*sin( beta ) / 2, labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
+            lPos.append( new LabelPosition( i, candidateStartX - labelHeight*cos( beta ) / 2, candidateStartY - labelHeight*sin( beta ) / 2, labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
         }
       }
       else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal )
@@ -863,7 +870,7 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition*>& l
     {
       // label is bigger than line, use whole available line
       candidateLength = sqrt(( x[nbPoints-1] - x[0] ) * ( x[nbPoints-1] - x[0] )
-                     + ( y[nbPoints-1] - y[0] ) * ( y[nbPoints-1] - y[0] ) );
+                             + ( y[nbPoints-1] - y[0] ) * ( y[nbPoints-1] - y[0] ) );
     }
     else
     {
