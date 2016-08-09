@@ -23,7 +23,7 @@ from qgis.PyQt.QtWidgets import (QGroupBox,
                                  QListWidget,
                                  QAbstractItemView)
 from qgis.PyQt.QtGui import QFont
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import Qt, QSize, pyqtSignal
 
 
 class ListMultiSelectWidget(QGroupBox):
@@ -163,7 +163,7 @@ class ListMultiSelectWidget(QGroupBox):
         self._set_list_widget_defaults(self.unselected_widget)
         unselected_label = QLabel()
         unselected_label.setText('Unselected')
-        unselected_label.setAlignment(Qt.Qt.AlignCenter)
+        unselected_label.setAlignment(Qt.AlignCenter)
         unselected_label.setFont(italic_font)
         unselected_v_layout = QVBoxLayout()
         unselected_v_layout.addWidget(unselected_label)
@@ -174,7 +174,7 @@ class ListMultiSelectWidget(QGroupBox):
         self._set_list_widget_defaults(self.selected_widget)
         selected_label = QLabel()
         selected_label.setText('Selected')
-        selected_label.setAlignment(Qt.Qt.AlignCenter)
+        selected_label.setAlignment(Qt.AlignCenter)
         selected_label.setFont(italic_font)
         selected_v_layout = QVBoxLayout()
         selected_v_layout.addWidget(selected_label)
@@ -215,7 +215,7 @@ class ListMultiSelectWidget(QGroupBox):
         widget.setDragEnabled(True)
         widget.setDragDropMode(QAbstractItemView.DragDrop)
         widget.setDragDropOverwriteMode(False)
-        widget.setDefaultDropAction(QtCore.Qt.MoveAction)
+        widget.setDefaultDropAction(Qt.MoveAction)
         widget.setSelectionMode(QAbstractItemView.MultiSelection)
 
 
@@ -227,4 +227,4 @@ class SmallQPushButton(QPushButton):
         buttons_size_policy = QSizePolicy(
             QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.setSizePolicy(buttons_size_policy)
-        self.setMaximumSize(QtCore.QSize(30, 30))
+        self.setMaximumSize(QSize(30, 30))
