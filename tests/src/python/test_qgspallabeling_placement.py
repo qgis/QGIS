@@ -370,7 +370,7 @@ class TestPointPlacement(TestPlacementBase):
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.Line
         self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
-        #self.checkTest()
+        self.checkTest()
         self.removeMapLayer(self.layer)
         self.layer = None
 
@@ -381,7 +381,7 @@ class TestPointPlacement(TestPlacementBase):
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.Line
         self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
-        #self.checkTest()
+        self.checkTest()
         self.removeMapLayer(self.layer)
         self.layer = None
 
