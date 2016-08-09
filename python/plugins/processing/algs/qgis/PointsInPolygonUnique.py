@@ -62,8 +62,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 
-        polyProvider = polyLayer.dataProvider()
-        fields = polyProvider.fields()
+        fields = polyLayer.fields()
         fields.append(QgsField(fieldName, QVariant.Int))
 
         classFieldIndex = pointLayer.fieldNameIndex(classFieldName)
@@ -71,7 +70,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
                                                          polyLayer.pendingFields(), fieldName)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), polyProvider.geometryType(), polyProvider.crs())
+            fields.toList(), polyLayer.wkbType(), polyLayer.crs())
 
         spatialIndex = vector.spatialindex(pointLayer)
 

@@ -70,12 +70,11 @@ class Dissolve(GeoAlgorithm):
         fieldname = self.getParameterValue(Dissolve.FIELD)
         vlayerA = dataobjects.getObjectFromUri(
             self.getParameterValue(Dissolve.INPUT))
-        vproviderA = vlayerA.dataProvider()
         fields = vlayerA.fields()
         writer = self.getOutputFromName(
             Dissolve.OUTPUT).getVectorWriter(fields,
-                                             vproviderA.geometryType(),
-                                             vproviderA.crs())
+                                             vlayerA.wkbType(),
+                                             vlayerA.crs())
         outFeat = QgsFeature()
         features = vector.features(vlayerA)
         total = 100.0 / len(features)

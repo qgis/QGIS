@@ -66,14 +66,14 @@ class Merge(GeoAlgorithm):
             layer = QgsVectorLayer(paths[x], unicode(x), 'ogr')
 
             if (len(layers) > 0):
-                if (layer.dataProvider().geometryType() != layers[0].dataProvider().geometryType()):
+                if (layer.wkbType() != layers[0].wkbType()):
                     raise GeoAlgorithmExecutionException(
                         self.tr('All layers must have same geometry type!'))
 
             layers.append(layer)
             totalFeatureCount += layer.featureCount()
 
-            for sindex, sfield in enumerate(layer.dataProvider().fields()):
+            for sindex, sfield in enumerate(layer.fields()):
                 found = None
                 for dfield in fields:
                     if (dfield.name().upper() == sfield.name().upper()):
@@ -88,12 +88,12 @@ class Merge(GeoAlgorithm):
 
         total = 100.0 / totalFeatureCount
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), layers[0].dataProvider().geometryType(),
+            fields.toList(), layers[0].wkbType(),
             layers[0].crs())
 
         featureCount = 0
         for layer in layers:
-            for feature in layer.dataProvider().getFeatures():
+            for feature in layer.getFeatures():
                 sattributes = feature.attributes()
                 dattributes = []
                 for dindex, dfield in enumerate(fields):
@@ -104,7 +104,7 @@ class Merge(GeoAlgorithm):
                     else:
                         dattribute = ''
 
-                    for sindex, sfield in enumerate(layer.dataProvider().fields()):
+                    for sindex, sfield in enumerate(layer.fields()):
                         if (sfield.name().upper() == dfield.name().upper()):
                             if (sfield.type() != dfield.type()):
                                 raise GeoAlgorithmExecutionException(

@@ -73,12 +73,11 @@ class Intersection(GeoAlgorithm):
             self.getParameterValue(self.INPUT))
         vlayerB = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT2))
-        vproviderA = vlayerA.dataProvider()
 
-        geomType = vproviderA.geometryType()
+        geomType = vlayerA.wkbType()
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     geomType, vproviderA.crs())
+                                                                     geomType, vlayerA.crs())
         outFeat = QgsFeature()
         index = vector.spatialindex(vlayerB)
         selectionA = vector.features(vlayerA)

@@ -97,27 +97,26 @@ class CheckValidity(GeoAlgorithm):
     def doCheck(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
-        provider = layer.dataProvider()
 
         settings = QSettings()
         method = int(settings.value(settings_method_key, 1))
 
         valid_ouput = self.getOutputFromName(self.VALID_OUTPUT)
-        valid_fields = layer.pendingFields().toList()
+        valid_fields = layer.fields()
         valid_writer = valid_ouput.getVectorWriter(
             valid_fields,
-            provider.geometryType(),
+            layer.wkbType(),
             layer.crs())
         valid_count = 0
 
         invalid_ouput = self.getOutputFromName(self.INVALID_OUTPUT)
-        invalid_fields = layer.pendingFields().toList() + [
+        invalid_fields = layer.fields().toList() + [
             QgsField(name='_errors',
                      type=QVariant.String,
                      len=255)]
         invalid_writer = invalid_ouput.getVectorWriter(
             invalid_fields,
-            provider.geometryType(),
+            layer.wkbType(),
             layer.crs())
         invalid_count = 0
 

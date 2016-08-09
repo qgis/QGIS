@@ -158,7 +158,7 @@ class ZonalStatistics(GeoAlgorithm):
                                                          columnPrefix + 'mode', 21, 6)
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
+            fields.toList(), layer.wkbType(), layer.crs())
 
         outFeat = QgsFeature()
 

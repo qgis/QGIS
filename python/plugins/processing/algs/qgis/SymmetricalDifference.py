@@ -65,13 +65,10 @@ class SymmetricalDifference(GeoAlgorithm):
         layerB = dataobjects.getObjectFromUri(
             self.getParameterValue(self.OVERLAY))
 
-        providerA = layerA.dataProvider()
-        providerB = layerB.dataProvider()
-
-        geomType = providerA.geometryType()
+        geomType = layerA.wkbType()
         fields = vector.combineVectorFields(layerA, layerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, geomType, providerA.crs())
+            fields, geomType, layerA.crs())
 
         featB = QgsFeature()
         outFeat = QgsFeature()
@@ -92,7 +89,7 @@ class SymmetricalDifference(GeoAlgorithm):
             attrs = featA.attributes()
             intersects = indexA.intersects(geom.boundingBox())
             for i in intersects:
-                providerB.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
+                layerB.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
                 tmpGeom = QgsGeometry(featB.geometry())
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
@@ -117,7 +114,7 @@ class SymmetricalDifference(GeoAlgorithm):
             count += 1
             progress.setPercentage(int(count * total))
 
-        length = len(providerA.fields())
+        length = len(layerA.fields())
 
         for featA in featuresB:
             add = True
@@ -127,7 +124,7 @@ class SymmetricalDifference(GeoAlgorithm):
             attrs = [NULL] * length + attrs
             intersects = indexB.intersects(geom.boundingBox())
             for i in intersects:
-                providerA.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
+                layerA.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
                 tmpGeom = QgsGeometry(featB.geometry())
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
