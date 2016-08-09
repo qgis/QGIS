@@ -683,6 +683,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
   straightSegmentLengths << currentStraightSegmentLength;
   straightSegmentAngles << QgsGeometryUtils::normalizedAngle( atan2( y[numberNodes-1] - segmentStartY, x[numberNodes-1] - segmentStartX ) );
   longestSegmentLength = qMax( longestSegmentLength, currentStraightSegmentLength );
+  double middleOfLine = totalLineLength / 2.0;
 
   if ( totalLineLength < labelWidth )
   {
@@ -729,6 +730,10 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
 
       candidateLength = sqrt(( candidateEndX - candidateStartX ) * ( candidateEndX - candidateStartX ) + ( candidateEndY - candidateStartY ) * ( candidateEndY - candidateStartY ) );
 
+
+      // LOTS OF DIFFERENT COSTS TO BALANCE HERE - feel free to tweak these, but please add a unit test
+      // which covers the situation you are adjusting for (eg "given equal length lines, choose the more horizontal line")
+
       cost = candidateLength / labelWidth;
       if ( cost > 0.98 )
         cost = 0.0001;
@@ -738,10 +743,15 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
         cost = ( 1 - cost ) / 100; // ranges from 0.0001 to 0.01 (however a cost 0.005 is already a lot!)
       }
 
-      // penalize positions which are further from the line's midpoint
+      // penalize positions which are further from the straight segments's midpoint
       double labelCenter = currentDistanceAlongLine + labelWidth / 2.0;
       double costCenter = 2 * qAbs( labelCenter - distanceToCenterOfSegment ) / ( distanceToEndOfSegment - distanceToStartOfSegment ); // 0 -> 1
       cost += costCenter * 0.0005;  // < 0, 0.0005 >
+
+      // penalize positions which are further from absolute center of whole linestring
+      double costLineCenter = 2 * qAbs( labelCenter - middleOfLine ) / totalLineLength; // 0 -> 1
+      cost += costLineCenter * 0.0005;  // < 0, 0.0005 >
+
       cost += segmentCost * 0.0005; // prefer labels on longer straight segments
       cost += segmentAngleCost * 0.0001; // prefer more horizontal segments, but this is less important than length considerations
 

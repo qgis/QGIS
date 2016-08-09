@@ -276,6 +276,7 @@ class TestPointPlacement(TestPlacementBase):
         self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_perimeter')
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine
         self.checkTest()
         self.removeMapLayer(self.layer)
         self.layer = None
@@ -385,6 +386,51 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(self.layer)
         self.layer = None
 
+    def test_prefer_longer_lines_over_shorter(self):
+        # Test that labeling a line using parallel labels will tend to place the labels over the longer straight parts of
+        # the line
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_placement_1')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_prefer_more_horizontal_lines(self):
+        # Test that labeling a line using parallel labels will tend to place the labels over more horizontal sections
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_placement_2')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_line_over_small_angles(self):
+        # Test that labeling a line using parallel labels will place labels near center of straightish line
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_placement_3')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_line_toward_center(self):
+        # Test that labeling a line using parallel labels will try to place labels as close to center of line as possible
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_placement_4')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_line_avoid_jaggy(self):
+        # Test that labeling a line using parallel labels won't place labels over jaggy bits of line
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_placement_5')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
