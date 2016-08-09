@@ -71,9 +71,9 @@ class QgsLabelSorter
 QgsLabelingEngineV2::QgsLabelingEngineV2()
     : mFlags( RenderOutlineLabels | UsePartialCandidates )
     , mSearchMethod( QgsPalLabeling::Chain )
-    , mCandPoint( 8 )
-    , mCandLine( 8 )
-    , mCandPolygon( 8 )
+    , mCandPoint( 16 )
+    , mCandLine( 50 )
+    , mCandPolygon( 30 )
     , mResults( nullptr )
 {
   mResults = new QgsLabelingResults;
@@ -343,9 +343,9 @@ void QgsLabelingEngineV2::readSettingsFromProject()
   bool saved = false;
   QgsProject* prj = QgsProject::instance();
   mSearchMethod = static_cast< QgsPalLabeling::Search >( prj->readNumEntry( "PAL", "/SearchMethod", static_cast< int >( QgsPalLabeling::Chain ), &saved ) );
-  mCandPoint = prj->readNumEntry( "PAL", "/CandidatesPoint", 8, &saved );
-  mCandLine = prj->readNumEntry( "PAL", "/CandidatesLine", 8, &saved );
-  mCandPolygon = prj->readNumEntry( "PAL", "/CandidatesPolygon", 8, &saved );
+  mCandPoint = prj->readNumEntry( "PAL", "/CandidatesPoint", 16, &saved );
+  mCandLine = prj->readNumEntry( "PAL", "/CandidatesLine", 50, &saved );
+  mCandPolygon = prj->readNumEntry( "PAL", "/CandidatesPolygon", 30, &saved );
 
   mFlags = nullptr;
   if ( prj->readBoolEntry( "PAL", "/ShowingCandidates", false, &saved ) ) mFlags |= DrawCandidates;
