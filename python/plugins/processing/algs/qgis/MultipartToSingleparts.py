@@ -63,20 +63,22 @@ class MultipartToSingleparts(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.pendingFields().toList(), geomType, layer.crs())
 
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
-            inGeom = f.geometry()
+            outFeat = QgsFeature()
             attrs = f.attributes()
-
-            geometries = self.extractAsSingle(inGeom)
             outFeat.setAttributes(attrs)
 
-            for g in geometries:
-                outFeat.setGeometry(g)
+            if f.constGeometry():
+                inGeom = QgsGeometry(f.constGeometry())
+                geometries = self.extractAsSingle(inGeom)
+
+                for g in geometries:
+                    outFeat.setGeometry(g)
+                    writer.addFeature(outFeat)
+            else:
+                #input feature with null geometry
                 writer.addFeature(outFeat)
 
             progress.setPercentage(int(current * total))
